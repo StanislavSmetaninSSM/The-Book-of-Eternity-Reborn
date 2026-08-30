@@ -119,6 +119,43 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         Assert.NotSame(first, second);
     }
 
+    [Fact]
+    public async Task ReadCurrent_ReturnsExactSignedOptionalSubsetAndDetachedAcceptedDice()
+    {
+        const string coveredOptionalPath = "game_state/world/current_location.json";
+        const string absentOptionalPath = "game_state/quests/regular_quests.json";
+        await _fs.WriteFileAtomicAsync(
+            RequiredPath,
+            "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(
+            coveredOptionalPath,
+            "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new PendingTurnSnapshotPathSelection(
+                    new[] { RequiredPath },
+                    new[] { coveredOptionalPath, absentOptionalPath }));
+        }
+
+        Assert.True(result.Success, Describe(result.Issues));
+        var snapshot = Assert.IsType<PendingTurnSnapshotReadAuthority>(result.Snapshot);
+        Assert.Equal(
+            new[] { RequiredPath, coveredOptionalPath }.OrderBy(
+                static path => path,
+                StringComparer.Ordinal),
+            snapshot.CoveredLogicalPaths);
+        Assert.Equal(new[] { 3, 17 }, snapshot.AcceptedD20EventValues);
+        Assert.Throws<NotSupportedException>(() =>
+            Assert.IsAssignableFrom<IList<int>>(snapshot.AcceptedD20EventValues)[0] = 20);
+        Assert.Throws<KeyNotFoundException>(() => snapshot.ReadRequiredBytes(absentOptionalPath));
+    }
+
     [Theory]
     [InlineData("missing_coverage")]
     [InlineData("stale_context")]
@@ -306,7 +343,8 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
             RequestId = "snapshot-request-71",
             TurnNumber = 71,
             CurrentRealm = "Mortal World",
-            PlayerAction = "Проверить подписанный снимок состояния."
+            PlayerAction = "Проверить подписанный снимок состояния.",
+            PreGeneratedDices1d20 = new[] { 3, 17 }
         });
 
     private async Task<LiveTurnPendingSnapshotManifest> RewriteAuthorityForLegacyTextHashesAsync()

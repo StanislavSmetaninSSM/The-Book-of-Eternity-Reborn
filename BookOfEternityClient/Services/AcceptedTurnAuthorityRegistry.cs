@@ -239,7 +239,10 @@ internal static class AcceptedTurnAuthorityRegistry
         try
         {
             return GetState(fileSystem, writeLease)
-                .BindMortalWoundTreatmentAcceptedState(candidate);
+                .BindMortalWoundTreatmentAcceptedState(
+                    fileSystem,
+                    writeLease,
+                    candidate);
         }
         catch (Exception exception) when (
             !candidate.IsValid &&
@@ -252,7 +255,10 @@ internal static class AcceptedTurnAuthorityRegistry
 
     private static MortalWoundTreatmentAcceptedStateAuthorityResult Detach(
         MortalWoundTreatmentAcceptedStateAuthorityResult candidate) =>
-        new(candidate.IsValid, candidate.Issues.ToArray(), candidate.Authority);
+        new(
+            candidate.IsValid,
+            Array.AsReadOnly(candidate.Issues.ToArray()),
+            candidate.Authority);
 
     private static AcceptedTurnAuthorityState GetState(
         FileSystemManager fileSystem,
@@ -335,6 +341,8 @@ internal static class AcceptedTurnAuthorityRegistry
 
         internal MortalWoundTreatmentAcceptedStateAuthorityResult
             BindMortalWoundTreatmentAcceptedState(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
                 MortalWoundTreatmentAcceptedStateAuthorityResult candidate)
         {
             lock (_gate)
@@ -348,6 +356,9 @@ internal static class AcceptedTurnAuthorityRegistry
                 }
 
                 if (_mortalWoundTreatmentAcceptedState is not null &&
+                    _mortalWoundTreatmentAcceptedState.IsLeaseBoundTo(
+                        fileSystem,
+                        writeLease) &&
                     _mortalWoundTreatmentAcceptedState.SemanticallyEquals(
                         candidate.Authority))
                 {

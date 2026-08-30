@@ -205,6 +205,15 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     {
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
+        if (context.SchemaVersion != 1)
+        {
+            issues.Add(Issue(
+                context.SourcePath,
+                "mortal_wound_treatment_accepted_state_context_schema_invalid",
+                "schemaVersion=1 parsed treatment context",
+                context.SchemaVersion.ToString(CultureInfo.InvariantCulture)));
+            return Failure(issues);
+        }
         if (!string.Equals(context.Realm, "mortal_world", StringComparison.Ordinal))
         {
             issues.Add(Issue(
@@ -215,18 +224,21 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             return Failure(issues);
         }
 
-        var coveredPaths = ReadManifestCoveredPaths(fileSystem);
-        var requiredPaths = BuildRequiredPaths(context, coveredPaths, issues);
+        var pathSelection = BuildPathSelection(context, issues);
         if (issues.Count != 0)
             return Failure(issues);
 
         var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
             fileSystem,
             writeLease,
-            requiredPaths);
+            pathSelection);
         if (!snapshotRead.Success || snapshotRead.Snapshot is null)
             return Failure(snapshotRead.Issues);
         var signed = snapshotRead.Snapshot;
+        var requiredPaths = signed.CoveredLogicalPaths;
+        ValidateTargetCarrierCoverage(context, requiredPaths, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
 
         if (!string.Equals(signed.Realm, "mortal_world", StringComparison.Ordinal))
         {
@@ -248,7 +260,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         if (issues.Count != 0)
             return Failure(issues);
 
-        if (!TryComposeBinding(fileSystem, signed, issues, out var binding, out var requestFingerprint) ||
+        if (!TryComposeBinding(signed, issues, out var binding, out var requestFingerprint) ||
             !TryReadWorldMinute(roots[WorldTimePath], issues, out var currentGameMinute))
         {
             return Failure(issues);
@@ -279,6 +291,12 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             WoundHistoryState.HistoryPath);
         issues.AddRange(identity.Issues);
         issues.AddRange(history.Issues);
+        if (identity.State is not null &&
+            history.State is not null &&
+            history.State.Transitions.Count != 0)
+        {
+            issues.AddRange(history.State.ValidateAgreement(identity.State, woundCatalog));
+        }
         if (occurrence is not null && identity.State is not null)
         {
             if (!identity.State.TryGetEntry(woundId, out var identityEntry))
@@ -328,6 +346,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             return Failure(issues);
 
         var playerCapabilities = ParsePlayerCapabilities(roots, issues);
+        ValidateStrictCanonicalSourceContracts(context, roots, issues);
         var npcCapabilities = ParseNpcCapabilities(roots[NpcCorePath], issues);
         if (issues.Count != 0)
             return Failure(issues);
@@ -380,6 +399,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             signed.RequestId,
             signed.SnapshotToken,
             Number(signed.TurnNumber),
+            Number(context.SchemaVersion),
             context.Realm,
             context.TargetKind,
             context.TargetId,
@@ -402,17 +422,17 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         var itemResourceFingerprint = Hash(
             "mortal_wound_treatment_item_resource",
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(items.Select(ToJson).Cast<JsonNode?>().ToArray())),
+                new JsonArray(items.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(resources.Select(ToJson).Cast<JsonNode?>().ToArray())));
+                new JsonArray(resources.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())));
         var actorLocationFingerprint = Hash(
             "mortal_wound_treatment_actor_location",
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(actors.Select(ToJson).Cast<JsonNode?>().ToArray())),
+                new JsonArray(actors.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(locations.Select(ToJson).Cast<JsonNode?>().ToArray())),
+                new JsonArray(locations.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(facilities.Select(ToJson).Cast<JsonNode?>().ToArray())));
+                new JsonArray(facilities.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())));
         var playerCatalogFingerprint = ComputeCapabilityCatalogFingerprint(playerCapabilities);
         var npcCatalogFingerprint = ComputeCapabilityCatalogFingerprint(npcCapabilities);
         var skillSourceFingerprint = Hash(
@@ -421,16 +441,16 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             npcCatalogFingerprint);
         var requirementSnapshotFingerprint = Hash(
             "mortal_wound_treatment_requirement_snapshot",
-            WoundAcceptedTurnFingerprintWriter.CanonicalJson(requirementProjection));
-        var requiredRootFingerprint = Hash(
-            "mortal_wound_treatment_required_roots",
-            requiredPaths.OrderBy(static path => path, StringComparer.Ordinal)
-                .SelectMany(path => new[]
-                {
-                    path,
-                    Hash("canonical_root", WoundAcceptedTurnFingerprintWriter.CanonicalJson(roots[path]))
-                })
-                .ToArray());
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                BuildMechanicalRequirementProjection(
+                    signed.SnapshotToken,
+                    items,
+                    resources,
+                    actors,
+                    facilities,
+                    locations,
+                    quests,
+                    effects)));
         var acceptedStateFingerprint = Hash(
             "mortal_wound_treatment_accepted_state",
             "1",
@@ -448,8 +468,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             playerCatalogFingerprint,
             npcCatalogFingerprint,
             skillSourceFingerprint,
-            requirementSnapshotFingerprint,
-            requiredRootFingerprint);
+            requirementSnapshotFingerprint);
 
         var authority = new MortalWoundTreatmentAcceptedStateAuthority(
             fileSystem,
@@ -528,33 +547,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
     }
 
-    private static IReadOnlySet<string> ReadManifestCoveredPaths(FileSystemManager fileSystem)
-    {
-        var result = new HashSet<string>(StringComparer.Ordinal);
-        try
-        {
-            var json = fileSystem.ReadFileSync(
-                LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            using var document = JsonDocument.Parse(json ?? string.Empty);
-            if (document.RootElement.ValueKind != JsonValueKind.Object ||
-                !document.RootElement.TryGetProperty("files", out var files) ||
-                files.ValueKind != JsonValueKind.Object)
-            {
-                return result;
-            }
-            foreach (var property in files.EnumerateObject())
-                result.Add(property.Name);
-        }
-        catch (JsonException)
-        {
-            // PendingTurnSnapshotReader owns the authoritative diagnostic.
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<string> BuildRequiredPaths(
+    private static PendingTurnSnapshotPathSelection BuildPathSelection(
         MortalWoundTreatmentAuthority.Context context,
-        IReadOnlySet<string> covered,
         ICollection<ValidationIssue> issues)
     {
         var required = new HashSet<string>(StringComparer.Ordinal)
@@ -567,24 +561,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath
         };
-        foreach (var path in OptionalAuthorityPaths)
-        {
-            if (covered.Contains(path))
-                required.Add(path);
-        }
-
         var targetPaths = context.TargetKind switch
         {
             "player" => new[] { WoundCarrierCatalog.PlayerPath },
             "npc" => new[] { WoundCarrierCatalog.NpcPath },
-            "combatant" or "combatant_member" => new[]
-            {
-                WoundCarrierCatalog.EnemiesPath,
-                WoundCarrierCatalog.AlliesPath
-            }.Where(covered.Contains).ToArray(),
+            "combatant" or "combatant_member" => Array.Empty<string>(),
             _ => Array.Empty<string>()
         };
-        if (targetPaths.Length == 0)
+        if (targetPaths.Length == 0 && context.TargetKind is not ("combatant" or "combatant_member"))
         {
             issues.Add(Issue(
                 "treatmentSelection.target",
@@ -594,11 +578,34 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
         foreach (var path in targetPaths)
             required.Add(path);
-        return required.OrderBy(static path => path, StringComparer.Ordinal).ToArray();
+        return new PendingTurnSnapshotPathSelection(
+            required.OrderBy(static path => path, StringComparer.Ordinal),
+            OptionalAuthorityPaths
+                .Where(path => !required.Contains(path))
+                .Distinct(StringComparer.Ordinal)
+                .OrderBy(static path => path, StringComparer.Ordinal));
+    }
+
+    private static void ValidateTargetCarrierCoverage(
+        MortalWoundTreatmentAuthority.Context context,
+        IReadOnlyCollection<string> covered,
+        ICollection<ValidationIssue> issues)
+    {
+        if (context.TargetKind is not ("combatant" or "combatant_member"))
+            return;
+        if (covered.Contains(WoundCarrierCatalog.EnemiesPath, StringComparer.Ordinal) ||
+            covered.Contains(WoundCarrierCatalog.AlliesPath, StringComparer.Ordinal))
+        {
+            return;
+        }
+        issues.Add(Issue(
+            "treatmentSelection.target",
+            "mortal_wound_treatment_accepted_state_target_carrier_missing",
+            "one signed canonical carrier path for the selected target kind",
+            context.TargetKind));
     }
 
     private static bool TryComposeBinding(
-        FileSystemManager fileSystem,
         PendingTurnSnapshotReadAuthority signed,
         ICollection<ValidationIssue> issues,
         out WoundAcceptedTurnBinding? binding,
@@ -606,56 +613,23 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     {
         binding = null;
         requestFingerprint = string.Empty;
-        var requestJson = fileSystem.ReadFileSync(LiveTurnPreparationService.TurnRequestPath);
-        if (string.IsNullOrWhiteSpace(requestJson))
+        var dice = signed.AcceptedD20EventValues;
+        if (dice.Count == 0 || dice.Any(static value => value is < 1 or > 20))
         {
             issues.Add(Issue(
                 LiveTurnPreparationService.TurnRequestPath,
                 "mortal_wound_treatment_accepted_event_missing",
                 "one complete current accepted-turn request/event authority",
-                "missing"));
+                "missing or malformed signed d20 event source"));
             return false;
         }
-
-        try
-        {
-            using var document = JsonDocument.Parse(requestJson);
-            var root = document.RootElement;
-            if (root.ValueKind != JsonValueKind.Object ||
-                HasDuplicateProperty(root) ||
-                !root.TryGetProperty("gameMode", out var mode) ||
-                mode.ValueKind != JsonValueKind.String ||
-                !string.Equals(mode.GetString(), "normal", StringComparison.Ordinal) ||
-                !root.TryGetProperty("preGeneratedDices1d20", out var dice) ||
-                dice.ValueKind != JsonValueKind.Array || dice.GetArrayLength() == 0 ||
-                dice.EnumerateArray().Any(static die =>
-                    die.ValueKind != JsonValueKind.Number ||
-                    !die.TryGetInt32(out var value) || value is < 1 or > 20))
-            {
-                issues.Add(Issue(
-                    LiveTurnPreparationService.TurnRequestPath,
-                    "mortal_wound_treatment_accepted_event_missing",
-                    "one strict normal-mode current request with accepted d20 event authority",
-                    "missing or malformed event source"));
-                return false;
-            }
-            requestFingerprint = Hash(
-                "mortal_wound_treatment_request_event_source",
-                signed.SessionId,
-                signed.RequestId,
-                Number(signed.TurnNumber),
-                string.Join(",", dice.EnumerateArray().Select(static die =>
-                    die.GetInt32().ToString(CultureInfo.InvariantCulture))));
-        }
-        catch (JsonException exception)
-        {
-            issues.Add(Issue(
-                LiveTurnPreparationService.TurnRequestPath,
-                "mortal_wound_treatment_accepted_event_missing",
-                "one strict current request/event authority",
-                exception.GetType().Name));
-            return false;
-        }
+        requestFingerprint = Hash(
+            "mortal_wound_treatment_request_event_source",
+            signed.SessionId,
+            signed.RequestId,
+            Number(signed.TurnNumber),
+            string.Join(",", dice.Select(static die =>
+                die.ToString(CultureInfo.InvariantCulture))));
 
         var eventRoot = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
             signed.TurnNumber,
@@ -738,6 +712,171 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             PlayerPassiveSkillsPath);
         AddIssues(issues, result.Issues);
         return result.Sources;
+    }
+
+    private static void ValidateStrictCanonicalSourceContracts(
+        MortalWoundTreatmentAuthority.Context context,
+        IReadOnlyDictionary<string, JsonObject> roots,
+        ICollection<ValidationIssue> issues)
+    {
+        var npcRoot = roots[NpcCorePath];
+        foreach (var section in new[] { "NPCsInScene", "NPCs", "UpdateNPCs" })
+        {
+            if (npcRoot[section] is null)
+                continue;
+            if (npcRoot[section] is not JsonArray rows)
+            {
+                issues.Add(Issue(
+                    NpcCorePath + "." + section,
+                    "mortal_wound_treatment_accepted_state_collection_invalid",
+                    "one canonical array of strict NPC objects",
+                    Describe(npcRoot[section])));
+                continue;
+            }
+            for (var index = 0; index < rows.Count; index++)
+            {
+                if (rows[index] is not JsonObject npc)
+                {
+                    issues.Add(Issue(
+                        NpcCorePath + $".{section}[{index}]",
+                        "mortal_wound_treatment_accepted_state_collection_row_invalid",
+                        "one strict NPC object row",
+                        Describe(rows[index])));
+                    continue;
+                }
+                if (!TryNpcId(npc, out var npcId) ||
+                    !string.Equals(context.ProviderKind, "npc", StringComparison.Ordinal) ||
+                    !string.Equals(context.ProviderId, npcId, StringComparison.Ordinal))
+                {
+                    continue;
+                }
+                ValidateRequiredBoolean(
+                    npc,
+                    "active",
+                    NpcCorePath + $".{section}[{index}]",
+                    issues);
+                ValidateRequiredBoolean(
+                    npc,
+                    "reachable",
+                    NpcCorePath + $".{section}[{index}]",
+                    issues);
+                ValidateRequiredIdentifier(
+                    npc,
+                    "lifecycle",
+                    NpcCorePath + $".{section}[{index}]",
+                    issues);
+            }
+        }
+
+        var location = roots[CurrentLocationPath];
+        ValidateStrictObjectRows(
+            location,
+            "presentActors",
+            CurrentLocationPath,
+            issues,
+            static (row, path, destination) =>
+            {
+                ValidateRequiredIdentifier(row, "actorKind", path, destination);
+                ValidateRequiredIdentifier(row, "actorId", path, destination);
+            });
+        ValidateStrictObjectRows(
+            location,
+            "resources",
+            CurrentLocationPath,
+            issues,
+            static (row, path, destination) =>
+            {
+                ValidateRequiredIdentifier(row, "resourceRef", path, destination);
+                ValidateRequiredIdentifier(row, "realm", path, destination);
+                ValidateRequiredIdentifier(row, "ownerKind", path, destination);
+                ValidateRequiredIdentifier(row, "ownerId", path, destination);
+                ValidateRequiredNonNegativeInt32(row, "currentValue", path, destination);
+                ValidateRequiredNonNegativeInt32(row, "availableValue", path, destination);
+                ValidateRequiredIdentifier(row, "reservationState", path, destination);
+                ValidateRequiredIdentifier(row, "lifecycle", path, destination);
+                ValidateRequiredBoolean(row, "active", path, destination);
+            });
+    }
+
+    private static void ValidateStrictObjectRows(
+        JsonObject root,
+        string field,
+        string sourcePath,
+        ICollection<ValidationIssue> issues,
+        Action<JsonObject, string, ICollection<ValidationIssue>> validateRow)
+    {
+        if (root[field] is not JsonArray rows)
+        {
+            issues.Add(Issue(
+                sourcePath + "." + field,
+                "mortal_wound_treatment_accepted_state_collection_invalid",
+                "one canonical array of strict object rows",
+                Describe(root[field])));
+            return;
+        }
+        for (var index = 0; index < rows.Count; index++)
+        {
+            var path = sourcePath + $".{field}[{index}]";
+            if (rows[index] is not JsonObject row)
+            {
+                issues.Add(Issue(
+                    path,
+                    "mortal_wound_treatment_accepted_state_collection_row_invalid",
+                    "one strict canonical object row",
+                    Describe(rows[index])));
+                continue;
+            }
+            validateRow(row, path, issues);
+        }
+    }
+
+    private static void ValidateRequiredIdentifier(
+        JsonObject row,
+        string field,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        if (TryString(row, field, out _))
+            return;
+        issues.Add(Issue(
+            path + "." + field,
+            "mortal_wound_treatment_accepted_state_field_invalid",
+            "one explicit exact identifier",
+            Describe(row[field])));
+    }
+
+    private static void ValidateRequiredBoolean(
+        JsonObject row,
+        string field,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        if (row[field] is JsonValue value && value.TryGetValue<bool>(out _))
+            return;
+        issues.Add(Issue(
+            path + "." + field,
+            "mortal_wound_treatment_accepted_state_field_invalid",
+            "one explicit boolean",
+            Describe(row[field])));
+    }
+
+    private static void ValidateRequiredNonNegativeInt32(
+        JsonObject row,
+        string field,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        if (row[field] is JsonValue value &&
+            value.TryGetValue<int>(out var parsed) &&
+            parsed >= 0)
+        {
+            return;
+        }
+        issues.Add(Issue(
+            path + "." + field,
+            "mortal_wound_treatment_accepted_state_field_invalid",
+            "one explicit non-negative Int32",
+            Describe(row[field])));
     }
 
     private static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
@@ -1349,6 +1488,135 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["active"] = value.Active
     };
 
+    private static JsonObject BuildMechanicalRequirementProjection(
+        string snapshotToken,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Item> items,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Resource> resources,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Actor> actors,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Facility> facilities,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Location> locations,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Quest> quests,
+        IReadOnlyList<MortalWoundTreatmentAuthority.Effect> effects) => new()
+    {
+        ["schemaVersion"] = 1,
+        ["snapshotToken"] = snapshotToken,
+        ["items"] = new JsonArray(items.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["resources"] = new JsonArray(resources.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["actors"] = new JsonArray(actors.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["facilities"] = new JsonArray(facilities.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["locations"] = new JsonArray(locations.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["quests"] = new JsonArray(quests.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["effects"] = new JsonArray(effects.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
+        ["environments"] = new JsonArray()
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Item value) => new()
+    {
+        ["itemId"] = value.ItemId,
+        ["realm"] = value.Realm,
+        ["ownerKind"] = value.OwnerKind,
+        ["ownerId"] = value.OwnerId,
+        ["count"] = value.Count,
+        ["availableCount"] = value.AvailableCount,
+        ["reservationState"] = value.ReservationState,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Resource value) => new()
+    {
+        ["resourceRef"] = value.ResourceRef,
+        ["realm"] = value.Realm,
+        ["ownerKind"] = value.OwnerKind,
+        ["ownerId"] = value.OwnerId,
+        ["currentValue"] = value.CurrentValue,
+        ["availableValue"] = value.AvailableValue,
+        ["reservationState"] = value.ReservationState,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Actor value) => new()
+    {
+        ["actorKind"] = value.ActorKind,
+        ["actorId"] = value.ActorId,
+        ["realm"] = value.Realm,
+        ["currentLocationId"] = value.CurrentLocationId,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active,
+        ["reachable"] = value.Reachable,
+        ["skills"] = new JsonArray(value.Skills.Select(skill => (JsonNode)new JsonObject
+        {
+            ["capabilityRef"] = skill.CapabilityRef,
+            ["tier"] = skill.Tier,
+            ["lifecycle"] = skill.Lifecycle,
+            ["active"] = skill.Active
+        }).ToArray()),
+        ["capabilities"] = new JsonArray(value.Capabilities.Select(capability =>
+            (JsonNode)new JsonObject
+            {
+                ["capabilityRef"] = capability.CapabilityRef,
+                ["lifecycle"] = capability.Lifecycle,
+                ["active"] = capability.Active
+            }).ToArray()),
+        ["consents"] = new JsonArray(value.Consents.Select(consent =>
+            (JsonNode)new JsonObject
+            {
+                ["consentRef"] = consent.ConsentRef,
+                ["providerKind"] = consent.ProviderKind,
+                ["providerId"] = consent.ProviderId,
+                ["targetKind"] = consent.TargetKind,
+                ["targetId"] = consent.TargetId,
+                ["status"] = consent.Status,
+                ["lifecycle"] = consent.Lifecycle,
+                ["active"] = consent.Active
+            }).ToArray())
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Facility value) => new()
+    {
+        ["facilityId"] = value.FacilityId,
+        ["realm"] = value.Realm,
+        ["locationId"] = value.LocationId,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active,
+        ["available"] = value.Available
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Location value) => new()
+    {
+        ["locationId"] = value.LocationId,
+        ["realm"] = value.Realm,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active,
+        ["presentActors"] = new JsonArray(value.PresentActors.Select(actor =>
+            (JsonNode)new JsonObject
+            {
+                ["actorKind"] = actor.ActorKind,
+                ["actorId"] = actor.ActorId
+            }).ToArray())
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Quest value) => new()
+    {
+        ["questId"] = value.QuestId,
+        ["realm"] = value.Realm,
+        ["state"] = value.State,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Effect value) => new()
+    {
+        ["effectId"] = value.EffectId,
+        ["realm"] = value.Realm,
+        ["targetKind"] = value.TargetKind,
+        ["targetId"] = value.TargetId,
+        ["state"] = value.State,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
     private static string ComputeEffectFingerprint(EffectMechanicsSnapshot snapshot)
     {
         var fields = new List<string?>
@@ -1367,19 +1635,40 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             fields.Add(effect.OwnerKind);
             fields.Add(effect.OwnerId);
             fields.Add(effect.Category);
-            fields.Add(effect.CanonicalEffect.GetRawText());
+            fields.Add(ReadMechanicalEffectString(effect.CanonicalEffect, "state"));
+            fields.Add(ReadMechanicalEffectString(effect.CanonicalEffect, "lifecycle"));
+            fields.Add(ReadMechanicalEffectBoolean(effect.CanonicalEffect, "active"));
         }
         foreach (var component in snapshot.Components)
         {
             fields.Add(component.EffectId);
             fields.Add(component.ComponentId);
+            fields.Add(component.Realm);
+            fields.Add(component.TargetKind);
+            fields.Add(component.TargetId);
+            fields.Add(component.IsPlayerVisible ? "true" : "false");
             fields.Add(component.Profile);
             fields.Add(Number(component.Priority));
             fields.Add(Number(component.CurrentStacks));
-            fields.Add(component.Payload.GetRawText());
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                JsonNode.Parse(component.Payload.GetRawText())));
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
+
+    private static string? ReadMechanicalEffectString(JsonElement effect, string field) =>
+        effect.ValueKind == JsonValueKind.Object &&
+        effect.TryGetProperty(field, out var value) &&
+        value.ValueKind == JsonValueKind.String
+            ? value.GetString()
+            : null;
+
+    private static string? ReadMechanicalEffectBoolean(JsonElement effect, string field) =>
+        effect.ValueKind == JsonValueKind.Object &&
+        effect.TryGetProperty(field, out var value) &&
+        value.ValueKind is JsonValueKind.True or JsonValueKind.False
+            ? value.GetBoolean() ? "true" : "false"
+            : null;
 
     private static string ComputeCapabilityCatalogFingerprint(
         IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> sources)

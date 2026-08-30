@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -29,7 +30,7 @@ internal static class PendingTurnSnapshotReader
         fs.EnsureCanonicalWriteLeaseActive(lease);
 
         var issues = new List<ValidationIssue>();
-        var required = ValidateRequiredPaths(requiredLogicalPaths, issues);
+        var selection = ValidatePathSelection(requiredLogicalPaths, issues);
         if (issues.Count != 0)
             return Failure(issues);
 
@@ -165,8 +166,12 @@ internal static class PendingTurnSnapshotReader
             return Failure(issues);
         }
 
+        var selectedPaths = ResolveSelectedPaths(selection, manifest, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
+
         var bytesByPath = new Dictionary<string, byte[]>(StringComparer.Ordinal);
-        foreach (var logicalPath in required)
+        foreach (var logicalPath in selectedPaths)
         {
             var fileRows = manifest.Files
                 .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
@@ -227,11 +232,12 @@ internal static class PendingTurnSnapshotReader
                 manifest.ManifestPayloadHash,
                 manifest.TurnNumber,
                 realm,
+                manifest.PreGeneratedDices1d20,
                 bytesByPath),
             Array.Empty<ValidationIssue>());
     }
 
-    private static IReadOnlyList<string> ValidateRequiredPaths(
+    private static PendingTurnSnapshotValidatedPathSelection ValidatePathSelection(
         IReadOnlyCollection<string> paths,
         ICollection<ValidationIssue> issues)
     {
@@ -242,10 +248,16 @@ internal static class PendingTurnSnapshotReader
                 LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
                 "pending_turn_snapshot_reader_required_paths_invalid",
                 $"count={paths.Count}");
-            return Array.Empty<string>();
+            return PendingTurnSnapshotValidatedPathSelection.Empty;
         }
 
         var result = new List<string>(paths.Count);
+        var optional = new HashSet<string>(StringComparer.Ordinal);
+        if (paths is PendingTurnSnapshotPathSelection pathSelection)
+        {
+            foreach (var path in pathSelection.OptionalLogicalPaths)
+                optional.Add(path);
+        }
         var exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         foreach (var path in paths)
         {
@@ -263,6 +275,48 @@ internal static class PendingTurnSnapshotReader
                 continue;
             }
             result.Add(path);
+        }
+        return new PendingTurnSnapshotValidatedPathSelection(
+            Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),
+            Array.AsReadOnly(result.Where(optional.Contains).ToArray()));
+    }
+
+    private static IReadOnlyList<string> ResolveSelectedPaths(
+        PendingTurnSnapshotValidatedPathSelection selection,
+        LiveTurnPendingSnapshotManifest manifest,
+        ICollection<ValidationIssue> issues)
+    {
+        var result = new List<string>(
+            selection.RequiredLogicalPaths.Count + selection.OptionalLogicalPaths.Count);
+        foreach (var path in selection.RequiredLogicalPaths)
+        {
+            if (!manifest.Files.ContainsKey(path) ||
+                !manifest.SnapshotFileHashes.ContainsKey(path))
+            {
+                Add(
+                    issues,
+                    path,
+                    "pending_turn_snapshot_reader_coverage_missing",
+                    "required logical path is absent or ambiguous in signed snapshot coverage");
+                continue;
+            }
+            result.Add(path);
+        }
+        foreach (var path in selection.OptionalLogicalPaths)
+        {
+            var hasFile = manifest.Files.ContainsKey(path);
+            var hasHash = manifest.SnapshotFileHashes.ContainsKey(path);
+            if (hasFile != hasHash)
+            {
+                Add(
+                    issues,
+                    path,
+                    "pending_turn_snapshot_reader_coverage_missing",
+                    "optional logical path has incomplete signed snapshot coverage");
+                continue;
+            }
+            if (hasFile)
+                result.Add(path);
         }
         return Array.AsReadOnly(result.ToArray());
     }
@@ -417,6 +471,15 @@ internal static class PendingTurnSnapshotReader
         PendingTurnSnapshotContextStatus Status,
         PendingTurnSnapshotRequestContext? Context);
 
+    private sealed record PendingTurnSnapshotValidatedPathSelection(
+        IReadOnlyList<string> RequiredLogicalPaths,
+        IReadOnlyList<string> OptionalLogicalPaths)
+    {
+        internal static PendingTurnSnapshotValidatedPathSelection Empty { get; } = new(
+            Array.Empty<string>(),
+            Array.Empty<string>());
+    }
+
     private enum PendingTurnSnapshotContextStatus
     {
         Missing,
@@ -429,6 +492,8 @@ internal static class PendingTurnSnapshotReader
 internal sealed class PendingTurnSnapshotReadAuthority
 {
     private readonly ReadOnlyDictionary<string, byte[]> _bytesByPath;
+    private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
+    private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
 
     internal PendingTurnSnapshotReadAuthority(
         string sessionId,
@@ -436,6 +501,7 @@ internal sealed class PendingTurnSnapshotReadAuthority
         string snapshotToken,
         int turnNumber,
         string realm,
+        IReadOnlyList<int>? acceptedD20EventValues,
         IReadOnlyDictionary<string, byte[]> bytesByPath)
     {
         SessionId = sessionId;
@@ -443,6 +509,10 @@ internal sealed class PendingTurnSnapshotReadAuthority
         SnapshotToken = snapshotToken;
         TurnNumber = turnNumber;
         Realm = realm;
+        _acceptedD20EventValues = Array.AsReadOnly(
+            acceptedD20EventValues?.ToArray() ?? Array.Empty<int>());
+        _coveredLogicalPaths = Array.AsReadOnly(
+            bytesByPath.Keys.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
         _bytesByPath = new ReadOnlyDictionary<string, byte[]>(
             bytesByPath.ToDictionary(
                 pair => pair.Key,
@@ -455,6 +525,9 @@ internal sealed class PendingTurnSnapshotReadAuthority
     public string SnapshotToken { get; }
     public int TurnNumber { get; }
     public string Realm { get; }
+
+    internal IReadOnlyList<int> AcceptedD20EventValues => _acceptedD20EventValues;
+    internal IReadOnlyList<string> CoveredLogicalPaths => _coveredLogicalPaths;
 
     public byte[] ReadRequiredBytes(string logicalPath)
     {
@@ -469,3 +542,31 @@ internal sealed record PendingTurnSnapshotReadResult(
     bool Success,
     PendingTurnSnapshotReadAuthority? Snapshot,
     IReadOnlyList<ValidationIssue> Issues);
+
+/// <summary>
+/// Internal path-selection envelope for callers that need all mandatory roots plus
+/// the exact signed subset of optional canonical roots. It deliberately implements
+/// the frozen reader's existing third-parameter contract.
+/// </summary>
+internal sealed class PendingTurnSnapshotPathSelection : IReadOnlyCollection<string>
+{
+    private readonly ReadOnlyCollection<string> _allLogicalPaths;
+
+    internal PendingTurnSnapshotPathSelection(
+        IEnumerable<string> requiredLogicalPaths,
+        IEnumerable<string> optionalLogicalPaths)
+    {
+        ArgumentNullException.ThrowIfNull(requiredLogicalPaths);
+        ArgumentNullException.ThrowIfNull(optionalLogicalPaths);
+        RequiredLogicalPaths = Array.AsReadOnly(requiredLogicalPaths.ToArray());
+        OptionalLogicalPaths = Array.AsReadOnly(optionalLogicalPaths.ToArray());
+        _allLogicalPaths = Array.AsReadOnly(
+            RequiredLogicalPaths.Concat(OptionalLogicalPaths).ToArray());
+    }
+
+    internal IReadOnlyList<string> RequiredLogicalPaths { get; }
+    internal IReadOnlyList<string> OptionalLogicalPaths { get; }
+    public int Count => _allLogicalPaths.Count;
+    public IEnumerator<string> GetEnumerator() => _allLogicalPaths.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+}

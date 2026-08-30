@@ -828,6 +828,223 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.NotEqual(before.Display.Name, fixture.ReadPersistedWoundDisplayName());
     }
 
+    [Fact]
+    public void AcceptedStateExport_AcceptsEmptyLegalPreTreatmentHistory()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+
+        var authority = fixture.GetAcceptedState();
+
+        Assert.Empty(Assert.IsType<WoundHistoryState>(
+            ReadAcceptedStateMember(authority, "History")).Transitions);
+    }
+
+    [Theory]
+    [InlineData("latest_after_fingerprint")]
+    [InlineData("latest_transition_ordinal")]
+    public void AcceptedStateExport_RejectsNonEmptyHistoryThatDisagreesWithExactCarrierAndIdentity(
+        string mutation)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplyHistoryAgreementMutation(mutation);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Fact]
+    public void AcceptedStateExport_RejectsForeignOrphanHistoryChain()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplyHistoryAgreementMutation("foreign_orphan_chain");
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void AcceptedStateExport_ReplacesCachedAuthorityWhenLiveLeaseOwnerChanges(
+        bool replaceFileSystemManager)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        var first = fixture.GetAcceptedState();
+
+        fixture.ReplaceLeaseWithoutGenerationRotation(replaceFileSystemManager);
+        var second = fixture.GetAcceptedState();
+
+        Assert.NotSame(first, second);
+        fixture.AssertAuthorityBoundToCurrentLease(second);
+    }
+
+    [Theory]
+    [InlineData("provider_reachable")]
+    [InlineData("provider_active")]
+    [InlineData("provider_lifecycle")]
+    [InlineData("resource_current_value")]
+    [InlineData("resource_available_value")]
+    [InlineData("resource_reservation_state")]
+    public void AcceptedStateExport_RejectsMissingRequiredCanonicalRowField(string field)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.RemoveRequiredCanonicalRowField(field);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Theory]
+    [InlineData("provider_unreachable")]
+    [InlineData("provider_inactive")]
+    [InlineData("provider_retired")]
+    [InlineData("resource_zero_unavailable")]
+    public void AcceptedStateExport_RetainsExplicitStructurallyValidNegativeRows(string mutation)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplyExplicitNegativeCanonicalRow(mutation);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
+    }
+
+    [Theory]
+    [InlineData("npc")]
+    [InlineData("present_actor")]
+    [InlineData("resource")]
+    public void AcceptedStateExport_RejectsNonObjectRequiredCollectionRows(string collection)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.AddNonObjectRequiredCollectionRow(collection);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Theory]
+    [InlineData(LiveTurnPreparationService.PendingTurnSnapshotManifestPath)]
+    [InlineData(LiveTurnPreparationService.TurnRequestPath)]
+    public void AcceptedStateExport_ReadsValidatedManifestAndRequestExactlyOnce(string path)
+    {
+        var interposition = new AcceptedStateReadInterposition(path);
+        using var fixture = AcceptedStateFixture.Create(
+            CreateScenario("procedure_normal_uses_lowest_free_die", "procedure"),
+            interposition.Hooks);
+        interposition.Arm();
+
+        var result = fixture.ExportCurrent();
+
+        Assert.True(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
+        Assert.Equal(1, interposition.ReadCount);
+    }
+
+    [Fact]
+    public void AcceptedStateExport_FingerprintsMechanicalStateWithoutDisplayProse()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        var baseline = fixture.GetAcceptedState();
+
+        fixture.ApplyDisplayOnlyAcceptedSourceMutation();
+        var displayOnly = fixture.GetAcceptedState();
+
+        foreach (var fingerprint in new[]
+                 {
+                     "ItemResourceFingerprint",
+                     "ActorLocationFingerprint",
+                     "PlayerCapabilityCatalogFingerprint",
+                     "NpcCapabilityCatalogFingerprint",
+                     "SkillSourceFingerprint"
+                 })
+        {
+            Assert.Equal(
+                ReadAcceptedStateMember(baseline, fingerprint),
+                ReadAcceptedStateMember(displayOnly, fingerprint));
+        }
+        Assert.NotEqual(
+            ReadAcceptedStateMember(baseline, "ContextFingerprint"),
+            ReadAcceptedStateMember(displayOnly, "ContextFingerprint"));
+        Assert.NotEqual(
+            ReadAcceptedStateMember(baseline, "AcceptedStateFingerprint"),
+            ReadAcceptedStateMember(displayOnly, "AcceptedStateFingerprint"));
+
+        fixture.ApplyExplicitNegativeCanonicalRow("provider_unreachable");
+        var mechanical = fixture.GetAcceptedState();
+        Assert.NotEqual(
+            ReadAcceptedStateMember(displayOnly, "ActorLocationFingerprint"),
+            ReadAcceptedStateMember(mechanical, "ActorLocationFingerprint"));
+        Assert.NotEqual(
+            ReadAcceptedStateMember(displayOnly, "AcceptedStateFingerprint"),
+            ReadAcceptedStateMember(mechanical, "AcceptedStateFingerprint"));
+    }
+
+    [Fact]
+    public void AcceptedStateExport_RejectsCopiedParsedContextWithUnsupportedSchemaVersion()
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+
+        var result = fixture.ExportWithContextSchemaVersion(2);
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.NotEmpty(AsObjects(ReadRequiredProperty(result, "Issues")));
+    }
+
+    [Theory]
+    [InlineData("null")]
+    [InlineData("empty")]
+    [InlineData("out_of_range")]
+    public void AcceptedStateExport_RejectsInvalidSignedAcceptedDiceEvidence(string mutation)
+    {
+        using var fixture = AcceptedStateFixture.Create(CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure"));
+        fixture.ApplySignedAcceptedDiceMutation(mutation);
+
+        var result = fixture.ExportCurrent();
+
+        Assert.False(Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")));
+        Assert.Null(ReadPropertyAllowingNull(result, "Authority"));
+        Assert.Contains(
+            AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>),
+            issue => issue.Code == "mortal_wound_treatment_accepted_event_missing");
+    }
+
     [Theory]
     [MemberData(nameof(ProcedureRows))]
     public void PrepareProcedureRequest_ResolvesOnlyThroughLeaseBoundAcceptedState(
@@ -3439,8 +3656,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
         WoundHistoryParseResult History,
         object Result);
 
+    private sealed class AcceptedStateReadInterposition
+    {
+        private readonly string _path;
+        private bool _armed;
+
+        internal AcceptedStateReadInterposition(string path)
+        {
+            _path = path;
+            Hooks = new FileSystemManagerHooks
+            {
+                AfterCanonicalReadInitialValidationAsync = observedPath =>
+                {
+                    if (_armed && string.Equals(observedPath, _path, StringComparison.Ordinal))
+                    {
+                        ReadCount++;
+                        if (ReadCount > 1)
+                            throw new IOException("A validated accepted-state source was reread live.");
+                    }
+                    return Task.CompletedTask;
+                }
+            };
+        }
+
+        internal FileSystemManagerHooks Hooks { get; }
+        internal int ReadCount { get; private set; }
+        internal void Arm() => _armed = true;
+    }
+
     private sealed class AcceptedStateFixture : IDisposable
     {
+        private const string NpcCorePath = "game_state/npcs/npc_core.json";
+        private const string PlayerInventoryPath = "game_state/inventory/items.json";
+
         private AcceptedStateFixture(
             string root,
             FileSystemManager fileSystem,
@@ -3470,11 +3718,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal string TargetId { get; }
         internal string TargetCarrierPath { get; }
 
-        internal static AcceptedStateFixture Create(ResolverScenario scenario)
+        internal static AcceptedStateFixture Create(
+            ResolverScenario scenario,
+            FileSystemManagerHooks? hooks = null)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-t061-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
-            var fileSystem = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            var fileSystem = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance,
+                PhysicalLoadTransactionOperations.Instance,
+                hooks);
             fileSystem.EnsureDirectoryStructure();
             var targetKind = scenario.AcceptedState["targetKind"]!.GetValue<string>();
             var targetId = scenario.AcceptedState["targetId"]!.GetValue<string>();
@@ -3795,6 +4049,264 @@ public sealed partial class MortalWoundTreatmentResolverTests
         internal void ReacquireLeaseAfterExternalDistribution() =>
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
 
+        internal void ReplaceLeaseWithoutGenerationRotation(bool replaceFileSystemManager)
+        {
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            if (replaceFileSystemManager)
+            {
+                FileSystem = new FileSystemManager(
+                    Root,
+                    NullLogger<FileSystemManager>.Instance);
+                FileSystem.EnsureDirectoryStructure();
+            }
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        }
+
+        internal void AssertAuthorityBoundToCurrentLease(object authority)
+        {
+            var bindingCheck = authority.GetType().GetMethod(
+                "IsLeaseBoundTo",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+            Assert.NotNull(bindingCheck);
+            Assert.True(Assert.IsType<bool>(bindingCheck!.Invoke(
+                authority,
+                new object?[] { FileSystem, Lease })));
+        }
+
+        internal object ExportWithContextSchemaVersion(int schemaVersion)
+        {
+            var current = Assert.IsType<MortalWoundTreatmentAuthority.Context>(TreatmentContext);
+            var altered = current with { SchemaVersion = schemaVersion };
+            var authorityType = typeof(WoundMaterializationContract).Assembly.GetType(
+                "BookOfEternityClient.Services.MortalWoundTreatmentAcceptedStateAuthority",
+                throwOnError: true,
+                ignoreCase: false)!;
+            return Invoke(
+                ExactStaticMethod(authorityType, "ExportCurrent", 4),
+                new object?[] { FileSystem, Lease, altered, WoundId });
+        }
+
+        internal void ApplyHistoryAgreementMutation(string mutation)
+        {
+            var carrier = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                TargetCarrierPath)))!.AsObject();
+            var wound = FindPersistedWound(carrier);
+            var parsed = WoundMaterializationContract.Parse(
+                wound.ToJsonString(),
+                TargetCarrierPath + ".activeWounds[0]");
+            Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+            var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parsed.Wound!);
+            var transition = WoundContractTestData.CreateTransition();
+            transition["woundId"] = WoundId;
+            transition["beforeFingerprint"] =
+                WoundHistoryState.ComputeNonexistentBeforeFingerprint(WoundId);
+            transition["afterFingerprint"] = afterFingerprint;
+            transition["sourceFingerprint"] = "sha256:" + new string('e', 64);
+            transition["attemptId"] = null;
+
+            switch (mutation)
+            {
+                case "latest_after_fingerprint":
+                    transition["afterFingerprint"] = "sha256:" + new string('d', 64);
+                    break;
+                case "latest_transition_ordinal":
+                {
+                    wound["lastTransition"]!["transitionId"] = "wound_transition_test_002";
+                    wound["lastTransition"]!["kind"] = "worsen";
+                    wound["lastTransition"]!["ordinal"] = 2;
+                    File.WriteAllText(FileSystem.ResolvePath(TargetCarrierPath), carrier.ToJsonString());
+                    parsed = WoundMaterializationContract.Parse(
+                        wound.ToJsonString(),
+                        TargetCarrierPath + ".activeWounds[0]");
+                    Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+                    afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parsed.Wound!);
+                    transition["afterFingerprint"] = afterFingerprint;
+                    var identity = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        WoundIdentityState.StatePath)))!.AsObject();
+                    identity["entries"]![0]!["lastTransitionOrdinal"] = 2;
+                    identity["entries"]![0]!["semanticFingerprint"] = afterFingerprint;
+                    File.WriteAllText(
+                        FileSystem.ResolvePath(WoundIdentityState.StatePath),
+                        identity.ToJsonString());
+                    break;
+                }
+                case "foreign_orphan_chain":
+                    transition["woundId"] = "wound_foreign_orphan_001";
+                    transition["beforeFingerprint"] =
+                        WoundHistoryState.ComputeNonexistentBeforeFingerprint(
+                            "wound_foreign_orphan_001");
+                    transition["afterFingerprint"] = "sha256:" + new string('c', 64);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+
+            File.WriteAllText(
+                FileSystem.ResolvePath(WoundHistoryState.HistoryPath),
+                WoundContractTestData.CreateHistory(transition).ToJsonString());
+            PrepareFreshSnapshot("history_" + mutation);
+        }
+
+        internal void RemoveRequiredCanonicalRowField(string field)
+        {
+            if (field.StartsWith("provider_", StringComparison.Ordinal))
+            {
+                var root = ReadObject(NpcCorePath);
+                root["NPCsInScene"]![0]!.AsObject().Remove(field["provider_".Length..] switch
+                {
+                    "reachable" => "reachable",
+                    "active" => "active",
+                    "lifecycle" => "lifecycle",
+                    _ => throw new ArgumentOutOfRangeException(nameof(field), field, null)
+                });
+                WriteObject(NpcCorePath, root);
+            }
+            else
+            {
+                var root = ReadObject("game_state/world/current_location.json");
+                root["resources"]![0]!.AsObject().Remove(field["resource_".Length..] switch
+                {
+                    "current_value" => "currentValue",
+                    "available_value" => "availableValue",
+                    "reservation_state" => "reservationState",
+                    _ => throw new ArgumentOutOfRangeException(nameof(field), field, null)
+                });
+                WriteObject("game_state/world/current_location.json", root);
+            }
+            PrepareFreshSnapshot("missing_" + field);
+        }
+
+        internal void ApplyExplicitNegativeCanonicalRow(string mutation)
+        {
+            if (mutation.StartsWith("provider_", StringComparison.Ordinal))
+            {
+                var root = ReadObject(NpcCorePath);
+                var provider = root["NPCsInScene"]![0]!.AsObject();
+                switch (mutation)
+                {
+                    case "provider_unreachable": provider["reachable"] = false; break;
+                    case "provider_inactive": provider["active"] = false; break;
+                    case "provider_retired": provider["lifecycle"] = "retired"; break;
+                    default: throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+                }
+                WriteObject(NpcCorePath, root);
+            }
+            else if (string.Equals(mutation, "resource_zero_unavailable", StringComparison.Ordinal))
+            {
+                var root = ReadObject("game_state/world/current_location.json");
+                var resource = root["resources"]![0]!.AsObject();
+                resource["currentValue"] = 0;
+                resource["availableValue"] = 0;
+                resource["reservationState"] = "reserved";
+                WriteObject("game_state/world/current_location.json", root);
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+            PrepareFreshSnapshot(mutation);
+        }
+
+        internal void AddNonObjectRequiredCollectionRow(string collection)
+        {
+            switch (collection)
+            {
+                case "npc":
+                {
+                    var root = ReadObject(NpcCorePath);
+                    root["NPCsInScene"]!.AsArray().Add("invalid-row");
+                    WriteObject(NpcCorePath, root);
+                    break;
+                }
+                case "present_actor":
+                {
+                    var root = ReadObject("game_state/world/current_location.json");
+                    root["presentActors"]!.AsArray().Add("invalid-row");
+                    WriteObject("game_state/world/current_location.json", root);
+                    break;
+                }
+                case "resource":
+                {
+                    var root = ReadObject("game_state/world/current_location.json");
+                    root["resources"]!.AsArray().Add("invalid-row");
+                    WriteObject("game_state/world/current_location.json", root);
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(collection), collection, null);
+            }
+            PrepareFreshSnapshot("non_object_" + collection);
+        }
+
+        internal void ApplyDisplayOnlyAcceptedSourceMutation()
+        {
+            var npc = ReadObject(NpcCorePath);
+            var provider = npc["NPCsInScene"]![0]!.AsObject();
+            provider["displayName"] = "Renamed field medic";
+            provider["activeSkills"]![0]!["displayName"] = "Renamed guaranteed care";
+            provider["consents"]![0]!["displayName"] = "Renamed consent";
+            WriteObject(NpcCorePath, npc);
+
+            var location = ReadObject("game_state/world/current_location.json");
+            location["name"] = "Renamed field clinic";
+            location["resources"]![0]!["displayName"] = "Renamed clinic supply";
+            WriteObject("game_state/world/current_location.json", location);
+
+            var inventory = ReadObject(PlayerInventoryPath);
+            if (inventory["items"] is JsonArray items && items.Count > 0)
+                items[0]!["displayName"] = "Renamed antibiotic dose";
+            WriteObject(PlayerInventoryPath, inventory);
+            PrepareFreshSnapshot("display_only", preserveRequestId: true);
+        }
+
+        internal void ApplySignedAcceptedDiceMutation(string mutation)
+        {
+            var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                File.ReadAllText(FileSystem.ResolvePath(
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath)),
+                LiveTurnPreparationService.ManifestJsonOptions)!;
+            manifest.PreGeneratedDices1d20 = mutation switch
+            {
+                "null" => null,
+                "empty" => Array.Empty<int>(),
+                "out_of_range" => new[] { 21 },
+                _ => throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null)
+            };
+            manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+                manifest,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                static value => value.ManifestPayloadHash,
+                static (value, hash) => value.ManifestPayloadHash = hash);
+            var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+                manifest,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                static value => value.ManifestPayloadHash,
+                static (value, hash) => value.ManifestPayloadHash = hash,
+                static value => value.SessionId,
+                static value => value.RequestId,
+                static value => value.TurnNumber,
+                static value => value.Files,
+                static value => value.SnapshotFileHashes,
+                static value => value.ClientOwnedValidationHashes,
+                static value => value.RollbackBaselineFiles,
+                static value => value.SourceLabel,
+                static value => value.RollbackBackups,
+                FileSystem.ReadFileBytesSync,
+                hashSnapshotBytesExactly: true);
+            File.WriteAllText(
+                FileSystem.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath),
+                JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+            File.WriteAllText(
+                FileSystem.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath),
+                authority);
+        }
+
+        private JsonObject ReadObject(string relativePath) =>
+            JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(relativePath)))!.AsObject();
+
+        private void WriteObject(string relativePath, JsonObject root) =>
+            File.WriteAllText(FileSystem.ResolvePath(relativePath), root.ToJsonString());
+
         internal void ApplyUntrustedSourceMutation(string mutation)
         {
             switch (mutation)
@@ -3821,12 +4333,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 }
                 case "missing_accepted_event":
                 {
-                    var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
-                        LiveTurnPreparationService.TurnRequestPath)))!.AsObject();
-                    request.Remove("gameMode");
+                    var manifest = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
+                        LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
+                    manifest["preGeneratedDices1d20"] = new JsonArray();
                     File.WriteAllText(
-                        FileSystem.ResolvePath(LiveTurnPreparationService.TurnRequestPath),
-                        request.ToJsonString());
+                        FileSystem.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath),
+                        manifest.ToJsonString());
                     return;
                 }
                 case "ambiguous_actor_coordinate":
@@ -3907,7 +4419,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             return carrier["enemiesData"]![0]!["activeWounds"]![0]!.AsObject();
         }
 
-        private void PrepareFreshSnapshot(string label)
+        private void PrepareFreshSnapshot(string label, bool preserveRequestId = false)
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
@@ -3916,7 +4428,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 new LiveTurnPreparationOptions
                 {
                     SessionId = request["sessionId"]!.GetValue<string>(),
-                    RequestId = request["requestId"]!.GetValue<string>() + "_" + label,
+                    RequestId = request["requestId"]!.GetValue<string>() +
+                        (preserveRequestId ? string.Empty : "_" + label),
                     TurnNumber = request["turnNumber"]!.GetValue<int>(),
                     PlayerAction = "Refresh accepted-state authority for " + label + ".",
                     CurrentRealm = "Mortal World",
