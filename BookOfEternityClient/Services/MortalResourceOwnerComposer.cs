@@ -1146,7 +1146,7 @@ internal static class MortalResourceOwnerComposer
     {
         var preTurnIds = new HashSet<string>(StringComparer.Ordinal);
         var ownerAliases = new HashSet<string>(StringComparer.Ordinal);
-        var preTurnCopies = new Dictionary<string, (string Section, JsonObject Npc)>(StringComparer.Ordinal);
+        var preTurnCopies = new Dictionary<string, (HashSet<string> Sections, JsonObject Npc)>(StringComparer.Ordinal);
         var preTurnAliasIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var index = 0;
         foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
@@ -1172,7 +1172,7 @@ internal static class MortalResourceOwnerComposer
                 {
                     var previous = preTurnCopies[previousId];
                     if (!string.Equals(previousId, npcId, StringComparison.Ordinal) ||
-                        string.Equals(previous.Section, section, StringComparison.Ordinal) ||
+                        !previous.Sections.Add(section) ||
                         !JsonNode.DeepEquals(previous.Npc, npc))
                     {
                         Add(
@@ -1185,7 +1185,9 @@ internal static class MortalResourceOwnerComposer
                     continue;
                 }
                 preTurnAliasIds.Add(alias, npcId);
-                preTurnCopies.Add(npcId, (section, npc));
+                preTurnCopies.Add(
+                    npcId,
+                    (new HashSet<string>(StringComparer.Ordinal) { section }, npc));
                 preTurnIds.Add(npcId);
                 ownerAliases.Add(alias);
                 RejectLegacyResourceValues(
@@ -1200,7 +1202,7 @@ internal static class MortalResourceOwnerComposer
         var acceptedIds = new HashSet<string>(StringComparer.Ordinal);
         var sameTurnRefs = new HashSet<string>(StringComparer.Ordinal);
         var sameTurnAliases = new HashSet<string>(StringComparer.Ordinal);
-        var acceptedPermanentCopies = new Dictionary<string, (string Section, JsonObject Npc)>(StringComparer.Ordinal);
+        var acceptedPermanentCopies = new Dictionary<string, (HashSet<string> Sections, JsonObject Npc)>(StringComparer.Ordinal);
         index = 0;
         foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
@@ -1223,7 +1225,7 @@ internal static class MortalResourceOwnerComposer
                     }
                     if (acceptedPermanentCopies.TryGetValue(npcId, out var previous))
                     {
-                        if (string.Equals(previous.Section, section, StringComparison.Ordinal) ||
+                        if (!previous.Sections.Add(section) ||
                             !JsonNode.DeepEquals(previous.Npc, npc))
                         {
                             Add(
@@ -1235,7 +1237,9 @@ internal static class MortalResourceOwnerComposer
                         }
                         continue;
                     }
-                    acceptedPermanentCopies.Add(npcId, (section, npc));
+                    acceptedPermanentCopies.Add(
+                        npcId,
+                        (new HashSet<string>(StringComparer.Ordinal) { section }, npc));
                     acceptedIds.Add(npcId);
 
                     RejectLegacyResourceValues(

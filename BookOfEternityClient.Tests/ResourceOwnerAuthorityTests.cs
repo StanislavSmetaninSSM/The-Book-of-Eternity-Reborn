@@ -60,6 +60,54 @@ public sealed class ResourceOwnerAuthorityTests
         }
     }
 
+    [Fact]
+    public void MortalComposition_RejectsThirdIdenticalNpcCopyInSamePreTurnCarrier()
+    {
+        var root = NpcMirrorRoot();
+        root["NPCsInScene"]!.AsArray().Add(
+            root["NPCsInScene"]![0]!.DeepClone());
+
+        var result = MortalResourceOwnerComposer.ComposeCanonical(
+            ResourceDefinitionCatalog.CreateBuiltIn(),
+            new MortalResourceOwnerRoots(
+                root,
+                new JsonObject { ["enemiesData"] = new JsonArray() },
+                new JsonObject { ["alliesData"] = new JsonArray() },
+                new JsonObject { ["vehicles"] = new JsonArray() }),
+            EmptyItemCatalog());
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_owner_npc_identity_ambiguous");
+    }
+
+    [Fact]
+    public void MortalComposition_RejectsThirdIdenticalNpcCopyInSameAcceptedCarrier()
+    {
+        var preTurn = NpcMirrorRoot();
+        var accepted = NpcMirrorRoot();
+        accepted["NPCsInScene"]!.AsArray().Add(
+            accepted["NPCsInScene"]![0]!.DeepClone());
+
+        var result = MortalResourceOwnerComposer.Compose(
+            new MortalResourceOwnerCompositionInput(
+                ResourceDefinitionCatalog.CreateBuiltIn(),
+                new MortalResourceOwnerRoots(
+                    preTurn,
+                    new JsonObject { ["enemiesData"] = new JsonArray() },
+                    new JsonObject { ["alliesData"] = new JsonArray() },
+                    new JsonObject { ["vehicles"] = new JsonArray() }),
+                new MortalResourceOwnerRoots(
+                    accepted,
+                    new JsonObject { ["enemiesData"] = new JsonArray() },
+                    new JsonObject { ["alliesData"] = new JsonArray() },
+                    new JsonObject { ["vehicles"] = new JsonArray() })));
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "resource_owner_npc_identity_ambiguous");
+    }
+
     [Theory]
     [InlineData("mortal_world", "Player", "player_current", "health")]
     [InlineData("mortal_world", "Npc", "npc_alpha", "health")]
@@ -411,6 +459,29 @@ public sealed class ResourceOwnerAuthorityTests
             resourceKey,
             ResourceOwnerId: ownerId,
             OwnerRef: null));
+
+    private static JsonObject NpcMirrorRoot()
+    {
+        var npc = new JsonObject
+        {
+            ["NPCId"] = "npc_field_medic",
+            ["displayName"] = "Field medic"
+        };
+        return new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray(npc.DeepClone()),
+            ["UpdateNPCs"] = new JsonArray(npc.DeepClone())
+        };
+    }
+
+    private static MortalItemCarrierCatalog EmptyItemCatalog() =>
+        MortalItemCarrierCatalog.Build(new MortalItemCarrierCatalogInput(
+            null,
+            null,
+            null,
+            null,
+            null,
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
 
     private static ResourceOwnerAuthority Build(
         IReadOnlyList<ResourceOwnerExport> preTurn,
