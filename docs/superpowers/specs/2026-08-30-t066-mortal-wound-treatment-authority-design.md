@@ -89,7 +89,7 @@ duplicates, or asymmetric file/hash coverage are rejected.
 
 #### Registered treatment scene states
 
-The existing canonical current location location-container `customStates[]` gains three recognized,
+The existing canonical current location's location-container `customStates[]` gains three recognized,
 strictly closed version-1 kinds:
 
 - `mortal_wound_treatment_facility` with `facilityId`, diagnostic `displayName`, and

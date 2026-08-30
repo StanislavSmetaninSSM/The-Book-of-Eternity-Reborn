@@ -763,7 +763,10 @@ caller fingerprint is an accepted new-attempt input. The production integration 
 parses only source-shaped selection JSON through `MortalWoundTreatmentAuthority.ParseContext`
 and then calls `MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
 FileSystemManager, CanonicalWriteLease, MortalWoundTreatmentAuthority.Context, string woundId)`.
-Under the active canonical lease this exporter revalidates that selection against the
+`ParseContext` embeds private origin evidence over exact schema version and coordinates;
+the exporter requires version 1 and recomputes that evidence. Direct construction,
+copy-with-mutation, wrong version, or absent/mismatched provenance is invalid. Under the
+active canonical lease this exporter revalidates that selection against the
 live turn and internally derives the binding/event set before it strictly composes the unchanged
 T060 context/snapshot, reads canonical world time, current player/NPC skill sources, and
 the accepted combat-actor treatment projection,
@@ -786,6 +789,19 @@ root identity, or live revision. Those remain non-serialized registry/lease admi
 guards, so relocating or restarting the same valid game cannot poison durable replay.
 Test fixtures must enter through a temporary `FileSystemManager` and the same
 registry/lease path; a shape-valid detached object grants no authority.
+
+Canonical projection does not read transient lookalikes. Active items use exact
+carrier/identity/current-transition quantity agreement and expose their count as available
+until T068. Resources require definition/state/history/recomposed-owner agreement and
+project only non-negative signed-32-bit integer Mortal actor rows; active and suspended
+map respectively to current availability and inactive zero availability, while valid
+decimal/non-actor/foreign/out-of-range siblings are omitted. `combat_group_member` maps
+to `combatant_member`. Known off-scene NPCs remain exact actors with `reachable=false`;
+only `NPCsInScene` grants scene presence, and only signed combat roots grant combat
+presence. Active/passive membership supplies current lifecycle; player-active tier uses
+its exact mastery row, NPC-active tier uses `currentMasteryLevel`, and passive tier uses
+`masteryLevel`. Missing active mastery creates no tier row. Regular quest `status` maps to
+transient `state`, including retained completed/failed quests.
 
 `MortalWoundTreatmentPlanner.CreateAttemptCoordinates(
 MortalWoundTreatmentAcceptedStateAuthority acceptedState,
