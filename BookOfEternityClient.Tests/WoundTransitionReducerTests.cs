@@ -861,12 +861,16 @@ public sealed class WoundTransitionReducerTests
             "diagnosis_path_infection",
             "route:clean_and_suture",
             "complication:complication_infection");
-        var before = PhysicalWound() with
+        var seed = PhysicalWound();
+        var before = seed with
         {
             Complications = ImmutableArray.Create(complication),
-            Treatment = PhysicalWound().Treatment with
+            Treatment = seed.Treatment with
             {
                 DiagnosisPaths = ImmutableArray.Create(diagnosisPath),
+                Routes = seed.Treatment.Routes
+                    .Select(static route => route with { Visibility = "hidden" })
+                    .ToImmutableArray(),
                 KnownRouteIds = ImmutableArray<string>.Empty
             }
         };
@@ -915,12 +919,16 @@ public sealed class WoundTransitionReducerTests
             "diagnosis_path_declared",
             "route:clean_and_suture",
             "complication:complication_declared");
-        var before = PhysicalWound() with
+        var seed = PhysicalWound();
+        var before = seed with
         {
             Complications = ImmutableArray.Create(declared, privateFact),
-            Treatment = PhysicalWound().Treatment with
+            Treatment = seed.Treatment with
             {
                 DiagnosisPaths = ImmutableArray.Create(diagnosisPath),
+                Routes = seed.Treatment.Routes
+                    .Select(static route => route with { Visibility = "hidden" })
+                    .ToImmutableArray(),
                 KnownRouteIds = ImmutableArray<string>.Empty
             }
         };
@@ -3646,7 +3654,9 @@ public sealed class WoundTransitionReducerTests
         string diagnosisPathId,
         params string[] reveals) => new(
             diagnosisPathId,
+            "Проверить известные признаки",
             "known_to_player",
+            ImmutableArray<string>.Empty,
             ImmutableArray<JsonElement>.Empty,
             JsonSerializer.Deserialize<JsonElement>("{}"),
             reveals.ToImmutableArray(),

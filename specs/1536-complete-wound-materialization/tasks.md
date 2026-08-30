@@ -1092,11 +1092,48 @@ prompt/example/manifest change is required beyond the explicit inventory exclusi
   reducer language. T064 MUST keep a missing real source resolver unregistered and MUST
   NOT add a placeholder producer; T070 wires the first real finalized source transaction
   to this reducer and remains the sole publisher of occurrence/receipt after-images.
-- [ ] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, client-owned canonical recovery/deterioration-anchor authoring rejection (proposal absent/null only), and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
+- [X] T065 [US2] Implement strict readable diagnosis paths, typed known-fact prerequisites/reveals, least-fixed-point discovery validation, treatment routes/known/completed agreement, exact common route envelope, exact/confusable categorized gapless procedure bands with an applicable positive operation in every `success` band, contiguous canonical-minute course milestones with non-empty positive final course, closed no-improvement/effectless-positive-difficulty-complication/current-policy-reference interruption shape, guaranteed singleton source reference, canonical-versus-proposal complication selector dialects, client-owned canonical recovery/deterioration-anchor authoring rejection (proposal absent/null only), and closed ordered typed outcomes reusing the current complication/consequence sub-proposal plus proposal-safe cosmetic/mechanical-effect heal-legacy drafts in `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` and `BookOfEternityClient/Services/WoundMaterializationContract.cs`
   T065 also owns structural positive-kind versus attempt-time applicability separation,
-  positive-only non-empty ordinary course milestones, at-most-one-final-heal and
-  aggregate legacy/severity bounds, checked numeric validation,
+  positive-only non-empty ordinary course milestones, per-result at-most-one-final-heal
+  and per-result aggregate legacy/severity bounds, checked numeric validation,
   selected-result complication-ref uniqueness, and closed local reference namespace rules.
+
+T065 GREEN evidence (2026-08-30): the initial strict-contract baselines exposed 124/153
+intended treatment failures
+(`20260830-093538-110-23776-b46bd7e2cc864ebdaac7b30ab6205f63-focused`) and 94/97
+diagnosis failures, of which only the parser contour belonged to T065
+(`20260830-093655-118-7988-990b53efe05f4af69548bca11a4740d1-focused`). The completed
+detached typed contract, canonical writer, fixed-point diagnosis graph, proposal/canonical
+selector dialects, wound-owned complication/effect graph validation, bounded opaque
+outcomes, client-owned recovery anchors, and cosmetic/mechanical legacy drafts pass all
+223/223 T065-owned treatment rows
+(`20260830-135231-591-43068-4f225d0a30a24c2cbf45574d6177e6b7-focused`) and all 33/33
+parser-owned diagnosis rows
+(`20260830-133438-649-43992-dcf87b19e8074d5e9eddee9d30418198-focused`). The neighboring
+wound materialization, consequence-envelope, and transition-reducer control passes
+378/378 (`20260830-133528-476-25916-191597281879462ab59291c580ad1842-focused`), while
+recovery-authoring anchors plus T064 cold replay pass 2/2
+(`20260830-133634-070-35580-418bcb47d74e43ba89069852c374f2a8-focused`).
+
+Review hardening was performed RED -> GREEN for detached Mortal reaction-parameter
+materialization, materialized-child envelope revalidation, exact/confusable legacy
+definition/application namespaces, the 32-row opaque-outcome bound, client-bound wound
+marker projection, end-to-end edge-parameter delivery, and derived owner-target plus
+`wound_legacy` predicate validation. The final independent rereview returns Ready YES
+with zero Critical and zero Important findings; its sole Minor plan-wording correction is
+incorporated. The meaningful Fast checkpoint executes 2,568/2,568 rows in
+`00:03:50.9483582`: 2,503 PASS and exactly 65 intentional T067 RED rows, all confined to
+`MortalWoundDiagnosisTests` command parsing/recomposition, History, repair, and reducer
+orchestration. It reports no T065 or unrelated failure, timeout, duplicate test ID,
+warning, or incomplete owned-process cleanup
+(`20260830-135651-447-38292-02a0bfea93d04eff8a82ba24ee962b00-fast`).
+
+This slice is a strict authoring/validation contract only. It adds no reachable player
+command, pending/control file, status projection, publication path, migration, or
+compatibility reader. Full Mortal GM guidance, documentation guards, and worked examples
+remain owned by T072-T074 once resolver/resource/recovery surfaces exist. Chaos Sea and
+Shining Abode contracts are unchanged, so their matrix, examples, manifest, and daemon
+entrypoints require no update for T065.
 - [ ] T066 [US2] Preserve the completed three-argument T060 surface and implement a separate complete scoped course-milestone requirement classifier with kind-complete typed success witnesses/shared internal T060 row-fingerprint recomputation and typed failure witnesses plus canonical player/NPC active/passive skill `mortalWoundTreatmentCapabilities[]` validation/normalization/export proof (linked for later adoption by #1533), including permanent exact/confusable-unique skill identity across all current active/passive rows, domain/severity/aggregate operation limits, provenance, idless/confusable/stale rejection, deterministic unchanged-shape T060 capability projection from the same skill, separate unchanged-T060 tier gates, current and final-composed publication proof exporters, and source/proof fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`, `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Skills.cs`
   T066 also owns `AcceptedTurnAuthorityRegistry.cs`,
   `MortalWoundTreatmentAcceptedStateAuthority.cs`, and

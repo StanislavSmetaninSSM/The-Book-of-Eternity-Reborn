@@ -193,7 +193,11 @@ public sealed class MortalWoundDiagnosisTests
 
         AssertInvalidAt(
             Parse(wound),
-            RoutePath(wound, "hidden_route_target") + ".routeId",
+            RoutePath(
+                wound,
+                mutation == "second_route_uncovered"
+                    ? "hidden_route_uncovered"
+                    : "hidden_route_target") + ".routeId",
             "wound_treatment_hidden_route_undiscoverable");
     }
 
@@ -218,6 +222,7 @@ public sealed class MortalWoundDiagnosisTests
     [Theory]
     [InlineData("two_path_cycle")]
     [InlineData("self_cycle")]
+    [InlineData("cycle_with_unrevealed_external_prerequisite")]
     public void Parse_UnseededDiagnosisCyclesFailClosed(string mutation)
     {
         var wound = WoundContractTestData.CreateActiveWound();
@@ -234,11 +239,15 @@ public sealed class MortalWoundDiagnosisTests
         else
         {
             AddHiddenRoute(wound, "hidden_route_beta");
+            if (mutation == "cycle_with_unrevealed_external_prerequisite")
+                AddHiddenRoute(wound, "hidden_route_orphan");
             DiagnosisPaths(wound).Add(CreateDiagnosisPath(
                 "diagnosis_alpha_cycle",
                 "Путь к альфе через бету",
                 "known_to_player",
-                new[] { "route:hidden_route_beta" },
+                mutation == "cycle_with_unrevealed_external_prerequisite"
+                    ? new[] { "route:hidden_route_beta", "route:hidden_route_orphan" }
+                    : new[] { "route:hidden_route_beta" },
                 new[] { "route:hidden_route_alpha" }));
             DiagnosisPaths(wound).Add(CreateDiagnosisPath(
                 "diagnosis_beta_cycle",

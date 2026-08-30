@@ -166,6 +166,573 @@ public sealed class WoundConsequenceEnvelopeTests
                 StringComparer.Ordinal));
     }
 
+    [Fact]
+    public void DetachedMortalEnvelope_ValidatesStaticSlotsWithoutMaterializationAuthority()
+    {
+        const string draftPath =
+            "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions";
+        var definitionPath = draftPath + "[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 2,
+                draftPath,
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        definitionPath,
+                        new[]
+                        {
+                            RawScalarComponent(
+                                "component_strength",
+                                "characteristic_modifier",
+                                "characteristic",
+                                "strength",
+                                "percent",
+                                "100",
+                                "{\"minimum\":-10,\"maximum\":10}"),
+                            PeriodicComponent("component_bleeding", 999m)
+                        })
+                }));
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(issue => $"{issue.FilePath}: {issue.Code}")));
+        Assert.Empty(result.Issues);
+        Assert.True(result.HasDeferredPeriodicAuthority);
+        Assert.Collection(
+            result.Slots.OrderBy(static slot => slot.ProfileKey, StringComparer.Ordinal),
+            slot =>
+            {
+                Assert.Equal("definition_root", slot.EffectRef);
+                Assert.Equal("characteristic_modifier", slot.ProfileKey);
+                Assert.Equal("characteristic_modifier:characteristic:strength", slot.Coordinate);
+                Assert.Equal(
+                    definitionPath + ".components[0].payload.characteristic",
+                    slot.AuthorPath);
+            },
+            slot =>
+            {
+                Assert.Equal("definition_root", slot.EffectRef);
+                Assert.Equal("periodic_damage", slot.ProfileKey);
+                Assert.Equal("periodic_damage:resource:health", slot.Coordinate);
+                Assert.Equal(
+                    definitionPath + ".components[1].payload.resource",
+                    slot.AuthorPath);
+            });
+    }
+
+    [Theory]
+    [InlineData(2, "attack", "forbid", null, "operation", "wound_consequence_action_forbid_invalid")]
+    [InlineData(3, "escape", "forbid", null, "action", "wound_consequence_action_forbid_invalid")]
+    [InlineData(2, "attack", "cost_modifier", 3, "modifier", "wound_consequence_magnitude_exceeded")]
+    public void DetachedMortalEnvelope_ReusesActionSeverityMagnitudeAndForbidClosure(
+        int severityRank,
+        string action,
+        string operation,
+        int? modifier,
+        string issueField,
+        string issueCode)
+    {
+        const string definitionPath = "draft.consequenceDefinitions[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank,
+                "draft.consequenceDefinitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        definitionPath,
+                        new[]
+                        {
+                            ActionComponent(
+                                "component_action",
+                                action,
+                                operation,
+                                modifier)
+                        })
+                }));
+
+        Assert.Contains(result.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                definitionPath + ".components[0].payload." + issueField,
+                StringComparison.Ordinal) &&
+            string.Equals(issue.Code, issueCode, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_DerivesRollSlotsAndRejectsTheSecondAuthoredCoordinate()
+    {
+        const string firstPath = "draft.definitions[0].definition";
+        const string secondPath = "draft.definitions[1].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 4,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_first",
+                        firstPath,
+                        new[]
+                        {
+                            RollComponent(
+                                "component_first_roll",
+                                "attack_roll",
+                                "defense_roll")
+                        }),
+                    new WoundDetachedMortalEffectRef(
+                        "definition_second",
+                        secondPath,
+                        new[]
+                        {
+                            RollComponent("component_second_roll", "attack_roll")
+                        })
+                }));
+
+        Assert.Contains(result.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                secondPath + ".components[0].payload.operations[0]",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_duplicate_coordinate",
+                StringComparison.Ordinal));
+        Assert.Equal(2, result.Slots.Length);
+        Assert.All(
+            result.Slots,
+            slot => Assert.Equal("roll_modifier", slot.ProfileKey));
+        Assert.Contains(result.Slots, slot => string.Equals(
+            slot.AuthorPath,
+            firstPath + ".components[0].payload.operations[1]",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_ValidatesDeterministicFlattenedReactionChildren()
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        const string leafPath = "draft.definitions[1].definition";
+        var expansion = new WoundDetachedMortalReactionExpansionRef(
+            "component_reaction",
+            leafPath,
+            new[]
+            {
+                ResistanceComponent(
+                    "component_leaf_resistance",
+                    "percent",
+                    1m)
+            },
+            Element(new JsonObject
+            {
+                ["value"] = 21m,
+                ["notPresentInPayload"] = "must_not_be_inserted"
+            }));
+        var boundPayload = expansion.Components.Single().GetProperty("payload");
+        Assert.Equal(21m, boundPayload.GetProperty("value").GetDecimal());
+        Assert.False(boundPayload.TryGetProperty("notPresentInPayload", out _));
+
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            new WoundDetachedMortalReactionExpansionRef(
+                                "component_reaction",
+                                leafPath,
+                                new[]
+                                {
+                                    ResistanceComponent(
+                                        "component_leaf_resistance",
+                                        "percent",
+                                        20m)
+                                })
+                        })
+                }));
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(issue => $"{issue.FilePath}: {issue.Code}")));
+        Assert.Equal(
+            new[] { "event_reaction", "resistance_modifier" },
+            result.Slots.Select(static slot => slot.ProfileKey).OrderBy(
+                static profile => profile,
+                StringComparer.Ordinal));
+        Assert.Contains(result.Slots, slot =>
+            string.Equals(slot.EffectRef, "definition_root", StringComparison.Ordinal) &&
+            string.Equals(
+                slot.AuthorPath,
+                leafPath + ".components[0].payload.resistance",
+                StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData(
+        "characteristic_modifier",
+        "characteristic",
+        "strength",
+        "flat",
+        "100",
+        "{\"minimum\":-3,\"maximum\":3}",
+        "cap")]
+    [InlineData(
+        "resistance_modifier",
+        "resistance",
+        "fire",
+        "percent",
+        "11",
+        "null",
+        "value")]
+    public void DetachedMortalEnvelope_ReusesScalarEffectiveMagnitudeBounds(
+        string profile,
+        string targetField,
+        string target,
+        string operation,
+        string valueJson,
+        string capJson,
+        string issueField)
+    {
+        const string definitionPath = "draft.definitions[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 2,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        definitionPath,
+                        new[]
+                        {
+                            RawScalarComponent(
+                                "component_scalar",
+                                profile,
+                                targetField,
+                                target,
+                                operation,
+                                valueJson,
+                                capJson)
+                        })
+                }));
+
+        Assert.Contains(result.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                definitionPath + ".components[0].payload." + issueField,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_magnitude_exceeded",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_ReportsReactionAndChildFailuresAtAuthoredPaths()
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        const string leafPath = "draft.definitions[1].definition";
+        var light = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 2,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            new WoundDetachedMortalReactionExpansionRef(
+                                "component_reaction",
+                                leafPath,
+                                Array.Empty<JsonElement>())
+                        })
+                }));
+        Assert.Contains(light.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                rootPath + ".components[0].payload.definitionKey",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_reaction_expansion_invalid",
+                StringComparison.Ordinal));
+
+        var excessiveChild = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            new WoundDetachedMortalReactionExpansionRef(
+                                "component_reaction",
+                                leafPath,
+                                new[]
+                                {
+                                    ResistanceComponent(
+                                        "component_leaf_resistance",
+                                        "percent",
+                                        21m)
+                                })
+                        })
+                }));
+        Assert.Contains(excessiveChild.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                leafPath + ".components[0].payload.value",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_magnitude_exceeded",
+                StringComparison.Ordinal));
+
+        var unknownResult = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent(
+                                "component_reaction",
+                                "unregistered_result",
+                                1)
+                        })
+                }));
+        Assert.Contains(unknownResult.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                rootPath + ".components[0].payload.resultKind",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_reaction_result_invalid",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_BindsReactionEdgeParametersBeforeChildValidation()
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        const string leafPath = "draft.definitions[1].definition";
+        var expansion = new WoundDetachedMortalReactionExpansionRef(
+            "component_reaction",
+            leafPath,
+            new[]
+            {
+                ResistanceComponent(
+                    "component_leaf_resistance",
+                    "percent",
+                    1m)
+            },
+            Element(new JsonObject { ["value"] = 21m }));
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            expansion
+                        })
+                }));
+
+        Assert.Contains(result.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                leafPath + ".components[0].payload.value",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "wound_consequence_magnitude_exceeded",
+                StringComparison.Ordinal) &&
+            string.Equals(issue.Actual, "21", StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("periodic_amount", "amount")]
+    [InlineData("action", "action")]
+    public void DetachedMortalEnvelope_RevalidatesMaterializedReactionChildShape(
+        string mutation,
+        string expectedField)
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        const string leafPath = "draft.definitions[1].definition";
+        JsonElement leafComponent;
+        JsonElement parameters;
+        switch (mutation)
+        {
+            case "periodic_amount":
+                leafComponent = PeriodicComponent("component_leaf_periodic", 1m);
+                parameters = Element(new JsonObject { ["amount"] = 0m });
+                break;
+            case "action":
+                leafComponent = ActionComponent(
+                    "component_leaf_action",
+                    "movement",
+                    "restrict");
+                parameters = Element(new JsonObject { ["action"] = "unregistered_action" });
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            new WoundDetachedMortalReactionExpansionRef(
+                                "component_reaction",
+                                leafPath,
+                                new[] { leafComponent },
+                                parameters)
+                        })
+                }));
+
+        Assert.Contains(result.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                $"{leafPath}.components[0].payload.{expectedField}",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "effect_materialization_invalid_component",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_ZeroChildExpansionChargesOnlyRootBoundReaction()
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        const string rootedTargetPath = "draft.definitions[1].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 3,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_root",
+                        rootPath,
+                        new[]
+                        {
+                            ReactionComponent("component_reaction", "apply_definition", 2)
+                        },
+                        new[]
+                        {
+                            new WoundDetachedMortalReactionExpansionRef(
+                                "component_reaction",
+                                rootedTargetPath,
+                                Array.Empty<JsonElement>())
+                        })
+                }));
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(issue => $"{issue.FilePath}: {issue.Code}")));
+        var slot = Assert.Single(result.Slots);
+        Assert.Equal("event_reaction", slot.ProfileKey);
+        Assert.Equal(rootPath + ".components[0].payload.resultKind", slot.AuthorPath);
+    }
+
+    [Fact]
+    public void DetachedMortalEnvelope_MalformedReactionMaximumFailsClosedWithoutThrowing()
+    {
+        const string rootPath = "draft.definitions[0].definition";
+        var reaction = JsonNode.Parse(
+            ReactionComponent("component_reaction", "apply_definition", 2).GetRawText())!
+            .AsObject();
+        reaction["payload"]!["maxExpansion"] = "2";
+        WoundDetachedMortalEnvelopeValidationResult? result = null;
+
+        var exception = Record.Exception(() =>
+            result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+                new WoundDetachedMortalEnvelopeRequest(
+                    severityRank: 3,
+                    "draft.definitions",
+                    new[]
+                    {
+                        new WoundDetachedMortalEffectRef(
+                            "definition_root",
+                            rootPath,
+                            new[] { Element(reaction) },
+                            new[]
+                            {
+                                new WoundDetachedMortalReactionExpansionRef(
+                                    "component_reaction",
+                                    "draft.definitions[1].definition",
+                                    Array.Empty<JsonElement>())
+                            })
+                    })));
+
+        Assert.Null(exception);
+        Assert.NotNull(result);
+        Assert.Contains(result!.Issues, issue =>
+            string.Equals(
+                issue.FilePath,
+                rootPath + ".components[0].payload.maxExpansion",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.Code,
+                "effect_materialization_invalid_component",
+                StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("I", 1)]
     [InlineData("II", 2)]

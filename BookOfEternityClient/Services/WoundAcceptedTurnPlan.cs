@@ -1958,11 +1958,16 @@ internal static class WoundAcceptedTurnData
         WoundDiagnosisPath value) =>
         new(
             value.DiagnosisPathId,
+            value.DisplayName,
             value.Visibility,
+            CopySimpleList(value.RequiresKnownFacts),
             CloneElements(value.Requirements),
             CloneElement(value.Check),
             CopySimpleList(value.Reveals),
-            value.FailurePolicy);
+            value.FailurePolicy)
+        {
+            SourcePath = value.SourcePath
+        };
 
     private static WoundTreatmentRoute CloneTreatmentRoute(
         WoundTreatmentRoute value) =>
@@ -1977,7 +1982,10 @@ internal static class WoundAcceptedTurnData
             CloneElements(value.Outcomes),
             value.Interruption is { } interruption
                 ? CloneElement(interruption)
-                : null);
+                : null)
+        {
+            SourcePath = value.SourcePath
+        };
 
     private static WoundRecovery? CloneRecovery(WoundRecovery? value) =>
         value is null

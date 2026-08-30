@@ -589,34 +589,78 @@ internal static class WoundContractTestData
             ["reserveBeforeResolution"] = true,
             ["consumeOn"] = new JsonArray("success", "partial_success", "failed_attempt"),
             ["refundOn"] = new JsonArray("cancelled", "validation_failed", "rolled_back"),
-            ["mutations"] = new JsonArray()
+            ["mutations"] = new JsonArray(new JsonObject
+            {
+                ["kind"] = "consume_requirement",
+                ["scope"] = "common",
+                ["milestoneOrdinal"] = null,
+                ["requirementIndex"] = 0
+            })
         },
         ["resolution"] = new JsonObject
         {
             ["formulaKey"] = "mortal_wound_procedure_v1",
             ["difficulty"] = 15,
-            ["rollSource"] = "accepted_d20"
+            ["rollSource"] = "accepted_d20",
+            ["criticalPolicy"] = "natural_20_first_natural_1_last",
+            ["modifierSource"] = new JsonObject
+            {
+                ["kind"] = "resolved_skill_tier",
+                ["requirementIndex"] = 1
+            }
         },
         ["outcomes"] = new JsonArray(
             new JsonObject
             {
+                ["bandId"] = "clean_success",
                 ["minimumMargin"] = 5,
-                ["result"] = new JsonArray("stabilize", "reduce_one")
+                ["maximumMargin"] = null,
+                ["category"] = "success",
+                ["result"] = new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })
             },
             new JsonObject
             {
+                ["bandId"] = "clean_partial",
                 ["minimumMargin"] = 0,
-                ["result"] = new JsonArray("stabilize", "add_recovery:1")
+                ["maximumMargin"] = 4,
+                ["category"] = "partial_success",
+                ["result"] = new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" },
+                    new JsonObject { ["kind"] = "add_recovery", ["points"] = 1 })
             },
             new JsonObject
             {
+                ["bandId"] = "clean_no_improvement",
                 ["minimumMargin"] = -4,
-                ["result"] = new JsonArray("no_improvement")
+                ["maximumMargin"] = -1,
+                ["category"] = "failed_attempt",
+                ["result"] = new JsonArray(new JsonObject { ["kind"] = "no_improvement" })
             },
             new JsonObject
             {
+                ["bandId"] = "clean_complication",
+                ["minimumMargin"] = null,
                 ["maximumMargin"] = -5,
-                ["result"] = new JsonArray("add_complication:irritation")
+                ["category"] = "failed_attempt",
+                ["result"] = new JsonArray(new JsonObject
+                {
+                    ["kind"] = "add_complication",
+                    ["complicationDraft"] = new JsonObject
+                    {
+                        ["complications"] = new JsonArray(new JsonObject
+                        {
+                            ["complicationRef"] = "irritation",
+                            ["kind"] = "pain",
+                            ["state"] = "active",
+                            ["displayName"] = "Раздражённые края раны",
+                            ["treatmentDifficultyModifier"] = 1,
+                            ["visibility"] = "known_to_player"
+                        }),
+                        ["consequenceDefinitions"] = new JsonArray()
+                    }
+                })
             }),
         ["interruption"] = null
     };

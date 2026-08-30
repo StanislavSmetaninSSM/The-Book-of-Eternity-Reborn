@@ -179,6 +179,16 @@ internal static partial class WoundResponseInputComposer
             return new TransitionComposition(null, null);
         }
         ValidateNoDuplicateProperties(proposalElement, path, issues);
+        if (string.Equals(opportunity.Domain, "physical", StringComparison.Ordinal) &&
+            JsonNode.Parse(proposalElement.GetRawText()) is JsonObject mortalProposal)
+        {
+            var recoveryAuthoring =
+                MortalWoundRecoveryAuthoringAuthority.ValidateProposal(
+                    mortalProposal,
+                    path);
+            foreach (var issue in recoveryAuthoring.Issues)
+                issues.Add(issue);
+        }
 
         var classification = ReadStrictObject(
             proposal,
@@ -205,6 +215,8 @@ internal static partial class WoundResponseInputComposer
             issues);
         var treatment = ReadObjectNode(proposal, "treatment", path, issues);
         var recovery = ReadObjectNode(proposal, "recovery", path, issues);
+        if (recovery is not null)
+            RemoveNullRecoveryAnchorPlaceholders(recovery);
         var complicationElements = ReadArray(
             proposal,
             "complications",
@@ -262,6 +274,14 @@ internal static partial class WoundResponseInputComposer
         var complicationByRef = complications.ToDictionary(
             static value => value.LocalRef,
             StringComparer.Ordinal);
+        if (opportunity.WorseningTarget is null)
+        {
+            treatment = RewriteInitialTreatmentComplicationSelectors(
+                treatment,
+                path + ".treatment",
+                complicationByRef,
+                issues);
+        }
         var definitions = ParseDefinitions(
             definitionElements,
             path + ".consequenceDefinitions",
@@ -864,6 +884,93 @@ internal static partial class WoundResponseInputComposer
         return result;
     }
 
+    private static JsonObject RewriteInitialTreatmentComplicationSelectors(
+        JsonObject treatment,
+        string path,
+        IReadOnlyDictionary<string, ParsedComplicationProposal> complicationByRef,
+        ICollection<ValidationIssue> issues)
+    {
+        var rewritten = treatment.DeepClone().AsObject();
+        if (rewritten["routes"] is not JsonArray routes)
+            return rewritten;
+
+        for (var routeIndex = 0; routeIndex < routes.Count; routeIndex++)
+        {
+            if (routes[routeIndex] is not JsonObject route)
+                continue;
+            var routePath = $"{path}.routes[{routeIndex}]";
+            if (route["outcomes"] is JsonArray outcomes)
+            {
+                for (var outcomeIndex = 0; outcomeIndex < outcomes.Count; outcomeIndex++)
+                {
+                    if (outcomes[outcomeIndex] is JsonObject outcome &&
+                        outcome["result"] is JsonArray result)
+                    {
+                        RewriteInitialResultComplicationSelectors(
+                            result,
+                            $"{routePath}.outcomes[{outcomeIndex}].result",
+                            complicationByRef,
+                            issues);
+                    }
+                }
+            }
+            if (route["interruption"] is JsonObject interruption &&
+                interruption["result"] is JsonArray interruptionResult)
+            {
+                RewriteInitialResultComplicationSelectors(
+                    interruptionResult,
+                    routePath + ".interruption.result",
+                    complicationByRef,
+                    issues);
+            }
+        }
+        return rewritten;
+    }
+
+    private static void RewriteInitialResultComplicationSelectors(
+        JsonArray result,
+        string path,
+        IReadOnlyDictionary<string, ParsedComplicationProposal> complicationByRef,
+        ICollection<ValidationIssue> issues)
+    {
+        for (var operationIndex = 0; operationIndex < result.Count; operationIndex++)
+        {
+            if (result[operationIndex] is not JsonObject operation ||
+                operation["kind"] is not JsonValue kindNode ||
+                !kindNode.TryGetValue<string>(out var kind) ||
+                !string.Equals(kind, "remove_complication", StringComparison.Ordinal))
+            {
+                continue;
+            }
+            var operationPath = $"{path}[{operationIndex}]";
+            if (operation.ContainsKey("complicationId"))
+            {
+                Add(
+                    issues,
+                    operationPath + ".complicationId",
+                    "wound_response_unknown_field",
+                    "response-local complicationRef; permanent IDs are client-owned",
+                    "complicationId");
+                continue;
+            }
+            if (operation["complicationRef"] is not JsonValue refNode ||
+                !refNode.TryGetValue<string>(out var complicationRef) ||
+                !ResourceMaterializationContract.IsExactIdentifier(complicationRef) ||
+                !complicationByRef.TryGetValue(complicationRef, out var complication))
+            {
+                Add(
+                    issues,
+                    operationPath + ".complicationRef",
+                    "wound_response_invalid_local_reference",
+                    "one exact complicationRef from this proposal",
+                    operation["complicationRef"]?.ToJsonString() ?? "missing");
+                continue;
+            }
+            operation.Remove("complicationRef");
+            operation["complicationId"] = complication.ComplicationId;
+        }
+    }
+
     private static WoundRootOwnershipDomain? ParseRootOwnership(
         JsonElement element,
         string path,
@@ -948,6 +1055,15 @@ internal static partial class WoundResponseInputComposer
             ["role"] = "source"
         });
         return result;
+    }
+
+    private static void RemoveNullRecoveryAnchorPlaceholders(JsonObject recovery)
+    {
+        foreach (var field in new[] { "recoveryAnchor", "deteriorationAnchor" })
+        {
+            if (recovery.ContainsKey(field) && recovery[field] is null)
+                recovery.Remove(field);
+        }
     }
 
     private static JsonObject? ReadStrictObject(

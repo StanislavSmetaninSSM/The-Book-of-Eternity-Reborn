@@ -1112,6 +1112,23 @@ public sealed class WoundMaterializationContractTests
         }
     }
 
+    [Fact]
+    public void Parse_InvalidOwnerKindReturnsValidationIssueWithoutThrowing()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        wound["owner"]!["ownerKind"] = "unknown_owner_kind";
+        WoundMaterializationParseResult? result = null;
+
+        var exception = Record.Exception(() => result = Parse(wound));
+
+        Assert.Null(exception);
+        Assert.NotNull(result);
+        AssertInvalid(
+            result!,
+            Path + ".owner.ownerKind",
+            "wound_materialization_invalid_field");
+    }
+
     [Theory]
     [InlineData("I", 1)]
     [InlineData("II", 2)]
@@ -1221,9 +1238,14 @@ public sealed class WoundMaterializationContractTests
             static (wound, count) =>
             {
                 var routes = wound["treatment"]!["routes"]!.AsArray();
+                var template = routes[0]!.DeepClone().AsObject();
                 routes.Clear();
                 for (var index = 0; index < count; index++)
-                    routes.Add(CreateRoute(index));
+                    routes.Add(CreateRoute(template, index));
+                wound["treatment"]!["knownRouteIds"] = new JsonArray(
+                    Enumerable.Range(0, count)
+                        .Select(static index => (JsonNode?)$"route_{index}")
+                        .ToArray());
             },
             Path + ".treatment.routes");
 
@@ -1495,12 +1517,32 @@ public sealed class WoundMaterializationContractTests
         Assert.Contains("\"itemRef\":\"sterile_thread\"", first, StringComparison.Ordinal);
         Assert.Contains("\"capabilityRef\":\"field_medicine\"", first, StringComparison.Ordinal);
         Assert.Contains(
-            "\"result\":[\"stabilize\",\"reduce_one\"]",
+            "\"result\":[{\"kind\":\"stabilize\"},{\"kind\":\"reduce_severity\",\"steps\":1}]",
             first,
             StringComparison.Ordinal);
         Assert.DoesNotContain("\"itemId\":", first, StringComparison.Ordinal);
         Assert.DoesNotContain("\"skillId\":", first, StringComparison.Ordinal);
         Assert.DoesNotContain("\"results\":", first, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void CanonicalSerialization_PhysicalWoundOutsideMortalWorldUsesCompatibilityProjection()
+    {
+        var source = WoundContractTestData.CreateActiveWound(
+            realm: "chaos_sea",
+            ownerKind: "player_soul",
+            ownerId: "player_soul_current",
+            carrierPath: "game_state/meta/afterlife_entity_profiles.json#/playerSoul");
+        source["treatment"]!["routes"]![0]!["resolution"]!["formulaKey"] =
+            "legacy_physical_afterlife_formula";
+        var parsed = Parse(source);
+        Assert.True(parsed.IsValid, DescribeIssues(parsed));
+
+        var canonical = WoundMaterializationContract.SerializeCanonical(parsed.Wound!);
+        var reparsed = WoundMaterializationContract.Parse(canonical, Path);
+
+        Assert.True(reparsed.IsValid, DescribeIssues(reparsed));
+        Assert.Equal(canonical, WoundMaterializationContract.SerializeCanonical(reparsed.Wound!));
     }
 
     private static WoundMaterializationParseResult Parse(JsonObject wound) =>
@@ -1717,36 +1759,42 @@ public sealed class WoundMaterializationContractTests
         ["visibility"] = "known_to_player"
     };
 
-    private static JsonObject CreateRoute(int index) => new()
+    private static JsonObject CreateRoute(JsonObject template, int index)
     {
-        ["routeId"] = $"route_{index}",
-        ["displayName"] = $"Маршрут {index}",
-        ["visibility"] = "known_to_player",
-        ["mode"] = "procedure",
-        ["requirements"] = new JsonArray(),
-        ["resourcePolicy"] = new JsonObject(),
-        ["resolution"] = new JsonObject(),
-        ["outcomes"] = new JsonArray(),
-        ["interruption"] = null
-    };
+        var route = template.DeepClone().AsObject();
+        route["routeId"] = $"route_{index}";
+        route["displayName"] = $"Маршрут {index}";
+        route["visibility"] = "known_to_player";
+        return route;
+    }
 
     private static JsonObject CreateDiagnosisPath(int index) => new()
     {
         ["diagnosisPathId"] = $"diagnosis_{index}",
-        ["visibility"] = "known_to_player",
+        ["displayName"] = $"Диагностика {index}",
+        ["visibility"] = "gm_only",
+        ["requiresKnownFacts"] = new JsonArray(),
         ["requirements"] = new JsonArray(),
         ["check"] = new JsonObject(),
         ["reveals"] = new JsonArray(),
         ["failurePolicy"] = "no_reveal"
     };
 
-    private static JsonObject CreateRequirement(int index) => new()
-    {
-        ["kind"] = "item_quantity",
-        ["itemRef"] = $"item_{index}",
-        ["quantity"] = 1,
-        ["ownerRole"] = "provider"
-    };
+    private static JsonObject CreateRequirement(int index) => index == 1
+        ? new JsonObject
+        {
+            ["kind"] = "skill_tier",
+            ["capabilityRef"] = "field_medicine",
+            ["minimumTier"] = 2,
+            ["actorRole"] = "provider"
+        }
+        : new JsonObject
+        {
+            ["kind"] = "item_quantity",
+            ["itemRef"] = $"item_{index}",
+            ["quantity"] = 1,
+            ["ownerRole"] = "provider"
+        };
 
     private static JsonObject ReverseObject(JsonObject source)
     {

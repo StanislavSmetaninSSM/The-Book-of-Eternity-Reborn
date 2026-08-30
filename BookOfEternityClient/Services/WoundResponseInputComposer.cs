@@ -387,7 +387,7 @@ internal static partial class WoundResponseInputComposer
         {
             if (!ResourceMaterializationContract.IsExactIdentifier(value) ||
                 !exact.Add(value) ||
-                !confusable.Add(MortalLocationIdentityState.BuildConfusableKey(value)))
+                !confusable.Add(ExactIdentifierConfusableKey.Build(value)))
             {
                 return false;
             }

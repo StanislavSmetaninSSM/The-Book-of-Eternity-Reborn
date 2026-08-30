@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -481,6 +482,141 @@ internal sealed class WoundConsequenceEnvelopeValidationResult
     internal ImmutableArray<ValidationIssue> Issues { get; }
 }
 
+internal sealed class WoundDetachedMortalEffectRef
+{
+    internal WoundDetachedMortalEffectRef(
+        string effectRef,
+        string authorPath,
+        IReadOnlyList<JsonElement> components,
+        IReadOnlyList<WoundDetachedMortalReactionExpansionRef>? reactionExpansions = null)
+    {
+        EffectRef = effectRef;
+        AuthorPath = authorPath;
+        Components = components;
+        ReactionExpansions = reactionExpansions ??
+            Array.Empty<WoundDetachedMortalReactionExpansionRef>();
+    }
+
+    internal string EffectRef { get; }
+
+    internal string AuthorPath { get; }
+
+    internal IReadOnlyList<JsonElement> Components { get; }
+
+    internal IReadOnlyList<WoundDetachedMortalReactionExpansionRef> ReactionExpansions { get; }
+}
+
+internal sealed class WoundDetachedMortalReactionExpansionRef
+{
+    internal WoundDetachedMortalReactionExpansionRef(
+        string reactionComponentId,
+        string authorPath,
+        IReadOnlyList<JsonElement> components,
+        JsonElement parameters = default)
+    {
+        ReactionComponentId = reactionComponentId;
+        AuthorPath = authorPath;
+        Components = EffectComponentParameterBinder.Bind(components, parameters);
+    }
+
+    internal string ReactionComponentId { get; }
+
+    internal string AuthorPath { get; }
+
+    internal IReadOnlyList<JsonElement> Components { get; }
+}
+
+internal static class EffectComponentParameterBinder
+{
+    internal static ImmutableArray<JsonElement> Bind(
+        IReadOnlyList<JsonElement> components,
+        JsonElement parameters)
+    {
+        if (components == null)
+            return ImmutableArray<JsonElement>.Empty;
+
+        JsonObject? parameterObject = null;
+        if (parameters.ValueKind == JsonValueKind.Object)
+            parameterObject = JsonNode.Parse(parameters.GetRawText()) as JsonObject;
+
+        var bound = ImmutableArray.CreateBuilder<JsonElement>(components.Count);
+        for (var index = 0; index < components.Count; index++)
+        {
+            var component = components[index];
+            if (component.ValueKind == JsonValueKind.Undefined)
+            {
+                bound.Add(default);
+                continue;
+            }
+
+            var componentNode = JsonNode.Parse(component.GetRawText());
+            if (componentNode is JsonObject componentObject &&
+                componentObject["payload"] is JsonObject payload &&
+                parameterObject != null)
+            {
+                foreach (var parameter in parameterObject)
+                {
+                    if (payload.ContainsKey(parameter.Key))
+                        payload[parameter.Key] = parameter.Value?.DeepClone();
+                }
+            }
+
+            bound.Add(JsonSerializer.SerializeToElement(componentNode));
+        }
+
+        return bound.MoveToImmutable();
+    }
+}
+
+internal sealed class WoundDetachedMortalEnvelopeRequest
+{
+    internal WoundDetachedMortalEnvelopeRequest(
+        int severityRank,
+        string authorPath,
+        IReadOnlyList<WoundDetachedMortalEffectRef> effects)
+    {
+        SeverityRank = severityRank;
+        AuthorPath = authorPath;
+        Effects = effects;
+    }
+
+    internal int SeverityRank { get; }
+
+    internal string AuthorPath { get; }
+
+    internal IReadOnlyList<WoundDetachedMortalEffectRef> Effects { get; }
+}
+
+internal sealed record WoundDetachedMortalEnvelopeSlot(
+    int Slot,
+    string EffectRef,
+    string ComponentId,
+    string ProfileKey,
+    string Axis,
+    string OperationKey,
+    string Coordinate,
+    string AuthorPath);
+
+internal sealed class WoundDetachedMortalEnvelopeValidationResult
+{
+    internal WoundDetachedMortalEnvelopeValidationResult(
+        ImmutableArray<WoundDetachedMortalEnvelopeSlot> slots,
+        ImmutableArray<ValidationIssue> issues)
+    {
+        Slots = slots;
+        Issues = issues;
+    }
+
+    internal bool IsValid => Issues.IsEmpty;
+
+    internal ImmutableArray<WoundDetachedMortalEnvelopeSlot> Slots { get; }
+
+    internal bool HasDeferredPeriodicAuthority => Slots.Any(static slot =>
+        slot.ProfileKey is "periodic_damage" or "periodic_restore");
+
+    internal ImmutableArray<ValidationIssue> Issues { get; }
+}
+
 internal static class WoundConsequenceEnvelopeCatalog
 {
     internal const int MaximumEffectProposals = 128;
@@ -533,6 +669,273 @@ internal static class WoundConsequenceEnvelopeCatalog
 
     internal static IReadOnlySet<string> SpiritualArtRestrictionKeys =>
         SpiritualWoundEffectProfileCatalog.ArtOperations;
+
+    internal static WoundDetachedMortalEnvelopeValidationResult ValidateDetachedMortal(
+        WoundDetachedMortalEnvelopeRequest request)
+    {
+        var issues = new List<ValidationIssue>();
+        var path = request == null || string.IsNullOrWhiteSpace(request.AuthorPath)
+            ? "wound.detachedConsequences"
+            : request.AuthorPath;
+        if (request == null)
+        {
+            Add(
+                issues,
+                path,
+                "wound_consequence_input_invalid",
+                "one non-null detached Mortal component envelope request",
+                "null");
+            return new WoundDetachedMortalEnvelopeValidationResult(
+                ImmutableArray<WoundDetachedMortalEnvelopeSlot>.Empty,
+                issues.ToImmutableArray());
+        }
+
+        if (request.SeverityRank is < 1 or > MaximumConsequenceSlots)
+        {
+            Add(
+                issues,
+                path,
+                "wound_consequence_severity_invalid",
+                "severity rank 1 | 2 | 3 | 4",
+                request.SeverityRank.ToString(CultureInfo.InvariantCulture));
+        }
+
+        var candidates = new List<SlotCandidate>();
+        var coordinates = new HashSet<string>(StringComparer.Ordinal);
+        for (var effectIndex = 0; effectIndex < request.Effects.Count; effectIndex++)
+        {
+            var effect = request.Effects[effectIndex];
+            var effectPath = string.IsNullOrWhiteSpace(effect.AuthorPath)
+                ? $"{path}[{effectIndex}]"
+                : effect.AuthorPath;
+            var evidence = BuildDetachedMortalEvidenceIndex(effect);
+            var usedExpansions = new HashSet<int>();
+            for (var componentIndex = 0;
+                 componentIndex < effect.Components.Count;
+                 componentIndex++)
+            {
+                ValidateDetachedMortalComponent(
+                    request.SeverityRank,
+                    effect.EffectRef,
+                    evidence,
+                    componentIndex,
+                    effect.Components[componentIndex],
+                    effectPath,
+                    originPrefix: "0:",
+                    allowReaction: true,
+                    candidates,
+                    coordinates,
+                    usedExpansions,
+                    issues);
+            }
+
+            for (var expansionIndex = 0;
+                 expansionIndex < effect.ReactionExpansions.Count;
+                 expansionIndex++)
+            {
+                if (!usedExpansions.Contains(expansionIndex))
+                {
+                    Add(
+                        issues,
+                        effect.ReactionExpansions[expansionIndex].AuthorPath,
+                        "wound_consequence_reaction_expansion_invalid",
+                        "one expansion bound to exactly one apply_definition component",
+                        effect.ReactionExpansions[expansionIndex].ReactionComponentId);
+                }
+            }
+        }
+
+        return new WoundDetachedMortalEnvelopeValidationResult(
+            DeriveDetachedSlots(candidates),
+            issues.ToImmutableArray());
+    }
+
+    private static MortalEvidenceIndex BuildDetachedMortalEvidenceIndex(
+        WoundDetachedMortalEffectRef effect)
+    {
+        var expansions = new Dictionary<
+            string,
+            ImmutableArray<IndexedExpansion>.Builder>(StringComparer.Ordinal);
+        for (var index = 0; index < effect.ReactionExpansions.Count; index++)
+        {
+            var expansion = effect.ReactionExpansions[index];
+            AddEvidence(
+                expansions,
+                expansion.ReactionComponentId,
+                new IndexedExpansion(
+                    index,
+                    new WoundReactionExpansionProposal(
+                        expansion.ReactionComponentId,
+                        expansion.Components),
+                    expansion.AuthorPath));
+        }
+
+        return new MortalEvidenceIndex(
+            new Dictionary<string, ImmutableArray<IndexedCadence>>(StringComparer.Ordinal),
+            expansions.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.ToImmutable(),
+                StringComparer.Ordinal));
+    }
+
+    private static void ValidateDetachedMortalComponent(
+        int rank,
+        string effectRef,
+        MortalEvidenceIndex evidence,
+        int componentIndex,
+        JsonElement component,
+        string componentContainerPath,
+        string originPrefix,
+        bool allowReaction,
+        List<SlotCandidate> candidates,
+        HashSet<string> coordinates,
+        HashSet<int> usedExpansions,
+        List<ValidationIssue> issues)
+    {
+        // The detached definition contract has already enforced the closed #1535
+        // component shape. This seam owns only wound-severity semantics. Periodic
+        // amount percentage, resource quantum, and cadence remain deferred until
+        // accepted runtime authority is available.
+        var componentPath = $"{componentContainerPath}.components[{componentIndex}]";
+        if (!ValidateNoDuplicateRawProperties(component, componentPath, issues))
+            return;
+
+        if (!TryReadString(component, "profile", out var profile) ||
+            (!MortalMechanicalProfileSet.Contains(profile) &&
+             !MortalZeroSlotProfileSet.Contains(profile)))
+        {
+            Add(
+                issues,
+                componentPath + ".profile",
+                "wound_consequence_profile_unsupported",
+                DescribeMortalProfiles(),
+                DescribeProperty(component, "profile"));
+            return;
+        }
+
+        if (!allowReaction && string.Equals(profile, "event_reaction", StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                componentPath + ".profile",
+                "wound_consequence_reaction_expansion_invalid",
+                "fully flattened non-reaction mechanical component",
+                profile);
+            return;
+        }
+
+        var genericIssueCount = issues.Count;
+        EffectComponentProfiles.ValidateComponent(component, componentPath, issues);
+        var genericValid = issues.Count == genericIssueCount;
+
+        if (string.Equals(profile, "event_reaction", StringComparison.Ordinal))
+        {
+            ValidateReactionComponentCore(
+                rank,
+                effectRef,
+                evidence,
+                component,
+                componentPath,
+                originPrefix,
+                genericValid,
+                candidates,
+                coordinates,
+                usedExpansions,
+                issues,
+                (indexedExpansion, expansionComponentIndex) =>
+                    ValidateDetachedMortalComponent(
+                        rank,
+                        effectRef,
+                        evidence,
+                        expansionComponentIndex,
+                        indexedExpansion.Expansion.Components[expansionComponentIndex],
+                        indexedExpansion.AuthorPath,
+                        "1:" + component.GetProperty("componentId").GetString() + ":",
+                        allowReaction: false,
+                        candidates,
+                        coordinates,
+                        usedExpansions,
+                        issues));
+            return;
+        }
+
+        if ((!genericValid && profile is not ("periodic_damage" or "periodic_restore")) ||
+            !TryReadString(component, "componentId", out var componentId) ||
+            !component.TryGetProperty("payload", out var payload) ||
+            payload.ValueKind != JsonValueKind.Object)
+        {
+            return;
+        }
+
+        var originKey = originPrefix + componentId;
+        switch (profile)
+        {
+            case "characteristic_modifier":
+                ValidateScalarModifier(
+                    rank,
+                    effectRef,
+                    componentId,
+                    profile,
+                    payload,
+                    componentPath,
+                    "characteristic",
+                    originKey,
+                    candidates,
+                    coordinates,
+                    issues);
+                break;
+            case "resistance_modifier":
+                ValidateScalarModifier(
+                    rank,
+                    effectRef,
+                    componentId,
+                    profile,
+                    payload,
+                    componentPath,
+                    "resistance",
+                    originKey,
+                    candidates,
+                    coordinates,
+                    issues);
+                break;
+            case "roll_modifier":
+                ValidateRollModifier(
+                    effectRef,
+                    componentId,
+                    payload,
+                    componentPath,
+                    originKey,
+                    candidates,
+                    coordinates,
+                    issues);
+                break;
+            case "periodic_damage":
+            case "periodic_restore":
+                ValidatePeriodicCoordinate(
+                    effectRef,
+                    componentId,
+                    profile,
+                    payload,
+                    componentPath,
+                    originKey,
+                    candidates,
+                    coordinates,
+                    issues);
+                break;
+            case "action_control":
+                ValidateAction(
+                    rank,
+                    effectRef,
+                    componentId,
+                    payload,
+                    componentPath,
+                    originKey,
+                    candidates,
+                    coordinates,
+                    issues);
+                break;
+        }
+    }
 
     internal static WoundConsequenceEnvelopeValidationResult Validate(
         WoundConsequenceEnvelopeRequest request,
@@ -1093,7 +1496,8 @@ internal static class WoundConsequenceEnvelopeCatalog
     };
 
     private static MortalEvidenceIndex BuildMortalEvidenceIndex(
-        WoundConsequenceEffectProposal effect)
+        WoundConsequenceEffectProposal effect,
+        string effectPath)
     {
         var cadences = new Dictionary<
             string,
@@ -1114,7 +1518,10 @@ internal static class WoundConsequenceEnvelopeCatalog
             AddEvidence(
                 expansions,
                 effect.Expansions[index].ReactionComponentId,
-                new IndexedExpansion(index, effect.Expansions[index]));
+                new IndexedExpansion(
+                    index,
+                    effect.Expansions[index],
+                    $"{effectPath}.expansions[{index}]"));
         }
 
         return new MortalEvidenceIndex(
@@ -1159,7 +1566,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             var effectPath = $"{path}.effects[{indexed.Index}]";
             var usedExpansions = new HashSet<int>();
             var cadenceUseCounts = new int[effect.Cadences.Length];
-            var evidence = BuildMortalEvidenceIndex(effect);
+            var evidence = BuildMortalEvidenceIndex(effect, effectPath);
 
             for (var componentIndex = 0;
                  componentIndex < effect.Components.Length;
@@ -1488,7 +1895,8 @@ internal static class WoundConsequenceEnvelopeCatalog
                 targetField,
                 target,
                 $"{profile}:{targetField}:{target}",
-                originKey),
+                originKey,
+                componentPath + $".payload.{targetField}"),
             componentPath + $".payload.{targetField}",
             issues);
     }
@@ -1525,7 +1933,8 @@ internal static class WoundConsequenceEnvelopeCatalog
                         "rollMode",
                         operation,
                         "roll_modifier:" + operation,
-                        originKey + ":" + index.ToString("D4", CultureInfo.InvariantCulture)),
+                        originKey + ":" + index.ToString("D4", CultureInfo.InvariantCulture),
+                        $"{componentPath}.payload.operations[{index}]"),
                     $"{componentPath}.payload.operations[{index}]",
                     issues);
             }
@@ -1633,20 +2042,68 @@ internal static class WoundConsequenceEnvelopeCatalog
         if (!cadenceValid)
             return;
 
+        AddPeriodicSlot(
+            effectId,
+            componentId,
+            profile,
+            resource,
+            componentPath,
+            originKey,
+            candidates,
+            coordinates,
+            issues);
+    }
+
+    private static void ValidatePeriodicCoordinate(
+        string effectRef,
+        string componentId,
+        string profile,
+        JsonElement payload,
+        string componentPath,
+        string originKey,
+        List<SlotCandidate> candidates,
+        HashSet<string> coordinates,
+        List<ValidationIssue> issues)
+    {
+        if (!TryReadString(payload, "resource", out var resource))
+            return;
+
+        AddPeriodicSlot(
+            effectRef,
+            componentId,
+            profile,
+            resource,
+            componentPath,
+            originKey,
+            candidates,
+            coordinates,
+            issues);
+    }
+
+    private static void AddPeriodicSlot(
+        string effectRef,
+        string componentId,
+        string profile,
+        string resource,
+        string componentPath,
+        string originKey,
+        List<SlotCandidate> candidates,
+        HashSet<string> coordinates,
+        List<ValidationIssue> issues) =>
         AddSlot(
             candidates,
             coordinates,
             new SlotCandidate(
-                effectId,
+                effectRef,
                 componentId,
                 profile,
                 "resource",
                 resource,
                 $"{profile}:resource:{resource}",
-                originKey),
+                originKey,
+                componentPath + ".payload.resource"),
             componentPath + ".payload.resource",
             issues);
-    }
 
     private static void ValidateAction(
         int rank,
@@ -1729,7 +2186,8 @@ internal static class WoundConsequenceEnvelopeCatalog
                 "action",
                 action,
                 "action_control:action:" + action,
-                originKey),
+                originKey,
+                componentPath + ".payload.action"),
             componentPath + ".payload.action",
             issues);
     }
@@ -1751,6 +2209,51 @@ internal static class WoundConsequenceEnvelopeCatalog
         HashSet<int> usedExpansions,
         int[] cadenceUseCounts,
         List<ValidationIssue> issues)
+    {
+        ValidateReactionComponentCore(
+            rank,
+            indexed.Effect.EffectId,
+            evidence,
+            component,
+            componentPath,
+            originPrefix,
+            genericValid,
+            candidates,
+            coordinates,
+            usedExpansions,
+            issues,
+            (indexedExpansion, expansionComponentIndex) => ValidateMortalComponent(
+                request,
+                rank,
+                indexed,
+                evidence,
+                expansionComponentIndex,
+                indexedExpansion.Expansion.Components[expansionComponentIndex],
+                indexedExpansion.AuthorPath,
+                effectPath,
+                "1:" + component.GetProperty("componentId").GetString() + ":",
+                allowReaction: false,
+                resourceBounds,
+                candidates,
+                coordinates,
+                usedExpansions,
+                cadenceUseCounts,
+                issues));
+    }
+
+    private static void ValidateReactionComponentCore(
+        int rank,
+        string effectRef,
+        MortalEvidenceIndex evidence,
+        JsonElement component,
+        string componentPath,
+        string originPrefix,
+        bool genericValid,
+        List<SlotCandidate> candidates,
+        HashSet<string> coordinates,
+        HashSet<int> usedExpansions,
+        List<ValidationIssue> issues,
+        Action<IndexedExpansion, int> validateExpansionComponent)
     {
         if (!component.TryGetProperty("payload", out var payload) ||
             payload.ValueKind != JsonValueKind.Object ||
@@ -1782,13 +2285,14 @@ internal static class WoundConsequenceEnvelopeCatalog
             candidates,
             coordinates,
             new SlotCandidate(
-                indexed.Effect.EffectId,
+                effectRef,
                 componentId,
                 "event_reaction",
                 "reaction",
                 eventType + ":" + resultKind,
                 "event_reaction:" + eventType + ":" + resultKind,
-                originPrefix + componentId),
+                originPrefix + componentId,
+                componentPath + ".payload.resultKind"),
             componentPath + ".payload.resultKind",
             issues);
 
@@ -1816,6 +2320,7 @@ internal static class WoundConsequenceEnvelopeCatalog
         }
 
         if (!payload.TryGetProperty("maxExpansion", out var rawMaximum) ||
+            rawMaximum.ValueKind != JsonValueKind.Number ||
             !rawMaximum.TryGetInt32(out var declaredMaximum) ||
             !string.Equals(
                 rawMaximum.GetRawText(),
@@ -1856,7 +2361,7 @@ internal static class WoundConsequenceEnvelopeCatalog
 
         var indexedExpansion = expansionMatches[0];
         var expansion = indexedExpansion.Expansion;
-        var expansionPath = $"{effectPath}.expansions[{indexedExpansion.Index}]";
+        var expansionPath = indexedExpansion.AuthorPath;
         if (expansion.Components.Length > MaximumReactionExpansionComponents)
         {
             Add(
@@ -1872,23 +2377,7 @@ internal static class WoundConsequenceEnvelopeCatalog
              expansionComponentIndex < expansion.Components.Length;
              expansionComponentIndex++)
         {
-            ValidateMortalComponent(
-                request,
-                rank,
-                indexed,
-                evidence,
-                expansionComponentIndex,
-                expansion.Components[expansionComponentIndex],
-                expansionPath,
-                effectPath,
-                "1:" + componentId + ":",
-                allowReaction: false,
-                resourceBounds,
-                candidates,
-                coordinates,
-                usedExpansions,
-                cadenceUseCounts,
-                issues);
+            validateExpansionComponent(indexedExpansion, expansionComponentIndex);
         }
     }
 
@@ -2149,6 +2638,34 @@ internal static class WoundConsequenceEnvelopeCatalog
         return builder.MoveToImmutable();
     }
 
+    private static ImmutableArray<WoundDetachedMortalEnvelopeSlot> DeriveDetachedSlots(
+        List<SlotCandidate> candidates)
+    {
+        var ordered = candidates
+            .OrderBy(static candidate => candidate.EffectId, StringComparer.Ordinal)
+            .ThenBy(static candidate => candidate.OriginKey, StringComparer.Ordinal)
+            .ThenBy(static candidate => candidate.ProfileKey, StringComparer.Ordinal)
+            .ThenBy(static candidate => candidate.OperationKey, StringComparer.Ordinal)
+            .ToArray();
+        var builder = ImmutableArray.CreateBuilder<WoundDetachedMortalEnvelopeSlot>(
+            ordered.Length);
+        for (var index = 0; index < ordered.Length; index++)
+        {
+            var candidate = ordered[index];
+            builder.Add(new WoundDetachedMortalEnvelopeSlot(
+                index + 1,
+                candidate.EffectId,
+                candidate.ComponentId,
+                candidate.ProfileKey,
+                candidate.Axis,
+                candidate.OperationKey,
+                candidate.Coordinate,
+                candidate.AuthorPath));
+        }
+
+        return builder.MoveToImmutable();
+    }
+
     private static void ValidateSlotBudget(
         WoundConsequenceEnvelopeRequest request,
         int rank,
@@ -2380,7 +2897,8 @@ internal static class WoundConsequenceEnvelopeCatalog
 
     private sealed record IndexedExpansion(
         int Index,
-        WoundReactionExpansionProposal Expansion);
+        WoundReactionExpansionProposal Expansion,
+        string AuthorPath);
 
     private sealed record MortalEvidenceIndex(
         IReadOnlyDictionary<string, ImmutableArray<IndexedCadence>> CadencesByComponentId,
@@ -2394,5 +2912,6 @@ internal static class WoundConsequenceEnvelopeCatalog
         string Axis,
         string OperationKey,
         string Coordinate,
-        string OriginKey);
+        string OriginKey,
+        string AuthorPath = "");
 }

@@ -620,6 +620,9 @@ internal static class WoundTransitionReducer
                 wound.Treatment.CompletedRouteIds,
                 WoundMaterializationContract.MaxTreatmentRoutes) ||
             wound.Treatment.DiagnosisPaths.Any(path =>
+                !BoundedReferences(
+                    path.RequiresKnownFacts,
+                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
                 !BoundedJsonElements(
                     path.Requirements,
                     WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
@@ -633,7 +636,7 @@ internal static class WoundTransitionReducer
                     WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
                 !BoundedJsonElements(
                     route.Outcomes,
-                    WoundMaterializationContract.MaxRequirementsPerTreatmentMember) ||
+                    WoundMaterializationContract.MaxTreatmentOutcomeMembers) ||
                 route.ResourcePolicy.ValueKind == JsonValueKind.Undefined ||
                 route.Resolution.ValueKind == JsonValueKind.Undefined ||
                 route.Interruption is { ValueKind: JsonValueKind.Undefined }) ||

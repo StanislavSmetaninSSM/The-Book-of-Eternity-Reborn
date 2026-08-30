@@ -137,11 +137,16 @@ internal sealed record WoundTreatment(
 
 internal sealed record WoundDiagnosisPath(
     string DiagnosisPathId,
+    string DisplayName,
     string Visibility,
+    IReadOnlyList<string> RequiresKnownFacts,
     IReadOnlyList<JsonElement> Requirements,
     JsonElement Check,
     IReadOnlyList<string> Reveals,
-    string FailurePolicy);
+    string FailurePolicy)
+{
+    internal string SourcePath { get; init; } = string.Empty;
+}
 
 internal sealed record WoundTreatmentRoute(
     string RouteId,
@@ -185,6 +190,7 @@ internal static class WoundMaterializationContract
     internal const int MaxTreatmentRoutes = 32;
     internal const int MaxDiagnosisPaths = 32;
     internal const int MaxRequirementsPerTreatmentMember = 16;
+    internal const int MaxTreatmentOutcomeMembers = 32;
     internal const int MaxComplications = 16;
     internal const int MaxConsequences = 4;
     internal const int MaxOwnedEffectDefinitions = 5;
@@ -227,8 +233,8 @@ internal static class WoundMaterializationContract
     private static readonly IReadOnlySet<string> TreatmentFields = Set(
         "diagnosisPaths", "routes", "knownRouteIds", "completedRouteIds");
     private static readonly IReadOnlySet<string> DiagnosisPathFields = Set(
-        "diagnosisPathId", "visibility", "requirements", "check", "reveals",
-        "failurePolicy");
+        "diagnosisPathId", "displayName", "visibility", "requiresKnownFacts",
+        "requirements", "check", "reveals", "failurePolicy");
     private static readonly IReadOnlySet<string> TreatmentRouteFields = Set(
         "routeId", "displayName", "visibility", "mode", "requirements",
         "resourcePolicy", "resolution", "outcomes", "interruption");
@@ -328,13 +334,19 @@ internal static class WoundMaterializationContract
             var severity = ParseSeverity(ReadRequiredObject(root, "severity", path, issues), path + ".severity", issues);
             var care = ParseCare(ReadRequiredObject(root, "care", path, issues), path + ".care", issues);
             var complications = ParseComplications(root, path, issues);
-            var treatment = ParseTreatment(
-                ReadRequiredObject(root, "treatment", path, issues),
-                path + ".treatment",
-                issues);
             var recovery = ParseRecovery(
                 ReadRequiredObject(root, "recovery", path, issues),
                 path + ".recovery",
+                issues);
+            var treatment = ParseTreatment(
+                ReadRequiredObject(root, "treatment", path, issues),
+                path + ".treatment",
+                classification.Domain,
+                owner.Realm,
+                ResolveEffectTargetKind(owner.OwnerKind),
+                severity.Rank,
+                complications,
+                recovery,
                 issues);
             var consequences = ParseConsequences(
                 ReadRequiredObject(root, "consequences", path, issues),
@@ -405,7 +417,7 @@ internal static class WoundMaterializationContract
             WriteCare(writer, wound.Care);
             WriteComplications(writer, wound.Complications);
             WriteConsequences(writer, wound.Consequences);
-            WriteTreatment(writer, wound.Treatment);
+            WriteTreatment(writer, wound);
             WriteRecovery(writer, wound.Recovery);
             WriteRelations(writer, wound.Relations);
             WriteLastTransition(writer, wound.LastTransition);
@@ -1826,16 +1838,37 @@ internal static class WoundMaterializationContract
     private static WoundTreatment ParseTreatment(
         JsonElement value,
         string path,
+        string domain,
+        string realm,
+        string ownerTargetKind,
+        int severityRank,
+        IReadOnlyList<WoundComplication> complications,
+        WoundRecovery recovery,
         List<ValidationIssue> issues)
     {
         ValidateObjectShape(value, path, TreatmentFields, TreatmentFields, issues);
         var diagnosisPaths = ParseDiagnosisPaths(value, path, issues);
         var routes = ParseTreatmentRoutes(value, path, issues);
-        return new WoundTreatment(
+        var treatment = new WoundTreatment(
             diagnosisPaths,
             routes,
             ReadIdentifierArray(value, "knownRouteIds", path, unique: true, issues),
             ReadIdentifierArray(value, "completedRouteIds", path, unique: true, issues));
+        if (string.Equals(domain, "physical", StringComparison.Ordinal) &&
+            string.Equals(realm, "mortal_world", StringComparison.Ordinal) &&
+            ownerTargetKind.Length > 0)
+        {
+            var typed = MortalWoundTreatmentContract.ParseProjection(
+                treatment,
+                path,
+                realm,
+                ownerTargetKind,
+                severityRank,
+                complications,
+                recovery.DeteriorationPolicy);
+            issues.AddRange(typed.Issues);
+        }
+        return treatment;
     }
 
     private static IReadOnlyList<WoundDiagnosisPath> ParseDiagnosisPaths(
@@ -1873,11 +1906,16 @@ internal static class WoundMaterializationContract
             AddUniqueIdentifier(identifiers, diagnosisPathId, itemPath + ".diagnosisPathId", issues);
             parsed.Add(new WoundDiagnosisPath(
                 diagnosisPathId,
+                ReadText(item, "displayName", itemPath, issues),
                 ReadClosedString(item, "visibility", itemPath, Visibilities, issues),
+                ReadDiagnosisFactArray(item, "requiresKnownFacts", itemPath, issues),
                 ReadRequirementArray(item, itemPath, issues),
                 ReadOpaqueObject(item, "check", itemPath, issues),
-                ReadIdentifierArray(item, "reveals", itemPath, unique: true, issues),
-                ReadExactIdentifier(item, "failurePolicy", itemPath, issues)));
+                ReadDiagnosisFactArray(item, "reveals", itemPath, issues),
+                ReadClosedString(item, "failurePolicy", itemPath, Set("no_reveal"), issues))
+            {
+                SourcePath = itemPath
+            });
             index++;
         }
 
@@ -2045,11 +2083,20 @@ internal static class WoundMaterializationContract
     {
         if (!TryReadArray(parent, field, path, out var array, issues))
             return ImmutableArray<JsonElement>.Empty;
+        var arrayPath = path + "." + field;
+        AddLimitIssue(
+            array,
+            arrayPath,
+            MaxTreatmentOutcomeMembers,
+            "treatment outcome members",
+            issues);
         var result = ImmutableArray.CreateBuilder<JsonElement>();
         var index = 0;
         foreach (var item in array.EnumerateArray())
         {
-            var itemPath = $"{path}.{field}[{index++}]";
+            if (index >= MaxTreatmentOutcomeMembers)
+                break;
+            var itemPath = $"{arrayPath}[{index++}]";
             if (item.ValueKind != JsonValueKind.Object)
             {
                 AddIssue(
@@ -2186,6 +2233,55 @@ internal static class WoundMaterializationContract
                 continue;
             }
             result.Add(identifier);
+        }
+        return result.ToImmutable();
+    }
+
+    private static IReadOnlyList<string> ReadDiagnosisFactArray(
+        JsonElement parent,
+        string field,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        if (!TryReadArray(parent, field, path, out var array, issues))
+            return ImmutableArray<string>.Empty;
+        AddLimitIssue(
+            array,
+            path + "." + field,
+            MaxRequirementsPerTreatmentMember,
+            "diagnosis facts",
+            issues);
+
+        var result = ImmutableArray.CreateBuilder<string>();
+        var identifiers = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var item in array.EnumerateArray())
+        {
+            if (index >= MaxRequirementsPerTreatmentMember)
+                break;
+            var itemPath = $"{path}.{field}[{index++}]";
+            if (item.ValueKind != JsonValueKind.String)
+            {
+                AddIssue(
+                    issues,
+                    itemPath,
+                    "wound_treatment_diagnosis_fact_unknown",
+                    "route:<routeId> or complication:<complicationId>",
+                    item.GetRawText());
+                continue;
+            }
+            var fact = item.GetString() ?? string.Empty;
+            if (!identifiers.Add(fact))
+            {
+                AddIssue(
+                    issues,
+                    itemPath,
+                    "wound_materialization_duplicate_identifier",
+                    "one occurrence of each exact diagnosis fact",
+                    fact);
+                continue;
+            }
+            result.Add(fact);
         }
         return result.ToImmutable();
     }
@@ -2609,14 +2705,18 @@ internal static class WoundMaterializationContract
             case JsonValueKind.Array:
                 var index = 0;
                 var maximum = path.EndsWith(
+                        ".outcomes",
+                        StringComparison.Ordinal)
+                    ? MaxTreatmentOutcomeMembers
+                    : path.EndsWith(
                         ".consequences.ownedEffectSources.definitions",
                         StringComparison.Ordinal)
-                    ? MaxOwnedEffectDefinitions
-                    : path.EndsWith(
-                        ".consequences.ownedEffectSources.rootBindings",
-                        StringComparison.Ordinal)
-                        ? MaxOwnedEffectRootBindings
-                        : int.MaxValue;
+                        ? MaxOwnedEffectDefinitions
+                        : path.EndsWith(
+                            ".consequences.ownedEffectSources.rootBindings",
+                            StringComparison.Ordinal)
+                            ? MaxOwnedEffectRootBindings
+                            : int.MaxValue;
                 if (maximum != int.MaxValue && value.GetArrayLength() > maximum)
                     break;
                 foreach (var item in value.EnumerateArray())
@@ -2813,7 +2913,36 @@ internal static class WoundMaterializationContract
             ? definitionKey
             : string.Empty;
 
-    private static void WriteTreatment(Utf8JsonWriter writer, WoundTreatment treatment)
+    private static void WriteTreatment(
+        Utf8JsonWriter writer,
+        WoundMaterializationEnvelope wound)
+    {
+        if (string.Equals(wound.Classification.Domain, "physical", StringComparison.Ordinal) &&
+            string.Equals(wound.Owner.Realm, "mortal_world", StringComparison.Ordinal))
+        {
+            var typed = MortalWoundTreatmentContract.ParseProjection(
+                wound.Treatment,
+                "wound.treatment",
+                wound.Owner.Realm,
+                ResolveEffectTargetKind(wound.Owner.OwnerKind),
+                wound.Severity.Rank,
+                wound.Complications,
+                wound.Recovery.DeteriorationPolicy);
+            if (!typed.IsValid || typed.Treatment is null)
+            {
+                throw new InvalidOperationException(
+                    "Cannot serialize an invalid Mortal wound treatment projection.");
+            }
+            MortalWoundTreatmentContract.WriteCanonical(writer, typed.Treatment);
+            return;
+        }
+
+        WriteTreatmentCompatibility(writer, wound.Treatment);
+    }
+
+    private static void WriteTreatmentCompatibility(
+        Utf8JsonWriter writer,
+        WoundTreatment treatment)
     {
         writer.WritePropertyName("treatment");
         writer.WriteStartObject();
@@ -2823,7 +2952,9 @@ internal static class WoundMaterializationContract
         {
             writer.WriteStartObject();
             writer.WriteString("diagnosisPathId", diagnosis.DiagnosisPathId);
+            writer.WriteString("displayName", diagnosis.DisplayName);
             writer.WriteString("visibility", diagnosis.Visibility);
+            WriteStringArray(writer, "requiresKnownFacts", diagnosis.RequiresKnownFacts);
             WriteJsonArray(writer, "requirements", diagnosis.Requirements);
             writer.WritePropertyName("check");
             WriteCanonicalElement(writer, diagnosis.Check);
@@ -2956,7 +3087,7 @@ internal static class WoundMaterializationContract
         return Encoding.UTF8.GetString(buffer.WrittenSpan);
     }
 
-    private static void WriteCanonicalElement(Utf8JsonWriter writer, JsonElement value)
+    internal static void WriteCanonicalElement(Utf8JsonWriter writer, JsonElement value)
     {
         switch (value.ValueKind)
         {

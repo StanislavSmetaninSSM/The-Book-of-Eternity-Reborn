@@ -138,6 +138,232 @@ public sealed class MortalWoundTreatmentContractTests
     }
 
     [Fact]
+    public void Parse_AllElevenClosedRequirementBranchesShareOneTypedConjunctiveArray()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var route = Route(wound);
+        route["requirements"] = new JsonArray(
+            new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "sterile_thread",
+                ["quantity"] = 1,
+                ["ownerRole"] = "provider"
+            },
+            new JsonObject
+            {
+                ["kind"] = "resource_quantity",
+                ["resourceRef"] = "medical_charge",
+                ["quantity"] = 2,
+                ["ownerRole"] = "provider"
+            },
+            new JsonObject
+            {
+                ["kind"] = "skill_tier",
+                ["capabilityRef"] = "field_medicine",
+                ["minimumTier"] = 0,
+                ["actorRole"] = "provider"
+            },
+            new JsonObject
+            {
+                ["kind"] = "source_capability",
+                ["capabilityRef"] = "sterile_field",
+                ["actorRole"] = "provider"
+            },
+            new JsonObject { ["kind"] = "provider", ["providerRef"] = "medic_01" },
+            new JsonObject
+            {
+                ["kind"] = "consent",
+                ["consentRef"] = "care_consent",
+                ["providerRef"] = "medic_01",
+                ["targetRef"] = "player_current"
+            },
+            new JsonObject { ["kind"] = "facility", ["facilityRef"] = "clean_bench" },
+            new JsonObject
+            {
+                ["kind"] = "location",
+                ["locationRef"] = "clinic_room",
+                ["targetRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "quest_state",
+                ["questRef"] = "restore_clinic",
+                ["requiredState"] = "completed"
+            },
+            new JsonObject
+            {
+                ["kind"] = "effect_state",
+                ["effectRef"] = "pain_suppressed",
+                ["requiredState"] = "active",
+                ["targetRole"] = "target"
+            },
+            new JsonObject
+            {
+                ["kind"] = "environment",
+                ["environmentRef"] = "sterile_air",
+                ["requiredState"] = "active"
+            });
+        route["resourcePolicy"]!["mutations"] = new JsonArray();
+        route["resolution"]!["modifierSource"] = new JsonObject
+        {
+            ["kind"] = "fixed_zero"
+        };
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+        var parsedRoute = Assert.IsType<MortalWoundProcedureRouteDefinition>(
+            Assert.Single(MortalWoundTreatmentContract.ParseProjection(
+                result.Wound!.Treatment,
+                Path + ".treatment",
+                result.Wound.Owner.Realm,
+                "player",
+                result.Wound.Severity.Rank,
+                result.Wound.Complications,
+                result.Wound.Recovery.DeteriorationPolicy).Treatment!.Routes));
+        Assert.Equal(11, parsedRoute.Requirements.Length);
+        Assert.Equal(
+            new[]
+            {
+                "item_quantity", "resource_quantity", "skill_tier", "source_capability",
+                "provider", "consent", "facility", "location", "quest_state",
+                "effect_state", "environment"
+            },
+            parsedRoute.Requirements.Select(static requirement => requirement.Kind));
+    }
+
+    [Theory]
+    [InlineData(int.MinValue)]
+    [InlineData(-1)]
+    [InlineData(int.MaxValue)]
+    public void Parse_SkillMinimumTierUsesTheCompleteSignedInt32Domain(int minimumTier)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        Route(wound)["requirements"]![1]!["minimumTier"] = minimumTier;
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Theory]
+    [InlineData(16, true)]
+    [InlineData(17, false)]
+    public void Parse_CommonRequirementCountUsesTheExactVersionOneBoundary(
+        int count,
+        bool expectedValid)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var route = Route(wound);
+        route["requirements"] = WoundContractTestData.Repeat(
+            count,
+            index => new JsonObject
+            {
+                ["kind"] = "provider",
+                ["providerRef"] = $"provider_{index}"
+            });
+        route["resourcePolicy"]!["mutations"] = new JsonArray();
+        route["resolution"]!["modifierSource"] = new JsonObject
+        {
+            ["kind"] = "fixed_zero"
+        };
+
+        var result = Parse(wound);
+
+        if (expectedValid)
+            Assert.True(result.IsValid, DescribeIssues(result));
+        else
+            AssertInvalidAt(
+                result,
+                "wound.treatment.routes[0].requirements",
+                "wound_materialization_limit_exceeded");
+    }
+
+    [Theory]
+    [InlineData("common_out_of_range", "wound.treatment.routes[0].resourcePolicy.mutations[0].requirementIndex")]
+    [InlineData("course_unknown_milestone", "wound.treatment.routes[0].resourcePolicy.mutations[0].milestoneOrdinal")]
+    [InlineData("course_out_of_range", "wound.treatment.routes[0].resourcePolicy.mutations[0].requirementIndex")]
+    [InlineData("course_non_quantity", "wound.treatment.routes[0].resourcePolicy.mutations[0].requirementIndex")]
+    [InlineData("course_scope_in_procedure", "wound.treatment.routes[0].resourcePolicy.mutations[0].scope")]
+    public void Parse_ResourceSelectorsResolveOneExistingQuantityRequirement(
+        string mutation,
+        string expectedPath)
+    {
+        var mode = mutation.StartsWith("course_", StringComparison.Ordinal) &&
+                   mutation != "course_scope_in_procedure"
+            ? "course"
+            : "procedure";
+        var wound = CreateWoundWithStrictRoute(mode);
+        var route = Route(wound);
+        var selector = route["resourcePolicy"]!["mutations"]![0]!.AsObject();
+        switch (mutation)
+        {
+            case "common_out_of_range":
+                selector["requirementIndex"] = 15;
+                break;
+            case "course_unknown_milestone":
+                selector["milestoneOrdinal"] = 99;
+                break;
+            case "course_out_of_range":
+                selector["requirementIndex"] = 15;
+                break;
+            case "course_non_quantity":
+                route["outcomes"]![0]!["requirements"]![0] = new JsonObject
+                {
+                    ["kind"] = "provider",
+                    ["providerRef"] = "medic_01"
+                };
+                break;
+            case "course_scope_in_procedure":
+                selector["scope"] = "course_milestone";
+                selector["milestoneOrdinal"] = 1;
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        AssertInvalidAt(Parse(wound), expectedPath, "wound_materialization_invalid_field");
+    }
+
+    [Fact]
+    public void Parse_CourseAndGuaranteedCannotConsumeFailedAttemptCategory()
+    {
+        foreach (var mode in new[] { "course", "guaranteed" })
+        {
+            var wound = CreateWoundWithStrictRoute(mode);
+            Route(wound)["resourcePolicy"]!["consumeOn"] =
+                new JsonArray("success", "failed_attempt");
+
+            AssertInvalidAt(
+                Parse(wound),
+                "wound.treatment.routes[0].resourcePolicy.consumeOn[1]",
+                "wound_materialization_invalid_field");
+        }
+    }
+
+    [Theory]
+    [InlineData(64, true)]
+    [InlineData(65, false)]
+    public void Parse_ResourceMutationSelectorsUseTheExactVersionOneBoundary(
+        int count,
+        bool expectedValid)
+    {
+        var wound = CreateWoundWithStrictRoute("course");
+        ConfigureCourseResourceSelectorCount(wound, count);
+
+        var result = Parse(wound);
+
+        if (expectedValid)
+            Assert.True(result.IsValid, DescribeIssues(result));
+        else
+            AssertInvalidAt(
+                result,
+                "wound.treatment.routes[0].resourcePolicy.mutations",
+                "wound_materialization_limit_exceeded");
+    }
+
+    [Fact]
     public void Parse_SeparateCompleteRoutesAreAlternativesButInvalidSiblingFailsWholeWound()
     {
         var wound = WoundContractTestData.CreateActiveWound();
@@ -244,6 +470,67 @@ public sealed class MortalWoundTreatmentContractTests
         Assert.Equal(mode, route.Mode);
     }
 
+    [Fact]
+    public void ParseProjection_ProducesDetachedTypedProcedureWithoutCachingItOnRawRoute()
+    {
+        var parsed = Parse(CreateWoundWithStrictRoute("procedure"));
+        Assert.True(parsed.IsValid, DescribeIssues(parsed));
+        var wound = parsed.Wound!;
+
+        var typed = MortalWoundTreatmentContract.ParseProjection(
+            wound.Treatment,
+            Path + ".treatment",
+            wound.Owner.Realm,
+            "player",
+            wound.Severity.Rank,
+            wound.Complications,
+            wound.Recovery.DeteriorationPolicy);
+
+        Assert.True(typed.IsValid, DescribeIssues(typed.Issues));
+        var treatment = Assert.IsType<MortalWoundTreatmentDefinition>(typed.Treatment);
+        var route = Assert.IsType<MortalWoundProcedureRouteDefinition>(
+            Assert.Single(treatment.Routes));
+        Assert.Collection(
+            route.Requirements,
+            requirement => Assert.IsType<MortalWoundItemQuantityRequirement>(requirement),
+            requirement => Assert.IsType<MortalWoundSkillTierRequirement>(requirement));
+        Assert.IsType<MortalWoundStabilizeOperation>(
+            route.Bands[0].DeclaredResult[0]);
+        Assert.DoesNotContain(
+            typeof(WoundTreatmentRoute).GetProperties(),
+            property => property.Name.Contains("Typed", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ParseProjection_TypedCanonicalOutputSurvivesBorrowedRawDocumentDisposal()
+    {
+        var parsed = Parse(CreateWoundWithStrictRoute("procedure"));
+        Assert.True(parsed.IsValid, DescribeIssues(parsed));
+        var wound = parsed.Wound!;
+        var route = Assert.Single(wound.Treatment.Routes);
+        using var borrowedDocument = JsonDocument.Parse(route.Resolution.GetRawText());
+        var borrowedTreatment = wound.Treatment with
+        {
+            Routes = new[] { route with { Resolution = borrowedDocument.RootElement } }
+        };
+        var projected = MortalWoundTreatmentContract.ParseProjection(
+            borrowedTreatment,
+            Path + ".treatment",
+            wound.Owner.Realm,
+            "player",
+            wound.Severity.Rank,
+            wound.Complications,
+            wound.Recovery.DeteriorationPolicy);
+        Assert.True(projected.IsValid, DescribeIssues(projected.Issues));
+        var typed = Assert.IsType<MortalWoundTreatmentDefinition>(projected.Treatment);
+        var beforeDisposal = SerializeTypedTreatment(typed);
+
+        borrowedDocument.Dispose();
+        var afterDisposal = SerializeTypedTreatment(typed);
+
+        Assert.Equal(beforeDisposal, afterDisposal);
+    }
+
     [Theory]
     [InlineData("missing_band_id", "wound.treatment.routes[0].outcomes[0].bandId", "wound_materialization_missing_field")]
     [InlineData("duplicate_band_id", "wound.treatment.routes[0].outcomes[1].bandId", "wound_materialization_invalid_field")]
@@ -251,6 +538,9 @@ public sealed class MortalWoundTreatmentContractTests
     [InlineData("confusable_band_id", "wound.treatment.routes[0].outcomes[1].bandId", "wound_materialization_invalid_field")]
     [InlineData("gap", "wound.treatment.routes[0].outcomes[1].minimumMargin", "wound_materialization_invalid_field")]
     [InlineData("overlap", "wound.treatment.routes[0].outcomes[1].maximumMargin", "wound_materialization_invalid_field")]
+    [InlineData("missing_finite_minimum", "wound.treatment.routes[0].outcomes[1].minimumMargin", "wound_materialization_invalid_field")]
+    [InlineData("missing_finite_maximum", "wound.treatment.routes[0].outcomes[2].maximumMargin", "wound_materialization_invalid_field")]
+    [InlineData("empty_band", "wound.treatment.routes[0].outcomes[1].minimumMargin", "wound_materialization_invalid_field")]
     [InlineData("first_upper_bound", "wound.treatment.routes[0].outcomes[0].maximumMargin", "wound_materialization_invalid_field")]
     [InlineData("last_lower_bound", "wound.treatment.routes[0].outcomes[3].minimumMargin", "wound_materialization_invalid_field")]
     [InlineData("wrong_first_category", "wound.treatment.routes[0].outcomes[0].category", "wound_materialization_invalid_field")]
@@ -289,6 +579,16 @@ public sealed class MortalWoundTreatmentContractTests
                 break;
             case "overlap":
                 outcomes[1]!["maximumMargin"] = 5;
+                break;
+            case "missing_finite_minimum":
+                outcomes[1]!["minimumMargin"] = null;
+                break;
+            case "missing_finite_maximum":
+                outcomes[2]!["maximumMargin"] = null;
+                break;
+            case "empty_band":
+                outcomes[1]!["minimumMargin"] = 5;
+                outcomes[2]!["maximumMargin"] = 4;
                 break;
             case "first_upper_bound":
                 outcomes[0]!["maximumMargin"] = 100;
@@ -564,6 +864,29 @@ public sealed class MortalWoundTreatmentContractTests
         Assert.True(result.IsValid, DescribeIssues(result));
     }
 
+    [Fact]
+    public void Parse_CourseInterruptionAcceptsAnOrderedMixedHarmfulSequence()
+    {
+        var wound = CreateWoundWithStrictRoute("course");
+        ConfigureCurrentDeteriorationPolicy(wound, "missed-course-dose");
+        var first = CreateEffectlessComplicationOperation();
+        var second = CreateEffectlessComplicationOperation();
+        second["complicationDraft"]!["complications"]![0]!["complicationRef"] =
+            "secondary_inflammation";
+        Route(wound)["interruption"]!["result"] = new JsonArray(
+            first,
+            new JsonObject
+            {
+                ["kind"] = "apply_deterioration",
+                ["policyRef"] = "missed-course-dose"
+            },
+            second);
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
     [Theory]
     [InlineData(1)]
     [InlineData(32)]
@@ -582,11 +905,17 @@ public sealed class MortalWoundTreatmentContractTests
     {
         var wound = CreateWoundWithStrictRoute("course");
         ConfigureCourseMilestoneCount(wound, 33);
+        Route(wound)["outcomes"]![32] = "untrusted_tail_must_not_be_projected";
+
+        var result = Parse(wound);
 
         AssertInvalidAt(
-            Parse(wound),
+            result,
             "wound.treatment.routes[0].outcomes",
             "wound_materialization_limit_exceeded");
+        Assert.DoesNotContain(result.Issues, issue => issue.FilePath.StartsWith(
+            "wound.treatment.routes[0].outcomes[32]",
+            StringComparison.Ordinal));
     }
 
     [Fact]
@@ -660,6 +989,21 @@ public sealed class MortalWoundTreatmentContractTests
             Parse(wound),
             expectedPath,
             "wound_materialization_invalid_field");
+    }
+
+    [Fact]
+    public void Parse_GuaranteedRouteAllowsValidSiblingRequirementsBesideOneMatchingSource()
+    {
+        var wound = CreateWoundWithStrictRoute("guaranteed");
+        Route(wound)["requirements"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "provider",
+            ["providerRef"] = "shrine_healer"
+        });
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
     }
 
     [Theory]
@@ -862,6 +1206,134 @@ public sealed class MortalWoundTreatmentContractTests
         AssertInvalidAt(Parse(wound), expectedPath, expectedCode);
     }
 
+    [Fact]
+    public void Parse_OutcomeAlgebraAcceptsEveryInclusivePositiveBoundary()
+    {
+        var cases = new List<JsonArray>
+        {
+            WoundContractTestData.Repeat(
+                8,
+                _ => new JsonObject { ["kind"] = "stabilize" }),
+            new JsonArray(new JsonObject
+            {
+                ["kind"] = "add_recovery",
+                ["points"] = int.MaxValue
+            }),
+            new JsonArray(
+                new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 2 },
+                new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+                CreateHealOperation()),
+            new JsonArray(CreateHealOperation(
+                Enumerable.Range(0, 8)
+                    .Select(index => CreateCosmeticHealLegacy($"legacy_{index}"))
+                    .ToArray()))
+        };
+
+        foreach (var declaredResult in cases)
+        {
+            var wound = CreateWoundWithStrictRoute("procedure");
+            Route(wound)["outcomes"]![0]!["result"] = declaredResult;
+
+            var result = Parse(wound);
+
+            Assert.True(result.IsValid, DescribeIssues(result));
+        }
+    }
+
+    [Fact]
+    public void Parse_ProcedureBandsAcceptInclusiveSignedInt64FiniteBounds()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var outcomes = Route(wound)["outcomes"]!;
+        outcomes[0]!["minimumMargin"] = long.MaxValue;
+        outcomes[1]!["minimumMargin"] = 0;
+        outcomes[1]!["maximumMargin"] = long.MaxValue - 1;
+        outcomes[2]!["minimumMargin"] = long.MinValue + 1;
+        outcomes[2]!["maximumMargin"] = -1;
+        outcomes[3]!["maximumMargin"] = long.MinValue;
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_RemoveComplicationRouteRemainsStructurallyValidAfterTargetIsGone()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        Route(wound)["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "remove_complication",
+            ["complicationId"] = "complication_already_removed"
+        });
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Theory]
+    [InlineData("course")]
+    [InlineData("guaranteed")]
+    [InlineData("complication")]
+    [InlineData("legacy")]
+    [InlineData("mixed_interruption")]
+    public void CanonicalRoundTrip_UsesTypedWriterForEveryTreatmentPayloadFamily(
+        string scenario)
+    {
+        JsonObject wound;
+        switch (scenario)
+        {
+            case "course":
+                wound = CreateWoundWithStrictRoute("course");
+                break;
+            case "guaranteed":
+                wound = CreateWoundWithStrictRoute("guaranteed");
+                Route(wound)["requirements"]!.AsArray().Add(new JsonObject
+                {
+                    ["kind"] = "provider",
+                    ["providerRef"] = "shrine_healer"
+                });
+                break;
+            case "complication":
+                wound = CreateWoundWithStrictRoute("procedure");
+                var complication = CreateEffectlessComplicationOperation();
+                complication["complicationDraft"]!["consequenceDefinitions"] =
+                    CreateEffectfulComplicationDefinitions();
+                Route(wound)["outcomes"]![3]!["result"] = new JsonArray(complication);
+                break;
+            case "legacy":
+                wound = CreateWoundWithStrictRoute("procedure");
+                Route(wound)["outcomes"]![0]!["result"] = new JsonArray(
+                    new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+                    CreateHealOperation(CreateMechanicalHealLegacy("typed_legacy")));
+                break;
+            case "mixed_interruption":
+                wound = CreateWoundWithStrictRoute("course");
+                ConfigureCurrentDeteriorationPolicy(wound, "missed-course-dose");
+                Route(wound)["interruption"]!["result"] = new JsonArray(
+                    CreateEffectlessComplicationOperation(),
+                    new JsonObject
+                    {
+                        ["kind"] = "apply_deterioration",
+                        ["policyRef"] = "missed-course-dose"
+                    });
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(scenario), scenario, null);
+        }
+
+        var first = Parse(wound);
+        Assert.True(first.IsValid, DescribeIssues(first));
+        var canonical = WoundMaterializationContract.SerializeCanonical(first.Wound!);
+        var reparsed = WoundMaterializationContract.Parse(canonical, Path);
+        Assert.True(reparsed.IsValid, DescribeIssues(reparsed));
+
+        Assert.Equal(
+            canonical,
+            WoundMaterializationContract.SerializeCanonical(reparsed.Wound!));
+    }
+
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -883,10 +1355,260 @@ public sealed class MortalWoundTreatmentContractTests
     }
 
     [Theory]
+    [InlineData("all_roots_null", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions")]
+    [InlineData("wrong_slot_profile", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].root.slots[0].profileKey")]
+    [InlineData("root_requires_parameters", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.parameterBounds")]
+    [InlineData("non_single_stack", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.stacking.maxStacks")]
+    [InlineData("independent_changes_at_maximum", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.stacking.atMaximum")]
+    [InlineData("irrelevant_refresh_mode", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.stacking.refreshMode")]
+    [InlineData("irrelevant_merge_rule", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.stacking.mergeRule")]
+    [InlineData("duplicate_stack_key", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.stacking.stackKey")]
+    [InlineData("confusable_stack_key", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.stacking.stackKey")]
+    [InlineData("non_wound_source_predicate", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.lifetime.activePredicate")]
+    [InlineData("wrong_owner_target_kind", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.allowedTargetKinds")]
+    [InlineData("root_bound_reaction_target_not_replace", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.stacking.policy")]
+    [InlineData("root_bound_reaction_nonempty_parameters", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.components[0].payload.parameters")]
+    [InlineData("severity_forbid", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.components[0].payload.operation")]
+    [InlineData("duplicate_mechanical_coordinate", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.components[0].payload.action")]
+    [InlineData("rooted_plus_orphan", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition")]
+    [InlineData("aggregate_slot_overflow", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions")]
+    [InlineData("authored_marker_wound_id", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.components[0].payload.woundId")]
+    public void Parse_EffectfulComplicationRequiresOneCompleteWoundOwnedGraph(
+        string mutation,
+        string expectedPath)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        var definitions = CreateEffectfulComplicationDefinitions();
+        operation["complicationDraft"]!["consequenceDefinitions"] = definitions;
+        switch (mutation)
+        {
+            case "all_roots_null":
+                definitions[0]!["root"] = null;
+                break;
+            case "wrong_slot_profile":
+                definitions[0]!["root"]!["slots"]![0]!["profileKey"] =
+                    "periodic_damage";
+                break;
+            case "root_requires_parameters":
+                definitions[0]!["definition"]!["parameterBounds"] = new JsonObject
+                {
+                    ["action"] = new JsonObject
+                    {
+                        ["kind"] = "enum",
+                        ["allowedValues"] = new JsonArray("movement"),
+                        ["required"] = true
+                    }
+                };
+                break;
+            case "non_single_stack":
+                definitions[0]!["definition"]!["stacking"]!["maxStacks"] = 2;
+                break;
+            case "independent_changes_at_maximum":
+                definitions[0]!["definition"]!["stacking"]!["atMaximum"] = "refresh";
+                break;
+            case "irrelevant_refresh_mode":
+                definitions[0]!["definition"]!["stacking"]!["refreshMode"] = "reset";
+                break;
+            case "irrelevant_merge_rule":
+                definitions[0]!["definition"]!["stacking"]!["mergeRule"] = "sum";
+                break;
+            case "duplicate_stack_key":
+                AddSecondRootDefinition(definitions, reuseStackKey: true);
+                break;
+            case "confusable_stack_key":
+                definitions[0]!["definition"]!["stacking"]!["stackKey"] =
+                    "stack-irritation";
+                AddSecondRootDefinition(
+                    definitions,
+                    reuseStackKey: false,
+                    stackKey: "stack‐irritation");
+                break;
+            case "non_wound_source_predicate":
+                definitions[0]!["definition"]!["lifetime"]!["activePredicate"] =
+                    "equipped";
+                break;
+            case "wrong_owner_target_kind":
+                definitions[0]!["definition"]!["allowedTargetKinds"] =
+                    new JsonArray("npc");
+                break;
+            case "root_bound_reaction_target_not_replace":
+                ReplaceDefinitions(
+                    definitions,
+                    CreateRootBoundReactionComplicationDefinitions(
+                        targetPolicy: "independent"));
+                wound["severity"]!["value"] = "III";
+                wound["severity"]!["rank"] = 3;
+                wound["severity"]!["maximumAtCreation"] = "III";
+                break;
+            case "root_bound_reaction_nonempty_parameters":
+                ReplaceDefinitions(
+                    definitions,
+                    CreateRootBoundReactionComplicationDefinitions(
+                        targetPolicy: "replace"));
+                definitions[0]!["definition"]!["components"]![0]!["payload"]!["parameters"] =
+                    new JsonObject { ["mode"] = "unsafe" };
+                wound["severity"]!["value"] = "III";
+                wound["severity"]!["rank"] = 3;
+                wound["severity"]!["maximumAtCreation"] = "III";
+                break;
+            case "severity_forbid":
+                definitions[0]!["definition"]!["components"]![0]!["payload"]!["operation"] =
+                    "forbid";
+                break;
+            case "duplicate_mechanical_coordinate":
+                AddSecondRootDefinition(definitions, reuseStackKey: false);
+                break;
+            case "rooted_plus_orphan":
+            {
+                var orphan = definitions[0]!.DeepClone().AsObject();
+                orphan["definitionRef"] = "orphan_irritation_limit";
+                orphan["definition"]!["definitionKey"] = "orphan_irritation_limit";
+                orphan["definition"]!["stacking"]!["stackKey"] =
+                    "stack_orphan_irritation_limit";
+                orphan["root"] = null;
+                definitions.Add(orphan);
+                break;
+            }
+            case "aggregate_slot_overflow":
+            {
+                var template = definitions[0]!.DeepClone().AsObject();
+                for (var index = 1; index < 5; index++)
+                {
+                    var wrapper = template.DeepClone().AsObject();
+                    wrapper["definitionRef"] = $"irritation_grip_limit_{index}";
+                    wrapper["definition"]!["definitionKey"] =
+                        $"irritation_grip_limit_{index}";
+                    wrapper["definition"]!["stacking"]!["stackKey"] =
+                        $"stack_irritation_grip_limit_{index}";
+                    definitions.Add(wrapper);
+                }
+                break;
+            }
+            case "authored_marker_wound_id":
+                definitions[0] = CreateMarkerComplicationDefinition(
+                    authoredWoundId: "caller_forged_wound");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        AssertInvalidAt(
+            Parse(wound),
+            expectedPath,
+            "wound_materialization_invalid_field");
+    }
+
+    [Fact]
+    public void Parse_EffectfulComplicationAcceptsClientBoundWoundMarker()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        operation["complicationDraft"]!["consequenceDefinitions"] =
+            new JsonArray(CreateMarkerComplicationDefinition(authoredWoundId: null));
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_EffectfulComplicationAcceptsRootBoundReplaceReactionTarget()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        wound["severity"]!["value"] = "III";
+        wound["severity"]!["rank"] = 3;
+        wound["severity"]!["maximumAtCreation"] = "III";
+        var operation = CreateEffectlessComplicationOperation();
+        operation["complicationDraft"]!["consequenceDefinitions"] =
+            CreateRootBoundReactionComplicationDefinitions(targetPolicy: "replace");
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_EffectfulComplicationValidatesMaterializedReactionChildMagnitude()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        wound["severity"]!["value"] = "III";
+        wound["severity"]!["rank"] = 3;
+        wound["severity"]!["maximumAtCreation"] = "III";
+        var operation = CreateEffectlessComplicationOperation();
+        var producer = WoundContractTestData.CreateApplyDefinitionRoot(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_reaction",
+            "irritation_resistance_leaf");
+        producer["links"] = new JsonArray();
+        producer["components"]![0]!["payload"]!["parameters"] =
+            new JsonObject { ["value"] = 21 };
+        var leaf = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_resistance_leaf",
+            "resistance_modifier");
+        leaf["links"] = new JsonArray();
+        leaf["components"]![0]!["payload"]!.AsObject().Remove("cap");
+        leaf["parameterBounds"] = new JsonObject
+        {
+            ["value"] = new JsonObject
+            {
+                ["kind"] = "number",
+                ["minimum"] = -100,
+                ["maximum"] = 100
+            }
+        };
+        operation["complicationDraft"]!["consequenceDefinitions"] = new JsonArray(
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_reaction",
+                ["definition"] = producer,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "irritation"
+                    },
+                    ["slots"] = new JsonArray(
+                        new JsonObject
+                        {
+                            ["profileKey"] = "event_reaction",
+                            ["readableSummary"] = "Боль запускает связанное ограничение."
+                        },
+                        new JsonObject
+                        {
+                            ["profileKey"] = "resistance_modifier",
+                            ["readableSummary"] = "Раздражение резко снижает сопротивление."
+                        })
+                }
+            },
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_resistance_leaf",
+                ["definition"] = leaf,
+                ["root"] = null
+            });
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        AssertInvalidAt(
+            Parse(wound),
+            "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.components[0].payload.value",
+            "wound_materialization_invalid_field");
+    }
+
+    [Theory]
     [InlineData("parallel_effect_draft", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.ownedEffectDraft")]
     [InlineData("two_complications", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.complications")]
     [InlineData("wrong_owner_ref", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].root.ownership.complicationRef")]
     [InlineData("nonempty_links", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition.links")]
+    [InlineData("negative_difficulty", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.complications[0].treatmentDifficultyModifier")]
+    [InlineData("difficulty_above_common_maximum", "wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.complications[0].treatmentDifficultyModifier")]
     [InlineData("duplicate_ref", "wound.treatment.routes[0].outcomes[3].result[1].complicationDraft.complications[0].complicationRef")]
     [InlineData("case_changed_ref", "wound.treatment.routes[0].outcomes[3].result[1].complicationDraft.complications[0].complicationRef")]
     [InlineData("confusable_ref", "wound.treatment.routes[0].outcomes[3].result[1].complicationDraft.complications[0].complicationRef")]
@@ -922,6 +1644,12 @@ public sealed class MortalWoundTreatmentContractTests
                     CreateEffectfulComplicationDefinitions();
                 first["complicationDraft"]!["consequenceDefinitions"]![0]!["definition"]!["links"] =
                     new JsonArray(new JsonObject { ["kind"] = "wound" });
+                break;
+            case "negative_difficulty":
+                first["complicationDraft"]!["complications"]![0]!["treatmentDifficultyModifier"] = -1;
+                break;
+            case "difficulty_above_common_maximum":
+                first["complicationDraft"]!["complications"]![0]!["treatmentDifficultyModifier"] = 5;
                 break;
             case "duplicate_ref":
                 result.Add(CreateEffectlessComplicationOperation());
@@ -975,6 +1703,24 @@ public sealed class MortalWoundTreatmentContractTests
             "wound_materialization_unknown_field");
     }
 
+    [Theory]
+    [InlineData("public")]
+    [InlineData("known_to_player")]
+    [InlineData("hidden")]
+    [InlineData("gm_only")]
+    public void Parse_AddComplicationReusesCompleteComplicationVisibilityVocabulary(
+        string visibility)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        operation["complicationDraft"]!["complications"]![0]!["visibility"] = visibility;
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
     [Fact]
     public void ProposalComposition_RewritesSameProposalComplicationRefToCanonicalId()
     {
@@ -991,7 +1737,7 @@ public sealed class MortalWoundTreatmentContractTests
             binding,
             new[] { opportunity },
             new[] { JsonSerializer.SerializeToElement(decision) },
-            "Рана и способ лечения подтверждены.",
+            "Острый край распорол бок в короткой схватке. Рана и способ лечения подтверждены.",
             Array.Empty<WoundOpportunityDecisionReceipt>());
 
         Assert.True(composition.Success, DescribeIssues(composition.Issues));
@@ -1004,6 +1750,89 @@ public sealed class MortalWoundTreatmentContractTests
             complicationId,
             remove.GetProperty("complicationId").GetString());
         Assert.False(remove.TryGetProperty("complicationRef", out _));
+    }
+
+    [Fact]
+    public void ProposalComposition_WorseningPreservesSignedCanonicalComplicationSelector()
+    {
+        var (binding, createOpportunity) = CreateTreatmentProposalOpportunity();
+        var createProposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        createProposal["severity"] = "I";
+        var createDecision = new JsonObject
+        {
+            ["opportunityRef"] = createOpportunity.PublicRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_before_worsening",
+            ["proposal"] = createProposal
+        };
+        var created = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { createOpportunity },
+            new[] { JsonSerializer.SerializeToElement(createDecision) },
+            "Острый край распорол бок в короткой схватке. Рана подтверждена.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(created.Success, DescribeIssues(created.Issues));
+        var before = Assert.Single(created.Transitions).ProposedAfter;
+        var complicationId = Assert.Single(before.Complications).ComplicationId;
+
+        var (_, worseningOpportunity) = CreateTreatmentProposalOpportunity(before);
+        var worseningProposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        var canonicalBefore = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        worseningProposal["treatment"] = canonicalBefore["treatment"]!.DeepClone();
+        var worseningDecision = new JsonObject
+        {
+            ["opportunityRef"] = worseningOpportunity.PublicRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_after_worsening",
+            ["proposal"] = worseningProposal
+        };
+
+        var worsened = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { worseningOpportunity },
+            new[] { JsonSerializer.SerializeToElement(worseningDecision) },
+            "Острый край распорол бок в короткой схватке. Повторная травма ухудшила рану.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.True(worsened.Success, DescribeIssues(worsened.Issues));
+        var after = Assert.Single(worsened.Transitions).ProposedAfter;
+        var remove = Assert.Single(after.Treatment.Routes).Outcomes[0]
+            .GetProperty("result")[0];
+        Assert.Equal(complicationId, remove.GetProperty("complicationId").GetString());
+    }
+
+    [Fact]
+    public void ProposalComposition_RejectsUnicodeDashConfusableComplicationRefs()
+    {
+        var (binding, opportunity) = CreateTreatmentProposalOpportunity();
+        var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        var complications = proposal["complications"]!.AsArray();
+        complications[0]!["complicationRef"] = "irritation-edge";
+        var second = complications[0]!.DeepClone().AsObject();
+        second["complicationRef"] = "irritation‐edge";
+        complications.Add(second);
+        proposal["treatment"]!["routes"]![0]!["outcomes"]![0]!["result"]![0]!["complicationRef"] =
+            "irritation-edge";
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_confusable_complications",
+            ["proposal"] = proposal
+        };
+
+        var composition = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(decision) },
+            "Острый край распорол бок в короткой схватке. Неоднозначные ссылки отклонены.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(composition.Success);
+        Assert.Contains(composition.Issues, issue =>
+            issue.FilePath == "woundDecisions[0].proposal.complications" &&
+            issue.Code == "wound_response_duplicate_local_reference");
     }
 
     [Fact]
@@ -1035,6 +1864,69 @@ public sealed class MortalWoundTreatmentContractTests
             issue.FilePath ==
                 "woundDecisions[0].proposal.treatment.routes[0].outcomes[0].result[0].complicationId" &&
             issue.Code == "wound_response_unknown_field");
+    }
+
+    [Fact]
+    public void ProposalComposition_RejectsClientOwnedRecoveryAnchorsBeforeCanonicalParsing()
+    {
+        var (binding, opportunity) = CreateTreatmentProposalOpportunity();
+        var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        proposal["recovery"]!["recoveryAnchor"] = new JsonObject
+        {
+            ["anchorKind"] = "creation",
+            ["anchorMinute"] = 100,
+            ["anchorTransitionId"] = "forged_anchor"
+        };
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_forged_recovery_anchor",
+            ["proposal"] = proposal
+        };
+
+        var composition = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(decision) },
+            "Острый край распорол бок; поддельная точка восстановления отклонена.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(composition.Success);
+        Assert.Contains(composition.Issues, issue =>
+            issue.FilePath == "woundDecisions[0].proposal.recovery.recoveryAnchor" &&
+            issue.Code == "wound_materialization_client_owned_field");
+    }
+
+    [Theory]
+    [InlineData("recoveryAnchor")]
+    [InlineData("deteriorationAnchor")]
+    public void ProposalComposition_StripsNullClientOwnedRecoveryAnchorPlaceholders(
+        string anchorField)
+    {
+        var (binding, opportunity) = CreateTreatmentProposalOpportunity();
+        var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        proposal["recovery"]![anchorField] = null;
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef,
+            ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_null_recovery_anchor",
+            ["proposal"] = proposal
+        };
+
+        var composition = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(decision) },
+            "Острый край распорол бок в короткой схватке. Пустой служебный якорь очищен клиентом.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.True(composition.Success, DescribeIssues(composition.Issues));
+        var proposed = Assert.Single(composition.Transitions).ProposedAfter;
+        var canonical = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(proposed))!.AsObject();
+        Assert.False(canonical["recovery"]!.AsObject().ContainsKey(anchorField));
     }
 
     [Fact]
@@ -1080,6 +1972,162 @@ public sealed class MortalWoundTreatmentContractTests
         var result = Parse(wound);
 
         Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_MechanicalLegacyValidatesDefinitionsAsOneReachableReactionGraph()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var legacy = CreateMechanicalHealLegacy("reaction_graph_legacy");
+        var draft = legacy["effectDraft"]!;
+        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        root["definitionKey"] = "legacy_reaction_root";
+        root["allowedRealms"] = new JsonArray("mortal_world");
+        root["allowedTargetKinds"] = new JsonArray("player");
+        root["stacking"]!["stackKey"] = "legacy_reaction_root_stack";
+        root["links"] = new JsonArray();
+        var payload = root["components"]![0]!["payload"]!.AsObject();
+        payload["resultKind"] = "apply_definition";
+        payload["dependency"] = "before_current_event";
+        payload["maxExpansion"] = 2;
+        payload["definitionKey"] = "legacy_reaction_child";
+        payload["parameters"] = new JsonObject { ["amount"] = 3 };
+
+        var child = EffectMaterializationTestFixture.CreateDefinition();
+        child["definitionKey"] = "legacy_reaction_child";
+        child["allowedRealms"] = new JsonArray("mortal_world");
+        child["allowedTargetKinds"] = new JsonArray("player");
+        child["stacking"]!["stackKey"] = "legacy_reaction_child_stack";
+        child["links"] = new JsonArray();
+        draft["definitions"] = new JsonArray(
+            new JsonObject
+            {
+                ["definitionRef"] = "reaction_root_ref",
+                ["definition"] = root
+            },
+            new JsonObject
+            {
+                ["definitionRef"] = "reaction_child_ref",
+                ["definition"] = child
+            });
+        draft["applications"]![0]!["definitionRef"] = "reaction_root_ref";
+        Route(wound)["outcomes"]![0]!["result"] = new JsonArray(
+            new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+            CreateHealOperation(legacy));
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Parse_MechanicalLegacyRejectsDanglingReactionDefinition()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var legacy = CreateMechanicalHealLegacy("dangling_reaction_legacy");
+        var draft = legacy["effectDraft"]!;
+        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        root["definitionKey"] = "legacy_dangling_root";
+        root["allowedRealms"] = new JsonArray("mortal_world");
+        root["allowedTargetKinds"] = new JsonArray("player");
+        root["stacking"]!["stackKey"] = "legacy_dangling_root_stack";
+        root["links"] = new JsonArray();
+        var payload = root["components"]![0]!["payload"]!.AsObject();
+        payload["resultKind"] = "apply_definition";
+        payload["dependency"] = "before_current_event";
+        payload["maxExpansion"] = 2;
+        payload["definitionKey"] = "missing_legacy_child";
+        payload["parameters"] = new JsonObject();
+        draft["definitions"] = new JsonArray(new JsonObject
+        {
+            ["definitionRef"] = "dangling_root_ref",
+            ["definition"] = root
+        });
+        draft["applications"]![0]!["definitionRef"] = "dangling_root_ref";
+        Route(wound)["outcomes"]![0]!["result"] = new JsonArray(
+            new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+            CreateHealOperation(legacy));
+
+        AssertInvalidAt(
+            Parse(wound),
+            "wound.treatment.routes[0].outcomes[0].result[1].legacies[0].effectDraft.definitions[0].definition.components[0].payload.definitionKey",
+            "wound_materialization_invalid_field");
+    }
+
+    [Fact]
+    public void Parse_MechanicalLegacyRejectsDefinitionDisconnectedFromEveryApplication()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var legacy = CreateMechanicalHealLegacy("orphan_definition_legacy");
+        var draft = legacy["effectDraft"]!;
+        var orphan = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "orphan_legacy_definition",
+            "action_control");
+        orphan["links"] = new JsonArray();
+        draft["definitions"]!.AsArray().Add(new JsonObject
+        {
+            ["definitionRef"] = "orphan_legacy_definition_ref",
+            ["definition"] = orphan
+        });
+        Route(wound)["outcomes"]![0]!["result"] = new JsonArray(
+            new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+            CreateHealOperation(legacy));
+
+        AssertInvalidAt(
+            Parse(wound),
+            "wound.treatment.routes[0].outcomes[0].result[1].legacies[0].effectDraft.definitions[1].definition",
+            "wound_materialization_invalid_field");
+    }
+
+    [Theory]
+    [InlineData("missing_required", "effect_source_parameter_required")]
+    [InlineData("unknown_parameter", "effect_source_parameter_forbidden")]
+    [InlineData("out_of_bounds", "effect_source_parameter_out_of_bounds")]
+    public void Parse_MechanicalLegacyApplicationsObeyTheirDefinitionParameterBounds(
+        string mutation,
+        string expectedCode)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var legacy = CreateMechanicalHealLegacy("bounded_mechanical_legacy");
+        var effectDraft = legacy["effectDraft"]!;
+        var definition = effectDraft["definitions"]![0]!["definition"]!;
+        var parameters = effectDraft["applications"]![0]!["parameters"]!.AsObject();
+        definition["parameterBounds"] = new JsonObject
+        {
+            ["action"] = new JsonObject
+            {
+                ["kind"] = "enum",
+                ["allowedValues"] = new JsonArray("use_item"),
+                ["required"] = true
+            }
+        };
+        switch (mutation)
+        {
+            case "missing_required":
+                break;
+            case "unknown_parameter":
+                definition["parameterBounds"] = new JsonObject();
+                parameters["unknown"] = 1;
+                break;
+            case "out_of_bounds":
+                parameters["action"] = "attack";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+        Route(wound)["outcomes"]![0]!["result"] = new JsonArray(
+            new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 },
+            CreateHealOperation(legacy));
+
+        var result = Parse(wound);
+
+        AssertInvalidAt(
+            result,
+            "wound.treatment.routes[0].outcomes[0].result[1].legacies[0].effectDraft.applications[0].parameters" +
+            (mutation == "unknown_parameter" ? ".unknown" : ".action"),
+            expectedCode);
     }
 
     [Fact]
@@ -1138,6 +2186,10 @@ public sealed class MortalWoundTreatmentContractTests
     [InlineData("duplicate_definition_ref", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.definitions[1].definitionRef", "wound_materialization_invalid_field")]
     [InlineData("confusable_definition_key", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.definitions[1].definition.definitionKey", "wound_materialization_invalid_field")]
     [InlineData("confusable_application_ref", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.applications[1].applicationRef", "wound_materialization_invalid_field")]
+    [InlineData("definition_application_ref_collision", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.applications[0].applicationRef", "wound_materialization_invalid_field")]
+    [InlineData("confusable_definition_application_ref_collision", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.applications[0].applicationRef", "wound_materialization_invalid_field")]
+    [InlineData("wrong_derived_target_kind", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.definitions[0].definition.allowedTargetKinds", "wound_materialization_invalid_field")]
+    [InlineData("invalid_wound_legacy_predicate", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.definitions[0].definition.lifetime.activePredicate", "wound_materialization_invalid_field")]
     [InlineData("caller_target", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.applications[0].targetId", "wound_materialization_unknown_field")]
     [InlineData("nonempty_links", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].effectDraft.definitions[0].definition.links", "wound_materialization_invalid_field")]
     [InlineData("duplicate_legacy_ref", "wound.treatment.routes[0].outcomes[0].result[1].legacies[1].localLegacyRef", "wound_materialization_invalid_field")]
@@ -1241,6 +2293,26 @@ public sealed class MortalWoundTreatmentContractTests
                 applications.Add(copy);
                 break;
             }
+            case "definition_application_ref_collision":
+                legacies[1]!["effectDraft"]!["applications"]![0]!["applicationRef"] =
+                    "residual_tremor_definition";
+                break;
+            case "confusable_definition_application_ref_collision":
+                legacies[1]!["effectDraft"]!["definitions"]![0]!["definitionRef"] =
+                    "residual-tremor";
+                legacies[1]!["effectDraft"]!["applications"]![0]!["definitionRef"] =
+                    "residual-tremor";
+                legacies[1]!["effectDraft"]!["applications"]![0]!["applicationRef"] =
+                    "residual‐tremor";
+                break;
+            case "wrong_derived_target_kind":
+                legacies[1]!["effectDraft"]!["definitions"]![0]!["definition"]!["allowedTargetKinds"] =
+                    new JsonArray("npc");
+                break;
+            case "invalid_wound_legacy_predicate":
+                legacies[1]!["effectDraft"]!["definitions"]![0]!["definition"]!["lifetime"]!["activePredicate"] =
+                    "equipped";
+                break;
             case "caller_target":
                 legacies[1]!["effectDraft"]!["applications"]![0]!["targetId"] =
                     "player_current";
@@ -1399,7 +2471,7 @@ public sealed class MortalWoundTreatmentContractTests
     }
 
     private static (WoundAcceptedTurnBinding Binding, WoundOpportunityAuthority Opportunity)
-        CreateTreatmentProposalOpportunity()
+        CreateTreatmentProposalOpportunity(WoundMaterializationEnvelope? worseningTarget = null)
     {
         var evidence = new WoundOpportunityEventEvidence(
             "formal",
@@ -1443,7 +2515,10 @@ public sealed class MortalWoundTreatmentContractTests
             new WoundOpportunitySafeContext(
                 "вы",
                 "осколок стекла",
-                new[] { "anatomical", "systemic", "other" })));
+                new[] { "anatomical", "systemic", "other" }),
+            worseningTarget is null
+                ? null
+                : new WoundOpportunityWorseningTargetEvidence(worseningTarget, "retrauma")));
         Assert.True(result.Success, DescribeIssues(result.Issues));
         return (binding, Assert.IsType<WoundOpportunityAuthority>(result.Opportunity));
     }
@@ -1627,6 +2702,52 @@ public sealed class MortalWoundTreatmentContractTests
         route["resourcePolicy"]!["mutations"] = mutations;
     }
 
+    private static void ConfigureCourseResourceSelectorCount(JsonObject wound, int count)
+    {
+        ConfigureCourseMilestoneCount(wound, 32);
+        var route = Route(wound);
+        var mutations = new JsonArray();
+        for (var ordinal = 1; ordinal <= 32; ordinal++)
+        {
+            var requirements = route["outcomes"]![ordinal - 1]!["requirements"]!.AsArray();
+            requirements.Add(new JsonObject
+            {
+                ["kind"] = "resource_quantity",
+                ["resourceRef"] = $"course_resource_{ordinal}",
+                ["quantity"] = 1,
+                ["ownerRole"] = "target"
+            });
+            mutations.Add(CreateCourseResourceMutation(ordinal));
+            var second = CreateCourseResourceMutation(ordinal);
+            second["requirementIndex"] = 1;
+            mutations.Add(second);
+        }
+
+        if (count == 65)
+        {
+            route["requirements"]!.AsArray().Add(new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "course_case",
+                ["quantity"] = 1,
+                ["ownerRole"] = "provider"
+            });
+            mutations.Add(new JsonObject
+            {
+                ["kind"] = "consume_requirement",
+                ["scope"] = "common",
+                ["milestoneOrdinal"] = null,
+                ["requirementIndex"] = 1
+            });
+        }
+        else if (count != 64)
+        {
+            throw new ArgumentOutOfRangeException(nameof(count), count, null);
+        }
+
+        route["resourcePolicy"]!["mutations"] = mutations;
+    }
+
     private static JsonObject CreateCourseResourceMutation(int ordinal) => new()
     {
         ["kind"] = "consume_requirement",
@@ -1780,6 +2901,114 @@ public sealed class MortalWoundTreatmentContractTests
         });
     }
 
+    private static void AddSecondRootDefinition(
+        JsonArray definitions,
+        bool reuseStackKey,
+        string? stackKey = null)
+    {
+        var second = definitions[0]!.DeepClone().AsObject();
+        second["definitionRef"] = "second_irritation_limit";
+        second["definition"]!["definitionKey"] = "second_irritation_limit";
+        if (!reuseStackKey)
+        {
+            second["definition"]!["stacking"]!["stackKey"] =
+                stackKey ?? "stack_second_irritation_limit";
+        }
+        definitions.Add(second);
+    }
+
+    private static JsonArray CreateRootBoundReactionComplicationDefinitions(
+        string targetPolicy)
+    {
+        var producer = WoundContractTestData.CreateApplyDefinitionRoot(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_reaction",
+            "irritation_reaction_target");
+        producer["links"] = new JsonArray();
+        var target = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_reaction_target",
+            "action_control");
+        target["links"] = new JsonArray();
+        target["stacking"]!["policy"] = targetPolicy;
+
+        return new JsonArray(
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_reaction",
+                ["definition"] = producer,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "irritation"
+                    },
+                    ["slots"] = new JsonArray(new JsonObject
+                    {
+                        ["profileKey"] = "event_reaction",
+                        ["readableSummary"] = "Боль усиливает следующий связанный эффект."
+                    })
+                }
+            },
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_reaction_target",
+                ["definition"] = target,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "irritation"
+                    },
+                    ["slots"] = new JsonArray(new JsonObject
+                    {
+                        ["profileKey"] = "action_control",
+                        ["readableSummary"] = "Боль ограничивает движение."
+                    })
+                }
+            });
+    }
+
+    private static void ReplaceDefinitions(JsonArray target, JsonArray replacement)
+    {
+        target.Clear();
+        foreach (var definition in replacement)
+            target.Add(definition?.DeepClone());
+    }
+
+    private static JsonObject CreateMarkerComplicationDefinition(string? authoredWoundId)
+    {
+        var definition = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_wound_marker",
+            "wound_consequence");
+        definition["links"] = new JsonArray();
+        var payload = definition["components"]![0]!["payload"]!.AsObject();
+        if (authoredWoundId is null)
+            payload.Remove("woundId");
+        else
+            payload["woundId"] = authoredWoundId;
+        return new JsonObject
+        {
+            ["definitionRef"] = "irritation_wound_marker",
+            ["definition"] = definition,
+            ["root"] = new JsonObject
+            {
+                ["ownership"] = new JsonObject
+                {
+                    ["kind"] = "complication",
+                    ["complicationRef"] = "irritation"
+                },
+                ["slots"] = new JsonArray()
+            }
+        };
+    }
+
     private static JsonObject CreateHealOperation(params JsonObject[] legacies)
     {
         var rows = new JsonArray();
@@ -1894,6 +3123,18 @@ public sealed class MortalWoundTreatmentContractTests
 
     private static JsonObject Route(JsonObject wound) =>
         wound["treatment"]!["routes"]![0]!.AsObject();
+
+    private static string SerializeTypedTreatment(MortalWoundTreatmentDefinition treatment)
+    {
+        using var stream = new MemoryStream();
+        using (var writer = new Utf8JsonWriter(stream))
+        {
+            writer.WriteStartObject();
+            MortalWoundTreatmentContract.WriteCanonical(writer, treatment);
+            writer.WriteEndObject();
+        }
+        return System.Text.Encoding.UTF8.GetString(stream.ToArray());
+    }
 
     private static WoundMaterializationParseResult Parse(JsonObject wound) =>
         WoundMaterializationContract.Parse(wound.ToJsonString(), Path);
