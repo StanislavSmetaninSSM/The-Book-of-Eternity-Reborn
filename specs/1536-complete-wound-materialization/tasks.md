@@ -1134,7 +1134,7 @@ compatibility reader. Full Mortal GM guidance, documentation guards, and worked 
 remain owned by T072-T074 once resolver/resource/recovery surfaces exist. Chaos Sea and
 Shining Abode contracts are unchanged, so their matrix, examples, manifest, and daemon
 entrypoints require no update for T065.
-- [ ] T066 [US2] Preserve the completed three-argument T060 surface and implement a separate complete scoped course-milestone requirement classifier with kind-complete typed success witnesses/shared internal T060 row-fingerprint recomputation and typed failure witnesses plus canonical player/NPC active/passive skill `mortalWoundTreatmentCapabilities[]` validation/normalization/export proof (linked for later adoption by #1533), including permanent exact/confusable-unique skill identity across all current active/passive rows, domain/severity/aggregate operation limits, provenance, idless/confusable/stale rejection, deterministic unchanged-shape T060 capability projection from the same skill, separate unchanged-T060 tier gates, current and final-composed publication proof exporters, and source/proof fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`, `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Skills.cs`
+- [X] T066 [US2] Preserve the completed three-argument T060 surface and implement a separate complete scoped course-milestone requirement classifier with kind-complete typed success witnesses/shared internal T060 row-fingerprint recomputation and typed failure witnesses plus canonical player/NPC active/passive skill `mortalWoundTreatmentCapabilities[]` validation/normalization/export proof (linked for later adoption by #1533), including permanent exact/confusable-unique skill identity across all current active/passive rows, domain/severity/aggregate operation limits, provenance, idless/confusable/stale rejection, deterministic unchanged-shape T060 capability projection from the same skill, separate unchanged-T060 tier gates, current and final-composed publication proof exporters, and source/proof fingerprints in `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`, `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Skills.cs`
   T066 also owns `AcceptedTurnAuthorityRegistry.cs`,
   `MortalWoundTreatmentAcceptedStateAuthority.cs`, and
   `MortalWoundTreatmentRequirementAuthorityBundle.cs`, including the canonical lease-
@@ -1181,6 +1181,15 @@ entrypoints require no update for T065.
   and its always-read compact Mortal-location template/directive MUST name the copied wound
   guide/example whenever these scene rows are authored; context-pack copying alone is not
   sufficient guidance.
+  T066 GREEN closure (2026-08-31): the accepted-state/source adapter, scoped requirement
+  bundle, registered current-location treatment states, GM documentation/example guards,
+  canonical skill capability contract, current/final exporters, and immutable proof
+  authority are complete through `f107d1fd`. The final authority remediation independently
+  rereviewed Ready with 0 Critical/Important/Minor findings. Fresh owning Focused control
+  passed 296/296 with a warning-free build, no timeout/duplicates, and complete cleanup
+  (`20260831-042446-783-43392-7bf8ca2438d04218b73b3fccb8b866cc-focused`). The 10
+  publication rows blocked before the exporter remain explicit T067/T070 integration
+  evidence rather than a T066 closure gap.
 - [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
   production treatment resolver in two explicit phases around T068: deterministic request/attempt/
   course identities; strict response adaptation and repair; exact six-argument request
