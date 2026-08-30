@@ -933,16 +933,25 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     private static JsonObject CreateCanonicalSkillFixture() => new()
     {
         ["realm"] = "mortal_world",
-        ["player"] = CreateSkillOwner("player_current"),
-        ["npc"] = CreateSkillOwner("npc_field_medic_01")
+        ["player"] = CreateSkillOwner("player_current", includeCurrentMasteryLevel: false),
+        ["npc"] = CreateSkillOwner("npc_field_medic_01", includeCurrentMasteryLevel: true)
     };
 
-    private static JsonObject CreateSkillOwner(string ownerId) => new()
+    private static JsonObject CreateSkillOwner(
+        string ownerId,
+        bool includeCurrentMasteryLevel)
     {
-        ["ownerId"] = ownerId,
-        ["activeSkills"] = new JsonArray(CreateSkill("active")),
-        ["passiveSkills"] = new JsonArray(CreateSkill("passive"))
-    };
+        var activeSkill = CreateSkill("active");
+        if (includeCurrentMasteryLevel)
+            activeSkill["currentMasteryLevel"] = 3;
+
+        return new JsonObject
+        {
+            ["ownerId"] = ownerId,
+            ["activeSkills"] = new JsonArray(activeSkill),
+            ["passiveSkills"] = new JsonArray(CreateSkill("passive"))
+        };
+    }
 
     private static JsonObject CreateSkill(string kind)
     {
@@ -2187,6 +2196,15 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
             WriteCanonicalSkillSources(fileSystem, currentSource);
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/player/skill_mastery.json"),
+                CreatePlayerSkillMastery(currentSource).ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/inventory/items.json"),
+                new JsonObject { ["items"] = new JsonArray() }.ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/inventory/item_identity_index.json"),
+                MortalItemTestFixture.CreateIndexForCarriers().ToJsonString());
             Directory.CreateDirectory(Path.GetDirectoryName(
                 fileSystem.ResolvePath("game_state/world/world_time.json"))!);
             File.WriteAllText(
@@ -2196,14 +2214,21 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     ["schemaVersion"] = 1,
                     ["currentTimeInMinutes"] = 1_260
                 }.ToJsonString());
+            var location = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
+                "loc_field_clinic_001",
+                "Capability authority field clinic");
             File.WriteAllText(
-                fileSystem.ResolvePath("game_state/world/current_location.json"),
-                new JsonObject
-                {
-                    ["locationId"] = "loc_field_clinic_001",
-                    ["name"] = "Capability authority field clinic",
-                    ["realm"] = "mortal_world"
-                }.ToJsonString());
+                fileSystem.ResolvePath(MortalLocationMaterializationContract.WorldMapPath),
+                MortalLocationTestFixture.CreateWorldMap(location).ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath(MortalLocationMaterializationContract.CurrentLocationPath),
+                MortalLocationTestFixture.CreateCurrentProjection(location).ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath(MortalLocationIdentityState.StatePath),
+                MortalLocationTestFixture.CreateIdentityIndex(location).ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath("game_state/meta/soul_state.json"),
+                new JsonObject { ["currentRealm"] = "Mortal World" }.ToJsonString());
             var combatTarget = scenario.TargetKind is "combatant" or "combatant_member";
             var carrierPath = scenario.TargetKind == "combatant_member"
                 ? WoundCarrierCatalog.AlliesPath
@@ -2229,21 +2254,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 Directory.CreateDirectory(Path.GetDirectoryName(
                     fileSystem.ResolvePath(carrierPath))!);
                 var combatant = scenario.TargetKind == "combatant_member"
-                    ? new JsonObject
-                    {
-                        ["combatantId"] = "combatant_group_01",
-                        ["isGroup"] = true,
-                        ["members"] = new JsonArray(new JsonObject
-                        {
-                            ["memberId"] = scenario.TargetId,
-                            ["activeWounds"] = new JsonArray(woundRoot.DeepClone())
-                        })
-                    }
-                    : new JsonObject
-                    {
-                        ["combatantId"] = scenario.TargetId,
-                        ["activeWounds"] = new JsonArray(woundRoot.DeepClone())
-                    };
+                    ? CreateProductionCombatGroup(
+                        "combatant_group_01",
+                        scenario.TargetId,
+                        woundRoot)
+                    : CreateProductionCombatant(scenario.TargetId, woundRoot);
                 var combatantsRoot = new JsonObject
                 {
                     [scenario.TargetKind == "combatant_member" ? "alliesData" : "enemiesData"] =
@@ -2301,6 +2316,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.True(history.IsValid, DescribeIssues(history.Issues));
             Assert.Empty(carriers.Issues);
             Assert.Empty(history.State!.ValidateAgreement(identity.State!, carriers));
+            WriteCanonicalResourceAuthority(fileSystem);
             var preparedTurn = new LiveTurnPreparationService(fileSystem).PrepareAsync(
                 new LiveTurnPreparationOptions
                 {
@@ -2349,6 +2365,108 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     "mortal_world"),
                 ["entries"] = new JsonArray()
             };
+        }
+
+        private static JsonObject CreatePlayerSkillMastery(JsonObject source)
+        {
+            var activeSkill = Skill(source, "player", "activeSkills");
+            return new JsonObject
+            {
+                ["skillMasteryChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillName"] = activeSkill["skillName"]!.DeepClone(),
+                    ["newMasteryLevel"] = 3,
+                    ["newCurrentMasteryProgress"] = 0,
+                    ["newMasteryProgressNeeded"] = 100,
+                    ["masteryLeveledUp"] = false
+                })
+            };
+        }
+
+        private static JsonObject CreateProductionCombatant(
+            string combatantId,
+            JsonObject wound)
+        {
+            var row = CreateProductionCombatRow("Capability authority combatant");
+            row["combatantId"] = combatantId;
+            row["activeWounds"] = new JsonArray(wound.DeepClone());
+            return row;
+        }
+
+        private static JsonObject CreateProductionCombatGroup(
+            string combatantId,
+            string memberId,
+            JsonObject wound)
+        {
+            var row = CreateProductionCombatRow("Capability authority combat group");
+            row["combatantId"] = combatantId;
+            row["isGroup"] = true;
+            row["count"] = 1;
+            row["unitName"] = "member";
+            row["members"] = new JsonArray(new JsonObject
+            {
+                ["memberId"] = memberId,
+                ["displayName"] = "Capability authority combat member",
+                ["activeWounds"] = new JsonArray(wound.DeepClone())
+            });
+            return row;
+        }
+
+        private static JsonObject CreateProductionCombatRow(string name) => new()
+        {
+            ["NPCId"] = null,
+            ["name"] = name,
+            ["image_prompt"] = "setting neutral combatant portrait",
+            ["description"] = "A complete canonical combat row used by capability authority tests.",
+            ["type"] = "Test combatant",
+            ["isGroup"] = false,
+            ["actions"] = new JsonArray(),
+            ["resistances"] = new JsonArray(),
+            ["activeBuffs"] = new JsonArray(),
+            ["activeDebuffs"] = new JsonArray()
+        };
+
+        private static void WriteCanonicalResourceAuthority(FileSystemManager fileSystem)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(fileSystem.ResolvePath(
+                ResourceMaterializationContract.DefinitionsPath))!);
+            var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+                incarnationNumber: 1,
+                turn: 1,
+                permanentStrength: 10,
+                permanentConstitution: 10,
+                permanentIntelligence: 10,
+                permanentWisdom: 10,
+                permanentFaith: 10);
+            Assert.True(bootstrap.IsValid, DescribeIssues(bootstrap.Issues));
+            var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+            var state = Assert.IsType<ResourceStateLedger>(bootstrap.State);
+            var history = Assert.IsType<ResourceHistoryState>(bootstrap.History);
+            File.WriteAllText(
+                fileSystem.ResolvePath(ResourceMaterializationContract.DefinitionsPath),
+                definitions.ToCanonicalJson());
+            File.WriteAllText(
+                fileSystem.ResolvePath(ResourceMaterializationContract.StatePath),
+                state.ToCanonicalJson());
+            File.WriteAllText(
+                fileSystem.ResolvePath(ResourceMaterializationContract.HistoryPath),
+                history.ToCanonicalJson());
+
+            var composed = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                    definitions,
+                    path => Task.FromResult<string?>(File.Exists(fileSystem.ResolvePath(path))
+                        ? File.ReadAllText(fileSystem.ResolvePath(path))
+                        : null),
+                    state,
+                    history,
+                    CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap)
+                .GetAwaiter()
+                .GetResult();
+            Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+            Assert.False(string.IsNullOrWhiteSpace(composed.CanonicalAuthorityJson));
+            File.WriteAllText(
+                fileSystem.ResolvePath(CanonicalResourceOwnerAuthorityComposer.AuthorityPath),
+                composed.CanonicalAuthorityJson);
         }
 
         public void Dispose()
@@ -2724,6 +2842,12 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             var player = Assert.IsType<JsonObject>(CurrentSource["player"]);
             var npc = Assert.IsType<JsonObject>(CurrentSource["npc"]);
+            var playerActiveSkill = Assert.IsType<JsonObject>(
+                Assert.Single(Assert.IsType<JsonArray>(player["activeSkills"])));
+            var npcActiveSkill = Assert.IsType<JsonObject>(
+                Assert.Single(Assert.IsType<JsonArray>(npc["activeSkills"])));
+            Assert.False(playerActiveSkill.ContainsKey("currentMasteryLevel"));
+            Assert.Equal(3, npcActiveSkill["currentMasteryLevel"]!.GetValue<int>());
             Assert.True(
                 ValidationService.IsProductionValidMortalActiveSkill(ParseFirstSkill(player, "activeSkills")));
             Assert.True(
@@ -2735,12 +2859,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
             var npcRoot = ReadRoot("game_state/npcs/npc_core.json");
             var persistedNpc = Assert.IsType<JsonObject>(Assert.Single(
-                Assert.IsType<JsonArray>(npcRoot!["NPCs"])));
-            Assert.Equal("npc_field_medic_01", persistedNpc["npcId"]!.GetValue<string>());
+                Assert.IsType<JsonArray>(npcRoot!["NPCsInScene"])));
+            Assert.Equal("npc_field_medic_01", persistedNpc["NPCId"]!.GetValue<string>());
             Assert.True(ValidationService.IsProductionValidMortalActiveSkill(
                 ParseFirstSkill(persistedNpc, "activeSkills")));
             Assert.True(ValidationService.IsProductionValidMortalPassiveSkill(
                 ParseFirstSkill(persistedNpc, "passiveSkills")));
+
+            var publicationNpcRoot = PublicationRoot(CurrentSource, "game_state/npcs/npc_core.json");
+            Assert.False(publicationNpcRoot.ContainsKey("NPCs"));
+            var publicationNpc = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(publicationNpcRoot["NPCsInScene"])));
+            Assert.True(JsonNode.DeepEquals(persistedNpc, publicationNpc));
         }
 
         internal void AssertPreparedLiveTurnMatchesExportedBinding(object binding)
@@ -3119,15 +3249,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 {
                     ["passiveSkillChanges"] = player["passiveSkills"]!.DeepClone()
                 },
-                _ => new JsonObject
-                {
-                    ["NPCs"] = new JsonArray(new JsonObject
-                    {
-                        ["npcId"] = npc["ownerId"]!.DeepClone(),
-                        ["activeSkills"] = npc["activeSkills"]!.DeepClone(),
-                        ["passiveSkills"] = npc["passiveSkills"]!.DeepClone()
-                    })
-                }
+                _ => CreateProductionNpcCore(npc)
             };
         }
 
@@ -3191,17 +3313,23 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 new JsonObject { ["passiveSkillChanges"] = player["passiveSkills"]!.DeepClone() }.ToJsonString());
             File.WriteAllText(
                 fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
-                new JsonObject
-                {
-                    ["NPCs"] = new JsonArray(new JsonObject
-                    {
-                        ["npcId"] = npc["ownerId"]!.DeepClone(),
-                        ["displayName"] = "Field medic",
-                        ["currentLocationId"] = "loc_field_clinic_001",
-                        ["activeSkills"] = npc["activeSkills"]!.DeepClone(),
-                        ["passiveSkills"] = npc["passiveSkills"]!.DeepClone()
-                    })
-                }.ToJsonString());
+                CreateProductionNpcCore(npc).ToJsonString());
+        }
+
+        private static JsonObject CreateProductionNpcCore(JsonObject npc)
+        {
+            var actorId = npc["ownerId"]!.GetValue<string>();
+            var actor = MortalActorTestFixtures.CreateActor(
+                actorId,
+                "loc_field_clinic_001",
+                "Capability authority field clinic");
+            actor["displayName"] = "Field medic";
+            actor["activeSkills"] = npc["activeSkills"]!.DeepClone();
+            actor["passiveSkills"] = npc["passiveSkills"]!.DeepClone();
+            return new JsonObject
+            {
+                ["NPCsInScene"] = new JsonArray(actor)
+            };
         }
     }
 }
