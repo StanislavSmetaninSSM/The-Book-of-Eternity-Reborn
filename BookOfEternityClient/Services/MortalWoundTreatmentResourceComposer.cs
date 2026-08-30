@@ -927,8 +927,6 @@ internal static class MortalWoundTreatmentResourceComposer
         var allowedConsumeOn = route.Mode == "procedure"
             ? new[] { "success", "partial_success", "failed_attempt" }
             : new[] { "success" };
-        var expectedConsumeOrder = allowedConsumeOn.Where(value =>
-            policy.ConsumeOn.Contains(value, StringComparer.Ordinal));
         var selectorKeys = new HashSet<string>(StringComparer.Ordinal);
         var valid = policy.ReserveBeforeResolution &&
                     policy.ConsumeOn.Length <= allowedConsumeOn.Length &&
@@ -937,7 +935,6 @@ internal static class MortalWoundTreatmentResourceComposer
                     policy.ConsumeOn.All(value => allowedConsumeOn.Contains(
                         value,
                         StringComparer.Ordinal)) &&
-                    policy.ConsumeOn.SequenceEqual(expectedConsumeOrder) &&
                     policy.RefundOn.SequenceEqual(new[]
                     {
                         "cancelled", "validation_failed", "rolled_back"

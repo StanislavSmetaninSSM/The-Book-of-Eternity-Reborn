@@ -250,6 +250,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void ResourcePreparation_ProcedurePreservesAuthoredConsumeOrder()
+    {
+        var source = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var before = source.Before.DeepClone().AsObject();
+        before["treatment"]!["routes"]![0]!["resourcePolicy"]!["consumeOn"] =
+            new JsonArray("failed_attempt", "success");
+        var scenario = source with { Before = before };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareProcedureCheckAuthorityInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var procedureAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(
+                InvokePreparedProcedureCheckAuthority(prepared)));
+
+        var result = MortalWoundTreatmentResourceComposer.PrepareProcedure(
+            prepared.AcceptedState,
+            prepared.Coordinates,
+            prepared.Before,
+            prepared.RequirementAuthority,
+            procedureAuthority);
+
+        Assert.True(result.IsValid, DescribeIssues(result.Issues));
+        Assert.Equal(
+            new[] { "failed_attempt", "success" },
+            Assert.IsType<MortalWoundTreatmentResourceReservationAuthority>(
+                result.Authority).Policy.ConsumeOn);
+    }
+
+    [Fact]
     public void ResourcePreparation_FirstCourseClaimsOnlyCommonAndOrdinalOneRequirements()
     {
         var scenario = CreateFirstCourseResourceScenario();
