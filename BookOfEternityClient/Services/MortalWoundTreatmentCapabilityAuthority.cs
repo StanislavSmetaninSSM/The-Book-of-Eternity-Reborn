@@ -97,7 +97,7 @@ internal sealed class MortalWoundTreatmentCapabilityProofResult
         ValidationIssue issue) => new(false, new[] { issue }, null);
 }
 
-internal sealed class MortalWoundTreatmentCapabilityProof
+internal sealed class MortalWoundTreatmentCapabilityProof : MortalWoundTreatmentModeAuthority
 {
     private MortalWoundTreatmentCapabilityProof(
         string snapshotToken,

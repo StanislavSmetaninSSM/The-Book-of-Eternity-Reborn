@@ -83,7 +83,7 @@ internal sealed class MortalWoundCourseStartAuthority
     }
 }
 
-internal sealed class MortalWoundCourseModeAuthority
+internal sealed class MortalWoundCourseModeAuthority : MortalWoundTreatmentModeAuthority
 {
     private const string CourseIdentityDomain =
         "book_of_eternity.mortal_wound_treatment.course_identity";
