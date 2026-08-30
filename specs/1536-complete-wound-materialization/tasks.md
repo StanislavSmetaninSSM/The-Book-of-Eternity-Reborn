@@ -1230,6 +1230,18 @@ entrypoints require no update for T065.
   `WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(binding,
   resolution, finalSceneText)` seam; it must not overload or replace T059's sole
   `ComposeAcceptedTransitionCommandRoot(...WoundTransitionRequest...)` method.
+  T067 Phase A closure (2026-08-31): complete through `a304e309`. Immutable authority
+  shells, private procedure-die/Fate reservation lifecycles, the shared legacy/treatment
+  Fate arbiter, typed reaction seam, and review hardening pass 37/37 owning plus 252/252
+  adjacent Focused controls. Final independent rereview returned Ready YES with zero
+  Critical/Important/Minor findings. The required Fast checkpoint exited non-zero only
+  on downstream intentional RED boundaries: one completed TRX recorded 1,286/1,315 PASS
+  with 29 failures, and a partial no-TRX shard emitted 13 more. All 42 observations were
+  classified against the unchanged pre-Phase-A tests and retained earlier Fast artifact:
+  13 require T067-B request sealing, one requires T069 deterioration authority, and 28
+  require T070 common wound composition. There was no timeout, duplicate test ID,
+  incomplete cleanup, or T067-A regression
+  (`20260831-082119-955-39532-0f6db1d2d1cd49899d249d60cae2728f-fast`).
 - [ ] T068 [US2] Implement the prerequisite two-stage item/resource authority before T067 resolver integration: closed policy validation with scoped/milestone `consume_requirement` selectors; `PrepareProcedure|PrepareCourse|PrepareGuaranteed` production overloads; deterministic lease/generation-scoped reservation IDs and restart-safe command/pending claim coalescing/aggregate non-overbooking; immutable policy/claim authority sealing against complete success witnesses; exact retry/conflict/release; and post-resolution `Finalize(resolution)` that consumes only selected full-quantity claims, releases tools/non-consuming results, and integrates cancellation/validation/rollback/replay without consuming an unmet/current/future course step in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`, and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
   T068 MUST accept complete course-mode authority (not bare time), seal matching course
   ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
