@@ -174,6 +174,48 @@ onto its current conflict side only while that exact actor is an unambiguous par
 Inspection, communication, help, treatment, withdrawal, surrender, negotiation, and
 the separate dissipation choice remain safe. A wound profile cannot block them.
 
+## wound_treatment_scene_authority_v1
+
+Mortal wound treatment may use three exact closed version-1 setting rows inside the
+exact current location's `customStates[]`:
+
+- `mortal_wound_treatment_facility` contains exactly `kind`, `schemaVersion=1`,
+  an exact `facilityId`, non-empty `displayName`, and boolean `available`;
+- `mortal_wound_treatment_environment` contains exactly `kind`, `schemaVersion=1`,
+  an exact `environmentId`, non-empty `displayName`, and exact setting-specific
+  `state`;
+- `mortal_wound_treatment_consent` contains exactly `kind`, `schemaVersion=1`,
+  exact `consentRef`, non-empty `displayName`, typed `providerKind/providerId`, typed
+  `targetKind/targetId`, and `status` equal to `granted` or `withdrawn`.
+
+Actor kinds are exactly `player`, `npc`, `combatant`, or `combatant_member`. The client
+rebinds realm, current location, actor identity, co-presence, lifecycle, and
+reachability from canonical state; do not author those fields in a scene row. IDs are
+exact and case/Unicode-confusable unique within their kind. Environment uniqueness is
+by `environmentId`, so two distinct environment IDs may share one exact `state`.
+There is no universal catalog of facilities, environments, medicines, or consent
+records: their exact IDs and environment states are setting-specific.
+
+An unavailable facility (`available=false`) and withdrawn consent
+(`status=withdrawn`) are valid retained negative evidence. Unrecognized custom states
+remain ordinary setting data and grant no treatment authority. A malformed recognized
+row rejects; it is not silently ignored. Reserved treatment rows are location-only:
+placing one in link `customStates[]` rejects the link.
+
+### Existing and new location authoring
+
+For a known location, author these rows only through
+`worldMapUpdates.locationUpdates[]`. Send the complete replacement `customStates[]`
+and preserve every unrelated sibling that must survive. Do not resend a known
+location through `currentLocationData` merely to change treatment rows.
+
+A same-turn new selected location carries its complete array in its ordinary complete
+`currentLocationData` creation envelope. A same-turn new remote location carries its
+complete array in its ordinary complete `worldMapUpdates.newLocations[]` envelope.
+The creation envelope still needs every field and materialization section required by
+Mortal Location Materialization v1. See
+`Examples/E_CLI_Wound_Materialization.txt` for all three routes and the link rejection.
+
 ## Validation, replay, and repair
 
 Unknown fields, wrong types, duplicate or stale decisions, over-maximum severity,

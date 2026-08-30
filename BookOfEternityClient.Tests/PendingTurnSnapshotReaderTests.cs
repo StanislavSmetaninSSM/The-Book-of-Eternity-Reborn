@@ -156,6 +156,355 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         Assert.Throws<KeyNotFoundException>(() => snapshot.ReadRequiredBytes(absentOptionalPath));
     }
 
+    [Fact]
+    public async Task ReadCurrent_RejectsSignedCaseVariantOptionalCoverageInsteadOfTreatingItAsAbsent()
+    {
+        const string optionalPath = "game_state/world/current_location.json";
+        const string caseVariant = "Game_state/world/current_location.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(optionalPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            var snapshotPath = manifest.Files[optionalPath];
+            var snapshotHash = manifest.SnapshotFileHashes[optionalPath];
+            manifest.Files.Remove(optionalPath);
+            manifest.SnapshotFileHashes.Remove(optionalPath);
+            manifest.Files = new Dictionary<string, string>(manifest.Files, StringComparer.Ordinal)
+            {
+                [caseVariant] = snapshotPath
+            };
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal)
+            {
+                [caseVariant] = snapshotHash
+            };
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new PendingTurnSnapshotPathSelection(
+                    new[] { RequiredPath },
+                    new[] { optionalPath }));
+        }
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_coverage_case_mismatch");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsSignedExactAndCaseVariantOptionalCoverage()
+    {
+        const string optionalPath = "game_state/world/current_location.json";
+        const string caseVariant = "game_state/world/Current_location.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(optionalPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            manifest.Files = new Dictionary<string, string>(manifest.Files, StringComparer.Ordinal);
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal);
+            manifest.Files[caseVariant] = manifest.Files[optionalPath];
+            manifest.SnapshotFileHashes[caseVariant] = manifest.SnapshotFileHashes[optionalPath];
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new PendingTurnSnapshotPathSelection(
+                    new[] { RequiredPath },
+                    new[] { optionalPath }));
+        }
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsSignedOptionalCoverageWhoseFileAndHashKeyCasingDisagree()
+    {
+        const string optionalPath = "game_state/world/current_location.json";
+        const string hashCaseVariant = "game_state/world/current_Location.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(optionalPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            var snapshotHash = manifest.SnapshotFileHashes[optionalPath];
+            manifest.SnapshotFileHashes.Remove(optionalPath);
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal)
+            {
+                [hashCaseVariant] = snapshotHash
+            };
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new PendingTurnSnapshotPathSelection(
+                    new[] { RequiredPath },
+                    new[] { optionalPath }));
+        }
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_coverage_case_mismatch");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsRawDuplicateManifestProperties()
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var path = _fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+        var json = File.ReadAllText(path);
+        var root = JsonNode.Parse(json)!.AsObject();
+        var filesJson = root["files"]!.ToJsonString();
+        var duplicate = $"\"files\":{filesJson},";
+        var insertion = json.IndexOf('{') + 1;
+        json = json.Insert(insertion, duplicate);
+        await _fs.WriteFileAtomicAsync(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            json);
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+    }
+
+    [Theory]
+    [InlineData("top_level")]
+    [InlineData("nested_files")]
+    public async Task ReadCurrent_RejectsRawCaseAliasManifestPropertiesBeforeDeserialization(string mutation)
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var path = _fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+        var root = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+        if (mutation == "top_level")
+        {
+            root["Files"] = root["files"]!.DeepClone();
+        }
+        else
+        {
+            var files = root["files"]!.AsObject();
+            files["Game_state/control/pending_mortal_wound_occurrences.json"] =
+                files[RequiredPath]!.DeepClone();
+        }
+        await _fs.WriteFileAtomicAsync(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            root.ToJsonString());
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+    }
+
+    [Theory]
+    [InlineData("files")]
+    [InlineData("snapshotFileHashes")]
+    public async Task ReadCurrent_RejectsNullManifestCoverageMapsWithoutThrowing(string property)
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var path = _fs.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
+        var root = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+        root[property] = null;
+        await _fs.WriteFileAtomicAsync(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            root.ToJsonString());
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsMoreThanSixtyFourActuallyEnumeratedRequestedPaths()
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var paths = Enumerable.Range(0, 65)
+            .Select(index => $"game_state/control/requested_{index}.json")
+            .ToArray();
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new MisreportedPathCollection(paths, reportedCount: 1));
+        }
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_required_paths_invalid");
+    }
+
+    [Theory]
+    [InlineData("duplicate")]
+    [InlineData("invalid")]
+    public async Task ReadCurrent_BoundsEveryYieldedRequestedPathBeforeDeduplicationOrValidation(string kind)
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var paths = Enumerable.Range(0, 65)
+            .Select(index => kind == "duplicate" ? RequiredPath : $" invalid-{index} ")
+            .ToArray();
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new MisreportedPathCollection(paths, reportedCount: 1));
+        }
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_required_paths_invalid" &&
+            issue.Actual == "count>64");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_AcceptsValidEnumerationDespiteNegativeReportedCount()
+    {
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+        {
+            result = PendingTurnSnapshotReader.ReadCurrent(
+                _fs,
+                lease,
+                new MisreportedPathCollection(new[] { RequiredPath }, reportedCount: -1));
+        }
+
+        Assert.True(result.Success);
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsUnrequestedSignedCaseConfusableCoverage()
+    {
+        const string coveredPath = "game_state/world/current_location.json";
+        const string confusablePath = "game_state/world/Current_location.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(coveredPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            manifest.Files = new Dictionary<string, string>(manifest.Files, StringComparer.Ordinal);
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal);
+            manifest.Files[confusablePath] = manifest.Files[coveredPath];
+            manifest.SnapshotFileHashes[confusablePath] = manifest.SnapshotFileHashes[coveredPath];
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
+    }
+
+    [Fact]
+    public async Task ReadCurrent_RejectsUnrequestedCrossMapCaseMismatch()
+    {
+        const string coveredPath = "game_state/world/current_location.json";
+        const string hashCaseVariant = "game_state/world/Current_location.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(coveredPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            var snapshotHash = manifest.SnapshotFileHashes[coveredPath];
+            manifest.SnapshotFileHashes.Remove(coveredPath);
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal)
+            {
+                [hashCaseVariant] = snapshotHash
+            };
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_coverage_case_mismatch");
+    }
+
+    [Theory]
+    [InlineData("missing_hash")]
+    [InlineData("extra_hash")]
+    public async Task ReadCurrent_RejectsUnrequestedAsymmetricGlobalCoverage(string mutation)
+    {
+        const string coveredPath = "game_state/world/current_location.json";
+        const string extraPath = "game_state/world/unrequested_extra.json";
+        await _fs.WriteFileAtomicAsync(RequiredPath, "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await _fs.WriteFileAtomicAsync(coveredPath, "{\"locationId\":\"loc_reader_test\"}");
+        await PrepareAsync();
+        await RewriteSignedManifestAsync(manifest =>
+        {
+            manifest.SnapshotFileHashes = new Dictionary<string, string>(
+                manifest.SnapshotFileHashes,
+                StringComparer.Ordinal);
+            if (mutation == "missing_hash")
+            {
+                manifest.SnapshotFileHashes.Remove(coveredPath);
+            }
+            else
+            {
+                manifest.SnapshotFileHashes[extraPath] = manifest.SnapshotFileHashes[RequiredPath];
+            }
+        });
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_coverage_case_mismatch");
+    }
+
     [Theory]
     [InlineData("missing_coverage")]
     [InlineData("stale_context")]
@@ -390,6 +739,43 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         return manifest;
     }
 
+    private async Task RewriteSignedManifestAsync(
+        Action<LiveTurnPendingSnapshotManifest> mutate)
+    {
+        var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+            File.ReadAllText(_fs.ResolvePath(
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath)),
+            LiveTurnPreparationService.ManifestJsonOptions)!;
+        mutate(manifest);
+        manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+            manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            static value => value.ManifestPayloadHash,
+            static (value, hash) => value.ManifestPayloadHash = hash);
+        var authorityJson = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+            manifest,
+            LiveTurnPreparationService.ManifestHashJsonOptions,
+            static value => value.ManifestPayloadHash,
+            static (value, hash) => value.ManifestPayloadHash = hash,
+            static value => value.SessionId,
+            static value => value.RequestId,
+            static value => value.TurnNumber,
+            static value => value.Files,
+            static value => value.SnapshotFileHashes,
+            static value => value.ClientOwnedValidationHashes,
+            static value => value.RollbackBaselineFiles,
+            static value => value.SourceLabel,
+            static value => value.RollbackBackups,
+            _fs.ReadFileBytesSync,
+            hashSnapshotBytesExactly: true);
+        await _fs.WriteFileAtomicAsync(
+            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+            JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+        await _fs.WriteFileAtomicAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            authorityJson);
+    }
+
     private Task WriteContextAsync(
         string path,
         string sessionId,
@@ -442,6 +828,22 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
             throwOnError: false,
             ignoreCase: false) ??
         throw new Xunit.Sdk.XunitException($"T064 requires {name}.");
+
+    private sealed class MisreportedPathCollection : IReadOnlyCollection<string>
+    {
+        private readonly IReadOnlyList<string> _paths;
+
+        internal MisreportedPathCollection(IReadOnlyList<string> paths, int reportedCount)
+        {
+            _paths = paths;
+            Count = reportedCount;
+        }
+
+        public int Count { get; }
+        public IEnumerator<string> GetEnumerator() => _paths.GetEnumerator();
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() =>
+            GetEnumerator();
+    }
 
     public void Dispose()
     {

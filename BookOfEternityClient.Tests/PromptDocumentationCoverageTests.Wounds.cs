@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
@@ -108,6 +109,116 @@ public sealed partial class PromptDocumentationCoverageTests
                      "acquisitionNarration",
                      "ordinary wound is optional",
                      "guaranteed"
+                 })
+        {
+            Assert.Contains(required, daemon, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
+    public void WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes()
+    {
+        var contract = ReadRepoFile(
+            "OtherGuides",
+            "Wound_Materialization_Contract.md");
+        var example = ReadRepoFile(
+            "Examples",
+            "E_CLI_Wound_Materialization.txt");
+        var manifest = ReadRepoFile(
+            "Examples",
+            "example_validation_manifest.json");
+        var daemon = ReadRepoFile(
+            "BookOfEternityClient",
+            "game_master_daemon.ps1");
+
+        foreach (var document in new[] { contract, example })
+        {
+            foreach (var required in new[]
+                     {
+                         "mortal_wound_treatment_facility",
+                         "mortal_wound_treatment_environment",
+                         "mortal_wound_treatment_consent",
+                         "worldMapUpdates.locationUpdates[]",
+                         "complete replacement",
+                         "preserve every unrelated",
+                         "currentLocationData",
+                         "worldMapUpdates.newLocations[]",
+                         "link `customStates[]`",
+                         "no universal catalog"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        foreach (var marker in new[]
+                 {
+                     "wound_treatment_scene_authority_v1",
+                     "wound_treatment_existing_location_update_v1",
+                     "wound_treatment_new_selected_location_v1",
+                     "wound_treatment_new_remote_location_v1",
+                     "wound_treatment_link_rejection_v1"
+                 })
+        {
+            Assert.Contains(marker, example, StringComparison.Ordinal);
+            Assert.Contains(marker, manifest, StringComparison.Ordinal);
+        }
+
+        static JsonNode ReadWorkedJson(string document, string marker)
+        {
+            var match = Regex.Match(
+                document,
+                Regex.Escape(marker) + @".*?```json\s*(?<json>.*?)```",
+                RegexOptions.Singleline | RegexOptions.CultureInvariant);
+            Assert.True(match.Success, $"Missing JSON block for {marker}.");
+            return Assert.IsAssignableFrom<JsonNode>(
+                JsonNode.Parse(match.Groups["json"].Value));
+        }
+
+        static void AssertValidLocationStates(JsonNode states, string marker)
+        {
+            using var parsed = JsonDocument.Parse(states.ToJsonString());
+            Assert.Empty(MortalLocationCustomStateContract.ValidateLocation(
+                parsed.RootElement,
+                marker + ".customStates"));
+        }
+
+        AssertValidLocationStates(
+            ReadWorkedJson(example, "wound_treatment_scene_authority_v1"),
+            "wound_treatment_scene_authority_v1");
+        AssertValidLocationStates(
+            ReadWorkedJson(example, "wound_treatment_existing_location_update_v1")!
+                ["worldMapUpdates"]!["locationUpdates"]![0]!["customStates"]!,
+            "wound_treatment_existing_location_update_v1");
+        AssertValidLocationStates(
+            ReadWorkedJson(example, "wound_treatment_new_selected_location_v1")!
+                ["currentLocationData"]!["customStates"]!,
+            "wound_treatment_new_selected_location_v1");
+        AssertValidLocationStates(
+            ReadWorkedJson(example, "wound_treatment_new_remote_location_v1")!
+                ["worldMapUpdates"]!["newLocations"]![0]!["customStates"]!,
+            "wound_treatment_new_remote_location_v1");
+        var invalidLinkStates = ReadWorkedJson(
+            example,
+            "wound_treatment_link_rejection_v1")!
+            ["worldMapUpdates"]!["newLinks"]![0]!["customStates"]!;
+        using (var parsed = JsonDocument.Parse(invalidLinkStates.ToJsonString()))
+        {
+            Assert.Contains(
+                MortalLocationCustomStateContract.ValidateLink(
+                    parsed.RootElement,
+                    "wound_treatment_link_rejection_v1.customStates"),
+                issue => issue.Code == "mortal_wound_treatment_scene_state_wrong_container");
+        }
+
+        foreach (var required in new[]
+                 {
+                     "WoundTreatmentExamplePath",
+                     "Examples\\E_CLI_Wound_Materialization.txt",
+                     "wound_treatment_scene_authority_v1",
+                     "Wound_Materialization_Contract.md",
+                     "E_CLI_Wound_Materialization.txt",
+                     "CompactMortalLocationTemplatePath"
                  })
         {
             Assert.Contains(required, daemon, StringComparison.OrdinalIgnoreCase);

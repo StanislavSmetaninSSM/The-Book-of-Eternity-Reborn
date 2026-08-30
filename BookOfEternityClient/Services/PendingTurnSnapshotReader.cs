@@ -39,18 +39,23 @@ internal static class PendingTurnSnapshotReader
         {
             var manifestJson = fs.ReadFileSync(
                 LiveTurnPreparationService.PendingTurnSnapshotManifestPath);
-            manifest = string.IsNullOrWhiteSpace(manifestJson)
-                ? null
-                : JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+            if (string.IsNullOrWhiteSpace(manifestJson) || HasDuplicateJsonProperties(manifestJson))
+            {
+                manifest = null;
+            }
+            else
+            {
+                manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
                     manifestJson,
                     LiveTurnPreparationService.ManifestJsonOptions);
+            }
         }
         catch (JsonException)
         {
             manifest = null;
         }
 
-        if (manifest is null)
+        if (manifest is null || manifest.Files is null || manifest.SnapshotFileHashes is null)
         {
             Add(
                 issues,
@@ -59,6 +64,10 @@ internal static class PendingTurnSnapshotReader
                 "missing or malformed pending-turn manifest");
             return Failure(issues);
         }
+
+        ValidateNoCaseConfusableCoverage(selection, manifest, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
 
         var authorityJson = fs.ReadFileSync(PendingTurnSnapshotAuthority.AuthorityPath);
         if (!PendingTurnSnapshotAuthority.TryValidateManifestForReaderAuthority(
@@ -241,17 +250,7 @@ internal static class PendingTurnSnapshotReader
         IReadOnlyCollection<string> paths,
         ICollection<ValidationIssue> issues)
     {
-        if (paths.Count is < 1 or > MaximumRequiredPaths)
-        {
-            Add(
-                issues,
-                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
-                "pending_turn_snapshot_reader_required_paths_invalid",
-                $"count={paths.Count}");
-            return PendingTurnSnapshotValidatedPathSelection.Empty;
-        }
-
-        var result = new List<string>(paths.Count);
+        var result = new List<string>();
         var optional = new HashSet<string>(StringComparer.Ordinal);
         if (paths is PendingTurnSnapshotPathSelection pathSelection)
         {
@@ -259,8 +258,19 @@ internal static class PendingTurnSnapshotReader
                 optional.Add(path);
         }
         var exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var yieldedCount = 0;
         foreach (var path in paths)
         {
+            yieldedCount++;
+            if (yieldedCount > MaximumRequiredPaths)
+            {
+                Add(
+                    issues,
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    "pending_turn_snapshot_reader_required_paths_invalid",
+                    $"count>{MaximumRequiredPaths}");
+                return PendingTurnSnapshotValidatedPathSelection.Empty;
+            }
             if (string.IsNullOrWhiteSpace(path) ||
                 !string.Equals(path, path.Trim(), StringComparison.Ordinal) ||
                 path.Contains('\\') ||
@@ -276,6 +286,15 @@ internal static class PendingTurnSnapshotReader
             }
             result.Add(path);
         }
+        if (result.Count == 0)
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "pending_turn_snapshot_reader_required_paths_invalid",
+                "count=0");
+            return PendingTurnSnapshotValidatedPathSelection.Empty;
+        }
         return new PendingTurnSnapshotValidatedPathSelection(
             Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),
             Array.AsReadOnly(result.Where(optional.Contains).ToArray()));
@@ -290,35 +309,160 @@ internal static class PendingTurnSnapshotReader
             selection.RequiredLogicalPaths.Count + selection.OptionalLogicalPaths.Count);
         foreach (var path in selection.RequiredLogicalPaths)
         {
-            if (!manifest.Files.ContainsKey(path) ||
-                !manifest.SnapshotFileHashes.ContainsKey(path))
+            if (!TryResolveExactCoverage(path, manifest, optional: false, issues, out var selected))
             {
-                Add(
-                    issues,
-                    path,
-                    "pending_turn_snapshot_reader_coverage_missing",
-                    "required logical path is absent or ambiguous in signed snapshot coverage");
                 continue;
             }
-            result.Add(path);
+            if (selected)
+                result.Add(path);
         }
         foreach (var path in selection.OptionalLogicalPaths)
         {
-            var hasFile = manifest.Files.ContainsKey(path);
-            var hasHash = manifest.SnapshotFileHashes.ContainsKey(path);
-            if (hasFile != hasHash)
+            if (!TryResolveExactCoverage(path, manifest, optional: true, issues, out var selected))
+                continue;
+            if (selected)
+                result.Add(path);
+        }
+        return Array.AsReadOnly(result.ToArray());
+    }
+
+    private static void ValidateNoCaseConfusableCoverage(
+        PendingTurnSnapshotValidatedPathSelection selection,
+        LiveTurnPendingSnapshotManifest manifest,
+        ICollection<ValidationIssue> issues)
+    {
+        ValidateNoCaseConfusableCoverage(manifest.Files.Keys, issues);
+        ValidateNoCaseConfusableCoverage(manifest.SnapshotFileHashes.Keys, issues);
+        var fileKeys = manifest.Files.Keys.ToHashSet(StringComparer.Ordinal);
+        var hashKeys = manifest.SnapshotFileHashes.Keys.ToHashSet(StringComparer.Ordinal);
+        if (!fileKeys.SetEquals(hashKeys))
+        {
+            foreach (var path in fileKeys.Except(hashKeys, StringComparer.Ordinal)
+                         .Concat(hashKeys.Except(fileKeys, StringComparer.Ordinal)))
             {
                 Add(
                     issues,
                     path,
-                    "pending_turn_snapshot_reader_coverage_missing",
-                    "optional logical path has incomplete signed snapshot coverage");
+                    "pending_turn_snapshot_reader_coverage_case_mismatch",
+                    "signed snapshot file and hash coverage keys do not agree exactly");
+            }
+        }
+        if (issues.Count != 0)
+            return;
+
+        foreach (var path in selection.RequiredLogicalPaths.Concat(selection.OptionalLogicalPaths))
+        {
+            if (manifest.Files.Keys.Any(key =>
+                    string.Equals(key, path, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(key, path, StringComparison.Ordinal)) ||
+                manifest.SnapshotFileHashes.Keys.Any(key =>
+                    string.Equals(key, path, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(key, path, StringComparison.Ordinal)))
+            {
+                Add(
+                    issues,
+                    path,
+                    "pending_turn_snapshot_reader_coverage_case_mismatch",
+                    "signed snapshot coverage contains a confusable path key");
+            }
+        }
+    }
+
+    private static void ValidateNoCaseConfusableCoverage(
+        IEnumerable<string> paths,
+        ICollection<ValidationIssue> issues)
+    {
+        var exact = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var path in paths)
+        {
+            if (exact.TryGetValue(path, out var previous) &&
+                !string.Equals(previous, path, StringComparison.Ordinal))
+            {
+                Add(
+                    issues,
+                    path,
+                    "pending_turn_snapshot_reader_coverage_case_mismatch",
+                    $"signed snapshot coverage contains confusable keys '{previous}' and '{path}'");
                 continue;
             }
-            if (hasFile)
-                result.Add(path);
+            exact[path] = path;
         }
-        return Array.AsReadOnly(result.ToArray());
+    }
+
+    private static bool TryResolveExactCoverage(
+        string path,
+        LiveTurnPendingSnapshotManifest manifest,
+        bool optional,
+        ICollection<ValidationIssue> issues,
+        out bool selected)
+    {
+        selected = false;
+        var fileKeys = manifest.Files.Keys
+            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        var hashKeys = manifest.SnapshotFileHashes.Keys
+            .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))
+            .ToArray();
+        var fileExact = fileKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));
+        var hashExact = hashKeys.Count(key => string.Equals(key, path, StringComparison.Ordinal));
+
+        if (fileKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)) ||
+            hashKeys.Any(key => !string.Equals(key, path, StringComparison.Ordinal)))
+        {
+            Add(
+                issues,
+                path,
+                "pending_turn_snapshot_reader_coverage_case_mismatch",
+                "signed snapshot coverage contains a confusable path key");
+            return false;
+        }
+
+        if (fileExact == 1 && hashExact == 1)
+        {
+            selected = true;
+            return true;
+        }
+
+        if (optional && fileExact == 0 && hashExact == 0)
+            return true;
+
+        Add(
+            issues,
+            path,
+            "pending_turn_snapshot_reader_coverage_missing",
+            optional
+                ? "optional logical path has incomplete signed snapshot coverage"
+                : "required logical path is absent or ambiguous in signed snapshot coverage");
+        return false;
+    }
+
+    private static bool HasDuplicateJsonProperties(string json)
+    {
+        using var document = JsonDocument.Parse(json);
+        return HasDuplicateJsonProperties(document.RootElement);
+    }
+
+    private static bool HasDuplicateJsonProperties(JsonElement element)
+    {
+        if (element.ValueKind == JsonValueKind.Object)
+        {
+            var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var property in element.EnumerateObject())
+            {
+                if (!names.Add(property.Name) || HasDuplicateJsonProperties(property.Value))
+                    return true;
+            }
+        }
+        else if (element.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var item in element.EnumerateArray())
+            {
+                if (HasDuplicateJsonProperties(item))
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private static PendingTurnSnapshotContextRead ReadCurrentContext(

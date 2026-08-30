@@ -24,18 +24,18 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     private const string CurrentLocationPath = "game_state/world/current_location.json";
     private const string PlayerActiveSkillsPath = "game_state/player/skills_active.json";
     private const string PlayerPassiveSkillsPath = "game_state/player/skills_passive.json";
+    private const string PlayerSkillMasteryPath = "game_state/player/skill_mastery.json";
     private const string NpcCorePath = "game_state/npcs/npc_core.json";
     private const string PlayerInventoryPath = "game_state/inventory/items.json";
     private const string ItemIdentityPath = "game_state/inventory/item_identity_index.json";
     private const string RegularQuestsPath = "game_state/quests/regular_quests.json";
-    private const string SoulQuestsPath = "game_state/quests/soul_quests.json";
 
     private static readonly string[] OptionalAuthorityPaths =
+    new[]
     {
         PlayerInventoryPath,
         ItemIdentityPath,
         RegularQuestsPath,
-        SoulQuestsPath,
         WoundCarrierCatalog.PlayerPath,
         WoundCarrierCatalog.NpcPath,
         WoundCarrierCatalog.EnemiesPath,
@@ -48,7 +48,10 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         EffectCarrierCatalog.AfterlifeProfilesPath,
         EffectCarrierCatalog.SpiritualConflictPath,
         EffectIdentityState.StatePath
-    };
+    }
+    .Concat(CanonicalResourceOwnerAuthorityComposer.SourceAuthorityPaths)
+    .Distinct(StringComparer.Ordinal)
+    .ToArray();
 
     private readonly FileSystemManager _fileSystem;
     private readonly FileSystemManager.CanonicalWriteLease _writeLease;
@@ -205,6 +208,15 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     {
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         var issues = new List<ValidationIssue>();
+        if (!context.HasValidParserProvenance())
+        {
+            issues.Add(Issue(
+                context.SourcePath,
+                "mortal_wound_treatment_accepted_state_context_provenance_invalid",
+                "exact output of MortalWoundTreatmentAuthority.ParseContext",
+                "unsealed, copied, or modified context"));
+            return Failure(issues);
+        }
         if (context.SchemaVersion != 1)
         {
             issues.Add(Issue(
@@ -346,25 +358,24 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             return Failure(issues);
 
         var playerCapabilities = ParsePlayerCapabilities(roots, issues);
-        ValidateStrictCanonicalSourceContracts(context, roots, issues);
         var npcCapabilities = ParseNpcCapabilities(roots[NpcCorePath], issues);
         if (issues.Count != 0)
             return Failure(issues);
 
-        var actors = ComposeActors(
+        var canonical = MortalWoundTreatmentAcceptedCanonicalProjection.Compose(
             context,
+            signed,
             roots,
-            woundCatalog,
             playerCapabilities,
-            npcCapabilities,
-            issues);
-        var locations = ComposeLocations(roots[CurrentLocationPath], issues);
-        ValidateSelectedCoordinates(context, actors, locations, issues);
-
-        var items = ComposeItems(roots, issues);
-        var resources = ComposeResources(roots[CurrentLocationPath], issues);
-        var facilities = ComposeFacilities(roots[CurrentLocationPath], issues);
-        var quests = ComposeQuests(roots, issues);
+            npcCapabilities);
+        AddIssues(issues, canonical.Issues);
+        var actors = canonical.Actors;
+        var locations = canonical.Locations;
+        var items = canonical.Items;
+        var resources = canonical.Resources;
+        var facilities = canonical.Facilities;
+        var quests = canonical.Quests;
+        var environments = canonical.Environments;
         var effectMechanics = ComposeEffectMechanics(roots, issues);
         var effects = ComposeRequirementEffects(effectMechanics);
         if (issues.Count != 0)
@@ -381,7 +392,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             ["locations"] = new JsonArray(locations.Select(ToJson).Cast<JsonNode?>().ToArray()),
             ["quests"] = new JsonArray(quests.Select(ToJson).Cast<JsonNode?>().ToArray()),
             ["effects"] = new JsonArray(effects.Select(ToJson).Cast<JsonNode?>().ToArray()),
-            ["environments"] = new JsonArray()
+            ["environments"] = new JsonArray(environments.Select(ToJson).Cast<JsonNode?>().ToArray())
         };
         var parsedSnapshot = MortalWoundTreatmentAuthority.ParseSnapshot(
             requirementProjection.ToJsonString(),
@@ -432,7 +443,9 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
                 new JsonArray(locations.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(
-                new JsonArray(facilities.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())));
+                new JsonArray(facilities.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                new JsonArray(environments.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())));
         var playerCatalogFingerprint = ComputeCapabilityCatalogFingerprint(playerCapabilities);
         var npcCatalogFingerprint = ComputeCapabilityCatalogFingerprint(npcCapabilities);
         var skillSourceFingerprint = Hash(
@@ -450,7 +463,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     facilities,
                     locations,
                     quests,
-                    effects)));
+                    effects,
+                    environments)));
         var acceptedStateFingerprint = Hash(
             "mortal_wound_treatment_accepted_state",
             "1",
@@ -555,9 +569,17 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         {
             WorldTimePath,
             CurrentLocationPath,
+            MortalLocationMaterializationContract.WorldMapPath,
+            MortalLocationIdentityState.StatePath,
             PlayerActiveSkillsPath,
             PlayerPassiveSkillsPath,
+            PlayerSkillMasteryPath,
             NpcCorePath,
+            ItemIdentityPath,
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             WoundIdentityState.StatePath,
             WoundHistoryState.HistoryPath
         };
@@ -714,179 +736,25 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         return result.Sources;
     }
 
-    private static void ValidateStrictCanonicalSourceContracts(
-        MortalWoundTreatmentAuthority.Context context,
-        IReadOnlyDictionary<string, JsonObject> roots,
-        ICollection<ValidationIssue> issues)
-    {
-        var npcRoot = roots[NpcCorePath];
-        foreach (var section in new[] { "NPCsInScene", "NPCs", "UpdateNPCs" })
-        {
-            if (npcRoot[section] is null)
-                continue;
-            if (npcRoot[section] is not JsonArray rows)
-            {
-                issues.Add(Issue(
-                    NpcCorePath + "." + section,
-                    "mortal_wound_treatment_accepted_state_collection_invalid",
-                    "one canonical array of strict NPC objects",
-                    Describe(npcRoot[section])));
-                continue;
-            }
-            for (var index = 0; index < rows.Count; index++)
-            {
-                if (rows[index] is not JsonObject npc)
-                {
-                    issues.Add(Issue(
-                        NpcCorePath + $".{section}[{index}]",
-                        "mortal_wound_treatment_accepted_state_collection_row_invalid",
-                        "one strict NPC object row",
-                        Describe(rows[index])));
-                    continue;
-                }
-                if (!TryNpcId(npc, out var npcId) ||
-                    !string.Equals(context.ProviderKind, "npc", StringComparison.Ordinal) ||
-                    !string.Equals(context.ProviderId, npcId, StringComparison.Ordinal))
-                {
-                    continue;
-                }
-                ValidateRequiredBoolean(
-                    npc,
-                    "active",
-                    NpcCorePath + $".{section}[{index}]",
-                    issues);
-                ValidateRequiredBoolean(
-                    npc,
-                    "reachable",
-                    NpcCorePath + $".{section}[{index}]",
-                    issues);
-                ValidateRequiredIdentifier(
-                    npc,
-                    "lifecycle",
-                    NpcCorePath + $".{section}[{index}]",
-                    issues);
-            }
-        }
-
-        var location = roots[CurrentLocationPath];
-        ValidateStrictObjectRows(
-            location,
-            "presentActors",
-            CurrentLocationPath,
-            issues,
-            static (row, path, destination) =>
-            {
-                ValidateRequiredIdentifier(row, "actorKind", path, destination);
-                ValidateRequiredIdentifier(row, "actorId", path, destination);
-            });
-        ValidateStrictObjectRows(
-            location,
-            "resources",
-            CurrentLocationPath,
-            issues,
-            static (row, path, destination) =>
-            {
-                ValidateRequiredIdentifier(row, "resourceRef", path, destination);
-                ValidateRequiredIdentifier(row, "realm", path, destination);
-                ValidateRequiredIdentifier(row, "ownerKind", path, destination);
-                ValidateRequiredIdentifier(row, "ownerId", path, destination);
-                ValidateRequiredNonNegativeInt32(row, "currentValue", path, destination);
-                ValidateRequiredNonNegativeInt32(row, "availableValue", path, destination);
-                ValidateRequiredIdentifier(row, "reservationState", path, destination);
-                ValidateRequiredIdentifier(row, "lifecycle", path, destination);
-                ValidateRequiredBoolean(row, "active", path, destination);
-            });
-    }
-
-    private static void ValidateStrictObjectRows(
-        JsonObject root,
-        string field,
-        string sourcePath,
-        ICollection<ValidationIssue> issues,
-        Action<JsonObject, string, ICollection<ValidationIssue>> validateRow)
-    {
-        if (root[field] is not JsonArray rows)
-        {
-            issues.Add(Issue(
-                sourcePath + "." + field,
-                "mortal_wound_treatment_accepted_state_collection_invalid",
-                "one canonical array of strict object rows",
-                Describe(root[field])));
-            return;
-        }
-        for (var index = 0; index < rows.Count; index++)
-        {
-            var path = sourcePath + $".{field}[{index}]";
-            if (rows[index] is not JsonObject row)
-            {
-                issues.Add(Issue(
-                    path,
-                    "mortal_wound_treatment_accepted_state_collection_row_invalid",
-                    "one strict canonical object row",
-                    Describe(rows[index])));
-                continue;
-            }
-            validateRow(row, path, issues);
-        }
-    }
-
-    private static void ValidateRequiredIdentifier(
-        JsonObject row,
-        string field,
-        string path,
-        ICollection<ValidationIssue> issues)
-    {
-        if (TryString(row, field, out _))
-            return;
-        issues.Add(Issue(
-            path + "." + field,
-            "mortal_wound_treatment_accepted_state_field_invalid",
-            "one explicit exact identifier",
-            Describe(row[field])));
-    }
-
-    private static void ValidateRequiredBoolean(
-        JsonObject row,
-        string field,
-        string path,
-        ICollection<ValidationIssue> issues)
-    {
-        if (row[field] is JsonValue value && value.TryGetValue<bool>(out _))
-            return;
-        issues.Add(Issue(
-            path + "." + field,
-            "mortal_wound_treatment_accepted_state_field_invalid",
-            "one explicit boolean",
-            Describe(row[field])));
-    }
-
-    private static void ValidateRequiredNonNegativeInt32(
-        JsonObject row,
-        string field,
-        string path,
-        ICollection<ValidationIssue> issues)
-    {
-        if (row[field] is JsonValue value &&
-            value.TryGetValue<int>(out var parsed) &&
-            parsed >= 0)
-        {
-            return;
-        }
-        issues.Add(Issue(
-            path + "." + field,
-            "mortal_wound_treatment_accepted_state_field_invalid",
-            "one explicit non-negative Int32",
-            Describe(row[field])));
-    }
-
     private static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
         ParseNpcCapabilities(JsonObject npcRoot, ICollection<ValidationIssue> issues)
     {
         var result = new List<MortalWoundTreatmentCapabilitySkillSource>();
-        foreach (var npc in EnumerateNpcs(npcRoot))
+        var canonical = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
-            if (!TryNpcId(npc, out var npcId))
+            if (npcRoot[section] is not JsonArray rows)
                 continue;
+            foreach (var npc in rows.OfType<JsonObject>())
+            {
+                if (!GuardianPolicyContracts.TryResolveStrictPermanentNpcId(npc, out var npcId) ||
+                    canonical.ContainsKey(npcId))
+                    continue;
+                canonical.Add(npcId, npc);
+            }
+        }
+        foreach (var (npcId, npc) in canonical)
+        {
             var active = new JsonObject
             {
                 ["activeSkills"] = npc["activeSkills"]?.DeepClone() ?? new JsonArray()
@@ -904,432 +772,6 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                 NpcCorePath + $".npc[{npcId}].passiveSkills");
             AddIssues(issues, parsed.Issues);
             result.AddRange(parsed.Sources);
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Actor> ComposeActors(
-        MortalWoundTreatmentAuthority.Context context,
-        IReadOnlyDictionary<string, JsonObject> roots,
-        WoundCarrierCatalog woundCatalog,
-        IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> playerCapabilities,
-        IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> npcCapabilities,
-        ICollection<ValidationIssue> issues)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Actor>();
-        var playerSkills = ComposeSkills(
-            roots[PlayerActiveSkillsPath],
-            "activeSkillChanges",
-            roots[PlayerPassiveSkillsPath],
-            "passiveSkillChanges");
-        result.Add(new MortalWoundTreatmentAuthority.Actor(
-            "player",
-            "player_current",
-            "Player",
-            "mortal_world",
-            context.CurrentLocationId,
-            "active",
-            true,
-            true,
-            playerSkills,
-            ComposeCapabilities(playerCapabilities),
-            Array.Empty<MortalWoundTreatmentAuthority.Consent>()));
-
-        foreach (var npc in EnumerateNpcs(roots[NpcCorePath]))
-        {
-            if (!TryNpcId(npc, out var npcId))
-            {
-                issues.Add(Issue(
-                    NpcCorePath,
-                    "mortal_wound_treatment_accepted_state_actor_invalid",
-                    "one exact NPC identity on every selected source row",
-                    Describe(npc)));
-                continue;
-            }
-            result.Add(new MortalWoundTreatmentAuthority.Actor(
-                "npc",
-                npcId,
-                ReadText(npc, "displayName") ?? npcId,
-                ReadText(npc, "realm") ?? "mortal_world",
-                ReadText(npc, "currentLocationId") ?? string.Empty,
-                ReadText(npc, "lifecycle") ?? "active",
-                ReadBoolean(npc, "active", true),
-                ReadBoolean(npc, "reachable", true),
-                ComposeSkills(npc, "activeSkills", npc, "passiveSkills"),
-                ComposeCapabilities(npcCapabilities.Where(source =>
-                    string.Equals(source.OwnerId, npcId, StringComparison.Ordinal)).ToArray()),
-                ComposeConsents(npc, issues)));
-        }
-
-        var combatCoordinates = woundCatalog.Occurrences
-            .Select(static occurrence => occurrence.Coordinate)
-            .Where(static coordinate => coordinate.OwnerKind is "combatant" or "combatant_member")
-            .Distinct()
-            .ToArray();
-        foreach (var coordinate in combatCoordinates)
-        {
-            result.Add(new MortalWoundTreatmentAuthority.Actor(
-                coordinate.OwnerKind,
-                coordinate.OwnerId,
-                coordinate.OwnerId,
-                coordinate.Realm,
-                context.CurrentLocationId,
-                "active",
-                true,
-                true,
-                Array.Empty<MortalWoundTreatmentAuthority.Skill>(),
-                Array.Empty<MortalWoundTreatmentAuthority.Capability>(),
-                Array.Empty<MortalWoundTreatmentAuthority.Consent>()));
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Skill> ComposeSkills(
-        JsonObject activeRoot,
-        string activeArray,
-        JsonObject passiveRoot,
-        string passiveArray)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Skill>();
-        foreach (var skill in EnumerateObjects(activeRoot[activeArray])
-                     .Concat(EnumerateObjects(passiveRoot[passiveArray])))
-        {
-            var lifecycle = ReadText(skill, "lifecycle") ?? "active";
-            var active = ReadBoolean(skill, "active", true);
-            var tier = ReadInt32(skill, "tier", ReadInt32(skill, "masteryLevel", 0));
-            var display = ReadText(skill, "displayName") ??
-                ReadText(skill, "skillName") ?? "Skill";
-            if (TryString(skill, "skillId", out var skillId))
-                result.Add(new MortalWoundTreatmentAuthority.Skill(
-                    skillId,
-                    display,
-                    tier,
-                    lifecycle,
-                    active));
-            foreach (var capability in EnumerateObjects(
-                         skill["mortalWoundTreatmentCapabilities"]))
-            {
-                if (TryString(capability, "capabilityRef", out var capabilityRef))
-                {
-                    result.Add(new MortalWoundTreatmentAuthority.Skill(
-                        capabilityRef,
-                        display,
-                        tier,
-                        lifecycle,
-                        active));
-                }
-            }
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Capability>
-        ComposeCapabilities(
-            IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> sources) =>
-        sources.SelectMany(source => source.Capabilities.Select(capability =>
-                new MortalWoundTreatmentAuthority.Capability(
-                    capability.CapabilityRef,
-                    source.DisplayName,
-                    source.Lifecycle,
-                    source.Active)))
-            .ToArray();
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Consent> ComposeConsents(
-        JsonObject actor,
-        ICollection<ValidationIssue> issues)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Consent>();
-        var index = 0;
-        foreach (var consent in EnumerateObjects(actor["consents"]))
-        {
-            var path = NpcCorePath + $".consents[{index++}]";
-            if (!TryString(consent, "consentRef", out var consentRef) ||
-                !TryString(consent, "providerKind", out var providerKind) ||
-                !TryString(consent, "providerId", out var providerId) ||
-                !TryString(consent, "targetKind", out var targetKind) ||
-                !TryString(consent, "targetId", out var targetId) ||
-                !TryString(consent, "status", out var status) ||
-                status is not ("granted" or "withdrawn"))
-            {
-                issues.Add(Issue(
-                    path,
-                    "mortal_wound_treatment_accepted_state_consent_invalid",
-                    "one structurally complete current consent row",
-                    Describe(consent)));
-                continue;
-            }
-            result.Add(new MortalWoundTreatmentAuthority.Consent(
-                consentRef,
-                ReadText(consent, "displayName") ?? consentRef,
-                providerKind,
-                providerId,
-                targetKind,
-                targetId,
-                status,
-                ReadText(consent, "lifecycle") ?? "active",
-                ReadBoolean(consent, "active", true)));
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Location> ComposeLocations(
-        JsonObject root,
-        ICollection<ValidationIssue> issues)
-    {
-        if (!TryString(root, "locationId", out var locationId))
-        {
-            issues.Add(Issue(
-                CurrentLocationPath + ".locationId",
-                "mortal_wound_treatment_accepted_state_location_invalid",
-                "one exact current location identity",
-                Describe(root["locationId"])));
-            return Array.Empty<MortalWoundTreatmentAuthority.Location>();
-        }
-        var present = new List<MortalWoundTreatmentAuthority.ActorCoordinate>();
-        foreach (var actor in EnumerateObjects(root["presentActors"]))
-        {
-            if (TryString(actor, "actorKind", out var actorKind) &&
-                TryString(actor, "actorId", out var actorId))
-            {
-                present.Add(new MortalWoundTreatmentAuthority.ActorCoordinate(
-                    actorKind,
-                    actorId));
-            }
-            else
-            {
-                issues.Add(Issue(
-                    CurrentLocationPath + ".presentActors",
-                    "mortal_wound_treatment_accepted_state_presence_invalid",
-                    "closed exact actor coordinates",
-                    Describe(actor)));
-            }
-        }
-        return new[]
-        {
-            new MortalWoundTreatmentAuthority.Location(
-                locationId,
-                ReadText(root, "name") ?? ReadText(root, "displayName") ?? locationId,
-                ReadText(root, "realm") ?? "mortal_world",
-                ReadText(root, "lifecycle") ?? "active",
-                ReadBoolean(root, "active", true),
-                present)
-        };
-    }
-
-    private static void ValidateSelectedCoordinates(
-        MortalWoundTreatmentAuthority.Context context,
-        IReadOnlyList<MortalWoundTreatmentAuthority.Actor> actors,
-        IReadOnlyList<MortalWoundTreatmentAuthority.Location> locations,
-        ICollection<ValidationIssue> issues)
-    {
-        foreach (var coordinate in new[]
-                 {
-                     (Role: "target", Kind: context.TargetKind, Id: context.TargetId),
-                     (Role: "provider", Kind: context.ProviderKind, Id: context.ProviderId)
-                 })
-        {
-            var matches = actors.Where(actor =>
-                string.Equals(actor.ActorKind, coordinate.Kind, StringComparison.Ordinal) &&
-                string.Equals(actor.ActorId, coordinate.Id, StringComparison.Ordinal)).ToArray();
-            if (matches.Length != 1 ||
-                matches.Any(actor => !string.Equals(
-                    actor.Realm,
-                    context.Realm,
-                    StringComparison.Ordinal)))
-            {
-                issues.Add(Issue(
-                    context.SourcePath + "." + coordinate.Role + "Id",
-                    "mortal_wound_treatment_accepted_state_actor_ambiguous",
-                    "one exact current same-realm actor coordinate",
-                    $"({coordinate.Kind}, {coordinate.Id}): matches={matches.Length}"));
-            }
-        }
-
-        var locationMatches = locations.Where(location => string.Equals(
-            location.LocationId,
-            context.CurrentLocationId,
-            StringComparison.Ordinal)).ToArray();
-        if (locationMatches.Length != 1 ||
-            !string.Equals(locationMatches.SingleOrDefault()?.Realm, context.Realm, StringComparison.Ordinal))
-        {
-            issues.Add(Issue(
-                context.SourcePath + ".currentLocationId",
-                "mortal_wound_treatment_accepted_state_location_ambiguous",
-                "one exact current same-realm location coordinate",
-                $"{context.CurrentLocationId}: matches={locationMatches.Length}"));
-            return;
-        }
-        foreach (var coordinate in new[]
-                 {
-                     (context.TargetKind, context.TargetId),
-                     (context.ProviderKind, context.ProviderId)
-                 }.Distinct())
-        {
-            var present = locationMatches[0].PresentActors.Count(actor =>
-                string.Equals(actor.ActorKind, coordinate.Item1, StringComparison.Ordinal) &&
-                string.Equals(actor.ActorId, coordinate.Item2, StringComparison.Ordinal));
-            if (present != 1)
-            {
-                issues.Add(Issue(
-                    CurrentLocationPath + ".presentActors",
-                    "mortal_wound_treatment_accepted_state_presence_ambiguous",
-                    "one exact co-presence coordinate for each selected actor",
-                    $"({coordinate.Item1}, {coordinate.Item2}): matches={present}"));
-            }
-        }
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Item> ComposeItems(
-        IReadOnlyDictionary<string, JsonObject> roots,
-        ICollection<ValidationIssue> issues)
-    {
-        var input = new MortalItemCarrierCatalogInput(
-            Get(roots, PlayerInventoryPath),
-            Get(roots, NpcCorePath),
-            null,
-            Get(roots, CurrentLocationPath),
-            null,
-            new Dictionary<string, JsonObject>(StringComparer.Ordinal));
-        var catalog = MortalItemCarrierCatalog.Build(input);
-        foreach (var issue in catalog.Issues)
-        {
-            issues.Add(Issue(
-                issue.Path,
-                issue.Code,
-                "one exact canonical Mortal item carrier row",
-                issue.Message));
-        }
-        var result = new List<MortalWoundTreatmentAuthority.Item>();
-        foreach (var occurrence in catalog.Occurrences)
-        {
-            if (occurrence.ItemId is not { } itemId)
-                continue;
-            var count = ReadInt32(occurrence.Item, "count", 0);
-            if (count <= 0)
-            {
-                issues.Add(Issue(
-                    occurrence.JsonPath + ".count",
-                    "mortal_wound_treatment_accepted_state_item_invalid",
-                    "positive canonical item count",
-                    count.ToString(CultureInfo.InvariantCulture)));
-                continue;
-            }
-            var ownerKind = occurrence.Carrier.Kind switch
-            {
-                "player_inventory" => "player",
-                "npc_inventory" => "npc",
-                _ => "player"
-            };
-            var ownerId = ownerKind == "player"
-                ? "player_current"
-                : occurrence.Carrier.OwnerId;
-            result.Add(new MortalWoundTreatmentAuthority.Item(
-                itemId,
-                ReadText(occurrence.Item, "displayName") ??
-                    ReadText(occurrence.Item, "name") ?? itemId,
-                "mortal_world",
-                ownerKind,
-                ownerId,
-                count,
-                ReadInt32(occurrence.Item, "availableCount", count),
-                ReadText(occurrence.Item, "reservationState") ?? "available",
-                ReadText(occurrence.Item, "lifecycle") ?? "active",
-                ReadBoolean(occurrence.Item, "active", true)));
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Resource> ComposeResources(
-        JsonObject location,
-        ICollection<ValidationIssue> issues)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Resource>();
-        foreach (var resource in EnumerateObjects(location["resources"]))
-        {
-            if (!TryString(resource, "resourceRef", out var resourceRef) ||
-                !TryString(resource, "ownerKind", out var ownerKind) ||
-                !TryString(resource, "ownerId", out var ownerId))
-            {
-                issues.Add(Issue(
-                    CurrentLocationPath + ".resources",
-                    "mortal_wound_treatment_accepted_state_resource_invalid",
-                    "one complete canonical resource row",
-                    Describe(resource)));
-                continue;
-            }
-            result.Add(new MortalWoundTreatmentAuthority.Resource(
-                resourceRef,
-                ReadText(resource, "displayName") ?? resourceRef,
-                ReadText(resource, "realm") ?? "mortal_world",
-                ownerKind,
-                ownerId,
-                ReadInt32(resource, "currentValue", 0),
-                ReadInt32(resource, "availableValue", 0),
-                ReadText(resource, "reservationState") ?? "available",
-                ReadText(resource, "lifecycle") ?? "active",
-                ReadBoolean(resource, "active", true)));
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Facility> ComposeFacilities(
-        JsonObject location,
-        ICollection<ValidationIssue> issues)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Facility>();
-        foreach (var facility in EnumerateObjects(location["facilities"]))
-        {
-            if (!TryString(facility, "facilityId", out var facilityId) ||
-                !TryString(facility, "locationId", out var locationId))
-            {
-                issues.Add(Issue(
-                    CurrentLocationPath + ".facilities",
-                    "mortal_wound_treatment_accepted_state_facility_invalid",
-                    "one complete canonical facility row",
-                    Describe(facility)));
-                continue;
-            }
-            result.Add(new MortalWoundTreatmentAuthority.Facility(
-                facilityId,
-                ReadText(facility, "displayName") ?? facilityId,
-                ReadText(facility, "realm") ?? "mortal_world",
-                locationId,
-                ReadText(facility, "lifecycle") ?? "active",
-                ReadBoolean(facility, "active", true),
-                ReadBoolean(facility, "available", true)));
-        }
-        return result;
-    }
-
-    private static IReadOnlyList<MortalWoundTreatmentAuthority.Quest> ComposeQuests(
-        IReadOnlyDictionary<string, JsonObject> roots,
-        ICollection<ValidationIssue> issues)
-    {
-        var result = new List<MortalWoundTreatmentAuthority.Quest>();
-        foreach (var path in new[] { RegularQuestsPath, SoulQuestsPath })
-        {
-            if (!roots.TryGetValue(path, out var root))
-                continue;
-            foreach (var quest in EnumerateObjects(root["quests"] ?? root["activeQuests"]))
-            {
-                if (!TryString(quest, "questId", out var questId) ||
-                    !TryString(quest, "state", out var state))
-                {
-                    issues.Add(Issue(
-                        path,
-                        "mortal_wound_treatment_accepted_state_quest_invalid",
-                        "one complete canonical quest row",
-                        Describe(quest)));
-                    continue;
-                }
-                result.Add(new MortalWoundTreatmentAuthority.Quest(
-                    questId,
-                    ReadText(quest, "displayName") ?? ReadText(quest, "name") ?? questId,
-                    ReadText(quest, "realm") ?? "mortal_world",
-                    state,
-                    ReadText(quest, "lifecycle") ?? "active",
-                    ReadBoolean(quest, "active", true)));
-            }
         }
         return result;
     }
@@ -1488,6 +930,17 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["active"] = value.Active
     };
 
+    private static JsonObject ToJson(MortalWoundTreatmentAuthority.EnvironmentState value) => new()
+    {
+        ["environmentId"] = value.EnvironmentId,
+        ["displayName"] = value.DisplayName,
+        ["realm"] = value.Realm,
+        ["locationId"] = value.LocationId,
+        ["state"] = value.State,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
     private static JsonObject BuildMechanicalRequirementProjection(
         string snapshotToken,
         IReadOnlyList<MortalWoundTreatmentAuthority.Item> items,
@@ -1496,7 +949,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         IReadOnlyList<MortalWoundTreatmentAuthority.Facility> facilities,
         IReadOnlyList<MortalWoundTreatmentAuthority.Location> locations,
         IReadOnlyList<MortalWoundTreatmentAuthority.Quest> quests,
-        IReadOnlyList<MortalWoundTreatmentAuthority.Effect> effects) => new()
+        IReadOnlyList<MortalWoundTreatmentAuthority.Effect> effects,
+        IReadOnlyList<MortalWoundTreatmentAuthority.EnvironmentState> environments) => new()
     {
         ["schemaVersion"] = 1,
         ["snapshotToken"] = snapshotToken,
@@ -1507,7 +961,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["locations"] = new JsonArray(locations.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
         ["quests"] = new JsonArray(quests.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
         ["effects"] = new JsonArray(effects.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray()),
-        ["environments"] = new JsonArray()
+        ["environments"] = new JsonArray(environments.Select(ToMechanicalJson).Cast<JsonNode?>().ToArray())
     };
 
     private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.Item value) => new()
@@ -1612,6 +1066,16 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["realm"] = value.Realm,
         ["targetKind"] = value.TargetKind,
         ["targetId"] = value.TargetId,
+        ["state"] = value.State,
+        ["lifecycle"] = value.Lifecycle,
+        ["active"] = value.Active
+    };
+
+    private static JsonObject ToMechanicalJson(MortalWoundTreatmentAuthority.EnvironmentState value) => new()
+    {
+        ["environmentId"] = value.EnvironmentId,
+        ["realm"] = value.Realm,
+        ["locationId"] = value.LocationId,
         ["state"] = value.State,
         ["lifecycle"] = value.Lifecycle,
         ["active"] = value.Active
@@ -1811,31 +1275,6 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         return false;
     }
 
-    private static IEnumerable<JsonObject> EnumerateNpcs(JsonObject root)
-    {
-        foreach (var section in new[] { "NPCsInScene", "NPCs", "UpdateNPCs" })
-        {
-            foreach (var npc in EnumerateObjects(root[section]))
-                yield return npc;
-        }
-    }
-
-    private static IEnumerable<JsonObject> EnumerateObjects(JsonNode? node) =>
-        node is JsonArray array
-            ? array.OfType<JsonObject>()
-            : Array.Empty<JsonObject>();
-
-    private static bool TryNpcId(JsonObject npc, out string npcId)
-    {
-        foreach (var field in new[] { "NPCId", "npcId", "id", "initialId" })
-        {
-            if (TryString(npc, field, out npcId))
-                return true;
-        }
-        npcId = string.Empty;
-        return false;
-    }
-
     private static bool TryString(JsonObject root, string field, out string value)
     {
         value = string.Empty;
@@ -1856,24 +1295,6 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         foreach (var issue in source)
             destination.Add(issue);
     }
-
-    private static string? ReadText(JsonObject root, string field) =>
-        root[field] is JsonValue node &&
-        node.TryGetValue<string>(out var value) &&
-        !string.IsNullOrWhiteSpace(value) &&
-        string.Equals(value, value.Trim(), StringComparison.Ordinal)
-            ? value
-            : null;
-
-    private static bool ReadBoolean(JsonObject root, string field, bool fallback) =>
-        root[field] is JsonValue node && node.TryGetValue<bool>(out var value)
-            ? value
-            : fallback;
-
-    private static int ReadInt32(JsonObject root, string field, int fallback) =>
-        root[field] is JsonValue node && node.TryGetValue<int>(out var value)
-            ? value
-            : fallback;
 
     private static JsonObject? Get(
         IReadOnlyDictionary<string, JsonObject> roots,

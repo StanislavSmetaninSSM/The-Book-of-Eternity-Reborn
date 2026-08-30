@@ -211,8 +211,6 @@ internal static class MortalWoundTreatmentCapabilityContract
             var path = $"{sourcePath}.{arrayName}[{index}]";
             var skillId = ReadString(skill, "skillId") ?? string.Empty;
             var displayName = ReadString(skill, "displayName") ?? ReadString(skill, "skillName") ?? string.Empty;
-            var lifecycle = ReadString(skill, "lifecycle") ?? string.Empty;
-            var active = skill["active"] is JsonValue activeValue && activeValue.TryGetValue<bool>(out var parsedActive) && parsedActive;
             var capabilities = Array.Empty<MortalWoundTreatmentCapabilityDefinition>();
             if (skill.TryGetPropertyValue(ExtensionProperty, out var extension))
                 capabilities = ParseCapabilities(extension, path, issues).ToArray();
@@ -232,8 +230,8 @@ internal static class MortalWoundTreatmentCapabilityContract
                 skillKind,
                 skillId,
                 displayName,
-                lifecycle,
-                active,
+                "active",
+                true,
                 path,
                 capabilities));
         }

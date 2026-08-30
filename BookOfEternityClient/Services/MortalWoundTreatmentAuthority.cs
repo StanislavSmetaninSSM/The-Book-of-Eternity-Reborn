@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
@@ -7,6 +8,8 @@ namespace BookOfEternityClient.Services;
 internal sealed class MortalWoundTreatmentAuthority
 {
     private const int SchemaVersion = 1;
+    private static readonly ConditionalWeakTable<Context, ContextParserProvenance>
+        ContextParserProvenanceRegistry = new();
     private const string MortalRealm = "mortal_world";
     private const string ContextInvalidFieldCode =
         "mortal_wound_treatment_context_invalid_field";
@@ -123,6 +126,9 @@ internal sealed class MortalWoundTreatmentAuthority
         string CurrentLocationId)
     {
         internal string SourcePath { get; init; } = string.Empty;
+
+        internal bool HasValidParserProvenance() =>
+            HasContextParserProvenance(this);
     }
 
     internal sealed record Snapshot(
@@ -320,10 +326,7 @@ internal sealed class MortalWoundTreatmentAuthority
             if (issues.Count != 0)
                 return new ContextParseResult(false, Freeze(issues), null);
 
-            return new ContextParseResult(
-                true,
-                Freeze(issues),
-                new Context(
+            var context = new Context(
                     version,
                     realm,
                     targetKind,
@@ -333,7 +336,9 @@ internal sealed class MortalWoundTreatmentAuthority
                     currentLocationId)
                 {
                     SourcePath = path
-                });
+                };
+            RegisterContextParserProvenance(context);
+            return new ContextParseResult(true, Freeze(issues), context);
         }
     }
 
@@ -1638,6 +1643,35 @@ internal sealed class MortalWoundTreatmentAuthority
         fields.Add(context.ProviderId);
         fields.Add(context.CurrentLocationId);
     }
+
+    private static string ComputeContextParserSeal(Context context) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "mortal_wound_treatment_parsed_context",
+            "1",
+            Number(context.SchemaVersion),
+            context.Realm,
+            context.TargetKind,
+            context.TargetId,
+            context.ProviderKind,
+            context.ProviderId,
+            context.CurrentLocationId,
+            context.SourcePath
+        });
+
+    private static void RegisterContextParserProvenance(Context context) =>
+        ContextParserProvenanceRegistry.Add(
+            context,
+            new ContextParserProvenance(ComputeContextParserSeal(context)));
+
+    private static bool HasContextParserProvenance(Context context) =>
+        ContextParserProvenanceRegistry.TryGetValue(context, out var provenance) &&
+        string.Equals(
+            provenance.Seal,
+            ComputeContextParserSeal(context),
+            StringComparison.Ordinal);
+
+    private sealed record ContextParserProvenance(string Seal);
 
     private static void AppendRequirementFields(
         ICollection<string?> fields,

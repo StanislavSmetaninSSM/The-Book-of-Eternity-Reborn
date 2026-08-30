@@ -212,6 +212,225 @@ public sealed class MortalLocationMaterializationContractTests
     }
 
     [Theory]
+    [InlineData("extra_field")]
+    [InlineData("wrong_schema")]
+    [InlineData("wrong_actor_kind")]
+    [InlineData("wrong_consent_status")]
+    public void ValidateCanonicalLocation_RejectsMalformedRecognizedTreatmentSceneState(
+        string mutation)
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var consent = CreateTreatmentConsent();
+        switch (mutation)
+        {
+            case "extra_field":
+                consent["lifecycle"] = "active";
+                break;
+            case "wrong_schema":
+                consent["schemaVersion"] = 2;
+                break;
+            case "wrong_actor_kind":
+                consent["providerKind"] = "NPC";
+                break;
+            case "wrong_consent_status":
+                consent["status"] = "revoked";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation));
+        }
+        SetCustomStates(location, new JsonArray(consent));
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "world_map.locations[0]");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_invalid");
+    }
+
+    [Fact]
+    public void ValidateCanonicalLocation_RejectsConfusableTreatmentSceneIdentifiers()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var first = CreateTreatmentFacility("clean_work_surface", available: true);
+        var second = CreateTreatmentFacility("CLEAN_WORK_SURFACE", available: false);
+        SetCustomStates(location, new JsonArray(first, second));
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "world_map.locations[0]");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_ambiguous");
+    }
+
+    [Fact]
+    public void ValidateCanonicalLocation_AcceptsUnavailableFacilityAndWithdrawnConsent()
+    {
+        var location = MortalLocationTestFixture.CreateCanonicalLocation();
+        var consent = CreateTreatmentConsent();
+        consent["status"] = "withdrawn";
+        SetCustomStates(location, new JsonArray(
+            CreateTreatmentFacility("clean_work_surface", available: false),
+            consent,
+            new JsonObject
+            {
+                ["kind"] = "mortal_wound_treatment_environment",
+                ["schemaVersion"] = 1,
+                ["environmentId"] = "sterile_field",
+                ["displayName"] = "Sterile field",
+                ["state"] = "inactive"
+            }));
+
+        using var document = Parse(location);
+        var issues = MortalLocationMaterializationContract.ValidateCanonicalLocation(
+            document.RootElement,
+            "world_map.locations[0]");
+
+        Assert.Empty(issues);
+    }
+
+    [Theory]
+    [InlineData("{\"kind\":\"mortal_wound_treatment_facility\",\"kind\":\"mortal_wound_treatment_facility\",\"schemaVersion\":1,\"facilityId\":\"clean_surface\",\"displayName\":\"Clean surface\",\"available\":true}")]
+    [InlineData("{\"kind\":\"mortal_wound_treatment_facility\",\"Kind\":\"mortal_wound_treatment_facility\",\"schemaVersion\":1,\"facilityId\":\"clean_surface\",\"displayName\":\"Clean surface\",\"available\":true}")]
+    [InlineData("{\"Kind\":\"mortal_wound_treatment_facility\",\"schemaVersion\":1,\"facilityId\":\"clean_surface\",\"displayName\":\"Clean surface\",\"available\":true}")]
+    public void TreatmentSceneContract_RejectsReservedKindAliases(string rowJson)
+    {
+        using var document = JsonDocument.Parse("[" + rowJson + "]");
+
+        var issues = MortalLocationCustomStateContract.ValidateLocation(
+            document.RootElement,
+            "current_location.customStates");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_invalid");
+    }
+
+    [Fact]
+    public void TreatmentSceneContract_RejectsCaseOnlyReservedKindInLink()
+    {
+        using var document = JsonDocument.Parse("""
+        [{"Kind":"mortal_wound_treatment_facility","schemaVersion":1,"facilityId":"clean_surface","displayName":"Clean surface","available":true}]
+        """);
+
+        var issues = MortalLocationCustomStateContract.ValidateLink(
+            document.RootElement,
+            "world_map.links[0].customStates");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_wrong_container");
+    }
+
+    [Theory]
+    [InlineData("facilityId")]
+    [InlineData("environmentState")]
+    public void TreatmentSceneContract_RejectsNonNormalizedExactIdentifiers(string field)
+    {
+        var row = field == "facilityId"
+            ? CreateTreatmentFacility("facility_e\u0301", available: true)
+            : new JsonObject
+            {
+                ["kind"] = "mortal_wound_treatment_environment",
+                ["schemaVersion"] = 1,
+                ["environmentId"] = "sterile_field",
+                ["displayName"] = "Sterile field",
+                ["state"] = "state_e\u0301"
+            };
+        using var document = JsonDocument.Parse(new JsonArray(row).ToJsonString());
+
+        var issues = MortalLocationCustomStateContract.ValidateLocation(
+            document.RootElement,
+            "current_location.customStates");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_invalid");
+    }
+
+    [Fact]
+    public void TreatmentSceneContract_AllowsDistinctEnvironmentsWithTheSameState()
+    {
+        using var document = JsonDocument.Parse("""
+        [
+          {"kind":"mortal_wound_treatment_environment","schemaVersion":1,"environmentId":"sterile_field","displayName":"Sterile field","state":"active"},
+          {"kind":"mortal_wound_treatment_environment","schemaVersion":1,"environmentId":"warm_shelter","displayName":"Warm shelter","state":"active"}
+        ]
+        """);
+
+        Assert.Empty(MortalLocationCustomStateContract.ValidateLocation(
+            document.RootElement,
+            "current_location.customStates"));
+    }
+
+    [Fact]
+    public void TreatmentSceneContract_RejectsConfusableEnvironmentIdentifiers()
+    {
+        using var document = JsonDocument.Parse("""
+        [
+          {"kind":"mortal_wound_treatment_environment","schemaVersion":1,"environmentId":"sterile_field","displayName":"Sterile field","state":"active"},
+          {"kind":"mortal_wound_treatment_environment","schemaVersion":1,"environmentId":"STERILE_FIELD","displayName":"Other field","state":"inactive"}
+        ]
+        """);
+
+        Assert.Contains(
+            MortalLocationCustomStateContract.ValidateLocation(
+                document.RootElement,
+                "current_location.customStates"),
+            issue => issue.Code == "mortal_wound_treatment_scene_state_ambiguous");
+    }
+
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public void CustomStateContract_RejectsNonArrayContainersAtBothDirectEntrypoints(bool location)
+    {
+        using var document = JsonDocument.Parse("{\"kind\":\"ordinary_setting_state\"}");
+
+        var issues = location
+            ? MortalLocationCustomStateContract.ValidateLocation(
+                document.RootElement, "current_location.customStates")
+            : MortalLocationCustomStateContract.ValidateLink(
+                document.RootElement, "world_map.links[0].customStates");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_location_custom_state_shape_invalid");
+    }
+
+    private static JsonObject CreateTreatmentFacility(string id, bool available) => new()
+    {
+        ["kind"] = "mortal_wound_treatment_facility",
+        ["schemaVersion"] = 1,
+        ["facilityId"] = id,
+        ["displayName"] = "Clean work surface",
+        ["available"] = available
+    };
+
+    private static JsonObject CreateTreatmentConsent() => new()
+    {
+        ["kind"] = "mortal_wound_treatment_consent",
+        ["schemaVersion"] = 1,
+        ["consentRef"] = "consent_field_medic_player",
+        ["displayName"] = "Field medic consent",
+        ["providerKind"] = "npc",
+        ["providerId"] = "npc_field_medic_01",
+        ["targetKind"] = "player",
+        ["targetId"] = "player_current",
+        ["status"] = "granted"
+    };
+
+    private static void SetCustomStates(JsonObject location, JsonArray states)
+    {
+        location["customStates"] = states;
+        location["materialization"]!["sections"]!["customStates"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+        MortalLocationTestFixture.ResealCanonicalLocation(location);
+    }
+
+    [Theory]
     [InlineData("schemaVersion", "mortal_location_materialization_invalid_envelope")]
     [InlineData("entityKind", "mortal_location_materialization_invalid_envelope")]
     [InlineData("realm", "mortal_location_materialization_wrong_realm")]
@@ -516,6 +735,30 @@ public sealed class MortalLocationMaterializationContractTests
             issue.FilePath.EndsWith(
                 ".customStates[0].details.repairPacket",
                 StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ValidateRawLink_RejectsReservedTreatmentSceneStateKind()
+    {
+        var link = MortalLocationTestFixture.CreateRawLink(
+            MortalLocationTestFixture.LocationId,
+            TargetLocationId);
+        link["customStates"] = new JsonArray(
+            CreateTreatmentFacility("clean_work_surface", available: true));
+        link["materialization"]!["sections"]!["customStates"] = new JsonObject
+        {
+            ["disposition"] = "populated",
+            ["reason"] = null
+        };
+
+        using var document = Parse(link);
+        var issues = MortalLocationMaterializationContract.ValidateRawLink(
+            document.RootElement,
+            "worldMapUpdates.newLinks[0]",
+            "world_map_link_creation");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "mortal_wound_treatment_scene_state_wrong_container");
     }
 
     [Fact]

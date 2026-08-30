@@ -2218,7 +2218,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             if (update["customStates"] is JsonNode customStatesNode)
             {
                 using var customStatesDocument = JsonDocument.Parse(customStatesNode.ToJsonString());
-                var customStateIssues = MortalLocationCustomStateContract.Validate(
+                var customStateIssues = MortalLocationCustomStateContract.ValidateLocation(
                     customStatesDocument.RootElement,
                     context + ".customStates");
                 if (customStateIssues.Count != 0)

@@ -1,0 +1,218 @@
+<title>Mortal wound treatment scene authority — compact worked routes</title>
+<description>
+  Compact GM examples for the three closed current-location treatment states,
+  existing-location replacement, new selected/remote creation, and link rejection.
+</description>
+<content><![CDATA[
+
+## wound_treatment_scene_authority_v1
+
+There is no universal catalog of facilities, environments, medicines, or consent.
+The GM chooses setting-specific exact identifiers. The client accepts only these three
+closed `schemaVersion: 1` location rows:
+
+```json
+[
+  {
+    "kind": "mortal_wound_treatment_facility",
+    "schemaVersion": 1,
+    "facilityId": "field_clinic_table",
+    "displayName": "Чистый стол полевой лечебницы",
+    "available": true
+  },
+  {
+    "kind": "mortal_wound_treatment_environment",
+    "schemaVersion": 1,
+    "environmentId": "sterile_field",
+    "displayName": "Стерильное поле",
+    "state": "active"
+  },
+  {
+    "kind": "mortal_wound_treatment_consent",
+    "schemaVersion": 1,
+    "consentRef": "field_medic_treats_player",
+    "displayName": "Согласие полевого медика",
+    "providerKind": "npc",
+    "providerId": "npc_field_medic_01",
+    "targetKind": "player",
+    "targetId": "player_current",
+    "status": "granted"
+  }
+]
+```
+
+`available: false` and `status: "withdrawn"` are valid negative evidence. Two
+different `environmentId` values may share the same exact `state`. Do not add realm,
+location, lifecycle, active, reachability, reservation, fingerprint, seal, or source
+authority fields; the client derives those from canonical state.
+
+## wound_treatment_existing_location_update_v1
+
+For a known location, use `worldMapUpdates.locationUpdates[]`. `customStates` is a
+complete replacement, so preserve every unrelated sibling from the accepted location:
+
+```json
+{
+  "worldMapUpdates": {
+    "locationUpdates": [
+      {
+        "locationId": "loc_field_clinic_001",
+        "customStates": [
+          {
+            "kind": "local_festival_lanterns",
+            "color": "amber"
+          },
+          {
+            "kind": "mortal_wound_treatment_facility",
+            "schemaVersion": 1,
+            "facilityId": "field_clinic_table",
+            "displayName": "Чистый стол полевой лечебницы",
+            "available": true
+          },
+          {
+            "kind": "mortal_wound_treatment_environment",
+            "schemaVersion": 1,
+            "environmentId": "sterile_field",
+            "displayName": "Стерильное поле",
+            "state": "active"
+          },
+          {
+            "kind": "mortal_wound_treatment_consent",
+            "schemaVersion": 1,
+            "consentRef": "field_medic_treats_player",
+            "displayName": "Согласие полевого медика",
+            "providerKind": "npc",
+            "providerId": "npc_field_medic_01",
+            "targetKind": "player",
+            "targetId": "player_current",
+            "status": "granted"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Do not use `currentLocationData` as a full resend for this known location. Omitting
+`local_festival_lanterns` would remove that unrelated state.
+
+## wound_treatment_new_selected_location_v1
+
+A new selected location puts the complete `customStates[]` inside its ordinary
+complete `currentLocationData` creation envelope:
+
+```json
+{
+  "currentLocationData": {
+    "locationId": null,
+    "initialId": "locref_turn_17_selected_clinic",
+    "realm": "mortal_world",
+    "name": "Полевой лазарет",
+    "customStates": [
+      {
+        "kind": "mortal_wound_treatment_facility",
+        "schemaVersion": 1,
+        "facilityId": "selected_clinic_table",
+        "displayName": "Стол лазарета",
+        "available": false
+      }
+    ],
+    "materialization": {
+      "schemaVersion": 1,
+      "materializationId": "mlocmat_turn_17_selected_clinic",
+      "entityKind": "mortal_location",
+      "realm": "mortal_world",
+      "route": "current_scene_creation",
+      "sourceTurn": 17,
+      "sourceAuthority": { "kind": "accepted_turn", "authorityId": "turn_17" },
+      "initialId": "locref_turn_17_selected_clinic",
+      "state": "complete",
+      "sections": {
+        "customStates": { "disposition": "populated", "reason": null }
+      }
+    }
+  }
+}
+```
+
+The compact fragment highlights treatment state. The actual creation envelope must
+also include every presentation, physical, placement, discovery, difficulty,
+chronicle, governed collection, topology, and section-disposition field required by
+Mortal Location Materialization v1; use the compact location template for that shape.
+
+## wound_treatment_new_remote_location_v1
+
+A new remote location uses the same complete location shape in
+`worldMapUpdates.newLocations[]`, never an existing-location partial update:
+
+```json
+{
+  "worldMapUpdates": {
+    "newLocations": [
+      {
+        "locationId": null,
+        "initialId": "locref_turn_17_remote_hospice",
+        "realm": "mortal_world",
+        "name": "Приют травников",
+        "customStates": [
+          {
+            "kind": "mortal_wound_treatment_environment",
+            "schemaVersion": 1,
+            "environmentId": "remote_clean_room",
+            "displayName": "Чистая комната",
+            "state": "active"
+          }
+        ],
+        "materialization": {
+          "schemaVersion": 1,
+          "materializationId": "mlocmat_turn_17_remote_hospice",
+          "entityKind": "mortal_location",
+          "realm": "mortal_world",
+          "route": "world_map_creation",
+          "sourceTurn": 17,
+          "sourceAuthority": { "kind": "accepted_turn", "authorityId": "turn_17" },
+          "initialId": "locref_turn_17_remote_hospice",
+          "state": "complete",
+          "sections": {
+            "customStates": { "disposition": "populated", "reason": null }
+          }
+        }
+      }
+    ]
+  }
+}
+```
+
+As above, supply the complete Mortal location creation envelope, not only this focused
+fragment.
+
+## wound_treatment_link_rejection_v1
+
+The three reserved kinds belong only to location `customStates[]`. This link is
+rejected even though the inner row would be valid at a location:
+
+```json
+{
+  "worldMapUpdates": {
+    "newLinks": [
+      {
+        "initialId": "linkref_invalid_treatment_state",
+        "customStates": [
+          {
+            "kind": "mortal_wound_treatment_facility",
+            "schemaVersion": 1,
+            "facilityId": "forged_link_clinic",
+            "displayName": "Ложная лечебница на пути",
+            "available": true
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Keep link `customStates[]` free of every reserved treatment kind.
+
+]]></content>

@@ -78,14 +78,58 @@ internal static class MortalLocationCustomStateContract
         "mortal_item_identity_authority_repair"
     };
 
-    internal static IReadOnlyList<ValidationIssue> Validate(
+    internal static IReadOnlyList<ValidationIssue> ValidateLocation(
         JsonElement customStates,
         string context)
+        => Validate(customStates, context, allowTreatmentSceneAuthority: true);
+
+    internal static IReadOnlyList<ValidationIssue> ValidateLink(
+        JsonElement customStates,
+        string context)
+        => Validate(customStates, context, allowTreatmentSceneAuthority: false);
+
+    private static IReadOnlyList<ValidationIssue> Validate(
+        JsonElement customStates,
+        string context,
+        bool allowTreatmentSceneAuthority)
     {
         var issues = new List<ValidationIssue>();
         if (customStates.ValueKind != JsonValueKind.Array)
+        {
+            issues.Add(new ValidationIssue(
+                context,
+                IssueSeverity.Error,
+                "Mortal location customStates must be one canonical array.",
+                code: "mortal_location_custom_state_shape_invalid",
+                section: "mortal_location_materialization",
+                expected: "array",
+                actual: customStates.GetRawText()));
             return issues;
+        }
 
+        if (allowTreatmentSceneAuthority)
+        {
+            issues.AddRange(MortalWoundTreatmentSceneAuthorityContract.Parse(customStates, context).Issues);
+        }
+        else
+        {
+            var index = 0;
+            foreach (var row in customStates.EnumerateArray())
+            {
+                if (MortalWoundTreatmentSceneAuthorityContract.IsRecognized(row))
+                {
+                    issues.Add(new ValidationIssue(
+                        $"{context}[{index}]",
+                        IssueSeverity.Error,
+                        "Mortal wound treatment scene authority is reserved for location customStates.",
+                        code: "mortal_wound_treatment_scene_state_wrong_container",
+                        section: "mortal_location_materialization",
+                        expected: "unreserved link setting state",
+                        actual: row.GetRawText()));
+                }
+                index++;
+            }
+        }
         ValidateRecursive(customStates, context, issues);
         return issues;
     }

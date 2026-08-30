@@ -99,6 +99,25 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
     }
 
     [Fact]
+    public void ParseActorCatalog_DerivesCurrentLifecycleFromCatalogMembershipAndIgnoresLookalikes()
+    {
+        var skill = Skill("skill_field_medicine_01", "Field Medicine", withCapability: true);
+        skill["lifecycle"] = "retired";
+        skill["active"] = false;
+        var active = Root("activeSkillChanges", skill);
+
+        var result = MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+            "player", "player_current", active, "game_state/player/skills_active.json",
+            new JsonObject { ["passiveSkillChanges"] = new JsonArray() },
+            "game_state/player/skills_passive.json");
+
+        Assert.True(result.IsValid);
+        var source = Assert.Single(result.Sources);
+        Assert.Equal("active", source.Lifecycle);
+        Assert.True(source.Active);
+    }
+
+    [Fact]
     public void ParseActorCatalog_RejectsPresentNullExtensionWhileAllowingItsAbsence()
     {
         var active = Root("activeSkillChanges", Skill("skill_field_medicine_01", "Field Medicine", withCapability: false));

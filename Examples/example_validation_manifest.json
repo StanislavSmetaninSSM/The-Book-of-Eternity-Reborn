@@ -2,6 +2,18 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "wound_treatment_scene_authority_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "current Mortal location customStates[]",
+      "responseSurface": "worldMapUpdates.locationUpdates[] | currentLocationData | worldMapUpdates.newLocations[]",
+      "realms": ["Mortal World"],
+      "description": "The three exact closed treatment scene kinds are shown through existing-location replacement and new selected/remote creation, with unrelated sibling preservation and link rejection.",
+      "validationKind": "production-validator",
+      "validationRoute": "PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes -> MortalLocationCustomStateContract.ValidateLocation | ValidateLink",
+      "coverageLimit": "Closed treatment rows and route ownership; complete generic Mortal location envelope validation remains Mortal Location Materialization v1-owned.",
+      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog"]
+    },
+    {
       "contractId": "effect_mortal_profiles_v1",
       "file": "E_CLI_Effect_Materialization.txt",
       "statePath": "game_state/effects/effect_commands.json",
