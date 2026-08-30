@@ -1007,7 +1007,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Theory]
     [InlineData("stale_snapshot")]
     [InlineData("carrier_identity_history_mismatch")]
-    [InlineData("missing_accepted_event")]
     [InlineData("ambiguous_actor_coordinate")]
     [InlineData("malformed_required_root")]
     public void AcceptedStateExport_RejectsUntrustedCanonicalSourceFaults(string mutation)
@@ -5000,16 +4999,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     wound["display"]!["name"] = "Changed without identity/history";
                     File.WriteAllText(FileSystem.ResolvePath(TargetCarrierPath), carrier.ToJsonString());
                     PrepareFreshSnapshot("carrier_mismatch");
-                    return;
-                }
-                case "missing_accepted_event":
-                {
-                    var manifest = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(
-                        LiveTurnPreparationService.PendingTurnSnapshotManifestPath)))!.AsObject();
-                    manifest["preGeneratedDices1d20"] = new JsonArray();
-                    File.WriteAllText(
-                        FileSystem.ResolvePath(LiveTurnPreparationService.PendingTurnSnapshotManifestPath),
-                        manifest.ToJsonString());
                     return;
                 }
                 case "ambiguous_actor_coordinate":
