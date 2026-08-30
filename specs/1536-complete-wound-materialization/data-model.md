@@ -2517,8 +2517,11 @@ evidence described in the plan and cannot expose mutation or reservation intents
 Canonical-to-transient mapping is closed:
 
 - current item carrier plus identity/current-transition quantity agreement projects only
-  active carried rows; before T068, canonical count is both total and available and the
-  reservation state is `available`;
+  active actor-carried rows: `player_inventory` maps catalog owner `player` to
+  `(player, player_current)`, and `npc_inventory` maps to `(npc, exact NPC ID)`. Valid
+  location/offscreen-storage/vehicle/other non-actor siblings are omitted and cannot
+  satisfy an actor-owned treatment requirement. Before T068, canonical count is both
+  total and available and the reservation state is `available`;
 - the resource definition/state/history/recomposed-owner quartet projects only
   `mortal_world`, integer, non-negative signed-32-bit rows owned by
   `player|npc|combatant|combat_group_member`; the last kind maps to

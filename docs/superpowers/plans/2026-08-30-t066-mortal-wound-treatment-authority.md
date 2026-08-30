@@ -272,7 +272,10 @@ Add method-level cases for stale lease/snapshot, changed wound carrier versus id
 Pin the complete translation boundary: an off-scene known NPC remains projected with
 `reachable=false`; completed/failed regular quests remain queryable by exact status; a
 production-valid active skill without applicable mastery gets no invented tier; item
-quantity/availability comes only from carrier/identity agreement; valid decimal and
+quantity/availability comes only from carrier/identity agreement and only
+`player_inventory -> (player, player_current)` / `npc_inventory -> (npc, exact NPC ID)`
+project. Valid location/offscreen-storage/vehicle item siblings neither poison export nor
+satisfy actor-owned requirements; valid decimal and
 non-actor resource siblings do not poison accepted state; integral overflow is not
 silently truncated; `combat_group_member` maps to `combatant_member`; and suspended
 resources remain trusted inactive/zero-availability rows. Add direct-constructed,
@@ -326,8 +329,9 @@ wound IDs, and never let a hit skip current signed-snapshot validation.
 
 Resource authority must validate the signed definition/state/history/persisted-owner
 quartet against a recomposed owner authority using only signed source roots. Items must
-agree with their canonical identity and current transition quantity; before T068 their
-exact current count is available and unreserved. Resource projection admits only
+agree with their canonical identity and current transition quantity; only player/NPC
+inventory carriers map to the exact actor coordinates above, while other carriers are
+omitted; before T068 their exact current count is available and unreserved. Resource projection admits only
 non-negative signed-32-bit integer Mortal actor rows, maps
 `combat_group_member -> combatant_member`, maps active/suspended as specified in the data
 model, and omits otherwise-valid non-projectable siblings. Actor identity includes known

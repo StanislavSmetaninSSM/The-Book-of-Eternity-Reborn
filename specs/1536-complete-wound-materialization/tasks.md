@@ -1159,7 +1159,9 @@ entrypoints require no update for T065.
   The adapter MUST retain a known off-scene NPC as `reachable=false`; map player active,
   NPC active, and passive mastery only from their explicit canonical sources without an
   invented tier; keep terminal regular quests queryable by mapped status; derive item
-  availability from identity/carrier quantity only; and filter the resource quartet to
+  availability from identity/carrier quantity only, projecting only
+  `player_inventory -> (player, player_current)` and `npc_inventory -> (npc, exact NPC ID)`
+  while ignoring valid storage/vehicle/non-actor siblings; and filter the resource quartet to
   representable non-negative signed-32-bit Mortal actor integer rows. It MUST map
   `combat_group_member` to `combatant_member`, preserve suspended rows as inactive with
   zero availability, and ignore valid decimal/non-actor/foreign/out-of-range siblings

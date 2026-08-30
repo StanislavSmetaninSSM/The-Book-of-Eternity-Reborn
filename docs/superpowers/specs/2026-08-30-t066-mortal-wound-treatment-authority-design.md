@@ -63,8 +63,9 @@ Signed bytes are necessary but do not by themselves establish a canonical source
 contract. The exporter therefore uses these exact adapters:
 
 - current item carriers plus item identity/current-transition quantity agreement; only
-  active carrier rows project, with canonical count as total/available and
-  `reservationState=available` until T068;
+  active actor carriers project: `player_inventory` maps to `(player, player_current)` and
+  `npc_inventory` to `(npc, exact NPC ID)`. Valid storage/vehicle/non-actor siblings are
+  omitted. Canonical count is total/available and `reservationState=available` until T068;
 - resource definitions, state, history, and recomposed persisted owner-authority
   agreement, all from the same signed snapshot. Project only non-negative signed-32-bit
   integer Mortal actor rows; translate `combat_group_member` to `combatant_member`, map

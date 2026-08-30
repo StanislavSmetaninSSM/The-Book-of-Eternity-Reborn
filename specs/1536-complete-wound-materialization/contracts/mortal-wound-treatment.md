@@ -792,7 +792,10 @@ registry/lease path; a shape-valid detached object grants no authority.
 
 Canonical projection does not read transient lookalikes. Active items use exact
 carrier/identity/current-transition quantity agreement and expose their count as available
-until T068. Resources require definition/state/history/recomposed-owner agreement and
+until T068. Only `player_inventory -> (player, player_current)` and
+`npc_inventory -> (npc, exact NPC ID)` actor carriers project; valid location,
+offscreen-storage, vehicle, and other non-actor carrier siblings are omitted and grant no
+actor-owned treatment authority. Resources require definition/state/history/recomposed-owner agreement and
 project only non-negative signed-32-bit integer Mortal actor rows; active and suspended
 map respectively to current availability and inactive zero availability, while valid
 decimal/non-actor/foreign/out-of-range siblings are omitted. `combat_group_member` maps
