@@ -5,7 +5,8 @@ namespace BookOfEternityClient.Services;
 internal sealed record MortalWoundProcedureDiceReservationResult(
     bool IsValid,
     IReadOnlyList<ValidationIssue> Issues,
-    MortalWoundProcedureDiceReservation? Reservation);
+    MortalWoundProcedureDiceReservation? Reservation,
+    bool WasCreated = false);
 
 internal sealed class MortalWoundProcedureDiceReservation
 {
@@ -121,24 +122,32 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
         _byOperationKey.Add(coordinates.OperationKey, reservation);
         foreach (var sourceIndex in indices)
             _occupiedSourceIndices.Add(sourceIndex);
-        return Valid(reservation);
+        return Valid(reservation, wasCreated: true);
     }
 
     internal bool Release(MortalWoundProcedureDiceReservation reservation)
     {
         ArgumentNullException.ThrowIfNull(reservation);
-        if (!_byOperationKey.TryGetValue(reservation.OperationKey, out var current) ||
-            !ReferenceEquals(current, reservation) ||
-            reservation.SourceIndices.Any(sourceIndex =>
-                !_occupiedSourceIndices.Contains(sourceIndex)))
-        {
+        if (!CanRelease(reservation))
             return false;
-        }
+        ReleaseUnchecked(reservation);
+        return true;
+    }
 
+    internal bool CanRelease(MortalWoundProcedureDiceReservation reservation)
+    {
+        ArgumentNullException.ThrowIfNull(reservation);
+        return _byOperationKey.TryGetValue(reservation.OperationKey, out var current) &&
+               ReferenceEquals(current, reservation) &&
+               reservation.SourceIndices.All(sourceIndex =>
+                   _occupiedSourceIndices.Contains(sourceIndex));
+    }
+
+    internal void ReleaseUnchecked(MortalWoundProcedureDiceReservation reservation)
+    {
         _byOperationKey.Remove(reservation.OperationKey);
         foreach (var sourceIndex in reservation.SourceIndices)
             _occupiedSourceIndices.Remove(sourceIndex);
-        return true;
     }
 
     internal void InvalidateAll()
@@ -166,10 +175,12 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
     }
 
     private static MortalWoundProcedureDiceReservationResult Valid(
-        MortalWoundProcedureDiceReservation reservation) => new(
+        MortalWoundProcedureDiceReservation reservation,
+        bool wasCreated = false) => new(
         true,
         Array.Empty<ValidationIssue>(),
-        reservation);
+        reservation,
+        wasCreated);
 
     private static MortalWoundProcedureDiceReservationResult Invalid(
         string code,

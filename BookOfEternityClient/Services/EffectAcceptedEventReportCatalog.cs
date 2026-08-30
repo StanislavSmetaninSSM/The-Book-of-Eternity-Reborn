@@ -80,6 +80,8 @@ internal static class EffectAcceptedEventReportCatalog
 
         var catalog = EffectCarrierCatalog.Build(carriers);
         issues.AddRange(catalog.Issues);
+        var fateCandidates = FateShieldReactionArbiter.ProjectEligibleCandidates(
+            catalog.Occurrences);
         var seenEvents = new HashSet<string>(StringComparer.Ordinal);
         var reservedEffectIds = new HashSet<string>(StringComparer.Ordinal);
         for (var index = 0; index < reports.Count; index++)
@@ -152,14 +154,10 @@ internal static class EffectAcceptedEventReportCatalog
                 continue;
             }
 
-            var matches = catalog.Occurrences
-                .Where(occurrence =>
-                    !reservedEffectIds.Contains(occurrence.EffectId) &&
-                    IsEligibleFateShield(occurrence.Effect, out _))
-                .OrderBy(static occurrence => ReadCreatedAtTurn(occurrence.Effect))
-                .ThenBy(static occurrence => occurrence.EffectId, StringComparer.Ordinal)
-                .ToArray();
-            if (matches.Length == 0)
+            var selected = FateShieldReactionArbiter.SelectOldest(
+                fateCandidates,
+                reservedEffectIds);
+            if (selected is null)
             {
                 Add(
                     issues,
@@ -170,8 +168,6 @@ internal static class EffectAcceptedEventReportCatalog
                 continue;
             }
 
-            var selected = matches[0];
-            _ = IsEligibleFateShield(selected.Effect, out var triggerId);
             reservedEffectIds.Add(selected.EffectId);
             events.Add(new JsonObject
             {
@@ -186,7 +182,7 @@ internal static class EffectAcceptedEventReportCatalog
                     ["targetId"] = "player_current"
                 },
                 ["effectId"] = selected.EffectId,
-                ["triggerId"] = triggerId,
+                ["triggerId"] = selected.TriggerId,
                 ["currentTime"] = null,
                 ["currentSceneId"] = null,
                 ["sceneClosed"] = false,
@@ -203,6 +199,22 @@ internal static class EffectAcceptedEventReportCatalog
                 Array.Empty<JsonObject>(),
                 issues.ToArray());
     }
+
+    internal static MortalWoundCriticalReactionResolutionResult
+        ResolvePreparedMortalWoundCriticalReaction(
+            MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
+        MortalWoundCriticalReactionResolutionResult.Invalid(new ValidationIssue(
+            LiveTurnPreparationService.TurnRequestPath,
+            IssueSeverity.Error,
+            "The prepared Mortal wound critical reaction cannot be trusted.",
+            code: "mortal_wound_treatment_critical_reaction_authority_invalid",
+            actor: "Client",
+            section: "wound_materialization",
+            expected: "one sealed current Mortal wound treatment request and accepted state",
+            actual: request is null || acceptedState is null
+                ? "missing input"
+                : "unsealed Phase A request"));
 
     private static bool ValidatePlayerTarget(
         JsonNode? node,
@@ -337,65 +349,6 @@ internal static class EffectAcceptedEventReportCatalog
         indexes = parsed;
         return true;
     }
-
-    private static bool IsEligibleFateShield(
-        JsonObject effect,
-        out string triggerId)
-    {
-        triggerId = string.Empty;
-        if (!HasExact(effect, "state", "active") ||
-            !HasExact(effect, "realm", "mortal_world") ||
-            effect["target"] is not JsonObject target ||
-            !HasExact(target, "kind", "player") ||
-            !HasExact(target, "targetId", "player_current") ||
-            effect["source"] is not JsonObject source ||
-            !HasExact(source, "kind", EffectBuiltInSourceCatalog.FateShieldSourceKind) ||
-            !HasExact(source, "sourceId", EffectBuiltInSourceCatalog.FateShieldSourceId) ||
-            !HasExact(source, "definitionKey", EffectBuiltInSourceCatalog.FateShieldDefinitionKey) ||
-            effect["lifetime"] is not JsonObject lifetime ||
-            !HasExact(lifetime, "mode", "uses") ||
-            !TryReadInt(lifetime["remainingUses"], out var remainingUses) ||
-            remainingUses <= 0 ||
-            effect["triggers"] is not JsonArray triggers ||
-            effect["components"] is not JsonArray components)
-        {
-            return false;
-        }
-
-        var matchingTriggers = triggers.OfType<JsonObject>()
-            .Where(trigger =>
-                HasExact(trigger, "eventType", "owner_critical_failure") &&
-                HasExact(trigger, "resolutionMode", "deterministic") &&
-                trigger["consumeUses"] is JsonValue consumeNode &&
-                consumeNode.TryGetValue<bool>(out var consume) && consume)
-            .ToArray();
-        if (matchingTriggers.Length != 1 ||
-            !TryExact(matchingTriggers[0]["triggerId"], out triggerId) ||
-            matchingTriggers[0]["componentIds"] is not JsonArray componentIds ||
-            componentIds.Count != 1 ||
-            !TryExact(componentIds[0], out var componentId))
-        {
-            return false;
-        }
-
-        var matchingComponents = components.OfType<JsonObject>()
-            .Where(component => HasExact(component, "componentId", componentId))
-            .ToArray();
-        return matchingComponents.Length == 1 &&
-            HasExact(matchingComponents[0], "profile", "event_reaction") &&
-            matchingComponents[0]["payload"] is JsonObject payload &&
-            HasExact(payload, "eventType", "owner_critical_failure") &&
-            HasExact(payload, "resultKind", "event_outcome") &&
-            HasExact(payload, "originalOutcome", "critical_failure") &&
-            HasExact(payload, "resolvedOutcome", "failure") &&
-            HasExact(payload, "dependency", "before_current_event");
-    }
-
-    private static int ReadCreatedAtTurn(JsonObject effect) =>
-        effect["chronology"] is JsonObject chronology &&
-        TryReadInt(chronology["createdAtTurn"], out var turn)
-            ? turn
-            : int.MaxValue;
 
     private static bool HasExact(
         JsonObject value,

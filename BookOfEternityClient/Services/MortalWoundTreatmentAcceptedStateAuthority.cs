@@ -755,6 +755,31 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             this,
             reservation);
 
+    internal MortalWoundProcedureReservationSetResult ReserveProcedureReservations(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string rollMode,
+        string rollActorKind,
+        string rollActorId) =>
+        AcceptedTurnAuthorityRegistry.ReserveMortalWoundProcedureReservations(
+            _fileSystem,
+            _writeLease,
+            this,
+            coordinates,
+            rollMode,
+            rollActorKind,
+            rollActorId,
+            _acceptedD20EventValues.AsSpan());
+
+    internal bool ReleaseProcedureReservations(
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation) =>
+        AcceptedTurnAuthorityRegistry.ReleaseMortalWoundProcedureReservations(
+            _fileSystem,
+            _writeLease,
+            this,
+            diceReservation,
+            criticalReactionReservation);
+
     internal bool MatchesCurrentWound(WoundMaterializationEnvelope? wound)
     {
         if (wound is null)
@@ -1557,6 +1582,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             fields.Add(Number(component.CurrentStacks));
             fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
                 JsonNode.Parse(component.Payload.GetRawText())));
+        }
+        fields.Add(Number(snapshot.FateShieldReactionCandidates.Count));
+        foreach (var candidate in snapshot.FateShieldReactionCandidates)
+        {
+            fields.Add(candidate.EffectId);
+            fields.Add(candidate.TriggerId);
+            fields.Add(Number(candidate.CreatedAtTurn));
+            fields.Add(candidate.AcceptedEffectFingerprint);
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }

@@ -344,6 +344,73 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static MortalWoundProcedureReservationSetResult
+        ReserveMortalWoundProcedureReservations(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptCoordinates coordinates,
+            string rollMode,
+            string rollActorKind,
+            string rollActorId,
+            ReadOnlySpan<int> acceptedD20EventValues)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(coordinates);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .ReserveMortalWoundProcedureReservations(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    coordinates,
+                    rollMode,
+                    rollActorKind,
+                    rollActorId,
+                    acceptedD20EventValues);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return MortalWoundProcedureReservationSetRegistryFailure(
+                "one current accepted-state authority and active canonical lease",
+                exception.GetType().Name);
+        }
+    }
+
+    internal static bool ReleaseMortalWoundProcedureReservations(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(diceReservation);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .ReleaseMortalWoundProcedureReservations(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    diceReservation,
+                    criticalReactionReservation);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
     private static MortalWoundProcedureDiceReservationResult
         MortalWoundProcedureDiceReservationRegistryFailure(
             string expected,
@@ -361,6 +428,26 @@ internal static class AcceptedTurnAuthorityRegistry
                     expected: expected,
                     actual: actual)
             }),
+            null);
+
+    private static MortalWoundProcedureReservationSetResult
+        MortalWoundProcedureReservationSetRegistryFailure(
+            string expected,
+            string actual) => new(
+            false,
+            Array.AsReadOnly(new[]
+            {
+                new ValidationIssue(
+                    LiveTurnPreparationService.TurnRequestPath,
+                    IssueSeverity.Error,
+                    "The accepted die and Fate reservations for the Mortal wound procedure cannot be trusted.",
+                    code: "mortal_wound_treatment_procedure_reservation_authority_invalid",
+                    actor: "Client",
+                    section: "wound_materialization",
+                    expected: expected,
+                    actual: actual)
+            }),
+            null,
             null);
 
     private static bool IsValidCandidateDetached(
@@ -439,6 +526,8 @@ internal static class AcceptedTurnAuthorityRegistry
         private readonly WoundAcceptedTurnPlanCache _woundPlan;
         private readonly MortalItemAcceptedTurnAuthority.Cache _mortalItems;
         private readonly MortalWoundProcedureDiceReservationRegistry _procedureDice = new();
+        private readonly MortalWoundCriticalReactionReservationRegistry
+            _criticalReactions = new();
         private MortalWoundTreatmentAcceptedStateAuthority?
             _mortalWoundTreatmentAcceptedState;
         private object? _woundEffectStageToken;
@@ -472,6 +561,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     candidate.Issues.Count != 0)
                 {
                     _procedureDice.InvalidateAll();
+                    _criticalReactions.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return AcceptedTurnAuthorityRegistry.Detach(candidate);
                 }
@@ -479,6 +569,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (!candidate.Authority.IsLeaseBoundTo(fileSystem, writeLease))
                 {
                     _procedureDice.InvalidateAll();
+                    _criticalReactions.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return MortalWoundTreatmentAcceptedStateAuthority
                         .RegistryCandidateBindingFailure(
@@ -499,6 +590,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 }
 
                 _procedureDice.InvalidateAll();
+                _criticalReactions.InvalidateAll();
                 _mortalWoundTreatmentAcceptedState = candidate.Authority;
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
             }
@@ -547,6 +639,147 @@ internal static class AcceptedTurnAuthorityRegistry
                            StringComparison.Ordinal) &&
                        _procedureDice.Release(reservation);
             }
+        }
+
+        internal MortalWoundProcedureReservationSetResult
+            ReserveMortalWoundProcedureReservations(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+                MortalWoundTreatmentAttemptCoordinates coordinates,
+                string rollMode,
+                string rollActorKind,
+                string rollActorId,
+                ReadOnlySpan<int> acceptedD20EventValues)
+        {
+            lock (_gate)
+            {
+                if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !coordinates.MatchesAcceptedState(acceptedState))
+                {
+                    return AcceptedTurnAuthorityRegistry
+                        .MortalWoundProcedureReservationSetRegistryFailure(
+                            "the exact current accepted state and matching attempt coordinates",
+                            "stale, foreign, or mismatched authority");
+                }
+
+                var dice = _procedureDice.Reserve(
+                    coordinates,
+                    rollMode,
+                    acceptedD20EventValues);
+                if (!dice.IsValid || dice.Reservation is null)
+                {
+                    return new MortalWoundProcedureReservationSetResult(
+                        false,
+                        dice.Issues,
+                        null,
+                        null);
+                }
+
+                if (!RequiresPlayerFateReservation(
+                        dice.Reservation,
+                        rollMode,
+                        rollActorKind,
+                        rollActorId))
+                {
+                    return new MortalWoundProcedureReservationSetResult(
+                        true,
+                        Array.Empty<ValidationIssue>(),
+                        dice.Reservation,
+                        null);
+                }
+
+                MortalWoundCriticalReactionReservationResult reaction;
+                try
+                {
+                    reaction = _criticalReactions.Reserve(
+                        coordinates,
+                        acceptedState.EffectMechanics.FateShieldReactionCandidates);
+                }
+                catch (Exception exception) when (
+                    exception is ArgumentException or InvalidOperationException or
+                        OverflowException)
+                {
+                    if (dice.WasCreated)
+                        _procedureDice.Release(dice.Reservation);
+                    return AcceptedTurnAuthorityRegistry
+                        .MortalWoundProcedureReservationSetRegistryFailure(
+                            "one detached eligible Fate candidate agreement",
+                            exception.GetType().Name);
+                }
+                if (!reaction.IsValid)
+                {
+                    if (dice.WasCreated)
+                        _procedureDice.Release(dice.Reservation);
+                    return new MortalWoundProcedureReservationSetResult(
+                        false,
+                        reaction.Issues,
+                        null,
+                        null);
+                }
+
+                return new MortalWoundProcedureReservationSetResult(
+                    true,
+                    Array.Empty<ValidationIssue>(),
+                    dice.Reservation,
+                    reaction.Reservation);
+            }
+        }
+
+        internal bool ReleaseMortalWoundProcedureReservations(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundProcedureDiceReservation diceReservation,
+            MortalWoundCriticalReactionReservation? criticalReactionReservation)
+        {
+            lock (_gate)
+            {
+                if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !string.Equals(
+                        diceReservation.AcceptedStateFingerprint,
+                        acceptedState.AcceptedStateFingerprint,
+                        StringComparison.Ordinal) ||
+                    !_procedureDice.CanRelease(diceReservation) ||
+                    !_criticalReactions.MatchesReleaseAgreement(
+                        diceReservation,
+                        criticalReactionReservation))
+                {
+                    return false;
+                }
+
+                _procedureDice.ReleaseUnchecked(diceReservation);
+                _criticalReactions.ReleaseUnchecked(
+                    diceReservation,
+                    criticalReactionReservation);
+                return true;
+            }
+        }
+
+        private static bool RequiresPlayerFateReservation(
+            MortalWoundProcedureDiceReservation reservation,
+            string rollMode,
+            string rollActorKind,
+            string rollActorId)
+        {
+            var selectedOrdinal = reservation.SourceRolls.Count == 1
+                ? 0
+                : rollMode switch
+                {
+                    "advantage" => reservation.SourceRolls[1] > reservation.SourceRolls[0]
+                        ? 1
+                        : 0,
+                    "disadvantage" => reservation.SourceRolls[1] < reservation.SourceRolls[0]
+                        ? 1
+                        : 0,
+                    _ => -1
+                };
+            return selectedOrdinal >= 0 &&
+                   reservation.SourceRolls[selectedOrdinal] == 1 &&
+                   string.Equals(rollActorKind, "player", StringComparison.Ordinal) &&
+                   string.Equals(rollActorId, "player_current", StringComparison.Ordinal);
         }
 
         internal bool IsCurrentMortalWoundTreatmentAcceptedState(
@@ -1134,6 +1367,7 @@ internal static class AcceptedTurnAuthorityRegistry
             _woundPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
             _procedureDice.InvalidateAll();
+            _criticalReactions.InvalidateAll();
             _mortalWoundTreatmentAcceptedState = null;
         }
 

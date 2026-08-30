@@ -51,6 +51,9 @@ internal sealed record EffectMechanicsSnapshot(
     internal IReadOnlyList<EffectAcceptedInstance> Effects { get; init; } =
         Array.Empty<EffectAcceptedInstance>();
 
+    internal IReadOnlyList<FateShieldReactionCandidate> FateShieldReactionCandidates
+        { get; init; } = Array.Empty<FateShieldReactionCandidate>();
+
     internal static EffectMechanicsSnapshot Build(EffectMechanicsInput input)
     {
         ArgumentNullException.ThrowIfNull(input);
@@ -172,7 +175,9 @@ internal sealed record EffectMechanicsSnapshot(
             ReadOnly(audit),
             Array.Empty<ValidationIssue>())
         {
-            Effects = ReadOnly(effects)
+            Effects = ReadOnly(effects),
+            FateShieldReactionCandidates =
+                FateShieldReactionArbiter.ProjectEligibleCandidates(catalog.Occurrences)
         };
     }
 

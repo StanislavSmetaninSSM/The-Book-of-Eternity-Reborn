@@ -575,6 +575,16 @@ internal sealed partial class MortalWoundCriticalReactionResolutionResult
     public bool IsValid { get; }
     public IReadOnlyList<ValidationIssue> Issues => _issues;
     public MortalWoundCriticalReactionIntent? Intent { get; }
+
+    internal static MortalWoundCriticalReactionResolutionResult Invalid(
+        ValidationIssue issue)
+    {
+        ArgumentNullException.ThrowIfNull(issue);
+        return new MortalWoundCriticalReactionResolutionResult(
+            false,
+            new[] { issue },
+            null);
+    }
 }
 
 internal sealed partial class MortalWoundCriticalReactionIntent

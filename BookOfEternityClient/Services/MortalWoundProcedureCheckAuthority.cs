@@ -54,6 +54,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
     private readonly ReadOnlyCollection<int> _sourceIndices;
     private readonly ReadOnlyCollection<int> _sourceRolls;
     private readonly MortalWoundProcedureDiceReservation _diceReservation;
+    private readonly MortalWoundCriticalReactionReservation?
+        _criticalReactionReservation;
 
     private MortalWoundProcedureCheckAuthority(
         string sourcePath,
@@ -73,7 +75,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string acceptedStateFingerprint,
         MortalWoundPreparedCriticalReaction? preparedCriticalReaction,
         string authorityFingerprint,
-        MortalWoundProcedureDiceReservation diceReservation)
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation)
     {
         SourcePath = sourcePath;
         RollMode = rollMode;
@@ -93,6 +96,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         PreparedCriticalReaction = preparedCriticalReaction;
         AuthorityFingerprint = authorityFingerprint;
         _diceReservation = diceReservation;
+        _criticalReactionReservation = criticalReactionReservation;
     }
 
     public string SourcePath { get; }
@@ -241,22 +245,32 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         }
 
         MortalWoundProcedureDiceReservation? reservation = null;
+        MortalWoundCriticalReactionReservation? criticalReactionReservation = null;
         var transferred = false;
         try
         {
-            var reservationResult = acceptedState.ReserveProcedureDice(
+            var reservationResult = acceptedState.ReserveProcedureReservations(
                 coordinates,
-                rollMode!);
-            if (!reservationResult.IsValid || reservationResult.Reservation is null)
+                rollMode!,
+                rollActorKind!,
+                rollActorId!);
+            if (!reservationResult.IsValid ||
+                reservationResult.DiceReservation is null)
                 return MortalWoundProcedureCheckAuthorityResult.Invalid(
                     reservationResult.Issues);
-            reservation = reservationResult.Reservation;
+            reservation = reservationResult.DiceReservation;
+            criticalReactionReservation =
+                reservationResult.CriticalReactionReservation;
 
             var selectedOrdinal = SelectSourceOrdinal(
                 reservation.SourceRolls,
                 rollMode!);
             var selectedSourceIndex = reservation.SourceIndices[selectedOrdinal];
             var naturalRoll = reservation.SourceRolls[selectedOrdinal];
+            var preparedCriticalReaction = criticalReactionReservation is null
+                ? null
+                : MortalWoundPreparedCriticalReaction.Create(
+                    criticalReactionReservation);
             var authorityFingerprint = ComputeAuthorityFingerprint(
                 LiveTurnPreparationService.TurnRequestPath,
                 rollMode!,
@@ -273,7 +287,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 requirementAuthority.AuthorityFingerprint,
                 coordinates.CoordinatesFingerprint,
                 coordinates.AcceptedStateFingerprint,
-                preparedReactionFingerprint: null);
+                preparedCriticalReaction?.PreparedReactionFingerprint);
             var authority = new MortalWoundProcedureCheckAuthority(
                 LiveTurnPreparationService.TurnRequestPath,
                 rollMode!,
@@ -290,9 +304,10 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 requirementAuthority.AuthorityFingerprint,
                 coordinates.CoordinatesFingerprint,
                 coordinates.AcceptedStateFingerprint,
-                preparedCriticalReaction: null,
+                preparedCriticalReaction,
                 authorityFingerprint,
-                reservation);
+                reservation,
+                criticalReactionReservation);
             transferred = true;
             return MortalWoundProcedureCheckAuthorityResult.Valid(authority);
         }
@@ -309,13 +324,19 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         finally
         {
             if (!transferred && reservation is not null)
-                acceptedState.ReleaseProcedureDice(reservation);
+            {
+                acceptedState.ReleaseProcedureReservations(
+                    reservation,
+                    criticalReactionReservation);
+            }
         }
     }
 
     internal bool ReleaseProvisionalReservations(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
-        acceptedState is not null && acceptedState.ReleaseProcedureDice(_diceReservation);
+        acceptedState is not null && acceptedState.ReleaseProcedureReservations(
+            _diceReservation,
+            _criticalReactionReservation);
 
     private static bool TryValidateRequirementAuthority(
         MortalWoundTreatmentAttemptCoordinates coordinates,
@@ -636,4 +657,15 @@ internal sealed partial class MortalWoundPreparedCriticalReaction
     public string TriggerId { get; }
     public string AcceptedEffectFingerprint { get; }
     public string PreparedReactionFingerprint { get; }
+
+    internal static MortalWoundPreparedCriticalReaction Create(
+        MortalWoundCriticalReactionReservation reservation)
+    {
+        ArgumentNullException.ThrowIfNull(reservation);
+        return new MortalWoundPreparedCriticalReaction(
+            reservation.EffectId,
+            reservation.TriggerId,
+            reservation.AcceptedEffectFingerprint,
+            reservation.PreparedReactionFingerprint);
+    }
 }
