@@ -14,6 +14,22 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
     private const string RequiredPath =
         "game_state/control/pending_mortal_wound_occurrences.json";
 
+    public static IEnumerable<object[]> LifecycleContextAuthorityAmbiguityRows()
+    {
+        var paths = new[]
+        {
+            LiveTurnPreparationService.TurnRequestPath,
+            "ready/turn_complete.json",
+            "game_state/control/validation_repair_request.json"
+        };
+        var properties = new[] { "sessionId", "requestId", "turnNumber" };
+        var mutations = new[] { "duplicate_exact", "case_alias" };
+        return from path in paths
+               from property in properties
+               from mutation in mutations
+               select new object[] { path, property, mutation };
+    }
+
     private readonly string _root;
     private readonly FileSystemManager _fs;
 
@@ -665,6 +681,88 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
     }
 
     [Theory]
+    [MemberData(nameof(LifecycleContextAuthorityAmbiguityRows))]
+    public async Task ReadCurrent_RejectsAmbiguousAuthorityFieldsInEveryLifecycleContext(
+        string path,
+        string property,
+        string mutation)
+    {
+        await _fs.WriteFileAtomicAsync(
+            RequiredPath,
+            "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        await WriteRawAmbiguousContextAsync(path, property, mutation);
+        var before = SnapshotTree();
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Null(result.Snapshot);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_context_invalid" &&
+            issue.FilePath == path);
+        AssertTreeEqual(before, SnapshotTree());
+    }
+
+    [Theory]
+    [InlineData("duplicate_exact")]
+    [InlineData("case_alias")]
+    public async Task ReadCurrent_RejectsAmbiguousRepairDiagnosticAuthority(string mutation)
+    {
+        const string path = "game_state/control/validation_repair_request.json";
+        await _fs.WriteFileAtomicAsync(
+            RequiredPath,
+            "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        var alias = mutation == "duplicate_exact"
+            ? "metadataDiagnosticOnly"
+            : "MetadataDiagnosticOnly";
+        await _fs.WriteFileAtomicAsync(
+            path,
+            "{\"sessionId\":\"snapshot-session-71\"," +
+            "\"requestId\":\"snapshot-request-71\"," +
+            "\"turnNumber\":71," +
+            "\"metadataDiagnosticOnly\":false," +
+            $"\"{alias}\":false}}");
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "pending_turn_snapshot_reader_context_invalid" &&
+            issue.FilePath == path);
+    }
+
+    [Theory]
+    [InlineData("ready/turn_complete.json")]
+    [InlineData("game_state/control/validation_repair_request.json")]
+    [InlineData(LiveTurnPreparationService.TurnRequestPath)]
+    public async Task ReadCurrent_AllowsDuplicateUnknownLifecyclePayloadFields(string path)
+    {
+        await _fs.WriteFileAtomicAsync(
+            RequiredPath,
+            "{\"schemaVersion\":1,\"occurrences\":[]}");
+        await PrepareAsync();
+        await _fs.WriteFileAtomicAsync(
+            path,
+            "{\"sessionId\":\"snapshot-session-71\"," +
+            "\"requestId\":\"snapshot-request-71\"," +
+            "\"turnNumber\":71," +
+            "\"payload\":\"first\",\"Payload\":\"second\"," +
+            "\"nested\":{\"value\":1,\"value\":2}}");
+
+        PendingTurnSnapshotReadResult result;
+        await using (var lease = await _fs.AcquireCanonicalWriteLeaseAsync())
+            result = PendingTurnSnapshotReader.ReadCurrent(_fs, lease, new[] { RequiredPath });
+
+        Assert.True(result.Success, Describe(result.Issues));
+    }
+
+    [Theory]
     [InlineData("")]
     [InlineData(" game_state/player/wounds.json")]
     [InlineData("game_state\\player\\wounds.json")]
@@ -792,6 +890,27 @@ public sealed class PendingTurnSnapshotReaderTests : IDisposable
         if (metadataDiagnosticOnly.HasValue)
             context["metadataDiagnosticOnly"] = metadataDiagnosticOnly.Value;
         return _fs.WriteFileAtomicAsync(path, context.ToJsonString());
+    }
+
+    private Task WriteRawAmbiguousContextAsync(
+        string path,
+        string property,
+        string mutation)
+    {
+        var alias = mutation == "duplicate_exact"
+            ? property
+            : char.ToUpperInvariant(property[0]) + property[1..];
+        var value = property == "turnNumber"
+            ? "71"
+            : property == "sessionId"
+                ? "\"snapshot-session-71\""
+                : "\"snapshot-request-71\"";
+        return _fs.WriteFileAtomicAsync(
+            path,
+            "{\"sessionId\":\"snapshot-session-71\"," +
+            "\"requestId\":\"snapshot-request-71\"," +
+            "\"turnNumber\":71," +
+            $"\"{alias}\":{value}}}");
     }
 
     private JsonObject ReadRoot(string path) =>

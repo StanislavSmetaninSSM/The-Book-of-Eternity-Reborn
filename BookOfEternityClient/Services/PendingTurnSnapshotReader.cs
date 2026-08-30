@@ -486,8 +486,16 @@ internal static class PendingTurnSnapshotReader
         {
             using var document = JsonDocument.Parse(json);
             var root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                HasAmbiguousContextAuthorityProperties(root, source.IsRepairRequest))
+            {
+                return new PendingTurnSnapshotContextRead(
+                    source.Path,
+                    PendingTurnSnapshotContextStatus.Invalid,
+                    null);
+            }
+
             if (source.IsRepairRequest &&
-                root.ValueKind == JsonValueKind.Object &&
                 root.TryGetProperty("metadataDiagnosticOnly", out var diagnosticNode))
             {
                 if (diagnosticNode.ValueKind is not (JsonValueKind.True or JsonValueKind.False))
@@ -507,8 +515,7 @@ internal static class PendingTurnSnapshotReader
                 }
             }
 
-            if (root.ValueKind != JsonValueKind.Object ||
-                !root.TryGetProperty("sessionId", out var sessionNode) ||
+            if (!root.TryGetProperty("sessionId", out var sessionNode) ||
                 sessionNode.ValueKind != JsonValueKind.String ||
                 !root.TryGetProperty("requestId", out var requestNode) ||
                 requestNode.ValueKind != JsonValueKind.String ||
@@ -546,6 +553,49 @@ internal static class PendingTurnSnapshotReader
                 PendingTurnSnapshotContextStatus.Invalid,
                 null);
         }
+    }
+
+    private static bool HasAmbiguousContextAuthorityProperties(
+        JsonElement root,
+        bool isRepairRequest)
+    {
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var property in root.EnumerateObject())
+        {
+            var canonicalName = ContextAuthorityPropertyName(
+                property.Name,
+                isRepairRequest);
+            if (canonicalName is null)
+                continue;
+            if (!string.Equals(property.Name, canonicalName, StringComparison.Ordinal) ||
+                !seen.Add(canonicalName))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static string? ContextAuthorityPropertyName(
+        string propertyName,
+        bool isRepairRequest)
+    {
+        if (string.Equals(propertyName, "sessionId", StringComparison.OrdinalIgnoreCase))
+            return "sessionId";
+        if (string.Equals(propertyName, "requestId", StringComparison.OrdinalIgnoreCase))
+            return "requestId";
+        if (string.Equals(propertyName, "turnNumber", StringComparison.OrdinalIgnoreCase))
+            return "turnNumber";
+        if (isRepairRequest && string.Equals(
+                propertyName,
+                "metadataDiagnosticOnly",
+                StringComparison.OrdinalIgnoreCase))
+        {
+            return "metadataDiagnosticOnly";
+        }
+
+        return null;
     }
 
     private static bool ContextsMatch(
