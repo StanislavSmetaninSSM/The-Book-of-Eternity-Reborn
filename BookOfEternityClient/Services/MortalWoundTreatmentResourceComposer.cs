@@ -12,29 +12,47 @@ internal sealed class MortalWoundTreatmentResourcePreparationResult
     private MortalWoundTreatmentResourcePreparationResult(
         bool isValid,
         IEnumerable<ValidationIssue> issues,
-        MortalWoundTreatmentResourceReservationAuthority? authority)
+        MortalWoundTreatmentResourceReservationAuthority? authority,
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
+        MortalWoundTreatmentResourceReservationOwnership? ownership)
     {
         IsValid = isValid;
         _issues = MortalWoundTreatmentShellDetachment.Freeze(issues);
         Authority = authority;
+        AcceptedState = acceptedState;
+        Ownership = ownership;
     }
 
     public bool IsValid { get; }
     public IReadOnlyList<ValidationIssue> Issues => _issues;
     public MortalWoundTreatmentResourceReservationAuthority? Authority { get; }
 
+    internal MortalWoundTreatmentAcceptedStateAuthority? AcceptedState { get; }
+    internal MortalWoundTreatmentResourceReservationOwnership? Ownership { get; }
+
     internal static MortalWoundTreatmentResourcePreparationResult Valid(
-        MortalWoundTreatmentResourceReservationAuthority authority)
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentResourceReservationAuthority authority,
+        MortalWoundTreatmentResourceReservationOwnership ownership)
     {
+        ArgumentNullException.ThrowIfNull(acceptedState);
         ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(ownership);
         return new MortalWoundTreatmentResourcePreparationResult(
             true,
             Array.Empty<ValidationIssue>(),
-            authority);
+            authority,
+            acceptedState,
+            ownership);
     }
 
     internal static MortalWoundTreatmentResourcePreparationResult Invalid(
-        IEnumerable<ValidationIssue> issues) => new(false, issues, null);
+        IEnumerable<ValidationIssue> issues) => new(
+        false,
+        issues,
+        null,
+        null,
+        null);
 }
 
 internal sealed class MortalWoundTreatmentResourceClaim
@@ -372,6 +390,27 @@ internal static class MortalWoundTreatmentResourceComposer
         requirementAuthority,
         modeAuthority);
 
+    internal static bool RollbackNew(
+        MortalWoundTreatmentResourcePreparationResult? preparation)
+    {
+        if (preparation is not
+            {
+                IsValid: true,
+                Authority: not null,
+                AcceptedState: not null,
+                Ownership: not null
+            } ||
+            preparation.Issues.Count != 0)
+        {
+            return false;
+        }
+
+        return preparation.AcceptedState.RollbackNewTreatmentResources(
+            ResourceReservationCapability,
+            preparation.Ownership,
+            preparation.Authority);
+    }
+
     private static MortalWoundTreatmentResourcePreparationResult Prepare(
         string mode,
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
@@ -458,9 +497,13 @@ internal static class MortalWoundTreatmentResourceComposer
             mode,
             modeAuthority,
             candidate);
-        return reservation.IsValid && reservation.Authority is not null
+        return reservation.IsValid &&
+               reservation.Authority is not null &&
+               reservation.Ownership is not null
             ? MortalWoundTreatmentResourcePreparationResult.Valid(
-                reservation.Authority)
+                acceptedState,
+                reservation.Authority,
+                reservation.Ownership)
             : MortalWoundTreatmentResourcePreparationResult.Invalid(
                 reservation.Issues);
     }

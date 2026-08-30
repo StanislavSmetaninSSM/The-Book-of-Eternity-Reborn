@@ -812,6 +812,18 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             modeAuthority,
             candidate);
 
+    internal bool RollbackNewTreatmentResources(
+        object reservationCapability,
+        MortalWoundTreatmentResourceReservationOwnership ownership,
+        MortalWoundTreatmentResourceReservationAuthority authority) =>
+        AcceptedTurnAuthorityRegistry.RollbackNewMortalWoundTreatmentResources(
+            _fileSystem,
+            _writeLease,
+            this,
+            reservationCapability,
+            ownership,
+            authority);
+
     internal bool TryReadProcedureDicePool(
         object readCapability,
         out int[] acceptedD20EventValues,

@@ -59,6 +59,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         _criticalReactionReservation;
     private readonly MortalWoundCriticalReactionReservationAgreement?
         _criticalReactionAgreement;
+    private readonly MortalWoundProcedureReservationOwnership _reservationOwnership;
 
     internal static bool IsProcedureReservationCapability(object capability) =>
         ReferenceEquals(capability, ProcedureReservationCapability);
@@ -83,7 +84,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string authorityFingerprint,
         MortalWoundProcedureDiceReservation diceReservation,
         MortalWoundCriticalReactionReservation? criticalReactionReservation,
-        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement)
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        MortalWoundProcedureReservationOwnership reservationOwnership)
     {
         SourcePath = sourcePath;
         RollMode = rollMode;
@@ -105,6 +107,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         _diceReservation = diceReservation;
         _criticalReactionReservation = criticalReactionReservation;
         _criticalReactionAgreement = criticalReactionAgreement;
+        _reservationOwnership = reservationOwnership;
     }
 
     public string SourcePath { get; }
@@ -325,7 +328,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 authorityFingerprint,
                 reservation,
                 criticalReactionReservation,
-                criticalReactionAgreement);
+                criticalReactionAgreement,
+                reservationOwnership);
             transferred = true;
             return MortalWoundProcedureCheckAuthorityResult.Valid(authority);
         }
@@ -360,6 +364,14 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             _diceReservation,
             _criticalReactionReservation,
             _criticalReactionAgreement);
+
+    internal bool RollbackNewProvisionalReservations(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
+        acceptedState is not null && acceptedState.RollbackNewProcedureReservations(
+            _diceReservation,
+            _criticalReactionReservation,
+            _criticalReactionAgreement,
+            _reservationOwnership);
 
     internal bool HasLiveReservationAgreement(
         object liveCheckCapability,

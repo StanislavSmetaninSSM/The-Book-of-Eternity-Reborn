@@ -6,7 +6,8 @@ namespace BookOfEternityClient.Services;
 internal sealed record MortalWoundTreatmentResourceReservationResult(
     bool IsValid,
     IReadOnlyList<ValidationIssue> Issues,
-    MortalWoundTreatmentResourceReservationAuthority? Authority);
+    MortalWoundTreatmentResourceReservationAuthority? Authority,
+    MortalWoundTreatmentResourceReservationOwnership? Ownership = null);
 
 internal sealed class MortalWoundTreatmentResourceReservationAgreement
 {
@@ -155,6 +156,49 @@ internal sealed class MortalWoundTreatmentResourceReservationAgreement
     }
 }
 
+internal sealed class MortalWoundTreatmentResourceReservationOwnership
+{
+    private readonly MortalWoundTreatmentResourceReservationAgreement _agreement;
+    private readonly MortalWoundTreatmentResourceReservationAuthority _authority;
+
+    private MortalWoundTreatmentResourceReservationOwnership(
+        MortalWoundTreatmentResourceReservationAgreement agreement,
+        MortalWoundTreatmentResourceReservationAuthority authority,
+        bool wasCreated)
+    {
+        _agreement = agreement;
+        _authority = authority;
+        WasCreated = wasCreated;
+    }
+
+    internal string OperationKey => _agreement.OperationKey;
+    internal bool WasCreated { get; }
+
+    internal static MortalWoundTreatmentResourceReservationOwnership Create(
+        object registryCapability,
+        MortalWoundTreatmentResourceReservationAgreement agreement,
+        bool wasCreated)
+    {
+        if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
+                registryCapability))
+        {
+            throw new InvalidOperationException(
+                "Treatment resource ownership requires registry authority.");
+        }
+        ArgumentNullException.ThrowIfNull(agreement);
+        return new MortalWoundTreatmentResourceReservationOwnership(
+            agreement,
+            agreement.Authority,
+            wasCreated);
+    }
+
+    internal bool Matches(
+        MortalWoundTreatmentResourceReservationAgreement agreement,
+        MortalWoundTreatmentResourceReservationAuthority authority) =>
+        ReferenceEquals(_agreement, agreement) &&
+        ReferenceEquals(_authority, authority);
+}
+
 internal sealed class MortalWoundTreatmentResourceReservationRegistry
 {
     private const string IssuePath = "treatmentAttempt.resources";
@@ -193,7 +237,12 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
                 out var existing))
         {
             return existing.Agrees(coordinates, mode, candidate)
-                ? Valid(existing.Authority)
+                ? Valid(
+                    existing.Authority,
+                    MortalWoundTreatmentResourceReservationOwnership.Create(
+                        registryCapability,
+                        existing,
+                        wasCreated: false))
                 : Invalid(
                     "mortal_wound_treatment_resource_reservation_conflict",
                     "the exact prior resource agreement for this operation key",
@@ -214,7 +263,35 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
             mode,
             candidate);
         _byOperationKey.Add(coordinates.OperationKey, agreement);
-        return Valid(candidate);
+        return Valid(
+            candidate,
+            MortalWoundTreatmentResourceReservationOwnership.Create(
+                registryCapability,
+                agreement,
+                wasCreated: true));
+    }
+
+    internal bool RollbackNew(
+        object registryCapability,
+        MortalWoundTreatmentResourceReservationOwnership ownership,
+        MortalWoundTreatmentResourceReservationAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(ownership);
+        ArgumentNullException.ThrowIfNull(authority);
+        if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
+                registryCapability) ||
+            !_byOperationKey.TryGetValue(
+                ownership.OperationKey,
+                out var current) ||
+            !ownership.Matches(current, authority))
+        {
+            return false;
+        }
+
+        if (!ownership.WasCreated)
+            return true;
+        _byOperationKey.Remove(ownership.OperationKey);
+        return true;
     }
 
     internal void InvalidateAll() => _byOperationKey.Clear();
@@ -310,10 +387,12 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
           !string.IsNullOrWhiteSpace(candidate.ReservationId)));
 
     private static MortalWoundTreatmentResourceReservationResult Valid(
-        MortalWoundTreatmentResourceReservationAuthority authority) => new(
+        MortalWoundTreatmentResourceReservationAuthority authority,
+        MortalWoundTreatmentResourceReservationOwnership ownership) => new(
         true,
         Array.Empty<ValidationIssue>(),
-        authority);
+        authority,
+        ownership);
 
     internal static MortalWoundTreatmentResourceReservationResult Invalid(
         string code,

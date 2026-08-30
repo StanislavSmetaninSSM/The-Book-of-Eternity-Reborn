@@ -452,6 +452,38 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static bool RollbackNewMortalWoundTreatmentResources(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        object reservationCapability,
+        MortalWoundTreatmentResourceReservationOwnership ownership,
+        MortalWoundTreatmentResourceReservationAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(ownership);
+        ArgumentNullException.ThrowIfNull(authority);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .RollbackNewMortalWoundTreatmentResources(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    reservationCapability,
+                    ownership,
+                    authority);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
     private static MortalWoundProcedureReservationSetResult
         MortalWoundProcedureReservationSetRegistryFailure(
             string expected,
@@ -779,6 +811,29 @@ internal static class AcceptedTurnAuthorityRegistry
                     coordinates,
                     mode,
                     candidate);
+            }
+        }
+
+        internal bool RollbackNewMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object reservationCapability,
+            MortalWoundTreatmentResourceReservationOwnership ownership,
+            MortalWoundTreatmentResourceReservationAuthority authority)
+        {
+            lock (_gate)
+            {
+                return MortalWoundTreatmentResourceComposer
+                           .IsResourceReservationCapability(reservationCapability) &&
+                       ReferenceEquals(
+                           _mortalWoundTreatmentAcceptedState,
+                           acceptedState) &&
+                       acceptedState.IsLeaseBoundTo(fileSystem, writeLease) &&
+                       _treatmentResources.RollbackNew(
+                           TreatmentResourceRegistryCapability,
+                           ownership,
+                           authority);
             }
         }
 
