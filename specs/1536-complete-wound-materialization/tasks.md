@@ -1156,11 +1156,29 @@ entrypoints require no update for T065.
   validator/export contract, focused GM documentation/example/source guard, and strict
   optional-snapshot case/duplicate coverage. Projection-shaped NPC/location shadow
   fields MUST grant no authority.
+  The adapter MUST retain a known off-scene NPC as `reachable=false`; map player active,
+  NPC active, and passive mastery only from their explicit canonical sources without an
+  invented tier; keep terminal regular quests queryable by mapped status; derive item
+  availability from identity/carrier quantity only; and filter the resource quartet to
+  representable non-negative signed-32-bit Mortal actor integer rows. It MUST map
+  `combat_group_member` to `combatant_member`, preserve suspended rows as inactive with
+  zero availability, and ignore valid decimal/non-actor/foreign/out-of-range siblings
+  rather than invalidating unrelated authority. `Context` admission MUST require exact
+  version 1 plus recomputable parser-origin provenance.
+  Registered treatment kinds are location-container-only: link `customStates[]` rejects
+  them; identifier uniqueness excludes environment state; two environments may share one
+  exact state. Existing-location authoring uses the complete replacement array in
+  `worldMapUpdates.locationUpdates[]` and preserves unrelated siblings; new selected and
+  remote locations use their complete ordinary creation envelopes. RED coverage MUST pin
+  raw/canonical/new/update/link containers and world-map/current-location publication
+  agreement.
   The documentation slice updates `OtherGuides/Wound_Materialization_Contract.md`, one
-  worked current-location case in `Examples/E_Block_21.txt`,
-  `Examples/example_validation_manifest.json`, and
-  `PromptDocumentationCoverageTests.Wounds.cs`; the existing daemon entrypoint already
-  loads that guide and therefore needs no code change.
+  compact worked case in a new `Examples/E_CLI_Wound_Materialization.txt`,
+  `Examples/example_validation_manifest.json`, `BookOfEternityClient/game_master_daemon.ps1`,
+  and `PromptDocumentationCoverageTests.Wounds.cs`. The daemon MUST copy the worked example
+  and its always-read compact Mortal-location template/directive MUST name the copied wound
+  guide/example whenever these scene rows are authored; context-pack copying alone is not
+  sufficient guidance.
 - [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
   production treatment resolver in two explicit phases around T068: deterministic request/attempt/
   course identities; strict response adaptation and repair; exact six-argument request

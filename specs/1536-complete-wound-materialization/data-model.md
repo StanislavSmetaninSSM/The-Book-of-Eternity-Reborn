@@ -2514,6 +2514,32 @@ selected requirement with a reference-specific cross-realm or ambiguity issue in
 of letting a parser silently choose one. Resolver output remains the separately sealed
 evidence described in the plan and cannot expose mutation or reservation intents.
 
+Canonical-to-transient mapping is closed:
+
+- current item carrier plus identity/current-transition quantity agreement projects only
+  active carried rows; before T068, canonical count is both total and available and the
+  reservation state is `available`;
+- the resource definition/state/history/recomposed-owner quartet projects only
+  `mortal_world`, integer, non-negative signed-32-bit rows owned by
+  `player|npc|combatant|combat_group_member`; the last kind maps to
+  `combatant_member`. Active rows expose their current value as available; suspended rows
+  remain `lifecycle=active`, `active=false`, available zero. Valid decimal, non-actor,
+  foreign-realm, negative, or out-of-range siblings are omitted rather than invalidating
+  unrelated accepted authority;
+- player/NPC active/passive catalog membership supplies active lifecycle. Player active
+  tier comes from the exact canonical mastery row, NPC active tier from
+  `currentMasteryLevel`, and passive tier from `masteryLevel`. A valid active skill with
+  no applicable mastery emits no tier row and never receives an invented zero/test tier;
+- exact retained regular `quests[]` members map `status` to transient `state` and remain
+  current/active query rows even when the status is completed or failed;
+- an exact known NPC outside `NPCsInScene` remains an actor with `reachable=false`; only
+  exact scene membership grants presence/reachability. Combat presence comes only from
+  signed enemy/ally roots plus combat identity/promotion agreement, never a wound.
+
+The parsed `Context` has private parser-origin provenance over its version and visible
+coordinates. Accepted-state export requires version 1 and recomputes that provenance;
+direct construction, a forged copy, or a missing/mismatched parser seal is invalid.
+
 The completed T060 projection and its resolved row shape remain unchanged. In
 particular, transient `actors[].capabilities[]` rows do not carry treatment guarantees
 or source-contract fingerprints and parsing such a row never grants provenance.
@@ -2521,8 +2547,8 @@ or source-contract fingerprints and parsing such a row never grants provenance.
 ### Canonical Mortal treatment scene states
 
 The exact accepted current Mortal location may register treatment-only scene authority
-inside its existing `customStates[]`. Only the following three exact `kind` values grant
-authority; every recognized object is closed and has `schemaVersion=1`:
+inside its existing location `customStates[]`. Only the following three exact `kind`
+values grant authority; every recognized object is closed and has `schemaVersion=1`:
 
 | `kind` | Exact remaining fields | Projection rule |
 |---|---|---|
@@ -2531,14 +2557,23 @@ authority; every recognized object is closed and has `schemaVersion=1`:
 | `mortal_wound_treatment_consent` | exact `consentRef`, non-empty `displayName`, `providerKind`, exact `providerId`, `targetKind`, exact `targetId`, `status=granted|withdrawn` | the exporter must resolve both typed actors exactly once in the same current location; lifecycle=`active`, active=`true`; the row is attached to the exact provider actor in the transient projection |
 
 Actor kinds are exactly `player|npc|combatant|combatant_member`. Facility IDs,
-environment IDs, consent refs, and environment state values are exact/confusable-unique
-within their registered kind. Unrecognized `customStates[]` rows remain setting data and
+environment IDs, and consent refs are exact/confusable-unique within their registered
+kind. Environment state is an exact setting-specific value bound to one environment ID,
+but two distinct environment IDs may share it. Unrecognized location `customStates[]`
+rows remain setting data and
 cannot satisfy a treatment requirement. A recognized malformed, duplicate, confusable,
 wrong-location, or unresolved-actor row invalidates scene authority; it is not ignored.
 Removing a registered row makes that exact authority absent. Retaining a facility with
 `available=false` or consent with `status=withdrawn` preserves trustworthy negative
 evidence for the unchanged T060 classifier. No recognized row may carry lifecycle,
 reservation, fingerprint, location, or client-owned authority fields.
+
+These kinds are reserved to location containers. A raw or canonical location, a same-turn
+new-location candidate, and `worldMapUpdates.locationUpdates[]` validate them through an
+explicit location-container entry point. A link `customStates[]` containing a reserved
+treatment kind is invalid. For an existing location the update supplies the complete
+replacement array and preserves unrelated siblings; new selected/remote locations carry
+the complete array in their ordinary full creation envelope.
 
 ### Canonical Mortal wound-treatment skill capability
 

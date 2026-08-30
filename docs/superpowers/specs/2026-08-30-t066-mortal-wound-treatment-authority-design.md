@@ -62,15 +62,23 @@ Under the supplied live canonical lease it must:
 Signed bytes are necessary but do not by themselves establish a canonical source
 contract. The exporter therefore uses these exact adapters:
 
-- current item carriers plus the item identity/transition quantity agreement;
+- current item carriers plus item identity/current-transition quantity agreement; only
+  active carrier rows project, with canonical count as total/available and
+  `reservationState=available` until T068;
 - resource definitions, state, history, and recomposed persisted owner-authority
-  agreement, all from the same signed snapshot;
+  agreement, all from the same signed snapshot. Project only non-negative signed-32-bit
+  integer Mortal actor rows; translate `combat_group_member` to `combatant_member`, map
+  active to current availability and suspended to active lifecycle plus inactive/zero
+  availability, and omit valid decimal/non-actor/foreign/out-of-range siblings;
 - exact canonical current location agreed with world map and location identity;
-- player presence, exact `NPCsInScene` membership, and exact signed combat roots for
-  actor co-presence/reachability;
-- active/passive catalog membership for current skill lifecycle and the canonical
-  mastery field for tier;
-- canonical regular-quest `status` and accepted effect mechanics;
+- player presence, all exact known NPC identities, exact `NPCsInScene` membership, and
+  exact signed combat roots for actor co-presence/reachability. A known off-scene NPC is
+  retained with `reachable=false`; wound occurrences grant no combat presence;
+- active/passive catalog membership for current skill lifecycle; player active tier comes
+  from the exact mastery row, NPC active tier from `currentMasteryLevel`, and passive tier
+  from `masteryLevel`. A valid active skill without applicable mastery emits no tier row;
+- canonical regular-quest `status` mapped to transient `state` while every retained quest,
+  including completed/failed, remains a current active query row; accepted effect mechanics;
 - the three recognized closed treatment scene states described below.
 
 The exporter must not read NPC `lifecycle/active/reachable/consents`, current-location
@@ -81,7 +89,7 @@ duplicates, or asymmetric file/hash coverage are rejected.
 
 #### Registered treatment scene states
 
-The existing canonical current location `customStates[]` gains three recognized,
+The existing canonical current location location-container `customStates[]` gains three recognized,
 strictly closed version-1 kinds:
 
 - `mortal_wound_treatment_facility` with `facilityId`, diagnostic `displayName`, and
@@ -94,10 +102,20 @@ strictly closed version-1 kinds:
 These are registrations of arbitrary world-specific scene facts, not a catalog of
 facilities, cures, environments, or wounds. Exact current-location membership derives
 realm, location, active lifecycle, and current presence. Consent actors must resolve
-exactly once among the composed current actors. IDs and state values are exact and
-confusable-unique within their kind. Unrecognized custom states remain ordinary setting
+exactly once among the composed current actors. Facility IDs, environment IDs, and
+consent refs are exact/confusable-unique within their kind. State values are exact but
+may repeat for distinct environment IDs. Unrecognized location custom states remain ordinary setting
 data and never grant authority. An unavailable facility and withdrawn consent remain
 valid negative predicate evidence; removing a row makes it absent.
+
+Reserved treatment kinds in link `customStates[]` are invalid. The shared validator must
+receive an explicit location/link container discriminator or expose separate entry
+points. Raw/canonical locations, current-scene creation, remote-location creation, and
+known-location updates use the location entry point; link creation/canonical validation
+uses the link entry point. Existing locations author a complete replacement array only
+through `worldMapUpdates.locationUpdates[]` and preserve all unrelated siblings. New
+selected/remote locations carry the full array through their ordinary complete
+`currentLocationData` / `worldMapUpdates.newLocations[]` envelopes.
 
 The result contains exactly `IsValid`, frozen issues, and nullable authority. The authority has no public constructor and exposes no `JsonNode`, `JsonElement`, `JsonDocument`, dice collection, mutation, reservation, absolute-root identity, or caller fingerprint. Runtime root/revision data may remain private admission state; durable fingerprints use stable semantic coordinates so a cold copy to another root remains replayable.
 
@@ -113,6 +131,11 @@ authority. A cache hit is never decided from only context/wound IDs and never sk
 candidate validation.
 
 Malformed, ambiguous, or structurally incomplete canonical selection evidence fails closed. A structurally valid negative predicate such as withdrawn consent, insufficient quantity, or an unreachable provider remains detached snapshot evidence for requirement classification; it is not itself an accepted-state parser error. Tests must use validator-accepted canonical source fixtures. Production derives only contract-defined facts such as current-catalog lifecycle and exact-scene reachability; it never supplies favorable fallback values for missing source data.
+
+`Context` is admissible only when it carries private origin evidence produced by the
+strict version-1 `ParseContext` path. `ExportCurrent` independently checks schema version
+and recomputes that evidence before any snapshot read; direct construction, a copied
+record with changed visible coordinates, or absent/mismatched provenance fails closed.
 
 ### Attempt, time, and course authorities
 
@@ -231,8 +254,12 @@ At every checkpoint retain the completed T060 authority class green, then run th
 
 T066 adds no reachable player command, pending/control file, player projection, or
 publication path. It does, however, register three GM-authored semantic kinds inside the
-existing Mortal location `customStates[]` surface. The Mortal wound guide, one worked
-location/treatment example, its manifest/source guard, and the launcher/daemon guidance
-must describe those kinds in this change. T072-T074 still own the complete later
+existing Mortal location `customStates[]` surface. The Mortal wound guide, a new compact
+worked `Examples/E_CLI_Wound_Materialization.txt`, its manifest/source guard, the daemon
+context-pack registration, and the always-read compact Mortal-location template/directive
+must describe the legal existing/new-location routes and sibling preservation in this
+change. The compact template explicitly tells the GM to open the copied wound guide and
+worked example when authoring these rows; merely copying a guide is not treated as proof
+that the GM read it. T072-T074 still own the complete later
 treatment response and player-command workflow. Chaos Sea and Shining Abode contracts
 are unchanged, so afterlife matrix/example/manifest files require no T066 update.

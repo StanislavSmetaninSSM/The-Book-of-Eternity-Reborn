@@ -545,27 +545,43 @@ non-authoritative diagnostics. Actor entries additionally carry exact reachabili
 target-specific treatment consent.
 
 The production T066 adapter does not accept lookalike fields from a signed file merely
-because they match the transient projection. Item rows come from exact current carrier
-plus item-identity/quantity agreement. Resource rows come from the registered resource
-definition, state, history, and recomposed owner-authority agreement. Player/NPC skill
-tier is read from the canonical mastery field for that skill kind, and membership in a
-current active/passive catalog supplies current lifecycle rather than ad-hoc
-`lifecycle`/`active` fields. Regular Mortal quests use their canonical `status`.
+because they match the transient projection. It uses this exact projection policy:
+
+| Transient row | Canonical source and mapping |
+|---|---|
+| Item | Exact active current item carrier plus item identity/current-transition quantity agreement. `count` is the canonical positive stack quantity; before T068, `availableCount=count`, `reservationState=available`, `lifecycle=active`, and `active=true`. Retired identities without a current carrier are not projected. |
+| Resource | The validated definition/state/history quartet plus recomposed persisted owner authority. Project only `mortal_world` integer resources owned by `player|npc|combatant|combat_group_member`, translate the last kind to `combatant_member`, and require a non-negative integral `current` within signed-32-bit range. Valid decimal, foreign-realm, non-actor, negative, or out-of-range sibling rows remain valid canonical data but are omitted. Before T068 an active row uses `availableValue=currentValue`, `reservationState=available`, `lifecycle=active`, `active=true`; a suspended row uses zero availability, `reservationState=available`, `lifecycle=active`, `active=false`. |
+| NPC actor | Exact canonical NPC membership supplies identity/lifecycle. Exact `NPCsInScene` membership at the agreed current location alone supplies `reachable=true` and presence. A known NPC outside that array remains projected with its canonical location and `reachable=false`; it is not absent or invalid merely for being off-scene. |
+| Combat actor | Exact signed current enemy/ally roots and their canonical combat identity/promotion agreement supply `combatant|combatant_member` identity and current-scene presence. Wound occurrences never create combat actors. |
+| Player/NPC skill | Current active/passive catalog membership supplies `lifecycle=active` and `active=true`; no source `lifecycle`, `active`, or test-only `tier` field is read. Player active tier comes from the exact matching canonical mastery row, NPC active tier from its canonical `currentMasteryLevel`, and passive tier from `masteryLevel`. A production-valid current active skill without applicable mastery remains a valid skill/capability source but emits no `skill_tier` row; no zero or favorable tier is invented. |
+| Regular quest | Every exact retained `quests[]` member maps canonical `status` to transient `state`, with `lifecycle=active` and `active=true` even for completed/failed terminal status. |
+
 Current-location identity must agree with the world map and location identity index;
 player presence, exact `NPCsInScene` membership, and signed current combat roots compose
 co-presence. NPC `reachable`, location `presentActors/resources/facilities`, wound
-occurrences, and other unregistered shadow fields grant no authority.
+occurrences, and other unregistered shadow fields grant no authority. Malformed canonical
+collections fail the accepted-state export; a valid non-projectable sibling does not.
 
 Facility, environment, and consent use three closed version-1 registered members of the
-already canonical current location's `customStates[]`:
+already canonical current location's location `customStates[]`:
 `mortal_wound_treatment_facility`, `mortal_wound_treatment_environment`, and
 `mortal_wound_treatment_consent`. These rows are GM-authored setting semantics but are
 strictly shape-validated and re-bound by the client. Their exact IDs and environment
 states are world-specific; there is no universal facility, medicine, environment, or
-wound catalog. Absence means no current authority. A retained facility with
+wound catalog. Facility IDs, environment IDs, and consent refs are exact/confusable-
+unique inside their respective kind; two distinct environments may legitimately share
+the same exact state value. Reserved treatment kinds in link `customStates[]` are invalid.
+Absence means no current authority. A retained facility with
 `available=false` and a retained consent with `status=withdrawn` are valid negative
 predicate evidence. Membership in the exact current location supplies active lifecycle;
 moving/removing the row makes the old reference absent rather than silently portable.
+
+The GM authors these rows only through existing location routes. A known location uses
+`worldMapUpdates.locationUpdates[]` and supplies the complete replacement
+`customStates[]`, preserving every unrelated existing member. A newly selected location
+uses its complete `currentLocationData` creation envelope; a newly materialized remote
+location uses `worldMapUpdates.newLocations[]`. Treatment rows never use
+`currentLocationData` as a full resend for a known location and never belong to a link.
 
 Tests and integration adapters obtain those types only through the production-owned
 `ParseContext(json, path)` and `ParseSnapshot(json, path)` entry points on
@@ -578,6 +594,10 @@ type or retain `JsonNode`, `JsonElement`, or `JsonDocument` anywhere in the pars
 graph, and no caller may pass `JsonObject` to `ResolveRequirements`. The transient JSON
 exists only as a strict adapter/testing seam for already-authoritative canonical exports
 and is never a second persisted game-state or GM response contract.
+`Context` also carries private parser-origin provenance bound to its canonical fields;
+`ExportCurrent` recomputes and requires that provenance and `schemaVersion=1`. A directly
+constructed, copied-with-mutated-fields, wrong-version, or missing-provenance value is
+invalid even when its visible properties look source-shaped.
 
 The resolver returns an externally immutable detached
 `MortalWoundRequirementAuthorityResult` containing

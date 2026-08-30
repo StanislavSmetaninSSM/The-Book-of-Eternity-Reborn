@@ -1315,11 +1315,21 @@ array or an NPC `consents/reachable` field:
 ```
 
 The IDs and environment state are setting-specific exact identifiers, not entries in a
-global catalog. The client validates the closed shapes and uniqueness, inherits
+global catalog. Facility IDs, environment IDs, and consent refs are exact/confusable-
+unique; state values are exact but may repeat for distinct environment IDs. The client
+validates the closed shapes and identifier uniqueness, inherits
 realm/location/current lifecycle only from the exact canonical location, and re-resolves
 both consent actors against current co-presence. Unrecognized custom states never grant
 treatment mechanics. A present unavailable facility or withdrawn consent remains valid
 negative evidence; deleting or moving the row makes the old authority absent.
+
+The registered kinds are valid only in a location container and are rejected from link
+`customStates[]`. For an existing location the GM uses
+`worldMapUpdates.locationUpdates[]` and sends the complete replacement `customStates[]`,
+including every unrelated sibling that must survive. A same-turn new selected location
+uses its complete `currentLocationData` creation envelope; a same-turn new remote
+location uses `worldMapUpdates.newLocations[]`. A known `currentLocationData` full resend
+is not an authoring route for these rows.
 
 ## Resource and item handling
 

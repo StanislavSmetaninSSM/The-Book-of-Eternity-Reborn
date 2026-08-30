@@ -205,14 +205,19 @@ git commit -m "feat(wounds): validate treatment skill capabilities (#1536)"
 - Create: `BookOfEternityClient/Services/MortalWoundTreatmentSceneAuthorityContract.cs`
 - Modify: `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs`
 - Modify: `BookOfEternityClient/Services/MortalLocationCustomStateContract.cs`
+- Modify: `BookOfEternityClient/Services/MortalLocationAcceptedTurnPlanner.cs` only if the
+  existing location-update validation does not already route through the explicit
+  location-container contract without dropping unrelated siblings
 - Modify: `BookOfEternityClient/Services/PendingTurnSnapshotReader.cs`
 - Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentCapabilityAuthorityTests.cs` only where a fixture lacks required canonical actor/location/co-presence source rows
 - Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs` only where the same source-shaped fixture omission exists
 - Modify: `BookOfEternityClient.Tests/PendingTurnSnapshotReaderTests.cs`
 - Modify: `BookOfEternityClient.Tests/MortalLocationMaterializationContractTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalLocationMaterializationLifecycleTests.cs`
 - Modify: `OtherGuides/Wound_Materialization_Contract.md`
-- Modify: `Examples/E_Block_21.txt`
+- Create: `Examples/E_CLI_Wound_Materialization.txt`
 - Modify: `Examples/example_validation_manifest.json`
+- Modify: `BookOfEternityClient/game_master_daemon.ps1`
 - Modify: `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs`
 
 **Interfaces:**
@@ -262,7 +267,23 @@ Expected: 0/1 because `MortalWoundTreatmentAcceptedStateAuthority` is absent.
 
 - [ ] **Step 2: Add canonical source-fault RED cases**
 
-Add method-level cases for stale lease/snapshot, changed wound carrier versus identity/history, missing accepted event, ambiguous player/NPC/combat coordinate, malformed required root, structurally valid withdrawn consent, structurally valid unavailable resource, and detached output after persisted-root mutation. The last two must export valid accepted state; later requirement classification owns their negative result. Build these tests from actual canonical resource definition/state/history/owner agreement, item carrier/identity agreement, exact current-location/world-map/identity agreement, `NPCsInScene`, signed combat roots, canonical skill mastery, regular-quest `status`, and the registered scene-state contract. Add explicit RED cases proving projection-shaped NPC/location shadow fields grant nothing.
+Add method-level cases for stale lease/snapshot, changed wound carrier versus identity/history, missing accepted event, ambiguous player/NPC/combat coordinate, malformed required root, structurally valid withdrawn consent, structurally valid unavailable resource, and detached output after persisted-root mutation. The last two must export valid accepted state; later requirement classification owns their negative result. Build these tests from actual canonical resource definition/state/history/owner agreement, item carrier/identity agreement, exact current-location/world-map/identity agreement, all known NPC rows plus `NPCsInScene`, signed combat roots, canonical skill mastery, regular-quest `status`, and the registered scene-state contract. Add explicit RED cases proving projection-shaped NPC/location shadow fields grant nothing.
+
+Pin the complete translation boundary: an off-scene known NPC remains projected with
+`reachable=false`; completed/failed regular quests remain queryable by exact status; a
+production-valid active skill without applicable mastery gets no invented tier; item
+quantity/availability comes only from carrier/identity agreement; valid decimal and
+non-actor resource siblings do not poison accepted state; integral overflow is not
+silently truncated; `combat_group_member` maps to `combatant_member`; and suspended
+resources remain trusted inactive/zero-availability rows. Add direct-constructed,
+wrong-version, copied-with-mutated-fields, and missing-provenance Context cases.
+
+For scene-state validation, pin raw/canonical/current-scene/new-location/location-update
+location containers and link containers. Reserved kinds in links fail. Duplicate and
+case-confusable member names fail. Two distinct environment IDs may share one exact state,
+while duplicate/confusable environment IDs fail. The accepted location-update test must
+prove the full replacement array preserves unrelated custom-state siblings and agrees
+between `world_map` and `current_location` after publication.
 
 ```csharp
 [Theory]
@@ -305,23 +326,33 @@ wound IDs, and never let a hit skip current signed-snapshot validation.
 
 Resource authority must validate the signed definition/state/history/persisted-owner
 quartet against a recomposed owner authority using only signed source roots. Items must
-agree with their canonical identity and current transition quantity. Actor presence is
-derived from player, exact `NPCsInScene`, and signed combat roots; current-location
-identity is independently agreed with world map and location identity. Skill tier comes
-from the canonical mastery field and current catalog membership supplies lifecycle.
-Regular quests use `status`. Facility/environment/consent come only from the three
-closed version-1 registered `customStates[]` kinds in the exact current location.
+agree with their canonical identity and current transition quantity; before T068 their
+exact current count is available and unreserved. Resource projection admits only
+non-negative signed-32-bit integer Mortal actor rows, maps
+`combat_group_member -> combatant_member`, maps active/suspended as specified in the data
+model, and omits otherwise-valid non-projectable siblings. Actor identity includes known
+off-scene NPCs; only exact `NPCsInScene` and signed combat roots grant current presence.
+Current-location identity is independently agreed with world map and location identity.
+Skill tier follows the four explicit player/NPC active/passive mastery mappings and is
+absent rather than invented when mastery is unavailable. Regular quests map `status` to
+transient `state` without retiring terminal rows. Facility/environment/consent come only
+from the three closed version-1 registered location `customStates[]` kinds in the exact
+current location. `ExportCurrent` rejects any Context lacking recomputable parser-origin
+provenance or exact version 1.
 
 Harden optional snapshot selection in the same slice: resolve keys ordinally and reject
 case variants, raw duplicate keys, exact-plus-case aliases, asymmetric file/hash rows,
 or more than 64 actually enumerated requested paths. Preserve the sole three-argument
 reader API.
 
-Document the three registered GM-authored scene-state kinds in the wound guide and one
-worked current-location example, register that example in the validation manifest, and
-add a source/documentation guard proving the daemon-loaded guide and example retain the
-exact kinds and closed fields. No daemon entrypoint edit is needed because it already
-loads `Wound_Materialization_Contract.md` as a mandatory context pack.
+Document the three registered GM-authored scene-state kinds in the wound guide and a new
+`Examples/E_CLI_Wound_Materialization.txt` worked example. Show the complete
+`worldMapUpdates.locationUpdates[]` replacement route for a known location, preservation
+of unrelated custom-state siblings, and the complete new-location envelopes. Register the
+example in the validation manifest and daemon context pack. Update the always-read compact
+Mortal-location template/directive to require the copied wound guide/example whenever the
+GM authors one of these reserved kinds. Add source/documentation guards for the exact
+kinds, closed fields, legal route, link rejection, context-pack copy, and prompt trigger.
 
 ```csharp
 var candidate = ExportCurrentCore(fileSystem, writeLease, context, woundId);
