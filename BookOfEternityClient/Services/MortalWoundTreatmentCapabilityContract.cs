@@ -160,10 +160,10 @@ internal static class MortalWoundTreatmentCapabilityContract
 
         var currentExtensions = BuildExtensionMap(currentActiveRoot, currentPassiveRoot);
         var composedExtensions = BuildExtensionMap(composedActiveRoot, composedPassiveRoot);
-        foreach (var (key, currentExtension) in currentExtensions)
+        foreach (var (key, currentExtension) in currentExtensions.Where(static pair => pair.Value.IsPresent))
         {
             if (!composedExtensions.TryGetValue(key, out var composedExtension) ||
-                !string.Equals(currentExtension.ToJsonString(), composedExtension.ToJsonString(), StringComparison.Ordinal))
+                !currentExtension.IsByteSemanticallyEqualTo(composedExtension))
             {
                 AddIssue(
                     issues,
@@ -173,9 +173,9 @@ internal static class MortalWoundTreatmentCapabilityContract
             }
         }
 
-        foreach (var (key, _) in composedExtensions)
+        foreach (var (key, _) in composedExtensions.Where(static pair => pair.Value.IsPresent))
         {
-            if (!currentExtensions.ContainsKey(key))
+            if (!currentExtensions.TryGetValue(key, out var currentExtension) || !currentExtension.IsPresent)
             {
                 AddIssue(
                     issues,
@@ -214,8 +214,8 @@ internal static class MortalWoundTreatmentCapabilityContract
             var lifecycle = ReadString(skill, "lifecycle") ?? string.Empty;
             var active = skill["active"] is JsonValue activeValue && activeValue.TryGetValue<bool>(out var parsedActive) && parsedActive;
             var capabilities = Array.Empty<MortalWoundTreatmentCapabilityDefinition>();
-            if (skill.TryGetPropertyValue(ExtensionProperty, out var extension) && extension is not null)
-                capabilities = ParseCapabilities(ToElement(extension), path, issues).ToArray();
+            if (skill.TryGetPropertyValue(ExtensionProperty, out var extension))
+                capabilities = ParseCapabilities(extension, path, issues).ToArray();
 
             if (capabilities.Length > 0 && !ResourceMaterializationContract.IsExactIdentifier(skillId))
             {
@@ -239,6 +239,22 @@ internal static class MortalWoundTreatmentCapabilityContract
         }
 
         return sources;
+    }
+
+    private static IReadOnlyList<MortalWoundTreatmentCapabilityDefinition> ParseCapabilities(
+        JsonNode? extension,
+        string skillPath,
+        ICollection<ValidationIssue> issues)
+    {
+        if (extension is null)
+        {
+            AddIssue(issues, skillPath + "." + ExtensionProperty,
+                "mortal_wound_treatment_capability_shape_invalid",
+                "mortalWoundTreatmentCapabilities must be an array.");
+            return Array.Empty<MortalWoundTreatmentCapabilityDefinition>();
+        }
+
+        return ParseCapabilities(ToElement(extension), skillPath, issues);
     }
 
     private static IReadOnlyList<MortalWoundTreatmentCapabilityDefinition> ParseCapabilities(
@@ -430,9 +446,9 @@ internal static class MortalWoundTreatmentCapabilityContract
         }
     }
 
-    private static Dictionary<ExtensionKey, JsonNode> BuildExtensionMap(JsonObject activeRoot, JsonObject passiveRoot)
+    private static Dictionary<ExtensionKey, ExtensionState> BuildExtensionMap(JsonObject activeRoot, JsonObject passiveRoot)
     {
-        var map = new Dictionary<ExtensionKey, JsonNode>();
+        var map = new Dictionary<ExtensionKey, ExtensionState>();
         AddExtensions(activeRoot, "activeSkillChanges", "activeSkills", map);
         AddExtensions(passiveRoot, "passiveSkillChanges", "passiveSkills", map);
         return map;
@@ -442,7 +458,7 @@ internal static class MortalWoundTreatmentCapabilityContract
         JsonObject root,
         string preferredArrayName,
         string alternateArrayName,
-        IDictionary<ExtensionKey, JsonNode> map)
+        IDictionary<ExtensionKey, ExtensionState> map)
     {
         var arrayName = root[preferredArrayName] is JsonArray ? preferredArrayName : alternateArrayName;
         var array = root[arrayName] as JsonArray;
@@ -450,16 +466,23 @@ internal static class MortalWoundTreatmentCapabilityContract
             return;
         for (var index = 0; index < array.Count; index++)
         {
-            if (array[index] is not JsonObject skill ||
-                !skill.TryGetPropertyValue(ExtensionProperty, out var extension) ||
-                extension is null)
-            {
+            if (array[index] is not JsonObject skill)
                 continue;
-            }
-            map[new ExtensionKey(
+
+            var key = new ExtensionKey(
                 ReadString(skill, "skillId") ?? string.Empty,
-                $"{arrayName}[{index}].{ExtensionProperty}")] = extension.DeepClone();
+                $"{arrayName}[{index}].{ExtensionProperty}");
+            map[key] = skill.TryGetPropertyValue(ExtensionProperty, out var extension)
+                ? new ExtensionState(true, extension?.DeepClone())
+                : new ExtensionState(false, null);
         }
+    }
+
+    private sealed record ExtensionState(bool IsPresent, JsonNode? Value)
+    {
+        internal bool IsByteSemanticallyEqualTo(ExtensionState other) =>
+            IsPresent == other.IsPresent &&
+            (!IsPresent || string.Equals(Value?.ToJsonString() ?? "null", other.Value?.ToJsonString() ?? "null", StringComparison.Ordinal));
     }
 
     private static JsonElement ToElement(JsonNode node)

@@ -99,6 +99,25 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
     }
 
     [Fact]
+    public void ParseActorCatalog_RejectsPresentNullExtensionWhileAllowingItsAbsence()
+    {
+        var active = Root("activeSkillChanges", Skill("skill_field_medicine_01", "Field Medicine", withCapability: false));
+        var passive = Root("passiveSkillChanges", Skill("skill_observation_01", "Observation", withCapability: false));
+
+        Assert.True(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+            "player", "player", active, "game_state/player/skills_active.json",
+            passive, "game_state/player/skills_passive.json").IsValid);
+
+        active["activeSkillChanges"]!.AsArray()[0]!.AsObject()["mortalWoundTreatmentCapabilities"] = null;
+        var result = MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+            "player", "player", active, "game_state/player/skills_active.json",
+            passive, "game_state/player/skills_passive.json");
+
+        Assert.False(result.IsValid);
+        Assert.Contains(result.Issues, issue => issue.Code == "mortal_wound_treatment_capability_shape_invalid");
+    }
+
+    [Fact]
     public void ValidateSkillExtension_RequiresExactFieldSetsAndCheckedOperationLimits()
     {
         using var document = JsonDocument.Parse(Skill("skill_field_medicine_01", "Field Medicine", true).ToJsonString());
@@ -178,6 +197,31 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
                 currentWithEmptyExtension, "game_state/player/skills_passive.json",
                 currentActive.DeepClone().AsObject(), currentPassive.DeepClone().AsObject()),
             issue => issue.Code == "mortal_wound_treatment_capability_preservation_invalid");
+    }
+
+    [Fact]
+    public void ValidateComposedActorCatalog_RejectsPresentNullExtensionsInsteadOfTreatingThemAsAbsent()
+    {
+        var currentActive = Root("activeSkillChanges", Skill("skill_field_medicine_01", "Field Medicine", withCapability: false));
+        var currentPassive = Root("passiveSkillChanges", Skill("skill_observation_01", "Observation", withCapability: false));
+
+        var composedOnlyNull = currentPassive.DeepClone().AsObject();
+        composedOnlyNull["passiveSkillChanges"]!.AsArray()[0]!.AsObject()["mortalWoundTreatmentCapabilities"] = null;
+        Assert.Contains(
+            MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
+                "player", "player", currentActive, "game_state/player/skills_active.json",
+                currentPassive, "game_state/player/skills_passive.json",
+                currentActive.DeepClone().AsObject(), composedOnlyNull),
+            issue => issue.Code == "mortal_wound_treatment_capability_shape_invalid");
+
+        var currentNull = currentActive.DeepClone().AsObject();
+        currentNull["activeSkillChanges"]!.AsArray()[0]!.AsObject()["mortalWoundTreatmentCapabilities"] = null;
+        Assert.Contains(
+            MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
+                "player", "player", currentNull, "game_state/player/skills_active.json",
+                currentPassive, "game_state/player/skills_passive.json",
+                currentActive.DeepClone().AsObject(), currentPassive.DeepClone().AsObject()),
+            issue => issue.Code == "mortal_wound_treatment_capability_shape_invalid");
     }
 
     private static object[] Row(
