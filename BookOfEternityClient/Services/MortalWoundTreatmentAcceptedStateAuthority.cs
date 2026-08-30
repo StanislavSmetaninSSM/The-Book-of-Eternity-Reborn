@@ -796,6 +796,22 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             criticalReactionAgreement,
             ownership);
 
+    internal MortalWoundTreatmentResourceReservationResult ReserveTreatmentResources(
+        object reservationCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string mode,
+        MortalWoundTreatmentModeAuthority modeAuthority,
+        MortalWoundTreatmentResourceReservationAuthority candidate) =>
+        AcceptedTurnAuthorityRegistry.ReserveMortalWoundTreatmentResources(
+            _fileSystem,
+            _writeLease,
+            this,
+            reservationCapability,
+            coordinates,
+            mode,
+            modeAuthority,
+            candidate);
+
     internal bool TryReadProcedureDicePool(
         object readCapability,
         out int[] acceptedD20EventValues,

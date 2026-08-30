@@ -361,6 +361,22 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             _criticalReactionReservation,
             _criticalReactionAgreement);
 
+    internal bool HasLiveReservationAgreement(
+        object liveCheckCapability,
+        MortalWoundProcedureDiceReservationRegistry diceRegistry,
+        MortalWoundCriticalReactionReservationRegistry criticalReactionRegistry)
+    {
+        ArgumentNullException.ThrowIfNull(diceRegistry);
+        ArgumentNullException.ThrowIfNull(criticalReactionRegistry);
+        return AcceptedTurnAuthorityRegistry.IsProcedureReservationLiveCheckCapability(
+                   liveCheckCapability) &&
+               diceRegistry.CanRelease(_diceReservation) &&
+               criticalReactionRegistry.MatchesReleaseAgreement(
+                   _diceReservation,
+                   _criticalReactionReservation,
+                   _criticalReactionAgreement);
+    }
+
     private static bool TryValidateRequirementAuthority(
         MortalWoundTreatmentAttemptCoordinates coordinates,
         MortalWoundProcedureRouteDefinition route,

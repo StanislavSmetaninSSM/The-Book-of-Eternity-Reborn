@@ -10,12 +10,20 @@ internal static class AcceptedTurnAuthorityRegistry
         RootAuthoritySlot> RootSlots = new();
     private static readonly object ProcedureDicePoolReadCapability = new();
     private static readonly object ProcedureReservationOwnershipCapability = new();
+    private static readonly object ProcedureReservationLiveCheckCapability = new();
+    private static readonly object TreatmentResourceRegistryCapability = new();
 
     internal static bool IsProcedureDicePoolReadCapability(object capability) =>
         ReferenceEquals(capability, ProcedureDicePoolReadCapability);
 
     internal static bool IsProcedureReservationOwnershipCapability(object capability) =>
         ReferenceEquals(capability, ProcedureReservationOwnershipCapability);
+
+    internal static bool IsProcedureReservationLiveCheckCapability(object capability) =>
+        ReferenceEquals(capability, ProcedureReservationLiveCheckCapability);
+
+    internal static bool IsTreatmentResourceRegistryCapability(object capability) =>
+        ReferenceEquals(capability, TreatmentResourceRegistryCapability);
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(
         FileSystemManager fileSystem,
@@ -402,6 +410,48 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static MortalWoundTreatmentResourceReservationResult
+        ReserveMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object reservationCapability,
+            MortalWoundTreatmentAttemptCoordinates coordinates,
+            string mode,
+            MortalWoundTreatmentModeAuthority modeAuthority,
+            MortalWoundTreatmentResourceReservationAuthority candidate)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(coordinates);
+        ArgumentNullException.ThrowIfNull(modeAuthority);
+        ArgumentNullException.ThrowIfNull(candidate);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .ReserveMortalWoundTreatmentResources(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    reservationCapability,
+                    coordinates,
+                    mode,
+                    modeAuthority,
+                    candidate);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException or
+                OverflowException)
+        {
+            return MortalWoundTreatmentResourceReservationRegistry.Invalid(
+                "mortal_wound_treatment_resource_reservation_authority_invalid",
+                "one current accepted-state authority and active canonical lease",
+                exception.GetType().Name);
+        }
+    }
+
     private static MortalWoundProcedureReservationSetResult
         MortalWoundProcedureReservationSetRegistryFailure(
             string expected,
@@ -500,6 +550,8 @@ internal static class AcceptedTurnAuthorityRegistry
         private readonly MortalWoundProcedureDiceReservationRegistry _procedureDice = new();
         private readonly MortalWoundCriticalReactionReservationRegistry
             _criticalReactions = new();
+        private readonly MortalWoundTreatmentResourceReservationRegistry
+            _treatmentResources = new();
         private MortalWoundTreatmentAcceptedStateAuthority?
             _mortalWoundTreatmentAcceptedState;
         private object? _woundEffectStageToken;
@@ -534,6 +586,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 {
                     _procedureDice.InvalidateAll();
                     _criticalReactions.InvalidateAll();
+                    _treatmentResources.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return AcceptedTurnAuthorityRegistry.Detach(candidate);
                 }
@@ -542,6 +595,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 {
                     _procedureDice.InvalidateAll();
                     _criticalReactions.InvalidateAll();
+                    _treatmentResources.InvalidateAll();
                     _mortalWoundTreatmentAcceptedState = null;
                     return MortalWoundTreatmentAcceptedStateAuthority
                         .RegistryCandidateBindingFailure(
@@ -563,6 +617,7 @@ internal static class AcceptedTurnAuthorityRegistry
 
                 _procedureDice.InvalidateAll();
                 _criticalReactions.InvalidateAll();
+                _treatmentResources.InvalidateAll();
                 _mortalWoundTreatmentAcceptedState = candidate.Authority;
                 return AcceptedTurnAuthorityRegistry.Detach(candidate);
             }
@@ -676,6 +731,54 @@ internal static class AcceptedTurnAuthorityRegistry
                     reaction.Reservation,
                     reaction.Agreement,
                     reservationOwnership);
+            }
+        }
+
+        internal MortalWoundTreatmentResourceReservationResult
+            ReserveMortalWoundTreatmentResources(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+                object reservationCapability,
+                MortalWoundTreatmentAttemptCoordinates coordinates,
+                string mode,
+                MortalWoundTreatmentModeAuthority modeAuthority,
+                MortalWoundTreatmentResourceReservationAuthority candidate)
+        {
+            lock (_gate)
+            {
+                if (!MortalWoundTreatmentResourceComposer
+                        .IsResourceReservationCapability(reservationCapability) ||
+                    !ReferenceEquals(
+                        _mortalWoundTreatmentAcceptedState,
+                        acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !coordinates.AgreesWithAcceptedStateSemantics(acceptedState))
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry.Invalid(
+                        "mortal_wound_treatment_resource_reservation_authority_invalid",
+                        "the exact current accepted state and matching attempt coordinates",
+                        "stale, foreign, or mismatched authority");
+                }
+
+                if (string.Equals(mode, "procedure", StringComparison.Ordinal) &&
+                    (modeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
+                     !procedure.HasLiveReservationAgreement(
+                         ProcedureReservationLiveCheckCapability,
+                         _procedureDice,
+                         _criticalReactions)))
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry.Invalid(
+                        "mortal_wound_treatment_resource_procedure_reservation_invalid",
+                        "the exact live private die and Fate reservation agreement",
+                        "released, stale, foreign, or mismatched procedure authority");
+                }
+
+                return _treatmentResources.Reserve(
+                    TreatmentResourceRegistryCapability,
+                    coordinates,
+                    mode,
+                    candidate);
             }
         }
 
@@ -1355,6 +1458,7 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _commonPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
+            _treatmentResources.InvalidateAll();
         }
 
         private void InvalidateAllCore()
@@ -1366,6 +1470,7 @@ internal static class AcceptedTurnAuthorityRegistry
             _mortalItems.InvalidateValidated();
             _procedureDice.InvalidateAll();
             _criticalReactions.InvalidateAll();
+            _treatmentResources.InvalidateAll();
             _mortalWoundTreatmentAcceptedState = null;
         }
 

@@ -315,6 +315,10 @@ internal static class MortalWoundTreatmentResourceComposer
     private const string IssuePath = "treatmentAttempt.resources";
     private static readonly object ClaimMintCapability = new();
     private static readonly object AuthorityMintCapability = new();
+    private static readonly object ResourceReservationCapability = new();
+
+    internal static bool IsResourceReservationCapability(object capability) =>
+        ReferenceEquals(capability, ResourceReservationCapability);
 
     internal static void RequireClaimMintCapability(object? capability)
     {
@@ -434,25 +438,31 @@ internal static class MortalWoundTreatmentResourceComposer
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
         }
 
-        if (claims!.Count != 0)
-        {
-            return MortalWoundTreatmentResourcePreparationResult.Valid(
-                MortalWoundTreatmentResourceReservationAuthority.CreateHeld(
-                    AuthorityMintCapability,
-                    coordinates,
-                    routeFingerprint!,
-                    requirementAuthority,
-                    route!.ResourcePolicy,
-                    claims));
-        }
-
-        return MortalWoundTreatmentResourcePreparationResult.Valid(
-            MortalWoundTreatmentResourceReservationAuthority.CreateNotRequired(
+        var candidate = claims!.Count == 0
+            ? MortalWoundTreatmentResourceReservationAuthority.CreateNotRequired(
                 AuthorityMintCapability,
                 coordinates,
                 routeFingerprint!,
                 requirementAuthority,
-                route!.ResourcePolicy));
+                route!.ResourcePolicy)
+            : MortalWoundTreatmentResourceReservationAuthority.CreateHeld(
+                AuthorityMintCapability,
+                coordinates,
+                routeFingerprint!,
+                requirementAuthority,
+                route!.ResourcePolicy,
+                claims);
+        var reservation = acceptedState.ReserveTreatmentResources(
+            ResourceReservationCapability,
+            coordinates,
+            mode,
+            modeAuthority,
+            candidate);
+        return reservation.IsValid && reservation.Authority is not null
+            ? MortalWoundTreatmentResourcePreparationResult.Valid(
+                reservation.Authority)
+            : MortalWoundTreatmentResourcePreparationResult.Invalid(
+                reservation.Issues);
     }
 
     private static bool TryBuildClaims(
