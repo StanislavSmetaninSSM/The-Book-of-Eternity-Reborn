@@ -236,6 +236,12 @@ internal static class AcceptedTurnAuthorityRegistry
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(candidate);
 
+        if (IsValidCandidateDetached(fileSystem, writeLease, candidate))
+        {
+            return MortalWoundTreatmentAcceptedStateAuthority
+                .RegistryCandidateBindingFailure("detached candidate authority");
+        }
+
         try
         {
             return GetState(fileSystem, writeLease)
@@ -245,13 +251,24 @@ internal static class AcceptedTurnAuthorityRegistry
                     candidate);
         }
         catch (Exception exception) when (
-            !candidate.IsValid &&
             exception is InvalidOperationException or ObjectDisposedException or
-                ArgumentException)
+                ArgumentException or IOException or UnauthorizedAccessException)
         {
-            return Detach(candidate);
+            return candidate.IsValid
+                ? MortalWoundTreatmentAcceptedStateAuthority
+                    .RegistryCandidateBindingFailure(exception.GetType().Name)
+                : Detach(candidate);
         }
     }
+
+    private static bool IsValidCandidateDetached(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthorityResult candidate) =>
+        candidate.IsValid &&
+        (candidate.Authority is null ||
+         candidate.Issues.Count != 0 ||
+         !candidate.Authority.IsLeaseBoundTo(fileSystem, writeLease));
 
     private static MortalWoundTreatmentAcceptedStateAuthorityResult Detach(
         MortalWoundTreatmentAcceptedStateAuthorityResult candidate) =>
@@ -353,6 +370,14 @@ internal static class AcceptedTurnAuthorityRegistry
                 {
                     _mortalWoundTreatmentAcceptedState = null;
                     return AcceptedTurnAuthorityRegistry.Detach(candidate);
+                }
+
+                if (!candidate.Authority.IsLeaseBoundTo(fileSystem, writeLease))
+                {
+                    _mortalWoundTreatmentAcceptedState = null;
+                    return MortalWoundTreatmentAcceptedStateAuthority
+                        .RegistryCandidateBindingFailure(
+                            "detached candidate authority");
                 }
 
                 if (_mortalWoundTreatmentAcceptedState is not null &&

@@ -551,11 +551,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             return ReferenceEquals(_fileSystem, fileSystem) &&
                    ReferenceEquals(_writeLease, writeLease) &&
                    ReferenceEquals(_rootIdentity, fileSystem.CanonicalRootAuthorityIdentity) &&
-                   _rootRevision == _rootIdentity.SessionGenerationRevision;
+                   _rootRevision == _rootIdentity.SessionGenerationRevision &&
+                   fileSystem.IsCurrentSessionGeneration(writeLease, SessionGeneration);
         }
         catch (Exception exception) when (exception is InvalidOperationException or
                                            ObjectDisposedException or
-                                           ArgumentException)
+                                           ArgumentException or
+                                           IOException or
+                                           UnauthorizedAccessException)
         {
             return false;
         }
@@ -1349,6 +1352,16 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         false,
         new ReadOnlyCollection<ValidationIssue>(issues.ToArray()),
         null);
+
+    internal static MortalWoundTreatmentAcceptedStateAuthorityResult
+        RegistryCandidateBindingFailure(string actual) => Failure(new[]
+        {
+            Issue(
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "mortal_wound_treatment_accepted_state_registry_candidate_stale",
+                "candidate bound to the exact active manager, lease, root revision, and session generation",
+                actual)
+        });
 
     private static ValidationIssue Issue(
         string path,
