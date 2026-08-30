@@ -5644,6 +5644,16 @@ public partial class ValidationService
             ValidateArrayItems(activeSkills, $"{itemContext}.activeSkills", issues, ValidateActiveSkillObject);
         if (item.TryGetProperty("passiveSkills", out var passiveSkills) && passiveSkills.ValueKind != JsonValueKind.Null)
             ValidateArrayItems(passiveSkills, $"{itemContext}.passiveSkills", issues, ValidatePassiveSkillObject);
+        if (JsonNode.Parse(item.GetRawText()) is JsonObject npcRoot)
+        {
+            issues.AddRange(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+                "npc",
+                GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId") ?? string.Empty,
+                npcRoot,
+                itemContext,
+                npcRoot,
+                itemContext).Issues);
+        }
         if (item.TryGetProperty("equippedItems", out var equippedItems))
             ValidateNpcEquippedItemsObject(equippedItems, $"{itemContext}.equippedItems", issues);
         if (item.TryGetProperty("fateCards", out var fateCards))

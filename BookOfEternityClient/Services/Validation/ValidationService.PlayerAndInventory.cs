@@ -75,6 +75,7 @@ public partial class ValidationService
             {
                 "passiveSkillChanges", "removePassiveSkills"
             }, issues);
+        await ValidatePlayerMortalWoundTreatmentCapabilityCatalogAsync(issues);
         await ValidatePlayerContractFile("game_state/player/skill_mastery.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -134,6 +135,29 @@ public partial class ValidationService
             {
                 "moveToLocationStorage", "retrieveFromLocationStorage"
             }, issues);
+    }
+
+    private async Task ValidatePlayerMortalWoundTreatmentCapabilityCatalogAsync(List<ValidationIssue> issues)
+    {
+        const string activePath = "game_state/player/skills_active.json";
+        const string passivePath = "game_state/player/skills_passive.json";
+        if (!ShouldValidateStateFile(activePath) || !ShouldValidateStateFile(passivePath))
+            return;
+
+        try
+        {
+            var active = JsonNode.Parse(await _fs.ReadFileAsync(activePath) ?? string.Empty) as JsonObject;
+            var passive = JsonNode.Parse(await _fs.ReadFileAsync(passivePath) ?? string.Empty) as JsonObject;
+            if (active is null || passive is null)
+                return;
+
+            issues.AddRange(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+                "player", "player", active, activePath, passive, passivePath).Issues);
+        }
+        catch (JsonException)
+        {
+            // The ordinary per-file validation owns malformed JSON diagnostics.
+        }
     }
 
     private async Task ValidatePlayerContractFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
@@ -4162,6 +4186,7 @@ public partial class ValidationService
 
     private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
             item,
             itemContext,
@@ -4265,6 +4290,7 @@ public partial class ValidationService
 
     private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
             item,
             itemContext,
