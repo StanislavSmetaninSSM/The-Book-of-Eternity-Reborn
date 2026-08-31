@@ -1190,7 +1190,7 @@ entrypoints require no update for T065.
   (`20260831-042446-783-43392-7bf8ca2438d04218b73b3fccb8b866cc-focused`). The 10
   publication rows blocked before the exporter remain explicit T067/T070 integration
   evidence rather than a T066 closure gap.
-- [ ] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
+- [x] T067 [US2] Implement diagnosis/alternative-authoring orchestration and the complete
   production treatment resolver in two explicit phases around T068-A: deterministic request/attempt/
   course identities; strict response adaptation and repair; exact six-argument request
   factories; procedure dice/effect/Fate semantics with same-turn legacy-report guard;
@@ -1242,6 +1242,31 @@ entrypoints require no update for T065.
   require T070 common wound composition. There was no timeout, duplicate test ID,
   incomplete cleanup, or T067-A regression
   (`20260831-082119-955-39532-0f6db1d2d1cd49899d249d60cae2728f-fast`).
+  T067 Phase B closure (2026-09-01): complete through `5e647387`. Production now seals
+  the canonical detached route-source wound and complete requirement/resource/mode
+  authority into procedure, course, and guaranteed requests; persists and revalidates
+  command/pending/history evidence before current-state reads; reconstructs course
+  continuation from globally ordered typed milestones; and reduces every fresh or cold
+  restored request through the same mode-specific resolver to one complete typed
+  Resolution and intent-free replay receipt. First accepted-state binding also restores
+  exact dice/Fate claims once, in coalesced first-authoritative producer order, with
+  roll-topology-compatible producer-reachable gaps and recovery-local historical claim
+  mappings that never enter live state. The final coherent owning Focused control passed
+  148/148 with a warning-free build, no timeout or duplicate IDs, and complete cleanup
+  (`20260901-084738-234-31092-5e40f4d8ec0b441284e65640885850e4-focused`). Independent
+  rereview returned Ready YES with zero Critical or Important findings. Two non-blocking
+  Minors remain recorded in the SDD ledger: narrow the coordinator's internal dice-read
+  capability seam in a future refactor, and add direct reordered-course/confusable-event
+  regression rows when that history suite is next extended. The required Fast checkpoint
+  completed its first descriptor 1,304/1,304 GREEN, then reached the lane's non-overridable
+  five-minute limit while an incomplete no-TRX shard emitted 39 failures exclusively at
+  the still-open T070-B treatment/recovery publication and durable-replay boundary. Owned
+  process cleanup completed and the completed descriptor had no duplicate IDs
+  (`20260901-085804-417-44772-7106623996524b37b081e9cd45db1365-fast`). T068-B resource
+  finalization/restart and T070-B publication remain explicitly open. No GM prompt,
+  example, manifest, Mortal guide, or afterlife matrix update is required for T067-B:
+  this phase changes only client-owned internal Mortal request, resolver, persistence,
+  and claim-recovery authority; T070-B owns the later player-visible accepted publication.
 - [ ] T068 [US2] Implement the prerequisite two-stage item/resource authority before T067 resolver integration: closed policy validation with scoped/milestone `consume_requirement` selectors; `PrepareProcedure|PrepareCourse|PrepareGuaranteed` production overloads; deterministic lease/generation-scoped reservation IDs and restart-safe command/pending claim coalescing/aggregate non-overbooking; immutable policy/claim authority sealing against complete success witnesses; exact retry/conflict/release; and post-resolution `Finalize(resolution)` that consumes only selected full-quantity claims, releases tools/non-consuming results, and integrates cancellation/validation/rollback/replay without consuming an unmet/current/future course step in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`, and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
   T068 MUST accept complete course-mode authority (not bare time), seal matching course
   ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
