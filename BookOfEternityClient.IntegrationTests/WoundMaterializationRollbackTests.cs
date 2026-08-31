@@ -294,16 +294,42 @@ public sealed partial class WoundMaterializationLifecycleTests
         {
             ["reserveBeforeResolution"] = true,
             ["consumeOn"] = new JsonArray("success", "partial_success"),
-            ["refundOn"] = new JsonArray("validation_failed", "rolled_back"),
+            ["refundOn"] = new JsonArray(
+                "cancelled",
+                "validation_failed",
+                "rolled_back"),
             ["mutations"] = new JsonArray()
         },
         ["resolution"] = new JsonObject
         {
             ["formulaKey"] = "mortal_wound_procedure_v1",
             ["difficulty"] = 12,
-            ["rollSource"] = "accepted_d20"
+            ["rollSource"] = "accepted_d20",
+            ["criticalPolicy"] = "natural_20_first_natural_1_last",
+            ["modifierSource"] = new JsonObject
+            {
+                ["kind"] = "fixed_zero"
+            }
         },
-        ["outcomes"] = new JsonArray(),
+        ["outcomes"] = new JsonArray(
+            new JsonObject
+            {
+                ["bandId"] = "clean_success",
+                ["minimumMargin"] = 0,
+                ["maximumMargin"] = null,
+                ["category"] = "success",
+                ["result"] = new JsonArray(
+                    new JsonObject { ["kind"] = "stabilize" })
+            },
+            new JsonObject
+            {
+                ["bandId"] = "clean_no_improvement",
+                ["minimumMargin"] = null,
+                ["maximumMargin"] = -1,
+                ["category"] = "failed_attempt",
+                ["result"] = new JsonArray(
+                    new JsonObject { ["kind"] = "no_improvement" })
+            }),
         ["interruption"] = null
     };
 

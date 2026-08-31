@@ -1,5 +1,4 @@
 using System.Globalization;
-using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -686,8 +685,9 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
     private static string? ReadOptional(PendingTurnSnapshotReadAuthority signed, string path) =>
         signed.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal) ? Read(signed, path) : null;
 
-    private static string Read(PendingTurnSnapshotReadAuthority signed, string path) =>
-        Encoding.UTF8.GetString(signed.ReadRequiredBytes(path));
+    private static string Read(PendingTurnSnapshotReadAuthority signed, string path)
+        => CanonicalJsonUtf8.DecodeOneOptionalBom(
+            signed.ReadRequiredBytes(path));
 
     private static JsonObject? Get(IReadOnlyDictionary<string, JsonObject> roots, string path) =>
         roots.TryGetValue(path, out var value) ? value : null;

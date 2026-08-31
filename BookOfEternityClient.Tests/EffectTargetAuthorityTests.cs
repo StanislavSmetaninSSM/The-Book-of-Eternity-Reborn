@@ -220,6 +220,42 @@ public sealed class EffectTargetAuthorityTests
         Assert.Contains(authority.Issues, issue => issue.Code == "effect_target_authority_ref_required");
     }
 
+    [Fact]
+    public void CanonicalPublicationSubset_AllowsAdditionalUnusedCanonicalTargets()
+    {
+        var staged = Build(Target(
+            "mortal_world",
+            "player",
+            "player_current"));
+        var canonical = Build(
+            Target("mortal_world", "player", "player_current"),
+            Target("mortal_world", "npc", "npc_unrelated_canonical_target"));
+
+        Assert.True(staged.IsCanonicalPublicationSubsetOf(canonical));
+        Assert.False(canonical.IsCanonicalPublicationSubsetOf(staged));
+    }
+
+    [Fact]
+    public void CanonicalPublicationSubset_RejectsChangedCanonicalBinding()
+    {
+        var staged = Build(new EffectTargetExport(
+            "mortal_world",
+            "combatant",
+            "combatant_bound_target",
+            SameTurn: false,
+            BoundNpcId: "npc_original",
+            BoundResourceOwnerKind: ResourceOwnerKind.Npc));
+        var canonical = Build(new EffectTargetExport(
+            "mortal_world",
+            "combatant",
+            "combatant_bound_target",
+            SameTurn: false,
+            BoundNpcId: "npc_changed",
+            BoundResourceOwnerKind: ResourceOwnerKind.Npc));
+
+        Assert.False(staged.IsCanonicalPublicationSubsetOf(canonical));
+    }
+
     private static EffectTargetAuthority Build(params EffectTargetExport[] targets) =>
         EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
             targets,

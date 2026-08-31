@@ -508,10 +508,18 @@ public partial class ValidationService
             PlanningContext: context,
             WoundCommands: woundHandoff?.Commands,
             WoundInput: woundHandoff?.Input);
-        var result = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
-            _fs,
-            writeLease,
-            input);
+        var result = woundHandoff?.StageBundle is { } woundStageBundle &&
+                     MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
+                         woundStageBundle)
+            ? AcceptedMechanicsPlanAuthority.GetOrBuildWoundValidated(
+                _fs,
+                writeLease,
+                input,
+                woundStageBundle)
+            : AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
+                _fs,
+                writeLease,
+                input);
         issues.AddRange(result.Issues);
         if (result.Success &&
             result.Plan?.WoundStageBundle is not null)

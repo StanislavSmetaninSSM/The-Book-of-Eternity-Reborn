@@ -140,6 +140,16 @@ internal static class AcceptedTurnAuthorityRegistry
             prepared,
             effectResult);
 
+    internal static AcceptedMechanicsPlanningResult
+        GetOrBuildCommonWoundValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            AcceptedMechanicsInput input,
+            AcceptedMechanicsWoundStageBundle bundle) =>
+        GetState(fileSystem, writeLease).GetOrBuildCommonWoundValidated(
+            input,
+            bundle);
+
     internal static bool TryPeekWoundPrepared(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -1105,6 +1115,65 @@ internal static class AcceptedTurnAuthorityRegistry
                                 woundMismatch)
                         });
                 }
+                try
+                {
+                    return _commonPlan.GetOrBuildValidated(input);
+                }
+                catch
+                {
+                    InvalidateAllCore();
+                    throw;
+                }
+            }
+        }
+
+        internal AcceptedMechanicsPlanningResult GetOrBuildCommonWoundValidated(
+            AcceptedMechanicsInput input,
+            AcceptedMechanicsWoundStageBundle bundle)
+        {
+            ArgumentNullException.ThrowIfNull(input);
+            ArgumentNullException.ThrowIfNull(bundle);
+            lock (_gate)
+            {
+                var supplied = input.PlanningContext?.WoundStageBundle;
+                if (input.WoundInput is null || supplied is null ||
+                    !string.Equals(
+                        supplied.BundleFingerprint,
+                        bundle.BundleFingerprint,
+                        StringComparison.Ordinal))
+                {
+                    InvalidateWoundAndDependentCore();
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        new[]
+                        {
+                            WoundIssue(
+                                "accepted_mechanics_wound_stage_provenance_mismatch",
+                                "the exact supplied bundle in the common planning input",
+                                supplied?.BundleFingerprint ?? "missing")
+                        });
+                }
+
+                var hasPrepared = _woundPlan.TryPeekPrepared(out _);
+                var hasFinal = _woundPlan.TryPeekFinal(out _);
+                if (hasPrepared || hasFinal)
+                {
+                    var mismatch = GetCommonWoundStageMismatch(input);
+                    if (mismatch is not null)
+                    {
+                        InvalidateWoundAndDependentCore();
+                        return new AcceptedMechanicsPlanningResult(
+                            null,
+                            new[]
+                            {
+                                WoundIssue(
+                                    "accepted_mechanics_wound_stage_provenance_mismatch",
+                                    "the current registry-owned or sole sealed wound stages",
+                                    mismatch)
+                            });
+                    }
+                }
+
                 try
                 {
                     return _commonPlan.GetOrBuildValidated(input);

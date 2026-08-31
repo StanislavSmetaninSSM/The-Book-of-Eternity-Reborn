@@ -928,7 +928,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
         string? woundCarrierPath = null,
         IReadOnlyDictionary<string, JsonObject?>? pendingAfterImages = null,
         IReadOnlyList<AcceptedMechanicsOwnerTransition>? ownerTransitions = null,
-        bool alignCommonBinding = true)
+        bool alignCommonBinding = true,
+        MortalWoundCanonicalAnchorPlan? woundAnchorPlan = null)
     {
         var beforeImages = BeforeImages(new byte[] { 4, 5, 6 });
         beforeImages[WoundCommonCommandPath] =
@@ -960,7 +961,9 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             beforeImages.Remove(omittedBeforeImagePath);
         var baseline = Input(
             beforeImages: beforeImages,
-            planningContext: CreateWoundCommonPlanningContext(woundStages),
+            planningContext: CreateWoundCommonPlanningContext(
+                woundStages,
+                woundAnchorPlan),
             woundCommands: Object("schemaVersion", 1),
             woundInput: woundStages.Input,
             preserveMissingWoundCommandBeforeImage:
@@ -989,7 +992,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
 
     private static AcceptedMechanicsPlanningContext
         CreateWoundCommonPlanningContext(
-            AcceptedMechanicsWoundStageBundle woundStages)
+            AcceptedMechanicsWoundStageBundle woundStages,
+            MortalWoundCanonicalAnchorPlan? woundAnchorPlan = null)
     {
         var baseline = Assert.IsType<AcceptedMechanicsPlanningContext>(
             ValidCommonInput().PlanningContext);
@@ -1013,7 +1017,8 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             baseline.ResourceIdentityFactory,
             baseline.EffectIdentityFactory,
             baseline.ExecutionSequenceOffset,
-            woundStages);
+            woundStages,
+            woundAnchorPlan);
     }
 
     private static void CorruptWoundCommonPreparedPayload(

@@ -296,6 +296,29 @@ internal sealed class AcceptedMechanicsInput
 
     internal AcceptedMechanicsPlanningContext? PlanningContext { get; }
 
+    internal AcceptedMechanicsInput WithPlanningContext(
+        AcceptedMechanicsPlanningContext planningContext)
+    {
+        ArgumentNullException.ThrowIfNull(planningContext);
+        return new AcceptedMechanicsInput(
+            SessionId,
+            RequestId,
+            SnapshotToken,
+            Realm,
+            Turn,
+            AcceptedEvents,
+            ResourceCommands,
+            EffectCommands,
+            PendingInput,
+            InternalInputs,
+            AuthorityFingerprints,
+            BeforeImages,
+            ValidationIssues,
+            planningContext,
+            WoundCommands,
+            WoundInput);
+    }
+
     internal AcceptedMechanicsPlanBinding CreateBinding() => new(
         SessionId,
         RequestId,
@@ -709,6 +732,9 @@ internal sealed class AcceptedMechanicsPlanningContext
     private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
     private readonly IResourceRegisteredSystemOutcomeDraft[] _registeredSystemOutcomes;
     private readonly AcceptedMechanicsWoundStageBundle? _woundStageBundle;
+    private readonly MortalWoundCanonicalAnchorPlan? _woundAnchorPlan;
+    private readonly AcceptedMechanicsDirectWoundPublicationAuthority?
+        _directWoundPublicationAuthority;
 
     internal AcceptedMechanicsPlanningContext(
         JsonObject definitionRoot,
@@ -730,7 +756,10 @@ internal sealed class AcceptedMechanicsPlanningContext
         AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null,
         EffectIdentityFactory? effectIdentityFactory = null,
         int executionSequenceOffset = 0,
-        AcceptedMechanicsWoundStageBundle? woundStageBundle = null)
+        AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
+        MortalWoundCanonicalAnchorPlan? woundAnchorPlan = null,
+        AcceptedMechanicsDirectWoundPublicationAuthority?
+            directWoundPublicationAuthority = null)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -803,6 +832,27 @@ internal sealed class AcceptedMechanicsPlanningContext
         ResourceIdentityFactory = resourceIdentityFactory;
         EffectIdentityFactory = effectIdentityFactory;
         _woundStageBundle = woundStageBundle?.DetachedCopy();
+        _woundAnchorPlan = woundAnchorPlan?.DetachedCopy();
+        if (_woundAnchorPlan is not null &&
+            (_woundStageBundle is null ||
+             !_woundAnchorPlan.AgreesWith(_woundStageBundle)))
+        {
+            throw new ArgumentException(
+                "A canonical wound anchor plan must bind the exact wound stage bundle.",
+                nameof(woundAnchorPlan));
+        }
+        _directWoundPublicationAuthority =
+            directWoundPublicationAuthority?.DetachedCopy();
+        if (_directWoundPublicationAuthority is not null &&
+            (_woundStageBundle is null || _woundAnchorPlan is null ||
+             !_directWoundPublicationAuthority.AgreesWith(
+                 _woundStageBundle,
+                 _woundAnchorPlan)))
+        {
+            throw new ArgumentException(
+                "Direct wound publication authority must bind the exact wound stages and canonical anchor plan.",
+                nameof(directWoundPublicationAuthority));
+        }
         if (executionSequenceOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(executionSequenceOffset));
         ExecutionSequenceOffset = executionSequenceOffset;
@@ -819,6 +869,49 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal EffectAcceptedTurnPlan? EffectPlan { get; }
     internal AcceptedMechanicsWoundStageBundle? WoundStageBundle =>
         _woundStageBundle?.DetachedCopy();
+    internal MortalWoundCanonicalAnchorPlan? WoundAnchorPlan =>
+        _woundAnchorPlan?.DetachedCopy();
+    internal AcceptedMechanicsDirectWoundPublicationAuthority?
+        DirectWoundPublicationAuthority =>
+        _directWoundPublicationAuthority?.DetachedCopy();
+
+    internal AcceptedMechanicsPlanningContext WithWoundAnchorPlan(
+        MortalWoundCanonicalAnchorPlan woundAnchorPlan)
+    {
+        ArgumentNullException.ThrowIfNull(woundAnchorPlan);
+        if (_woundStageBundle is null ||
+            !woundAnchorPlan.AgreesWith(_woundStageBundle))
+        {
+            throw new ArgumentException(
+                "A canonical wound anchor plan must bind this planning context's exact wound stage bundle.",
+                nameof(woundAnchorPlan));
+        }
+
+        return new AcceptedMechanicsPlanningContext(
+            DefinitionRoot,
+            Definitions,
+            State,
+            History,
+            Owners,
+            Sources,
+            Commands,
+            EffectIdentityRoot,
+            EffectPlan,
+            CapacityTransitions,
+            OwnerCapacityDrafts,
+            TerminalOwners,
+            OwnerCompanionAfterImages,
+            OwnerTransitions,
+            RegisteredSystemOutcomes,
+            PendingResolutionState,
+            ResourceIdentityFactory,
+            EffectIdentityFactory,
+            ExecutionSequenceOffset,
+            _woundStageBundle,
+            woundAnchorPlan,
+            directWoundPublicationAuthority: null);
+    }
+
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
         new ReadOnlyDictionary<string, JsonObject>(
             _ownerCompanionAfterImages.ToDictionary(
@@ -901,7 +994,8 @@ internal sealed class AcceptedMechanicsWoundPublication
         JsonObject identityAfterImage,
         JsonObject historyAfterImage,
         string woundStageBundleFingerprint,
-        string finalEffectPlanFingerprint)
+        string finalEffectPlanFingerprint,
+        string? woundAnchorPlanFingerprint)
     {
         ArgumentNullException.ThrowIfNull(carrierAfterImages);
         ArgumentNullException.ThrowIfNull(identityAfterImage);
@@ -917,6 +1011,14 @@ internal sealed class AcceptedMechanicsWoundPublication
             throw new ArgumentException(
                 "Expected the exact final effect-plan fingerprint.",
                 nameof(finalEffectPlanFingerprint));
+        }
+        if (woundAnchorPlanFingerprint is not null &&
+            !ResourceMaterializationContract.IsAuthorityFingerprint(
+                woundAnchorPlanFingerprint))
+        {
+            throw new ArgumentException(
+                "Expected the exact canonical wound anchor-plan fingerprint.",
+                nameof(woundAnchorPlanFingerprint));
         }
         _carrierAfterImages = new Dictionary<string, JsonObject>(
             StringComparer.Ordinal);
@@ -934,6 +1036,7 @@ internal sealed class AcceptedMechanicsWoundPublication
         _historyAfterImage = historyAfterImage.DeepClone().AsObject();
         WoundStageBundleFingerprint = woundStageBundleFingerprint;
         FinalEffectPlanFingerprint = finalEffectPlanFingerprint;
+        WoundAnchorPlanFingerprint = woundAnchorPlanFingerprint;
     }
 
     internal static AcceptedMechanicsWoundPublication CreateValidated(
@@ -942,6 +1045,7 @@ internal sealed class AcceptedMechanicsWoundPublication
         JsonObject historyAfterImage,
         string woundStageBundleFingerprint,
         string finalEffectPlanFingerprint,
+        string? woundAnchorPlanFingerprint,
         AcceptedMechanicsCarrierAssembler.ValidatedPublicationProof proof)
     {
         if (!AcceptedMechanicsCarrierAssembler.IsPublicationProof(proof))
@@ -955,7 +1059,8 @@ internal sealed class AcceptedMechanicsWoundPublication
             identityAfterImage,
             historyAfterImage,
             woundStageBundleFingerprint,
-            finalEffectPlanFingerprint);
+            finalEffectPlanFingerprint,
+            woundAnchorPlanFingerprint);
     }
 
     internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
@@ -975,13 +1080,16 @@ internal sealed class AcceptedMechanicsWoundPublication
 
     internal string FinalEffectPlanFingerprint { get; }
 
+    internal string? WoundAnchorPlanFingerprint { get; }
+
     internal AcceptedMechanicsWoundPublication DetachedCopy() =>
         new(
             _carrierAfterImages,
             _identityAfterImage,
             _historyAfterImage,
             WoundStageBundleFingerprint,
-            FinalEffectPlanFingerprint);
+            FinalEffectPlanFingerprint,
+            WoundAnchorPlanFingerprint);
 }
 
 internal sealed class AcceptedMechanicsPendingPublicationAuthority
@@ -1073,6 +1181,8 @@ internal sealed class AcceptedMechanicsPlan
     private readonly ResourceAppliedEvent[] _resourceEvents;
     private readonly AcceptedMechanicsWoundStageBundle? _woundStageBundle;
     private readonly AcceptedMechanicsWoundPublication? _woundPublication;
+    private readonly AcceptedMechanicsDirectWoundPublicationAuthority?
+        _directWoundPublicationAuthority;
 
     internal AcceptedMechanicsPlan(
         string inputFingerprint,
@@ -1095,7 +1205,9 @@ internal sealed class AcceptedMechanicsPlan
         JsonObject? pendingGmPacket = null,
         AcceptedMechanicsPendingPublicationAuthority? pendingPublicationAuthority = null,
         AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
-        AcceptedMechanicsCarrierCompositionResult? carrierComposition = null)
+        AcceptedMechanicsCarrierCompositionResult? carrierComposition = null,
+        AcceptedMechanicsDirectWoundPublicationAuthority?
+            directWoundPublicationAuthority = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -1145,6 +1257,16 @@ internal sealed class AcceptedMechanicsPlan
                 nameof(woundStageBundle));
         }
         _woundPublication = woundPublication?.DetachedCopy();
+        _directWoundPublicationAuthority =
+            directWoundPublicationAuthority?.DetachedCopy();
+        if (_directWoundPublicationAuthority is not null &&
+            (_pendingGmPacket is not null || _woundStageBundle is null ||
+             _woundPublication?.WoundAnchorPlanFingerprint is null))
+        {
+            throw new ArgumentException(
+                "Direct wound publication authority requires one completed anchored wound publication and cannot authorize a pending plan.",
+                nameof(directWoundPublicationAuthority));
+        }
         if (_woundStageBundle is not null &&
             _woundPublication is not null &&
             carrierComposition is not null)
@@ -1166,12 +1288,13 @@ internal sealed class AcceptedMechanicsPlan
                         .ComputeAcceptedEffectPlanPayload(EffectPlan),
                     _woundPublication.FinalEffectPlanFingerprint,
                     StringComparison.Ordinal) ||
-                !JsonNode.DeepEquals(
-                    final.IdentityIndexAfterImage,
-                    _woundPublication.IdentityAfterImage) ||
-                !JsonNode.DeepEquals(
-                    final.HistoryAfterImage,
-                    _woundPublication.HistoryAfterImage))
+                (_woundPublication.WoundAnchorPlanFingerprint is null &&
+                 (!JsonNode.DeepEquals(
+                     final.IdentityIndexAfterImage,
+                     _woundPublication.IdentityAfterImage) ||
+                  !JsonNode.DeepEquals(
+                      final.HistoryAfterImage,
+                      _woundPublication.HistoryAfterImage))))
             {
                 throw new ArgumentException(
                     "Wound publication and all carrier maps must equal one proof-bound composition for the exact wound stages and final effect plan; competing or drifted effect/wound producers are forbidden.",
@@ -1247,6 +1370,13 @@ internal sealed class AcceptedMechanicsPlan
 
     internal JsonObject? WoundHistoryAfterImage =>
         _woundPublication?.HistoryAfterImage;
+
+    internal string? WoundAnchorPlanFingerprint =>
+        _woundPublication?.WoundAnchorPlanFingerprint;
+
+    internal AcceptedMechanicsDirectWoundPublicationAuthority?
+        DirectWoundPublicationAuthority =>
+        _directWoundPublicationAuthority?.DetachedCopy();
 
     internal string PreparedPlanFingerprint { get; }
 
@@ -1638,6 +1768,8 @@ internal static class AcceptedMechanicsPlanFingerprints
         fields.Add(plan.OwnerAuthority.Fingerprint);
         AppendEffectPlan(fields, plan.EffectPlan);
         AppendWoundStages(fields, plan.WoundStageBundle);
+        fields.Add(plan.WoundAnchorPlanFingerprint);
+        fields.Add(plan.DirectWoundPublicationAuthority?.Fingerprint);
         AppendObjectMap(fields, plan.WoundCarrierAfterImages);
         AppendOptionalJson(fields, plan.WoundIdentityAfterImage);
         AppendOptionalJson(fields, plan.WoundHistoryAfterImage);
@@ -1675,6 +1807,9 @@ internal static class AcceptedMechanicsPlanFingerprints
             ComputeInput(input.CreateBinding())
         };
         AppendWoundStages(fields, input.PlanningContext?.WoundStageBundle);
+        fields.Add(input.PlanningContext?.WoundAnchorPlan?.Fingerprint);
+        fields.Add(
+            input.PlanningContext?.DirectWoundPublicationAuthority?.Fingerprint);
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
@@ -1859,10 +1994,10 @@ internal sealed record AcceptedMechanicsPlanningResult
         _issues = issues.ToArray();
     }
 
-    internal AcceptedMechanicsPlan? Plan { get; }
+    public AcceptedMechanicsPlan? Plan { get; }
 
-    internal IReadOnlyList<ValidationIssue> Issues =>
+    public IReadOnlyList<ValidationIssue> Issues =>
         Array.AsReadOnly(_issues.ToArray());
 
-    internal bool Success => Plan != null && Issues.Count == 0;
+    public bool Success => Plan != null && Issues.Count == 0;
 }

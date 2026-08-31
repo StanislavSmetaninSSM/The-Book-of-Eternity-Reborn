@@ -162,6 +162,16 @@ internal sealed record WoundTreatmentRoute(
     internal string SourcePath { get; init; } = string.Empty;
 }
 
+internal sealed record WoundRecoveryAnchor(
+    string AnchorKind,
+    long AnchorMinute,
+    string AnchorTransitionId);
+
+internal sealed record WoundDeteriorationAnchor(
+    string ConditionKey,
+    long AnchorMinute,
+    string AnchorTransitionId);
+
 internal sealed record WoundRecovery(
     string Mode,
     string ClockKind,
@@ -171,7 +181,9 @@ internal sealed record WoundRecovery(
     string? LastTickKey,
     IReadOnlyList<string> Blockers,
     bool CarryOverflow,
-    JsonElement? DeteriorationPolicy);
+    JsonElement? DeteriorationPolicy,
+    WoundRecoveryAnchor? RecoveryAnchor = null,
+    WoundDeteriorationAnchor? DeteriorationAnchor = null);
 
 internal sealed record WoundRelations(
     string? PriorWoundId,
@@ -238,9 +250,17 @@ internal static class WoundMaterializationContract
     private static readonly IReadOnlySet<string> TreatmentRouteFields = Set(
         "routeId", "displayName", "visibility", "mode", "requirements",
         "resourcePolicy", "resolution", "outcomes", "interruption");
-    private static readonly IReadOnlySet<string> RecoveryFields = Set(
+    private static readonly IReadOnlySet<string> RecoveryRequiredFields = Set(
         "mode", "clockKind", "cadence", "currentStepProgress", "currentStepThreshold",
         "lastTickKey", "blockers", "carryOverflow", "deteriorationPolicy");
+    private static readonly IReadOnlySet<string> RecoveryFields = Set(
+        RecoveryRequiredFields
+            .Concat(new[] { "recoveryAnchor", "deteriorationAnchor" })
+            .ToArray());
+    private static readonly IReadOnlySet<string> RecoveryAnchorFields = Set(
+        "anchorKind", "anchorMinute", "anchorTransitionId");
+    private static readonly IReadOnlySet<string> DeteriorationAnchorFields = Set(
+        "conditionKey", "anchorMinute", "anchorTransitionId");
     private static readonly IReadOnlySet<string> RelationsFields = Set(
         "priorWoundId", "legacyRefs", "independentEffectRefs");
     private static readonly IReadOnlySet<string> LastTransitionFields = Set(
@@ -1993,7 +2013,12 @@ internal static class WoundMaterializationContract
         string path,
         List<ValidationIssue> issues)
     {
-        ValidateObjectShape(value, path, RecoveryFields, RecoveryFields, issues);
+        ValidateObjectShape(
+            value,
+            path,
+            RecoveryFields,
+            RecoveryRequiredFields,
+            issues);
         return new WoundRecovery(
             ReadClosedString(value, "mode", path, RecoveryModes, issues),
             ReadExactIdentifier(value, "clockKind", path, issues),
@@ -2003,7 +2028,83 @@ internal static class WoundMaterializationContract
             ReadNullableExactIdentifier(value, "lastTickKey", path, issues),
             ReadIdentifierArray(value, "blockers", path, unique: true, issues),
             ReadBoolean(value, "carryOverflow", path, issues),
-            ReadNullableOpaqueObject(value, "deteriorationPolicy", path, issues));
+            ReadNullableOpaqueObject(value, "deteriorationPolicy", path, issues),
+            ParseRecoveryAnchor(value, path, issues),
+            ParseDeteriorationAnchor(value, path, issues));
+    }
+
+    private static WoundRecoveryAnchor? ParseRecoveryAnchor(
+        JsonElement recovery,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        const string field = "recoveryAnchor";
+        if (recovery.ValueKind != JsonValueKind.Object ||
+            !recovery.TryGetProperty(field, out var value) ||
+            value.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        var anchorPath = path + "." + field;
+        if (value.ValueKind != JsonValueKind.Object)
+        {
+            AddIssue(
+                issues,
+                anchorPath,
+                "wound_materialization_invalid_field",
+                "null or closed recovery anchor object",
+                value.ValueKind.ToString());
+            return null;
+        }
+
+        ValidateObjectShape(
+            value,
+            anchorPath,
+            RecoveryAnchorFields,
+            RecoveryAnchorFields,
+            issues);
+        return new WoundRecoveryAnchor(
+            ReadExactIdentifier(value, "anchorKind", anchorPath, issues),
+            ReadInt64(value, "anchorMinute", anchorPath, 0, long.MaxValue, issues),
+            ReadExactIdentifier(value, "anchorTransitionId", anchorPath, issues));
+    }
+
+    private static WoundDeteriorationAnchor? ParseDeteriorationAnchor(
+        JsonElement recovery,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        const string field = "deteriorationAnchor";
+        if (recovery.ValueKind != JsonValueKind.Object ||
+            !recovery.TryGetProperty(field, out var value) ||
+            value.ValueKind == JsonValueKind.Null)
+        {
+            return null;
+        }
+
+        var anchorPath = path + "." + field;
+        if (value.ValueKind != JsonValueKind.Object)
+        {
+            AddIssue(
+                issues,
+                anchorPath,
+                "wound_materialization_invalid_field",
+                "null or closed deterioration anchor object",
+                value.ValueKind.ToString());
+            return null;
+        }
+
+        ValidateObjectShape(
+            value,
+            anchorPath,
+            DeteriorationAnchorFields,
+            DeteriorationAnchorFields,
+            issues);
+        return new WoundDeteriorationAnchor(
+            ReadExactIdentifier(value, "conditionKey", anchorPath, issues),
+            ReadInt64(value, "anchorMinute", anchorPath, 0, long.MaxValue, issues),
+            ReadExactIdentifier(value, "anchorTransitionId", anchorPath, issues));
     }
 
     private static WoundRelations ParseRelations(
@@ -3012,6 +3113,36 @@ internal static class WoundMaterializationContract
         writer.WriteStartObject();
         writer.WriteString("mode", recovery.Mode);
         writer.WriteString("clockKind", recovery.ClockKind);
+        writer.WritePropertyName("recoveryAnchor");
+        if (recovery.RecoveryAnchor is { } recoveryAnchor)
+        {
+            writer.WriteStartObject();
+            writer.WriteString("anchorKind", recoveryAnchor.AnchorKind);
+            writer.WriteNumber("anchorMinute", recoveryAnchor.AnchorMinute);
+            writer.WriteString(
+                "anchorTransitionId",
+                recoveryAnchor.AnchorTransitionId);
+            writer.WriteEndObject();
+        }
+        else
+        {
+            writer.WriteNullValue();
+        }
+        writer.WritePropertyName("deteriorationAnchor");
+        if (recovery.DeteriorationAnchor is { } deteriorationAnchor)
+        {
+            writer.WriteStartObject();
+            writer.WriteString("conditionKey", deteriorationAnchor.ConditionKey);
+            writer.WriteNumber("anchorMinute", deteriorationAnchor.AnchorMinute);
+            writer.WriteString(
+                "anchorTransitionId",
+                deteriorationAnchor.AnchorTransitionId);
+            writer.WriteEndObject();
+        }
+        else
+        {
+            writer.WriteNullValue();
+        }
         writer.WriteNumber("cadence", recovery.Cadence);
         writer.WriteNumber("currentStepProgress", recovery.CurrentStepProgress);
         writer.WriteNumber("currentStepThreshold", recovery.CurrentStepThreshold);

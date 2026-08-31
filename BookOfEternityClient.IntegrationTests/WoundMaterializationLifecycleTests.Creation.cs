@@ -122,6 +122,62 @@ public sealed partial class WoundMaterializationLifecycleTests
     }
 
     [Fact]
+    public async Task AcceptedInitialCreate_ProductionValidationPublishesCanonicalAnchors()
+    {
+        await using var context = await CreatePlayerContextAsync();
+        var authority = await CreateSignedAuthorityAsync(
+            context,
+            maximumSeverityRank: 2);
+        var proposal = CreateRepairRoundtripProposal("treatment");
+        proposal["recovery"]!["deteriorationPolicy"] = new JsonObject
+        {
+            ["policyRef"] = "untreated_infection",
+            ["unmetConditions"] = new JsonArray("not_stabilized"),
+            ["graceMinutes"] = 30L,
+            ["cadenceMinutes"] = 10L,
+            ["result"] = new JsonObject { ["kind"] = "increase_severity" }
+        };
+        var decision = Decision("materialize", proposal);
+        decision["opportunityRef"] = authority.Opportunity.PublicRef;
+        var response = Response(decision);
+        var composed = WoundResponseInputComposer.Compose(
+            authority.Binding,
+            new[] { authority.Opportunity },
+            response.WoundDecisions,
+            response.Response,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.True(composed.Success, Describe(composed.Issues));
+        await PublishAsync(context, Assert.IsType<JsonObject>(composed.CommandRoot));
+
+        var player = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            WoundCarrierCatalog.PlayerPath));
+        var wound = Assert.IsType<JsonObject>(Assert.Single(
+            player["activeWounds"]!.AsArray()));
+        var history = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            WoundHistoryState.HistoryPath));
+        var transition = Assert.IsType<JsonObject>(Assert.Single(
+            history["transitions"]!.AsArray()));
+        var transitionId = transition["transitionId"]!.GetValue<string>();
+        var recoveryAnchor = Assert.IsType<JsonObject>(
+            wound["recovery"]!["recoveryAnchor"]);
+        Assert.Equal("creation", recoveryAnchor["anchorKind"]!.GetValue<string>());
+        Assert.Equal(1260L, recoveryAnchor["anchorMinute"]!.GetValue<long>());
+        Assert.Equal(
+            transitionId,
+            recoveryAnchor["anchorTransitionId"]!.GetValue<string>());
+        var deteriorationAnchor = Assert.IsType<JsonObject>(
+            wound["recovery"]!["deteriorationAnchor"]);
+        Assert.Equal(
+            "not_stabilized",
+            deteriorationAnchor["conditionKey"]!.GetValue<string>());
+        Assert.Equal(1260L, deteriorationAnchor["anchorMinute"]!.GetValue<long>());
+        Assert.Equal(
+            transitionId,
+            deteriorationAnchor["anchorTransitionId"]!.GetValue<string>());
+    }
+
+    [Fact]
     public async Task GuaranteedOpportunity_OmittedWoundFailsClosedBeforeAnyPublication()
     {
         await using var context = await CreatePlayerContextAsync();
@@ -710,6 +766,12 @@ public sealed partial class WoundMaterializationLifecycleTests
         await context.WriteExactJsonAsync(
             EffectAcceptedTurnPlan.CommandPath,
             EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot().ToJsonString());
+        await context.WriteExactJsonAsync(
+            EffectAcceptedTurnInputComposer.WorldTimePath,
+            new JsonObject
+            {
+                ["currentTimeInMinutes"] = 1260L
+            }.ToJsonString());
         await context.CaptureValidatedPendingSnapshotAsync(
             additionalTrackedPaths: WoundMaterializationValidationTests.SnapshotWoundPaths);
         return context;
@@ -788,6 +850,141 @@ public sealed partial class WoundMaterializationLifecycleTests
         return new CreationAuthority(
             binding,
             Assert.IsType<WoundOpportunityAuthority>(result.Opportunity));
+    }
+
+    private static async Task<CreationAuthority> CreateSignedAuthorityAsync(
+        ResourceMaterializationTestContext context,
+        int maximumSeverityRank)
+    {
+        var sourceSnapshotToken = await WoundMaterializationValidationTests
+            .ReadSnapshotTokenAsync(context);
+        var evidence = new WoundOpportunityEventEvidence(
+            "formal",
+            "accepted_turn",
+            "turn_41",
+            "harmful",
+            maximumSeverityRank,
+            "Острый край ранит левое предплечье во время обвала.");
+        var sourceEvents = WoundAcceptedEventAuthorityComposer.Compose(
+            new WoundAcceptedResponseEventProjection(
+                SessionId,
+                RequestId,
+                sourceSnapshotToken,
+                41,
+                new[]
+                {
+                    new WoundAcceptedResponseEventCoordinate(
+                        EventRef,
+                        evidence.AuthorityKind,
+                        evidence.AuthorityId)
+                }),
+            new[] { new WoundSelectedEventEvidence(0, evidence) });
+        Assert.True(sourceEvents.Success, Describe(sourceEvents.Issues));
+
+        var owner = new WoundOwnerCoordinate(
+            "mortal_world",
+            "player",
+            "player_current",
+            WoundCarrierCatalog.PlayerPath);
+        var candidate = new MortalWoundOccurrenceCandidate(
+            SessionId,
+            RequestId,
+            sourceSnapshotToken,
+            41,
+            "producer_operation_creation_player_001",
+            0,
+            1,
+            "formal",
+            0,
+            sourceEvents.Events,
+            owner,
+            "physical",
+            "mortal_formal_injury_v1",
+            new MortalWoundOccurrenceSource(
+                "combat_action",
+                "combat_action_creation_player_001",
+                "active"),
+            new MortalWoundOccurrenceOutcome(
+                "harmful",
+                maximumSeverityRank,
+                evidence.ReadableCause),
+            4,
+            null,
+            null,
+            new WoundOpportunitySafeContext(
+                "вы",
+                "острый край во время обвала",
+                new[] { "anatomical", "systemic", "other" }),
+            null,
+            Fingerprint("signed-occurrence-source"));
+        var emptyOccurrences = MortalWoundOccurrenceState.Parse(
+            "{\"schemaVersion\":1,\"occurrences\":[]}",
+            MortalWoundOccurrenceState.StatePath);
+        var emptyReceipts = MortalWoundOpportunityReceiptState.Parse(
+            "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}",
+            MortalWoundOpportunityReceiptState.StatePath);
+        Assert.True(emptyOccurrences.IsValid, Describe(emptyOccurrences.Issues));
+        Assert.True(emptyReceipts.IsValid, Describe(emptyReceipts.Issues));
+        var append = MortalWoundOccurrenceState.PlanAppend(
+            Assert.IsType<MortalWoundOccurrenceState>(emptyOccurrences.State),
+            new MortalWoundOccurrenceCandidateBatch(new[] { candidate }),
+            Assert.IsType<MortalWoundOpportunityReceiptState>(emptyReceipts.State));
+        Assert.Equal("appended", append.Disposition);
+        Assert.Empty(append.Issues);
+        var occurrenceState = Assert.IsType<MortalWoundOccurrenceState>(append.State);
+        await context.WriteExactJsonAsync(
+            MortalWoundOccurrenceState.StatePath,
+            MortalWoundOccurrenceState.SerializeCanonical(occurrenceState));
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: WoundMaterializationValidationTests.SnapshotWoundPaths);
+
+        var snapshotToken = await WoundMaterializationValidationTests
+            .ReadSnapshotTokenAsync(context);
+        var occurrence = Assert.Single(occurrenceState.Occurrences);
+        var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
+            occurrence,
+            occurrenceState.Occurrences,
+            SessionId,
+            RequestId,
+            snapshotToken,
+            42);
+        Assert.True(rebound.Success, Describe(rebound.Issues));
+        var binding = new WoundAcceptedTurnBinding(
+            SessionId,
+            RequestId,
+            snapshotToken,
+            "mortal_world",
+            42,
+            rebound.Events,
+            rebound.EventsFingerprint);
+        var selectedEvent = rebound.Events[occurrence.AcceptedEventOrdinal];
+        var opportunity = WoundOpportunityAuthority.Compose(
+            new WoundOpportunityBuildRequest(
+                binding,
+                occurrence.OccurrenceId,
+                occurrence.OpportunityRef,
+                selectedEvent.EventRef,
+                occurrence.Owner,
+                occurrence.Domain,
+                occurrence.ProfileKey,
+                occurrence.Source.Kind,
+                occurrence.Source.SourceId,
+                occurrence.Source.State,
+                new WoundOpportunityEventEvidence(
+                    occurrence.AdapterKind,
+                    selectedEvent.Kind,
+                    selectedEvent.AuthorityId,
+                    occurrence.Outcome.Kind,
+                    occurrence.Outcome.MaximumSeverityRank,
+                    occurrence.Outcome.ReadableCause),
+                occurrence.HardMaximumSeverityRank,
+                null,
+                occurrence.SafeContext,
+                null));
+        Assert.True(opportunity.Success, Describe(opportunity.Issues));
+        return new CreationAuthority(
+            binding,
+            Assert.IsType<WoundOpportunityAuthority>(opportunity.Opportunity));
     }
 
     private static GameResponse Response(JsonObject decision) => new()

@@ -1783,7 +1783,9 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         root = null;
         try
         {
-            using var document = JsonDocument.Parse(bytes, new JsonDocumentOptions
+            using var document = JsonDocument.Parse(
+                CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                new JsonDocumentOptions
             {
                 AllowTrailingCommas = false,
                 CommentHandling = JsonCommentHandling.Disallow,
@@ -1803,6 +1805,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             return true;
         }
         catch (Exception exception) when (exception is JsonException or
+                                           InvalidDataException or
                                            InvalidOperationException or
                                            ArgumentException)
         {
@@ -1862,7 +1865,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         IReadOnlyDictionary<string, JsonObject> roots,
         string path) => roots.TryGetValue(path, out var root) ? root : null;
 
-    private static string Decode(byte[] bytes) => Encoding.UTF8.GetString(bytes);
+    private static string Decode(byte[] bytes) =>
+        CanonicalJsonUtf8.DecodeOneOptionalBom(bytes);
 
     private static string Hash(string domain, params string?[] values)
     {

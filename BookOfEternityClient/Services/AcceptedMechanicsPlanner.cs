@@ -511,7 +511,8 @@ internal static class AcceptedMechanicsCarrierAssembler
     internal static AcceptedMechanicsCarrierCompositionResult Compose(
         EffectAcceptedTurnPlan? effectPlan,
         IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
-        AcceptedMechanicsWoundStageBundle? woundStages)
+        AcceptedMechanicsWoundStageBundle? woundStages,
+        MortalWoundCanonicalAnchorPlan? woundAnchorPlan = null)
     {
         ArgumentNullException.ThrowIfNull(ownerCompanionAfterImages);
 
@@ -577,12 +578,29 @@ internal static class AcceptedMechanicsCarrierAssembler
 
             if (woundStages is null)
             {
+                if (woundAnchorPlan is not null)
+                {
+                    return Failed(
+                        "accepted_mechanics_wound_anchor_authority_mismatch",
+                        "A canonical wound anchor plan has no wound stage bundle.",
+                        "no anchor plan without one exact wound stage bundle",
+                        woundAnchorPlan.Fingerprint);
+                }
                 return AcceptedMechanicsCarrierCompositionResult.CreateValidated(
                     effectRoots,
                     ownerRoots,
                     null,
                     Array.Empty<ValidationIssue>(),
                     PublicationProof);
+            }
+            if (woundAnchorPlan is not null &&
+                !woundAnchorPlan.AgreesWith(woundStages))
+            {
+                return Failed(
+                    "accepted_mechanics_wound_anchor_authority_mismatch",
+                    "The canonical wound anchor plan does not bind this sealed wound stage bundle.",
+                    woundStages.BundleFingerprint,
+                    woundAnchorPlan.WoundStageBundleFingerprint);
             }
             if (effectPlan is null)
             {
@@ -621,6 +639,10 @@ internal static class AcceptedMechanicsCarrierAssembler
             var woundRoots = new Dictionary<string, JsonObject>(
                 StringComparer.Ordinal);
             var contributionOwners = new HashSet<WoundOwnerCoordinate>();
+            var projectedAnchorWounds = new Dictionary<
+                string,
+                (WoundMaterializationEnvelope Before, WoundMaterializationEnvelope After)>(
+                StringComparer.Ordinal);
             foreach (var pathGroup in final.CarrierContributions
                          .GroupBy(static contribution =>
                              contribution.Owner.CarrierPath,
@@ -720,10 +742,70 @@ internal static class AcceptedMechanicsCarrierAssembler
                                 "one mutation per woundId",
                                 mutation.WoundId);
                         }
+                        var effectiveMutation = mutation;
+                        if (woundAnchorPlan is not null &&
+                            woundAnchorPlan.TryGetAllocation(
+                                mutation.WoundId,
+                                out var allocation))
+                        {
+                            if (!string.Equals(
+                                    mutation.Operation,
+                                    "add",
+                                    StringComparison.Ordinal) ||
+                                mutation.BeforeWound is not null ||
+                                mutation.AfterWound is not { } unanchored ||
+                                !string.Equals(
+                                    unanchored.LastTransition.TransitionId,
+                                    allocation.TransitionId,
+                                    StringComparison.Ordinal) ||
+                                !string.Equals(
+                                    unanchored.LastTransition.Kind,
+                                    "create",
+                                    StringComparison.Ordinal) ||
+                                !string.Equals(
+                                    unanchored.Classification.Domain,
+                                    "physical",
+                                    StringComparison.Ordinal) ||
+                                unanchored.Recovery.RecoveryAnchor is not null ||
+                                unanchored.Recovery.DeteriorationAnchor is not null)
+                            {
+                                return Failed(
+                                    "accepted_mechanics_wound_anchor_projection_invalid",
+                                    "A canonical anchor allocation does not select one unanchored physical create.",
+                                    allocation.WoundId + "/" + allocation.TransitionId,
+                                    mutation.Operation + "/" + mutation.WoundId);
+                            }
+                            var anchored = unanchored with
+                            {
+                                Recovery = unanchored.Recovery with
+                                {
+                                    RecoveryAnchor = allocation.RecoveryAnchor with { },
+                                    DeteriorationAnchor =
+                                        allocation.DeteriorationAnchor is { } deterioration
+                                            ? deterioration with { }
+                                            : null
+                                }
+                            };
+                            if (!projectedAnchorWounds.TryAdd(
+                                    mutation.WoundId,
+                                    (unanchored, anchored)))
+                            {
+                                return Failed(
+                                    "accepted_mechanics_wound_anchor_projection_duplicate",
+                                    "A canonical anchor plan selected one wound more than once.",
+                                    "one allocation per newly created physical wound",
+                                    mutation.WoundId);
+                            }
+                            effectiveMutation = new WoundCarrierMutation(
+                                mutation.Operation,
+                                mutation.WoundId,
+                                beforeWound: null,
+                                anchored);
+                        }
                         var mutationFailure = ApplyMutation(
                             selectedCollection,
                             owner,
-                            mutation);
+                            effectiveMutation);
                         if (mutationFailure is not null)
                             return Failed(mutationFailure);
                     }
@@ -732,6 +814,18 @@ internal static class AcceptedMechanicsCarrierAssembler
                 woundRoots.Add(path, selected);
                 effectRoots.Remove(path);
                 ownerRoots.Remove(path);
+            }
+
+            if (woundAnchorPlan is not null &&
+                projectedAnchorWounds.Count != woundAnchorPlan.Allocations.Count)
+            {
+                return Failed(
+                    "accepted_mechanics_wound_anchor_projection_incomplete",
+                    "Not every sealed canonical anchor allocation selected one final wound mutation.",
+                    woundAnchorPlan.Allocations.Count.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture),
+                    projectedAnchorWounds.Count.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture));
             }
 
             var assembledCarriers = WoundAcceptedTurnData.CloneWoundCarriers(
@@ -749,11 +843,22 @@ internal static class AcceptedMechanicsCarrierAssembler
                     pair.Value);
             }
             var assembledCatalog = WoundCarrierCatalog.Build(assembledCarriers);
+            var projectedIdentity = final.IdentityIndexAfterImage;
+            var projectedHistory = final.HistoryAfterImage;
+            if (woundAnchorPlan is not null)
+            {
+                var projectionFailure = ProjectAnchorAgreementRoots(
+                    projectedIdentity,
+                    projectedHistory,
+                    projectedAnchorWounds);
+                if (projectionFailure is not null)
+                    return Failed(projectionFailure);
+            }
             var identity = WoundIdentityState.Parse(
-                final.IdentityIndexAfterImage.ToJsonString(),
+                projectedIdentity.ToJsonString(),
                 WoundIdentityState.StatePath);
             var history = WoundHistoryState.Parse(
-                final.HistoryAfterImage.ToJsonString(),
+                projectedHistory.ToJsonString(),
                 WoundHistoryState.HistoryPath);
             var agreementIssues = new List<ValidationIssue>();
             agreementIssues.AddRange(assembledCatalog.Issues);
@@ -781,11 +886,12 @@ internal static class AcceptedMechanicsCarrierAssembler
 
             var publication = AcceptedMechanicsWoundPublication.CreateValidated(
                 woundRoots,
-                final.IdentityIndexAfterImage,
-                final.HistoryAfterImage,
+                projectedIdentity,
+                projectedHistory,
                 woundStages.BundleFingerprint,
                 WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
                     effectPlan),
+                woundAnchorPlan?.Fingerprint,
                 PublicationProof);
             return AcceptedMechanicsCarrierCompositionResult.CreateValidated(
                 effectRoots,
@@ -804,6 +910,87 @@ internal static class AcceptedMechanicsCarrierAssembler
                 "one exact typed same-root composition",
                 exception.GetType().Name);
         }
+    }
+
+    private static ValidationIssue? ProjectAnchorAgreementRoots(
+        JsonObject identityAfterImage,
+        JsonObject historyAfterImage,
+        IReadOnlyDictionary<
+            string,
+            (WoundMaterializationEnvelope Before, WoundMaterializationEnvelope After)>
+            projectedWounds)
+    {
+        ArgumentNullException.ThrowIfNull(identityAfterImage);
+        ArgumentNullException.ThrowIfNull(historyAfterImage);
+        ArgumentNullException.ThrowIfNull(projectedWounds);
+        var entries = identityAfterImage["entries"] as JsonArray;
+        var transitions = historyAfterImage["transitions"] as JsonArray;
+        if (entries is null || transitions is null)
+        {
+            return Issue(
+                WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_anchor_agreement_root_invalid",
+                "Canonical wound anchor projection requires identity entries and history transitions arrays.",
+                "strict canonical identity and history after-images",
+                "missing or malformed arrays");
+        }
+
+        foreach (var projection in projectedWounds.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            var woundId = projection.Key;
+            var beforeFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
+                projection.Value.Before);
+            var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
+                projection.Value.After);
+            var identityMatches = entries
+                .OfType<JsonObject>()
+                .Where(entry => string.Equals(
+                    entry["woundId"]?.GetValue<string>(),
+                    woundId,
+                    StringComparison.Ordinal))
+                .ToArray();
+            var transitionId = projection.Value.After.LastTransition.TransitionId;
+            var historyMatches = transitions
+                .OfType<JsonObject>()
+                .Where(transition => string.Equals(
+                    transition["woundId"]?.GetValue<string>(),
+                    woundId,
+                    StringComparison.Ordinal) &&
+                    string.Equals(
+                        transition["transitionId"]?.GetValue<string>(),
+                        transitionId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        transition["kind"]?.GetValue<string>(),
+                        "create",
+                        StringComparison.Ordinal))
+                .ToArray();
+            if (identityMatches.Length != 1 ||
+                historyMatches.Length != 1 ||
+                !string.Equals(
+                    identityMatches[0]["semanticFingerprint"]?.GetValue<string>(),
+                    beforeFingerprint,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    historyMatches[0]["afterFingerprint"]?.GetValue<string>(),
+                    beforeFingerprint,
+                    StringComparison.Ordinal))
+            {
+                return Issue(
+                    WoundIdentityState.StatePath,
+                    "accepted_mechanics_wound_anchor_agreement_mismatch",
+                    "Canonical anchor projection does not match the sealed unanchored identity/history result.",
+                    woundId + "/" + transitionId + "/" + beforeFingerprint,
+                    $"identity={identityMatches.Length}; history={historyMatches.Length}");
+            }
+
+            identityMatches[0]["semanticFingerprint"] = afterFingerprint;
+            historyMatches[0]["afterFingerprint"] = afterFingerprint;
+        }
+
+        return null;
     }
 
     private static ValidationIssue? ApplyMutation(
@@ -3665,7 +3852,8 @@ internal static class AcceptedMechanicsPlanner
         var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
             effectPlan,
             ownerCompanionAfterImages,
-            woundStages);
+            woundStages,
+            context.WoundAnchorPlan);
         if (!carrierComposition.Success)
         {
             return new AcceptedMechanicsPlanningResult(
@@ -3767,7 +3955,9 @@ internal static class AcceptedMechanicsPlanner
                 woundStageBundle: woundStages,
                 carrierComposition: woundStages is null
                     ? null
-                    : carrierComposition),
+                    : carrierComposition,
+                directWoundPublicationAuthority:
+                    context.DirectWoundPublicationAuthority),
             Array.Empty<ValidationIssue>());
     }
 

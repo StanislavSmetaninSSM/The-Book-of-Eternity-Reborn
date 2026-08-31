@@ -2007,6 +2007,12 @@ internal static class WoundAcceptedTurnData
                 value.CarryOverflow,
                 value.DeteriorationPolicy is { } deterioration
                     ? CloneElement(deterioration)
+                    : null,
+                value.RecoveryAnchor is { } recoveryAnchor
+                    ? recoveryAnchor with { }
+                    : null,
+                value.DeteriorationAnchor is { } deteriorationAnchor
+                    ? deteriorationAnchor with { }
                     : null);
 
     private static WoundRelations? CloneRelations(WoundRelations? value) =>

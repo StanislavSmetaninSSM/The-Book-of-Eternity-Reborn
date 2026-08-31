@@ -395,6 +395,31 @@ public sealed class EffectSourceAuthorityTests
             issue.Code?.StartsWith("effect_source_link_target_", StringComparison.Ordinal) == true);
     }
 
+    [Fact]
+    public void CanonicalPublicationSubset_AllowsAdditionalUnusedCanonicalSources()
+    {
+        var staged = Build(Source("skill", "skill_used_by_sealed_plan"));
+        var canonical = Build(
+            Source("skill", "skill_used_by_sealed_plan"),
+            Source("item", "item_unrelated_canonical_source"));
+
+        Assert.True(staged.IsCanonicalPublicationSubsetOf(canonical));
+        Assert.False(canonical.IsCanonicalPublicationSubsetOf(staged));
+    }
+
+    [Fact]
+    public void CanonicalPublicationSubset_RejectsChangedCanonicalDefinition()
+    {
+        var staged = Build(Source("skill", "skill_used_by_sealed_plan"));
+        var changed = Source("skill", "skill_used_by_sealed_plan");
+        changed.Definitions[0]!["display"]!["name"] = "Changed after sealing";
+        var canonical = Build(
+            changed,
+            Source("item", "item_unrelated_canonical_source"));
+
+        Assert.False(staged.IsCanonicalPublicationSubsetOf(canonical));
+    }
+
     private static EffectSourceAuthority Build(params EffectSourceExport[] exports) =>
         EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
             exports,

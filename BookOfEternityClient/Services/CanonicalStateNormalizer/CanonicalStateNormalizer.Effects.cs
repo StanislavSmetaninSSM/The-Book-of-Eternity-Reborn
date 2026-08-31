@@ -8,7 +8,8 @@ public partial class CanonicalStateNormalizer
     private async Task ValidateEffectPlanPublicationBindingAsync(
         EffectAcceptedTurnPlan plan,
         bool normalizedAcceptedCarrierBaselines,
-        AcceptedMechanicsWoundStageBundle? woundStageBundle)
+        AcceptedMechanicsWoundStageBundle? woundStageBundle,
+        bool allowDirectWoundBootstrap)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
@@ -39,7 +40,9 @@ public partial class CanonicalStateNormalizer
             EffectAcceptedTurnPlan.IdentityIndexPath);
         if (!JsonNode.DeepEquals(
                 plan.IdentityIndexBeforeImage,
-                liveIdentityIndex))
+                liveIdentityIndex) &&
+            !(allowDirectWoundBootstrap && liveIdentityIndex is null &&
+              IsPristineEffectIdentityIndex(plan.IdentityIndexBeforeImage)))
         {
             throw StaleEffectPlan(EffectAcceptedTurnPlan.IdentityIndexPath);
         }
@@ -70,14 +73,20 @@ public partial class CanonicalStateNormalizer
         if (!string.Equals(
                 plan.SourceAuthorityFingerprint,
                 sourceAuthority.CanonicalFingerprint,
-                StringComparison.Ordinal))
+                StringComparison.Ordinal) &&
+            !(allowDirectWoundBootstrap &&
+              plan.SourceAuthority.IsCanonicalPublicationSubsetOf(
+                  sourceAuthority)))
         {
             throw StaleEffectPlan("effect source authority catalog");
         }
         if (!string.Equals(
                 plan.TargetAuthorityFingerprint,
                 targetAuthority.CanonicalFingerprint,
-                StringComparison.Ordinal))
+                StringComparison.Ordinal) &&
+            !(allowDirectWoundBootstrap &&
+              plan.TargetAuthority.IsCanonicalPublicationSubsetOf(
+                  targetAuthority)))
         {
             throw StaleEffectPlan("effect target authority catalog");
         }
@@ -161,6 +170,25 @@ public partial class CanonicalStateNormalizer
             afterImages.TryGetValue(path, out var afterImage)
                 ? afterImage.DeepClone().AsObject()
                 : live;
+    }
+
+    private static bool IsPristineEffectIdentityIndex(JsonObject? root)
+    {
+        if (root is null)
+            return false;
+        try
+        {
+            using var document = JsonDocument.Parse(root.ToJsonString());
+            var parsed = EffectIdentityState.Parse(
+                document.RootElement,
+                EffectAcceptedTurnPlan.IdentityIndexPath);
+            return parsed.State is not null && parsed.Issues.Count == 0 &&
+                   parsed.State.Entries.Count == 0;
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
     }
 
     private async Task<EffectCarrierCatalogInput> ReadEffectPublicationCarriersAsync() =>

@@ -323,6 +323,55 @@ internal sealed class EffectSourceAuthority
 
     internal string CanonicalFingerprint { get; }
 
+    internal bool IsCanonicalPublicationSubsetOf(
+        EffectSourceAuthority canonicalAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(canonicalAuthority);
+        if (Issues.Count != 0 || canonicalAuthority.Issues.Count != 0)
+            return false;
+
+        var entryKeys = _entries.Keys.ToHashSet();
+        var canonicalEntries = canonicalAuthority._entries
+            .Where(pair => entryKeys.Contains(pair.Key))
+            .Select(static pair => pair.Value)
+            .ToArray();
+        if (canonicalEntries.Length != _entries.Count)
+            return false;
+
+        var ownerKeys = _ownerExports
+            .Select(static export => new EffectSourceOwnerKey(
+                export.Realm,
+                export.Kind,
+                export.SourceId))
+            .ToHashSet();
+        var canonicalOwnerExports = canonicalAuthority._ownerExports
+            .Where(export => ownerKeys.Contains(new EffectSourceOwnerKey(
+                export.Realm,
+                export.Kind,
+                export.SourceId)))
+            .ToArray();
+        if (canonicalOwnerExports.Length != _ownerExports.Length)
+            return false;
+
+        var woundGroupKeys = _woundGroups.Keys.ToHashSet();
+        var canonicalWoundGroups = canonicalAuthority._woundGroups
+            .Where(pair => woundGroupKeys.Contains(pair.Key))
+            .Select(static pair => pair.Value)
+            .ToArray();
+        if (canonicalWoundGroups.Length != _woundGroups.Count)
+            return false;
+
+        var canonicalSubsetFingerprint = CreateCanonicalFingerprint(
+            canonicalEntries,
+            canonicalOwnerExports,
+            canonicalWoundGroups,
+            Array.Empty<ValidationIssue>());
+        return string.Equals(
+            CanonicalFingerprint,
+            canonicalSubsetFingerprint,
+            StringComparison.Ordinal);
+    }
+
     internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() =>
         _entries.Values
             .Where(static entry =>

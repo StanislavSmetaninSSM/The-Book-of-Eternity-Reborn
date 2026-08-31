@@ -13,7 +13,8 @@ public partial class CanonicalStateNormalizer
         internal sealed record Validated(
             AcceptedMechanicsPlan Plan,
             AcceptedMechanicsPlanBinding Binding,
-            IReadOnlyDictionary<string, CanonicalBeforeImage> SnapshotBeforeImages)
+            IReadOnlyDictionary<string, CanonicalBeforeImage>
+                PublicationAuthorityBeforeImages)
             : AcceptedMechanicsNormalizationPreflight;
     }
 
@@ -77,14 +78,16 @@ public partial class CanonicalStateNormalizer
                 await ValidateEffectPlanPublicationBindingAsync(
                     plan.EffectPlan,
                     normalizedAcceptedCarrierBaselines,
-                    plan.WoundStageBundle);
+                    plan.WoundStageBundle,
+                    allowDirectWoundBootstrap:
+                        plan.DirectWoundPublicationAuthority is not null);
             }
 
-            // Other normalizers may intentionally consume plan before-images. The pending
-            // manifest and its detached authority are never mutable normalization outputs,
-            // so bind them again immediately before consuming the publication handoff.
-            await ValidateAcceptedMechanicsSnapshotBeforeImagesAsync(
-                validated.SnapshotBeforeImages);
+            // Other normalizers may intentionally consume plan before-images. The exact
+            // authority roots selected by preflight are never mutable normalization
+            // outputs, so bind them again immediately before consuming the handoff.
+            await ValidateAcceptedMechanicsPublicationAuthorityBeforeImagesAsync(
+                validated.PublicationAuthorityBeforeImages);
         }
         catch
         {
@@ -284,15 +287,35 @@ public partial class CanonicalStateNormalizer
         try
         {
             await ValidateAcceptedMechanicsBeforeImagesAsync(peeked.Plan);
-            var snapshotBeforeImages = CaptureAcceptedMechanicsSnapshotBeforeImages(
-                peeked.Plan.BeforeImages);
-            ValidateAcceptedMechanicsSnapshotBinding(
-                binding,
-                snapshotBeforeImages);
+            IReadOnlyDictionary<string, CanonicalBeforeImage>
+                publicationAuthorityBeforeImages;
+            if (peeked.Plan.DirectWoundPublicationAuthority is { } directAuthority)
+            {
+                if (!directAuthority.AgreesWith(binding, peeked.Plan))
+                {
+                    throw new InvalidDataException(
+                        "Accepted mechanics direct wound publication authority does not match the exact validated plan binding, wound stages, anchors, and retained roots.");
+                }
+                publicationAuthorityBeforeImages =
+                    CaptureAcceptedMechanicsDirectWoundBeforeImages(
+                        peeked.Plan.BeforeImages);
+                ValidateAcceptedMechanicsSnapshotBinding(
+                    binding,
+                    publicationAuthorityBeforeImages);
+            }
+            else
+            {
+                publicationAuthorityBeforeImages =
+                    CaptureAcceptedMechanicsSnapshotBeforeImages(
+                        peeked.Plan.BeforeImages);
+                ValidateAcceptedMechanicsSnapshotBinding(
+                    binding,
+                    publicationAuthorityBeforeImages);
+            }
             return new AcceptedMechanicsNormalizationPreflight.Validated(
                 peeked.Plan,
                 binding,
-                snapshotBeforeImages);
+                publicationAuthorityBeforeImages);
         }
         catch
         {
@@ -372,6 +395,34 @@ public partial class CanonicalStateNormalizer
         return AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(result);
     }
 
+    private static IReadOnlyDictionary<string, CanonicalBeforeImage>
+        CaptureAcceptedMechanicsDirectWoundBeforeImages(
+            IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages)
+    {
+        var result = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
+        foreach (var path in new[]
+                 {
+                     PendingTurnSnapshotManifestPath,
+                     PendingTurnSnapshotAuthority.AuthorityPath,
+                     LiveTurnPreparationService.TurnRequestPath,
+                     EffectAcceptedTurnInputComposer.WorldTimePath
+                 })
+        {
+            if (!beforeImages.TryGetValue(path, out var beforeImage) ||
+                !beforeImage.Existed ||
+                beforeImage.Bytes == null)
+            {
+                throw new InvalidDataException(
+                    $"Accepted mechanics direct wound preflight requires exact retained authority bytes at '{path}'.");
+            }
+
+            result.Add(
+                path,
+                new CanonicalBeforeImage(existed: true, beforeImage.Bytes));
+        }
+        return AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(result);
+    }
+
     private static void ValidateAcceptedMechanicsSnapshotBinding(
         AcceptedMechanicsPlanBinding binding,
         IReadOnlyDictionary<string, CanonicalBeforeImage> snapshotBeforeImages)
@@ -435,10 +486,10 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private async Task ValidateAcceptedMechanicsSnapshotBeforeImagesAsync(
-        IReadOnlyDictionary<string, CanonicalBeforeImage> snapshotBeforeImages)
+    private async Task ValidateAcceptedMechanicsPublicationAuthorityBeforeImagesAsync(
+        IReadOnlyDictionary<string, CanonicalBeforeImage> authorityBeforeImages)
     {
-        foreach (var pair in snapshotBeforeImages.OrderBy(
+        foreach (var pair in authorityBeforeImages.OrderBy(
                      static value => value.Key,
                      StringComparer.Ordinal))
         {
@@ -449,7 +500,7 @@ public partial class CanonicalStateNormalizer
                 !expected.AsSpan().SequenceEqual(current))
             {
                 throw new InvalidDataException(
-                    "Mortal item accepted-turn authority requires the exact validated common-plan session and snapshot binding; pending snapshot authority changed after preflight.");
+                    "Accepted mechanics publication authority changed after preflight.");
             }
         }
     }

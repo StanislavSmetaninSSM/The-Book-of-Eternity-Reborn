@@ -407,6 +407,15 @@ internal sealed class AcceptedMechanicsPlanCache
                    string.Equals(
                        expected.BundleFingerprint,
                        actual!.BundleFingerprint,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       input.PlanningContext?.WoundAnchorPlan?.Fingerprint,
+                       plan.WoundAnchorPlanFingerprint,
+                       StringComparison.Ordinal) &&
+                   string.Equals(
+                       input.PlanningContext?.DirectWoundPublicationAuthority
+                           ?.Fingerprint,
+                       plan.DirectWoundPublicationAuthority?.Fingerprint,
                        StringComparison.Ordinal);
         }
         catch (Exception exception) when (IsMalformedBoundary(exception))
@@ -504,6 +513,104 @@ internal sealed class AcceptedMechanicsPlanCache
 
 internal static class AcceptedMechanicsPlanAuthority
 {
+    internal static AcceptedMechanicsPlanningResult GetOrBuildWoundValidated(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsInput input,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(bundle);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+
+        var planningContext = input.PlanningContext;
+        var suppliedBundle = planningContext?.WoundStageBundle;
+        if (input.WoundInput is null || planningContext is null ||
+            suppliedBundle is null ||
+            !string.Equals(
+                suppliedBundle.BundleFingerprint,
+                bundle.BundleFingerprint,
+                StringComparison.Ordinal))
+        {
+            return WoundAnchorContextFailure(
+                suppliedBundle?.BundleFingerprint ?? "missing");
+        }
+
+        var anchors = MortalWoundCanonicalAnchorPlan.Create(
+            fileSystem,
+            writeLease,
+            bundle);
+        if (!anchors.Success || anchors.Plan is null)
+            return new AcceptedMechanicsPlanningResult(null, anchors.Issues);
+
+        try
+        {
+            var anchoredInput = input.WithPlanningContext(
+                planningContext.WithWoundAnchorPlan(anchors.Plan));
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
+                fileSystem,
+                writeLease,
+                anchoredInput,
+                bundle);
+        }
+        catch (ArgumentException)
+        {
+            return WoundAnchorContextFailure(
+                "the supplied planning context rejected the sealed anchor plan");
+        }
+    }
+
+    internal static AcceptedMechanicsPlanningResult GetOrBuildWoundValidated(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(bundle);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+
+        var anchors = MortalWoundCanonicalAnchorPlan.Create(
+            fileSystem,
+            writeLease,
+            bundle);
+        if (!anchors.Success || anchors.Plan is null)
+            return new AcceptedMechanicsPlanningResult(null, anchors.Issues);
+        var composed = AcceptedMechanicsWoundCommonInputComposer.Compose(
+            fileSystem,
+            writeLease,
+            bundle,
+            anchors.Plan);
+        if (!composed.Success || composed.Input is null)
+            return new AcceptedMechanicsPlanningResult(null, composed.Issues);
+        return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
+            fileSystem,
+            writeLease,
+            composed.Input,
+            bundle);
+    }
+
+    private static AcceptedMechanicsPlanningResult WoundAnchorContextFailure(
+        string actual) => new(
+        null,
+        new[]
+        {
+            new ValidationIssue(
+                "acceptedMechanicsPlan.woundAnchorPlan",
+                IssueSeverity.Error,
+                "Canonical Mortal wound anchors cannot be attached to a foreign common planning input.",
+                code: "accepted_mechanics_wound_anchor_context_mismatch",
+                actor: "Client",
+                section: "wound_materialization",
+                expected:
+                    "the exact complete accepted-mechanics input and wound stage bundle",
+                actual: actual,
+                repairHint:
+                    "Rebuild the common accepted-turn input and canonical anchor plan from one validated handoff.")
+        });
+
     internal static AcceptedMechanicsPlanningResult GetOrBuildValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
