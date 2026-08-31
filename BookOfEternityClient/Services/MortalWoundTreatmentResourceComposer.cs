@@ -55,6 +55,201 @@ internal sealed class MortalWoundTreatmentResourcePreparationResult
         null);
 }
 
+internal sealed class MortalWoundTreatmentResourceFinalizationResult
+{
+    private readonly ReadOnlyCollection<ValidationIssue> _issues;
+
+    private MortalWoundTreatmentResourceFinalizationResult(
+        bool isValid,
+        IEnumerable<ValidationIssue> issues,
+        MortalWoundTreatmentResourceFinalization? finalization)
+    {
+        IsValid = isValid;
+        _issues = MortalWoundTreatmentShellDetachment.Freeze(issues);
+        Finalization = finalization;
+    }
+
+    public bool IsValid { get; }
+    public IReadOnlyList<ValidationIssue> Issues => _issues;
+    public MortalWoundTreatmentResourceFinalization? Finalization { get; }
+
+    internal static MortalWoundTreatmentResourceFinalizationResult Valid(
+        MortalWoundTreatmentResourceFinalization finalization)
+    {
+        ArgumentNullException.ThrowIfNull(finalization);
+        return new MortalWoundTreatmentResourceFinalizationResult(
+            true,
+            Array.Empty<ValidationIssue>(),
+            finalization);
+    }
+
+    internal static MortalWoundTreatmentResourceFinalizationResult Invalid(
+        ValidationIssue issue)
+    {
+        ArgumentNullException.ThrowIfNull(issue);
+        return new MortalWoundTreatmentResourceFinalizationResult(
+            false,
+            new[] { issue },
+            null);
+    }
+}
+
+internal sealed class MortalWoundTreatmentResourceFinalization
+{
+    private readonly ReadOnlyCollection<MortalWoundTreatmentResourceConsumptionIntent>
+        _consumptions;
+    private readonly ReadOnlyCollection<string> _releasedClaimFingerprints;
+
+    private MortalWoundTreatmentResourceFinalization(
+        string disposition,
+        string? reservationId,
+        string requestFingerprint,
+        string resultFingerprint,
+        string resourceAuthorityFingerprint,
+        string consumptionTrigger,
+        IEnumerable<MortalWoundTreatmentResourceConsumptionIntent> consumptions,
+        IEnumerable<string> releasedClaimFingerprints,
+        string finalizationFingerprint)
+    {
+        Disposition = disposition;
+        ReservationId = reservationId;
+        RequestFingerprint = requestFingerprint;
+        ResultFingerprint = resultFingerprint;
+        ResourceAuthorityFingerprint = resourceAuthorityFingerprint;
+        ConsumptionTrigger = consumptionTrigger;
+        _consumptions = MortalWoundTreatmentShellDetachment.Freeze(consumptions);
+        _releasedClaimFingerprints = MortalWoundTreatmentShellDetachment.Freeze(
+            releasedClaimFingerprints);
+        FinalizationFingerprint = finalizationFingerprint;
+    }
+
+    public string Disposition { get; }
+    public string? ReservationId { get; }
+    public string RequestFingerprint { get; }
+    public string ResultFingerprint { get; }
+    public string ResourceAuthorityFingerprint { get; }
+    public string ConsumptionTrigger { get; }
+    public IReadOnlyList<MortalWoundTreatmentResourceConsumptionIntent> Consumptions =>
+        _consumptions;
+    public IReadOnlyList<string> ReleasedClaimFingerprints =>
+        _releasedClaimFingerprints;
+    public string FinalizationFingerprint { get; }
+
+    internal static MortalWoundTreatmentResourceFinalization Create(
+        string disposition,
+        MortalWoundTreatmentResolution resolution,
+        IReadOnlyList<MortalWoundTreatmentResourceConsumptionIntent> consumptions,
+        IReadOnlyList<string> releasedClaimFingerprints)
+    {
+        ArgumentNullException.ThrowIfNull(resolution);
+        ArgumentNullException.ThrowIfNull(consumptions);
+        ArgumentNullException.ThrowIfNull(releasedClaimFingerprints);
+        var resource = resolution.ResourceAuthority;
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_wound_treatment.resource_finalization",
+            "1",
+            disposition,
+            resource.ReservationId,
+            resolution.RequestFingerprint,
+            resolution.ResultFingerprint,
+            resource.AuthorityFingerprint,
+            MortalWoundTreatmentResourceComposer.ComputePolicyFingerprint(resource.Policy),
+            resolution.ConsumptionTrigger,
+            consumptions.Count.ToString(CultureInfo.InvariantCulture)
+        };
+        fields.AddRange(consumptions.Select(static intent => intent.IntentFingerprint));
+        fields.Add(releasedClaimFingerprints.Count.ToString(CultureInfo.InvariantCulture));
+        fields.AddRange(releasedClaimFingerprints);
+        return new MortalWoundTreatmentResourceFinalization(
+            disposition,
+            resource.ReservationId,
+            resolution.RequestFingerprint,
+            resolution.ResultFingerprint,
+            resource.AuthorityFingerprint,
+            resolution.ConsumptionTrigger,
+            consumptions,
+            releasedClaimFingerprints,
+            WoundAcceptedTurnFingerprintWriter.Compute(fields));
+    }
+}
+
+internal sealed class MortalWoundTreatmentResourceConsumptionIntent
+{
+    private MortalWoundTreatmentResourceConsumptionIntent(
+        string scope,
+        int? courseMilestoneOrdinal,
+        int requirementIndex,
+        string kind,
+        string authorityRef,
+        string realm,
+        string ownerKind,
+        string ownerId,
+        int quantity,
+        string claimFingerprint,
+        string intentFingerprint)
+    {
+        Scope = scope;
+        CourseMilestoneOrdinal = courseMilestoneOrdinal;
+        RequirementIndex = requirementIndex;
+        Kind = kind;
+        AuthorityRef = authorityRef;
+        Realm = realm;
+        OwnerKind = ownerKind;
+        OwnerId = ownerId;
+        Quantity = quantity;
+        ClaimFingerprint = claimFingerprint;
+        IntentFingerprint = intentFingerprint;
+    }
+
+    public string Scope { get; }
+    public int? CourseMilestoneOrdinal { get; }
+    public int RequirementIndex { get; }
+    public string Kind { get; }
+    public string AuthorityRef { get; }
+    public string Realm { get; }
+    public string OwnerKind { get; }
+    public string OwnerId { get; }
+    public int Quantity { get; }
+    public string ClaimFingerprint { get; }
+    public string IntentFingerprint { get; }
+
+    internal static MortalWoundTreatmentResourceConsumptionIntent Create(
+        MortalWoundTreatmentResourceClaim claim,
+        int? courseMilestoneOrdinal)
+    {
+        ArgumentNullException.ThrowIfNull(claim);
+        var intentFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.resource_consumption_intent",
+                "1",
+                claim.Scope,
+                courseMilestoneOrdinal?.ToString(CultureInfo.InvariantCulture),
+                claim.RequirementIndex.ToString(CultureInfo.InvariantCulture),
+                claim.Kind,
+                claim.AuthorityRef,
+                claim.Realm,
+                claim.OwnerKind,
+                claim.OwnerId,
+                claim.Quantity.ToString(CultureInfo.InvariantCulture),
+                claim.ClaimFingerprint
+            });
+        return new MortalWoundTreatmentResourceConsumptionIntent(
+            claim.Scope,
+            courseMilestoneOrdinal,
+            claim.RequirementIndex,
+            claim.Kind,
+            claim.AuthorityRef,
+            claim.Realm,
+            claim.OwnerKind,
+            claim.OwnerId,
+            claim.Quantity,
+            claim.ClaimFingerprint,
+            intentFingerprint);
+    }
+}
+
 internal sealed class MortalWoundTreatmentResourceClaim
 {
     private MortalWoundTreatmentResourceClaim(
@@ -439,6 +634,327 @@ internal static class MortalWoundTreatmentResourceComposer
             preparation.Ownership,
             preparation.Authority);
     }
+
+    internal static MortalWoundTreatmentResourceFinalizationResult Finalize(
+        MortalWoundTreatmentResolution resolution)
+    {
+        try
+        {
+            if (resolution is null)
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_resolution_missing",
+                    "one complete sealed terminal treatment resolution",
+                    "missing resolution");
+            }
+            if (!string.Equals(
+                    resolution.AttemptDisposition,
+                    "AcceptedTerminal",
+                    StringComparison.Ordinal))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_disposition_invalid",
+                    "AcceptedTerminal",
+                    resolution.AttemptDisposition);
+            }
+
+            var request = resolution.RequestAuthority;
+            if (request is null ||
+                !MortalWoundTreatmentDetachedSealValidator.IsValid(request))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_request_invalid",
+                    "one independently valid complete detached request",
+                    request is null ? "missing request" : "request seal mismatch");
+            }
+            if (!HasExactResolutionRequestAgreement(resolution, request))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_request_agreement_invalid",
+                    "exact outer/request mode, coordinates, route, course, and authority seals",
+                    resolution.RequestFingerprint);
+            }
+            if (!HasMatchingModeEvidenceType(resolution.Mode, resolution.ModeEvidence))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_mode_evidence_invalid",
+                    $"one exact {resolution.Mode} mode-evidence graph",
+                    resolution.ModeEvidence?.GetType().Name ?? "missing evidence");
+            }
+
+            var modeEvidenceFingerprint =
+                MortalWoundTreatmentResolution.ComputeModeEvidenceFingerprint(
+                    resolution.ModeEvidence);
+            var expectedResolutionFingerprint =
+                MortalWoundTreatmentResolution.ComputeResolutionAuthorityFingerprint(
+                    resolution.RequestFingerprint,
+                    resolution.Mode,
+                    resolution.AttemptDisposition,
+                    resolution.ResultCategory,
+                    resolution.SelectedOutcomeIndex,
+                    resolution.Interruption,
+                    resolution.ConsumptionTrigger,
+                    resolution.CourseId,
+                    resolution.CourseMilestoneOrdinal,
+                    resolution.CourseDisposition,
+                    resolution.RouteFingerprint,
+                    resolution.RouteCompletion,
+                    resolution.CriticalReactionIntent?.IntentFingerprint,
+                    modeEvidenceFingerprint);
+            if (!string.Equals(
+                    resolution.ResolutionAuthorityFingerprint,
+                    expectedResolutionFingerprint,
+                    StringComparison.Ordinal))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_resolution_authority_invalid",
+                    expectedResolutionFingerprint,
+                    resolution.ResolutionAuthorityFingerprint);
+            }
+            var expectedResultFingerprint =
+                MortalWoundTreatmentResolution.ComputeResultFingerprint(
+                    expectedResolutionFingerprint,
+                    resolution.DeclaredResult);
+            if (!string.Equals(
+                    resolution.ResultFingerprint,
+                    expectedResultFingerprint,
+                    StringComparison.Ordinal))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_result_invalid",
+                    expectedResultFingerprint,
+                    resolution.ResultFingerprint);
+            }
+
+            var policy = resolution.ResourceAuthority.Policy;
+            var expectedTrigger = !resolution.Interruption &&
+                                  policy.ConsumeOn.Contains(
+                                      resolution.ResultCategory,
+                                      StringComparer.Ordinal)
+                ? resolution.ResultCategory
+                : "none";
+            if (!string.Equals(
+                    resolution.ConsumptionTrigger,
+                    expectedTrigger,
+                    StringComparison.Ordinal))
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_trigger_invalid",
+                    expectedTrigger,
+                    resolution.ConsumptionTrigger);
+            }
+
+            var resource = resolution.ResourceAuthority;
+            if (!TrySelectCurrentClaims(
+                    resolution,
+                    expectedTrigger,
+                    out var selectedClaimFingerprints,
+                    out var selectorIssue))
+            {
+                return MortalWoundTreatmentResourceFinalizationResult.Invalid(
+                    selectorIssue!);
+            }
+
+            var consumptions = new List<MortalWoundTreatmentResourceConsumptionIntent>();
+            var released = new List<string>();
+            foreach (var claim in resource.Claims)
+            {
+                if (selectedClaimFingerprints!.Contains(claim.ClaimFingerprint))
+                {
+                    consumptions.Add(MortalWoundTreatmentResourceConsumptionIntent.Create(
+                        claim,
+                        claim.Scope == "course_milestone"
+                            ? resolution.CourseMilestoneOrdinal
+                            : null));
+                }
+                else
+                {
+                    released.Add(claim.ClaimFingerprint);
+                }
+            }
+
+            if (resource.ReservationDisposition == "not_required")
+            {
+                if (resource.ReservationId is not null ||
+                    resource.Claims.Count != 0 ||
+                    consumptions.Count != 0 ||
+                    released.Count != 0)
+                {
+                    return InvalidFinalization(
+                        "mortal_wound_treatment_resource_finalization_reservation_invalid",
+                        "not_required with a null reservation and empty partition",
+                        resource.AuthorityFingerprint);
+                }
+                return MortalWoundTreatmentResourceFinalizationResult.Valid(
+                    MortalWoundTreatmentResourceFinalization.Create(
+                        "not_required",
+                        resolution,
+                        consumptions,
+                        released));
+            }
+
+            if (resource.ReservationDisposition != "held" ||
+                string.IsNullOrWhiteSpace(resource.ReservationId) ||
+                resource.Claims.Count == 0 ||
+                consumptions.Count + released.Count != resource.Claims.Count ||
+                selectedClaimFingerprints!.Count != consumptions.Count)
+            {
+                return InvalidFinalization(
+                    "mortal_wound_treatment_resource_finalization_partition_invalid",
+                    "one disjoint complete ordered partition of every held claim",
+                    resource.AuthorityFingerprint);
+            }
+
+            return MortalWoundTreatmentResourceFinalizationResult.Valid(
+                MortalWoundTreatmentResourceFinalization.Create(
+                    consumptions.Count == 0 ? "release_only" : "consume",
+                    resolution,
+                    consumptions,
+                    released));
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           JsonException or
+                                           NotSupportedException or
+                                           NullReferenceException or
+                                           OverflowException or
+                                           IndexOutOfRangeException)
+        {
+            return InvalidFinalization(
+                "mortal_wound_treatment_resource_finalization_graph_invalid",
+                "one complete independently recomputable sealed resolution graph",
+                exception.GetType().Name);
+        }
+    }
+
+    private static bool HasExactResolutionRequestAgreement(
+        MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentAttemptRequest request)
+    {
+        var requirement = request.RequirementAuthority;
+        var resource = request.ResourceAuthority;
+        var isCourse = string.Equals(request.Mode, "course", StringComparison.Ordinal);
+        return string.Equals(resolution.Mode, request.Mode, StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.Coordinates.CoordinatesFingerprint,
+                   request.Coordinates.CoordinatesFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.RequestFingerprint,
+                   request.RequestFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.RequirementAuthority.AuthorityFingerprint,
+                   requirement.AuthorityFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.ResourceAuthority.AuthorityFingerprint,
+                   resource.AuthorityFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.RouteFingerprint,
+                   requirement.RouteFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   resolution.RouteFingerprint,
+                   resource.RouteFingerprint,
+                   StringComparison.Ordinal) &&
+               resolution.CourseMilestoneOrdinal == request.MilestoneOrdinal &&
+               resolution.CourseMilestoneOrdinal == requirement.CourseMilestoneOrdinal &&
+               resolution.CourseMilestoneOrdinal == resource.CourseMilestoneOrdinal &&
+               string.Equals(resolution.CourseId, requirement.CourseId,
+                   StringComparison.Ordinal) &&
+               string.Equals(resolution.CourseId, resource.CourseId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   requirement.CourseCoordinateFingerprint,
+                   resource.CourseCoordinateFingerprint,
+                   StringComparison.Ordinal) &&
+               (isCourse
+                   ? resolution.CourseMilestoneOrdinal is > 0 &&
+                     !string.IsNullOrWhiteSpace(resolution.CourseId) &&
+                     !string.IsNullOrWhiteSpace(requirement.CourseCoordinateFingerprint)
+                   : resolution.CourseMilestoneOrdinal is null &&
+                     resolution.CourseId is null &&
+                     resolution.CourseDisposition is null &&
+                     requirement.CourseCoordinateFingerprint is null);
+    }
+
+    private static bool HasMatchingModeEvidenceType(
+        string mode,
+        MortalWoundTreatmentModeEvidence? evidence) => (mode, evidence) switch
+    {
+        ("procedure", MortalWoundProcedureModeEvidence) => true,
+        ("course", MortalWoundCourseModeEvidence) => true,
+        ("guaranteed", MortalWoundGuaranteedModeEvidence) => true,
+        _ => false
+    };
+
+    private static bool TrySelectCurrentClaims(
+        MortalWoundTreatmentResolution resolution,
+        string trigger,
+        out HashSet<string>? selectedClaimFingerprints,
+        out ValidationIssue? issue)
+    {
+        selectedClaimFingerprints = new HashSet<string>(StringComparer.Ordinal);
+        issue = null;
+        if (trigger == "none")
+            return true;
+
+        var claims = resolution.ResourceAuthority.Claims;
+        foreach (var selector in resolution.ResourceAuthority.Policy.Mutations)
+        {
+            var isCurrent = selector.Scope switch
+            {
+                "common" when selector.MilestoneOrdinal is null => true,
+                "course_milestone" when resolution.Mode == "course" &&
+                    selector.MilestoneOrdinal == resolution.CourseMilestoneOrdinal => true,
+                "course_milestone" when selector.MilestoneOrdinal is > 0 => false,
+                _ => false
+            };
+            if (!isCurrent)
+                continue;
+
+            var matches = claims.Where(claim =>
+                    string.Equals(claim.Scope, selector.Scope, StringComparison.Ordinal) &&
+                    claim.RequirementIndex == selector.RequirementIndex)
+                .ToArray();
+            if (matches.Length != 1 ||
+                matches[0].Kind is not ("item_quantity" or "resource_quantity") ||
+                matches[0].Quantity <= 0 ||
+                !selectedClaimFingerprints.Add(matches[0].ClaimFingerprint))
+            {
+                issue = CreateFinalizationIssue(
+                    "mortal_wound_treatment_resource_finalization_selector_invalid",
+                    "one unique current positive quantity claim for every active selector",
+                    $"{selector.Scope}:{selector.MilestoneOrdinal?.ToString(CultureInfo.InvariantCulture) ?? "null"}:{selector.RequirementIndex.ToString(CultureInfo.InvariantCulture)}");
+                selectedClaimFingerprints = null;
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static MortalWoundTreatmentResourceFinalizationResult InvalidFinalization(
+        string code,
+        string expected,
+        string actual) => MortalWoundTreatmentResourceFinalizationResult.Invalid(
+        CreateFinalizationIssue(code, expected, actual));
+
+    private static ValidationIssue CreateFinalizationIssue(
+        string code,
+        string expected,
+        string actual) => new(
+        IssuePath + ".finalization",
+        IssueSeverity.Error,
+        "The Mortal wound-treatment resource finalization cannot be trusted.",
+        code: code,
+        actor: "Client",
+        section: "wound_materialization",
+        expected: expected,
+        actual: actual,
+        repairHint:
+        "Discard the untrusted result and resolve the complete sealed treatment request again.");
 
     private static MortalWoundTreatmentResourcePreparationResult Prepare(
         string mode,

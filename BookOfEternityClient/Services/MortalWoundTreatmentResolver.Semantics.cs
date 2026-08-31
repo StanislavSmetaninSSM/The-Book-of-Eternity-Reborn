@@ -202,7 +202,7 @@ internal sealed partial class MortalWoundTreatmentResolution
             routeFingerprint,
             routeCompletion,
             criticalReactionIntent?.IntentFingerprint,
-            ModeEvidenceFingerprint(modeEvidence));
+            ComputeModeEvidenceFingerprint(modeEvidence));
         var resultFingerprint = ComputeResultFingerprint(
             resolutionAuthorityFingerprint,
             declared);
@@ -231,7 +231,8 @@ internal sealed partial class MortalWoundTreatmentResolution
             routeCompletion);
     }
 
-    private static string ModeEvidenceFingerprint(MortalWoundTreatmentModeEvidence evidence) =>
+    internal static string ComputeModeEvidenceFingerprint(
+        MortalWoundTreatmentModeEvidence evidence) =>
         evidence switch
         {
             MortalWoundProcedureModeEvidence procedure => procedure.AcceptedRollFingerprint,
