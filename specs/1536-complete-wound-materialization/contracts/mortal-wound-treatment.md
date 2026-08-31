@@ -1376,9 +1376,29 @@ Each wound selects exactly one mode:
 - `no_natural_recovery`: only treatment improves the wound.
 
 The policy declares clock source, cadence, threshold per step, blockers, overflow,
-and allowed result. Optional deterioration declares exact unmet conditions, grace
-period/cadence, and bounded complication/severity/death-contour result. The client owns
-tick keys and progress arithmetic.
+and allowed result. Optional deterioration is a closed object containing exactly
+`policyRef`, singleton `unmetConditions`, non-negative signed-64-bit `graceMinutes`,
+positive signed-64-bit `cadenceMinutes`, and `result`. The client owns tick keys and
+progress arithmetic.
+
+```json
+{
+  "policyRef": "untreated_infection",
+  "unmetConditions": ["not_stabilized"],
+  "graceMinutes": 30,
+  "cadenceMinutes": 10,
+  "result": { "kind": "increase_severity" }
+}
+```
+
+The adverse result is exactly one of: `{ "kind": "increase_severity" }` for a
+one-tier increase at severity I-III; `{ "kind": "add_complication",
+"complicationDraft": ... }` using the existing complete arbitrary-complication draft
+with difficulty 1-4 and a graph that fits the current envelope; or
+`{ "kind": "death_contour" }` for a separate Mortal death-lifecycle handoff. A
+severity-IV increase is not a hidden death instruction. `no_change`, `add_recovery`,
+unknown/open results, and currently inapplicable adverse results cannot produce a
+strictly-worsening authority.
 
 Mortal elapsed-time policies use only canonical
 `world_time.currentTimeInMinutes`; cadence/grace values are positive/non-negative

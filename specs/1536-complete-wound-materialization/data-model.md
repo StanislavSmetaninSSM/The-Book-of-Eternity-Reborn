@@ -1349,6 +1349,41 @@ For Mortal wounds `cadence` is a positive signed 64-bit count of canonical world
 minutes and uses the same `world_time.currentTimeInMinutes` authority as treatment
 courses; it never uses wall time or a parallel seconds counter.
 
+The optional Mortal deterioration policy is one closed version-1 value:
+
+```json
+{
+  "policyRef": "untreated_infection",
+  "unmetConditions": ["not_stabilized"],
+  "graceMinutes": 30,
+  "cadenceMinutes": 10,
+  "result": { "kind": "increase_severity" }
+}
+```
+
+All five fields are required and no others are allowed. `unmetConditions` contains
+exactly one exact identifier because one `deteriorationAnchor` owns one
+`conditionKey`; v1 does not ambiguously share one clock across a condition set.
+`graceMinutes` is a non-negative signed 64-bit minute count and `cadenceMinutes` is a
+positive signed 64-bit minute count.
+
+The closed adverse result union is exactly:
+
+- `{ "kind": "increase_severity" }`, meaning one tier and applicable only at
+  severity I-III;
+- `{ "kind": "add_complication", "complicationDraft": ... }`, reusing the complete
+  existing arbitrary-complication draft. Its sole active complication has
+  `treatmentDifficultyModifier` 1-4, its optional consequence graph is complete, and
+  the current complication count plus consequence-slot envelope can accept it;
+- `{ "kind": "death_contour" }`, which emits the separate Mortal death-lifecycle
+  handoff rather than mutating death state.
+
+`no_change` is classified as neutral and `add_recovery` as beneficial solely so the
+authority can reject either deterministically at the policy path. They are not valid
+deterioration results. Unknown/open/malformed results are invalid. At severity IV,
+`increase_severity` is currently inapplicable and therefore not strictly worsening;
+it never implies `death_contour` because only the GM may declare that decision.
+
 `recoveryAnchor` and `deteriorationAnchor` are independent closed canonical state.
 `recoveryAnchor` supplies the next progressive cadence: at `due - 1` no transition is
 eligible, while `due` and later evaluate `elapsedCadences = floor((now-anchor)/cadence)`
