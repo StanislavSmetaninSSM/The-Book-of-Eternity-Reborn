@@ -1273,6 +1273,25 @@ entrypoints require no update for T065.
   recovery receipt/history evidence, closes invalid-history-first and exact replay.
   Neither scheduler tests nor replay tests may hand-write an anchor, binding, receipt,
   history row, or after-image.
+  T069 Phase A closure (2026-08-31): complete through `21696e44`. Both production-only
+  deterioration-policy factories now derive one registry-current policy from the exact
+  canonical wound or accepted treatment coordinates, classify only `increase_severity`,
+  applicable `add_complication`, and `death_contour` as strictly worsening, and bind the
+  complete policy plus exact wound occurrence path into immutable authority. Closed parsing
+  fails without exceptions for malformed drafts or owner kinds; combined complication,
+  slot, definition, and five-root boundaries are independently proved. The final owning
+  structural/authority/GM source-guard Focused run is 32/32
+  (`20260831-121844-716-47756-a4ea2f57c13a47eeba8ec7a372fbee24-focused`), warning-free,
+  without timeout or duplicate IDs, and with complete cleanup. Independent final rereview
+  reports zero Critical/Important/Minor findings and Ready YES. The required Fast checkpoint
+  executed 1,333 tests with 1,305 PASS and 28 failures, all at the unchanged future T070-A
+  common wound-composer overload before T069 scheduling executes
+  (`20260831-122220-823-1644-c54f3bfbacca430cb71cd6f753bf511b-fast`); its one load-sensitive
+  web fencing timeout independently passed 1/1
+  (`20260831-122651-130-40164-c971ccaa748f4763840c321210badb83-focused`). No afterlife
+  matrix/example/manifest update is required because this phase changes only the Mortal
+  physical-wound policy contract and no afterlife runtime surface. Phases B and C remain
+  explicitly open for canonical anchors, scheduling/intents, publication, and durable replay.
 - [ ] T070 [US2] Compose Mortal accepted-occurrence creation, opportunity-decision receipt/pending-occurrence consumption, plus diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. On a source-result transaction, accept only T064's complete harmful typed candidate batch, read both occurrence and receipt roots as signed before-images, combine pending and consumed replay by producer operation key plus batch ordinal/count, reject changed or incomplete batches, derive canonical occurrence/public identities inside the common plan, append only genuinely new candidates atomically in ordinal order, and expose opportunities only after the next active pending-turn snapshot has sealed exact bytes. On the later wound-decision transaction, extend the common signed-snapshot/before-image inventory with both occurrence and receipt roots. Every accepted `none` or `materialize` decision appends exactly one sealed receipt carrying the consumed occurrence's source replay authority and consumes exactly one occurrence; a decline publishes null wound/transition coordinates without inventing a wound-history row, while a materialized receipt carries exact wound/transition IDs and matches exactly one ordinary `create|worsen` history row on transition/wound/turn/event/operation/source authority. Exact cold replay emits no command/transition, changed decision conflicts, and failed publication/rollback leaves neither receipt nor consumed occurrence. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
