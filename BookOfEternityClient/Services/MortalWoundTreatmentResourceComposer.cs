@@ -420,14 +420,31 @@ internal static class MortalWoundTreatmentResourceComposer
         MortalWoundTreatmentModeAuthority? modeAuthority)
     {
         var issues = new List<ValidationIssue>();
-        if (!TryResolveCurrentRoute(
+        var routeIsCurrent = TryResolveCurrentRoute(
                 mode,
                 acceptedState,
                 coordinates,
                 before,
                 issues,
                 out var route,
-                out var routeFingerprint) ||
+                out var routeFingerprint);
+        if (requirementAuthority is null)
+        {
+            AddIssue(
+                issues,
+                "mortal_wound_treatment_resource_requirement_authority_invalid",
+                "one complete matching current requirement bundle",
+                "missing authority");
+        }
+        if (modeAuthority is null)
+        {
+            AddIssue(
+                issues,
+                "mortal_wound_treatment_resource_mode_authority_invalid",
+                $"one exact current {mode} mode authority",
+                "missing authority");
+        }
+        if (!routeIsCurrent ||
             acceptedState is null ||
             coordinates is null ||
             before is null ||
