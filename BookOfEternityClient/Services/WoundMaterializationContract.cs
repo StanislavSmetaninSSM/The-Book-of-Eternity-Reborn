@@ -360,6 +360,18 @@ internal static class WoundMaterializationContract
                 complications,
                 recovery,
                 issues);
+            if (string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) &&
+                string.Equals(classification.Domain, "physical", StringComparison.Ordinal) &&
+                recovery.DeteriorationPolicy is { } deteriorationPolicy)
+            {
+                var parsedPolicy = MortalWoundDeteriorationPolicyContract.Parse(
+                    deteriorationPolicy,
+                    path + ".recovery.deteriorationPolicy",
+                    owner.Realm,
+                    ResolveEffectTargetKind(owner.OwnerKind),
+                    severity.Rank);
+                issues.AddRange(parsedPolicy.Issues);
+            }
             var relations = ParseRelations(
                 ReadRequiredObject(root, "relations", path, issues),
                 path + ".relations",

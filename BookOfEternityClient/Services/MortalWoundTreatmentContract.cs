@@ -150,6 +150,33 @@ internal static partial class MortalWoundTreatmentContract
         }
     }
 
+    internal static IReadOnlyList<ValidationIssue>
+        ValidateDeteriorationComplicationResult(
+            JsonElement result,
+            string path,
+            string realm,
+            string ownerTargetKind,
+            int severityRank)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentException.ThrowIfNullOrWhiteSpace(realm);
+        ArgumentException.ThrowIfNullOrWhiteSpace(ownerTargetKind);
+        var issues = new List<ValidationIssue>();
+        ValidateAddComplication(
+            result,
+            path,
+            new ValidationContext(
+                realm,
+                ownerTargetKind,
+                severityRank,
+                Array.Empty<WoundComplication>(),
+                CurrentPolicyRef: null),
+            new HashSet<string>(StringComparer.Ordinal),
+            ComplicationValidationUse.DeteriorationPolicy,
+            issues);
+        return issues.ToArray();
+    }
+
     internal static void ValidateDiagnosis(
         WoundTreatment treatment,
         string treatmentPath,
@@ -1241,7 +1268,9 @@ internal static partial class MortalWoundTreatmentContract
                     path,
                     context,
                     complicationRefs,
-                    interruption,
+                    interruption
+                        ? ComplicationValidationUse.Interruption
+                        : ComplicationValidationUse.Ordinary,
                     issues);
                 break;
             case "apply_deterioration":
@@ -1282,7 +1311,7 @@ internal static partial class MortalWoundTreatmentContract
         string path,
         ValidationContext context,
         HashSet<string> complicationRefs,
-        bool interruption,
+        ComplicationValidationUse use,
         List<ValidationIssue> issues)
     {
         ValidateObject(operation, path, Set("kind", "complicationDraft"), issues);
@@ -1323,7 +1352,7 @@ internal static partial class MortalWoundTreatmentContract
                     complication,
                     "treatmentDifficultyModifier",
                     complicationPath,
-                    interruption ? 1 : 0,
+                    use == ComplicationValidationUse.Ordinary ? 0 : 1,
                     4,
                     issues);
                 ValidateClosedString(
@@ -1340,7 +1369,8 @@ internal static partial class MortalWoundTreatmentContract
             AddMissing(issues, draftPath + ".consequenceDefinitions");
             return;
         }
-        if (interruption && definitions.GetArrayLength() != 0)
+        if (use == ComplicationValidationUse.Interruption &&
+            definitions.GetArrayLength() != 0)
         {
             AddInvalid(
                 issues,
@@ -1348,7 +1378,7 @@ internal static partial class MortalWoundTreatmentContract
                 "empty array for an effectless interruption complication",
                 definitions.GetArrayLength().ToString(CultureInfo.InvariantCulture));
         }
-        if (!interruption)
+        if (use != ComplicationValidationUse.Interruption)
         {
             ValidateComplicationConsequenceDefinitions(
                 definitions,
@@ -2255,6 +2285,13 @@ internal static partial class MortalWoundTreatmentContract
         int SeverityRank,
         IReadOnlyList<WoundComplication> CurrentComplications,
         string? CurrentPolicyRef);
+
+    private enum ComplicationValidationUse
+    {
+        Ordinary,
+        Interruption,
+        DeteriorationPolicy
+    }
 
     private sealed class ResultSummaryBuilder
     {

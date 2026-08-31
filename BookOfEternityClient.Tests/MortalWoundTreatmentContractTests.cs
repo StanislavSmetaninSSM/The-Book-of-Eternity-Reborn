@@ -2847,11 +2847,15 @@ public sealed class MortalWoundTreatmentContractTests
         JsonObject wound,
         string policyRef)
     {
-        // T065 owns exact reference agreement; T062/T069 later replace this opaque
-        // declared-policy fixture with the complete typed worsening transition.
+        // T065 owns exact reference agreement; T069 now requires the same complete
+        // typed policy shape that a canonical Mortal wound persists.
         wound["recovery"]!["deteriorationPolicy"] = new JsonObject
         {
-            ["policyRef"] = policyRef
+            ["policyRef"] = policyRef,
+            ["unmetConditions"] = new JsonArray("not_stabilized"),
+            ["graceMinutes"] = 30L,
+            ["cadenceMinutes"] = 10L,
+            ["result"] = new JsonObject { ["kind"] = "increase_severity" }
         };
     }
 
