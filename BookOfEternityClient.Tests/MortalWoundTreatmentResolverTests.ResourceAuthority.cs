@@ -650,6 +650,35 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public async Task ResourcePreparation_GenerationRotationInvalidatesHeldReservations()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 2,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var oldPreparation = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_old_generation",
+                scenario.RouteId));
+        Assert.True(oldPreparation.IsValid, DescribeIssues(oldPreparation.Issues));
+
+        await fixture.RotateGenerationAndPrepareFreshSnapshotAsync(
+            "t068a_resource_registry_generation_rotation");
+
+        var rotated = InvokePreparedGuaranteedResource(
+            PrepareGuaranteedResourceInputs(
+                fixture,
+                scenario.OperationKey + "_rotated_generation",
+                scenario.RouteId));
+        Assert.True(rotated.IsValid, DescribeIssues(rotated.Issues));
+        Assert.NotEqual(
+            oldPreparation.Authority!.AcceptedStateFingerprint,
+            rotated.Authority!.AcceptedStateFingerprint);
+        Assert.False(RollbackNewResourcePreparation(oldPreparation));
+    }
+
+    [Fact]
     public void ResourcePreparation_NotRequiredRollbackReleasesOnlyCreatingAgreement()
     {
         var scenario = CreateTwoZeroClaimGuaranteedRoutesScenario();
