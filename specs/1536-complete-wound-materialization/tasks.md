@@ -1325,6 +1325,31 @@ entrypoints require no update for T065.
   treatment or recovery shortcut. T070 Phase B, after T067-B/T068-B/T069-B, owns
   treatment, stabilization, recovery, re-entry, durable receipt/history, and remaining
   atomic publication integration required before T069-C replay closure.
+  T070 Phase A closure (2026-08-31): complete through `56a0f341`. Initial accepted
+  Mortal physical creates now allocate closed recovery and applicable condition anchors
+  from the accepted canonical world minute, bind them to the exact sealed stage bundle,
+  and atomically project the carrier, identity, and history fingerprints only through the
+  ordinary common-plan normalizer. Production `ValidationService` uses the anchor-aware
+  overload; mixed create/worsen phases, foreign turn/snapshot/realm authority, stale
+  source/target roots, and malformed UTF-8/BOM contours fail closed. The final owning
+  Focused control is 26/26
+  (`20260831-165721-585-15076-d3ac909530244cdc921592198907b890-focused`), and the fresh
+  production-path integration sentinel is 1/1
+  (`20260831-170307-054-15684-e79b0d9d2c584d7b95c271f6da92907f-focused`), both with
+  warning-free builds, no timeout or duplicate IDs, and complete cleanup. Independent
+  final rereview reports zero Critical/Important/Minor findings and Ready YES. The Fast
+  checkpoint's completed descriptor executed 1,355 tests with 1,323 PASS and 32 failures,
+  all at the unchanged future T067-B/T070-B treatment-capability publication seam
+  (`20260831-164643-837-43692-63f282ef4b9f4e8f87b223ba34b08963-fast`); the runner did not
+  schedule its next descriptor after that intentional failing descriptor. The complete
+  recovery class independently executed 47 tests with 22 PASS and exactly 25 future
+  T069-B/T070-B scheduler/publication failures
+  (`20260831-163811-483-25492-19059150dc45468da077ff833a3e97c1-focused`). No GM prompt,
+  example, manifest, or afterlife matrix update is required: this phase changes only a
+  client-owned Mortal canonical anchor/publication path, while existing GM guidance
+  already forbids authoring clocks, anchors, history, fingerprints, or canonical carrier
+  post-state. Phase B remains explicitly open for treatment, recovery, re-entry, durable
+  evidence, and remaining publication integration.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution
