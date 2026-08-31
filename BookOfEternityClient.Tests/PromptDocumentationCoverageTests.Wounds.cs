@@ -122,7 +122,8 @@ public sealed partial class PromptDocumentationCoverageTests
                      "add_complication", "complicationDraft", "death_contour",
                      "no_change", "add_recovery", "severity IV",
                      "silently converted", "16 complications",
-                     "four total consequence slots", "five total owned effect definitions"
+                     "four total consequence slots", "five total root bindings",
+                     "five total owned effect definitions"
                  })
         {
             Assert.Contains(required, contract, StringComparison.OrdinalIgnoreCase);

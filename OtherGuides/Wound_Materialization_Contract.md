@@ -183,9 +183,9 @@ are not strictly worsening; they grant no deterioration authority. An unknown or
 result is malformed rather than a fallback.
 
 For `add_complication`, the client also checks the current wound before granting
-authority: at most 16 complications, four total consequence slots/root bindings, and
-five total owned effect definitions. The ordinary accepted wound reducer revalidates
-the complete allocated after-image before publication. The policy itself never grants
+authority: at most 16 complications, four total consequence slots, five total root
+bindings, and five total owned effect definitions. The ordinary accepted wound reducer
+revalidates the complete allocated after-image before publication. The policy itself never grants
 the GM permission to edit a canonical wound, effect, history row, clock, anchor,
 fingerprint, receipt, or lifecycle state.
 

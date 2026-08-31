@@ -325,6 +325,7 @@ internal static class WoundMaterializationContract
             var woundId = ReadExactIdentifier(root, "woundId", path, issues);
             var lifecycle = ReadClosedString(root, "lifecycle", path, Lifecycles, issues);
             var owner = ParseOwner(ReadRequiredObject(root, "owner", path, issues), path + ".owner", issues);
+            var ownerTargetKind = ResolveEffectTargetKind(owner.OwnerKind);
             var origin = ParseOrigin(ReadRequiredObject(root, "origin", path, issues), path + ".origin", issues);
             var classification = ParseClassification(
                 ReadRequiredObject(root, "classification", path, issues),
@@ -343,7 +344,7 @@ internal static class WoundMaterializationContract
                 path + ".treatment",
                 classification.Domain,
                 owner.Realm,
-                ResolveEffectTargetKind(owner.OwnerKind),
+                ownerTargetKind,
                 severity.Rank,
                 complications,
                 recovery,
@@ -362,13 +363,14 @@ internal static class WoundMaterializationContract
                 issues);
             if (string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) &&
                 string.Equals(classification.Domain, "physical", StringComparison.Ordinal) &&
+                ownerTargetKind.Length > 0 &&
                 recovery.DeteriorationPolicy is { } deteriorationPolicy)
             {
                 var parsedPolicy = MortalWoundDeteriorationPolicyContract.Parse(
                     deteriorationPolicy,
                     path + ".recovery.deteriorationPolicy",
                     owner.Realm,
-                    ResolveEffectTargetKind(owner.OwnerKind),
+                    ownerTargetKind,
                     severity.Rank);
                 issues.AddRange(parsedPolicy.Issues);
             }

@@ -201,8 +201,9 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
                    resultingSlots <= wound.Consequences.SlotBudget &&
                    resultingSlots <= WoundMaterializationContract.MaxConsequences &&
                    resultingDefinitions <=
-                       WoundMaterializationContract.MaxOwnedEffectDefinitions &&
-                   resultingRoots <= WoundMaterializationContract.MaxConsequences;
+                        WoundMaterializationContract.MaxOwnedEffectDefinitions &&
+                   resultingRoots <=
+                       WoundMaterializationContract.MaxOwnedEffectRootBindings;
         }
         catch (OverflowException)
         {

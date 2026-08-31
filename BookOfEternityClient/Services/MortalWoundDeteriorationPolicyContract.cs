@@ -183,7 +183,9 @@ internal static class MortalWoundDeteriorationPolicyContract
     private static (int Definitions, int Roots, int Slots)
         CountDeclaredConsequenceGraph(JsonElement result)
     {
-        if (!result.TryGetProperty("complicationDraft", out var draft) ||
+        if (result.ValueKind != JsonValueKind.Object ||
+            !result.TryGetProperty("complicationDraft", out var draft) ||
+            draft.ValueKind != JsonValueKind.Object ||
             !draft.TryGetProperty("consequenceDefinitions", out var definitions) ||
             definitions.ValueKind != JsonValueKind.Array)
         {
@@ -195,7 +197,8 @@ internal static class MortalWoundDeteriorationPolicyContract
         var total = 0;
         foreach (var wrapper in definitions.EnumerateArray())
         {
-            if (!wrapper.TryGetProperty("root", out var root) ||
+            if (wrapper.ValueKind != JsonValueKind.Object ||
+                !wrapper.TryGetProperty("root", out var root) ||
                 root.ValueKind != JsonValueKind.Object ||
                 !root.TryGetProperty("slots", out var slots) ||
                 slots.ValueKind != JsonValueKind.Array)
