@@ -722,19 +722,23 @@ are copied into the coordinate seal. The exact operation key must be unique acro
 reconstructed typed command/pending/history attempt set. Production then calls one
 of `SealProcedureRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundProcedureCheckAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`,
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`,
 `SealCourseMilestoneRequest(MortalWoundTreatmentAttemptCoordinates, int,
 MortalWoundCourseModeAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`, or
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`, or
 `SealGuaranteedRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundTreatmentCapabilityProof, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`.
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`.
 Each returns an immutable
 `MortalWoundTreatmentAttemptRequestResult` (`IsValid`, frozen `Issues`, nullable
 `Request`). The resulting closed
 `MortalWoundTreatmentAttemptRequest` contains exactly mode, coordinates, nullable course
-ordinal, immutable typed mode authority, full requirement authority, pre-resolution
-resource authority, and one `RequestFingerprint`. Course mode authority is the complete
+ordinal, the canonical detached pre-attempt `RouteSourceWound` plus its recomputed
+`RouteSourceWoundFingerprint`, immutable typed mode authority, full requirement authority,
+pre-resolution resource authority, and one `RequestFingerprint`. The sealer rejects unless
+the detached wound fingerprint equals `ExpectedBeforeFingerprint` and its exact selected
+route fingerprint equals the requirement/resource authorities; the request fingerprint
+binds that source fingerprint. Course mode authority is the complete
 `MortalWoundCourseModeAuthority`, not bare game time. Repair/retry restores and reuses that original sealed request; it
 never rebuilds coordinates from the current after-state. The planner exposes:
 
@@ -838,7 +842,9 @@ Command and pending storage may hold the same request during one repair wave. Pa
 and dice/Fate/resource registries coalesce byte-semantic exact copies by
 `(OperationKey, AttemptId, RequestFingerprint)` into one logical request/claim. A
 different request, nested bundle/resource authority, or outer coordinate under a reused
-operation/attempt coordinate conflicts; exact copies never double-reserve.
+coordinate conflicts. After exact-copy coalescing, operation key, attempt ID, accepted
+event ref, and every non-null `(courseId, milestoneOrdinal)` are independently
+exact/confusable unique; exact copies never double-reserve.
 
 After a true cold restart from copied durable bytes under a different filesystem root
 and fresh process-local registries, the typed command/pending authority restores the
@@ -851,6 +857,17 @@ consumer passes only that typed request/resolution pair through the existing six
 T070 publication. Actionable intents are not serialized as a trusted command-result
 shortcut: the persisted history-shaped result and every nested request/result seal are
 recomputed, and any post-seal result-semantic replacement fails parsing or recomposition.
+Accepted-state binding performs one atomic claim-recovery phase before any new live
+procedure reservation. It consumes the catalog's existing first-authoritative order
+(typed history transitions, then command rows, then pending exact copies after
+coalescing), never reorders by dice coordinates, restores the carried exact spans, and
+proves a player natural-1 Fate candidate reachable from the shared oldest-candidate
+producer. Lower unoccupied spans may explain only roll-topology-compatible historical
+claims. Their temporary span-to-effect mapping remains recovery-local; when a later
+accepted span overlaps one, that overlap is the evidence that the earlier temporary
+reservation was released. Fresh validation precedes the sole atomic registry swap, so
+virtual claims never become live. A second exact recovery is idempotent, a changed set
+conflicts, and a recovery attempted after live reservation rejects.
 Failed persistence or rollback restores the
 original command/pending/history bytes, releases provisional die/Fate/resource claims,
 and permits one exact retry without duplicate claims or intents. The planner first

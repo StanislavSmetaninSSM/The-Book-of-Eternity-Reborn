@@ -275,6 +275,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static IReadOnlyDictionary<string, byte[]> CaptureResolverFixtureTree(string root) =>
         Directory.EnumerateFiles(root, "*", SearchOption.AllDirectories)
+            .Where(path => !Path.GetRelativePath(root, path)
+                .StartsWith(".boe_runtime", StringComparison.OrdinalIgnoreCase))
             .OrderBy(static path => path, StringComparer.Ordinal)
             .ToDictionary(
                 path => Path.GetRelativePath(root, path).Replace('\\', '/'),

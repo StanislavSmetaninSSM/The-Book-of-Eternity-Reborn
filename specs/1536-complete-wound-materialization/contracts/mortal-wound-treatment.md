@@ -855,23 +855,28 @@ band, category, or outcome.
 The client next calls exactly one of
 `SealProcedureRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundProcedureCheckAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`,
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`,
 `SealCourseMilestoneRequest(MortalWoundTreatmentAttemptCoordinates, int,
 MortalWoundCourseModeAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`, or
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`, or
 `SealGuaranteedRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundTreatmentCapabilityProof, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`.
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`.
 Each returns
 `MortalWoundTreatmentAttemptRequestResult` with exactly `IsValid`, frozen `Issues`, and
 nullable immutable `Request`. This closed request binds its complete context/accepted-
 state coordinates, mode authority, complete requirement authority, pre-resolution
 resource authority, and one production
 `RequestFingerprint`. Its exact properties are `Mode`, `Coordinates`, nullable
-`MilestoneOrdinal`, immutable `ModeAuthority`, immutable full `RequirementAuthority`,
-immutable `ResourceAuthority`, and `RequestFingerprint`; mode authority is respectively
+`MilestoneOrdinal`, canonical detached pre-attempt `RouteSourceWound`, recomputed
+`RouteSourceWoundFingerprint`, immutable `ModeAuthority`, immutable full
+`RequirementAuthority`, immutable `ResourceAuthority`, and `RequestFingerprint`; mode authority is respectively
 procedure-check, complete course-mode, or capability proof. Repair or
 retry restores the same request instead of recomputing coordinates from an after-state.
+The sealer and every detached parser re-parse the wound, require its semantic fingerprint
+to equal the coordinate's expected-before fingerprint, derive the exact selected route,
+declared result, resource policy, and mode evidence from it, and bind the source fingerprint
+into `RequestFingerprint`; a carried route/result fingerprint alone is not authority.
 
 Tests and production reach those low-level sealers only through
 `MortalWoundTreatmentPlanner.PrepareProcedureRequest(acceptedState, history, before,
@@ -981,7 +986,9 @@ The same request may coexist in command and pending storage during one repair wa
 Parsers plus dice/Fate/resource registries coalesce byte-semantic exact copies by
 `(OperationKey, AttemptId, RequestFingerprint)` into one logical request/claim. Any
 different request, nested bundle/resource authority, or outer coordinate under a reused
-operation or attempt coordinate is a conflict; exact copies never double-reserve.
+coordinate is a conflict. After exact-copy coalescing, operation key, attempt ID,
+accepted event ref, and every non-null `(courseId, milestoneOrdinal)` are independently
+exact/confusable unique; exact copies never double-reserve.
 
 After a true cold restart that copies only durable game-state bytes to a different
 filesystem root and constructs fresh process-local registries, that typed command/pending
@@ -998,6 +1005,19 @@ seal semantic replacement. Failed
 command persistence or rollback releases every provisional die, Fate, and resource claim,
 leaves no durable command/pending/history duplicate, and permits one exact retry under the
 same logical coordinates.
+Accepted-state binding runs one atomic procedure-claim recovery before any new live
+reservation. It preserves the catalog's coalesced first-authoritative order (typed
+history transition order, then command order, then pending order after exact-copy
+coalescing); source indices are occupancy evidence, not chronology. Each exact persisted
+dice span is restored. A player natural-1 prepared reaction is accepted only when the
+shared oldest-candidate producer could have selected it after accounting for lower,
+unoccupied, roll-topology-compatible historical spans. Recovery-local mappings bind one
+such span to one temporarily skipped candidate. A later accepted span overlap proves the
+temporary reservation was released and may make that candidate live again; an
+unrelated span cannot erase it. Virtual mappings are neither persisted nor copied into
+the live registries. Fresh-authority validation precedes the sole atomic swap. An exact
+second recovery returns the already attached requests, a changed set conflicts, and
+recovery after any new live reservation rejects.
 `WoundHistoryParseResult.ProbeTreatmentAttempt(operationKey, attemptId,
 requestFingerprint)` returns exactly `Status=NotFound|ExactReplay|Conflict|InvalidHistory`,
 frozen `Issues`, nullable restored `Request`, and nullable original typed `Receipt`.

@@ -203,18 +203,62 @@ internal static class EffectAcceptedEventReportCatalog
     internal static MortalWoundCriticalReactionResolutionResult
         ResolvePreparedMortalWoundCriticalReaction(
             MortalWoundTreatmentAttemptRequest request,
-            MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
-        MortalWoundCriticalReactionResolutionResult.Invalid(new ValidationIssue(
-            LiveTurnPreparationService.TurnRequestPath,
-            IssueSeverity.Error,
-            "The prepared Mortal wound critical reaction cannot be trusted.",
-            code: "mortal_wound_treatment_critical_reaction_authority_invalid",
-            actor: "Client",
-            section: "wound_materialization",
-            expected: "one sealed current Mortal wound treatment request and accepted state",
-            actual: request is null || acceptedState is null
-                ? "missing input"
-                : "unsealed Phase A request"));
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        if (request is null ||
+            acceptedState is null ||
+            !request.HasMatchingFingerprint() ||
+            !string.Equals(request.Mode, "procedure", StringComparison.Ordinal) ||
+            request.MilestoneOrdinal is not null ||
+            request.ModeAuthority is not MortalWoundProcedureCheckAuthority procedure ||
+            !request.Coordinates.MatchesAcceptedState(acceptedState) ||
+            !string.Equals(
+                procedure.CoordinatesFingerprint,
+                request.Coordinates.CoordinatesFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                procedure.AcceptedStateFingerprint,
+                request.Coordinates.AcceptedStateFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                procedure.RequirementAuthorityFingerprint,
+                request.RequirementAuthority.AuthorityFingerprint,
+                StringComparison.Ordinal))
+        {
+            return MortalWoundCriticalReactionResolutionResult.Invalid(new ValidationIssue(
+                LiveTurnPreparationService.TurnRequestPath,
+                IssueSeverity.Error,
+                "The prepared Mortal wound critical reaction cannot be trusted.",
+                code: "mortal_wound_treatment_critical_reaction_authority_invalid",
+                actor: "Client",
+                section: "wound_materialization",
+                expected: "one sealed current Mortal wound treatment request and accepted state",
+                actual: request is null || acceptedState is null
+                    ? "missing input"
+                    : "foreign, stale, or mismatched request"));
+        }
+
+        var prepared = procedure.PreparedCriticalReaction;
+        if (prepared is null)
+            return MortalWoundCriticalReactionResolutionResult.Valid(null);
+        if (procedure.NaturalRoll != 1 ||
+            !string.Equals(procedure.RollActorKind, "player", StringComparison.Ordinal) ||
+            !string.Equals(procedure.RollActorId, "player_current", StringComparison.Ordinal))
+        {
+            return MortalWoundCriticalReactionResolutionResult.Invalid(new ValidationIssue(
+                LiveTurnPreparationService.TurnRequestPath,
+                IssueSeverity.Error,
+                "The prepared Mortal wound critical reaction cannot be trusted.",
+                code: "mortal_wound_treatment_critical_reaction_candidate_invalid",
+                actor: "Client",
+                section: "wound_materialization",
+                expected: "one player-owned prepared reaction for a sealed natural 1",
+                actual: $"{procedure.RollActorKind}/{procedure.RollActorId}/{procedure.NaturalRoll}"));
+        }
+
+        return MortalWoundCriticalReactionResolutionResult.Valid(
+            MortalWoundCriticalReactionIntent.Create(request, prepared));
+    }
 
     private static bool ValidatePlayerTarget(
         JsonNode? node,

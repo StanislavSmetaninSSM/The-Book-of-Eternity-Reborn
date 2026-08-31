@@ -449,6 +449,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             ["localLegacyRef"] = localLegacyRef,
             ["kind"] = "mechanical_effect",
+            ["readableSummary"] = "T061 mechanical legacy.",
             ["effectDraft"] = new JsonObject
             {
                 ["schemaVersion"] = 1,
@@ -473,6 +474,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var definition = EffectMaterializationTestFixture.CreateDefinition("action_control");
         definition["definitionKey"] = definitionKey;
+        definition["stacking"]!["maxStacks"] = 1;
         definition["links"] = new JsonArray();
         definition["lifetime"] = new JsonObject
         {

@@ -152,8 +152,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             AttemptRequestTypeName,
             new[]
             {
-                "Mode", "Coordinates", "MilestoneOrdinal", "ModeAuthority",
-                "RequirementAuthority", "ResourceAuthority", "RequestFingerprint"
+                "Mode", "Coordinates", "MilestoneOrdinal", "RouteSourceWound",
+                "RouteSourceWoundFingerprint", "ModeAuthority", "RequirementAuthority",
+                "ResourceAuthority", "RequestFingerprint"
             }
         },
         {

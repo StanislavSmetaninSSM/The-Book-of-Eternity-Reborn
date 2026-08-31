@@ -15,6 +15,7 @@ internal sealed class MortalWoundGameTimeAuthority
     private const string AuthorityDomain =
         "book_of_eternity.mortal_wound_treatment.game_time_authority";
 
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundGameTimeAuthority(
         long currentTimeInMinutes,
         string coordinatesFingerprint,

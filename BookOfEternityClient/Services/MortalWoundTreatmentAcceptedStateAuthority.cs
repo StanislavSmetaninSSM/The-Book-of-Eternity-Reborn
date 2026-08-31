@@ -22,6 +22,7 @@ internal sealed record MortalWoundTreatmentAcceptedStateAuthorityResult(
 /// </summary>
 internal sealed class MortalWoundTreatmentAcceptedStateAuthority
 {
+    private static readonly object PersistedProcedureClaimRecoveryCapability = new();
     private static readonly ConditionalWeakTable<
         MortalWoundTreatmentAuthority.Context,
         RequirementContextProjectionProvenance>
@@ -761,6 +762,11 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             _writeLease,
             this);
 
+    internal static bool IsPersistedProcedureClaimRecoveryCapability(
+        object capability) => ReferenceEquals(
+        capability,
+        PersistedProcedureClaimRecoveryCapability);
+
     internal bool AgreesWithBindingAndWound(
         WoundAcceptedTurnBinding? binding,
         string? woundId) =>
@@ -807,6 +813,100 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             diceReservation,
             criticalReactionReservation,
             criticalReactionAgreement);
+
+    internal bool HasLiveProcedureReservationAgreement(
+        MortalWoundProcedureCheckAuthority procedure) =>
+        AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                _fileSystem,
+                _writeLease,
+                this,
+                procedure);
+
+    internal MortalWoundTreatmentPersistedRequestCatalogResult
+        RestorePersistedTreatmentRequests(WoundHistoryParseResult history)
+    {
+        ArgumentNullException.ThrowIfNull(history);
+        try
+        {
+            _fileSystem.EnsureCanonicalWriteLeaseActive(_writeLease);
+            if (!HasCurrentAdmissionAuthority() || !MatchesCompleteHistory(history))
+            {
+                return PersistedRecoveryFailure(
+                    "mortal_wound_treatment_procedure_claim_recovery_stale",
+                    "the exact current accepted state and complete history",
+                    "stale or mismatched recovery boundary");
+            }
+
+            var commandRoot = ReadOptionalPersistedRoot(
+                AcceptedMechanicsPlan.WoundCommandPath);
+            var pendingRoot = ReadOptionalPersistedRoot(
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+            var catalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
+                commandRoot,
+                pendingRoot,
+                history);
+            if (!catalog.IsValid)
+                return catalog;
+
+            var recovery = AcceptedTurnAuthorityRegistry
+                .RestoreMortalWoundProcedureClaims(
+                    _fileSystem,
+                    _writeLease,
+                    this,
+                    history,
+                    PersistedProcedureClaimRecoveryCapability,
+                    catalog.Requests);
+            return recovery.IsValid
+                ? new MortalWoundTreatmentPersistedRequestCatalogResult(
+                    true,
+                    Array.Empty<ValidationIssue>(),
+                    recovery.Requests)
+                : new MortalWoundTreatmentPersistedRequestCatalogResult(
+                    false,
+                    recovery.Issues,
+                    Array.Empty<MortalWoundTreatmentAttemptRequest>());
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException or
+                JsonException)
+        {
+            return PersistedRecoveryFailure(
+                "mortal_wound_treatment_procedure_claim_recovery_invalid",
+                "strict current durable command, pending, and history roots",
+                exception.GetType().Name);
+        }
+    }
+
+    private JsonElement? ReadOptionalPersistedRoot(string logicalPath)
+    {
+        var physicalPath = _fileSystem.ResolvePath(logicalPath);
+        if (!File.Exists(physicalPath))
+            return null;
+        using var document = JsonDocument.Parse(File.ReadAllText(physicalPath));
+        return document.RootElement.Clone();
+    }
+
+    private static MortalWoundTreatmentPersistedRequestCatalogResult
+        PersistedRecoveryFailure(
+            string code,
+            string expected,
+            string actual) => new(
+            false,
+            new[]
+            {
+                new ValidationIssue(
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    IssueSeverity.Error,
+                    "The persisted Mortal wound-treatment requests cannot be restored.",
+                    code: code,
+                    actor: "Client",
+                    section: "wound_materialization",
+                    expected: expected,
+                    actual: actual)
+            },
+            Array.Empty<MortalWoundTreatmentAttemptRequest>());
 
     internal bool RollbackNewProcedureReservations(
         MortalWoundProcedureDiceReservation diceReservation,
@@ -865,6 +965,32 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
 
         acceptedD20EventValues = _acceptedD20EventValues.ToArray();
         poolFingerprint = _acceptedD20PoolFingerprint;
+        return true;
+    }
+
+    internal bool MatchesProcedureDiceEvidence(
+        IReadOnlyList<int>? sourceIndices,
+        IReadOnlyList<int>? sourceRolls)
+    {
+        if (sourceIndices is null ||
+            sourceRolls is null ||
+            sourceIndices.Count != sourceRolls.Count ||
+            sourceIndices.Count is < 1 or > 2)
+        {
+            return false;
+        }
+
+        for (var offset = 0; offset < sourceIndices.Count; offset++)
+        {
+            var sourceIndex = sourceIndices[offset];
+            if (sourceIndex < 0 ||
+                sourceIndex >= _acceptedD20EventValues.Length ||
+                sourceRolls[offset] is < 1 or > 20 ||
+                _acceptedD20EventValues[sourceIndex] != sourceRolls[offset])
+            {
+                return false;
+            }
+        }
         return true;
     }
 

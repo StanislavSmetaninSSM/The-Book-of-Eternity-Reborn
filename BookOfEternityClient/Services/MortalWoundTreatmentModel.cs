@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Services;
 
@@ -203,6 +204,15 @@ internal sealed record MortalWoundGuaranteedOutcome(
     string Category,
     ImmutableArray<MortalWoundTreatmentOperation> DeclaredResult);
 
+[JsonPolymorphic]
+[JsonDerivedType(typeof(MortalWoundNoImprovementOperation))]
+[JsonDerivedType(typeof(MortalWoundStabilizeOperation))]
+[JsonDerivedType(typeof(MortalWoundAddRecoveryOperation))]
+[JsonDerivedType(typeof(MortalWoundReduceSeverityOperation))]
+[JsonDerivedType(typeof(MortalWoundRemoveComplicationOperation))]
+[JsonDerivedType(typeof(MortalWoundAddComplicationOperation))]
+[JsonDerivedType(typeof(MortalWoundApplyDeteriorationOperation))]
+[JsonDerivedType(typeof(MortalWoundHealOperation))]
 internal abstract record MortalWoundTreatmentOperation(string Kind);
 
 internal sealed record MortalWoundNoImprovementOperation() :

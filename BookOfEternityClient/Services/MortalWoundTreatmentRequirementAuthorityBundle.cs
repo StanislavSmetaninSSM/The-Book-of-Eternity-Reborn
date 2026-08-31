@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Services;
 
@@ -19,6 +20,7 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
     private const string BundleDomain =
         "book_of_eternity.mortal_wound_treatment.requirement_bundle";
 
+    [JsonConstructor]
     private MortalWoundTreatmentRequirementAuthorityBundle(
         string mode,
         string contextFingerprint,
@@ -112,9 +114,19 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
                 courseMode.CourseStartAuthority.RouteFingerprint,
                 routeFingerprint,
                 StringComparison.Ordinal) ||
+            courseMode.WindowDisposition is not ("ready" or "deadline_exceeded") ||
+            courseMode.MilestoneOrdinal == 1 &&
+            (before.Care.ActiveCourseId is not null ||
+             !string.Equals(
+                 courseMode.CourseStartAuthority.StartingWoundFingerprint,
+                 acceptedState.WoundFingerprint,
+                 StringComparison.Ordinal) ||
+             !acceptedState.MatchesCurrentWound(
+                 courseMode.CourseStartAuthority.StartingWound)) ||
+            courseMode.MilestoneOrdinal > 1 &&
             !string.Equals(
-                courseMode.CourseStartAuthority.StartingWoundFingerprint,
-                acceptedState.WoundFingerprint,
+                before.Care.ActiveCourseId,
+                courseMode.CourseId,
                 StringComparison.Ordinal))
         {
             if (issues.Count == 0)
@@ -184,6 +196,13 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
                      milestoneScope!.Status == "Satisfied"
             ? "Satisfied"
             : "Unsatisfied";
+        var interruptionReason = courseMode.WindowDisposition switch
+        {
+            "deadline_exceeded" => "deadline_exceeded",
+            "ready" when status == "Unsatisfied" && courseMode.MilestoneOrdinal > 1 =>
+                "requirements_unsatisfied",
+            _ => null
+        };
         var authority = Create(
             "course",
             coordinates,
@@ -192,7 +211,7 @@ internal sealed class MortalWoundTreatmentRequirementAuthorityBundle
             courseMode.MilestoneOrdinal,
             courseMode.CourseCoordinateFingerprint,
             status,
-            interruptionReason: null,
+            interruptionReason,
             new[] { commonScope!, milestoneScope! });
         return new MortalWoundCourseRequirementAuthorityResult(
             status,
@@ -676,6 +695,7 @@ internal sealed class MortalWoundTreatmentRequirementScopeAuthority
     private const string Domain =
         "book_of_eternity.mortal_wound_treatment.requirement_scope";
 
+    [JsonConstructor]
     private MortalWoundTreatmentRequirementScopeAuthority(
         string scope,
         int? courseMilestoneOrdinal,
@@ -733,6 +753,7 @@ internal sealed class MortalWoundTreatmentRequirementBinding
     private const string Domain =
         "book_of_eternity.mortal_wound_treatment.requirement_binding";
 
+    [JsonConstructor]
     private MortalWoundTreatmentRequirementBinding(
         int requirementIndex,
         MortalWoundResolvedRequirement resolvedRequirement,
@@ -767,6 +788,18 @@ internal sealed class MortalWoundTreatmentRequirementBinding
         }));
 }
 
+[JsonPolymorphic]
+[JsonDerivedType(typeof(MortalWoundItemQuantityRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundResourceQuantityRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundSkillTierRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundSourceCapabilityRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundProviderRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundConsentRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundFacilityRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundLocationRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundQuestStateRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundEffectStateRequirementEvidence))]
+[JsonDerivedType(typeof(MortalWoundEnvironmentRequirementEvidence))]
 internal abstract record MortalWoundTreatmentRequirementEvidence(string Kind);
 
 internal sealed record MortalWoundItemQuantityRequirementEvidence(
@@ -914,6 +947,43 @@ internal sealed class MortalWoundTreatmentRequirementSuccessWitness
         WitnessFingerprint = witnessFingerprint;
     }
 
+    [JsonConstructor]
+    private MortalWoundTreatmentRequirementSuccessWitness(
+        string scope,
+        int requirementIndex,
+        string kind,
+        string authorityRef,
+        string snapshotToken,
+        string realm,
+        string? ownerKind,
+        string? ownerId,
+        string? providerKind,
+        string? providerId,
+        string? targetKind,
+        string? targetId,
+        string? locationId,
+        MortalWoundTreatmentRequirementEvidence evidence,
+        string witnessFingerprint)
+        : this(
+            scope,
+            requirementIndex,
+            kind,
+            authorityRef,
+            snapshotToken,
+            realm,
+            ownerKind,
+            ownerId,
+            providerKind,
+            providerId,
+            targetKind,
+            targetId,
+            locationId,
+            evidence,
+            Array.Empty<string?>(),
+            witnessFingerprint)
+    {
+    }
+
     public string Scope { get; }
     public int RequirementIndex { get; }
     public string Kind { get; }
@@ -934,6 +1004,7 @@ internal sealed class MortalWoundTreatmentRequirementSuccessWitness
 
 internal sealed class MortalWoundTreatmentRequirementFailureObservation
 {
+    [JsonConstructor]
     internal MortalWoundTreatmentRequirementFailureObservation(
         string snapshotToken,
         string realm,
@@ -978,6 +1049,7 @@ internal sealed class MortalWoundTreatmentRequirementFailureWitness
     private const string Domain =
         "book_of_eternity.mortal_wound_treatment.requirement_failure_witness";
 
+    [JsonConstructor]
     private MortalWoundTreatmentRequirementFailureWitness(
         string scope,
         int requirementIndex,

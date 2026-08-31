@@ -156,6 +156,9 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
         _byOperationKey = new(StringComparer.Ordinal);
     private readonly HashSet<string> _claimedEffectIds = new(StringComparer.Ordinal);
 
+    internal bool IsEmpty =>
+        _byOperationKey.Count == 0 && _claimedEffectIds.Count == 0;
+
     internal MortalWoundCriticalReactionReservationResult Reserve(
         MortalWoundTreatmentAttemptCoordinates coordinates,
         IReadOnlyList<FateShieldReactionCandidate> candidates)
@@ -251,6 +254,162 @@ internal sealed class MortalWoundCriticalReactionReservationRegistry
             reservation,
             reservationAgreement,
             wasCreated: true);
+    }
+
+    internal MortalWoundCriticalReactionReservationResult RestoreExact(
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        IReadOnlyList<FateShieldReactionCandidate> candidates,
+        MortalWoundPreparedCriticalReaction? preparedReaction,
+        int maximumHistoricallyClaimedOlderCandidates,
+        HashSet<string> historicallyClaimedEffectIds)
+    {
+        ArgumentNullException.ThrowIfNull(coordinates);
+        ArgumentNullException.ThrowIfNull(candidates);
+        ArgumentNullException.ThrowIfNull(historicallyClaimedEffectIds);
+        if (maximumHistoricallyClaimedOlderCandidates < 0)
+        {
+            return Invalid(
+                "mortal_wound_treatment_critical_reaction_restore_mismatch",
+                "a non-negative producer-reachability allowance",
+                maximumHistoricallyClaimedOlderCandidates.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+        }
+        if (_byOperationKey.ContainsKey(coordinates.OperationKey))
+        {
+            return Invalid(
+                "mortal_wound_treatment_critical_reaction_reservation_conflict",
+                "one exact restored Fate agreement per operation key",
+                coordinates.OperationKey);
+        }
+
+        var candidateEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        if (candidates.Any(candidate =>
+                candidate is null ||
+                !candidateEffectIds.Add(candidate.EffectId)) ||
+            historicallyClaimedEffectIds.Any(effectId =>
+                !candidateEffectIds.Contains(effectId) ||
+                _claimedEffectIds.Contains(effectId)) ||
+            historicallyClaimedEffectIds.Count >
+                maximumHistoricallyClaimedOlderCandidates)
+        {
+            return Invalid(
+                "mortal_wound_treatment_critical_reaction_restore_mismatch",
+                "one unique current Fate candidate topology within the available historical gap evidence",
+                coordinates.OperationKey);
+        }
+
+        var remainingHistoricalClaims =
+            maximumHistoricallyClaimedOlderCandidates -
+            historicallyClaimedEffectIds.Count;
+        var availableCandidates = candidates
+            .Where(candidate =>
+                !_claimedEffectIds.Contains(candidate.EffectId) &&
+                !historicallyClaimedEffectIds.Contains(candidate.EffectId))
+            .OrderBy(static candidate => candidate.CreatedAtTurn)
+            .ThenBy(static candidate => candidate.EffectId, StringComparer.Ordinal)
+            .ToArray();
+        if (preparedReaction is null)
+        {
+            if (availableCandidates.Length > remainingHistoricalClaims)
+            {
+                return Invalid(
+                    "mortal_wound_treatment_critical_reaction_restore_mismatch",
+                    "the producer-selected oldest reachable Fate candidate",
+                    "no prepared reaction");
+            }
+            var emptyAgreement = new MortalWoundCriticalReactionReservationAgreement(
+                coordinates,
+                reservation: null);
+            _byOperationKey.Add(coordinates.OperationKey, emptyAgreement);
+            foreach (var candidate in availableCandidates)
+                historicallyClaimedEffectIds.Add(candidate.EffectId);
+            return new MortalWoundCriticalReactionReservationResult(
+                true,
+                Array.Empty<ValidationIssue>(),
+                null,
+                emptyAgreement,
+                WasCreated: true);
+        }
+
+        var matches = availableCandidates.Where(candidate =>
+                string.Equals(candidate.EffectId, preparedReaction.EffectId,
+                    StringComparison.Ordinal) &&
+                string.Equals(candidate.TriggerId, preparedReaction.TriggerId,
+                    StringComparison.Ordinal) &&
+                string.Equals(candidate.AcceptedEffectFingerprint,
+                    preparedReaction.AcceptedEffectFingerprint,
+                    StringComparison.Ordinal))
+            .ToArray();
+        var preparedFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.prepared_critical_reaction",
+            "1",
+            preparedReaction.EffectId,
+            preparedReaction.TriggerId,
+            preparedReaction.AcceptedEffectFingerprint,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint
+        });
+        var selectedOrdinal = Array.FindIndex(
+            availableCandidates,
+            candidate => string.Equals(
+                             candidate.EffectId,
+                             preparedReaction.EffectId,
+                             StringComparison.Ordinal) &&
+                         string.Equals(
+                             candidate.TriggerId,
+                             preparedReaction.TriggerId,
+                             StringComparison.Ordinal) &&
+                         string.Equals(
+                             candidate.AcceptedEffectFingerprint,
+                             preparedReaction.AcceptedEffectFingerprint,
+                             StringComparison.Ordinal));
+        if (matches.Length != 1 ||
+            selectedOrdinal < 0 ||
+            selectedOrdinal > remainingHistoricalClaims ||
+            !string.Equals(
+                preparedReaction.PreparedReactionFingerprint,
+                preparedFingerprint,
+                StringComparison.Ordinal) ||
+            _claimedEffectIds.Contains(preparedReaction.EffectId))
+        {
+            return Invalid(
+                "mortal_wound_treatment_critical_reaction_restore_mismatch",
+                "one exact current unclaimed Fate candidate and prepared reaction seal",
+                preparedReaction.EffectId);
+        }
+
+        var claimFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.critical_reaction_claim",
+            "1",
+            coordinates.OperationKey,
+            coordinates.AttemptId,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            preparedReaction.EffectId,
+            preparedReaction.TriggerId,
+            preparedReaction.AcceptedEffectFingerprint,
+            preparedFingerprint
+        });
+        var reservation = new MortalWoundCriticalReactionReservation(
+            coordinates.OperationKey,
+            coordinates.AttemptId,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            preparedReaction.EffectId,
+            preparedReaction.TriggerId,
+            preparedReaction.AcceptedEffectFingerprint,
+            preparedFingerprint,
+            claimFingerprint);
+        var agreement = new MortalWoundCriticalReactionReservationAgreement(
+            coordinates,
+            reservation);
+        _byOperationKey.Add(coordinates.OperationKey, agreement);
+        for (var index = 0; index < selectedOrdinal; index++)
+            historicallyClaimedEffectIds.Add(availableCandidates[index].EffectId);
+        _claimedEffectIds.Add(preparedReaction.EffectId);
+        return Valid(reservation, agreement, wasCreated: true);
     }
 
     internal bool CanRelease(MortalWoundCriticalReactionReservation reservation)

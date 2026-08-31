@@ -34,7 +34,8 @@ internal sealed record WoundHistoryTransition(
     string? PaymentFingerprint,
     string OutputFingerprint,
     string ReadableSummary,
-    bool Terminal);
+    bool Terminal,
+    MortalWoundTreatmentPersistedResult? TreatmentResult = null);
 
 internal sealed record WoundHistoryReplayProbe(
     string OperationKey,
@@ -71,7 +72,7 @@ internal sealed record WoundHistoryReplayResult(
     IReadOnlyList<ValidationIssue> Issues,
     WoundAlreadyAcceptedReceipt? AlreadyAcceptedReceipt);
 
-internal sealed record WoundHistoryParseResult(
+internal sealed partial record WoundHistoryParseResult(
     WoundHistoryState? State,
     IReadOnlyList<ValidationIssue> Issues)
 {
@@ -86,12 +87,18 @@ internal sealed class WoundHistoryState
 
     private static readonly IReadOnlySet<string> RootFields = Set(
         "schemaVersion", "nextOrdinal", "transitions");
-    private static readonly IReadOnlySet<string> TransitionFields = Set(
+    private static readonly IReadOnlySet<string> RequiredTransitionFields = Set(
         "transitionId", "woundId", "ordinal", "woundTransitionOrdinal", "kind", "turn",
         "eventRef", "operationKey", "beforeFingerprint", "afterFingerprint",
         "sourceFingerprint", "attemptId", "courseId", "courseMilestoneOrdinal",
         "cycleKey", "paymentFingerprint", "outputFingerprint", "readableSummary",
         "terminal");
+    private static readonly IReadOnlySet<string> TransitionFields = Set(
+        "transitionId", "woundId", "ordinal", "woundTransitionOrdinal", "kind", "turn",
+        "eventRef", "operationKey", "beforeFingerprint", "afterFingerprint",
+        "sourceFingerprint", "attemptId", "courseId", "courseMilestoneOrdinal",
+        "cycleKey", "paymentFingerprint", "outputFingerprint", "readableSummary",
+        "terminal", "transitionResult");
     private static readonly IReadOnlySet<string> Kinds = Set(
         "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
         "recover", "heal", "legacy", "archive");
@@ -562,7 +569,7 @@ internal sealed class WoundHistoryState
 
         var issueCount = issues.Count;
         ValidateClosedObject(element, path, TransitionFields, issues);
-        RequireFields(element, path, TransitionFields, issues);
+        RequireFields(element, path, RequiredTransitionFields, issues);
         var transitionId = ReadExactIdentifier(element, "transitionId", path, issues);
         var woundId = ReadExactIdentifier(element, "woundId", path, issues);
         var ordinal = ReadInt32(element, "ordinal", path, 1, MaxTransitions, issues);
@@ -614,6 +621,14 @@ internal sealed class WoundHistoryState
             issues);
         var summary = ReadSummary(element, path, issues);
         var terminal = ReadBoolean(element, "terminal", path, issues);
+        MortalWoundTreatmentPersistedResult? treatmentResult = null;
+        if (element.TryGetProperty("transitionResult", out var treatmentResultElement))
+        {
+            treatmentResult = MortalWoundTreatmentPersistedResult.Parse(
+                treatmentResultElement,
+                path + ".transitionResult",
+                issues);
+        }
 
         return issues.Count == issueCount
             ? new WoundHistoryTransition(
@@ -635,7 +650,8 @@ internal sealed class WoundHistoryState
                 paymentFingerprint,
                 outputFingerprint,
                 summary,
-                terminal)
+                terminal,
+                treatmentResult)
             : null;
     }
 
@@ -678,6 +694,15 @@ internal sealed class WoundHistoryState
         var confusableTransitionIds = new HashSet<string>(StringComparer.Ordinal);
         var exactOperationKeys = new HashSet<string>(StringComparer.Ordinal);
         var confusableOperationKeys = new HashSet<string>(StringComparer.Ordinal);
+        var exactAttemptIds = new HashSet<string>(StringComparer.Ordinal);
+        var confusableAttemptIds = new HashSet<string>(StringComparer.Ordinal);
+        var exactTreatmentEventRefs = new HashSet<string>(StringComparer.Ordinal);
+        var confusableTreatmentEventRefs = new HashSet<string>(StringComparer.Ordinal);
+        var exactCourseCoordinates = new HashSet<string>(StringComparer.Ordinal);
+        var confusableCourseCoordinates = new HashSet<string>(StringComparer.Ordinal);
+        var typedCourseRows = new Dictionary<
+            string,
+            List<(int Index, int MilestoneOrdinal)>>(StringComparer.Ordinal);
         var confusableWoundIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var byWound = new Dictionary<string, List<WoundHistoryTransition>>(StringComparer.Ordinal);
 
@@ -721,6 +746,73 @@ internal sealed class WoundHistoryState
                 exactOperationKeys,
                 confusableOperationKeys,
                 issues);
+            if (transition.AttemptId is not null)
+            {
+                RegisterUniqueIdentifier(
+                    transition.AttemptId,
+                    rowPath + ".attemptId",
+                    "wound_history_duplicate_attempt_id",
+                    "wound_history_confusable_attempt_id",
+                    exactAttemptIds,
+                    confusableAttemptIds,
+                    issues);
+            }
+            if (transition.TreatmentResult is not null)
+            {
+                RegisterUniqueIdentifier(
+                    transition.EventRef,
+                    rowPath + ".eventRef",
+                    "wound_history_duplicate_treatment_event_ref",
+                    "wound_history_confusable_treatment_event_ref",
+                    exactTreatmentEventRefs,
+                    confusableTreatmentEventRefs,
+                    issues);
+                if (transition.CourseId is { } typedCourseId &&
+                    transition.CourseMilestoneOrdinal is { } typedMilestoneOrdinal &&
+                    ResourceMaterializationContract.IsExactIdentifier(typedCourseId) &&
+                    typedMilestoneOrdinal is >= 1 and <= MaxTransitions)
+                {
+                    if (!typedCourseRows.TryGetValue(typedCourseId, out var courseRows))
+                    {
+                        courseRows = new List<(int Index, int MilestoneOrdinal)>();
+                        typedCourseRows.Add(typedCourseId, courseRows);
+                    }
+                    courseRows.Add((index, typedMilestoneOrdinal));
+                }
+            }
+            if (transition.CourseId is not null &&
+                transition.CourseMilestoneOrdinal.HasValue)
+            {
+                var exactCoordinate = transition.CourseId + "\u001f" +
+                                      transition.CourseMilestoneOrdinal.Value.ToString(
+                                          CultureInfo.InvariantCulture);
+                if (!exactCourseCoordinates.Add(exactCoordinate))
+                {
+                    AddIssue(
+                        issues,
+                        rowPath + ".courseId",
+                        "wound_history_duplicate_course_coordinate",
+                        "one exact durable row per course milestone",
+                        exactCoordinate);
+                }
+                else
+                {
+                    var confusableCoordinate =
+                        MortalLocationIdentityState.BuildConfusableKey(transition.CourseId) +
+                        "\u001f" +
+                        transition.CourseMilestoneOrdinal.Value.ToString(
+                            CultureInfo.InvariantCulture);
+                    if (!confusableCourseCoordinates.Add(confusableCoordinate))
+                    {
+                        AddIssue(
+                            issues,
+                            rowPath + ".courseId",
+                            "wound_history_confusable_course_coordinate",
+                            "one exact/confusable durable row per course milestone",
+                            exactCoordinate);
+                    }
+                }
+            }
 
             if (ResourceMaterializationContract.IsExactIdentifier(transition.WoundId))
             {
@@ -747,6 +839,23 @@ internal sealed class WoundHistoryState
                     byWound.Add(transition.WoundId, woundRows);
                 }
                 woundRows.Add(transition);
+            }
+        }
+
+        foreach (var course in typedCourseRows)
+        {
+            for (var index = 0; index < course.Value.Count; index++)
+            {
+                var row = course.Value[index];
+                var expectedMilestoneOrdinal = index + 1;
+                if (row.MilestoneOrdinal == expectedMilestoneOrdinal)
+                    continue;
+                AddIssue(
+                    issues,
+                    $"{path}.transitions[{row.Index}].courseMilestoneOrdinal",
+                    "wound_history_treatment_course_ordinal_discontinuity",
+                    $"course {course.Key} milestone {expectedMilestoneOrdinal}",
+                    row.MilestoneOrdinal.ToString(CultureInfo.InvariantCulture));
             }
         }
 
@@ -855,6 +964,69 @@ internal sealed class WoundHistoryState
                 "wound_history_invalid_summary",
                 $"trimmed non-empty readable text up to {WoundMaterializationContract.MaxReadableTextLength} characters",
                 transition.ReadableSummary ?? "null");
+        }
+        ValidateTreatmentResult(transition, path, issues);
+    }
+
+    private static void ValidateTreatmentResult(
+        WoundHistoryTransition transition,
+        string path,
+        ICollection<ValidationIssue> issues)
+    {
+        var result = transition.TreatmentResult;
+        if (result is null)
+        {
+            if (string.Equals(transition.Kind, "treat", StringComparison.Ordinal) &&
+                transition.AttemptId is not null)
+            {
+                AddIssue(
+                    issues,
+                    path + ".transitionResult",
+                    "wound_history_treatment_result_missing",
+                    "one complete sealed treatment result for an attempted treat row",
+                    "missing");
+            }
+            return;
+        }
+
+        if (!string.Equals(transition.Kind, "treat", StringComparison.Ordinal))
+        {
+            AddIssue(
+                issues,
+                path + ".transitionResult",
+                "wound_history_treatment_result_unexpected",
+                "transitionResult only on a treat row",
+                transition.Kind);
+            return;
+        }
+
+        var request = result.Request;
+        var receipt = result.Receipt;
+        var coordinates = request.Coordinates;
+        var agrees =
+            string.Equals(transition.WoundId, coordinates.WoundId,
+                StringComparison.Ordinal) &&
+            transition.Turn == coordinates.Turn &&
+            string.Equals(transition.EventRef, coordinates.EventRef,
+                StringComparison.Ordinal) &&
+            string.Equals(transition.OperationKey, coordinates.OperationKey,
+                StringComparison.Ordinal) &&
+            string.Equals(transition.AttemptId, coordinates.AttemptId,
+                StringComparison.Ordinal) &&
+            string.Equals(transition.BeforeFingerprint,
+                coordinates.ExpectedBeforeFingerprint, StringComparison.Ordinal) &&
+            string.Equals(transition.CourseId, receipt.CourseId,
+                StringComparison.Ordinal) &&
+            transition.CourseMilestoneOrdinal == receipt.CourseMilestoneOrdinal &&
+            !transition.Terminal;
+        if (!agrees)
+        {
+            AddIssue(
+                issues,
+                path + ".transitionResult",
+                "wound_history_treatment_result_coordinate_mismatch",
+                "outer wound/turn/event/operation/attempt/before/course coordinates matching the sealed result",
+                "one or more outer coordinates disagree");
         }
     }
 
@@ -1533,6 +1705,11 @@ internal sealed class WoundHistoryState
         writer.WriteString("outputFingerprint", transition.OutputFingerprint);
         writer.WriteString("readableSummary", transition.ReadableSummary);
         writer.WriteBoolean("terminal", transition.Terminal);
+        if (transition.TreatmentResult is not null)
+        {
+            writer.WritePropertyName("transitionResult");
+            transition.TreatmentResult.WriteCanonical(writer);
+        }
         writer.WriteEndObject();
     }
 

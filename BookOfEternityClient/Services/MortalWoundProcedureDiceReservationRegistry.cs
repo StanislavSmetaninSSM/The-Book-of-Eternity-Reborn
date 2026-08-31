@@ -8,6 +8,34 @@ internal sealed record MortalWoundProcedureDiceReservationResult(
     MortalWoundProcedureDiceReservation? Reservation,
     bool WasCreated = false);
 
+internal readonly record struct MortalWoundProcedurePotentialNaturalOneClaimSpan(
+    int StartIndex,
+    int SourceCount)
+{
+    internal bool Overlaps(IReadOnlyList<int> sourceIndices)
+    {
+        ArgumentNullException.ThrowIfNull(sourceIndices);
+        var endExclusive = checked(StartIndex + SourceCount);
+        for (var index = 0; index < sourceIndices.Count; index++)
+        {
+            if (sourceIndices[index] >= StartIndex &&
+                sourceIndices[index] < endExclusive)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    internal bool Overlaps(
+        MortalWoundProcedurePotentialNaturalOneClaimSpan other)
+    {
+        var endExclusive = checked(StartIndex + SourceCount);
+        var otherEndExclusive = checked(other.StartIndex + other.SourceCount);
+        return StartIndex < otherEndExclusive && other.StartIndex < endExclusive;
+    }
+}
+
 internal sealed class MortalWoundProcedureDiceReservation
 {
     private readonly ReadOnlyCollection<int> _sourceIndices;
@@ -53,6 +81,11 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
     private readonly Dictionary<string, MortalWoundProcedureDiceReservation>
         _byCoordinatesFingerprint = new(StringComparer.Ordinal);
     private readonly HashSet<int> _occupiedSourceIndices = new();
+
+    internal bool IsEmpty =>
+        _coordinatesByOperationKey.Count == 0 &&
+        _byCoordinatesFingerprint.Count == 0 &&
+        _occupiedSourceIndices.Count == 0;
 
     internal MortalWoundProcedureDiceReservationResult Reserve(
         object acceptedPoolReadCapability,
@@ -202,12 +235,247 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
         return Valid(reservation, wasCreated: true);
     }
 
+    internal MortalWoundProcedureDiceReservationResult RestoreExact(
+        object acceptedPoolReadCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string rollMode,
+        IReadOnlyList<int> sourceIndices,
+        IReadOnlyList<int> sourceRolls,
+        ReadOnlySpan<int> acceptedD20EventValues,
+        string poolFingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(coordinates);
+        ArgumentNullException.ThrowIfNull(sourceIndices);
+        ArgumentNullException.ThrowIfNull(sourceRolls);
+        if (!AcceptedTurnAuthorityRegistry.IsProcedureDicePoolReadCapability(
+                acceptedPoolReadCapability))
+        {
+            return Invalid(
+                "mortal_wound_treatment_procedure_dice_authority_invalid",
+                "registry-authorized access to the accepted d20 pool",
+                "missing accepted-pool read authority");
+        }
+
+        var requiredCount = rollMode switch
+        {
+            "normal" => 1,
+            "advantage" or "disadvantage" => 2,
+            _ => 0
+        };
+        if (requiredCount == 0 ||
+            sourceIndices.Count != requiredCount ||
+            sourceRolls.Count != requiredCount)
+        {
+            return Invalid(
+                "mortal_wound_treatment_procedure_dice_mode_invalid",
+                "one exact normal die or two exact advantage/disadvantage dice",
+                $"{rollMode}:{sourceIndices.Count}:{sourceRolls.Count}");
+        }
+        if (acceptedD20EventValues.IsEmpty ||
+            acceptedD20EventValues.ToArray().Any(static value => value is < 1 or > 20))
+        {
+            return Invalid(
+                "mortal_wound_treatment_procedure_dice_pool_invalid",
+                "a non-empty accepted d20 pool containing only values 1..20",
+                acceptedD20EventValues.Length.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture));
+        }
+        for (var offset = 0; offset < requiredCount; offset++)
+        {
+            var sourceIndex = sourceIndices[offset];
+            if (sourceIndex < 0 ||
+                sourceIndex >= acceptedD20EventValues.Length ||
+                (offset != 0 && sourceIndex != sourceIndices[0] + offset) ||
+                acceptedD20EventValues[sourceIndex] != sourceRolls[offset])
+            {
+                return Invalid(
+                    "mortal_wound_treatment_procedure_dice_restore_mismatch",
+                    "the exact carried contiguous span and current accepted d20 values",
+                    $"offset {offset}");
+            }
+        }
+
+        if (_coordinatesByOperationKey.TryGetValue(
+                coordinates.OperationKey,
+                out var existingCoordinatesFingerprint) &&
+            !string.Equals(
+                existingCoordinatesFingerprint,
+                coordinates.CoordinatesFingerprint,
+                StringComparison.Ordinal))
+        {
+            return Invalid(
+                "mortal_wound_treatment_procedure_dice_reservation_conflict",
+                "one exact restored coordinate per operation key",
+                coordinates.OperationKey);
+        }
+        if (_byCoordinatesFingerprint.TryGetValue(
+                coordinates.CoordinatesFingerprint,
+                out var existing))
+        {
+            var expectedFingerprint = ComputeClaimFingerprint(
+                coordinates,
+                poolFingerprint,
+                rollMode,
+                sourceIndices,
+                sourceRolls);
+            return string.Equals(existing.OperationKey, coordinates.OperationKey,
+                       StringComparison.Ordinal) &&
+                   string.Equals(existing.AttemptId, coordinates.AttemptId,
+                       StringComparison.Ordinal) &&
+                   string.Equals(existing.AcceptedStateFingerprint,
+                       coordinates.AcceptedStateFingerprint, StringComparison.Ordinal) &&
+                   string.Equals(existing.PoolFingerprint, poolFingerprint,
+                       StringComparison.Ordinal) &&
+                   string.Equals(existing.RollMode, rollMode, StringComparison.Ordinal) &&
+                   existing.SourceIndices.SequenceEqual(sourceIndices) &&
+                   existing.SourceRolls.SequenceEqual(sourceRolls) &&
+                   string.Equals(existing.ClaimFingerprint, expectedFingerprint,
+                       StringComparison.Ordinal)
+                ? Valid(existing)
+                : Invalid(
+                    "mortal_wound_treatment_procedure_dice_reservation_conflict",
+                    "one exact restored claim per coordinate",
+                    coordinates.OperationKey);
+        }
+        if (sourceIndices.Any(_occupiedSourceIndices.Contains))
+        {
+            return Invalid(
+                "mortal_wound_treatment_procedure_dice_restore_overlap",
+                "non-overlapping exact persisted die spans",
+                string.Join(',', sourceIndices));
+        }
+
+        var claimFingerprint = ComputeClaimFingerprint(
+            coordinates,
+            poolFingerprint,
+            rollMode,
+            sourceIndices,
+            sourceRolls);
+        var reservation = new MortalWoundProcedureDiceReservation(
+            coordinates.OperationKey,
+            coordinates.AttemptId,
+            coordinates.CoordinatesFingerprint,
+            coordinates.AcceptedStateFingerprint,
+            poolFingerprint,
+            rollMode,
+            sourceIndices,
+            sourceRolls,
+            claimFingerprint);
+        _coordinatesByOperationKey.Add(
+            coordinates.OperationKey,
+            coordinates.CoordinatesFingerprint);
+        _byCoordinatesFingerprint.Add(
+            coordinates.CoordinatesFingerprint,
+            reservation);
+        foreach (var sourceIndex in sourceIndices)
+            _occupiedSourceIndices.Add(sourceIndex);
+        return Valid(reservation, wasCreated: true);
+    }
+
     internal bool Release(MortalWoundProcedureDiceReservation reservation)
     {
         ArgumentNullException.ThrowIfNull(reservation);
         if (!CanRelease(reservation))
             return false;
         ReleaseUnchecked(reservation);
+        return true;
+    }
+
+    internal bool TryCountPotentialPlayerNaturalOneClaimsBefore(
+        object acceptedPoolReadCapability,
+        MortalWoundProcedureDiceReservation reservation,
+        ReadOnlySpan<int> acceptedD20EventValues,
+        out int count)
+    {
+        if (!TryGetPotentialPlayerNaturalOneClaimSpansBefore(
+                acceptedPoolReadCapability,
+                reservation,
+                acceptedD20EventValues,
+                out var spans))
+        {
+            count = 0;
+            return false;
+        }
+        count = spans.Count;
+        return true;
+    }
+
+    internal bool TryGetPotentialPlayerNaturalOneClaimSpansBefore(
+        object acceptedPoolReadCapability,
+        MortalWoundProcedureDiceReservation reservation,
+        ReadOnlySpan<int> acceptedD20EventValues,
+        out IReadOnlyList<MortalWoundProcedurePotentialNaturalOneClaimSpan> spans)
+    {
+        ArgumentNullException.ThrowIfNull(reservation);
+        var result = new List<MortalWoundProcedurePotentialNaturalOneClaimSpan>();
+        spans = Array.Empty<MortalWoundProcedurePotentialNaturalOneClaimSpan>();
+        if (!AcceptedTurnAuthorityRegistry.IsProcedureDicePoolReadCapability(
+                acceptedPoolReadCapability) ||
+            !CanRelease(reservation) ||
+            reservation.SourceIndices.Count == 0)
+        {
+            return false;
+        }
+
+        var firstSourceIndex = reservation.SourceIndices[0];
+        if (firstSourceIndex < 0 || firstSourceIndex >= acceptedD20EventValues.Length)
+            return false;
+        if (string.Equals(reservation.RollMode, "normal", StringComparison.Ordinal))
+        {
+            for (var sourceIndex = 0;
+                 sourceIndex < firstSourceIndex;
+                 sourceIndex++)
+            {
+                if (!_occupiedSourceIndices.Contains(sourceIndex) &&
+                    acceptedD20EventValues[sourceIndex] == 1)
+                {
+                    result.Add(new MortalWoundProcedurePotentialNaturalOneClaimSpan(
+                        sourceIndex,
+                        1));
+                }
+            }
+            spans = Array.AsReadOnly(result.ToArray());
+            return true;
+        }
+
+        if (!string.Equals(reservation.RollMode, "advantage", StringComparison.Ordinal) &&
+            !string.Equals(
+                reservation.RollMode,
+                "disadvantage",
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        for (var sourceIndex = 0; sourceIndex + 1 < firstSourceIndex;)
+        {
+            if (_occupiedSourceIndices.Contains(sourceIndex) ||
+                _occupiedSourceIndices.Contains(sourceIndex + 1))
+            {
+                sourceIndex++;
+                continue;
+            }
+
+            var left = acceptedD20EventValues[sourceIndex];
+            var right = acceptedD20EventValues[sourceIndex + 1];
+            var selectsNaturalOne = string.Equals(
+                reservation.RollMode,
+                "advantage",
+                StringComparison.Ordinal)
+                ? left == 1 && right == 1
+                : left == 1 || right == 1;
+            if (!selectsNaturalOne)
+            {
+                sourceIndex++;
+                continue;
+            }
+
+            result.Add(new MortalWoundProcedurePotentialNaturalOneClaimSpan(
+                sourceIndex,
+                2));
+            sourceIndex += 2;
+        }
+        spans = Array.AsReadOnly(result.ToArray());
         return true;
     }
 

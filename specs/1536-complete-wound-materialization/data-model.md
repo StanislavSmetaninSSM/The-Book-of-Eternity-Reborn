@@ -348,7 +348,10 @@ claim is released rather than consumed.
 
 `requestAuthority` is the complete recursively closed serialized
 `MortalWoundTreatmentAttemptRequest`, not a fingerprint placeholder. Its exact
-`resourceAuthority` is the pre-resolution reservation authority defined below. Its `mode` must
+`routeSourceWound` is the canonical detached pre-attempt wound, its
+`routeSourceWoundFingerprint` equals both the wound's recomputed semantic fingerprint and
+the request coordinate's expected-before fingerprint, and its exact `resourceAuthority`
+is the pre-resolution reservation authority defined below. Its `mode` must
 equal the sibling result mode, every coordinate must agree with the enclosing history
 row, and its recomputed `requestFingerprint` participates in `resultFingerprint`.
 There is no sibling `requestFingerprint` field. Procedure `modeAuthority` has exactly
@@ -547,21 +550,25 @@ milestone against current canonical state.
 `MortalWoundTreatmentAttemptRequest` is a closed immutable union produced only by
 `SealProcedureRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundProcedureCheckAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`,
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`,
 `SealCourseMilestoneRequest(MortalWoundTreatmentAttemptCoordinates, int,
 MortalWoundCourseModeAuthority, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`, or
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`, or
 `SealGuaranteedRequest(MortalWoundTreatmentAttemptCoordinates,
 MortalWoundTreatmentCapabilityProof, MortalWoundTreatmentRequirementAuthorityBundle,
-MortalWoundTreatmentResourceReservationAuthority)`.
+MortalWoundTreatmentResourceReservationAuthority, WoundMaterializationEnvelope)`.
 Each returns
 `MortalWoundTreatmentAttemptRequestResult` with exactly `IsValid`, frozen `Issues`, and
 nullable `Request`. The request
-contains exactly `Mode`, `Coordinates`, `MilestoneOrdinal`, `ModeAuthority`,
+contains exactly `Mode`, `Coordinates`, `MilestoneOrdinal`, canonical detached pre-attempt
+`RouteSourceWound`, recomputed `RouteSourceWoundFingerprint`, `ModeAuthority`,
 `RequirementAuthority`, `ResourceAuthority`, and
 `RequestFingerprint`; `MilestoneOrdinal` is present only for course mode, while
 `ModeAuthority` is exactly the procedure-check, complete course-mode, or canonical capability proof
-type. The request fingerprint binds the complete coordinates plus the applicable mode
+type. Detached parsing re-parses `RouteSourceWound` and derives the exact selected route,
+declared result, resource policy, and mode evidence; a carried route/result fingerprint
+cannot substitute for that payload. The request fingerprint binds the complete coordinates,
+route-source wound fingerprint, plus the applicable mode
 authority, full requirement authority, resource authority, and ordinal under one
 versioned domain. A new operation creates coordinates and
 seals a request once; repair/retry restores that request from client-owned pending/
@@ -597,8 +604,9 @@ Factories select the route/scopes themselves, invoke unchanged T060, build compl
 success/failure witnesses, and accept no requirement array, context/snapshot, or caller
 fingerprint.
 
-Before acceptance the full serialized request, including its nested complete
-`RequirementAuthority` and `ResourceAuthority`, is stored under the typed `treat`
+Before acceptance the full serialized request, including its canonical detached
+`RouteSourceWound`, `RouteSourceWoundFingerprint`, nested complete
+`RequirementAuthority`, and `ResourceAuthority`, is stored under the typed `treat`
 authority in `game_state/wounds/wound_commands.json`, and in
 `game_state/control/pending_wound_resolutions.json` whenever a bounded GM repair or
 construction wave is required. The accepted transition copies the exact detached
@@ -611,7 +619,9 @@ request coordinates must agree exactly.
 The same request may legitimately appear in both command and pending storage during one
 repair wave. Every parser and dice/Fate/resource registry coalesces byte-semantic exact
 copies by `(OperationKey, AttemptId, RequestFingerprint)` into one logical request/claim.
-A differing request, bundle, resource authority, or outer coordinate under either reused
+After exact-copy coalescing, operation key, attempt ID, accepted event ref, and every
+non-null `(courseId, milestoneOrdinal)` are independently exact/confusable unique.
+A differing request, bundle, resource authority, or outer coordinate under any reused
 semantic coordinate is a conflict/invalid state; exact copies never double-reserve or
 look like duplicate operations.
 
@@ -630,6 +640,16 @@ the existing six-argument T070 publication. The command result remains history-s
 does not persist actionable intents. Its declared result, mode evidence, resolution/result
 fingerprints, and all nested request/result agreements are independently recomputed, so a
 post-seal semantic replacement is invalid at parse or recompose time.
+Before any new live procedure reservation, accepted-state binding reconstructs claims
+exactly once in the catalog's coalesced first-authoritative order. Exact persisted dice
+spans are restored without coordinate sorting. For player natural 1, only lower
+unoccupied spans compatible with the actor's roll topology may explain skipped older
+Fate candidates. Recovery binds each such temporary span to one skipped effect ID; a
+later accepted overlap releases that temporary mapping, while non-overlapping mappings
+remain active for the batch. The mapping is never serialized or installed into live
+state. Only the exact reconstructed dice/Fate registries are atomically installed after
+fresh validation. Repeating the same recovery is idempotent, changing the request set is
+a conflict, and starting recovery after a live reservation is invalid.
 `WoundHistoryParseResult.ProbeTreatmentAttempt(string
 operationKey, string attemptId, string requestFingerprint)` returns one immutable
 `MortalWoundTreatmentReplayProbeResult` with exactly `Status`, frozen `Issues`, nullable

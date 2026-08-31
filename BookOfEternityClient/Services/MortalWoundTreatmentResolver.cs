@@ -1,7 +1,12 @@
 using System.Collections.ObjectModel;
+using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Services;
 
+[JsonPolymorphic]
+[JsonDerivedType(typeof(MortalWoundProcedureCheckAuthority))]
+[JsonDerivedType(typeof(MortalWoundCourseModeAuthority))]
+[JsonDerivedType(typeof(MortalWoundTreatmentCapabilityProof))]
 internal abstract class MortalWoundTreatmentModeAuthority
 {
     private protected MortalWoundTreatmentModeAuthority()
@@ -9,6 +14,10 @@ internal abstract class MortalWoundTreatmentModeAuthority
     }
 }
 
+[JsonPolymorphic]
+[JsonDerivedType(typeof(MortalWoundProcedureModeEvidence))]
+[JsonDerivedType(typeof(MortalWoundCourseModeEvidence))]
+[JsonDerivedType(typeof(MortalWoundGuaranteedModeEvidence))]
 internal abstract class MortalWoundTreatmentModeEvidence
 {
     private protected MortalWoundTreatmentModeEvidence()
@@ -41,6 +50,8 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         string mode,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         int? milestoneOrdinal,
+        WoundMaterializationEnvelope routeSourceWound,
+        string routeSourceWoundFingerprint,
         MortalWoundTreatmentModeAuthority modeAuthority,
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
         MortalWoundTreatmentResourceReservationAuthority resourceAuthority,
@@ -49,6 +60,8 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         Mode = mode;
         Coordinates = coordinates;
         MilestoneOrdinal = milestoneOrdinal;
+        RouteSourceWound = routeSourceWound;
+        RouteSourceWoundFingerprint = routeSourceWoundFingerprint;
         ModeAuthority = modeAuthority;
         RequirementAuthority = requirementAuthority;
         ResourceAuthority = resourceAuthority;
@@ -58,6 +71,8 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
     public string Mode { get; }
     public MortalWoundTreatmentAttemptCoordinates Coordinates { get; }
     public int? MilestoneOrdinal { get; }
+    public WoundMaterializationEnvelope RouteSourceWound { get; }
+    public string RouteSourceWoundFingerprint { get; }
     public MortalWoundTreatmentModeAuthority ModeAuthority { get; }
     public MortalWoundTreatmentRequirementAuthorityBundle RequirementAuthority { get; }
     public MortalWoundTreatmentResourceReservationAuthority ResourceAuthority { get; }
@@ -169,9 +184,72 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
 
 internal sealed partial class MortalWoundTreatmentReceipt
 {
-    private MortalWoundTreatmentReceipt()
+    private readonly ReadOnlyCollection<MortalWoundTreatmentOperation> _declaredResult;
+
+    private MortalWoundTreatmentReceipt(
+        string mode,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string attemptDisposition,
+        string resultCategory,
+        int? selectedOutcomeIndex,
+        bool interruption,
+        IEnumerable<MortalWoundTreatmentOperation> declaredResult,
+        string consumptionTrigger,
+        string? courseId,
+        int? courseMilestoneOrdinal,
+        string? courseDisposition,
+        string requirementAuthorityFingerprint,
+        string resourceAuthorityFingerprint,
+        MortalWoundTreatmentModeEvidence modeEvidence,
+        string routeFingerprint,
+        string resolutionAuthorityFingerprint,
+        string requestFingerprint,
+        string resultFingerprint,
+        string routeCompletion,
+        string receiptFingerprint)
     {
+        Mode = mode;
+        Coordinates = coordinates;
+        AttemptDisposition = attemptDisposition;
+        ResultCategory = resultCategory;
+        SelectedOutcomeIndex = selectedOutcomeIndex;
+        Interruption = interruption;
+        _declaredResult = MortalWoundTreatmentShellDetachment.Freeze(declaredResult);
+        ConsumptionTrigger = consumptionTrigger;
+        CourseId = courseId;
+        CourseMilestoneOrdinal = courseMilestoneOrdinal;
+        CourseDisposition = courseDisposition;
+        RequirementAuthorityFingerprint = requirementAuthorityFingerprint;
+        ResourceAuthorityFingerprint = resourceAuthorityFingerprint;
+        ModeEvidence = modeEvidence;
+        RouteFingerprint = routeFingerprint;
+        ResolutionAuthorityFingerprint = resolutionAuthorityFingerprint;
+        RequestFingerprint = requestFingerprint;
+        ResultFingerprint = resultFingerprint;
+        RouteCompletion = routeCompletion;
+        ReceiptFingerprint = receiptFingerprint;
     }
+
+    public string Mode { get; }
+    public MortalWoundTreatmentAttemptCoordinates Coordinates { get; }
+    public string AttemptDisposition { get; }
+    public string ResultCategory { get; }
+    public int? SelectedOutcomeIndex { get; }
+    public bool Interruption { get; }
+    public IReadOnlyList<MortalWoundTreatmentOperation> DeclaredResult => _declaredResult;
+    public string ConsumptionTrigger { get; }
+    public string? CourseId { get; }
+    public int? CourseMilestoneOrdinal { get; }
+    public string? CourseDisposition { get; }
+    public string RequirementAuthorityFingerprint { get; }
+    public string ResourceAuthorityFingerprint { get; }
+    public MortalWoundTreatmentModeEvidence ModeEvidence { get; }
+    public string RouteFingerprint { get; }
+    public string ResolutionAuthorityFingerprint { get; }
+    public string RequestFingerprint { get; }
+    public string ResultFingerprint { get; }
+    public string RouteCompletion { get; }
+    public string ReceiptFingerprint { get; }
 }
 
 internal sealed partial class MortalWoundProcedureModeEvidence :
@@ -180,12 +258,13 @@ internal sealed partial class MortalWoundProcedureModeEvidence :
     private readonly ReadOnlyCollection<int> _sourceIndices;
     private readonly ReadOnlyCollection<int> _sourceRolls;
 
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundProcedureModeEvidence(
         string rollMode,
         string rollActorKind,
         string rollActorId,
-        IEnumerable<int> sourceIndices,
-        IEnumerable<int> sourceRolls,
+        IReadOnlyList<int> sourceIndices,
+        IReadOnlyList<int> sourceRolls,
         int selectedSourceIndex,
         int naturalRoll,
         int modifier,
@@ -252,6 +331,7 @@ internal sealed partial class MortalWoundProcedureModeEvidence :
 internal sealed partial class MortalWoundCourseModeEvidence :
     MortalWoundTreatmentModeEvidence
 {
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundCourseModeEvidence(
         string courseId,
         int milestoneOrdinal,
@@ -279,6 +359,7 @@ internal sealed partial class MortalWoundCourseModeEvidence :
 internal sealed partial class MortalWoundGuaranteedModeEvidence :
     MortalWoundTreatmentModeEvidence
 {
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundGuaranteedModeEvidence(
         string capabilityRef,
         string actorRole,

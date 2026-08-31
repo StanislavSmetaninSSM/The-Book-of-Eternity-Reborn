@@ -85,6 +85,34 @@ internal sealed class MortalWoundTreatmentResourceClaim
         BindingFingerprint = bindingFingerprint;
     }
 
+    [System.Text.Json.Serialization.JsonConstructor]
+    private MortalWoundTreatmentResourceClaim(
+        string scope,
+        int requirementIndex,
+        string kind,
+        string authorityRef,
+        string realm,
+        string ownerKind,
+        string ownerId,
+        int quantity,
+        string successWitnessFingerprint,
+        string claimFingerprint)
+        : this(
+            scope,
+            requirementIndex,
+            kind,
+            authorityRef,
+            realm,
+            ownerKind,
+            ownerId,
+            quantity,
+            successWitnessFingerprint,
+            claimFingerprint,
+            availableQuantity: quantity,
+            bindingFingerprint: string.Empty)
+    {
+    }
+
     public string Scope { get; }
     public int RequirementIndex { get; }
     public string Kind { get; }
@@ -150,6 +178,7 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
 {
     private readonly ReadOnlyCollection<MortalWoundTreatmentResourceClaim> _claims;
 
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundTreatmentResourceReservationAuthority(
         string reservationDisposition,
         string? reservationId,
@@ -161,7 +190,7 @@ internal sealed partial class MortalWoundTreatmentResourceReservationAuthority
         string? courseCoordinateFingerprint,
         string requirementAuthorityFingerprint,
         MortalWoundTreatmentResourcePolicy policy,
-        IEnumerable<MortalWoundTreatmentResourceClaim> claims,
+        IReadOnlyList<MortalWoundTreatmentResourceClaim> claims,
         string authorityFingerprint)
     {
         ReservationDisposition = reservationDisposition;
@@ -479,7 +508,8 @@ internal static class MortalWoundTreatmentResourceComposer
             string.Equals(
                 requirementAuthority.CourseRequirementStatus,
                 "Unsatisfied",
-                StringComparison.Ordinal))
+                StringComparison.Ordinal) &&
+            requirementAuthority.InterruptionReason is null)
         {
             AddIssue(
                 issues,
@@ -489,7 +519,12 @@ internal static class MortalWoundTreatmentResourceComposer
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
         }
 
-        if (!TryBuildClaims(requirementAuthority, issues, out var claims))
+        IReadOnlyList<MortalWoundTreatmentResourceClaim>? claims;
+        if (requirementAuthority.InterruptionReason is not null)
+        {
+            claims = Array.Empty<MortalWoundTreatmentResourceClaim>();
+        }
+        else if (!TryBuildClaims(requirementAuthority, issues, out claims))
         {
             return MortalWoundTreatmentResourcePreparationResult.Invalid(issues);
         }
@@ -942,16 +977,27 @@ internal static class MortalWoundTreatmentResourceComposer
                 when mode == "course" && route is MortalWoundCourseRouteDefinition =>
                 course.GameTimeAuthority.Matches(acceptedState, coordinates) &&
                 course.MilestoneOrdinal > 0 &&
-                string.Equals(course.WindowDisposition, "ready", StringComparison.Ordinal) &&
+                course.WindowDisposition is "ready" or "deadline_exceeded" &&
                 string.Equals(course.CoordinatesFingerprint, coordinates.CoordinatesFingerprint, StringComparison.Ordinal) &&
                 string.Equals(course.AcceptedStateFingerprint, coordinates.AcceptedStateFingerprint, StringComparison.Ordinal) &&
                 string.Equals(course.CourseId, requirementAuthority.CourseId, StringComparison.Ordinal) &&
                 course.MilestoneOrdinal == requirementAuthority.CourseMilestoneOrdinal &&
                 string.Equals(course.CourseCoordinateFingerprint, requirementAuthority.CourseCoordinateFingerprint, StringComparison.Ordinal) &&
+                string.Equals(course.CourseStartAuthority.CourseId, course.CourseId, StringComparison.Ordinal) &&
                 string.Equals(course.CourseStartAuthority.RouteId, coordinates.RouteId, StringComparison.Ordinal) &&
                 string.Equals(course.CourseStartAuthority.RouteFingerprint, routeFingerprint, StringComparison.Ordinal) &&
-                string.Equals(course.CourseStartAuthority.StartingWoundFingerprint, acceptedState.WoundFingerprint, StringComparison.Ordinal) &&
-                acceptedState.MatchesCurrentWound(course.CourseStartAuthority.StartingWound),
+                (course.MilestoneOrdinal == 1
+                    ? before.Care.ActiveCourseId is null &&
+                      string.Equals(
+                          course.CourseStartAuthority.StartingWoundFingerprint,
+                          acceptedState.WoundFingerprint,
+                          StringComparison.Ordinal) &&
+                      acceptedState.MatchesCurrentWound(
+                          course.CourseStartAuthority.StartingWound)
+                    : string.Equals(
+                        before.Care.ActiveCourseId,
+                        course.CourseId,
+                        StringComparison.Ordinal)),
             MortalWoundTreatmentCapabilityProof proof
                 when mode == "guaranteed" && route is MortalWoundGuaranteedRouteDefinition guaranteed =>
                 string.Equals(proof.CoordinatesFingerprint, coordinates.CoordinatesFingerprint, StringComparison.Ordinal) &&

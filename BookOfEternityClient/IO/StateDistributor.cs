@@ -223,6 +223,23 @@ public class StateDistributor
         }
         if (commands.Count == 0)
             return null;
+        if (parsed.TreatmentCommands.Count != 0)
+        {
+            var publishedTreatmentScene = PlayerFacingTextNormalizer
+                .NormalizeEscapedLineBreakArtifacts(response.Response);
+            if (parsed.Commands.Count != 0 ||
+                hasRawDecisions ||
+                acceptedWoundInput.DecisionReceipts.Count != 0 ||
+                parsed.TreatmentCommands.Any(command => !string.Equals(
+                    command.FinalSceneText,
+                    publishedTreatmentScene,
+                    StringComparison.Ordinal)))
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed treatment command no longer matches the distributed player response.");
+            }
+            return root.DeepClone().AsObject();
+        }
         if (!hasRawDecisions)
         {
             throw new InvalidDataException(

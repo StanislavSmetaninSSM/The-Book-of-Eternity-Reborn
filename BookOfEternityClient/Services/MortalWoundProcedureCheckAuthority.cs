@@ -54,12 +54,12 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         _rollContributions;
     private readonly ReadOnlyCollection<int> _sourceIndices;
     private readonly ReadOnlyCollection<int> _sourceRolls;
-    private readonly MortalWoundProcedureDiceReservation _diceReservation;
+    private readonly MortalWoundProcedureDiceReservation? _diceReservation;
     private readonly MortalWoundCriticalReactionReservation?
         _criticalReactionReservation;
     private readonly MortalWoundCriticalReactionReservationAgreement?
         _criticalReactionAgreement;
-    private readonly MortalWoundProcedureReservationOwnership _reservationOwnership;
+    private readonly MortalWoundProcedureReservationOwnership? _reservationOwnership;
 
     internal static bool IsProcedureReservationCapability(object capability) =>
         ReferenceEquals(capability, ProcedureReservationCapability);
@@ -69,9 +69,9 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollMode,
         string rollActorKind,
         string rollActorId,
-        IEnumerable<MortalWoundProcedureRollContribution> rollContributions,
-        IEnumerable<int> sourceIndices,
-        IEnumerable<int> sourceRolls,
+        IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
+        IReadOnlyList<int> sourceIndices,
+        IReadOnlyList<int> sourceRolls,
         int selectedSourceIndex,
         int naturalRoll,
         int modifier,
@@ -82,10 +82,10 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string acceptedStateFingerprint,
         MortalWoundPreparedCriticalReaction? preparedCriticalReaction,
         string authorityFingerprint,
-        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundProcedureDiceReservation? diceReservation,
         MortalWoundCriticalReactionReservation? criticalReactionReservation,
         MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
-        MortalWoundProcedureReservationOwnership reservationOwnership)
+        MortalWoundProcedureReservationOwnership? reservationOwnership)
     {
         SourcePath = sourcePath;
         RollMode = rollMode;
@@ -108,6 +108,50 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         _criticalReactionReservation = criticalReactionReservation;
         _criticalReactionAgreement = criticalReactionAgreement;
         _reservationOwnership = reservationOwnership;
+    }
+
+    [System.Text.Json.Serialization.JsonConstructor]
+    private MortalWoundProcedureCheckAuthority(
+        string sourcePath,
+        string rollMode,
+        string rollActorKind,
+        string rollActorId,
+        IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
+        IReadOnlyList<int> sourceIndices,
+        IReadOnlyList<int> sourceRolls,
+        int selectedSourceIndex,
+        int naturalRoll,
+        int modifier,
+        int complicationDifficultyModifier,
+        int effectiveDifficulty,
+        string requirementAuthorityFingerprint,
+        string coordinatesFingerprint,
+        string acceptedStateFingerprint,
+        MortalWoundPreparedCriticalReaction? preparedCriticalReaction,
+        string authorityFingerprint)
+        : this(
+            sourcePath,
+            rollMode,
+            rollActorKind,
+            rollActorId,
+            rollContributions,
+            sourceIndices,
+            sourceRolls,
+            selectedSourceIndex,
+            naturalRoll,
+            modifier,
+            complicationDifficultyModifier,
+            effectiveDifficulty,
+            requirementAuthorityFingerprint,
+            coordinatesFingerprint,
+            acceptedStateFingerprint,
+            preparedCriticalReaction,
+            authorityFingerprint,
+            diceReservation: null,
+            criticalReactionReservation: null,
+            criticalReactionAgreement: null,
+            reservationOwnership: null)
+    {
     }
 
     public string SourcePath { get; }
@@ -360,14 +404,19 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
     internal bool ReleaseProvisionalReservations(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
-        acceptedState is not null && acceptedState.ReleaseProcedureReservations(
+        acceptedState is not null &&
+        _diceReservation is not null &&
+        acceptedState.ReleaseProcedureReservations(
             _diceReservation,
             _criticalReactionReservation,
             _criticalReactionAgreement);
 
     internal bool RollbackNewProvisionalReservations(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
-        acceptedState is not null && acceptedState.RollbackNewProcedureReservations(
+        acceptedState is not null &&
+        _diceReservation is not null &&
+        _reservationOwnership is not null &&
+        acceptedState.RollbackNewProcedureReservations(
             _diceReservation,
             _criticalReactionReservation,
             _criticalReactionAgreement,
@@ -382,11 +431,42 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         ArgumentNullException.ThrowIfNull(criticalReactionRegistry);
         return AcceptedTurnAuthorityRegistry.IsProcedureReservationLiveCheckCapability(
                    liveCheckCapability) &&
+               _diceReservation is not null &&
                diceRegistry.CanRelease(_diceReservation) &&
                criticalReactionRegistry.MatchesReleaseAgreement(
                    _diceReservation,
                    _criticalReactionReservation,
                    _criticalReactionAgreement);
+    }
+
+    internal MortalWoundProcedureCheckAuthority AttachRestoredReservations(
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement)
+    {
+        ArgumentNullException.ThrowIfNull(diceReservation);
+        return new MortalWoundProcedureCheckAuthority(
+            SourcePath,
+            RollMode,
+            RollActorKind,
+            RollActorId,
+            RollContributions,
+            SourceIndices,
+            SourceRolls,
+            SelectedSourceIndex,
+            NaturalRoll,
+            Modifier,
+            ComplicationDifficultyModifier,
+            EffectiveDifficulty,
+            RequirementAuthorityFingerprint,
+            CoordinatesFingerprint,
+            AcceptedStateFingerprint,
+            PreparedCriticalReaction,
+            AuthorityFingerprint,
+            diceReservation,
+            criticalReactionReservation,
+            criticalReactionAgreement,
+            reservationOwnership: null);
     }
 
     private static bool TryValidateRequirementAuthority(
@@ -670,6 +750,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
 
 internal sealed partial class MortalWoundProcedureRollContribution
 {
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundProcedureRollContribution(
         string effectId,
         string componentId,
@@ -692,6 +773,7 @@ internal sealed partial class MortalWoundProcedureRollContribution
 
 internal sealed partial class MortalWoundPreparedCriticalReaction
 {
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundPreparedCriticalReaction(
         string effectId,
         string triggerId,

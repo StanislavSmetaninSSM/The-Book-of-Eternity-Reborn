@@ -1917,6 +1917,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static ResolverScenario CreateScenario(string name, string mode)
     {
         var before = WoundContractTestData.CreateActiveWound();
+        // The retained treatment routes may lower a severity-II wound to severity I.
+        // Keep the fixture's complete consequence graph within that selected
+        // after-state's one-slot physical envelope so the production all-band
+        // applicability check proves a genuinely canonical transition.
+        before["consequences"]!["ownedEffectSources"]!["definitions"]!
+            .AsArray().RemoveAt(1);
+        before["consequences"]!["ownedEffectSources"]!["rootBindings"]!
+            .AsArray().RemoveAt(1);
+        before["consequences"]!["entries"]!.AsArray().RemoveAt(1);
+        before["consequences"]!["slotsUsed"] = 1;
         var route = before["treatment"]!["routes"]![0]!.DeepClone().AsObject();
         ConfigureModeRoute(route, mode, name);
         before["treatment"]!["routes"] = new JsonArray(route);
@@ -2001,9 +2011,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
             before["severity"]!["maximumAtCreation"] = "I";
             before["consequences"]!["slotBudget"] = 1;
             before["consequences"]!["slotsUsed"] = 1;
-            before["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(1);
-            before["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(1);
-            before["consequences"]!["entries"]!.AsArray().RemoveAt(1);
             route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
             {
                 ["kind"] = "heal",
@@ -3157,8 +3164,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "guaranteed" => "SealGuaranteedRequest",
             _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
         };
-        var seal = ExactStaticMethod(planner, sealName, 4);
+        var seal = ExactStaticMethod(planner, sealName, mode == "course" ? 6 : 5);
         Assert.Equal("MortalWoundTreatmentAttemptRequestResult", seal.ReturnType.Name);
+        Assert.Equal(
+            typeof(WoundMaterializationEnvelope),
+            seal.GetParameters()[^1].ParameterType);
 
         var bundleType = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.MortalWoundTreatmentRequirementAuthorityBundle",
@@ -3211,10 +3221,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(
             "MortalWoundTreatmentResourcePreparationResult",
             ExactStaticMethod(resourceComposer, resourceName, 5).ReturnType.Name);
-        Assert.Equal(
-            "MortalWoundTreatmentResourceFinalizationResult",
-            ExactStaticMethod(resourceComposer, "Finalize", 1).ReturnType.Name);
-
     }
 
     private static object Invoke(MethodInfo method, object?[] arguments)
@@ -3364,7 +3370,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         AssertClosedProperties(request, new[]
         {
-            "Mode", "Coordinates", "MilestoneOrdinal", "ModeAuthority", "RequirementAuthority",
+            "Mode", "Coordinates", "MilestoneOrdinal", "RouteSourceWound",
+            "RouteSourceWoundFingerprint", "ModeAuthority", "RequirementAuthority",
             "ResourceAuthority", "RequestFingerprint"
         });
         Assert.Equal(scenario.Mode, Assert.IsType<string>(ReadRequiredProperty(request, "Mode")));
@@ -3373,6 +3380,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var modeAuthority = ReadRequiredProperty(request, "ModeAuthority");
         var requestFingerprint = ReadRequiredProperty(request, "RequestFingerprint");
         AssertAuthorityFingerprint(requestFingerprint);
+        var routeSourceWound = Assert.IsType<WoundMaterializationEnvelope>(
+            ReadRequiredProperty(request, "RouteSourceWound"));
+        var routeSourceWoundFingerprint = Assert.IsType<string>(
+            ReadRequiredProperty(request, "RouteSourceWoundFingerprint"));
+        Assert.Equal(
+            ReadRequiredProperty(coordinates, "ExpectedBeforeFingerprint"),
+            routeSourceWoundFingerprint);
+        Assert.Equal(
+            routeSourceWoundFingerprint,
+            WoundIdentityState.ComputeSemanticFingerprint(routeSourceWound));
         var bundle = ReadRequiredProperty(request, "RequirementAuthority");
         AssertClosedProperties(bundle, new[]
         {
@@ -4057,7 +4074,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     private static string DescribeIssues(IEnumerable<ValidationIssue> issues) =>
-        string.Join(" | ", issues.Select(issue => $"{issue.Code}@{issue.FilePath}"));
+        string.Join(" | ", issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}: {issue.Actual}"));
 
     private sealed record ResolverScenario(
         string Name,
@@ -5171,7 +5189,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
                 PlayerWounds: ReadOptionalJsonObject(WoundCarrierCatalog.PlayerPath),
-                NpcWounds: null,
+                NpcWounds: ReadOptionalJsonObject(WoundCarrierCatalog.NpcPath),
                 EnemyCombatants: ReadOptionalJsonObject(WoundCarrierCatalog.EnemiesPath),
                 AllyCombatants: ReadOptionalJsonObject(WoundCarrierCatalog.AlliesPath),
                 AfterlifeProfiles: null));

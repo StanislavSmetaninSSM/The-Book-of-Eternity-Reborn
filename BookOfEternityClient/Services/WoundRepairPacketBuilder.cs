@@ -413,7 +413,7 @@ internal sealed class WoundRepairPacket
 /// NPC data, and unrelated response content are removed before any packet is made.
 /// One invalid candidate invalidates the complete pending wave.
 /// </summary>
-internal static class WoundRepairPacketBuilder
+internal static partial class WoundRepairPacketBuilder
 {
     private const int CandidateLimit = 64;
     private const int EvidenceLimit = 512;

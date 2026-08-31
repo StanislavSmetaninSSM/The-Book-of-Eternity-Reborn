@@ -8,13 +8,14 @@ internal sealed record MortalWoundTreatmentAttemptCoordinatesResult(
     IReadOnlyList<ValidationIssue> Issues,
     MortalWoundTreatmentAttemptCoordinates? Coordinates);
 
-internal sealed class MortalWoundTreatmentAttemptCoordinates
+internal sealed partial class MortalWoundTreatmentAttemptCoordinates
 {
     private const string AttemptIdentityDomain =
         "book_of_eternity.mortal_wound_treatment.attempt_identity";
     private const string CoordinatesDomain =
         "book_of_eternity.mortal_wound_treatment.attempt_coordinates";
 
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundTreatmentAttemptCoordinates(
         int schemaVersion,
         string sessionId,

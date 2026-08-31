@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.UI;
 
 namespace BookOfEternityClient.Services;
 
@@ -8,10 +9,25 @@ internal sealed record WoundResponseCommandDraft(
     JsonElement Decision,
     string? FinalSceneText);
 
+internal sealed record MortalWoundTreatmentCommandDraft(
+    JsonObject Command,
+    JsonObject Request,
+    string SessionId,
+    string RequestId,
+    string SnapshotToken,
+    string OperationKey,
+    string AttemptId,
+    string EventRef,
+    string RequestFingerprint,
+    string? CourseId,
+    int? CourseMilestoneOrdinal,
+    string FinalSceneText);
+
 internal sealed class WoundResponseCommandParsingResult
 {
     private readonly JsonObject? _commandRoot;
     private readonly WoundResponseCommandDraft[] _commands;
+    private readonly MortalWoundTreatmentCommandDraft[] _treatmentCommands;
     private readonly ValidationIssue[] _issues;
 
     internal WoundResponseCommandParsingResult(
@@ -24,7 +40,20 @@ internal sealed class WoundResponseCommandParsingResult
             WoundAcceptedTurnData.CloneOpportunity(value.Opportunity),
             value.Decision.Clone(),
             value.FinalSceneText)).ToArray();
+        _treatmentCommands = Array.Empty<MortalWoundTreatmentCommandDraft>();
         _issues = issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray();
+    }
+
+    internal WoundResponseCommandParsingResult(
+        JsonObject? commandRoot,
+        IReadOnlyList<WoundResponseCommandDraft> commands,
+        IReadOnlyList<MortalWoundTreatmentCommandDraft> treatmentCommands,
+        IReadOnlyList<ValidationIssue> issues)
+        : this(commandRoot, commands, issues)
+    {
+        _treatmentCommands = treatmentCommands
+            .Select(CloneTreatmentCommand)
+            .ToArray();
     }
 
     internal JsonObject? CommandRoot => _commandRoot?.DeepClone().AsObject();
@@ -35,15 +64,27 @@ internal sealed class WoundResponseCommandParsingResult
             value.Decision.Clone(),
             value.FinalSceneText)).ToArray());
 
+    internal IReadOnlyList<MortalWoundTreatmentCommandDraft> TreatmentCommands =>
+        Array.AsReadOnly(_treatmentCommands
+            .Select(CloneTreatmentCommand)
+            .ToArray());
+
     internal IReadOnlyList<ValidationIssue> Issues =>
         Array.AsReadOnly(_issues.Select(WoundAcceptedTurnData.CloneIssue).ToArray());
 
     internal bool Success => _commandRoot is not null && _issues.Length == 0;
+
+    private static MortalWoundTreatmentCommandDraft CloneTreatmentCommand(
+        MortalWoundTreatmentCommandDraft value) => value with
+        {
+            Command = value.Command.DeepClone().AsObject(),
+            Request = value.Request.DeepClone().AsObject()
+        };
 }
 
 internal static partial class WoundResponseInputComposer
 {
-    private const int MaximumAcceptedCommandCount = 32;
+    internal const int MaximumAcceptedCommandCount = 32;
 
     private static readonly IReadOnlySet<string> CommandRootFields = Set(
         "schemaVersion", "sessionId", "requestId", "snapshotToken", "commands");
@@ -92,23 +133,24 @@ internal static partial class WoundResponseInputComposer
                 "exact integer schemaVersion 1",
                 Raw(fields, "schemaVersion"));
         }
-        ReadExactIdentifier(
+        var sessionId = ReadExactIdentifier(
             fields,
             "sessionId",
             AcceptedMechanicsPlan.WoundCommandPath,
             issues);
-        ReadExactIdentifier(
+        var requestId = ReadExactIdentifier(
             fields,
             "requestId",
             AcceptedMechanicsPlan.WoundCommandPath,
             issues);
-        ReadExactIdentifier(
+        var snapshotToken = ReadExactIdentifier(
             fields,
             "snapshotToken",
             AcceptedMechanicsPlan.WoundCommandPath,
             issues);
 
         var commands = new List<WoundResponseCommandDraft>();
+        var treatmentCommands = new List<MortalWoundTreatmentCommandDraft>();
         if (!fields.TryGetValue("commands", out var commandArray) ||
             commandArray.ValueKind != JsonValueKind.Array)
         {
@@ -134,25 +176,42 @@ internal static partial class WoundResponseInputComposer
             var index = 0;
             foreach (var element in commandArray.EnumerateArray())
             {
-                var command = ParseCommand(element, index, issues);
-                if (command is not null)
+                if (MortalWoundTreatmentCommandCodec.IsTreatmentCommand(element))
                 {
-                    commands.Add(command);
+                    var treatment = MortalWoundTreatmentCommandCodec.Parse(
+                        element,
+                        index,
+                        sessionId,
+                        requestId,
+                        snapshotToken,
+                        issues);
+                    if (treatment is not null)
+                        treatmentCommands.Add(treatment);
                 }
                 else
                 {
-                    AddCommandIssue(
-                        issues,
-                        $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}]",
-                        "wound_command_transition_adapter_unavailable",
-                        "one complete client-adapted opportunity_decision command",
-                        "command could not be adapted to one typed wound transition");
+                    var command = ParseCommand(element, index, issues);
+                    if (command is not null)
+                    {
+                        commands.Add(command);
+                    }
+                    else
+                    {
+                        AddCommandIssue(
+                            issues,
+                            $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}]",
+                            "wound_command_transition_adapter_unavailable",
+                            "one complete client-adapted wound command",
+                            "command could not be adapted to one typed wound transition");
+                    }
                 }
                 index++;
             }
         }
 
         if (commands.Select(static value => value.FinalSceneText)
+                .Concat(treatmentCommands.Select(static value =>
+                    (string?)value.FinalSceneText))
                 .Distinct(StringComparer.Ordinal).Count() > 1)
         {
             AddCommandIssue(
@@ -163,11 +222,25 @@ internal static partial class WoundResponseInputComposer
                 "different finalSceneText values");
         }
 
+        if (treatmentCommands.Count != 0 &&
+            !MortalWoundTreatmentCommandCodec.HasUniquePersistedCoordinates(
+                treatmentCommands))
+        {
+            AddCommandIssue(
+                issues,
+                AcceptedMechanicsPlan.WoundCommandPath + ".commands",
+                "mortal_wound_treatment_persisted_coordinate_collision",
+                "independently exact/confusable-unique treatment operation, " +
+                "attempt, event, request-fingerprint, and course coordinates",
+                "duplicate or confusable treatment coordinates");
+        }
+
         if (issues.Count != 0)
             return ParseFailure(issues);
         return new WoundResponseCommandParsingResult(
             JsonNode.Parse(root.GetRawText())!.AsObject(),
             commands,
+            treatmentCommands,
             Array.Empty<ValidationIssue>());
     }
 
@@ -181,6 +254,44 @@ internal static partial class WoundResponseInputComposer
         ArgumentNullException.ThrowIfNull(priorReceipts);
         if (!parsed.Success || parsed.CommandRoot is null)
             return Failure(parsed.Issues);
+
+        var treatmentCommands = parsed.TreatmentCommands;
+        if (treatmentCommands.Count != 0)
+        {
+            if (parsed.Commands.Count != 0)
+            {
+                return Failure(new[]
+                {
+                    CommandIssue(
+                        AcceptedMechanicsPlan.WoundCommandPath + ".commands",
+                        "wound_command_mixed_transition_kinds",
+                        "one homogeneous wound command family",
+                        "opportunity and treatment commands are mixed")
+                });
+            }
+            var treatmentRoot = MortalWoundTreatmentCommandCodec.RecomposeRoot(
+                binding,
+                treatmentCommands);
+            if (treatmentRoot is not null &&
+                JsonNode.DeepEquals(treatmentRoot, parsed.CommandRoot))
+            {
+                return new WoundResponseInputCompositionResult(
+                    treatmentRoot,
+                    Array.Empty<WoundOpportunityAuthority>(),
+                    Array.Empty<WoundAcceptedTransitionDraft>(),
+                    Array.Empty<WoundPlayerNotification>(),
+                    Array.Empty<WoundOpportunityDecisionReceipt>(),
+                    Array.Empty<ValidationIssue>());
+            }
+            return Failure(new[]
+            {
+                CommandIssue(
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    "wound_command_recomposition_mismatch",
+                    "the exact strictly parsed treatment command root",
+                    "parsed treatment command changes under typed recomposition")
+            });
+        }
 
         var commands = parsed.Commands;
         var finalSceneText = commands.Count == 0

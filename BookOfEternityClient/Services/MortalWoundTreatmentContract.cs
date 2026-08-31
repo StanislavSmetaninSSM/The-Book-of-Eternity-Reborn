@@ -15,7 +15,7 @@ internal static partial class MortalWoundTreatmentContract
     private const int MaxProcedureBands = 16;
     private const int MaxCourseMilestones = WoundMaterializationContract.MaxTreatmentOutcomeMembers;
     private const int MaxResourceSelectors = 64;
-    private const int MaxOutcomeOperations = 8;
+    internal const int MaxOutcomeOperations = 8;
     private const int MaxHealLegacies = 8;
 
     private static readonly IReadOnlySet<string> MortalRouteVisibilities = Set(

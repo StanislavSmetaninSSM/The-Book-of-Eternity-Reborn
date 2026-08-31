@@ -60,6 +60,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 .OrderBy(static name => name));
     }
 
+    [Theory]
+    [InlineData("diagnose")]
+    [InlineData("author_alternative_treatment")]
+    public void TreatmentCommandClassifier_DoesNotCaptureOtherAcceptedTransitionFamilies(
+        string transitionKind)
+    {
+        var row = JsonSerializer.SerializeToElement(new
+        {
+            kind = "accepted_transition",
+            transitionKind
+        });
+
+        Assert.False(MortalWoundTreatmentCommandCodec.IsTreatmentCommand(row));
+    }
+
     [Fact]
     public void PersistedCommand_ColdRestartReconstructsExactRetryAndKeepsDiceFateAndResourceHeld()
     {
@@ -97,8 +112,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(persistedBytes, File.ReadAllBytes(coldCommandPath));
         persistedRoot = JsonNode.Parse(File.ReadAllText(coldCommandPath))!.AsObject();
         var restored = Assert.Single(AssertValidPersistedCatalog(
-            ParsePersistedRequestCatalog(persistedRoot, null, coldFixture.ReadCurrentHistory()),
-            "cold command reconstruction"));
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+            "cold command reconstruction and live-claim recovery"));
         Assert.NotSame(first.Request, restored);
         Assert.Equal(CanonicalValue(first.Request), CanonicalValue(restored));
         Assert.Equal(
@@ -133,10 +148,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             var publicationRoot = JsonNode.Parse(File.ReadAllText(
                 publicationCommandPath))!.AsObject();
             var publicationRequest = Assert.Single(AssertValidPersistedCatalog(
-                ParsePersistedRequestCatalog(
-                    publicationRoot,
-                    null,
-                    publicationFixture.ReadCurrentHistory()),
+                RestoreCurrentPersistedTreatmentCatalog(publicationFixture),
                 "cold T070 publication reconstruction"));
             var publicationFlow = RehydratePersistedTreatment(
                 publicationFixture,
@@ -382,6 +394,998 @@ public sealed partial class MortalWoundTreatmentResolverTests
             recomposed.Success,
             "A post-seal replacement of the treatment result semantic crossed both parsers.");
         Assert.NotEmpty(recomposed.Issues);
+    }
+
+    [Fact]
+    public void TreatmentCommand_CommandRefIsRecomputedFromTheCompletePersistedCommand()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var command = ComposeTreatmentCommand(
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_command_ref_tamper",
+                scenario.RouteId),
+            "The deterministic command identity cannot be replaced.");
+        var tampered = command.Root.DeepClone().AsObject();
+        var row = Assert.IsType<JsonObject>(Assert.Single(
+            tampered["commands"]!.AsArray()));
+        row[FindJsonPropertyName(row, "CommandRef")] = "foreign_command_ref_1536";
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(tampered));
+        Assert.False(parsed.Success);
+        Assert.Contains(parsed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_command_ref_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void TreatmentCommand_ComposerRejectsForeignAcceptedTurnBinding()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_foreign_composer_binding",
+            scenario.RouteId);
+        var binding = Assert.IsType<WoundAcceptedTurnBinding>(
+            ReadAcceptedStateMember(flow.AcceptedState, "Binding"));
+        var foreign = binding with { SessionId = "foreign_session_1536" };
+
+        Assert.Throws<InvalidOperationException>(() =>
+            WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(
+                foreign,
+                Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution),
+                "A foreign accepted root must not produce durable treatment bytes."));
+    }
+
+    [Theory]
+    [InlineData("procedure_roll")]
+    [InlineData("requirement_evidence")]
+    [InlineData("resource_claim")]
+    public void TreatmentCommand_NestedAuthorityTamperCannotCrossDetachedSealValidation(
+        string axis)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var command = ComposeTreatmentCommand(
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_nested_tamper_" + axis,
+                scenario.RouteId),
+            "Every nested authority remains sealed after persistence.");
+        var tampered = command.Root.DeepClone().AsObject();
+        var copies = FindSerializedTreatmentRequests(tampered);
+        Assert.Equal(2, copies.Length);
+        foreach (var request in copies)
+        {
+            switch (axis)
+            {
+                case "procedure_roll":
+                {
+                    var modeAuthority = ReadJsonObject(request, "ModeAuthority");
+                    var name = FindJsonPropertyName(modeAuthority, "NaturalRoll");
+                    modeAuthority[name] = modeAuthority[name]!.GetValue<int>() == 20 ? 19 : 20;
+                    break;
+                }
+                case "requirement_evidence":
+                {
+                    var requirement = ReadJsonObject(request, "RequirementAuthority");
+                    var scopes = Assert.IsType<JsonArray>(requirement[
+                        FindJsonPropertyName(requirement, "Scopes")]);
+                    var scope = Assert.IsType<JsonObject>(Assert.Single(scopes));
+                    var bindings = Assert.IsType<JsonArray>(scope[
+                        FindJsonPropertyName(scope, "Bindings")]);
+                    var binding = bindings.OfType<JsonObject>().First(candidate =>
+                        HasJsonProperty(
+                            ReadJsonObject(
+                                ReadJsonObject(candidate, "SuccessWitness"),
+                                "Evidence"),
+                            "Count"));
+                    var witness = ReadJsonObject(binding, "SuccessWitness");
+                    var evidence = ReadJsonObject(witness, "Evidence");
+                    var countName = FindJsonPropertyName(evidence, "Count");
+                    evidence[countName] = evidence[countName]!.GetValue<int>() + 1;
+                    break;
+                }
+                case "resource_claim":
+                {
+                    var resource = ReadJsonObject(request, "ResourceAuthority");
+                    var claims = Assert.IsType<JsonArray>(resource[
+                        FindJsonPropertyName(resource, "Claims")]);
+                    var claim = Assert.IsType<JsonObject>(Assert.Single(claims));
+                    var quantityName = FindJsonPropertyName(claim, "Quantity");
+                    claim[quantityName] = claim[quantityName]!.GetValue<int>() + 1;
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+            }
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(tampered));
+        Assert.False(parsed.Success);
+        Assert.Contains(parsed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_request_seal_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("command", "sessionId")]
+    [InlineData("command", "requestId")]
+    [InlineData("command", "snapshotToken")]
+    [InlineData("pending", "sessionId")]
+    [InlineData("pending", "requestId")]
+    [InlineData("pending", "snapshotToken")]
+    public void PersistedTreatment_RootBindingMustMatchEverySealedRequest(
+        string origin,
+        string field)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_foreign_root_" + origin + "_" + field,
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "The submitted treatment remains bound to one accepted turn root.");
+        var pending = ComposeTreatmentRepairPendingRoot(
+            command,
+            CreateTreatmentRepairPackets(command.Binding, scenario.Before));
+        var root = string.Equals(origin, "command", StringComparison.Ordinal)
+            ? command.Root.DeepClone().AsObject()
+            : pending.DeepClone().AsObject();
+        root[field] = "foreign_" + field.ToLowerInvariant() + "_1536";
+
+        if (string.Equals(origin, "command", StringComparison.Ordinal))
+        {
+            var parsed = WoundResponseInputComposer.ParseCommandRoot(
+                JsonSerializer.SerializeToElement(root));
+            Assert.False(parsed.Success);
+            Assert.Contains(parsed.Issues, static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_persisted_root_binding_mismatch",
+                StringComparison.Ordinal));
+        }
+
+        AssertInvalidPersistedCatalog(
+            ParsePersistedRequestCatalog(
+                string.Equals(origin, "command", StringComparison.Ordinal) ? root : null,
+                string.Equals(origin, "pending", StringComparison.Ordinal) ? root : null,
+                flow.History),
+            origin + " " + field + " binding mismatch");
+    }
+
+    [Theory]
+    [InlineData("procedure", "procedure_normal_uses_lowest_free_die")]
+    [InlineData("course", "course_first_milestone_is_ready_at_inclusive_due_time")]
+    [InlineData("guaranteed", "guaranteed_current_capability_proof_stabilizes")]
+    public void TreatmentCommand_ModeEvidencePayloadIsRecomputedRatherThanTrustingItsSeal(
+        string mode,
+        string scenarioName)
+    {
+        var scenario = CreateScenario(scenarioName, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var command = ComposeTreatmentCommand(
+            ResolveCurrentTreatment(
+                fixture,
+                mode,
+                scenario.OperationKey + "_mode_evidence_tamper_" + mode,
+                scenario.RouteId),
+            "The persisted mode evidence remains derived from the sealed request.");
+        var tampered = command.Root.DeepClone().AsObject();
+        var evidence = ReadJsonObject(
+            ReadCommandTreatmentResult(tampered),
+            "ModeEvidence");
+        switch (mode)
+        {
+            case "procedure":
+                evidence[FindJsonPropertyName(evidence, "RollActorId")] =
+                    "foreign_procedure_actor";
+                break;
+            case "course":
+            {
+                var property = FindJsonPropertyName(
+                    evidence,
+                    "ResolvedAtGameTimeMinutes");
+                evidence[property] = evidence[property]!.GetValue<long>() + 1;
+                break;
+            }
+            case "guaranteed":
+                evidence[FindJsonPropertyName(evidence, "ActorRole")] = "target";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mode), mode, null);
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(tampered));
+        Assert.False(parsed.Success);
+        Assert.Contains(parsed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_mode_evidence_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("course_game_time")]
+    [InlineData("requirement_evidence")]
+    public void TreatmentCommand_NullNestedAuthorityFailsClosedWithoutThrowing(
+        string axis)
+    {
+        var mode = string.Equals(axis, "course_game_time", StringComparison.Ordinal)
+            ? "course"
+            : "procedure";
+        var scenarioName = mode == "course"
+            ? "course_first_milestone_is_ready_at_inclusive_due_time"
+            : "procedure_normal_uses_lowest_free_die";
+        var scenario = CreateScenario(scenarioName, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var command = ComposeTreatmentCommand(
+            ResolveCurrentTreatment(
+                fixture,
+                mode,
+                scenario.OperationKey + "_null_nested_" + axis,
+                scenario.RouteId),
+            "Malformed nullable authority input must fail closed.");
+        var tampered = command.Root.DeepClone().AsObject();
+        foreach (var request in FindSerializedTreatmentRequests(tampered))
+        {
+            if (string.Equals(axis, "course_game_time", StringComparison.Ordinal))
+            {
+                var authority = ReadJsonObject(request, "ModeAuthority");
+                authority[FindJsonPropertyName(authority, "GameTimeAuthority")] = null;
+                continue;
+            }
+
+            var requirement = ReadJsonObject(request, "RequirementAuthority");
+            var scopes = Assert.IsType<JsonArray>(requirement[
+                FindJsonPropertyName(requirement, "Scopes")]);
+            var scope = Assert.IsType<JsonObject>(Assert.Single(scopes));
+            var bindings = Assert.IsType<JsonArray>(scope[
+                FindJsonPropertyName(scope, "Bindings")]);
+            var binding = bindings.OfType<JsonObject>().First(candidate =>
+                HasJsonProperty(candidate, "SuccessWitness"));
+            var witness = ReadJsonObject(binding, "SuccessWitness");
+            witness[FindJsonPropertyName(witness, "Evidence")] = null;
+        }
+
+        WoundResponseCommandParsingResult? parsed = null;
+        var exception = Record.Exception(() => parsed =
+            WoundResponseInputComposer.ParseCommandRoot(
+                JsonSerializer.SerializeToElement(tampered)));
+        Assert.Null(exception);
+        Assert.NotNull(parsed);
+        Assert.False(parsed.Success);
+        Assert.NotEmpty(parsed.Issues);
+    }
+
+    [Fact]
+    public void TreatmentCommand_IgnoredComputedAuthorityFieldCannotSurviveTypedRoundTrip()
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var command = ComposeTreatmentCommand(
+            ResolveCurrentTreatment(
+                fixture,
+                "course",
+                scenario.OperationKey + "_computed_clock_tamper",
+                scenario.RouteId),
+            "Every serialized authority field is checked by typed reconstruction.");
+        var tampered = command.Root.DeepClone().AsObject();
+        foreach (var request in FindSerializedTreatmentRequests(tampered))
+        {
+            var authority = ReadJsonObject(request, "ModeAuthority");
+            var gameTime = ReadJsonObject(authority, "GameTimeAuthority");
+            gameTime[FindJsonPropertyName(gameTime, "ClockKind")] =
+                "foreign_clock_kind";
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(tampered));
+        Assert.False(parsed.Success);
+        Assert.Contains(parsed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_request_roundtrip_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("not_required_hides_quantity", "procedure",
+        "procedure_normal_uses_lowest_free_die")]
+    [InlineData("missing_current_claim", "course",
+        "course_first_milestone_is_ready_at_inclusive_due_time")]
+    public void TreatmentCommand_ResealedResourceGraphMustMatchRequirementBindings(
+        string axis,
+        string mode,
+        string scenarioName)
+    {
+        var scenario = CreateScenario(scenarioName, mode);
+        if (string.Equals(axis, "missing_current_claim", StringComparison.Ordinal))
+        {
+            var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+            route["requirements"]!.AsArray().Add(new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "sterile_thread",
+                ["quantity"] = 1,
+                ["ownerRole"] = "provider"
+            });
+            route["resourcePolicy"]!["mutations"]!.AsArray().Insert(
+                0,
+                new JsonObject
+                {
+                    ["kind"] = "consume_requirement",
+                    ["scope"] = "common",
+                    ["milestoneOrdinal"] = null,
+                    ["requirementIndex"] = 1
+                });
+        }
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            mode,
+            scenario.OperationKey + "_resource_agreement_" + axis,
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "Every held quantity remains linked to its exact success witness.");
+        var policy = ReadRequiredProperty(
+            ReadRequiredProperty(flow.Request, "ResourceAuthority"),
+            "Policy");
+        var policyFingerprint = Assert.IsType<string>(Invoke(
+            ExactStaticMethod(
+                typeof(MortalWoundTreatmentResourceComposer),
+                "ComputePolicyFingerprint",
+                1),
+            new[] { policy }));
+        var tampered = command.Root.DeepClone().AsObject();
+        foreach (var request in FindSerializedTreatmentRequests(tampered))
+        {
+            var resource = ReadJsonObject(request, "ResourceAuthority");
+            var claims = Assert.IsType<JsonArray>(resource[
+                FindJsonPropertyName(resource, "Claims")]);
+            if (string.Equals(
+                    axis,
+                    "not_required_hides_quantity",
+                    StringComparison.Ordinal))
+            {
+                Assert.NotEmpty(claims);
+                claims.Clear();
+                resource[FindJsonPropertyName(resource, "ReservationDisposition")] =
+                    "not_required";
+                resource[FindJsonPropertyName(resource, "ReservationId")] = null;
+            }
+            else
+            {
+                Assert.True(claims.Count >= 2);
+                claims.RemoveAt(claims.Count - 1);
+            }
+            ResealSerializedResourceAndRequest(request, policyFingerprint);
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(tampered));
+        Assert.False(parsed.Success);
+        Assert.Contains(parsed.Issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_persisted_request_seal_mismatch",
+                StringComparison.Ordinal) &&
+            Convert.ToString(issue.Actual)?.Contains(
+                "resource_requirement_agreement",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
+    [InlineData("missing_future_milestone")]
+    [InlineData("future_requirement_is_not_quantity")]
+    public void PersistedCourseRequest_ResourcePolicySelectorsMustMatchTheSealedStartingRoute(
+        string axis)
+    {
+        var scenario = CreateFirstCourseResourceScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_future_selector_" + axis,
+            scenario.RouteId);
+        var request = Assert.IsType<JsonObject>(WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(flow.Request));
+        var resource = ReadJsonObject(request, "ResourceAuthority");
+        var policy = ReadJsonObject(resource, "Policy");
+        var mutations = Assert.IsType<JsonArray>(policy[
+            FindJsonPropertyName(policy, "Mutations")]);
+        var future = Assert.Single(
+            mutations.OfType<JsonObject>(),
+            mutation => ReadOptionalJsonInt32(mutation, "MilestoneOrdinal") == 2);
+        if (string.Equals(axis, "missing_future_milestone", StringComparison.Ordinal))
+        {
+            future[FindJsonPropertyName(future, "MilestoneOrdinal")] = 4;
+        }
+        else
+        {
+            future[FindJsonPropertyName(future, "RequirementIndex")] = 1;
+        }
+        ResealSerializedResourceAndRequest(
+            request,
+            ComputeSerializedPolicyFingerprint(policy));
+
+        var issues = new List<ValidationIssue>();
+        var parsed = MortalWoundTreatmentCommandCodec.TryParseRequest(
+            request,
+            "request",
+            issues,
+            out _);
+
+        Assert.False(parsed);
+        Assert.Contains(issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_persisted_request_seal_mismatch",
+                StringComparison.Ordinal) &&
+            Convert.ToString(issue.Actual)?.Contains(
+                "resource_requirement_agreement",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
+    [InlineData("missing_future_mutation")]
+    [InlineData("missing_consume_trigger")]
+    public void PersistedCourseRequest_ResourcePolicyMustExactlyMatchTheSealedStartingRoute(
+        string axis)
+    {
+        var scenario = CreateFirstCourseResourceScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_policy_exact_" + axis,
+            scenario.RouteId);
+        var request = Assert.IsType<JsonObject>(WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(flow.Request));
+        var resource = ReadJsonObject(request, "ResourceAuthority");
+        var policy = ReadJsonObject(resource, "Policy");
+        if (string.Equals(axis, "missing_future_mutation", StringComparison.Ordinal))
+        {
+            var mutations = Assert.IsType<JsonArray>(policy[
+                FindJsonPropertyName(policy, "Mutations")]);
+            var futureIndex = mutations.Select((value, index) => (value, index))
+                .Single(pair => ReadOptionalJsonInt32(
+                    Assert.IsType<JsonObject>(pair.value),
+                    "MilestoneOrdinal") == 2)
+                .index;
+            mutations.RemoveAt(futureIndex);
+        }
+        else
+        {
+            Assert.IsType<JsonArray>(policy[
+                FindJsonPropertyName(policy, "ConsumeOn")]).Clear();
+        }
+        ResealSerializedResourceAndRequest(
+            request,
+            ComputeSerializedPolicyFingerprint(policy));
+
+        var issues = new List<ValidationIssue>();
+        var parsed = MortalWoundTreatmentCommandCodec.TryParseRequest(
+            request,
+            "request",
+            issues,
+            out _);
+
+        Assert.False(parsed);
+        Assert.Contains(issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_persisted_request_seal_mismatch",
+                StringComparison.Ordinal) &&
+            Convert.ToString(issue.Actual)?.Contains(
+                "resource_requirement_agreement",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Theory]
+    [InlineData("due_minute")]
+    [InlineData("deadline_minute")]
+    [InlineData("window_disposition")]
+    public void PersistedCourseRequest_WindowMustBeRecomputedFromTheSealedStartingRoute(
+        string axis)
+    {
+        var scenario = CreateFirstCourseResourceScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_course_window_" + axis,
+            scenario.RouteId);
+        var request = Assert.IsType<JsonObject>(WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(flow.Request));
+        var modeAuthority = ReadJsonObject(request, "ModeAuthority");
+        switch (axis)
+        {
+            case "due_minute":
+                modeAuthority[FindJsonPropertyName(
+                    modeAuthority,
+                    "DueAtGameTimeMinutes")] =
+                    modeAuthority[FindJsonPropertyName(
+                        modeAuthority,
+                        "DueAtGameTimeMinutes")]!.GetValue<long>() + 1;
+                break;
+            case "deadline_minute":
+                modeAuthority[FindJsonPropertyName(
+                    modeAuthority,
+                    "DeadlineAtGameTimeMinutes")] =
+                    modeAuthority[FindJsonPropertyName(
+                        modeAuthority,
+                        "DeadlineAtGameTimeMinutes")]!.GetValue<long>() + 1;
+                break;
+            default:
+                modeAuthority[FindJsonPropertyName(
+                    modeAuthority,
+                    "WindowDisposition")] = "foreign_window";
+                break;
+        }
+        modeAuthority[FindJsonPropertyName(modeAuthority, "AuthorityFingerprint")] =
+            ComputeSerializedCourseAuthorityFingerprint(modeAuthority);
+        var policy = ReadJsonObject(
+            ReadJsonObject(request, "ResourceAuthority"),
+            "Policy");
+        ResealSerializedResourceAndRequest(
+            request,
+            ComputeSerializedPolicyFingerprint(policy));
+
+        var issues = new List<ValidationIssue>();
+        var parsed = MortalWoundTreatmentCommandCodec.TryParseRequest(
+            request,
+            "request",
+            issues,
+            out _);
+
+        Assert.False(parsed);
+        Assert.Contains(issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_persisted_request_seal_mismatch",
+                StringComparison.Ordinal) &&
+            Convert.ToString(issue.Actual)?.Contains(
+                "mode_authority.course_window",
+                StringComparison.Ordinal) == true);
+    }
+
+    [Fact]
+    public void DetachedRequirementScope_RejectsNestedWitnessesFromAnotherScope()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_foreign_nested_scope",
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var common = Assert.Single(request.RequirementAuthority.Scopes);
+        var foreignSuccess = MortalWoundTreatmentRequirementScopeAuthority.Create(
+            "course_milestone",
+            1,
+            "Satisfied",
+            common.Bindings,
+            Array.Empty<MortalWoundTreatmentRequirementFailureWitness>());
+        var foreignFailure = MortalWoundTreatmentRequirementScopeAuthority.Create(
+            "course_milestone",
+            1,
+            "Unsatisfied",
+            Array.Empty<MortalWoundTreatmentRequirementBinding>(),
+            new[]
+            {
+                MortalWoundTreatmentRequirementFailureWitness.CreateAbsent(
+                    "common",
+                    0,
+                    "item_quantity",
+                    "foreign_missing_item")
+            });
+        var validate = ExactStaticMethod(
+            typeof(MortalWoundTreatmentDetachedSealValidator),
+            "HasValidRequirementScope",
+            1);
+
+        Assert.False(Assert.IsType<bool>(Invoke(validate, new object[]
+        {
+            foreignSuccess
+        })));
+        Assert.False(Assert.IsType<bool>(Invoke(validate, new object[]
+        {
+            foreignFailure
+        })));
+    }
+
+    [Fact]
+    public void GuaranteedSelfTreatment_PersistedEvidenceKeepsTheAuthoredTargetRole()
+    {
+        var scenario = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        var before = WoundContractTestData.CreateActiveWound(
+            woundId: scenario.Before["woundId"]!.GetValue<string>(),
+            ownerKind: "npc",
+            ownerId: "field_medic_01",
+            carrierPath: WoundCarrierCatalog.NpcPath);
+        before["treatment"] = scenario.Before["treatment"]!.DeepClone();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        route["requirements"]![0]!["actorRole"] = "target";
+        route["resolution"]!["actorRole"] = "target";
+        var accepted = scenario.AcceptedState.DeepClone().AsObject();
+        accepted["targetKind"] = "npc";
+        accepted["targetId"] = "field_medic_01";
+        scenario = scenario with
+        {
+            Before = before,
+            AcceptedState = accepted,
+            OperationKey = scenario.OperationKey + "_self_target"
+        };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "guaranteed",
+            scenario.OperationKey,
+            scenario.RouteId);
+
+        var command = ComposeTreatmentCommand(
+            flow,
+            "The healer applies the target-owned guarantee to their own wound.");
+
+        Assert.True(command.Parsed.Success, DescribeIssues(command.Parsed.Issues));
+    }
+
+    [Fact]
+    public void PersistedProcedureEvidence_RecomputesTheExactCriticalReactionIntent()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_forged_reaction_intent",
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var authority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+        var evidence = Assert.IsType<MortalWoundProcedureModeEvidence>(
+            resolution.ModeEvidence);
+        var source = Assert.IsType<JsonObject>(WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(evidence));
+        const string forgedReaction =
+            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+        source[FindJsonPropertyName(source, "ReactionFingerprint")] = forgedReaction;
+        source[FindJsonPropertyName(source, "AcceptedRollFingerprint")] =
+            WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.procedure_evidence",
+                "1",
+                authority.AuthorityFingerprint,
+                evidence.Total.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                evidence.BaseDifficulty.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture),
+                evidence.Margin.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                evidence.OriginalOutcome,
+                evidence.ResolvedOutcome,
+                evidence.SelectedBandId,
+                evidence.SelectedOutcomeIndex.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture),
+                forgedReaction
+            });
+        var issues = new List<ValidationIssue>();
+        var arguments = new object?[]
+        {
+            source,
+            request,
+            resolution.SelectedOutcomeIndex,
+            "result.modeEvidence",
+            issues,
+            null,
+            null,
+            null
+        };
+        var validate = ExactStaticMethod(
+            typeof(MortalWoundTreatmentCommandCodec),
+            "TryValidateModeEvidence",
+            arguments.Length);
+
+        var valid = Assert.IsType<bool>(validate.Invoke(null, arguments));
+
+        Assert.False(valid);
+        Assert.Contains(issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_mode_evidence_mismatch",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void PersistedCourseEvidence_DerivesDispositionFromTheSealedMilestone()
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_forged_course_disposition",
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var authority = Assert.IsType<MortalWoundCourseModeAuthority>(
+            request.ModeAuthority);
+        var evidence = Assert.IsType<MortalWoundCourseModeEvidence>(
+            resolution.ModeEvidence);
+        Assert.Equal("active", evidence.CourseDisposition);
+        var source = Assert.IsType<JsonObject>(WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(evidence));
+        const string forgedDisposition = "completed";
+        source[FindJsonPropertyName(source, "CourseDisposition")] = forgedDisposition;
+        source[FindJsonPropertyName(source, "ClockEvidenceFingerprint")] =
+            WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.course_evidence",
+                "1",
+                authority.AuthorityFingerprint,
+                authority.CourseId,
+                authority.MilestoneOrdinal.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture),
+                authority.CourseStartAuthority.StartedAtGameTimeMinutes.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture),
+                authority.GameTimeAuthority.CurrentTimeInMinutes.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture),
+                authority.WindowDisposition,
+                forgedDisposition
+            });
+        var issues = new List<ValidationIssue>();
+        var arguments = new object?[]
+        {
+            source,
+            request,
+            resolution.SelectedOutcomeIndex,
+            "result.modeEvidence",
+            issues,
+            null,
+            null,
+            null
+        };
+        var validate = ExactStaticMethod(
+            typeof(MortalWoundTreatmentCommandCodec),
+            "TryValidateModeEvidence",
+            arguments.Length);
+
+        var valid = Assert.IsType<bool>(validate.Invoke(null, arguments));
+
+        Assert.False(valid);
+        Assert.Contains(issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_mode_evidence_mismatch",
+                StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("result_category")]
+    [InlineData("selected_outcome")]
+    [InlineData("interruption")]
+    [InlineData("consumption_trigger")]
+    [InlineData("course_disposition")]
+    [InlineData("route_fingerprint")]
+    [InlineData("route_completion")]
+    public void PersistedCourseResult_DerivesAllActionableFieldsFromTheSealedRequest(
+        string axis)
+    {
+        var scenario = CreateScenario(
+            "course_first_milestone_is_ready_at_inclusive_due_time",
+            "course");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_forged_course_result_" + axis,
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var resultCategory = resolution.ResultCategory;
+        var selectedOutcomeIndex = resolution.SelectedOutcomeIndex;
+        var interruption = resolution.Interruption;
+        var consumptionTrigger = resolution.ConsumptionTrigger;
+        var courseDisposition = resolution.CourseDisposition;
+        var routeFingerprint = resolution.RouteFingerprint;
+        var routeCompletion = resolution.RouteCompletion;
+        switch (axis)
+        {
+            case "result_category":
+                resultCategory = "failed_attempt";
+                break;
+            case "selected_outcome":
+                selectedOutcomeIndex = null;
+                break;
+            case "interruption":
+                interruption = true;
+                break;
+            case "consumption_trigger":
+                consumptionTrigger = "none";
+                break;
+            case "course_disposition":
+                courseDisposition = "completed";
+                break;
+            case "route_fingerprint":
+                routeFingerprint =
+                    "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+                break;
+            case "route_completion":
+                routeCompletion = "AppendOnce";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+        }
+        var validate = ExactStaticMethod(
+            typeof(MortalWoundTreatmentCommandCodec),
+            "HasMatchingResultSemantics",
+            8);
+        var originalValid = Assert.IsType<bool>(Invoke(validate, new object?[]
+        {
+            request,
+            resolution.ResultCategory,
+            resolution.SelectedOutcomeIndex,
+            resolution.Interruption,
+            resolution.ConsumptionTrigger,
+            resolution.CourseDisposition,
+            resolution.RouteFingerprint,
+            resolution.RouteCompletion
+        }));
+        var forgedValid = Assert.IsType<bool>(Invoke(validate, new object?[]
+        {
+            request,
+            resultCategory,
+            selectedOutcomeIndex,
+            interruption,
+            consumptionTrigger,
+            courseDisposition,
+            routeFingerprint,
+            routeCompletion
+        }));
+
+        Assert.True(originalValid);
+        Assert.False(forgedValid);
+    }
+
+    [Theory]
+    [InlineData("procedure", "procedure_normal_uses_lowest_free_die")]
+    [InlineData("course", "course_first_milestone_is_ready_at_inclusive_due_time")]
+    [InlineData("guaranteed", "guaranteed_current_capability_proof_stabilizes")]
+    public void PersistedRequest_CarriesTheCanonicalRouteSourceForDetachedResultVerification(
+        string mode,
+        string scenarioName)
+    {
+        var scenario = CreateScenario(scenarioName, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            mode,
+            scenario.OperationKey + "_route_source_" + mode,
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var routeSourceWound = Assert.IsType<WoundMaterializationEnvelope>(
+            ReadRequiredProperty(request, "RouteSourceWound"));
+        var routeSourceFingerprint = Assert.IsType<string>(
+            ReadRequiredProperty(request, "RouteSourceWoundFingerprint"));
+
+        Assert.Equal(request.Coordinates.WoundId, routeSourceWound.WoundId);
+        Assert.Equal(
+            request.Coordinates.ExpectedBeforeFingerprint,
+            routeSourceFingerprint);
+        Assert.Equal(
+            routeSourceFingerprint,
+            WoundIdentityState.ComputeSemanticFingerprint(routeSourceWound));
+        Assert.Equal(
+            request.RequirementAuthority.RouteFingerprint,
+            MortalWoundTreatmentRouteFingerprint.Compute(
+                routeSourceWound,
+                request.Coordinates.RouteId));
+    }
+
+    [Theory]
+    [InlineData("procedure", "procedure_normal_uses_lowest_free_die")]
+    [InlineData("course", "course_first_milestone_is_ready_at_inclusive_due_time")]
+    [InlineData("guaranteed", "guaranteed_current_capability_proof_stabilizes")]
+    public void PersistedResult_DeclaredOperationsMustExactlyMatchTheSealedRouteSelection(
+        string mode,
+        string scenarioName)
+    {
+        var scenario = CreateScenario(scenarioName, mode);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            mode,
+            scenario.OperationKey + "_declared_result_" + mode,
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var forged = resolution.DeclaredResult
+            .Concat(new MortalWoundTreatmentOperation[]
+            {
+                new MortalWoundNoImprovementOperation()
+            })
+            .ToArray();
+        var validate = ExactStaticMethod(
+            typeof(MortalWoundTreatmentCommandCodec),
+            "HasMatchingDeclaredResult",
+            2);
+
+        Assert.True(Assert.IsType<bool>(Invoke(validate, new object[]
+        {
+            request,
+            resolution.DeclaredResult
+        })));
+        Assert.False(Assert.IsType<bool>(Invoke(validate, new object[]
+        {
+            request,
+            forged
+        })));
+    }
+
+    [Fact]
+    public void PersistedPending_RejectsSubmittedTreatmentWithoutARepairWave()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_forged_empty_repair_wave",
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "No repair wave may retain a private treatment request.");
+        var pending = Assert.IsType<JsonObject>(Invoke(
+            ExactStaticMethod(typeof(WoundRepairPacketBuilder), "ComposePendingRoot", 3),
+            new object?[]
+            {
+                command.Binding,
+                Array.Empty<WoundRepairPacket>(),
+                command.Parsed
+            }));
+        var request = ReadCommandTreatmentRequest(command.Root);
+        var coordinates = ReadJsonObject(request, "Coordinates");
+        pending["submittedTreatmentRequests"] = new JsonArray(new JsonObject
+        {
+            ["operationKey"] = ReadJsonString(coordinates, "OperationKey"),
+            ["attemptId"] = ReadJsonString(coordinates, "AttemptId"),
+            ["requestFingerprint"] = ReadJsonString(request, "RequestFingerprint"),
+            ["request"] = request.DeepClone()
+        });
+
+        AssertInvalidPersistedCatalog(
+            ParsePersistedRequestCatalog(null, pending, flow.History),
+            "submitted treatment without repair wave");
     }
 
     [Fact]
@@ -1102,9 +2106,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 _ => throw new ArgumentOutOfRangeException(nameof(mode), mode, null)
             }, 4),
             new object?[] { restoredRequest, history, before, acceptedState });
-        Assert.Equal(
-            "Resolved",
-            Convert.ToString(ReadRequiredProperty(result, "Disposition")));
+        Assert.True(
+            string.Equals(
+                "Resolved",
+                Convert.ToString(ReadRequiredProperty(result, "Disposition")),
+                StringComparison.Ordinal),
+            DescribeIssues(AsObjects(ReadRequiredProperty(result, "Issues"))
+                .Select(Assert.IsType<ValidationIssue>)));
         Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
         return new TreatmentFlow(
             acceptedState,
@@ -1122,12 +2130,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var commandPath = fixture.FileSystem.ResolvePath(
             AcceptedMechanicsPlan.WoundCommandPath);
         Assert.Equal(expectedCommandBytes, File.ReadAllBytes(commandPath));
-        var commandRoot = JsonNode.Parse(File.ReadAllText(commandPath))!.AsObject();
         return Assert.Single(AssertValidPersistedCatalog(
-            ParsePersistedRequestCatalog(
-                commandRoot,
-                null,
-                fixture.ReadCurrentHistory()),
+            RestoreCurrentPersistedTreatmentCatalog(fixture),
             boundary));
     }
 
@@ -1137,7 +2141,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         foreach (var directory in Directory.EnumerateDirectories(
                      source,
                      "*",
-                     SearchOption.AllDirectories))
+                     SearchOption.AllDirectories)
+                 .Where(path => IsColdRootCopyPath(source, path)))
         {
             Directory.CreateDirectory(Path.Combine(
                 destination,
@@ -1146,12 +2151,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         foreach (var file in Directory.EnumerateFiles(
                      source,
                      "*",
-                     SearchOption.AllDirectories))
+                     SearchOption.AllDirectories)
+                 .Where(path => IsColdRootCopyPath(source, path)))
         {
             var target = Path.Combine(destination, Path.GetRelativePath(source, file));
             Directory.CreateDirectory(Path.GetDirectoryName(target)!);
             File.Copy(file, target);
         }
+    }
+
+    private static bool IsColdRootCopyPath(string root, string path)
+    {
+        var relative = Path.GetRelativePath(root, path).Replace('\\', '/');
+        return !relative.StartsWith(".boe_runtime", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(relative, ".boe_runtime", StringComparison.OrdinalIgnoreCase) ||
+               relative.StartsWith(
+                   ".boe_runtime/session-generation",
+                   StringComparison.OrdinalIgnoreCase);
     }
 
     private static void AssertTreatmentCommandResult(
@@ -1218,9 +2234,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static void AssertSerializedTypedValue(object? expected, JsonNode? actual)
     {
-        var expectedNode = expected is null
-            ? null
-            : JsonSerializer.SerializeToNode(expected, expected.GetType());
+        var expectedNode = WoundResponseInputComposer
+            .SerializeMortalWoundTreatmentValue(expected);
         Assert.True(JsonNode.DeepEquals(
             NormalizeJsonPropertyNames(expectedNode),
             NormalizeJsonPropertyNames(actual)));
@@ -1292,10 +2307,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static object[] AssertValidPersistedCatalog(object result, string boundary)
     {
         AssertClosedProperties(result, new[] { "IsValid", "Issues", "Requests" });
+        var issues = AsObjects(ReadRequiredProperty(result, "Issues"))
+            .Select(Assert.IsType<ValidationIssue>)
+            .ToArray();
         Assert.True(
             Assert.IsType<bool>(ReadRequiredProperty(result, "IsValid")),
-            boundary + " was rejected by the persisted-request catalog.");
-        Assert.Empty(AsObjects(ReadRequiredProperty(result, "Issues")));
+            boundary + " was rejected by the persisted-request catalog: " +
+            DescribeIssues(issues));
+        Assert.Empty(issues);
         return AsObjects(ReadRequiredProperty(result, "Requests"));
     }
 
@@ -1483,6 +2502,154 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var name = FindJsonPropertyName(value, propertyName);
         return value[name]!.GetValue<string>();
+    }
+
+    private static string? ReadOptionalJsonString(
+        JsonObject value,
+        string propertyName)
+    {
+        var node = value[FindJsonPropertyName(value, propertyName)];
+        return node is null ? null : node.GetValue<string>();
+    }
+
+    private static int? ReadOptionalJsonInt32(
+        JsonObject value,
+        string propertyName)
+    {
+        var node = value[FindJsonPropertyName(value, propertyName)];
+        return node is null ? null : node.GetValue<int>();
+    }
+
+    private static void ResealSerializedResourceAndRequest(
+        JsonObject request,
+        string policyFingerprint)
+    {
+        var resource = ReadJsonObject(request, "ResourceAuthority");
+        var claims = Assert.IsType<JsonArray>(resource[
+            FindJsonPropertyName(resource, "Claims")]);
+        var disposition = ReadJsonString(resource, "ReservationDisposition");
+        string ComputeResourceFingerprint(string? reservationId)
+        {
+            var fields = new List<string?>
+            {
+                "book_of_eternity.mortal_wound_treatment.resource_reservation_authority",
+                "1",
+                disposition,
+                reservationId,
+                ReadJsonString(resource, "CoordinatesFingerprint"),
+                ReadJsonString(resource, "AcceptedStateFingerprint"),
+                ReadJsonString(resource, "RouteFingerprint"),
+                ReadOptionalJsonString(resource, "CourseId"),
+                ReadOptionalJsonInt32(resource, "CourseMilestoneOrdinal")
+                    ?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                ReadOptionalJsonString(resource, "CourseCoordinateFingerprint"),
+                ReadJsonString(resource, "RequirementAuthorityFingerprint"),
+                policyFingerprint,
+                claims.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)
+            };
+            fields.AddRange(claims.OfType<JsonObject>().Select(claim =>
+                ReadJsonString(claim, "ClaimFingerprint")));
+            return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
+
+        string? reservationId = null;
+        if (string.Equals(disposition, "held", StringComparison.Ordinal))
+        {
+            var semantic = ComputeResourceFingerprint(null);
+            reservationId = "wound_treatment_resource_reservation_" +
+                            semantic["sha256:".Length..];
+        }
+        resource[FindJsonPropertyName(resource, "ReservationId")] = reservationId;
+        var resourceFingerprint = ComputeResourceFingerprint(reservationId);
+        resource[FindJsonPropertyName(resource, "AuthorityFingerprint")] =
+            resourceFingerprint;
+
+        var mode = ReadJsonString(request, "Mode");
+        var coordinates = ReadJsonObject(request, "Coordinates");
+        var modeAuthority = ReadJsonObject(request, "ModeAuthority");
+        var requirement = ReadJsonObject(request, "RequirementAuthority");
+        var modeFingerprint = string.Equals(mode, "guaranteed", StringComparison.Ordinal)
+            ? ReadJsonString(modeAuthority, "ProofFingerprint")
+            : ReadJsonString(modeAuthority, "AuthorityFingerprint");
+        var requestFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.attempt_request",
+                "1",
+                mode,
+                ReadJsonString(coordinates, "CoordinatesFingerprint"),
+                ReadOptionalJsonInt32(request, "MilestoneOrdinal")
+                    ?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+                ReadJsonString(request, "RouteSourceWoundFingerprint"),
+                modeFingerprint,
+                ReadJsonString(requirement, "AuthorityFingerprint"),
+                resourceFingerprint
+            });
+        request[FindJsonPropertyName(request, "RequestFingerprint")] =
+            requestFingerprint;
+    }
+
+    private static string ComputeSerializedPolicyFingerprint(JsonObject policy)
+    {
+        var consumeOn = Assert.IsType<JsonArray>(policy[
+            FindJsonPropertyName(policy, "ConsumeOn")]);
+        var refundOn = Assert.IsType<JsonArray>(policy[
+            FindJsonPropertyName(policy, "RefundOn")]);
+        var mutations = Assert.IsType<JsonArray>(policy[
+            FindJsonPropertyName(policy, "Mutations")]);
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_wound_treatment.resource_policy",
+            "1",
+            policy[FindJsonPropertyName(policy, "ReserveBeforeResolution")]!
+                .GetValue<bool>()
+                ? "true"
+                : "false",
+            consumeOn.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        };
+        fields.AddRange(consumeOn.Select(static value => value!.GetValue<string>()));
+        fields.Add(refundOn.Count.ToString(
+            System.Globalization.CultureInfo.InvariantCulture));
+        fields.AddRange(refundOn.Select(static value => value!.GetValue<string>()));
+        fields.Add(mutations.Count.ToString(
+            System.Globalization.CultureInfo.InvariantCulture));
+        foreach (var mutation in mutations.OfType<JsonObject>())
+        {
+            fields.Add(ReadJsonString(mutation, "Kind"));
+            fields.Add(ReadJsonString(mutation, "Scope"));
+            fields.Add(ReadOptionalJsonInt32(mutation, "MilestoneOrdinal")
+                ?.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            fields.Add(ReadOptionalJsonInt32(mutation, "RequirementIndex")
+                ?.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        }
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private static string ComputeSerializedCourseAuthorityFingerprint(
+        JsonObject authority)
+    {
+        var gameTime = ReadJsonObject(authority, "GameTimeAuthority");
+        var start = ReadJsonObject(authority, "CourseStartAuthority");
+        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.course_mode_authority",
+            "1",
+            ReadJsonString(gameTime, "AuthorityFingerprint"),
+            ReadJsonString(authority, "CourseId"),
+            ReadOptionalJsonInt32(authority, "MilestoneOrdinal")
+                ?.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            authority[FindJsonPropertyName(authority, "DueAtGameTimeMinutes")]!
+                .GetValue<long>()
+                .ToString(System.Globalization.CultureInfo.InvariantCulture),
+            authority[FindJsonPropertyName(authority, "DeadlineAtGameTimeMinutes")]!
+                .GetValue<long>()
+                .ToString(System.Globalization.CultureInfo.InvariantCulture),
+            ReadJsonString(authority, "WindowDisposition"),
+            ReadJsonString(start, "AuthorityFingerprint"),
+            ReadJsonString(authority, "CourseCoordinateFingerprint"),
+            ReadJsonString(authority, "CoordinatesFingerprint"),
+            ReadJsonString(authority, "AcceptedStateFingerprint")
+        });
     }
 
     private static void SetJsonProperty(

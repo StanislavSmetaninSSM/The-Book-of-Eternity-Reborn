@@ -8,6 +8,7 @@ internal sealed class MortalWoundTreatmentCapabilityOperationLimits
 {
     private readonly ReadOnlyCollection<string> _removableComplicationKinds;
 
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundTreatmentCapabilityOperationLimits(
         bool mayStabilize,
         int maximumRecoveryPoints,

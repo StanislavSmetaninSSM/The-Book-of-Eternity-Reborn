@@ -99,6 +99,7 @@ internal sealed class MortalWoundTreatmentCapabilityProofResult
 
 internal sealed class MortalWoundTreatmentCapabilityProof : MortalWoundTreatmentModeAuthority
 {
+    [System.Text.Json.Serialization.JsonConstructor]
     private MortalWoundTreatmentCapabilityProof(
         string snapshotToken,
         string sourcePath,
