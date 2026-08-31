@@ -1709,7 +1709,7 @@ internal static class WoundMaterializationContract
         return "base_wound";
     }
 
-    private static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
+    internal static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
     {
         "player" or "player_soul" => "player",
         "combatant" or "combatant_member" => "combatant",

@@ -12,6 +12,7 @@ internal static class AcceptedTurnAuthorityRegistry
     private static readonly object ProcedureReservationOwnershipCapability = new();
     private static readonly object ProcedureReservationLiveCheckCapability = new();
     private static readonly object TreatmentResourceRegistryCapability = new();
+    private static readonly object DeteriorationPolicyAuthorityCapability = new();
 
     internal static bool IsProcedureDicePoolReadCapability(object capability) =>
         ReferenceEquals(capability, ProcedureDicePoolReadCapability);
@@ -24,6 +25,9 @@ internal static class AcceptedTurnAuthorityRegistry
 
     internal static bool IsTreatmentResourceRegistryCapability(object capability) =>
         ReferenceEquals(capability, TreatmentResourceRegistryCapability);
+
+    internal static bool IsDeteriorationPolicyAuthorityCapability(object capability) =>
+        ReferenceEquals(capability, DeteriorationPolicyAuthorityCapability);
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(
         FileSystemManager fileSystem,
@@ -298,6 +302,69 @@ internal static class AcceptedTurnAuthorityRegistry
                 ArgumentException or IOException or UnauthorizedAccessException)
         {
             return false;
+        }
+    }
+
+    internal static MortalWoundDeteriorationPolicyAuthorityResult
+        CreateMortalWoundDeteriorationPolicyAuthority(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            WoundAcceptedTurnBinding? binding,
+            string? woundId,
+            string? policyRef)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .CreateMortalWoundDeteriorationPolicyAuthority(
+                    fileSystem,
+                    writeLease,
+                    binding,
+                    woundId,
+                    policyRef,
+                    DeteriorationPolicyAuthorityCapability);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return MortalWoundDeteriorationPolicyAuthority.InvalidAuthority(
+                "recovery.deteriorationPolicy",
+                exception.GetType().Name);
+        }
+    }
+
+    internal static MortalWoundDeteriorationPolicyAuthorityResult
+        CreateMortalWoundDeteriorationPolicyAuthority(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptCoordinates? coordinates,
+            string? policyRef)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .CreateMortalWoundDeteriorationPolicyAuthority(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    coordinates,
+                    policyRef,
+                    DeteriorationPolicyAuthorityCapability);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return MortalWoundDeteriorationPolicyAuthority.InvalidAuthority(
+                acceptedState.WoundSourcePath + ".recovery.deteriorationPolicy",
+                exception.GetType().Name);
         }
     }
 
@@ -949,6 +1016,73 @@ internal static class AcceptedTurnAuthorityRegistry
                            _mortalWoundTreatmentAcceptedState,
                            authority) &&
                        authority.IsLeaseBoundTo(fileSystem, writeLease);
+            }
+        }
+
+        internal MortalWoundDeteriorationPolicyAuthorityResult
+            CreateMortalWoundDeteriorationPolicyAuthority(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                WoundAcceptedTurnBinding? binding,
+                string? woundId,
+                string? policyRef,
+                object capability)
+        {
+            lock (_gate)
+            {
+                var acceptedState = _mortalWoundTreatmentAcceptedState;
+                if (!AcceptedTurnAuthorityRegistry
+                        .IsDeteriorationPolicyAuthorityCapability(capability) ||
+                    acceptedState is null ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !acceptedState.AgreesWithBindingAndWound(binding, woundId))
+                {
+                    return MortalWoundDeteriorationPolicyAuthority.InvalidAuthority(
+                        acceptedState?.WoundSourcePath + ".recovery.deteriorationPolicy" ??
+                        "recovery.deteriorationPolicy",
+                        "missing, stale, foreign, or mismatched accepted-state binding");
+                }
+
+                return MortalWoundDeteriorationPolicyAuthority.CreateRegistered(
+                    capability,
+                    acceptedState,
+                    coordinates: null,
+                    policyRef,
+                    scope: "recovery");
+            }
+        }
+
+        internal MortalWoundDeteriorationPolicyAuthorityResult
+            CreateMortalWoundDeteriorationPolicyAuthority(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+                MortalWoundTreatmentAttemptCoordinates? coordinates,
+                string? policyRef,
+                object capability)
+        {
+            lock (_gate)
+            {
+                if (!AcceptedTurnAuthorityRegistry
+                        .IsDeteriorationPolicyAuthorityCapability(capability) ||
+                    !ReferenceEquals(
+                        _mortalWoundTreatmentAcceptedState,
+                        acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    coordinates is null ||
+                    !coordinates.AgreesWithAcceptedStateSemantics(acceptedState))
+                {
+                    return MortalWoundDeteriorationPolicyAuthority.InvalidAuthority(
+                        acceptedState.WoundSourcePath + ".recovery.deteriorationPolicy",
+                        "missing, stale, foreign, or mismatched attempt coordinates");
+                }
+
+                return MortalWoundDeteriorationPolicyAuthority.CreateRegistered(
+                    capability,
+                    acceptedState,
+                    coordinates,
+                    policyRef,
+                    scope: "treatment_interruption");
             }
         }
 

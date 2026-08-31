@@ -27,6 +27,8 @@ internal sealed record MortalWoundDeteriorationPolicyDefinition(
     MortalWoundDeteriorationResultKind ResultKind,
     MortalWoundDeteriorationPolicyClassification Classification,
     JsonElement Result,
+    int AdditionalDefinitions,
+    int AdditionalRoots,
     int AdditionalConsequenceSlots,
     string CanonicalProjection);
 
@@ -79,6 +81,8 @@ internal static class MortalWoundDeteriorationPolicyContract
         MortalWoundDeteriorationResultKind? resultKind = null;
         MortalWoundDeteriorationPolicyClassification? classification = null;
         var additionalSlots = 0;
+        var additionalDefinitions = 0;
+        var additionalRoots = 0;
         JsonElement result = default;
         var resultPath = path + ".result";
         if (!value.TryGetProperty("result", out result) ||
@@ -135,7 +139,8 @@ internal static class MortalWoundDeteriorationPolicyContract
                     }
                     resultKind = MortalWoundDeteriorationResultKind.AddComplication;
                     classification = MortalWoundDeteriorationPolicyClassification.StrictlyWorsening;
-                    additionalSlots = CountDeclaredConsequenceSlots(result);
+                    (additionalDefinitions, additionalRoots, additionalSlots) =
+                        CountDeclaredConsequenceGraph(result);
                     break;
                 default:
                     Add(
@@ -169,19 +174,24 @@ internal static class MortalWoundDeteriorationPolicyContract
                 resultKind.Value,
                 classification.Value,
                 result.Clone(),
+                additionalDefinitions,
+                additionalRoots,
                 additionalSlots,
                 canonical));
     }
 
-    private static int CountDeclaredConsequenceSlots(JsonElement result)
+    private static (int Definitions, int Roots, int Slots)
+        CountDeclaredConsequenceGraph(JsonElement result)
     {
         if (!result.TryGetProperty("complicationDraft", out var draft) ||
             !draft.TryGetProperty("consequenceDefinitions", out var definitions) ||
             definitions.ValueKind != JsonValueKind.Array)
         {
-            return 0;
+            return (0, 0, 0);
         }
 
+        var definitionCount = definitions.GetArrayLength();
+        var rootCount = 0;
         var total = 0;
         foreach (var wrapper in definitions.EnumerateArray())
         {
@@ -192,9 +202,10 @@ internal static class MortalWoundDeteriorationPolicyContract
             {
                 continue;
             }
+            rootCount++;
             total = checked(total + slots.GetArrayLength());
         }
-        return total;
+        return (definitionCount, rootCount, total);
     }
 
     private static string ReadSingletonCondition(

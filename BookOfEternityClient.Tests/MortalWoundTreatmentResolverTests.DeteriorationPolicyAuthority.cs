@@ -249,6 +249,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "mortal_wound_deterioration_policy_not_strictly_worsening");
     }
 
+    [Fact]
+    public void DeteriorationPolicyAuthority_FingerprintBindsEveryPolicySemantic()
+    {
+        var fingerprints = new[]
+        {
+            DeteriorationAuthorityFingerprint("baseline"),
+            DeteriorationAuthorityFingerprint("condition"),
+            DeteriorationAuthorityFingerprint("grace"),
+            DeteriorationAuthorityFingerprint("cadence"),
+            DeteriorationAuthorityFingerprint("result")
+        };
+
+        Assert.Equal(fingerprints.Length, fingerprints.Distinct(StringComparer.Ordinal).Count());
+    }
+
     private static ResolverScenario DeteriorationScenario(
         JsonObject result,
         int severityRank = 2,
@@ -296,6 +311,58 @@ public sealed partial class MortalWoundTreatmentResolverTests
                            result["kind"]!.GetValue<string>() +
                            (fillComplications ? "_full" : string.Empty)
         };
+    }
+
+    private static string DeteriorationAuthorityFingerprint(string mutation)
+    {
+        var scenario = DeteriorationScenario(
+            new JsonObject { ["kind"] = "increase_severity" });
+        var before = scenario.Before.DeepClone().AsObject();
+        var policy = before["recovery"]!["deteriorationPolicy"]!.AsObject();
+        switch (mutation)
+        {
+            case "baseline":
+                break;
+            case "condition":
+                policy["unmetConditions"] = new JsonArray("awaiting_antibiotics");
+                break;
+            case "grace":
+                policy["graceMinutes"] = 31L;
+                break;
+            case "cadence":
+                policy["cadenceMinutes"] = 11L;
+                break;
+            case "result":
+                policy["result"] = new JsonObject { ["kind"] = "death_contour" };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+        scenario = scenario with
+        {
+            Before = before,
+            OperationKey = scenario.OperationKey + "_fingerprint_" + mutation
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+        var authority = ValidDeteriorationAuthority(Invoke(
+            DeteriorationFactory(3),
+            new object?[]
+            {
+                acceptedState,
+                coordinates,
+                "untreated_infection"
+            }));
+        return Assert.IsType<string>(ReadRequiredProperty(
+            authority,
+            "AuthorityFingerprint"));
     }
 
     private static JsonObject DeteriorationComplicationResult() => new()
