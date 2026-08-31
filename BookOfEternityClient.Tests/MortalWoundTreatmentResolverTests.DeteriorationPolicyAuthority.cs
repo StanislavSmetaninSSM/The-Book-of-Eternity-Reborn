@@ -367,6 +367,87 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void DeteriorationPolicyAuthority_RejectsSlotOverflowWithRootsAndDefinitionsAvailable()
+    {
+        var scenario = DeteriorationScenario(
+            DeteriorationEffectfulComplicationResult());
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        Assert.Equal(2, acceptedState.CurrentWound.Consequences.SlotsUsed);
+        Assert.Equal(2, acceptedState.CurrentWound.Consequences.SlotBudget);
+        Assert.Equal(2, acceptedState.CurrentWound.Consequences.OwnedEffectSources.Definitions.Count);
+        Assert.Equal(2, acceptedState.CurrentWound.Consequences.OwnedEffectSources.RootBindings.Count);
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        AssertInvalidDeteriorationAuthority(
+            Invoke(DeteriorationFactory(3), new object?[]
+            {
+                acceptedState,
+                coordinates,
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_not_strictly_worsening");
+    }
+
+    [Fact]
+    public void DeteriorationPolicyAuthority_RejectsDefinitionOverflowWithRootsAndSlotsAvailable()
+    {
+        var scenario = DeteriorationScenarioWithDefinitionEnvelope(
+            DeteriorationMarkerComplicationResult());
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        Assert.Equal(5, acceptedState.CurrentWound.Consequences.OwnedEffectSources.Definitions.Count);
+        Assert.Equal(4, acceptedState.CurrentWound.Consequences.OwnedEffectSources.RootBindings.Count);
+        Assert.Equal(4, acceptedState.CurrentWound.Consequences.SlotsUsed);
+        Assert.Equal(4, acceptedState.CurrentWound.Consequences.SlotBudget);
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        AssertInvalidDeteriorationAuthority(
+            Invoke(DeteriorationFactory(3), new object?[]
+            {
+                acceptedState,
+                coordinates,
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_not_strictly_worsening");
+    }
+
+    [Fact]
+    public void DeteriorationPolicyAuthority_AcceptedStateFingerprintBindsOccurrencePath()
+    {
+        var scenario = DeteriorationScenario(
+            new JsonObject { ["kind"] = "increase_severity" });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var occurrencePath = fixture.TargetCarrierPath + ".activeWounds[0]";
+
+        Assert.Equal(occurrencePath, acceptedState.WoundSourcePath);
+        Assert.Equal(
+            acceptedState.AcceptedStateFingerprint,
+            ComputeT069AcceptedStateFingerprint(
+                acceptedState,
+                scenario,
+                occurrencePath));
+        Assert.NotEqual(
+            acceptedState.AcceptedStateFingerprint,
+            ComputeT069AcceptedStateFingerprint(
+                acceptedState,
+                scenario,
+                fixture.TargetCarrierPath + ".activeWounds[1]"));
+    }
+
+    [Fact]
     public void DeteriorationPolicyAuthority_FingerprintBindsEveryPolicySemantic()
     {
         var fingerprints = new[]
@@ -526,6 +607,156 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
     }
 
+    private static ResolverScenario DeteriorationScenarioWithDefinitionEnvelope(
+        JsonObject result)
+    {
+        const string woundId = "wound_test_torn_side";
+        const string reactionEffectId = "effect_definition_capacity_reaction";
+        const string reactionKey = "definition_definition_capacity_reaction";
+        const string leafKey = "definition_definition_capacity_leaf";
+        var scenario = DeteriorationScenario(result, severityRank: 4);
+        var before = scenario.Before.DeepClone().AsObject();
+        var reaction = WoundContractTestData.CreateApplyDefinitionRoot(
+            woundId,
+            "mortal_world",
+            reactionKey,
+            leafKey);
+        reaction["components"]![0]!["payload"]!["parameters"] =
+            new JsonObject { ["amount"] = 3 };
+        var leaf = WoundContractTestData.CreateOwnedEffectDefinition(
+            woundId,
+            "mortal_world",
+            leafKey,
+            "periodic_damage");
+        leaf["parameterBounds"] = new JsonObject
+        {
+            ["amount"] = new JsonObject
+            {
+                ["kind"] = "number",
+                ["minimum"] = 1,
+                ["maximum"] = 10
+            }
+        };
+        var action = WoundContractTestData.CreateOwnedEffectDefinition(
+            woundId,
+            "mortal_world",
+            "definition_definition_capacity_action",
+            "action_control");
+        var resistance = WoundContractTestData.CreateOwnedEffectDefinition(
+            woundId,
+            "mortal_world",
+            "definition_definition_capacity_resistance",
+            "resistance_modifier");
+        var marker = WoundContractTestData.CreateOwnedEffectDefinition(
+            woundId,
+            "mortal_world",
+            "definition_definition_capacity_marker",
+            "wound_consequence");
+        var consequences = before["consequences"]!.AsObject();
+        consequences["slotBudget"] = 4;
+        consequences["slotsUsed"] = 4;
+        consequences["ownedEffectSources"] = new JsonObject
+        {
+            ["definitions"] = new JsonArray(
+                reaction,
+                leaf,
+                action,
+                resistance,
+                marker),
+            ["rootBindings"] = new JsonArray(
+                WoundContractTestData.CreateRootBinding(reactionEffectId, reactionKey),
+                WoundContractTestData.CreateRootBinding(
+                    "effect_definition_capacity_action",
+                    "definition_definition_capacity_action"),
+                WoundContractTestData.CreateRootBinding(
+                    "effect_definition_capacity_resistance",
+                    "definition_definition_capacity_resistance"),
+                WoundContractTestData.CreateRootBinding(
+                    "effect_definition_capacity_marker",
+                    "definition_definition_capacity_marker"))
+        };
+        consequences["entries"] = new JsonArray(
+            new JsonObject
+            {
+                ["slot"] = 1,
+                ["profileKey"] = "event_reaction",
+                ["effectId"] = reactionEffectId,
+                ["readableSummary"] = "Ухудшение готово породить связанное следствие."
+            },
+            new JsonObject
+            {
+                ["slot"] = 2,
+                ["profileKey"] = "periodic_damage",
+                ["effectId"] = reactionEffectId,
+                ["readableSummary"] = "Связанное следствие учтено в пределе раны."
+            },
+            new JsonObject
+            {
+                ["slot"] = 3,
+                ["profileKey"] = "action_control",
+                ["effectId"] = "effect_definition_capacity_action",
+                ["readableSummary"] = "Действие ограничено раной."
+            },
+            new JsonObject
+            {
+                ["slot"] = 4,
+                ["profileKey"] = "resistance_modifier",
+                ["effectId"] = "effect_definition_capacity_resistance",
+                ["readableSummary"] = "Сопротивление снижено раной."
+            });
+        return scenario with
+        {
+            Before = before,
+            OperationKey = scenario.OperationKey + "_definition_capacity"
+        };
+    }
+
+    private static string ComputeT069AcceptedStateFingerprint(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        ResolverScenario scenario,
+        string occurrencePath)
+    {
+        var binding = acceptedState.Binding;
+        var dice = scenario.AcceptedState["acceptedDice"]!.AsArray()
+            .Select(static value => value!.GetValue<int>())
+            .ToArray();
+        var requestFingerprint = ComputeT069Fingerprint(
+            "mortal_wound_treatment_request_event_source",
+            binding.SessionId,
+            binding.RequestId,
+            binding.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            string.Join(",", dice.Select(static value =>
+                value.ToString(System.Globalization.CultureInfo.InvariantCulture))));
+        return ComputeT069Fingerprint(
+            "mortal_wound_treatment_accepted_state",
+            "1",
+            acceptedState.SessionGeneration,
+            acceptedState.BindingFingerprint,
+            acceptedState.ContextFingerprint,
+            requestFingerprint,
+            acceptedState.WoundFingerprint,
+            occurrencePath,
+            acceptedState.IdentityFingerprint,
+            acceptedState.HistoryFingerprint,
+            acceptedState.ClockFingerprint,
+            acceptedState.EffectFingerprint,
+            acceptedState.ItemResourceFingerprint,
+            acceptedState.ActorLocationFingerprint,
+            acceptedState.PlayerCapabilityCatalogFingerprint,
+            acceptedState.NpcCapabilityCatalogFingerprint,
+            acceptedState.SkillSourceFingerprint,
+            acceptedState.RequirementSnapshotFingerprint);
+    }
+
+    private static string ComputeT069Fingerprint(
+        string domain,
+        params string?[] values)
+    {
+        var fields = new List<string?> { domain, "1" };
+        fields.AddRange(values);
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
     private static JsonObject DeteriorationComplicationResult() => new()
     {
         ["kind"] = "add_complication",
@@ -543,6 +774,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ["consequenceDefinitions"] = new JsonArray()
         }
     };
+
+    private static JsonObject DeteriorationEffectfulComplicationResult()
+    {
+        var definition = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "deterioration_infection_action",
+            "action_control");
+        definition["links"] = new JsonArray();
+        return new JsonObject
+        {
+            ["kind"] = "add_complication",
+            ["complicationDraft"] = new JsonObject
+            {
+                ["complications"] = new JsonArray(new JsonObject
+                {
+                    ["complicationRef"] = "deterioration_infection",
+                    ["kind"] = "infection",
+                    ["state"] = "active",
+                    ["displayName"] = "Распространяющееся заражение",
+                    ["treatmentDifficultyModifier"] = 1,
+                    ["visibility"] = "known_to_player"
+                }),
+                ["consequenceDefinitions"] = new JsonArray(new JsonObject
+                {
+                    ["definitionRef"] = "deterioration_infection_action",
+                    ["definition"] = definition,
+                    ["root"] = new JsonObject
+                    {
+                        ["ownership"] = new JsonObject
+                        {
+                            ["kind"] = "complication",
+                            ["complicationRef"] = "deterioration_infection"
+                        },
+                        ["slots"] = new JsonArray(new JsonObject
+                        {
+                            ["profileKey"] = "action_control",
+                            ["readableSummary"] = "Заражение ограничивает движение."
+                        })
+                    }
+                })
+            }
+        };
+    }
 
     private static JsonObject DeteriorationMarkerComplicationResult()
     {
