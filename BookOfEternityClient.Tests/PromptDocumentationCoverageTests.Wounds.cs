@@ -93,6 +93,60 @@ public sealed partial class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void MortalDeteriorationPolicyDocumentation_UsesTheClosedTypedContract()
+    {
+        var contract = ReadRepoFile(
+            "OtherGuides",
+            "Wound_Materialization_Contract.md");
+        var rules = ReadRepoFile("Rules", "Block_5.txt");
+        var examples = ReadRepoFile("Examples", "E_Block_5.txt");
+
+        foreach (var document in new[] { contract, rules, examples })
+        {
+            Assert.Contains(
+                "wound_mortal_deterioration_policy_v1",
+                document,
+                StringComparison.Ordinal);
+            foreach (var required in new[]
+                     {
+                         "policyRef", "unmetConditions", "graceMinutes",
+                         "cadenceMinutes", "increase_severity"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.Ordinal);
+            }
+        }
+
+        foreach (var required in new[]
+                 {
+                     "add_complication", "complicationDraft", "death_contour",
+                     "no_change", "add_recovery", "severity IV",
+                     "silently converted", "16 complications",
+                     "four total consequence slots", "five total owned effect definitions"
+                 })
+        {
+            Assert.Contains(required, contract, StringComparison.OrdinalIgnoreCase);
+        }
+
+        var workedMatch = Regex.Match(
+            contract,
+            @"wound_mortal_deterioration_policy_v1.*?```json\s*(?<json>.*?)```",
+            RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        Assert.True(workedMatch.Success, "Missing worked Mortal deterioration policy JSON.");
+        var policy = Assert.IsType<JsonObject>(
+            JsonNode.Parse(workedMatch.Groups["json"].Value));
+        var wound = WoundContractTestData.CreateActiveWound();
+        wound["recovery"]!["deteriorationPolicy"] = policy.DeepClone();
+
+        var parsed = WoundMaterializationContract.Parse(
+            wound.ToJsonString(),
+            "documentedWound");
+
+        Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+    }
+
+    [Fact]
     public void GmDaemon_ForcesWoundContractForExposedOpportunities()
     {
         var daemon = ReadRepoFile(

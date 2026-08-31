@@ -2396,7 +2396,7 @@
     wound_guaranteed_creation_v1
    </title>
    <scenariocontext>
-    A pre-materialized source guarantees a severity-II physical wound. The GM must materialize that guaranteed result, while retaining freedom over its setting-appropriate fiction.
+    A pre-materialized source guarantees a severity-II physical wound. The GM must materialize that guaranteed result, while retaining freedom over its setting-appropriate fiction. wound_mortal_deterioration_policy_v1 is shown as one exact setting-authored strictly-worsening policy.
    </scenariocontext>
    <content type="json">
     <![CDATA[
@@ -2441,7 +2441,7 @@
           "lastTickKey": null,
           "blockers": ["not_stabilized"],
           "carryOverflow": true,
-          "deteriorationPolicy": null
+          "deteriorationPolicy": {"policyRef":"untreated_brand_inflammation","unmetConditions":["not_stabilized"],"graceMinutes":720,"cadenceMinutes":1440,"result":{"kind":"increase_severity"}}
         }
       }
     }

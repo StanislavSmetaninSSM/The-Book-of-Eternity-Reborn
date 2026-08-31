@@ -149,6 +149,74 @@ Conversely, healing retires the wound-owned active root/descendant group without
 touching unrelated effects. Saref memory suppression and other independently sourced
 effects are not wound consequences merely because the fiction mentions injury.
 
+## wound_mortal_deterioration_policy_v1
+
+A Mortal physical wound may declare one non-null deterioration policy when an unmet
+care condition can make the wound worse over canonical Mortal-world time. Use `null`
+when the wound has no such rule. This is setting-authored policy, not a universal list
+of infections, medicines, complications, or deadlines.
+
+The non-null object is closed and contains exactly:
+
+- `policyRef`: one exact GM-authored policy identifier;
+- `unmetConditions`: an array containing exactly one exact condition identifier;
+- `graceMinutes`: a non-negative signed 64-bit number of canonical minutes before the
+  first deterioration can become due;
+- `cadenceMinutes`: a positive signed 64-bit number of canonical minutes between later
+  deterioration opportunities;
+- `result`: exactly one closed typed result.
+
+The adverse result is exactly one of:
+
+- `{ "kind": "increase_severity" }`, which raises severity by one tier only while the
+  active wound is below IV;
+- `{ "kind": "add_complication", "complicationDraft": ... }`, where the draft contains
+  exactly one complete setting-specific complication with treatment difficulty 1-4
+  and an optional complete wound-consequence graph;
+- `{ "kind": "death_contour" }`, which requests the separate Mortal death lifecycle
+  handoff and never writes death state directly.
+
+At severity IV, `increase_severity` is inapplicable and is never silently converted to
+death. If death is the authored consequence, select `death_contour` explicitly.
+`no_change` and `add_recovery` are recognized only so the client can report that they
+are not strictly worsening; they grant no deterioration authority. An unknown or open
+result is malformed rather than a fallback.
+
+For `add_complication`, the client also checks the current wound before granting
+authority: at most 16 complications, four total consequence slots/root bindings, and
+five total owned effect definitions. The ordinary accepted wound reducer revalidates
+the complete allocated after-image before publication. The policy itself never grants
+the GM permission to edit a canonical wound, effect, history row, clock, anchor,
+fingerprint, receipt, or lifecycle state.
+
+Worked GM example — untreated contamination may add one effectless, independently
+treatable infection complication after its grace period:
+
+```json
+{
+  "policyRef": "untreated_contamination",
+  "unmetConditions": ["not_stabilized"],
+  "graceMinutes": 720,
+  "cadenceMinutes": 1440,
+  "result": {
+    "kind": "add_complication",
+    "complicationDraft": {
+      "complications": [
+        {
+          "complicationRef": "spreading_infection",
+          "kind": "infection",
+          "state": "active",
+          "displayName": "Распространяющееся заражение",
+          "treatmentDifficultyModifier": 2,
+          "visibility": "known_to_player"
+        }
+      ],
+      "consequenceDefinitions": []
+    }
+  }
+}
+```
+
 ## wound_spiritual_profiles_v1
 
 Spiritual wound mechanics use exactly these eight registered deterministic profiles:

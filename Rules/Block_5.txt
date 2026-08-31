@@ -3527,7 +3527,13 @@
           "lastTickKey": null,
           "blockers": ["not_stabilized"],
           "carryOverflow": true,
-          "deteriorationPolicy": null
+          "deteriorationPolicy": {
+            "policyRef": "untreated_forearm_contamination",
+            "unmetConditions": ["not_stabilized"],
+            "graceMinutes": 720,
+            "cadenceMinutes": 1440,
+            "result": { "kind": "increase_severity" }
+          }
         }
       }
     }
@@ -3570,6 +3576,8 @@
                             Never create a wound in response to a request to heal, treat, inspect, or diagnose one.
 
                             Physical wounds keep setting-authored treatment routes: medicine, herbs, bandages, crystals, magic, facilities, rest, or another evidence-backed method may be appropriate. There is no universal catalog of wounds or cures.
+
+                            wound_mortal_deterioration_policy_v1: A non-null Mortal physical recovery.deteriorationPolicy contains exactly policyRef, one-entry unmetConditions, non-negative graceMinutes, positive cadenceMinutes, and one closed result. Use only increase_severity, add_complication with one complete complicationDraft, or the explicit separate death_contour handoff. At severity IV, increase_severity is inapplicable and never becomes implicit death. no_change, add_recovery, unknown kinds, caller authority, direct mutations, fingerprints, anchors, receipts, and lifecycle writes are not valid adverse-policy authority. Use null when the wound has no deterioration rule.
 
                             Spiritual wounds use their dedicated healing, provider, and natural afterlife-time contracts. Do not substitute Mortal inventory, ordinary HP, or combatConditions[].
 
