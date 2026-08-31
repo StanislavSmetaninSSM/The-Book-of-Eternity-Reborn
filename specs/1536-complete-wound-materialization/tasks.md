@@ -1292,6 +1292,35 @@ entrypoints require no update for T065.
   matrix/example/manifest update is required because this phase changes only the Mortal
   physical-wound policy contract and no afterlife runtime surface. Phases B and C remain
   explicitly open for canonical anchors, scheduling/intents, publication, and durable replay.
+  T069 Phase B closure (2026-08-31): complete through `3c0b3b26`. The exact sole
+  four-argument `MortalWoundRecoveryPlanner.Plan(fs, lease, binding, woundId)` now enters
+  only through a private registry capability and the registry-current T066 accepted-state
+  export; stale bindings, mismatched wound IDs, detached leases, and caller-supplied
+  clocks/plans/ticks/policies cannot reach planning. Canonical world-minute arithmetic
+  covers due/grace boundaries, checked elapsed jumps, next anchors strictly after the
+  current minute, blocked/no-natural modes, simultaneous independent 10/7 recovery and
+  deterioration cadences, and death as a typed lifecycle handoff. Strict-worsening policy
+  authority is revalidated even while its condition is inactive. Planning is deterministic,
+  registers no common plan, and leaves every governed root and the complete canonical tree
+  byte-unchanged. The final owning policy/planner Focused control passes 25/25 with a
+  warning-free build, no timeout or duplicate IDs, and complete cleanup
+  (`20260831-192558-557-18844-a2e00bcd1b534598a5089740f76f9d4e-focused`). A complete
+  recovery-class diagnostic executed 67 tests with 44 PASS and exactly 23 failures at the
+  still-absent T067-B/T070-B stabilization, recovery-publication, and replay seams
+  (`20260831-185756-527-43648-34d00da3c5634739b6403990ccaab10b-focused`). The required
+  Fast checkpoint's first descriptor passed 1,304/1,304; the lane then hit its hard
+  five-minute limit while the second process emitted only the already-owned 31 treatment-
+  publication and 23 recovery-publication/replay REDs. It had complete owned-tree cleanup
+  and no duplicate completed IDs
+  (`20260831-190213-627-46268-ca6ce266b1114048999e29e32c68c01b-fast`); repeating the same
+  bounded lane cannot add headroom because Fast currently rejects timeout overrides.
+  Independent review found zero Critical/Important issues and one Minor missing test guard
+  against a second `Plan` overload; the guard was added and review declared Ready YES.
+  No GM prompt, example, manifest, Mortal guide, or afterlife matrix update is required:
+  this phase adds only the client-owned evaluator for the already documented Mortal
+  recovery policy/anchor contract and changes no GM-authored field, command, response,
+  pending/control surface, or afterlife runtime contract. T069 Phase C remains open until
+  T070-B publishes durable receipt/history evidence for invalid-history-first exact replay.
 - [ ] T070 [US2] Compose Mortal accepted-occurrence creation, opportunity-decision receipt/pending-occurrence consumption, plus diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. On a source-result transaction, accept only T064's complete harmful typed candidate batch, read both occurrence and receipt roots as signed before-images, combine pending and consumed replay by producer operation key plus batch ordinal/count, reject changed or incomplete batches, derive canonical occurrence/public identities inside the common plan, append only genuinely new candidates atomically in ordinal order, and expose opportunities only after the next active pending-turn snapshot has sealed exact bytes. On the later wound-decision transaction, extend the common signed-snapshot/before-image inventory with both occurrence and receipt roots. Every accepted `none` or `materialize` decision appends exactly one sealed receipt carrying the consumed occurrence's source replay authority and consumes exactly one occurrence; a decline publishes null wound/transition coordinates without inventing a wound-history row, while a materialized receipt carries exact wound/transition IDs and matches exactly one ordinary `create|worsen` history row on transition/wound/turn/event/operation/source authority. Exact cold replay emits no command/transition, changed decision conflicts, and failed publication/rollback leaves neither receipt nor consumed occurrence. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
