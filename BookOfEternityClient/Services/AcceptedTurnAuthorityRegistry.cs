@@ -13,6 +13,7 @@ internal static class AcceptedTurnAuthorityRegistry
     private static readonly object ProcedureReservationLiveCheckCapability = new();
     private static readonly object TreatmentResourceRegistryCapability = new();
     private static readonly object DeteriorationPolicyAuthorityCapability = new();
+    private static readonly object MortalWoundRecoveryPlannerCapability = new();
 
     internal static bool IsProcedureDicePoolReadCapability(object capability) =>
         ReferenceEquals(capability, ProcedureDicePoolReadCapability);
@@ -28,6 +29,9 @@ internal static class AcceptedTurnAuthorityRegistry
 
     internal static bool IsDeteriorationPolicyAuthorityCapability(object capability) =>
         ReferenceEquals(capability, DeteriorationPolicyAuthorityCapability);
+
+    internal static bool IsMortalWoundRecoveryPlannerCapability(object capability) =>
+        ReferenceEquals(capability, MortalWoundRecoveryPlannerCapability);
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(
         FileSystemManager fileSystem,
@@ -342,6 +346,33 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             return MortalWoundDeteriorationPolicyAuthority.InvalidAuthority(
                 "recovery.deteriorationPolicy",
+                exception.GetType().Name);
+        }
+    }
+
+    internal static MortalWoundRecoveryPlanningResult PlanMortalWoundRecovery(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        WoundAcceptedTurnBinding? binding,
+        string? woundId)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        try
+        {
+            return GetState(fileSystem, writeLease).PlanMortalWoundRecovery(
+                fileSystem,
+                writeLease,
+                binding,
+                woundId,
+                MortalWoundRecoveryPlannerCapability);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException or
+                OverflowException)
+        {
+            return MortalWoundRecoveryPlanner.RegistryFailure(
                 exception.GetType().Name);
         }
     }
@@ -1059,6 +1090,36 @@ internal static class AcceptedTurnAuthorityRegistry
                     coordinates: null,
                     policyRef,
                     scope: "recovery");
+            }
+        }
+
+        internal MortalWoundRecoveryPlanningResult PlanMortalWoundRecovery(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            WoundAcceptedTurnBinding? binding,
+            string? woundId,
+            object capability)
+        {
+            lock (_gate)
+            {
+                var acceptedState = _mortalWoundTreatmentAcceptedState;
+                if (!AcceptedTurnAuthorityRegistry
+                        .IsMortalWoundRecoveryPlannerCapability(capability) ||
+                    acceptedState is null ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !acceptedState.AgreesWithBindingAndWound(binding, woundId))
+                {
+                    return MortalWoundRecoveryPlanner.RegistryFailure(
+                        "missing, stale, foreign, or mismatched accepted-state binding");
+                }
+
+                return MortalWoundRecoveryPlanner.PlanRegistered(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    binding!,
+                    woundId!,
+                    capability);
             }
         }
 

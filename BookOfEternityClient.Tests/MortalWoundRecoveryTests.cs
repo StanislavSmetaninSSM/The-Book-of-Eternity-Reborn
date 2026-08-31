@@ -56,6 +56,33 @@ public sealed class MortalWoundRecoveryTests
         Scenario.StrictlyWorsening(), Scenario.NeutralPolicy(), Scenario.BeneficialPolicy()
     }.Select(static value => new object[] { value });
 
+    public static IEnumerable<object[]> NonReplayPlannerAuthorityRows => new[]
+    {
+        Scenario.DueMinusOne() with { StartsStabilized = false },
+        Scenario.AtDueBoundary() with { StartsStabilized = false },
+        Scenario.DuePlusOne() with { StartsStabilized = false },
+        Scenario.MultiCadenceJump() with { StartsStabilized = false },
+        Scenario.GraceMinusOne(),
+        Scenario.Grace(),
+        Scenario.GracePlusOne(),
+        Scenario.RequiresStabilization(),
+        Scenario.NoNaturalRecovery() with { StartsStabilized = false },
+        Scenario.CheckedOverflow() with { StartsStabilized = false },
+        Scenario.RecoveryNextAnchorOverflow() with { StartsStabilized = false },
+        Scenario.DeteriorationCadenceOverflow(),
+        Scenario.DeteriorationNextAnchorOverflow(),
+        Scenario.DeteriorationMultiCadence(),
+        Scenario.DeathHandoffRequired(),
+        Scenario.InactiveStrictPolicy(),
+        Scenario.ConcurrentIndependentCadences()
+    }.Select(static value => new object[] { value });
+
+    public static IEnumerable<object[]> InactiveNonWorseningPolicyRows => new[]
+    {
+        Scenario.InactiveNeutralPolicy(),
+        Scenario.InactiveBeneficialPolicy()
+    }.Select(static value => new object[] { value });
+
     [Theory]
     [MemberData(nameof(PlannerRows))]
     public void FixtureControl_RecoveryShapeAndWorldTimeAreCurrentlyValid(Scenario scenario)
@@ -117,6 +144,122 @@ public sealed class MortalWoundRecoveryTests
             Assert.True(Assert.IsType<bool>(Required(absentResult, "IsValid")), anchor);
             Assert.Empty(Values(absentResult, "Issues"));
         }
+    }
+
+    [Theory]
+    [MemberData(nameof(NonReplayPlannerAuthorityRows))]
+    public void T069B_PlannerUsesOnlyCanonicalNonReplayAuthorityWithoutWriting(
+        Scenario scenario)
+    {
+        using var fixture = Fixture.Create(scenario);
+        fixture.AssertCarrierIdentityHistoryAgreement();
+        var governedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var treeBefore = fixture.CaptureCanonicalTreeBytes();
+
+        var first = AssertPlannerResult(
+            InvokePlan(fixture),
+            scenario,
+            fixture.WoundId);
+        var repeated = AssertPlannerResult(
+            InvokePlan(fixture),
+            scenario,
+            fixture.WoundId);
+        if (first is not null)
+        {
+            Assert.NotNull(repeated);
+            Assert.Equal(
+                Required(first, "AuthorityFingerprint"),
+                Required(repeated!, "AuthorityFingerprint"));
+            Assert.Equal(
+                Required(first, "TickKey"),
+                Required(repeated, "TickKey"));
+        }
+
+        Fixture.AssertAllGovernedBytesUnchanged(
+            fixture.FileSystem,
+            governedBefore);
+        fixture.AssertCanonicalTreeBytesUnchanged(treeBefore);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public void T069B_PlannerRejectsStaleAcceptedBindingWithoutWriting()
+    {
+        using var fixture = Fixture.Create(Scenario.RequiresStabilization());
+        var staleBinding = fixture.Binding;
+        fixture.PrepareFreshContinuationTurn(45, "stale_recovery_binding");
+        var governedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var treeBefore = fixture.CaptureCanonicalTreeBytes();
+
+        AssertPlannerAuthorityRejected(InvokePlan(fixture, staleBinding));
+
+        Fixture.AssertAllGovernedBytesUnchanged(
+            fixture.FileSystem,
+            governedBefore);
+        fixture.AssertCanonicalTreeBytesUnchanged(treeBefore);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out _));
+    }
+
+    [Fact]
+    public void T069B_PlannerRejectsMismatchedWoundIdWithoutWriting()
+    {
+        using var fixture = Fixture.Create(Scenario.RequiresStabilization());
+        var governedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var treeBefore = fixture.CaptureCanonicalTreeBytes();
+
+        AssertPlannerAuthorityRejected(InvokePlan(
+            fixture,
+            woundId: "wound_other_current"));
+
+        Fixture.AssertAllGovernedBytesUnchanged(
+            fixture.FileSystem,
+            governedBefore);
+        fixture.AssertCanonicalTreeBytesUnchanged(treeBefore);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out _));
+    }
+
+    [Theory]
+    [MemberData(nameof(InactiveNonWorseningPolicyRows))]
+    public void T069B_PlannerRejectsInactiveNonWorseningPolicyWithoutWriting(
+        Scenario scenario)
+    {
+        using var fixture = Fixture.Create(scenario);
+        var governedBefore = Fixture.CaptureAllGovernedBytes(fixture.FileSystem);
+        var treeBefore = fixture.CaptureCanonicalTreeBytes();
+
+        var result = InvokePlan(fixture);
+
+        AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+        Assert.Equal("Rejected", Convert.ToString(Required(result, "Disposition")));
+        var issue = Assert.Single(
+            Values(result, "Issues").Select(Assert.IsType<ValidationIssue>));
+        Assert.Equal(
+            "mortal_wound_deterioration_policy_not_strictly_worsening",
+            issue.Code);
+        Assert.Equal(Fixture.CanonicalDeteriorationPolicyPath, issue.FilePath);
+        Assert.Null(Optional(result, "ReplayReceipt"));
+        Assert.Null(Optional(result, "Resolution"));
+        Fixture.AssertAllGovernedBytesUnchanged(
+            fixture.FileSystem,
+            governedBefore);
+        fixture.AssertCanonicalTreeBytesUnchanged(treeBefore);
+        Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out _));
     }
 
     [Fact]
@@ -291,11 +434,18 @@ public sealed class MortalWoundRecoveryTests
             parameter.Name.Contains("wound", StringComparison.OrdinalIgnoreCase));
     }
 
-    private static object InvokePlan(Fixture fixture)
+    private static object InvokePlan(
+        Fixture fixture,
+        WoundAcceptedTurnBinding? binding = null,
+        string? woundId = null)
     {
         var type = typeof(WoundMaterializationContract).Assembly.GetType(PlannerName, false, false);
         Assert.True(type is not null, $"T069 planner is absent for '{fixture.Name}'.");
-        var method = ExactStatic(type!, "Plan", 4);
+        var method = Assert.Single(
+            type!.GetMethods(
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => candidate.Name == "Plan");
+        Assert.Equal(4, method.GetParameters().Length);
         Assert.Equal("MortalWoundRecoveryPlanningResult", method.ReturnType.Name);
         Assert.Equal(typeof(FileSystemManager), method.GetParameters()[0].ParameterType);
         Assert.Equal(fixture.Lease.GetType(), method.GetParameters()[1].ParameterType);
@@ -306,7 +456,23 @@ public sealed class MortalWoundRecoveryTests
             p.Name!.Contains("fingerprint", StringComparison.OrdinalIgnoreCase) ||
             p.Name.Contains("tick", StringComparison.OrdinalIgnoreCase) ||
             p.Name.Contains("plan", StringComparison.OrdinalIgnoreCase));
-        return Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, fixture.WoundId);
+        return Invoke(
+            method,
+            fixture.FileSystem,
+            fixture.Lease,
+            binding ?? fixture.Binding,
+            woundId ?? fixture.WoundId);
+    }
+
+    private static void AssertPlannerAuthorityRejected(object result)
+    {
+        AssertClosed(result, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+        Assert.Equal("Rejected", Convert.ToString(Required(result, "Disposition")));
+        var issue = Assert.Single(
+            Values(result, "Issues").Select(Assert.IsType<ValidationIssue>));
+        Assert.Equal("mortal_wound_recovery_authority_invalid", issue.Code);
+        Assert.Null(Optional(result, "ReplayReceipt"));
+        Assert.Null(Optional(result, "Resolution"));
     }
 
     private static object? AssertPlannerResult(object result, Scenario scenario, string woundId)
@@ -689,6 +855,46 @@ public sealed class MortalWoundRecoveryTests
             "", null, 110, 130, [], "no_change", stabilized: false, expected: "Rejected");
         internal static Scenario BeneficialPolicy() => Create("beneficial_interruption_rejected", "requires_stabilization", 130,
             "", null, 110, 130, [], "add_recovery", stabilized: false, expected: "Rejected");
+        internal static Scenario InactiveNeutralPolicy() => Create(
+            "inactive_neutral_deterioration_rejected", "progressive", 109,
+            "", null, 110, null, [], "no_change", stabilized: false,
+            expected: "Rejected", elapsedCadences: 0);
+        internal static Scenario InactiveBeneficialPolicy() => Create(
+            "inactive_beneficial_deterioration_rejected", "progressive", 109,
+            "", null, 110, null, [], "add_recovery", stabilized: false,
+            expected: "Rejected", elapsedCadences: 0);
+        internal static Scenario InactiveStrictPolicy() => Create(
+            "inactive_strict_deterioration_retained", "progressive", 109,
+            "NotDue", "untreated_infection", 110, null, [],
+            "increase_severity", stabilized: false, elapsedCadences: 0);
+        internal static Scenario ConcurrentIndependentCadences()
+        {
+            var scenario = Create(
+                "concurrent_independent_recovery_and_deterioration",
+                "progressive",
+                145,
+                "Deteriorated",
+                "untreated_infection",
+                110,
+                130,
+                [
+                    "MortalWoundRecoveryProgressIntent",
+                    "MortalWoundRecoveryDeteriorationIntent"
+                ],
+                "increase_severity",
+                stabilized: false,
+                deteriorationAnchor: 100,
+                elapsedCadences: 4,
+                elapsedDeteriorationCadences: 3,
+                nextRecoveryAnchor: 150,
+                nextDeteriorationAnchor: 151);
+            var recovery = Assert.IsType<JsonObject>(scenario.Wound["recovery"]);
+            recovery["blockers"] = new JsonArray("contaminated");
+            var policy = Assert.IsType<JsonObject>(recovery["deteriorationPolicy"]);
+            policy["unmetConditions"] = new JsonArray("contaminated");
+            policy["cadenceMinutes"] = 7;
+            return scenario;
+        }
 
         private static Scenario Create(string name, string mode, long minute, string recoveryDisposition,
             string? expectedPolicyRef, long? due, long? grace, string[] intents, string? policyKind = null,
@@ -718,16 +924,20 @@ public sealed class MortalWoundRecoveryTests
             {
                 ["kind"] = "location", ["locationRef"] = "loc_field_clinic_001", ["targetRole"] = "target"
             });
-            var conditionAnchor = deteriorationAnchor ?? (policyKind is null ? null : creationMinute);
+            var conditionAnchor = deteriorationAnchor ??
+                (policyKind is null || mode != "requires_stabilization"
+                    ? null
+                    : creationMinute);
             var elapsedDeterioration = policyKind is null ? 0 : elapsedDeteriorationCadences;
             return new(name, mode, anchor, conditionAnchor, creationMinute, stabilizationMinute, minute, wound,
                 new JsonObject { ["currentTimeInMinutes"] = creationMinute }, expected, recoveryDisposition,
                 expectedPolicyRef, due, grace, elapsedCadences, elapsedDeterioration,
                 mode == "no_natural_recovery" ? null : nextRecoveryAnchor ?? (expected == "Rejected" ? null :
                     (elapsedCadences == 0 ? anchor + cadence : anchor + (elapsedCadences + 1) * cadence)),
-                nextDeteriorationAnchor ?? (conditionAnchor is null || elapsedDeterioration == 0
-                    ? (conditionAnchor is null ? null : conditionAnchor + (grace ?? 0))
-                    : conditionAnchor + (grace ?? 0) + elapsedDeterioration * cadence),
+                nextDeteriorationAnchor ?? (conditionAnchor is null
+                    ? null
+                    : conditionAnchor + graceMinutes +
+                      elapsedDeterioration * cadence),
                 intents, death, replay, policyValid, stabilized, noMechanics);
         }
     }
