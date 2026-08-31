@@ -1254,6 +1254,17 @@ entrypoints require no update for T065.
   owns `Finalize(resolution)`, confirmation/finalization, command/pending reconstruction,
   cancellation/validation/rollback release, and cold-restart evidence. Phase A does not
   invent a test resolution or a temporary finalization DTO to simulate Phase B.
+  T068 Phase A closure (2026-08-31): complete through `be9faa2a`. The exact three
+  production-only preparation overloads, immutable policy/claim/reservation authority,
+  same-gate procedure die/Fate liveness, generation-scoped logical agreements,
+  checked aggregate non-overbooking, exact retry/conflict, `not_required`, and opaque
+  creator-only rollback are GREEN. Final resource preparation is 19/19
+  (`20260831-101348-491-15528-309935302ea14e4eae7e8287c0111d62-focused`), the owning
+  procedure authority remains 39/39, and adjacent accepted-state/requirement authority
+  remains 238/238. Independent review found one Minor missing-null diagnostic; its
+  exact 0/2 RED was fixed with typed requirement/mode-authority issues, and rereview
+  returned Ready with zero remaining findings. Phase B remains explicitly open for
+  finalization, persistence/reconstruction, cancellation, restart, and replay.
 - [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. Stabilization clears the satisfied condition anchor while rebasing only recovery; a later accepted condition re-entry allocates a fresh deterioration anchor from that exact transition and minute without reallocating recovery. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
   T069 Phase A owns both closed deterioration-policy authority factories and exact
   strict-worsening classification. After T070-A has created canonical anchor state only
