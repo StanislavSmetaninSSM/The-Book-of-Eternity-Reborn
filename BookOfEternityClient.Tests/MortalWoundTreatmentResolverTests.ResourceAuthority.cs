@@ -186,6 +186,36 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertAuthorityFingerprint(ReadRequiredProperty(firstAuthority, "AuthorityFingerprint"));
     }
 
+    [Theory]
+    [InlineData(
+        true,
+        "mortal_wound_treatment_resource_requirement_authority_invalid")]
+    [InlineData(
+        false,
+        "mortal_wound_treatment_resource_mode_authority_invalid")]
+    public void ResourcePreparation_MissingClosedAuthorityRejectsWithTypedIssue(
+        bool omitRequirementAuthority,
+        string expectedCode)
+    {
+        var scenario = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var prepared = PrepareGuaranteedResourceInputs(
+            fixture,
+            scenario.OperationKey,
+            scenario.RouteId);
+
+        var result = MortalWoundTreatmentResourceComposer.PrepareGuaranteed(
+            prepared.AcceptedState,
+            prepared.Coordinates,
+            prepared.Before,
+            omitRequirementAuthority ? null! : prepared.RequirementAuthority,
+            omitRequirementAuthority ? prepared.CapabilityProof : null!);
+
+        AssertInvalidResourcePreparation(result, expectedCode);
+    }
+
     [Fact]
     public void ResourcePreparation_ProcedureQuantityProducesClosedHeldClaim()
     {
