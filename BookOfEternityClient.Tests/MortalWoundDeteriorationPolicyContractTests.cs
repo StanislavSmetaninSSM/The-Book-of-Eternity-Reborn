@@ -53,6 +53,8 @@ public sealed class MortalWoundDeteriorationPolicyContractTests
     [InlineData("unknown_result")]
     [InlineData("open_scalar_result")]
     [InlineData("zero_difficulty_complication")]
+    [InlineData("scalar_complication_draft")]
+    [InlineData("scalar_consequence_wrapper")]
     public void Parse_RejectsMalformedOrOpenPolicyBeforeAcceptedStateAuthority(
         string mutation)
     {
@@ -96,6 +98,19 @@ public sealed class MortalWoundDeteriorationPolicyContractTests
                     "treatmentDifficultyModifier"] = 0;
                 policy["result"] = result;
                 break;
+            case "scalar_complication_draft":
+                policy["result"] = new JsonObject
+                {
+                    ["kind"] = "add_complication",
+                    ["complicationDraft"] = 7
+                };
+                break;
+            case "scalar_consequence_wrapper":
+                var scalarWrapperResult = EffectlessComplicationResult();
+                scalarWrapperResult["complicationDraft"]!["consequenceDefinitions"] =
+                    new JsonArray(7);
+                policy["result"] = scalarWrapperResult;
+                break;
             default:
                 throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
         }
@@ -110,6 +125,24 @@ public sealed class MortalWoundDeteriorationPolicyContractTests
         Assert.Contains(parsed.Issues, issue =>
             issue.Code == "mortal_wound_deterioration_policy_invalid" &&
             issue.FilePath.StartsWith(PolicyPath, StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void Parse_InvalidOwnerKindWithPolicy_ReturnsValidationIssuesInsteadOfThrowing()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        wound["owner"]!["ownerKind"] = "unsupported_owner";
+        wound["recovery"]!["deteriorationPolicy"] = Policy(
+            new JsonObject { ["kind"] = "increase_severity" });
+
+        var parsed = WoundMaterializationContract.Parse(
+            wound.ToJsonString(),
+            WoundPath);
+
+        Assert.False(parsed.IsValid);
+        Assert.Null(parsed.Wound);
+        Assert.Contains(parsed.Issues, issue =>
+            issue.FilePath == WoundPath + ".owner.ownerKind");
     }
 
     private static JsonObject Policy(JsonObject result) => new()

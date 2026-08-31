@@ -100,6 +100,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             }),
             "mortal_wound_deterioration_policy_reference_mismatch");
 
+        AssertInvalidDeteriorationAuthority(
+            Invoke(create, new object?[]
+            {
+                acceptedState,
+                null,
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_authority_invalid");
+
         fixture.InvalidateDeteriorationAcceptedState();
         AssertInvalidDeteriorationAuthority(
             Invoke(create, new object?[]
@@ -157,6 +166,43 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 "untreated_infection"
             }),
             "mortal_wound_deterioration_policy_authority_invalid");
+
+        AssertInvalidDeteriorationAuthority(
+            Invoke(create, new object?[]
+            {
+                fixture.FileSystem,
+                fixture.Lease,
+                acceptedState.Binding,
+                "another_wound",
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_authority_invalid");
+    }
+
+    [Theory]
+    [InlineData("no_change")]
+    [InlineData("add_recovery")]
+    public void DeteriorationPolicyAuthority_RejectsRecognizedNonWorseningResults(
+        string kind)
+    {
+        var scenario = DeteriorationScenario(new JsonObject { ["kind"] = kind });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        AssertInvalidDeteriorationAuthority(
+            Invoke(DeteriorationFactory(3), new object?[]
+            {
+                acceptedState,
+                coordinates,
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_not_strictly_worsening");
     }
 
     [Fact]
@@ -244,6 +290,77 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 fullState,
                 fullCoordinates,
+                "untreated_infection"
+            }),
+            "mortal_wound_deterioration_policy_not_strictly_worsening");
+    }
+
+    [Fact]
+    public void DeteriorationPolicyAuthority_AcceptsEffectlessComplicationAtFiveRootBoundary()
+    {
+        var scenario = DeteriorationScenarioWithRootEnvelope(
+            DeteriorationComplicationResult(),
+            includeExistingMarker: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        ValidDeteriorationAuthority(Invoke(DeteriorationFactory(3), new object?[]
+        {
+            acceptedState,
+            coordinates,
+            "untreated_infection"
+        }));
+    }
+
+    [Fact]
+    public void DeteriorationPolicyAuthority_AcceptsFifthZeroSlotRoot()
+    {
+        var scenario = DeteriorationScenarioWithRootEnvelope(
+            DeteriorationMarkerComplicationResult(),
+            includeExistingMarker: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        ValidDeteriorationAuthority(Invoke(DeteriorationFactory(3), new object?[]
+        {
+            acceptedState,
+            coordinates,
+            "untreated_infection"
+        }));
+    }
+
+    [Fact]
+    public void DeteriorationPolicyAuthority_RejectsSixthRoot()
+    {
+        var scenario = DeteriorationScenarioWithRootEnvelope(
+            DeteriorationMarkerComplicationResult(),
+            includeExistingMarker: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var coordinates = CreateDeteriorationCoordinates(
+            fixture,
+            acceptedState,
+            scenario,
+            scenario.OperationKey);
+
+        AssertInvalidDeteriorationAuthority(
+            Invoke(DeteriorationFactory(3), new object?[]
+            {
+                acceptedState,
+                coordinates,
                 "untreated_infection"
             }),
             "mortal_wound_deterioration_policy_not_strictly_worsening");
@@ -365,6 +482,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "AuthorityFingerprint"));
     }
 
+    private static ResolverScenario DeteriorationScenarioWithRootEnvelope(
+        JsonObject result,
+        bool includeExistingMarker)
+    {
+        var scenario = DeteriorationScenario(result, severityRank: 4);
+        var before = scenario.Before.DeepClone().AsObject();
+        var consequences = before["consequences"]!.AsObject();
+        consequences["slotBudget"] = 4;
+        consequences["slotsUsed"] = 4;
+        consequences["entries"] = WoundContractTestData.Repeat(4, index =>
+            new JsonObject
+            {
+                ["slot"] = index + 1,
+                ["profileKey"] = WoundContractTestData.DistinctMortalProfile(index),
+                ["effectId"] = $"effect_deterioration_root_{index}",
+                ["readableSummary"] = $"Ограничение ухудшения {index + 1}."
+            });
+        var roots = new List<(string EffectId, string DefinitionKey, string Profile)>
+        {
+            ("effect_deterioration_root_0", "definition_deterioration_root_0", "action_control"),
+            ("effect_deterioration_root_1", "definition_deterioration_root_1", "characteristic_modifier"),
+            ("effect_deterioration_root_2", "definition_deterioration_root_2", "resistance_modifier"),
+            ("effect_deterioration_root_3", "definition_deterioration_root_3", "periodic_damage")
+        };
+        if (includeExistingMarker)
+        {
+            roots.Add((
+                "effect_deterioration_marker",
+                "definition_deterioration_marker",
+                "wound_consequence"));
+        }
+        consequences["ownedEffectSources"] =
+            WoundContractTestData.CreateOwnedEffectSources(
+                "wound_test_torn_side",
+                "mortal_world",
+                roots.ToArray());
+        return scenario with
+        {
+            Before = before,
+            OperationKey = scenario.OperationKey +
+                           (includeExistingMarker ? "_five_roots" : "_four_roots")
+        };
+    }
+
     private static JsonObject DeteriorationComplicationResult() => new()
     {
         ["kind"] = "add_complication",
@@ -382,6 +543,34 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ["consequenceDefinitions"] = new JsonArray()
         }
     };
+
+    private static JsonObject DeteriorationMarkerComplicationResult()
+    {
+        var result = DeteriorationComplicationResult();
+        var definition = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "deterioration_infection_marker",
+            "wound_consequence");
+        definition["links"] = new JsonArray();
+        definition["components"]![0]!["payload"]!.AsObject().Remove("woundId");
+        result["complicationDraft"]!["consequenceDefinitions"] = new JsonArray(
+            new JsonObject
+            {
+                ["definitionRef"] = "deterioration_infection_marker",
+                ["definition"] = definition,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "deterioration_infection"
+                    },
+                    ["slots"] = new JsonArray()
+                }
+            });
+        return result;
+    }
 
     private static MortalWoundTreatmentAttemptCoordinates CreateDeteriorationCoordinates(
         AcceptedStateFixture fixture,
