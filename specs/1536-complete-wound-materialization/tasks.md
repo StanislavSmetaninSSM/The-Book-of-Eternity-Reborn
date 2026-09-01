@@ -1267,7 +1267,7 @@ entrypoints require no update for T065.
   example, manifest, Mortal guide, or afterlife matrix update is required for T067-B:
   this phase changes only client-owned internal Mortal request, resolver, persistence,
   and claim-recovery authority; T070-B owns the later player-visible accepted publication.
-- [ ] T068 [US2] Implement the prerequisite two-stage item/resource authority before T067 resolver integration: closed policy validation with scoped/milestone `consume_requirement` selectors; `PrepareProcedure|PrepareCourse|PrepareGuaranteed` production overloads; deterministic lease/generation-scoped reservation IDs and restart-safe command/pending claim coalescing/aggregate non-overbooking; immutable policy/claim authority sealing against complete success witnesses; exact retry/conflict/release; and post-resolution `Finalize(resolution)` that consumes only selected full-quantity claims, releases tools/non-consuming results, and integrates cancellation/validation/rollback/replay without consuming an unmet/current/future course step in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`, and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- [x] T068 [US2] Implement the prerequisite two-stage item/resource authority before T067 resolver integration: closed policy validation with scoped/milestone `consume_requirement` selectors; `PrepareProcedure|PrepareCourse|PrepareGuaranteed` production overloads; deterministic lease/generation-scoped reservation IDs and restart-safe command/pending claim coalescing/aggregate non-overbooking; immutable policy/claim authority sealing against complete success witnesses; exact retry/conflict/release; and post-resolution `Finalize(resolution)` that consumes only selected full-quantity claims, releases tools/non-consuming results, and integrates cancellation/validation/rollback/replay without consuming an unmet/current/future course step in `BookOfEternityClient/Services/MortalWoundTreatmentResourceComposer.cs`, `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`, and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
   T068 MUST accept complete course-mode authority (not bare time), seal matching course
   ID/ordinal/coordinate evidence into bundle/reservation claims, and finalize solely from
   the resolution's full nested RequestAuthority without an unsealed live lookup.
@@ -1288,8 +1288,27 @@ entrypoints require no update for T065.
   procedure authority remains 39/39, and adjacent accepted-state/requirement authority
   remains 238/238. Independent review found one Minor missing-null diagnostic; its
   exact 0/2 RED was fixed with typed requirement/mode-authority issues, and rereview
-  returned Ready with zero remaining findings. Phase B remains explicitly open for
-  finalization, persistence/reconstruction, cancellation, restart, and replay.
+  returned Ready with zero remaining findings.
+  T068 Phase B closure (2026-09-01): complete through `d6c02837`. The pure sealed
+  `Finalize(resolution)` derives immutable full-quantity consume/release plans without
+  writes; durable command/pending holds and history tombstones reconstruct atomically
+  across cold restart; and reservations now follow the exact capacity-bearing
+  `ProvisionalHeld -> ConfirmedHeld -> Finalized|Released` lifecycle with reason-bound
+  release, stale-owner rejection, rollback ordering, current-state/capability gates, and
+  idempotent terminal retries. Final bounded controls passed resource finalization 26/26
+  (`20260901-123455-412-31688-28ecd13e49e64d73bec16f00f35544df-focused`), resource
+  preparation 19/19 (`20260901-123855-025-44100-73a0cdc67ba64672a51f5e4a365fd5e5-focused`),
+  persistence lifecycle 2/2 (`20260901-122637-846-10008-bff8f484cd704f6ca26d0c62ad964437-focused`),
+  and complete cold recovery 19/19
+  (`20260901-130052-777-36240-67fba474fb6d43b0972240c384aa9b34-focused`). Independent
+  whole-range rereview returned spec PASS and code-quality PASS with no findings and
+  Ready YES. The retained Fast artifact was not repeated: its completed descriptor was
+  GREEN and its unfinished failures are the still-open T070-B publication/replay
+  boundary, so another bounded Fast run would add no T068 evidence. No GM prompt,
+  documentation, example, manifest, browser/console, or afterlife update is required:
+  T068 is internal client-owned Mortal authority. Positive canonical publication and
+  production commit invocation remain explicitly assigned to T070-B; no migration or
+  premature publisher was added.
 - [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. Stabilization clears the satisfied condition anchor while rebasing only recovery; a later accepted condition re-entry allocates a fresh deterioration anchor from that exact transition and minute without reallocating recovery. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
   T069 Phase A owns both closed deterioration-policy authority factories and exact
   strict-worsening classification. After T070-A has created canonical anchor state only
