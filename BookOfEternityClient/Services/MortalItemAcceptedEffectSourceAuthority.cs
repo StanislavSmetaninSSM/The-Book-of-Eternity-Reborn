@@ -150,6 +150,73 @@ internal static class MortalItemAcceptedTurnAuthority
             governedItemIds);
     }
 
+    internal static IReadOnlyList<ValidationIssue>
+        RegisterValidatedTreatmentItems(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            MortalItemCarrierCatalog catalog,
+            IEnumerable<string> knownItemIds,
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
+        ArgumentNullException.ThrowIfNull(catalog);
+        ArgumentNullException.ThrowIfNull(knownItemIds);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
+
+        var newCandidates = catalog.Occurrences
+            .Where(static occurrence =>
+                occurrence.ItemId == null &&
+                occurrence.CreationRef != null)
+            .OrderBy(static occurrence => occurrence.CreationRef, StringComparer.Ordinal)
+            .Select(occurrence => new NewCandidate(
+                occurrence.CreationRef!,
+                occurrence.Item.DeepClone().AsObject(),
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                CloneCarrier(occurrence.Carrier),
+                IsEligiblePlayerEffectSource(occurrence),
+                IsEquippedPlayerReference(catalog, occurrence.CreationRef!)))
+            .ToArray();
+        var stableCandidates = catalog.Occurrences
+            .Where(static occurrence => occurrence.ItemId != null)
+            .OrderBy(static occurrence => occurrence.ItemId, StringComparer.Ordinal)
+            .Select(occurrence => new StableCandidate(
+                occurrence.ItemId!,
+                occurrence.Item.DeepClone().AsObject(),
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                CloneCarrier(occurrence.Carrier),
+                IsEligiblePlayerEffectSource(occurrence),
+                IsEquippedPlayerReference(catalog, occurrence.ItemId!)))
+            .ToArray();
+        var governedItemIds = knownItemIds
+            .OrderBy(static itemId => itemId, StringComparer.Ordinal)
+            .ToArray();
+        var fingerprint = CreateFingerprint(
+            newCandidates,
+            stableCandidates,
+            governedItemIds);
+        return AcceptedTurnAuthorityRegistry
+            .RegisterMortalTreatmentItemsValidated(
+                fs,
+                writeLease,
+                sessionId,
+                snapshotToken,
+                fingerprint,
+                newCandidates,
+                stableCandidates,
+                governedItemIds,
+                treatmentContinuationAuthority,
+                reservationAuthority);
+    }
+
     internal static IReadOnlyList<EffectSourceExport> GetValidatedEffectSources(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,

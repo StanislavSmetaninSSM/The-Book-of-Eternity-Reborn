@@ -48,13 +48,15 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             FileSystemManager.CanonicalWriteLease writeLease,
             AcceptedMechanicsWoundStageBundle bundle,
             object continuationAuthority,
+            object reservationAuthority,
             long currentTimeInMinutes) => ComposeCore(
                 fileSystem,
                 writeLease,
                 bundle,
                 anchorPlan: null,
                 treatmentCurrentTimeInMinutes: currentTimeInMinutes,
-                treatmentContinuationAuthority: continuationAuthority);
+                treatmentContinuationAuthority: continuationAuthority,
+                treatmentReservationAuthority: reservationAuthority);
 
     private static AcceptedMechanicsWoundCommonInputCompositionResult ComposeCore(
         FileSystemManager fileSystem,
@@ -62,7 +64,8 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
         AcceptedMechanicsWoundStageBundle bundle,
         MortalWoundCanonicalAnchorPlan? anchorPlan,
         long? treatmentCurrentTimeInMinutes,
-        object? treatmentContinuationAuthority = null)
+        object? treatmentContinuationAuthority = null,
+        object? treatmentReservationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -77,11 +80,16 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 "missing or competing publication authority");
         }
         if (treatmentCurrentTimeInMinutes is not null &&
-            (!ReferenceEquals(
+            (treatmentContinuationAuthority is null ||
+             !ReferenceEquals(
                  bundle.PreparedPlan.TreatmentContinuationAuthority,
                  treatmentContinuationAuthority) ||
              !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(
-                 bundle.PreparedPlan)))
+                 bundle.PreparedPlan) ||
+             treatmentReservationAuthority is null ||
+             !WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
+                 treatmentContinuationAuthority,
+                 treatmentReservationAuthority)))
         {
             return Failed(
                 WoundIdentityState.StatePath,
@@ -279,13 +287,22 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                         null,
                         issues);
                 }
-                MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
-                    fileSystem,
-                    writeLease,
-                    binding.SessionId,
-                    binding.SnapshotToken,
-                    itemCatalog,
-                    itemIdentity.EntriesByItemId.Keys);
+                issues.AddRange(MortalItemAcceptedTurnAuthority
+                    .RegisterValidatedTreatmentItems(
+                        fileSystem,
+                        writeLease,
+                        binding.SessionId,
+                        binding.SnapshotToken,
+                        itemCatalog,
+                        itemIdentity.EntriesByItemId.Keys,
+                        treatmentContinuationAuthority!,
+                        treatmentReservationAuthority!));
+                if (issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
             }
 
             var sourcesResult = ResourceMutationSourceCatalog.Create(

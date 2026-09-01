@@ -721,6 +721,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 fixture.Lease,
                 ordinaryBundle,
                 continuationAuthority,
+                new object(),
                 1_260);
         Assert.False(foreign.Success);
         Assert.Contains(foreign.Issues, static issue =>
@@ -850,6 +851,163 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             out _,
             out var cached));
         Assert.Same(admitted.Value, cached.Plan);
+    }
+
+    [Fact]
+    public async Task PublicationPlan_StaleCancelledReservationCannotEraseLaterCommittedPlan()
+    {
+        var armed = 0;
+        var observed = 0;
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "untouched_player_skill_reads_current_lease_bound_root",
+                publication: true),
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (Volatile.Read(ref armed) == 1 &&
+                        Interlocked.CompareExchange(ref observed, 1, 0) == 0)
+                    {
+                        entered.Set();
+                        release.Wait();
+                    }
+                    return Task.CompletedTask;
+                }
+            });
+        var staleAttempt = PreparePublicationAttempt(fixture);
+        var laterAttempt = PreparePublicationAttempt(
+            fixture,
+            CapabilityAuthorityFixture.OperationKey + "_later_committed");
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+        Volatile.Write(ref armed, 1);
+
+        var staleTask = Task.Run(() => InvokeT070Publication(
+            fixture,
+            staleAttempt.AcceptedState,
+            staleAttempt.Request,
+            staleAttempt.Resolution));
+        TypedResultView? later = null;
+        try
+        {
+            Assert.True(entered.Wait(TimeSpan.FromSeconds(15)));
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(
+                fixture.FileSystem,
+                fixture.Lease);
+            later = InvokeT070Publication(
+                fixture,
+                laterAttempt.AcceptedState,
+                laterAttempt.Request,
+                laterAttempt.Resolution);
+            AssertValidResultShell(
+                later.IsValid,
+                later.Issues,
+                later.Value,
+                "later committed treatment publication");
+        }
+        finally
+        {
+            release.Set();
+        }
+        var stale = await staleTask;
+
+        Assert.NotNull(later);
+        Assert.False(stale.IsValid);
+        Assert.Null(stale.Value);
+        Assert.Contains(stale.Issues, static issue =>
+            issue.Code is "mortal_wound_treatment_publication_conflict" or
+                "mortal_wound_treatment_publication_reservation_invalid");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.True(cached.Success, DescribeIssues(cached.Issues));
+        Assert.Same(later.Value, cached.Plan);
+        Assert.Equal(
+            ReadRequiredProperty(later.Value!, "PreparedPlanFingerprint"),
+            ReadRequiredProperty(cached.Plan!, "PreparedPlanFingerprint"));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
+    [Fact]
+    public async Task PublicationPlan_StaleReservationCannotRegisterTreatmentItemsAfterLaterCommit()
+    {
+        var armed = 0;
+        var observed = 0;
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "untouched_player_skill_reads_current_lease_bound_root",
+                publication: true),
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (Volatile.Read(ref armed) == 1 &&
+                        string.Equals(
+                            path,
+                            MortalItemIdentityState.StatePath,
+                            StringComparison.Ordinal) &&
+                        Interlocked.CompareExchange(ref observed, 1, 0) == 0)
+                    {
+                        entered.Set();
+                        release.Wait();
+                    }
+                    return Task.CompletedTask;
+                }
+            });
+        var staleAttempt = PreparePublicationAttempt(fixture);
+        var laterAttempt = PreparePublicationAttempt(
+            fixture,
+            CapabilityAuthorityFixture.OperationKey + "_item_later_committed");
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+        Volatile.Write(ref armed, 1);
+
+        var staleTask = Task.Run(() => InvokeT070Publication(
+            fixture,
+            staleAttempt.AcceptedState,
+            staleAttempt.Request,
+            staleAttempt.Resolution));
+        TypedResultView? later = null;
+        try
+        {
+            Assert.True(entered.Wait(TimeSpan.FromSeconds(15)));
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(
+                fixture.FileSystem,
+                fixture.Lease);
+            later = InvokeT070Publication(
+                fixture,
+                laterAttempt.AcceptedState,
+                laterAttempt.Request,
+                laterAttempt.Resolution);
+            AssertValidResultShell(
+                later.IsValid,
+                later.Issues,
+                later.Value,
+                "later publication committed before stale item registration");
+        }
+        finally
+        {
+            release.Set();
+        }
+        var stale = await staleTask;
+
+        Assert.NotNull(later);
+        Assert.False(stale.IsValid);
+        Assert.Contains(stale.Issues, static issue =>
+            issue.Code ==
+                "mortal_wound_treatment_publication_reservation_invalid");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.Same(later.Value, cached.Plan);
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
     }
 
     [Theory]

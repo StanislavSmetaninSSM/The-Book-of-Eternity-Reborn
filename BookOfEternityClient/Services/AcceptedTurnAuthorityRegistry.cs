@@ -153,11 +153,43 @@ internal static class AcceptedTurnAuthorityRegistry
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             WoundAcceptedTurnInput input,
-            object treatmentContinuationAuthority) =>
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
         GetState(fileSystem, writeLease)
             .GetOrBuildWoundTreatmentContinuationPrepared(
                 input,
-                treatmentContinuationAuthority);
+                treatmentContinuationAuthority,
+                reservationAuthority);
+
+    internal static WoundEffectBatchPlanningResult
+        GetOrBuildWoundTreatmentContinuationEffectValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            WoundPreparedAcceptedTurnPlan prepared,
+            EffectAcceptedTurnInput input,
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+        GetState(fileSystem, writeLease)
+            .GetOrBuildWoundEffectValidated(
+                prepared,
+                input,
+                treatmentContinuationAuthority,
+                reservationAuthority);
+
+    internal static WoundAcceptedTurnPlanningResult
+        GetOrBuildWoundTreatmentContinuationFinalValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            WoundPreparedAcceptedTurnPlan prepared,
+            WoundEffectBatchPlanningResult effectResult,
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+        GetState(fileSystem, writeLease)
+            .GetOrBuildWoundFinal(
+                prepared,
+                effectResult,
+                treatmentContinuationAuthority,
+                reservationAuthority);
 
     internal static WoundAcceptedTurnPlanningResult GetOrBuildWoundFinalValidated(
         FileSystemManager fileSystem,
@@ -251,6 +283,28 @@ internal static class AcceptedTurnAuthorityRegistry
             newCandidates,
             stableCandidates,
             governedItemIds);
+
+    internal static IReadOnlyList<ValidationIssue>
+        RegisterMortalTreatmentItemsValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            string fingerprint,
+            IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
+            IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
+            IReadOnlyList<string> governedItemIds,
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+        GetState(fileSystem, writeLease).RegisterMortalTreatmentItemsValidated(
+            sessionId,
+            snapshotToken,
+            fingerprint,
+            newCandidates,
+            stableCandidates,
+            governedItemIds,
+            treatmentContinuationAuthority,
+            reservationAuthority);
 
     internal static bool HasMortalItemsValidated(
         FileSystemManager fileSystem,
@@ -1958,14 +2012,9 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (!ReferenceEquals(
                         _mortalWoundTreatmentAcceptedState,
                         acceptedState) ||
-                    _mortalWoundTreatmentPublicationFingerprint is not null ||
-                    !ReferenceEquals(
-                        _mortalWoundTreatmentPublicationReservation,
-                        reservationAuthority) ||
-                    !string.Equals(
-                        _mortalWoundTreatmentReservedFingerprint,
-                        semanticFingerprint,
-                        StringComparison.Ordinal))
+                    !OwnsMortalWoundTreatmentPublicationReservation(
+                        continuationAuthority,
+                        reservationAuthority))
                 {
                     return new AcceptedMechanicsPlanningResult(
                         null,
@@ -2208,10 +2257,20 @@ internal static class AcceptedTurnAuthorityRegistry
         internal WoundAcceptedTurnPreparationResult
             GetOrBuildWoundTreatmentContinuationPrepared(
                 WoundAcceptedTurnInput input,
-                object treatmentContinuationAuthority)
+                object treatmentContinuationAuthority,
+                object reservationAuthority)
         {
             lock (_gate)
             {
+                if (!OwnsMortalWoundTreatmentPublicationReservation(
+                        treatmentContinuationAuthority,
+                        reservationAuthority))
+                {
+                    return FailedWoundPrepared(
+                        "mortal_wound_treatment_publication_reservation_invalid",
+                        "the current exact private treatment publication reservation",
+                        "stale or cancelled treatment publication reservation");
+                }
                 try
                 {
                     var result = _woundPlan
@@ -2265,10 +2324,22 @@ internal static class AcceptedTurnAuthorityRegistry
 
         internal WoundEffectBatchPlanningResult GetOrBuildWoundEffectValidated(
             WoundPreparedAcceptedTurnPlan prepared,
-            EffectAcceptedTurnInput input)
+            EffectAcceptedTurnInput input,
+            object? treatmentContinuationAuthority = null,
+            object? reservationAuthority = null)
         {
             lock (_gate)
             {
+                if (!WoundStageReservationAgrees(
+                        prepared,
+                        treatmentContinuationAuthority,
+                        reservationAuthority))
+                {
+                    return FailedWoundEffect(
+                        "mortal_wound_treatment_publication_reservation_invalid",
+                        "the current exact private treatment publication reservation",
+                        "stale or cancelled treatment publication reservation");
+                }
                 var preparedMismatch =
                     _woundPlan.GetPreparedMismatchCode(prepared);
                 if (preparedMismatch is not null)
@@ -2336,10 +2407,22 @@ internal static class AcceptedTurnAuthorityRegistry
 
         internal WoundAcceptedTurnPlanningResult GetOrBuildWoundFinal(
             WoundPreparedAcceptedTurnPlan prepared,
-            WoundEffectBatchPlanningResult effectResult)
+            WoundEffectBatchPlanningResult effectResult,
+            object? treatmentContinuationAuthority = null,
+            object? reservationAuthority = null)
         {
             lock (_gate)
             {
+                if (!WoundStageReservationAgrees(
+                        prepared,
+                        treatmentContinuationAuthority,
+                        reservationAuthority))
+                {
+                    return FailedWoundFinal(
+                        "mortal_wound_treatment_publication_reservation_invalid",
+                        "the current exact private treatment publication reservation",
+                        "stale or cancelled treatment publication reservation");
+                }
                 var preparedMismatch =
                     _woundPlan.GetPreparedMismatchCode(prepared);
                 if (preparedMismatch is not null)
@@ -2464,6 +2547,42 @@ internal static class AcceptedTurnAuthorityRegistry
                     newCandidates,
                     stableCandidates,
                     governedItemIds);
+        }
+
+        internal IReadOnlyList<ValidationIssue>
+            RegisterMortalTreatmentItemsValidated(
+                string sessionId,
+                string snapshotToken,
+                string fingerprint,
+                IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
+                IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
+                IReadOnlyList<string> governedItemIds,
+                object treatmentContinuationAuthority,
+                object reservationAuthority)
+        {
+            lock (_gate)
+            {
+                if (!OwnsMortalWoundTreatmentPublicationReservation(
+                        treatmentContinuationAuthority,
+                        reservationAuthority))
+                {
+                    return new[]
+                    {
+                        WoundIssue(
+                            "mortal_wound_treatment_publication_reservation_invalid",
+                            "the current exact private treatment publication reservation",
+                            "stale or cancelled treatment publication reservation")
+                    };
+                }
+                _mortalItems.Register(
+                    sessionId,
+                    snapshotToken,
+                    fingerprint,
+                    newCandidates,
+                    stableCandidates,
+                    governedItemIds);
+                return Array.Empty<ValidationIssue>();
+            }
         }
 
         internal bool HasMortalItemsValidated()
@@ -2636,6 +2755,41 @@ internal static class AcceptedTurnAuthorityRegistry
             _mortalWoundTreatmentReservedFingerprint = null;
         }
 
+        private bool OwnsMortalWoundTreatmentPublicationReservation(
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+            _mortalWoundTreatmentPublicationFingerprint is null &&
+            _mortalWoundTreatmentPublicationReservation is not null &&
+            _mortalWoundTreatmentReservedFingerprint is not null &&
+            ReferenceEquals(
+                _mortalWoundTreatmentPublicationReservation,
+                reservationAuthority) &&
+            WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
+                treatmentContinuationAuthority,
+                reservationAuthority,
+                _mortalWoundTreatmentReservedFingerprint);
+
+        private bool WoundStageReservationAgrees(
+            WoundPreparedAcceptedTurnPlan prepared,
+            object? treatmentContinuationAuthority,
+            object? reservationAuthority)
+        {
+            var preparedAuthority = prepared.TreatmentContinuationAuthority;
+            if (preparedAuthority is null)
+            {
+                return treatmentContinuationAuthority is null &&
+                       reservationAuthority is null;
+            }
+            return treatmentContinuationAuthority is not null &&
+                   reservationAuthority is not null &&
+                   ReferenceEquals(
+                       preparedAuthority,
+                       treatmentContinuationAuthority) &&
+                   OwnsMortalWoundTreatmentPublicationReservation(
+                       treatmentContinuationAuthority,
+                       reservationAuthority);
+        }
+
         private static WoundEffectBatchPlanningResult Detach(
             WoundEffectBatchPlanningResult result) =>
             new(result.Plan, result.Issues);
@@ -2657,6 +2811,12 @@ internal static class AcceptedTurnAuthorityRegistry
         }
 
         private static WoundEffectBatchPlanningResult FailedWoundEffect(
+            string code,
+            string expected,
+            string actual) =>
+            new(null, new[] { WoundIssue(code, expected, actual) });
+
+        private static WoundAcceptedTurnPreparationResult FailedWoundPrepared(
             string code,
             string expected,
             string actual) =>

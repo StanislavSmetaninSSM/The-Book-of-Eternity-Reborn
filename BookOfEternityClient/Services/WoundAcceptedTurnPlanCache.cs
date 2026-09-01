@@ -17,6 +17,7 @@ internal sealed class WoundAcceptedTurnPlanCache
     private readonly WoundAcceptedTurnFinalizationFactory _finalizer;
     private string? _preparedInputFingerprint;
     private string? _preparedTreatmentContinuationFingerprint;
+    private object? _preparedTreatmentContinuationAuthority;
     private string? _preparedFingerprint;
     private object? _preparedStageToken;
     private WoundAcceptedTurnPreparationResult? _preparedResult;
@@ -120,7 +121,10 @@ internal sealed class WoundAcceptedTurnPlanCache
                 string.Equals(
                     _preparedTreatmentContinuationFingerprint,
                     treatmentContinuationFingerprint,
-                    StringComparison.Ordinal))
+                    StringComparison.Ordinal) &&
+                ReferenceEquals(
+                    _preparedTreatmentContinuationAuthority,
+                    treatmentContinuationAuthority))
             {
                 reused = true;
                 return Detach(_preparedResult);
@@ -161,6 +165,8 @@ internal sealed class WoundAcceptedTurnPlanCache
             _preparedInputFingerprint = inputFingerprint;
             _preparedTreatmentContinuationFingerprint =
                 treatmentContinuationFingerprint;
+            _preparedTreatmentContinuationAuthority =
+                treatmentContinuationAuthority;
             _preparedFingerprint = plan.WoundPreparationFingerprint;
             _preparedStageToken = stageToken;
             _preparedResult = Detach(validated);
@@ -843,6 +849,7 @@ internal sealed class WoundAcceptedTurnPlanCache
     {
         _preparedInputFingerprint = null;
         _preparedTreatmentContinuationFingerprint = null;
+        _preparedTreatmentContinuationAuthority = null;
         _preparedFingerprint = null;
         _preparedStageToken = null;
         _preparedResult = null;
@@ -924,19 +931,74 @@ internal static class WoundAcceptedTurnPlanAuthority
             BookOfEternityClient.Core.FileSystemManager fileSystem,
             BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,
             WoundAcceptedTurnInput input,
-            object treatmentContinuationAuthority)
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         return AcceptedTurnAuthorityRegistry
             .GetOrBuildWoundTreatmentContinuationPreparedValidated(
                 fileSystem,
                 writeLease,
                 input,
-                treatmentContinuationAuthority);
+                treatmentContinuationAuthority,
+                reservationAuthority);
+    }
+
+    internal static WoundEffectBatchPlanningResult
+        GetOrBuildTreatmentContinuationEffectValidated(
+            BookOfEternityClient.Core.FileSystemManager fileSystem,
+            BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,
+            WoundPreparedAcceptedTurnPlan prepared,
+            EffectAcceptedTurnInput input,
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(prepared);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .GetOrBuildWoundTreatmentContinuationEffectValidated(
+                fileSystem,
+                writeLease,
+                prepared,
+                input,
+                treatmentContinuationAuthority,
+                reservationAuthority);
+    }
+
+    internal static WoundAcceptedTurnPlanningResult
+        GetOrBuildTreatmentContinuationFinalValidated(
+            BookOfEternityClient.Core.FileSystemManager fileSystem,
+            BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,
+            WoundPreparedAcceptedTurnPlan prepared,
+            WoundEffectBatchPlanningResult effectResult,
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(prepared);
+        ArgumentNullException.ThrowIfNull(effectResult);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .GetOrBuildWoundTreatmentContinuationFinalValidated(
+                fileSystem,
+                writeLease,
+                prepared,
+                effectResult,
+                treatmentContinuationAuthority,
+                reservationAuthority);
     }
 
     internal static WoundAcceptedTurnPreparationResult GetOrBuildPreparedValidated(
