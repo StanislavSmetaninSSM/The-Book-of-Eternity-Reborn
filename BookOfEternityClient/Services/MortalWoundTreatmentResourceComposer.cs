@@ -55,6 +55,48 @@ internal sealed class MortalWoundTreatmentResourcePreparationResult
         null);
 }
 
+internal sealed class MortalWoundTreatmentResourceRehydrationResult
+{
+    private readonly ReadOnlyCollection<ValidationIssue> _issues;
+
+    private MortalWoundTreatmentResourceRehydrationResult(
+        bool isValid,
+        IEnumerable<ValidationIssue> issues,
+        MortalWoundTreatmentResourceReservationAuthority? authority)
+    {
+        IsValid = isValid;
+        _issues = MortalWoundTreatmentShellDetachment.Freeze(issues);
+        Authority = authority;
+    }
+
+    internal bool IsValid { get; }
+    internal IReadOnlyList<ValidationIssue> Issues => _issues;
+    internal MortalWoundTreatmentResourceReservationAuthority? Authority { get; }
+
+    internal static MortalWoundTreatmentResourceRehydrationResult Valid(
+        MortalWoundTreatmentResourceReservationAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        return new MortalWoundTreatmentResourceRehydrationResult(
+            true,
+            Array.Empty<ValidationIssue>(),
+            authority);
+    }
+
+    internal static MortalWoundTreatmentResourceRehydrationResult Invalid(
+        ValidationIssue issue)
+    {
+        ArgumentNullException.ThrowIfNull(issue);
+        return new MortalWoundTreatmentResourceRehydrationResult(
+            false,
+            new[] { issue },
+            null);
+    }
+
+    internal static MortalWoundTreatmentResourceRehydrationResult Invalid(
+        IEnumerable<ValidationIssue> issues) => new(false, issues, null);
+}
+
 internal sealed class MortalWoundTreatmentResourceFinalizationResult
 {
     private readonly ReadOnlyCollection<ValidationIssue> _issues;
@@ -635,6 +677,67 @@ internal static class MortalWoundTreatmentResourceComposer
             preparation.Authority);
     }
 
+    internal static MortalWoundTreatmentResourceRehydrationResult
+        RehydratePersistedAuthority(MortalWoundTreatmentAttemptRequest? request)
+    {
+        if (request is null ||
+            !MortalWoundTreatmentDetachedSealValidator.IsValid(request))
+        {
+            return InvalidRehydration(
+                "mortal_wound_treatment_resource_recovery_request_invalid",
+                "one complete independently valid detached request",
+                request is null ? "missing request" : "request seal mismatch");
+        }
+
+        try
+        {
+            var issues = new List<ValidationIssue>();
+            IReadOnlyList<MortalWoundTreatmentResourceClaim>? claims;
+            if (request.RequirementAuthority.InterruptionReason is not null)
+            {
+                claims = Array.Empty<MortalWoundTreatmentResourceClaim>();
+            }
+            else if (!TryBuildClaims(request.RequirementAuthority, issues, out claims))
+            {
+                return MortalWoundTreatmentResourceRehydrationResult.Invalid(issues);
+            }
+
+            var persisted = request.ResourceAuthority;
+            var rebuilt = claims!.Count == 0
+                ? MortalWoundTreatmentResourceReservationAuthority.CreateNotRequired(
+                    AuthorityMintCapability,
+                    request.Coordinates,
+                    request.RequirementAuthority.RouteFingerprint,
+                    request.RequirementAuthority,
+                    persisted.Policy)
+                : MortalWoundTreatmentResourceReservationAuthority.CreateHeld(
+                    AuthorityMintCapability,
+                    request.Coordinates,
+                    request.RequirementAuthority.RouteFingerprint,
+                    request.RequirementAuthority,
+                    persisted.Policy,
+                    claims);
+            if (!HasExactResourceAuthorityAgreement(persisted, rebuilt))
+            {
+                return InvalidRehydration(
+                    "mortal_wound_treatment_resource_recovery_authority_mismatch",
+                    "the exact persisted disposition, identifier, public claims, policy, and authority seal",
+                    persisted.AuthorityFingerprint);
+            }
+
+            return MortalWoundTreatmentResourceRehydrationResult.Valid(rebuilt);
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            return InvalidRehydration(
+                "mortal_wound_treatment_resource_recovery_invalid",
+                "one freshly rebuilt resource authority from complete requirement evidence",
+                exception.GetType().Name);
+        }
+    }
+
     internal static MortalWoundTreatmentResourceFinalizationResult Finalize(
         MortalWoundTreatmentResolution resolution)
     {
@@ -1002,6 +1105,22 @@ internal static class MortalWoundTreatmentResourceComposer
         actual: actual,
         repairHint:
         "Discard the untrusted result and resolve the complete sealed treatment request again.");
+
+    private static MortalWoundTreatmentResourceRehydrationResult InvalidRehydration(
+        string code,
+        string expected,
+        string actual) => MortalWoundTreatmentResourceRehydrationResult.Invalid(
+        new ValidationIssue(
+            IssuePath + ".recovery",
+            IssueSeverity.Error,
+            "The persisted Mortal wound-treatment resource authority cannot be restored.",
+            code: code,
+            actor: "Client",
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+            "Discard the untrusted persisted request and prepare it again from current accepted state."));
 
     private static MortalWoundTreatmentResourcePreparationResult Prepare(
         string mode,

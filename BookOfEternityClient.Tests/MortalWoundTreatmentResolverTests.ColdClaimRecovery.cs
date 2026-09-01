@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +7,205 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    [Fact]
+    public void ColdClaimRecovery_FinalizedTombstoneCannotReenterHeldCapacity()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_finalized_tombstone",
+            scenario.RouteId);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var capability = Assert.IsType<object>(typeof(AcceptedTurnAuthorityRegistry)
+            .GetField(
+                "TreatmentResourceRegistryCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+        var registry = new MortalWoundTreatmentResourceReservationRegistry();
+
+        var restored = registry.RestoreFinalized(
+            capability,
+            request.Coordinates,
+            request.Mode,
+            request.ResourceAuthority);
+        var repeated = registry.RestoreFinalized(
+            capability,
+            request.Coordinates,
+            request.Mode,
+            request.ResourceAuthority);
+        var reentered = registry.Reserve(
+            capability,
+            request.Coordinates,
+            request.Mode,
+            request.ResourceAuthority);
+
+        Assert.True(restored.IsValid, DescribeIssues(restored.Issues));
+        Assert.True(repeated.IsValid, DescribeIssues(repeated.Issues));
+        Assert.False(reentered.IsValid);
+        Assert.Contains(reentered.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_conflict",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_CommandOnlyCatalogClassifiesHeldRequest()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_command_only_held",
+            scenario.RouteId);
+        PersistTreatmentCommand(
+            fixture,
+            ComposeTreatmentCommand(flow, "The command owns one durable hold."));
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture));
+
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            catalog,
+            "command-only held origin"));
+        Assert.Single(catalog.HeldRequests);
+        Assert.Empty(catalog.FinalizedRequests);
+        AssertFrozenProjection(catalog.HeldRequests);
+        AssertFrozenProjection(catalog.FinalizedRequests);
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_ExactCommandAndPendingCoalesceAsOneHeldRequest()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_command_pending_held",
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "The repair wave repeats the exact durable request.");
+        var pending = ComposeTreatmentRepairPendingRoot(
+            command,
+            CreateTreatmentRepairPackets(command.Binding, scenario.Before));
+
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            ParsePersistedRequestCatalog(command.Root, pending, flow.History));
+
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            catalog,
+            "exact command/pending held origin"));
+        Assert.Single(catalog.HeldRequests);
+        Assert.Empty(catalog.FinalizedRequests);
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_HistoryOnlyCatalogClassifiesFinalizedRequest()
+    {
+        var scenario = CreateFinalizedOriginRecoveryScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var finalized = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_history_only_finalized",
+            scenario.RouteId);
+        var history = CreatePersistedTreatmentHistory(
+            finalized,
+            "history_only_finalized");
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            ParsePersistedRequestCatalog(null, null, history));
+
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            catalog,
+            "history-only finalized origin"));
+        Assert.Empty(catalog.HeldRequests);
+        Assert.Single(catalog.FinalizedRequests);
+        AssertFrozenProjection(catalog.HeldRequests);
+        AssertFrozenProjection(catalog.FinalizedRequests);
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_HistoryDominatesExactStaleCommandAsFinalized()
+    {
+        var scenario = CreateFinalizedOriginRecoveryScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var finalized = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_history_stale_command_finalized",
+            scenario.RouteId);
+        var staleCommand = ComposeTreatmentCommand(
+            finalized,
+            "History must dominate this exact stale command copy.");
+        var history = CreatePersistedTreatmentHistory(
+            finalized,
+            "history_stale_command_finalized");
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            ParsePersistedRequestCatalog(staleCommand.Root, null, history));
+
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            catalog,
+            "history plus exact stale command finalized origin"));
+        Assert.Empty(catalog.HeldRequests);
+        Assert.Single(catalog.FinalizedRequests);
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_DivergentHistoryAndCommandOriginsConflict()
+    {
+        const string operationKey = "operation_t068b_divergent_origins";
+        var acceptedScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var divergentScenario = CreateScenario(
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure");
+        using var acceptedFixture = AcceptedStateFixture.Create(acceptedScenario);
+        using var divergentFixture = AcceptedStateFixture.Create(divergentScenario);
+        var accepted = ResolveCurrentTreatment(
+            acceptedFixture,
+            "procedure",
+            operationKey,
+            acceptedScenario.RouteId);
+        var history = CreatePersistedTreatmentHistory(
+            accepted,
+            "divergent_history_origin");
+        var divergent = ResolveCurrentTreatment(
+            divergentFixture,
+            "procedure",
+            operationKey,
+            divergentScenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            divergent,
+            "A divergent command cannot replace finalized history authority.");
+
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            ParsePersistedRequestCatalog(
+                command.Root,
+                null,
+                history));
+
+        AssertInvalidPersistedCatalog(catalog, "divergent history/command origins");
+        Assert.Contains(catalog.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_persisted_coordinate_collision",
+            StringComparison.Ordinal));
+        Assert.Empty(catalog.HeldRequests);
+        Assert.Empty(catalog.FinalizedRequests);
+    }
+
     [Fact]
     public void ColdClaimRecovery_RestoresDiceAndFateBeforeAnyExactRetry()
     {
@@ -170,6 +370,74 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Null(ReadPropertyAllowingNull(
             ReadRequiredProperty(nextLive.Request, "ModeAuthority"),
             "PreparedCriticalReaction"));
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_ChangedSecondRestoreConflictsAndPreservesAllRegistries()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 1, 1, 17);
+        scenario.AcceptedState["sterileThreadCount"] = 3;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        const string scene = "Only the first durable request belongs to recovery.";
+        var persisted = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_atomic_persisted",
+            scenario.RouteId);
+        var unpersisted = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_atomic_unpersisted",
+            scenario.RouteId);
+        var persistedCommand = ComposeTreatmentCommand(persisted, scene);
+        var unpersistedCommand = ComposeTreatmentCommand(unpersisted, scene);
+        PersistTreatmentCommand(fixture, persistedCommand);
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+            "initial atomic recovery"));
+
+        var changedRoot = unpersistedCommand.Root.DeepClone().AsObject();
+        File.WriteAllText(
+            coldFixture.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath),
+            changedRoot.ToJsonString());
+
+        var changed = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture));
+        Assert.False(changed.IsValid);
+        Assert.Contains(changed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_procedure_claim_recovery_conflict",
+            StringComparison.Ordinal));
+
+        _ = ResolveCurrentTreatment(
+            coldFixture,
+            "procedure",
+            scenario.OperationKey + "_atomic_live_first",
+            scenario.RouteId);
+        _ = ResolveCurrentTreatment(
+            coldFixture,
+            "procedure",
+            scenario.OperationKey + "_atomic_live_second",
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            coldFixture.GetAcceptedState());
+        var overbooked = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            coldFixture.ReadCurrentHistory(),
+            coldFixture.ReadCurrentWound(),
+            scenario.OperationKey + "_atomic_overbooked",
+            scenario.RouteId,
+            coldFixture.AcceptedEventRef(acceptedState));
+        Assert.False(overbooked.IsValid);
+        Assert.Contains(overbooked.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_overbooked",
+            StringComparison.Ordinal));
     }
 
     [Fact]
@@ -571,6 +839,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 source.RequirementAuthority,
                 source.ResourceAuthority,
                 requestFingerprint));
+    }
+
+    private static ResolverScenario CreateFinalizedOriginRecoveryScenario()
+    {
+        var scenario = CreateScenario(
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure");
+        scenario.Before["severity"]!["value"] = "III";
+        scenario.Before["severity"]!["rank"] = 3;
+        scenario.Before["severity"]!["maximumAtCreation"] = "III";
+        scenario.Before["consequences"]!["slotBudget"] = 3;
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        scenario.Before["treatment"]!["routes"]![0]!["resourcePolicy"]![
+            "consumeOn"] = new JsonArray("success");
+        return scenario;
     }
 
     private static object RestoreCurrentPersistedTreatmentCatalog(

@@ -10,6 +10,98 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
+    public void ResourceFinalization_ColdCommandRestoresHeldClaimAndRecomputesExactPlan()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 1, 17);
+        scenario.AcceptedState["sterileThreadCount"] = 2;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var original = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_cold_resource_claim",
+            scenario.RouteId);
+        PersistTreatmentCommand(
+            fixture,
+            ComposeTreatmentCommand(
+                original,
+                "The durable request must reclaim its sterile thread hold."));
+        var freshFinalization = MortalWoundTreatmentResourceComposer.Finalize(
+            Assert.IsType<MortalWoundTreatmentResolution>(original.Resolution));
+        Assert.True(freshFinalization.IsValid,
+            DescribeIssues(freshFinalization.Issues));
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        var restored = Assert.Single(AssertValidPersistedCatalog(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+            "cold resource-claim recovery"));
+        Assert.Equal(CanonicalValue(original.Request), CanonicalValue(restored));
+        var originalRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            original.Request);
+        var restoredRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            restored);
+        Assert.Equal(
+            originalRequest.RequestFingerprint,
+            restoredRequest.RequestFingerprint);
+        Assert.Equal(
+            originalRequest.ResourceAuthority.Claims.Select(static claim =>
+                (claim.AvailableQuantity, claim.BindingFingerprint)),
+            restoredRequest.ResourceAuthority.Claims.Select(static claim =>
+                (claim.AvailableQuantity, claim.BindingFingerprint)));
+        Assert.All(restoredRequest.ResourceAuthority.Claims, static claim =>
+        {
+            Assert.Equal(2, claim.AvailableQuantity);
+            Assert.False(string.IsNullOrWhiteSpace(claim.BindingFingerprint));
+        });
+        var rehydrated = RehydratePersistedTreatment(
+            coldFixture,
+            "procedure",
+            restored);
+        var coldFinalization = MortalWoundTreatmentResourceComposer.Finalize(
+            Assert.IsType<MortalWoundTreatmentResolution>(rehydrated.Resolution));
+
+        Assert.True(coldFinalization.IsValid,
+            DescribeIssues(coldFinalization.Issues));
+        Assert.Equal(
+            CanonicalValue(freshFinalization),
+            CanonicalValue(coldFinalization));
+
+        _ = ResolveCurrentTreatment(
+            coldFixture,
+            "procedure",
+            scenario.OperationKey + "_remaining_resource_claim",
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            coldFixture.GetAcceptedState());
+        var rejected = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            coldFixture.ReadCurrentHistory(),
+            coldFixture.ReadCurrentWound(),
+            scenario.OperationKey + "_overbooked_resource_claim",
+            scenario.RouteId,
+            coldFixture.AcceptedEventRef(acceptedState));
+        Assert.False(rejected.IsValid);
+        Assert.Contains(rejected.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_overbooked",
+            StringComparison.Ordinal));
+
+        var exactRetry = RehydratePersistedTreatment(
+            coldFixture,
+            "procedure",
+            restored);
+        var retryFinalization = MortalWoundTreatmentResourceComposer.Finalize(
+            Assert.IsType<MortalWoundTreatmentResolution>(exactRetry.Resolution));
+        Assert.True(retryFinalization.IsValid,
+            DescribeIssues(retryFinalization.Issues));
+        Assert.Equal(
+            CanonicalValue(coldFinalization),
+            CanonicalValue(retryFinalization));
+    }
+
+    [Fact]
     public void ResourceFinalization_ProcedureConsumesOnlySelectedSupplyAndReleasesReusableToolWithoutWriting()
     {
         var scenario = CreateScenario(

@@ -10,20 +10,30 @@ internal sealed class MortalWoundTreatmentPersistedRequestCatalogResult
 {
     private readonly ReadOnlyCollection<ValidationIssue> _issues;
     private readonly ReadOnlyCollection<MortalWoundTreatmentAttemptRequest> _requests;
+    private readonly ReadOnlyCollection<MortalWoundTreatmentAttemptRequest> _heldRequests;
+    private readonly ReadOnlyCollection<MortalWoundTreatmentAttemptRequest> _finalizedRequests;
 
     internal MortalWoundTreatmentPersistedRequestCatalogResult(
         bool isValid,
         IEnumerable<ValidationIssue> issues,
-        IEnumerable<MortalWoundTreatmentAttemptRequest> requests)
+        IEnumerable<MortalWoundTreatmentAttemptRequest> requests,
+        IEnumerable<MortalWoundTreatmentAttemptRequest> heldRequests,
+        IEnumerable<MortalWoundTreatmentAttemptRequest> finalizedRequests)
     {
         IsValid = isValid;
         _issues = MortalWoundTreatmentShellDetachment.Freeze(issues);
         _requests = MortalWoundTreatmentShellDetachment.Freeze(requests);
+        _heldRequests = MortalWoundTreatmentShellDetachment.Freeze(heldRequests);
+        _finalizedRequests = MortalWoundTreatmentShellDetachment.Freeze(finalizedRequests);
     }
 
     public bool IsValid { get; }
     public IReadOnlyList<ValidationIssue> Issues => _issues;
     public IReadOnlyList<MortalWoundTreatmentAttemptRequest> Requests => _requests;
+    internal IReadOnlyList<MortalWoundTreatmentAttemptRequest> HeldRequests =>
+        _heldRequests;
+    internal IReadOnlyList<MortalWoundTreatmentAttemptRequest> FinalizedRequests =>
+        _finalizedRequests;
 }
 
 internal sealed class MortalWoundTreatmentRequirementEvidenceJsonConverter :
@@ -101,6 +111,8 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             return new MortalWoundTreatmentPersistedRequestCatalogResult(
                 false,
                 history.Issues,
+                Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                 Array.Empty<MortalWoundTreatmentAttemptRequest>());
         }
 
@@ -188,12 +200,26 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             return new MortalWoundTreatmentPersistedRequestCatalogResult(
                 false,
                 issues,
+                Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                 Array.Empty<MortalWoundTreatmentAttemptRequest>());
         }
+        var finalized = unique.Where(candidate => candidates.Any(origin =>
+                string.Equals(origin.Origin, "history", StringComparison.Ordinal) &&
+                HasExactLogicalCoordinate(origin, candidate)))
+            .Select(static candidate => candidate.Request)
+            .ToArray();
+        var held = unique.Where(candidate => !candidates.Any(origin =>
+                string.Equals(origin.Origin, "history", StringComparison.Ordinal) &&
+                HasExactLogicalCoordinate(origin, candidate)))
+            .Select(static candidate => candidate.Request)
+            .ToArray();
         return new MortalWoundTreatmentPersistedRequestCatalogResult(
             true,
             Array.Empty<ValidationIssue>(),
-            unique.Select(static candidate => candidate.Request));
+            unique.Select(static candidate => candidate.Request),
+            held,
+            finalized);
     }
 
     private static (string SessionId, string RequestId, string SnapshotToken)? ParsePending(

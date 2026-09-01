@@ -856,15 +856,25 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     this,
                     history,
                     PersistedProcedureClaimRecoveryCapability,
-                    catalog.Requests);
+                    catalog.Requests,
+                    catalog.HeldRequests,
+                    catalog.FinalizedRequests);
             return recovery.IsValid
                 ? new MortalWoundTreatmentPersistedRequestCatalogResult(
                     true,
                     Array.Empty<ValidationIssue>(),
-                    recovery.Requests)
+                    recovery.Requests,
+                    SelectRecoveredRequests(
+                        recovery.Requests,
+                        catalog.HeldRequests),
+                    SelectRecoveredRequests(
+                        recovery.Requests,
+                        catalog.FinalizedRequests))
                 : new MortalWoundTreatmentPersistedRequestCatalogResult(
                     false,
                     recovery.Issues,
+                    Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                    Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                     Array.Empty<MortalWoundTreatmentAttemptRequest>());
         }
         catch (Exception exception) when (
@@ -888,6 +898,25 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         return document.RootElement.Clone();
     }
 
+    private static IReadOnlyList<MortalWoundTreatmentAttemptRequest>
+        SelectRecoveredRequests(
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> recovered,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> selected) => selected
+        .Select(request => recovered.Single(candidate =>
+            string.Equals(
+                candidate.Coordinates.OperationKey,
+                request.Coordinates.OperationKey,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.Coordinates.AttemptId,
+                request.Coordinates.AttemptId,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.RequestFingerprint,
+                request.RequestFingerprint,
+                StringComparison.Ordinal)))
+        .ToArray();
+
     private static MortalWoundTreatmentPersistedRequestCatalogResult
         PersistedRecoveryFailure(
             string code,
@@ -906,6 +935,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     expected: expected,
                     actual: actual)
             },
+            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
             Array.Empty<MortalWoundTreatmentAttemptRequest>());
 
     internal bool RollbackNewProcedureReservations(

@@ -187,6 +187,29 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
             ResourceAuthority,
             RequestFingerprint);
     }
+
+    internal MortalWoundTreatmentAttemptRequest? AttachRestoredResourceAuthority(
+        MortalWoundTreatmentResourceReservationAuthority resourceAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(resourceAuthority);
+        if (!string.Equals(
+                ResourceAuthority.AuthorityFingerprint,
+                resourceAuthority.AuthorityFingerprint,
+                StringComparison.Ordinal))
+        {
+            return null;
+        }
+        return RestoreDetached(
+            Mode,
+            Coordinates,
+            MilestoneOrdinal,
+            RouteSourceWound,
+            RouteSourceWoundFingerprint,
+            ModeAuthority,
+            RequirementAuthority,
+            resourceAuthority,
+            RequestFingerprint);
+    }
 }
 
 internal static partial class MortalWoundTreatmentPlanner

@@ -19,7 +19,8 @@ internal sealed class MortalWoundTreatmentResourceReservationAgreement
         object registryCapability,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         string mode,
-        MortalWoundTreatmentResourceReservationAuthority authority)
+        MortalWoundTreatmentResourceReservationAuthority authority,
+        bool holdsCapacity)
     {
         if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
                 registryCapability))
@@ -52,6 +53,7 @@ internal sealed class MortalWoundTreatmentResourceReservationAgreement
             .ToArray());
         AuthorityFingerprint = authority.AuthorityFingerprint;
         Authority = authority;
+        HoldsCapacity = holdsCapacity;
         AgreementFingerprint = ComputeAgreementFingerprint(
             coordinates,
             mode,
@@ -75,11 +77,14 @@ internal sealed class MortalWoundTreatmentResourceReservationAgreement
     internal string AuthorityFingerprint { get; }
     internal string AgreementFingerprint { get; }
     internal MortalWoundTreatmentResourceReservationAuthority Authority { get; }
+    internal bool HoldsCapacity { get; }
 
     internal bool Agrees(
         MortalWoundTreatmentAttemptCoordinates coordinates,
         string mode,
-        MortalWoundTreatmentResourceReservationAuthority authority) =>
+        MortalWoundTreatmentResourceReservationAuthority authority,
+        bool holdsCapacity) =>
+        HoldsCapacity == holdsCapacity &&
         string.Equals(OperationKey, coordinates.OperationKey, StringComparison.Ordinal) &&
         string.Equals(AttemptId, coordinates.AttemptId, StringComparison.Ordinal) &&
         string.Equals(Mode, mode, StringComparison.Ordinal) &&
@@ -211,7 +216,32 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
         object registryCapability,
         MortalWoundTreatmentAttemptCoordinates coordinates,
         string mode,
-        MortalWoundTreatmentResourceReservationAuthority candidate)
+        MortalWoundTreatmentResourceReservationAuthority candidate) => Restore(
+        registryCapability,
+        coordinates,
+        mode,
+        candidate,
+        holdsCapacity: true);
+
+    internal MortalWoundTreatmentResourceReservationResult RestoreFinalized(
+        object registryCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string mode,
+        MortalWoundTreatmentResourceReservationAuthority candidate) => Restore(
+        registryCapability,
+        coordinates,
+        mode,
+        candidate,
+        holdsCapacity: false);
+
+    internal bool IsEmpty => _byOperationKey.Count == 0;
+
+    private MortalWoundTreatmentResourceReservationResult Restore(
+        object registryCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string mode,
+        MortalWoundTreatmentResourceReservationAuthority candidate,
+        bool holdsCapacity)
     {
         ArgumentNullException.ThrowIfNull(coordinates);
         ArgumentNullException.ThrowIfNull(candidate);
@@ -236,7 +266,7 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
                 coordinates.OperationKey,
                 out var existing))
         {
-            return existing.Agrees(coordinates, mode, candidate)
+            return existing.Agrees(coordinates, mode, candidate, holdsCapacity)
                 ? Valid(
                     existing.Authority,
                     MortalWoundTreatmentResourceReservationOwnership.Create(
@@ -249,7 +279,8 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
                     coordinates.OperationKey);
         }
 
-        if (!TryValidateAggregate(candidate, out var aggregateFailure))
+        if (holdsCapacity &&
+            !TryValidateAggregate(candidate, out var aggregateFailure))
         {
             return Invalid(
                 "mortal_wound_treatment_resource_reservation_overbooked",
@@ -261,7 +292,8 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
             registryCapability,
             coordinates,
             mode,
-            candidate);
+            candidate,
+            holdsCapacity);
         _byOperationKey.Add(coordinates.OperationKey, agreement);
         return Valid(
             candidate,
@@ -305,6 +337,8 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
         {
             foreach (var agreement in _byOperationKey.Values)
             {
+                if (!agreement.HoldsCapacity)
+                    continue;
                 foreach (var claim in agreement.Authority.Claims)
                 {
                     if (!TryAddClaim(aggregate, claim, out failure))
