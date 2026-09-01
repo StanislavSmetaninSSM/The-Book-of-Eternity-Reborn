@@ -121,6 +121,12 @@ internal sealed class AcceptedMechanicsPlanCache
 
     internal AcceptedMechanicsPlanningResult GetOrBuildValidated(
         AcceptedMechanicsInput input)
+        => GetOrBuildValidated(input, candidateAdmission: null);
+
+    internal AcceptedMechanicsPlanningResult GetOrBuildValidated(
+        AcceptedMechanicsInput input,
+        Func<AcceptedMechanicsPlan, IReadOnlyList<ValidationIssue>>?
+            candidateAdmission)
     {
         ArgumentNullException.ThrowIfNull(input);
         lock (_gate)
@@ -140,6 +146,7 @@ internal sealed class AcceptedMechanicsPlanCache
             var fingerprint =
                 AcceptedMechanicsPlanFingerprints.ComputePlanningInput(input);
             AcceptedMechanicsPlanningResult result;
+            var newlyPlanned = false;
             if (_planningResult != null &&
                 string.Equals(_inputFingerprint, fingerprint, StringComparison.Ordinal))
             {
@@ -160,14 +167,31 @@ internal sealed class AcceptedMechanicsPlanCache
                     InvalidateAllCore();
                     return result;
                 }
-                _inputFingerprint = fingerprint;
-                _planningResult = result;
+                newlyPlanned = true;
             }
 
             if (!result.Success)
             {
                 InvalidateValidatedCore();
                 return result;
+            }
+
+            if (candidateAdmission is not null)
+            {
+                var admissionIssues = candidateAdmission(result.Plan!);
+                if (admissionIssues.Count != 0)
+                {
+                    InvalidateValidatedCore();
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        admissionIssues);
+                }
+            }
+
+            if (newlyPlanned)
+            {
+                _inputFingerprint = fingerprint;
+                _planningResult = result;
             }
 
             _validatedBindingFingerprint = bindingFingerprint;
@@ -513,6 +537,50 @@ internal sealed class AcceptedMechanicsPlanCache
 
 internal static class AcceptedMechanicsPlanAuthority
 {
+    internal static AcceptedMechanicsPlanningResult
+        GetOrBuildMortalWoundTreatmentValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            AcceptedMechanicsInput input,
+            AcceptedMechanicsWoundStageBundle bundle,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptRequest request,
+            string semanticFingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(bundle);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        var context = input.PlanningContext;
+        var supplied = context?.WoundStageBundle;
+        if (input.WoundInput is null ||
+            context is null ||
+            supplied is null ||
+            context.WoundAnchorPlan is not null ||
+            context.DirectWoundPublicationAuthority is not null ||
+            !string.Equals(
+                supplied.BundleFingerprint,
+                bundle.BundleFingerprint,
+                StringComparison.Ordinal))
+        {
+            return WoundAnchorContextFailure(
+                supplied?.BundleFingerprint ?? "missing");
+        }
+        return AcceptedTurnAuthorityRegistry
+            .GetOrBuildCommonMortalWoundTreatmentValidated(
+                fileSystem,
+                writeLease,
+                input,
+                bundle,
+                acceptedState,
+                request,
+                semanticFingerprint);
+    }
+
     internal static AcceptedMechanicsPlanningResult GetOrBuildWoundValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,

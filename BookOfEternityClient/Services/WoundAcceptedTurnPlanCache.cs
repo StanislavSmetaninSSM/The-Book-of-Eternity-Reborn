@@ -16,6 +16,7 @@ internal sealed class WoundAcceptedTurnPlanCache
     private readonly WoundAcceptedTurnPreparationFactory _preparer;
     private readonly WoundAcceptedTurnFinalizationFactory _finalizer;
     private string? _preparedInputFingerprint;
+    private string? _preparedTreatmentContinuationFingerprint;
     private string? _preparedFingerprint;
     private object? _preparedStageToken;
     private WoundAcceptedTurnPreparationResult? _preparedResult;
@@ -63,6 +64,21 @@ internal sealed class WoundAcceptedTurnPlanCache
     internal WoundAcceptedTurnPreparationResult GetOrBuildPrepared(
         WoundAcceptedTurnInput input,
         out bool reused)
+        => GetOrBuildPrepared(input, treatmentContinuationAuthority: null, out reused);
+
+    internal WoundAcceptedTurnPreparationResult
+        GetOrBuildTreatmentContinuationPrepared(
+            WoundAcceptedTurnInput input,
+            object treatmentContinuationAuthority,
+            out bool reused) => GetOrBuildPrepared(
+                input,
+                treatmentContinuationAuthority,
+                out reused);
+
+    private WoundAcceptedTurnPreparationResult GetOrBuildPrepared(
+        WoundAcceptedTurnInput input,
+        object? treatmentContinuationAuthority,
+        out bool reused)
     {
         ArgumentNullException.ThrowIfNull(input);
         reused = false;
@@ -70,6 +86,7 @@ internal sealed class WoundAcceptedTurnPlanCache
         {
             WoundAcceptedTurnPlannerCore.ValidatedInput validation;
             string inputFingerprint;
+            string? treatmentContinuationFingerprint;
             try
             {
                 validation = WoundAcceptedTurnPlannerCore.ValidateInput(input);
@@ -81,6 +98,10 @@ internal sealed class WoundAcceptedTurnPlanCache
                         validation.Issues);
                 }
                 inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
+                treatmentContinuationFingerprint = treatmentContinuationAuthority is null
+                    ? null
+                    : WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
+                        treatmentContinuationAuthority);
             }
             catch (Exception exception) when (IsMalformedBoundary(exception))
             {
@@ -95,6 +116,10 @@ internal sealed class WoundAcceptedTurnPlanCache
                 string.Equals(
                     _preparedInputFingerprint,
                     inputFingerprint,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    _preparedTreatmentContinuationFingerprint,
+                    treatmentContinuationFingerprint,
                     StringComparison.Ordinal))
             {
                 reused = true;
@@ -105,7 +130,11 @@ internal sealed class WoundAcceptedTurnPlanCache
             WoundAcceptedTurnPreparationResult result;
             try
             {
-                result = _preparer(WoundAcceptedTurnData.CloneInput(input)!) ??
+                result = (treatmentContinuationAuthority is null
+                    ? _preparer(WoundAcceptedTurnData.CloneInput(input)!)
+                    : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
+                        WoundAcceptedTurnData.CloneInput(input)!,
+                        treatmentContinuationAuthority)) ??
                     throw new InvalidOperationException(
                         "Wound accepted-turn preparer returned null.");
             }
@@ -130,6 +159,8 @@ internal sealed class WoundAcceptedTurnPlanCache
                 plan,
                 Array.Empty<ValidationIssue>());
             _preparedInputFingerprint = inputFingerprint;
+            _preparedTreatmentContinuationFingerprint =
+                treatmentContinuationFingerprint;
             _preparedFingerprint = plan.WoundPreparationFingerprint;
             _preparedStageToken = stageToken;
             _preparedResult = Detach(validated);
@@ -530,6 +561,18 @@ internal sealed class WoundAcceptedTurnPlanCache
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
+        if (plan.TreatmentContinuationAuthority is not null)
+        {
+            if (transitions.Count != 0 ||
+                input.Opportunities.Count != 0 ||
+                batches.Count != 0 ||
+                !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(plan))
+            {
+                mismatch = "treatment continuation authority";
+                return false;
+            }
+            return true;
+        }
         if (transitions.Count != batches.Count)
         {
             mismatch = "transition count";
@@ -636,8 +679,12 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
-        var replay = WoundAcceptedTurnPlanner.Prepare(
-            WoundAcceptedTurnData.CloneInput(input)!);
+        var replay = plan.TreatmentContinuationAuthority is null
+            ? WoundAcceptedTurnPlanner.Prepare(
+                WoundAcceptedTurnData.CloneInput(input)!)
+            : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
+                WoundAcceptedTurnData.CloneInput(input)!,
+                plan.TreatmentContinuationAuthority);
         if (!replay.Success || replay.Plan is not { } expected)
             return false;
         if (!string.Equals(
@@ -795,6 +842,7 @@ internal sealed class WoundAcceptedTurnPlanCache
     private void InvalidateAllCore()
     {
         _preparedInputFingerprint = null;
+        _preparedTreatmentContinuationFingerprint = null;
         _preparedFingerprint = null;
         _preparedStageToken = null;
         _preparedResult = null;
@@ -871,6 +919,26 @@ internal sealed class WoundAcceptedTurnPlanCache
 
 internal static class WoundAcceptedTurnPlanAuthority
 {
+    internal static WoundAcceptedTurnPreparationResult
+        GetOrBuildTreatmentContinuationPreparedValidated(
+            BookOfEternityClient.Core.FileSystemManager fileSystem,
+            BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,
+            WoundAcceptedTurnInput input,
+            object treatmentContinuationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .GetOrBuildWoundTreatmentContinuationPreparedValidated(
+                fileSystem,
+                writeLease,
+                input,
+                treatmentContinuationAuthority);
+    }
+
     internal static WoundAcceptedTurnPreparationResult GetOrBuildPreparedValidated(
         BookOfEternityClient.Core.FileSystemManager fileSystem,
         BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,

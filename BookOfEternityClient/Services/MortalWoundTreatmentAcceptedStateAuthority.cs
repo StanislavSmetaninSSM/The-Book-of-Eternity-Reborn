@@ -220,6 +220,30 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             MortalWoundTreatmentAttemptCoordinates? coordinates,
             string? actorRole,
             AcceptedMechanicsPlan? publicationPlan)
+        => ReadCanonicalCapabilityCatalogCore(
+            coordinates,
+            actorRole,
+            publicationPlan,
+            candidateReadCapability: null);
+
+    internal MortalWoundTreatmentCapabilityCatalogReadResult
+        ReadCanonicalCapabilityCatalogForCandidate(
+            object candidateReadCapability,
+            MortalWoundTreatmentAttemptCoordinates? coordinates,
+            string? actorRole,
+            AcceptedMechanicsPlan publicationPlan) =>
+        ReadCanonicalCapabilityCatalogCore(
+            coordinates,
+            actorRole,
+            publicationPlan,
+            candidateReadCapability);
+
+    private MortalWoundTreatmentCapabilityCatalogReadResult
+        ReadCanonicalCapabilityCatalogCore(
+            MortalWoundTreatmentAttemptCoordinates? coordinates,
+            string? actorRole,
+            AcceptedMechanicsPlan? publicationPlan,
+            object? candidateReadCapability)
     {
         if (coordinates is null ||
             !coordinates.MatchesAcceptedState(this) ||
@@ -257,7 +281,11 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     MortalWoundTreatmentCapabilityCatalogReadStatus.CoordinatesInvalid);
             }
             if (publicationPlan is not null &&
-                !MatchesValidatedPublicationPlan(publicationPlan))
+                (candidateReadCapability is null
+                    ? !MatchesValidatedPublicationPlan(publicationPlan)
+                    : !MortalWoundTreatmentCapabilityAuthority
+                        .CandidateAdmissionGate.IsCandidateReadCapability(
+                            candidateReadCapability)))
             {
                 return new MortalWoundTreatmentCapabilityCatalogReadResult(
                     MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);

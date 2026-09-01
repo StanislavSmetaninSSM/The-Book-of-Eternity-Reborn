@@ -1382,7 +1382,10 @@ public sealed class MortalWoundRecoveryTests
             var wholeTreeBefore = CaptureTreeBytes(fs.GameSessionPath);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
-            AssertPublishedWoundPlan(plan, Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(composed, "WoundStageBundle")), woundId);
+            AssertPublishedWoundPlan(
+                plan,
+                Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle),
+                woundId);
             AssertAllGovernedBytesUnchanged(fs, governedBefore);
             AssertTreeBytesUnchanged(fs, wholeTreeBefore);
             Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)

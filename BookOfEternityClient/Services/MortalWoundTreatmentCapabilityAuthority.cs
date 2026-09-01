@@ -329,7 +329,8 @@ internal static class MortalWoundTreatmentCapabilityAuthority
             capabilityRef,
             actorRole,
             publicationPlan: null,
-            forPublication: false);
+            forPublication: false,
+            candidateReadCapability: null);
 
     internal static MortalWoundTreatmentCapabilityProofResult ExportForPublication(
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
@@ -343,7 +344,8 @@ internal static class MortalWoundTreatmentCapabilityAuthority
             capabilityRef,
             actorRole,
             publicationPlan,
-            forPublication: true);
+            forPublication: true,
+            candidateReadCapability: null);
 
     private static MortalWoundTreatmentCapabilityProofResult Export(
         MortalWoundTreatmentAcceptedStateAuthority? acceptedState,
@@ -351,7 +353,8 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         string? capabilityRef,
         string? actorRole,
         AcceptedMechanicsPlan? publicationPlan,
-        bool forPublication)
+        bool forPublication,
+        object? candidateReadCapability)
     {
         if (acceptedState is null ||
             coordinates is null ||
@@ -456,10 +459,16 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 "Publication export requires the exact validated accepted mechanics plan.");
         }
 
-        var read = acceptedState.ReadCanonicalCapabilityCatalog(
-            coordinates,
-            actorRole!,
-            forPublication ? publicationPlan : null);
+        var read = candidateReadCapability is null
+            ? acceptedState.ReadCanonicalCapabilityCatalog(
+                coordinates,
+                actorRole!,
+                forPublication ? publicationPlan : null)
+            : acceptedState.ReadCanonicalCapabilityCatalogForCandidate(
+                candidateReadCapability,
+                coordinates,
+                actorRole!,
+                publicationPlan!);
         var readFailure = MapReadFailure(read.Status, forPublication);
         if (readFailure is not null)
             return readFailure;
@@ -799,4 +808,74 @@ internal static class MortalWoundTreatmentCapabilityAuthority
     private sealed record SelectedCapability(
         MortalWoundTreatmentCapabilitySkillSource Source,
         MortalWoundTreatmentCapabilityDefinition Capability);
+
+    internal static class CandidateAdmissionGate
+    {
+        private static readonly object CandidateReadCapability = new();
+
+        internal static bool IsCandidateReadCapability(object? capability) =>
+            ReferenceEquals(capability, CandidateReadCapability);
+
+        internal static IReadOnlyList<ValidationIssue> Validate(
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptRequest request,
+            AcceptedMechanicsPlan candidate)
+        {
+            ArgumentNullException.ThrowIfNull(acceptedState);
+            ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(candidate);
+            var route = acceptedState.TreatmentDefinition.Routes
+                .SingleOrDefault(value => string.Equals(
+                    value.RouteId,
+                    request.Coordinates.RouteId,
+                    StringComparison.Ordinal)) as
+                MortalWoundGuaranteedRouteDefinition;
+            if (request.ModeAuthority is not
+                    MortalWoundTreatmentCapabilityProof acceptedProof ||
+                request.Mode is not "guaranteed" ||
+                route is null ||
+                candidate.WoundStageBundle is not { } bundle ||
+                !string.Equals(
+                    bundle.Input.Binding.SessionId,
+                    acceptedState.Binding.SessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    bundle.Input.Binding.RequestId,
+                    acceptedState.Binding.RequestId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    bundle.Input.Binding.SnapshotToken,
+                    acceptedState.Binding.SnapshotToken,
+                    StringComparison.Ordinal) ||
+                bundle.Input.Binding.Turn != acceptedState.Binding.Turn)
+            {
+                return PublicationMismatch(
+                    "The candidate plan does not bind the accepted guaranteed treatment authority.")
+                    .Issues;
+            }
+
+            var exported = Export(
+                acceptedState,
+                request.Coordinates,
+                route.Resolution.CapabilityRef,
+                route.Resolution.ActorRole,
+                candidate,
+                forPublication: true,
+                CandidateReadCapability);
+            if (!exported.IsValid || exported.Proof is null)
+                return exported.Issues;
+            return string.Equals(
+                    exported.Proof.ProofFingerprint,
+                    acceptedProof.ProofFingerprint,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    exported.Proof.SourceSemanticFingerprint,
+                    acceptedProof.SourceSemanticFingerprint,
+                    StringComparison.Ordinal)
+                ? Array.Empty<ValidationIssue>()
+                : PublicationMismatch(
+                    "The final candidate capability differs from the sealed accepted proof.")
+                    .Issues;
+        }
+    }
 }

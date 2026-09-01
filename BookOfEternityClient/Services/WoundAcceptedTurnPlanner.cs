@@ -185,7 +185,7 @@ internal static class WoundEffectBatchPlanner
     }
 }
 
-internal static class WoundAcceptedTurnPlanner
+internal static partial class WoundAcceptedTurnPlanner
 {
     internal static WoundHistoryReplayResult ResolveAcceptedReplay(
         WoundHistoryState history,
@@ -851,6 +851,9 @@ internal static class WoundAcceptedTurnPlannerCore
         WoundEffectBatchAcceptedPlan accepted,
         IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
+        if (prepared.TreatmentContinuationAuthority is not null)
+            return ComposeTreatmentContinuationFinalPlan(prepared, accepted);
+
         try
         {
             var baseline = prepared.BaselineAuthority;
@@ -1097,6 +1100,211 @@ internal static class WoundAcceptedTurnPlannerCore
                 "wound_plan_effect_handoff_invalid",
                 "The detached wound/effect payload could not be finalized atomically.",
                 "complete agreeing prepared/effect payload",
+                exception.GetType().Name);
+        }
+    }
+
+    private static WoundAcceptedTurnPlanningResult
+        ComposeTreatmentContinuationFinalPlan(
+            WoundPreparedAcceptedTurnPlan prepared,
+            WoundEffectBatchAcceptedPlan accepted)
+    {
+        try
+        {
+            if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                    prepared.TreatmentContinuationAuthority,
+                    out var continuation) ||
+                !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(
+                    prepared))
+            {
+                return FailedFinal(
+                    "wound_plan_treatment_continuation_invalid",
+                    "The private treatment continuation must remain sealed through finalization.",
+                    "one exact treatment continuation authority",
+                    "missing or changed authority");
+            }
+
+            var baseline = prepared.BaselineAuthority;
+            var carrierCatalog = WoundCarrierCatalog.Build(baseline.PreTurnCarriers);
+            var identityBefore = WoundIdentityState.Parse(
+                baseline.PreTurnIdentityIndex.ToJsonString(),
+                WoundIdentityState.StatePath);
+            var historyBefore = WoundHistoryState.Parse(
+                baseline.PreTurnHistory.ToJsonString(),
+                WoundHistoryState.HistoryPath);
+            var matches = carrierCatalog.Occurrences.Where(value => string.Equals(
+                    value.WoundId,
+                    continuation.Before.WoundId,
+                    StringComparison.Ordinal))
+                .ToArray();
+            if (carrierCatalog.Issues.Count != 0 ||
+                identityBefore.State is null || identityBefore.Issues.Count != 0 ||
+                historyBefore.State is null || historyBefore.Issues.Count != 0 ||
+                historyBefore.State.ValidateAgreement(
+                    identityBefore.State,
+                    carrierCatalog).Count != 0 ||
+                matches.Length != 1 ||
+                !string.Equals(
+                    WoundIdentityState.ComputeSemanticFingerprint(matches[0].Wound),
+                    WoundIdentityState.ComputeSemanticFingerprint(
+                        continuation.Before),
+                    StringComparison.Ordinal))
+            {
+                return FailedFinal(
+                    "wound_plan_prepared_seal_mismatch",
+                    "The treatment continuation baseline must contain its exact active wound, identity, and history.",
+                    continuation.Before.WoundId,
+                    $"matches={matches.Length}");
+            }
+
+            var before = matches[0].Wound;
+            var after = continuation.After;
+            var coordinates = continuation.Resolution.Coordinates;
+            var outcome = new WoundDeclaredTransitionOutcome(
+                after.Severity.Rank,
+                after.Care.State,
+                after.Recovery.CurrentStepProgress,
+                Heals: false,
+                TerminalAttempt: true,
+                AllowsWorsening: false,
+                after.Complications.Select(static value => value.ComplicationId)
+                    .ToArray(),
+                after.Consequences.OwnedEffectSources.RootBindings
+                    .Select(static value => value.EffectId)
+                    .OrderBy(static value => value, StringComparer.Ordinal)
+                    .ToArray(),
+                after.Recovery.Blockers.ToArray(),
+                after.Treatment.CompletedRouteIds.ToArray());
+            var reduction = WoundTransitionReducer.Reduce(
+                new WoundTransitionRequest(
+                    "treat",
+                    continuation.TransitionId,
+                    coordinates.OperationKey,
+                    coordinates.EventRef,
+                    coordinates.Turn,
+                    before,
+                    after,
+                    new WoundTreatmentEvidence(
+                        continuation.Resolution.ResolutionAuthorityFingerprint,
+                        WoundIdentityState.ComputeSemanticFingerprint(before),
+                        WoundIdentityState.ComputeSemanticFingerprint(after),
+                        coordinates.RouteId,
+                        coordinates.AttemptId,
+                        outcome)));
+            if (!reduction.IsValid)
+            {
+                return new WoundAcceptedTurnPlanningResult(
+                    null,
+                    reduction.Issues.Select(CloneIssue).ToArray());
+            }
+
+            var proposed = reduction.ProposedAfter!;
+            var transitions = new[]
+            {
+                new FinalizedWoundTransition(before, proposed)
+            };
+            var intents = reduction.Intents.ToArray();
+            var historyIntent = intents.OfType<WoundTransitionHistoryIntent>()
+                .Single();
+            var historyRow = new WoundHistoryTransition(
+                historyIntent.TransitionId,
+                historyIntent.WoundId,
+                historyBefore.State.NextOrdinal,
+                proposed.LastTransition.Ordinal,
+                historyIntent.Kind,
+                historyIntent.Turn,
+                historyIntent.EventRef,
+                historyIntent.OperationKey,
+                historyIntent.BeforeFingerprint,
+                historyIntent.AfterFingerprint,
+                continuation.Resolution.RequestFingerprint,
+                historyIntent.AttemptId,
+                CourseId: null,
+                CourseMilestoneOrdinal: null,
+                CycleKey: null,
+                PaymentFingerprint: null,
+                WoundHistoryState.ComputeOutputFingerprint(
+                    historyIntent.OperationKey,
+                    historyIntent.EventRef,
+                    WoundAcceptedTurnPlanner.TreatmentPublicationSummary),
+                WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
+                Terminal: false,
+                TreatmentResult: continuation.PersistedResult);
+            var contributions = BuildCarrierContributions(
+                baseline.PreTurnCarriers,
+                transitions);
+            var identityAfter = BuildIdentityAfterImage(
+                baseline.PreTurnIdentityIndex,
+                transitions);
+            if (identityAfter.State is null || identityAfter.Issues.Count != 0)
+            {
+                return new WoundAcceptedTurnPlanningResult(
+                    null,
+                    identityAfter.Issues.Select(CloneIssue).ToArray());
+            }
+            var identityAfterJson = JsonNode.Parse(
+                WoundIdentityState.SerializeCanonical(identityAfter.State))!
+                .AsObject();
+            var historyAfter = WoundHistoryState.CreateValidated(
+                historyBefore.State.NextOrdinal + 1,
+                historyBefore.State.Transitions.Append(historyRow));
+            if (historyAfter.State is null || historyAfter.Issues.Count != 0)
+            {
+                return new WoundAcceptedTurnPlanningResult(
+                    null,
+                    historyAfter.Issues.Select(CloneIssue).ToArray());
+            }
+            var historyAfterJson = JsonNode.Parse(
+                WoundHistoryState.SerializeCanonical(historyAfter.State))!
+                .AsObject();
+            var carriersAfter = ApplyFinalWounds(
+                baseline.PreTurnCarriers,
+                transitions);
+            var carrierAfterCatalog = WoundCarrierCatalog.Build(carriersAfter);
+            var agreement = historyAfter.State.ValidateAgreement(
+                identityAfter.State,
+                carrierAfterCatalog);
+            if (carrierAfterCatalog.Issues.Count != 0 || agreement.Count != 0)
+            {
+                return new WoundAcceptedTurnPlanningResult(
+                    null,
+                    carrierAfterCatalog.Issues.Concat(agreement)
+                        .Select(CloneIssue)
+                        .ToArray());
+            }
+
+            var finalFingerprint = WoundAcceptedTurnFingerprints.ComputeFinal(
+                prepared,
+                accepted,
+                contributions,
+                identityAfterJson,
+                historyAfterJson,
+                intents);
+            return new WoundAcceptedTurnPlanningResult(
+                new WoundAcceptedTurnPlan(
+                    prepared.Binding,
+                    prepared.BindingFingerprint,
+                    prepared.InputFingerprint,
+                    accepted.WoundPreparationFingerprint,
+                    accepted.EffectInputFingerprint,
+                    accepted.EffectAcceptedTurnPlanFingerprint,
+                    finalFingerprint,
+                    prepared.AllocatedWoundIds,
+                    prepared.AllocatedTransitionIds,
+                    contributions,
+                    identityAfterJson,
+                    historyAfterJson,
+                    intents),
+                Array.Empty<ValidationIssue>());
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException or
+                JsonException or NullReferenceException or OverflowException)
+        {
+            return FailedFinal(
+                "wound_plan_treatment_continuation_invalid",
+                "The treatment continuation could not be finalized atomically.",
+                "one complete sealed treatment continuation",
                 exception.GetType().Name);
         }
     }
@@ -2612,15 +2820,20 @@ internal static class WoundAcceptedTurnPlannerCore
     {
         try
         {
+            var isTreatmentContinuation =
+                prepared.TreatmentContinuationAuthority is not null;
             if (prepared.Binding is null ||
                 prepared.AllocatedWoundIds is null ||
                 prepared.AllocatedTransitionIds is null ||
                 prepared.PreparedWounds is null ||
                 prepared.EffectOperationBatches is null ||
                 prepared.BaselineAuthority is null ||
-                prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
-                prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
-                prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count ||
+                (!isTreatmentContinuation &&
+                 (prepared.AllocatedWoundIds.Count != prepared.PreparedWounds.Count ||
+                  prepared.AllocatedTransitionIds.Count != prepared.PreparedWounds.Count ||
+                  prepared.EffectOperationBatches.Count != prepared.PreparedWounds.Count)) ||
+                (isTreatmentContinuation &&
+                 !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared)) ||
                 !string.Equals(
                     WoundAcceptedTurnFingerprints.ComputeBinding(prepared.Binding),
                     prepared.BindingFingerprint,
@@ -2649,6 +2862,9 @@ internal static class WoundAcceptedTurnPlannerCore
             {
                 return PreparedSealFailure("changed prepared baseline authority");
             }
+
+            if (isTreatmentContinuation)
+                return Array.Empty<ValidationIssue>();
 
             for (var index = 0; index < prepared.EffectOperationBatches.Count; index++)
             {

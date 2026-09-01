@@ -35,13 +35,45 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
         FileSystemManager.CanonicalWriteLease writeLease,
         AcceptedMechanicsWoundStageBundle bundle,
         MortalWoundCanonicalAnchorPlan anchorPlan)
+        => ComposeCore(
+            fileSystem,
+            writeLease,
+            bundle,
+            anchorPlan,
+            treatmentCurrentTimeInMinutes: null);
+
+    internal static AcceptedMechanicsWoundCommonInputCompositionResult
+        ComposeTreatmentContinuation(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            AcceptedMechanicsWoundStageBundle bundle,
+            long currentTimeInMinutes) => ComposeCore(
+                fileSystem,
+                writeLease,
+                bundle,
+                anchorPlan: null,
+                treatmentCurrentTimeInMinutes: currentTimeInMinutes);
+
+    private static AcceptedMechanicsWoundCommonInputCompositionResult ComposeCore(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsWoundStageBundle bundle,
+        MortalWoundCanonicalAnchorPlan? anchorPlan,
+        long? treatmentCurrentTimeInMinutes)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(bundle);
-        ArgumentNullException.ThrowIfNull(anchorPlan);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
-        if (!anchorPlan.AgreesWith(bundle))
+        if ((anchorPlan is null) == (treatmentCurrentTimeInMinutes is null))
+        {
+            return Failed(
+                WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_publication_authority_mismatch",
+                "exactly one initial-create anchor or treatment-continuation clock authority",
+                "missing or competing publication authority");
+        }
+        if (anchorPlan is not null && !anchorPlan.AgreesWith(bundle))
         {
             return Failed(
                 WoundIdentityState.StatePath,
@@ -136,12 +168,14 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             var worldTimeJson = Read(EffectAcceptedTurnInputComposer.WorldTimePath);
             var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                 worldTimeJson);
-            if (currentTime != anchorPlan.CurrentTimeInMinutes)
+            var expectedCurrentTime = anchorPlan?.CurrentTimeInMinutes ??
+                treatmentCurrentTimeInMinutes!.Value;
+            if (currentTime != expectedCurrentTime)
             {
                 issues.Add(Issue(
                     EffectAcceptedTurnInputComposer.WorldTimePath,
                     "accepted_mechanics_wound_anchor_clock_changed",
-                    anchorPlan.CurrentTimeInMinutes.ToString(
+                    expectedCurrentTime.ToString(
                         System.Globalization.CultureInfo.InvariantCulture),
                     currentTime?.ToString(
                         System.Globalization.CultureInfo.InvariantCulture) ??
@@ -200,6 +234,44 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             if (ownerResult.Authority is not { } owners || issues.Count != 0)
                 return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
 
+            if (anchorPlan is null)
+            {
+                var itemCatalog = MortalItemCarrierCatalog.Build(
+                    new MortalItemCarrierCatalogInput(
+                        ParseNullableObject(Read("game_state/inventory/items.json")),
+                        ParseNullableObject(Read("game_state/npcs/npc_core.json")),
+                        ParseNullableObject(Read("game_state/npcs/npc_inventory.json")),
+                        ParseNullableObject(Read("game_state/world/current_location.json")),
+                        ParseNullableObject(Read("game_state/misc/vehicles.json")),
+                        new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                        ParseNullableObject(Read(
+                            MortalLocationStorageContentsState.StatePath))));
+                foreach (var itemIssue in itemCatalog.Issues)
+                {
+                    issues.Add(Issue(
+                        itemIssue.Path,
+                        itemIssue.Code,
+                        "one exact non-ambiguous Mortal item carrier catalog",
+                        itemIssue.Identity ?? itemIssue.IdentityKind));
+                }
+                var itemIdentity = MortalItemIdentityState.Parse(
+                    Read(MortalItemIdentityState.StatePath));
+                issues.AddRange(itemIdentity.Issues);
+                if (issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+                MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
+                    fileSystem,
+                    writeLease,
+                    binding.SessionId,
+                    binding.SnapshotToken,
+                    itemCatalog,
+                    itemIdentity.EntriesByItemId.Keys);
+            }
+
             var sourcesResult = ResourceMutationSourceCatalog.Create(
                 Array.Empty<ResourceMutationSourceExport>());
             issues.AddRange(sourcesResult.Issues);
@@ -227,24 +299,31 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             {
                 ["schemaVersion"] = 1,
                 ["inputFingerprint"] = bundle.InputFingerprint,
-                ["bundleFingerprint"] = bundle.BundleFingerprint,
-                ["anchorPlanFingerprint"] = anchorPlan.Fingerprint
+                ["bundleFingerprint"] = bundle.BundleFingerprint
             };
+            if (anchorPlan is not null)
+                woundCommands["anchorPlanFingerprint"] = anchorPlan.Fingerprint;
+            else
+                woundCommands["authorityKind"] =
+                    "accepted_mortal_wound_treatment_continuation";
             var definitionRoot = definitions.ToCanonicalRoot();
             var stateRoot = JsonNode.Parse(state.ToCanonicalJson())!.AsObject();
             var historyRoot = JsonNode.Parse(history.ToCanonicalJson())!.AsObject();
             var internalInputs = new JsonObject
             {
-                ["authorityKind"] = "accepted_mortal_wound_initial_create",
+                ["authorityKind"] = anchorPlan is null
+                    ? "accepted_mortal_wound_treatment_continuation"
+                    : "accepted_mortal_wound_initial_create",
                 ["definitions"] = definitionRoot.DeepClone(),
                 ["state"] = stateRoot.DeepClone(),
                 ["history"] = historyRoot.DeepClone(),
                 ["ownerFingerprint"] = owners.Fingerprint,
                 ["sourceFingerprint"] = sources.Fingerprint,
                 ["woundInputFingerprint"] = bundle.InputFingerprint,
-                ["woundStageBundleFingerprint"] = bundle.BundleFingerprint,
-                ["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint
+                ["woundStageBundleFingerprint"] = bundle.BundleFingerprint
             };
+            if (anchorPlan is not null)
+                internalInputs["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint;
             var effectIdentityJson = Read(
                 EffectAcceptedTurnPlan.IdentityIndexPath);
             var effectIdentityRoot = stagedEffectPlan.IdentityIndexBeforeImage ??
@@ -268,21 +347,29 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(stagedEffectPlan.TouchedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.DeletedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.CarrierBeforeImages.Keys);
-            requiredPaths.UnionWith(
-                EffectAcceptedTurnInputComposer.SourceAuthorityPaths);
+            if (anchorPlan is not null)
+            {
+                requiredPaths.UnionWith(
+                    EffectAcceptedTurnInputComposer.SourceAuthorityPaths);
+            }
             foreach (var path in requiredPaths)
                 _ = Read(path);
             if (issues.Count != 0)
                 return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
 
-            var directPublicationAuthority =
-                AcceptedMechanicsDirectWoundPublicationAuthority.Create(
-                    bundle,
-                    anchorPlan,
-                    beforeImages,
-                    DirectPublicationProof);
-            internalInputs["directWoundPublicationAuthorityFingerprint"] =
-                directPublicationAuthority.Fingerprint;
+            AcceptedMechanicsDirectWoundPublicationAuthority?
+                directPublicationAuthority = null;
+            if (anchorPlan is not null)
+            {
+                directPublicationAuthority =
+                    AcceptedMechanicsDirectWoundPublicationAuthority.Create(
+                        bundle,
+                        anchorPlan,
+                        beforeImages,
+                        DirectPublicationProof);
+                internalInputs["directWoundPublicationAuthorityFingerprint"] =
+                    directPublicationAuthority.Fingerprint;
+            }
             var fingerprints = new AcceptedMechanicsAuthorityFingerprints(
                 Definitions: HashText(
                     "resource-definitions-v1",

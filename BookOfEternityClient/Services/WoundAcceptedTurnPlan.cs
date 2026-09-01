@@ -806,6 +806,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly WoundMaterializationEnvelope[]? _preparedWounds;
     private readonly WoundEffectOperationBatch[]? _effectOperationBatches;
     private readonly WoundPreparedBaselineAuthority? _baselineAuthority;
+    private readonly object? _treatmentContinuationAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
@@ -819,6 +820,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         IReadOnlyList<WoundMaterializationEnvelope> preparedWounds,
         IReadOnlyList<WoundEffectOperationBatch> effectOperationBatches,
         WoundPreparedBaselineAuthority baselineAuthority,
+        object? treatmentContinuationAuthority = null,
         object? cacheAuthorityStateToken = null,
         object? cachePreparedStageToken = null)
     {
@@ -837,6 +839,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneOperationBatch);
         _baselineAuthority =
             WoundAcceptedTurnData.CloneBaselineAuthority(baselineAuthority);
+        _treatmentContinuationAuthority = treatmentContinuationAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
     }
@@ -860,6 +863,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             WoundAcceptedTurnData.CloneOperationBatch);
     internal WoundPreparedBaselineAuthority BaselineAuthority =>
         WoundAcceptedTurnData.CloneBaselineAuthority(_baselineAuthority)!;
+    internal object? TreatmentContinuationAuthority =>
+        _treatmentContinuationAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -877,6 +882,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             PreparedWounds,
             EffectOperationBatches,
             BaselineAuthority,
+            _treatmentContinuationAuthority,
             authorityStateToken,
             preparedStageToken);
     }
@@ -892,6 +898,7 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             PreparedWounds,
             EffectOperationBatches,
             BaselineAuthority,
+            _treatmentContinuationAuthority,
             _cacheAuthorityStateToken,
             _cachePreparedStageToken);
 
@@ -2228,6 +2235,13 @@ internal static class WoundAcceptedTurnFingerprints
                     terminalIndex,
                     terminalOperations[terminalIndex]);
             }
+        }
+        if (plan.TreatmentContinuationAuthority is not null)
+        {
+            fields.Add("treatment_continuation");
+            fields.Add(WoundAcceptedTurnPlanner
+                .GetTreatmentContinuationFingerprint(
+                    plan.TreatmentContinuationAuthority));
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }

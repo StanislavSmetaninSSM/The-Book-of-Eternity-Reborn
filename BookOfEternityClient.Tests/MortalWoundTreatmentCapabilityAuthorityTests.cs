@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Immutable;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -351,6 +352,48 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
     }
 
     [Fact]
+    public void PublicationPrerequisite_EffectlessUntreatedWoundAcceptsGuaranteedStabilization()
+    {
+        var scenario = DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true);
+        using var fixture = CapabilityAuthorityFixture.Create(scenario);
+        var candidate = fixture.Before with
+        {
+            Care = fixture.Before.Care with
+            {
+                State = "stabilized",
+                StabilizedAtTurn = fixture.Before.LastTransition.Turn
+            },
+            Recovery = fixture.Before.Recovery with
+            {
+                Blockers = fixture.Before.Recovery.Blockers
+                    .Where(static blocker => !string.Equals(
+                        blocker,
+                        "not_stabilized",
+                        StringComparison.Ordinal))
+                    .ToImmutableArray()
+            }
+        };
+        var roundTrip = WoundMaterializationContract.Parse(
+            WoundMaterializationContract.SerializeCanonical(candidate),
+            "t070.publicationPrerequisite");
+        Assert.True(roundTrip.IsValid, DescribeIssues(roundTrip.Issues));
+
+        var simulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
+            fixture.Before,
+            new[]
+            {
+                ImmutableArray.Create<MortalWoundTreatmentOperation>(
+                    new MortalWoundStabilizeOperation())
+            });
+
+        Assert.True(simulation.IsApplicable);
+        Assert.True(simulation.Improved);
+        Assert.NotNull(simulation.WorkingWound);
+    }
+
+    [Fact]
     public void AcceptedStateRequirementContextProjection_IsValidOnlyWhileOriginAuthorityIsCurrent()
     {
         var scenario = DescribeScenario(
@@ -437,8 +480,206 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             fixture.Lease));
     }
 
+    [Fact]
+    public void PublicationPlan_GuaranteedStabilizationPublishesFromUntouchedPlayerSkill()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+
+        fixture.AssertUnrelatedEffectMechanicsSnapshot();
+        var flow = ComposePublicationFlow(fixture);
+        var beforeRetry = fixture.CaptureGovernedPublicationBeforeImages();
+        var retry = InvokeT070Publication(
+            fixture,
+            flow.AcceptedState,
+            flow.Request,
+            flow.Resolution);
+        AssertValidResultShell(
+            retry.IsValid,
+            retry.Issues,
+            retry.Value,
+            "T070 exact guaranteed stabilization retry");
+        Assert.Same(flow.Plan, retry.Value);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cachedRetry));
+        Assert.True(cachedRetry.Success, DescribeIssues(cachedRetry.Issues));
+        Assert.Same(flow.Plan, cachedRetry.Plan);
+        fixture.AssertGovernedRootsMatchBeforeImages(beforeRetry);
+
+        var beforeImages = fixture.CaptureGovernedPublicationBeforeImages();
+        var published = PublishCachedAcceptedPlan(fixture);
+
+        Assert.Same(flow.Plan, published);
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            published.WoundStageBundle);
+        Assert.Equal(bundle.InputFingerprint, bundle.PreparedPlan.InputFingerprint);
+        Assert.Equal(
+            bundle.WoundPreparationFingerprint,
+            bundle.EffectBatchPlan.WoundPreparationFingerprint);
+        Assert.Equal(
+            bundle.EffectInputFingerprint,
+            bundle.FinalPlan.EffectInputFingerprint);
+        Assert.Equal(
+            bundle.EffectAcceptedTurnPlanFingerprint,
+            bundle.FinalPlan.EffectAcceptedTurnPlanFingerprint);
+        Assert.Equal(
+            bundle.WoundFinalPlanFingerprint,
+            bundle.FinalPlan.WoundFinalPlanFingerprint);
+        Assert.False(string.IsNullOrWhiteSpace(bundle.BundleFingerprint));
+        Assert.Empty(bundle.ApplicationResults);
+        Assert.Empty(bundle.TerminationResults);
+        fixture.AssertPublicationPublishedExactSkillRoots(flow.Plan, beforeImages);
+        fixture.AssertUnrelatedGlobalEffectPreserved(beforeImages);
+        var wound = ReadPublishedPlayerWound(fixture);
+        var requestCoordinates = ReadRequiredProperty(flow.Request, "Coordinates");
+        Assert.Equal("stabilized", wound.Care.State);
+        Assert.Equal(
+            Convert.ToInt32(ReadRequiredProperty(flow.Coordinates, "Turn")),
+            wound.Care.StabilizedAtTurn);
+        Assert.Equal(
+            Convert.ToString(ReadRequiredProperty(requestCoordinates, "AttemptId")),
+            wound.Care.LastAttemptId);
+        Assert.Contains(CapabilityAuthorityFixture.RouteId, wound.Treatment.CompletedRouteIds);
+        Assert.DoesNotContain("not_stabilized", wound.Recovery.Blockers);
+        Assert.Contains("unsafe_environment", wound.Recovery.Blockers);
+        var recoveryAnchor = Assert.IsType<WoundRecoveryAnchor>(
+            wound.Recovery.RecoveryAnchor);
+        Assert.Equal("stabilization", recoveryAnchor.AnchorKind);
+        Assert.Equal(1_260, recoveryAnchor.AnchorMinute);
+        Assert.Null(wound.Recovery.DeteriorationAnchor);
+
+        var history = fixture.ReadCurrentHistory();
+        var transition = Assert.Single(
+            history.State!.Transitions,
+            static row => string.Equals(row.Kind, "treat", StringComparison.Ordinal));
+        Assert.Equal(
+            ReadRequiredProperty(requestCoordinates, "OperationKey"),
+            transition.OperationKey);
+        Assert.Equal(
+            ReadRequiredProperty(requestCoordinates, "AttemptId"),
+            transition.AttemptId);
+        Assert.False(transition.Terminal);
+        Assert.NotNull(transition.TreatmentResult);
+        Assert.Null(transition.CourseId);
+        Assert.Null(transition.CourseMilestoneOrdinal);
+        Assert.Null(transition.PaymentFingerprint);
+        Assert.Equal(
+            ReadRequiredProperty(flow.Request, "RequestFingerprint"),
+            transition.SourceFingerprint);
+        const string treatmentSummary =
+            "The accepted treatment result is retained for replay.";
+        Assert.Equal(treatmentSummary, transition.ReadableSummary);
+        Assert.Equal(
+            WoundHistoryState.ComputeOutputFingerprint(
+                transition.OperationKey,
+                transition.EventRef,
+                treatmentSummary),
+            transition.OutputFingerprint);
+        Assert.Equal(transition.TransitionId, recoveryAnchor.AnchorTransitionId);
+    }
+
+    [Fact]
+    public void PublicationPlan_GuaranteedStabilizationPreservesUnrelatedDeteriorationAnchor()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_preserves_unrelated_deterioration_anchor",
+            publication: true));
+
+        var flow = ComposePublicationFlow(fixture);
+        var published = PublishCachedAcceptedPlan(fixture);
+
+        Assert.Same(flow.Plan, published);
+        var wound = ReadPublishedPlayerWound(fixture);
+        var deteriorationAnchor = Assert.IsType<WoundDeteriorationAnchor>(
+            wound.Recovery.DeteriorationAnchor);
+        var recoveryAnchor = Assert.IsType<WoundRecoveryAnchor>(
+            wound.Recovery.RecoveryAnchor);
+        Assert.Equal("stabilization", recoveryAnchor.AnchorKind);
+        Assert.Equal(1_260, recoveryAnchor.AnchorMinute);
+        Assert.Equal("unsafe_environment", deteriorationAnchor.ConditionKey);
+        Assert.Equal(100, deteriorationAnchor.AnchorMinute);
+        Assert.Equal(
+            "wound_transition_test_001",
+            deteriorationAnchor.AnchorTransitionId);
+        var transition = Assert.Single(
+            fixture.ReadCurrentHistory().State!.Transitions,
+            static row => string.Equals(row.Kind, "treat", StringComparison.Ordinal));
+        Assert.Equal(transition.TransitionId, recoveryAnchor.AnchorTransitionId);
+    }
+
+    [Fact]
+    public void PublicationPlan_FinalCapabilityMutationRejectsWithoutCachingOrWriting()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+
+        var attempt = PreparePublicationAttempt(fixture);
+        fixture.MutatePersistedSelectedCapabilityAfterExport();
+        var beforeAdmission = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(
+            rejected.Issues,
+            static issue =>
+                string.Equals(
+                    issue.Code,
+                    "mortal_wound_treatment_capability_publication_mismatch",
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    issue.FilePath,
+                    "treatmentCapability.publicationPlan",
+                    StringComparison.Ordinal));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(beforeAdmission);
+    }
+
+    [Fact]
+    public void PublicationPlan_ChangedSealedSemanticsRejectWithoutReplacingAcceptedPlanOrWriting()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+
+        var first = ComposePublicationFlow(fixture);
+        var changedAttempt = PreparePublicationAttempt(
+            fixture,
+            CapabilityAuthorityFixture.OperationKey + "_changed");
+        var beforeConflict = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            changedAttempt.AcceptedState,
+            changedAttempt.Request,
+            changedAttempt.Resolution);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.NotEmpty(rejected.Issues);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.True(cached.Success, DescribeIssues(cached.Issues));
+        Assert.Same(first.Plan, cached.Plan);
+        fixture.AssertGovernedRootsMatchBeforeImages(beforeConflict);
+    }
+
     [Theory]
-    [InlineData("untouched_player_skill_reads_current_lease_bound_root")]
     [InlineData("untouched_player_passive_skill_reads_current_lease_bound_root")]
     [InlineData("untouched_npc_passive_skill_reads_current_lease_bound_root")]
     [InlineData("touched_player_active_skill_reads_exact_final_after_image")]
@@ -614,6 +855,26 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         CapabilityAuthorityFixture fixture,
         string operationKey = CapabilityAuthorityFixture.OperationKey)
     {
+        var attempt = PreparePublicationAttempt(fixture, operationKey);
+        var plan = ComposeT070PlanAndPeek(
+            fixture,
+            attempt.AcceptedState,
+            attempt.AcceptedBinding,
+            attempt.Request,
+            attempt.Resolution);
+        return new PublicationFlow(
+            attempt.AcceptedState,
+            attempt.Coordinates,
+            attempt.SealedCurrent,
+            attempt.Request,
+            attempt.Resolution,
+            plan);
+    }
+
+    private static PreparedPublicationAttempt PreparePublicationAttempt(
+        CapabilityAuthorityFixture fixture,
+        string operationKey = CapabilityAuthorityFixture.OperationKey)
+    {
         var accepted = ExportAcceptedState(fixture);
         var acceptedState = RequireAcceptedState(accepted);
         var coordinates = CreateCoordinates(fixture, acceptedState, operationKey);
@@ -635,15 +896,26 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var resolution = ResolveSealedGuaranteedAttempt(fixture, acceptedState, request);
         fixture.AssertPublicationFinalRootScenario();
         Assert.NotNull(accepted.Binding);
-        var plan = ComposeT070PlanAndPeek(
-            fixture, acceptedState, accepted.Binding!, request, resolution);
-        return new PublicationFlow(
+        return new PreparedPublicationAttempt(
             acceptedState,
             coordinates,
             sealedCurrent,
             request,
             resolution,
-            plan);
+            accepted.Binding!);
+    }
+
+    private static WoundMaterializationEnvelope ReadPublishedPlayerWound(
+        CapabilityAuthorityFixture fixture)
+    {
+        var carrier = JsonNode.Parse(File.ReadAllText(fixture.FileSystem.ResolvePath(
+            WoundCarrierCatalog.PlayerPath)))!.AsObject();
+        var woundNode = Assert.Single(carrier["activeWounds"]!.AsArray());
+        var parsed = WoundMaterializationContract.Parse(
+            woundNode!.ToJsonString(),
+            WoundCarrierCatalog.PlayerPath + ".activeWounds[0]");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
     }
 
     private static TypedResultView ComposeRejectedPublicationFlow(
@@ -1913,6 +2185,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "player_active_skill_exports_physical_capability" or
             "untouched_player_skill_reads_current_lease_bound_root" or
+            "untouched_player_skill_preserves_unrelated_deterioration_anchor" or
             "touched_player_active_skill_reads_exact_final_after_image" or
             "changed_final_skill_id_rejects" or
             "duplicate_or_confusable_final_skill_row_rejects" or
@@ -2053,6 +2326,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         object Request,
         object Resolution,
         object Plan);
+
+    private sealed record PreparedPublicationAttempt(
+        object AcceptedState,
+        object Coordinates,
+        CapabilityProofView SealedCurrent,
+        object Request,
+        object Resolution,
+        object AcceptedBinding);
 
     private sealed record PublicationBeforeImage(bool Existed, byte[]? Bytes);
 
@@ -2200,6 +2481,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         internal const string EventKind = "accepted_turn";
         internal const string EventAuthorityId = "turn_42";
         internal const string OperationKey = "capability_authority_operation_001";
+        internal const string UnrelatedEffectId = "effect_t070_unrelated_focus";
 
         // Test-owned inventory of the complete canonical transaction scope. Neither
         // the plan nor the production rollback list is allowed to choose this oracle.
@@ -2210,6 +2492,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/control/mortal_bootstrap_scaffold.json",
             "game_state/control/pending_craft_request.json",
             "game_state/control/pending_effect_resolutions.json",
+            "game_state/control/pending_mortal_wound_occurrences.json",
             "game_state/control/pending_npc_trade_inventory_requests.json",
             "game_state/control/pending_wound_resolutions.json",
             "game_state/control/progression_report.json",
@@ -2276,6 +2559,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/wounds/wound_commands.json",
             "game_state/wounds/wound_history.json",
             "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_opportunity_receipts.json",
             "lore/codex_entries.json",
             "output/debug_logs.json",
             "output/interface_updates.json",
@@ -2338,9 +2622,20 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             }
             else if (scenario.ExpectedBoundary != CapabilityFailureBoundary.Exporter)
                 ApplyScenario(currentSource, scenario);
+            if (scenario.Publication)
+            {
+                MakeUnselectedSkillIdsOwnerUnique(
+                    currentSource,
+                    scenario.SourceOwner);
+                MakeUnselectedSkillIdsOwnerUnique(
+                    finalSource,
+                    scenario.SourceOwner);
+            }
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
             WriteCanonicalSkillSources(fileSystem, currentSource);
+            if (scenario.Publication)
+                WriteUnrelatedGlobalEffect(fileSystem);
             File.WriteAllText(
                 fileSystem.ResolvePath("game_state/player/skill_mastery.json"),
                 CreatePlayerSkillMastery(currentSource).ToJsonString());
@@ -2386,8 +2681,17 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     carrierPath: carrierPath)
                 : WoundContractTestData.CreateActiveWound(woundId: WoundId);
             ConfigureEffectlessMortalWound(woundRoot);
+            if (scenario.Name ==
+                "untouched_player_skill_preserves_unrelated_deterioration_anchor")
+            {
+                woundRoot["recovery"]!["deteriorationAnchor"]!["conditionKey"] =
+                    "unsafe_environment";
+            }
             if (scenario.Name == "fresh_untreated_empty_blockers_stabilize_exports")
+            {
                 woundRoot["recovery"]!["blockers"] = new JsonArray();
+                woundRoot["recovery"]!["deteriorationAnchor"] = null;
+            }
             woundRoot["treatment"]!["routes"] = new JsonArray(
                 CreateGuaranteedRoute(scenario));
             woundRoot["treatment"]!["knownRouteIds"] = new JsonArray(RouteId);
@@ -2496,6 +2800,21 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 finalSource);
         }
 
+        private static void MakeUnselectedSkillIdsOwnerUnique(
+            JsonObject source,
+            string selectedOwner)
+        {
+            var unselectedOwner = selectedOwner == "player" ? "npc" : "player";
+            var owner = Assert.IsType<JsonObject>(source[unselectedOwner]);
+            var prefix = unselectedOwner == "player" ? "player" : "npc";
+            Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(owner["activeSkills"])))!["skillId"] =
+                    $"skill_{prefix}_field_medicine_01";
+            Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(owner["passiveSkills"])))!["skillId"] =
+                    $"skill_{prefix}_triage_passive_01";
+        }
+
         private static void ConfigureEffectlessMortalWound(JsonObject woundRoot)
         {
             Assert.Equal("untreated", woundRoot["care"]!["state"]!.GetValue<string>());
@@ -2503,6 +2822,21 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 "not_stabilized",
                 woundRoot["recovery"]!["blockers"]!.AsArray()
                     .Select(static blocker => blocker!.GetValue<string>()));
+            woundRoot["recovery"]!["blockers"] = new JsonArray(
+                "not_stabilized",
+                "unsafe_environment");
+            woundRoot["recovery"]!["recoveryAnchor"] = new JsonObject
+            {
+                ["anchorKind"] = "creation",
+                ["anchorMinute"] = 100,
+                ["anchorTransitionId"] = "wound_transition_test_001"
+            };
+            woundRoot["recovery"]!["deteriorationAnchor"] = new JsonObject
+            {
+                ["conditionKey"] = "not_stabilized",
+                ["anchorMinute"] = 100,
+                ["anchorTransitionId"] = "wound_transition_test_001"
+            };
             woundRoot["consequences"] = new JsonObject
             {
                 ["slotBudget"] = 2,
@@ -2512,6 +2846,94 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     "mortal_world"),
                 ["entries"] = new JsonArray()
             };
+        }
+
+        private static void WriteUnrelatedGlobalEffect(FileSystemManager fileSystem)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(
+                fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath))!);
+            Directory.CreateDirectory(Path.GetDirectoryName(
+                fileSystem.ResolvePath(EffectIdentityState.StatePath))!);
+            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+                "player",
+                "event_reaction");
+            effect["effectId"] = UnrelatedEffectId;
+            effect["display"] = new JsonObject
+            {
+                ["name"] = "Щит Судьбы",
+                ["description"] =
+                    "Чернила Судьбы смягчают следующий критический провал до обычного провала.",
+                ["category"] = "buff",
+                ["visibility"] = "visible"
+            };
+            effect["source"] = new JsonObject
+            {
+                ["kind"] = EffectBuiltInSourceCatalog.FateShieldSourceKind,
+                ["sourceId"] = EffectBuiltInSourceCatalog.FateShieldSourceId,
+                ["definitionKey"] = EffectBuiltInSourceCatalog.FateShieldDefinitionKey
+            };
+            effect["components"] = new JsonArray(new JsonObject
+            {
+                ["componentId"] = "fate_shield_reaction",
+                ["profile"] = "event_reaction",
+                ["priority"] = -100,
+                ["payload"] = new JsonObject
+                {
+                    ["eventType"] = "owner_critical_failure",
+                    ["resultKind"] = "event_outcome",
+                    ["originalOutcome"] = "critical_failure",
+                    ["resolvedOutcome"] = "failure",
+                    ["dependency"] = "before_current_event",
+                    ["maxExpansion"] = 1
+                }
+            });
+            effect["lifetime"] = new JsonObject
+            {
+                ["mode"] = "uses",
+                ["remainingUses"] = 1,
+                ["consumingTriggerIds"] = new JsonArray(
+                    "fate_shield_on_critical_failure"),
+                ["displayText"] = "Until the next critical failure"
+            };
+            effect["stacking"] = new JsonObject
+            {
+                ["stackKey"] = "ink-feather-fate-shield",
+                ["policy"] = "independent",
+                ["maxStacks"] = 1,
+                ["currentStacks"] = 1,
+                ["refreshMode"] = null,
+                ["mergeRule"] = null
+            };
+            effect["triggers"] = new JsonArray(new JsonObject
+            {
+                ["triggerId"] = "fate_shield_on_critical_failure",
+                ["eventType"] = "owner_critical_failure",
+                ["priority"] = -100,
+                ["componentIds"] = new JsonArray("fate_shield_reaction"),
+                ["consumeUses"] = true,
+                ["resolutionMode"] = "deterministic"
+            });
+            effect["removal"] = new JsonObject
+            {
+                ["dispelCategories"] = new JsonArray("fate"),
+                ["cureKinds"] = new JsonArray(),
+                ["onSourceLoss"] = "no_change",
+                ["onConditionLoss"] = null,
+                ["manualAuthorities"] = new JsonArray()
+            };
+            effect["links"] = new JsonArray();
+
+            File.WriteAllText(
+                fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath),
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["activeEffects"] = new JsonArray(effect.DeepClone())
+                }.ToJsonString());
+            File.WriteAllText(
+                fileSystem.ResolvePath(EffectIdentityState.StatePath),
+                EffectMaterializationTestFixture.CreateIdentityIndex(effect)
+                    .ToJsonString());
         }
 
         private static JsonObject CreatePlayerSkillMastery(JsonObject source)
@@ -2656,6 +3078,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             var skill = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
             skill["displayName"] = "Mutated only after proof export";
+            WriteCanonicalSkillSources(FileSystem, CurrentSource);
+        }
+
+        internal void MutatePersistedSelectedCapabilityAfterExport()
+        {
+            var skill = Skill(CurrentSource, Scenario.SourceOwner, Scenario.SourceSkillArray);
+            Limits(Capability(skill))["maximumRecoveryPoints"] = 1;
             WriteCanonicalSkillSources(FileSystem, CurrentSource);
         }
 
@@ -2985,6 +3414,26 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             Assert.Empty(snapshot.Effects);
         }
 
+        internal void AssertUnrelatedEffectMechanicsSnapshot()
+        {
+            var snapshot = EffectMechanicsSnapshot.LoadAsync(FileSystem, Lease)
+                .GetAwaiter().GetResult();
+            Assert.True(snapshot.IsAccepted, DescribeIssues(snapshot.Issues));
+            Assert.Empty(snapshot.Issues);
+            Assert.Contains(
+                snapshot.Effects,
+                static effect => string.Equals(
+                    effect.EffectId,
+                    UnrelatedEffectId,
+                    StringComparison.Ordinal));
+            Assert.Contains(
+                snapshot.Components,
+                static component => string.Equals(
+                    component.EffectId,
+                    UnrelatedEffectId,
+                    StringComparison.Ordinal));
+        }
+
         internal void AssertProductionValidSkillShapes()
         {
             var player = Assert.IsType<JsonObject>(CurrentSource["player"]);
@@ -3133,6 +3582,41 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 Assert.True(JsonNode.DeepEquals(expected, actual),
                     $"Normalizer did not publish the exact after-image at '{path}'.");
             }
+        }
+
+        internal void AssertUnrelatedGlobalEffectPreserved(
+            IReadOnlyDictionary<string, PublicationBeforeImage> beforeImages)
+        {
+            foreach (var path in new[]
+                     {
+                         EffectCarrierCatalog.PlayerPath,
+                         EffectIdentityState.StatePath
+                     })
+            {
+                Assert.True(beforeImages.TryGetValue(path, out var before));
+                Assert.True(before!.Existed);
+                Assert.NotNull(before.Bytes);
+                var expected = JsonNode.Parse(before.Bytes!);
+                var actual = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(path)));
+                Assert.True(
+                    JsonNode.DeepEquals(expected, actual),
+                    $"Unrelated global effect authority changed at '{path}'.");
+            }
+
+            var carrier = ReadRoot(EffectCarrierCatalog.PlayerPath);
+            Assert.Contains(
+                carrier!["activeEffects"]!.AsArray().OfType<JsonObject>(),
+                static effect => string.Equals(
+                    effect["effectId"]!.GetValue<string>(),
+                    UnrelatedEffectId,
+                    StringComparison.Ordinal));
+            var identity = ReadRoot(EffectIdentityState.StatePath);
+            Assert.Contains(
+                identity!["entries"]!.AsArray().OfType<JsonObject>(),
+                static entry => string.Equals(
+                    entry["effectId"]!.GetValue<string>(),
+                    UnrelatedEffectId,
+                    StringComparison.Ordinal));
         }
 
         internal void MutateGovernedRootAfterComposition()

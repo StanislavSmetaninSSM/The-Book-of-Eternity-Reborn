@@ -3,6 +3,13 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
+internal enum MortalWoundTreatmentPublicationProbe
+{
+    None,
+    Exact,
+    Conflict
+}
+
 internal static class AcceptedTurnAuthorityRegistry
 {
     private static readonly ConditionalWeakTable<
@@ -137,6 +144,17 @@ internal static class AcceptedTurnAuthorityRegistry
             WoundAcceptedTurnInput input) =>
         GetState(fileSystem, writeLease).GetOrBuildWoundPrepared(input);
 
+    internal static WoundAcceptedTurnPreparationResult
+        GetOrBuildWoundTreatmentContinuationPreparedValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            WoundAcceptedTurnInput input,
+            object treatmentContinuationAuthority) =>
+        GetState(fileSystem, writeLease)
+            .GetOrBuildWoundTreatmentContinuationPrepared(
+                input,
+                treatmentContinuationAuthority);
+
     internal static WoundAcceptedTurnPlanningResult GetOrBuildWoundFinalValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -155,6 +173,33 @@ internal static class AcceptedTurnAuthorityRegistry
         GetState(fileSystem, writeLease).GetOrBuildCommonWoundValidated(
             input,
             bundle);
+
+    internal static MortalWoundTreatmentPublicationProbe
+        ProbeMortalWoundTreatmentPublication(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            string semanticFingerprint) =>
+        GetState(fileSystem, writeLease).ProbeMortalWoundTreatmentPublication(
+            acceptedState,
+            semanticFingerprint);
+
+    internal static AcceptedMechanicsPlanningResult
+        GetOrBuildCommonMortalWoundTreatmentValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            AcceptedMechanicsInput input,
+            AcceptedMechanicsWoundStageBundle bundle,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptRequest request,
+            string semanticFingerprint) =>
+        GetState(fileSystem, writeLease)
+            .GetOrBuildCommonMortalWoundTreatmentValidated(
+                input,
+                bundle,
+                acceptedState,
+                request,
+                semanticFingerprint);
 
     internal static bool TryPeekWoundPrepared(
         FileSystemManager fileSystem,
@@ -883,6 +928,7 @@ internal static class AcceptedTurnAuthorityRegistry
         private object? _woundEffectStageToken;
         private string? _woundEffectFingerprint;
         private WoundEffectBatchPlanningResult? _woundEffectResult;
+        private string? _mortalWoundTreatmentPublicationFingerprint;
 
         internal AcceptedTurnAuthorityState(
             AcceptedMechanicsPlanCache? commonPlan = null,
@@ -1808,6 +1854,109 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        internal MortalWoundTreatmentPublicationProbe
+            ProbeMortalWoundTreatmentPublication(
+                MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+                string semanticFingerprint)
+        {
+            ArgumentNullException.ThrowIfNull(acceptedState);
+            ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
+            lock (_gate)
+            {
+                if (!ReferenceEquals(
+                        _mortalWoundTreatmentAcceptedState,
+                        acceptedState))
+                {
+                    return MortalWoundTreatmentPublicationProbe.Conflict;
+                }
+                if (_mortalWoundTreatmentPublicationFingerprint is null)
+                    return MortalWoundTreatmentPublicationProbe.None;
+                return string.Equals(
+                    _mortalWoundTreatmentPublicationFingerprint,
+                    semanticFingerprint,
+                    StringComparison.Ordinal)
+                    ? MortalWoundTreatmentPublicationProbe.Exact
+                    : MortalWoundTreatmentPublicationProbe.Conflict;
+            }
+        }
+
+        internal AcceptedMechanicsPlanningResult
+            GetOrBuildCommonMortalWoundTreatmentValidated(
+                AcceptedMechanicsInput input,
+                AcceptedMechanicsWoundStageBundle bundle,
+                MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+                MortalWoundTreatmentAttemptRequest request,
+                string semanticFingerprint)
+        {
+            ArgumentNullException.ThrowIfNull(input);
+            ArgumentNullException.ThrowIfNull(bundle);
+            ArgumentNullException.ThrowIfNull(acceptedState);
+            ArgumentNullException.ThrowIfNull(request);
+            ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
+            lock (_gate)
+            {
+                if (!ReferenceEquals(
+                        _mortalWoundTreatmentAcceptedState,
+                        acceptedState) ||
+                    _mortalWoundTreatmentPublicationFingerprint is not null)
+                {
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        new[]
+                        {
+                            WoundIssue(
+                                "mortal_wound_treatment_publication_conflict",
+                                "one fresh first publication admission",
+                                "stale accepted state or existing publication")
+                        });
+                }
+
+                var supplied = input.PlanningContext?.WoundStageBundle;
+                var mismatch = supplied is null ||
+                    !string.Equals(
+                        supplied.BundleFingerprint,
+                        bundle.BundleFingerprint,
+                        StringComparison.Ordinal)
+                    ? "missing or different supplied bundle"
+                    : GetCommonWoundStageMismatch(input);
+                if (mismatch is not null)
+                {
+                    InvalidateWoundAndDependentCore();
+                    return new AcceptedMechanicsPlanningResult(
+                        null,
+                        new[]
+                        {
+                            WoundIssue(
+                                "accepted_mechanics_wound_stage_provenance_mismatch",
+                                "the current registry-owned prepared, effect, and final wound stages",
+                                mismatch)
+                        });
+                }
+
+                try
+                {
+                    var result = _commonPlan.GetOrBuildValidated(
+                        input,
+                        candidate => MortalWoundTreatmentCapabilityAuthority
+                            .CandidateAdmissionGate.Validate(
+                                acceptedState,
+                                request,
+                                candidate));
+                    if (result.Success)
+                    {
+                        _mortalWoundTreatmentPublicationFingerprint =
+                            semanticFingerprint;
+                    }
+                    return result;
+                }
+                catch
+                {
+                    InvalidateAllCore();
+                    throw;
+                }
+            }
+        }
+
         private string? GetCommonWoundStageMismatch(
             AcceptedMechanicsInput input)
         {
@@ -1900,7 +2049,10 @@ internal static class AcceptedTurnAuthorityRegistry
         internal void InvalidateCommonValidated()
         {
             lock (_gate)
+            {
                 _commonPlan.InvalidateValidated();
+                _mortalWoundTreatmentPublicationFingerprint = null;
+            }
         }
 
         internal bool HasCommonValidated()
@@ -1968,6 +2120,38 @@ internal static class AcceptedTurnAuthorityRegistry
                         _effectPlan.InvalidateAll();
                         ClearWoundEffectCore();
                         _commonPlan.InvalidateAll();
+                        _mortalWoundTreatmentPublicationFingerprint = null;
+                    }
+                    return result;
+                }
+                catch
+                {
+                    InvalidateAllCore();
+                    throw;
+                }
+            }
+        }
+
+        internal WoundAcceptedTurnPreparationResult
+            GetOrBuildWoundTreatmentContinuationPrepared(
+                WoundAcceptedTurnInput input,
+                object treatmentContinuationAuthority)
+        {
+            lock (_gate)
+            {
+                try
+                {
+                    var result = _woundPlan
+                        .GetOrBuildTreatmentContinuationPrepared(
+                            input,
+                            treatmentContinuationAuthority,
+                            out var reused);
+                    if (!reused)
+                    {
+                        _effectPlan.InvalidateAll();
+                        ClearWoundEffectCore();
+                        _commonPlan.InvalidateAll();
+                        _mortalWoundTreatmentPublicationFingerprint = null;
                     }
                     return result;
                 }
@@ -1994,6 +2178,7 @@ internal static class AcceptedTurnAuthorityRegistry
                         ClearWoundEffectCore();
                         _woundPlan.InvalidateFinal();
                         _commonPlan.InvalidateAll();
+                        _mortalWoundTreatmentPublicationFingerprint = null;
                     }
                     return result;
                 }
@@ -2038,6 +2223,7 @@ internal static class AcceptedTurnAuthorityRegistry
                         ClearWoundEffectCore();
                         _woundPlan.InvalidateFinal();
                         _commonPlan.InvalidateAll();
+                        _mortalWoundTreatmentPublicationFingerprint = null;
                         return accepted;
                     }
 
@@ -2055,6 +2241,7 @@ internal static class AcceptedTurnAuthorityRegistry
 
                     _woundPlan.InvalidateFinal();
                     _commonPlan.InvalidateAll();
+                    _mortalWoundTreatmentPublicationFingerprint = null;
                     var stageToken = new object();
                     var bound = accepted.Plan.BindToCacheAuthority(
                         _authorityStateToken,
@@ -2113,6 +2300,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     else if (!reused)
                     {
                         _commonPlan.InvalidateAll();
+                        _mortalWoundTreatmentPublicationFingerprint = null;
                     }
                     return result;
                 }
@@ -2132,6 +2320,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 ClearWoundEffectCore();
                 _woundPlan.InvalidateFinal();
                 _commonPlan.InvalidateAll();
+                _mortalWoundTreatmentPublicationFingerprint = null;
             }
         }
 
@@ -2175,6 +2364,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     out result);
                 if (!taken)
                     _commonPlan.InvalidateAll();
+                _mortalWoundTreatmentPublicationFingerprint = null;
                 _effectPlan.InvalidateAll();
                 ClearWoundEffectCore();
                 _woundPlan.InvalidateAll();
@@ -2337,12 +2527,14 @@ internal static class AcceptedTurnAuthorityRegistry
             _effectPlan.InvalidateAll();
             ClearWoundEffectCore();
             _commonPlan.InvalidateAll();
+            _mortalWoundTreatmentPublicationFingerprint = null;
             _mortalItems.InvalidateValidated();
         }
 
         private void InvalidateAllCore()
         {
             _commonPlan.InvalidateAll();
+            _mortalWoundTreatmentPublicationFingerprint = null;
             _effectPlan.InvalidateAll();
             ClearWoundEffectCore();
             _woundPlan.InvalidateAll();
