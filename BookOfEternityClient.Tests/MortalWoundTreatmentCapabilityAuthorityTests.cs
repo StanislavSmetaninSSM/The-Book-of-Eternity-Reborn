@@ -1140,6 +1140,69 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertGovernedRootsMatchBeforeImages(beforeRetry);
     }
 
+    [Fact]
+    public void PublicationPlan_ChangedExplicitNoOpConflictsWithTheCachedEmptyOperation()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root", publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var first = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse());
+        AssertValidResultShell(first.IsValid, first.Issues, first.Value, "empty publication");
+        var beforeConflict = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var conflicting = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse { ActiveSkillChanges = Array.Empty<JsonElement>() });
+
+        Assert.False(conflicting.IsValid);
+        Assert.Null(conflicting.Value);
+        Assert.Contains(conflicting.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_conflict");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.Same(first.Value, cached.Plan);
+        fixture.AssertGovernedRootsMatchBeforeImages(beforeConflict);
+    }
+
+    [Fact]
+    public void PublicationPlan_MalformedSkillCommandRejectsBeforeCachingOrWriting()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root", publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse
+            {
+                ActiveSkillChanges = new[] { JsonSerializer.SerializeToElement("not-a-skill") }
+            });
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_skill_command_invalid");
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
     private static CapabilityProofView InvokeExportCurrent(
         CapabilityAuthorityFixture fixture,
         CapabilityScenario scenario)
@@ -1583,7 +1646,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         CapabilityAuthorityFixture fixture,
         object acceptedState,
         object request,
-        object resolution)
+        object resolution,
+        GameResponse? suppliedProposal = null)
     {
         // T070 alone validates and normalizes the GM proposal, derives final
         // owner-companion after-images, and populates the common accepted-plan
@@ -1605,8 +1669,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Equal(acceptedState.GetType(), parameters[3].ParameterType);
         Assert.Equal(request.GetType(), parameters[4].ParameterType);
         Assert.Equal(resolution.GetType(), parameters[5].ParameterType);
-        var proposal = fixture.CreatePublicationProposal();
-        fixture.AssertPublicationProposalIsNotFinalPlanAuthority(proposal);
+        var proposal = suppliedProposal ?? fixture.CreatePublicationProposal();
+        if (suppliedProposal is null)
+            fixture.AssertPublicationProposalIsNotFinalPlanAuthority(proposal);
         var beforeCompose = fixture.CaptureGovernedPublicationBeforeImages();
         var composed = Invoke(compose, new object?[]
         {
@@ -4094,13 +4159,24 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
             Assert.Equal(CapabilityFailureBoundary.Exporter, Scenario.ExpectedBoundary);
             Assert.NotNull(Scenario.ExpectedCode);
-            Assert.Equal(currentRoots.Keys.OrderBy(static path => path),
-                finalRoots.Keys.OrderBy(static path => path));
+            if (Scenario.Name is "duplicate_or_confusable_final_skill_row_rejects" or
+                "confusable_final_skill_sibling_rejects")
+            {
+                Assert.True(finalRoots.Keys.ToHashSet(StringComparer.Ordinal)
+                    .IsSupersetOf(currentRoots.Keys));
+                Assert.Equal(currentRoots.Count + 1, finalRoots.Count);
+            }
+            else
+            {
+                Assert.Equal(currentRoots.Keys.OrderBy(static path => path),
+                    finalRoots.Keys.OrderBy(static path => path));
+            }
             Assert.Contains(finalRoots.Keys,
-                path => !string.Equals(
-                    currentRoots[path].ToJsonString(),
-                    finalRoots[path].ToJsonString(),
-                    StringComparison.Ordinal));
+                path => !currentRoots.TryGetValue(path, out var currentRoot) ||
+                        !string.Equals(
+                            currentRoot.ToJsonString(),
+                            finalRoots[path].ToJsonString(),
+                            StringComparison.Ordinal));
         }
 
         internal void AssertCachedPublicationPlanBinding(
@@ -4122,6 +4198,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     Assert.Equal(canonicalBeforeBytes, before.Bytes);
                     Assert.NotEqual(string.Empty, finalRoot.ToJsonString());
                 }
+            }
+            else if (Scenario.SourceOwner == "npc")
+            {
+                Assert.True(binding.BeforeImages.TryGetValue(SelectedSkillRootPath, out var before));
+                Assert.True(before!.Existed);
+                Assert.Equal(
+                    File.ReadAllBytes(FileSystem.ResolvePath(SelectedSkillRootPath)),
+                    before.Bytes);
             }
             else
                 Assert.DoesNotContain(SelectedSkillRootPath, binding.BeforeImages.Keys);
