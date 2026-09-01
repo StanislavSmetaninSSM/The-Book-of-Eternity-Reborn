@@ -285,6 +285,42 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
     }
 
+    [Fact]
+    public void ResourceFinalization_ResealedSuccessfulProcedureInterruptionRejects()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_resealed_interruption",
+            scenario.RouteId);
+        var treeBefore = CaptureResolverFixtureTree(fixture.Root);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("success", resolution.ResultCategory);
+        Assert.False(resolution.Interruption);
+
+        var resealed = RecreateFinalizationResolution(
+            resolution,
+            interruption: true,
+            consumptionTrigger: "none");
+        Assert.True(resealed.Interruption);
+        Assert.Equal("none", resealed.ConsumptionTrigger);
+
+        var result = MortalWoundTreatmentResourceComposer.Finalize(resealed);
+
+        Assert.False(result.IsValid);
+        var issue = Assert.Single(result.Issues);
+        Assert.StartsWith(
+            "mortal_wound_treatment_resource_finalization_",
+            issue.Code,
+            StringComparison.Ordinal);
+        Assert.Null(result.Finalization);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
+    }
+
     [Theory]
     [InlineData("request")]
     [InlineData("resource")]
@@ -468,6 +504,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         MortalWoundTreatmentAttemptRequest? request = null,
         string? attemptDisposition = null,
         string? resultCategory = null,
+        bool? interruption = null,
         string? consumptionTrigger = null,
         IReadOnlyList<MortalWoundTreatmentOperation>? declaredResult = null,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent>? outcomeIntents = null,
@@ -480,7 +517,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             attemptDisposition ?? source.AttemptDisposition,
             resultCategory ?? source.ResultCategory,
             source.SelectedOutcomeIndex,
-            source.Interruption,
+            interruption ?? source.Interruption,
             declaredResult ?? source.DeclaredResult,
             outcomeIntents ?? source.OutcomeIntents,
             source.CriticalReactionIntent,

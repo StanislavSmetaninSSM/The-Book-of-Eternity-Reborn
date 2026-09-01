@@ -295,7 +295,8 @@ internal sealed partial class MortalWoundTreatmentResolution
         MortalWoundProcedureCheckAuthority authority,
         MortalWoundProcedureRouteDefinition route)
     {
-        if (!string.Equals(resolution.Mode, "procedure", StringComparison.Ordinal))
+        if (!string.Equals(resolution.Mode, "procedure", StringComparison.Ordinal) ||
+            resolution.Interruption)
             throw new InvalidOperationException("Procedure evidence requires procedure mode.");
         var total = checked((long)authority.NaturalRoll + authority.Modifier);
         var margin = checked(total - authority.EffectiveDifficulty);
