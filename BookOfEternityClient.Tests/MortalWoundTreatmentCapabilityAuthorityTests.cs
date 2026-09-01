@@ -1497,6 +1497,84 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertGovernedRootsMatchBeforeImages(before);
     }
 
+    [Fact]
+    public void PublicationExport_UntouchedNpcRejectsConfusableLiveOwnerAtCapabilityBoundary()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_npc_skill_reads_current_lease_bound_root",
+            publication: true));
+        var flow = ComposePublicationFlow(fixture);
+        fixture.AddConfusableNpcSiblingAfterPublicationComposition();
+
+        var rejected = InvokeCapabilityExporter(
+            "ExportForPublication",
+            flow.AcceptedState,
+            flow.Coordinates,
+            CapabilityRef,
+            fixture.Scenario.ActorRole,
+            flow.Plan);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Proof);
+        var issue = Assert.Single(rejected.Issues);
+        Assert.Equal("mortal_wound_treatment_capability_source_ambiguous", issue.Code);
+        Assert.Equal("treatmentCapability.source.skillId", issue.FilePath);
+    }
+
+    [Fact]
+    public void PublicationAdmission_MutatedActorCatalogMapsCannotHideForgedCapabilityState()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "touched_npc_active_skill_reads_exact_final_after_image",
+                publication: true),
+            addSecondNpc: true);
+        var attempt = PreparePublicationAttempt(fixture);
+        var composed = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            fixture.CreateMultipleNpcSkillPublicationProposal());
+        AssertValidResultShell(
+            composed.IsValid,
+            composed.Issues,
+            composed.Value,
+            "sealed multiple-NPC publication");
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Value);
+        var continuation = Assert.IsAssignableFrom<object>(
+            Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle)
+                .PreparedPlan.TreatmentContinuationAuthority);
+        var semanticFingerprint = Assert.IsType<string>(
+            ReadRequiredProperty(continuation, "SemanticFingerprint"));
+        var projection = ReadRequiredProperty(continuation, "SkillProjectionAuthority");
+        var actorBefore = Assert.IsAssignableFrom<IDictionary<string, JsonObject>>(
+            projection.GetType().GetField(
+                "_actorBeforeRoots",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(projection));
+        var actorAfter = Assert.IsAssignableFrom<IDictionary<string, JsonObject>>(
+            projection.GetType().GetField(
+                "_actorAfterRoots",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(projection));
+        var forgedRoot = fixture.CreateSynthesizedAssistantActiveRoot();
+        actorBefore["npc:npc_publication_assistant_02:active"] =
+            forgedRoot.DeepClone().AsObject();
+        actorAfter["npc:npc_publication_assistant_02:active"] =
+            forgedRoot.DeepClone().AsObject();
+
+        var issues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.Validate(
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(attempt.AcceptedState),
+            Assert.IsType<MortalWoundTreatmentAttemptRequest>(attempt.Request),
+            Assert.IsType<MortalWoundTreatmentResolution>(attempt.Resolution),
+            plan,
+            semanticFingerprint,
+            continuation);
+
+        Assert.Contains(issues, static issue =>
+            issue.Code is "mortal_wound_treatment_publication_provenance_mismatch" or
+                "mortal_wound_treatment_publication_projection_mismatch");
+    }
+
     private static CapabilityProofView InvokeExportCurrent(
         CapabilityAuthorityFixture fixture,
         CapabilityScenario scenario)
@@ -3936,6 +4014,19 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             return proposal;
         }
 
+        internal JsonObject CreateSynthesizedAssistantActiveRoot()
+        {
+            var synthesized = Skill(CurrentSource, "npc", "activeSkills")
+                .DeepClone().AsObject();
+            synthesized["skillId"] = "skill_publication_assistant_care_02";
+            synthesized["skillName"] = "Synthesized assistant care";
+            synthesized["displayName"] = "Synthesized assistant care";
+            return new JsonObject
+            {
+                ["activeSkills"] = new JsonArray(synthesized)
+            };
+        }
+
         internal void AssertCombinedNpcSkillProjection(object value)
         {
             var plan = Assert.IsType<AcceptedMechanicsPlan>(value);
@@ -4005,6 +4096,21 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mutation));
             }
+            File.WriteAllText(path, root.ToJsonString());
+        }
+
+        internal void AddConfusableNpcSiblingAfterPublicationComposition()
+        {
+            var path = FileSystem.ResolvePath("game_state/npcs/npc_core.json");
+            var root = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+            var actors = Assert.IsType<JsonArray>(root["NPCsInScene"]);
+            var selected = Assert.IsType<JsonObject>(Assert.Single(actors));
+            var confusable = selected.DeepClone().AsObject();
+            confusable["NPCId"] = Scenario.ProviderId.Replace(
+                "i",
+                "і",
+                StringComparison.Ordinal);
+            actors.Add(confusable);
             File.WriteAllText(path, root.ToJsonString());
         }
 

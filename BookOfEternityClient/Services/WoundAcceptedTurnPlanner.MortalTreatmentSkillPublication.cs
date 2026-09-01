@@ -536,6 +536,8 @@ internal static partial class WoundAcceptedTurnPlanner
             semanticFingerprint,
             baselines,
             afterImages,
+            actorBefore,
+            actorAfter,
             touchedActors);
         return new(
             new TreatmentSkillProjectionAuthority(
@@ -733,6 +735,8 @@ internal static partial class WoundAcceptedTurnPlanner
         string semanticFingerprint,
         IReadOnlyDictionary<string, CanonicalBeforeImage> baselines,
         IReadOnlyDictionary<string, JsonObject> afterImages,
+        IReadOnlyDictionary<string, JsonObject> actorBeforeRoots,
+        IReadOnlyDictionary<string, JsonObject> actorAfterRoots,
         IEnumerable<string> touchedActorIds)
     {
         var fields = new List<string?>
@@ -761,8 +765,29 @@ internal static partial class WoundAcceptedTurnPlanner
                 WoundAcceptedTurnFingerprintWriter.CanonicalJson(afterImages[path])
             }));
         }
+        AppendTreatmentSkillActorCatalogFingerprints(
+            fields,
+            "before",
+            actorBeforeRoots);
+        AppendTreatmentSkillActorCatalogFingerprints(
+            fields,
+            "after",
+            actorAfterRoots);
         fields.AddRange(touchedActorIds.OrderBy(static value => value, StringComparer.Ordinal));
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private static void AppendTreatmentSkillActorCatalogFingerprints(
+        ICollection<string?> fields,
+        string stage,
+        IReadOnlyDictionary<string, JsonObject> roots)
+    {
+        foreach (var key in roots.Keys.OrderBy(static value => value, StringComparer.Ordinal))
+        {
+            fields.Add(stage);
+            fields.Add(key);
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(roots[key]));
+        }
     }
 
     private static bool TryReadTreatmentSkillProjection(
@@ -783,6 +808,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.SemanticFingerprint,
             candidate.Baselines,
             candidate.AfterImages,
+            candidate.ActorBeforeRoots,
+            candidate.ActorAfterRoots,
             candidate.TouchedActorIds);
         if (!string.Equals(candidate.Fingerprint, fingerprint, StringComparison.Ordinal))
             return false;
@@ -839,12 +866,18 @@ internal static partial class WoundAcceptedTurnPlanner
         var skillPaths = new HashSet<string>(
             new[] { PlayerActiveSkillPath, PlayerPassiveSkillPath, NpcSkillPath },
             StringComparer.Ordinal);
-        var actualSkillAfterImagePaths = candidate.OwnerCompanionAfterImages.Keys
+        var candidateAfterImages = candidate.OwnerCompanionAfterImages;
+        var candidateBeforeImages = candidate.BeforeImages;
+        var actualSkillAfterImagePaths = candidateAfterImages.Keys
             .Where(skillPaths.Contains)
             .ToHashSet(StringComparer.Ordinal);
         var expectedSkillAfterImagePaths = projection.AfterImages.Keys
             .ToHashSet(StringComparer.Ordinal);
-        if (!actualSkillAfterImagePaths.SetEquals(expectedSkillAfterImagePaths))
+        var actualTouchedSkillPaths = candidate.TouchedPaths
+            .Where(skillPaths.Contains)
+            .ToHashSet(StringComparer.Ordinal);
+        if (!actualSkillAfterImagePaths.SetEquals(expectedSkillAfterImagePaths) ||
+            !actualTouchedSkillPaths.SetEquals(expectedSkillAfterImagePaths))
         {
             return new[]
             {
@@ -859,9 +892,9 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         foreach (var (path, expected) in projection.AfterImages)
         {
-            if (!candidate.OwnerCompanionAfterImages.TryGetValue(path, out var actual) ||
+            if (!candidateAfterImages.TryGetValue(path, out var actual) ||
                 !JsonNode.DeepEquals(expected, actual) ||
-                !candidate.TouchedPaths.Contains(path, StringComparer.Ordinal))
+                !actualTouchedSkillPaths.Contains(path))
             {
                 return new[]
                 {
@@ -875,7 +908,7 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         foreach (var (path, expected) in projection.Baselines)
         {
-            if (!candidate.BeforeImages.TryGetValue(path, out var actual) ||
+            if (!candidateBeforeImages.TryGetValue(path, out var actual) ||
                 expected.Existed != actual.Existed ||
                 !(expected.Bytes ?? Array.Empty<byte>()).AsSpan().SequenceEqual(
                     actual.Bytes ?? Array.Empty<byte>()))
@@ -890,12 +923,40 @@ internal static partial class WoundAcceptedTurnPlanner
                 };
             }
         }
-        return ValidateTreatmentSkillActorPreservation(projection);
+        return ValidateTreatmentSkillActorPreservation(
+            projection,
+            candidateBeforeImages,
+            candidateAfterImages);
     }
 
     private static IReadOnlyList<ValidationIssue> ValidateTreatmentSkillActorPreservation(
-        TreatmentSkillProjectionAuthority projection)
+        TreatmentSkillProjectionAuthority projection,
+        IReadOnlyDictionary<string, CanonicalBeforeImage> candidateBeforeImages,
+        IReadOnlyDictionary<string, JsonObject> candidateAfterImages)
     {
+        if (!TryDeriveTreatmentSkillActorCatalogs(
+                projection,
+                candidateBeforeImages,
+                candidateAfterImages,
+                out var actorBeforeRoots,
+                out var actorAfterRoots) ||
+            !TreatmentSkillActorCatalogMapsAgree(
+                projection.ActorBeforeRoots,
+                actorBeforeRoots) ||
+            !TreatmentSkillActorCatalogMapsAgree(
+                projection.ActorAfterRoots,
+                actorAfterRoots))
+        {
+            return new[]
+            {
+                PublicationIssue(
+                    "treatmentPublication.skillProjection.actorCatalogs",
+                    "mortal_wound_treatment_publication_projection_mismatch",
+                    "actor catalogs re-derived from exact candidate before/final roots",
+                    "missing, ambiguous, or changed actor catalog")
+            };
+        }
+
         var issues = new List<ValidationIssue>();
         foreach (var actor in projection.TouchedActorIds)
         {
@@ -903,10 +964,10 @@ internal static partial class WoundAcceptedTurnPlanner
             var ownerKind = parts[0];
             var ownerId = parts[1];
             var prefix = actor + ":";
-            var beforeActive = projection.ActorBeforeRoots[prefix + "active"];
-            var beforePassive = projection.ActorBeforeRoots[prefix + "passive"];
-            var afterActive = projection.ActorAfterRoots[prefix + "active"];
-            var afterPassive = projection.ActorAfterRoots[prefix + "passive"];
+            var beforeActive = actorBeforeRoots[prefix + "active"];
+            var beforePassive = actorBeforeRoots[prefix + "passive"];
+            var afterActive = actorAfterRoots[prefix + "active"];
+            var afterPassive = actorAfterRoots[prefix + "passive"];
             issues.AddRange(MortalWoundTreatmentCapabilityContract.ValidateComposedActorCatalog(
                 ownerKind,
                 ownerId,
@@ -921,6 +982,181 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         return issues;
     }
+
+    private static bool TryDeriveTreatmentSkillActorCatalogs(
+        TreatmentSkillProjectionAuthority projection,
+        IReadOnlyDictionary<string, CanonicalBeforeImage> candidateBeforeImages,
+        IReadOnlyDictionary<string, JsonObject> candidateAfterImages,
+        out IReadOnlyDictionary<string, JsonObject> actorBeforeRoots,
+        out IReadOnlyDictionary<string, JsonObject> actorAfterRoots)
+    {
+        var before = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var after = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        actorBeforeRoots = before;
+        actorAfterRoots = after;
+
+        JsonObject? playerActiveBefore = null;
+        JsonObject? playerPassiveBefore = null;
+        JsonObject? npcBefore = null;
+        JsonObject? npcAfter = null;
+        foreach (var actor in projection.TouchedActorIds)
+        {
+            var parts = actor.Split(':', 2);
+            if (parts.Length != 2)
+                return false;
+            var ownerKind = parts[0];
+            var ownerId = parts[1];
+            var prefix = actor + ":";
+            if (ownerKind == "player")
+            {
+                if (!string.Equals(ownerId, "player_current", StringComparison.Ordinal) ||
+                    !TryReadTreatmentSkillBeforeRoot(
+                        PlayerActiveSkillPath,
+                        projection,
+                        candidateBeforeImages,
+                        ref playerActiveBefore) ||
+                    !TryReadTreatmentSkillBeforeRoot(
+                        PlayerPassiveSkillPath,
+                        projection,
+                        candidateBeforeImages,
+                        ref playerPassiveBefore))
+                {
+                    return false;
+                }
+                before[prefix + "active"] = playerActiveBefore!.DeepClone().AsObject();
+                before[prefix + "passive"] = playerPassiveBefore!.DeepClone().AsObject();
+                after[prefix + "active"] = candidateAfterImages.TryGetValue(
+                    PlayerActiveSkillPath,
+                    out var playerActiveAfter)
+                    ? playerActiveAfter.DeepClone().AsObject()
+                    : playerActiveBefore.DeepClone().AsObject();
+                after[prefix + "passive"] = candidateAfterImages.TryGetValue(
+                    PlayerPassiveSkillPath,
+                    out var playerPassiveAfter)
+                    ? playerPassiveAfter.DeepClone().AsObject()
+                    : playerPassiveBefore.DeepClone().AsObject();
+                continue;
+            }
+
+            if (ownerKind != "npc" ||
+                !TryReadTreatmentSkillBeforeRoot(
+                    NpcSkillPath,
+                    projection,
+                    candidateBeforeImages,
+                    ref npcBefore) ||
+                (npcAfter ??= candidateAfterImages.GetValueOrDefault(NpcSkillPath)) is null ||
+                !TryResolveTreatmentSkillNpcActorCatalog(
+                    npcBefore!,
+                    ownerId,
+                    out var npcBeforeActive,
+                    out var npcBeforePassive) ||
+                !TryResolveTreatmentSkillNpcActorCatalog(
+                    npcAfter!,
+                    ownerId,
+                    out var npcAfterActive,
+                    out var npcAfterPassive))
+            {
+                return false;
+            }
+            before[prefix + "active"] = npcBeforeActive;
+            before[prefix + "passive"] = npcBeforePassive;
+            after[prefix + "active"] = npcAfterActive;
+            after[prefix + "passive"] = npcAfterPassive;
+        }
+        return true;
+    }
+
+    private static bool TryReadTreatmentSkillBeforeRoot(
+        string path,
+        TreatmentSkillProjectionAuthority projection,
+        IReadOnlyDictionary<string, CanonicalBeforeImage> candidateBeforeImages,
+        ref JsonObject? root)
+    {
+        if (root is not null)
+            return true;
+        if (!projection.Baselines.ContainsKey(path) ||
+            !candidateBeforeImages.TryGetValue(path, out var beforeImage) ||
+            !beforeImage.Existed ||
+            beforeImage.Bytes is null)
+        {
+            return false;
+        }
+        try
+        {
+            root = JsonNode.Parse(CanonicalJsonUtf8.DecodeOneOptionalBom(beforeImage.Bytes))
+                ?.AsObject();
+            return root is not null;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidOperationException)
+        {
+            return false;
+        }
+    }
+
+    private static bool TryResolveTreatmentSkillNpcActorCatalog(
+        JsonObject root,
+        string ownerId,
+        out JsonObject activeRoot,
+        out JsonObject passiveRoot)
+    {
+        activeRoot = null!;
+        passiveRoot = null!;
+        var owners = new List<(string Section, JsonObject Actor)>();
+        var ownerConfusableKey = MortalLocationIdentityState.BuildConfusableKey(ownerId);
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (root[section] is null)
+                continue;
+            if (root[section] is not JsonArray rows)
+                return false;
+            for (var index = 0; index < rows.Count; index++)
+            {
+                if (rows[index] is not JsonObject actor ||
+                    !GuardianPolicyContracts.TryResolveStrictPermanentNpcId(
+                        actor,
+                        out var npcId))
+                {
+                    return false;
+                }
+                if (string.Equals(npcId, ownerId, StringComparison.Ordinal))
+                {
+                    owners.Add((section, actor));
+                }
+                else if (string.Equals(
+                             MortalLocationIdentityState.BuildConfusableKey(npcId),
+                             ownerConfusableKey,
+                             StringComparison.Ordinal))
+                {
+                    return false;
+                }
+            }
+        }
+        if (owners.Count == 0 ||
+            owners.GroupBy(static owner => owner.Section, StringComparer.Ordinal)
+                .Any(static group => group.Count() != 1) ||
+            owners.Skip(1).Any(owner =>
+                !JsonNode.DeepEquals(owners[0].Actor, owner.Actor)))
+        {
+            return false;
+        }
+        activeRoot = new JsonObject
+        {
+            ["activeSkills"] = owners[0].Actor["activeSkills"]?.DeepClone() ?? new JsonArray()
+        };
+        passiveRoot = new JsonObject
+        {
+            ["passiveSkills"] = owners[0].Actor["passiveSkills"]?.DeepClone() ?? new JsonArray()
+        };
+        return true;
+    }
+
+    private static bool TreatmentSkillActorCatalogMapsAgree(
+        IReadOnlyDictionary<string, JsonObject> expected,
+        IReadOnlyDictionary<string, JsonObject> actual) =>
+        expected.Count == actual.Count &&
+        expected.All(pair => actual.TryGetValue(pair.Key, out var root) &&
+                             JsonNode.DeepEquals(pair.Value, root));
 
     private static void ValidateProductionSkillRows(
         JsonObject root,

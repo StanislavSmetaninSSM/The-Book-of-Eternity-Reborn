@@ -1148,6 +1148,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         }
 
         var owners = new List<(string Section, JsonObject Actor)>();
+        var ownerConfusableKey = MortalLocationIdentityState.BuildConfusableKey(ownerId);
+        var hasConfusableSibling = false;
         foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
             if (npcRoot![section] is not JsonArray rows)
@@ -1156,14 +1158,28 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             {
                 if (GuardianPolicyContracts.TryResolveStrictPermanentNpcId(
                         npc,
-                        out var npcId) &&
-                    string.Equals(npcId, ownerId, StringComparison.Ordinal))
+                        out var npcId))
                 {
-                    owners.Add((section, npc));
+                    if (string.Equals(npcId, ownerId, StringComparison.Ordinal))
+                    {
+                        owners.Add((section, npc));
+                    }
+                    else if (string.Equals(
+                                 MortalLocationIdentityState.BuildConfusableKey(npcId),
+                                 ownerConfusableKey,
+                                 StringComparison.Ordinal))
+                    {
+                        hasConfusableSibling = true;
+                    }
                 }
             }
         }
 
+        if (hasConfusableSibling)
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.SourceAmbiguous);
+        }
         if (owners.Count == 0)
         {
             return new MortalWoundTreatmentCapabilityCatalogReadResult(
