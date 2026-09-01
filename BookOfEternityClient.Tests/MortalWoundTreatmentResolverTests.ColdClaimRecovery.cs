@@ -462,6 +462,98 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void ColdClaimRecovery_HeldCourseContinuationRebuildsFreshAuthorityAndRejectsAdvancedClock()
+    {
+        var scenario = ConfigureCourseCrossScopeResourceQuantity(
+            CreateScenario(
+                "course_first_milestone_is_ready_at_inclusive_due_time",
+                "course"),
+            commonQuantity: 9,
+            milestoneQuantity: 1);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerHealthForRequirementTest(10);
+        var first = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_cold_freshness_start",
+            scenario.RouteId);
+        InstallPublishedCourseStart(fixture, first);
+
+        fixture.RestartForReplay();
+        fixture.PrepareNextTurn(43, 480, "cold_course_freshness_ordinal_2");
+        var persisted = ResolveCurrentTreatment(
+            fixture,
+            "course",
+            scenario.OperationKey + "_cold_freshness_held",
+            scenario.RouteId);
+        var persistedRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            persisted.Request);
+        var persistedCourse = Assert.IsType<MortalWoundCourseModeAuthority>(
+            persistedRequest.ModeAuthority);
+        Assert.Equal(fixture.ReadCurrentWound().Care.ActiveCourseId, persistedCourse.CourseId);
+        Assert.Equal(2, persistedCourse.MilestoneOrdinal);
+        Assert.Equal(480, persistedCourse.GameTimeAuthority.CurrentTimeInMinutes);
+        Assert.Equal("held", persistedRequest.ResourceAuthority.ReservationDisposition);
+        Assert.Contains(persistedRequest.ResourceAuthority.Claims, static claim =>
+            string.Equals(claim.AuthorityRef, "health", StringComparison.Ordinal) &&
+            claim.Quantity == 9);
+        PersistTreatmentCommand(
+            fixture,
+            ComposeTreatmentCommand(
+                persisted,
+                "The durable second course milestone must remain bound to its course clock."));
+
+        using (var freshColdFixture = CreateColdRootCopy(fixture))
+        {
+            var catalog = AssertValidPersistedCatalog(
+                RestoreCurrentPersistedTreatmentCatalog(freshColdFixture),
+                "fresh held course continuation recovery");
+            var restored = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+                Assert.Single(catalog, candidate => string.Equals(
+                    Assert.IsType<MortalWoundTreatmentAttemptRequest>(candidate)
+                        .RequestFingerprint,
+                    persistedRequest.RequestFingerprint,
+                    StringComparison.Ordinal)));
+            var restoredCourse = Assert.IsType<MortalWoundCourseModeAuthority>(
+                restored.ModeAuthority);
+            Assert.Equal(CanonicalValue(persistedRequest), CanonicalValue(restored));
+            Assert.Equal(persistedCourse.CourseId, restoredCourse.CourseId);
+            Assert.Equal(2, restoredCourse.MilestoneOrdinal);
+            Assert.Equal(480, restoredCourse.GameTimeAuthority.CurrentTimeInMinutes);
+        }
+
+        fixture.PrepareNextTurn(44, 960, "cold_course_advanced_clock");
+        using var staleColdFixture = CreateColdRootCopy(fixture);
+        var rejected = staleColdFixture.ExportCurrent();
+
+        AssertInvalidTypedResult(
+            rejected,
+            "Authority",
+            "held course continuation after the canonical course clock advanced");
+        var freshness = Assert.Single(
+            Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
+                ReadRequiredProperty(rejected, "Issues")),
+            static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_procedure_claim_recovery_fresh_mismatch",
+                StringComparison.Ordinal));
+        Assert.Equal("accepted_state_fingerprint", freshness.Actual);
+
+        File.Delete(staleColdFixture.FileSystem.ResolvePath(
+            AcceptedMechanicsPlan.WoundCommandPath));
+        var fresh = ResolveCurrentTreatment(
+            staleColdFixture,
+            "course",
+            scenario.OperationKey + "_cold_freshness_reacquired",
+            scenario.RouteId);
+        var freshRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(fresh.Request);
+        Assert.Equal("held", freshRequest.ResourceAuthority.ReservationDisposition);
+        Assert.Contains(freshRequest.ResourceAuthority.Claims, static claim =>
+            string.Equals(claim.AuthorityRef, "health", StringComparison.Ordinal) &&
+            claim.Quantity == 9);
+    }
+
+    [Fact]
     public void ColdClaimRecovery_ChangedSecondRestoreConflictsAndPreservesAllRegistries()
     {
         var scenario = CreateScenario(
