@@ -97,6 +97,25 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 "the exact private-minted continuation authority carried by the prepared stage",
                 "foreign or ordinary wound-stage bundle");
         }
+        IReadOnlyDictionary<string, CanonicalBeforeImage> treatmentSkillBaselines =
+            new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
+        IReadOnlyDictionary<string, JsonObject> treatmentSkillAfterImages =
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        var treatmentSkillProjectionFingerprint = string.Empty;
+        if (treatmentCurrentTimeInMinutes is not null &&
+            !WoundAcceptedTurnPlanner.TryReadTreatmentSkillProjection(
+                treatmentContinuationAuthority!,
+                treatmentReservationAuthority!,
+                out treatmentSkillBaselines,
+                out treatmentSkillAfterImages,
+                out treatmentSkillProjectionFingerprint))
+        {
+            return Failed(
+                WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_treatment_continuation_provenance_mismatch",
+                "the exact private-minted treatment skill projection",
+                "missing, foreign, or changed projection authority");
+        }
         if (anchorPlan is not null && !anchorPlan.AgreesWith(bundle))
         {
             return Failed(
@@ -150,6 +169,24 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
 
         try
         {
+            foreach (var (path, expected) in treatmentSkillBaselines)
+            {
+                _ = Read(path);
+                var actual = beforeImages[path];
+                if (expected.Existed != actual.Existed ||
+                    !(expected.Bytes ?? Array.Empty<byte>()).AsSpan().SequenceEqual(
+                        actual.Bytes ?? Array.Empty<byte>()))
+                {
+                    issues.Add(Issue(
+                        path,
+                        "accepted_mechanics_wound_treatment_skill_before_image_mismatch",
+                        "the exact sealed skill projection baseline",
+                        "canonical bytes changed after projection"));
+                }
+            }
+            if (issues.Count != 0)
+                return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
+
             var binding = bundle.Input.Binding;
             ValidateTurnRequest(Read(LiveTurnPreparationService.TurnRequestPath), binding, issues);
             if (issues.Count != 0)
@@ -357,6 +394,9 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             };
             if (anchorPlan is not null)
                 internalInputs["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint;
+            if (treatmentCurrentTimeInMinutes is not null)
+                internalInputs["treatmentSkillProjectionFingerprint"] =
+                    treatmentSkillProjectionFingerprint;
             var effectIdentityJson = Read(
                 EffectAcceptedTurnPlan.IdentityIndexPath);
             var effectIdentityRoot = stagedEffectPlan.IdentityIndexBeforeImage ??
@@ -380,6 +420,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(stagedEffectPlan.TouchedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.DeletedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.CarrierBeforeImages.Keys);
+            requiredPaths.UnionWith(treatmentSkillBaselines.Keys);
             if (anchorPlan is not null)
             {
                 requiredPaths.UnionWith(
@@ -451,6 +492,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 resourceCommands,
                 effectIdentityRoot,
                 stagedEffectPlan,
+                ownerCompanionAfterImages: treatmentSkillAfterImages,
                 pendingResolutionState: pendingResult.State,
                 woundStageBundle: bundle,
                 woundAnchorPlan: anchorPlan,

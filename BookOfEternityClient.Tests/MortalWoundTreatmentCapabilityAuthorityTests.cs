@@ -1087,10 +1087,12 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             selectedBefore,
             fixture.FileSystem);
 
-        var exception = Assert.Throws<IOException>(() => PublishCachedAcceptedPlan(fixture));
+        var exception = Assert.Throws<CanonicalStateWriteException>(() =>
+            PublishCachedAcceptedPlan(fixture));
+        Assert.Equal(WoundHistoryState.HistoryPath, exception.RelativePath);
         Assert.Equal(
             $"Injected accepted-plan publication failure at '{WoundHistoryState.HistoryPath}'.",
-            exception.Message);
+            Assert.IsType<IOException>(exception.InnerException).Message);
         Assert.True(fault.Fired);
         fault.AssertFiredAfterAnEarlierPlanWrite();
         var selectedAfterImage = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
@@ -1197,6 +1199,298 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         Assert.Null(rejected.Value);
         Assert.Contains(rejected.Issues, static issue =>
             issue.Code == "mortal_wound_treatment_publication_skill_command_invalid");
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
+    [Fact]
+    public void PublicationPlan_ExactRetryReturnsBeforeFreshSkillCapabilityReads()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "touched_player_active_skill_reads_exact_final_after_image", publication: true));
+        var first = ComposePublicationFlow(fixture);
+        fixture.MutatePersistedSelectedCapabilityAfterExport();
+        var beforeRetry = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var retry = InvokeT070Publication(
+            fixture,
+            first.AcceptedState,
+            first.Request,
+            first.Resolution);
+
+        AssertValidResultShell(retry.IsValid, retry.Issues, retry.Value, "exact cached retry");
+        Assert.Same(first.Plan, retry.Value);
+        fixture.AssertGovernedRootsMatchBeforeImages(beforeRetry);
+    }
+
+    [Fact]
+    public void PublicationPlan_NpcActiveAndPassiveCommandsProduceOneNpcCoreAfterImage()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "touched_npc_active_skill_reads_exact_final_after_image", publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var proposal = fixture.CreateCombinedNpcSkillPublicationProposal();
+
+        var result = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            proposal);
+
+        AssertValidResultShell(
+            result.IsValid,
+            result.Issues,
+            result.Value,
+            "combined NPC skill publication");
+        fixture.AssertCombinedNpcSkillProjection(result.Value!);
+    }
+
+    [Fact]
+    public void PublicationPlan_IdenticalMirroredNpcIsUpdatedInEveryCanonicalSection()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "touched_npc_active_skill_reads_exact_final_after_image",
+                publication: true),
+            mirrorNpc: true);
+        var attempt = PreparePublicationAttempt(fixture);
+
+        var result = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution);
+
+        AssertValidResultShell(
+            result.IsValid,
+            result.Issues,
+            result.Value,
+            "mirrored NPC skill publication");
+        fixture.AssertMirroredNpcProjection(result.Value!);
+    }
+
+    [Theory]
+    [InlineData("divergent_cross_section")]
+    [InlineData("same_section_duplicate")]
+    public void PublicationPlan_InvalidNpcMirrorsRejectBeforeCachingOrWriting(string mutation)
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "touched_npc_active_skill_reads_exact_final_after_image",
+                publication: true),
+            mirrorNpc: mutation == "divergent_cross_section");
+        var attempt = PreparePublicationAttempt(fixture);
+        fixture.MutateNpcMirror(mutation);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_npc_selector_ambiguous");
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
+    [Fact]
+    public void PublicationPlan_MultipleNpcCommandsComposeIntoOneNpcCoreAfterImage()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "touched_npc_active_skill_reads_exact_final_after_image",
+                publication: true),
+            addSecondNpc: true);
+        var attempt = PreparePublicationAttempt(fixture);
+
+        var result = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            fixture.CreateMultipleNpcSkillPublicationProposal());
+
+        AssertValidResultShell(
+            result.IsValid,
+            result.Issues,
+            result.Value,
+            "multiple NPC skill publication");
+        fixture.AssertMultipleNpcSkillProjection(result.Value!);
+    }
+
+    [Fact]
+    public void PublicationPlan_UntouchedMirroredNpcExportsOneLogicalOwner()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "untouched_npc_skill_reads_current_lease_bound_root",
+                publication: true),
+            mirrorNpc: true);
+
+        var flow = ComposePublicationFlow(fixture);
+
+        Assert.Empty(Assert.IsType<AcceptedMechanicsPlan>(flow.Plan)
+            .OwnerCompanionAfterImages);
+    }
+
+    [Fact]
+    public void PublicationPlan_UnsupportedResponseFieldRejectsBeforeCachingOrWriting()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse { MoneyChange = 1 });
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_response_unsupported");
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
+    [Fact]
+    public void PublicationPlan_DetachedAfterImageMutationCannotAlterTheSealedCandidate()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "touched_player_active_skill_reads_exact_final_after_image",
+            publication: true));
+        var flow = ComposePublicationFlow(fixture);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(flow.Plan);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+        var detached = plan.OwnerCompanionAfterImages[
+            "game_state/player/skills_active.json"];
+        detached.Clear();
+
+        Assert.NotEmpty(plan.OwnerCompanionAfterImages[
+            "game_state/player/skills_active.json"]);
+        var published = PublishCachedAcceptedPlan(fixture);
+
+        Assert.Same(plan, published);
+        fixture.AssertPublicationPublishedExactSkillRoots(plan, before);
+    }
+
+    [Fact]
+    public void PublicationAdmission_SwappedProjectionAuthorityRejectsAtTheGate()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "touched_player_active_skill_reads_exact_final_after_image",
+            publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var composed = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution);
+        AssertValidResultShell(
+            composed.IsValid,
+            composed.Issues,
+            composed.Value,
+            "sealed projection publication");
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Value);
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle);
+        var continuation = Assert.IsAssignableFrom<object>(
+            bundle.PreparedPlan.TreatmentContinuationAuthority);
+        var semanticFingerprint = Assert.IsType<string>(
+            ReadRequiredProperty(continuation, "SemanticFingerprint"));
+        var projectionField = Assert.IsAssignableFrom<FieldInfo>(
+            continuation.GetType().GetField(
+                "<SkillProjectionAuthority>k__BackingField",
+                BindingFlags.Instance | BindingFlags.NonPublic));
+        projectionField.SetValue(continuation, new object());
+
+        var issues = MortalWoundTreatmentCapabilityAuthority.CandidateAdmissionGate.Validate(
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(attempt.AcceptedState),
+            Assert.IsType<MortalWoundTreatmentAttemptRequest>(attempt.Request),
+            Assert.IsType<MortalWoundTreatmentResolution>(attempt.Resolution),
+            plan,
+            semanticFingerprint,
+            continuation);
+
+        Assert.Contains(issues, static issue =>
+            issue.Code is "mortal_wound_treatment_publication_provenance_mismatch" or
+                "mortal_wound_treatment_publication_projection_mismatch");
+    }
+
+    [Fact]
+    public void PublicationPlan_PresentEmptyNpcFieldIsATouchAndDiffersFromNull()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_npc_skill_reads_current_lease_bound_root",
+            publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var beforeRoot = JsonNode.Parse(File.ReadAllText(fixture.FileSystem.ResolvePath(
+            "game_state/npcs/npc_core.json")))!.AsObject();
+
+        var explicitNoOp = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse { NPCActiveSkillChanges = Array.Empty<JsonElement>() });
+
+        AssertValidResultShell(
+            explicitNoOp.IsValid,
+            explicitNoOp.Issues,
+            explicitNoOp.Value,
+            "present-empty NPC skill publication");
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(explicitNoOp.Value);
+        var after = Assert.Single(plan.OwnerCompanionAfterImages);
+        Assert.Equal("game_state/npcs/npc_core.json", after.Key);
+        Assert.True(JsonNode.DeepEquals(beforeRoot, after.Value));
+
+        var nullOperation = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            new GameResponse());
+        Assert.False(nullOperation.IsValid);
+        Assert.Contains(nullOperation.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_conflict");
+    }
+
+    [Fact]
+    public void PublicationPlan_UnselectedTouchedActorCannotSynthesizeTreatmentCapability()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "touched_npc_active_skill_reads_exact_final_after_image",
+                publication: true),
+            addSecondNpc: true);
+        var attempt = PreparePublicationAttempt(fixture);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution,
+            fixture.CreateSynthesizingNpcSkillPublicationProposal());
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_capability_synthesized");
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             fixture.FileSystem,
             fixture.Lease));
@@ -2005,10 +2299,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 break;
             case "duplicate_or_confusable_final_skill_row_rejects":
                 OtherSkill(fixture, scenario)["skillId"] = sourceSkill["skillId"]!.DeepClone();
+                OtherSkill(fixture, scenario)["skillName"] =
+                    "Publication sibling replacement";
                 break;
             case "confusable_final_skill_sibling_rejects":
                 OtherSkill(fixture, scenario)["skillId"] =
                     scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
+                OtherSkill(fixture, scenario)["skillName"] =
+                    "Publication sibling replacement";
                 break;
             case "stale_final_source_rejects":
                 sourceSkill["active"] = false;
@@ -3016,7 +3314,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 
         internal static CapabilityAuthorityFixture Create(
             CapabilityScenario scenario,
-            FileSystemManagerHooks? hooks = null)
+            FileSystemManagerHooks? hooks = null,
+            bool mirrorNpc = false,
+            bool addSecondNpc = false)
         {
             var root = Path.Combine(Path.GetTempPath(), "boe-capability-authority-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
@@ -3068,6 +3368,28 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             AssertCanonicalFixtureShape(currentSource);
             AssertCanonicalFixtureShape(finalSource);
             WriteCanonicalSkillSources(fileSystem, currentSource);
+            if (mirrorNpc)
+            {
+                var npcPath = fileSystem.ResolvePath("game_state/npcs/npc_core.json");
+                var npcRoot = JsonNode.Parse(File.ReadAllText(npcPath))!.AsObject();
+                var actor = Assert.IsType<JsonObject>(Assert.Single(
+                    Assert.IsType<JsonArray>(npcRoot["NPCsInScene"])));
+                npcRoot["UpdateNPCs"] = new JsonArray(actor.DeepClone());
+                File.WriteAllText(npcPath, npcRoot.ToJsonString());
+            }
+            if (addSecondNpc)
+            {
+                var npcPath = fileSystem.ResolvePath("game_state/npcs/npc_core.json");
+                var npcRoot = JsonNode.Parse(File.ReadAllText(npcPath))!.AsObject();
+                var actor = MortalActorTestFixtures.CreateActor(
+                    "npc_publication_assistant_02",
+                    "loc_field_clinic_001",
+                    "Publication assistant");
+                actor["activeSkills"] = new JsonArray();
+                actor["passiveSkills"] = new JsonArray();
+                Assert.IsType<JsonArray>(npcRoot["NPCsInScene"]).Add(actor);
+                File.WriteAllText(npcPath, npcRoot.ToJsonString());
+            }
             if (scenario.Publication)
                 WriteUnrelatedGlobalEffect(fileSystem);
             File.WriteAllText(
@@ -3548,6 +3870,144 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             return proposal;
         }
 
+        internal GameResponse CreateCombinedNpcSkillPublicationProposal()
+        {
+            var active = Skill(CurrentSource, "npc", "activeSkills")
+                .DeepClone().AsObject();
+            var passive = Skill(CurrentSource, "npc", "passiveSkills")
+                .DeepClone().AsObject();
+            active["displayName"] = "Combined active publication wording";
+            passive["displayName"] = "Combined passive publication wording";
+            return new GameResponse
+            {
+                NPCActiveSkillChanges = new[]
+                {
+                    JsonSerializer.SerializeToElement(new JsonObject
+                    {
+                        ["npcId"] = Scenario.ProviderId,
+                        ["skillChanges"] = new JsonArray(active)
+                    })
+                },
+                NPCPassiveSkillChanges = new[]
+                {
+                    JsonSerializer.SerializeToElement(new JsonObject
+                    {
+                        ["npcId"] = Scenario.ProviderId,
+                        ["skillChanges"] = new JsonArray(passive)
+                    })
+                }
+            };
+        }
+
+        internal GameResponse CreateMultipleNpcSkillPublicationProposal()
+        {
+            var proposal = CreatePublicationProposal();
+            var selected = Assert.Single(proposal.NPCActiveSkillChanges!);
+            proposal.NPCActiveSkillChanges = new[]
+            {
+                selected,
+                JsonSerializer.SerializeToElement(new JsonObject
+                {
+                    ["npcId"] = "npc_publication_assistant_02",
+                    ["skillChanges"] = new JsonArray()
+                })
+            };
+            return proposal;
+        }
+
+        internal GameResponse CreateSynthesizingNpcSkillPublicationProposal()
+        {
+            var proposal = CreatePublicationProposal();
+            var selected = Assert.Single(proposal.NPCActiveSkillChanges!);
+            var synthesized = Skill(CurrentSource, "npc", "activeSkills")
+                .DeepClone().AsObject();
+            synthesized["skillId"] = "skill_publication_assistant_care_02";
+            synthesized["skillName"] = "Synthesized assistant care";
+            synthesized["displayName"] = "Synthesized assistant care";
+            proposal.NPCActiveSkillChanges = new[]
+            {
+                selected,
+                JsonSerializer.SerializeToElement(new JsonObject
+                {
+                    ["npcId"] = "npc_publication_assistant_02",
+                    ["skillChanges"] = new JsonArray(synthesized)
+                })
+            };
+            return proposal;
+        }
+
+        internal void AssertCombinedNpcSkillProjection(object value)
+        {
+            var plan = Assert.IsType<AcceptedMechanicsPlan>(value);
+            var after = Assert.Single(plan.OwnerCompanionAfterImages);
+            Assert.Equal("game_state/npcs/npc_core.json", after.Key);
+            var actor = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(after.Value["NPCsInScene"])));
+            Assert.Equal(
+                "Combined active publication wording",
+                Assert.IsType<JsonObject>(Assert.Single(
+                    Assert.IsType<JsonArray>(actor["activeSkills"])))
+                    ["displayName"]!.GetValue<string>());
+            Assert.Equal(
+                "Combined passive publication wording",
+                Assert.IsType<JsonObject>(Assert.Single(
+                    Assert.IsType<JsonArray>(actor["passiveSkills"])))
+                    ["displayName"]!.GetValue<string>());
+        }
+
+        internal void AssertMirroredNpcProjection(object value)
+        {
+            var plan = Assert.IsType<AcceptedMechanicsPlan>(value);
+            var npcRoot = plan.OwnerCompanionAfterImages["game_state/npcs/npc_core.json"];
+            var updated = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(npcRoot["UpdateNPCs"])));
+            var inScene = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(npcRoot["NPCsInScene"])));
+            Assert.True(JsonNode.DeepEquals(updated, inScene));
+            var skill = Assert.IsType<JsonObject>(Assert.Single(
+                Assert.IsType<JsonArray>(updated["activeSkills"])));
+            Assert.Equal(
+                "Publication-only diagnostic wording",
+                skill["displayName"]!.GetValue<string>());
+        }
+
+        internal void AssertMultipleNpcSkillProjection(object value)
+        {
+            var plan = Assert.IsType<AcceptedMechanicsPlan>(value);
+            var after = Assert.Single(plan.OwnerCompanionAfterImages);
+            Assert.Equal("game_state/npcs/npc_core.json", after.Key);
+            var actors = Assert.IsType<JsonArray>(after.Value["NPCsInScene"])
+                .OfType<JsonObject>()
+                .ToArray();
+            Assert.Equal(2, actors.Length);
+            var assistant = Assert.Single(actors, static actor =>
+                actor["NPCId"]?.GetValue<string>() == "npc_publication_assistant_02");
+            Assert.Empty(Assert.IsType<JsonArray>(assistant["activeSkills"]));
+            Assert.Empty(Assert.IsType<JsonArray>(assistant["passiveSkills"]));
+        }
+
+        internal void MutateNpcMirror(string mutation)
+        {
+            var path = FileSystem.ResolvePath("game_state/npcs/npc_core.json");
+            var root = JsonNode.Parse(File.ReadAllText(path))!.AsObject();
+            var inScene = Assert.IsType<JsonArray>(root["NPCsInScene"]);
+            var actor = Assert.IsType<JsonObject>(Assert.Single(inScene));
+            switch (mutation)
+            {
+                case "divergent_cross_section":
+                    var mirrored = Assert.IsType<JsonObject>(Assert.Single(
+                        Assert.IsType<JsonArray>(root["UpdateNPCs"])));
+                    mirrored["displayName"] = "Divergent publication mirror";
+                    break;
+                case "same_section_duplicate":
+                    inScene.Add(actor.DeepClone());
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation));
+            }
+            File.WriteAllText(path, root.ToJsonString());
+        }
+
         private JsonObject CreateScenarioProposalRows()
         {
             // This is deliberately independent from FinalSource: it models only
@@ -3580,10 +4040,14 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     break;
                 case "duplicate_or_confusable_final_skill_row_rejects":
                     OtherSkill(rows, Scenario)["skillId"] = selected["skillId"]!.DeepClone();
+                    OtherSkill(rows, Scenario)["skillName"] =
+                        "Publication sibling replacement";
                     break;
                 case "confusable_final_skill_sibling_rejects":
                     OtherSkill(rows, Scenario)["skillId"] =
                         Scenario.SkillId.Replace("i", "і", StringComparison.Ordinal);
+                    OtherSkill(rows, Scenario)["skillName"] =
+                        "Publication sibling replacement";
                     break;
                 case "changed_final_skill_id_rejects":
                     // Existing composition selects an update by exact skillId/name;
@@ -3745,6 +4209,17 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 proposal.ActiveSkillChanges = changes;
             else
                 proposal.PassiveSkillChanges = changes;
+            if (!selectedArray && Scenario.Name is
+                    "duplicate_or_confusable_final_skill_row_rejects" or
+                    "confusable_final_skill_sibling_rejects")
+            {
+                var original = Assert.IsType<JsonObject>(Assert.Single(current));
+                var originalName = original["skillName"]!.GetValue<string>();
+                if (skillArray == "activeSkills")
+                    proposal.RemoveActiveSkills = new[] { originalName };
+                else
+                    proposal.RemovePassiveSkills = new[] { originalName };
+            }
             if (selectedArray && Scenario.Name == "changed_final_skill_id_rejects")
             {
                 if (skillArray == "activeSkills")

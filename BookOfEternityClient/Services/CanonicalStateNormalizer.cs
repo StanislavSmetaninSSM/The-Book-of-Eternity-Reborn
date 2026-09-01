@@ -365,7 +365,10 @@ public partial class CanonicalStateNormalizer
         await NormalizeFactionChroniclesAsync(backups);
         await NormalizeFactionCoreAsync(backups);
         await NormalizeNpcCoreChangesAsync(backups);
-        await NormalizeNpcTradeCoreAsync(backups);
+        await NormalizeNpcTradeCoreAsync(
+            backups,
+            (acceptedMechanicsPreflight as
+                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         await NormalizeNpcJournalsAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);
         await NormalizeInventoryItemsAsync(backups);

@@ -162,9 +162,17 @@ public partial class CanonicalStateNormalizer
         return string.Empty;
     }
 
-    private async Task NormalizeNpcTradeCoreAsync(IReadOnlyDictionary<string, string>? backups)
+    private async Task NormalizeNpcTradeCoreAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         const string path = "game_state/npcs/npc_core.json";
+        if (acceptedMechanicsPlan?.WoundStageBundle?.PreparedPlan
+                .TreatmentContinuationAuthority is not null &&
+            !acceptedMechanicsPlan.OwnerCompanionAfterImages.ContainsKey(path))
+        {
+            return;
+        }
         var currentNode = await ReadNodeAsync(path);
         if (currentNode is not JsonObject currentObj)
             return;

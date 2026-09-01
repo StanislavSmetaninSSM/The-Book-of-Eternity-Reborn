@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Reflection;
 using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -21,8 +20,10 @@ internal static partial class WoundAcceptedTurnPlanner
             string transitionId,
             MortalWoundTreatmentPersistedResult persistedResult,
             string acceptedStateFingerprint,
+            string baseSemanticFingerprint,
             string semanticFingerprint,
             object reservationAuthority,
+            object skillProjectionAuthority,
             string fingerprint)
         {
             Before = before;
@@ -31,8 +32,10 @@ internal static partial class WoundAcceptedTurnPlanner
             TransitionId = transitionId;
             PersistedResult = persistedResult;
             AcceptedStateFingerprint = acceptedStateFingerprint;
+            BaseSemanticFingerprint = baseSemanticFingerprint;
             SemanticFingerprint = semanticFingerprint;
             ReservationAuthority = reservationAuthority;
+            SkillProjectionAuthority = skillProjectionAuthority;
             Fingerprint = fingerprint;
         }
 
@@ -42,8 +45,10 @@ internal static partial class WoundAcceptedTurnPlanner
         internal string TransitionId { get; }
         internal MortalWoundTreatmentPersistedResult PersistedResult { get; }
         internal string AcceptedStateFingerprint { get; }
+        internal string BaseSemanticFingerprint { get; }
         internal string SemanticFingerprint { get; }
         internal object ReservationAuthority { get; }
+        internal object SkillProjectionAuthority { get; }
         internal string Fingerprint { get; }
     }
 
@@ -54,8 +59,10 @@ internal static partial class WoundAcceptedTurnPlanner
         string TransitionId,
         MortalWoundTreatmentPersistedResult PersistedResult,
         string AcceptedStateFingerprint,
+        string BaseSemanticFingerprint,
         string SemanticFingerprint,
         object ReservationAuthority,
+        object SkillProjectionAuthority,
         string Fingerprint);
 
     internal sealed class MortalWoundTreatmentPublicationResult
@@ -118,18 +125,17 @@ internal static partial class WoundAcceptedTurnPlanner
                 exception.GetType().Name);
         }
 
-        if (!IsCompletelyEmptyResponse(response))
-        {
-            return PublicationFailure(
-                "mortal_wound_treatment_publication_response_not_empty",
-                "an ordinary GameResponse with every public field absent",
-                "one or more GM-authored fields were present");
-        }
-
-        var semanticFingerprint = ComputeTreatmentPublicationFingerprint(
+        var frozenCommands = FreezeTreatmentSkillCommands(response);
+        if (frozenCommands.Envelope is null)
+            return MortalWoundTreatmentPublicationResult.Invalid(frozenCommands.Issues);
+        var commandEnvelope = frozenCommands.Envelope;
+        var baseSemanticFingerprint = ComputeTreatmentPublicationFingerprint(
             acceptedState,
             request,
             resolution);
+        var semanticFingerprint = ComputeTreatmentPublicationEnvelopeFingerprint(
+            baseSemanticFingerprint,
+            commandEnvelope);
         var reservation = AcceptedTurnAuthorityRegistry
             .ReserveMortalWoundTreatmentPublication(
                 fileSystem,
@@ -171,6 +177,18 @@ internal static partial class WoundAcceptedTurnPlanner
             if (shellIssues.Count != 0)
                 return MortalWoundTreatmentPublicationResult.Invalid(shellIssues);
 
+            var skillProjection = CreateTreatmentSkillProjection(
+                fileSystem,
+                writeLease,
+                commandEnvelope,
+                semanticFingerprint,
+                reservation.Authority!);
+            if (skillProjection.Authority is null)
+            {
+                return MortalWoundTreatmentPublicationResult.Invalid(
+                    skillProjection.Issues);
+            }
+
             var baselines = ReadPublicationBaselines(fileSystem, writeLease);
             if (baselines.Issues.Count != 0)
             {
@@ -199,8 +217,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 resolution,
                 transitionId,
                 acceptedState,
+                baseSemanticFingerprint,
                 semanticFingerprint,
-                reservation.Authority!);
+                reservation.Authority!,
+                skillProjection.Authority);
             var input = new WoundAcceptedTurnInput(
                 acceptedState.Binding,
                 Array.Empty<WoundOpportunityAuthority>(),
@@ -323,9 +343,20 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentResolution resolution,
         string transitionId,
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        string baseSemanticFingerprint,
         string semanticFingerprint,
-        object reservationAuthority)
+        object reservationAuthority,
+        object skillProjectionAuthority)
     {
+        if (!TryReadTreatmentSkillProjection(
+                skillProjectionAuthority,
+                reservationAuthority,
+                semanticFingerprint,
+                out var skillProjection))
+        {
+            throw new InvalidOperationException(
+                "Treatment continuation requires one exact sealed skill projection.");
+        }
         var persisted = MortalWoundTreatmentPersistedResult.Create(resolution);
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             before,
@@ -333,7 +364,9 @@ internal static partial class WoundAcceptedTurnPlanner
             resolution,
             transitionId,
             acceptedState.AcceptedStateFingerprint,
-            semanticFingerprint);
+            baseSemanticFingerprint,
+            semanticFingerprint,
+            skillProjection.Fingerprint);
         return new TreatmentContinuationAuthority(
             before,
             after,
@@ -341,8 +374,10 @@ internal static partial class WoundAcceptedTurnPlanner
             transitionId,
             persisted,
             acceptedState.AcceptedStateFingerprint,
+            baseSemanticFingerprint,
             semanticFingerprint,
             reservationAuthority,
+            skillProjectionAuthority,
             fingerprint);
     }
 
@@ -362,7 +397,12 @@ internal static partial class WoundAcceptedTurnPlanner
     {
         continuation = null!;
         if (authority is not TreatmentContinuationAuthority candidate ||
-            candidate.ReservationAuthority is null)
+            candidate.ReservationAuthority is null ||
+            !TryReadTreatmentSkillProjection(
+                candidate.SkillProjectionAuthority,
+                candidate.ReservationAuthority,
+                candidate.SemanticFingerprint,
+                out var skillProjection))
             return false;
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             candidate.Before,
@@ -370,7 +410,9 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.Resolution,
             candidate.TransitionId,
             candidate.AcceptedStateFingerprint,
-            candidate.SemanticFingerprint);
+            candidate.BaseSemanticFingerprint,
+            candidate.SemanticFingerprint,
+            skillProjection.Fingerprint);
         if (!string.Equals(
                 fingerprint,
                 candidate.Fingerprint,
@@ -385,8 +427,10 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.TransitionId,
             candidate.PersistedResult,
             candidate.AcceptedStateFingerprint,
+            candidate.BaseSemanticFingerprint,
             candidate.SemanticFingerprint,
             candidate.ReservationAuthority,
+            candidate.SkillProjectionAuthority,
             candidate.Fingerprint);
         return true;
     }
@@ -468,7 +512,7 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             return false;
         }
-        var recomputedSemantic = ComputeTreatmentPublicationFingerprint(
+        var recomputedBaseSemantic = ComputeTreatmentPublicationFingerprint(
             acceptedState,
             request,
             resolution);
@@ -482,11 +526,11 @@ internal static partial class WoundAcceptedTurnPlanner
                    request.RequestFingerprint,
                    StringComparison.Ordinal) &&
                string.Equals(
-                   continuation.SemanticFingerprint,
-                   semanticFingerprint,
+                   continuation.BaseSemanticFingerprint,
+                   recomputedBaseSemantic,
                    StringComparison.Ordinal) &&
                string.Equals(
-                   recomputedSemantic,
+                   continuation.SemanticFingerprint,
                    semanticFingerprint,
                    StringComparison.Ordinal);
     }
@@ -593,7 +637,9 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentResolution resolution,
         string transitionId,
         string acceptedStateFingerprint,
-        string semanticFingerprint) =>
+        string baseSemanticFingerprint,
+        string semanticFingerprint,
+        string skillProjectionFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.wound.treatment_continuation_authority",
@@ -606,7 +652,9 @@ internal static partial class WoundAcceptedTurnPlanner
             resolution.Coordinates.CoordinatesFingerprint,
             transitionId,
             acceptedStateFingerprint,
+            baseSemanticFingerprint,
             semanticFingerprint,
+            skillProjectionFingerprint,
             TreatmentPublicationSummary
         });
 
@@ -858,13 +906,6 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         return issues;
     }
-
-    private static bool IsCompletelyEmptyResponse(GameResponse response) =>
-        response.GetType()
-            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-            .Where(static property => property.GetIndexParameters().Length == 0 &&
-                                      property.CanRead)
-            .All(property => property.GetValue(response) is null);
 
     private static string ComputeTreatmentPublicationFingerprint(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,

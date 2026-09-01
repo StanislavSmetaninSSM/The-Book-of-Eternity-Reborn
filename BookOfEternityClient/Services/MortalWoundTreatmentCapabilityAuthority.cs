@@ -836,11 +836,25 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     request.Coordinates.RouteId,
                     StringComparison.Ordinal)) as
                 MortalWoundGuaranteedRouteDefinition;
+            AcceptedMechanicsWoundStageBundle? bundle;
+            try
+            {
+                bundle = candidate.WoundStageBundle;
+            }
+            catch (Exception exception) when (
+                exception is ArgumentException or InvalidOperationException)
+            {
+                return Invalid(
+                    "treatmentCapability.publicationPlan",
+                    "mortal_wound_treatment_publication_provenance_mismatch",
+                    "The candidate plan carries a changed treatment continuation authority.")
+                    .Issues;
+            }
             if (request.ModeAuthority is not
                     MortalWoundTreatmentCapabilityProof acceptedProof ||
                 request.Mode is not "guaranteed" ||
                 route is null ||
-                candidate.WoundStageBundle is not { } bundle ||
+                bundle is null ||
                 !WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
                     continuationAuthority,
                     bundle,
@@ -879,18 +893,33 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 CandidateReadCapability);
             if (!exported.IsValid || exported.Proof is null)
                 return exported.Issues;
-            return string.Equals(
+            if (!string.Equals(
                     exported.Proof.ProofFingerprint,
                     acceptedProof.ProofFingerprint,
-                    StringComparison.Ordinal) &&
-                string.Equals(
+                    StringComparison.Ordinal) ||
+                !string.Equals(
                     exported.Proof.SourceSemanticFingerprint,
                     acceptedProof.SourceSemanticFingerprint,
-                    StringComparison.Ordinal)
-                ? Array.Empty<ValidationIssue>()
-                : PublicationMismatch(
+                    StringComparison.Ordinal))
+            {
+                return PublicationMismatch(
                     "The final candidate capability differs from the sealed accepted proof.")
                     .Issues;
+            }
+            if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                    continuationAuthority,
+                    out var continuation))
+            {
+                return Invalid(
+                    "treatmentCapability.publicationPlan",
+                    "mortal_wound_treatment_publication_provenance_mismatch",
+                    "The candidate plan lost its private treatment continuation authority.")
+                    .Issues;
+            }
+            return WoundAcceptedTurnPlanner.ValidateTreatmentSkillProjectionCandidate(
+                continuationAuthority,
+                continuation.ReservationAuthority,
+                candidate);
         }
     }
 }

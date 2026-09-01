@@ -2141,25 +2141,20 @@ internal static class EffectAcceptedTurnInputComposer
         List<EffectTargetExport> targets)
     {
         if (!sourceRoots.TryGetValue("game_state/npcs/npc_core.json", out var root) ||
-            root is not JsonObject npcRoot)
+            root is not JsonObject)
             return;
-        foreach (var collectionName in new[] { "NPCsInScene", "UpdateNPCs" })
+        foreach (var npc in EnumerateCanonicalNpcActors(root))
         {
-            if (npcRoot[collectionName] is not JsonArray npcs)
+            var temporaryRef = ReadFirstExact(npc, "npcRef", "initialId");
+            var targetId = ReadFirstExact(npc, "NPCId", "npcId") ?? temporaryRef;
+            if (targetId == null)
                 continue;
-            foreach (var npc in npcs.OfType<JsonObject>())
-            {
-                var temporaryRef = ReadFirstExact(npc, "npcRef", "initialId");
-                var targetId = ReadFirstExact(npc, "NPCId", "npcId") ?? temporaryRef;
-                if (targetId == null)
-                    continue;
-                targets.Add(new EffectTargetExport(
-                    "mortal_world",
-                    "npc",
-                    targetId,
-                    SameTurn: false,
-                    TargetRef: includeTemporaryRefs ? temporaryRef : null));
-            }
+            targets.Add(new EffectTargetExport(
+                "mortal_world",
+                "npc",
+                targetId,
+                SameTurn: false,
+                TargetRef: includeTemporaryRefs ? temporaryRef : null));
         }
     }
 
@@ -2309,10 +2304,7 @@ internal static class EffectAcceptedTurnInputComposer
                     yield return Candidate(owner, inheritedRealm, FactionSourceDescriptors);
                 yield break;
             case "game_state/npcs/npc_core.json":
-                foreach (var actor in EnumerateArrayOwners(
-                             root,
-                             "NPCsInScene",
-                             "UpdateNPCs"))
+                foreach (var actor in EnumerateCanonicalNpcActors(root))
                 {
                     foreach (var skill in EnumerateArrayOwners(
                                  actor,
@@ -2449,6 +2441,54 @@ internal static class EffectAcceptedTurnInputComposer
                 continue;
             foreach (var owner in owners.OfType<JsonObject>())
                 yield return owner;
+        }
+    }
+
+    private static IEnumerable<JsonObject> EnumerateCanonicalNpcActors(JsonNode? root)
+    {
+        if (root is not JsonObject objectRoot)
+            yield break;
+
+        var actorsFromPriorSections = new List<(string NpcId, JsonObject Actor)>();
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (objectRoot[section] is not JsonArray rows)
+                continue;
+
+            var actorsInSection = rows.OfType<JsonObject>().ToArray();
+            foreach (var actor in actorsInSection)
+            {
+                if (GuardianPolicyContracts.TryResolveStrictPermanentNpcId(
+                        actor,
+                        out var npcId))
+                {
+                    var priorMirrors = actorsFromPriorSections
+                        .Where(candidate => string.Equals(
+                            candidate.NpcId,
+                            npcId,
+                            StringComparison.Ordinal))
+                        .ToArray();
+                    if (priorMirrors.Length != 0 &&
+                        priorMirrors.All(candidate => JsonNode.DeepEquals(
+                            candidate.Actor,
+                            actor)))
+                    {
+                        continue;
+                    }
+                }
+
+                yield return actor;
+            }
+
+            foreach (var actor in actorsInSection)
+            {
+                if (GuardianPolicyContracts.TryResolveStrictPermanentNpcId(
+                        actor,
+                        out var npcId))
+                {
+                    actorsFromPriorSections.Add((npcId, actor));
+                }
+            }
         }
     }
 

@@ -1147,7 +1147,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     : MortalWoundTreatmentCapabilityCatalogReadStatus.PublicationMismatch);
         }
 
-        var owners = new List<JsonObject>();
+        var owners = new List<(string Section, JsonObject Actor)>();
         foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
             if (npcRoot![section] is not JsonArray rows)
@@ -1159,26 +1159,32 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                         out var npcId) &&
                     string.Equals(npcId, ownerId, StringComparison.Ordinal))
                 {
-                    owners.Add(npc);
+                    owners.Add((section, npc));
                 }
             }
         }
 
-        if (owners.Count != 1)
+        if (owners.Count == 0)
         {
             return new MortalWoundTreatmentCapabilityCatalogReadResult(
-                owners.Count > 1
-                    ? MortalWoundTreatmentCapabilityCatalogReadStatus.SourceAmbiguous
-                    : MortalWoundTreatmentCapabilityCatalogReadStatus.SourceOwnerMismatch);
+                MortalWoundTreatmentCapabilityCatalogReadStatus.SourceOwnerMismatch);
+        }
+        if (owners.GroupBy(static owner => owner.Section, StringComparer.Ordinal)
+                .Any(static group => group.Count() != 1) ||
+            owners.Skip(1).Any(owner =>
+                !JsonNode.DeepEquals(owners[0].Actor, owner.Actor)))
+        {
+            return new MortalWoundTreatmentCapabilityCatalogReadResult(
+                MortalWoundTreatmentCapabilityCatalogReadStatus.SourceAmbiguous);
         }
 
         var activeRoot = new JsonObject
         {
-            ["activeSkills"] = owners[0]["activeSkills"]?.DeepClone() ?? new JsonArray()
+            ["activeSkills"] = owners[0].Actor["activeSkills"]?.DeepClone() ?? new JsonArray()
         };
         var passiveRoot = new JsonObject
         {
-            ["passiveSkills"] = owners[0]["passiveSkills"]?.DeepClone() ?? new JsonArray()
+            ["passiveSkills"] = owners[0].Actor["passiveSkills"]?.DeepClone() ?? new JsonArray()
         };
         return ParseLiveCapabilityCatalog(
             "npc",
