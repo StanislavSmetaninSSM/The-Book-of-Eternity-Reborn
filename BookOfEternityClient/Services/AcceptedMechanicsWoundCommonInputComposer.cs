@@ -47,19 +47,22 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             AcceptedMechanicsWoundStageBundle bundle,
+            object continuationAuthority,
             long currentTimeInMinutes) => ComposeCore(
                 fileSystem,
                 writeLease,
                 bundle,
                 anchorPlan: null,
-                treatmentCurrentTimeInMinutes: currentTimeInMinutes);
+                treatmentCurrentTimeInMinutes: currentTimeInMinutes,
+                treatmentContinuationAuthority: continuationAuthority);
 
     private static AcceptedMechanicsWoundCommonInputCompositionResult ComposeCore(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         AcceptedMechanicsWoundStageBundle bundle,
         MortalWoundCanonicalAnchorPlan? anchorPlan,
-        long? treatmentCurrentTimeInMinutes)
+        long? treatmentCurrentTimeInMinutes,
+        object? treatmentContinuationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -72,6 +75,19 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 "accepted_mechanics_wound_publication_authority_mismatch",
                 "exactly one initial-create anchor or treatment-continuation clock authority",
                 "missing or competing publication authority");
+        }
+        if (treatmentCurrentTimeInMinutes is not null &&
+            (!ReferenceEquals(
+                 bundle.PreparedPlan.TreatmentContinuationAuthority,
+                 treatmentContinuationAuthority) ||
+             !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(
+                 bundle.PreparedPlan)))
+        {
+            return Failed(
+                WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_treatment_continuation_provenance_mismatch",
+                "the exact private-minted continuation authority carried by the prepared stage",
+                "foreign or ordinary wound-stage bundle");
         }
         if (anchorPlan is not null && !anchorPlan.AgreesWith(bundle))
         {

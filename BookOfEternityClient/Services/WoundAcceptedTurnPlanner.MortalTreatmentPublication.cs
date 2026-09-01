@@ -20,6 +20,8 @@ internal static partial class WoundAcceptedTurnPlanner
             MortalWoundTreatmentResolution resolution,
             string transitionId,
             MortalWoundTreatmentPersistedResult persistedResult,
+            string acceptedStateFingerprint,
+            string semanticFingerprint,
             string fingerprint)
         {
             Before = before;
@@ -27,6 +29,8 @@ internal static partial class WoundAcceptedTurnPlanner
             Resolution = resolution;
             TransitionId = transitionId;
             PersistedResult = persistedResult;
+            AcceptedStateFingerprint = acceptedStateFingerprint;
+            SemanticFingerprint = semanticFingerprint;
             Fingerprint = fingerprint;
         }
 
@@ -35,6 +39,8 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentResolution Resolution { get; }
         internal string TransitionId { get; }
         internal MortalWoundTreatmentPersistedResult PersistedResult { get; }
+        internal string AcceptedStateFingerprint { get; }
+        internal string SemanticFingerprint { get; }
         internal string Fingerprint { get; }
     }
 
@@ -44,6 +50,8 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentResolution Resolution,
         string TransitionId,
         MortalWoundTreatmentPersistedResult PersistedResult,
+        string AcceptedStateFingerprint,
+        string SemanticFingerprint,
         string Fingerprint);
 
     internal sealed class MortalWoundTreatmentPublicationResult
@@ -118,20 +126,22 @@ internal static partial class WoundAcceptedTurnPlanner
             acceptedState,
             request,
             resolution);
-        var probe = AcceptedTurnAuthorityRegistry
-            .ProbeMortalWoundTreatmentPublication(
+        var reservation = AcceptedTurnAuthorityRegistry
+            .ReserveMortalWoundTreatmentPublication(
                 fileSystem,
                 writeLease,
                 acceptedState,
                 semanticFingerprint);
-        if (probe == MortalWoundTreatmentPublicationProbe.Conflict)
+        if (reservation.Status ==
+            MortalWoundTreatmentPublicationReservationStatus.Conflict)
         {
             return PublicationFailure(
                 "mortal_wound_treatment_publication_conflict",
                 "the exact first sealed guaranteed stabilization semantics",
                 "different accepted treatment semantics are already cached");
         }
-        if (probe == MortalWoundTreatmentPublicationProbe.Exact)
+        if (reservation.Status ==
+            MortalWoundTreatmentPublicationReservationStatus.Exact)
         {
             if (AcceptedMechanicsPlanAuthority.TryPeekValidated(
                     fileSystem,
@@ -148,15 +158,15 @@ internal static partial class WoundAcceptedTurnPlanner
                 "publication fingerprint exists without its plan");
         }
 
-        var shellIssues = ValidateGuaranteedStabilizationShell(
-            acceptedState,
-            request,
-            resolution);
-        if (shellIssues.Count != 0)
-            return MortalWoundTreatmentPublicationResult.Invalid(shellIssues);
-
         try
         {
+            var shellIssues = ValidateGuaranteedStabilizationShell(
+                acceptedState,
+                request,
+                resolution);
+            if (shellIssues.Count != 0)
+                return MortalWoundTreatmentPublicationResult.Invalid(shellIssues);
+
             var baselines = ReadPublicationBaselines(fileSystem, writeLease);
             if (baselines.Issues.Count != 0)
             {
@@ -183,7 +193,9 @@ internal static partial class WoundAcceptedTurnPlanner
                 request.RouteSourceWound,
                 after,
                 resolution,
-                transitionId);
+                transitionId,
+                acceptedState,
+                semanticFingerprint);
             var input = new WoundAcceptedTurnInput(
                 acceptedState.Binding,
                 Array.Empty<WoundOpportunityAuthority>(),
@@ -250,6 +262,7 @@ internal static partial class WoundAcceptedTurnPlanner
                     fileSystem,
                     writeLease,
                     bundle,
+                    continuationAuthority,
                     acceptedState.CurrentGameMinute);
             if (!commonInput.Success || commonInput.Input is null)
             {
@@ -264,7 +277,10 @@ internal static partial class WoundAcceptedTurnPlanner
                     bundle,
                     acceptedState,
                     request,
-                    semanticFingerprint);
+                    resolution,
+                    semanticFingerprint,
+                    continuationAuthority,
+                    reservation.Authority!);
             return commonResult.Success && commonResult.Plan is not null
                 ? MortalWoundTreatmentPublicationResult.Valid(commonResult.Plan)
                 : MortalWoundTreatmentPublicationResult.Invalid(
@@ -281,26 +297,39 @@ internal static partial class WoundAcceptedTurnPlanner
                 "one complete sealed guaranteed stabilization publication",
                 exception.GetType().Name);
         }
+        finally
+        {
+            AcceptedTurnAuthorityRegistry.AbortMortalWoundTreatmentPublication(
+                fileSystem,
+                writeLease,
+                reservation.Authority);
+        }
     }
 
     private static object CreateTreatmentContinuationAuthority(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
         MortalWoundTreatmentResolution resolution,
-        string transitionId)
+        string transitionId,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        string semanticFingerprint)
     {
         var persisted = MortalWoundTreatmentPersistedResult.Create(resolution);
         var fingerprint = ComputeTreatmentContinuationFingerprint(
             before,
             after,
             resolution,
-            transitionId);
+            transitionId,
+            acceptedState.AcceptedStateFingerprint,
+            semanticFingerprint);
         return new TreatmentContinuationAuthority(
             before,
             after,
             resolution,
             transitionId,
             persisted,
+            acceptedState.AcceptedStateFingerprint,
+            semanticFingerprint,
             fingerprint);
     }
 
@@ -325,7 +354,9 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.Before,
             candidate.After,
             candidate.Resolution,
-            candidate.TransitionId);
+            candidate.TransitionId,
+            candidate.AcceptedStateFingerprint,
+            candidate.SemanticFingerprint);
         if (!string.Equals(
                 fingerprint,
                 candidate.Fingerprint,
@@ -339,6 +370,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.Resolution,
             candidate.TransitionId,
             candidate.PersistedResult,
+            candidate.AcceptedStateFingerprint,
+            candidate.SemanticFingerprint,
             candidate.Fingerprint);
         return true;
     }
@@ -377,6 +410,45 @@ internal static partial class WoundAcceptedTurnPlanner
                string.Equals(binding.SnapshotToken, coordinates.SnapshotToken, StringComparison.Ordinal) &&
                string.Equals(binding.Realm, coordinates.Realm, StringComparison.Ordinal) &&
                binding.Turn == coordinates.Turn;
+    }
+
+    internal static bool TreatmentContinuationPublicationAgrees(
+        object authority,
+        AcceptedMechanicsWoundStageBundle bundle,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution,
+        string semanticFingerprint)
+    {
+        if (!ReferenceEquals(
+                bundle.PreparedPlan.TreatmentContinuationAuthority,
+                authority) ||
+            !TryReadTreatmentContinuation(authority, out var continuation) ||
+            !TreatmentContinuationPreparedAgrees(bundle.PreparedPlan))
+        {
+            return false;
+        }
+        var recomputedSemantic = ComputeTreatmentPublicationFingerprint(
+            acceptedState,
+            request,
+            resolution);
+        return ReferenceEquals(continuation.Resolution, resolution) &&
+               string.Equals(
+                   continuation.AcceptedStateFingerprint,
+                   acceptedState.AcceptedStateFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   continuation.Resolution.RequestFingerprint,
+                   request.RequestFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   continuation.SemanticFingerprint,
+                   semanticFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   recomputedSemantic,
+                   semanticFingerprint,
+                   StringComparison.Ordinal);
     }
 
     internal static WoundAcceptedTurnPreparationResult
@@ -479,7 +551,9 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
         MortalWoundTreatmentResolution resolution,
-        string transitionId) =>
+        string transitionId,
+        string acceptedStateFingerprint,
+        string semanticFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.wound.treatment_continuation_authority",
@@ -491,6 +565,8 @@ internal static partial class WoundAcceptedTurnPlanner
             resolution.ResolutionAuthorityFingerprint,
             resolution.Coordinates.CoordinatesFingerprint,
             transitionId,
+            acceptedStateFingerprint,
+            semanticFingerprint,
             TreatmentPublicationSummary
         });
 
@@ -676,10 +752,29 @@ internal static partial class WoundAcceptedTurnPlanner
                 resolution.Coordinates.CoordinatesFingerprint,
                 coordinates.CoordinatesFingerprint,
                 StringComparison.Ordinal);
+        var recomposed = MortalWoundTreatmentOutcomeIntentComposer.TryCompose(
+            request,
+            resolution.DeclaredResult,
+            acceptedState,
+            out var recomposedIntents,
+            out _);
         var exactOutcome = resolution.DeclaredResult.Count == 1 &&
             resolution.DeclaredResult[0] is MortalWoundStabilizeOperation &&
             resolution.OutcomeIntents.Count == 1 &&
-            resolution.OutcomeIntents[0] is MortalWoundStabilizeOutcomeIntent;
+            resolution.OutcomeIntents[0] is MortalWoundStabilizeOutcomeIntent actualIntent &&
+            recomposed &&
+            recomposedIntents.Count == 1 &&
+            recomposedIntents[0] is MortalWoundStabilizeOutcomeIntent expectedIntent &&
+            actualIntent.OperationOrdinal == 0 &&
+            string.Equals(actualIntent.Kind, "stabilize", StringComparison.Ordinal) &&
+            string.Equals(
+                actualIntent.DeclaredOperationFingerprint,
+                expectedIntent.DeclaredOperationFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                actualIntent.IntentFingerprint,
+                expectedIntent.IntentFingerprint,
+                StringComparison.Ordinal);
         if (!acceptedState.HasCurrentAdmissionAuthority() ||
             !exactRequest || !exactCoordinates ||
             request.Mode is not "guaranteed" ||

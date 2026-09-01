@@ -679,6 +679,179 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertGovernedRootsMatchBeforeImages(beforeConflict);
     }
 
+    [Fact]
+    public void PublicationAdmission_RejectsForeignOrdinaryBundleAndContinuationRequestMix()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+        var first = ComposePublicationFlow(fixture);
+        var changed = PreparePublicationAttempt(
+            fixture,
+            CapabilityAuthorityFixture.OperationKey + "_foreign");
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            Assert.IsType<AcceptedMechanicsPlan>(first.Plan).WoundStageBundle);
+        var continuationAuthority = Assert.IsAssignableFrom<object>(
+            bundle.PreparedPlan.TreatmentContinuationAuthority);
+
+        var ordinaryInput = WoundEffectBatchPlannerTests
+            .CreateNoMechanicsInputForAcceptedCache();
+        var ordinaryPrepared = WoundAcceptedTurnPlanner.Prepare(ordinaryInput);
+        Assert.True(ordinaryPrepared.Success, DescribeIssues(ordinaryPrepared.Issues));
+        var ordinaryEffectInput = WoundEffectBatchPlannerTests
+            .CreateEffectInputForAcceptedCache(ordinaryPrepared.Plan!);
+        var ordinaryEffect = WoundEffectBatchPlanner.Build(
+            ordinaryPrepared.Plan!,
+            ordinaryEffectInput,
+            new EffectIdentityFactory());
+        Assert.True(ordinaryEffect.Success, DescribeIssues(ordinaryEffect.Issues));
+        var ordinaryFinal = WoundAcceptedTurnPlanner.Finalize(
+            ordinaryPrepared.Plan!,
+            ordinaryEffect);
+        Assert.True(ordinaryFinal.Success, DescribeIssues(ordinaryFinal.Issues));
+        var ordinaryBundle = new AcceptedMechanicsWoundStageBundle(
+            ordinaryInput,
+            ordinaryPrepared.Plan!,
+            ordinaryEffect.Plan!,
+            ordinaryFinal.Plan!);
+
+        var foreign = AcceptedMechanicsWoundCommonInputComposer
+            .ComposeTreatmentContinuation(
+                fixture.FileSystem,
+                fixture.Lease,
+                ordinaryBundle,
+                continuationAuthority,
+                1_260);
+        Assert.False(foreign.Success);
+        Assert.Contains(foreign.Issues, static issue =>
+            issue.Code == "accepted_mechanics_wound_treatment_continuation_provenance_mismatch");
+
+        var mixedIssues = MortalWoundTreatmentCapabilityAuthority
+            .CandidateAdmissionGate.Validate(
+                Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(changed.AcceptedState),
+                Assert.IsType<MortalWoundTreatmentAttemptRequest>(changed.Request),
+                Assert.IsType<MortalWoundTreatmentResolution>(changed.Resolution),
+                Assert.IsType<AcceptedMechanicsPlan>(first.Plan),
+                ComputePublicationSemanticFingerprint(changed),
+                continuationAuthority);
+        Assert.Contains(mixedIssues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_provenance_mismatch");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.Same(first.Plan, cached.Plan);
+    }
+
+    [Fact]
+    public void PublicationPlan_MalformedStabilizeIntentSealRejectsWithoutCachingOrWriting()
+    {
+        using var fixture = CapabilityAuthorityFixture.Create(DescribeScenario(
+            "untouched_player_skill_reads_current_lease_bound_root",
+            publication: true));
+        var attempt = PreparePublicationAttempt(fixture);
+        var source = Assert.IsType<MortalWoundTreatmentResolution>(attempt.Resolution);
+        var original = Assert.IsType<MortalWoundStabilizeOutcomeIntent>(
+            Assert.Single(source.OutcomeIntents));
+        var malformed = MortalWoundStabilizeOutcomeIntent.Create(
+            ordinal: 0,
+            original.DeclaredOperationFingerprint,
+            "sha256:" + new string('f', 64));
+        var forged = RecreateResolution(source, new[] { malformed });
+        Assert.Equal(
+            source.ResolutionAuthorityFingerprint,
+            forged.ResolutionAuthorityFingerprint);
+        Assert.Equal(source.ResultFingerprint, forged.ResultFingerprint);
+        Assert.NotEqual(
+            original.IntentFingerprint,
+            Assert.Single(forged.OutcomeIntents).IntentFingerprint);
+        var before = fixture.CaptureGovernedPublicationBeforeImages();
+
+        var rejected = InvokeT070Publication(
+            fixture,
+            attempt.AcceptedState,
+            attempt.Request,
+            forged);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Value);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        fixture.AssertGovernedRootsMatchBeforeImages(before);
+    }
+
+    [Fact]
+    public async Task PublicationPlan_ConcurrentDifferentSemanticsCannotPassOneInProgressReservation()
+    {
+        var armed = 0;
+        var observed = 0;
+        using var entered = new ManualResetEventSlim();
+        using var release = new ManualResetEventSlim();
+        using var fixture = CapabilityAuthorityFixture.Create(
+            DescribeScenario(
+                "untouched_player_skill_reads_current_lease_bound_root",
+                publication: true),
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    if (Volatile.Read(ref armed) == 1 &&
+                        Interlocked.CompareExchange(ref observed, 1, 0) == 0)
+                    {
+                        entered.Set();
+                        release.Wait();
+                    }
+                    return Task.CompletedTask;
+                }
+            });
+        var first = PreparePublicationAttempt(fixture);
+        var second = PreparePublicationAttempt(
+            fixture,
+            CapabilityAuthorityFixture.OperationKey + "_concurrent");
+        Volatile.Write(ref armed, 1);
+
+        var firstTask = Task.Run(() => InvokeT070Publication(
+            fixture,
+            first.AcceptedState,
+            first.Request,
+            first.Resolution));
+        TypedResultView? conflicting = null;
+        try
+        {
+            Assert.True(entered.Wait(TimeSpan.FromSeconds(15)));
+            conflicting = InvokeT070Publication(
+                fixture,
+                second.AcceptedState,
+                second.Request,
+                second.Resolution);
+        }
+        finally
+        {
+            release.Set();
+        }
+        var admitted = await firstTask;
+
+        AssertValidResultShell(
+            admitted.IsValid,
+            admitted.Issues,
+            admitted.Value,
+            "reserved first treatment publication");
+        Assert.NotNull(conflicting);
+        Assert.False(conflicting.IsValid);
+        Assert.Contains(conflicting.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_conflict");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.Same(admitted.Value, cached.Plan);
+    }
+
     [Theory]
     [InlineData("untouched_player_passive_skill_reads_current_lease_bound_root")]
     [InlineData("untouched_npc_passive_skill_reads_current_lease_bound_root")]
@@ -904,6 +1077,44 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             resolution,
             accepted.Binding!);
     }
+
+    private static string ComputePublicationSemanticFingerprint(
+        PreparedPublicationAttempt attempt)
+    {
+        var method = Assert.Single(
+            typeof(WoundAcceptedTurnPlanner).GetMethods(
+                BindingFlags.Static | BindingFlags.NonPublic),
+            static candidate =>
+                candidate.Name == "ComputeTreatmentPublicationFingerprint");
+        return Assert.IsType<string>(method.Invoke(null, new[]
+        {
+            attempt.AcceptedState,
+            attempt.Request,
+            attempt.Resolution
+        }));
+    }
+
+    private static MortalWoundTreatmentResolution RecreateResolution(
+        MortalWoundTreatmentResolution source,
+        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> outcomeIntents) =>
+        MortalWoundTreatmentResolution.Create(
+            source.Mode,
+            source.Coordinates,
+            source.AttemptDisposition,
+            source.ResultCategory,
+            source.SelectedOutcomeIndex,
+            source.Interruption,
+            source.DeclaredResult,
+            outcomeIntents,
+            source.CriticalReactionIntent,
+            source.ConsumptionTrigger,
+            source.CourseId,
+            source.CourseMilestoneOrdinal,
+            source.CourseDisposition,
+            source.RequestAuthority,
+            source.ModeEvidence,
+            source.RouteFingerprint,
+            source.RouteCompletion);
 
     private static WoundMaterializationEnvelope ReadPublishedPlayerWound(
         CapabilityAuthorityFixture fixture)

@@ -545,7 +545,10 @@ internal static class AcceptedMechanicsPlanAuthority
             AcceptedMechanicsWoundStageBundle bundle,
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             MortalWoundTreatmentAttemptRequest request,
-            string semanticFingerprint)
+            MortalWoundTreatmentResolution resolution,
+            string semanticFingerprint,
+            object continuationAuthority,
+            object reservationAuthority)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -553,6 +556,9 @@ internal static class AcceptedMechanicsPlanAuthority
         ArgumentNullException.ThrowIfNull(bundle);
         ArgumentNullException.ThrowIfNull(acceptedState);
         ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(resolution);
+        ArgumentNullException.ThrowIfNull(continuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
         ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
         var context = input.PlanningContext;
@@ -578,7 +584,10 @@ internal static class AcceptedMechanicsPlanAuthority
                 bundle,
                 acceptedState,
                 request,
-                semanticFingerprint);
+                resolution,
+                semanticFingerprint,
+                continuationAuthority,
+                reservationAuthority);
     }
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildWoundValidated(

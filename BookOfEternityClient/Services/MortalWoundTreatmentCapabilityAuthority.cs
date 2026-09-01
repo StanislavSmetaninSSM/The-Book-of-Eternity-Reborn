@@ -819,11 +819,17 @@ internal static class MortalWoundTreatmentCapabilityAuthority
         internal static IReadOnlyList<ValidationIssue> Validate(
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             MortalWoundTreatmentAttemptRequest request,
-            AcceptedMechanicsPlan candidate)
+            MortalWoundTreatmentResolution resolution,
+            AcceptedMechanicsPlan candidate,
+            string semanticFingerprint,
+            object continuationAuthority)
         {
             ArgumentNullException.ThrowIfNull(acceptedState);
             ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(resolution);
             ArgumentNullException.ThrowIfNull(candidate);
+            ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
+            ArgumentNullException.ThrowIfNull(continuationAuthority);
             var route = acceptedState.TreatmentDefinition.Routes
                 .SingleOrDefault(value => string.Equals(
                     value.RouteId,
@@ -835,6 +841,13 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 request.Mode is not "guaranteed" ||
                 route is null ||
                 candidate.WoundStageBundle is not { } bundle ||
+                !WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+                    continuationAuthority,
+                    bundle,
+                    acceptedState,
+                    request,
+                    resolution,
+                    semanticFingerprint) ||
                 !string.Equals(
                     bundle.Input.Binding.SessionId,
                     acceptedState.Binding.SessionId,
@@ -849,8 +862,10 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     StringComparison.Ordinal) ||
                 bundle.Input.Binding.Turn != acceptedState.Binding.Turn)
             {
-                return PublicationMismatch(
-                    "The candidate plan does not bind the accepted guaranteed treatment authority.")
+                return Invalid(
+                    "treatmentCapability.publicationPlan",
+                    "mortal_wound_treatment_publication_provenance_mismatch",
+                    "The candidate plan does not carry the exact sealed continuation provenance.")
                     .Issues;
             }
 

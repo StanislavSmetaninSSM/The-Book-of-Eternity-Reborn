@@ -3,12 +3,16 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-internal enum MortalWoundTreatmentPublicationProbe
+internal enum MortalWoundTreatmentPublicationReservationStatus
 {
-    None,
+    Reserved,
     Exact,
     Conflict
 }
+
+internal sealed record MortalWoundTreatmentPublicationReservation(
+    MortalWoundTreatmentPublicationReservationStatus Status,
+    object? Authority);
 
 internal static class AcceptedTurnAuthorityRegistry
 {
@@ -174,15 +178,22 @@ internal static class AcceptedTurnAuthorityRegistry
             input,
             bundle);
 
-    internal static MortalWoundTreatmentPublicationProbe
-        ProbeMortalWoundTreatmentPublication(
+    internal static MortalWoundTreatmentPublicationReservation
+        ReserveMortalWoundTreatmentPublication(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             string semanticFingerprint) =>
-        GetState(fileSystem, writeLease).ProbeMortalWoundTreatmentPublication(
+        GetState(fileSystem, writeLease).ReserveMortalWoundTreatmentPublication(
             acceptedState,
             semanticFingerprint);
+
+    internal static void AbortMortalWoundTreatmentPublication(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        object? reservationAuthority) =>
+        GetState(fileSystem, writeLease).AbortMortalWoundTreatmentPublication(
+            reservationAuthority);
 
     internal static AcceptedMechanicsPlanningResult
         GetOrBuildCommonMortalWoundTreatmentValidated(
@@ -192,14 +203,20 @@ internal static class AcceptedTurnAuthorityRegistry
             AcceptedMechanicsWoundStageBundle bundle,
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             MortalWoundTreatmentAttemptRequest request,
-            string semanticFingerprint) =>
+            MortalWoundTreatmentResolution resolution,
+            string semanticFingerprint,
+            object continuationAuthority,
+            object reservationAuthority) =>
         GetState(fileSystem, writeLease)
             .GetOrBuildCommonMortalWoundTreatmentValidated(
                 input,
                 bundle,
                 acceptedState,
                 request,
-                semanticFingerprint);
+                resolution,
+                semanticFingerprint,
+                continuationAuthority,
+                reservationAuthority);
 
     internal static bool TryPeekWoundPrepared(
         FileSystemManager fileSystem,
@@ -903,6 +920,10 @@ internal static class AcceptedTurnAuthorityRegistry
         private const string WoundPlanPath =
             "game_state/wounds/accepted_turn_plan";
 
+        private sealed class TreatmentPublicationReservationAuthority
+        {
+        }
+
         private readonly object _gate = new();
         private readonly object _authorityStateToken = new();
         private readonly AcceptedMechanicsPlanCache _commonPlan;
@@ -929,6 +950,8 @@ internal static class AcceptedTurnAuthorityRegistry
         private string? _woundEffectFingerprint;
         private WoundEffectBatchPlanningResult? _woundEffectResult;
         private string? _mortalWoundTreatmentPublicationFingerprint;
+        private object? _mortalWoundTreatmentPublicationReservation;
+        private string? _mortalWoundTreatmentReservedFingerprint;
 
         internal AcceptedTurnAuthorityState(
             AcceptedMechanicsPlanCache? commonPlan = null,
@@ -1854,8 +1877,8 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
-        internal MortalWoundTreatmentPublicationProbe
-            ProbeMortalWoundTreatmentPublication(
+        internal MortalWoundTreatmentPublicationReservation
+            ReserveMortalWoundTreatmentPublication(
                 MortalWoundTreatmentAcceptedStateAuthority acceptedState,
                 string semanticFingerprint)
         {
@@ -1867,16 +1890,47 @@ internal static class AcceptedTurnAuthorityRegistry
                         _mortalWoundTreatmentAcceptedState,
                         acceptedState))
                 {
-                    return MortalWoundTreatmentPublicationProbe.Conflict;
+                    return new(
+                        MortalWoundTreatmentPublicationReservationStatus.Conflict,
+                        null);
                 }
-                if (_mortalWoundTreatmentPublicationFingerprint is null)
-                    return MortalWoundTreatmentPublicationProbe.None;
-                return string.Equals(
-                    _mortalWoundTreatmentPublicationFingerprint,
-                    semanticFingerprint,
-                    StringComparison.Ordinal)
-                    ? MortalWoundTreatmentPublicationProbe.Exact
-                    : MortalWoundTreatmentPublicationProbe.Conflict;
+                if (_mortalWoundTreatmentPublicationFingerprint is not null)
+                {
+                    return new(
+                        string.Equals(
+                            _mortalWoundTreatmentPublicationFingerprint,
+                            semanticFingerprint,
+                            StringComparison.Ordinal)
+                            ? MortalWoundTreatmentPublicationReservationStatus.Exact
+                            : MortalWoundTreatmentPublicationReservationStatus.Conflict,
+                        null);
+                }
+                if (_mortalWoundTreatmentPublicationReservation is not null)
+                {
+                    return new(
+                        MortalWoundTreatmentPublicationReservationStatus.Conflict,
+                        null);
+                }
+                var reservation = new TreatmentPublicationReservationAuthority();
+                _mortalWoundTreatmentPublicationReservation = reservation;
+                _mortalWoundTreatmentReservedFingerprint = semanticFingerprint;
+                return new(
+                    MortalWoundTreatmentPublicationReservationStatus.Reserved,
+                    reservation);
+            }
+        }
+
+        internal void AbortMortalWoundTreatmentPublication(
+            object? reservationAuthority)
+        {
+            lock (_gate)
+            {
+                if (reservationAuthority is not null && ReferenceEquals(
+                        _mortalWoundTreatmentPublicationReservation,
+                        reservationAuthority))
+                {
+                    ClearMortalWoundTreatmentPublicationReservationCore();
+                }
             }
         }
 
@@ -1886,19 +1940,32 @@ internal static class AcceptedTurnAuthorityRegistry
                 AcceptedMechanicsWoundStageBundle bundle,
                 MortalWoundTreatmentAcceptedStateAuthority acceptedState,
                 MortalWoundTreatmentAttemptRequest request,
-                string semanticFingerprint)
+                MortalWoundTreatmentResolution resolution,
+                string semanticFingerprint,
+                object continuationAuthority,
+                object reservationAuthority)
         {
             ArgumentNullException.ThrowIfNull(input);
             ArgumentNullException.ThrowIfNull(bundle);
             ArgumentNullException.ThrowIfNull(acceptedState);
             ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(resolution);
+            ArgumentNullException.ThrowIfNull(continuationAuthority);
+            ArgumentNullException.ThrowIfNull(reservationAuthority);
             ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
             lock (_gate)
             {
                 if (!ReferenceEquals(
                         _mortalWoundTreatmentAcceptedState,
                         acceptedState) ||
-                    _mortalWoundTreatmentPublicationFingerprint is not null)
+                    _mortalWoundTreatmentPublicationFingerprint is not null ||
+                    !ReferenceEquals(
+                        _mortalWoundTreatmentPublicationReservation,
+                        reservationAuthority) ||
+                    !string.Equals(
+                        _mortalWoundTreatmentReservedFingerprint,
+                        semanticFingerprint,
+                        StringComparison.Ordinal))
                 {
                     return new AcceptedMechanicsPlanningResult(
                         null,
@@ -1941,11 +2008,15 @@ internal static class AcceptedTurnAuthorityRegistry
                             .CandidateAdmissionGate.Validate(
                                 acceptedState,
                                 request,
-                                candidate));
+                                resolution,
+                                candidate,
+                                semanticFingerprint,
+                                continuationAuthority));
                     if (result.Success)
                     {
                         _mortalWoundTreatmentPublicationFingerprint =
                             semanticFingerprint;
+                        ClearMortalWoundTreatmentPublicationReservationCore();
                     }
                     return result;
                 }
@@ -2052,6 +2123,7 @@ internal static class AcceptedTurnAuthorityRegistry
             {
                 _commonPlan.InvalidateValidated();
                 _mortalWoundTreatmentPublicationFingerprint = null;
+                ClearMortalWoundTreatmentPublicationReservationCore();
             }
         }
 
@@ -2121,6 +2193,7 @@ internal static class AcceptedTurnAuthorityRegistry
                         ClearWoundEffectCore();
                         _commonPlan.InvalidateAll();
                         _mortalWoundTreatmentPublicationFingerprint = null;
+                        ClearMortalWoundTreatmentPublicationReservationCore();
                     }
                     return result;
                 }
@@ -2321,6 +2394,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 _woundPlan.InvalidateFinal();
                 _commonPlan.InvalidateAll();
                 _mortalWoundTreatmentPublicationFingerprint = null;
+                ClearMortalWoundTreatmentPublicationReservationCore();
             }
         }
 
@@ -2365,6 +2439,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (!taken)
                     _commonPlan.InvalidateAll();
                 _mortalWoundTreatmentPublicationFingerprint = null;
+                ClearMortalWoundTreatmentPublicationReservationCore();
                 _effectPlan.InvalidateAll();
                 ClearWoundEffectCore();
                 _woundPlan.InvalidateAll();
@@ -2528,6 +2603,7 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _commonPlan.InvalidateAll();
             _mortalWoundTreatmentPublicationFingerprint = null;
+            ClearMortalWoundTreatmentPublicationReservationCore();
             _mortalItems.InvalidateValidated();
         }
 
@@ -2535,6 +2611,7 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             _commonPlan.InvalidateAll();
             _mortalWoundTreatmentPublicationFingerprint = null;
+            ClearMortalWoundTreatmentPublicationReservationCore();
             _effectPlan.InvalidateAll();
             ClearWoundEffectCore();
             _woundPlan.InvalidateAll();
@@ -2551,6 +2628,12 @@ internal static class AcceptedTurnAuthorityRegistry
             _woundEffectStageToken = null;
             _woundEffectFingerprint = null;
             _woundEffectResult = null;
+        }
+
+        private void ClearMortalWoundTreatmentPublicationReservationCore()
+        {
+            _mortalWoundTreatmentPublicationReservation = null;
+            _mortalWoundTreatmentReservedFingerprint = null;
         }
 
         private static WoundEffectBatchPlanningResult Detach(
