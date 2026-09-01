@@ -1389,6 +1389,137 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void ResourceFinalization_PersistedCommandConfirmsAndRollbackReleaseAllowsExactRetry()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 2;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+
+        var persisted = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_confirmed_persistence",
+            scenario.RouteId);
+        var persistedCommand = ComposeTreatmentCommand(
+            persisted,
+            "The complete command confirms its treatment resource hold.");
+        var persistedRequests = ParseTreatmentRequests(persistedCommand);
+
+        var modified = PersistTreatmentCommand(fixture, persistedCommand);
+
+        Assert.Contains(AcceptedMechanicsPlan.WoundCommandPath, modified);
+        var repeatedConfirmation = ConfirmTreatmentResources(
+            fixture,
+            persistedRequests);
+        Assert.True(repeatedConfirmation.IsValid,
+            DescribeIssues(repeatedConfirmation.Issues));
+        Assert.Equal(0, repeatedConfirmation.ChangedCount);
+
+        var rolledBack = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_rolled_back_persistence",
+            scenario.RouteId);
+        var rolledBackCommand = ComposeTreatmentCommand(
+            rolledBack,
+            "This command is restored to its exact before-image.");
+
+        FailTreatmentCommandAfterPhysicalWrite(fixture, rolledBackCommand);
+
+        var exactRetry = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_rolled_back_persistence",
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(rolledBack.Request), CanonicalValue(exactRetry.Request));
+        Assert.Equal(
+            CanonicalValue(rolledBack.Resolution),
+            CanonicalValue(exactRetry.Resolution));
+    }
+
+    [Fact]
+    public async Task ResourceFinalization_RollbackFailureRetainsHoldAndSurfacesAggregateFailure()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_rollback_failure",
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "A failed physical rollback must retain the exact resource hold.");
+        var hooks = new StateDistributorHooks
+        {
+            AfterFileMutationAppliedAsync = path => string.Equals(
+                    path,
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    StringComparison.Ordinal)
+                ? Task.FromException(new IOException(
+                    "Injected failure after the accepted treatment command write."))
+                : Task.CompletedTask,
+            BeforeFileMutationRollback = path =>
+            {
+                if (string.Equals(
+                        path,
+                        AcceptedMechanicsPlan.WoundCommandPath,
+                        StringComparison.Ordinal))
+                {
+                    throw new IOException(
+                        "Injected failure before treatment command rollback.");
+                }
+            }
+        };
+
+        fixture.ReleaseLeaseForExternalDistribution();
+        AggregateException failure;
+        try
+        {
+            failure = await Assert.ThrowsAsync<AggregateException>(() =>
+                    new StateDistributor(
+                            fixture.FileSystem,
+                            NullLogger<StateDistributor>.Instance,
+                            hooks)
+                        .DistributeAsync(
+                            new GameResponse { Response = command.FinalSceneText },
+                            command.Recomposed));
+        }
+        finally
+        {
+            fixture.ReacquireLeaseAfterExternalDistribution();
+        }
+
+        Assert.Contains(failure.InnerExceptions, exception => exception.Message.Contains(
+            "after the accepted treatment command write",
+            StringComparison.Ordinal));
+        Assert.Contains(failure.InnerExceptions, exception => exception.Message.Contains(
+            "before treatment command rollback",
+            StringComparison.Ordinal));
+        Assert.True(File.Exists(fixture.FileSystem.ResolvePath(
+            AcceptedMechanicsPlan.WoundCommandPath)));
+
+        var acceptedState = fixture.GetAcceptedState();
+        var competing = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(acceptedState),
+            fixture.ReadCurrentHistory(),
+            fixture.ReadCurrentWound(),
+            scenario.OperationKey + "_rollback_failure_competing",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        Assert.False(competing.IsValid);
+        Assert.Contains(competing.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_overbooked",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void FailedCommandPersistence_RollsBackBytesReleasesAllClaimsAndAllowsExactRetry()
     {
         var scenario = CreateScenario(
@@ -1735,6 +1866,34 @@ public sealed partial class MortalWoundTreatmentResolverTests
             parsed,
             recomposed,
             finalSceneText);
+    }
+
+    private static IReadOnlyList<MortalWoundTreatmentAttemptRequest>
+        ParseTreatmentRequests(TreatmentPersistenceCommand command)
+    {
+        var issues = new List<ValidationIssue>();
+        var requests = command.Parsed.TreatmentCommands.Select(draft =>
+        {
+            Assert.True(MortalWoundTreatmentCommandCodec.TryParseRequest(
+                draft.Request,
+                AcceptedMechanicsPlan.WoundCommandPath + ".authority.request",
+                issues,
+                out var request));
+            return Assert.IsType<MortalWoundTreatmentAttemptRequest>(request);
+        }).ToArray();
+        Assert.Empty(issues);
+        return requests;
+    }
+
+    private static MortalWoundTreatmentResourceLifecycleResult ConfirmTreatmentResources(
+        AcceptedStateFixture fixture,
+        IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests)
+    {
+        return MortalWoundTreatmentResourceComposer
+            .ConfirmPersistedTreatmentResources(
+                fixture.FileSystem,
+                fixture.Lease,
+                requests);
     }
 
     private static IReadOnlyList<string> PersistTreatmentCommand(

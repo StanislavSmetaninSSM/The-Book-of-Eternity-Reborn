@@ -673,6 +673,80 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        ConfirmPersistedMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests) =>
+        GetState(fileSystem, writeLease).ConfirmPersistedTreatmentResources(
+            lifecycleCapability,
+            requests);
+
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        ReleaseMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests,
+            string reason) =>
+        GetState(fileSystem, writeLease).ReleaseTreatmentResources(
+            lifecycleCapability,
+            requests,
+            reason);
+
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        ConfirmPersistedMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests)
+    {
+        var state = GetState(fileSystem, writeLease);
+        return state.IsCurrentAcceptedState(fileSystem, writeLease, acceptedState)
+            ? state.ConfirmPersistedTreatmentResources(lifecycleCapability, requests)
+            : MortalWoundTreatmentResourceReservationRegistry.LifecycleFailure(
+                "mortal_wound_treatment_resource_lifecycle_stale",
+                "the exact current accepted-state authority",
+                "stale or foreign authority");
+    }
+
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        ReleaseMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests,
+            string reason)
+    {
+        var state = GetState(fileSystem, writeLease);
+        return state.IsCurrentAcceptedState(fileSystem, writeLease, acceptedState)
+            ? state.ReleaseTreatmentResources(lifecycleCapability, requests, reason)
+            : MortalWoundTreatmentResourceReservationRegistry.LifecycleFailure(
+                "mortal_wound_treatment_resource_lifecycle_stale",
+                "the exact current accepted-state authority",
+                "stale or foreign authority");
+    }
+
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        CommitMortalWoundTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object lifecycleCapability,
+            MortalWoundTreatmentResourceFinalization finalization)
+    {
+        var state = GetState(fileSystem, writeLease);
+        return state.IsCurrentAcceptedState(fileSystem, writeLease, acceptedState)
+            ? state.CommitTreatmentResources(lifecycleCapability, finalization)
+            : MortalWoundTreatmentResourceReservationRegistry.LifecycleFailure(
+                "mortal_wound_treatment_resource_lifecycle_stale",
+                "the exact current accepted-state authority",
+                "stale or foreign authority");
+    }
+
     private static MortalWoundProcedureReservationSetResult
         MortalWoundProcedureReservationSetRegistryFailure(
             string expected,
@@ -1119,15 +1193,13 @@ internal static class AcceptedTurnAuthorityRegistry
                     }
 
                     var restored = isHeld
-                        ? restoredResources.Reserve(
+                        ? restoredResources.RestoreConfirmed(
                             TreatmentResourceRegistryCapability,
-                            attached.Coordinates,
-                            attached.Mode,
+                            attached,
                             resource.Authority)
                         : restoredResources.RestoreFinalized(
                             TreatmentResourceRegistryCapability,
-                            attached.Coordinates,
-                            attached.Mode,
+                            attached,
                             resource.Authority);
                     if (!restored.IsValid)
                     {
@@ -1335,6 +1407,85 @@ internal static class AcceptedTurnAuthorityRegistry
                            authority);
             }
         }
+
+        internal MortalWoundTreatmentResourceLifecycleResult
+            ConfirmPersistedTreatmentResources(
+                object lifecycleCapability,
+                IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests)
+        {
+            lock (_gate)
+            {
+                if (!MortalWoundTreatmentResourceComposer
+                        .IsResourceReservationCapability(lifecycleCapability))
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry
+                        .LifecycleFailure(
+                            "mortal_wound_treatment_resource_lifecycle_authority_invalid",
+                            "resource-composer-owned lifecycle authority",
+                            "missing lifecycle capability");
+                }
+                return _treatmentResources.ConfirmPersisted(
+                    TreatmentResourceRegistryCapability,
+                    requests);
+            }
+        }
+
+        internal bool IsCurrentAcceptedState(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+        {
+            lock (_gate)
+            {
+                return ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) &&
+                       acceptedState.IsLeaseBoundTo(fileSystem, writeLease);
+            }
+        }
+
+        internal MortalWoundTreatmentResourceLifecycleResult ReleaseTreatmentResources(
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests,
+            string reason)
+        {
+            lock (_gate)
+            {
+                if (!MortalWoundTreatmentResourceComposer
+                        .IsResourceReservationCapability(lifecycleCapability))
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry
+                        .LifecycleFailure(
+                            "mortal_wound_treatment_resource_lifecycle_authority_invalid",
+                            "resource-composer-owned lifecycle authority",
+                            "missing lifecycle capability");
+                }
+                return _treatmentResources.Release(
+                    TreatmentResourceRegistryCapability,
+                    requests,
+                    reason);
+            }
+        }
+
+        internal MortalWoundTreatmentResourceLifecycleResult CommitTreatmentResources(
+            object lifecycleCapability,
+            MortalWoundTreatmentResourceFinalization finalization)
+        {
+            lock (_gate)
+            {
+                if (!MortalWoundTreatmentResourceComposer
+                        .IsResourceReservationCapability(lifecycleCapability))
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry
+                        .LifecycleFailure(
+                            "mortal_wound_treatment_resource_lifecycle_authority_invalid",
+                            "resource-composer-owned lifecycle authority",
+                            "missing lifecycle capability");
+                }
+                return _treatmentResources.Commit(
+                    TreatmentResourceRegistryCapability,
+                    finalization);
+            }
+        }
+
 
         internal bool RollbackNewMortalWoundProcedureReservations(
             FileSystemManager fileSystem,

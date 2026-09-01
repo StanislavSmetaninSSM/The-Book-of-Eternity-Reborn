@@ -14,6 +14,7 @@ internal sealed class StateDistributorHooks
 {
     internal Func<Task>? AfterBackupsCapturedAsync { get; init; }
     internal Func<string, Task>? AfterFileMutationAppliedAsync { get; init; }
+    internal Action<string>? BeforeFileMutationRollback { get; init; }
     internal Func<Task>? BeforeBackupCleanupAsync { get; init; }
 }
 
@@ -123,13 +124,29 @@ public class StateDistributor
             {
                 await WriteAcceptedWoundCommandAsync(
                     writeLease,
-                    acceptedWoundCommand,
+                    acceptedWoundCommand.Root,
                     mutations,
                     modifiedFiles);
             }
 
             // Phase 3: Write output interface files
             await WriteOutputFiles(writeLease, response, mutations);
+
+            if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })
+            {
+                var confirmation = MortalWoundTreatmentResourceComposer
+                    .ConfirmPersistedTreatmentResources(
+                        _fs,
+                        writeLease,
+                        acceptedWoundCommand.TreatmentRequests);
+                if (!confirmation.IsValid)
+                {
+                    throw new InvalidDataException(
+                        "mortal_wound_treatment_resource_confirmation_failed: " +
+                        string.Join(", ", confirmation.Issues.Select(static issue =>
+                            issue.Code)));
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -140,6 +157,25 @@ public class StateDistributor
                 throw new AggregateException(
                     "State distribution failed and one or more rollback operations also failed.",
                     [ex, .. rollbackFailures]);
+            }
+
+
+            if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })
+            {
+                var release = MortalWoundTreatmentResourceComposer
+                    .ReleaseTreatmentResources(
+                        _fs,
+                        writeLease,
+                        acceptedWoundCommand.TreatmentRequests,
+                        "rolled_back");
+                if (!release.IsValid)
+                {
+                    throw new AggregateException(
+                        "State distribution failed, physical rollback succeeded, but " +
+                        "the provisional treatment resource hold could not be released.",
+                        [ex, new InvalidDataException(string.Join(", ",
+                            release.Issues.Select(static issue => issue.Code)))]);
+                }
             }
 
             ExceptionDispatchInfo.Capture(ex).Throw();
@@ -186,7 +222,7 @@ public class StateDistributor
         return result;
     }
 
-    private static JsonObject? ResolveAcceptedWoundCommand(
+    private static AcceptedWoundCommand? ResolveAcceptedWoundCommand(
         GameResponse response,
         WoundResponseInputCompositionResult? acceptedWoundInput)
     {
@@ -238,7 +274,31 @@ public class StateDistributor
                 throw new InvalidDataException(
                     "wound_accepted_command_unbound: the typed treatment command no longer matches the distributed player response.");
             }
-            return root.DeepClone().AsObject();
+            var requests = new List<MortalWoundTreatmentAttemptRequest>();
+            var requestIssues = new List<ValidationIssue>();
+            for (var index = 0; index < parsed.TreatmentCommands.Count; index++)
+            {
+                var draft = parsed.TreatmentCommands[index];
+                if (!MortalWoundTreatmentCommandCodec.TryParseRequest(
+                        draft.Request,
+                        $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}].authority.request",
+                        requestIssues,
+                        out var request) ||
+                    request is null)
+                {
+                    throw new InvalidDataException(
+                        "wound_accepted_command_invalid: the treatment request failed independent strict parsing.");
+                }
+                requests.Add(request);
+            }
+            if (requestIssues.Count != 0)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_invalid: the treatment request failed independent strict parsing.");
+            }
+            return new AcceptedWoundCommand(
+                root.DeepClone().AsObject(),
+                Array.AsReadOnly(requests.ToArray()));
         }
         if (!hasRawDecisions)
         {
@@ -286,7 +346,9 @@ public class StateDistributor
             matchedDecisionIndexes.Add(matchingIndexes[0]);
         }
 
-        return root.DeepClone().AsObject();
+        return new AcceptedWoundCommand(
+            root.DeepClone().AsObject(),
+            Array.Empty<MortalWoundTreatmentAttemptRequest>());
     }
 
     private static bool TryReadNullableString(JsonNode? node, out string? value)
@@ -546,6 +608,7 @@ public class StateDistributor
 
             try
             {
+                _hooks?.BeforeFileMutationRollback?.Invoke(mutation.Path);
                 if (mutation.ExistedBefore)
                 {
                     if (string.IsNullOrWhiteSpace(mutation.BackupPath))
@@ -631,6 +694,10 @@ public class StateDistributor
         internal string? BackupPath { get; set; }
         internal bool MutationApplied { get; set; }
     }
+
+    private sealed record AcceptedWoundCommand(
+        JsonObject Root,
+        IReadOnlyList<MortalWoundTreatmentAttemptRequest> TreatmentRequests);
 
     private static DialogueOption[]? NormalizeDialogueOptions(DialogueOption[]? options)
     {

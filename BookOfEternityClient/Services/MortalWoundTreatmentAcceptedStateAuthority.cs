@@ -958,6 +958,40 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             ownership,
             authority);
 
+    internal MortalWoundTreatmentResourceLifecycleResult
+        ConfirmPersistedTreatmentResources(
+            object lifecycleCapability,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests) =>
+        AcceptedTurnAuthorityRegistry
+            .ConfirmPersistedMortalWoundTreatmentResources(
+                _fileSystem,
+                _writeLease,
+                this,
+                lifecycleCapability,
+                requests);
+
+    internal MortalWoundTreatmentResourceLifecycleResult ReleaseTreatmentResources(
+        object lifecycleCapability,
+        IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests,
+        string reason) =>
+        AcceptedTurnAuthorityRegistry.ReleaseMortalWoundTreatmentResources(
+            _fileSystem,
+            _writeLease,
+            this,
+            lifecycleCapability,
+            requests,
+            reason);
+
+    internal MortalWoundTreatmentResourceLifecycleResult CommitTreatmentResources(
+        object lifecycleCapability,
+        MortalWoundTreatmentResourceFinalization finalization) =>
+        AcceptedTurnAuthorityRegistry.CommitMortalWoundTreatmentResources(
+            _fileSystem,
+            _writeLease,
+            this,
+            lifecycleCapability,
+            finalization);
+
     internal bool TryReadProcedureDicePool(
         object readCapability,
         out int[] acceptedD20EventValues,

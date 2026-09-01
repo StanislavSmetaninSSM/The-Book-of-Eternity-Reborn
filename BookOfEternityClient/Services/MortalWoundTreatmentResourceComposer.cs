@@ -2,6 +2,7 @@ using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text.Json;
+using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
@@ -603,6 +604,40 @@ internal static class MortalWoundTreatmentResourceComposer
 
     internal static bool IsResourceReservationCapability(object capability) =>
         ReferenceEquals(capability, ResourceReservationCapability);
+
+    internal static MortalWoundTreatmentResourceLifecycleResult
+        ConfirmPersistedTreatmentResources(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(requests);
+        return AcceptedTurnAuthorityRegistry
+            .ConfirmPersistedMortalWoundTreatmentResources(
+                fileSystem,
+                writeLease,
+                ResourceReservationCapability,
+                requests);
+    }
+
+    internal static MortalWoundTreatmentResourceLifecycleResult ReleaseTreatmentResources(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        IReadOnlyList<MortalWoundTreatmentAttemptRequest> requests,
+        string reason)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(requests);
+        return AcceptedTurnAuthorityRegistry.ReleaseMortalWoundTreatmentResources(
+            fileSystem,
+            writeLease,
+            ResourceReservationCapability,
+            requests,
+            reason);
+    }
 
     internal static void RequireClaimMintCapability(object? capability)
     {

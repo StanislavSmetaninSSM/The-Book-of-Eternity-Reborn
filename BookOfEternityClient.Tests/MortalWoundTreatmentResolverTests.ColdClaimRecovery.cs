@@ -29,13 +29,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         var restored = registry.RestoreFinalized(
             capability,
-            request.Coordinates,
-            request.Mode,
+            request,
             request.ResourceAuthority);
         var repeated = registry.RestoreFinalized(
             capability,
-            request.Coordinates,
-            request.Mode,
+            request,
             request.ResourceAuthority);
         var reentered = registry.Reserve(
             capability,
@@ -48,7 +46,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.False(reentered.IsValid);
         Assert.Contains(reentered.Issues, static issue => string.Equals(
             issue.Code,
-            "mortal_wound_treatment_resource_reservation_conflict",
+            "mortal_wound_treatment_resource_reservation_finalized",
             StringComparison.Ordinal));
     }
 

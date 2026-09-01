@@ -377,6 +377,463 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
     }
 
+    [Theory]
+    [InlineData("cancelled")]
+    [InlineData("validation_failed")]
+    public void ResourceFinalization_ExplicitReleaseIsIdempotentAndAllowsExactRetry(
+        string reason)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var operationKey = scenario.OperationKey + "_" + reason;
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            operationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var capability = ResourceLifecycleCapability();
+
+        var first = acceptedState.ReleaseTreatmentResources(
+            capability,
+            new[] { request },
+            reason);
+        var repeated = acceptedState.ReleaseTreatmentResources(
+            capability,
+            new[] { request },
+            reason);
+
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        Assert.Equal(1, first.ChangedCount);
+        Assert.True(repeated.IsValid, DescribeIssues(repeated.Issues));
+        Assert.Equal(0, repeated.ChangedCount);
+        var retry = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            operationKey,
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(flow.Request), CanonicalValue(retry.Request));
+        Assert.Equal(CanonicalValue(flow.Resolution), CanonicalValue(retry.Resolution));
+    }
+
+    [Fact]
+    public void ResourceFinalization_ReleasedOperationRejectsChangedSemanticsBeforeExactRetry()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 1,
+            includeAlternateRoute: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "guaranteed",
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var released = acceptedState.ReleaseTreatmentResources(
+            ResourceLifecycleCapability(),
+            new[] { request },
+            "cancelled");
+        Assert.True(released.IsValid, DescribeIssues(released.Issues));
+
+        var changed = MortalWoundTreatmentPlanner.PrepareGuaranteedRequest(
+            acceptedState,
+            fixture.ReadCurrentHistory(),
+            fixture.ReadCurrentWound(),
+            scenario.OperationKey,
+            AlternateGuaranteedRouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        Assert.False(changed.IsValid);
+        Assert.Contains(changed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_conflict",
+            StringComparison.Ordinal));
+        var retry = ResolveCurrentTreatment(
+            fixture,
+            "guaranteed",
+            scenario.OperationKey,
+            scenario.RouteId);
+        Assert.Equal(CanonicalValue(flow.Request), CanonicalValue(retry.Request));
+    }
+
+    [Fact]
+    public void ResourceFinalization_ReleasedOperationRejectsChangedTerminalReason()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_release_reason",
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var capability = ResourceLifecycleCapability();
+
+        var first = acceptedState.ReleaseTreatmentResources(
+            capability,
+            new[] { request },
+            "cancelled");
+        var repeated = acceptedState.ReleaseTreatmentResources(
+            capability,
+            new[] { request },
+            "cancelled");
+        var changed = acceptedState.ReleaseTreatmentResources(
+            capability,
+            new[] { request },
+            "validation_failed");
+
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        Assert.Equal(1, first.ChangedCount);
+        Assert.True(repeated.IsValid, DescribeIssues(repeated.Issues));
+        Assert.Equal(0, repeated.ChangedCount);
+        Assert.False(changed.IsValid);
+        Assert.Contains(changed.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_release_conflict",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ResourceFinalization_ReleaseRejectsMissingAgreementWithoutTerminalTombstone()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_missing_release",
+                scenario.RouteId).Request);
+        var capability = Assert.IsType<object>(typeof(AcceptedTurnAuthorityRegistry)
+            .GetField(
+                "TreatmentResourceRegistryCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+        var registry = new MortalWoundTreatmentResourceReservationRegistry();
+
+        var released = registry.Release(
+            capability,
+            new[] { request },
+            "validation_failed");
+
+        Assert.False(released.IsValid);
+        Assert.Equal(0, released.ChangedCount);
+        Assert.Contains(released.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_release_conflict",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ResourceFinalization_CommitRequiresConfirmationThenIsIdempotentAndConflictsOnChange()
+    {
+        Assert.DoesNotContain(
+            typeof(MortalWoundTreatmentResourceComposer).GetMethods(
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static method => string.Equals(
+                method.Name,
+                "CommitTreatmentResources",
+                StringComparison.Ordinal));
+
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_commit_lifecycle",
+            scenario.RouteId);
+        var treeBefore = CaptureResolverFixtureTree(fixture.Root);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var composed = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+        var finalization = Assert.IsType<MortalWoundTreatmentResourceFinalization>(
+            composed.Finalization);
+        var capability = ResourceLifecycleCapability();
+
+        var foreignCapability = acceptedState.CommitTreatmentResources(
+            new object(),
+            finalization);
+
+        Assert.False(foreignCapability.IsValid);
+        Assert.Contains(foreignCapability.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_lifecycle_authority_invalid",
+            StringComparison.Ordinal));
+
+        var premature = acceptedState.CommitTreatmentResources(
+            capability,
+            finalization);
+
+        Assert.False(premature.IsValid);
+        Assert.Contains(premature.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_commit_conflict",
+            StringComparison.Ordinal));
+        var confirmation = acceptedState.ConfirmPersistedTreatmentResources(
+            capability,
+            new[] { request });
+        Assert.True(confirmation.IsValid, DescribeIssues(confirmation.Issues));
+        Assert.Equal(1, confirmation.ChangedCount);
+
+        var committed = acceptedState.CommitTreatmentResources(
+            capability,
+            finalization);
+        var repeated = acceptedState.CommitTreatmentResources(
+            capability,
+            finalization);
+
+        Assert.True(committed.IsValid, DescribeIssues(committed.Issues));
+        Assert.Equal(1, committed.ChangedCount);
+        Assert.True(repeated.IsValid, DescribeIssues(repeated.Issues));
+        Assert.Equal(0, repeated.ChangedCount);
+
+        var changed = CloneFinalizationWithFingerprint(
+            finalization,
+            ChangedFinalizationFingerprint(finalization.FinalizationFingerprint));
+        var conflict = acceptedState.CommitTreatmentResources(capability, changed);
+        Assert.False(conflict.IsValid);
+        Assert.Contains(conflict.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_commit_conflict",
+            StringComparison.Ordinal));
+
+        var reentry = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            fixture.ReadCurrentHistory(),
+            fixture.ReadCurrentWound(),
+            request.Coordinates.OperationKey,
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        Assert.False(reentry.IsValid);
+        Assert.Contains(reentry.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_finalized",
+            StringComparison.Ordinal));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
+    }
+
+    [Fact]
+    public void ResourceFinalization_ConfirmedHoldRejectsItsOldCreatorRollbackOwnership()
+    {
+        var firstScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        firstScenario.AcceptedState["sterileThreadCount"] = 1;
+        var secondScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        secondScenario.AcceptedState["sterileThreadCount"] = 1;
+        using var firstFixture = AcceptedStateFixture.Create(firstScenario);
+        using var secondFixture = AcceptedStateFixture.Create(secondScenario);
+        var firstFlow = ResolveCurrentTreatment(
+            firstFixture,
+            "procedure",
+            firstScenario.OperationKey + "_confirmed_creator",
+            firstScenario.RouteId);
+        var secondFlow = ResolveCurrentTreatment(
+            secondFixture,
+            "procedure",
+            secondScenario.OperationKey + "_competing_creator",
+            secondScenario.RouteId);
+        var firstRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            firstFlow.Request);
+        var secondRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            secondFlow.Request);
+        var capability = Assert.IsType<object>(typeof(AcceptedTurnAuthorityRegistry)
+            .GetField(
+                "TreatmentResourceRegistryCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+        var registry = new MortalWoundTreatmentResourceReservationRegistry();
+        var reserved = registry.Reserve(
+            capability,
+            firstRequest.Coordinates,
+            firstRequest.Mode,
+            firstRequest.ResourceAuthority);
+        Assert.True(reserved.IsValid, DescribeIssues(reserved.Issues));
+        var ownership = Assert.IsType<MortalWoundTreatmentResourceReservationOwnership>(
+            reserved.Ownership);
+
+        var confirmed = registry.ConfirmPersisted(
+            capability,
+            new[] { firstRequest });
+        Assert.True(confirmed.IsValid, DescribeIssues(confirmed.Issues));
+
+        Assert.False(registry.RollbackNew(
+            capability,
+            ownership,
+            firstRequest.ResourceAuthority));
+        var competing = registry.Reserve(
+            capability,
+            secondRequest.Coordinates,
+            secondRequest.Mode,
+            secondRequest.ResourceAuthority);
+        Assert.False(competing.IsValid);
+        Assert.Contains(competing.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_overbooked",
+            StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("confirm")]
+    [InlineData("release")]
+    public void ResourceFinalization_BatchLifecycleFailureDoesNotPartiallyChangeAgreements(
+        string operation)
+    {
+        var firstScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        firstScenario.AcceptedState["sterileThreadCount"] = 2;
+        var secondScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        secondScenario.AcceptedState["sterileThreadCount"] = 2;
+        using var firstFixture = AcceptedStateFixture.Create(firstScenario);
+        using var secondFixture = AcceptedStateFixture.Create(secondScenario);
+        var first = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ResolveCurrentTreatment(
+                firstFixture,
+                "procedure",
+                firstScenario.OperationKey + "_batch_first",
+                firstScenario.RouteId).Request);
+        var second = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ResolveCurrentTreatment(
+                secondFixture,
+                "procedure",
+                secondScenario.OperationKey + "_batch_second",
+                secondScenario.RouteId).Request);
+        var capability = Assert.IsType<object>(typeof(AcceptedTurnAuthorityRegistry)
+            .GetField(
+                "TreatmentResourceRegistryCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+        var registry = new MortalWoundTreatmentResourceReservationRegistry();
+        var firstReservation = registry.Reserve(
+            capability,
+            first.Coordinates,
+            first.Mode,
+            first.ResourceAuthority);
+        var secondReservation = registry.Reserve(
+            capability,
+            second.Coordinates,
+            second.Mode,
+            second.ResourceAuthority);
+        Assert.True(firstReservation.IsValid, DescribeIssues(firstReservation.Issues));
+        Assert.True(secondReservation.IsValid, DescribeIssues(secondReservation.Issues));
+        var tamperedResource = TamperFinalizationResourceAuthority(
+            second.ResourceAuthority,
+            "resource");
+        var tamperedSecond = WithFinalizationResourceAuthority(
+            second,
+            tamperedResource);
+
+        var result = operation == "confirm"
+            ? registry.ConfirmPersisted(capability, new[] { first, tamperedSecond })
+            : registry.Release(
+                capability,
+                new[] { first, tamperedSecond },
+                "validation_failed");
+
+        Assert.False(result.IsValid);
+        Assert.Equal(0, result.ChangedCount);
+        Assert.True(registry.RollbackNew(
+            capability,
+            Assert.IsType<MortalWoundTreatmentResourceReservationOwnership>(
+                firstReservation.Ownership),
+            first.ResourceAuthority));
+        Assert.True(registry.RollbackNew(
+            capability,
+            Assert.IsType<MortalWoundTreatmentResourceReservationOwnership>(
+                secondReservation.Ownership),
+            second.ResourceAuthority));
+    }
+
+    [Fact]
+    public void ResourceFinalization_RolledBackReleaseRejectsMixedConfirmedAndProvisionalBatchAtomically()
+    {
+        var firstScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        firstScenario.AcceptedState["sterileThreadCount"] = 2;
+        var secondScenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        secondScenario.AcceptedState["sterileThreadCount"] = 2;
+        using var firstFixture = AcceptedStateFixture.Create(firstScenario);
+        using var secondFixture = AcceptedStateFixture.Create(secondScenario);
+        var first = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ResolveCurrentTreatment(
+                firstFixture,
+                "procedure",
+                firstScenario.OperationKey + "_mixed_confirmed",
+                firstScenario.RouteId).Request);
+        var second = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ResolveCurrentTreatment(
+                secondFixture,
+                "procedure",
+                secondScenario.OperationKey + "_mixed_provisional",
+                secondScenario.RouteId).Request);
+        var capability = Assert.IsType<object>(typeof(AcceptedTurnAuthorityRegistry)
+            .GetField(
+                "TreatmentResourceRegistryCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+        var registry = new MortalWoundTreatmentResourceReservationRegistry();
+        var firstReservation = registry.Reserve(
+            capability,
+            first.Coordinates,
+            first.Mode,
+            first.ResourceAuthority);
+        var secondReservation = registry.Reserve(
+            capability,
+            second.Coordinates,
+            second.Mode,
+            second.ResourceAuthority);
+        Assert.True(firstReservation.IsValid, DescribeIssues(firstReservation.Issues));
+        Assert.True(secondReservation.IsValid, DescribeIssues(secondReservation.Issues));
+        var confirmation = registry.ConfirmPersisted(capability, new[] { first });
+        Assert.True(confirmation.IsValid, DescribeIssues(confirmation.Issues));
+
+        var released = registry.Release(
+            capability,
+            new[] { second, first },
+            "rolled_back");
+
+        Assert.False(released.IsValid);
+        Assert.Equal(0, released.ChangedCount);
+        Assert.False(registry.RollbackNew(
+            capability,
+            Assert.IsType<MortalWoundTreatmentResourceReservationOwnership>(
+                firstReservation.Ownership),
+            first.ResourceAuthority));
+        Assert.True(registry.RollbackNew(
+            capability,
+            Assert.IsType<MortalWoundTreatmentResourceReservationOwnership>(
+                secondReservation.Ownership),
+            second.ResourceAuthority));
+    }
+
     [Fact]
     public void ResourceFinalization_ResealedSuccessfulProcedureInterruptionRejects()
     {
@@ -625,6 +1082,35 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static string ChangedFinalizationFingerprint(string source) =>
         source[..^1] + (source[^1] == '0' ? "1" : "0");
+
+    private static object ResourceLifecycleCapability() =>
+        Assert.IsType<object>(typeof(MortalWoundTreatmentResourceComposer)
+            .GetField(
+                "ResourceReservationCapability",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .GetValue(null));
+
+    private static MortalWoundTreatmentResourceFinalization
+        CloneFinalizationWithFingerprint(
+            MortalWoundTreatmentResourceFinalization source,
+            string finalizationFingerprint)
+    {
+        var constructor = Assert.Single(typeof(MortalWoundTreatmentResourceFinalization)
+            .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic));
+        return Assert.IsType<MortalWoundTreatmentResourceFinalization>(
+            constructor.Invoke(new object?[]
+            {
+                source.Disposition,
+                source.ReservationId,
+                source.RequestFingerprint,
+                source.ResultFingerprint,
+                source.ResourceAuthorityFingerprint,
+                source.ConsumptionTrigger,
+                source.Consumptions,
+                source.ReleasedClaimFingerprints,
+                finalizationFingerprint
+            }));
+    }
 
     private static MethodInfo RequireExactResourceFinalizeMethod()
     {
