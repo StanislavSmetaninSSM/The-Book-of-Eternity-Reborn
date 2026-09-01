@@ -864,12 +864,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     true,
                     Array.Empty<ValidationIssue>(),
                     recovery.Requests,
-                    SelectRecoveredRequests(
-                        recovery.Requests,
-                        catalog.HeldRequests),
-                    SelectRecoveredRequests(
-                        recovery.Requests,
-                        catalog.FinalizedRequests))
+                    recovery.HeldRequests,
+                    recovery.FinalizedRequests)
                 : new MortalWoundTreatmentPersistedRequestCatalogResult(
                     false,
                     recovery.Issues,
@@ -897,25 +893,6 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         using var document = JsonDocument.Parse(File.ReadAllText(physicalPath));
         return document.RootElement.Clone();
     }
-
-    private static IReadOnlyList<MortalWoundTreatmentAttemptRequest>
-        SelectRecoveredRequests(
-            IReadOnlyList<MortalWoundTreatmentAttemptRequest> recovered,
-            IReadOnlyList<MortalWoundTreatmentAttemptRequest> selected) => selected
-        .Select(request => recovered.Single(candidate =>
-            string.Equals(
-                candidate.Coordinates.OperationKey,
-                request.Coordinates.OperationKey,
-                StringComparison.Ordinal) &&
-            string.Equals(
-                candidate.Coordinates.AttemptId,
-                request.Coordinates.AttemptId,
-                StringComparison.Ordinal) &&
-            string.Equals(
-                candidate.RequestFingerprint,
-                request.RequestFingerprint,
-                StringComparison.Ordinal)))
-        .ToArray();
 
     private static MortalWoundTreatmentPersistedRequestCatalogResult
         PersistedRecoveryFailure(

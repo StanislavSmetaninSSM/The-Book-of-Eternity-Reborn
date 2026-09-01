@@ -373,6 +373,97 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void ColdClaimRecovery_WoundDependentInvalidationPreservesDurableHold()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 17);
+        scenario.AcceptedState["sterileThreadCount"] = 2;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var persisted = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_invalidated_persisted",
+            scenario.RouteId);
+        PersistTreatmentCommand(
+            fixture,
+            ComposeTreatmentCommand(
+                persisted,
+                "The durable resource hold survives wound-cache invalidation."));
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+            "initial invalidation recovery"));
+
+        TriggerWoundDependentInvalidation(coldFixture);
+        _ = Assert.Single(AssertValidPersistedCatalog(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+            "exact recovery after wound-dependent invalidation"));
+
+        var remaining = ResolveCurrentTreatment(
+            coldFixture,
+            "procedure",
+            scenario.OperationKey + "_invalidated_remaining",
+            scenario.RouteId);
+        Assert.Equal(
+            new[] { 1 },
+            ReadIntSequence(ReadRequiredProperty(
+                ReadRequiredProperty(remaining.Request, "ModeAuthority"),
+                "SourceIndices")));
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            coldFixture.GetAcceptedState());
+        var overbooked = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            coldFixture.ReadCurrentHistory(),
+            coldFixture.ReadCurrentWound(),
+            scenario.OperationKey + "_invalidated_overbooked",
+            scenario.RouteId,
+            coldFixture.AcceptedEventRef(acceptedState));
+        Assert.False(overbooked.IsValid);
+        Assert.Contains(overbooked.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_resource_reservation_overbooked",
+            StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ColdClaimRecovery_StaleHeldGuaranteedRequestIsFreshRejected()
+    {
+        var scenario = CreateGuaranteedResourceRegistryScenario(
+            quantity: 1,
+            includeAlternateRoute: false);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var persisted = ResolveCurrentTreatment(
+            fixture,
+            "guaranteed",
+            scenario.OperationKey + "_stale_held_guaranteed",
+            scenario.RouteId);
+        PersistTreatmentCommand(
+            fixture,
+            ComposeTreatmentCommand(
+                persisted,
+                "A detached guaranteed hold cannot authorize stale current state."));
+        fixture.SetCanonicalPlayerHealthForRequirementTest(9);
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        var rejected = coldFixture.ExportCurrent();
+
+        AssertInvalidTypedResult(
+            rejected,
+            "Authority",
+            "stale held guaranteed cold recovery");
+        Assert.Contains(
+            Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
+                ReadRequiredProperty(rejected, "Issues")),
+            static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_procedure_claim_recovery_fresh_mismatch",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void ColdClaimRecovery_ChangedSecondRestoreConflictsAndPreservesAllRegistries()
     {
         var scenario = CreateScenario(
@@ -397,9 +488,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
         PersistTreatmentCommand(fixture, persistedCommand);
 
         using var coldFixture = CreateColdRootCopy(fixture);
-        _ = Assert.Single(AssertValidPersistedCatalog(
-            RestoreCurrentPersistedTreatmentCatalog(coldFixture),
-            "initial atomic recovery"));
+        var initiallyRestored = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            Assert.Single(AssertValidPersistedCatalog(
+                RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+                "initial atomic recovery")));
+        Assert.Equal(
+            CanonicalValue(persisted.Request),
+            CanonicalValue(initiallyRestored));
+        Assert.Equal(
+            Assert.IsType<MortalWoundTreatmentAttemptRequest>(persisted.Request)
+                .ResourceAuthority.ReservationId,
+            initiallyRestored.ResourceAuthority.ReservationId);
 
         var changedRoot = unpersistedCommand.Root.DeepClone().AsObject();
         File.WriteAllText(
@@ -414,16 +513,47 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "mortal_wound_treatment_procedure_claim_recovery_conflict",
             StringComparison.Ordinal));
 
-        _ = ResolveCurrentTreatment(
+        File.WriteAllText(
+            coldFixture.FileSystem.ResolvePath(AcceptedMechanicsPlan.WoundCommandPath),
+            persistedCommand.Root.ToJsonString());
+        var exactRetry = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            Assert.Single(AssertValidPersistedCatalog(
+                RestoreCurrentPersistedTreatmentCatalog(coldFixture),
+                "original attached request after conflicting recovery")));
+        Assert.Same(initiallyRestored, exactRetry);
+        Assert.Equal(
+            CanonicalValue(persisted.Request),
+            CanonicalValue(exactRetry));
+        Assert.Equal(
+            initiallyRestored.ResourceAuthority.ReservationId,
+            exactRetry.ResourceAuthority.ReservationId);
+
+        var firstLive = ResolveCurrentTreatment(
             coldFixture,
             "procedure",
             scenario.OperationKey + "_atomic_live_first",
             scenario.RouteId);
-        _ = ResolveCurrentTreatment(
+        Assert.Equal(
+            new[] { 1 },
+            ReadIntSequence(ReadRequiredProperty(
+                ReadRequiredProperty(firstLive.Request, "ModeAuthority"),
+                "SourceIndices")));
+        Assert.Equal(
+            "effect_fate_shield_newer",
+            ReadPreparedFateEffectId(firstLive.Request));
+        var secondLive = ResolveCurrentTreatment(
             coldFixture,
             "procedure",
             scenario.OperationKey + "_atomic_live_second",
             scenario.RouteId);
+        Assert.Equal(
+            new[] { 2 },
+            ReadIntSequence(ReadRequiredProperty(
+                ReadRequiredProperty(secondLive.Request, "ModeAuthority"),
+                "SourceIndices")));
+        Assert.Null(ReadPropertyAllowingNull(
+            ReadRequiredProperty(secondLive.Request, "ModeAuthority"),
+            "PreparedCriticalReaction"));
         var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
             coldFixture.GetAcceptedState());
         var overbooked = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
@@ -438,6 +568,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
             issue.Code,
             "mortal_wound_treatment_resource_reservation_overbooked",
             StringComparison.Ordinal));
+    }
+
+    private static void TriggerWoundDependentInvalidation(
+        AcceptedStateFixture fixture)
+    {
+        var registry = typeof(AcceptedTurnAuthorityRegistry);
+        var getState = Assert.Single(registry.GetMethods(
+            BindingFlags.Static | BindingFlags.NonPublic),
+            static method =>
+                string.Equals(method.Name, "GetState", StringComparison.Ordinal) &&
+                method.GetParameters().Length == 2);
+        var state = Invoke(
+            getState,
+            new object?[] { fixture.FileSystem, fixture.Lease });
+        var invalidate = Assert.IsAssignableFrom<MethodInfo>(state.GetType().GetMethod(
+            "InvalidateWoundAndDependentCore",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+        _ = invalidate.Invoke(state, null);
     }
 
     [Fact]

@@ -711,6 +711,8 @@ internal static class AcceptedTurnAuthorityRegistry
                     expected: expected,
                     actual: actual)
             }),
+            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
             Array.Empty<MortalWoundTreatmentAttemptRequest>());
 
     private static bool IsValidCandidateDetached(
@@ -798,6 +800,12 @@ internal static class AcceptedTurnAuthorityRegistry
         private bool _procedureClaimRecoveryCompleted;
         private MortalWoundTreatmentAttemptRequest[] _recoveredTreatmentRequests =
             Array.Empty<MortalWoundTreatmentAttemptRequest>();
+        private MortalWoundTreatmentAttemptRequest[]
+            _recoveredHeldTreatmentRequests =
+                Array.Empty<MortalWoundTreatmentAttemptRequest>();
+        private MortalWoundTreatmentAttemptRequest[]
+            _recoveredFinalizedTreatmentRequests =
+                Array.Empty<MortalWoundTreatmentAttemptRequest>();
         private object? _woundEffectStageToken;
         private string? _woundEffectFingerprint;
         private WoundEffectBatchPlanningResult? _woundEffectResult;
@@ -1032,7 +1040,9 @@ internal static class AcceptedTurnAuthorityRegistry
                         ? new MortalWoundProcedureClaimRecoveryResult(
                             true,
                             Array.Empty<ValidationIssue>(),
-                            _recoveredTreatmentRequests)
+                            _recoveredTreatmentRequests,
+                            _recoveredHeldTreatmentRequests,
+                            _recoveredFinalizedTreatmentRequests)
                         : AcceptedTurnAuthorityRegistry.ProcedureClaimRecoveryFailure(
                             "mortal_wound_treatment_procedure_claim_recovery_conflict",
                             "the exact request set used by the one completed recovery phase",
@@ -1059,11 +1069,17 @@ internal static class AcceptedTurnAuthorityRegistry
                     return new MortalWoundProcedureClaimRecoveryResult(
                         false,
                         reconstruction.Issues,
+                        Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                        Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                         Array.Empty<MortalWoundTreatmentAttemptRequest>());
                 }
                 var restoredDice = reconstruction.DiceRegistry;
                 var restoredReactions = reconstruction.ReactionRegistry;
                 var restoredRequests = reconstruction.Requests.ToArray();
+                var restoredHeldRequests =
+                    new List<MortalWoundTreatmentAttemptRequest>();
+                var restoredFinalizedRequests =
+                    new List<MortalWoundTreatmentAttemptRequest>();
                 var restoredResources =
                     new MortalWoundTreatmentResourceReservationRegistry();
                 for (var index = 0; index < restoredRequests.Length; index++)
@@ -1088,6 +1104,8 @@ internal static class AcceptedTurnAuthorityRegistry
                         return new MortalWoundProcedureClaimRecoveryResult(
                             false,
                             resource.Issues,
+                            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                             Array.Empty<MortalWoundTreatmentAttemptRequest>());
                     }
                     var attached = request.AttachRestoredResourceAuthority(
@@ -1116,9 +1134,15 @@ internal static class AcceptedTurnAuthorityRegistry
                         return new MortalWoundProcedureClaimRecoveryResult(
                             false,
                             restored.Issues,
+                            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
+                            Array.Empty<MortalWoundTreatmentAttemptRequest>(),
                             Array.Empty<MortalWoundTreatmentAttemptRequest>());
                     }
                     restoredRequests[index] = attached;
+                    if (isHeld)
+                        restoredHeldRequests.Add(attached);
+                    else
+                        restoredFinalizedRequests.Add(attached);
                 }
 
                 var previousDice = _procedureDice;
@@ -1129,23 +1153,21 @@ internal static class AcceptedTurnAuthorityRegistry
                 _treatmentResources = restoredResources;
                 try
                 {
-                    foreach (var request in restoredRequests)
+                    foreach (var request in restoredHeldRequests)
                     {
-                        if (request.ModeAuthority is not MortalWoundProcedureCheckAuthority ||
-                            !string.Equals(
+                        var mismatch = !string.Equals(
                                 request.Coordinates.AcceptedStateFingerprint,
                                 acceptedState.AcceptedStateFingerprint,
-                                StringComparison.Ordinal))
-                        {
-                            continue;
-                        }
+                                StringComparison.Ordinal)
+                            ? "accepted_state_fingerprint"
+                            : null;
                         var routes = acceptedState.TreatmentDefinition.Routes.Where(route =>
                             string.Equals(
                                 route.RouteId,
                                 request.Coordinates.RouteId,
                                 StringComparison.Ordinal))
                             .ToArray();
-                        var mismatch = routes.Length == 1
+                        mismatch ??= routes.Length == 1
                             ? MortalWoundTreatmentFreshAuthorityValidator.FindMismatch(
                                 request,
                                 history,
@@ -1174,11 +1196,16 @@ internal static class AcceptedTurnAuthorityRegistry
 
                 _procedureClaimRecoveryCompleted = true;
                 _recoveredTreatmentRequests = restoredRequests.ToArray();
+                _recoveredHeldTreatmentRequests = restoredHeldRequests.ToArray();
+                _recoveredFinalizedTreatmentRequests =
+                    restoredFinalizedRequests.ToArray();
 
                 return new MortalWoundProcedureClaimRecoveryResult(
                     true,
                     Array.Empty<ValidationIssue>(),
-                    _recoveredTreatmentRequests);
+                    _recoveredTreatmentRequests,
+                    _recoveredHeldTreatmentRequests,
+                    _recoveredFinalizedTreatmentRequests);
             }
         }
 
@@ -1231,6 +1258,10 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             _procedureClaimRecoveryCompleted = false;
             _recoveredTreatmentRequests =
+                Array.Empty<MortalWoundTreatmentAttemptRequest>();
+            _recoveredHeldTreatmentRequests =
+                Array.Empty<MortalWoundTreatmentAttemptRequest>();
+            _recoveredFinalizedTreatmentRequests =
                 Array.Empty<MortalWoundTreatmentAttemptRequest>();
         }
 
@@ -2156,7 +2187,6 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _commonPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
-            _treatmentResources.InvalidateAll();
         }
 
         private void InvalidateAllCore()
