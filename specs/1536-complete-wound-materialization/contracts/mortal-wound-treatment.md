@@ -1113,10 +1113,13 @@ witness fingerprint, and claim fingerprint. `not_required` has null ID/empty cla
 is legal only for a trusted already-active interruption or current satisfied scopes
 without quantity requirements.
 The lease/generation registry reconstructs held claims from strictly valid complete
-command/pending requests including their nested bundles, checks aggregate availability, and returns the same
-reservation for exact retry. Accepted history marks it finalized. Failed preparation,
-request sealing/persistence, cancellation, validation, or rollback releases the resource,
-die, and Fate provisional claims; restart cannot overbook pending work.
+command/pending requests including their nested bundles, checks aggregate availability,
+and returns the same reservation for exact retry. Accepted history marks it finalized
+unless the same in-process publication is fenced by an open one-use take receipt awaiting
+the full accepted-turn success boundary. Failed preparation or request
+sealing/persistence releases provisional resource, die, and Fate claims. Terminal
+cancellation, validation rejection, or rollback removes the exact durable request copies
+before releasing a confirmed agreement; restart cannot overbook pending work.
 
 The bundle binds the same accepted-state/context/route seals, and aggregate
 non-overbooking is checked across successful bindings in all scopes before a consuming
@@ -1380,12 +1383,22 @@ accepted-mechanics plan. It never writes inventory or resource ledgers directly.
 3. Prepare and exclusively reserve every current item/resource quantity under the sealed route policy.
 4. Seal and persist one request, atomically confirming resource and any die/Fate claims.
 5. Resolve the check/course/guarantee and derive a policy-aware consumption trigger.
-6. Finalize only declared `consume_requirement` selectors, compose all after-images, and commit once.
-7. Release every other claim on a non-consuming result, cancellation, rejection, or rollback.
+6. Finalize only declared `consume_requirement` selectors, compose/publish/read back all
+   after-images, and retain a private one-use open publication receipt.
+7. Complete runtime refresh, wound post-seal/output, critical/full-state validation,
+   cleanup, and final runtime refresh; then commit once as the last fallible semantic
+   action.
+8. On terminal cancellation/rejection/rollback, remove the exact durable request and
+   release every claim. On retryable in-flight publication failure, compensate exact
+   bytes, retain the confirmed hold with its restored command, and re-arm only the same
+   receipt-owned plan; do not emit the lifecycle reason `rolled_back`.
 
 A valid failed procedure may consume only selected supplies when `consumeOn` says so. A
 reusable tool can remain a quantity requirement without a mutation selector. A repair
-round restores the same reservation authority and never reserves or consumes a second set.
+round restores the same reservation authority and never reserves or consumes a second
+set. The private take receipt is production-minted from the exact cached plan and registry
+generation, is one-use, and cannot be forged, swapped, replayed, or used after
+invalidation/session replacement.
 
 ## Natural recovery
 

@@ -1277,7 +1277,8 @@ entrypoints require no update for T065.
   It is proved directly from production T066/T067-A authority without a request shell.
   T068 Phase B, after T067-B creates sealed requests/resolutions and durable commands,
   owns `Finalize(resolution)`, confirmation/finalization, command/pending reconstruction,
-  cancellation/validation/rollback release, and cold-restart evidence. Phase A does not
+  terminal cancellation/validation/rollback release, retryable publication-compensation
+  distinction, and cold-restart evidence. Phase A does not
   invent a test resolution or a temporary finalization DTO to simulate Phase B.
   T068 Phase A closure (2026-08-31): complete through `be9faa2a`. The exact three
   production-only preparation overloads, immutable policy/claim/reservation authority,
@@ -1398,6 +1399,14 @@ entrypoints require no update for T065.
   treatment or recovery shortcut. T070 Phase B, after T067-B/T068-B/T069-B, owns
   treatment, stabilization, recovery, re-entry, durable receipt/history, and remaining
   atomic publication integration required before T069-C replay closure.
+  Any treatment plan carrying `ConfirmedHeld` resources MUST use a production-minted
+  one-use take receipt and remain open through the complete accepted-turn pipeline,
+  including helper readbacks/validators, runtime refresh, wound post-seal/output checks,
+  critical/full-state validation, cleanup, and final runtime refresh. Resource
+  finalization commits only after those boundaries pass. Before commit, retryable
+  publication failure performs byte-exact transaction compensation, retains the restored
+  durable command plus its exact confirmed hold, and re-arms only the same receipt-owned
+  plan; terminal rejection removes durable authority before release.
   T070 Phase A closure (2026-08-31): complete through `56a0f341`. Initial accepted
   Mortal physical creates now allocate closed recovery and applicable condition anchors
   from the accepted canonical world minute, bind them to the exact sealed stage bundle,

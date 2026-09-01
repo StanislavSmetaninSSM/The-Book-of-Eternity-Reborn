@@ -4302,6 +4302,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/npcs/npc_core.json"),
                     npcCore.ToJsonString());
+                if (reusableTool is not null)
+                {
+                    File.WriteAllText(
+                        fileSystem.ResolvePath("game_state/npcs/npc_inventory.json"),
+                        new JsonObject
+                        {
+                            ["NPCInventoryAdds"] = new JsonArray()
+                        }.ToJsonString());
+                }
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/world/world_time.json"),
                     new JsonObject

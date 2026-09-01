@@ -958,9 +958,18 @@ treating finalized history as still reserved.
 After resolution, `MortalWoundTreatmentResourceComposer.Finalize(resolution)` recomputes
 request/resource/bundle/policy/claim seals, consumes only matching current-scope selectors,
 and releases every other claim. `None` is release-only and `not_required` is empty.
-Commit finalizes the reservation; cancellation, validation failure, or rollback releases
-it. This makes concurrency, `consumeOn`, reusable tools, and replay implementable without
-granting T061 raw mutation authority.
+Commit finalizes the reservation only as the last fallible semantic action of the full
+accepted-turn transaction: after common publication/readback, helper validators, runtime
+refresh, wound post-seal/output checks, critical/full-state validation, cleanup, and the
+final runtime refresh. A private production-minted marker atomically takes the exact plan
+into a one-use receipt; only that receipt may commit or re-arm the same vacant cache slot.
+Terminal cancellation, validation rejection, or rollback first removes the exact durable
+command/pending authority and then releases it. By contrast, retryable in-flight
+publication compensation restores the bytes and durable command, retains the exact
+`ConfirmedHeld` agreement, and re-arms only the same plan; it is not the lifecycle outcome
+`rolled_back` and emits no refund reason. This makes concurrency, `consumeOn`, reusable
+tools, downstream validation, and replay implementable without granting T061 raw mutation
+authority or leaving a durable command without a hold.
 
 Procedure route resolution has a closed `modifierSource`: exact zero/provider roll actor,
 or one zero-based satisfied T060 `skill_tier` requirement whose current tier and resolved

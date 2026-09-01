@@ -810,11 +810,14 @@ The lease/generation-scoped reservation registry reconstructs held claims from e
 strictly valid complete `treat` request (which owns its full bundle) in command/pending state for the
 binding, rejects aggregate overbooking against the witnessed availability, returns the
 same reservation for exact retry, and conflicts on changed coordinates/policy/bundle.
-Accepted history marks a reservation finalized rather than held. Preparation is
-provisional; successful request sealing+persistence confirms it, while preparation,
-sealing, validation, cancellation, or persistence failure releases it together with any
-provisional die/Fate claim. Restart cannot reserve a quantity already held by pending
-work.
+Accepted history marks a reservation finalized rather than held unless that same
+in-process publication is fenced by an open one-use take receipt awaiting the full
+accepted-turn success boundary. Preparation is provisional; successful request
+sealing+persistence confirms it, while a pre-confirmation preparation/sealing/persistence
+failure releases it together with any provisional die/Fate claim. Terminal validation
+rejection or cancellation removes the exact durable command/pending copies before
+releasing a confirmed agreement. Restart cannot reserve a quantity already held by
+pending work.
 
 Aggregate non-overbooking is checked across successful bindings in all scopes before a
 consuming result. Non-course bundles have null course fields and one satisfied common
@@ -830,9 +833,15 @@ claim seals and derives the selected mutation selectors. A held authority plus a
 present in `Policy.ConsumeOn` emits exact typed full-quantity consume intents only for
 matching current-scope selectors and releases every other held claim. Trigger `None`
 emits release-only finalization; `not_required` emits an empty plan. A category/policy/
-reservation mismatch rejects. Commit marks the deterministic reservation finalized;
-cancel, validation failure, or rollback releases it. Exact replay calls neither prepare
-nor finalize.
+reservation mismatch rejects. Commit marks the deterministic reservation finalized only
+through a private one-use publication receipt and only after the complete accepted-turn
+pipeline has passed common readback, runtime refresh, wound post-seal/output authority,
+critical/full-state validation, cleanup, and final runtime refresh. Terminal cancellation,
+validation rejection, or rollback removes the exact durable request authority and then
+releases it. Retryable in-flight publication compensation instead restores canonical
+bytes and the exact durable command, retains `ConfirmedHeld`, and re-arms only the same
+receipt-owned plan slot; this compensation is not the lifecycle outcome `rolled_back`.
+Exact replay calls neither prepare nor finalize.
 
 `MortalWoundTreatmentResolutionResult` contains exactly `Disposition`, frozen `Issues`,
 nullable immutable `Resolution`, and nullable immutable `ReplayReceipt`; disposition is
