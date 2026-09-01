@@ -243,6 +243,267 @@ internal sealed partial class MortalWoundTreatmentResolution
                 nameof(evidence))
         };
 
+    internal static bool TryRecomputeModeEvidenceFingerprint(
+        MortalWoundTreatmentResolution resolution,
+        out string? fingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(resolution);
+        fingerprint = null;
+        var request = resolution.RequestAuthority;
+        if (!MortalWoundTreatmentDetachedSealValidator.TryGetRoute(
+                request,
+                out var selectedRoute) ||
+            selectedRoute is null)
+        {
+            return false;
+        }
+
+        MortalWoundTreatmentModeEvidence expected;
+        try
+        {
+            expected = (request.ModeAuthority, selectedRoute) switch
+            {
+                (MortalWoundProcedureCheckAuthority authority,
+                    MortalWoundProcedureRouteDefinition route) =>
+                    RecomputeProcedureEvidence(resolution, request, authority, route),
+                (MortalWoundCourseModeAuthority authority,
+                    MortalWoundCourseRouteDefinition route) =>
+                    RecomputeCourseEvidence(resolution, request, authority, route),
+                (MortalWoundTreatmentCapabilityProof proof,
+                    MortalWoundGuaranteedRouteDefinition route) =>
+                    RecomputeGuaranteedEvidence(resolution, proof, route),
+                _ => throw new InvalidOperationException(
+                    "The mode authority and route do not form one closed evidence case.")
+            };
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            return false;
+        }
+
+        if (!ModeEvidenceEquals(resolution.ModeEvidence, expected))
+            return false;
+        fingerprint = ComputeModeEvidenceFingerprint(expected);
+        return true;
+    }
+
+    private static MortalWoundProcedureModeEvidence RecomputeProcedureEvidence(
+        MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundProcedureCheckAuthority authority,
+        MortalWoundProcedureRouteDefinition route)
+    {
+        if (!string.Equals(resolution.Mode, "procedure", StringComparison.Ordinal))
+            throw new InvalidOperationException("Procedure evidence requires procedure mode.");
+        var total = checked((long)authority.NaturalRoll + authority.Modifier);
+        var margin = checked(total - authority.EffectiveDifficulty);
+        var expectedReaction = authority.PreparedCriticalReaction is null
+            ? null
+            : MortalWoundCriticalReactionIntent.Create(
+                request,
+                authority.PreparedCriticalReaction);
+        if (!string.Equals(
+                expectedReaction?.IntentFingerprint,
+                resolution.CriticalReactionIntent?.IntentFingerprint,
+                StringComparison.Ordinal))
+        {
+            throw new InvalidOperationException(
+                "The critical reaction does not match the sealed procedure authority.");
+        }
+        var selectedIndex = MortalWoundTreatmentPlanner.SelectProcedureBand(
+            route,
+            authority.NaturalRoll,
+            margin,
+            expectedReaction is not null);
+        if (selectedIndex < 0 ||
+            selectedIndex >= route.Bands.Length ||
+            resolution.SelectedOutcomeIndex != selectedIndex ||
+            !string.Equals(
+                resolution.ResultCategory,
+                route.Bands[selectedIndex].Category,
+                StringComparison.Ordinal) ||
+            !DeclaredResultsEqual(
+                resolution.DeclaredResult,
+                route.Bands[selectedIndex].DeclaredResult))
+        {
+            throw new InvalidOperationException(
+                "The selected procedure outcome does not match the sealed roll.");
+        }
+        var originalOutcome = authority.NaturalRoll switch
+        {
+            20 => "critical_success",
+            1 => "critical_failure",
+            _ => "ordinary"
+        };
+        var resolvedOutcome = authority.NaturalRoll == 1 && expectedReaction is not null
+            ? "failure"
+            : originalOutcome;
+        return MortalWoundProcedureModeEvidence.Create(
+            authority,
+            route,
+            total,
+            margin,
+            originalOutcome,
+            resolvedOutcome,
+            route.Bands[selectedIndex],
+            selectedIndex,
+            expectedReaction);
+    }
+
+    private static MortalWoundCourseModeEvidence RecomputeCourseEvidence(
+        MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundCourseModeAuthority authority,
+        MortalWoundCourseRouteDefinition route)
+    {
+        if (!string.Equals(resolution.Mode, "course", StringComparison.Ordinal) ||
+            request.MilestoneOrdinal != authority.MilestoneOrdinal)
+        {
+            throw new InvalidOperationException("Course evidence requires one current milestone.");
+        }
+        var milestones = route.Milestones.Where(candidate =>
+            candidate.Ordinal == authority.MilestoneOrdinal).ToArray();
+        if (milestones.Length != 1)
+            throw new InvalidOperationException("The current course milestone is ambiguous.");
+        var interrupted = request.RequirementAuthority.InterruptionReason is not null;
+        var expectedDisposition = interrupted
+            ? "interrupted"
+            : milestones[0].Completion;
+        var expectedOutcomeIndex = interrupted
+            ? (int?)null
+            : authority.MilestoneOrdinal - 1;
+        var expectedCategory = interrupted
+            ? route.Interruption.Category
+            : milestones[0].Category;
+        var expectedDeclaredResult = interrupted
+            ? route.Interruption.DeclaredResult
+            : milestones[0].DeclaredResult;
+        if (resolution.Interruption != interrupted ||
+            resolution.SelectedOutcomeIndex != expectedOutcomeIndex ||
+            !string.Equals(
+                resolution.CourseDisposition,
+                expectedDisposition,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                resolution.ResultCategory,
+                expectedCategory,
+                StringComparison.Ordinal) ||
+            !DeclaredResultsEqual(
+                resolution.DeclaredResult,
+                expectedDeclaredResult))
+        {
+            throw new InvalidOperationException(
+                "The course result does not match its current milestone evidence.");
+        }
+        return MortalWoundCourseModeEvidence.Create(authority, expectedDisposition);
+    }
+
+    private static MortalWoundGuaranteedModeEvidence RecomputeGuaranteedEvidence(
+        MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentCapabilityProof proof,
+        MortalWoundGuaranteedRouteDefinition route)
+    {
+        if (!string.Equals(resolution.Mode, "guaranteed", StringComparison.Ordinal) ||
+            resolution.SelectedOutcomeIndex != 0 ||
+            resolution.Interruption ||
+            !string.Equals(
+                resolution.ResultCategory,
+                route.Outcome.Category,
+                StringComparison.Ordinal) ||
+            !DeclaredResultsEqual(
+                resolution.DeclaredResult,
+                route.Outcome.DeclaredResult))
+        {
+            throw new InvalidOperationException(
+                "Guaranteed evidence requires the sole non-interrupted outcome.");
+        }
+        return MortalWoundGuaranteedModeEvidence.Create(proof, route);
+    }
+
+    private static bool DeclaredResultsEqual(
+        IReadOnlyList<MortalWoundTreatmentOperation> actual,
+        IReadOnlyList<MortalWoundTreatmentOperation> expected)
+    {
+        if (actual.Count != expected.Count)
+            return false;
+        for (var ordinal = 0; ordinal < actual.Count; ordinal++)
+        {
+            if (!string.Equals(
+                    MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(
+                        ordinal,
+                        actual[ordinal]),
+                    MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(
+                        ordinal,
+                        expected[ordinal]),
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool ModeEvidenceEquals(
+        MortalWoundTreatmentModeEvidence actual,
+        MortalWoundTreatmentModeEvidence expected) => (actual, expected) switch
+    {
+        (MortalWoundProcedureModeEvidence left,
+            MortalWoundProcedureModeEvidence right) =>
+            string.Equals(left.RollMode, right.RollMode, StringComparison.Ordinal) &&
+            string.Equals(left.RollActorKind, right.RollActorKind,
+                StringComparison.Ordinal) &&
+            string.Equals(left.RollActorId, right.RollActorId,
+                StringComparison.Ordinal) &&
+            left.SourceIndices.SequenceEqual(right.SourceIndices) &&
+            left.SourceRolls.SequenceEqual(right.SourceRolls) &&
+            left.SelectedSourceIndex == right.SelectedSourceIndex &&
+            left.NaturalRoll == right.NaturalRoll &&
+            left.Modifier == right.Modifier &&
+            left.Total == right.Total &&
+            left.BaseDifficulty == right.BaseDifficulty &&
+            left.ComplicationDifficultyModifier ==
+                right.ComplicationDifficultyModifier &&
+            left.EffectiveDifficulty == right.EffectiveDifficulty &&
+            left.Margin == right.Margin &&
+            string.Equals(left.OriginalOutcome, right.OriginalOutcome,
+                StringComparison.Ordinal) &&
+            string.Equals(left.ResolvedOutcome, right.ResolvedOutcome,
+                StringComparison.Ordinal) &&
+            string.Equals(left.SelectedBandId, right.SelectedBandId,
+                StringComparison.Ordinal) &&
+            left.SelectedOutcomeIndex == right.SelectedOutcomeIndex &&
+            string.Equals(left.ReactionEffectId, right.ReactionEffectId,
+                StringComparison.Ordinal) &&
+            string.Equals(left.ReactionTriggerId, right.ReactionTriggerId,
+                StringComparison.Ordinal) &&
+            string.Equals(left.ReactionFingerprint, right.ReactionFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(left.AcceptedRollFingerprint, right.AcceptedRollFingerprint,
+                StringComparison.Ordinal),
+        (MortalWoundCourseModeEvidence left, MortalWoundCourseModeEvidence right) =>
+            string.Equals(left.CourseId, right.CourseId, StringComparison.Ordinal) &&
+            left.MilestoneOrdinal == right.MilestoneOrdinal &&
+            left.CourseStartedAtGameTimeMinutes == right.CourseStartedAtGameTimeMinutes &&
+            left.ResolvedAtGameTimeMinutes == right.ResolvedAtGameTimeMinutes &&
+            string.Equals(left.ClockEvidenceFingerprint, right.ClockEvidenceFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(left.CourseDisposition, right.CourseDisposition,
+                StringComparison.Ordinal),
+        (MortalWoundGuaranteedModeEvidence left,
+            MortalWoundGuaranteedModeEvidence right) =>
+            string.Equals(left.CapabilityRef, right.CapabilityRef,
+                StringComparison.Ordinal) &&
+            string.Equals(left.ActorRole, right.ActorRole, StringComparison.Ordinal) &&
+            string.Equals(left.SkillId, right.SkillId, StringComparison.Ordinal) &&
+            string.Equals(left.SourceSemanticFingerprint,
+                right.SourceSemanticFingerprint, StringComparison.Ordinal) &&
+            string.Equals(left.CapabilityProofFingerprint,
+                right.CapabilityProofFingerprint, StringComparison.Ordinal),
+        _ => false
+    };
+
     internal static string ComputeResolutionAuthorityFingerprint(
         string requestFingerprint,
         string mode,

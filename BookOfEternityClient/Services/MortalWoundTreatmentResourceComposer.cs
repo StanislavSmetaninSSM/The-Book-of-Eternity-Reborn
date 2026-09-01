@@ -674,17 +674,16 @@ internal static class MortalWoundTreatmentResourceComposer
                     "exact outer/request mode, coordinates, route, course, and authority seals",
                     resolution.RequestFingerprint);
             }
-            if (!HasMatchingModeEvidenceType(resolution.Mode, resolution.ModeEvidence))
+            if (!MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(
+                    resolution,
+                    out var modeEvidenceFingerprint) ||
+                modeEvidenceFingerprint is null)
             {
                 return InvalidFinalization(
                     "mortal_wound_treatment_resource_finalization_mode_evidence_invalid",
-                    $"one exact {resolution.Mode} mode-evidence graph",
+                    $"one independently recomputable {resolution.Mode} mode-evidence graph",
                     resolution.ModeEvidence?.GetType().Name ?? "missing evidence");
             }
-
-            var modeEvidenceFingerprint =
-                MortalWoundTreatmentResolution.ComputeModeEvidenceFingerprint(
-                    resolution.ModeEvidence);
             var expectedResolutionFingerprint =
                 MortalWoundTreatmentResolution.ComputeResolutionAuthorityFingerprint(
                     resolution.RequestFingerprint,
@@ -851,6 +850,9 @@ internal static class MortalWoundTreatmentResourceComposer
                    resolution.ResourceAuthority.AuthorityFingerprint,
                    resource.AuthorityFingerprint,
                    StringComparison.Ordinal) &&
+               HasExactResourceAuthorityAgreement(
+                   resolution.ResourceAuthority,
+                   resource) &&
                string.Equals(
                    resolution.RouteFingerprint,
                    requirement.RouteFingerprint,
@@ -880,15 +882,60 @@ internal static class MortalWoundTreatmentResourceComposer
                      requirement.CourseCoordinateFingerprint is null);
     }
 
-    private static bool HasMatchingModeEvidenceType(
-        string mode,
-        MortalWoundTreatmentModeEvidence? evidence) => (mode, evidence) switch
+    private static bool HasExactResourceAuthorityAgreement(
+        MortalWoundTreatmentResourceReservationAuthority actual,
+        MortalWoundTreatmentResourceReservationAuthority expected)
     {
-        ("procedure", MortalWoundProcedureModeEvidence) => true,
-        ("course", MortalWoundCourseModeEvidence) => true,
-        ("guaranteed", MortalWoundGuaranteedModeEvidence) => true,
-        _ => false
-    };
+        if (!string.Equals(actual.ReservationDisposition,
+                expected.ReservationDisposition, StringComparison.Ordinal) ||
+            !string.Equals(actual.ReservationId, expected.ReservationId,
+                StringComparison.Ordinal) ||
+            !string.Equals(actual.CoordinatesFingerprint,
+                expected.CoordinatesFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(actual.AcceptedStateFingerprint,
+                expected.AcceptedStateFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(actual.RouteFingerprint, expected.RouteFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(actual.CourseId, expected.CourseId,
+                StringComparison.Ordinal) ||
+            actual.CourseMilestoneOrdinal != expected.CourseMilestoneOrdinal ||
+            !string.Equals(actual.CourseCoordinateFingerprint,
+                expected.CourseCoordinateFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(actual.RequirementAuthorityFingerprint,
+                expected.RequirementAuthorityFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(actual.AuthorityFingerprint, expected.AuthorityFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(ComputePolicyFingerprint(actual.Policy),
+                ComputePolicyFingerprint(expected.Policy), StringComparison.Ordinal) ||
+            actual.Claims.Count != expected.Claims.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < actual.Claims.Count; index++)
+        {
+            var left = actual.Claims[index];
+            var right = expected.Claims[index];
+            if (!string.Equals(left.Scope, right.Scope, StringComparison.Ordinal) ||
+                left.RequirementIndex != right.RequirementIndex ||
+                !string.Equals(left.Kind, right.Kind, StringComparison.Ordinal) ||
+                !string.Equals(left.AuthorityRef, right.AuthorityRef,
+                    StringComparison.Ordinal) ||
+                !string.Equals(left.Realm, right.Realm, StringComparison.Ordinal) ||
+                !string.Equals(left.OwnerKind, right.OwnerKind,
+                    StringComparison.Ordinal) ||
+                !string.Equals(left.OwnerId, right.OwnerId, StringComparison.Ordinal) ||
+                left.Quantity != right.Quantity ||
+                !string.Equals(left.SuccessWitnessFingerprint,
+                    right.SuccessWitnessFingerprint, StringComparison.Ordinal) ||
+                !string.Equals(left.ClaimFingerprint, right.ClaimFingerprint,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
 
     private static bool TrySelectCurrentClaims(
         MortalWoundTreatmentResolution resolution,
