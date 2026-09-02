@@ -444,6 +444,43 @@ internal sealed partial class MortalItemTransitionWriter
         return result;
     }
 
+    private static MortalItemCarrierCatalogInput CreateConsumptionCarrierRoots(
+        LoadedState state) => new(
+        state.Inventory?.CatalogRoot,
+        state.NpcCore?.CatalogRoot,
+        NpcInventoryCommands: null,
+        state.Location?.CatalogRoot,
+        state.Vehicles?.CatalogRoot,
+        state.Companions,
+        state.OffscreenLocationStorage?.CatalogRoot);
+
+    private static void ApplyConsumptionAfterImages(
+        LoadedState state,
+        IReadOnlyDictionary<string, JsonObject> afterImages)
+    {
+        foreach (var document in state.Documents())
+        {
+            if (!afterImages.TryGetValue(document.Path, out var afterImage))
+                continue;
+            if (document.Root is JsonArray legacyVehicles)
+            {
+                if (afterImage["vehicles"] is not JsonArray projectedVehicles)
+                {
+                    throw new InvalidDataException(
+                        "Consumption planner changed legacy vehicle topology.");
+                }
+                legacyVehicles.Clear();
+                foreach (var vehicle in projectedVehicles)
+                    legacyVehicles.Add(vehicle?.DeepClone());
+                continue;
+            }
+
+            document.CatalogRoot.Clear();
+            foreach (var pair in afterImage)
+                document.CatalogRoot[pair.Key] = pair.Value?.DeepClone();
+        }
+    }
+
     private static void ApplyProjectedDocument(
         StateDocument? document,
         IReadOnlyDictionary<string, JsonNode?> projectedRoots)

@@ -179,6 +179,25 @@ public sealed class MortalItemConsumptionPlannerTests
         Assert.Empty(result.TerminalOwners);
     }
 
+    [Fact]
+    public void Plan_SuspendedLiveItemResourceScalesExactlyAndRemainsActionable()
+    {
+        var state = Resource("itm_resource_suspended", 8m, 6m) with
+        {
+            State = ResourceLifecycleState.Suspended
+        };
+        var fixture = CreateFixture("itm_resource_suspended", 4, resource: state);
+
+        var result = Plan(fixture,
+            BuildCommand(1, fixture.ItemId, 2, "mitrn_t070b4_resource_suspended_0001"));
+
+        AssertValid(result);
+        var capacity = Assert.Single(result.Capacities);
+        Assert.Equal(4m, capacity.ResolvedCapacity!.Maximum);
+        Assert.Equal(ResourceCurrentDisposition.ScaleRatioExact, capacity.CurrentDisposition);
+        Assert.Equal(ResourceCapacityOperation.Reconfigure, capacity.Operation);
+    }
+
     [Theory]
     [InlineData("inexact_quantum")]
     [InlineData("non_instance_fixed")]
@@ -226,6 +245,139 @@ public sealed class MortalItemConsumptionPlannerTests
         Assert.Equal(firstInput, Describe(firstFixture));
         Assert.Equal(secondInput, Describe(secondFixture));
         AssertFilesEqual(filesBefore, ReadFiles(canonicalRoot));
+    }
+
+    [Fact]
+    public void Plan_InvalidIssuesAreDeeplyDetachedFromCallerOwnedRepairContext()
+    {
+        var fixture = CreateFixture("itm_detached_issue", 1);
+        var companionTargets = new[] { "game_state/inventory/item_bonds.json" };
+        var sourcePath = new[] { "source_container" };
+        var destinationPath = new[] { "destination_container" };
+        var callerIssue = new ValidationIssue(
+            MortalItemIdentityState.StatePath,
+            IssueSeverity.Error,
+            "Caller-owned invalid identity state.",
+            code: "mortal_item_test_invalid_identity",
+            repairTargetFiles: companionTargets)
+        {
+            MortalItemRepairContext = new MortalItemRepairContext(
+                "entries[itm_detached_issue]",
+                "consume",
+                "player_inventory",
+                new MortalItemCarrierCoordinate(
+                    "player_inventory", "player", "source_container", sourcePath),
+                new MortalItemCarrierCoordinate(
+                    "player_inventory", "player", "destination_container", destinationPath),
+                "expected_authority",
+                "actual_evidence",
+                companionTargets)
+        };
+        var identity = fixture.Identity with { Issues = new[] { callerIssue } };
+
+        var result = PlanWithIdentity(fixture, identity,
+            BuildCommand(1, fixture.ItemId, 1, "mitrn_t070b4_detached_issue_0001"));
+
+        AssertInvalidEmpty(result);
+        var detached = Assert.Single(result.Issues);
+        Assert.NotSame(callerIssue, detached);
+        Assert.NotSame(
+            callerIssue.MortalItemRepairContext!.RequiredCompanionTargets,
+            detached.MortalItemRepairContext!.RequiredCompanionTargets);
+        Assert.NotSame(
+            callerIssue.MortalItemRepairContext.SourceCarrier!.ContainerPath,
+            detached.MortalItemRepairContext.SourceCarrier!.ContainerPath);
+        Assert.NotSame(
+            callerIssue.MortalItemRepairContext.DestinationCarrier!.ContainerPath,
+            detached.MortalItemRepairContext.DestinationCarrier!.ContainerPath);
+        companionTargets[0] = "caller_mutated_after_planning.json";
+        sourcePath[0] = "caller_mutated_source_path";
+        destinationPath[0] = "caller_mutated_destination_path";
+        callerIssue.MortalItemRepairContext = null;
+        Assert.Equal(
+            "game_state/inventory/item_bonds.json",
+            Assert.Single(detached.MortalItemRepairContext!.RequiredCompanionTargets));
+        Assert.Equal(
+            "source_container",
+            Assert.Single(detached.MortalItemRepairContext.SourceCarrier!.ContainerPath));
+        Assert.Equal(
+            "destination_container",
+            Assert.Single(detached.MortalItemRepairContext.DestinationCarrier!.ContainerPath));
+    }
+
+    [Fact]
+    public void Plan_CompanionRootPathCollisionRejectsWithoutThrowingOrAfterImages()
+    {
+        var fixture = CreateFixture("itm_root_collision", 1);
+        var cloned = Clone(fixture.Roots);
+        var companionRoots = cloned.CompanionRoots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
+        companionRoots.Add(PlayerPath, new JsonObject
+        {
+            ["shadow"] = "must not replace the standard root"
+        });
+        var roots = cloned with { CompanionRoots = companionRoots };
+
+        var result = PlanWithRoots(fixture, roots,
+            BuildCommand(1, fixture.ItemId, 1, "mitrn_t070b4_root_collision_0001"));
+
+        AssertInvalidEmpty(result);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code?.Contains("root", StringComparison.Ordinal) == true ||
+            issue.Message.Contains("root", StringComparison.OrdinalIgnoreCase));
+    }
+
+    [Fact]
+    public void Plan_FingerprintBindsCompleteIssuePayloadAndCapacityReceiptId()
+    {
+        var fixture = CreateFixture("itm_fingerprint_payload", 1);
+        var input = CreatePlanningInput(
+            fixture,
+            [BuildCommand(1, fixture.ItemId, 1, "mitrn_t070b4_fingerprint_payload_0001")]);
+        var issueA = new ValidationIssue(
+            MortalItemIdentityState.StatePath,
+            IssueSeverity.Error,
+            "First complete issue payload.",
+            code: "mortal_item_fingerprint_issue",
+            expected: "same",
+            actual: "same");
+        var issueB = new ValidationIssue(
+            MortalItemIdentityState.StatePath,
+            IssueSeverity.Error,
+            "Second complete issue payload.",
+            code: "mortal_item_fingerprint_issue",
+            expected: "same",
+            actual: "same");
+        var coordinate = new ResourceCoordinate(
+            "mortal_world", ResourceOwnerKind.Item, fixture.ItemId, "durability");
+        var capacityA = new ResourceCapacityIntent(
+            "turn_42:mortal_item_consume:0001:itm_fingerprint_payload:durability",
+            fixture.Source.SourceKind,
+            fixture.Source.SourceId,
+            coordinate,
+            ResourceCapacityOperation.Retire,
+            null,
+            null,
+            ResourceMutationPhase.RegisteredSystemOutcome,
+            70,
+            fixture.Source,
+            fixture.PolicyFingerprint,
+            "receipt_a");
+        var capacityB = capacityA with { ReceiptId = "receipt_b" };
+
+        var issueFingerprintA = InvokeFingerprint(input, ResultForFingerprint(
+            issues: [issueA]));
+        var issueFingerprintB = InvokeFingerprint(input, ResultForFingerprint(
+            issues: [issueB]));
+        var receiptFingerprintA = InvokeFingerprint(input, ResultForFingerprint(
+            capacities: [capacityA]));
+        var receiptFingerprintB = InvokeFingerprint(input, ResultForFingerprint(
+            capacities: [capacityB]));
+
+        Assert.NotEqual(issueFingerprintA, issueFingerprintB);
+        Assert.NotEqual(receiptFingerprintA, receiptFingerprintB);
     }
 
     [Theory]
@@ -679,18 +831,35 @@ public sealed class MortalItemConsumptionPlannerTests
         new(ordinal, id, quantity, Fingerprint("claim_" + ordinal + "_" + id), transitionId,
             "mortal_wound_treatment", "mwta_t070b4_finalization_" + ordinal);
 
-    private static Result Plan(Fixture fixture, params Command[] commands)
+    private static Result Plan(Fixture fixture, params Command[] commands) =>
+        InvokePlan(CreatePlanningInput(fixture, commands));
+
+    private static Result PlanWithIdentity(
+        Fixture fixture,
+        MortalItemIdentityParseResult identity,
+        params Command[] commands) =>
+        InvokePlan(CreatePlanningInput(fixture, commands, identityState: identity));
+
+    private static Result PlanWithRoots(
+        Fixture fixture,
+        MortalItemCarrierCatalogInput roots,
+        params Command[] commands) =>
+        InvokePlan(CreatePlanningInput(fixture, commands, carrierRoots: roots));
+
+    private static object CreatePlanningInput(
+        Fixture fixture,
+        IReadOnlyList<Command> commands,
+        MortalItemCarrierCatalogInput? carrierRoots = null,
+        MortalItemIdentityParseResult? identityState = null)
     {
-        var planner = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanner");
         var inputType = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanningInput");
         var commandType = ExactType("BookOfEternityClient.Services.MortalItemConsumptionCommand");
         var resultType = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanningResult");
         PlanShape(inputType, commandType, resultType);
-        var method = ExactMethod(planner, "Plan", inputType, resultType);
-        var commandArray = Array.CreateInstance(commandType, commands.Length);
+        var commandArray = Array.CreateInstance(commandType, commands.Count);
         var commandCtor = Ctor(commandType, typeof(int), typeof(string), typeof(int),
             typeof(string), typeof(string), typeof(string), typeof(string));
-        for (var i = 0; i < commands.Length; i++)
+        for (var i = 0; i < commands.Count; i++)
         {
             var value = commands[i];
             commandArray.SetValue(commandCtor.Invoke([
@@ -702,11 +871,42 @@ public sealed class MortalItemConsumptionPlannerTests
             typeof(IReadOnlyList<>).MakeGenericType(commandType),
             typeof(ResourceDefinitionCatalog), typeof(ResourceStateLedger),
             typeof(ResourceSourceEvidence), typeof(string)).Invoke([
-                Turn, Fingerprint("baseline_" + fixture.ItemId), Clone(fixture.Roots),
-                MortalItemIdentityState.Parse(fixture.Index.ToJsonString()), commandArray,
+                Turn, Fingerprint("baseline_" + fixture.ItemId),
+                carrierRoots ?? Clone(fixture.Roots),
+                identityState ?? MortalItemIdentityState.Parse(fixture.Index.ToJsonString()), commandArray,
                 fixture.Definitions, new ResourceStateLedger(fixture.State.Entries),
                 fixture.Source, fixture.PolicyFingerprint]);
+        return input;
+    }
+
+    private static Result InvokePlan(object input)
+    {
+        var planner = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanner");
+        var inputType = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanningInput");
+        var resultType = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanningResult");
+        var method = ExactMethod(planner, "Plan", inputType, resultType);
         return ReadResult(method.Invoke(null, [input])!);
+    }
+
+    private static object ResultForFingerprint(
+        IReadOnlyList<ResourceCapacityIntent>? capacities = null,
+        IReadOnlyList<ValidationIssue>? issues = null) =>
+        new MortalItemConsumptionPlanningResult(
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+            null,
+            Array.Empty<JsonObject>(),
+            capacities ?? Array.Empty<ResourceCapacityIntent>(),
+            Array.Empty<ResourceOwnerKey>(),
+            issues ?? Array.Empty<ValidationIssue>(),
+            string.Empty);
+
+    private static string InvokeFingerprint(object input, object result)
+    {
+        var planner = ExactType("BookOfEternityClient.Services.MortalItemConsumptionPlanner");
+        var method = Assert.Single(planner.GetMethods(
+            BindingFlags.Static | BindingFlags.NonPublic), value =>
+            value.Name == "Fingerprint" && value.GetParameters().Length == 2);
+        return Assert.IsType<string>(method.Invoke(null, [input, result]));
     }
 
     private static Result ReadResult(object value) => new(

@@ -14,29 +14,65 @@ internal sealed partial class MortalItemTransitionWriter
         var loaded = await LoadItemResourcesAsync(writeLease, intent.Turn);
         if (!loaded.Success)
             return ItemResourcePreparation.Failed(loaded.Error!);
-        var coordinates = loaded.State!.Entries
-            .Where(entry =>
-                entry.Coordinate.OwnerKind == ResourceOwnerKind.Item &&
-                string.Equals(
-                    entry.Coordinate.ResourceOwnerId,
-                    itemId,
-                    StringComparison.Ordinal))
-            .OrderBy(entry => entry.Coordinate.ResourceKey, StringComparer.Ordinal)
-            .ToArray();
-        if (coordinates.Length == 0)
+        var issues = new List<ValidationIssue>();
+        var capacityTransitions = AcceptedMechanicsPlanner.ComposeOwnerCapacityTransitions(
+            intent.Turn,
+            loaded.OwnerAuthority!,
+            loaded.State!,
+            Array.Empty<ResourceOwnerCapacityDraft>(),
+            new[]
+            {
+                new ResourceOwnerKey(
+                    "mortal_world",
+                    ResourceOwnerKind.Item,
+                    itemId)
+            },
+            issues);
+        if (issues.Count > 0)
+            return ItemResourcePreparation.Failed(DescribeResourceIssues(issues));
+        if (capacityTransitions.Count == 0)
             return ItemResourcePreparation.Empty;
-
-        var capacityTransitions = coordinates
-            .Select((entry, index) => CreateRetirementIntent(
-                intent,
-                entry,
-                index + 1))
-            .ToArray();
         return BuildItemResourcePlan(
             loaded,
             intent,
             Array.Empty<ResourceMutationIntent>(),
             capacityTransitions);
+    }
+
+    private static ItemResourcePreparation PrepareConsumptionItemResources(
+        ItemResourceLoadResult loaded,
+        MortalItemTransitionIntent intent,
+        MortalItemConsumptionPlanningResult plan)
+    {
+        var issues = new List<ValidationIssue>();
+        var terminalTransitions = AcceptedMechanicsPlanner.ComposeOwnerCapacityTransitions(
+            intent.Turn,
+            loaded.OwnerAuthority!,
+            loaded.State!,
+            Array.Empty<ResourceOwnerCapacityDraft>(),
+            plan.TerminalOwners,
+            issues);
+        if (issues.Count > 0)
+            return ItemResourcePreparation.Failed(DescribeResourceIssues(issues));
+
+        // The pure boundary preserves the caller-sealed capacity policy evidence.
+        // The ordinary reducer additionally requires its resolved binding evidence.
+        var partialTransitions = plan.CapacityTransitions
+            .Select(static transition => transition.ResolvedCapacity == null
+                ? transition
+                : transition with
+                {
+                    PolicyFingerprint =
+                        transition.ResolvedCapacity.Binding.AuthorityFingerprint
+                });
+        var capacities = partialTransitions.Concat(terminalTransitions).ToArray();
+        return capacities.Length == 0
+            ? ItemResourcePreparation.Empty
+            : BuildItemResourcePlan(
+                loaded,
+                intent,
+                Array.Empty<ResourceMutationIntent>(),
+                capacities);
     }
 
     private async Task<ItemResourcePreparation> PrepareSplitItemResourcesAsync(

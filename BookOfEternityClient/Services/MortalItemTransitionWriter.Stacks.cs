@@ -56,14 +56,11 @@ internal sealed partial class MortalItemTransitionWriter
                 state,
                 beforeCatalog,
                 beforeIndex),
-            MortalItemTransitionKind.Consume => await ExecuteTerminalAsync(
+            MortalItemTransitionKind.Consume => await ExecuteConsumptionAsync(
                 writeLease,
                 intent,
                 state,
-                beforeCatalog,
-                beforeIndex,
-                terminalState: "consumed",
-                transitionKind: "consume"),
+                beforeIndex),
             MortalItemTransitionKind.Destroy => await ExecuteDestroyAsync(
                 writeLease,
                 intent,
@@ -72,6 +69,92 @@ internal sealed partial class MortalItemTransitionWriter
                 beforeIndex),
             _ => MortalItemTransitionResult.Failed("Неподдерживаемый стековый переход.")
         };
+    }
+
+    private async Task<MortalItemTransitionResult> ExecuteConsumptionAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemTransitionIntent intent,
+        LoadedState state,
+        MortalItemIdentityParseResult beforeIndex)
+    {
+        var loadedResources = await LoadItemResourcesAsync(writeLease, intent.Turn);
+        if (!loadedResources.Success)
+            return MortalItemTransitionResult.Failed(loadedResources.Error!);
+
+        var claimFingerprint = CreateItemResourceAuthorityFingerprint(
+            intent,
+            "consumption_claim");
+        var sourceFingerprint = CreateItemResourceAuthorityFingerprint(
+            intent,
+            "consumption_capacity_source");
+        var policyFingerprint = CreateItemResourceAuthorityFingerprint(
+            intent,
+            "consumption_capacity_policy");
+        var sourceEvidence = new ResourceSourceEvidence(
+            "mortal_item_consumption",
+            intent.AuthorityId,
+            sourceFingerprint);
+        var plan = MortalItemConsumptionPlanner.Plan(
+            new MortalItemConsumptionPlanningInput(
+                intent.Turn,
+                CreateItemResourceAuthorityFingerprint(intent, "consumption_baseline"),
+                CreateConsumptionCarrierRoots(state),
+                beforeIndex,
+                new[]
+                {
+                    new MortalItemConsumptionCommand(
+                        FinalizationOrdinal: 1,
+                        intent.SourceItemIds[0],
+                        intent.Quantity,
+                        claimFingerprint,
+                        "mitrn_" + Guid.NewGuid().ToString("N"),
+                        intent.AuthorityKind,
+                        intent.AuthorityId)
+                },
+                loadedResources.Definitions!,
+                loadedResources.State!,
+                sourceEvidence,
+                policyFingerprint));
+        if (!plan.IsValid || plan.IdentityIndexAfterImage == null)
+        {
+            return MortalItemTransitionResult.Failed(
+                plan.Issues.FirstOrDefault()?.Message ??
+                "Общий planner отклонил потребление предмета без after-image.");
+        }
+
+        var resourcePreparation = PrepareConsumptionItemResources(
+            loadedResources,
+            intent,
+            plan);
+        if (!resourcePreparation.Success)
+            return MortalItemTransitionResult.Failed(resourcePreparation.Error!);
+
+        ApplyConsumptionAfterImages(state, plan.CarrierAfterImages);
+        var normalizedIndex = MortalItemIdentityState.Parse(plan.IdentityIndexAfterImage);
+        var terminal = plan.TerminalOwners.Count > 0;
+        var validationError = ValidateMutationResult(
+            state,
+            beforeIndex,
+            normalizedIndex,
+            terminal ? null : intent.SourceItemIds[0],
+            terminal ? null : intent.SourceCarrier);
+        if (validationError != null)
+            return MortalItemTransitionResult.Failed(validationError);
+
+        var committed = await CommitSingleCarrierAsync(
+            writeLease,
+            state,
+            intent.SourceCarrier!,
+            normalizedIndex.Root,
+            resourcePreparation.Writes);
+        return committed
+            ? MortalItemTransitionResult.Completed(
+                intent.SourceItemIds[0],
+                terminal
+                    ? "Предмет терминально израсходован вместе со всеми ресурсами."
+                    : "Количество предмета и его ресурсы уменьшены exact-пропорционально.")
+            : MortalItemTransitionResult.Failed(
+                "Игровое состояние изменилось во время consumption; исходные данные сохранены.");
     }
 
     private async Task<MortalItemTransitionResult> ExecuteSplitAsync(
@@ -684,7 +767,7 @@ internal sealed partial class MortalItemTransitionWriter
             return intent.SourceItemIds.Count == 1 && intent.DestinationCarrier == null &&
                    intent.SurvivorItemId == null && intent.ResourceDisposition == null
                 ? null
-                : "Terminal item transition требует один source item и не допускает destination, survivor или stack disposition.";
+                : "Consume или destroy требует один source item и не допускает destination, survivor или stack disposition.";
         }
         if (intent.DestinationCarrier == null ||
             !SameCarrier(intent.SourceCarrier, intent.DestinationCarrier))
