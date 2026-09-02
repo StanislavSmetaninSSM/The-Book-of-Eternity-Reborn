@@ -89,7 +89,7 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             await ReadAsync(StorageTransportMoveService.CurrentLocationPath),
             StorageTransportMoveService.CurrentLocationPath,
             issues);
-        var vehicles = ParseOptionalObject(
+        var vehicles = ParseOptionalVehicles(
             await ReadAsync(StorageTransportMoveService.VehiclesPath),
             StorageTransportMoveService.VehiclesPath,
             issues);
@@ -386,6 +386,19 @@ internal static class CanonicalResourceOwnerAuthorityComposer
         return TryParseStrictObject(json, out var root)
             ? root
             : AddInvalidRoot(path, issues);
+    }
+
+    private static JsonObject? ParseOptionalVehicles(
+        string? json,
+        string path,
+        List<ValidationIssue> issues)
+    {
+        var parsed = MortalItemProjectionRootParser.Parse(json, path);
+        if (!parsed.IsValid)
+            return AddInvalidRoot(path, issues);
+        return MortalItemProjectionRootParser.ToCarrierCatalogObject(
+            parsed.Root,
+            path);
     }
 
     private static JsonObject ParseOwnerRoot(

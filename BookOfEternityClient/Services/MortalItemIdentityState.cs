@@ -327,10 +327,21 @@ internal static class MortalItemIdentityState
     internal static JsonObject CreateRootReceipt(
         JsonObject rawItem,
         string itemId,
-        int acceptedTurn)
+        int acceptedTurn) => CreateRootReceipt(
+            rawItem,
+            itemId,
+            acceptedTurn,
+            NewId("mirec_"));
+
+    internal static JsonObject CreateRootReceipt(
+        JsonObject rawItem,
+        string itemId,
+        int acceptedTurn,
+        string receiptId)
     {
         ArgumentNullException.ThrowIfNull(rawItem);
         RequireExactIdentity(itemId, nameof(itemId));
+        RequireExactIdentity(receiptId, nameof(receiptId));
         if (acceptedTurn < 1)
             throw new ArgumentOutOfRangeException(nameof(acceptedTurn));
 
@@ -339,7 +350,7 @@ internal static class MortalItemIdentityState
         var receipt = new JsonObject
         {
             ["schemaVersion"] = SchemaVersion,
-            ["receiptId"] = NewId("mirec_"),
+            ["receiptId"] = receiptId,
             ["itemId"] = itemId,
             ["materializationId"] = RequireExactIdentityValue(envelope, "materializationId"),
             ["acceptedAtTurn"] = acceptedTurn,
@@ -388,7 +399,29 @@ internal static class MortalItemIdentityState
         int quantityBefore,
         int quantityAfter,
         string authorityKind,
-        string authorityId)
+        string authorityId) => CreateTransition(
+            kind,
+            turn,
+            sourceItemIds,
+            sourceCarrier,
+            destinationCarrier,
+            quantityBefore,
+            quantityAfter,
+            authorityKind,
+            authorityId,
+            NewId("mitrn_"));
+
+    internal static JsonObject CreateTransition(
+        string kind,
+        int turn,
+        IEnumerable<string> sourceItemIds,
+        JsonObject? sourceCarrier,
+        JsonObject? destinationCarrier,
+        int quantityBefore,
+        int quantityAfter,
+        string authorityKind,
+        string authorityId,
+        string transitionId)
     {
         if (!TransitionKinds.Contains(kind))
             throw new ArgumentOutOfRangeException(nameof(kind));
@@ -400,6 +433,7 @@ internal static class MortalItemIdentityState
             throw new ArgumentOutOfRangeException(nameof(quantityAfter));
         RequireExactIdentity(authorityKind, nameof(authorityKind));
         RequireExactIdentity(authorityId, nameof(authorityId));
+        RequireExactIdentity(transitionId, nameof(transitionId));
 
         var sourceIds = sourceItemIds?.ToArray() ??
                         throw new ArgumentNullException(nameof(sourceItemIds));
@@ -413,7 +447,7 @@ internal static class MortalItemIdentityState
 
         return new JsonObject
         {
-            ["transitionId"] = NewId("mitrn_"),
+            ["transitionId"] = transitionId,
             ["kind"] = kind,
             ["turn"] = turn,
             ["sourceItemIds"] = new JsonArray(

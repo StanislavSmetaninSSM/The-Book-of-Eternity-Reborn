@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +7,44 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalItemMaterializationValidationTests
 {
+    public static IEnumerable<object[]> InvalidPresentNonVehicleProjectionRootBytes()
+    {
+        yield return new object[] { "json_null", Encoding.UTF8.GetBytes("null") };
+        yield return new object[] { "empty", Array.Empty<byte>() };
+        yield return new object[] { "malformed", Encoding.UTF8.GetBytes("{") };
+        yield return new object[] { "non_object", Encoding.UTF8.GetBytes("[]") };
+    }
+
+    [Theory]
+    [MemberData(nameof(InvalidPresentNonVehicleProjectionRootBytes))]
+    public async Task RawProjectionRegistration_PresentInvalidNonVehicleRootRejectsAndStaysDistinctFromAbsent(
+        string axis,
+        byte[] invalidBytes)
+    {
+        const string path = "game_state/inventory/recipes.json";
+        await using var context = await MortalItemMaterializationTestContext.CreateAsync();
+        await context.ArrangeEmptyMortalTurnAsync();
+        Assert.Null(await context.FileSystem.ReadFileBytesAsync(path));
+
+        var absentIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.DoesNotContain(
+            absentIssues,
+            issue => issue.Severity == IssueSeverity.Error);
+
+        await context.FileSystem.WriteFileAtomicBytesAsync(path, invalidBytes);
+        Assert.NotNull(await context.FileSystem.ReadFileBytesAsync(path));
+
+        var presentIssues = await context.Validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        Assert.True(
+            presentIssues.Any(issue =>
+                issue.Severity == IssueSeverity.Error &&
+                string.Equals(issue.FilePath, path, StringComparison.Ordinal)),
+            $"Present {axis} bytes at '{path}' must reject instead of matching an absent root.");
+    }
+
     [Fact]
     public async Task RawCompletePlayerCreation_PassesBeforeSeal()
     {

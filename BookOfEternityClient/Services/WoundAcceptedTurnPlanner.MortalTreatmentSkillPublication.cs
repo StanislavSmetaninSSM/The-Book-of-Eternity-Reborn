@@ -26,6 +26,19 @@ internal static partial class WoundAcceptedTurnPlanner
         },
         StringComparer.Ordinal);
 
+    private static readonly HashSet<string> TreatmentItemResponseProperties = new(
+        new[]
+        {
+            nameof(GameResponse.UpdateInventory),
+            nameof(GameResponse.MoveInventoryItems),
+            nameof(GameResponse.RemoveInventoryItems),
+            nameof(GameResponse.NPCInventoryAdds),
+            nameof(GameResponse.NPCInventoryUpdates),
+            nameof(GameResponse.NPCInventoryRemovals),
+            nameof(GameResponse.NPCEquipmentChanges)
+        },
+        StringComparer.Ordinal);
+
     private sealed record FrozenNpcSkillCommand(
         string NpcId,
         JsonArray? SkillChanges,
@@ -78,6 +91,10 @@ internal static partial class WoundAcceptedTurnPlanner
         TreatmentSkillCommandEnvelope? Envelope,
         IReadOnlyList<ValidationIssue> Issues);
 
+    private sealed record TreatmentItemCommandEnvelopeResult(
+        MortalTreatmentItemCommandEnvelope? Envelope,
+        IReadOnlyList<ValidationIssue> Issues);
+
     private sealed class TreatmentSkillProjectionAuthority
     {
         private readonly Dictionary<string, CanonicalBeforeImage> _baselines;
@@ -85,6 +102,7 @@ internal static partial class WoundAcceptedTurnPlanner
         private readonly Dictionary<string, JsonObject> _actorBeforeRoots;
         private readonly Dictionary<string, JsonObject> _actorAfterRoots;
         private readonly string[] _touchedActorIds;
+        private readonly JsonObject? _npcSemanticBaseline;
 
         internal TreatmentSkillProjectionAuthority(
             object reservationAuthority,
@@ -95,6 +113,7 @@ internal static partial class WoundAcceptedTurnPlanner
             IReadOnlyDictionary<string, JsonObject> actorBeforeRoots,
             IReadOnlyDictionary<string, JsonObject> actorAfterRoots,
             IReadOnlyList<string> touchedActorIds,
+            JsonObject? npcSemanticBaseline,
             string fingerprint)
         {
             ReservationAuthority = reservationAuthority;
@@ -111,6 +130,7 @@ internal static partial class WoundAcceptedTurnPlanner
             _actorAfterRoots = CloneObjects(actorAfterRoots);
             _touchedActorIds = touchedActorIds.OrderBy(static value => value, StringComparer.Ordinal)
                 .ToArray();
+            _npcSemanticBaseline = npcSemanticBaseline?.DeepClone().AsObject();
             Fingerprint = fingerprint;
         }
 
@@ -132,6 +152,8 @@ internal static partial class WoundAcceptedTurnPlanner
         internal IReadOnlyDictionary<string, JsonObject> ActorAfterRoots =>
             new ReadOnlyDictionary<string, JsonObject>(CloneObjects(_actorAfterRoots));
         internal IReadOnlyList<string> TouchedActorIds => Array.AsReadOnly(_touchedActorIds.ToArray());
+        internal JsonObject? NpcSemanticBaseline =>
+            _npcSemanticBaseline?.DeepClone().AsObject();
 
         private static Dictionary<string, JsonObject> CloneObjects(
             IReadOnlyDictionary<string, JsonObject> values) => values.ToDictionary(
@@ -155,12 +177,13 @@ internal static partial class WoundAcceptedTurnPlanner
             if (property.GetIndexParameters().Length != 0 || !property.CanRead)
                 continue;
             if (!TreatmentSkillResponseProperties.Contains(property.Name) &&
+                !TreatmentItemResponseProperties.Contains(property.Name) &&
                 property.GetValue(response) is not null)
             {
                 issues.Add(PublicationIssue(
                     "treatmentPublication.response." + property.Name,
                     "mortal_wound_treatment_publication_response_unsupported",
-                    "only the six ordinary Mortal skill-operation fields",
+                    "only the six Mortal skill fields and seven Mortal item fields",
                     property.Name));
             }
         }
@@ -217,6 +240,55 @@ internal static partial class WoundAcceptedTurnPlanner
                 npcPassive,
                 fingerprint),
             Array.Empty<ValidationIssue>());
+    }
+
+    private static TreatmentItemCommandEnvelopeResult FreezeTreatmentItemCommands(
+        GameResponse response)
+    {
+        ArgumentNullException.ThrowIfNull(response);
+        var issues = new List<ValidationIssue>();
+        var envelope = new MortalTreatmentItemCommandEnvelope(
+            FreezeItemRows(response.UpdateInventory, nameof(GameResponse.UpdateInventory), issues),
+            FreezeItemRows(response.MoveInventoryItems, nameof(GameResponse.MoveInventoryItems), issues),
+            FreezeItemRows(response.RemoveInventoryItems, nameof(GameResponse.RemoveInventoryItems), issues),
+            FreezeItemRows(response.NPCInventoryAdds, nameof(GameResponse.NPCInventoryAdds), issues),
+            FreezeItemRows(response.NPCInventoryUpdates, nameof(GameResponse.NPCInventoryUpdates), issues),
+            FreezeItemRows(response.NPCInventoryRemovals, nameof(GameResponse.NPCInventoryRemovals), issues),
+            FreezeItemRows(response.NPCEquipmentChanges, nameof(GameResponse.NPCEquipmentChanges), issues));
+        return issues.Count == 0
+            ? new TreatmentItemCommandEnvelopeResult(
+                envelope,
+                Array.Empty<ValidationIssue>())
+            : new TreatmentItemCommandEnvelopeResult(null, issues.ToArray());
+    }
+
+    private static JsonArray? FreezeItemRows(
+        JsonElement[]? rows,
+        string propertyName,
+        ICollection<ValidationIssue> issues)
+    {
+        if (rows is null)
+            return null;
+
+        var frozen = new JsonArray();
+        for (var index = 0; index < rows.Length; index++)
+        {
+            var row = rows[index];
+            if (row.ValueKind != JsonValueKind.Object ||
+                HasDuplicateObjectProperties(row))
+            {
+                issues.Add(PublicationIssue(
+                    $"treatmentPublication.response.{propertyName}[{index}]",
+                    "mortal_wound_treatment_publication_item_command_invalid",
+                    "one closed unique-property item command object",
+                    row.ValueKind.ToString()));
+                continue;
+            }
+
+            frozen.Add(JsonNode.Parse(row.GetRawText()));
+        }
+
+        return frozen;
     }
 
     private static JsonArray? FreezeSkillRows(
@@ -417,14 +489,17 @@ internal static partial class WoundAcceptedTurnPlanner
 
     private static string ComputeTreatmentPublicationEnvelopeFingerprint(
         string baseFingerprint,
-        TreatmentSkillCommandEnvelope envelope) => envelope.IsEmpty
+        TreatmentSkillCommandEnvelope skillEnvelope,
+        MortalTreatmentItemCommandEnvelope itemEnvelope) =>
+        skillEnvelope.IsEmpty && itemEnvelope.IsEmpty
         ? baseFingerprint
         : WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
-            "book_of_eternity.mortal_wound_treatment.guaranteed_stabilization_skill_publication",
-            "1",
+            "book_of_eternity.mortal_wound_treatment.guaranteed_stabilization_publication",
+            "2",
             baseFingerprint,
-            envelope.Fingerprint
+            skillEnvelope.Fingerprint,
+            itemEnvelope.Fingerprint
         });
 
     private static TreatmentSkillProjectionResult CreateTreatmentSkillProjection(
@@ -432,7 +507,8 @@ internal static partial class WoundAcceptedTurnPlanner
         FileSystemManager.CanonicalWriteLease writeLease,
         TreatmentSkillCommandEnvelope envelope,
         string semanticFingerprint,
-        object reservationAuthority)
+        object reservationAuthority,
+        JsonObject? suppliedNpcSemanticBaseline)
     {
         var issues = new List<ValidationIssue>();
         var baselines = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
@@ -440,6 +516,7 @@ internal static partial class WoundAcceptedTurnPlanner
         var actorBefore = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         var actorAfter = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         var touchedActors = new HashSet<string>(StringComparer.Ordinal);
+        JsonObject? npcSemanticBaseline = null;
 
         JsonObject? ReadRoot(string path)
         {
@@ -513,11 +590,14 @@ internal static partial class WoundAcceptedTurnPlanner
 
         if (envelope.TouchesNpc)
         {
-            var npcBefore = ReadRoot(NpcSkillPath);
-            if (npcBefore is not null)
+            var liveNpcBefore = ReadRoot(NpcSkillPath);
+            var semanticNpcBefore = suppliedNpcSemanticBaseline?.DeepClone().AsObject() ??
+                                    liveNpcBefore?.DeepClone().AsObject();
+            if (liveNpcBefore is not null && semanticNpcBefore is not null)
             {
+                npcSemanticBaseline = semanticNpcBefore.DeepClone().AsObject();
                 var npcAfter = ComposeNpcSkillRoot(
-                    npcBefore,
+                    semanticNpcBefore,
                     envelope.NpcActive,
                     envelope.NpcPassive,
                     actorBefore,
@@ -538,6 +618,7 @@ internal static partial class WoundAcceptedTurnPlanner
             afterImages,
             actorBefore,
             actorAfter,
+            npcSemanticBaseline,
             touchedActors);
         return new(
             new TreatmentSkillProjectionAuthority(
@@ -549,6 +630,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 actorBefore,
                 actorAfter,
                 touchedActors.ToArray(),
+                npcSemanticBaseline,
                 fingerprint),
             Array.Empty<ValidationIssue>());
     }
@@ -737,15 +819,19 @@ internal static partial class WoundAcceptedTurnPlanner
         IReadOnlyDictionary<string, JsonObject> afterImages,
         IReadOnlyDictionary<string, JsonObject> actorBeforeRoots,
         IReadOnlyDictionary<string, JsonObject> actorAfterRoots,
+        JsonObject? npcSemanticBaseline,
         IEnumerable<string> touchedActorIds)
     {
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.skill_projection_authority",
-            "1",
+            "2",
             commandEnvelopeFingerprint,
             semanticFingerprint
         };
+        fields.Add(npcSemanticBaseline is null
+            ? "no_npc_semantic_baseline"
+            : WoundAcceptedTurnFingerprintWriter.CanonicalJson(npcSemanticBaseline));
         foreach (var path in baselines.Keys.OrderBy(static value => value, StringComparer.Ordinal))
         {
             var before = baselines[path];
@@ -810,6 +896,7 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.AfterImages,
             candidate.ActorBeforeRoots,
             candidate.ActorAfterRoots,
+            candidate.NpcSemanticBaseline,
             candidate.TouchedActorIds);
         if (!string.Equals(candidate.Fingerprint, fingerprint, StringComparison.Ordinal))
             return false;
@@ -1039,11 +1126,7 @@ internal static partial class WoundAcceptedTurnPlanner
             }
 
             if (ownerKind != "npc" ||
-                !TryReadTreatmentSkillBeforeRoot(
-                    NpcSkillPath,
-                    projection,
-                    candidateBeforeImages,
-                    ref npcBefore) ||
+                (npcBefore ??= projection.NpcSemanticBaseline) is null ||
                 (npcAfter ??= candidateAfterImages.GetValueOrDefault(NpcSkillPath)) is null ||
                 !TryResolveTreatmentSkillNpcActorCatalog(
                     npcBefore!,

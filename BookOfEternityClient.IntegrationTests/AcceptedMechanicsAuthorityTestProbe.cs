@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -90,13 +91,28 @@ internal static class AcceptedMechanicsAuthorityTestProbe
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         await using var writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
+        var routes = await MortalItemRouteAuthorityCatalog.BuildAsync(fileSystem);
+        var currentRoots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+        {
+            var json = await fileSystem.ReadFileAsync(path);
+            currentRoots.Add(path, json is null ? null : JsonNode.Parse(json));
+        }
+        var backupRoots = currentRoots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
         MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
             fileSystem,
             writeLease,
             sessionId,
             snapshotToken,
             catalog,
-            knownItemIds);
+            knownItemIds,
+            routes,
+            transferCatalog: null,
+            currentRoots,
+            backupRoots);
     }
 
     internal static async Task<IReadOnlyList<EffectSourceExport>> GetItemEffectSourcesAsync(

@@ -499,6 +499,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             .OrderBy(static property => property.Name, StringComparer.Ordinal)
             .Select(static property => new object[] { property.Name });
 
+    public static IEnumerable<object[]> AllowedTreatmentItemEnvelopeProperties() =>
+        TreatmentItemResponsePropertyNames.Select(static propertyName =>
+            new object[] { propertyName });
+
     [Theory]
     [MemberData(nameof(UnsupportedTreatmentItemEnvelopeProperties))]
     public void GuaranteedItemConsumption_ClosedItemEnvelopeRejectsEveryOtherNonNullGameResponseProperty(
@@ -542,6 +546,253 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture.FileSystem,
             fixture.Lease));
         AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
+    }
+
+    [Theory]
+    [MemberData(nameof(AllowedTreatmentItemEnvelopeProperties))]
+    public void GuaranteedTreatmentPublication_ChangedAllowedItemEnvelopeCannotReuseExactCachedPlan(
+        string propertyName)
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "changed_item_envelope_" + propertyName);
+        var originalPlan = ComposeResourcePublication(fixture, flow);
+        var changedResponse = new GameResponse();
+        var property = Assert.Single(
+            typeof(GameResponse).GetProperties(
+                BindingFlags.Instance | BindingFlags.Public),
+            candidate => string.Equals(
+                candidate.Name,
+                propertyName,
+                StringComparison.Ordinal));
+        Assert.Equal(typeof(JsonElement[]), property.PropertyType);
+        property.SetValue(changedResponse, Array.Empty<JsonElement>());
+
+        var changed = ComposeResourcePublicationResult(
+            fixture,
+            flow,
+            changedResponse);
+
+        Assert.False(changed.IsValid);
+        Assert.Null(changed.Plan);
+        var issue = Assert.Single(changed.Issues);
+        Assert.Equal("mortal_wound_treatment_publication_conflict", issue.Code);
+        Assert.Same(originalPlan, PeekCachedPlan(fixture));
+    }
+
+    [Fact]
+    public void TreatmentItemProjectionRoots_LegacyVehicleArrayPassesTreatmentCacheConfirmation()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "legacy_vehicle_array_projection");
+        WriteTreatmentProjectionRootBytes(
+            fixture,
+            StorageTransportMoveService.VehiclesPath,
+            Encoding.UTF8.GetBytes("[]"));
+
+        var composed = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+        Assert.NotNull(composed.Plan);
+        Assert.True(MortalItemAcceptedTurnAuthority.HasValidatedItems(
+            fixture.FileSystem,
+            fixture.Lease));
+    }
+
+    [Fact]
+    public void SkillOnlyItemBootstrap_ExistingNonExactCacheRejectsWithoutMutationAndNoCacheBootstrapSucceeds()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true);
+
+        using (var noCacheFixture = AcceptedStateFixture.Create(scenario))
+        {
+            noCacheFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            var noCacheFlow = PersistAndRehydrateResourcePublication(
+                noCacheFixture,
+                scenario,
+                "skill_only_no_item_cache");
+            Assert.False(MortalItemAcceptedTurnAuthority.HasValidatedItems(
+                noCacheFixture.FileSystem,
+                noCacheFixture.Lease));
+
+            var bootstrap = ComposeResourcePublicationResult(
+                noCacheFixture,
+                noCacheFlow);
+
+            Assert.True(bootstrap.IsValid, DescribeIssues(bootstrap.Issues));
+            Assert.NotNull(bootstrap.Plan);
+            Assert.True(MortalItemAcceptedTurnAuthority.HasValidatedItems(
+                noCacheFixture.FileSystem,
+                noCacheFixture.Lease));
+        }
+
+        using var existingCacheFixture = AcceptedStateFixture.Create(scenario);
+        existingCacheFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var existingCacheFlow = PersistAndRehydrateResourcePublication(
+            existingCacheFixture,
+            scenario,
+            "skill_only_non_exact_item_cache");
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            existingCacheFlow.AcceptedState);
+        var binding = acceptedState.Binding;
+        RegisterNonExactOrdinaryItemCache(
+            existingCacheFixture,
+            binding);
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            existingCacheFixture.FileSystem,
+            existingCacheFixture.Lease,
+            binding.SessionId,
+            binding.SnapshotToken,
+            binding.Turn,
+            out var before));
+
+        var rejected = ComposeResourcePublicationResult(
+            existingCacheFixture,
+            existingCacheFlow);
+
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            existingCacheFixture.FileSystem,
+            existingCacheFixture.Lease,
+            binding.SessionId,
+            binding.SnapshotToken,
+            binding.Turn,
+            out var after));
+        Assert.Equal(before.ProofFingerprint, after.ProofFingerprint);
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Plan);
+        var issue = Assert.Single(rejected.Issues);
+        Assert.Equal(
+            "mortal_wound_treatment_publication_item_authority_changed",
+            issue.Code);
+    }
+
+    [Fact]
+    public void AcceptedItemSnapshot_OneUseProofBindsFinalBaselinePlannerInputsOutputsAndTransformIds()
+    {
+        var repositoryRoot = FindRepositoryRootForB4SourceGuard();
+        var authoritySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "MortalItemAcceptedEffectSourceAuthority.cs")));
+        var registrySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "AcceptedTurnAuthorityRegistry.cs")));
+        var composerSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "AcceptedMechanicsWoundCommonInputComposer.cs")));
+        var productionBinding = string.Join(
+            Environment.NewLine,
+            authoritySource,
+            registrySource,
+            composerSource);
+        const string snapshotHeader =
+            "internal sealed class MortalItemAcceptedTurnNormalizationSnapshot";
+        var snapshotHeaderIndex = authoritySource.IndexOf(
+            snapshotHeader,
+            StringComparison.Ordinal);
+        Assert.True(
+            snapshotHeaderIndex >= 0,
+            $"Missing production snapshot type '{snapshotHeader}'.");
+        var cacheBinding = ExtractB4BracedBlockSource(
+            authoritySource,
+            snapshotHeaderIndex + snapshotHeader.Length,
+            snapshotHeader);
+        var requiredBindings = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["closed item envelope"] =
+                @"(?i)\b(itemCommandEnvelope|itemEnvelope)\b",
+            ["NPC-core authority"] = @"(?i)\bnpcCoreAuthority\b",
+            ["NPC-trade pending before-image"] = @"(?i)\bnpcTradePending\b",
+            ["training pending before-image"] = @"(?i)\btrainingPending\b",
+            ["authenticated NPC-trade disposition"] =
+                @"(?i)\bnpcTradeDisposition\b",
+            ["item-phase after-images"] = @"(?i)\bitemPhase\w*\b",
+            ["final carrier roots"] =
+                @"(?i)\bfinal(Carrier|Projection)Roots\b",
+            ["applied transform IDs"] = @"(?i)\bappliedTransformIds\b",
+            ["final baseline fingerprint"] =
+                @"(?i)\bfinalBaselineFingerprint\b"
+        };
+        var missingBindings = requiredBindings
+            .Where(pair => !System.Text.RegularExpressions.Regex.IsMatch(
+                cacheBinding,
+                pair.Value))
+            .Select(static pair => pair.Key)
+            .ToList();
+        if (!System.Text.RegularExpressions.Regex.IsMatch(
+                productionBinding,
+                @"\bMortalItemPublicationBaselinePlanner\s*\.\s*Project\s*\("))
+        {
+            missingBindings.Insert(0, "planner invocation");
+        }
+        Assert.True(
+            missingBindings.Count == 0,
+            "The one-use item authority is missing final-baseline bindings: " +
+            string.Join(", ", missingBindings));
+
+        var proof = ExtractB4MethodSource(
+            authoritySource,
+            "private string ComputeProofFingerprint(");
+        foreach (var requiredProof in new[]
+                 {
+                     @"(?i)\b(itemCommandEnvelope|itemEnvelope)\b",
+                     @"(?i)\bnpcCoreAuthority\b",
+                     @"(?i)\bnpcTradePending\b",
+                     @"(?i)\btrainingPending\b",
+                     @"(?i)\bnpcTradeDisposition\b",
+                     @"(?i)\bitemPhase\w*\b",
+                     @"(?i)\bfinal(Carrier|Projection)Roots\b",
+                     @"(?i)\bappliedTransformIds\b",
+                     @"(?i)\bfinalBaselineFingerprint\b"
+                 })
+        {
+            Assert.Matches(requiredProof, proof);
+        }
+        var currentAgreement = ExtractB4MethodSource(
+            authoritySource,
+            "private bool CurrentCacheStateAgrees(");
+        Assert.Contains(
+            "MatchesExactCacheState(",
+            currentAgreement,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "NormalizationSnapshot",
+            currentAgreement,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "TryTakeValidatedTreatmentPublication(",
+            authoritySource,
+            StringComparison.Ordinal);
+        Assert.Contains(
+            "TryRearmValidatedTreatmentPublication(",
+            authoritySource,
+            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -3547,6 +3798,54 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return root["NPCsInScene"]!.AsArray().OfType<JsonObject>()
             .SelectMany(npc => npc["inventory"]!.AsArray().OfType<JsonObject>())
             .Single(item => item["itemId"]!.GetValue<string>() == itemId)["count"]!.GetValue<int>();
+    }
+
+    private static void WriteTreatmentProjectionRootBytes(
+        AcceptedStateFixture fixture,
+        string path,
+        byte[] bytes)
+    {
+        var physicalPath = fixture.FileSystem.ResolvePath(path);
+        Directory.CreateDirectory(Path.GetDirectoryName(physicalPath)!);
+        File.WriteAllBytes(physicalPath, bytes);
+    }
+
+    private static void RegisterNonExactOrdinaryItemCache(
+        AcceptedStateFixture fixture,
+        WoundAcceptedTurnBinding binding)
+    {
+        var currentRoots = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
+            .ToDictionary(
+                static path => path,
+                static _ => (JsonNode?)null,
+                StringComparer.Ordinal);
+        var backupRoots = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
+            .ToDictionary(
+                static path => path,
+                static _ => (JsonNode?)null,
+                StringComparer.Ordinal);
+        AcceptedTurnAuthorityRegistry.RegisterMortalItemsValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            binding.SessionId,
+            binding.SnapshotToken,
+            WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+            {
+                "book_of_eternity.test.non_exact_ordinary_item_cache",
+                "1",
+                binding.SessionId,
+                binding.SnapshotToken
+            }),
+            Array.Empty<MortalItemAcceptedTurnAuthority.NewCandidate>(),
+            Array.Empty<MortalItemAcceptedTurnAuthority.StableCandidate>(),
+            Array.Empty<string>(),
+            new Dictionary<string, MortalItemRouteAuthority>(StringComparer.Ordinal),
+            Array.Empty<MortalItemAcceptedTransfer>(),
+            currentRoots,
+            backupRoots);
+        Assert.True(MortalItemAcceptedTurnAuthority.HasValidatedItems(
+            fixture.FileSystem,
+            fixture.Lease));
     }
 
     private static AcceptedMechanicsPlan ComposeResourcePublication(

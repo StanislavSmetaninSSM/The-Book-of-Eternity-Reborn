@@ -55,8 +55,56 @@ public partial class CanonicalStateNormalizer
         MortalItemAcceptedTurnNormalizationMode mode)
     {
         ArgumentNullException.ThrowIfNull(mode);
+        if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
+        {
+            var currentRoots = validated.Snapshot.CloneCurrentProjectionRoots();
+            var backupRoots = validated.Snapshot.CloneBackupProjectionRoots();
+            var identityRoot = currentRoots[MortalItemIdentityState.StatePath]
+                as JsonObject ?? throw new InvalidDataException(
+                    "Accepted Mortal item projection requires its frozen identity root.");
+            var identity = MortalItemIdentityState.Parse(identityRoot.DeepClone());
+            var projected = MortalItemCanonicalProjectionPlanner.Project(
+                new MortalItemCanonicalProjectionInput(
+                    validated.Snapshot.Turn,
+                    validated.Snapshot,
+                    validated.Snapshot.CloneRouteCatalog(),
+                    currentRoots,
+                    backupRoots,
+                    identity));
+            if (!projected.IsValid)
+            {
+                throw new InvalidDataException(
+                    $"Accepted Mortal item projection failed: {projected.Issues[0].Code}.");
+            }
+            foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+            {
+                var after = projected.ItemPhaseAfterImages[path];
+                if (JsonNode.DeepEquals(currentRoots[path], after))
+                    continue;
+                if (after == null)
+                {
+                    throw new InvalidDataException(
+                        $"Accepted Mortal item projection cannot remove registered root '{path}'.");
+                }
+                await WriteCanonicalFileAtomicAsync(path, after.ToJsonString(JsonOpts));
+            }
+            return;
+        }
+
+        await NormalizeOrdinaryMortalItemsAsync(
+            backups,
+            acceptedStorageCoordinates,
+            mode);
+    }
+
+    private async Task NormalizeOrdinaryMortalItemsAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
+        MortalItemAcceptedTurnNormalizationMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(mode);
         if (mode is not MortalItemAcceptedTurnNormalizationMode.ClientOwnedBootstrap)
-            await NormalizeMortalItemTransfersAsync(backups);
+            await NormalizeOrdinaryMortalItemTransfersAsync(backups);
 
         var playerRoot = await ReadMortalItemObjectRootAsync(
             InventoryEquipmentService.ItemsPath);
@@ -69,9 +117,7 @@ public partial class CanonicalStateNormalizer
         var offscreenLocationStorageRoot = await ReadMortalItemObjectRootAsync(
             MortalLocationStorageContentsState.StatePath);
         var vehiclesRoot = await ReadMortalItemVehiclesRootAsync();
-        var routeCatalog = await MortalItemRouteAuthorityCatalog.BuildAsync(
-            _fs,
-            _writeLease,
+        var routeCatalog = await BuildOrdinaryMortalItemRouteAuthorityCatalogAsync(
             acceptedStorageCoordinates);
         if (routeCatalog.Issues.Count > 0)
         {
@@ -501,196 +547,7 @@ public partial class CanonicalStateNormalizer
             MortalItemMaterializationContract.ReceiptProperty,
             StringComparison.Ordinal);
 
-    private async Task NormalizeMortalItemTransfersAsync(
-        IReadOnlyDictionary<string, string>? backups)
-    {
-        var previousPlayer = await ReadBackupObjectAsync(
-            InventoryEquipmentService.ItemsPath,
-            backups);
-        var previousNpc = await ReadBackupObjectAsync(
-            NpcCoreChangesContract.NpcCorePath,
-            backups);
-        var previousLocation = await ReadBackupObjectAsync(
-            StorageTransportMoveService.CurrentLocationPath,
-            backups);
-        var previousOffscreenLocationStorage = await ReadBackupObjectAsync(
-            MortalLocationStorageContentsState.StatePath,
-            backups);
-        var previousVehicles = WrapMortalItemVehicles(
-            await ReadBackupNodeAsync(StorageTransportMoveService.VehiclesPath, backups));
-        var previousCatalog = MortalItemCarrierCatalog.Build(
-            new MortalItemCarrierCatalogInput(
-                previousPlayer,
-                previousNpc,
-                null,
-                previousLocation,
-                previousVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                previousOffscreenLocationStorage));
-
-        var currentPlayer = await ReadMortalItemObjectRootAsync(
-            InventoryEquipmentService.ItemsPath);
-        var currentNpc = await ReadMortalItemObjectRootAsync(
-            NpcCoreChangesContract.NpcCorePath);
-        var currentLocation = await ReadMortalItemObjectRootAsync(
-            StorageTransportMoveService.CurrentLocationPath);
-        var currentOffscreenLocationStorage = await ReadMortalItemObjectRootAsync(
-            MortalLocationStorageContentsState.StatePath);
-        var currentVehicles = await ReadMortalItemVehiclesRootAsync();
-        var currentCatalog = MortalItemCarrierCatalog.Build(
-            new MortalItemCarrierCatalogInput(
-                currentPlayer,
-                currentNpc,
-                null,
-                currentLocation,
-                currentVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                currentOffscreenLocationStorage));
-        if (previousCatalog.Issues.Count > 0 || currentCatalog.Issues.Count > 0)
-        {
-            var issue = previousCatalog.Issues.FirstOrDefault() ?? currentCatalog.Issues[0];
-            throw new InvalidDataException(
-                $"Mortal item transfer carrier authority failed: {issue.Code}.");
-        }
-
-        var acceptedTurn = await TryReadCurrentTurnNumberAsync();
-        var transfers = await MortalItemAcceptedTransferCatalog.BuildAsync(
-            _fs,
-            _writeLease,
-            previousCatalog,
-            currentCatalog,
-            acceptedTurn);
-        if (transfers.Issues.Count > 0)
-        {
-            throw new InvalidDataException(
-                $"Mortal item transfer authority failed: {transfers.Issues[0].Code}.");
-        }
-        if (transfers.Transfers.Count == 0)
-            return;
-
-        if (_writeLease == null)
-        {
-            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await ApplyMortalItemTransfersAsync(ownedLease, transfers.Transfers);
-        }
-        else
-        {
-            await ApplyMortalItemTransfersAsync(_writeLease, transfers.Transfers);
-        }
-        await RemoveAppliedMortalItemTransferCommandsAsync(transfers.Transfers);
-    }
-
-    private async Task ApplyMortalItemTransfersAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
-    {
-        var writer = new MortalItemTransitionWriter(_fs);
-        foreach (var transfer in transfers)
-        {
-            var result = await writer.ExecuteAsync(
-                writeLease,
-                new MortalItemTransitionIntent(
-                    MortalItemTransitionKind.Transfer,
-                    new[] { transfer.ItemId },
-                    transfer.SourceCarrier,
-                    transfer.DestinationCarrier,
-                    transfer.Quantity,
-                    transfer.Turn,
-                    transfer.AuthorityKind,
-                    transfer.AuthorityId));
-            if (!result.Success)
-            {
-                throw new InvalidDataException(
-                    $"Mortal item transfer '{transfer.ItemId}' failed: {result.Message}");
-            }
-        }
-    }
-
-    private async Task RemoveAppliedMortalItemTransferCommandsAsync(
-        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
-    {
-        var player = await ReadMortalItemObjectRootAsync(
-            InventoryEquipmentService.ItemsPath);
-        var npcCommands = await ReadMortalItemObjectRootAsync(
-            MortalItemAcceptedTransferCatalog.NpcCommandsPath);
-        var playerRemovals = await ReadMortalItemObjectRootAsync(
-            MortalItemAcceptedTransferCatalog.PlayerRemovalPath);
-
-        var playerChanged = RemoveCommandIndexes(
-            player,
-            "UpdateInventory",
-            transfers
-                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.PlayerUpdate)
-                .Select(transfer => transfer.DestinationIndex));
-        var npcAddsChanged = RemoveCommandIndexes(
-            npcCommands,
-            "NPCInventoryAdds",
-            transfers
-                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.NpcAdd)
-                .Select(transfer => transfer.DestinationIndex));
-        var npcRemovalsChanged = RemoveCommandIndexes(
-            npcCommands,
-            "NPCInventoryRemovals",
-            transfers
-                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.NpcRemoval)
-                .Select(transfer => transfer.RemovalIndex));
-        var playerRemovalsChanged = RemoveCommandIndexes(
-            playerRemovals,
-            "removeInventoryItems",
-            transfers
-                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.PlayerRemoval)
-                .Select(transfer => transfer.RemovalIndex));
-
-        if (playerChanged && player != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                InventoryEquipmentService.ItemsPath,
-                player.ToJsonString(JsonOpts));
-        }
-        if ((npcAddsChanged || npcRemovalsChanged) && npcCommands != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                MortalItemAcceptedTransferCatalog.NpcCommandsPath,
-                npcCommands.ToJsonString(JsonOpts));
-        }
-        if (playerRemovalsChanged && playerRemovals != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
-                playerRemovals.ToJsonString(JsonOpts));
-        }
-    }
-
-    private static bool RemoveCommandIndexes(
-        JsonObject? root,
-        string property,
-        IEnumerable<int> indexes)
-    {
-        if (root?[property] is not JsonArray array)
-            return false;
-        var ordered = indexes.Distinct().OrderByDescending(index => index).ToArray();
-        if (ordered.Length == 0)
-            return false;
-        foreach (var index in ordered)
-        {
-            if (index < 0 || index >= array.Count)
-                throw new InvalidDataException($"Mortal item transfer command index {index} is stale.");
-            array.RemoveAt(index);
-        }
-        if (array.Count == 0)
-            root.Remove(property);
-        return true;
-    }
-
-    private static JsonObject? WrapMortalItemVehicles(JsonNode? node) =>
-        node switch
-        {
-            JsonObject root => root,
-            JsonArray vehicles => new JsonObject { ["vehicles"] = vehicles.DeepClone() },
-            _ => null
-        };
-
-    private static void EnsureRawMortalItemCreation(
+    internal static void EnsureRawMortalItemCreation(
         JsonObject rawItem,
         string itemPath,
         int acceptedTurn)
@@ -779,7 +636,7 @@ public partial class CanonicalStateNormalizer
         return result;
     }
 
-    private static bool CollectPlayerMortalItemCreations(
+    internal static bool CollectPlayerMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -819,7 +676,7 @@ public partial class CanonicalStateNormalizer
         return true;
     }
 
-    private static bool CollectNpcCoreMortalItemCreations(
+    internal static bool CollectNpcCoreMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -862,7 +719,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static MortalItemNpcCommandCollectionResult
+    internal static MortalItemNpcCommandCollectionResult
         CollectNpcCommandMortalItemCreations(
             MortalNpcCommandIndex npcCommandIndex,
             JsonObject? commandsRoot,
@@ -925,7 +782,7 @@ public partial class CanonicalStateNormalizer
             npcCoreChanged);
     }
 
-    private static bool CollectLocationMortalItemCreations(
+    internal static bool CollectLocationMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -970,7 +827,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static bool CollectOffscreenLocationStorageMortalItemCreations(
+    internal static bool CollectOffscreenLocationStorageMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -1008,7 +865,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static MortalItemNpcCommandCollectionResult ApplyMortalNpcEquipmentCommands(
+    internal static MortalItemNpcCommandCollectionResult ApplyMortalNpcEquipmentCommands(
         MortalNpcCommandIndex npcCommandIndex,
         JsonObject? commandsRoot,
         IReadOnlySet<string> createdItemIds)
@@ -1174,7 +1031,7 @@ public partial class CanonicalStateNormalizer
         ReadExactMortalItemIdentity(obj["id"]) ??
         ReadExactMortalItemIdentity(obj["initialId"]);
 
-    private sealed class MortalNpcCommandIndex
+    internal sealed class MortalNpcCommandIndex
     {
         private readonly Dictionary<string, List<JsonObject>> _ownersById =
             new(StringComparer.Ordinal);
@@ -1254,16 +1111,17 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static bool IsRawMortalItemCreation(JsonObject item) =>
+    internal static bool IsRawMortalItemCreation(JsonObject item) =>
         item.ContainsKey("creationRef") ||
         item.TryGetPropertyValue("existedId", out var existedId) && existedId == null;
 
-    private static JsonObject CreateMortalItemIdentityEntry(
+    internal static JsonObject CreateMortalItemIdentityEntry(
         JsonObject item,
         JsonObject receipt,
         int acceptedTurn,
         MortalItemRouteAuthority routeAuthority,
-        IReadOnlyDictionary<string, string> creationMap)
+        IReadOnlyDictionary<string, string> creationMap,
+        string? transitionId = null)
     {
         var itemId = RequireExactMortalItemIdentity(item["itemId"], "itemId");
         var envelope = item[MortalItemMaterializationContract.EnvelopeProperty]!.AsObject();
@@ -1273,16 +1131,28 @@ public partial class CanonicalStateNormalizer
         var quantity = ReadMortalItemQuantity(item);
         var carrier = CreateMortalItemCarrierNode(
             RewriteMortalItemCarrierCoordinate(routeAuthority.Destination, creationMap));
-        var transition = MortalItemIdentityState.CreateTransition(
-            "create",
-            acceptedTurn,
-            routeAuthority.SourceItemIds,
-            sourceCarrier: null,
-            destinationCarrier: carrier,
-            quantityBefore: 0,
-            quantityAfter: quantity,
-            routeAuthority.AuthorityKind,
-            routeAuthority.AuthorityId);
+        var transition = transitionId == null
+            ? MortalItemIdentityState.CreateTransition(
+                "create",
+                acceptedTurn,
+                routeAuthority.SourceItemIds,
+                sourceCarrier: null,
+                destinationCarrier: carrier,
+                quantityBefore: 0,
+                quantityAfter: quantity,
+                routeAuthority.AuthorityKind,
+                routeAuthority.AuthorityId)
+            : MortalItemIdentityState.CreateTransition(
+                "create",
+                acceptedTurn,
+                routeAuthority.SourceItemIds,
+                sourceCarrier: null,
+                destinationCarrier: carrier,
+                quantityBefore: 0,
+                quantityAfter: quantity,
+                routeAuthority.AuthorityKind,
+                routeAuthority.AuthorityId,
+                transitionId);
 
         return new JsonObject
         {
@@ -1311,7 +1181,7 @@ public partial class CanonicalStateNormalizer
         throw new InvalidDataException("A sealed Mortal item requires a positive integer count.");
     }
 
-    private static MortalItemCarrierCoordinate RewriteMortalItemCarrierCoordinate(
+    internal static MortalItemCarrierCoordinate RewriteMortalItemCarrierCoordinate(
         MortalItemCarrierCoordinate carrier,
         IReadOnlyDictionary<string, string> creationMap) =>
         carrier with
@@ -1321,7 +1191,7 @@ public partial class CanonicalStateNormalizer
                 .ToArray()
         };
 
-    private static JsonObject CreateMortalItemCarrierNode(
+    internal static JsonObject CreateMortalItemCarrierNode(
         MortalItemCarrierCoordinate carrier) =>
         new()
         {
@@ -1334,7 +1204,7 @@ public partial class CanonicalStateNormalizer
                     .ToArray())
         };
 
-    private static void RewriteMortalItemContentsPath(
+    internal static void RewriteMortalItemContentsPath(
         JsonObject item,
         IReadOnlyDictionary<string, string> creationMap)
     {
@@ -1349,7 +1219,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static bool RewriteMortalItemCreationReferences(
+    internal static bool RewriteMortalItemCreationReferences(
         JsonNode? node,
         IReadOnlyDictionary<string, string> creationMap) =>
         RewriteMortalItemCreationReferences(
@@ -1518,7 +1388,7 @@ public partial class CanonicalStateNormalizer
         MortalItemRouteAuthority Authority,
         Action<JsonObject> Store);
 
-    private sealed record MortalItemNpcCommandCollectionResult(
+    internal sealed record MortalItemNpcCommandCollectionResult(
         bool CommandsChanged,
         bool NpcCoreChanged);
 }

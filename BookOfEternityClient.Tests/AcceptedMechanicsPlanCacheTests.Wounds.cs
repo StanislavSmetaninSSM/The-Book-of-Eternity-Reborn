@@ -2651,7 +2651,17 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             "sha256:wound-cache-seeded-mortal-items",
             Array.Empty<MortalItemAcceptedTurnAuthority.NewCandidate>(),
             Array.Empty<MortalItemAcceptedTurnAuthority.StableCandidate>(),
-            Array.Empty<string>());
+            Array.Empty<string>(),
+            new Dictionary<string, MortalItemRouteAuthority>(StringComparer.Ordinal),
+            Array.Empty<MortalItemAcceptedTransfer>(),
+            MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+                static path => path,
+                static _ => (JsonNode?)null,
+                StringComparer.Ordinal),
+            MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+                static path => path,
+                static _ => (JsonNode?)null,
+                StringComparer.Ordinal));
         Assert.True(AcceptedTurnAuthorityRegistry.HasMortalItemsValidated(
             fileSystem,
             lease));

@@ -14,15 +14,56 @@ internal sealed record MortalItemAcceptedTurnOwner(
     JsonObject Item,
     bool SameTurn);
 
+internal sealed record MortalItemTreatmentPublicationBaselineSealResult(
+    MortalItemAcceptedTurnNormalizationSnapshot? Snapshot,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool IsValid => Snapshot is not null && Issues.Count == 0;
+}
+
 internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
 {
     private readonly Dictionary<string, string> _itemIdsByCreationRef;
+    private readonly Dictionary<string, string> _receiptIdsByCreationRef;
+    private readonly Dictionary<string, string> _createTransitionIdsByCreationRef;
+    private readonly Dictionary<string, string> _transferTransitionIdsByItemId;
+    private readonly Dictionary<string, MortalItemRouteAuthority> _routesByCreationRef;
+    private readonly MortalItemAcceptedTransfer[] _transfers;
+    private readonly Dictionary<string, JsonNode?> _currentRoots;
+    private readonly Dictionary<string, JsonNode?> _backupRoots;
+    private readonly Dictionary<string, string> _creationPathsByCreationRef;
+    private readonly Dictionary<string, int> _creationOrdinalsByCreationRef;
+    private readonly MortalTreatmentItemCommandEnvelope? _itemCommandEnvelope;
+    private readonly NpcCoreChangesContract.Authority? _npcCoreAuthority;
+    private readonly CanonicalBeforeImage? _npcTradePending;
+    private readonly CanonicalBeforeImage? _trainingPending;
+    private readonly MortalItemNpcTradeTailDisposition? _npcTradeDisposition;
+    private readonly Dictionary<string, JsonNode?> _itemPhaseAfterImages;
+    private readonly JsonObject? _itemPhaseIdentityIndexAfterImage;
+    private readonly string _itemPhaseFingerprint;
+    private readonly Dictionary<string, JsonNode?> _finalCarrierRoots;
+    private readonly JsonObject? _finalIdentityIndexAfterImage;
+    private readonly string[] _appliedTransformIds;
+    private readonly string _finalBaselineFingerprint;
 
     internal MortalItemAcceptedTurnNormalizationSnapshot(
         string sessionId,
         string snapshotToken,
         int turn,
-        IReadOnlyDictionary<string, string> itemIdsByCreationRef)
+        IReadOnlyDictionary<string, string> itemIdsByCreationRef,
+        IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
+        IReadOnlyList<MortalItemAcceptedTransfer> transfers,
+        IReadOnlyDictionary<string, JsonNode?> currentRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupRoots,
+        IReadOnlyDictionary<string, string> creationPathsByCreationRef,
+        IReadOnlyDictionary<string, int> creationOrdinalsByCreationRef,
+        MortalTreatmentItemCommandEnvelope? itemCommandEnvelope = null,
+        NpcCoreChangesContract.Authority? npcCoreAuthority = null,
+        CanonicalBeforeImage? npcTradePending = null,
+        CanonicalBeforeImage? trainingPending = null,
+        MortalItemNpcTradeTailDisposition? npcTradeDisposition = null,
+        MortalItemCanonicalProjectionResult? itemPhase = null,
+        MortalItemPublicationBaselineResult? finalBaseline = null)
     {
         if (!ResourceMaterializationContract.IsExactIdentifier(sessionId))
             throw new ArgumentException("Expected an exact accepted-turn session ID.", nameof(sessionId));
@@ -31,6 +72,12 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         if (turn <= 0)
             throw new ArgumentOutOfRangeException(nameof(turn));
         ArgumentNullException.ThrowIfNull(itemIdsByCreationRef);
+        ArgumentNullException.ThrowIfNull(routesByCreationRef);
+        ArgumentNullException.ThrowIfNull(transfers);
+        ArgumentNullException.ThrowIfNull(currentRoots);
+        ArgumentNullException.ThrowIfNull(backupRoots);
+        ArgumentNullException.ThrowIfNull(creationPathsByCreationRef);
+        ArgumentNullException.ThrowIfNull(creationOrdinalsByCreationRef);
 
         SessionId = sessionId;
         SnapshotToken = snapshotToken;
@@ -39,6 +86,129 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             static pair => pair.Key,
             static pair => pair.Value,
             StringComparer.Ordinal);
+        _routesByCreationRef = routesByCreationRef.ToDictionary(
+            static pair => pair.Key,
+            static pair => CloneRoute(pair.Value),
+            StringComparer.Ordinal);
+        _transfers = transfers.Select(CloneTransfer).ToArray();
+        _currentRoots = CloneRoots(currentRoots);
+        _backupRoots = CloneRoots(backupRoots);
+        _creationPathsByCreationRef = creationPathsByCreationRef.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
+        _creationOrdinalsByCreationRef = creationOrdinalsByCreationRef.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
+
+        var hasAnyFinalBaselineBinding = itemCommandEnvelope is not null ||
+                                         npcCoreAuthority is not null ||
+                                         npcTradePending is not null ||
+                                         trainingPending is not null ||
+                                         npcTradeDisposition is not null ||
+                                         itemPhase is not null ||
+                                         finalBaseline is not null;
+        var hasCompleteFinalBaselineBinding = itemCommandEnvelope is not null &&
+                                              npcCoreAuthority is not null &&
+                                              npcTradePending is not null &&
+                                              trainingPending is not null &&
+                                              npcTradeDisposition is not null &&
+                                              itemPhase is not null &&
+                                              finalBaseline is not null;
+        if (hasAnyFinalBaselineBinding != hasCompleteFinalBaselineBinding)
+        {
+            throw new ArgumentException(
+                "A treatment item snapshot requires either every final-baseline binding or none.");
+        }
+
+        _itemCommandEnvelope = itemCommandEnvelope?.Clone();
+        _npcCoreAuthority = npcCoreAuthority is null
+            ? null
+            : CloneNpcCoreAuthority(npcCoreAuthority);
+        _npcTradePending = CloneBeforeImage(npcTradePending);
+        _trainingPending = CloneBeforeImage(trainingPending);
+        _npcTradeDisposition = npcTradeDisposition;
+        _itemPhaseAfterImages = itemPhase is null
+            ? new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+            : CloneRoots(itemPhase.ItemPhaseAfterImages);
+        _itemPhaseIdentityIndexAfterImage = itemPhase?.IdentityIndexAfterImage
+            .DeepClone().AsObject();
+        _itemPhaseFingerprint = itemPhase?.Fingerprint ?? string.Empty;
+        _finalCarrierRoots = finalBaseline is null
+            ? new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+            : CloneRoots(finalBaseline.FinalCarrierRoots);
+        _finalIdentityIndexAfterImage = finalBaseline?.IdentityIndexAfterImage
+            .DeepClone().AsObject();
+        _appliedTransformIds = finalBaseline?.AppliedTransformIds.ToArray() ??
+                               Array.Empty<string>();
+        _finalBaselineFingerprint = finalBaseline?.Fingerprint ?? string.Empty;
+        if (hasCompleteFinalBaselineBinding &&
+            (itemPhase!.Issues.Count != 0 || finalBaseline!.Issues.Count != 0))
+        {
+            throw new ArgumentException(
+                "A treatment item snapshot cannot seal an invalid projection result.");
+        }
+
+        _receiptIdsByCreationRef = new Dictionary<string, string>(StringComparer.Ordinal);
+        _createTransitionIdsByCreationRef = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var creationRef in _itemIdsByCreationRef.Keys.OrderBy(
+                     value => _creationOrdinalsByCreationRef.GetValueOrDefault(
+                         value,
+                         int.MaxValue)))
+        {
+            if (!_creationOrdinalsByCreationRef.TryGetValue(
+                    creationRef,
+                    out var creationOrdinal) ||
+                creationOrdinal < 1)
+            {
+                throw new ArgumentException(
+                    "Every accepted creation requires one positive production ordinal.",
+                    nameof(creationOrdinalsByCreationRef));
+            }
+            var routeFingerprint = _routesByCreationRef.TryGetValue(
+                creationRef,
+                out var route)
+                ? RouteFingerprint(route)
+                : "missing";
+            _receiptIdsByCreationRef.Add(
+                creationRef,
+                DeterministicId(
+                    "mirec_",
+                    "accepted_root_receipt",
+                    creationRef,
+                    routeFingerprint,
+                    creationOrdinal));
+            _createTransitionIdsByCreationRef.Add(
+                creationRef,
+                DeterministicId(
+                    "mitrn_",
+                    "accepted_create_transition",
+                    creationRef,
+                    routeFingerprint,
+                    creationOrdinal));
+        }
+
+        _transferTransitionIdsByItemId = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (var index = 0; index < _transfers.Length; index++)
+        {
+            var transfer = _transfers[index];
+            if (!_transferTransitionIdsByItemId.TryAdd(
+                    transfer.ItemId,
+                    DeterministicId(
+                        "mitrn_",
+                        "accepted_transfer_transition",
+                        transfer.ItemId,
+                        TransferFingerprint(transfer),
+                        index + 1)))
+            {
+                throw new ArgumentException(
+                    "Accepted transfer item IDs must be ordinal-unique.",
+                    nameof(transfers));
+            }
+        }
+        ProjectionProofFingerprint = ComputeProjectionProofFingerprint();
+        ProofFingerprint = ComputeProofFingerprint();
     }
 
     internal string SessionId { get; }
@@ -47,8 +217,255 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
 
     internal int Turn { get; }
 
+    internal string ProofFingerprint { get; }
+
+    internal string ProjectionProofFingerprint { get; }
+
+    internal bool HasFinalPublicationBaseline =>
+        _itemCommandEnvelope is not null &&
+        _npcCoreAuthority is not null &&
+        _npcTradePending is not null &&
+        _trainingPending is not null &&
+        _npcTradeDisposition is not null &&
+        _itemPhaseIdentityIndexAfterImage is not null &&
+        _finalIdentityIndexAfterImage is not null &&
+        !string.IsNullOrEmpty(_itemPhaseFingerprint) &&
+        !string.IsNullOrEmpty(_finalBaselineFingerprint);
+
+    internal IReadOnlyList<MortalItemAcceptedTransfer> Transfers =>
+        _transfers.Select(CloneTransfer).ToArray();
+
+    internal MortalItemRouteAuthorityCatalog CloneRouteCatalog() =>
+        MortalItemRouteAuthorityCatalog.CreateFrozen(_routesByCreationRef);
+
+    internal IReadOnlyDictionary<string, JsonNode?> CloneCurrentProjectionRoots() =>
+        CloneRoots(_currentRoots);
+
+    internal IReadOnlyDictionary<string, JsonNode?> CloneBackupProjectionRoots() =>
+        CloneRoots(_backupRoots);
+
+    internal MortalTreatmentItemCommandEnvelope? CloneItemCommandEnvelope() =>
+        _itemCommandEnvelope?.Clone();
+
+    internal NpcCoreChangesContract.Authority? CloneNpcCoreAuthority() =>
+        _npcCoreAuthority is null
+            ? null
+            : CloneNpcCoreAuthority(_npcCoreAuthority);
+
+    internal CanonicalBeforeImage? CloneNpcTradePending() =>
+        CloneBeforeImage(_npcTradePending);
+
+    internal CanonicalBeforeImage? CloneTrainingPending() =>
+        CloneBeforeImage(_trainingPending);
+
+    internal MortalItemNpcTradeTailDisposition? NpcTradeDisposition =>
+        _npcTradeDisposition;
+
+    internal MortalItemCanonicalProjectionResult? CloneItemPhase() =>
+        !HasFinalPublicationBaseline
+            ? null
+            : new MortalItemCanonicalProjectionResult(
+                CloneRoots(_itemPhaseAfterImages),
+                _itemPhaseIdentityIndexAfterImage!.DeepClone().AsObject(),
+                Array.Empty<ValidationIssue>(),
+                _itemPhaseFingerprint);
+
+    internal MortalItemPublicationBaselineResult? CloneFinalBaseline() =>
+        !HasFinalPublicationBaseline
+            ? null
+            : new MortalItemPublicationBaselineResult(
+                CloneRoots(_finalCarrierRoots),
+                _finalIdentityIndexAfterImage!.DeepClone().AsObject(),
+                _appliedTransformIds.ToArray(),
+                Array.Empty<ValidationIssue>(),
+                _finalBaselineFingerprint);
+
+    internal MortalItemAcceptedTurnNormalizationSnapshot Clone() =>
+        CreateClone(includeFinalBaseline: HasFinalPublicationBaseline);
+
+    internal MortalItemTreatmentPublicationBaselineSealResult
+        CreateTreatmentPublicationBaseline(
+            MortalTreatmentItemCommandEnvelope itemCommandEnvelope,
+            NpcCoreChangesContract.Authority npcCoreAuthority,
+            CanonicalBeforeImage npcTradePending,
+            CanonicalBeforeImage trainingPending,
+            MortalItemNpcTradeTailDisposition npcTradeDisposition)
+    {
+        ArgumentNullException.ThrowIfNull(itemCommandEnvelope);
+        ArgumentNullException.ThrowIfNull(npcCoreAuthority);
+        ArgumentNullException.ThrowIfNull(npcTradePending);
+        ArgumentNullException.ThrowIfNull(trainingPending);
+        if (HasFinalPublicationBaseline)
+        {
+            return InvalidBaselineSeal(
+                "mortal_item_publication_baseline_already_sealed",
+                "an unsealed accepted item projection snapshot",
+                "a final baseline is already attached");
+        }
+
+        var identityState = MortalItemIdentityState.Parse(
+            _currentRoots.GetValueOrDefault(MortalItemIdentityState.StatePath));
+        if (identityState.Issues.Count != 0)
+        {
+            return new MortalItemTreatmentPublicationBaselineSealResult(
+                null,
+                identityState.Issues.ToArray());
+        }
+        var itemPhase = MortalItemCanonicalProjectionPlanner.Project(
+            new MortalItemCanonicalProjectionInput(
+                Turn,
+                this,
+                CloneRouteCatalog(),
+                CloneCurrentProjectionRoots(),
+                CloneBackupProjectionRoots(),
+                identityState));
+        if (!itemPhase.IsValid)
+        {
+            return new MortalItemTreatmentPublicationBaselineSealResult(
+                null,
+                itemPhase.Issues.ToArray());
+        }
+        var finalBaseline = MortalItemPublicationBaselinePlanner.Project(
+            new MortalItemPublicationBaselineInput(
+                itemPhase,
+                itemCommandEnvelope.Clone(),
+                CloneNpcCoreAuthority(npcCoreAuthority),
+                CloneBeforeImage(npcTradePending)!,
+                CloneBeforeImage(trainingPending)!,
+                npcTradeDisposition,
+                CloneBackupProjectionRoots()));
+        if (finalBaseline.Issues.Count != 0)
+        {
+            return new MortalItemTreatmentPublicationBaselineSealResult(
+                null,
+                finalBaseline.Issues.ToArray());
+        }
+
+        var sealedSnapshot = new MortalItemAcceptedTurnNormalizationSnapshot(
+            SessionId,
+            SnapshotToken,
+            Turn,
+            _itemIdsByCreationRef,
+            _routesByCreationRef,
+            _transfers,
+            _currentRoots,
+            _backupRoots,
+            _creationPathsByCreationRef,
+            _creationOrdinalsByCreationRef,
+            itemCommandEnvelope,
+            npcCoreAuthority,
+            npcTradePending,
+            trainingPending,
+            npcTradeDisposition,
+            itemPhase,
+            finalBaseline);
+        if (!sealedSnapshot.RecomputesFinalPublicationBaseline())
+        {
+            return InvalidBaselineSeal(
+                "mortal_item_publication_baseline_seal_mismatch",
+                "one independently reproducible complete final baseline",
+                "stored projection does not recompute");
+        }
+        return new MortalItemTreatmentPublicationBaselineSealResult(
+            sealedSnapshot,
+            Array.Empty<ValidationIssue>());
+    }
+
+    internal bool RecomputesFinalPublicationBaseline()
+    {
+        if (!HasFinalPublicationBaseline)
+            return false;
+        var baseSnapshot = CreateClone(includeFinalBaseline: false);
+        var identityState = MortalItemIdentityState.Parse(
+            baseSnapshot._currentRoots.GetValueOrDefault(
+                MortalItemIdentityState.StatePath));
+        if (identityState.Issues.Count != 0)
+            return false;
+        var itemPhase = MortalItemCanonicalProjectionPlanner.Project(
+            new MortalItemCanonicalProjectionInput(
+                Turn,
+                baseSnapshot,
+                baseSnapshot.CloneRouteCatalog(),
+                baseSnapshot.CloneCurrentProjectionRoots(),
+                baseSnapshot.CloneBackupProjectionRoots(),
+                identityState));
+        if (!ItemPhaseAgrees(itemPhase))
+            return false;
+        var finalBaseline = MortalItemPublicationBaselinePlanner.Project(
+            new MortalItemPublicationBaselineInput(
+                itemPhase,
+                _itemCommandEnvelope!.Clone(),
+                CloneNpcCoreAuthority(_npcCoreAuthority!),
+                CloneBeforeImage(_npcTradePending)!,
+                CloneBeforeImage(_trainingPending)!,
+                _npcTradeDisposition!.Value,
+                baseSnapshot.CloneBackupProjectionRoots()));
+        return FinalBaselineAgrees(finalBaseline) &&
+               string.Equals(
+                   ProofFingerprint,
+                   ComputeProofFingerprint(),
+                   StringComparison.Ordinal);
+    }
+
+    internal bool MatchesFinalPublicationBaseline(
+        MortalItemAcceptedTurnNormalizationSnapshot expected) =>
+        expected is not null &&
+        HasFinalPublicationBaseline &&
+        expected.HasFinalPublicationBaseline &&
+        string.Equals(
+            ProjectionProofFingerprint,
+            expected.ProjectionProofFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            ProofFingerprint,
+            expected.ProofFingerprint,
+            StringComparison.Ordinal) &&
+        RecomputesFinalPublicationBaseline() &&
+        expected.RecomputesFinalPublicationBaseline();
+
     internal bool TryGetAllocatedItemId(string creationRef, out string itemId) =>
         _itemIdsByCreationRef.TryGetValue(creationRef, out itemId!);
+
+    internal bool TryGetRootReceiptId(string creationRef, out string receiptId) =>
+        _receiptIdsByCreationRef.TryGetValue(creationRef, out receiptId!);
+
+    internal bool TryGetCreateTransitionId(string creationRef, out string transitionId) =>
+        _createTransitionIdsByCreationRef.TryGetValue(creationRef, out transitionId!);
+
+    internal bool TryGetTransferTransitionId(string itemId, out string transitionId) =>
+        _transferTransitionIdsByItemId.TryGetValue(itemId, out transitionId!);
+
+    internal bool TryGetCreationPath(string creationRef, out string path) =>
+        _creationPathsByCreationRef.TryGetValue(creationRef, out path!);
+
+    internal bool MatchesRouteCatalog(MortalItemRouteAuthorityCatalog catalog)
+    {
+        ArgumentNullException.ThrowIfNull(catalog);
+        if (_routesByCreationRef.Count != catalog.ByCreationRef.Count)
+            return false;
+        foreach (var pair in _routesByCreationRef)
+        {
+            if (!catalog.ByCreationRef.TryGetValue(pair.Key, out var actual) ||
+                !string.Equals(
+                    RouteFingerprint(pair.Value),
+                    RouteFingerprint(actual),
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    internal bool MatchesProjectionRoots(
+        IReadOnlyDictionary<string, JsonNode?> currentRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupRoots)
+    {
+        ArgumentNullException.ThrowIfNull(currentRoots);
+        ArgumentNullException.ThrowIfNull(backupRoots);
+        return RootsMatchFrozenSubset(currentRoots, _currentRoots) &&
+               RootsMatchFrozenSubset(backupRoots, _backupRoots);
+    }
 
     internal bool MatchesAcceptedOwnerAuthority(ResourceOwnerAuthority ownerAuthority)
     {
@@ -80,11 +497,13 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
     internal bool MatchesExactCacheState(
         string? sessionId,
         string? snapshotToken,
-        IReadOnlyDictionary<string, string> itemIdsByCreationRef)
+        IReadOnlyDictionary<string, string> itemIdsByCreationRef,
+        string proofFingerprint)
     {
         ArgumentNullException.ThrowIfNull(itemIdsByCreationRef);
         if (!string.Equals(SessionId, sessionId, StringComparison.Ordinal) ||
             !string.Equals(SnapshotToken, snapshotToken, StringComparison.Ordinal) ||
+            !string.Equals(ProofFingerprint, proofFingerprint, StringComparison.Ordinal) ||
             _itemIdsByCreationRef.Count != itemIdsByCreationRef.Count)
         {
             return false;
@@ -114,6 +533,7 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
             SnapshotToken,
             Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
             cacheFingerprint,
+            ProofFingerprint,
             _itemIdsByCreationRef.Count.ToString(
                 System.Globalization.CultureInfo.InvariantCulture)
         };
@@ -125,6 +545,333 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
+
+    private string DeterministicId(
+        string prefix,
+        string domain,
+        string subject,
+        string authorityFingerprint,
+        int ordinal)
+    {
+        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_item.accepted_turn_identity",
+            "1",
+            domain,
+            SessionId,
+            SnapshotToken,
+            Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            subject,
+            authorityFingerprint,
+            ordinal.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        });
+        return prefix + fingerprint["sha256:".Length..];
+    }
+
+    private string ComputeProofFingerprint()
+    {
+        if (!HasFinalPublicationBaseline)
+            return ProjectionProofFingerprint;
+
+        var itemCommandEnvelope = _itemCommandEnvelope!;
+        var npcCoreAuthority = _npcCoreAuthority!;
+        var npcTradePending = _npcTradePending!;
+        var trainingPending = _trainingPending!;
+        var npcTradeDisposition = _npcTradeDisposition!.Value;
+        var itemPhaseAfterImages = _itemPhaseAfterImages;
+        var finalCarrierRoots = _finalCarrierRoots;
+        var appliedTransformIds = _appliedTransformIds;
+        var finalBaselineFingerprint = _finalBaselineFingerprint;
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_item.accepted_turn_complete_publication_proof",
+            "1",
+            ProjectionProofFingerprint,
+            itemCommandEnvelope.Fingerprint,
+            npcTradePending.Fingerprint,
+            trainingPending.Fingerprint,
+            npcTradeDisposition.ToString(),
+            _itemPhaseFingerprint,
+            finalBaselineFingerprint
+        };
+        AppendNpcCoreAuthority(fields, npcCoreAuthority);
+        AppendRootFingerprints(fields, "item_phase", itemPhaseAfterImages);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            _itemPhaseIdentityIndexAfterImage));
+        AppendRootFingerprints(fields, "final", finalCarrierRoots);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            _finalIdentityIndexAfterImage));
+        foreach (var appliedTransformId in appliedTransformIds)
+            fields.Add(appliedTransformId);
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private string ComputeProjectionProofFingerprint()
+    {
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_item.accepted_turn_projection_proof",
+            "1",
+            SessionId,
+            SnapshotToken,
+            Turn.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        };
+        foreach (var pair in _itemIdsByCreationRef.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            fields.Add(pair.Key);
+            fields.Add(pair.Value);
+            fields.Add(_receiptIdsByCreationRef[pair.Key]);
+            fields.Add(_createTransitionIdsByCreationRef[pair.Key]);
+            fields.Add(_creationPathsByCreationRef.GetValueOrDefault(pair.Key));
+            fields.Add(_creationOrdinalsByCreationRef.GetValueOrDefault(pair.Key)
+                .ToString(System.Globalization.CultureInfo.InvariantCulture));
+            fields.Add(_routesByCreationRef.TryGetValue(pair.Key, out var route)
+                ? RouteFingerprint(route)
+                : "missing");
+        }
+        foreach (var transfer in _transfers)
+        {
+            fields.Add(TransferFingerprint(transfer));
+            fields.Add(_transferTransitionIdsByItemId[transfer.ItemId]);
+        }
+        AppendRootFingerprints(fields, "current", _currentRoots);
+        AppendRootFingerprints(fields, "backup", _backupRoots);
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    internal static bool RootsMatchFrozenSubset(
+        IReadOnlyDictionary<string, JsonNode?> actual,
+        IReadOnlyDictionary<string, JsonNode?> frozen)
+    {
+        if (actual.Count != frozen.Count)
+            return false;
+        foreach (var pair in actual)
+        {
+            if (!frozen.TryGetValue(pair.Key, out var expected) ||
+                !JsonNode.DeepEquals(pair.Value, expected))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static void AppendRootFingerprints(
+        ICollection<string?> fields,
+        string stage,
+        IReadOnlyDictionary<string, JsonNode?> roots)
+    {
+        foreach (var pair in roots.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        {
+            fields.Add(stage);
+            fields.Add(pair.Key);
+            fields.Add(pair.Value is null
+                ? "missing"
+                : WoundAcceptedTurnFingerprintWriter.CanonicalJson(pair.Value));
+        }
+    }
+
+    private MortalItemAcceptedTurnNormalizationSnapshot CreateClone(
+        bool includeFinalBaseline)
+    {
+        var itemPhase = includeFinalBaseline ? CloneItemPhase() : null;
+        var finalBaseline = includeFinalBaseline ? CloneFinalBaseline() : null;
+        return new MortalItemAcceptedTurnNormalizationSnapshot(
+            SessionId,
+            SnapshotToken,
+            Turn,
+            _itemIdsByCreationRef,
+            _routesByCreationRef,
+            _transfers,
+            _currentRoots,
+            _backupRoots,
+            _creationPathsByCreationRef,
+            _creationOrdinalsByCreationRef,
+            includeFinalBaseline ? _itemCommandEnvelope : null,
+            includeFinalBaseline ? _npcCoreAuthority : null,
+            includeFinalBaseline ? _npcTradePending : null,
+            includeFinalBaseline ? _trainingPending : null,
+            includeFinalBaseline ? _npcTradeDisposition : null,
+            itemPhase,
+            finalBaseline);
+    }
+
+    private bool ItemPhaseAgrees(MortalItemCanonicalProjectionResult itemPhase) =>
+        itemPhase.IsValid &&
+        string.Equals(
+            itemPhase.Fingerprint,
+            _itemPhaseFingerprint,
+            StringComparison.Ordinal) &&
+        RootsMatchFrozenSubset(
+            itemPhase.ItemPhaseAfterImages,
+            _itemPhaseAfterImages) &&
+        JsonNode.DeepEquals(
+            itemPhase.IdentityIndexAfterImage,
+            _itemPhaseIdentityIndexAfterImage);
+
+    private bool FinalBaselineAgrees(
+        MortalItemPublicationBaselineResult finalBaseline) =>
+        finalBaseline.Issues.Count == 0 &&
+        string.Equals(
+            finalBaseline.Fingerprint,
+            _finalBaselineFingerprint,
+            StringComparison.Ordinal) &&
+        RootsMatchFrozenSubset(
+            finalBaseline.FinalCarrierRoots,
+            _finalCarrierRoots) &&
+        JsonNode.DeepEquals(
+            finalBaseline.IdentityIndexAfterImage,
+            _finalIdentityIndexAfterImage) &&
+        finalBaseline.AppliedTransformIds.SequenceEqual(
+            _appliedTransformIds,
+            StringComparer.Ordinal);
+
+    private static MortalItemTreatmentPublicationBaselineSealResult
+        InvalidBaselineSeal(string code, string expected, string actual) => new(
+        null,
+        new[]
+        {
+            new ValidationIssue(
+                MortalItemIdentityState.StatePath,
+                IssueSeverity.Error,
+                "The accepted Mortal-item final publication baseline could not be sealed.",
+                code: code,
+                actor: "mortal_item:publication_baseline",
+                section: "MortalItemMaterialization",
+                expected: expected,
+                actual: actual,
+                repairHint:
+                    "Reject publication and rebuild the accepted item projection from the validated turn snapshot.",
+                repairTargetFiles: MortalItemCanonicalProjectionPlanner
+                    .ProjectionRootPaths.ToArray())
+        });
+
+    private static CanonicalBeforeImage? CloneBeforeImage(
+        CanonicalBeforeImage? image) => image is null
+        ? null
+        : new CanonicalBeforeImage(image.Existed, image.Bytes);
+
+    private static NpcCoreChangesContract.Authority CloneNpcCoreAuthority(
+        NpcCoreChangesContract.Authority authority) => new(
+        new HashSet<string>(
+            authority.KnownPermanentLocationIds,
+            StringComparer.Ordinal),
+        new HashSet<string>(
+            authority.SameTurnLocationInitialIds,
+            StringComparer.Ordinal),
+        new Dictionary<string, string>(
+            authority.FactionNamesById,
+            StringComparer.Ordinal),
+        new HashSet<string>(
+            authority.WorldCharacteristicKeys,
+            StringComparer.Ordinal));
+
+    private static void AppendNpcCoreAuthority(
+        ICollection<string?> fields,
+        NpcCoreChangesContract.Authority authority)
+    {
+        fields.Add("npcCoreAuthority");
+        foreach (var value in authority.KnownPermanentLocationIds.OrderBy(
+                     static value => value,
+                     StringComparer.Ordinal))
+        {
+            fields.Add("permanent_location");
+            fields.Add(value);
+        }
+        foreach (var value in authority.SameTurnLocationInitialIds.OrderBy(
+                     static value => value,
+                     StringComparer.Ordinal))
+        {
+            fields.Add("same_turn_location");
+            fields.Add(value);
+        }
+        foreach (var pair in authority.FactionNamesById.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            fields.Add("faction");
+            fields.Add(pair.Key);
+            fields.Add(pair.Value);
+        }
+        foreach (var value in authority.WorldCharacteristicKeys.OrderBy(
+                     static value => value,
+                     StringComparer.Ordinal))
+        {
+            fields.Add("characteristic");
+            fields.Add(value);
+        }
+    }
+
+    internal static Dictionary<string, JsonNode?> CloneRoots(
+        IReadOnlyDictionary<string, JsonNode?> roots) => roots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
+
+    internal static MortalItemRouteAuthority CloneRoute(MortalItemRouteAuthority value) =>
+        value with
+        {
+            Destination = value.Destination with
+            {
+                ContainerPath = value.Destination.ContainerPath.ToArray()
+            },
+            SourceItemIds = value.SourceItemIds.ToArray()
+        };
+
+    internal static MortalItemAcceptedTransfer CloneTransfer(
+        MortalItemAcceptedTransfer value) => value with
+        {
+            SourceCarrier = value.SourceCarrier with
+            {
+                ContainerPath = value.SourceCarrier.ContainerPath.ToArray()
+            },
+            DestinationCarrier = value.DestinationCarrier with
+            {
+                ContainerPath = value.DestinationCarrier.ContainerPath.ToArray()
+            }
+        };
+
+    private static string RouteFingerprint(MortalItemRouteAuthority value) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_item.route_authority",
+            "1",
+            value.Route,
+            value.AuthorityKind,
+            value.AuthorityId,
+            CarrierFingerprint(value.Destination),
+            string.Join("\0", value.SourceItemIds)
+        });
+
+    private static string TransferFingerprint(MortalItemAcceptedTransfer value) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_item.accepted_transfer",
+            "1",
+            value.ItemId,
+            CarrierFingerprint(value.SourceCarrier),
+            CarrierFingerprint(value.DestinationCarrier),
+            value.Quantity.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            value.Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            value.AuthorityKind,
+            value.AuthorityId,
+            value.DestinationSurface.ToString(),
+            value.DestinationIndex.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            value.RemovalSurface.ToString(),
+            value.RemovalIndex.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        });
+
+    private static string CarrierFingerprint(MortalItemCarrierCoordinate value) =>
+        WoundAcceptedTurnFingerprintWriter.CanonicalJson(new JsonObject
+        {
+            ["kind"] = value.Kind,
+            ["ownerId"] = value.OwnerId,
+            ["containerId"] = value.ContainerId,
+            ["containerPath"] = new JsonArray(
+                value.ContainerPath.Select(static item => (JsonNode?)item).ToArray())
+        })!;
 }
 
 internal static class MortalItemAcceptedTurnAuthority
@@ -146,7 +893,11 @@ internal static class MortalItemAcceptedTurnAuthority
         string sessionId,
         string snapshotToken,
         MortalItemCarrierCatalog catalog,
-        IEnumerable<string> knownItemIds)
+        IEnumerable<string> knownItemIds,
+        MortalItemRouteAuthorityCatalog routeAuthorities,
+        MortalItemAcceptedTransferCatalog? transferCatalog,
+        IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -154,12 +905,14 @@ internal static class MortalItemAcceptedTurnAuthority
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(knownItemIds);
+        ArgumentNullException.ThrowIfNull(routeAuthorities);
+        ArgumentNullException.ThrowIfNull(currentProjectionRoots);
+        ArgumentNullException.ThrowIfNull(backupProjectionRoots);
 
         var newCandidates = catalog.Occurrences
             .Where(static occurrence =>
                 occurrence.ItemId == null &&
                 occurrence.CreationRef != null)
-            .OrderBy(static occurrence => occurrence.CreationRef, StringComparer.Ordinal)
             .Select(occurrence => new NewCandidate(
                 occurrence.CreationRef!,
                 occurrence.Item.DeepClone().AsObject(),
@@ -196,7 +949,11 @@ internal static class MortalItemAcceptedTurnAuthority
             fingerprint,
             newCandidates,
             stableCandidates,
-            governedItemIds);
+            governedItemIds,
+            routeAuthorities.ByCreationRef,
+            transferCatalog?.Transfers,
+            currentProjectionRoots,
+            backupProjectionRoots);
     }
 
     internal static IReadOnlyList<ValidationIssue>
@@ -207,6 +964,7 @@ internal static class MortalItemAcceptedTurnAuthority
             string snapshotToken,
             MortalItemCarrierCatalog catalog,
             IEnumerable<string> knownItemIds,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
             object treatmentContinuationAuthority,
             object reservationAuthority)
     {
@@ -216,6 +974,7 @@ internal static class MortalItemAcceptedTurnAuthority
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
         ArgumentNullException.ThrowIfNull(catalog);
         ArgumentNullException.ThrowIfNull(knownItemIds);
+        ArgumentNullException.ThrowIfNull(currentProjectionRoots);
         ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
         ArgumentNullException.ThrowIfNull(reservationAuthority);
 
@@ -223,7 +982,6 @@ internal static class MortalItemAcceptedTurnAuthority
             .Where(static occurrence =>
                 occurrence.ItemId == null &&
                 occurrence.CreationRef != null)
-            .OrderBy(static occurrence => occurrence.CreationRef, StringComparer.Ordinal)
             .Select(occurrence => new NewCandidate(
                 occurrence.CreationRef!,
                 occurrence.Item.DeepClone().AsObject(),
@@ -262,6 +1020,70 @@ internal static class MortalItemAcceptedTurnAuthority
                 newCandidates,
                 stableCandidates,
                 governedItemIds,
+                currentProjectionRoots,
+                treatmentContinuationAuthority,
+                reservationAuthority);
+    }
+
+    internal static IReadOnlyList<ValidationIssue>
+        ConfirmValidatedTreatmentItems(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
+        ArgumentNullException.ThrowIfNull(currentProjectionRoots);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
+        return AcceptedTurnAuthorityRegistry.ConfirmMortalTreatmentItemsValidated(
+            fs,
+            writeLease,
+            sessionId,
+            snapshotToken,
+            currentProjectionRoots,
+            treatmentContinuationAuthority,
+            reservationAuthority);
+    }
+
+    internal static IReadOnlyList<ValidationIssue>
+        SealValidatedTreatmentPublicationBaseline(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            int turn,
+            NpcCoreChangesContract.Authority npcCoreAuthority,
+            CanonicalBeforeImage npcTradePending,
+            CanonicalBeforeImage trainingPending,
+            object treatmentContinuationAuthority,
+            object reservationAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
+        ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
+        ArgumentNullException.ThrowIfNull(npcCoreAuthority);
+        ArgumentNullException.ThrowIfNull(npcTradePending);
+        ArgumentNullException.ThrowIfNull(trainingPending);
+        ArgumentNullException.ThrowIfNull(treatmentContinuationAuthority);
+        ArgumentNullException.ThrowIfNull(reservationAuthority);
+        return AcceptedTurnAuthorityRegistry
+            .SealMortalTreatmentItemPublicationBaseline(
+                fs,
+                writeLease,
+                sessionId,
+                snapshotToken,
+                turn,
+                npcCoreAuthority,
+                npcTradePending,
+                trainingPending,
                 treatmentContinuationAuthority,
                 reservationAuthority);
     }
@@ -482,6 +1304,21 @@ internal static class MortalItemAcceptedTurnAuthority
         private HashSet<EffectSourceOwnerKey> _replacedSourceOwners = new();
         private MortalItemAcceptedTurnOwner[] _owners = Array.Empty<MortalItemAcceptedTurnOwner>();
         private HashSet<string> _missingGovernedItemIds = new(StringComparer.Ordinal);
+        private IReadOnlyDictionary<string, MortalItemRouteAuthority> _routesByCreationRef =
+            new Dictionary<string, MortalItemRouteAuthority>(StringComparer.Ordinal);
+        private IReadOnlyList<MortalItemAcceptedTransfer> _transfers =
+            Array.Empty<MortalItemAcceptedTransfer>();
+        private IReadOnlyDictionary<string, JsonNode?> _currentProjectionRoots =
+            new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        private IReadOnlyDictionary<string, JsonNode?> _backupProjectionRoots =
+            new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        private Dictionary<string, string> _creationPathsByCreationRef =
+            new(StringComparer.Ordinal);
+        private Dictionary<string, int> _creationOrdinalsByCreationRef =
+            new(StringComparer.Ordinal);
+        private string _normalizationProofFingerprint = string.Empty;
+        private MortalItemAcceptedTurnNormalizationSnapshot?
+            _treatmentPublicationBaselineSnapshot;
 
         internal bool HasValidated
         {
@@ -498,8 +1335,29 @@ internal static class MortalItemAcceptedTurnAuthority
             string fingerprint,
             IReadOnlyList<NewCandidate> newCandidates,
             IReadOnlyList<StableCandidate> stableCandidates,
-            IReadOnlyList<string> governedItemIds)
+            IReadOnlyList<string> governedItemIds,
+            IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
+            IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
         {
+            ArgumentNullException.ThrowIfNull(routesByCreationRef);
+            ArgumentNullException.ThrowIfNull(currentProjectionRoots);
+            ArgumentNullException.ThrowIfNull(backupProjectionRoots);
+            routesByCreationRef = routesByCreationRef.ToDictionary(
+                static pair => pair.Key,
+                static pair => MortalItemAcceptedTurnNormalizationSnapshot.CloneRoute(
+                    pair.Value),
+                StringComparer.Ordinal);
+            transfers = transfers?.Select(
+                MortalItemAcceptedTurnNormalizationSnapshot.CloneTransfer).ToArray() ??
+                Array.Empty<MortalItemAcceptedTransfer>();
+            currentProjectionRoots =
+                MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                    currentProjectionRoots);
+            backupProjectionRoots =
+                MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                    backupProjectionRoots);
             lock (_gate)
             {
                 _validatedFence = new object();
@@ -507,6 +1365,25 @@ internal static class MortalItemAcceptedTurnAuthority
                     string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal) &&
                     string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal))
                 {
+                    _routesByCreationRef = routesByCreationRef;
+                    _transfers = transfers;
+                    _currentProjectionRoots = currentProjectionRoots;
+                    _backupProjectionRoots = backupProjectionRoots;
+                    _creationPathsByCreationRef = newCandidates.ToDictionary(
+                        static candidate => candidate.CreationRef,
+                        static candidate => candidate.FilePath,
+                        StringComparer.Ordinal);
+                    _creationOrdinalsByCreationRef = newCandidates
+                        .Select(static (candidate, index) =>
+                            new KeyValuePair<string, int>(
+                                candidate.CreationRef,
+                                index + 1))
+                        .ToDictionary(
+                            static pair => pair.Key,
+                            static pair => pair.Value,
+                            StringComparer.Ordinal);
+                    _normalizationProofFingerprint = string.Empty;
+                    _treatmentPublicationBaselineSnapshot = null;
                     _validated = true;
                     return;
                 }
@@ -579,6 +1456,25 @@ internal static class MortalItemAcceptedTurnAuthority
                 _snapshotToken = snapshotToken;
                 _fingerprint = fingerprint;
                 _validated = true;
+                _routesByCreationRef = routesByCreationRef;
+                _transfers = transfers;
+                _currentProjectionRoots = currentProjectionRoots;
+                _backupProjectionRoots = backupProjectionRoots;
+                _creationPathsByCreationRef = newCandidates.ToDictionary(
+                    static candidate => candidate.CreationRef,
+                    static candidate => candidate.FilePath,
+                    StringComparer.Ordinal);
+                _creationOrdinalsByCreationRef = newCandidates
+                    .Select(static (candidate, index) =>
+                        new KeyValuePair<string, int>(
+                            candidate.CreationRef,
+                            index + 1))
+                    .ToDictionary(
+                        static pair => pair.Key,
+                        static pair => pair.Value,
+                        StringComparer.Ordinal);
+                _normalizationProofFingerprint = string.Empty;
+                _treatmentPublicationBaselineSnapshot = null;
                 _itemIdsByCreationRef = allocations;
                 _sources = exports.ToArray();
                 _owners = owners.ToArray();
@@ -603,6 +1499,69 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        internal bool ConfirmsTreatmentContinuation(
+            string sessionId,
+            string snapshotToken,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots)
+        {
+            ArgumentNullException.ThrowIfNull(currentProjectionRoots);
+            lock (_gate)
+            {
+                return _validated &&
+                       string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
+                       string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal) &&
+                       _currentProjectionRoots.Count ==
+                       MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.Count &&
+                       _currentProjectionRoots.Keys.ToHashSet(StringComparer.Ordinal)
+                           .SetEquals(
+                               MortalItemCanonicalProjectionPlanner
+                                   .ProjectionRootPaths) &&
+                       _backupProjectionRoots.Count ==
+                       MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.Count &&
+                       _backupProjectionRoots.Keys.ToHashSet(StringComparer.Ordinal)
+                           .SetEquals(
+                               MortalItemCanonicalProjectionPlanner
+                                   .ProjectionRootPaths) &&
+                       MortalItemAcceptedTurnNormalizationSnapshot
+                           .RootsMatchFrozenSubset(
+                               currentProjectionRoots,
+                               _currentProjectionRoots);
+            }
+        }
+
+        internal bool TrySealTreatmentPublicationBaseline(
+            MortalItemAcceptedTurnNormalizationSnapshot baseSnapshot,
+            MortalItemAcceptedTurnNormalizationSnapshot sealedSnapshot)
+        {
+            ArgumentNullException.ThrowIfNull(baseSnapshot);
+            ArgumentNullException.ThrowIfNull(sealedSnapshot);
+            lock (_gate)
+            {
+                if (!_validated ||
+                    _treatmentPublicationBaselineSnapshot is not null ||
+                    baseSnapshot.HasFinalPublicationBaseline ||
+                    !sealedSnapshot.HasFinalPublicationBaseline ||
+                    !baseSnapshot.MatchesExactCacheState(
+                        _sessionId,
+                        _snapshotToken,
+                        _itemIdsByCreationRef,
+                        _normalizationProofFingerprint) ||
+                    !string.Equals(
+                        baseSnapshot.ProjectionProofFingerprint,
+                        sealedSnapshot.ProjectionProofFingerprint,
+                        StringComparison.Ordinal) ||
+                    !sealedSnapshot.RecomputesFinalPublicationBaseline())
+                {
+                    return false;
+                }
+
+                _treatmentPublicationBaselineSnapshot = sealedSnapshot.Clone();
+                _normalizationProofFingerprint = string.Empty;
+                _validatedFence = new object();
+                return true;
+            }
+        }
+
         internal bool TryTakeValidatedTreatmentPublication(
             MortalItemAcceptedTurnNormalizationSnapshot expected,
             out ValidatedPublicationTakeSnapshot snapshot)
@@ -612,10 +1571,14 @@ internal static class MortalItemAcceptedTurnAuthority
             {
                 if (_validated &&
                     _fingerprint is not null &&
+                    _treatmentPublicationBaselineSnapshot is not null &&
+                    expected.MatchesFinalPublicationBaseline(
+                        _treatmentPublicationBaselineSnapshot) &&
                     expected.MatchesExactCacheState(
                         _sessionId,
                         _snapshotToken,
-                        _itemIdsByCreationRef))
+                        _itemIdsByCreationRef,
+                        _normalizationProofFingerprint))
                 {
                     snapshot = new ValidatedPublicationTakeSnapshot(
                         _cacheAuthority,
@@ -725,11 +1688,30 @@ internal static class MortalItemAcceptedTurnAuthority
             {
                 if (Matches(sessionId, snapshotToken))
                 {
-                    snapshot = new MortalItemAcceptedTurnNormalizationSnapshot(
-                        sessionId,
-                        snapshotToken,
-                        turn,
-                        _itemIdsByCreationRef);
+                    if (_treatmentPublicationBaselineSnapshot is not null)
+                    {
+                        if (_treatmentPublicationBaselineSnapshot.Turn != turn)
+                        {
+                            snapshot = null!;
+                            return false;
+                        }
+                        snapshot = _treatmentPublicationBaselineSnapshot.Clone();
+                    }
+                    else
+                    {
+                        snapshot = new MortalItemAcceptedTurnNormalizationSnapshot(
+                            sessionId,
+                            snapshotToken,
+                            turn,
+                            _itemIdsByCreationRef,
+                            _routesByCreationRef,
+                            _transfers,
+                            _currentProjectionRoots,
+                            _backupProjectionRoots,
+                            _creationPathsByCreationRef,
+                            _creationOrdinalsByCreationRef);
+                    }
+                    _normalizationProofFingerprint = snapshot.ProofFingerprint;
                     return true;
                 }
 
@@ -793,15 +1775,21 @@ internal static class MortalItemAcceptedTurnAuthority
                 StringComparison.Ordinal);
 
         private bool CurrentCacheStateAgrees(
-            ValidatedPublicationTakeSnapshot snapshot) =>
-            string.Equals(
+            ValidatedPublicationTakeSnapshot snapshot)
+        {
+            return string.Equals(
                 _fingerprint,
                 snapshot.CacheFingerprint,
                 StringComparison.Ordinal) &&
-            snapshot.NormalizationSnapshot.MatchesExactCacheState(
-                _sessionId,
-                _snapshotToken,
-                _itemIdsByCreationRef);
+                   _treatmentPublicationBaselineSnapshot is not null &&
+                   snapshot.NormalizationSnapshot.MatchesFinalPublicationBaseline(
+                       _treatmentPublicationBaselineSnapshot) &&
+                   snapshot.NormalizationSnapshot.MatchesExactCacheState(
+                       _sessionId,
+                       _snapshotToken,
+                       _itemIdsByCreationRef,
+                       _normalizationProofFingerprint);
+        }
     }
 
     internal sealed record NewCandidate(

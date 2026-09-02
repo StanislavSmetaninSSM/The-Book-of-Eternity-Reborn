@@ -62,6 +62,8 @@ public partial class ValidationService
                 ? null
                 : locationPlan);
         MortalItemRouteAuthorityCatalog? routeAuthorities = null;
+        MortalItemAcceptedTransferCatalog? transferCatalog = null;
+        MortalItemCatalogFiles? previous = null;
         MortalItemIdentityParseResult? currentIndex = null;
         ValidationPendingTurnSnapshotManifest? validatedManifest = null;
         try
@@ -128,7 +130,7 @@ public partial class ValidationService
                 issues);
         }
 
-        var previous = await LoadPreTurnMortalItemCatalogAsync(
+        previous = await LoadPreTurnMortalItemCatalogAsync(
             snapshotLookup,
             includeNpcInventoryCommands: false,
             issues);
@@ -168,7 +170,7 @@ public partial class ValidationService
                 repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
         }
 
-        var transferCatalog = await MortalItemAcceptedTransferCatalog.BuildAsync(
+        transferCatalog = await MortalItemAcceptedTransferCatalog.BuildAsync(
             _fs,
             writeLease: null,
             previous.Catalog,
@@ -190,13 +192,48 @@ public partial class ValidationService
         {
             if (validatedManifest != null)
             {
-                MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
-                    _fs,
-                    writeLease,
-                    validatedManifest.SessionId,
-                    validatedManifest.ManifestPayloadHash,
-                    current.Catalog,
-                    currentIndex?.EntriesByItemId.Keys ?? Array.Empty<string>());
+                var currentProjectionRoots = ProjectionRoots(current, issues);
+                currentProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
+                    ParseProjectionRoot(
+                        await ReadCurrentItemFileAsync(
+                            writeLease: null,
+                            path: MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
+                        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                        issues);
+                var backupProjectionRoots = previous is null
+                    ? MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+                        static path => path,
+                        static _ => (JsonNode?)null,
+                        StringComparer.Ordinal)
+                    : ProjectionRoots(previous, issues);
+                backupProjectionRoots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] =
+                    ParseProjectionRoot(
+                        await ReadValidatedPendingTurnSnapshotFileAsync(
+                            validatedManifest,
+                            MortalItemAcceptedTransferCatalog.NpcCommandsPath),
+                        MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+                        issues);
+                backupProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
+                    ParseProjectionRoot(
+                        await ReadValidatedPendingTurnSnapshotFileAsync(
+                            validatedManifest,
+                            MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
+                        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                        issues);
+                if (issues.All(issue => issue.Severity != IssueSeverity.Error))
+                {
+                    MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
+                        _fs,
+                        writeLease,
+                        validatedManifest.SessionId,
+                        validatedManifest.ManifestPayloadHash,
+                        current.Catalog,
+                        currentIndex?.EntriesByItemId.Keys ?? Array.Empty<string>(),
+                        routeAuthorities,
+                        transferCatalog,
+                        currentProjectionRoots,
+                        backupProjectionRoots);
+                }
             }
         }
     }
@@ -647,7 +684,7 @@ public partial class ValidationService
         foreach (var path in MortalItemCompanionPaths)
         {
             var json = await ReadCurrentItemFileAsync(writeLease, path);
-            var companion = ParseOptionalObject(json);
+            var companion = ParseProjectionRoot(json, path, issues) as JsonObject;
             if (companion != null)
                 companions.Add(path, companion);
         }
@@ -673,7 +710,9 @@ public partial class ValidationService
                 issues));
         return new MortalItemCatalogFiles(
             MortalItemCarrierCatalog.Build(input),
-            identityIndexJson);
+            identityIndexJson,
+            input,
+            vehiclesJson);
     }
 
     private async Task<MortalItemCatalogFiles?> LoadPreTurnMortalItemCatalogAsync(
@@ -713,18 +752,21 @@ public partial class ValidationService
         if (identityIndexJson == null)
             return null;
 
+        var baselineIssues = new List<ValidationIssue>();
         var companions = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in MortalItemCompanionPaths)
         {
             var json = await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
                 path);
-            var companion = ParseOptionalObject(json);
+            var companion = ParseProjectionRoot(
+                json,
+                path,
+                baselineIssues) as JsonObject;
             if (companion != null)
                 companions.Add(path, companion);
         }
 
-        var baselineIssues = new List<ValidationIssue>();
         var input = new MortalItemCarrierCatalogInput(
             ParseCarrierObject(
                 playerJson,
@@ -755,7 +797,7 @@ public partial class ValidationService
             return null;
         }
 
-        return new MortalItemCatalogFiles(catalog, identityIndexJson);
+        return new MortalItemCatalogFiles(catalog, identityIndexJson, input, vehiclesJson);
     }
 
     private async Task<string?> ReadCurrentItemFileAsync(
@@ -772,89 +814,33 @@ public partial class ValidationService
         string path,
         List<ValidationIssue> issues)
     {
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
-
-        try
-        {
-            var node = JsonNode.Parse(json);
-            if (node is JsonObject root)
-                return root;
-
-            issues.Add(InvalidCarrierRootIssue(path, node?.GetValueKind().ToString() ?? "null"));
-        }
-        catch (Exception exception) when (
-            exception is JsonException or InvalidOperationException or ArgumentException)
-        {
-            issues.Add(InvalidCarrierRootIssue(path, exception.Message));
-        }
-
-        return null;
+        var root = ParseProjectionRoot(json, path, issues);
+        return root as JsonObject;
     }
 
     private static JsonObject? ParseVehiclesObject(
         string? json,
         List<ValidationIssue> issues)
     {
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
-
-        try
-        {
-            var node = JsonNode.Parse(json);
-            if (node is JsonObject root)
-                return root;
-            if (node is JsonArray vehicles)
-            {
-                return new JsonObject
-                {
-                    ["vehicles"] = vehicles.DeepClone()
-                };
-            }
-
-            issues.Add(InvalidCarrierRootIssue(
-                StorageTransportMoveService.VehiclesPath,
-                node?.GetValueKind().ToString() ?? "null"));
-        }
-        catch (Exception exception) when (
-            exception is JsonException or InvalidOperationException or ArgumentException)
-        {
-            issues.Add(InvalidCarrierRootIssue(
-                StorageTransportMoveService.VehiclesPath,
-                exception.Message));
-        }
-
-        return null;
+        var root = ParseProjectionRoot(
+            json,
+            StorageTransportMoveService.VehiclesPath,
+            issues);
+        return MortalItemProjectionRootParser.ToCarrierCatalogObject(
+            root,
+            StorageTransportMoveService.VehiclesPath);
     }
 
-    private static JsonObject? ParseOptionalObject(string? json)
+    private static JsonNode? ParseProjectionRoot(
+        string? json,
+        string path,
+        ICollection<ValidationIssue> issues)
     {
-        if (string.IsNullOrWhiteSpace(json))
-            return null;
-
-        try
-        {
-            return JsonNode.Parse(json) as JsonObject;
-        }
-        catch (Exception exception) when (
-            exception is JsonException or InvalidOperationException or ArgumentException)
-        {
-            return null;
-        }
+        var parsed = MortalItemProjectionRootParser.Parse(json, path);
+        foreach (var issue in parsed.Issues)
+            issues.Add(issue);
+        return parsed.Root?.DeepClone();
     }
-
-    private static ValidationIssue InvalidCarrierRootIssue(string path, string actual) =>
-        new(
-            path,
-            IssueSeverity.Error,
-            "A governed Mortal item carrier must have a readable object root.",
-            code: "mortal_item_materialization_invalid_carrier_root",
-            actor: "mortal_item:unknown",
-            section: "MortalItemMaterialization",
-            expected: "readable JSON object",
-            actual: actual,
-            repairHint: "Восстанови только указанный carrier-файл из validated snapshot и повтори минимальную item-операцию.",
-            repairTargetFiles: new[] { path });
 
     private static bool IsRawMortalItemCreation(JsonObject item)
     {
@@ -1540,5 +1526,45 @@ public partial class ValidationService
 
     private sealed record MortalItemCatalogFiles(
         MortalItemCarrierCatalog Catalog,
-        string? IdentityIndexJson);
+        string? IdentityIndexJson,
+        MortalItemCarrierCatalogInput Roots,
+        string? VehiclesJson);
+
+    private static Dictionary<string, JsonNode?> ProjectionRoots(
+        MortalItemCatalogFiles files,
+        ICollection<ValidationIssue> issues)
+    {
+        var roots = files.Roots;
+        var result = new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+        {
+            [InventoryEquipmentService.ItemsPath] =
+                roots.PlayerInventory?.DeepClone().AsObject(),
+            [NpcCoreChangesContract.NpcCorePath] =
+                roots.NpcCore?.DeepClone().AsObject(),
+            [MortalItemAcceptedTransferCatalog.NpcCommandsPath] =
+                roots.NpcInventoryCommands?.DeepClone().AsObject(),
+            [MortalItemAcceptedTransferCatalog.PlayerRemovalPath] = null,
+            [StorageTransportMoveService.CurrentLocationPath] =
+                roots.CurrentLocation?.DeepClone().AsObject(),
+            [StorageTransportMoveService.VehiclesPath] =
+                ParseProjectionRoot(
+                    files.VehiclesJson,
+                    StorageTransportMoveService.VehiclesPath,
+                    issues),
+            [MortalItemIdentityState.StatePath] =
+                ParseProjectionRoot(
+                    files.IdentityIndexJson,
+                    MortalItemIdentityState.StatePath,
+                    issues),
+            [MortalLocationStorageContentsState.StatePath] =
+                roots.OffscreenLocationStorageContents?.DeepClone().AsObject()
+        };
+        foreach (var path in MortalItemCompanionPaths)
+        {
+            result[path] = roots.CompanionRoots.TryGetValue(path, out var root)
+                ? root.DeepClone().AsObject()
+                : null;
+        }
+        return result;
+    }
 }

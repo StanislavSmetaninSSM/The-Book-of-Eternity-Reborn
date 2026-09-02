@@ -123,165 +123,11 @@ internal sealed partial class MortalItemTransitionWriter
             return MortalItemTransitionResult.Failed(exception.Message);
         }
 
-        var beforeCatalog = BuildCatalog(state);
-        var beforeIndex = MortalItemIdentityState.Parse(state.IdentityIndexJson);
-        var baselineError = ValidateComposedState(state, beforeCatalog, beforeIndex);
-        if (baselineError != null)
-            return MortalItemTransitionResult.Failed(baselineError);
-        if (HasAppliedTransitionAuthority(beforeIndex, intent))
-        {
-            return MortalItemTransitionResult.Failed(
-                "Этот exact item transition authority уже был применён; replay отклонён без записи.");
-        }
-
-        var itemId = intent.SourceItemIds[0];
-        var occurrence = beforeCatalog.ByItemId[itemId][0];
-        if (!SameCarrier(occurrence.Carrier, intent.SourceCarrier!))
-        {
-            return MortalItemTransitionResult.Failed(
-                "Предмет больше не находится у выбранного исходного владельца. Откройте действие заново.");
-        }
-
-        var entry = beforeIndex.EntriesByItemId[itemId];
-        if (!string.Equals(ReadExactString(entry["state"]), "active", StringComparison.Ordinal) ||
-            !CarrierNodeEquals(entry["currentCarrier"], intent.SourceCarrier!))
-        {
-            return MortalItemTransitionResult.Failed(
-                "Идентичность предмета не активна у выбранного исходного владельца.");
-        }
-
-        var sourceArray = ResolveCarrierArray(
-            state,
-            intent.SourceCarrier!,
-            createIfMissing: false,
-            out var sourceError);
-        if (sourceArray == null)
-            return MortalItemTransitionResult.Failed(sourceError!);
-        var sourceMatches = sourceArray.OfType<JsonObject>()
-            .Where(item => string.Equals(
-                ReadExactString(item["itemId"]),
-                itemId,
-                StringComparison.Ordinal))
-            .ToArray();
-        if (sourceMatches.Length != 1)
-        {
-            return MortalItemTransitionResult.Failed(
-                "Исходный предмет не найден по точному itemId или найден неоднозначно.");
-        }
-        var item = sourceMatches[0];
-
-        if (!TryReadPositiveInt(item["count"], out var itemQuantity) ||
-            itemQuantity != intent.Quantity)
-        {
-            return MortalItemTransitionResult.Failed(
-                "Количество переносимого предмета не совпадает с его принятой записью.");
-        }
-
-        var destinationArray = ResolveCarrierArray(
-            state,
-            intent.DestinationCarrier!,
-            createIfMissing: true,
-            out var destinationError);
-        if (destinationArray == null)
-            return MortalItemTransitionResult.Failed(destinationError!);
-
-        if (!ValidateDestinationContainerPath(
-                destinationArray,
-                itemId,
-                intent.DestinationCarrier!.ContainerPath,
-                out destinationError))
-        {
-            return MortalItemTransitionResult.Failed(destinationError!);
-        }
-
-        var sourceIndex = sourceArray.IndexOf(item);
-        if (sourceIndex < 0)
-            return MortalItemTransitionResult.Failed("Исходный предмет изменился до переноса.");
-
-        var immutableEnvelope = item[MortalItemMaterializationContract.EnvelopeProperty]?.DeepClone();
-        var immutableReceipt = item[MortalItemMaterializationContract.ReceiptProperty]?.DeepClone();
-        ClearInlineEquipmentReference(state, intent.SourceCarrier!, itemId);
-        sourceArray.RemoveAt(sourceIndex);
-        item["contentsPath"] = intent.DestinationCarrier.ContainerPath.Count == 0
-            ? null
-            : new JsonArray(intent.DestinationCarrier.ContainerPath
-                .Select(value => (JsonNode?)JsonValue.Create(value))
-                .ToArray());
-        MortalItemLocalActionPolicy.NormalizePlacementForDestination(
-            item,
-            intent.DestinationCarrier);
-        destinationArray.Add(item);
-
-        var currentIndexRoot = beforeIndex.Root.DeepClone().AsObject();
-        var currentIndex = MortalItemIdentityState.Parse(currentIndexRoot);
-        var currentEntry = currentIndex.EntriesByItemId[itemId];
-        currentEntry["currentCarrier"] = CreateCarrierNode(intent.DestinationCarrier);
-        MortalItemIdentityState.AppendTransition(
-            currentEntry,
-            MortalItemIdentityState.CreateTransition(
-                "transfer",
-                intent.Turn,
-                intent.SourceItemIds,
-                CreateCarrierNode(intent.SourceCarrier!),
-                CreateCarrierNode(intent.DestinationCarrier),
-                intent.Quantity,
-                intent.Quantity,
-                intent.AuthorityKind,
-                intent.AuthorityId));
-
-        if (mutation != null)
-        {
-            var mutationError = mutation.Apply(CreateMutationContext(state, item));
-            if (mutationError != null)
-                return MortalItemTransitionResult.Failed(mutationError);
-        }
-
-        if (!JsonNode.DeepEquals(
-                immutableEnvelope,
-                item[MortalItemMaterializationContract.EnvelopeProperty]) ||
-            !JsonNode.DeepEquals(
-                immutableReceipt,
-                item[MortalItemMaterializationContract.ReceiptProperty]))
-        {
-            return MortalItemTransitionResult.Failed(
-                "Перенос попытался изменить неизменяемое свидетельство материализации предмета.");
-        }
-
-        var normalizedCurrentIndex = MortalItemIdentityState.Parse(currentIndex.Root);
-        if (normalizedCurrentIndex.Issues.Count > 0)
-            return MortalItemTransitionResult.Failed(normalizedCurrentIndex.Issues[0].Message);
-        var continuityIssues = MortalItemIdentityState.ValidateAgainst(
-            beforeIndex,
-            normalizedCurrentIndex);
-        if (continuityIssues.Count > 0)
-            return MortalItemTransitionResult.Failed(continuityIssues[0].Message);
-
-        state.IdentityIndexRoot = normalizedCurrentIndex.Root;
-        var afterCatalog = BuildCatalog(state);
-        var composedError = ValidateComposedState(state, afterCatalog, normalizedCurrentIndex);
-        if (composedError != null)
-            return MortalItemTransitionResult.Failed(composedError);
-        if (!afterCatalog.ByItemId.TryGetValue(itemId, out var afterOccurrences) ||
-            afterOccurrences.Count != 1 ||
-            !SameCarrier(afterOccurrences[0].Carrier, intent.DestinationCarrier))
-        {
-            return MortalItemTransitionResult.Failed(
-                "Перенос не завершился ровно одним активным носителем предмета.");
-        }
-
-        var writes = BuildWrites(
-            state,
-            intent.SourceCarrier!,
-            intent.DestinationCarrier!,
-            mutation);
-        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(
-            _fs,
+        return await ExecuteProjectedTransferAsync(
             writeLease,
-            writes);
-        return committed
-            ? MortalItemTransitionResult.Completed(itemId, "Предмет перенесён с сохранением идентичности.")
-            : MortalItemTransitionResult.Failed(
-                "Игровое состояние изменилось во время переноса; исходные данные сохранены.");
+            intent,
+            mutation,
+            state);
     }
 
     internal async Task<MortalItemTransitionResult> CreateAsync(
@@ -485,6 +331,141 @@ internal sealed partial class MortalItemTransitionWriter
                 "Предмет материализован с постоянной идентичностью.")
             : MortalItemTransitionResult.Failed(
                 "Игровое состояние изменилось во время materialization; исходные данные сохранены.");
+    }
+
+    private async Task<MortalItemTransitionResult> ExecuteProjectedTransferAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemTransitionIntent intent,
+        MortalItemTransitionMutation? mutation,
+        LoadedState state)
+    {
+        var beforeCatalog = BuildCatalog(state);
+        var beforeIndex = MortalItemIdentityState.Parse(state.IdentityIndexJson);
+        var baselineError = ValidateComposedState(state, beforeCatalog, beforeIndex);
+        if (baselineError != null)
+            return MortalItemTransitionResult.Failed(baselineError);
+        if (HasAppliedTransitionAuthority(beforeIndex, intent))
+        {
+            return MortalItemTransitionResult.Failed(
+                "Этот exact item transition authority уже был применён; replay отклонён без записи.");
+        }
+
+        var roots = CreateProjectionRoots(state);
+        var transfer = new MortalItemAcceptedTransfer(
+            intent.SourceItemIds[0],
+            intent.SourceCarrier!,
+            intent.DestinationCarrier!,
+            intent.Quantity,
+            intent.Turn,
+            intent.AuthorityKind,
+            intent.AuthorityId,
+            MortalItemTransferCommandSurface.PlayerUpdate,
+            -1,
+            MortalItemTransferCommandSurface.PlayerRemoval,
+            -1);
+        var transitionId = "mitrn_" + Guid.NewGuid().ToString("N");
+        var projected = MortalItemTransferPlanner.Plan(
+            roots,
+            beforeIndex,
+            new[] { transfer },
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [transfer.ItemId] = transitionId
+            },
+            removeAcceptedCommands: false);
+        if (!projected.IsValid)
+            return MortalItemTransitionResult.Failed(projected.Issues[0].Message);
+
+        ApplyProjectedDocument(state.Inventory, projected.Roots);
+        ApplyProjectedDocument(state.NpcCore, projected.Roots);
+        ApplyProjectedDocument(state.Location, projected.Roots);
+        ApplyProjectedDocument(state.OffscreenLocationStorage, projected.Roots);
+        ApplyProjectedDocument(state.Vehicles, projected.Roots);
+        state.IdentityIndexRoot = projected.IdentityIndexAfterImage.DeepClone().AsObject();
+
+        var projectedCatalog = BuildCatalog(state);
+        if (!projectedCatalog.ByItemId.TryGetValue(
+                transfer.ItemId,
+                out var projectedOccurrences) ||
+            projectedOccurrences.Count != 1)
+        {
+            return MortalItemTransitionResult.Failed(
+                "Перенос не завершился ровно одним активным носителем предмета.");
+        }
+        var item = projectedOccurrences[0].Item;
+        if (mutation != null)
+        {
+            var mutationError = mutation.Apply(CreateMutationContext(state, item));
+            if (mutationError != null)
+                return MortalItemTransitionResult.Failed(mutationError);
+        }
+
+        var normalizedIndex = MortalItemIdentityState.Parse(state.IdentityIndexRoot);
+        var afterCatalog = BuildCatalog(state);
+        var composedError = ValidateComposedState(state, afterCatalog, normalizedIndex);
+        if (composedError != null)
+            return MortalItemTransitionResult.Failed(composedError);
+        if (!afterCatalog.ByItemId.TryGetValue(transfer.ItemId, out var afterOccurrences) ||
+            afterOccurrences.Count != 1 ||
+            !SameCarrier(afterOccurrences[0].Carrier, intent.DestinationCarrier!))
+        {
+            return MortalItemTransitionResult.Failed(
+                "Перенос не завершился ровно одним активным носителем предмета.");
+        }
+
+        var writes = BuildWrites(
+            state,
+            intent.SourceCarrier!,
+            intent.DestinationCarrier!,
+            mutation);
+        var committed = await CoordinatedStateWriteHelper.TryCommitAsync(
+            _fs,
+            writeLease,
+            writes);
+        return committed
+            ? MortalItemTransitionResult.Completed(
+                transfer.ItemId,
+                "Предмет перенесён с сохранением идентичности.")
+            : MortalItemTransitionResult.Failed(
+                "Игровое состояние изменилось во время переноса; исходные данные сохранены.");
+    }
+
+    private static Dictionary<string, JsonNode?> CreateProjectionRoots(LoadedState state)
+    {
+        var result = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+            static path => path,
+            static _ => (JsonNode?)null,
+            StringComparer.Ordinal);
+        foreach (var document in state.Documents())
+            result[document.Path] = document.Root.DeepClone();
+        foreach (var pair in state.Companions)
+            result[pair.Key] = pair.Value.DeepClone();
+        result[MortalItemIdentityState.StatePath] = state.IdentityIndexRoot.DeepClone();
+        return result;
+    }
+
+    private static void ApplyProjectedDocument(
+        StateDocument? document,
+        IReadOnlyDictionary<string, JsonNode?> projectedRoots)
+    {
+        if (document == null || projectedRoots[document.Path] is not { } projected)
+            return;
+        switch (document.Root, projected)
+        {
+            case (JsonObject target, JsonObject source):
+                target.Clear();
+                foreach (var pair in source)
+                    target[pair.Key] = pair.Value?.DeepClone();
+                break;
+            case (JsonArray target, JsonArray source):
+                target.Clear();
+                foreach (var value in source)
+                    target.Add(value?.DeepClone());
+                break;
+            default:
+                throw new InvalidDataException(
+                    $"Projected root topology changed for '{document.Path}'.");
+        }
     }
 
     private static string? ValidateTransferIntent(MortalItemTransitionIntent intent)

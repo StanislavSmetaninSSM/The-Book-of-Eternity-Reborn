@@ -1,4 +1,5 @@
 using System.Runtime.CompilerServices;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -427,14 +428,22 @@ internal static class AcceptedTurnAuthorityRegistry
         string fingerprint,
         IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
         IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
-        IReadOnlyList<string> governedItemIds) =>
+        IReadOnlyList<string> governedItemIds,
+        IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
+        IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
+        IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots) =>
         GetState(fileSystem, writeLease).RegisterMortalItemsValidated(
             sessionId,
             snapshotToken,
             fingerprint,
             newCandidates,
             stableCandidates,
-            governedItemIds);
+            governedItemIds,
+            routesByCreationRef,
+            transfers,
+            currentProjectionRoots,
+            backupProjectionRoots);
 
     internal static IReadOnlyList<ValidationIssue>
         RegisterMortalTreatmentItemsValidated(
@@ -446,6 +455,7 @@ internal static class AcceptedTurnAuthorityRegistry
             IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
             IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
             IReadOnlyList<string> governedItemIds,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
             object treatmentContinuationAuthority,
             object reservationAuthority) =>
         GetState(fileSystem, writeLease).RegisterMortalTreatmentItemsValidated(
@@ -455,8 +465,48 @@ internal static class AcceptedTurnAuthorityRegistry
             newCandidates,
             stableCandidates,
             governedItemIds,
+            currentProjectionRoots,
             treatmentContinuationAuthority,
             reservationAuthority);
+
+    internal static IReadOnlyList<ValidationIssue>
+        ConfirmMortalTreatmentItemsValidated(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+        GetState(fileSystem, writeLease).ConfirmMortalTreatmentItemsValidated(
+            sessionId,
+            snapshotToken,
+            currentProjectionRoots,
+            treatmentContinuationAuthority,
+            reservationAuthority);
+
+    internal static IReadOnlyList<ValidationIssue>
+        SealMortalTreatmentItemPublicationBaseline(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            string sessionId,
+            string snapshotToken,
+            int turn,
+            NpcCoreChangesContract.Authority npcCoreAuthority,
+            CanonicalBeforeImage npcTradePending,
+            CanonicalBeforeImage trainingPending,
+            object treatmentContinuationAuthority,
+            object reservationAuthority) =>
+        GetState(fileSystem, writeLease)
+            .SealMortalTreatmentItemPublicationBaseline(
+                sessionId,
+                snapshotToken,
+                turn,
+                npcCoreAuthority,
+                npcTradePending,
+                trainingPending,
+                treatmentContinuationAuthority,
+                reservationAuthority);
 
     internal static bool HasMortalItemsValidated(
         FileSystemManager fileSystem,
@@ -3486,7 +3536,11 @@ internal static class AcceptedTurnAuthorityRegistry
             string fingerprint,
             IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
             IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
-            IReadOnlyList<string> governedItemIds)
+            IReadOnlyList<string> governedItemIds,
+            IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
+            IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
+            IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
         {
             lock (_gate)
                 _mortalItems.Register(
@@ -3495,7 +3549,11 @@ internal static class AcceptedTurnAuthorityRegistry
                     fingerprint,
                     newCandidates,
                     stableCandidates,
-                    governedItemIds);
+                    governedItemIds,
+                    routesByCreationRef,
+                    transfers,
+                    currentProjectionRoots,
+                    backupProjectionRoots);
         }
 
         internal IReadOnlyList<ValidationIssue>
@@ -3506,6 +3564,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 IReadOnlyList<MortalItemAcceptedTurnAuthority.NewCandidate> newCandidates,
                 IReadOnlyList<MortalItemAcceptedTurnAuthority.StableCandidate> stableCandidates,
                 IReadOnlyList<string> governedItemIds,
+                IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
                 object treatmentContinuationAuthority,
                 object reservationAuthority)
         {
@@ -3523,16 +3582,164 @@ internal static class AcceptedTurnAuthorityRegistry
                             "stale or cancelled treatment publication reservation")
                     };
                 }
-                _mortalItems.Register(
+                if (_mortalItems.HasValidated)
+                    return ItemAuthorityChangedIssue();
+                if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                        treatmentContinuationAuthority,
+                        out var continuation) &&
+                    continuation.ItemCommandEnvelope.IsEmpty &&
+                    continuation.ResourceFinalization.Consumptions.All(
+                        static consumption => !string.Equals(
+                            consumption.Kind,
+                            "item_quantity",
+                            StringComparison.Ordinal)) &&
+                    newCandidates.Count == 0 &&
+                    currentProjectionRoots.Count ==
+                    MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.Count &&
+                    currentProjectionRoots.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(
+                        MortalItemCanonicalProjectionPlanner.ProjectionRootPaths))
+                {
+                    _mortalItems.Register(
+                        sessionId,
+                        snapshotToken,
+                        fingerprint,
+                        newCandidates,
+                        stableCandidates,
+                        governedItemIds,
+                        new Dictionary<string, MortalItemRouteAuthority>(
+                            StringComparer.Ordinal),
+                        Array.Empty<MortalItemAcceptedTransfer>(),
+                        currentProjectionRoots,
+                        currentProjectionRoots);
+                    if (_mortalItems.ConfirmsTreatmentContinuation(
+                            sessionId,
+                            snapshotToken,
+                            currentProjectionRoots))
+                    {
+                        return Array.Empty<ValidationIssue>();
+                    }
+                }
+                return ItemAuthorityChangedIssue();
+            }
+        }
+
+        internal IReadOnlyList<ValidationIssue>
+            ConfirmMortalTreatmentItemsValidated(
+                string sessionId,
+                string snapshotToken,
+                IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+                object treatmentContinuationAuthority,
+                object reservationAuthority)
+        {
+            lock (_gate)
+            {
+                if (!OwnsMortalWoundTreatmentPublicationReservation(
+                        treatmentContinuationAuthority,
+                        reservationAuthority))
+                {
+                    return new[]
+                    {
+                        WoundIssue(
+                            "mortal_wound_treatment_publication_reservation_invalid",
+                            "the current exact private treatment publication reservation",
+                            "stale or cancelled treatment publication reservation")
+                    };
+                }
+                return _mortalItems.ConfirmsTreatmentContinuation(
                     sessionId,
                     snapshotToken,
-                    fingerprint,
-                    newCandidates,
-                    stableCandidates,
-                    governedItemIds);
+                    currentProjectionRoots)
+                    ? Array.Empty<ValidationIssue>()
+                    : ItemAuthorityChangedIssue();
+            }
+        }
+
+        internal IReadOnlyList<ValidationIssue>
+            SealMortalTreatmentItemPublicationBaseline(
+                string sessionId,
+                string snapshotToken,
+                int turn,
+                NpcCoreChangesContract.Authority npcCoreAuthority,
+                CanonicalBeforeImage npcTradePending,
+                CanonicalBeforeImage trainingPending,
+                object treatmentContinuationAuthority,
+                object reservationAuthority)
+        {
+            lock (_gate)
+            {
+                if (!OwnsMortalWoundTreatmentPublicationReservation(
+                        treatmentContinuationAuthority,
+                        reservationAuthority) ||
+                    !WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                        treatmentContinuationAuthority,
+                        out var continuation) ||
+                    !WoundAcceptedTurnPlanner.TryReadTreatmentSkillProjection(
+                        treatmentContinuationAuthority,
+                        reservationAuthority,
+                        out _,
+                        out var skillAfterImages,
+                        out _))
+                {
+                    return new[]
+                    {
+                        WoundIssue(
+                            "mortal_wound_treatment_publication_baseline_authority_invalid",
+                            "the current exact treatment continuation and skill projection authority",
+                            "missing, foreign, or changed authority")
+                    };
+                }
+                var coordinates = continuation.Resolution.Coordinates;
+                if (!string.Equals(
+                        sessionId,
+                        coordinates.SessionId,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        snapshotToken,
+                        coordinates.SnapshotToken,
+                        StringComparison.Ordinal) ||
+                    turn != coordinates.Turn ||
+                    !_mortalItems.TryCaptureNormalizationSnapshot(
+                        sessionId,
+                        snapshotToken,
+                        turn,
+                        out var baseSnapshot) ||
+                    baseSnapshot.HasFinalPublicationBaseline)
+                {
+                    return ItemAuthorityChangedIssue();
+                }
+
+                var npcTradeDisposition = skillAfterImages.ContainsKey(
+                    NpcCoreChangesContract.NpcCorePath)
+                    ? MortalItemNpcTradeTailDisposition.Apply
+                    : MortalItemNpcTradeTailDisposition
+                        .SkipUntouchedTreatmentContinuation;
+                var sealedBaseline = baseSnapshot
+                    .CreateTreatmentPublicationBaseline(
+                        continuation.ItemCommandEnvelope,
+                        npcCoreAuthority,
+                        npcTradePending,
+                        trainingPending,
+                        npcTradeDisposition);
+                if (!sealedBaseline.IsValid || sealedBaseline.Snapshot is null)
+                    return sealedBaseline.Issues;
+                if (!_mortalItems.TrySealTreatmentPublicationBaseline(
+                        baseSnapshot,
+                        sealedBaseline.Snapshot))
+                {
+                    return ItemAuthorityChangedIssue();
+                }
                 return Array.Empty<ValidationIssue>();
             }
         }
+
+        private static IReadOnlyList<ValidationIssue> ItemAuthorityChangedIssue() =>
+            new[]
+            {
+                WoundIssue(
+                    "mortal_wound_treatment_publication_item_authority_changed",
+                    "the exact already validated item projection authority",
+                    "missing or changed item cache proof")
+            };
 
         internal bool HasMortalItemsValidated()
         {

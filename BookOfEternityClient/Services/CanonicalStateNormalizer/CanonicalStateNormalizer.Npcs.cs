@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
@@ -17,24 +18,24 @@ public partial class CanonicalStateNormalizer
         if (preTurnRoot == null)
             return;
 
-        var result = CloneObject(currentRoot);
         var authority = await ReadNpcCoreAuthorityAsync();
-        var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
-            result,
-            await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath),
-            await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath));
-        var evaluation = NpcCoreChangesContract.Evaluate(
-            result,
-            preTurnRoot,
-            authority,
-            ValidationService.ValidateNpcCoreFateCardsAgainstProductionContract,
-            detectDirectMutations: true,
-            acceptedTurnAuthority);
-        if (!evaluation.CanApply)
+        var tradePending = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
+        var trainingPending = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
+        if (MortalItemPublicationTailTransforms.NpcCore(
+                currentRoot,
+                preTurnRoot,
+                authority,
+                BeforeImage(tradePending),
+                BeforeImage(trainingPending)) is not JsonObject result)
+        {
             return;
+        }
 
-        NpcCoreChangesContract.Apply(result, evaluation);
         await WriteIfChangedAsync(NpcCoreChangesContract.NpcCorePath, currentNode, result);
+
+        static CanonicalBeforeImage BeforeImage(string? json) => new(
+            json != null,
+            json == null ? null : Encoding.UTF8.GetBytes(json));
     }
 
     private async Task<NpcCoreChangesContract.Authority> ReadNpcCoreAuthorityAsync()
@@ -167,45 +168,28 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         const string path = "game_state/npcs/npc_core.json";
-        if (acceptedMechanicsPlan?.WoundStageBundle?.PreparedPlan
+        var disposition = acceptedMechanicsPlan?.WoundStageBundle?.PreparedPlan
                 .TreatmentContinuationAuthority is not null &&
-            !acceptedMechanicsPlan.OwnerCompanionAfterImages.ContainsKey(path))
-        {
-            return;
-        }
+            !acceptedMechanicsPlan.OwnerCompanionAfterImages.ContainsKey(path)
+                ? MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation
+                : MortalItemNpcTradeTailDisposition.Apply;
         var currentNode = await ReadNodeAsync(path);
         if (currentNode is not JsonObject currentObj)
             return;
 
         var previousObj = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(currentObj);
-        var changed = PreserveHistoricalMortalMaterialization(result, previousObj);
-
-        changed |= NormalizeMortalTeacherTrainingShowcasePatches(result);
-
-        if (result[NpcTradeRequestState.UpdateReceiptsProperty] is JsonArray receiptUpdates)
+        if (MortalItemPublicationTailTransforms.NpcTrade(
+                currentObj,
+                previousObj,
+                disposition) is not JsonObject result)
         {
-            NpcTradeRequestState.ApplyReceiptUpdates(result, receiptUpdates);
-            result.Remove(NpcTradeRequestState.UpdateReceiptsProperty);
-            changed = true;
+            return;
         }
 
-        foreach (var npcs in GuardianPolicyContracts.EnumerateCanonicalNpcObjectArrays(result))
-        {
-            foreach (var npc in npcs.OfType<JsonObject>())
-            {
-                var before = npc.ToJsonString();
-                NpcTradeRequestState.NormalizeNpcTradeReceiptsShape(npc);
-                if (!string.Equals(before, npc.ToJsonString(), StringComparison.Ordinal))
-                    changed = true;
-            }
-        }
-
-        if (changed)
-            await WriteIfChangedAsync(path, currentNode, result);
+        await WriteIfChangedAsync(path, currentNode, result);
     }
 
-    private static bool PreserveHistoricalMortalMaterialization(
+    internal static bool PreserveHistoricalMortalMaterialization(
         JsonObject currentRoot,
         JsonObject? previousRoot)
     {
@@ -270,7 +254,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static bool NormalizeMortalTeacherTrainingShowcasePatches(JsonObject root)
+    internal static bool NormalizeMortalTeacherTrainingShowcasePatches(JsonObject root)
     {
         if (root["UpdateNPCs"] is not JsonArray updates)
             return false;

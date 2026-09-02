@@ -1004,7 +1004,7 @@ public partial class CanonicalStateNormalizer
         return categories;
     }
 
-    private static IEnumerable<JsonNode> CollectQuestHistoryEntries(JsonNode? root)
+    internal static IEnumerable<JsonNode> CollectQuestHistoryEntries(JsonNode? root)
     {
         if (root is JsonArray rootArray)
         {
@@ -1327,7 +1327,7 @@ public partial class CanonicalStateNormalizer
         return false;
     }
 
-    private static void CollectNamedObjectEntries(JsonNode? root, string propName, List<JsonObject> target)
+    internal static void CollectNamedObjectEntries(JsonNode? root, string propName, List<JsonObject> target)
     {
         if (root is not JsonObject obj || obj[propName] is not JsonArray arr)
             return;
@@ -1342,7 +1342,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static IEnumerable<JsonObject> CollectInventorySidecarEntries(JsonNode? root, params string[] propNames)
+    internal static IEnumerable<JsonObject> CollectInventorySidecarEntries(JsonNode? root, params string[] propNames)
     {
         if (root is JsonArray rootArray)
         {
@@ -1364,7 +1364,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static IEnumerable<JsonObject> CollectInventoryTextEntries(JsonNode? root)
+    internal static IEnumerable<JsonObject> CollectInventoryTextEntries(JsonNode? root)
     {
         if (root is not JsonObject obj)
             yield break;

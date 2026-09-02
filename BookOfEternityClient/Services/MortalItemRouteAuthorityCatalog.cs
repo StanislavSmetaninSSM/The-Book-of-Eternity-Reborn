@@ -49,6 +49,25 @@ internal sealed class MortalItemRouteAuthorityCatalog
 
     internal IReadOnlyList<MortalItemRouteAuthorityIssue> Issues { get; }
 
+    internal static MortalItemRouteAuthorityCatalog CreateFrozen(
+        IReadOnlyDictionary<string, MortalItemRouteAuthority> byCreationRef)
+    {
+        ArgumentNullException.ThrowIfNull(byCreationRef);
+        return new MortalItemRouteAuthorityCatalog(
+            byCreationRef.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value with
+                {
+                    Destination = pair.Value.Destination with
+                    {
+                        ContainerPath = pair.Value.Destination.ContainerPath.ToArray()
+                    },
+                    SourceItemIds = pair.Value.SourceItemIds.ToArray()
+                },
+                StringComparer.Ordinal),
+            new List<MortalItemRouteAuthorityIssue>());
+    }
+
     internal static int MeasureTradeAuthorityWork(
         JsonObject? requestsRoot,
         JsonObject? npcRoot)

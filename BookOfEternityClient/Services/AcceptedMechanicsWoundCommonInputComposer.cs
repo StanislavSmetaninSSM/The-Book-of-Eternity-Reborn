@@ -167,6 +167,13 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             return text;
         }
 
+        CanonicalBeforeImage CaptureBeforeImage(string path)
+        {
+            _ = Read(path);
+            var image = beforeImages[path];
+            return new CanonicalBeforeImage(image.Existed, image.Bytes);
+        }
+
         try
         {
             foreach (var (path, expected) in treatmentSkillBaselines)
@@ -297,43 +304,93 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
 
             if (anchorPlan is null)
             {
-                var itemCatalog = MortalItemCarrierCatalog.Build(
-                    new MortalItemCarrierCatalogInput(
-                        ParseNullableObject(Read("game_state/inventory/items.json")),
-                        ParseNullableObject(Read("game_state/npcs/npc_core.json")),
-                        ParseNullableObject(Read("game_state/npcs/npc_inventory.json")),
-                        ParseNullableObject(Read("game_state/world/current_location.json")),
-                        ParseNullableObject(Read("game_state/misc/vehicles.json")),
-                        new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                        ParseNullableObject(Read(
-                            MortalLocationStorageContentsState.StatePath))));
-                foreach (var itemIssue in itemCatalog.Issues)
-                {
-                    issues.Add(Issue(
-                        itemIssue.Path,
-                        itemIssue.Code,
-                        "one exact non-ambiguous Mortal item carrier catalog",
-                        itemIssue.Identity ?? itemIssue.IdentityKind));
-                }
-                var itemIdentity = MortalItemIdentityState.Parse(
-                    Read(MortalItemIdentityState.StatePath));
-                issues.AddRange(itemIdentity.Issues);
+                var treatmentItemProjectionRoots =
+                    CaptureMortalItemProjectionRoots(Read, issues);
                 if (issues.Count != 0)
                 {
                     return new AcceptedMechanicsWoundCommonInputCompositionResult(
                         null,
                         issues);
                 }
-                issues.AddRange(MortalItemAcceptedTurnAuthority
-                    .RegisterValidatedTreatmentItems(
+
+                if (MortalItemAcceptedTurnAuthority.HasValidatedItems(
                         fileSystem,
-                        writeLease,
-                        binding.SessionId,
-                        binding.SnapshotToken,
-                        itemCatalog,
-                        itemIdentity.EntriesByItemId.Keys,
-                        treatmentContinuationAuthority!,
-                        treatmentReservationAuthority!));
+                        writeLease))
+                {
+                    issues.AddRange(MortalItemAcceptedTurnAuthority
+                        .ConfirmValidatedTreatmentItems(
+                            fileSystem,
+                            writeLease,
+                            binding.SessionId,
+                            binding.SnapshotToken,
+                            treatmentItemProjectionRoots,
+                            treatmentContinuationAuthority!,
+                            treatmentReservationAuthority!));
+                }
+                else
+                {
+                    var itemCatalog = MortalItemCarrierCatalog.Build(
+                        CreateMortalItemCarrierCatalogInput(
+                            treatmentItemProjectionRoots));
+                    foreach (var itemIssue in itemCatalog.Issues)
+                    {
+                        issues.Add(Issue(
+                            itemIssue.Path,
+                            itemIssue.Code,
+                            "one exact non-ambiguous Mortal item carrier catalog",
+                            itemIssue.Identity ?? itemIssue.IdentityKind));
+                    }
+                    var itemIdentity = MortalItemIdentityState.Parse(
+                        treatmentItemProjectionRoots[
+                            MortalItemIdentityState.StatePath]);
+                    issues.AddRange(itemIdentity.Issues);
+                    if (issues.Count == 0)
+                    {
+                        issues.AddRange(MortalItemAcceptedTurnAuthority
+                            .RegisterValidatedTreatmentItems(
+                                fileSystem,
+                                writeLease,
+                                binding.SessionId,
+                                binding.SnapshotToken,
+                                itemCatalog,
+                                itemIdentity.EntriesByItemId.Keys,
+                                treatmentItemProjectionRoots,
+                                treatmentContinuationAuthority!,
+                                treatmentReservationAuthority!));
+                    }
+                }
+                if (issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+
+                var npcCoreAuthority = NpcCoreChangesContract
+                    .CreateAuthorityFromCanonicalJson(
+                        Read(MortalLocationMaterializationContract.WorldMapPath),
+                        Read(MortalLocationMaterializationContract.CurrentLocationPath),
+                        Read("game_state/factions/faction_core.json"),
+                        Read("game_state/misc/characteristics.json"));
+                var npcTradePending = CaptureBeforeImage(
+                    NpcTradeRequestState.PendingRequestPath);
+                var trainingPending = CaptureBeforeImage(
+                    TrainingRequestState.PendingRequestPath);
+                if (issues.Count == 0)
+                {
+                    issues.AddRange(MortalItemAcceptedTurnAuthority
+                        .SealValidatedTreatmentPublicationBaseline(
+                            fileSystem,
+                            writeLease,
+                            binding.SessionId,
+                            binding.SnapshotToken,
+                            binding.Turn,
+                            npcCoreAuthority,
+                            npcTradePending,
+                            trainingPending,
+                            treatmentContinuationAuthority!,
+                            treatmentReservationAuthority!));
+                }
                 if (issues.Count != 0)
                 {
                     return new AcceptedMechanicsWoundCommonInputCompositionResult(
@@ -770,6 +827,43 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             return null;
         return JsonNode.Parse(json) as JsonObject ??
                throw new InvalidDataException("Expected a strict JSON object.");
+    }
+
+    private static Dictionary<string, JsonNode?> CaptureMortalItemProjectionRoots(
+        Func<string, string?> read,
+        ICollection<ValidationIssue> issues)
+    {
+        var roots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+        {
+            var parsed = MortalItemProjectionRootParser.Parse(read(path), path);
+            foreach (var issue in parsed.Issues)
+                issues.Add(issue);
+            roots.Add(path, parsed.Root?.DeepClone());
+        }
+        return roots;
+    }
+
+    private static MortalItemCarrierCatalogInput CreateMortalItemCarrierCatalogInput(
+        IReadOnlyDictionary<string, JsonNode?> roots)
+    {
+        var companions = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
+            .Skip(8)
+            .Where(path => roots[path] is JsonObject)
+            .ToDictionary(
+                static path => path,
+                path => roots[path]!.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+        return new MortalItemCarrierCatalogInput(
+            roots[InventoryEquipmentService.ItemsPath] as JsonObject,
+            roots[NpcCoreChangesContract.NpcCorePath] as JsonObject,
+            roots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] as JsonObject,
+            roots[StorageTransportMoveService.CurrentLocationPath] as JsonObject,
+            MortalItemProjectionRootParser.ToCarrierCatalogObject(
+                roots[StorageTransportMoveService.VehiclesPath],
+                StorageTransportMoveService.VehiclesPath),
+            companions,
+            roots[MortalLocationStorageContentsState.StatePath] as JsonObject);
     }
 
     private static JsonObject ParseObjectOrEmpty(string? json) =>
