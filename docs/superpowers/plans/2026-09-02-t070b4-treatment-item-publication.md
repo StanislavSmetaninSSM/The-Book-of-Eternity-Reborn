@@ -72,7 +72,7 @@ For the deterministic case, invoke the future pure planner twice with detached e
 
 - [ ] **Step 3: Add closed-envelope and final-baseline RED cases**
 
-Add `GuaranteedItemConsumption_ClosedItemEnvelopePreservesEverySupportedFieldAndRejectsEveryOtherField` and `GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer`. The first freezes all seven ordinary item properties together with the six skill properties and rejects each unrelated non-null `GameResponse` property. The second proves the sealed baseline equals the live output immediately before common publication after item transfer/materialization/equipment/identity, ordinary NPC core/trade, and inventory-journal transforms; it also proves NPC-core authority and NPC-trade/training pending-byte drift reject. The live baseline must exclude the B.2 treatment skill projection, which the common candidate applies afterward. Do not use a procedure/course publication test in this task.
+Add `GuaranteedItemConsumption_ClosedItemEnvelopePreservesEverySupportedFieldAndRejectsEveryOtherField` and `GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer`. The first freezes all seven ordinary item properties together with the six skill properties and rejects each unrelated non-null `GameResponse` property. The second proves the sealed baseline equals the live output immediately before common publication after the item phase and only selected-item-graph transforms in exact tail order: quest history -> NPC core -> conditional NPC trade -> inventory items journal -> item bonds -> item text updates -> NPC item journals. It also proves bidirectional complete path/file-presence/topology equality, legacy vehicle object/array parity, effective post-location roots, every tail sidecar, and rejection on NPC-core authority, NPC-trade/training pending-byte, or authenticated NPC-trade-disposition drift. The live baseline must exclude the B.2 treatment skill projection, which the common candidate applies afterward from the supplied semantic ordinary baseline while retaining its separate true live rollback before-image. Do not use a procedure/course publication test in this task.
 
 - [ ] **Step 4: Add publication/lifecycle RED cases**
 
@@ -118,6 +118,7 @@ git commit -m "test(wounds): specify treatment item publication transaction (#15
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.QuestsAndRivals.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs`
 - Modify: `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs`
@@ -130,8 +131,8 @@ git commit -m "test(wounds): specify treatment item publication transaction (#15
 
 **Interfaces:**
 
-- Consumes: the closed seven-property item envelope (sealed alongside but not merged into the B.2 skill envelope), exact current and backup carrier/command/index roots, route catalog, accepted turn, detached `NpcCoreChangesContract.Authority`, exact NPC-trade/training pending-file bytes, and `MortalItemAcceptedTurnNormalizationSnapshot`.
-- Produces: one item-phase projection plus one detached exact final carrier/index baseline immediately before common publication, issues, and recomputable fingerprints; no filesystem write.
+- Consumes: the closed seven-property item envelope (sealed alongside but not merged into the B.2 skill envelope), exact current and backup carrier/command/index roots as `JsonNode?` values, the already validated route and transfer catalogs, accepted turn, detached `NpcCoreChangesContract.Authority`, exact NPC-trade/training pending-file bytes, and `MortalItemAcceptedTurnNormalizationSnapshot`. Current location/storage entries are the effective post-location after-images already validated for this turn, never stale live bytes.
+- Produces: one item-phase projection plus one snapshot-owned detached exact final carrier/index/companion baseline immediately before common publication, issues, and recomputable fingerprints; no filesystem write. Input and output root maps preserve every exact registered path, file presence/absence (`null` means absent), and top-level object/array topology.
 
 - [ ] **Step 1: Define the closed projection input/result**
 
@@ -142,17 +143,23 @@ internal sealed record MortalItemCanonicalProjectionInput(
     int Turn,
     MortalItemAcceptedTurnNormalizationSnapshot Snapshot,
     MortalItemRouteAuthorityCatalog RouteCatalog,
-    IReadOnlyDictionary<string, JsonObject?> CurrentRoots,
-    IReadOnlyDictionary<string, JsonObject?> BackupRoots,
+    IReadOnlyDictionary<string, JsonNode?> CurrentRoots,
+    IReadOnlyDictionary<string, JsonNode?> BackupRoots,
     MortalItemIdentityParseResult IdentityState);
 
 internal sealed record MortalItemCanonicalProjectionResult(
-    IReadOnlyDictionary<string, JsonObject> ItemPhaseAfterImages,
+    IReadOnlyDictionary<string, JsonNode?> ItemPhaseAfterImages,
     JsonObject IdentityIndexAfterImage,
     IReadOnlyList<ValidationIssue> Issues,
     string Fingerprint)
 {
     internal bool IsValid => Issues.Count == 0;
+}
+
+internal enum MortalItemNpcTradeTailDisposition
+{
+    Apply,
+    SkipUntouchedTreatmentContinuation
 }
 
 internal sealed record MortalItemPublicationBaselineInput(
@@ -161,45 +168,64 @@ internal sealed record MortalItemPublicationBaselineInput(
     NpcCoreChangesContract.Authority NpcCoreAuthority,
     CanonicalBeforeImage NpcTradePending,
     CanonicalBeforeImage TrainingPending,
-    IReadOnlyDictionary<string, JsonObject?> BackupRoots);
+    MortalItemNpcTradeTailDisposition NpcTradeDisposition,
+    IReadOnlyDictionary<string, JsonNode?> BackupRoots);
 
 internal sealed record MortalItemPublicationBaselineResult(
-    IReadOnlyDictionary<string, JsonObject> FinalCarrierRoots,
+    IReadOnlyDictionary<string, JsonNode?> FinalCarrierRoots,
     JsonObject IdentityIndexAfterImage,
+    IReadOnlyList<string> AppliedTransformIds,
     IReadOnlyList<ValidationIssue> Issues,
     string Fingerprint);
 
 internal static class MortalItemCanonicalProjectionPlanner
 {
+    internal static IReadOnlyList<string> ProjectionRootPaths { get; }
+
     internal static MortalItemCanonicalProjectionResult Project(
         MortalItemCanonicalProjectionInput input);
 }
+
+internal static class MortalItemPublicationBaselinePlanner
+{
+    // Exact base IDs: quest_history:v1, npc_core:v1, npc_trade:v1,
+    // inventory_items_journal:v1, item_bonds:v1, item_text_updates:v1,
+    // npc_item_journals:v1.
+    internal static IReadOnlyList<string> TransformRegistry { get; }
+
+    internal static MortalItemPublicationBaselineResult Project(
+        MortalItemPublicationBaselineInput input);
+}
+
+// Add these exact methods to the existing production-created snapshot:
+// internal IReadOnlyDictionary<string, JsonNode?> CloneCurrentProjectionRoots()
+// internal IReadOnlyDictionary<string, JsonNode?> CloneBackupProjectionRoots()
 ```
 
-Both results must clone all roots and recompute fingerprints from the full input/output graph. The final result must identify its ordered transform versions and represent the exact roots expected after ordinary normalization and immediately before `PublishAcceptedMechanicsAsync`. Its seal includes the semantic NPC-core authority fingerprint plus presence and SHA-256 for both pending snapshots. It excludes the B.2 skill mutation. Do not expose mutable `JsonObject` instances retained from input.
+Both results must clone all roots and recompute fingerprints from the full input/output graph. `MortalItemCanonicalProjectionPlanner.ProjectionRootPaths` is the sole ordered internal path list. Equality is bidirectional over that complete exact root-path set: player inventory (including embedded commands), NPC core, NPC item commands, player item-removal commands, effective post-location current-location/storage roots, offscreen storage, legacy vehicle root, item identity index, and the quest-history/item-bond/item-text/recipe/NPC-item-journal companion roots; neither a missing frozen path nor an extra supplied path may be ignored. Input and output dictionaries retain every registered key and use a null value to prove that its file is absent; exact file presence/absence, content, and legacy vehicle object-versus-array topology participate in equality and the seal. A present JSON-null root is not a valid accepted item document and therefore never reaches projection. The final result must expose and fingerprint the exact ordered transform-version list `quest_history:v1`, `npc_core:v1`, one of `npc_trade:apply:v1` or `npc_trade:skip_untouched_treatment_continuation:v1`, `inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, `npc_item_journals:v1`, and represent the exact roots expected after ordinary normalization and immediately before `PublishAcceptedMechanicsAsync`. Its seal includes the semantic NPC-core authority fingerprint, presence and SHA-256 for both pending snapshots, and one authenticated `MortalItemNpcTradeTailDisposition` (`Apply` or `SkipUntouchedTreatmentContinuation`) that reproduces the current treatment-continuation skip gate. It excludes the B.2 skill mutation. Snapshot proof owns detached clones/DTOs and fingerprints; callers obtain roots only through `CloneCurrentProjectionRoots()` and `CloneBackupProjectionRoots()`. Do not expose input-owned mutable nodes or retain a planner result in the registry.
 
 - [ ] **Step 2: Move accepted item-phase transformation into `Project`**
 
-Extract transfer catalog classification, whole-stack transition application, inline-equipment clearing, and exact command-row removal into `MortalItemTransferPlanner`. It accepts complete detached current/backup roots and explicit client-minted transition IDs; it never calls `MortalItemTransitionWriter` or writes. Add explicit-ID overloads for `MortalItemIdentityState.CreateRootReceipt` and `CreateTransition` here, retaining random overloads only for ordinary non-accepted callers, and refactor the ordinary writer's transfer branch to call the same pure planner with its own client-minted ID. Extend `MortalItemAcceptedTurnNormalizationSnapshot` to derive and expose accepted creation root receipt/create-transition IDs plus transfer-transition IDs from session/snapshot/turn, exact route or transfer authority fingerprint, and ordinal. Then lift the remaining deterministic transformation portion of `NormalizeMortalItemsAsync` without changing validations, order, path selection, item ID allocation, mirror rules, or canonical serialization. The item phase applies transfers before creation and returns detached roots including removed command rows. File reads, lease checks, backups, writes, readback, and rollback remain in the normalizer wrapper.
+Extract transfer catalog classification, whole-stack transition application, inline-equipment clearing, and exact command-row removal into `MortalItemTransferPlanner`. It accepts complete detached current/backup roots and explicit client-minted transition IDs; it never calls `MortalItemTransitionWriter` or writes. Add explicit-ID overloads for `MortalItemIdentityState.CreateRootReceipt` and `CreateTransition` here, retaining random overloads only for ordinary non-accepted callers, and refactor the ordinary writer's transfer branch to call the same pure planner with its own client-minted ID. Extend `MortalItemAcceptedTurnNormalizationSnapshot` to derive and expose accepted creation root receipt/create-transition IDs plus transfer-transition IDs from session/snapshot/turn, exact route or transfer authority fingerprint, and the accepted production collector ordinal: `UpdateInventory` -> NPC core -> NPC commands -> current location -> offscreen storage. Then lift the remaining deterministic transformation portion of `NormalizeMortalItemsAsync` without changing validations, order, path selection, item ID allocation, mirror rules, or canonical serialization. The item phase applies transfers before creation and returns detached roots including removed command rows. The already validated route/transfer catalogs and snapshots are forwarded into this phase; no projector, registry, or normalizer may rebuild them or reread their manifest, turn-request, pending, carrier, or snapshot-target dependencies. File reads, lease checks, backups, writes, readback, and rollback remain in the normalizer wrapper.
 
 - [ ] **Step 3: Extract and compose every later selected-root transform**
 
-Factor the root transformations used by `NormalizeNpcCoreChangesAsync`, `NormalizeNpcTradeCoreAsync`, and `NormalizeInventoryItemsAsync` into shared pure functions. The NPC-core function accepts only the detached `NpcCoreChangesContract.Authority` and exact NPC-trade/training pending snapshots used to build `MortalActorAcceptedTurnAuthority`; it performs no live read. `MortalItemPublicationBaselinePlanner` applies those transforms to item-phase roots in the same order as `NormalizeAccumulatedStateCoreAsync`: ordinary NPC core, NPC trade canonicalization, inventory journal normalization. Each ordinary normalizer invokes the same function and retains only its read/write/lease/rollback wrapper. `NormalizeMortalItemsAsync` likewise commits only its pure item-phase result. Separately refactor the B.2 treatment NPC skill projector to accept a supplied verified baseline root; do not include its output in the live baseline. No transformation may have a second treatment-only implementation.
+Factor every ordinary pure transform that can touch the selected item graph into shared functions. `MortalItemPublicationBaselinePlanner.TransformRegistry` exposes the exact ordered base IDs `quest_history:v1` -> `npc_core:v1` -> `npc_trade:v1` -> `inventory_items_journal:v1` -> `item_bonds:v1` -> `item_text_updates:v1` -> `npc_item_journals:v1`. `Project` must execute one `foreach (var registration in TransformRegistry)` loop, call `ApplyRegisteredTransform(registration, ...)` exactly once per entry, and append `applied.AppliedTransformId` to `appliedTransformIds` inside that same loop. The NPC-trade application specializes its result ID to `npc_trade:apply:v1` or `npc_trade:skip_untouched_treatment_continuation:v1`; the final list is sealed into `AppliedTransformIds`. This is the exact `NormalizeAccumulatedStateCoreAsync` tail order, not an after-the-fact report over independently ordered code. Recipe and other untouched companion roots remain exact pass-through members of the complete root map. The NPC-core function accepts only detached `NpcCoreChangesContract.Authority` and exact NPC-trade/training pending snapshots used to build `MortalActorAcceptedTurnAuthority`; it performs no live read. The NPC-trade function accepts the authenticated sealed disposition/gate instead of consulting the live accepted-plan registry. `Apply` applies `UpdateNpcTradeInventoryReceipts`, removes that transient command, and normalizes receipts; `SkipUntouchedTreatmentContinuation` returns the post-NPC-core root unchanged, retaining the command and creating no receipt. Each ordinary normalizer invokes the same function and retains only its read/write/lease/rollback wrapper. `NormalizeMortalItemsAsync` likewise commits only its pure item-phase result. Separately refactor the B.2 treatment NPC skill projector to accept the supplied semantic final ordinary NPC baseline while retaining a distinct true live canonical before-image for transaction rollback; do not include its output in the live baseline. No transformation may have a second treatment-only implementation.
 
 - [ ] **Step 4: Bind the closed envelope and final baseline to the accepted item cache**
 
-Extend `ValidationService.MortalItemMaterialization` and `AcceptedTurnAuthorityRegistry` so the already validated route catalog and transfer catalog are forwarded into `MortalItemAcceptedTurnNormalizationSnapshot` instead of being discarded at registration. The sealed snapshot proves the exact item allocation/route authority, complete current/backup transfer roots, ordered accepted transfers and deterministic creation receipt/create-transition plus transfer-transition IDs, closed seven-item-property envelope, detached NPC-core authority, NPC-trade/training pending bytes, ordered ordinary tail transforms, and final pre-publication fingerprint. It stores detached proof DTOs, fingerprints, and ID maps, not a `MortalItemCanonicalProjectionResult` that would create a minting cycle. Preserve the current one-use take/rearm fence. A copied snapshot with changed allocation, turn, session, snapshot, envelope, backup/input root, transfer/receipt/transition-ID map, authority/pending snapshot, transform order/version, item-phase root, or final root must not match. Immediately before common publication, compare every live selected carrier/index root to this final ordinary baseline; never recapture or patch it. Only after equality may the common candidate apply the sealed B.2 skill projection and item consumption.
+Extend `ValidationService.MortalItemMaterialization` and `AcceptedTurnAuthorityRegistry` so the already validated route catalog, transfer catalog, effective post-location roots, and their snapshots are forwarded into `MortalItemAcceptedTurnNormalizationSnapshot` instead of being discarded at registration or rebuilt. The sealed snapshot proves the exact item allocation/route authority, complete current/backup transfer roots, ordered accepted transfers and deterministic creation receipt/create-transition plus transfer-transition IDs, closed seven-item-property envelope, detached NPC-core authority, NPC-trade/training pending bytes, authenticated NPC-trade disposition, ordered ordinary tail transforms, and final pre-publication fingerprint. It stores detached proof DTOs, fingerprints, ID maps, and exact root-path/presence/topology evidence, not a `MortalItemCanonicalProjectionResult` that would create a minting cycle. Preserve the current one-use take/rearm fence. A copied snapshot with changed allocation, turn, session, snapshot, envelope, backup/input root or root-path set, null/presence/topology, transfer/receipt/transition-ID map, authority/pending snapshot, trade disposition, transform order/version, item-phase root, or final root must not match. Immediately before common publication, compare the complete live selected carrier/index/companion root map bidirectionally to this final ordinary baseline; never recapture or patch it. Only after equality may the common candidate apply the sealed B.2 skill projection and item consumption.
 
 - [ ] **Step 5: Run parity controls**
 
-Run the new pure-planner filter plus the smallest existing item creation, transfer, equipment, NPC mirror/skill/trade, and inventory-journal filters found by source search. Include one real six-argument accepted-normalizer regression with all seven item properties null except the selected same-turn case, one case for each unsupported non-null property, and a source guard proving accepted item normalization does not call `MortalItemTransitionWriter` or random receipt/transition-ID overloads.
+Run the new pure-planner filter plus the smallest existing item creation, transfer, equipment, NPC mirror/skill/trade, inventory-journal, quest-history, item-bond, item-text, and NPC-item-journal filters found by source search. Include parity for every tail sidecar and for both legacy vehicle top-level object and array forms, one real six-argument accepted-normalizer regression with all seven item properties null except the selected same-turn case, one case for each unsupported non-null property, and a source guard proving accepted item normalization does not call `MortalItemTransitionWriter`, random receipt/transition-ID overloads, or route/transfer catalog builders after registration.
 
 Expected: item-phase and final-baseline tests pass; the live pre-publication roots equal the sealed final projection; all selected existing normalization tests pass unchanged.
 
 - [ ] **Step 6: Commit the extraction**
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs BookOfEternityClient/Services/MortalItemPublicationBaselinePlanner.cs BookOfEternityClient/Services/MortalItemTransferPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs
+git add -- BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs BookOfEternityClient/Services/MortalItemPublicationBaselinePlanner.cs BookOfEternityClient/Services/MortalItemTransferPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.QuestsAndRivals.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs
 git commit -m "refactor(items): extract accepted item state projection (#1536)"
 ```
 
@@ -357,7 +383,7 @@ In `BuildTreatmentResourcePublication`, map each selected `item_quantity` intent
 
 - [ ] **Step 5: Compose final item and owner roots**
 
-In `AcceptedMechanicsWoundCommonInputComposer`, obtain the exact pure item phase and apply the ordered ordinary NPC core/trade and inventory-journal tail to produce the final pre-publication baseline. Require byte/JSON agreement between that sealed baseline and the live roots produced by ordinary normalization. Apply the sealed B.2 skill projection to the verified baseline, then apply item consumption to the skill-composed root. Compose one final `npc_core.json` and `items.json` after-image for each touched path. Build the final `ResourceOwnerAuthority` from projected active owners plus terminal historical item keys, pass item capacity transitions/terminal owners into the common reducer, and add carrier/index after-images to the one common plan.
+In `AcceptedMechanicsWoundCommonInputComposer`, obtain the exact pure item phase and apply only selected-item-graph transforms in exact tail order: quest history -> NPC core -> conditional NPC trade -> inventory items journal -> item bonds -> item text updates -> NPC item journals. Require bidirectional byte/JSON/path-presence/topology agreement between that sealed baseline and the live roots produced by ordinary normalization. Apply the sealed B.2 skill projection to the verified semantic baseline while preserving its distinct true live rollback before-image, then apply item consumption to the skill-composed root. Compose one final after-image for each touched path. Build the final `ResourceOwnerAuthority` from projected active owners plus terminal historical item keys, pass item capacity transitions/terminal owners into the common reducer, and add carrier/index after-images to the one common plan.
 
 - [ ] **Step 6: Narrowly validate shared skill/item roots**
 
@@ -467,6 +493,6 @@ Add the exact test artifact IDs and B.4 closure note to `tasks.md`; write the ex
 
 ## Self-Review
 
-- Spec coverage: partial/full stacks, unsupported companions, repeated claims, item-owned resources, closed response envelope, complete final pre-publication baseline, shared NPC roots, mixed atomicity, replay, drift, and rollback each map to a task and named test.
+- Spec coverage: partial/full stacks, unsupported companions, repeated claims, item-owned resources, closed response envelope, `JsonNode` topology/presence, bidirectional complete root paths, effective post-location roots, exact seven-transform tail, authenticated NPC-trade disposition, distinct B.2 rollback before-image, production creation ordinal, forwarded catalogs/snapshots, every sidecar, legacy vehicle object/array parity, shared NPC roots, mixed atomicity, replay, drift, and rollback each map to a task and named test.
 - Placeholder scan: no `TBD`, `TODO`, generic “handle errors,” or unnamed test step remains.
-- Type consistency: the item-phase result, closed envelope, NPC authority, and pending snapshots feed the ordered ordinary final-baseline projection; the verified baseline feeds the sealed B.2 skill projection; the skill-composed root feeds consumption; the consumption result feeds the item publication authority; registered capacities and terminal owners feed the existing common resource reducer; the final plan remains the only publication input.
+- Type consistency: snapshot-owned detached root/catalog proof, the item-phase result, closed envelope, NPC authority, pending snapshots, and trade disposition feed the ordered ordinary final-baseline projection; the verified semantic baseline feeds the sealed B.2 skill projection while its true live before-image remains rollback authority; the skill-composed root feeds consumption; the consumption result feeds the item publication authority; registered capacities and terminal owners feed the existing common resource reducer; the final plan remains the only publication input.

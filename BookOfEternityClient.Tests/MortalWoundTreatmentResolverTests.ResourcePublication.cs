@@ -574,8 +574,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             issue.Code == DeferredItemConsumptionCode);
         var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
         var sealedPublication = ReadSealedTreatmentPublication(plan);
+        Assert.Equal("Apply", sealedPublication.NpcTradeDisposition);
         AssertSealedFinalBaselineAuthorityInputs(sealedPublication, fixture);
-        AssertFrozenFinalBaseline(sealedPublication.Baseline, plan);
+        AssertFrozenFinalBaseline(
+            sealedPublication.Baseline,
+            sealedPublication.NpcTradeDisposition,
+            plan,
+            fixture);
         AssertResolverFixtureTreeUnchanged(fixture.Root, before);
         observer.Arm(fixture.FileSystem, sealedPublication.Baseline);
         using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
@@ -596,6 +601,339 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             AssertFinalBaselineDriftRejectsBeforeCacheOrWrite(scenario, axis);
         }
+    }
+
+    [Fact]
+    public void GuaranteedPlayerItemConsumption_NpcTradeDispositionIsSealedByNpcTailOwnership()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true,
+            selectPlayerItem: true);
+
+        SealedTreatmentPublicationProbe skip;
+        using (var fixture = AcceptedStateFixture.Create(scenario))
+        {
+            fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            SeedNpcTradeTailBehaviorInput(fixture);
+            var flow = PersistAndRehydrateResourcePublication(
+                fixture,
+                scenario,
+                "npc_trade_tail_disposition");
+            skip = ReadSealedTreatmentPublication(
+                ComposeResourcePublication(fixture, flow));
+        }
+
+        SealedTreatmentPublicationProbe apply;
+        using (var fixture = AcceptedStateFixture.Create(scenario))
+        {
+            fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            SeedNpcTradeTailBehaviorInput(fixture);
+            var flow = PersistAndRehydrateResourcePublication(
+                fixture,
+                scenario,
+                "npc_trade_tail_disposition");
+            apply = ReadSealedTreatmentPublication(ComposeResourcePublication(
+                fixture,
+                flow,
+                CreateNpcSkillOnlyResponse(fixture)));
+        }
+
+        Assert.Equal("SkipUntouchedTreatmentContinuation", skip.NpcTradeDisposition);
+        Assert.Equal("Apply", apply.NpcTradeDisposition);
+        Assert.Equal(
+            ExpectedFinalBaselineTransformIds(skip.NpcTradeDisposition),
+            skip.Baseline.AppliedTransformIds);
+        Assert.Equal(
+            ExpectedFinalBaselineTransformIds(apply.NpcTradeDisposition),
+            apply.Baseline.AppliedTransformIds);
+        Assert.Equal(skip.ItemEnvelopeFingerprint, apply.ItemEnvelopeFingerprint);
+        Assert.NotEqual(skip.ItemAuthorityFingerprint, apply.ItemAuthorityFingerprint);
+        Assert.NotEqual(skip.Baseline.Fingerprint, apply.Baseline.Fingerprint);
+        Assert.True(JsonNode.DeepEquals(
+            skip.Baseline.IdentityIndex,
+            apply.Baseline.IdentityIndex));
+        Assert.Equal(
+            skip.Baseline.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+            apply.Baseline.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        foreach (var path in skip.Baseline.Roots.Keys.Where(path => !string.Equals(
+                     path,
+                     NpcCoreChangesContract.NpcCorePath,
+                     StringComparison.Ordinal)))
+        {
+            Assert.True(
+                JsonNode.DeepEquals(skip.Baseline.Roots[path], apply.Baseline.Roots[path]),
+                path);
+        }
+        var skippedNpcRoot = Assert.IsType<JsonObject>(skip.Baseline.Roots[
+            NpcCoreChangesContract.NpcCorePath]);
+        var appliedNpcRoot = Assert.IsType<JsonObject>(apply.Baseline.Roots[
+            NpcCoreChangesContract.NpcCorePath]);
+        Assert.True(skippedNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.False(appliedNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.False(HasNpcTradeTailBehaviorReceipt(skippedNpcRoot));
+        Assert.True(HasNpcTradeTailBehaviorReceipt(appliedNpcRoot));
+        Assert.False(JsonNode.DeepEquals(skippedNpcRoot, appliedNpcRoot));
+    }
+
+    [Fact]
+    public void FinalBaselinePlanner_DispatchesAndRecordsOnlyTheFrozenTransformRegistry()
+    {
+        var plannerType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalItemPublicationBaselinePlanner");
+        var registryProperty = plannerType.GetProperty(
+            "TransformRegistry",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(registryProperty);
+        Assert.Equal(typeof(IReadOnlyList<string>), registryProperty!.PropertyType);
+        Assert.Equal(
+            ExpectedFinalBaselineTransformRegistryIds(),
+            Assert.IsAssignableFrom<IReadOnlyList<string>>(
+                registryProperty.GetValue(null)));
+
+        var sourcePath = Path.Combine(
+            FindRepositoryRootForB4SourceGuard(),
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemPublicationBaselinePlanner.cs");
+        Assert.True(File.Exists(sourcePath), sourcePath);
+        var project = StripB4CSharpCommentsAndLiterals(ExtractB4MethodSource(
+            File.ReadAllText(sourcePath),
+            "internal static MortalItemPublicationBaselineResult Project("));
+        var loops = System.Text.RegularExpressions.Regex.Matches(
+                project,
+                @"\bforeach\s*\(\s*var\s+registration\s+in\s+TransformRegistry\s*\)")
+            .Cast<System.Text.RegularExpressions.Match>()
+            .ToArray();
+        var loop = Assert.Single(loops);
+        var loopBody = ExtractB4BracedBlockSource(
+            project,
+            loop.Index + loop.Length,
+            "TransformRegistry foreach");
+        var compactLoopBody = System.Text.RegularExpressions.Regex.Replace(
+            loopBody,
+            @"\s+",
+            " ");
+        var applyCall = "ApplyRegisteredTransform(registration,";
+        var recordCall = "appliedTransformIds.Add(applied.AppliedTransformId);";
+        Assert.Contains(applyCall, compactLoopBody, StringComparison.Ordinal);
+        Assert.Contains(recordCall, compactLoopBody, StringComparison.Ordinal);
+        Assert.True(
+            compactLoopBody.IndexOf(applyCall, StringComparison.Ordinal) <
+            compactLoopBody.IndexOf(recordCall, StringComparison.Ordinal),
+            "The registered transform must execute before its returned applied ID is recorded.");
+        Assert.Single(
+            System.Text.RegularExpressions.Regex.Matches(
+                    project,
+                    @"\bApplyRegisteredTransform\s*\(")
+                .Cast<System.Text.RegularExpressions.Match>());
+        Assert.Single(
+            System.Text.RegularExpressions.Regex.Matches(
+                    project,
+                    @"\bappliedTransformIds\s*\.\s*Add\s*\(\s*applied\s*\.\s*AppliedTransformId\s*\)")
+                .Cast<System.Text.RegularExpressions.Match>());
+        Assert.DoesNotContain(
+            "AppliedTransformIds =",
+            project,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void AcceptedItemProjection_ForwardsValidatedAuthoritiesAndNeverRebuildsOrWrites()
+    {
+        var repositoryRoot = FindRepositoryRootForB4SourceGuard();
+        var validationSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "Validation",
+            "ValidationService.MortalItemMaterialization.cs")));
+        var rawValidation = ExtractB4MethodSource(
+            validationSource,
+            "private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(");
+        var registrationToken =
+            "MortalItemAcceptedTurnAuthority.RegisterValidatedItems(";
+        var registrationIndex = rawValidation.IndexOf(
+            registrationToken,
+            StringComparison.Ordinal);
+        Assert.True(registrationIndex >= 0, "Accepted item registration call is absent.");
+        var registrationCall = ExtractB4InvocationSource(
+            rawValidation,
+            registrationToken);
+        Assert.Equal(
+            10,
+            CountB4TopLevelInvocationArguments(
+                registrationCall,
+                registrationToken.Length - 1));
+        foreach (var forwardedName in new[]
+                 {
+                     "routeAuthorities",
+                     "transferCatalog",
+                     "currentProjectionRoots",
+                     "backupProjectionRoots"
+                 })
+        {
+            Assert.Contains(forwardedName, registrationCall, StringComparison.Ordinal);
+        }
+
+        foreach (var builderToken in B4ForbiddenCatalogBuilderTokens())
+        {
+            var matches = AllB4TokenIndexes(rawValidation, builderToken);
+            Assert.Single(matches);
+            Assert.True(
+                matches[0] < registrationIndex,
+                $"'{builderToken}' must run only while raw validation is minting the accepted authority.");
+            Assert.DoesNotContain(
+                builderToken,
+                rawValidation[registrationIndex..],
+                StringComparison.Ordinal);
+        }
+
+        var authoritySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemAcceptedEffectSourceAuthority.cs")));
+        var authorityRegistration = ExtractB4MethodSource(
+            authoritySource,
+            "internal static void RegisterValidatedItems(");
+        AssertB4InvocationForwards(
+            authorityRegistration,
+            "AcceptedTurnAuthorityRegistry.RegisterMortalItemsValidated(",
+            12,
+            "routeAuthorities",
+            "transferCatalog",
+            "currentProjectionRoots",
+            "backupProjectionRoots");
+        var cacheRegistration = ExtractB4MethodSource(
+            authoritySource,
+            "internal void Register(");
+        var compactCacheRegistration = System.Text.RegularExpressions.Regex.Replace(
+            cacheRegistration,
+            @"\s+",
+            " ");
+        foreach (var retainedAssignment in new[]
+                 {
+                     "_routesByCreationRef = routesByCreationRef",
+                     "_transfers = transfers",
+                     "_currentProjectionRoots = currentProjectionRoots",
+                     "_backupProjectionRoots = backupProjectionRoots"
+                 })
+        {
+            Assert.Contains(
+                retainedAssignment,
+                compactCacheRegistration,
+                StringComparison.Ordinal);
+        }
+
+        var registrySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "AcceptedTurnAuthorityRegistry.cs")));
+        AssertB4InvocationForwards(
+            registrySource,
+            "GetState(fileSystem, writeLease).RegisterMortalItemsValidated(",
+            10,
+            "routesByCreationRef",
+            "transfers",
+            "currentProjectionRoots",
+            "backupProjectionRoots");
+        var stateRegistration = ExtractB4MethodSource(
+            registrySource,
+            "internal void RegisterMortalItemsValidated(");
+        AssertB4InvocationForwards(
+            stateRegistration,
+            "_mortalItems.Register(",
+            10,
+            "routesByCreationRef",
+            "transfers",
+            "currentProjectionRoots",
+            "backupProjectionRoots");
+        foreach (var source in new[] { authoritySource, registrySource })
+        {
+            foreach (var forbiddenToken in B4ForbiddenCatalogBuilderTokens()
+                         .Append("MortalItemTransitionWriter"))
+            {
+                Assert.DoesNotContain(
+                    forbiddenToken,
+                    source,
+                    StringComparison.Ordinal);
+            }
+        }
+
+        var normalizerPath = Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "CanonicalStateNormalizer",
+            "CanonicalStateNormalizer.MortalItems.cs");
+        var normalizerSource = StripB4CSharpCommentsAndLiterals(
+            File.ReadAllText(normalizerPath));
+        var acceptedNormalization = ExtractB4MethodSource(
+            normalizerSource,
+            "private async Task NormalizeMortalItemsAsync(");
+        Assert.Contains(
+            "MortalItemCanonicalProjectionPlanner.Project(",
+            acceptedNormalization,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "NormalizeMortalItemTransfersAsync(",
+            acceptedNormalization,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "MortalItemAcceptedTransferCatalog.Build",
+            normalizerSource,
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "MortalItemTransitionWriter",
+            normalizerSource,
+            StringComparison.Ordinal);
+
+        var projectionPath = Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemCanonicalProjectionPlanner.cs");
+        var transferPath = Path.Combine(
+            repositoryRoot,
+            "BookOfEternityClient",
+            "Services",
+            "MortalItemTransferPlanner.cs");
+        Assert.True(File.Exists(projectionPath), projectionPath);
+        Assert.True(File.Exists(transferPath), transferPath);
+        var postRegistrationSources = new[]
+        {
+            acceptedNormalization,
+            StripB4CSharpCommentsAndLiterals(File.ReadAllText(projectionPath)),
+            StripB4CSharpCommentsAndLiterals(File.ReadAllText(transferPath))
+        };
+        foreach (var source in postRegistrationSources)
+        {
+            foreach (var forbiddenToken in B4ForbiddenCatalogBuilderTokens()
+                         .Append("MortalItemTransitionWriter"))
+            {
+                Assert.DoesNotContain(
+                    forbiddenToken,
+                    source,
+                    StringComparison.Ordinal);
+            }
+        }
+
+        var postRegistrationIdentitySources = string.Join(
+            Environment.NewLine,
+            postRegistrationSources);
+        AssertB4InvocationArity(
+            postRegistrationIdentitySources,
+            "MortalItemIdentityState.CreateRootReceipt(",
+            expectedArity: 4);
+        AssertB4InvocationArity(
+            postRegistrationIdentitySources,
+            "MortalItemIdentityState.CreateTransition(",
+            expectedArity: 10);
     }
 
     [Fact]
@@ -1490,7 +1828,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         IReadOnlyList<int> selectedResourceOrder,
         bool includeReusableItem = false,
         bool selectReusableItem = false,
-        int reusableItemCount = 1)
+        int reusableItemCount = 1,
+        bool includePlayerItem = false,
+        bool selectPlayerItem = false)
     {
         var source = CreateScenario(
             "guaranteed_current_capability_proof_stabilizes",
@@ -1540,6 +1880,19 @@ public sealed partial class MortalWoundTreatmentResolverTests
             source.AcceptedState["reusableToolCount"] = reusableItemCount;
         }
 
+        int? playerItemIndex = null;
+        if (includePlayerItem)
+        {
+            playerItemIndex = requirements.Count;
+            requirements.Add(new JsonObject
+            {
+                ["kind"] = "item_quantity",
+                ["itemRef"] = "antibiotic_dose",
+                ["quantity"] = 1,
+                ["ownerRole"] = "target"
+            });
+        }
+
         var mutations = new JsonArray();
         foreach (var resourceOrdinal in selectedResourceOrder)
         {
@@ -1559,6 +1912,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ["scope"] = "common",
                 ["milestoneOrdinal"] = null,
                 ["requirementIndex"] = Assert.IsType<int>(reusableIndex)
+            });
+        }
+        if (selectPlayerItem)
+        {
+            mutations.Add(new JsonObject
+            {
+                ["kind"] = "consume_requirement",
+                ["scope"] = "common",
+                ["milestoneOrdinal"] = null,
+                ["requirementIndex"] = Assert.IsType<int>(playerItemIndex)
             });
         }
         route["resourcePolicy"]!["mutations"] = mutations;
@@ -1751,8 +2114,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     private sealed record SealedFinalBaselineProbe(
-        IReadOnlyDictionary<string, JsonObject> Roots,
+        IReadOnlyDictionary<string, JsonNode?> Roots,
         JsonObject IdentityIndex,
+        IReadOnlyList<string> AppliedTransformIds,
         string Fingerprint);
 
     private sealed record SealedTreatmentPublicationProbe(
@@ -1764,6 +2128,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         string ItemEnvelopeFingerprint,
         string SkillAuthorityFingerprint,
         string SkillEnvelopeFingerprint,
+        string NpcTradeDisposition,
         SealedFinalBaselineProbe Baseline);
 
     private static SealedTreatmentPublicationProbe ReadSealedTreatmentPublication(
@@ -1777,10 +2142,30 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "BookOfEternityClient.Services.MortalTreatmentItemCommandEnvelope");
         var baselineType = RequireB4Type(
             "BookOfEternityClient.Services.MortalItemPublicationBaselineResult");
+        var baselineInputType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalItemPublicationBaselineInput");
+        var itemPhaseType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalItemCanonicalProjectionResult");
+        var dispositionType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalItemNpcTradeTailDisposition");
+        Assert.True(dispositionType.IsEnum);
+        Assert.Equal(
+            new[] { "Apply", "SkipUntouchedTreatmentContinuation" },
+            Enum.GetNames(dispositionType));
+        RequireExactProperties(
+            baselineInputType,
+            ("ItemPhase", itemPhaseType),
+            ("Envelope", itemEnvelopeType),
+            ("NpcCoreAuthority", typeof(NpcCoreChangesContract.Authority)),
+            ("NpcTradePending", typeof(CanonicalBeforeImage)),
+            ("TrainingPending", typeof(CanonicalBeforeImage)),
+            ("NpcTradeDisposition", dispositionType),
+            ("BackupRoots", typeof(IReadOnlyDictionary<string, JsonNode?>)));
         RequireExactProperties(
             baselineType,
-            ("FinalCarrierRoots", typeof(IReadOnlyDictionary<string, JsonObject>)),
+            ("FinalCarrierRoots", typeof(IReadOnlyDictionary<string, JsonNode?>)),
             ("IdentityIndexAfterImage", typeof(JsonObject)),
+            ("AppliedTransformIds", typeof(IReadOnlyList<string>)),
             ("Issues", typeof(IReadOnlyList<ValidationIssue>)),
             ("Fingerprint", typeof(string)));
 
@@ -1810,12 +2195,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Contains(outerGraph, value => ReferenceEquals(value, skillProjection));
         Assert.Contains(itemGraph, value => ReferenceEquals(value, itemEnvelope));
         Assert.Contains(itemGraph, value => ReferenceEquals(value, baselineResult));
+        var dispositions = itemGraph
+            .Where(value => value.GetType() == dispositionType)
+            .Select(static value => value.ToString())
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
+        var disposition = Assert.IsType<string>(Assert.Single(dispositions));
 
-        var roots = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
+        var roots = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonNode?>>(
             ReadRequiredProperty(baselineResult, "FinalCarrierRoots"));
         var identity = Assert.IsType<JsonObject>(ReadRequiredProperty(
             baselineResult,
             "IdentityIndexAfterImage"));
+        var appliedTransformIds = Assert.IsAssignableFrom<IReadOnlyList<string>>(
+            ReadRequiredProperty(baselineResult, "AppliedTransformIds"));
         var baselineFingerprint = ReadRequiredStringProperty(
             baselineResult,
             "Fingerprint");
@@ -1833,9 +2226,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredStringProperty(itemEnvelope, "Fingerprint"),
             ReadObservedAuthorityFingerprint(skillProjection),
             ReadRequiredStringProperty(skillProjection, "CommandEnvelopeFingerprint"),
+            disposition,
             new SealedFinalBaselineProbe(
                 roots,
                 identity,
+                appliedTransformIds,
                 baselineFingerprint));
     }
 
@@ -2090,20 +2485,40 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static void AssertFrozenFinalBaseline(
         SealedFinalBaselineProbe baseline,
-        AcceptedMechanicsPlan plan)
+        string npcTradeDisposition,
+        AcceptedMechanicsPlan plan,
+        AcceptedStateFixture fixture)
     {
         Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
             baseline.Fingerprint));
+        Assert.Equal(
+            ExpectedFinalBaselineTransformIds(npcTradeDisposition),
+            baseline.AppliedTransformIds);
         var requiredPaths = new[]
         {
             NpcCoreChangesContract.NpcCorePath,
             InventoryEquipmentService.ItemsPath,
             "game_state/npcs/npc_inventory.json",
-            MortalItemAcceptedTransferCatalog.PlayerRemovalPath
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+            StorageTransportMoveService.CurrentLocationPath,
+            MortalLocationStorageContentsState.StatePath,
+            StorageTransportMoveService.VehiclesPath,
+            MortalItemIdentityState.StatePath,
+            "game_state/inventory/item_bonds.json",
+            "game_state/inventory/item_text_updates.json",
+            "game_state/inventory/recipes.json",
+            "game_state/npcs/item_journals.json",
+            "game_state/quests/quest_history.json"
         };
-        Assert.All(requiredPaths, path => Assert.Contains(path, baseline.Roots.Keys));
+        Assert.Equal(
+            requiredPaths.OrderBy(static path => path, StringComparer.Ordinal),
+            baseline.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        Assert.True(JsonNode.DeepEquals(
+            baseline.Roots[MortalItemIdentityState.StatePath],
+            baseline.IdentityIndex));
 
-        var npcRoot = baseline.Roots[NpcCoreChangesContract.NpcCorePath];
+        var npcRoot = Assert.IsType<JsonObject>(
+            baseline.Roots[NpcCoreChangesContract.NpcCorePath]);
         var medic = Assert.Single(
             npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
             actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
@@ -2112,6 +2527,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
             static pair => pair.Key));
         Assert.DoesNotContain(NpcTradeRequestState.UpdateReceiptsProperty, npcRoot.Select(
             static pair => pair.Key));
+
+        var rollbackBeforeImage = plan.BeforeImages[
+            NpcCoreChangesContract.NpcCorePath];
+        Assert.True(rollbackBeforeImage.Existed);
+        var rollbackBytes = Assert.IsType<byte[]>(rollbackBeforeImage.Bytes);
+        Assert.True(rollbackBytes.AsSpan().SequenceEqual(
+            ReadCanonicalBytes(fixture, NpcCoreChangesContract.NpcCorePath)));
+        var rollbackNpcRoot = JsonNode.Parse(rollbackBytes.AsSpan())!.AsObject();
+        Assert.True(rollbackNpcRoot.ContainsKey(NpcCoreChangesContract.PropertyName));
+        Assert.False(JsonNode.DeepEquals(rollbackNpcRoot, npcRoot));
         var receipt = Assert.Single(
             medic[NpcTradeRequestState.ReceiptsProperty]!.AsArray().OfType<JsonObject>(),
             row => row["requestId"]?.GetValue<string>() == "trade_baseline_request");
@@ -2130,7 +2555,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             equippedItemId,
             medic["equippedItems"]!["mainHand"]!.GetValue<string>());
 
-        var playerItems = baseline.Roots[InventoryEquipmentService.ItemsPath];
+        var playerItems = Assert.IsType<JsonObject>(
+            baseline.Roots[InventoryEquipmentService.ItemsPath]);
         Assert.DoesNotContain(
             playerItems["items"]!.AsArray().OfType<JsonObject>(),
             item => item["itemId"]?.GetValue<string>() == "antibiotic_dose");
@@ -2139,17 +2565,42 @@ public sealed partial class MortalWoundTreatmentResolverTests
             item => item["materializationReceipt"]?["creationRef"]?.GetValue<string>() ==
                     "new_item_baseline_player_journal");
         Assert.Equal(
-            "Inventory journal normalization ran last",
+            "Inventory journal tail preserved",
             Assert.Single(journalCreation["journalEntries"]!.AsArray())!
                 .GetValue<string>());
         Assert.False(playerItems.ContainsKey("UpdateInventory"));
 
-        var npcCommands = baseline.Roots["game_state/npcs/npc_inventory.json"];
+        var npcCommands = Assert.IsType<JsonObject>(
+            baseline.Roots["game_state/npcs/npc_inventory.json"]);
         Assert.False(npcCommands.ContainsKey("NPCInventoryAdds"));
         Assert.False(npcCommands.ContainsKey("NPCEquipmentChanges"));
         Assert.False(
-            baseline.Roots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath]
+            Assert.IsType<JsonObject>(baseline.Roots[
+                    MortalItemAcceptedTransferCatalog.PlayerRemovalPath])
                 .ContainsKey("removeInventoryItems"));
+
+        var questHistory = Assert.IsType<JsonObject>(
+            baseline.Roots["game_state/quests/quest_history.json"]);
+        Assert.Contains("baseline_tail_reward", questHistory.ToJsonString(),
+            StringComparison.Ordinal);
+
+        var itemBonds = Assert.IsType<JsonObject>(
+            baseline.Roots["game_state/inventory/item_bonds.json"]);
+        Assert.False(itemBonds.ContainsKey("itemBondLevelChanges"));
+        Assert.Contains("Baseline bond tail applied", itemBonds.ToJsonString(),
+            StringComparison.Ordinal);
+
+        var itemTexts = Assert.IsType<JsonObject>(
+            baseline.Roots["game_state/inventory/item_text_updates.json"]);
+        Assert.False(itemTexts.ContainsKey("updateItemTextContents"));
+        Assert.Contains("Baseline text tail applied", itemTexts.ToJsonString(),
+            StringComparison.Ordinal);
+
+        var itemJournals = Assert.IsType<JsonObject>(
+            baseline.Roots["game_state/npcs/item_journals.json"]);
+        Assert.False(itemJournals.ContainsKey("itemJournalUpdates"));
+        Assert.Contains("Baseline item-journal tail applied", itemJournals.ToJsonString(),
+            StringComparison.Ordinal);
 
         var parsedIdentity = MortalItemIdentityState.Parse(baseline.IdentityIndex);
         Assert.Empty(parsedIdentity.Issues);
@@ -2195,6 +2646,434 @@ public sealed partial class MortalWoundTreatmentResolverTests
             finalSkill["displayName"]!.GetValue<string>());
     }
 
+    private static IReadOnlyList<string> ExpectedFinalBaselineTransformIds(
+        string npcTradeDisposition) =>
+        new[]
+        {
+            "quest_history:v1",
+            "npc_core:v1",
+            npcTradeDisposition switch
+            {
+                "Apply" => "npc_trade:apply:v1",
+                "SkipUntouchedTreatmentContinuation" =>
+                    "npc_trade:skip_untouched_treatment_continuation:v1",
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(npcTradeDisposition),
+                    npcTradeDisposition,
+                    null)
+            },
+            "inventory_items_journal:v1",
+            "item_bonds:v1",
+            "item_text_updates:v1",
+            "npc_item_journals:v1"
+        };
+
+    private static IReadOnlyList<string>
+        ExpectedFinalBaselineTransformRegistryIds() =>
+        new[]
+        {
+            "quest_history:v1",
+            "npc_core:v1",
+            "npc_trade:v1",
+            "inventory_items_journal:v1",
+            "item_bonds:v1",
+            "item_text_updates:v1",
+            "npc_item_journals:v1"
+        };
+
+    private static string FindRepositoryRootForB4SourceGuard()
+    {
+        for (var current = new DirectoryInfo(AppContext.BaseDirectory);
+             current is not null;
+             current = current.Parent)
+        {
+            if (File.Exists(Path.Combine(current.FullName, "AGENTS.md")) &&
+                Directory.Exists(Path.Combine(
+                    current.FullName,
+                    "BookOfEternityClient")))
+            {
+                return current.FullName;
+            }
+        }
+        throw new DirectoryNotFoundException(
+            "Repository root was not found for the B.4 source guard.");
+    }
+
+    private static string ExtractB4MethodSource(
+        string source,
+        string signature)
+    {
+        var start = source.IndexOf(signature, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Missing method signature '{signature}'.");
+        var openingBrace = source.IndexOf('{', start);
+        Assert.True(openingBrace >= 0, $"Missing method body for '{signature}'.");
+        var depth = 0;
+        for (var index = openingBrace; index < source.Length; index++)
+        {
+            depth += source[index] switch
+            {
+                '{' => 1,
+                '}' => -1,
+                _ => 0
+            };
+            if (depth == 0)
+                return source[start..(index + 1)];
+        }
+        throw new InvalidOperationException(
+            $"Unterminated method body for '{signature}'.");
+    }
+
+    private static string ExtractB4BracedBlockSource(
+        string source,
+        int afterHeader,
+        string description)
+    {
+        var openingBrace = source.IndexOf('{', afterHeader);
+        Assert.True(openingBrace >= 0, $"Missing braced body for {description}.");
+        Assert.True(
+            string.IsNullOrWhiteSpace(source[afterHeader..openingBrace]),
+            $"{description} must own the immediately following braced body.");
+        var depth = 0;
+        for (var index = openingBrace; index < source.Length; index++)
+        {
+            depth += source[index] switch
+            {
+                '{' => 1,
+                '}' => -1,
+                _ => 0
+            };
+            if (depth == 0)
+                return source[openingBrace..(index + 1)];
+        }
+        throw new InvalidOperationException($"Unterminated braced body for {description}.");
+    }
+
+    private static IReadOnlyList<string> B4ForbiddenCatalogBuilderTokens() =>
+        new[]
+        {
+            "MortalItemRouteAuthorityCatalog.Build",
+            "MortalItemAcceptedTransferCatalog.Build"
+        };
+
+    private static IReadOnlyList<int> AllB4TokenIndexes(
+        string source,
+        string token)
+    {
+        var result = new List<int>();
+        for (var offset = 0; offset < source.Length;)
+        {
+            var index = source.IndexOf(token, offset, StringComparison.Ordinal);
+            if (index < 0)
+                break;
+            result.Add(index);
+            offset = index + token.Length;
+        }
+        return result;
+    }
+
+    private static void AssertB4InvocationForwards(
+        string source,
+        string invocationToken,
+        int expectedArity,
+        params string[] forwardedNames)
+    {
+        var invocation = ExtractB4InvocationSource(source, invocationToken);
+        Assert.Equal(
+            expectedArity,
+            CountB4TopLevelInvocationArguments(
+                invocation,
+                invocationToken.Length - 1));
+        foreach (var forwardedName in forwardedNames)
+            Assert.Contains(forwardedName, invocation, StringComparison.Ordinal);
+    }
+
+    private static string StripB4CSharpCommentsAndLiterals(string source)
+    {
+        var result = source.ToCharArray();
+        const int code = 0;
+        const int lineComment = 1;
+        const int blockComment = 2;
+        const int regularString = 3;
+        const int verbatimString = 4;
+        const int characterLiteral = 5;
+        const int rawString = 6;
+        var state = code;
+        var rawQuoteCount = 0;
+
+        static void Blank(char[] characters, int index)
+        {
+            if (characters[index] is not ('\r' or '\n'))
+                characters[index] = ' ';
+        }
+
+        for (var index = 0; index < result.Length; index++)
+        {
+            var current = result[index];
+            var next = index + 1 < result.Length ? result[index + 1] : '\0';
+            switch (state)
+            {
+                case code:
+                    if (current == '/' && next == '/')
+                    {
+                        Blank(result, index);
+                        Blank(result, ++index);
+                        state = lineComment;
+                    }
+                    else if (current == '/' && next == '*')
+                    {
+                        Blank(result, index);
+                        Blank(result, ++index);
+                        state = blockComment;
+                    }
+                    else if (current == '@' && next == '"')
+                    {
+                        Blank(result, index);
+                        Blank(result, ++index);
+                        state = verbatimString;
+                    }
+                    else if (current == '@' && next == '$' &&
+                             index + 2 < result.Length && result[index + 2] == '"')
+                    {
+                        Blank(result, index);
+                        Blank(result, ++index);
+                        Blank(result, ++index);
+                        state = verbatimString;
+                    }
+                    else if (current == '"')
+                    {
+                        var quoteCount = 1;
+                        while (index + quoteCount < result.Length &&
+                               result[index + quoteCount] == '"')
+                        {
+                            quoteCount++;
+                        }
+                        if (quoteCount >= 3)
+                        {
+                            rawQuoteCount = quoteCount;
+                            for (var offset = 0; offset < quoteCount; offset++)
+                                Blank(result, index + offset);
+                            index += quoteCount - 1;
+                            state = rawString;
+                        }
+                        else
+                        {
+                            Blank(result, index);
+                            state = regularString;
+                        }
+                    }
+                    else if (current == '\'')
+                    {
+                        Blank(result, index);
+                        state = characterLiteral;
+                    }
+                    break;
+
+                case lineComment:
+                    Blank(result, index);
+                    if (current is '\r' or '\n')
+                        state = code;
+                    break;
+
+                case blockComment:
+                    Blank(result, index);
+                    if (current == '*' && next == '/')
+                    {
+                        Blank(result, ++index);
+                        state = code;
+                    }
+                    break;
+
+                case regularString:
+                case characterLiteral:
+                    Blank(result, index);
+                    if (current == '\\' && next != '\0')
+                    {
+                        Blank(result, ++index);
+                    }
+                    else if ((state == regularString && current == '"') ||
+                             (state == characterLiteral && current == '\''))
+                    {
+                        state = code;
+                    }
+                    break;
+
+                case verbatimString:
+                    Blank(result, index);
+                    if (current == '"' && next == '"')
+                    {
+                        Blank(result, ++index);
+                    }
+                    else if (current == '"')
+                    {
+                        state = code;
+                    }
+                    break;
+
+                case rawString:
+                    Blank(result, index);
+                    if (current == '"')
+                    {
+                        var quoteCount = 1;
+                        while (index + quoteCount < result.Length &&
+                               result[index + quoteCount] == '"')
+                        {
+                            quoteCount++;
+                        }
+                        if (quoteCount >= rawQuoteCount)
+                        {
+                            for (var offset = 1; offset < rawQuoteCount; offset++)
+                                Blank(result, index + offset);
+                            index += rawQuoteCount - 1;
+                            state = code;
+                        }
+                    }
+                    break;
+            }
+        }
+        return new string(result);
+    }
+
+    private static string ExtractB4InvocationSource(
+        string source,
+        string invocationToken)
+    {
+        var start = source.IndexOf(invocationToken, StringComparison.Ordinal);
+        Assert.True(start >= 0, $"Missing invocation '{invocationToken}'.");
+        var openingParenthesis = start + invocationToken.Length - 1;
+        Assert.Equal('(', source[openingParenthesis]);
+        var depth = 0;
+        var inString = false;
+        var inCharacter = false;
+        var escaped = false;
+        for (var index = openingParenthesis; index < source.Length; index++)
+        {
+            var character = source[index];
+            if (escaped)
+            {
+                escaped = false;
+                continue;
+            }
+            if ((inString || inCharacter) && character == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+            if (!inCharacter && character == '"')
+            {
+                inString = !inString;
+                continue;
+            }
+            if (!inString && character == '\'')
+            {
+                inCharacter = !inCharacter;
+                continue;
+            }
+            if (inString || inCharacter)
+                continue;
+            if (character == '(')
+                depth++;
+            else if (character == ')' && --depth == 0)
+                return source[start..(index + 1)];
+        }
+        throw new InvalidOperationException(
+            $"Unterminated invocation '{invocationToken}'.");
+    }
+
+    private static void AssertB4InvocationArity(
+        string source,
+        string invocationToken,
+        int expectedArity)
+    {
+        var invocations = new List<string>();
+        for (var offset = 0; offset < source.Length;)
+        {
+            var index = source.IndexOf(invocationToken, offset, StringComparison.Ordinal);
+            if (index < 0)
+                break;
+            var invocation = ExtractB4InvocationSource(source[index..], invocationToken);
+            invocations.Add(invocation);
+            offset = index + invocation.Length;
+        }
+        Assert.NotEmpty(invocations);
+        Assert.All(
+            invocations,
+            invocation => Assert.Equal(
+                expectedArity,
+                CountB4TopLevelInvocationArguments(
+                    invocation,
+                    invocationToken.Length - 1)));
+    }
+
+    private static int CountB4TopLevelInvocationArguments(
+        string invocation,
+        int openingParenthesis)
+    {
+        Assert.InRange(openingParenthesis, 0, invocation.Length - 2);
+        Assert.Equal('(', invocation[openingParenthesis]);
+        var arguments = invocation[(openingParenthesis + 1)..^1];
+        if (string.IsNullOrWhiteSpace(arguments))
+            return 0;
+
+        var parenthesisDepth = 0;
+        var bracketDepth = 0;
+        var braceDepth = 0;
+        var inString = false;
+        var inCharacter = false;
+        var escaped = false;
+        var commas = 0;
+        foreach (var character in arguments)
+        {
+            if (escaped)
+            {
+                escaped = false;
+                continue;
+            }
+            if ((inString || inCharacter) && character == '\\')
+            {
+                escaped = true;
+                continue;
+            }
+            if (!inCharacter && character == '"')
+            {
+                inString = !inString;
+                continue;
+            }
+            if (!inString && character == '\'')
+            {
+                inCharacter = !inCharacter;
+                continue;
+            }
+            if (inString || inCharacter)
+                continue;
+
+            switch (character)
+            {
+                case '(':
+                    parenthesisDepth++;
+                    break;
+                case ')':
+                    parenthesisDepth--;
+                    break;
+                case '[':
+                    bracketDepth++;
+                    break;
+                case ']':
+                    bracketDepth--;
+                    break;
+                case '{':
+                    braceDepth++;
+                    break;
+                case '}':
+                    braceDepth--;
+                    break;
+                case ',' when parenthesisDepth == 0 && bracketDepth == 0 && braceDepth == 0:
+                    commas++;
+                    break;
+            }
+        }
+        return commas + 1;
+    }
+
     private static void AssertBaselineMatchesObservedLiveState(
         SealedFinalBaselineProbe baseline,
         FinalBaselinePublicationObserver observer)
@@ -2212,6 +3091,77 @@ public sealed partial class MortalWoundTreatmentResolverTests
             baseline.IdentityIndex,
             observer.IdentityIndex));
     }
+
+    private static GameResponse CreateNpcSkillOnlyResponse(
+        AcceptedStateFixture fixture)
+    {
+        var npcCore = ReadCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        var medic = Assert.Single(
+            npcCore["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        var skill = Assert.Single(
+                medic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+                value => value["skillId"]?.GetValue<string>() ==
+                         "skill_field_medicine_npc_01")
+            .DeepClone()
+            .AsObject();
+        skill["displayName"] = "Disposition-only NPC tail ownership";
+        return new GameResponse
+        {
+            ActiveSkillChanges = Array.Empty<JsonElement>(),
+            RemoveActiveSkills = Array.Empty<string>(),
+            PassiveSkillChanges = Array.Empty<JsonElement>(),
+            RemovePassiveSkills = Array.Empty<string>(),
+            NPCActiveSkillChanges = new[]
+            {
+                JsonSerializer.SerializeToElement(new JsonObject
+                {
+                    ["npcId"] = "field_medic_01",
+                    ["skillChanges"] = new JsonArray(skill)
+                })
+            },
+            NPCPassiveSkillChanges = Array.Empty<JsonElement>()
+        };
+    }
+
+    private static void SeedNpcTradeTailBehaviorInput(
+        AcceptedStateFixture fixture)
+    {
+        var npcRoot = ReadCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        npcRoot[NpcTradeRequestState.UpdateReceiptsProperty] =
+            new JsonArray(new JsonObject
+            {
+                ["requestId"] = "trade_tail_disposition_request",
+                ["npcId"] = "field_medic_01",
+                ["npcName"] = "Field medic",
+                ["tradeCycleId"] = "trade_tail_disposition_cycle",
+                ["merchantProfile"] = "GeneralGoods",
+                ["status"] = "ready",
+                ["itemCount"] = 0,
+                ["resolvedAtTurn"] = 42,
+                ["resolvedAtUtc"] = "2026-09-02T00:02:00.0000000Z"
+            });
+        WriteCanonicalBytes(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath,
+            Encoding.UTF8.GetBytes(npcRoot.ToJsonString()));
+    }
+
+    private static bool HasNpcTradeTailBehaviorReceipt(JsonObject npcRoot)
+    {
+        var medic = Assert.Single(
+            npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        return medic[NpcTradeRequestState.ReceiptsProperty] is JsonArray receipts &&
+               receipts.OfType<JsonObject>().Any(receipt =>
+                   receipt["requestId"]?.GetValue<string>() ==
+                   "trade_tail_disposition_request");
+    }
+
     private static GameResponse SeedFinalBaselineProductionInputs(
         AcceptedStateFixture fixture)
     {
@@ -2223,6 +3173,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             item => item["itemId"]?.GetValue<string>() == "antibiotic_dose")
             .DeepClone()
             .AsObject();
+        var transferredItemName = transferredItem["name"]!.GetValue<string>();
         var playerCreation = MortalItemTestFixture.CreateRawRoot(
             route: "player_acquisition",
             authorityKind: "turn_outcome",
@@ -2231,7 +3182,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             creationRef: "new_item_baseline_player_journal",
             materializationId: "mat_item_baseline_player_journal");
         playerCreation["journalEntries"] = new JsonArray(
-            "#[Turn 42]: Inventory journal normalization ran last");
+            "Inventory journal tail preserved");
         playerCreation["materialization"]!["sections"]!["readableOrSentient"] =
             new JsonObject
             {
@@ -2243,6 +3194,70 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture,
             InventoryEquipmentService.ItemsPath,
             Encoding.UTF8.GetBytes(playerItems.ToJsonString()));
+
+        var questHistory = ReadCanonicalObjectOrEmpty(
+            fixture,
+            "game_state/quests/quest_history.json");
+        if (questHistory["questRewards"] is not JsonArray questRewards)
+        {
+            questRewards = new JsonArray();
+            questHistory["questRewards"] = questRewards;
+        }
+        questRewards.Add(new JsonObject
+        {
+            ["questId"] = "baseline_tail_reward",
+            ["itemsReceived"] = new JsonArray(new JsonObject
+            {
+                ["itemId"] = "antibiotic_dose"
+            })
+        });
+        WriteCanonicalBytes(
+            fixture,
+            "game_state/quests/quest_history.json",
+            Encoding.UTF8.GetBytes(questHistory.ToJsonString()));
+
+        var itemBonds = ReadCanonicalObjectOrEmpty(
+            fixture,
+            "game_state/inventory/item_bonds.json");
+        itemBonds["itemBondLevelChanges"] = new JsonArray(new JsonObject
+        {
+            ["itemId"] = "antibiotic_dose",
+            ["itemName"] = transferredItemName,
+            ["newBondLevel"] = 2,
+            ["changeReason"] = "Baseline bond tail applied"
+        });
+        WriteCanonicalBytes(
+            fixture,
+            "game_state/inventory/item_bonds.json",
+            Encoding.UTF8.GetBytes(itemBonds.ToJsonString()));
+
+        var itemTexts = ReadCanonicalObjectOrEmpty(
+            fixture,
+            "game_state/inventory/item_text_updates.json");
+        itemTexts["updateItemTextContents"] = new JsonArray(new JsonObject
+        {
+            ["itemId"] = "antibiotic_dose",
+            ["itemName"] = transferredItemName,
+            ["textToAppend"] = "Baseline text tail applied"
+        });
+        WriteCanonicalBytes(
+            fixture,
+            "game_state/inventory/item_text_updates.json",
+            Encoding.UTF8.GetBytes(itemTexts.ToJsonString()));
+
+        var itemJournals = ReadCanonicalObjectOrEmpty(
+            fixture,
+            "game_state/npcs/item_journals.json");
+        itemJournals["itemJournalUpdates"] = new JsonArray(new JsonObject
+        {
+            ["itemId"] = "antibiotic_dose",
+            ["itemName"] = transferredItemName,
+            ["entryToAppend"] = "Baseline item-journal tail applied"
+        });
+        WriteCanonicalBytes(
+            fixture,
+            "game_state/npcs/item_journals.json",
+            Encoding.UTF8.GetBytes(itemJournals.ToJsonString()));
 
         var npcCreation = MortalItemTestFixture.CreateRawRoot(
             route: "npc_acquisition",
@@ -2343,7 +3358,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     ["requestId"] = "trade_baseline_request",
                     ["npcId"] = "field_medic_01",
                     ["npcName"] = "Field medic",
-                    ["merchantProfile"] = "field_medicine",
+                    ["merchantProfile"] = "GeneralGoods",
                     ["tradeCycleId"] = "trade_cycle_baseline",
                     ["derivedTradeSlotCount"] = 0,
                     ["createdAtTurn"] = 42,
@@ -2410,7 +3425,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         ["npcId"] = "field_medic_01",
         ["npcName"] = "Field medic",
         ["tradeCycleId"] = "trade_cycle_baseline",
-        ["merchantProfile"] = "field_medicine",
+        ["merchantProfile"] = "GeneralGoods",
         ["status"] = "ready",
         ["itemCount"] = 0,
         ["resolvedAtTurn"] = 42,
@@ -2431,7 +3446,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var sealedPlan = ComposeResourcePublication(fixture, flow, response);
         var sealedPublication = ReadSealedTreatmentPublication(sealedPlan);
         AssertSealedFinalBaselineAuthorityInputs(sealedPublication, fixture);
-        AssertFrozenFinalBaseline(sealedPublication.Baseline, sealedPlan);
+        AssertFrozenFinalBaseline(
+            sealedPublication.Baseline,
+            sealedPublication.NpcTradeDisposition,
+            sealedPlan,
+            fixture);
         AcceptedMechanicsPlanAuthority.InvalidateValidated(
             fixture.FileSystem,
             fixture.Lease);
@@ -2499,6 +3518,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AcceptedStateFixture fixture,
         string path) => JsonNode.Parse(ReadCanonicalBytes(fixture, path).AsSpan())!
             .AsObject();
+
+    private static JsonObject ReadCanonicalObjectOrEmpty(
+        AcceptedStateFixture fixture,
+        string path)
+    {
+        var physicalPath = fixture.FileSystem.ResolvePath(path);
+        return File.Exists(physicalPath)
+            ? ReadCanonicalObject(fixture, path)
+            : new JsonObject();
+    }
 
     private static void WriteCanonicalBytes(
         AcceptedStateFixture fixture,
@@ -3872,12 +4901,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         private readonly object _gate = new();
         private FileSystemManager? _fileSystem;
-        private IReadOnlyDictionary<string, JsonObject>? _expectedRoots;
+        private IReadOnlyDictionary<string, JsonNode?>? _expectedRoots;
         private JsonObject? _expectedIdentity;
 
         internal bool Matched { get; private set; }
-        internal IReadOnlyDictionary<string, JsonObject> Roots { get; private set; } =
-            new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        internal IReadOnlyDictionary<string, JsonNode?> Roots { get; private set; } =
+            new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         internal JsonObject? IdentityIndex { get; private set; }
 
         internal void Arm(
@@ -3887,7 +4916,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             _fileSystem = fileSystem;
             _expectedRoots = baseline.Roots.ToDictionary(
                 static pair => pair.Key,
-                static pair => pair.Value.DeepClone().AsObject(),
+                static pair => pair.Value?.DeepClone(),
                 StringComparer.Ordinal);
             _expectedIdentity = baseline.IdentityIndex.DeepClone().AsObject();
             Assert.False(TryCaptureExactLiveBaseline());
@@ -3915,16 +4944,21 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 return false;
             }
-            var actual = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var actual = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
             try
             {
                 foreach (var pair in _expectedRoots)
                 {
                     var physical = _fileSystem.ResolvePath(pair.Key);
-                    if (!File.Exists(physical))
-                        return false;
-                    var root = JsonNode.Parse(File.ReadAllBytes(physical).AsSpan())!
-                        .AsObject();
+                    if (pair.Value is null)
+                    {
+                        if (File.Exists(physical))
+                            return false;
+                        actual.Add(pair.Key, null);
+                        continue;
+                    }
+                    if (!File.Exists(physical)) return false;
+                    var root = JsonNode.Parse(File.ReadAllBytes(physical).AsSpan())!;
                     if (!JsonNode.DeepEquals(pair.Value, root))
                         return false;
                     actual.Add(pair.Key, root);

@@ -48,7 +48,7 @@
 
 - Q: What happens when treatment consumes only part of a stack that owns live resources? → A: The same permanent item identity and carrier remain active with the exact reduced count; every live item-owned `instance_fixed` maximum and current value is scaled by the exact remaining/source-count ratio with quantum alignment and no rounding. An inexact or non-`instance_fixed` projection rejects the entire publication. Consuming the complete remaining stack instead retires every live item-owned resource and terminally consumes the item.
 - Q: How are repeated selected treatment claims against one item represented? → A: Finalization order is authoritative: each selected claim emits one sequential item `consume` transition with its own exact before/after quantity, and all item/resource operation identities are privately derived from the sealed request, result/finalization, claim fingerprint, and ordinal. Claims are never silently aggregated and callers cannot supply IDs or history.
-- Q: Which same-turn response fields and normalized roots may participate in T070-B.4 treatment item publication? → A: Alongside the existing six closed skill-operation fields, B.4 admits only the ordinary Mortal item command properties `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and `NPCEquipmentChanges`; every other non-null response property remains unsupported. The sealed live item baseline is the exact output immediately before common-plan publication after every ordinary normalizer transformation that can touch the selected carrier roots: accepted item transfer/materialization/equipment/identity, ordinary NPC core processing, NPC trade canonicalization, and inventory journal normalization in production order. It explicitly excludes the B.2 treatment skill projection, which is a common-plan mutation applied to that baseline before item consumption. Each ordinary transformation must be shared with the normalizer rather than duplicated, and every authority or pending-file byte input on which it depends must be detached and sealed. Accepted same-turn creations use snapshot-owned deterministic root receipt and create-transition IDs, and transfers use deterministic transition IDs, all derived from session/snapshot/turn, exact route or transfer authority, and ordinal; neither the projector nor normalizer may invoke the writing transfer service or allocate a second random receipt/history row.
+- Q: Which same-turn response fields and normalized roots may participate in T070-B.4 treatment item publication? → A: Alongside the existing six closed skill-operation fields, B.4 admits only the ordinary Mortal item command properties `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and `NPCEquipmentChanges`; every other non-null response property remains unsupported. The snapshot owns detached `JsonNode?` current/backup and output roots; every map retains the complete bidirectional path set, with a null value proving an absent file, and preserves exact content plus top-level object/array topology, including legacy vehicles and effective post-location roots. The sealed live item baseline is the exact output immediately before common-plan publication after only the ordinary transforms that can touch the selected item graph. `TransformRegistry` owns execution in exact base order `quest_history:v1`, `npc_core:v1`, `npc_trade:v1`, `inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, `npc_item_journals:v1`; the same dispatch loop emits the fingerprinted `AppliedTransformIds`, specializing NPC trade to `npc_trade:apply:v1` or `npc_trade:skip_untouched_treatment_continuation:v1`. `Apply` consumes `UpdateNpcTradeInventoryReceipts` into canonical receipts, whereas `SkipUntouchedTreatmentContinuation` leaves the post-NPC-core root and command untouched and creates no receipt. The baseline explicitly excludes the B.2 treatment skill projection, which receives the supplied semantic final ordinary NPC root while transaction rollback retains its separate true live canonical before-image. Each ordinary transformation is shared with the normalizer rather than duplicated, and every authority, pending byte, route/transfer catalog, and snapshot on which it depends is detached, sealed, and forwarded from validation without reread or rebuild. Accepted same-turn creations use snapshot-owned deterministic root receipt and create-transition IDs in production collector order `UpdateInventory` -> NPC core -> NPC commands -> current location -> offscreen storage, and transfers use deterministic transition IDs; neither the projector nor normalizer may invoke the writing transfer service or allocate a second random receipt/history row.
 - Q: What may full treatment consumption unlink automatically? → A: Only an existing supported inline equipment reference may be cleared by the shared Mortal item transition contract. A container, quest, bond, or any other companion reference requires its own genuine atomic transition authority; because B.4 does not mint that authority, the complete mixed publication rejects before any write.
 
 ## User Scenarios & Testing *(mandatory)*
@@ -455,7 +455,36 @@ The destination-strain ceiling used by FR-032 is exact:
   seal complete backup/current carrier roots plus privately derived deterministic root
   receipt and create/transfer transition IDs; the ordinary normalizer and treatment
   projector MUST use one shared pure transfer transform and produce the same receipt/history
-  without a direct writer call.
+  without a direct writer call. Current and backup root maps MUST use nullable `JsonNode`
+  values and output maps MUST also use nullable `JsonNode` values, retaining every key and
+  using null to prove an absent file; a present JSON-null root is invalid before projection.
+  Snapshot proof MUST retain exact file presence and top-level object/array topology.
+  Snapshot validation MUST be
+  bidirectional over the complete carrier/command/index/companion root-path set, including
+  legacy vehicle object/array forms and effective post-location roots; no missing frozen or
+  extra supplied path is acceptable. Only ordinary transforms touching the selected item
+  graph participate, in exact tail order: quest history, NPC core, conditional NPC trade,
+  inventory items journal, item bonds, item text updates, then NPC item journals. The
+  baseline result MUST expose and fingerprint this order as exact `AppliedTransformIds`
+  `quest_history:v1`, `npc_core:v1`, one disposition-matching NPC-trade ID,
+  `inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+  `npc_item_journals:v1`; planner dispatch MUST use that ordered registry rather than
+  merely reporting it after independently ordered execution. The NPC-trade ID MUST be
+  exactly `npc_trade:apply:v1` or
+  `npc_trade:skip_untouched_treatment_continuation:v1`. The
+  planner MUST expose the corresponding base `TransformRegistry` with `npc_trade:v1`,
+  iterate it exactly once, invoke `ApplyRegisteredTransform` once per registration, and
+  append each returned applied ID inside that same loop. `Apply` MUST apply and remove
+  `UpdateNpcTradeInventoryReceipts`; `SkipUntouchedTreatmentContinuation` MUST leave the
+  post-NPC-core root and command unchanged and MUST NOT create the receipt. The
+  authenticated `MortalItemNpcTradeTailDisposition` closed to `Apply` or
+  `SkipUntouchedTreatmentContinuation` and its treatment-continuation skip gate MUST be
+  sealed and fingerprinted. The B.2 projector MUST retain the true live canonical
+  before-image for rollback separately from its supplied semantic final ordinary NPC
+  baseline. Creation ordinals MUST preserve collector order `UpdateInventory`, NPC core,
+  NPC commands, current location, then offscreen storage. Already validated route and
+  transfer catalogs, effective roots, and snapshots MUST be forwarded and MUST NOT be
+  reread or rebuilt by registration, projection, or normalization.
   Before any new live procedure reservation, accepted-state binding MUST perform exactly
   one atomic claim-recovery phase in the persisted catalog's coalesced first-authoritative
   order. Recovery MUST restore exact dice spans; prove every carried player natural-1

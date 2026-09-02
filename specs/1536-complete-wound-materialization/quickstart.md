@@ -252,18 +252,39 @@ selected resource. Consume the final unit and prove carrier/equipment removal, t
 Repeat the final consume with a container, quest, bond, and other companion reference and
 prove each rejects before any write; only supported inline equipment clears automatically.
 Using only the seven closed ordinary item response properties, repeat with same-turn item
-creation/transfer and an NPC guarantee touching the same `npc_core.json`. Prove the sealed
-baseline exactly matches the live root after item, ordinary NPC core/trade, and inventory
-journal normalizers. Change NPC-core authority, NPC-trade pending bytes, and training
-pending bytes independently and prove each invalidates recomposition. Then prove the common
-candidate applies the B.2 NPC skill projection and item consumption over that verified
-baseline so one final root preserves every change. Set one unrelated response property
+creation/transfer and an NPC guarantee touching the same `npc_core.json`. Supply nullable
+`JsonNode` current/backup roots and outputs, retaining null for an absent file, and prove bidirectional exact
+registered path, file presence/absence, content, and top-level topology preservation over every carrier,
+command, identity, and companion root, including both legacy vehicle object and array forms
+and effective post-location roots. Prove the sealed baseline exactly matches the live root
+after only selected-item-graph transforms in exact order: quest history -> NPC core ->
+conditional NPC trade -> inventory items journal -> item bonds -> item text updates -> NPC
+item journals. Assert exact fingerprinted `AppliedTransformIds` for both trade branches:
+`quest_history:v1`, `npc_core:v1`, the matching
+`npc_trade:apply:v1|npc_trade:skip_untouched_treatment_continuation:v1`,
+`inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+`npc_item_journals:v1`. Source-guard the exact base `TransformRegistry` (using
+`npc_trade:v1`) and the single `Project` loop that calls `ApplyRegisteredTransform` and
+records its returned ID; comparing a reported list alone is insufficient. Give both trade
+branches the same `UpdateNpcTradeInventoryReceipts` stimulus: Apply must consume/remove it
+and create the receipt, while Skip must retain the post-NPC-core command and create none.
+Exercise every tail sidecar. Change NPC-core authority, NPC-trade pending
+bytes, training pending bytes, and authenticated `MortalItemNpcTradeTailDisposition`
+independently
+and prove each invalidates recomposition while the disposition preserves current
+treatment-continuation skip semantics. Then prove the common candidate applies the B.2 NPC
+skill projection from the supplied semantic final ordinary NPC root while retaining the
+separate true live canonical before-image for rollback, followed by item consumption, so one
+final root preserves every change. Set one unrelated response property
 non-null and prove the treatment envelope rejects it. Inject a post-write failure and cold
 replay, proving byte-exact rollback and no second item/resource transition. Project the
-same accepted create/transfer phase twice from detached current/backup roots and prove its
-privately derived root receipt/create/transfer transition IDs, command removal, carrier/
-index roots, and fingerprint are identical; source-guard that neither path calls the writing
-item transition service or random receipt/transition overloads.
+same accepted create/transfer phase twice from snapshot-owned detached current/backup roots
+and prove its privately derived root receipt/create/transfer transition IDs, command
+removal, carrier/index roots, and fingerprint are identical. Assert creation ordinal follows
+`UpdateInventory` -> NPC core -> NPC commands -> current location -> offscreen storage.
+Source-guard that already validated route/transfer catalogs and snapshots are forwarded,
+never reread/rebuilt, and neither path calls the writing item transition service or random
+receipt/transition overloads.
 
 For Mortal recovery, create an untreated `requires_stabilization` wound at minute 100,
 stabilize it through the sealed treatment/publication path at minute 150, and assert the

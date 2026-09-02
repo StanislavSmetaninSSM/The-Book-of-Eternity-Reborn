@@ -18,6 +18,22 @@ public sealed class MortalItemConsumptionPlannerTests
     private const string PlayerPath = "game_state/inventory/items.json";
     private const string NpcPath = "game_state/npcs/npc_core.json";
     private const string NpcCommandsPath = "game_state/npcs/npc_inventory.json";
+    private static readonly string[] ProjectionRootPaths =
+    {
+        PlayerPath,
+        NpcPath,
+        NpcCommandsPath,
+        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+        StorageTransportMoveService.CurrentLocationPath,
+        MortalLocationStorageContentsState.StatePath,
+        StorageTransportMoveService.VehiclesPath,
+        MortalItemIdentityState.StatePath,
+        "game_state/quests/quest_history.json",
+        "game_state/inventory/item_bonds.json",
+        "game_state/inventory/item_text_updates.json",
+        "game_state/inventory/recipes.json",
+        "game_state/npcs/item_journals.json"
+    };
 
     [Fact]
     public void Plan_PartialStackPreservesIdentityReceiptAndCarrier()
@@ -212,15 +228,20 @@ public sealed class MortalItemConsumptionPlannerTests
         AssertFilesEqual(filesBefore, ReadFiles(canonicalRoot));
     }
 
-    [Fact]
-    public async Task Project_SameTurnCreateAndTransferUseSnapshotDeterministicReceiptAndTransitionIds()
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Project_SameTurnCreateAndTransferUseSnapshotDeterministicReceiptAndTransitionIds(
+        bool vehiclesUseLegacyArrayRoot)
     {
-        var scenario = await ProductionProjectionScenarioAsync();
+        var scenario = await ProductionProjectionScenarioAsync(vehiclesUseLegacyArrayRoot);
         var owner = ExactType("BookOfEternityClient.Services.MortalItemCanonicalProjectionPlanner");
         var inputType = ExactType("BookOfEternityClient.Services.MortalItemCanonicalProjectionInput");
         var resultType = ExactType("BookOfEternityClient.Services.MortalItemCanonicalProjectionResult");
         ProjectionInputShape(inputType);
         ProjectionResultShape(resultType);
+        AssertProjectionRootRegistry(owner);
+        AssertSnapshotProjectionRoots(scenario, vehiclesUseLegacyArrayRoot);
         var method = ExactMethod(owner, "Project", inputType, resultType);
         var first = ProjectionInput(inputType, scenario);
         var second = ProjectionInput(inputType, scenario);
@@ -250,7 +271,282 @@ public sealed class MortalItemConsumptionPlannerTests
         Assert.Equal("player_inventory",
             transferredEntry["currentCarrier"]!["kind"]!.GetValue<string>());
         Assert.NotNull(FindItem(firstResult.Roots, scenario.TransferredItemId));
+        Assert.Equal(
+            ProjectionRootPaths.OrderBy(static path => path, StringComparer.Ordinal),
+            firstResult.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        Assert.Equal(
+            vehiclesUseLegacyArrayRoot ? typeof(JsonArray) : typeof(JsonObject),
+            firstResult.Roots[StorageTransportMoveService.VehiclesPath]!.GetType());
+        Assert.Null(firstResult.Roots["game_state/inventory/recipes.json"]);
+        Assert.True(JsonNode.DeepEquals(
+            firstResult.Roots[MortalItemIdentityState.StatePath],
+            firstResult.Index));
         AssertFingerprint(firstResult.Fingerprint);
+
+        var missingRoots = scenario.CurrentRoots
+            .Where(pair => !string.Equals(
+                pair.Key,
+                "game_state/inventory/recipes.json",
+                StringComparison.Ordinal))
+            .ToDictionary(pair => pair.Key, pair => pair.Value?.DeepClone(),
+                StringComparer.Ordinal);
+        AssertProjectionInvalidEmpty(ProjectionResult(method.Invoke(
+            null,
+            new[] { ProjectionInput(inputType, scenario, currentRoots: missingRoots) })!));
+
+        var extraRoots = scenario.CurrentRoots.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
+        extraRoots.Add("game_state/inventory/unregistered_projection_root.json",
+            new JsonObject());
+        AssertProjectionInvalidEmpty(ProjectionResult(method.Invoke(
+            null,
+            new[] { ProjectionInput(inputType, scenario, currentRoots: extraRoots) })!));
+
+        var missingBackupRoots = scenario.BackupRoots
+            .Where(pair => !string.Equals(
+                pair.Key,
+                "game_state/inventory/recipes.json",
+                StringComparison.Ordinal))
+            .ToDictionary(pair => pair.Key, pair => pair.Value?.DeepClone(),
+                StringComparer.Ordinal);
+        AssertProjectionInvalidEmpty(ProjectionResult(method.Invoke(
+            null,
+            new[]
+            {
+                ProjectionInput(
+                    inputType,
+                    scenario,
+                    backupRoots: missingBackupRoots)
+            })!));
+
+        var extraBackupRoots = scenario.BackupRoots.ToDictionary(
+            pair => pair.Key,
+            pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
+        extraBackupRoots.Add("game_state/inventory/unregistered_backup_root.json",
+            new JsonObject());
+        AssertProjectionInvalidEmpty(ProjectionResult(method.Invoke(
+            null,
+            new[]
+            {
+                ProjectionInput(
+                    inputType,
+                    scenario,
+                    backupRoots: extraBackupRoots)
+            })!));
+
+        AssertProjectionInvalidEmpty(ProjectionResult(method.Invoke(
+            null,
+            new[]
+            {
+                ProjectionInput(
+                    inputType,
+                    scenario,
+                    identityRoot: MortalItemIdentityState.CreateEmptyRoot())
+            })!));
+    }
+
+    [Fact]
+    public async Task AcceptedCreationIdentityIds_UseFiveCollectorProductionOrderInsteadOfCreationRefOrder()
+    {
+        const int turn = 44;
+        const string sessionId = "session_t070b4_five_collectors";
+        var snapshotToken = Hex("snapshot_t070b4_five_collectors");
+        var expectedCreationRefs = new[]
+        {
+            "new_item_z_player",
+            "new_item_y_npc_core",
+            "new_item_x_npc_command",
+            "new_item_w_current_location",
+            "new_item_v_offscreen_storage"
+        };
+        Assert.False(expectedCreationRefs.SequenceEqual(
+            expectedCreationRefs.OrderBy(static value => value, StringComparer.Ordinal)));
+
+        var input = FiveCollectorInput(turn, expectedCreationRefs);
+        var catalog = MortalItemCarrierCatalog.Build(input);
+        Assert.Empty(catalog.Issues);
+        var occurrences = catalog.Occurrences
+            .Where(static value => value.ItemId is null && value.CreationRef is not null)
+            .ToArray();
+        Assert.Equal(expectedCreationRefs, occurrences.Select(static value => value.CreationRef));
+
+        var currentRoots = FiveCollectorProjectionRoots(input);
+        var backupRoots = ProjectionRootPaths.ToDictionary(
+            static path => path,
+            static _ => (JsonNode?)null,
+            StringComparer.Ordinal);
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-t070b4-five-collectors-" + Guid.NewGuid().ToString("N"));
+        var expectedParent = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        try
+        {
+            var fileSystem = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance);
+            fileSystem.EnsureDirectoryStructure();
+            await SeedFiveCollectorRouteAuthorityAsync(fileSystem, input, turn);
+            var routeCatalog = await MortalItemRouteAuthorityCatalog.BuildAsync(fileSystem);
+            Assert.Empty(routeCatalog.Issues);
+            Assert.Equal(
+                expectedCreationRefs.OrderBy(static value => value, StringComparer.Ordinal),
+                routeCatalog.ByCreationRef.Keys.OrderBy(
+                    static value => value,
+                    StringComparer.Ordinal));
+            MortalItemAcceptedTurnNormalizationSnapshot snapshot;
+            await using (var lease = await fileSystem.AcquireCanonicalWriteLeaseAsync())
+            {
+                RegisterFiveCollectorItems(
+                    fileSystem,
+                    lease,
+                    sessionId,
+                    snapshotToken,
+                    catalog,
+                    routeCatalog,
+                    currentRoots,
+                    backupRoots);
+                Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                    fileSystem,
+                    lease,
+                    sessionId,
+                    snapshotToken,
+                    turn,
+                    out snapshot));
+            }
+
+            var receiptIds = new HashSet<string>(StringComparer.Ordinal);
+            var transitionIds = new HashSet<string>(StringComparer.Ordinal);
+            for (var index = 0; index < expectedCreationRefs.Length; index++)
+            {
+                var creationRef = expectedCreationRefs[index];
+                var ordinal = index + 1;
+                var route = routeCatalog.ByCreationRef[creationRef];
+                var receiptId = SnapshotOwnedMapValue(snapshot, creationRef, "mirec_");
+                var transitionId = SnapshotOwnedMapValue(snapshot, creationRef, "mitrn_");
+                Assert.Equal(
+                    ExpectedAcceptedCreationIdentityId(
+                        "mirec_",
+                        "accepted_root_receipt",
+                        sessionId,
+                        snapshotToken,
+                        turn,
+                        creationRef,
+                        route,
+                        ordinal),
+                    receiptId);
+                Assert.Equal(
+                    ExpectedAcceptedCreationIdentityId(
+                        "mitrn_",
+                        "accepted_create_transition",
+                        sessionId,
+                        snapshotToken,
+                        turn,
+                        creationRef,
+                        route,
+                        ordinal),
+                    transitionId);
+                Assert.True(receiptIds.Add(receiptId));
+                Assert.True(transitionIds.Add(transitionId));
+            }
+        }
+        finally
+        {
+            var fullRoot = Path.GetFullPath(root);
+            if (!fullRoot.StartsWith(expectedParent, StringComparison.OrdinalIgnoreCase) ||
+                !Path.GetFileName(fullRoot).StartsWith(
+                    "boe-t070b4-five-collectors-",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Unsafe five-collector test root '{fullRoot}'.");
+            }
+            if (Directory.Exists(fullRoot))
+                Directory.Delete(fullRoot, recursive: true);
+        }
+    }
+
+    private static void AssertProjectionRootRegistry(Type owner)
+    {
+        var property = owner.GetProperty(
+            "ProjectionRootPaths",
+            BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(property);
+        Assert.Equal(typeof(IReadOnlyList<string>), property!.PropertyType);
+        Assert.Equal(
+            ProjectionRootPaths,
+            Assert.IsAssignableFrom<IReadOnlyList<string>>(property.GetValue(null))
+                .ToArray());
+    }
+
+    private static void AssertSnapshotProjectionRoots(
+        ProjectionScenario scenario,
+        bool vehiclesUseLegacyArrayRoot)
+    {
+        var current = ReadSnapshotProjectionRoots(
+            scenario.Snapshot,
+            "CloneCurrentProjectionRoots");
+        var backup = ReadSnapshotProjectionRoots(
+            scenario.Snapshot,
+            "CloneBackupProjectionRoots");
+        AssertProjectionInputRoots(scenario.CurrentRoots, current);
+        AssertProjectionInputRoots(scenario.BackupRoots, backup);
+        var expectedVehicleType = vehiclesUseLegacyArrayRoot
+            ? typeof(JsonArray)
+            : typeof(JsonObject);
+        Assert.Equal(expectedVehicleType,
+            current[StorageTransportMoveService.VehiclesPath]!.GetType());
+        Assert.Equal(expectedVehicleType,
+            backup[StorageTransportMoveService.VehiclesPath]!.GetType());
+
+        current[PlayerPath]!.AsObject()["detachedProbe"] = true;
+        var fresh = ReadSnapshotProjectionRoots(
+            scenario.Snapshot,
+            "CloneCurrentProjectionRoots");
+        Assert.False(fresh[PlayerPath]!.AsObject().ContainsKey("detachedProbe"));
+
+        backup[PlayerPath]!.AsObject()["detachedBackupProbe"] = true;
+        var freshBackup = ReadSnapshotProjectionRoots(
+            scenario.Snapshot,
+            "CloneBackupProjectionRoots");
+        Assert.False(freshBackup[PlayerPath]!.AsObject()
+            .ContainsKey("detachedBackupProbe"));
+    }
+
+    private static IReadOnlyDictionary<string, JsonNode?> ReadSnapshotProjectionRoots(
+        MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+        string methodName)
+    {
+        var method = snapshot.GetType().GetMethod(
+            methodName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic,
+            binder: null,
+            types: Type.EmptyTypes,
+            modifiers: null);
+        Assert.NotNull(method);
+        Assert.Equal(
+            typeof(IReadOnlyDictionary<string, JsonNode?>),
+            method!.ReturnType);
+        return Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonNode?>>(
+            method.Invoke(snapshot, null));
+    }
+
+    private static void AssertProjectionInputRoots(
+        IReadOnlyDictionary<string, JsonNode?> expected,
+        IReadOnlyDictionary<string, JsonNode?> actual)
+    {
+        Assert.Equal(
+            ProjectionRootPaths.OrderBy(static path => path, StringComparer.Ordinal),
+            actual.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        Assert.Equal(
+            expected.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+            actual.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        foreach (var pair in expected)
+            Assert.True(JsonNode.DeepEquals(pair.Value, actual[pair.Key]), pair.Key);
     }
 
     private static Fixture CreateFixture(string id, int count,
@@ -452,7 +748,8 @@ public sealed class MortalItemConsumptionPlannerTests
         Property(result, "IsValid", typeof(bool));
     }
 
-    private static async Task<ProjectionScenario> ProductionProjectionScenarioAsync()
+    private static async Task<ProjectionScenario> ProductionProjectionScenarioAsync(
+        bool vehiclesUseLegacyArrayRoot)
     {
         const int turn = 43;
         const string sessionId = "session_t070b4_projection";
@@ -469,6 +766,25 @@ public sealed class MortalItemConsumptionPlannerTests
             var fileSystem = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
             fileSystem.EnsureDirectoryStructure();
             await SeedProjectionBootstrapAsync(fileSystem);
+            await WriteJsonAsync(fileSystem, NpcCommandsPath, new JsonObject());
+            await WriteJsonAsync(
+                fileSystem,
+                MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                new JsonObject());
+            await WriteJsonAsync(
+                fileSystem,
+                MortalLocationStorageContentsState.StatePath,
+                MortalLocationStorageContentsState.CreateEmptyRoot());
+            await WriteJsonAsync(
+                fileSystem,
+                StorageTransportMoveService.VehiclesPath,
+                vehiclesUseLegacyArrayRoot
+                    ? new JsonArray()
+                    : new JsonObject { ["vehicles"] = new JsonArray() });
+            await WriteJsonAsync(
+                fileSystem,
+                "game_state/quests/quest_history.json",
+                new JsonObject { ["questHistory"] = new JsonArray() });
             var transferred = MortalItemTestFixture.CreateCanonicalRootAtTurn(
                 transferredId, 42, "npc_acquisition", "npc_inventory_add",
                 "npc_inventory_add:42:0:npc_projection",
@@ -478,6 +794,7 @@ public sealed class MortalItemConsumptionPlannerTests
                 transferred, "npc_inventory", npcId);
             await WriteJsonAsync(fileSystem, NpcPath, npcBefore);
             await WriteJsonAsync(fileSystem, MortalItemIdentityState.StatePath, indexRoot);
+            var backup = await ReadProjectionRootsAsync(fileSystem);
             await CapturePendingSnapshotAsync(fileSystem, sessionId, turn);
 
             var playerBeforeJson = await fileSystem.ReadFileAsync(PlayerPath);
@@ -525,18 +842,7 @@ public sealed class MortalItemConsumptionPlannerTests
             }
             var routes = await MortalItemRouteAuthorityCatalog.BuildAsync(fileSystem);
             Assert.Empty(routes.Issues);
-            var current = new Dictionary<string, JsonObject?>(StringComparer.Ordinal)
-            {
-                [PlayerPath] = playerCurrent,
-                [NpcPath] = npcBefore.DeepClone().AsObject(),
-                [NpcCommandsPath] = commandsCurrent
-            };
-            var backup = new Dictionary<string, JsonObject?>(StringComparer.Ordinal)
-            {
-                [PlayerPath] = playerBefore,
-                [NpcPath] = npcBefore,
-                [NpcCommandsPath] = null
-            };
+            var current = await ReadProjectionRootsAsync(fileSystem);
             return new ProjectionScenario(turn, snapshot, routes, current, backup,
                 indexRoot, createdId, creationRef, transferredId);
         }
@@ -551,22 +857,353 @@ public sealed class MortalItemConsumptionPlannerTests
         }
     }
 
-    private static object ProjectionInput(Type inputType, ProjectionScenario scenario)
+    private static MortalItemCarrierCatalogInput FiveCollectorInput(
+        int turn,
+        IReadOnlyList<string> creationRefs)
     {
-        var current = scenario.CurrentRoots.ToDictionary(pair => pair.Key,
-            pair => pair.Value?.DeepClone().AsObject(), StringComparer.Ordinal);
-        var backup = scenario.BackupRoots.ToDictionary(pair => pair.Key,
-            pair => pair.Value?.DeepClone().AsObject(), StringComparer.Ordinal);
-        var identity = MortalItemIdentityState.Parse(scenario.IdentityRoot.ToJsonString());
+        Assert.Equal(5, creationRefs.Count);
+        var player = Raw(
+            creationRefs[0],
+            "player_acquisition",
+            "turn_outcome",
+            $"turn_{turn}");
+        var npcCoreItem = Raw(
+            creationRefs[1],
+            "new_npc_inventory",
+            "new_npc",
+            "npc_five_new");
+        var npcCommandItem = Raw(
+            creationRefs[2],
+            "npc_acquisition",
+            "npc_inventory_add",
+            $"npc_inventory_add:{turn}:0:npc_five_command");
+        var currentLocationItem = Raw(
+            creationRefs[3],
+            "storage_placement",
+            "location_storage",
+            "loc_five_storage:storage_five_current");
+        var offscreenItem = Raw(
+            creationRefs[4],
+            "storage_placement",
+            "location_storage",
+            "loc_five_storage:storage_five_offscreen");
+
+        return new MortalItemCarrierCatalogInput(
+            new JsonObject
+            {
+                ["items"] = new JsonArray(),
+                ["equippedItems"] = new JsonObject(),
+                ["UpdateInventory"] = new JsonArray(player)
+            },
+            new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(new JsonObject
+                {
+                    ["initialId"] = "npc_five_new",
+                    ["name"] = "Five collector new NPC",
+                    ["inventory"] = new JsonArray(npcCoreItem),
+                    ["equippedItems"] = new JsonObject()
+                }),
+                ["NPCsInScene"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_five_command",
+                    ["name"] = "Five collector command owner",
+                    ["inventory"] = new JsonArray(),
+                    ["equippedItems"] = new JsonObject()
+                })
+            },
+            new JsonObject
+            {
+                ["NPCInventoryAdds"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_five_command",
+                    ["NPCName"] = "Five collector command owner",
+                    ["item"] = npcCommandItem,
+                    ["destinationContainerId"] = null
+                })
+            },
+            new JsonObject
+            {
+                ["locationId"] = "loc_five_storage",
+                ["locationStorages"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["storageId"] = "storage_five_current",
+                        ["contents"] = new JsonArray(currentLocationItem)
+                    },
+                    new JsonObject
+                    {
+                        ["storageId"] = "storage_five_offscreen",
+                        ["contents"] = new JsonArray()
+                    })
+            },
+            null,
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+            MortalLocationStorageContentsState.BuildCanonicalRoot(
+                new Dictionary<MortalLocationStorageKey, JsonArray>
+                {
+                    [new MortalLocationStorageKey(
+                        "loc_five_storage",
+                        "storage_five_offscreen")] = new JsonArray(offscreenItem)
+                }));
+
+        JsonObject Raw(
+            string creationRef,
+            string route,
+            string authorityKind,
+            string authorityId) =>
+            MortalItemTestFixture.CreateRawRoot(
+                route,
+                authorityKind,
+                authorityId,
+                turn,
+                creationRef,
+                "mat_" + creationRef);
+    }
+
+    private static IReadOnlyDictionary<string, JsonNode?> FiveCollectorProjectionRoots(
+        MortalItemCarrierCatalogInput input)
+    {
+        var roots = ProjectionRootPaths.ToDictionary(
+            static path => path,
+            static _ => (JsonNode?)null,
+            StringComparer.Ordinal);
+        roots[PlayerPath] = input.PlayerInventory!.DeepClone();
+        roots[NpcPath] = input.NpcCore!.DeepClone();
+        roots[NpcCommandsPath] = input.NpcInventoryCommands!.DeepClone();
+        roots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] = new JsonObject();
+        roots[StorageTransportMoveService.CurrentLocationPath] =
+            input.CurrentLocation!.DeepClone();
+        roots[MortalLocationStorageContentsState.StatePath] =
+            input.OffscreenLocationStorageContents!.DeepClone();
+        roots[StorageTransportMoveService.VehiclesPath] =
+            new JsonObject { ["vehicles"] = new JsonArray() };
+        roots[MortalItemIdentityState.StatePath] =
+            MortalItemIdentityState.CreateEmptyRoot();
+        roots["game_state/quests/quest_history.json"] =
+            new JsonObject { ["questHistory"] = new JsonArray() };
+        roots["game_state/inventory/item_bonds.json"] = new JsonObject();
+        roots["game_state/inventory/item_text_updates.json"] = new JsonObject();
+        roots["game_state/npcs/item_journals.json"] = new JsonObject();
+        return roots;
+    }
+
+    private static async Task SeedFiveCollectorRouteAuthorityAsync(
+        FileSystemManager fileSystem,
+        MortalItemCarrierCatalogInput input,
+        int turn)
+    {
+        await WriteJsonAsync(fileSystem, PlayerPath, input.PlayerInventory!);
+        await WriteJsonAsync(fileSystem, NpcPath, input.NpcCore!);
+        await WriteJsonAsync(fileSystem, NpcCommandsPath, input.NpcInventoryCommands!);
+        await WriteJsonAsync(
+            fileSystem,
+            StorageTransportMoveService.CurrentLocationPath,
+            input.CurrentLocation!);
+        await WriteJsonAsync(
+            fileSystem,
+            MortalLocationStorageContentsState.StatePath,
+            input.OffscreenLocationStorageContents!);
+        await WriteJsonAsync(
+            fileSystem,
+            StorageTransportMoveService.VehiclesPath,
+            new JsonObject { ["vehicles"] = new JsonArray() });
+        await WriteJsonAsync(
+            fileSystem,
+            "game_state/quests/quest_history.json",
+            new JsonObject { ["questHistory"] = new JsonArray() });
+        await WriteJsonAsync(fileSystem, "input/turn_request.json", new JsonObject
+        {
+            ["sessionId"] = "session_t070b4_five_collectors",
+            ["requestId"] = "request_t070b4_five_collectors",
+            ["turnNumber"] = turn,
+            ["playerAction"] = "Validate all five item creation collectors."
+        });
+
+        const string npcSnapshotPath =
+            "game_state/control/five_collectors_snapshot/npc_core.json";
+        const string locationSnapshotPath =
+            "game_state/control/five_collectors_snapshot/current_location.json";
+        await WriteJsonAsync(fileSystem, npcSnapshotPath, new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(),
+            ["NPCsInScene"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_five_command",
+                ["name"] = "Five collector command owner",
+                ["inventory"] = new JsonArray(),
+                ["equippedItems"] = new JsonObject()
+            })
+        });
+        await WriteJsonAsync(fileSystem, locationSnapshotPath, new JsonObject
+        {
+            ["locationId"] = "loc_five_storage",
+            ["locationStorages"] = new JsonArray(
+                new JsonObject
+                {
+                    ["storageId"] = "storage_five_current",
+                    ["contents"] = new JsonArray()
+                },
+                new JsonObject
+                {
+                    ["storageId"] = "storage_five_offscreen",
+                    ["contents"] = new JsonArray()
+                })
+        });
+        await WriteJsonAsync(
+            fileSystem,
+            "game_state/control/pending_turn_snapshot.json",
+            new JsonObject
+            {
+                ["files"] = new JsonObject
+                {
+                    [NpcPath] = npcSnapshotPath,
+                    [StorageTransportMoveService.CurrentLocationPath] =
+                        locationSnapshotPath
+                }
+            });
+    }
+
+    private static void RegisterFiveCollectorItems(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease,
+        string sessionId,
+        string snapshotToken,
+        MortalItemCarrierCatalog catalog,
+        MortalItemRouteAuthorityCatalog routeCatalog,
+        IReadOnlyDictionary<string, JsonNode?> currentRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupRoots)
+    {
+        var method = Assert.Single(typeof(MortalItemAcceptedTurnAuthority).GetMethods(
+                BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic),
+            static candidate => string.Equals(
+                candidate.Name,
+                "RegisterValidatedItems",
+                StringComparison.Ordinal));
+        var parameters = method.GetParameters();
+        Assert.Equal(10, parameters.Length);
+        var arguments = new object?[parameters.Length];
+        arguments[0] = fileSystem;
+        arguments[1] = lease;
+        arguments[2] = sessionId;
+        arguments[3] = snapshotToken;
+        arguments[4] = catalog;
+        arguments[5] = Array.Empty<string>();
+        arguments[6] = routeCatalog;
+        arguments[7] = null;
+        arguments[8] = ConvertProjectionRoots(
+            parameters[8].ParameterType,
+            currentRoots);
+        arguments[9] = ConvertProjectionRoots(
+            parameters[9].ParameterType,
+            backupRoots);
+        method.Invoke(null, arguments);
+    }
+
+    private static object ConvertProjectionRoots(
+        Type targetType,
+        IReadOnlyDictionary<string, JsonNode?> roots)
+    {
+        var dictionaryInterface = targetType.IsGenericType
+            ? targetType
+            : Assert.Single(targetType.GetInterfaces(), static candidate =>
+                candidate.IsGenericType &&
+                candidate.GetGenericTypeDefinition() == typeof(IReadOnlyDictionary<,>));
+        Assert.Equal(typeof(IReadOnlyDictionary<,>),
+            dictionaryInterface.GetGenericTypeDefinition());
+        var genericArguments = dictionaryInterface.GetGenericArguments();
+        Assert.Equal(typeof(string), genericArguments[0]);
+        Assert.True(genericArguments[1] == typeof(JsonObject) ||
+                    genericArguments[1] == typeof(JsonNode));
+        var dictionaryType = typeof(Dictionary<,>).MakeGenericType(genericArguments);
+        var result = Assert.IsAssignableFrom<IDictionary>(
+            Activator.CreateInstance(dictionaryType));
+        foreach (var pair in roots)
+        {
+            var node = pair.Value?.DeepClone();
+            Assert.True(node is null || genericArguments[1].IsInstanceOfType(node));
+            result.Add(pair.Key, node);
+        }
+        return result;
+    }
+
+    private static string ExpectedAcceptedCreationIdentityId(
+        string prefix,
+        string domain,
+        string sessionId,
+        string snapshotToken,
+        int turn,
+        string creationRef,
+        MortalItemRouteAuthority route,
+        int ordinal)
+    {
+        var routeFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_item.route_authority",
+            "1",
+            route.Route,
+            route.AuthorityKind,
+            route.AuthorityId,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(new JsonObject
+            {
+                ["kind"] = route.Destination.Kind,
+                ["ownerId"] = route.Destination.OwnerId,
+                ["containerId"] = route.Destination.ContainerId,
+                ["containerPath"] = new JsonArray(route.Destination.ContainerPath
+                    .Select(static value => (JsonNode?)value)
+                    .ToArray())
+            }),
+            string.Join("\0", route.SourceItemIds)
+        });
+        var fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_item.accepted_turn_identity",
+            "1",
+            domain,
+            sessionId,
+            snapshotToken,
+            turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            creationRef,
+            routeFingerprint,
+            ordinal.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        });
+        return prefix + fingerprint["sha256:".Length..];
+    }
+
+    private static object ProjectionInput(
+        Type inputType,
+        ProjectionScenario scenario,
+        IReadOnlyDictionary<string, JsonNode?>? currentRoots = null,
+        IReadOnlyDictionary<string, JsonNode?>? backupRoots = null,
+        JsonObject? identityRoot = null)
+    {
+        var current = (currentRoots ?? scenario.CurrentRoots).ToDictionary(pair => pair.Key,
+            pair => pair.Value?.DeepClone(), StringComparer.Ordinal);
+        var backup = (backupRoots ?? scenario.BackupRoots).ToDictionary(pair => pair.Key,
+            pair => pair.Value?.DeepClone(), StringComparer.Ordinal);
+        var identity = MortalItemIdentityState.Parse(
+            (identityRoot ?? scenario.IdentityRoot).ToJsonString());
         Assert.Empty(identity.Issues);
         return Ctor(inputType, typeof(int),
             typeof(MortalItemAcceptedTurnNormalizationSnapshot),
             typeof(MortalItemRouteAuthorityCatalog),
-            typeof(IReadOnlyDictionary<string, JsonObject?>),
-            typeof(IReadOnlyDictionary<string, JsonObject?>),
+            typeof(IReadOnlyDictionary<string, JsonNode?>),
+            typeof(IReadOnlyDictionary<string, JsonNode?>),
             typeof(MortalItemIdentityParseResult)).Invoke([
                 scenario.Turn, scenario.Snapshot, scenario.RouteCatalog,
                 current, backup, identity]);
+    }
+
+    private static async Task<IReadOnlyDictionary<string, JsonNode?>>
+        ReadProjectionRootsAsync(FileSystemManager fileSystem)
+    {
+        var roots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var path in ProjectionRootPaths)
+        {
+            var json = await fileSystem.ReadFileAsync(path);
+            roots.Add(path, json == null ? null : JsonNode.Parse(json));
+        }
+        return roots;
     }
 
     private static async Task SeedProjectionBootstrapAsync(FileSystemManager fileSystem)
@@ -729,14 +1366,14 @@ public sealed class MortalItemConsumptionPlannerTests
         Property(type, "Turn", typeof(int));
         Property(type, "Snapshot", typeof(MortalItemAcceptedTurnNormalizationSnapshot));
         Property(type, "RouteCatalog", typeof(MortalItemRouteAuthorityCatalog));
-        Property(type, "CurrentRoots", typeof(IReadOnlyDictionary<string, JsonObject?>));
-        Property(type, "BackupRoots", typeof(IReadOnlyDictionary<string, JsonObject?>));
+        Property(type, "CurrentRoots", typeof(IReadOnlyDictionary<string, JsonNode?>));
+        Property(type, "BackupRoots", typeof(IReadOnlyDictionary<string, JsonNode?>));
         Property(type, "IdentityState", typeof(MortalItemIdentityParseResult));
     }
 
     private static void ProjectionResultShape(Type type)
     {
-        Property(type, "ItemPhaseAfterImages", typeof(IReadOnlyDictionary<string, JsonObject>));
+        Property(type, "ItemPhaseAfterImages", typeof(IReadOnlyDictionary<string, JsonNode?>));
         Property(type, "IdentityIndexAfterImage", typeof(JsonObject));
         Property(type, "Issues", typeof(IReadOnlyList<ValidationIssue>));
         Property(type, "Fingerprint", typeof(string));
@@ -744,11 +1381,19 @@ public sealed class MortalItemConsumptionPlannerTests
     }
 
     private static ProjectionOutput ProjectionResult(object value) => new(
-        Read<IReadOnlyDictionary<string, JsonObject>>(value, "ItemPhaseAfterImages"),
+        Read<IReadOnlyDictionary<string, JsonNode?>>(value, "ItemPhaseAfterImages"),
         Read<JsonObject>(value, "IdentityIndexAfterImage"),
         Read<IReadOnlyList<ValidationIssue>>(value, "Issues"),
         Read<string>(value, "Fingerprint"),
         Read<bool>(value, "IsValid"));
+
+    private static void AssertProjectionInvalidEmpty(ProjectionOutput result)
+    {
+        Assert.False(result.IsValid);
+        Assert.NotEmpty(result.Issues);
+        Assert.Empty(result.Roots);
+        AssertFingerprint(result.Fingerprint);
+    }
 
     private static void AssertValid(Result result)
     {
@@ -806,7 +1451,7 @@ public sealed class MortalItemConsumptionPlannerTests
 
     private static void AssertProjectionEqual(ProjectionOutput expected, ProjectionOutput actual)
     {
-        AssertRoots(expected.Roots, actual.Roots);
+        AssertProjectionRoots(expected.Roots, actual.Roots);
         Assert.True(JsonNode.DeepEquals(expected.Index, actual.Index));
         Assert.Equal(expected.Issues.Count, actual.Issues.Count);
         for (var i = 0; i < expected.Issues.Count; i++) AssertIssue(expected.Issues[i], actual.Issues[i]);
@@ -816,6 +1461,16 @@ public sealed class MortalItemConsumptionPlannerTests
 
     private static void AssertRoots(IReadOnlyDictionary<string, JsonObject> expected,
         IReadOnlyDictionary<string, JsonObject> actual)
+    {
+        Assert.Equal(expected.Keys.OrderBy(v => v, StringComparer.Ordinal),
+            actual.Keys.OrderBy(v => v, StringComparer.Ordinal));
+        foreach (var pair in expected)
+            Assert.True(JsonNode.DeepEquals(pair.Value, actual[pair.Key]), pair.Key);
+    }
+
+    private static void AssertProjectionRoots(
+        IReadOnlyDictionary<string, JsonNode?> expected,
+        IReadOnlyDictionary<string, JsonNode?> actual)
     {
         Assert.Equal(expected.Keys.OrderBy(v => v, StringComparer.Ordinal),
             actual.Keys.OrderBy(v => v, StringComparer.Ordinal));
@@ -888,6 +1543,11 @@ public sealed class MortalItemConsumptionPlannerTests
     }
 
     private static JsonObject FindItem(IReadOnlyDictionary<string, JsonObject> roots, string id) =>
+        Assert.Single(roots.Values.SelectMany(Objects), value =>
+            string.Equals(value["itemId"]?.GetValue<string>(), id, StringComparison.Ordinal) &&
+            value["materializationReceipt"] is JsonObject);
+
+    private static JsonObject FindItem(IReadOnlyDictionary<string, JsonNode?> roots, string id) =>
         Assert.Single(roots.Values.SelectMany(Objects), value =>
             string.Equals(value["itemId"]?.GetValue<string>(), id, StringComparison.Ordinal) &&
             value["materializationReceipt"] is JsonObject);
@@ -1018,12 +1678,12 @@ public sealed class MortalItemConsumptionPlannerTests
     private sealed record ProjectionScenario(int Turn,
         MortalItemAcceptedTurnNormalizationSnapshot Snapshot,
         MortalItemRouteAuthorityCatalog RouteCatalog,
-        IReadOnlyDictionary<string, JsonObject?> CurrentRoots,
-        IReadOnlyDictionary<string, JsonObject?> BackupRoots,
+        IReadOnlyDictionary<string, JsonNode?> CurrentRoots,
+        IReadOnlyDictionary<string, JsonNode?> BackupRoots,
         JsonObject IdentityRoot,
         string CreatedItemId,
         string CreationRef,
         string TransferredItemId);
-    private sealed record ProjectionOutput(IReadOnlyDictionary<string, JsonObject> Roots,
+    private sealed record ProjectionOutput(IReadOnlyDictionary<string, JsonNode?> Roots,
         JsonObject Index, IReadOnlyList<ValidationIssue> Issues, string Fingerprint, bool IsValid);
 }

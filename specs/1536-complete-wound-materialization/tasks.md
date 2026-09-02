@@ -1449,13 +1449,31 @@ entrypoints require no update for T065.
   1. freeze the existing six skill fields plus only the seven ordinary Mortal item command
      properties named in the spec; extract deterministic write-free shared transforms for
      the item phase, including pure transfer classification/application from complete
-     backup/current roots and deterministic snapshot-owned creation receipt/create-
-     transition plus transfer-transition IDs,
-     and every later ordinary NPC core/trade or inventory-journal transform that can touch
-     a selected carrier root; seal their exact production-order output, detached NPC-core
-     authority, and NPC-trade/training pending bytes immediately before common publication,
-     with same-turn creation/transfer/equipment parity and unsupported-envelope tests;
-     exclude the plan-owned B.2 skill projection from this live baseline;
+     `JsonNode?` backup/current roots and outputs with null retained for absent files, deterministic
+     snapshot-owned creation receipt/create-transition plus transfer-transition IDs, and
+     production creation collector order `UpdateInventory` -> NPC core -> NPC commands ->
+     current location -> offscreen storage. Forward the already validated route/transfer
+     catalogs, effective post-location roots, and snapshots without reread or rebuild. Apply
+     only later ordinary transforms touching the selected item graph in exact tail order:
+     quest history -> NPC core -> conditional NPC trade -> inventory items journal -> item
+     bonds -> item text updates -> NPC item journals. Seal their output, detached NPC-core
+     authority, NPC-trade/training pending bytes, and authenticated fingerprinted
+     `MortalItemNpcTradeTailDisposition` (`Apply|SkipUntouchedTreatmentContinuation`)
+     together with exact dispatch-owned `AppliedTransformIds`: `quest_history:v1`,
+     `npc_core:v1`, the disposition-matching
+     `npc_trade:apply:v1|npc_trade:skip_untouched_treatment_continuation:v1`,
+     `inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+     `npc_item_journals:v1`, preserving the current treatment-continuation skip gate immediately
+     before common publication. Snapshot proof owns detached clones/DTOs/fingerprints and
+     validates the complete path set bidirectionally, including exact file absence/presence and
+     top-level topology. Add same-turn creation/transfer/equipment parity, every tail sidecar,
+     both legacy vehicle object/array forms, and unsupported-envelope tests; exclude the
+     plan-owned B.2 skill projection from this live baseline;
+     expose the base `TransformRegistry` with `npc_trade:v1`, dispatch it through one
+     `ApplyRegisteredTransform` loop, and source-guard that the returned applied ID is
+     recorded inside the loop. Behaviorally prove that Apply consumes/removes one shared
+     `UpdateNpcTradeInventoryReceipts` stimulus and creates its receipt while Skip retains
+     the command and creates none;
   2. add a pure shared `MortalItemConsumptionPlanner` for sequential partial/full stack
      identity transitions, clear only supported inline equipment, reject container/quest/
      bond/other companion references without separate atomic authority, and refactor the
@@ -1466,9 +1484,10 @@ entrypoints require no update for T065.
      and where invalid planning exposes no actionable partial result;
   3. add exact `instance_fixed` proportional item-owned capacity projection, full terminal
      owner retirement, and private registered-capacity integration in the common reducer;
-  4. compose item carrier/index and the B.2 skill projection over the exact final
-     pre-publication baseline into one shared `npc_core.json`/`items.json` root set,
-     preserving NPC trade, inventory journal, mirror, and actor-catalog validation;
+  4. compose item carrier/index and the B.2 skill projection over the supplied semantic
+     final ordinary NPC baseline into one shared root set while retaining the distinct true
+     live canonical before-image for transaction rollback; preserve NPC trade, every tail
+     sidecar, mirror, and actor-catalog validation;
   5. integrate mixed selected item/resource finalization into the existing B.3 authority,
      one-use take receipt, transaction compensation, cold recovery, and exact replay;
   6. retain the six-argument publication API, single `Finalize(resolution)`, and all public
@@ -1478,6 +1497,13 @@ entrypoints require no update for T065.
   `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.ResourcePublication.cs`,
   `BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs`,
   and `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs`.
+  Task 2's owning normalizer extraction/commit list includes
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs`,
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs`,
+  `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs`,
+  and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.QuestsAndRivals.cs`.
+  B.4 remains a closed-envelope, client-owned publication contour: no migration,
+  compatibility path, public DTO widening, or GM-authored surface/documentation change.
   Procedure/course/Fate/heal/recovery and T069-C remain later T070 contours; B.4 uses new
   guaranteed-treatment cold/replay cases and does not require an existing procedure/course
   publication test to become GREEN.

@@ -860,35 +860,83 @@ properties plus only `UpdateInventory`, `moveInventoryItems`, `removeInventoryIt
 `NPCEquipmentChanges`; every other non-null response property is invalid for this
 publication path.
 
-The item projection is write-free and deterministic and has two explicit stages. The item
-phase uses the same accepted allocation/route authority consumed by
+The item projection is write-free and deterministic and has two explicit stages. Its
+current/backup root dictionaries are `IReadOnlyDictionary<string, JsonNode?>` and its
+after-image dictionaries are `IReadOnlyDictionary<string, JsonNode?>`; every map retains
+every registered key and uses null to prove an absent file, preserving file presence,
+content, and top-level object/array topology. A present JSON-null root is invalid before
+this projection. The item phase
+uses the same accepted allocation/route and transfer authorities consumed by
 `CanonicalStateNormalizer` for transfer, materialization, equipment, and identity. The
-final pre-publication baseline then applies every later ordinary transformation that can
-touch a selected carrier root in actual production order: ordinary NPC core processing and
-NPC trade canonicalization for `npc_core.json`, plus inventory-journal normalization for
-`items.json`. The NPC-core projection input owns detached
+final pre-publication baseline then applies only later ordinary transformations that can
+touch the selected item graph, in actual production order: quest history -> NPC core ->
+conditional NPC trade -> inventory items journal -> item bonds -> item text updates -> NPC
+item journals. Untouched companion roots remain exact pass-through members. The NPC-core projection input owns detached
 `NpcCoreChangesContract.Authority`, exact bytes for
 `NpcTradeRequestState.PendingRequestPath` and `TrainingRequestState.PendingRequestPath`,
-and their semantic/byte fingerprints. Those transforms are extracted once and used by both
+and their semantic/byte fingerprints. An authenticated
+`MortalItemNpcTradeTailDisposition` with the exact closed values `Apply` and
+`SkipUntouchedTreatmentContinuation` seals and fingerprints the current treatment-
+continuation skip gate so the trade transform performs
+no live accepted-plan lookup. Those transforms are extracted once and used by both
 the ordinary normalizers and treatment composition; neither path reimplements them. The
 result contains the exact carrier roots and `item_identity_index.json` immediately before
 `PublishAcceptedMechanicsAsync`, not merely after `NormalizeMortalItemsAsync`. It excludes
 the B.2 treatment skill projection, which is applied later by the common candidate. Its
+`MortalItemPublicationBaselinePlanner.TransformRegistry` is the immutable base dispatch
+list `quest_history:v1`, `npc_core:v1`, `npc_trade:v1`,
+`inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+`npc_item_journals:v1`. `Project` iterates this list once, calls
+`ApplyRegisteredTransform` once per registration, and records the returned applied ID in
+that same loop. `AppliedTransformIds` is the immutable result list containing exactly
+`quest_history:v1`, `npc_core:v1`, one disposition-matching
+`npc_trade:apply:v1|npc_trade:skip_untouched_treatment_continuation:v1`,
+`inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+`npc_item_journals:v1`. `Apply` consumes/removes `UpdateNpcTradeInventoryReceipts` and
+materializes its receipt; `SkipUntouchedTreatmentContinuation` leaves the post-NPC-core
+root and command unchanged and materializes no receipt. The applied list is part of the
+seal rather than an observational label applied after execution. Its
 fingerprint binds the session/snapshot/turn, allocation map, closed envelope, backup and
-complete input roots, NPC authority/pending snapshots, accepted item commands/routes,
+complete input roots, exact bidirectional root-path/file-presence/topology evidence, NPC
+authority/pending snapshots and trade disposition, accepted item commands/routes,
 ordered transform versions, exact output roots, and every created/updated identity entry.
 A live final pre-publication root that differs from the sealed projection invalidates the
 plan before treatment publication rather than being patched opportunistically.
 
-`MortalItemAcceptedTurnNormalizationSnapshot` additionally seals all complete backup and
-current roots used to classify same-turn transfers and ordered private maps of accepted
+`MortalItemAcceptedTurnNormalizationSnapshot` additionally owns detached clones/proof DTOs
+for all complete backup and current roots used to classify same-turn transfers, including
+effective post-location current-location/storage roots, and ordered private maps of accepted
 creation root receipt/create-transition IDs plus transfer-transition IDs. Each ID is
 derived from session/snapshot/turn, operation kind, exact route or transfer authority
-fingerprint, and ordinal. A pure
+fingerprint, and the exact production collector ordinal `UpdateInventory` -> NPC core ->
+NPC commands -> current location -> offscreen storage. A pure
 `MortalItemTransferPlanner` applies whole-stack transfers and removes the matching command
 rows before creation/materialization; the ordinary normalizer and treatment projector use
-the same result. The writing transition service and random receipt/transition overloads are
-outside this accepted item phase.
+the same result. Already validated route/transfer catalogs and their snapshots are forwarded
+into registration and projection; they are never reread or rebuilt. Snapshot proof stores
+cloned DTOs/fingerprints rather than a planner result and validates both directions across
+the complete carrier/command/index/companion path set, rejecting either omitted frozen or
+extra supplied paths. The writing transition service and random receipt/transition overloads
+are outside this accepted item phase.
+
+The exact projection path set is `game_state/inventory/items.json`,
+`game_state/npcs/npc_core.json`, `game_state/npcs/npc_inventory.json`,
+`game_state/inventory/item_removals.json`, `game_state/world/current_location.json`,
+`game_state/world/location_storage_contents.json`, `game_state/misc/vehicles.json`,
+`game_state/inventory/item_identity_index.json`, `game_state/quests/quest_history.json`,
+`game_state/inventory/item_bonds.json`, `game_state/inventory/item_text_updates.json`,
+`game_state/inventory/recipes.json`, and `game_state/npcs/item_journals.json`. The two
+location roots are the effective post-location roots. Tests preserve both legacy vehicle
+top-level object and array forms and every tail sidecar; the projector does not coerce either
+topology.
+
+`MortalItemCanonicalProjectionPlanner.ProjectionRootPaths` exposes that ordered internal
+set. `MortalItemAcceptedTurnNormalizationSnapshot.CloneCurrentProjectionRoots()` and
+`CloneBackupProjectionRoots()` each return a newly detached
+`IReadOnlyDictionary<string, JsonNode?>`; no caller receives snapshot-owned mutable nodes.
+
+All of this remains inside the existing closed client-owned publication envelope. It adds
+no migration/compatibility path, public DTO field, or GM-authored surface.
 
 The pure item-consumption boundary is frozen as one input and one result:
 
@@ -958,9 +1006,12 @@ it never writes. Its exact result surface is `CarrierAfterImages`, nullable
 `Issues`, and `Fingerprint`. A valid result has a non-null index after-image and no issues.
 An invalid result exposes no carrier/index after-image, transition, capacity, or terminal
 owner subset. NPC item carriers and NPC skills share `npc_core.json`, so composition order is
-exactly item phase, ordinary NPC core/trade tail, verified live baseline, sealed B.2 skill
-projection, then item consumption, yielding one final whole-root after-image. `items.json`
-similarly includes ordinary journal normalization before consumption. Candidate admission
+exactly item phase -> quest history -> NPC core -> conditional NPC trade -> inventory items
+journal -> item bonds -> item text updates -> NPC item journals -> verified live baseline ->
+sealed B.2 skill projection -> item consumption, yielding one final whole-root after-image
+for every selected path. The B.2 projector receives the supplied semantic final ordinary
+NPC root while retaining the separate true live canonical before-image required for
+transaction rollback. Candidate admission
 permits this overlap only through the genuine closed-envelope, final-baseline, skill, and
 item authorities, verifies the live baseline before plan-owned mutations, and independently
 re-derives the final actor skill catalog. Generic whole-root producer relaxation is

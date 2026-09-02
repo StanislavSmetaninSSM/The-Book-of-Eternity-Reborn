@@ -1150,21 +1150,58 @@ remains unsupported. It must derive the same exact final pre-publication carrier
 baseline produced by the ordinary accepted normalizer pipeline, then apply one item
 `consume` transition per selected claim in finalization order. The baseline is the output
 immediately before `PublishAcceptedMechanicsAsync`, not merely the output of
-`NormalizeMortalItemsAsync`: every ordinary transform that can touch a selected
-`items.json` or `npc_core.json` root, including item transfer/materialization/equipment/
-identity, ordinary NPC core processing, NPC trade canonicalization, and inventory journal
-normalization, executes in production order through shared pure projectors. The baseline
-seals detached `NpcCoreChangesContract.Authority` and exact NPC-trade/training pending-file
-bytes used by NPC core processing. It excludes the B.2 treatment skill projection because
+`NormalizeMortalItemsAsync`. Current/backup root dictionaries contain nullable `JsonNode`
+values and output dictionaries contain nullable `JsonNode` values, retain every key, and use
+null to prove an absent file; detached snapshot proof preserves
+exact registered paths, file presence/absence, content, and top-level object/array topology.
+A present JSON-null root is invalid before projection. After item transfer/
+materialization/equipment/identity, only ordinary transforms touching the selected item
+graph execute through shared pure projectors, in exact production order: quest history ->
+NPC core -> conditional NPC trade -> inventory items journal -> item bonds -> item text
+updates -> NPC item journals. The result exposes and fingerprints exact ordered
+`AppliedTransformIds`: `quest_history:v1`, `npc_core:v1`, the disposition-matching
+`npc_trade:apply:v1|npc_trade:skip_untouched_treatment_continuation:v1`,
+`inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, and
+`npc_item_journals:v1`. Execution uses the exact base `TransformRegistry`
+`quest_history:v1`, `npc_core:v1`, `npc_trade:v1`, `inventory_items_journal:v1`,
+`item_bonds:v1`, `item_text_updates:v1`, `npc_item_journals:v1`; one loop calls
+`ApplyRegisteredTransform` once and records the returned applied ID per registration.
+`Apply` consumes/removes `UpdateNpcTradeInventoryReceipts` and creates its receipt;
+`SkipUntouchedTreatmentContinuation` leaves the post-NPC-core root/command unchanged and
+creates no receipt. The baseline seals detached `NpcCoreChangesContract.Authority`,
+exact NPC-trade/training pending-file bytes used by NPC core processing, and an authenticated
+fingerprinted `MortalItemNpcTradeTailDisposition` closed to `Apply` or
+`SkipUntouchedTreatmentContinuation`, preserving the current treatment-continuation skip
+gate without a live registry read. It excludes the B.2 treatment skill projection because
 that projection is a common-plan mutation, not a live ordinary-normalizer output. The live
 roots must equal the sealed baseline before the common plan applies the B.2 skill projection
-and then item consumption. Item-phase projection includes complete current and backup
-carrier roots, pure accepted-transfer classification/application, and command removal.
+and then item consumption. The B.2 projector receives the supplied semantic final ordinary
+NPC baseline but retains a separate true live canonical before-image for transaction
+rollback. Item-phase projection includes complete current and backup carrier roots, pure
+accepted-transfer classification/application, and command removal.
 Accepted creation root receipt/create-transition IDs and transfer-transition IDs are
-privately derived from session/snapshot/turn, the exact route or transfer authority, and
-ordinal; both the ordinary normalizer and treatment projector use those same IDs and the
-same pure transfer transform. Neither calls the writing `MortalItemTransitionWriter` or
-allocates a second random receipt/history row.
+privately derived from session/snapshot/turn, the exact route or transfer authority, and the
+production collector ordinal `UpdateInventory` -> NPC core -> NPC commands -> current
+location -> offscreen storage; both the ordinary normalizer and treatment projector use
+those same IDs and the same pure transfer transform. Already validated route/transfer
+catalogs, effective post-location roots, and snapshots are forwarded and never reread or
+rebuilt. Neither path calls the writing `MortalItemTransitionWriter` or allocates a second
+random receipt/history row.
+
+Snapshot proof owns detached cloned DTOs/fingerprints rather than a planner result. Its
+equality is bidirectional across the complete player-inventory/NPC-core/NPC-command/player-
+item-removal/effective-location/offscreen/vehicle/identity/quest-history/item-bond/item-text/
+recipe/NPC-item-journal path set defined by the data model: both omitted frozen and extra
+supplied paths reject. Every registered key remains in the map while null means its file is
+absent; legacy vehicle object and array topologies are preserved.
+Parity controls cover both vehicle forms and every tail sidecar.
+The exact internal proof surface is
+`MortalItemCanonicalProjectionPlanner.ProjectionRootPaths` plus
+`MortalItemAcceptedTurnNormalizationSnapshot.CloneCurrentProjectionRoots()` and
+`CloneBackupProjectionRoots()`, whose detached return type is
+`IReadOnlyDictionary<string, JsonNode?>`.
+This is an internal closed-envelope projection amendment only; it adds no migration,
+compatibility behavior, public request/response field, or GM-authored contract.
 
 The consumption projector has one internal entry point,
 `MortalItemConsumptionPlanner.Plan(MortalItemConsumptionPlanningInput)`. Its input is the
