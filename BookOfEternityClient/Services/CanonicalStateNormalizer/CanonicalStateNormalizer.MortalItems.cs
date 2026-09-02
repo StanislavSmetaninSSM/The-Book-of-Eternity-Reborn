@@ -39,8 +39,20 @@ public partial class CanonicalStateNormalizer
                 validated.Binding.SessionId,
                 validated.Binding.SnapshotToken,
                 validated.Binding.Turn,
-                out var snapshot) ||
-            !snapshot.MatchesAcceptedOwnerAuthority(validated.Plan.OwnerAuthority))
+                out var snapshot))
+        {
+            throw new InvalidDataException(
+                "Mortal item accepted-turn authority cache is missing or its immutable allocation map does not match the exact validated common-plan session and snapshot binding.");
+        }
+
+        var itemPublication = validated.Plan
+            .TreatmentResourcePublicationAuthority?.ItemPublicationAuthority;
+        var ownerAuthorityMatches = itemPublication is null
+            ? snapshot.MatchesAcceptedOwnerAuthority(validated.Plan.OwnerAuthority)
+            : itemPublication.MatchesNormalizationSnapshot(
+                snapshot,
+                validated.Plan.OwnerAuthority);
+        if (!ownerAuthorityMatches)
         {
             throw new InvalidDataException(
                 "Mortal item accepted-turn authority cache is missing or its immutable allocation map does not match the exact validated common-plan session and snapshot binding.");
@@ -58,27 +70,42 @@ public partial class CanonicalStateNormalizer
         if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
         {
             var currentRoots = validated.Snapshot.CloneCurrentProjectionRoots();
-            var backupRoots = validated.Snapshot.CloneBackupProjectionRoots();
-            var identityRoot = currentRoots[MortalItemIdentityState.StatePath]
-                as JsonObject ?? throw new InvalidDataException(
-                    "Accepted Mortal item projection requires its frozen identity root.");
-            var identity = MortalItemIdentityState.Parse(identityRoot.DeepClone());
-            var projected = MortalItemCanonicalProjectionPlanner.Project(
-                new MortalItemCanonicalProjectionInput(
-                    validated.Snapshot.Turn,
-                    validated.Snapshot,
-                    validated.Snapshot.CloneRouteCatalog(),
-                    currentRoots,
-                    backupRoots,
-                    identity));
-            if (!projected.IsValid)
+            IReadOnlyDictionary<string, JsonNode?> projectedRoots;
+            if (validated.Snapshot.CloneFinalBaseline() is { } finalBaseline)
             {
-                throw new InvalidDataException(
-                    $"Accepted Mortal item projection failed: {projected.Issues[0].Code}.");
+                if (finalBaseline.Issues.Count != 0 ||
+                    !validated.Snapshot.RecomputesFinalPublicationBaseline())
+                {
+                    throw new InvalidDataException(
+                        "Accepted Mortal item final publication baseline is invalid.");
+                }
+                projectedRoots = finalBaseline.FinalCarrierRoots;
+            }
+            else
+            {
+                var backupRoots = validated.Snapshot.CloneBackupProjectionRoots();
+                var identityRoot = currentRoots[MortalItemIdentityState.StatePath]
+                    as JsonObject ?? throw new InvalidDataException(
+                        "Accepted Mortal item projection requires its frozen identity root.");
+                var identity = MortalItemIdentityState.Parse(identityRoot.DeepClone());
+                var projected = MortalItemCanonicalProjectionPlanner.Project(
+                    new MortalItemCanonicalProjectionInput(
+                        validated.Snapshot.Turn,
+                        validated.Snapshot,
+                        validated.Snapshot.CloneRouteCatalog(),
+                        currentRoots,
+                        backupRoots,
+                        identity));
+                if (!projected.IsValid)
+                {
+                    throw new InvalidDataException(
+                        $"Accepted Mortal item projection failed: {projected.Issues[0].Code}.");
+                }
+                projectedRoots = projected.ItemPhaseAfterImages;
             }
             foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
             {
-                var after = projected.ItemPhaseAfterImages[path];
+                var after = projectedRoots[path];
                 if (JsonNode.DeepEquals(currentRoots[path], after))
                     continue;
                 if (after == null)

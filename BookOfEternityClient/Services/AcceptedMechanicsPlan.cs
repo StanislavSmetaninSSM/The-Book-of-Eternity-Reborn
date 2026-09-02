@@ -864,7 +864,13 @@ internal sealed class AcceptedMechanicsPlanningContext
              !_treatmentResourcePublicationAuthority.HasValidSeal() ||
              !ReferenceEquals(
                  _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
-                 _treatmentResourcePublicationAuthority.ContinuationAuthority)))
+                 _treatmentResourcePublicationAuthority.ContinuationAuthority) ||
+             (_treatmentResourcePublicationAuthority.FinalItemOwnerAuthority is
+                  { } finalItemOwners &&
+              !string.Equals(
+                  Owners.Fingerprint,
+                  finalItemOwners.Fingerprint,
+                  StringComparison.Ordinal))))
         {
             throw new ArgumentException(
                 "Treatment resource publication authority must bind the exact treatment continuation stages.",
@@ -1307,7 +1313,13 @@ internal sealed class AcceptedMechanicsPlan
              !_treatmentResourcePublicationAuthority.HasValidSeal() ||
              !ReferenceEquals(
                  _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
-                 _treatmentResourcePublicationAuthority.ContinuationAuthority)))
+                 _treatmentResourcePublicationAuthority.ContinuationAuthority) ||
+             (_treatmentResourcePublicationAuthority.FinalItemOwnerAuthority is
+                  { } finalItemOwners &&
+              !string.Equals(
+                  OwnerAuthority.Fingerprint,
+                  finalItemOwners.Fingerprint,
+                  StringComparison.Ordinal))))
         {
             throw new ArgumentException(
                 "Treatment resource publication authority requires the exact completed treatment continuation plan.",

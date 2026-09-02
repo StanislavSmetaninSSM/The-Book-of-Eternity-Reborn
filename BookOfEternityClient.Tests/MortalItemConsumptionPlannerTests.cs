@@ -150,6 +150,54 @@ public sealed class MortalItemConsumptionPlannerTests
     }
 
     [Fact]
+    public void Plan_CommonFinalizationOrdinalGapsRemainInStrictOrder()
+    {
+        var fixture = CreateFixture("itm_common_ordinal_gap", 2);
+        const string firstId = "mitrn_t070b4_common_gap_0002";
+        const string secondId = "mitrn_t070b4_common_gap_0004";
+
+        var result = Plan(
+            fixture,
+            BuildCommand(2, fixture.ItemId, 1, firstId),
+            BuildCommand(4, fixture.ItemId, 1, secondId));
+
+        AssertValid(result);
+        Assert.Equal(
+            new[] { firstId, secondId },
+            result.Transitions.Select(value =>
+                value["transitionId"]!.GetValue<string>()));
+    }
+
+    [Theory]
+    [InlineData(2, 2)]
+    [InlineData(3, 2)]
+    public void Plan_DuplicateOrDecreasingCommonFinalizationOrdinalsReject(
+        int firstOrdinal,
+        int secondOrdinal)
+    {
+        var fixture = CreateFixture("itm_common_ordinal_invalid", 2);
+
+        var result = Plan(
+            fixture,
+            BuildCommand(
+                firstOrdinal,
+                fixture.ItemId,
+                1,
+                "mitrn_t070b4_common_invalid_first"),
+            BuildCommand(
+                secondOrdinal,
+                fixture.ItemId,
+                1,
+                "mitrn_t070b4_common_invalid_second"));
+
+        AssertInvalidEmpty(result);
+        Assert.Contains(
+            result.Issues,
+            issue => issue.Code ==
+                     "mortal_item_consumption_ordinal_not_contiguous");
+    }
+
+    [Fact]
     public void Plan_ResourceBearingPartialScalesMaximumAndCurrentExactly()
     {
         var state = Resource("itm_resource_exact", 8m, 6m);

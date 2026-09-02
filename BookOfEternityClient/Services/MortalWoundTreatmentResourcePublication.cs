@@ -19,6 +19,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
     private readonly MortalWoundTreatmentResourcePublicationDraft _draft;
     private readonly string _finalizationSeal;
     private readonly string _requestResourceSeal;
+    private readonly MortalWoundTreatmentItemPublicationAuthority?
+        _itemPublicationAuthority;
 
     private MortalWoundTreatmentResourcePublicationAuthority(
         object mintCapability,
@@ -30,7 +32,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         object publicationReservationAuthority,
         string semanticFingerprint,
         string identitySeed,
-        MortalWoundTreatmentResourcePublicationDraft draft)
+        MortalWoundTreatmentResourcePublicationDraft draft,
+        MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority)
     {
         if (!WoundAcceptedTurnPlanner
                 .IsTreatmentResourcePublicationMintCapability(mintCapability))
@@ -47,6 +50,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         SemanticFingerprint = semanticFingerprint;
         IdentitySeed = identitySeed;
         _draft = draft;
+        _itemPublicationAuthority = itemPublicationAuthority;
         _finalizationSeal = ComputeFinalizationSeal(finalization);
         _requestResourceSeal = ComputeRequestResourceSeal(
             requestAuthority.ResourceAuthority);
@@ -60,7 +64,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             identitySeed,
             _finalizationSeal,
             _requestResourceSeal,
-            draft.Fingerprint);
+            draft.Fingerprint,
+            itemPublicationAuthority?.Fingerprint);
     }
 
     internal MortalWoundTreatmentAcceptedStateAuthority AcceptedStateAuthority { get; }
@@ -83,12 +88,21 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
     internal bool RequiresConfirmedHold =>
         !string.Equals(Finalization.Disposition, "not_required", StringComparison.Ordinal);
     internal IResourceRegisteredSystemOutcomeDraft RegisteredOutcome => _draft;
+    internal MortalWoundTreatmentItemPublicationAuthority?
+        ItemPublicationAuthority => _itemPublicationAuthority;
+    internal ResourceOwnerAuthority? FinalItemOwnerAuthority =>
+        _itemPublicationAuthority?.FinalOwnerAuthority;
+    internal IReadOnlyList<ResourceOwnerKey> ItemTerminalOwners =>
+        _itemPublicationAuthority?.TerminalOwners ?? Array.Empty<ResourceOwnerKey>();
 
-    internal AcceptedMechanicsIdentityFactory CreateIdentityFactory()
+    internal AcceptedMechanicsIdentityFactory CreateIdentityFactory() =>
+        new TreatmentPublicationIdentityFactory(IdentitySeed);
+
+    internal static (string OperationId, string TransitionId)
+        CreateMutationIdentities(string identitySeed, ResourceMutationIntent intent)
     {
-        var ordinal = -1;
-        return new AcceptedMechanicsIdentityFactory(() =>
-            CreateDeterministicGuid(IdentitySeed, checked(++ordinal)));
+        var factory = new TreatmentPublicationIdentityFactory(identitySeed);
+        return (factory.CreateOperationId(intent), factory.CreateTransitionId(intent));
     }
 
     internal bool HasValidSeal()
@@ -122,7 +136,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             IdentitySeed,
             _finalizationSeal,
             _requestResourceSeal,
-            _draft.Fingerprint);
+            _draft.Fingerprint,
+            _itemPublicationAuthority?.Fingerprint);
         return string.Equals(
                    _finalizationSeal,
                    ComputeFinalizationSeal(Finalization),
@@ -131,6 +146,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
                    _requestResourceSeal,
                    ComputeRequestResourceSeal(RequestAuthority.ResourceAuthority),
                    StringComparison.Ordinal) &&
+               (_itemPublicationAuthority?.HasValidSeal() ?? true) &&
                string.Equals(expected, AuthorityFingerprint, StringComparison.Ordinal);
     }
 
@@ -216,7 +232,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         object publicationReservationAuthority,
         string semanticFingerprint,
         string identitySeed,
-        MortalWoundTreatmentResourcePublicationDraft draft) => new(
+        MortalWoundTreatmentResourcePublicationDraft draft,
+        MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority) => new(
         mintCapability,
         acceptedStateAuthority,
         requestAuthority,
@@ -226,7 +243,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         publicationReservationAuthority,
         semanticFingerprint,
         identitySeed,
-        draft);
+        draft,
+        itemPublicationAuthority);
 
     private static string ComputeAuthorityFingerprint(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
@@ -238,7 +256,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         string identitySeed,
         string finalizationSeal,
         string requestResourceSeal,
-        string draftFingerprint) =>
+        string draftFingerprint,
+        string? itemPublicationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_wound_treatment.resource_publication_authority",
@@ -256,8 +275,47 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
                 continuationAuthority),
             semanticFingerprint,
             identitySeed,
-            draftFingerprint
+            draftFingerprint,
+            itemPublicationFingerprint
         });
+
+    private sealed class TreatmentPublicationIdentityFactory(string identitySeed)
+        : AcceptedMechanicsIdentityFactory
+    {
+        internal override string CreateOperationId(ResourceMutationIntent intent) =>
+            Create("resource_operation_", "mutation_operation", Describe(intent.Key));
+
+        internal override string CreateTransitionId(ResourceMutationIntent intent) =>
+            Create("resource_transition_", "mutation_transition", Describe(intent.Key));
+
+        internal override string CreateOperationId(ResourceCapacityIntent intent) =>
+            Create("resource_operation_", "capacity_operation", Describe(intent.Key));
+
+        internal override string CreateTransitionId(ResourceCapacityIntent intent) =>
+            Create("resource_transition_", "capacity_transition", Describe(intent.Key));
+
+        private string Create(string prefix, string domain, string key)
+        {
+            var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(
+                identitySeed + "\0" + domain + "\0" + key));
+            return prefix + new Guid(bytes.AsSpan(0, 16)).ToString("N");
+        }
+
+        private static string Describe(ResourceOperationKey key) =>
+            $"{key.EventRef}\0{key.OriginKind}\0{key.OriginId}\0" +
+            $"{DescribeCoordinate(key.Coordinate)}\0" +
+            key.Operation;
+
+        private static string Describe(ResourceCapacityOperationKey key) =>
+            $"{key.EventRef}\0{key.OriginKind}\0{key.OriginId}\0" +
+            $"{DescribeCoordinate(key.Coordinate)}\0" +
+            key.Operation;
+
+        private static string DescribeCoordinate(ResourceCoordinate coordinate) =>
+            $"{coordinate.Realm}/" +
+            $"{ResourceDefinitionCatalog.GetOwnerKindToken(coordinate.OwnerKind)}/" +
+            $"{coordinate.ResourceOwnerId}/{coordinate.ResourceKey}";
+    }
 
     private static string ComputeRequestResourceSeal(
         MortalWoundTreatmentResourceReservationAuthority value)
@@ -408,7 +466,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
 }
 
 internal sealed class MortalWoundTreatmentResourcePublicationDraft
-    : IResourceRegisteredSystemOutcomeDraft
+    : IResourceRegisteredSystemOutcomeDraft,
+        IResourceRegisteredSystemCapacityDraft
 {
     internal sealed record ExpectedTransition(
         int FinalizationOrdinal,
@@ -430,6 +489,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
     private readonly ResourceMutationIntent[] _mutations;
     private readonly ExpectedTransition[] _expectedTransitions;
     private readonly Dictionary<string, CanonicalBeforeImage> _beforeImages;
+    private readonly MortalWoundTreatmentItemPublicationAuthority?
+        _itemPublicationAuthority;
     private readonly string _sealFingerprint;
 
     internal MortalWoundTreatmentResourcePublicationDraft(
@@ -440,7 +501,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
         IReadOnlyList<ResourceMutationSourceExport> sources,
         IReadOnlyList<ResourceMutationIntent> mutations,
         IReadOnlyList<ExpectedTransition> expectedTransitions,
-        IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages)
+        IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages,
+        MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority = null)
     {
         AcceptedStateFingerprint = acceptedStateFingerprint;
         RequestFingerprint = requestFingerprint;
@@ -455,6 +517,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
                 pair.Value.Existed,
                 pair.Value.Bytes),
             StringComparer.Ordinal);
+        _itemPublicationAuthority = itemPublicationAuthority;
         _sealFingerprint = ComputeFingerprint(
             AcceptedStateFingerprint,
             RequestFingerprint,
@@ -463,7 +526,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
             _sources,
             _mutations,
             _expectedTransitions,
-            _beforeImages);
+            _beforeImages,
+            itemPublicationAuthority?.Fingerprint);
         Fingerprint = _sealFingerprint;
     }
 
@@ -478,6 +542,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
 
     public IReadOnlyList<ResourceMutationIntent> Mutations =>
         Array.AsReadOnly(_mutations.Select(CloneMutation).ToArray());
+
+    public IReadOnlyList<ResourceCapacityIntent> CapacityTransitions =>
+        _itemPublicationAuthority?.CapacityTransitions ??
+        Array.Empty<ResourceCapacityIntent>();
 
     public IReadOnlyDictionary<string, CanonicalBeforeImage> ExpectedBeforeImages =>
         new ReadOnlyDictionary<string, CanonicalBeforeImage>(
@@ -498,19 +566,25 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
             _sources,
             _mutations,
             _expectedTransitions,
-            _beforeImages),
+            _beforeImages,
+            _itemPublicationAuthority?.Fingerprint),
         StringComparison.Ordinal);
 
     public ResourceRegisteredSystemOutcomeProjectionResult Project(
         AcceptedMechanicsResourcePlanningResult resourceResult)
     {
         ArgumentNullException.ThrowIfNull(resourceResult);
+        var issues = ValidateTransitions(resourceResult.AppliedTransitions
+                .Concat(resourceResult.ReplayTransitions)
+                .ToArray())
+            .Concat(_itemPublicationAuthority?.ValidateResourceProjection(resourceResult) ??
+                    Array.Empty<ValidationIssue>())
+            .ToArray();
         return new ResourceRegisteredSystemOutcomeProjectionResult(
+            _itemPublicationAuthority?.PublicationAfterImages ??
             new Dictionary<string, JsonObject>(StringComparer.Ordinal),
             Array.Empty<AcceptedMechanicsOwnerTransition>(),
-            ValidateTransitions(resourceResult.AppliedTransitions
-                .Concat(resourceResult.ReplayTransitions)
-                .ToArray()));
+            issues);
     }
 
     internal IReadOnlyList<ValidationIssue> ValidateCandidate(
@@ -583,6 +657,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
             }
             previous = primary ?? previous;
         }
+        if (issues.Count == 0 && _itemPublicationAuthority is not null)
+            issues.AddRange(_itemPublicationAuthority.ValidateCandidate(candidate));
         return issues;
     }
 
@@ -677,7 +753,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
         IReadOnlyList<ResourceMutationSourceExport> sources,
         IReadOnlyList<ResourceMutationIntent> mutations,
         IReadOnlyList<ExpectedTransition> expectedTransitions,
-        IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages)
+        IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages,
+        string? itemPublicationFingerprint)
     {
         var fields = new List<string?>
         {
@@ -687,6 +764,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationDraft
             requestFingerprint,
             resultFingerprint,
             finalizationFingerprint,
+            itemPublicationFingerprint,
             sources.Count.ToString(CultureInfo.InvariantCulture)
         };
         foreach (var source in sources)
@@ -806,6 +884,10 @@ internal static partial class WoundAcceptedTurnPlanner
 {
     private static readonly object TreatmentResourcePublicationMintCapability = new();
 
+    private sealed record TreatmentItemPublicationBuild(
+        MortalWoundTreatmentItemPublicationAuthority? Authority,
+        IReadOnlyList<ValidationIssue> Issues);
+
     internal static bool IsTreatmentResourcePublicationMintCapability(
         object? capability) => ReferenceEquals(
         capability,
@@ -819,13 +901,20 @@ internal static partial class WoundAcceptedTurnPlanner
             ResourceStateLedger state,
             ResourceHistoryState history,
             ResourceOwnerAuthority owners,
-            IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages)
+            IReadOnlyDictionary<string, CanonicalBeforeImage> beforeImages,
+            MortalItemAcceptedTurnNormalizationSnapshot? itemSnapshot,
+            WoundPreparedAcceptedTurnPlan preparedWoundPlan,
+            string effectSourceBeforeFingerprint,
+            Func<string, string?> readDocument)
     {
         ArgumentNullException.ThrowIfNull(definitions);
         ArgumentNullException.ThrowIfNull(state);
         ArgumentNullException.ThrowIfNull(history);
         ArgumentNullException.ThrowIfNull(owners);
         ArgumentNullException.ThrowIfNull(beforeImages);
+        ArgumentNullException.ThrowIfNull(preparedWoundPlan);
+        ArgumentException.ThrowIfNullOrWhiteSpace(effectSourceBeforeFingerprint);
+        ArgumentNullException.ThrowIfNull(readDocument);
         if (!TryReadTreatmentContinuation(
                 continuationAuthority,
                 out var continuation) ||
@@ -857,6 +946,53 @@ internal static partial class WoundAcceptedTurnPlanner
         });
         var claims = continuation.RequestAuthority.ResourceAuthority.Claims
             .ToDictionary(static value => value.ClaimFingerprint, StringComparer.Ordinal);
+        MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority = null;
+        if (finalization.Consumptions.Any(static consumption => string.Equals(
+                consumption.Kind,
+                "item_quantity",
+                StringComparison.Ordinal)))
+        {
+            if (itemSnapshot is null ||
+                !itemSnapshot.HasFinalPublicationBaseline ||
+                !itemSnapshot.RecomputesFinalPublicationBaseline())
+            {
+                return Invalid(
+                    "mortal_wound_treatment_publication_item_consumption_unsupported",
+                    "one genuine complete private item publication capability",
+                    "missing, foreign, or incomplete item authority");
+            }
+            var itemPublication = BuildTreatmentItemPublication(
+                continuationAuthority,
+                continuation,
+                finalization,
+                itemSnapshot,
+                claims,
+                definitions,
+                state,
+                history,
+                owners,
+                identitySeed,
+                preparedWoundPlan,
+                effectSourceBeforeFingerprint,
+                readDocument);
+            issues.AddRange(itemPublication.Issues);
+            itemPublicationAuthority = itemPublication.Authority;
+            if (itemPublicationAuthority is null || issues.Count != 0)
+            {
+                return new MortalWoundTreatmentResourcePublicationBuildResult(
+                    null,
+                    issues.Count == 0
+                        ? new[]
+                        {
+                            PublicationIssue(
+                                "mortal_wound_treatment_publication_item_consumption_unsupported",
+                                "one genuine complete private item publication capability",
+                                "missing, foreign, or incomplete item authority")
+                        }
+                        : issues);
+            }
+            owners = itemPublicationAuthority.FinalOwnerAuthority;
+        }
         var running = new Dictionary<ResourceCoordinate, decimal>(
             ResourceCoordinateComparer.Instance);
         var priorByCoordinate = new Dictionary<ResourceCoordinate, ResourceOperationKey>(
@@ -868,12 +1004,7 @@ internal static partial class WoundAcceptedTurnPlanner
                     consumption.Kind,
                     "resource_quantity",
                     StringComparison.Ordinal))
-            {
-                return Invalid(
-                    "mortal_wound_treatment_publication_item_consumption_unsupported",
-                    "selected item_quantity consumption is deferred to T070-B.4",
-                    consumption.Kind);
-            }
+                continue;
             if (!claims.TryGetValue(consumption.ClaimFingerprint, out var claim) ||
                 !ConsumptionAgrees(consumption, claim) ||
                 !ResourceDefinitionCatalog.TryParseOwnerKind(
@@ -1013,13 +1144,15 @@ internal static partial class WoundAcceptedTurnPlanner
                     issues.AddRange(route.Issues);
                 continue;
             }
+            var identities = MortalWoundTreatmentResourcePublicationAuthority
+                .CreateMutationIdentities(identitySeed, mutation);
             expected.Add(new MortalWoundTreatmentResourcePublicationDraft.ExpectedTransition(
                 ordinal,
                 continuation.Resolution.Coordinates.Turn,
                 eventRef,
                 eventRef,
-                CreateDeterministicIdentity(identitySeed, ordinal * 2, "resource_operation_"),
-                CreateDeterministicIdentity(identitySeed, ordinal * 2 + 1, "resource_transition_"),
+                identities.OperationId,
+                identities.TransitionId,
                 coordinate,
                 consumption.Quantity,
                 before,
@@ -1075,7 +1208,8 @@ internal static partial class WoundAcceptedTurnPlanner
             sources,
             mutations,
             expected,
-            draftBeforeImages);
+            draftBeforeImages,
+            itemPublicationAuthority);
         var authority = MortalWoundTreatmentResourcePublicationAuthority.Create(
             TreatmentResourcePublicationMintCapability,
             continuation.AcceptedStateAuthority,
@@ -1086,11 +1220,289 @@ internal static partial class WoundAcceptedTurnPlanner
             publicationReservationAuthority,
             continuation.SemanticFingerprint,
             identitySeed,
-            draft);
+            draft,
+            itemPublicationAuthority);
         return new MortalWoundTreatmentResourcePublicationBuildResult(
             authority,
             Array.Empty<ValidationIssue>());
     }
+
+    private static TreatmentItemPublicationBuild BuildTreatmentItemPublication(
+        object continuationAuthority,
+        TreatmentContinuationView continuation,
+        MortalWoundTreatmentResourceFinalization finalization,
+        MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+        IReadOnlyDictionary<string, MortalWoundTreatmentResourceClaim> claims,
+        ResourceDefinitionCatalog definitions,
+        ResourceStateLedger state,
+        ResourceHistoryState history,
+        ResourceOwnerAuthority owners,
+        string identitySeed,
+        WoundPreparedAcceptedTurnPlan preparedWoundPlan,
+        string effectSourceBeforeFingerprint,
+        Func<string, string?> readDocument)
+    {
+        var itemPhase = snapshot.CloneItemPhase();
+        var baseline = snapshot.CloneFinalBaseline();
+        var envelope = snapshot.CloneItemCommandEnvelope();
+        if (itemPhase is null || baseline is null || envelope is null ||
+            !itemPhase.IsValid || baseline.Issues.Count != 0 ||
+            !string.Equals(
+                envelope.Fingerprint,
+                continuation.ItemCommandEnvelope.Fingerprint,
+                StringComparison.Ordinal) ||
+            baseline.FinalCarrierRoots.GetValueOrDefault(
+                NpcCoreChangesContract.NpcCorePath) is not JsonObject npcBaseline)
+        {
+            return ItemUnsupported("incomplete sealed item baseline");
+        }
+
+        var skillIssues = ComposeTreatmentSkillProjectionOnFinalItemBaseline(
+            continuationAuthority,
+            continuation.ReservationAuthority,
+            npcBaseline,
+            out var skillAfterImages,
+            out var skillProjectionAuthority,
+            out var skillProjectionFingerprint);
+        if (skillIssues.Count != 0)
+            return new TreatmentItemPublicationBuild(null, skillIssues);
+
+        var skillComposedRoots =
+            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                baseline.FinalCarrierRoots);
+        if (skillAfterImages.TryGetValue(
+                NpcCoreChangesContract.NpcCorePath,
+                out var npcSkillAfterImage))
+        {
+            skillComposedRoots[NpcCoreChangesContract.NpcCorePath] =
+                npcSkillAfterImage.DeepClone();
+        }
+
+        var itemRows = finalization.Consumptions
+            .Select((consumption, index) => (Consumption: consumption, Index: index))
+            .Where(static row => string.Equals(
+                row.Consumption.Kind,
+                "item_quantity",
+                StringComparison.Ordinal))
+            .ToArray();
+        var commands = new List<MortalItemConsumptionCommand>(itemRows.Length);
+        for (var index = 0; index < itemRows.Length; index++)
+        {
+            var row = itemRows[index];
+            if (!claims.TryGetValue(
+                    row.Consumption.ClaimFingerprint,
+                    out var claim) ||
+                !ConsumptionAgrees(row.Consumption, claim) ||
+                row.Consumption.Quantity > int.MaxValue)
+            {
+                return ItemUnsupported(
+                    "item finalization does not match one exact held claim");
+            }
+            var commandFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+                new string?[]
+                {
+                    "book_of_eternity.mortal_wound_treatment.item_consumption_command",
+                    "1",
+                    continuation.AcceptedStateFingerprint,
+                    continuation.RequestAuthority.RequestFingerprint,
+                    continuation.Resolution.ResultFingerprint,
+                    finalization.FinalizationFingerprint,
+                    row.Index.ToString("D4", CultureInfo.InvariantCulture),
+                    row.Consumption.AuthorityRef,
+                    row.Consumption.Quantity.ToString(CultureInfo.InvariantCulture),
+                    row.Consumption.ClaimFingerprint,
+                    row.Consumption.IntentFingerprint
+                });
+            commands.Add(new MortalItemConsumptionCommand(
+                row.Index + 1,
+                row.Consumption.AuthorityRef,
+                checked((int)row.Consumption.Quantity),
+                row.Consumption.ClaimFingerprint,
+                "mitrn_" + commandFingerprint["sha256:".Length..],
+                "mortal_wound_treatment",
+                "treatment_item_" +
+                commandFingerprint["sha256:".Length..("sha256:".Length + 24)]));
+        }
+
+        var identity = MortalItemIdentityState.Parse(
+            baseline.IdentityIndexAfterImage.DeepClone());
+        if (identity.Issues.Count != 0)
+            return new TreatmentItemPublicationBuild(null, identity.Issues);
+        var capacitySourceFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.item_capacity_source",
+                "1",
+                identitySeed,
+                baseline.Fingerprint
+            });
+        var capacityPolicyFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.item_capacity_policy",
+                "1",
+                identitySeed,
+                baseline.Fingerprint
+            });
+        var consumptionInput = new MortalItemConsumptionPlanningInput(
+            continuation.Resolution.Coordinates.Turn,
+            baseline.Fingerprint,
+            CreateConsumptionCarrierRoots(skillComposedRoots),
+            identity,
+            commands,
+            definitions,
+            state,
+            new ResourceSourceEvidence(
+                "mortal_wound_treatment",
+                "treatment_item_capacity_" +
+                capacitySourceFingerprint[
+                    "sha256:".Length..("sha256:".Length + 20)],
+                capacitySourceFingerprint),
+            capacityPolicyFingerprint);
+        var consumption = MortalItemConsumptionPlanner.Plan(consumptionInput);
+        if (!consumption.IsValid || consumption.IdentityIndexAfterImage is null)
+            return new TreatmentItemPublicationBuild(null, consumption.Issues);
+
+        var finalRoots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+            skillComposedRoots);
+        foreach (var pair in consumption.CarrierAfterImages)
+            finalRoots[pair.Key] = pair.Value.DeepClone();
+        finalRoots[MortalItemIdentityState.StatePath] =
+            consumption.IdentityIndexAfterImage.DeepClone();
+
+        var publicationAfterImages = new Dictionary<string, JsonObject>(
+            StringComparer.Ordinal);
+        if (skillAfterImages.TryGetValue(
+                NpcCoreChangesContract.NpcCorePath,
+                out var composedNpc))
+        {
+            publicationAfterImages[NpcCoreChangesContract.NpcCorePath] =
+                composedNpc.DeepClone().AsObject();
+        }
+        foreach (var pair in consumption.CarrierAfterImages)
+        {
+            if (!JsonNode.DeepEquals(
+                    skillComposedRoots.GetValueOrDefault(pair.Key),
+                    pair.Value))
+            {
+                publicationAfterImages[pair.Key] =
+                    pair.Value.DeepClone().AsObject();
+            }
+        }
+        if (!JsonNode.DeepEquals(
+                baseline.IdentityIndexAfterImage,
+                consumption.IdentityIndexAfterImage))
+        {
+            publicationAfterImages[MortalItemIdentityState.StatePath] =
+                consumption.IdentityIndexAfterImage.DeepClone().AsObject();
+        }
+
+        var existingHistoricalOwners = owners.ExportInput().HistoricalOwners;
+        var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                definitions,
+                path => Task.FromResult(finalRoots.TryGetValue(path, out var root)
+                    ? root?.ToJsonString()
+                    : readDocument(path)),
+                state: null,
+                history: null,
+                CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage,
+                existingHistoricalOwners.Concat(consumption.TerminalOwners)
+                    .Distinct()
+                    .ToArray())
+            .GetAwaiter()
+            .GetResult();
+        if (!ownerResult.IsValid || ownerResult.Authority is null)
+            return new TreatmentItemPublicationBuild(null, ownerResult.Issues);
+
+        var normalizedEffectSourceRoots = new Dictionary<string, JsonNode?>(
+            StringComparer.Ordinal);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            if (baseline.FinalCarrierRoots.TryGetValue(path, out var baselineRoot))
+            {
+                normalizedEffectSourceRoots[path] = baselineRoot?.DeepClone();
+                continue;
+            }
+            var json = readDocument(path);
+            normalizedEffectSourceRoots[path] = json is null
+                ? null
+                : JsonNode.Parse(json);
+        }
+        var normalizedEffectSourceAuthority =
+            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+                normalizedEffectSourceRoots,
+                preparedWoundPlan);
+        if (normalizedEffectSourceAuthority.Issues.Count != 0)
+        {
+            return new TreatmentItemPublicationBuild(
+                null,
+                normalizedEffectSourceAuthority.Issues);
+        }
+
+        var authority = MortalWoundTreatmentItemPublicationAuthority.Create(
+            TreatmentResourcePublicationMintCapability,
+            continuation.AcceptedStateAuthority,
+            continuation.RequestAuthority,
+            continuation.Resolution,
+            finalization,
+            continuationAuthority,
+            continuation.ReservationAuthority,
+            snapshot,
+            envelope,
+            itemPhase,
+            baseline,
+            skillProjectionAuthority,
+            skillProjectionFingerprint,
+            consumptionInput,
+            consumption,
+            finalRoots,
+            publicationAfterImages,
+            owners,
+            effectSourceBeforeFingerprint,
+            normalizedEffectSourceAuthority.CanonicalFingerprint,
+            ownerResult.Authority);
+        return authority.HasValidSeal()
+            ? new TreatmentItemPublicationBuild(
+                authority,
+                Array.Empty<ValidationIssue>())
+            : ItemUnsupported("item authority did not reproduce its complete seal");
+    }
+
+    private static MortalItemCarrierCatalogInput CreateConsumptionCarrierRoots(
+        IReadOnlyDictionary<string, JsonNode?> roots)
+    {
+        var companions = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
+            .Skip(8)
+            .Where(path => roots.GetValueOrDefault(path) is JsonObject)
+            .ToDictionary(
+                static path => path,
+                path => roots[path]!.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+        return new MortalItemCarrierCatalogInput(
+            roots.GetValueOrDefault(InventoryEquipmentService.ItemsPath) as JsonObject,
+            roots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject,
+            roots.GetValueOrDefault(
+                MortalItemAcceptedTransferCatalog.NpcCommandsPath) as JsonObject,
+            roots.GetValueOrDefault(
+                StorageTransportMoveService.CurrentLocationPath) as JsonObject,
+            MortalItemProjectionRootParser.ToCarrierCatalogObject(
+                roots.GetValueOrDefault(StorageTransportMoveService.VehiclesPath),
+                StorageTransportMoveService.VehiclesPath),
+            companions,
+            roots.GetValueOrDefault(
+                MortalLocationStorageContentsState.StatePath) as JsonObject);
+    }
+
+    private static TreatmentItemPublicationBuild ItemUnsupported(string actual) =>
+        new(
+            null,
+            new[]
+            {
+                PublicationIssue(
+                    "mortal_wound_treatment_publication_item_consumption_unsupported",
+                    "one genuine complete private item publication capability",
+                    actual)
+            });
 
     private static bool ConsumptionAgrees(
         MortalWoundTreatmentResourceConsumptionIntent consumption,
@@ -1123,16 +1535,6 @@ internal static partial class WoundAcceptedTurnPlanner
         return "treatment_resource_" +
                identity["sha256:".Length..("sha256:".Length + 24)] +
                "_" + ordinal.ToString("D4", CultureInfo.InvariantCulture);
-    }
-
-    private static string CreateDeterministicIdentity(
-        string identitySeed,
-        int ordinal,
-        string prefix)
-    {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(
-            identitySeed + "\0" + ordinal.ToString(CultureInfo.InvariantCulture)));
-        return prefix + new Guid(bytes.AsSpan(0, 16)).ToString("N");
     }
 
     private static string Describe(ResourceCoordinate coordinate) =>

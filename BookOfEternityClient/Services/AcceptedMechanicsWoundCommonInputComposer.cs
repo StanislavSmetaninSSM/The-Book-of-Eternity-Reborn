@@ -290,18 +290,29 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                                   historyResult.IsMissing
                 ? CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap
                 : CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation;
-            var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
-                    definitions,
-                    path => Task.FromResult(Read(path)),
-                    state,
-                    history,
-                    resourcePurpose)
-                .GetAwaiter()
-                .GetResult();
-            issues.AddRange(ownerResult.Issues);
-            if (ownerResult.Authority is not { } owners || issues.Count != 0)
-                return new AcceptedMechanicsWoundCommonInputCompositionResult(null, issues);
+            ResourceOwnerAuthority? owners = null;
+            if (anchorPlan is not null)
+            {
+                var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                        definitions,
+                        path => Task.FromResult(Read(path)),
+                        state,
+                        history,
+                        resourcePurpose)
+                    .GetAwaiter()
+                    .GetResult();
+                issues.AddRange(ownerResult.Issues);
+                owners = ownerResult.Authority;
+                if (owners is null || issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+                _ = Read(CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
+            }
 
+            MortalItemAcceptedTurnNormalizationSnapshot? treatmentItemSnapshot = null;
             if (anchorPlan is null)
             {
                 var treatmentItemProjectionRoots =
@@ -327,37 +338,13 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                             treatmentContinuationAuthority!,
                             treatmentReservationAuthority!));
                 }
-                else
+                else if (issues.Count == 0)
                 {
-                    var itemCatalog = MortalItemCarrierCatalog.Build(
-                        CreateMortalItemCarrierCatalogInput(
-                            treatmentItemProjectionRoots));
-                    foreach (var itemIssue in itemCatalog.Issues)
-                    {
-                        issues.Add(Issue(
-                            itemIssue.Path,
-                            itemIssue.Code,
-                            "one exact non-ambiguous Mortal item carrier catalog",
-                            itemIssue.Identity ?? itemIssue.IdentityKind));
-                    }
-                    var itemIdentity = MortalItemIdentityState.Parse(
-                        treatmentItemProjectionRoots[
-                            MortalItemIdentityState.StatePath]);
-                    issues.AddRange(itemIdentity.Issues);
-                    if (issues.Count == 0)
-                    {
-                        issues.AddRange(MortalItemAcceptedTurnAuthority
-                            .RegisterValidatedTreatmentItems(
-                                fileSystem,
-                                writeLease,
-                                binding.SessionId,
-                                binding.SnapshotToken,
-                                itemCatalog,
-                                itemIdentity.EntriesByItemId.Keys,
-                                treatmentItemProjectionRoots,
-                                treatmentContinuationAuthority!,
-                                treatmentReservationAuthority!));
-                    }
+                    issues.Add(Issue(
+                        MortalItemIdentityState.StatePath,
+                        "mortal_wound_treatment_publication_item_authority_changed",
+                        "the exact already validated item projection authority",
+                        "authoritative raw validation produced no cache"));
                 }
                 if (issues.Count != 0)
                 {
@@ -397,10 +384,65 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                         null,
                         issues);
                 }
+                _ = MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                    fileSystem,
+                    writeLease,
+                    binding.SessionId,
+                    binding.SnapshotToken,
+                    binding.Turn,
+                    out treatmentItemSnapshot);
+                var treatmentBaseline = treatmentItemSnapshot?.CloneFinalBaseline();
+                if (treatmentBaseline is null || treatmentBaseline.Issues.Count != 0)
+                {
+                    issues.Add(Issue(
+                        MortalItemIdentityState.StatePath,
+                        "mortal_wound_treatment_publication_item_consumption_unsupported",
+                        "one genuine complete private item publication baseline",
+                        "missing, foreign, or incomplete item authority"));
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+                var projectedOwnerRoots = treatmentBaseline.FinalCarrierRoots;
+                var sameTurnItemRefs = MortalItemAcceptedTurnAuthority
+                    .GetValidatedOwners(
+                        fileSystem,
+                        writeLease,
+                        binding.SessionId,
+                        binding.SnapshotToken)
+                    .Where(static owner => owner.SameTurn && owner.ItemRef is not null)
+                    .ToDictionary(
+                        static owner => owner.ItemId,
+                        static owner => owner.ItemRef!,
+                        StringComparer.Ordinal);
+                var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                        definitions,
+                        path => Task.FromResult(projectedOwnerRoots.TryGetValue(
+                            path,
+                            out var root)
+                            ? root?.ToJsonString()
+                            : Read(path)),
+                        state,
+                        history,
+                        CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage,
+                        sameTurnItemRefs: sameTurnItemRefs)
+                    .GetAwaiter()
+                    .GetResult();
+                issues.AddRange(ownerResult.Issues);
+                owners = ownerResult.Authority;
+                if (owners is null || issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+                _ = Read(CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
             }
 
             MortalWoundTreatmentResourcePublicationAuthority?
                 treatmentResourcePublicationAuthority = null;
+            IReadOnlyDictionary<string, JsonObject>
+                treatmentPlanSkillAfterImages = treatmentSkillAfterImages;
             if (anchorPlan is null)
             {
                 var resourcePublication = WoundAcceptedTurnPlanner
@@ -410,8 +452,12 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                         definitions,
                         state,
                         history,
-                        owners,
-                        beforeImages);
+                        owners!,
+                        beforeImages,
+                        treatmentItemSnapshot,
+                        bundle.PreparedPlan,
+                        bundle.EffectBatchPlan.EffectPlan.SourceAuthorityFingerprint,
+                        Read);
                 issues.AddRange(resourcePublication.Issues);
                 treatmentResourcePublicationAuthority =
                     resourcePublication.Authority;
@@ -443,6 +489,22 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                     return new AcceptedMechanicsWoundCommonInputCompositionResult(
                         null,
                         issues);
+                }
+                if (treatmentResourcePublicationAuthority.ItemPublicationAuthority
+                    is { } itemPublicationAuthority)
+                {
+                    owners = itemPublicationAuthority.FinalOwnerAuthority;
+                    var nonOverlappingSkillAfterImages = treatmentSkillAfterImages
+                        .ToDictionary(
+                            static pair => pair.Key,
+                            static pair => pair.Value.DeepClone().AsObject(),
+                            StringComparer.Ordinal);
+                    foreach (var path in itemPublicationAuthority
+                                 .PublicationAfterImages.Keys)
+                    {
+                        nonOverlappingSkillAfterImages.Remove(path);
+                    }
+                    treatmentPlanSkillAfterImages = nonOverlappingSkillAfterImages;
                 }
             }
 
@@ -493,7 +555,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 ["definitions"] = definitionRoot.DeepClone(),
                 ["state"] = stateRoot.DeepClone(),
                 ["history"] = historyRoot.DeepClone(),
-                ["ownerFingerprint"] = owners.Fingerprint,
+                ["ownerFingerprint"] = owners!.Fingerprint,
                 ["sourceFingerprint"] = sources.Fingerprint,
                 ["woundInputFingerprint"] = bundle.InputFingerprint,
                 ["woundStageBundleFingerprint"] = bundle.BundleFingerprint
@@ -568,7 +630,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 Definitions: HashText(
                     "resource-definitions-v1",
                     definitionRoot.ToJsonString()),
-                Owners: owners.Fingerprint,
+                Owners: owners!.Fingerprint,
                 ResourceState: state.Fingerprint,
                 ResourceHistory: history.Fingerprint,
                 EffectSources: HashText(
@@ -607,12 +669,14 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 definitions,
                 state,
                 history,
-                owners,
+                owners!,
                 sources,
                 resourceCommands,
                 effectIdentityRoot,
                 stagedEffectPlan,
-                ownerCompanionAfterImages: treatmentSkillAfterImages,
+                terminalOwners:
+                    treatmentResourcePublicationAuthority?.ItemTerminalOwners,
+                ownerCompanionAfterImages: treatmentPlanSkillAfterImages,
                 registeredSystemOutcomes:
                     treatmentResourcePublicationAuthority is null
                         ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>()
@@ -842,28 +906,6 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             roots.Add(path, parsed.Root?.DeepClone());
         }
         return roots;
-    }
-
-    private static MortalItemCarrierCatalogInput CreateMortalItemCarrierCatalogInput(
-        IReadOnlyDictionary<string, JsonNode?> roots)
-    {
-        var companions = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
-            .Skip(8)
-            .Where(path => roots[path] is JsonObject)
-            .ToDictionary(
-                static path => path,
-                path => roots[path]!.DeepClone().AsObject(),
-                StringComparer.Ordinal);
-        return new MortalItemCarrierCatalogInput(
-            roots[InventoryEquipmentService.ItemsPath] as JsonObject,
-            roots[NpcCoreChangesContract.NpcCorePath] as JsonObject,
-            roots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] as JsonObject,
-            roots[StorageTransportMoveService.CurrentLocationPath] as JsonObject,
-            MortalItemProjectionRootParser.ToCarrierCatalogObject(
-                roots[StorageTransportMoveService.VehiclesPath],
-                StorageTransportMoveService.VehiclesPath),
-            companions,
-            roots[MortalLocationStorageContentsState.StatePath] as JsonObject);
     }
 
     private static JsonObject ParseObjectOrEmpty(string? json) =>

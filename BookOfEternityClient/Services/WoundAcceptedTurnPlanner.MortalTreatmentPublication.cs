@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace BookOfEternityClient.Services;
 
@@ -160,6 +161,8 @@ internal static partial class WoundAcceptedTurnPlanner
             baseSemanticFingerprint,
             commandEnvelope,
             itemCommandEnvelope);
+        var skillSemanticFingerprint = ComputeTreatmentSkillSemanticFingerprint(
+            commandEnvelope);
         var reservation = AcceptedTurnAuthorityRegistry
             .ReserveMortalWoundTreatmentPublication(
                 fileSystem,
@@ -209,11 +212,29 @@ internal static partial class WoundAcceptedTurnPlanner
             if (shell.Issues.Count != 0 || shell.Finalization is null)
                 return MortalWoundTreatmentPublicationResult.Invalid(shell.Issues);
 
+            if (!MortalItemAcceptedTurnAuthority.HasValidatedItems(
+                    fileSystem,
+                    writeLease))
+            {
+                var itemValidationIssues = new ValidationService(
+                        fileSystem,
+                        NullLogger<ValidationService>.Instance)
+                    .ValidateAcceptedTurnRawMortalItemMaterializationAsync(
+                        writeLease)
+                    .GetAwaiter()
+                    .GetResult();
+                if (itemValidationIssues.Count != 0)
+                {
+                    return MortalWoundTreatmentPublicationResult.Invalid(
+                        itemValidationIssues);
+                }
+            }
+
             var skillProjection = CreateTreatmentSkillProjection(
                 fileSystem,
                 writeLease,
                 commandEnvelope,
-                semanticFingerprint,
+                skillSemanticFingerprint,
                 reservation.Authority!,
                 suppliedNpcSemanticBaseline: null);
             if (skillProjection.Authority is null)
@@ -387,10 +408,9 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalTreatmentItemCommandEnvelope itemCommandEnvelope,
         object skillProjectionAuthority)
     {
-        if (!TryReadTreatmentSkillProjection(
+        if (!TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 skillProjectionAuthority,
                 reservationAuthority,
-                semanticFingerprint,
                 out var skillProjection))
         {
             throw new InvalidOperationException(
@@ -467,10 +487,9 @@ internal static partial class WoundAcceptedTurnPlanner
                 candidate.ResourceFinalization.ResourceAuthorityFingerprint,
                 candidate.RequestAuthority.ResourceAuthority.AuthorityFingerprint,
                 StringComparison.Ordinal) ||
-            !TryReadTreatmentSkillProjection(
+            !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 candidate.SkillProjectionAuthority,
                 candidate.ReservationAuthority,
-                candidate.SemanticFingerprint,
                 out var skillProjection))
             return false;
         var fingerprint = ComputeTreatmentContinuationFingerprint(
@@ -947,23 +966,6 @@ internal static partial class WoundAcceptedTurnPlanner
                         finalized.FinalizationFingerprint)
                 });
         }
-        if (finalized?.Consumptions.Any(static value =>
-                string.Equals(
-                    value.Kind,
-                    "item_quantity",
-                    StringComparison.Ordinal)) == true)
-        {
-            return new GuaranteedStabilizationShellValidation(
-                null,
-                new[]
-                {
-                    PublicationIssue(
-                        "treatmentPublication.resources.consumptions",
-                        "mortal_wound_treatment_publication_item_consumption_unsupported",
-                        "selected item_quantity consumption is deferred to T070-B.4",
-                        "selected item_quantity consumption")
-                });
-        }
         var finalizationShape = finalized switch
         {
             { Disposition: "not_required", ReservationId: null } value =>
@@ -973,10 +975,15 @@ internal static partial class WoundAcceptedTurnPlanner
                 value.Consumptions.Count == 0,
             { Disposition: "consume", ReservationId: not null } value =>
                 value.Consumptions.Count != 0 &&
-                value.Consumptions.All(static consumption => string.Equals(
-                    consumption.Kind,
-                    "resource_quantity",
-                    StringComparison.Ordinal)),
+                value.Consumptions.All(static consumption =>
+                    string.Equals(
+                        consumption.Kind,
+                        "resource_quantity",
+                        StringComparison.Ordinal) ||
+                    string.Equals(
+                        consumption.Kind,
+                        "item_quantity",
+                        StringComparison.Ordinal)),
             _ => false
         };
         var exactCoordinates = coordinates.MatchesAcceptedState(acceptedState) &&

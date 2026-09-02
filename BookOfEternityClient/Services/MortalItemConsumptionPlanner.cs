@@ -259,17 +259,19 @@ internal static class MortalItemConsumptionPlanner
                 "one or more ordered consumption commands",
                 "empty"));
         }
+        var priorFinalizationOrdinal = 0;
         for (var index = 0; index < input.Commands.Count; index++)
         {
             var command = input.Commands[index];
-            if (command.FinalizationOrdinal != index + 1)
+            if (command.FinalizationOrdinal <= priorFinalizationOrdinal)
             {
                 issues.Add(Issue(
                     command.ItemId,
                     "mortal_item_consumption_ordinal_not_contiguous",
-                    (index + 1).ToString(CultureInfo.InvariantCulture),
+                    $"> {priorFinalizationOrdinal.ToString(CultureInfo.InvariantCulture)}",
                     command.FinalizationOrdinal.ToString(CultureInfo.InvariantCulture)));
             }
+            priorFinalizationOrdinal = command.FinalizationOrdinal;
             if (command.Quantity <= 0 ||
                 !ResourceMaterializationContract.IsExactIdentifier(command.ItemId) ||
                 !ResourceMaterializationContract.IsAuthorityFingerprint(

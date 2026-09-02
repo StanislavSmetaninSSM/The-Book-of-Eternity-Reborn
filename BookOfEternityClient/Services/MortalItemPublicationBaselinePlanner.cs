@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
@@ -132,11 +133,24 @@ internal static class MortalItemPublicationBaselinePlanner
         var roots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
             input.ItemPhase.ItemPhaseAfterImages);
         var appliedTransformIds = new List<string>();
-        foreach (var registration in TransformRegistry)
+        try
         {
-            var applied = ApplyRegisteredTransform(registration, roots, input);
-            roots = applied.Roots;
-            appliedTransformIds.Add(applied.AppliedTransformId);
+            foreach (var registration in TransformRegistry)
+            {
+                var applied = ApplyRegisteredTransform(registration, roots, input);
+                roots = applied.Roots;
+                appliedTransformIds.Add(applied.AppliedTransformId);
+            }
+        }
+        catch (InvalidDataException exception)
+        {
+            return Invalid(input, new[]
+            {
+                Issue(
+                    "mortal_item_publication_baseline_semantic_npc_invalid",
+                    "one exact item-phase-owned NPC comparison baseline",
+                    exception.Message)
+            });
         }
 
         var index = roots[MortalItemIdentityState.StatePath]!.DeepClone().AsObject();
@@ -166,12 +180,25 @@ internal static class MortalItemPublicationBaselinePlanner
             case "npc_core:v1":
             {
                 const string path = NpcCoreChangesContract.NpcCorePath;
-                roots[path] = MortalItemPublicationTailTransforms.NpcCore(
-                    roots[path],
-                    input.BackupRoots[path],
+                var current = roots[path];
+                var comparisonBaseline = ComposeNpcItemPhaseComparisonBaseline(
+                    current,
+                    input.BackupRoots[path]);
+                var projected = MortalItemPublicationTailTransforms.NpcCore(
+                    current,
+                    comparisonBaseline,
                     input.NpcCoreAuthority,
                     input.NpcTradePending,
                     input.TrainingPending);
+                if (current is JsonObject currentRoot &&
+                    currentRoot.ContainsKey(NpcCoreChangesContract.PropertyName) &&
+                    projected is JsonObject projectedRoot &&
+                    projectedRoot.ContainsKey(NpcCoreChangesContract.PropertyName))
+                {
+                    throw new InvalidDataException(
+                        "The exact shared NPC-core transform rejected the item-phase semantic baseline.");
+                }
+                roots[path] = projected;
                 appliedId = registration;
                 break;
             }
@@ -216,6 +243,122 @@ internal static class MortalItemPublicationBaselinePlanner
                     $"Unregistered Mortal item publication transform '{registration}'.");
         }
         return new AppliedTransform(roots, appliedId);
+    }
+
+    private static JsonNode? ComposeNpcItemPhaseComparisonBaseline(
+        JsonNode? itemPhaseRoot,
+        JsonNode? backupRoot)
+    {
+        if (itemPhaseRoot is not JsonObject current ||
+            backupRoot is not JsonObject backup)
+        {
+            throw new InvalidDataException(
+                "NPC item-phase and backup roots must both have object topology.");
+        }
+
+        var currentActors = BuildExactNpcActorCatalog(current, "item phase");
+        var backupActors = BuildExactNpcActorCatalog(backup, "backup");
+        if (!currentActors.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(
+                backupActors.Keys))
+        {
+            throw new InvalidDataException(
+                "NPC item-phase and backup actor identity sets differ.");
+        }
+        if (currentActors.Values.Any(static matches => matches.Count != 1) ||
+            backupActors.Values.Any(static matches => matches.Count != 1))
+        {
+            throw new InvalidDataException(
+                "NPC item-phase and backup actor identities must each occur exactly once.");
+        }
+
+        var result = backup.DeepClone().AsObject();
+        var resultActors = BuildExactNpcActorCatalog(result, "comparison baseline");
+        if (resultActors.Values.Any(static matches => matches.Count != 1))
+        {
+            throw new InvalidDataException(
+                "NPC comparison-baseline actor identities must each occur exactly once.");
+        }
+
+        foreach (var actorId in currentActors.Keys.OrderBy(
+                     static value => value,
+                     StringComparer.Ordinal))
+        {
+            var currentMatches = currentActors[actorId];
+            var resultMatches = resultActors[actorId];
+            CopyProperty(currentMatches[0], resultMatches[0], "inventory");
+            CopyProperty(currentMatches[0], resultMatches[0], "equippedItems");
+        }
+
+        return result;
+    }
+
+    private static Dictionary<string, List<JsonObject>> BuildExactNpcActorCatalog(
+        JsonObject root,
+        string stage)
+    {
+        var result = new Dictionary<string, List<JsonObject>>(StringComparer.Ordinal);
+        var confusables = new Dictionary<string, string>(StringComparer.Ordinal);
+        foreach (var actor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root))
+        {
+            var identities = new[] { "NPCId", "npcId", "id", "initialId" }
+                .Where(actor.ContainsKey)
+                .Select(name => ReadExactNpcIdentity(actor[name], stage, name))
+                .ToArray();
+            if (identities.Length == 0 ||
+                identities.Any(identity => !string.Equals(
+                    identity,
+                    identities[0],
+                    StringComparison.Ordinal)))
+            {
+                throw new InvalidDataException(
+                    $"The {stage} NPC graph contains a missing or conflicting actor identity.");
+            }
+
+            var actorId = identities[0];
+            var confusableKey = actorId.Normalize(NormalizationForm.FormKC)
+                .ToUpperInvariant();
+            if (confusables.TryGetValue(confusableKey, out var existing) &&
+                !string.Equals(existing, actorId, StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    $"The {stage} NPC graph contains confusable actor IDs '{existing}' and '{actorId}'.");
+            }
+            confusables[confusableKey] = actorId;
+            if (!result.TryGetValue(actorId, out var matches))
+            {
+                matches = new List<JsonObject>();
+                result.Add(actorId, matches);
+            }
+            matches.Add(actor);
+        }
+
+        return result;
+    }
+
+    private static string ReadExactNpcIdentity(
+        JsonNode? node,
+        string stage,
+        string property)
+    {
+        if (node is not JsonValue value ||
+            !value.TryGetValue<string>(out var text) ||
+            !ResourceMaterializationContract.IsExactIdentifier(text))
+        {
+            throw new InvalidDataException(
+                $"The {stage} NPC property '{property}' is not one exact actor ID.");
+        }
+        return text;
+    }
+
+    private static void CopyProperty(
+        JsonObject source,
+        JsonObject destination,
+        string property)
+    {
+        if (source.TryGetPropertyValue(property, out var value))
+            destination[property] = value?.DeepClone();
+        else
+            destination.Remove(property);
     }
 
     private static void Apply(
@@ -286,13 +429,23 @@ internal static class MortalItemPublicationBaselinePlanner
         {
             "book_of_eternity.mortal_item.publication_baseline",
             "1",
-            input.ItemPhase.Fingerprint,
             input.Envelope.Fingerprint,
             input.NpcTradePending.Fingerprint,
             input.TrainingPending.Fingerprint,
             input.NpcTradeDisposition.ToString(),
             AuthorityFingerprint(input.NpcCoreAuthority)
         };
+        foreach (var pair in input.ItemPhase.ItemPhaseAfterImages.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            fields.Add("item_phase");
+            fields.Add(pair.Key);
+            fields.Add(pair.Value == null ? "missing" :
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(pair.Value));
+        }
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+            input.ItemPhase.IdentityIndexAfterImage));
         foreach (var pair in input.BackupRoots.OrderBy(static pair => pair.Key,
                      StringComparer.Ordinal))
         {

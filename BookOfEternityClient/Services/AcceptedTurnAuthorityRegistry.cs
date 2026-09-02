@@ -2962,8 +2962,13 @@ internal static class AcceptedTurnAuthorityRegistry
                         liveBinding.SnapshotToken,
                         StringComparison.Ordinal) ||
                     mortalItemSnapshot.Turn != liveBinding.Turn ||
-                    !mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
-                        handoff.Plan.OwnerAuthority) ||
+                    !(handoff.PublicationAuthority.ItemPublicationAuthority is
+                        { } itemPublication
+                        ? itemPublication.MatchesNormalizationSnapshot(
+                            mortalItemSnapshot,
+                            handoff.Plan.OwnerAuthority)
+                        : mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
+                            handoff.Plan.OwnerAuthority)) ||
                     !_mortalItems.TryTakeValidatedTreatmentPublication(
                         mortalItemSnapshot,
                         out var mortalItemCacheSnapshot))
@@ -3677,8 +3682,9 @@ internal static class AcceptedTurnAuthorityRegistry
                         treatmentContinuationAuthority,
                         reservationAuthority,
                         out _,
-                        out var skillAfterImages,
-                        out _))
+                        out _,
+                        out _,
+                        out var ownsNpcTail))
                 {
                     return new[]
                     {
@@ -3702,17 +3708,26 @@ internal static class AcceptedTurnAuthorityRegistry
                         sessionId,
                         snapshotToken,
                         turn,
-                        out var baseSnapshot) ||
-                    baseSnapshot.HasFinalPublicationBaseline)
+                        out var baseSnapshot))
                 {
                     return ItemAuthorityChangedIssue();
                 }
 
-                var npcTradeDisposition = skillAfterImages.ContainsKey(
-                    NpcCoreChangesContract.NpcCorePath)
+                var npcTradeDisposition = ownsNpcTail
                     ? MortalItemNpcTradeTailDisposition.Apply
                     : MortalItemNpcTradeTailDisposition
                         .SkipUntouchedTreatmentContinuation;
+                if (baseSnapshot.HasFinalPublicationBaseline)
+                {
+                    return baseSnapshot.MatchesTreatmentPublicationBaseline(
+                        continuation.ItemCommandEnvelope,
+                        npcCoreAuthority,
+                        npcTradePending,
+                        trainingPending,
+                        npcTradeDisposition)
+                        ? Array.Empty<ValidationIssue>()
+                        : ItemBaselineChangedIssue();
+                }
                 var sealedBaseline = baseSnapshot
                     .CreateTreatmentPublicationBaseline(
                         continuation.ItemCommandEnvelope,
@@ -3739,6 +3754,15 @@ internal static class AcceptedTurnAuthorityRegistry
                     "mortal_wound_treatment_publication_item_authority_changed",
                     "the exact already validated item projection authority",
                     "missing or changed item cache proof")
+            };
+
+        private static IReadOnlyList<ValidationIssue> ItemBaselineChangedIssue() =>
+            new[]
+            {
+                WoundIssue(
+                    "mortal_wound_treatment_publication_item_baseline_changed",
+                    "the exact sealed treatment item publication baseline inputs",
+                    "one or more baseline authority inputs changed")
             };
 
         internal bool HasMortalItemsValidated()

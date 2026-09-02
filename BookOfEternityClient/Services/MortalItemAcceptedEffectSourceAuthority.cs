@@ -283,6 +283,32 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
     internal MortalItemAcceptedTurnNormalizationSnapshot Clone() =>
         CreateClone(includeFinalBaseline: HasFinalPublicationBaseline);
 
+    internal bool MatchesTreatmentPublicationBaseline(
+        MortalTreatmentItemCommandEnvelope itemCommandEnvelope,
+        NpcCoreChangesContract.Authority npcCoreAuthority,
+        CanonicalBeforeImage npcTradePending,
+        CanonicalBeforeImage trainingPending,
+        MortalItemNpcTradeTailDisposition npcTradeDisposition)
+    {
+        ArgumentNullException.ThrowIfNull(itemCommandEnvelope);
+        ArgumentNullException.ThrowIfNull(npcCoreAuthority);
+        ArgumentNullException.ThrowIfNull(npcTradePending);
+        ArgumentNullException.ThrowIfNull(trainingPending);
+        if (!HasFinalPublicationBaseline)
+            return false;
+
+        var recomposed = CreateClone(includeFinalBaseline: false)
+            .CreateTreatmentPublicationBaseline(
+                itemCommandEnvelope,
+                npcCoreAuthority,
+                npcTradePending,
+                trainingPending,
+                npcTradeDisposition);
+        return recomposed.IsValid &&
+               recomposed.Snapshot is not null &&
+               MatchesFinalPublicationBaseline(recomposed.Snapshot);
+    }
+
     internal MortalItemTreatmentPublicationBaselineSealResult
         CreateTreatmentPublicationBaseline(
             MortalTreatmentItemCommandEnvelope itemCommandEnvelope,

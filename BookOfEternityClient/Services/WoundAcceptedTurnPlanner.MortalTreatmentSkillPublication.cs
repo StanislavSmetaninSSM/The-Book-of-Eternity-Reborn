@@ -97,6 +97,7 @@ internal static partial class WoundAcceptedTurnPlanner
 
     private sealed class TreatmentSkillProjectionAuthority
     {
+        private readonly TreatmentSkillCommandEnvelope _commandEnvelope;
         private readonly Dictionary<string, CanonicalBeforeImage> _baselines;
         private readonly Dictionary<string, JsonObject> _afterImages;
         private readonly Dictionary<string, JsonObject> _actorBeforeRoots;
@@ -106,6 +107,7 @@ internal static partial class WoundAcceptedTurnPlanner
 
         internal TreatmentSkillProjectionAuthority(
             object reservationAuthority,
+            TreatmentSkillCommandEnvelope commandEnvelope,
             string commandEnvelopeFingerprint,
             string semanticFingerprint,
             IReadOnlyDictionary<string, CanonicalBeforeImage> baselines,
@@ -117,6 +119,8 @@ internal static partial class WoundAcceptedTurnPlanner
             string fingerprint)
         {
             ReservationAuthority = reservationAuthority;
+            _commandEnvelope = commandEnvelope ??
+                throw new ArgumentNullException(nameof(commandEnvelope));
             CommandEnvelopeFingerprint = commandEnvelopeFingerprint;
             SemanticFingerprint = semanticFingerprint;
             _baselines = baselines.ToDictionary(
@@ -135,6 +139,7 @@ internal static partial class WoundAcceptedTurnPlanner
         }
 
         internal object ReservationAuthority { get; }
+        internal TreatmentSkillCommandEnvelope CommandEnvelope => _commandEnvelope;
         internal string CommandEnvelopeFingerprint { get; }
         internal string SemanticFingerprint { get; }
         internal string Fingerprint { get; }
@@ -502,6 +507,15 @@ internal static partial class WoundAcceptedTurnPlanner
             itemEnvelope.Fingerprint
         });
 
+    private static string ComputeTreatmentSkillSemanticFingerprint(
+        TreatmentSkillCommandEnvelope skillEnvelope) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.skill_projection_semantics",
+            "1",
+            skillEnvelope.Fingerprint
+        });
+
     private static TreatmentSkillProjectionResult CreateTreatmentSkillProjection(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -623,6 +637,7 @@ internal static partial class WoundAcceptedTurnPlanner
         return new(
             new TreatmentSkillProjectionAuthority(
                 reservationAuthority,
+                envelope,
                 envelope.Fingerprint,
                 semanticFingerprint,
                 baselines,
@@ -790,6 +805,25 @@ internal static partial class WoundAcceptedTurnPlanner
                 }
                 catch (InvalidDataException exception)
                 {
+                    if (TryComposeExactNpcSkillIdUpdates(
+                            beforeRoot,
+                            commandsRoot,
+                            changeProperty,
+                            removalProperty,
+                            out composed))
+                    {
+                        foreach (var copy in copies)
+                        {
+                            copy.Actor[active ? "activeSkills" : "passiveSkills"] =
+                                composed[changeProperty]!.DeepClone();
+                        }
+                        touchedActors.Add("npc:" + command.NpcId);
+                        actorAfter["npc:" + command.NpcId + ":active"] =
+                            new JsonObject { ["activeSkills"] = copies[0].Actor["activeSkills"]?.DeepClone() ?? new JsonArray() };
+                        actorAfter["npc:" + command.NpcId + ":passive"] =
+                            new JsonObject { ["passiveSkills"] = copies[0].Actor["passiveSkills"]?.DeepClone() ?? new JsonArray() };
+                        continue;
+                    }
                     issues.Add(PublicationIssue(
                         NpcSkillPath,
                         "mortal_wound_treatment_publication_npc_skill_command_invalid",
@@ -810,6 +844,50 @@ internal static partial class WoundAcceptedTurnPlanner
             }
         }
         return issues.Count == 0 ? result : null;
+    }
+
+    private static bool TryComposeExactNpcSkillIdUpdates(
+        JsonObject beforeRoot,
+        JsonObject commandsRoot,
+        string changeProperty,
+        string removalProperty,
+        out JsonObject composed)
+    {
+        composed = null!;
+        if (commandsRoot.ContainsKey(removalProperty) ||
+            beforeRoot[changeProperty] is not JsonArray current ||
+            commandsRoot[changeProperty] is not JsonArray changes ||
+            changes.Count == 0)
+        {
+            return false;
+        }
+
+        var result = current.DeepClone().AsArray();
+        foreach (var node in changes)
+        {
+            if (node is not JsonObject candidate ||
+                candidate["skillId"] is not JsonValue skillIdNode ||
+                !skillIdNode.TryGetValue<string>(out var skillId) ||
+                string.IsNullOrWhiteSpace(skillId) ||
+                !string.Equals(skillId, skillId.Trim(), StringComparison.Ordinal))
+            {
+                return false;
+            }
+            var matches = result
+                .Select((value, index) => (value, index))
+                .Where(entry => entry.value is JsonObject skill &&
+                    string.Equals(
+                        skill["skillId"]?.GetValue<string>(),
+                        skillId,
+                        StringComparison.Ordinal))
+                .Select(static entry => entry.index)
+                .ToArray();
+            if (matches.Length != 1)
+                return false;
+            result[matches[0]] = candidate.DeepClone();
+        }
+        composed = new JsonObject { [changeProperty] = result };
+        return true;
     }
 
     private static string ComputeTreatmentSkillProjectionFingerprint(
@@ -885,6 +963,10 @@ internal static partial class WoundAcceptedTurnPlanner
         projection = null!;
         if (authority is not TreatmentSkillProjectionAuthority candidate ||
             !ReferenceEquals(candidate.ReservationAuthority, reservationAuthority) ||
+            !string.Equals(
+                candidate.CommandEnvelope.Fingerprint,
+                candidate.CommandEnvelopeFingerprint,
+                StringComparison.Ordinal) ||
             !string.Equals(candidate.SemanticFingerprint, semanticFingerprint, StringComparison.Ordinal))
         {
             return false;
@@ -904,21 +986,110 @@ internal static partial class WoundAcceptedTurnPlanner
         return true;
     }
 
+    private static bool TryReadTreatmentSkillProjectionForEnvelopeSemantics(
+        object? authority,
+        object reservationAuthority,
+        out TreatmentSkillProjectionAuthority projection)
+    {
+        projection = null!;
+        if (authority is not TreatmentSkillProjectionAuthority candidate)
+            return false;
+        return TryReadTreatmentSkillProjection(
+            candidate,
+            reservationAuthority,
+            ComputeTreatmentSkillSemanticFingerprint(
+                candidate.CommandEnvelope),
+            out projection);
+    }
+
+    internal static IReadOnlyList<ValidationIssue>
+        ComposeTreatmentSkillProjectionOnFinalItemBaseline(
+            object continuationAuthority,
+            object reservationAuthority,
+            JsonObject finalNpcBaseline,
+            out IReadOnlyDictionary<string, JsonObject> afterImages,
+            out object skillProjectionAuthority,
+            out string fingerprint)
+    {
+        ArgumentNullException.ThrowIfNull(finalNpcBaseline);
+        afterImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        skillProjectionAuthority = null!;
+        fingerprint = string.Empty;
+        if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
+            !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
+                continuation.SkillProjectionAuthority,
+                reservationAuthority,
+                out var projection))
+        {
+            return new[]
+            {
+                PublicationIssue(
+                    "treatmentPublication.skillProjection",
+                    "mortal_wound_treatment_publication_projection_mismatch",
+                    "one exact private-minted sealed skill projection",
+                    "missing, foreign, or changed projection")
+            };
+        }
+
+        var composed = projection.AfterImages.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DeepClone().AsObject(),
+            StringComparer.Ordinal);
+        if (projection.CommandEnvelope.TouchesNpc)
+        {
+            var issues = new List<ValidationIssue>();
+            var actorBefore = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var actorAfter = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            var touchedActors = new HashSet<string>(StringComparer.Ordinal);
+            var npcAfter = ComposeNpcSkillRoot(
+                finalNpcBaseline.DeepClone().AsObject(),
+                projection.CommandEnvelope.NpcActive,
+                projection.CommandEnvelope.NpcPassive,
+                actorBefore,
+                actorAfter,
+                touchedActors,
+                issues);
+            if (npcAfter is null || issues.Count != 0)
+                return issues;
+            composed[NpcSkillPath] = npcAfter;
+        }
+
+        afterImages = new ReadOnlyDictionary<string, JsonObject>(composed);
+        skillProjectionAuthority = projection;
+        fingerprint = projection.Fingerprint;
+        return Array.Empty<ValidationIssue>();
+    }
+
     internal static bool TryReadTreatmentSkillProjection(
         object continuationAuthority,
         object reservationAuthority,
         out IReadOnlyDictionary<string, CanonicalBeforeImage> baselines,
         out IReadOnlyDictionary<string, JsonObject> afterImages,
-        out string fingerprint)
+        out string fingerprint) =>
+        TryReadTreatmentSkillProjection(
+            continuationAuthority,
+            reservationAuthority,
+            out baselines,
+            out afterImages,
+            out fingerprint,
+            out _);
+
+    internal static bool TryReadTreatmentSkillProjection(
+        object continuationAuthority,
+        object reservationAuthority,
+        out IReadOnlyDictionary<string, CanonicalBeforeImage> baselines,
+        out IReadOnlyDictionary<string, JsonObject> afterImages,
+        out string fingerprint,
+        out bool ownsNpcTail)
     {
         baselines = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
         afterImages = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         fingerprint = string.Empty;
+        ownsNpcTail = false;
         if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
-            !TryReadTreatmentSkillProjection(
+            !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 continuation.SkillProjectionAuthority,
                 reservationAuthority,
-                continuation.SemanticFingerprint,
                 out var projection))
         {
             return false;
@@ -926,6 +1097,8 @@ internal static partial class WoundAcceptedTurnPlanner
         baselines = projection.Baselines;
         afterImages = projection.AfterImages;
         fingerprint = projection.Fingerprint;
+        ownsNpcTail = projection.TouchedActorIds.Any(static actorId =>
+            actorId.StartsWith("npc:", StringComparison.Ordinal));
         return true;
     }
 
@@ -935,10 +1108,9 @@ internal static partial class WoundAcceptedTurnPlanner
         AcceptedMechanicsPlan candidate)
     {
         if (!TryReadTreatmentContinuation(continuationAuthority, out var continuation) ||
-            !TryReadTreatmentSkillProjection(
+            !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 continuation.SkillProjectionAuthority,
                 reservationAuthority,
-                continuation.SemanticFingerprint,
                 out var projection))
         {
             return new[]
@@ -955,13 +1127,22 @@ internal static partial class WoundAcceptedTurnPlanner
             StringComparer.Ordinal);
         var candidateAfterImages = candidate.OwnerCompanionAfterImages;
         var candidateBeforeImages = candidate.BeforeImages;
+        var itemPublication = candidate.TreatmentResourcePublicationAuthority
+            ?.ItemPublicationAuthority;
+        var itemPublicationPaths = itemPublication?.PublicationAfterImages.Keys
+            .ToHashSet(StringComparer.Ordinal) ??
+            new HashSet<string>(StringComparer.Ordinal);
         var actualSkillAfterImagePaths = candidateAfterImages.Keys
-            .Where(skillPaths.Contains)
+            .Where(path => skillPaths.Contains(path) &&
+                           (!itemPublicationPaths.Contains(path) ||
+                            projection.AfterImages.ContainsKey(path)))
             .ToHashSet(StringComparer.Ordinal);
         var expectedSkillAfterImagePaths = projection.AfterImages.Keys
             .ToHashSet(StringComparer.Ordinal);
         var actualTouchedSkillPaths = candidate.TouchedPaths
-            .Where(skillPaths.Contains)
+            .Where(path => skillPaths.Contains(path) &&
+                           (!itemPublicationPaths.Contains(path) ||
+                            projection.AfterImages.ContainsKey(path)))
             .ToHashSet(StringComparer.Ordinal);
         if (!actualSkillAfterImagePaths.SetEquals(expectedSkillAfterImagePaths) ||
             !actualTouchedSkillPaths.SetEquals(expectedSkillAfterImagePaths))
@@ -980,7 +1161,6 @@ internal static partial class WoundAcceptedTurnPlanner
         foreach (var (path, expected) in projection.AfterImages)
         {
             if (!candidateAfterImages.TryGetValue(path, out var actual) ||
-                !JsonNode.DeepEquals(expected, actual) ||
                 !actualTouchedSkillPaths.Contains(path))
             {
                 return new[]
@@ -990,6 +1170,19 @@ internal static partial class WoundAcceptedTurnPlanner
                         "mortal_wound_treatment_publication_projection_mismatch",
                         "the exact sealed final skill-root after-image",
                         "missing or changed candidate after-image")
+                };
+            }
+            if (!JsonNode.DeepEquals(expected, actual) &&
+                !(string.Equals(path, NpcSkillPath, StringComparison.Ordinal) &&
+                  itemPublication?.ProvesNpcRootTransition(expected, actual) == true))
+            {
+                return new[]
+                {
+                    PublicationIssue(
+                        path,
+                        "mortal_wound_treatment_publication_projection_mismatch",
+                        "the exact sealed skill after-image or its exact privately sealed item-consumed successor",
+                        "changed candidate after-image")
                 };
             }
         }
@@ -1013,13 +1206,15 @@ internal static partial class WoundAcceptedTurnPlanner
         return ValidateTreatmentSkillActorPreservation(
             projection,
             candidateBeforeImages,
-            candidateAfterImages);
+            candidateAfterImages,
+            itemPublication);
     }
 
     private static IReadOnlyList<ValidationIssue> ValidateTreatmentSkillActorPreservation(
         TreatmentSkillProjectionAuthority projection,
         IReadOnlyDictionary<string, CanonicalBeforeImage> candidateBeforeImages,
-        IReadOnlyDictionary<string, JsonObject> candidateAfterImages)
+        IReadOnlyDictionary<string, JsonObject> candidateAfterImages,
+        MortalWoundTreatmentItemPublicationAuthority? itemPublication)
     {
         if (!TryDeriveTreatmentSkillActorCatalogs(
                 projection,
@@ -1029,10 +1224,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 out var actorAfterRoots) ||
             !TreatmentSkillActorCatalogMapsAgree(
                 projection.ActorBeforeRoots,
-                actorBeforeRoots) ||
-            !TreatmentSkillActorCatalogMapsAgree(
-                projection.ActorAfterRoots,
-                actorAfterRoots))
+                actorBeforeRoots))
         {
             return new[]
             {
@@ -1041,6 +1233,24 @@ internal static partial class WoundAcceptedTurnPlanner
                     "mortal_wound_treatment_publication_projection_mismatch",
                     "actor catalogs re-derived from exact candidate before/final roots",
                     "missing, ambiguous, or changed actor catalog")
+            };
+        }
+        var actorAfterMatches = TreatmentSkillActorCatalogMapsAgree(
+            projection.ActorAfterRoots,
+            actorAfterRoots);
+        var itemProvesNpcSuccessor =
+            projection.AfterImages.TryGetValue(NpcSkillPath, out var skillNpc) &&
+            candidateAfterImages.TryGetValue(NpcSkillPath, out var finalNpc) &&
+            itemPublication?.ProvesNpcRootTransition(skillNpc, finalNpc) == true;
+        if (!actorAfterMatches && !itemProvesNpcSuccessor)
+        {
+            return new[]
+            {
+                PublicationIssue(
+                    "treatmentPublication.skillProjection.actorCatalogs",
+                    "mortal_wound_treatment_publication_projection_mismatch",
+                    "actor catalogs from the exact skill result or its sealed baseline-to-item successor",
+                    "changed actor catalog")
             };
         }
 

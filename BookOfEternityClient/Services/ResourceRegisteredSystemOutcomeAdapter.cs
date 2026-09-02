@@ -25,6 +25,11 @@ internal interface IResourceRegisteredSystemOutcomeDraft
         AcceptedMechanicsResourcePlanningResult resourceResult);
 }
 
+internal interface IResourceRegisteredSystemCapacityDraft
+{
+    IReadOnlyList<ResourceCapacityIntent> CapacityTransitions { get; }
+}
+
 internal sealed record ResourceLossRecoveryTarget(
     ResourceCoordinate Coordinate,
     ResourceOperation Operation);

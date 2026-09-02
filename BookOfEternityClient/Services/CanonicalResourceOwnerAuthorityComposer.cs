@@ -41,6 +41,7 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             StorageTransportMoveService.CurrentLocationPath,
             StorageTransportMoveService.VehiclesPath,
             MortalLocationStorageContentsState.StatePath,
+            MortalItemIdentityState.StatePath,
             EffectCarrierCatalog.EnemiesPath,
             EffectCarrierCatalog.AlliesPath,
             AfterlifeEntityProfileState.StatePath,
@@ -59,7 +60,9 @@ internal static class CanonicalResourceOwnerAuthorityComposer
         Func<string, Task<string?>> readDocumentAsync,
         ResourceStateLedger? state,
         ResourceHistoryState? history,
-        CanonicalResourceOwnerAuthorityPurpose purpose)
+        CanonicalResourceOwnerAuthorityPurpose purpose,
+        IReadOnlyList<ResourceOwnerKey>? additionalHistoricalOwners = null,
+        IReadOnlyDictionary<string, string>? sameTurnItemRefs = null)
     {
         ArgumentNullException.ThrowIfNull(definitions);
         ArgumentNullException.ThrowIfNull(readDocumentAsync);
@@ -128,6 +131,9 @@ internal static class CanonicalResourceOwnerAuthorityComposer
                 actual: issue.Identity ?? "missing",
                 repairTargetFiles: new[] { issue.Path }));
         }
+        var historicalItemOwners = DeriveHistoricalItemOwners(
+            await ReadAsync(MortalItemIdentityState.StatePath),
+            issues);
 
         var mortalRoots = new MortalResourceOwnerRoots(
             npcCore ?? EmptyCollection("NPCsInScene"),
@@ -172,10 +178,19 @@ internal static class CanonicalResourceOwnerAuthorityComposer
         if (issues.Count != 0)
             return Invalid(issues);
 
-        var mortal = MortalResourceOwnerComposer.ComposeCanonical(
-            definitions,
-            mortalRoots,
-            items);
+        var mortal = sameTurnItemRefs is { Count: > 0 }
+            ? ComposeCanonicalWithSameTurnItems(
+                definitions,
+                mortalRoots,
+                items,
+                sameTurnItemRefs,
+                issues)
+            : MortalResourceOwnerComposer.ComposeCanonical(
+                definitions,
+                mortalRoots,
+                items);
+        if (issues.Count != 0)
+            return Invalid(issues);
         var afterlife = AfterlifeResourceOwnerComposer.Compose(
             new AfterlifeResourceOwnerCompositionInput(
                 definitions,
@@ -194,6 +209,8 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             exported.SameTurnOwners,
             exported.HistoricalOwners
                 .Concat(historicalOwners)
+                .Concat(historicalItemOwners)
+                .Concat(additionalHistoricalOwners ?? Array.Empty<ResourceOwnerKey>())
                 .Distinct()
                 .ToArray()));
         if (authority.Issues.Count != 0)
@@ -248,6 +265,118 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             combined.CapacityDrafts,
             null,
             Array.Empty<ValidationIssue>());
+    }
+
+    private static ResourceOwnerCompositionResult ComposeCanonicalWithSameTurnItems(
+        ResourceDefinitionCatalog definitions,
+        MortalResourceOwnerRoots roots,
+        MortalItemCarrierCatalog items,
+        IReadOnlyDictionary<string, string> sameTurnItemRefs,
+        ICollection<ValidationIssue> issues)
+    {
+        var acceptedItems = new List<MortalItemAcceptedTurnOwner>();
+        var acceptedRefs = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var pair in sameTurnItemRefs.OrderBy(
+                     static pair => pair.Key,
+                     StringComparer.Ordinal))
+        {
+            if (!ResourceMaterializationContract.IsExactIdentifier(pair.Key) ||
+                !ResourceMaterializationContract.IsExactIdentifier(pair.Value) ||
+                !acceptedRefs.Add(pair.Value))
+            {
+                issues.Add(new ValidationIssue(
+                    MortalItemIdentityState.StatePath,
+                    IssueSeverity.Error,
+                    "Canonical same-turn item owner has ambiguous accepted authority.",
+                    code: "resource_owner_item_same_turn_authority_invalid",
+                    section: "ResourceMaterialization",
+                    expected: "one exact unique itemId -> itemRef authority mapping",
+                    actual: $"{pair.Key} -> {pair.Value}",
+                    repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
+            }
+        }
+
+        var seenSameTurnItemIds = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var occurrence in items.Occurrences.OrderBy(
+                     static value => value.JsonPath,
+                     StringComparer.Ordinal))
+        {
+            if (!ResourceMaterializationContract.IsExactIdentifier(
+                    occurrence.ItemId))
+            {
+                issues.Add(new ValidationIssue(
+                    occurrence.JsonPath,
+                    IssueSeverity.Error,
+                    "Canonical item owner has no exact sealed identity.",
+                    code: "resource_owner_item_canonical_identity_missing",
+                    section: "ResourceMaterialization",
+                    expected: "one exact sealed itemId",
+                    actual: occurrence.ItemId ?? occurrence.CreationRef ?? "missing",
+                    repairTargetFiles: new[] { occurrence.FilePath }));
+                continue;
+            }
+
+            var sameTurn = sameTurnItemRefs.TryGetValue(
+                occurrence.ItemId!,
+                out var itemRef);
+            if (sameTurn &&
+                !seenSameTurnItemIds.Add(occurrence.ItemId!))
+            {
+                issues.Add(new ValidationIssue(
+                    occurrence.JsonPath,
+                    IssueSeverity.Error,
+                    "Canonical same-turn item owner has ambiguous accepted authority.",
+                    code: "resource_owner_item_same_turn_authority_invalid",
+                    section: "ResourceMaterialization",
+                    expected: "one exact unique accepted itemRef",
+                    actual: itemRef ?? "missing",
+                    repairTargetFiles: new[] { occurrence.FilePath }));
+                continue;
+            }
+
+            acceptedItems.Add(new MortalItemAcceptedTurnOwner(
+                occurrence.ItemId!,
+                sameTurn ? itemRef : null,
+                occurrence.FilePath,
+                occurrence.JsonPath,
+                occurrence.Carrier with
+                {
+                    ContainerPath = occurrence.Carrier.ContainerPath.ToArray()
+                },
+                occurrence.Item.DeepClone().AsObject(),
+                sameTurn));
+        }
+
+        foreach (var missingItemId in sameTurnItemRefs.Keys
+                     .Except(seenSameTurnItemIds, StringComparer.Ordinal)
+                     .OrderBy(static value => value, StringComparer.Ordinal))
+        {
+            issues.Add(new ValidationIssue(
+                MortalItemIdentityState.StatePath,
+                IssueSeverity.Error,
+                "Canonical same-turn item authority has no exact materialized owner.",
+                code: "resource_owner_item_same_turn_authority_missing",
+                section: "ResourceMaterialization",
+                expected: "one exact materialized item owner",
+                actual: missingItemId,
+                repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
+        }
+
+        return issues.Count == 0
+            ? MortalResourceOwnerComposer.Compose(
+                new MortalResourceOwnerCompositionInput(
+                    definitions,
+                    roots,
+                    roots,
+                    acceptedItems: acceptedItems))
+            : new ResourceOwnerCompositionResult(
+                null,
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
+                Array.Empty<AcceptedMechanicsOwnerTransition>(),
+                null,
+                Array.Empty<ResourceOwnerCapacityDraft>(),
+                Array.Empty<ResourceOwnerKey>(),
+                issues.ToArray());
     }
 
     private static void ValidateCapacityDraftAgreement(
@@ -370,6 +499,31 @@ internal static class CanonicalResourceOwnerAuthorityComposer
             .Select(static group => group.Key)
             .Distinct()
             .ToArray();
+
+    private static ResourceOwnerKey[] DeriveHistoricalItemOwners(
+        string? identityJson,
+        ICollection<ValidationIssue> issues)
+    {
+        if (identityJson is null)
+            return Array.Empty<ResourceOwnerKey>();
+        var parsed = MortalItemIdentityState.Parse(identityJson);
+        if (parsed.Issues.Count != 0)
+        {
+            foreach (var issue in parsed.Issues)
+                issues.Add(issue);
+            return Array.Empty<ResourceOwnerKey>();
+        }
+        return parsed.EntriesByItemId
+            .Where(static pair =>
+                pair.Value["state"]?.GetValue<string>() is
+                    "merged" or "consumed" or "destroyed")
+            .Select(static pair => new ResourceOwnerKey(
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                pair.Key))
+            .Distinct()
+            .ToArray();
+    }
 
     private static string DescribeCoordinate(ResourceCoordinate coordinate) =>
         $"{coordinate.Realm}/" +

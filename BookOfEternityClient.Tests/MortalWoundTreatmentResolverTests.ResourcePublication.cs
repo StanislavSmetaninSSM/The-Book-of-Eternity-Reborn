@@ -307,6 +307,58 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void GuaranteedItemConsumption_ItemCapacityUsesCommonFinalizationOrdinal()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 4);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        fixture.SetCanonicalReusableItemDurabilityForResourcePublicationTest(
+            current: 8,
+            maximum: 8);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "item_capacity_common_ordinal");
+
+        var composed = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
+        var publication = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            publication.ItemPublicationAuthority);
+        var expectedOrdinal = publication.Finalization.Consumptions
+            .Select((consumption, index) => (consumption, index))
+            .Single(row => string.Equals(
+                row.consumption.Kind,
+                "item_quantity",
+                StringComparison.Ordinal))
+            .index + 1;
+        Assert.Equal(2, expectedOrdinal);
+        var inputField = typeof(MortalWoundTreatmentItemPublicationAuthority)
+            .GetField(
+                "_consumptionInput",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+        var input = Assert.IsType<MortalItemConsumptionPlanningInput>(
+            Assert.IsAssignableFrom<FieldInfo>(inputField).GetValue(itemPublication));
+        var command = Assert.Single(input.Commands);
+        Assert.Equal(expectedOrdinal, command.FinalizationOrdinal);
+        var capacity = Assert.Single(itemPublication.CapacityTransitions);
+        Assert.Contains(
+            $":{expectedOrdinal:D4}:",
+            capacity.EventRef,
+            StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void GuaranteedItemConsumption_ClosedItemEnvelopePreservesEverySupportedFieldAndRejectsEveryOtherField()
     {
         var scenario = CreateGuaranteedResourcePublicationScenario(
@@ -4716,12 +4768,135 @@ public sealed partial class MortalWoundTreatmentResolverTests
             composed.CanonicalAuthorityJson);
     }
 
+    private static void WriteCanonicalReusableItemDurabilityAuthority(
+        FileSystemManager fileSystem,
+        decimal current,
+        decimal maximum)
+    {
+        const string itemId = "reusable_field_kit";
+        const string fingerprint =
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        Assert.Equal(maximum, current);
+        var definitionsResult = ResourceDefinitionCatalog.ParseCanonical(
+            File.ReadAllText(fileSystem.ResolvePath(
+                ResourceMaterializationContract.DefinitionsPath)),
+            allowMissingPristine: false);
+        Assert.True(definitionsResult.IsValid, DescribeIssues(definitionsResult.Issues));
+        var definitions = Assert.IsType<ResourceDefinitionCatalog>(
+            definitionsResult.Catalog);
+        Assert.True(definitions.TryResolveExact("durability", out var definition));
+        Assert.Equal(ResourceCapacityKind.InstanceFixed,
+            definition!.CapacityPolicy.Kind);
+        var stateResult = ResourceStateContract.ParseCanonical(
+            File.ReadAllText(fileSystem.ResolvePath(
+                ResourceMaterializationContract.StatePath)),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(stateResult.IsValid, DescribeIssues(stateResult.Issues));
+        var historyResult = ResourceHistoryState.ParseCanonical(
+            File.ReadAllText(fileSystem.ResolvePath(
+                ResourceMaterializationContract.HistoryPath)),
+            definitions,
+            allowMissingPristine: false);
+        Assert.True(historyResult.IsValid, DescribeIssues(historyResult.Issues));
+
+        var coordinate = new ResourceCoordinate(
+            "mortal_world",
+            ResourceOwnerKind.Item,
+            itemId,
+            "durability");
+        var binding = new ResourceCapacityBinding(
+            ResourceCapacityKind.InstanceFixed,
+            itemId,
+            fingerprint);
+        var initialized = new ResourceStateSnapshot(
+            current,
+            maximum,
+            binding,
+            ResourceLifecycleState.Active);
+        var initialize = new ResourceTransition(
+            "transition_reusable_field_kit_durability_initialize",
+            "operation_reusable_field_kit_durability_initialize",
+            "turn_3:resource:reusable_field_kit:durability",
+            "bootstrap_materialization",
+            "reusable_field_kit_durability_fixture",
+            ResourceMutationPhase.RegisteredSystemOutcome,
+            40,
+            0,
+            coordinate,
+            ResourceTransitionOperation.Initialize,
+            0,
+            0,
+            ResourceTransitionOutcome.Applied,
+            ResourceCapacityDisposition.InitializeFromDefinition,
+            null,
+            initialized,
+            new ResourceSourceEvidence(
+                "bootstrap_materialization",
+                "reusable_field_kit_durability_fixture",
+                fingerprint),
+            fingerprint,
+            null,
+            3);
+        var history = ResourceHistoryState.CreateValidated(
+            historyResult.History!.Transitions.Append(initialize),
+            definitions);
+        Assert.True(history.IsValid, DescribeIssues(history.Issues));
+        var state = new ResourceStateLedger(
+            stateResult.Ledger!.Entries.Append(new ResourceStateEntry(
+                coordinate,
+                current,
+                maximum,
+                binding,
+                ResourceLifecycleState.Active,
+                new ResourceChronology(
+                    3,
+                    initialize.EventRef,
+                    initialize.TransitionId,
+                    initialize.EventRef,
+                    3))));
+        Assert.Empty(history.History!.ValidateStateAgreement(state));
+        File.WriteAllText(
+            fileSystem.ResolvePath(ResourceMaterializationContract.StatePath),
+            state.ToCanonicalJson());
+        File.WriteAllText(
+            fileSystem.ResolvePath(ResourceMaterializationContract.HistoryPath),
+            history.History.ToCanonicalJson());
+        var owners = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                definitions,
+                path => Task.FromResult<string?>(
+                    File.Exists(fileSystem.ResolvePath(path))
+                        ? File.ReadAllText(fileSystem.ResolvePath(path))
+                        : null),
+                state,
+                history.History,
+                CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap)
+            .GetAwaiter()
+            .GetResult();
+        Assert.True(owners.IsValid, DescribeIssues(owners.Issues));
+        Assert.False(string.IsNullOrWhiteSpace(owners.CanonicalAuthorityJson));
+        File.WriteAllText(
+            fileSystem.ResolvePath(CanonicalResourceOwnerAuthorityComposer.AuthorityPath),
+            owners.CanonicalAuthorityJson);
+    }
+
     private sealed partial class AcceptedStateFixture
     {
         internal void SetCanonicalPlayerEnergyForResourcePublicationTest(int current)
         {
             WriteCanonicalPlayerEnergyAuthority(FileSystem, current);
             PrepareFreshSnapshot("t070b_energy_" + current);
+        }
+
+        internal void SetCanonicalReusableItemDurabilityForResourcePublicationTest(
+            decimal current,
+            decimal maximum)
+        {
+            WriteCanonicalReusableItemDurabilityAuthority(
+                FileSystem,
+                current,
+                maximum);
+            PrepareFreshSnapshot("t070b_item_durability");
         }
 
         internal void EnsureRawResourceMaterializationSnapshotCoverage()
@@ -5257,7 +5432,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         continue;
                     }
                     if (!File.Exists(physical)) return false;
-                    var root = JsonNode.Parse(File.ReadAllBytes(physical).AsSpan())!;
+                    var root = ParseCanonicalBytes(File.ReadAllBytes(physical));
                     if (!JsonNode.DeepEquals(pair.Value, root))
                         return false;
                     actual.Add(pair.Key, root);
@@ -5266,8 +5441,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     MortalItemIdentityState.StatePath);
                 if (!File.Exists(identityPhysical))
                     return false;
-                var identity = JsonNode.Parse(
-                        File.ReadAllBytes(identityPhysical).AsSpan())!
+                var identity = ParseCanonicalBytes(
+                        File.ReadAllBytes(identityPhysical))
                     .AsObject();
                 if (!JsonNode.DeepEquals(_expectedIdentity, identity))
                     return false;
@@ -5281,6 +5456,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 return false;
             }
+        }
+
+        private static JsonNode ParseCanonicalBytes(byte[] bytes)
+        {
+            var preamble = Encoding.UTF8.GetPreamble();
+            var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+            return JsonNode.Parse(bytes.AsSpan(offset))!;
         }
     }
 

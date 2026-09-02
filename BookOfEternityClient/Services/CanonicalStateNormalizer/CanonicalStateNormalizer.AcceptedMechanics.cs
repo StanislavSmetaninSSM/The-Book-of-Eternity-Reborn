@@ -125,7 +125,9 @@ public partial class CanonicalStateNormalizer
                     normalizedAcceptedCarrierBaselines,
                     plan.WoundStageBundle,
                     allowDirectWoundBootstrap:
-                        plan.DirectWoundPublicationAuthority is not null);
+                        plan.DirectWoundPublicationAuthority is not null,
+                    itemPublicationAuthority: plan.TreatmentResourcePublicationAuthority
+                        ?.ItemPublicationAuthority);
             }
 
             // Other normalizers may intentionally consume plan before-images. The exact

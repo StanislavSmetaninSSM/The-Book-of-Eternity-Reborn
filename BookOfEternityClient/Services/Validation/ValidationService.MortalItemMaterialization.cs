@@ -24,6 +24,18 @@ public partial class ValidationService
         return issues;
     }
 
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawMortalItemMaterializationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        var issues = new List<ValidationIssue>();
+        await ValidateAcceptedTurnRawMortalItemMaterializationAsync(
+            issues,
+            writeLease);
+        return issues;
+    }
+
     public async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnCanonicalMortalItemMaterializationAsync()
     {

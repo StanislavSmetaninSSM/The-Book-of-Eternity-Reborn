@@ -368,6 +368,30 @@ internal class AcceptedMechanicsIdentityFactory
 
     internal virtual string CreateTransitionId() =>
         "resource_transition_" + _guidFactory().ToString("N");
+
+    internal virtual string CreateOperationId(ResourceMutationIntent intent)
+    {
+        ArgumentNullException.ThrowIfNull(intent);
+        return CreateOperationId();
+    }
+
+    internal virtual string CreateTransitionId(ResourceMutationIntent intent)
+    {
+        ArgumentNullException.ThrowIfNull(intent);
+        return CreateTransitionId();
+    }
+
+    internal virtual string CreateOperationId(ResourceCapacityIntent intent)
+    {
+        ArgumentNullException.ThrowIfNull(intent);
+        return CreateOperationId();
+    }
+
+    internal virtual string CreateTransitionId(ResourceCapacityIntent intent)
+    {
+        ArgumentNullException.ThrowIfNull(intent);
+        return CreateTransitionId();
+    }
 }
 
 internal sealed class AcceptedMechanicsCarrierCompositionResult
@@ -5020,6 +5044,9 @@ internal static class AcceptedMechanicsPlanner
         List<ValidationIssue> issues)
     {
         var result = ComposeOwnerCapacityTransitions(input, context, issues).ToList();
+        result.AddRange(context.RegisteredSystemOutcomes
+            .OfType<IResourceRegisteredSystemCapacityDraft>()
+            .SelectMany(static draft => draft.CapacityTransitions));
         var supplied = context.CapacityTransitions.ToArray();
         var consumed = new HashSet<int>();
         foreach (var command in context.Commands.CapacityChanges
@@ -5101,6 +5128,16 @@ internal static class AcceptedMechanicsPlanner
                     "every validated capacity adapter intent bound to one exact accepted command",
                     supplied[index].EventRef);
             }
+        }
+        foreach (var duplicate in result
+                     .GroupBy(static intent => intent.Key)
+                     .Where(static group => group.Count() > 1))
+        {
+            AddIssue(
+                issues,
+                "resource_planner_duplicate_operation",
+                "one capacity transition per exact replay key",
+                Describe(duplicate.Key));
         }
         return result;
     }
@@ -8580,8 +8617,8 @@ internal static class AcceptedMechanicsPlanner
         var prepared = new List<PreparedMutation>(ordered.Length);
         foreach (var value in ordered)
         {
-            var operationId = identityFactory.CreateOperationId();
-            var transitionId = identityFactory.CreateTransitionId();
+            var operationId = identityFactory.CreateOperationId(value.Intent);
+            var transitionId = identityFactory.CreateTransitionId(value.Intent);
             identityRegistry.ValidateOperation(operationId, issues);
             identityRegistry.ValidateTransition(transitionId, issues);
             prepared.Add(new PreparedMutation(
@@ -8712,8 +8749,8 @@ internal static class AcceptedMechanicsPlanner
             .ThenBy(static value => value.Operation)
             .Select(value => new PreparedCapacity(
                 value,
-                identityFactory.CreateOperationId(),
-                identityFactory.CreateTransitionId()))
+                identityFactory.CreateOperationId(value),
+                identityFactory.CreateTransitionId(value)))
             .ToArray();
         foreach (var value in prepared)
         {
