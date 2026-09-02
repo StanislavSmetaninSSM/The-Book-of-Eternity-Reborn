@@ -1,3 +1,7 @@
+using System.Collections;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Reflection;
 using System.Runtime.ExceptionServices;
@@ -27,6 +31,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
         "mortal_wound_treatment_publication_terminal_release_failed";
     private const string PublishedAgreementChangedCode =
         "mortal_wound_treatment_publication_published_agreement_changed";
+    private const string ItemBaselineChangedCode =
+        "mortal_wound_treatment_publication_item_baseline_changed";
+
+    private static readonly HashSet<string> TreatmentItemAllowedResponsePropertyNames =
+        new(
+            new[]
+            {
+                nameof(GameResponse.ActiveSkillChanges),
+                nameof(GameResponse.RemoveActiveSkills),
+                nameof(GameResponse.PassiveSkillChanges),
+                nameof(GameResponse.RemovePassiveSkills),
+                nameof(GameResponse.NPCActiveSkillChanges),
+                nameof(GameResponse.NPCPassiveSkillChanges),
+                nameof(GameResponse.UpdateInventory),
+                nameof(GameResponse.MoveInventoryItems),
+                nameof(GameResponse.RemoveInventoryItems),
+                nameof(GameResponse.NPCInventoryAdds),
+                nameof(GameResponse.NPCInventoryUpdates),
+                nameof(GameResponse.NPCInventoryRemovals),
+                nameof(GameResponse.NPCEquipmentChanges)
+            },
+            StringComparer.Ordinal);
+
+    private static readonly string[] TreatmentItemResponsePropertyNames =
+    {
+        nameof(GameResponse.UpdateInventory),
+        nameof(GameResponse.MoveInventoryItems),
+        nameof(GameResponse.RemoveInventoryItems),
+        nameof(GameResponse.NPCInventoryAdds),
+        nameof(GameResponse.NPCInventoryUpdates),
+        nameof(GameResponse.NPCInventoryRemovals),
+        nameof(GameResponse.NPCEquipmentChanges)
+    };
 
     [Fact]
     public void GuaranteedResourceQuantity_PersistedConfirmedPublicationSpendsOnceAndCommitsAtFullPipelineEnd()
@@ -200,12 +237,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "mixed_item_resource");
         var itemBytesBefore = CaptureItemCarrierBytes(fixture);
         var resourceBytesBefore = CaptureResourceBytes(fixture);
+        var identityBefore = ReadItemIdentityEntry(
+            fixture,
+            "reusable_field_kit");
+        var identityTransitionCountBefore =
+            ReadIdentityTransitionCount(identityBefore);
+        var resourceTransitionCountBefore =
+            ReadResourceHistory(fixture).Transitions.Count;
         var composed = ComposeResourcePublicationResult(fixture, flow);
 
         Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
         var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
         Assert.Equal(1, ReadPlanNpcItemCount(plan, "reusable_field_kit"));
-        Assert.Equal(8m, plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>().Single(entry => entry["resourceKey"]!.GetValue<string>() == "energy")["current"]!.GetValue<decimal>());
+        Assert.Equal(
+            8m,
+            plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>()
+                .Single(entry => entry["resourceKey"]!.GetValue<string>() == "energy")
+                ["current"]!.GetValue<decimal>());
+        AssertPlanContainsExactPartialItemIdentity(
+            plan,
+            identityBefore,
+            "reusable_field_kit",
+            identityTransitionCountBefore);
         Assert.Equal(2, fixture.ReadNpcItemCount("reusable_field_kit"));
         Assert.Equal(10, ReadPlayerEnergy(fixture));
         AssertItemCarrierBytesEqual(fixture, itemBytesBefore);
@@ -217,12 +270,40 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
             Assert.Equal(8, ReadPlayerEnergy(fixture));
+            Assert.Equal(
+                identityTransitionCountBefore + 1,
+                ReadIdentityTransitionCount(ReadItemIdentityEntry(
+                    fixture,
+                    "reusable_field_kit")));
+            Assert.Equal(
+                resourceTransitionCountBefore + 1,
+                ReadResourceHistory(fixture).Transitions.Count);
             publication.CompleteAtFullPipelineEnd();
         }
+        var itemBytesAfterPublication = CaptureItemCarrierBytes(fixture);
+        var resourceBytesAfterPublication = CaptureResourceBytes(fixture);
+        var identityTransitionsAfterPublication = ReadIdentityTransitionCount(
+            ReadItemIdentityEntry(fixture, "reusable_field_kit"));
+        var resourceTransitionsAfterPublication =
+            ReadResourceHistory(fixture).Transitions.Count;
         fixture.PrepareFreshSnapshot("mixed_item_replay");
         fixture.RestartForReplay();
+        var replay = ProbePublishedTreatment(fixture, flow.Request);
+        Assert.Equal(
+            "ExactReplay",
+            Convert.ToString(ReadRequiredProperty(replay, "Status")));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
         Assert.Equal(8, ReadPlayerEnergy(fixture));
+        AssertItemCarrierBytesEqual(fixture, itemBytesAfterPublication);
+        AssertResourceBytesEqual(fixture, resourceBytesAfterPublication);
+        Assert.Equal(
+            identityTransitionsAfterPublication,
+            ReadIdentityTransitionCount(ReadItemIdentityEntry(
+                fixture,
+                "reusable_field_kit")));
+        Assert.Equal(
+            resourceTransitionsAfterPublication,
+            ReadResourceHistory(fixture).Transitions.Count);
     }
 
     [Fact]
@@ -240,15 +321,188 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario,
             "closed_item_envelope");
 
-        var composed = ComposeResourcePublicationResult(fixture, flow);
+        var response = CreateAllAllowedTreatmentItemResponseFieldsPresentEmpty();
+        Assert.Equal(13, TreatmentItemAllowedResponsePropertyNames.Count);
+        AssertGameResponseHasExactlyAllowedPresentEmpty(response);
+        var responseBefore = CaptureGameResponsePropertyGraph(response);
+        var composed = ComposeResourcePublicationResult(fixture, flow, response);
 
         Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
         Assert.DoesNotContain(composed.Issues, issue =>
             issue.Code == DeferredItemConsumptionCode);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
+        Assert.Equal(responseBefore, CaptureGameResponsePropertyGraph(response));
+        var sealedPublication = ReadSealedTreatmentPublication(plan);
+        Assert.Equal(
+            ComputeExpectedTreatmentSkillEnvelopeFingerprint(response),
+            sealedPublication.SkillEnvelopeFingerprint);
+        var emptyEnvelope = sealedPublication.ItemEnvelope;
+        AssertTreatmentItemEnvelopeHasExactNullShape(
+            emptyEnvelope,
+            expectPresentEmpty: true);
+
+        var sealedPlanFingerprint = plan.PreparedPlanFingerprint;
+        var sealedOuterFingerprint = sealedPublication.OuterFingerprint;
+        var sealedItemAuthorityFingerprint = sealedPublication.ItemAuthorityFingerprint;
+        var sealedSkillAuthorityFingerprint =
+            sealedPublication.SkillAuthorityFingerprint;
+        var sealedSkillFingerprint = sealedPublication.SkillEnvelopeFingerprint;
+        var sealedItemFingerprint = sealedPublication.ItemEnvelopeFingerprint;
+        var sealedBaselineFingerprint = sealedPublication.Baseline.Fingerprint;
+        foreach (var property in typeof(GameResponse).GetProperties(
+                     BindingFlags.Instance | BindingFlags.Public)
+                 .Where(property => TreatmentItemAllowedResponsePropertyNames.Contains(
+                     property.Name)))
+        {
+            property.SetValue(response, null);
+        }
+        Assert.Equal(sealedPlanFingerprint, plan.PreparedPlanFingerprint);
+        var detachedPublication = ReadSealedTreatmentPublication(plan);
+        Assert.Same(sealedPublication.ItemAuthority, detachedPublication.ItemAuthority);
+        Assert.Equal(sealedOuterFingerprint, detachedPublication.OuterFingerprint);
+        Assert.Equal(
+            sealedItemAuthorityFingerprint,
+            detachedPublication.ItemAuthorityFingerprint);
+        Assert.Equal(
+            sealedSkillAuthorityFingerprint,
+            detachedPublication.SkillAuthorityFingerprint);
+        Assert.Equal(
+            sealedSkillFingerprint,
+            detachedPublication.SkillEnvelopeFingerprint);
+        Assert.Equal(
+            sealedItemFingerprint,
+            detachedPublication.ItemEnvelopeFingerprint);
+        AssertTreatmentItemEnvelopeHasExactNullShape(
+            emptyEnvelope,
+            expectPresentEmpty: true);
+
+        using var nullSkillFixture = AcceptedStateFixture.Create(scenario);
+        nullSkillFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var nullSkillFlow = PersistAndRehydrateResourcePublication(
+            nullSkillFixture,
+            scenario,
+            "closed_item_envelope");
+        var nullSkillResponse = CreateAllAllowedTreatmentItemResponseFieldsPresentEmpty();
+        SetTreatmentSkillResponseFields(nullSkillResponse, value: null);
+        var nullSkillPlan = ComposeResourcePublication(
+            nullSkillFixture,
+            nullSkillFlow,
+            nullSkillResponse);
+        var nullSkillPublication = ReadSealedTreatmentPublication(nullSkillPlan);
+        Assert.Equal(
+            ComputeExpectedTreatmentSkillEnvelopeFingerprint(nullSkillResponse),
+            nullSkillPublication.SkillEnvelopeFingerprint);
+        Assert.Equal(sealedItemFingerprint, nullSkillPublication.ItemEnvelopeFingerprint);
+        Assert.Equal(sealedBaselineFingerprint, nullSkillPublication.Baseline.Fingerprint);
+        Assert.NotEqual(sealedSkillFingerprint, nullSkillPublication.SkillEnvelopeFingerprint);
+        Assert.NotEqual(
+            sealedSkillAuthorityFingerprint,
+            nullSkillPublication.SkillAuthorityFingerprint);
+        Assert.NotEqual(
+            sealedItemAuthorityFingerprint,
+            nullSkillPublication.ItemAuthorityFingerprint);
+        Assert.NotEqual(sealedOuterFingerprint, nullSkillPublication.OuterFingerprint);
+        Assert.NotEqual(sealedPlanFingerprint, nullSkillPlan.PreparedPlanFingerprint);
+
+        using var nullItemFixture = AcceptedStateFixture.Create(scenario);
+        nullItemFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var nullItemFlow = PersistAndRehydrateResourcePublication(
+            nullItemFixture,
+            scenario,
+            "closed_item_envelope");
+        var nullItemResponse = CreateAllAllowedTreatmentItemResponseFieldsPresentEmpty();
+        SetTreatmentItemResponseFields(nullItemResponse, value: null);
+        var nullItemPlan = ComposeResourcePublication(
+            nullItemFixture,
+            nullItemFlow,
+            nullItemResponse);
+        var nullItemPublication = ReadSealedTreatmentPublication(nullItemPlan);
+        Assert.Equal(
+            ComputeExpectedTreatmentSkillEnvelopeFingerprint(nullItemResponse),
+            nullItemPublication.SkillEnvelopeFingerprint);
+        var nullEnvelope = nullItemPublication.ItemEnvelope;
+        AssertTreatmentItemEnvelopeHasExactNullShape(
+            nullEnvelope,
+            expectPresentEmpty: false);
+        Assert.Equal(sealedSkillFingerprint, nullItemPublication.SkillEnvelopeFingerprint);
+        Assert.Equal(
+            sealedSkillAuthorityFingerprint,
+            nullItemPublication.SkillAuthorityFingerprint);
+        Assert.NotEqual(sealedItemFingerprint, nullItemPublication.ItemEnvelopeFingerprint);
+        Assert.NotEqual(sealedBaselineFingerprint, nullItemPublication.Baseline.Fingerprint);
+        Assert.NotEqual(
+            sealedItemAuthorityFingerprint,
+            nullItemPublication.ItemAuthorityFingerprint);
+        Assert.NotEqual(sealedOuterFingerprint, nullItemPublication.OuterFingerprint);
+        Assert.NotEqual(sealedPlanFingerprint, nullItemPlan.PreparedPlanFingerprint);
+
+        foreach (var propertyName in TreatmentItemResponsePropertyNames)
+        {
+            using var fieldFixture = AcceptedStateFixture.Create(scenario);
+            fieldFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            var fieldFlow = PersistAndRehydrateResourcePublication(
+                fieldFixture,
+                scenario,
+                "closed_item_envelope");
+            var fieldResponse = CreateAllAllowedTreatmentItemResponseFieldsPresentEmpty();
+            var fieldProperty = Assert.Single(
+                typeof(GameResponse).GetProperties(BindingFlags.Instance | BindingFlags.Public),
+                property => string.Equals(
+                    property.Name,
+                    propertyName,
+                    StringComparison.Ordinal));
+            fieldProperty.SetValue(fieldResponse, null);
+
+            var fieldPlan = ComposeResourcePublication(
+                fieldFixture,
+                fieldFlow,
+                fieldResponse);
+            var fieldPublication = ReadSealedTreatmentPublication(fieldPlan);
+
+            AssertTreatmentItemEnvelopeMatchesResponse(
+                fieldPublication.ItemEnvelope,
+                fieldResponse);
+            Assert.Equal(
+                ComputeExpectedTreatmentSkillEnvelopeFingerprint(fieldResponse),
+                fieldPublication.SkillEnvelopeFingerprint);
+            Assert.Equal(
+                sealedSkillFingerprint,
+                fieldPublication.SkillEnvelopeFingerprint);
+            Assert.Equal(
+                sealedSkillAuthorityFingerprint,
+                fieldPublication.SkillAuthorityFingerprint);
+            Assert.NotEqual(
+                sealedItemFingerprint,
+                fieldPublication.ItemEnvelopeFingerprint);
+            Assert.NotEqual(
+                sealedBaselineFingerprint,
+                fieldPublication.Baseline.Fingerprint);
+            Assert.NotEqual(
+                sealedItemAuthorityFingerprint,
+                fieldPublication.ItemAuthorityFingerprint);
+            Assert.NotEqual(
+                sealedOuterFingerprint,
+                fieldPublication.OuterFingerprint);
+            Assert.NotEqual(
+                sealedPlanFingerprint,
+                fieldPlan.PreparedPlanFingerprint);
+        }
     }
 
-    [Fact]
-    public void GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer()
+    public static IEnumerable<object[]> UnsupportedTreatmentItemEnvelopeProperties() =>
+        typeof(GameResponse)
+            .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(static property =>
+                property.CanRead &&
+                property.GetIndexParameters().Length == 0 &&
+                !TreatmentItemAllowedResponsePropertyNames.Contains(property.Name))
+            .OrderBy(static property => property.Name, StringComparer.Ordinal)
+            .Select(static property => new object[] { property.Name });
+
+    [Theory]
+    [MemberData(nameof(UnsupportedTreatmentItemEnvelopeProperties))]
+    public void GuaranteedItemConsumption_ClosedItemEnvelopeRejectsEveryOtherNonNullGameResponseProperty(
+        string propertyName)
     {
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
@@ -260,15 +514,88 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
             scenario,
+            "closed_item_envelope_reject_" +
+            B4Fingerprint(propertyName)[7..19]);
+        var response = new GameResponse();
+        var property = Assert.Single(
+            typeof(GameResponse).GetProperties(BindingFlags.Instance | BindingFlags.Public),
+            candidate => string.Equals(
+                candidate.Name,
+                propertyName,
+                StringComparison.Ordinal));
+        Assert.True(property.CanWrite);
+        property.SetValue(response, CreateNonNullGameResponsePropertyValue(property));
+        var treeBefore = CaptureResolverFixtureTree(fixture.Root);
+
+        var composed = ComposeResourcePublicationResult(fixture, flow, response);
+
+        Assert.False(composed.IsValid);
+        Assert.Null(composed.Plan);
+        var issue = Assert.Single(composed.Issues);
+        Assert.Equal(
+            "mortal_wound_treatment_publication_response_unsupported",
+            issue.Code);
+        Assert.Equal("treatmentPublication.response." + propertyName, issue.FilePath);
+        Assert.Equal(propertyName, issue.Actual);
+        Assert.Equal(IssueSeverity.Error, issue.Severity);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true);
+        var observer = new FinalBaselinePublicationObserver();
+        using var fixture = AcceptedStateFixture.Create(
+            scenario,
+            new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = observer.BeforeMutationAsync
+            });
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
             "final_prepublication_baseline");
         var before = CaptureResolverFixtureTree(fixture.Root);
 
-        var composed = ComposeResourcePublicationResult(fixture, flow);
+        var composed = ComposeResourcePublicationResult(fixture, flow, response);
 
         Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
         Assert.DoesNotContain(composed.Issues, issue =>
             issue.Code == DeferredItemConsumptionCode);
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
+        var sealedPublication = ReadSealedTreatmentPublication(plan);
+        AssertSealedFinalBaselineAuthorityInputs(sealedPublication, fixture);
+        AssertFrozenFinalBaseline(sealedPublication.Baseline, plan);
         AssertResolverFixtureTreeUnchanged(fixture.Root, before);
+        observer.Arm(fixture.FileSystem, sealedPublication.Baseline);
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.True(observer.Matched, observer.DescribeFailure());
+            AssertBaselineMatchesObservedLiveState(
+                sealedPublication.Baseline,
+                observer);
+            publication.Compensate();
+        }
+
+        foreach (var axis in new[]
+                 {
+                     "npc_authority",
+                     "npc_trade_pending_bytes",
+                     "training_pending_bytes"
+                 })
+        {
+            AssertFinalBaselineDriftRejectsBeforeCacheOrWrite(scenario, axis);
+        }
     }
 
     [Fact]
@@ -1274,14 +1601,916 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static WoundAcceptedTurnPlanner.MortalWoundTreatmentPublicationResult
         ComposeResourcePublicationResult(
             AcceptedStateFixture fixture,
-            TreatmentFlow flow) =>
+            TreatmentFlow flow,
+            GameResponse? mechanicsResponse = null) =>
         WoundAcceptedTurnPlanner.ComposeMortalWoundTreatmentPublication(
             fixture.FileSystem,
             fixture.Lease,
-            new GameResponse(),
+            mechanicsResponse ?? new GameResponse(),
             Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(flow.AcceptedState),
             Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request),
             Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution));
+
+    private static JsonObject ReadItemIdentityEntry(
+        AcceptedStateFixture fixture,
+        string itemId)
+    {
+        var parsed = MortalItemIdentityState.Parse(File.ReadAllText(
+            fixture.FileSystem.ResolvePath(MortalItemIdentityState.StatePath)));
+        Assert.Empty(parsed.Issues);
+        Assert.True(parsed.EntriesByItemId.TryGetValue(itemId, out var entry));
+        return Assert.IsType<JsonObject>(entry).DeepClone().AsObject();
+    }
+
+    private static int ReadIdentityTransitionCount(JsonObject entry) =>
+        Assert.IsType<JsonArray>(entry["transitions"]).Count;
+
+    private static void AssertPlanContainsExactPartialItemIdentity(
+        AcceptedMechanicsPlan plan,
+        JsonObject identityBefore,
+        string itemId,
+        int transitionCountBefore)
+    {
+        Assert.True(plan.OwnerCompanionAfterImages.TryGetValue(
+            MortalItemIdentityState.StatePath,
+            out var indexRoot));
+        var parsed = MortalItemIdentityState.Parse(indexRoot);
+        Assert.Empty(parsed.Issues);
+        var identityAfter = parsed.EntriesByItemId[itemId];
+        Assert.Equal("active", identityAfter["state"]!.GetValue<string>());
+        Assert.Equal(
+            identityBefore["receiptId"]!.GetValue<string>(),
+            identityAfter["receiptId"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(
+            identityBefore["currentCarrier"],
+            identityAfter["currentCarrier"]));
+        var beforeTransitions = identityBefore["transitions"]!.AsArray();
+        var afterTransitions = identityAfter["transitions"]!.AsArray();
+        Assert.Equal(transitionCountBefore + 1, afterTransitions.Count);
+        for (var index = 0; index < transitionCountBefore; index++)
+        {
+            Assert.True(JsonNode.DeepEquals(
+                beforeTransitions[index],
+                afterTransitions[index]));
+        }
+        var consume = Assert.IsType<JsonObject>(afterTransitions[^1]);
+        Assert.Equal("consume", consume["kind"]!.GetValue<string>());
+        Assert.Equal(2, consume["quantityBefore"]!.GetValue<int>());
+        Assert.Equal(1, consume["quantityAfter"]!.GetValue<int>());
+        Assert.True(JsonNode.DeepEquals(
+            identityBefore["currentCarrier"],
+            consume["sourceCarrier"]));
+        Assert.True(JsonNode.DeepEquals(
+            identityBefore["currentCarrier"],
+            consume["destinationCarrier"]));
+    }
+
+    private static GameResponse CreateAllAllowedTreatmentItemResponseFieldsPresentEmpty() =>
+        new()
+        {
+            ActiveSkillChanges = Array.Empty<JsonElement>(),
+            RemoveActiveSkills = Array.Empty<string>(),
+            PassiveSkillChanges = Array.Empty<JsonElement>(),
+            RemovePassiveSkills = Array.Empty<string>(),
+            NPCActiveSkillChanges = Array.Empty<JsonElement>(),
+            NPCPassiveSkillChanges = Array.Empty<JsonElement>(),
+            UpdateInventory = Array.Empty<JsonElement>(),
+            MoveInventoryItems = Array.Empty<JsonElement>(),
+            RemoveInventoryItems = Array.Empty<JsonElement>(),
+            NPCInventoryAdds = Array.Empty<JsonElement>(),
+            NPCInventoryUpdates = Array.Empty<JsonElement>(),
+            NPCInventoryRemovals = Array.Empty<JsonElement>(),
+            NPCEquipmentChanges = Array.Empty<JsonElement>()
+        };
+
+    private static string CaptureGameResponsePropertyGraph(GameResponse response) =>
+        string.Join(
+            "\n",
+            typeof(GameResponse)
+                .GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                .Where(static property =>
+                    property.CanRead && property.GetIndexParameters().Length == 0)
+                .OrderBy(static property => property.Name, StringComparer.Ordinal)
+                .Select(property =>
+                {
+                    var value = property.GetValue(response);
+                    return property.Name + "=" + (value is null
+                        ? "<null>"
+                        : JsonSerializer.Serialize(value, property.PropertyType));
+                }));
+
+    private static void AssertGameResponseHasExactlyAllowedPresentEmpty(
+        GameResponse response)
+    {
+        foreach (var property in typeof(GameResponse).GetProperties(
+                     BindingFlags.Instance | BindingFlags.Public))
+        {
+            if (!property.CanRead || property.GetIndexParameters().Length != 0)
+                continue;
+            var value = property.GetValue(response);
+            if (!TreatmentItemAllowedResponsePropertyNames.Contains(property.Name))
+            {
+                Assert.Null(value);
+                continue;
+            }
+            Assert.NotNull(value);
+            Assert.Empty(Assert.IsAssignableFrom<IEnumerable>(value).Cast<object>());
+        }
+    }
+
+    private static object CreateNonNullGameResponsePropertyValue(PropertyInfo property)
+    {
+        var type = property.PropertyType;
+        var nullable = Nullable.GetUnderlyingType(type);
+        if (nullable is not null)
+        {
+            if (nullable == typeof(int))
+                return 1;
+            if (nullable == typeof(double))
+                return 1d;
+            if (nullable == typeof(JsonElement))
+                return JsonDocument.Parse("{}").RootElement.Clone();
+        }
+        if (type == typeof(string))
+            return "unsupported_" + property.Name;
+        if (type == typeof(PlayerStatus))
+            return new PlayerStatus { CurrentCondition = "unsupported" };
+        if (type.IsArray)
+        {
+            var elementType = type.GetElementType();
+            Assert.NotNull(elementType);
+            return Array.CreateInstance(elementType, 0);
+        }
+        if (type.IsGenericType &&
+            type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        {
+            return Activator.CreateInstance(type)!;
+        }
+        throw new InvalidOperationException(
+            $"No non-null GameResponse test value is defined for {property.Name}:{type}.");
+    }
+
+    private sealed record SealedFinalBaselineProbe(
+        IReadOnlyDictionary<string, JsonObject> Roots,
+        JsonObject IdentityIndex,
+        string Fingerprint);
+
+    private sealed record SealedTreatmentPublicationProbe(
+        object OuterAuthority,
+        object ItemAuthority,
+        object ItemEnvelope,
+        string OuterFingerprint,
+        string ItemAuthorityFingerprint,
+        string ItemEnvelopeFingerprint,
+        string SkillAuthorityFingerprint,
+        string SkillEnvelopeFingerprint,
+        SealedFinalBaselineProbe Baseline);
+
+    private static SealedTreatmentPublicationProbe ReadSealedTreatmentPublication(
+        AcceptedMechanicsPlan plan)
+    {
+        var outer = Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        var itemAuthorityType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalWoundTreatmentItemPublicationAuthority");
+        var itemEnvelopeType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalTreatmentItemCommandEnvelope");
+        var baselineType = RequireB4Type(
+            "BookOfEternityClient.Services.MortalItemPublicationBaselineResult");
+        RequireExactProperties(
+            baselineType,
+            ("FinalCarrierRoots", typeof(IReadOnlyDictionary<string, JsonObject>)),
+            ("IdentityIndexAfterImage", typeof(JsonObject)),
+            ("Issues", typeof(IReadOnlyList<ValidationIssue>)),
+            ("Fingerprint", typeof(string)));
+
+        var outerGraph = EnumerateObjectGraph(outer, maximumDepth: 16).ToArray();
+        var itemAuthority = Assert.Single(
+            outerGraph,
+            value => value.GetType() == itemAuthorityType);
+        var itemGraph = EnumerateObjectGraph(itemAuthority, maximumDepth: 12).ToArray();
+        var itemEnvelope = Assert.Single(
+            itemGraph,
+            value => value.GetType() == itemEnvelopeType);
+        var baselineResult = Assert.Single(
+            itemGraph,
+            value => value.GetType() == baselineType);
+        var skillProjection = Assert.Single(
+            outerGraph,
+            value =>
+                string.Equals(
+                    value.GetType().Name,
+                    "TreatmentSkillProjectionAuthority",
+                    StringComparison.Ordinal) &&
+                HasReadableProperty(value, "CommandEnvelopeFingerprint"));
+
+        Assert.Contains(outerGraph, value => ReferenceEquals(value, itemAuthority));
+        Assert.Contains(outerGraph, value => ReferenceEquals(value, itemEnvelope));
+        Assert.Contains(outerGraph, value => ReferenceEquals(value, baselineResult));
+        Assert.Contains(outerGraph, value => ReferenceEquals(value, skillProjection));
+        Assert.Contains(itemGraph, value => ReferenceEquals(value, itemEnvelope));
+        Assert.Contains(itemGraph, value => ReferenceEquals(value, baselineResult));
+
+        var roots = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
+            ReadRequiredProperty(baselineResult, "FinalCarrierRoots"));
+        var identity = Assert.IsType<JsonObject>(ReadRequiredProperty(
+            baselineResult,
+            "IdentityIndexAfterImage"));
+        var baselineFingerprint = ReadRequiredStringProperty(
+            baselineResult,
+            "Fingerprint");
+        Assert.Empty(Assert.IsAssignableFrom<IEnumerable>(
+            ReadRequiredProperty(baselineResult, "Issues")).Cast<object>());
+        Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
+            baselineFingerprint));
+
+        return new SealedTreatmentPublicationProbe(
+            outer,
+            itemAuthority,
+            itemEnvelope,
+            ReadRequiredStringProperty(outer, "AuthorityFingerprint"),
+            ReadObservedAuthorityFingerprint(itemAuthority),
+            ReadRequiredStringProperty(itemEnvelope, "Fingerprint"),
+            ReadObservedAuthorityFingerprint(skillProjection),
+            ReadRequiredStringProperty(skillProjection, "CommandEnvelopeFingerprint"),
+            new SealedFinalBaselineProbe(
+                roots,
+                identity,
+                baselineFingerprint));
+    }
+
+    private static string ReadObservedAuthorityFingerprint(object authority)
+    {
+        foreach (var name in new[] { "Fingerprint", "AuthorityFingerprint" })
+        {
+            var property = authority.GetType().GetProperty(
+                name,
+                BindingFlags.Instance | BindingFlags.Public |
+                BindingFlags.NonPublic);
+            if (property?.GetValue(authority) is string fingerprint)
+            {
+                Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
+                    fingerprint));
+                return fingerprint;
+            }
+        }
+        throw new InvalidOperationException(
+            "The production-created treatment item authority exposes no sealed fingerprint.");
+    }
+
+    private static void AssertSealedFinalBaselineAuthorityInputs(
+        SealedTreatmentPublicationProbe publication,
+        AcceptedStateFixture fixture)
+    {
+        var graph = EnumerateObjectGraph(
+                publication.ItemAuthority,
+                maximumDepth: 12)
+            .ToArray();
+        Assert.NotEmpty(graph.OfType<NpcCoreChangesContract.Authority>());
+        foreach (var path in new[]
+                 {
+                     NpcTradeRequestState.PendingRequestPath,
+                     TrainingRequestState.PendingRequestPath
+                 })
+        {
+            var expected = ReadCanonicalBytes(fixture, path);
+            Assert.Contains(
+                graph.OfType<CanonicalBeforeImage>(),
+                before => before.Existed &&
+                          before.Bytes is { } bytes &&
+                          bytes.AsSpan().SequenceEqual(expected));
+        }
+    }
+
+    private static bool HasReadableProperty(object value, string propertyName) =>
+        value.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        is { CanRead: true };
+
+    private static IEnumerable<object> EnumerateObjectGraph(
+        object root,
+        int maximumDepth)
+    {
+        var seen = new HashSet<object>(ReferenceEqualityComparer.Instance);
+        var pending = new Queue<(object Value, int Depth)>();
+        pending.Enqueue((root, 0));
+        while (pending.Count != 0)
+        {
+            var (value, depth) = pending.Dequeue();
+            if (!seen.Add(value))
+                continue;
+            yield return value;
+            if (depth >= maximumDepth ||
+                value is string or byte[] or JsonNode or Type or MemberInfo ||
+                value.GetType().IsPrimitive || value is decimal)
+            {
+                continue;
+            }
+            if (value is IEnumerable sequence)
+            {
+                foreach (var child in sequence.Cast<object?>()
+                             .Where(static child => child is not null))
+                {
+                    pending.Enqueue((child!, depth + 1));
+                }
+            }
+            foreach (var field in value.GetType().GetFields(
+                         BindingFlags.Instance | BindingFlags.Public |
+                         BindingFlags.NonPublic))
+            {
+                if (field.GetValue(value) is { } child)
+                    pending.Enqueue((child, depth + 1));
+            }
+        }
+    }
+
+    private static void AssertTreatmentItemEnvelopeHasExactNullShape(
+        object envelope,
+        bool expectPresentEmpty)
+    {
+        var expected = new[]
+        {
+            "UpdateInventory",
+            "MoveInventoryItems",
+            "RemoveInventoryItems",
+            "NPCInventoryAdds",
+            "NPCInventoryUpdates",
+            "NPCInventoryRemovals",
+            "NPCEquipmentChanges"
+        };
+        var properties = envelope.GetType().GetProperties(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        foreach (var name in expected)
+        {
+            var property = Assert.Single(properties, candidate =>
+                string.Equals(candidate.Name, name, StringComparison.Ordinal));
+            var value = property.GetValue(envelope);
+            if (!expectPresentEmpty)
+            {
+                Assert.Null(value);
+                continue;
+            }
+            Assert.NotNull(value);
+            Assert.Empty(Assert.IsAssignableFrom<IEnumerable>(value).Cast<object>());
+        }
+        Assert.Equal(
+            expected.OrderBy(static name => name, StringComparer.Ordinal),
+            properties.Where(property => expected.Contains(
+                    property.Name,
+                    StringComparer.Ordinal))
+                .Select(static property => property.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
+        Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
+            ReadRequiredStringProperty(envelope, "Fingerprint")));
+    }
+
+    private static void AssertTreatmentItemEnvelopeMatchesResponse(
+        object envelope,
+        GameResponse response)
+    {
+        var envelopeProperties = envelope.GetType().GetProperties(
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        var responseProperties = typeof(GameResponse).GetProperties(
+            BindingFlags.Instance | BindingFlags.Public);
+        foreach (var name in TreatmentItemResponsePropertyNames)
+        {
+            var envelopeProperty = Assert.Single(envelopeProperties, property =>
+                string.Equals(property.Name, name, StringComparison.Ordinal));
+            var responseProperty = Assert.Single(responseProperties, property =>
+                string.Equals(property.Name, name, StringComparison.Ordinal));
+            var expected = responseProperty.GetValue(response);
+            var actual = envelopeProperty.GetValue(envelope);
+            if (expected is null)
+            {
+                Assert.Null(actual);
+                continue;
+            }
+            Assert.NotNull(actual);
+            Assert.Empty(Assert.IsAssignableFrom<IEnumerable>(expected).Cast<object>());
+            Assert.Empty(Assert.IsAssignableFrom<IEnumerable>(actual).Cast<object>());
+        }
+    }
+
+    private static string ComputeExpectedTreatmentSkillEnvelopeFingerprint(
+        GameResponse response)
+    {
+        var root = new JsonObject();
+        AddSkillEnvelopeArray(root, "activeSkillChanges", response.ActiveSkillChanges);
+        AddSkillEnvelopeArray(root, "removeActiveSkills", response.RemoveActiveSkills);
+        AddSkillEnvelopeArray(root, "passiveSkillChanges", response.PassiveSkillChanges);
+        AddSkillEnvelopeArray(root, "removePassiveSkills", response.RemovePassiveSkills);
+        AddSkillEnvelopeArray(root, "NPCActiveSkillChanges", response.NPCActiveSkillChanges);
+        AddSkillEnvelopeArray(root, "NPCPassiveSkillChanges", response.NPCPassiveSkillChanges);
+        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.skill_command_envelope",
+            "1",
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(root)
+        });
+    }
+
+    private static void AddSkillEnvelopeArray<T>(
+        JsonObject root,
+        string propertyName,
+        T[]? values)
+    {
+        if (values is null)
+            return;
+        root[propertyName] = JsonSerializer.SerializeToNode(values)!.AsArray();
+    }
+
+    private static void SetTreatmentSkillResponseFields(
+        GameResponse response,
+        Array? value)
+    {
+        Assert.Null(value);
+        response.ActiveSkillChanges = null;
+        response.RemoveActiveSkills = null;
+        response.PassiveSkillChanges = null;
+        response.RemovePassiveSkills = null;
+        response.NPCActiveSkillChanges = null;
+        response.NPCPassiveSkillChanges = null;
+    }
+
+    private static void SetTreatmentItemResponseFields(
+        GameResponse response,
+        Array? value)
+    {
+        Assert.Null(value);
+        response.UpdateInventory = null;
+        response.MoveInventoryItems = null;
+        response.RemoveInventoryItems = null;
+        response.NPCInventoryAdds = null;
+        response.NPCInventoryUpdates = null;
+        response.NPCInventoryRemovals = null;
+        response.NPCEquipmentChanges = null;
+    }
+
+    private static string ReadRequiredStringProperty(object value, string propertyName)
+    {
+        var property = value.GetType().GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        Assert.NotNull(property);
+        return Assert.IsType<string>(property.GetValue(value));
+    }
+
+    private static void RequireExactProperties(
+        Type type,
+        params (string Name, Type Type)[] expected)
+    {
+        var properties = type.GetProperties(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+            .Where(static property =>
+                property.GetMethod is { } getter &&
+                (getter.IsPublic || getter.IsAssembly))
+            .ToArray();
+        Assert.Equal(
+            expected.Select(static value => value.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal),
+            properties.Select(static property => property.Name)
+                .OrderBy(static name => name, StringComparer.Ordinal));
+        foreach (var (name, propertyType) in expected)
+        {
+            var property = Assert.Single(properties, candidate =>
+                string.Equals(candidate.Name, name, StringComparison.Ordinal));
+            Assert.Equal(propertyType, property.PropertyType);
+            Assert.True(property.CanRead);
+        }
+    }
+
+    private static Type RequireB4Type(string fullName)
+    {
+        var type = typeof(AcceptedMechanicsPlan).Assembly.GetType(fullName);
+        Assert.True(type is not null, $"The frozen B.4 type '{fullName}' is absent.");
+        Assert.Equal(fullName, type!.FullName);
+        return type;
+    }
+
+    private static void AssertFrozenFinalBaseline(
+        SealedFinalBaselineProbe baseline,
+        AcceptedMechanicsPlan plan)
+    {
+        Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
+            baseline.Fingerprint));
+        var requiredPaths = new[]
+        {
+            NpcCoreChangesContract.NpcCorePath,
+            InventoryEquipmentService.ItemsPath,
+            "game_state/npcs/npc_inventory.json",
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath
+        };
+        Assert.All(requiredPaths, path => Assert.Contains(path, baseline.Roots.Keys));
+
+        var npcRoot = baseline.Roots[NpcCoreChangesContract.NpcCorePath];
+        var medic = Assert.Single(
+            npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        Assert.Equal("Baseline worldview", medic["worldview"]!.GetValue<string>());
+        Assert.DoesNotContain(NpcCoreChangesContract.PropertyName, npcRoot.Select(
+            static pair => pair.Key));
+        Assert.DoesNotContain(NpcTradeRequestState.UpdateReceiptsProperty, npcRoot.Select(
+            static pair => pair.Key));
+        var receipt = Assert.Single(
+            medic[NpcTradeRequestState.ReceiptsProperty]!.AsArray().OfType<JsonObject>(),
+            row => row["requestId"]?.GetValue<string>() == "trade_baseline_request");
+        Assert.Equal("ready", receipt["status"]!.GetValue<string>());
+
+        var npcItems = medic["inventory"]!.AsArray().OfType<JsonObject>().ToArray();
+        Assert.Contains(
+            npcItems,
+            item => item["itemId"]?.GetValue<string>() == "antibiotic_dose");
+        var equippedCreation = Assert.Single(
+            npcItems,
+            item => item["materializationReceipt"]?["creationRef"]?.GetValue<string>() ==
+                    "new_item_baseline_npc_equipped");
+        var equippedItemId = equippedCreation["itemId"]!.GetValue<string>();
+        Assert.Equal(
+            equippedItemId,
+            medic["equippedItems"]!["mainHand"]!.GetValue<string>());
+
+        var playerItems = baseline.Roots[InventoryEquipmentService.ItemsPath];
+        Assert.DoesNotContain(
+            playerItems["items"]!.AsArray().OfType<JsonObject>(),
+            item => item["itemId"]?.GetValue<string>() == "antibiotic_dose");
+        var journalCreation = Assert.Single(
+            playerItems["items"]!.AsArray().OfType<JsonObject>(),
+            item => item["materializationReceipt"]?["creationRef"]?.GetValue<string>() ==
+                    "new_item_baseline_player_journal");
+        Assert.Equal(
+            "Inventory journal normalization ran last",
+            Assert.Single(journalCreation["journalEntries"]!.AsArray())!
+                .GetValue<string>());
+        Assert.False(playerItems.ContainsKey("UpdateInventory"));
+
+        var npcCommands = baseline.Roots["game_state/npcs/npc_inventory.json"];
+        Assert.False(npcCommands.ContainsKey("NPCInventoryAdds"));
+        Assert.False(npcCommands.ContainsKey("NPCEquipmentChanges"));
+        Assert.False(
+            baseline.Roots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath]
+                .ContainsKey("removeInventoryItems"));
+
+        var parsedIdentity = MortalItemIdentityState.Parse(baseline.IdentityIndex);
+        Assert.Empty(parsedIdentity.Issues);
+        var transferred = parsedIdentity.EntriesByItemId["antibiotic_dose"];
+        var transferredTransitions = transferred["transitions"]!.AsArray();
+        Assert.Equal(
+            "transfer",
+            transferredTransitions[^1]!["kind"]!.GetValue<string>());
+        foreach (var creationRef in new[]
+                 {
+                     "new_item_baseline_player_journal",
+                     "new_item_baseline_npc_equipped"
+                 })
+        {
+            var created = Assert.Single(
+                parsedIdentity.EntriesByItemId.Values,
+                entry => entry["originCreationRefs"]!.AsArray()
+                    .Any(node => node?.GetValue<string>() == creationRef));
+            Assert.Equal(
+                "create",
+                Assert.Single(created["transitions"]!.AsArray())!["kind"]!
+                    .GetValue<string>());
+        }
+
+        var baselineSkill = Assert.Single(
+            medic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+            skill => skill["skillId"]?.GetValue<string>() ==
+                     "skill_field_medicine_npc_01");
+        Assert.NotEqual(
+            "B.2 skill projection applied after ordinary baseline",
+            baselineSkill["displayName"]!.GetValue<string>());
+        var finalNpc = plan.OwnerCompanionAfterImages[
+            NpcCoreChangesContract.NpcCorePath];
+        var finalMedic = Assert.Single(
+            finalNpc["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        var finalSkill = Assert.Single(
+            finalMedic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+            skill => skill["skillId"]?.GetValue<string>() ==
+                     "skill_field_medicine_npc_01");
+        Assert.Equal(
+            "B.2 skill projection applied after ordinary baseline",
+            finalSkill["displayName"]!.GetValue<string>());
+    }
+
+    private static void AssertBaselineMatchesObservedLiveState(
+        SealedFinalBaselineProbe baseline,
+        FinalBaselinePublicationObserver observer)
+    {
+        Assert.Equal(
+            baseline.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal),
+            observer.Roots.Keys.OrderBy(static path => path, StringComparer.Ordinal));
+        foreach (var path in baseline.Roots.Keys)
+        {
+            Assert.True(
+                JsonNode.DeepEquals(baseline.Roots[path], observer.Roots[path]),
+                $"Observed live prepublication root '{path}' differs from the sealed baseline.");
+        }
+        Assert.True(JsonNode.DeepEquals(
+            baseline.IdentityIndex,
+            observer.IdentityIndex));
+    }
+    private static GameResponse SeedFinalBaselineProductionInputs(
+        AcceptedStateFixture fixture)
+    {
+        var playerItems = ReadCanonicalObject(
+            fixture,
+            InventoryEquipmentService.ItemsPath);
+        var transferredItem = Assert.Single(
+            playerItems["items"]!.AsArray().OfType<JsonObject>(),
+            item => item["itemId"]?.GetValue<string>() == "antibiotic_dose")
+            .DeepClone()
+            .AsObject();
+        var playerCreation = MortalItemTestFixture.CreateRawRoot(
+            route: "player_acquisition",
+            authorityKind: "turn_outcome",
+            authorityId: "turn_42",
+            sourceTurn: 42,
+            creationRef: "new_item_baseline_player_journal",
+            materializationId: "mat_item_baseline_player_journal");
+        playerCreation["journalEntries"] = new JsonArray(
+            "#[Turn 42]: Inventory journal normalization ran last");
+        playerCreation["materialization"]!["sections"]!["readableOrSentient"] =
+            new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        playerItems["UpdateInventory"] = new JsonArray(playerCreation.DeepClone());
+        WriteCanonicalBytes(
+            fixture,
+            InventoryEquipmentService.ItemsPath,
+            Encoding.UTF8.GetBytes(playerItems.ToJsonString()));
+
+        var npcCreation = MortalItemTestFixture.CreateRawRoot(
+            route: "npc_acquisition",
+            authorityKind: "npc_inventory_add",
+            authorityId: "npc_inventory_add:42:0:field_medic_01",
+            sourceTurn: 42,
+            creationRef: "new_item_baseline_npc_equipped",
+            materializationId: "mat_item_baseline_npc_equipped");
+        npcCreation["equipmentSlot"] = "MainHand";
+        npcCreation["materialization"]!["sections"]!["equipment"] =
+            new JsonObject
+            {
+                ["state"] = "populated",
+                ["reason"] = null
+            };
+        var npcAdds = new JsonArray(
+            new JsonObject
+            {
+                ["NPCId"] = "field_medic_01",
+                ["NPCName"] = "Field medic",
+                ["item"] = npcCreation.DeepClone(),
+                ["destinationContainerId"] = null
+            },
+            new JsonObject
+            {
+                ["NPCId"] = "field_medic_01",
+                ["NPCName"] = "Field medic",
+                ["item"] = transferredItem.DeepClone(),
+                ["destinationContainerId"] = null
+            });
+        var equipment = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "field_medic_01",
+            ["NPCName"] = "Field medic",
+            ["action"] = "equip",
+            ["itemId"] = "new_item_baseline_npc_equipped",
+            ["itemName"] = "Тестовый предмет",
+            ["targetSlots"] = new JsonArray("mainHand")
+        });
+        WriteCanonicalBytes(
+            fixture,
+            MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+            Encoding.UTF8.GetBytes(new JsonObject
+            {
+                ["NPCInventoryAdds"] = npcAdds.DeepClone(),
+                ["NPCEquipmentChanges"] = equipment.DeepClone()
+            }.ToJsonString()));
+        var removals = new JsonArray(new JsonObject
+        {
+            ["removedItemId"] = "antibiotic_dose",
+            ["currentContentsPath"] = null
+        });
+        WriteCanonicalBytes(
+            fixture,
+            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+            Encoding.UTF8.GetBytes(new JsonObject
+            {
+                ["removeInventoryItems"] = removals.DeepClone()
+            }.ToJsonString()));
+
+        var npcCore = ReadCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        var medic = Assert.Single(
+            npcCore["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        var skillUpdate = Assert.Single(
+                medic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+                skill => skill["skillId"]?.GetValue<string>() ==
+                         "skill_field_medicine_npc_01")
+            .DeepClone()
+            .AsObject();
+        skillUpdate["displayName"] =
+            "B.2 skill projection applied after ordinary baseline";
+        npcCore[NpcCoreChangesContract.PropertyName] = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "field_medic_01",
+            ["reason"] = "The accepted baseline records an ordinary profile change.",
+            ["profile"] = new JsonObject
+            {
+                ["worldview"] = "Baseline worldview"
+            }
+        });
+        npcCore[NpcTradeRequestState.UpdateReceiptsProperty] = new JsonArray(
+            CreateBaselineTradeReceipt());
+        WriteCanonicalBytes(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath,
+            Encoding.UTF8.GetBytes(npcCore.ToJsonString()));
+
+        WriteCanonicalBytes(
+            fixture,
+            NpcTradeRequestState.PendingRequestPath,
+            Encoding.UTF8.GetBytes(new JsonObject
+            {
+                ["requests"] = new JsonArray(new JsonObject
+                {
+                    ["requestId"] = "trade_baseline_request",
+                    ["npcId"] = "field_medic_01",
+                    ["npcName"] = "Field medic",
+                    ["merchantProfile"] = "field_medicine",
+                    ["tradeCycleId"] = "trade_cycle_baseline",
+                    ["derivedTradeSlotCount"] = 0,
+                    ["createdAtTurn"] = 42,
+                    ["createdAtUtc"] = "2026-09-02T00:00:00.0000000Z",
+                    ["createdAtWorldDate"] = 1,
+                    ["refreshAfterWorldDate"] = 2
+                })
+            }.ToJsonString()));
+        WriteCanonicalBytes(
+            fixture,
+            TrainingRequestState.PendingRequestPath,
+            Encoding.UTF8.GetBytes(new JsonObject
+            {
+                ["requests"] = new JsonArray(new JsonObject
+                {
+                    ["requestId"] = "training_baseline_request",
+                    ["requestKind"] = "mortal_teacher_showcase",
+                    ["sourceActorId"] = "field_medic_01",
+                    ["sourceActorName"] = "Field medic",
+                    ["sourceActorKind"] = "npc",
+                    ["realm"] = "mortal_world",
+                    ["createdAtTurn"] = 42,
+                    ["createdAtUtc"] = "2026-09-02T00:00:00Z",
+                    ["sourceActorSnapshotHash"] = null,
+                    ["reason"] = "Baseline authority coverage",
+                    ["details"] = new JsonObject
+                    {
+                        ["dedupeKey"] = "baseline"
+                    }
+                })
+            }.ToJsonString()));
+
+        return new GameResponse
+        {
+            ActiveSkillChanges = Array.Empty<JsonElement>(),
+            RemoveActiveSkills = Array.Empty<string>(),
+            PassiveSkillChanges = Array.Empty<JsonElement>(),
+            RemovePassiveSkills = Array.Empty<string>(),
+            NPCActiveSkillChanges = new[]
+            {
+                JsonSerializer.SerializeToElement(new JsonObject
+                {
+                    ["npcId"] = "field_medic_01",
+                    ["skillChanges"] = new JsonArray(skillUpdate)
+                })
+            },
+            NPCPassiveSkillChanges = Array.Empty<JsonElement>(),
+            UpdateInventory = ToResponseElements(
+                Assert.IsType<JsonArray>(playerItems["UpdateInventory"])),
+            MoveInventoryItems = Array.Empty<JsonElement>(),
+            RemoveInventoryItems = ToResponseElements(removals),
+            NPCInventoryAdds = ToResponseElements(npcAdds),
+            NPCInventoryUpdates = Array.Empty<JsonElement>(),
+            NPCInventoryRemovals = Array.Empty<JsonElement>(),
+            NPCEquipmentChanges = ToResponseElements(equipment)
+        };
+    }
+
+    private static JsonElement[] ToResponseElements(JsonArray rows) =>
+        rows.Select(static row => JsonSerializer.SerializeToElement(row)).ToArray();
+    private static JsonObject CreateBaselineTradeReceipt() => new()
+    {
+        ["requestId"] = "trade_baseline_request",
+        ["npcId"] = "field_medic_01",
+        ["npcName"] = "Field medic",
+        ["tradeCycleId"] = "trade_cycle_baseline",
+        ["merchantProfile"] = "field_medicine",
+        ["status"] = "ready",
+        ["itemCount"] = 0,
+        ["resolvedAtTurn"] = 42,
+        ["resolvedAtUtc"] = "2026-09-02T00:01:00.0000000Z"
+    };
+
+    private static void AssertFinalBaselineDriftRejectsBeforeCacheOrWrite(
+        ResolverScenario scenario,
+        string axis)
+    {
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "final_baseline_drift_" + axis);
+        var sealedPlan = ComposeResourcePublication(fixture, flow, response);
+        var sealedPublication = ReadSealedTreatmentPublication(sealedPlan);
+        AssertSealedFinalBaselineAuthorityInputs(sealedPublication, fixture);
+        AssertFrozenFinalBaseline(sealedPublication.Baseline, sealedPlan);
+        AcceptedMechanicsPlanAuthority.InvalidateValidated(
+            fixture.FileSystem,
+            fixture.Lease);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        MutateFinalBaselineAuthorityInput(fixture, axis);
+        var beforeRejectedComposition = CaptureResolverFixtureTree(fixture.Root);
+
+        var rejected = ComposeResourcePublicationResult(fixture, flow, response);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Plan);
+        var issue = Assert.Single(rejected.Issues);
+        Assert.Equal(ItemBaselineChangedCode, issue.Code);
+        Assert.Equal(IssueSeverity.Error, issue.Severity);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, beforeRejectedComposition);
+        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+    }
+
+    private static void MutateFinalBaselineAuthorityInput(
+        AcceptedStateFixture fixture,
+        string axis)
+    {
+        switch (axis)
+        {
+            case "npc_authority":
+            {
+                const string path = "game_state/misc/characteristics.json";
+                var physicalPath = fixture.FileSystem.ResolvePath(path);
+                var root = File.Exists(physicalPath)
+                    ? ReadCanonicalObject(fixture, path)
+                    : new JsonObject();
+                root["baselineDriftAuthority"] = 1;
+                WriteCanonicalBytes(fixture, path, Encoding.UTF8.GetBytes(root.ToJsonString()));
+                break;
+            }
+            case "npc_trade_pending_bytes":
+                AppendCanonicalWhitespace(fixture, NpcTradeRequestState.PendingRequestPath);
+                break;
+            case "training_pending_bytes":
+                AppendCanonicalWhitespace(fixture, TrainingRequestState.PendingRequestPath);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+        }
+    }
+
+    private static void AppendCanonicalWhitespace(
+        AcceptedStateFixture fixture,
+        string path)
+    {
+        var bytes = ReadCanonicalBytes(fixture, path);
+        WriteCanonicalBytes(
+            fixture,
+            path,
+            bytes.Concat(new[] { (byte)' ' }).ToArray());
+    }
+
+    private static JsonObject ReadCanonicalObject(
+        AcceptedStateFixture fixture,
+        string path) => JsonNode.Parse(ReadCanonicalBytes(fixture, path).AsSpan())!
+            .AsObject();
+
+    private static void WriteCanonicalBytes(
+        AcceptedStateFixture fixture,
+        string path,
+        byte[] bytes) => fixture.FileSystem.WriteFileAtomicBytesAsync(
+            fixture.Lease,
+            path,
+            bytes).GetAwaiter().GetResult();
+
+    private static string B4Fingerprint(params string?[] values) =>
+        "sha256:" + Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+            string.Join("\0", values)))).ToLowerInvariant();
 
     private static int ReadPlanNpcItemCount(AcceptedMechanicsPlan plan, string itemId)
     {
@@ -1293,12 +2522,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private static AcceptedMechanicsPlan ComposeResourcePublication(
         AcceptedStateFixture fixture,
-        TreatmentFlow flow)
+        TreatmentFlow flow,
+        GameResponse? mechanicsResponse = null)
     {
         Assert.Contains(
             "effect_wound_test_pain",
             fixture.ReadActivePlayerEffectIds());
-        var result = ComposeResourcePublicationResult(fixture, flow);
+        var result = ComposeResourcePublicationResult(
+            fixture,
+            flow,
+            mechanicsResponse);
         Assert.True(result.IsValid, DescribeIssues(result.Issues));
         Assert.Empty(result.Issues);
         return Assert.IsType<AcceptedMechanicsPlan>(result.Plan);
@@ -2633,6 +3866,89 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         foreach (var pair in expected)
             Assert.Equal(pair.Value, ReadCanonicalBytes(fixture, pair.Key));
+    }
+
+    private sealed class FinalBaselinePublicationObserver
+    {
+        private readonly object _gate = new();
+        private FileSystemManager? _fileSystem;
+        private IReadOnlyDictionary<string, JsonObject>? _expectedRoots;
+        private JsonObject? _expectedIdentity;
+
+        internal bool Matched { get; private set; }
+        internal IReadOnlyDictionary<string, JsonObject> Roots { get; private set; } =
+            new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+        internal JsonObject? IdentityIndex { get; private set; }
+
+        internal void Arm(
+            FileSystemManager fileSystem,
+            SealedFinalBaselineProbe baseline)
+        {
+            _fileSystem = fileSystem;
+            _expectedRoots = baseline.Roots.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            _expectedIdentity = baseline.IdentityIndex.DeepClone().AsObject();
+            Assert.False(TryCaptureExactLiveBaseline());
+        }
+
+        internal Task BeforeMutationAsync(string _)
+        {
+            lock (_gate)
+            {
+                if (!Matched)
+                    Matched = TryCaptureExactLiveBaseline();
+            }
+            return Task.CompletedTask;
+        }
+
+        internal string DescribeFailure() =>
+            "The normalizer never exposed the exact production-sealed ordinary " +
+            "carrier/index baseline before common treatment publication.";
+
+        private bool TryCaptureExactLiveBaseline()
+        {
+            if (_fileSystem is null ||
+                _expectedRoots is null ||
+                _expectedIdentity is null)
+            {
+                return false;
+            }
+            var actual = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
+            try
+            {
+                foreach (var pair in _expectedRoots)
+                {
+                    var physical = _fileSystem.ResolvePath(pair.Key);
+                    if (!File.Exists(physical))
+                        return false;
+                    var root = JsonNode.Parse(File.ReadAllBytes(physical).AsSpan())!
+                        .AsObject();
+                    if (!JsonNode.DeepEquals(pair.Value, root))
+                        return false;
+                    actual.Add(pair.Key, root);
+                }
+                var identityPhysical = _fileSystem.ResolvePath(
+                    MortalItemIdentityState.StatePath);
+                if (!File.Exists(identityPhysical))
+                    return false;
+                var identity = JsonNode.Parse(
+                        File.ReadAllBytes(identityPhysical).AsSpan())!
+                    .AsObject();
+                if (!JsonNode.DeepEquals(_expectedIdentity, identity))
+                    return false;
+                Roots = actual;
+                IdentityIndex = identity;
+                return true;
+            }
+            catch (Exception exception) when (
+                exception is IOException or UnauthorizedAccessException or
+                    JsonException or InvalidOperationException)
+            {
+                return false;
+            }
+        }
     }
 
     private sealed class TerminalDurableSurfaceRemovalObserver
