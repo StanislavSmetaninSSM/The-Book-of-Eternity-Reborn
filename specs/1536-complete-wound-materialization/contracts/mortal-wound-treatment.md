@@ -1166,6 +1166,17 @@ ordinal; both the ordinary normalizer and treatment projector use those same IDs
 same pure transfer transform. Neither calls the writing `MortalItemTransitionWriter` or
 allocates a second random receipt/history row.
 
+The consumption projector has one internal entry point,
+`MortalItemConsumptionPlanner.Plan(MortalItemConsumptionPlanningInput)`. Its input is the
+turn, exact final-baseline fingerprint, complete detached `MortalItemCarrierCatalogInput`
+including companion roots, parsed canonical identity state, ordered consumption commands,
+resource definitions/state, one attempt-derived capacity `ResourceSourceEvidence`, and the
+capacity policy fingerprint. The projector clones all JSON and returns carrier after-images,
+a nullable identity-index after-image, ordered identity transitions, registered capacity
+intents, terminal owners, issues, and a fingerprint over the complete input/output graph.
+An invalid result exposes none of the actionable after-images or intents. Resource history
+is not an input because only the common reducer may validate or append resource history.
+
 A partial transition preserves item ID, receipt, and carrier and decreases count; all live
 item-owned resources must be `instance_fixed` and scale maximum/current exactly by the
 remaining/source-count ratio with quantum alignment and no rounding. A full transition

@@ -1459,7 +1459,11 @@ entrypoints require no update for T065.
   2. add a pure shared `MortalItemConsumptionPlanner` for sequential partial/full stack
      identity transitions, clear only supported inline equipment, reject container/quest/
      bond/other companion references without separate atomic authority, and refactor the
-     ordinary writer to consume that same result;
+     ordinary writer to consume that same result; freeze its sole entry point as
+     `Plan(MortalItemConsumptionPlanningInput)`, where the input contains the exact
+     baseline fingerprint, complete detached carrier/companion roots, parsed identity
+     state, ordered commands, definitions/state, and attempt-derived capacity evidence,
+     and where invalid planning exposes no actionable partial result;
   3. add exact `instance_fixed` proportional item-owned capacity projection, full terminal
      owner retirement, and private registered-capacity integration in the common reducer;
   4. compose item carrier/index and the B.2 skill projection over the exact final

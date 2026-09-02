@@ -890,6 +890,37 @@ rows before creation/materialization; the ordinary normalizer and treatment proj
 the same result. The writing transition service and random receipt/transition overloads are
 outside this accepted item phase.
 
+The pure item-consumption boundary is frozen as one input and one result:
+
+```csharp
+internal sealed record MortalItemConsumptionPlanningInput(
+    int Turn,
+    string BaselineFingerprint,
+    MortalItemCarrierCatalogInput CarrierRoots,
+    MortalItemIdentityParseResult IdentityState,
+    IReadOnlyList<MortalItemConsumptionCommand> Commands,
+    ResourceDefinitionCatalog Definitions,
+    ResourceStateLedger ResourceState,
+    ResourceSourceEvidence CapacitySourceEvidence,
+    string CapacityPolicyFingerprint);
+
+internal static class MortalItemConsumptionPlanner
+{
+    internal static MortalItemConsumptionPlanningResult Plan(
+        MortalItemConsumptionPlanningInput input);
+}
+```
+
+`CarrierRoots` is the complete detached catalog input built from the verified
+skill-composed baseline and includes every companion root. `IdentityState` is the parsed
+canonical index for that same baseline. The planner clones both before working. The
+baseline fingerprint, definition semantics, resource-state fingerprint, capacity source
+evidence, policy fingerprint, commands, and every output participate in the result
+fingerprint. `CapacitySourceEvidence.SourceId` is the one attempt-derived origin shared by
+all partial-capacity rows. Resource history is deliberately absent: the consumption
+planner emits registered capacity intents, while the existing common reducer alone owns
+history/replay validation and append.
+
 The pure item-consumption projection then processes selected finalization intents in their
 frozen order. One intent produces one `consume` identity transition with sequential
 `quantityBefore`/`quantityAfter`. `transitionId`, capacity event/operation/transition IDs,
@@ -921,8 +952,12 @@ receives one terminal `retire` transition in the same resource plan. No current 
 active owner, or live resource coordinate may survive.
 
 The projection returns detached exact final-baseline carrier/index roots, ordered item
-transitions, registered capacity intents, terminal owner keys, and a fingerprint; it never
-writes. NPC item carriers and NPC skills share `npc_core.json`, so composition order is
+transitions, registered capacity intents, terminal owner keys, issues, and a fingerprint;
+it never writes. Its exact result surface is `CarrierAfterImages`, nullable
+`IdentityIndexAfterImage`, `IdentityTransitions`, `CapacityTransitions`, `TerminalOwners`,
+`Issues`, and `Fingerprint`. A valid result has a non-null index after-image and no issues.
+An invalid result exposes no carrier/index after-image, transition, capacity, or terminal
+owner subset. NPC item carriers and NPC skills share `npc_core.json`, so composition order is
 exactly item phase, ordinary NPC core/trade tail, verified live baseline, sealed B.2 skill
 projection, then item consumption, yielding one final whole-root after-image. `items.json`
 similarly includes ordinary journal normalization before consumption. Candidate admission

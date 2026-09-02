@@ -119,8 +119,11 @@ git commit -m "test(wounds): specify treatment item publication transaction (#15
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs`
 - Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemIdentityState.cs`
 - Modify: `BookOfEternityClient/Services/MortalItemTransitionWriter.cs`
+- Modify: `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs`
 - Test: `BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs`
 - Test: existing Mortal item normalization/transfer/equipment/NPC skill/trade/inventory-journal test classes selected by source search before editing.
@@ -185,7 +188,7 @@ Factor the root transformations used by `NormalizeNpcCoreChangesAsync`, `Normali
 
 - [ ] **Step 4: Bind the closed envelope and final baseline to the accepted item cache**
 
-Extend `MortalItemAcceptedTurnNormalizationSnapshot` so its sealed value proves the exact item allocation/route authority, complete current/backup transfer roots, ordered accepted transfers and deterministic creation receipt/create-transition plus transfer-transition IDs, closed seven-item-property envelope, item-phase projection, detached NPC-core authority, NPC-trade/training pending bytes, ordered ordinary tail transforms, and final pre-publication fingerprint. Preserve the current one-use take/rearm fence. A copied snapshot with changed allocation, turn, session, snapshot, envelope, backup/input root, transfer/receipt/transition-ID map, authority/pending snapshot, transform order/version, item-phase root, or final root must not match. Immediately before common publication, compare every live selected carrier/index root to this final ordinary baseline; never recapture or patch it. Only after equality may the common candidate apply the sealed B.2 skill projection and item consumption.
+Extend `ValidationService.MortalItemMaterialization` and `AcceptedTurnAuthorityRegistry` so the already validated route catalog and transfer catalog are forwarded into `MortalItemAcceptedTurnNormalizationSnapshot` instead of being discarded at registration. The sealed snapshot proves the exact item allocation/route authority, complete current/backup transfer roots, ordered accepted transfers and deterministic creation receipt/create-transition plus transfer-transition IDs, closed seven-item-property envelope, detached NPC-core authority, NPC-trade/training pending bytes, ordered ordinary tail transforms, and final pre-publication fingerprint. It stores detached proof DTOs, fingerprints, and ID maps, not a `MortalItemCanonicalProjectionResult` that would create a minting cycle. Preserve the current one-use take/rearm fence. A copied snapshot with changed allocation, turn, session, snapshot, envelope, backup/input root, transfer/receipt/transition-ID map, authority/pending snapshot, transform order/version, item-phase root, or final root must not match. Immediately before common publication, compare every live selected carrier/index root to this final ordinary baseline; never recapture or patch it. Only after equality may the common candidate apply the sealed B.2 skill projection and item consumption.
 
 - [ ] **Step 5: Run parity controls**
 
@@ -196,7 +199,7 @@ Expected: item-phase and final-baseline tests pass; the live pre-publication roo
 - [ ] **Step 6: Commit the extraction**
 
 ```powershell
-git add -- BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs BookOfEternityClient/Services/MortalItemPublicationBaselinePlanner.cs BookOfEternityClient/Services/MortalItemTransferPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs
+git add -- BookOfEternityClient/Services/MortalItemCanonicalProjectionPlanner.cs BookOfEternityClient/Services/MortalItemPublicationBaselinePlanner.cs BookOfEternityClient/Services/MortalItemTransferPlanner.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.MortalItems.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Npcs.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.InventorySidecars.cs BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.PrivateImplementation.cs BookOfEternityClient/Services/MortalItemAcceptedEffectSourceAuthority.cs BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs BookOfEternityClient/Services/Validation/ValidationService.MortalItemMaterialization.cs BookOfEternityClient/Services/MortalItemIdentityState.cs BookOfEternityClient/Services/MortalItemTransitionWriter.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentSkillPublication.cs BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs
 git commit -m "refactor(items): extract accepted item state projection (#1536)"
 ```
 
@@ -230,19 +233,39 @@ internal sealed record MortalItemConsumptionCommand(
     string AuthorityKind,
     string AuthorityId);
 
+internal sealed record MortalItemConsumptionPlanningInput(
+    int Turn,
+    string BaselineFingerprint,
+    MortalItemCarrierCatalogInput CarrierRoots,
+    MortalItemIdentityParseResult IdentityState,
+    IReadOnlyList<MortalItemConsumptionCommand> Commands,
+    ResourceDefinitionCatalog Definitions,
+    ResourceStateLedger ResourceState,
+    ResourceSourceEvidence CapacitySourceEvidence,
+    string CapacityPolicyFingerprint);
+
 internal sealed record MortalItemConsumptionPlanningResult(
     IReadOnlyDictionary<string, JsonObject> CarrierAfterImages,
-    JsonObject IdentityIndexAfterImage,
+    JsonObject? IdentityIndexAfterImage,
+    IReadOnlyList<JsonObject> IdentityTransitions,
     IReadOnlyList<ResourceCapacityIntent> CapacityTransitions,
     IReadOnlyList<ResourceOwnerKey> TerminalOwners,
     IReadOnlyList<ValidationIssue> Issues,
     string Fingerprint)
 {
-    internal bool IsValid => Issues.Count == 0;
+    internal bool IsValid => IdentityIndexAfterImage != null && Issues.Count == 0;
+}
+
+internal static class MortalItemConsumptionPlanner
+{
+    internal static MortalItemConsumptionPlanningResult Plan(
+        MortalItemConsumptionPlanningInput input);
 }
 ```
 
-`Plan` accepts commands only in exact contiguous finalization-ordinal order and validates item carrier/index/current-transition quantity agreement before changing a detached working set.
+`Plan` has exactly the one-argument signature above. `CarrierRoots` is the complete detached `MortalItemCarrierCatalogInput` built from the verified skill-composed baseline, including companion roots; the planner clones it before mutation. `IdentityState` is the already parsed exact canonical index. `CapacitySourceEvidence.SourceId` is the one attempt-derived origin shared by every partial capacity row, and its authority fingerprint plus `CapacityPolicyFingerprint` are privately minted by treatment publication. The result fingerprint binds every input field plus every detached output. Resource history is intentionally not a planner input: this planner emits registered capacity intents only, while the existing common reducer performs history/replay validation and append.
+
+Commands are accepted only in exact contiguous finalization-ordinal order. The planner validates item carrier/index/current-transition quantity agreement before changing a detached working set. Any invalid result has an empty `CarrierAfterImages`, null `IdentityIndexAfterImage`, empty transition/capacity/terminal-owner collections, and only detached issues/fingerprint; no partial after-image escapes.
 
 - [ ] **Step 2: Use the shared explicit transition-ID contract for consumption**
 

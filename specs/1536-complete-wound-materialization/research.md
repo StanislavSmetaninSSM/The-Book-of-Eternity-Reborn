@@ -609,6 +609,16 @@ coordinate. The final item carrier/index roots, resource state/history/owner aut
 skill projection, wound/effect/history/output, and command consumption are one plan and
 one normalizer transaction.
 
+The pure boundary uses exactly
+`MortalItemConsumptionPlanner.Plan(MortalItemConsumptionPlanningInput)`. The single input
+contains the turn, upstream baseline fingerprint, complete detached carrier/companion
+catalog roots, parsed identity state, ordered commands, resource definitions/state, and
+attempt-derived capacity source/policy evidence. The result exposes only detached carrier/
+index after-images, ordered identity transitions, registered capacity intents, terminal
+owners, issues, and a complete-graph fingerprint. Invalid planning exposes no actionable
+subset. `ResourceHistoryState` is intentionally excluded because replay/history remains
+the sole responsibility of the common reducer.
+
 The final pre-publication projection is mandatory because accepted item normalization is
 followed by other ordinary normalizers before common-plan publication. NPC inventory and
 the plan-owned treatment skill projection share `npc_core.json`, while inventory journal

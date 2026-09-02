@@ -999,8 +999,25 @@ or transfer authority, and ordinal. The ordinary normalizer and treatment projec
 those same IDs into the shared pure receipt/transition logic; neither invokes the writing
 transfer service or allocates a fresh random receipt/history row.
 
-On that baseline, a pure `MortalItemConsumptionPlanner` accepts only exact selected claims
-and processes one transition per finalization intent in frozen order. Partial consumption
+On that baseline, a pure `MortalItemConsumptionPlanner` has exactly one entry point:
+
+```csharp
+internal static MortalItemConsumptionPlanningResult Plan(
+    MortalItemConsumptionPlanningInput input);
+```
+
+The frozen input contains `Turn`, the exact upstream `BaselineFingerprint`, a complete
+detached `MortalItemCarrierCatalogInput` including companion roots, the parsed
+`MortalItemIdentityParseResult`, ordered commands, `ResourceDefinitionCatalog`,
+`ResourceStateLedger`, one attempt-derived `ResourceSourceEvidence`, and the exact capacity
+policy fingerprint. The planner clones JSON inputs and its fingerprint covers the entire
+input/output graph. It does not accept `ResourceHistoryState`: registered capacity intents
+flow into the existing common reducer, which remains the sole history/replay authority.
+Invalid planning returns issues but no carrier/index after-image, identity transition,
+capacity intent, or terminal owner subset.
+
+The planner accepts only exact selected claims and processes one transition per
+finalization intent in frozen order. Partial consumption
 retains item identity/receipt/carrier and decrements count. Full consumption removes the
 item, clears only supported inline equipment, records `consumed`, and returns a terminal
 item owner. A container, quest, bond, or other companion reference requires its own genuine
