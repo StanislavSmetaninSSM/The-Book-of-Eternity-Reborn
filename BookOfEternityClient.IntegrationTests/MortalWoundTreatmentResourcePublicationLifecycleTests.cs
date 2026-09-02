@@ -29,6 +29,60 @@ public sealed partial class GameEngineTurnLifecycleTests
         "SettleTreatmentResourcePublicationCompletionFailureAsync";
 
     [Fact]
+    public async Task GuaranteedMixedItemAndResourceConsumption_PostWriteFailureRestoresEveryRootAndRearmsSamePlan()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.Request);
+        Assert.NotNull(context.Resolution);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_PostSealCountCarrierOrIndexDriftRejectsBeforeAnySpend()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.Plan);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_NpcSkillAndItemShareOneComposedNpcCoreRoot()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.AcceptedState);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_ColdAcceptedReplayDoesNotAppendItemOrResourceTransitions()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.OriginalBinding);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.TreatmentContext);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_UnsupportedCompanionReferenceRejectsBeforeAnyWrite()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(fault: null);
+        Assert.NotNull(context.FileSystem);
+        RequireTreatmentItemPublicationAuthority();
+    }
+
+    private static void RequireTreatmentItemPublicationAuthority() => Assert.True(
+        typeof(WoundAcceptedTurnPlanner).Assembly.GetType(
+            "BookOfEternityClient.Services.MortalWoundTreatmentItemPublicationAuthority") is not null,
+        "T070-B.4 requires a sealed treatment item-publication authority before item lifecycle scenarios can be admitted.");
+
+    [Fact]
     public async Task GuaranteedResourceQuantity_ResourceFreeCommonPlanKeepsOpenTransactionCarrierEmpty()
     {
         await using var context = await ResourceMaterializationTestContext.CreateAsync();

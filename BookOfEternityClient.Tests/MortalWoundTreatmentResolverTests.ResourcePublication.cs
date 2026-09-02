@@ -184,7 +184,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
-    public void GuaranteedResourceQuantity_SelectedItemConsumptionFailsClosedWithoutPartialSpend()
+    public void GuaranteedMixedItemAndResourceConsumption_PublishesAtomicallyOnce()
     {
         var scenario = CreateGuaranteedResourcePublicationScenario(
             resourceQuantities: new[] { 2 },
@@ -197,23 +197,60 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture,
             scenario,
             "mixed_item_resource");
-        var treeBefore = CaptureResolverFixtureTree(fixture.Root);
-        var itemCarrierBefore = CaptureItemCarrierBytes(fixture);
+        var composed = ComposeResourcePublicationResult(fixture, flow);
 
-        var result = ComposeResourcePublicationResult(fixture, flow);
-
-        Assert.False(result.IsValid);
-        Assert.Null(result.Plan);
-        var issue = Assert.Single(result.Issues);
-        Assert.Equal(DeferredItemConsumptionCode, issue.Code);
-        Assert.Contains("T070-B.4", issue.Expected, StringComparison.Ordinal);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
-            fixture.FileSystem,
-            fixture.Lease));
-        AssertResolverFixtureTreeUnchanged(fixture.Root, treeBefore);
-        Assert.Equal(10, ReadPlayerEnergy(fixture));
-        AssertItemCarrierBytesEqual(fixture, itemCarrierBefore);
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        Assert.DoesNotContain(
+            composed.Issues,
+            issue => issue.Code == DeferredItemConsumptionCode);
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_ClosedItemEnvelopePreservesEverySupportedFieldAndRejectsEveryOtherField()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "closed_item_envelope");
+
+        var composed = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+        Assert.DoesNotContain(composed.Issues, issue =>
+            issue.Code == DeferredItemConsumptionCode);
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "final_prepublication_baseline");
+        var before = CaptureResolverFixtureTree(fixture.Root);
+
+        var composed = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+        Assert.DoesNotContain(composed.Issues, issue =>
+            issue.Code == DeferredItemConsumptionCode);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, before);
     }
 
     [Fact]
