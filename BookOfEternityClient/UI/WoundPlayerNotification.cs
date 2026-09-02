@@ -115,6 +115,15 @@ internal sealed record WoundPlayerNotification(
         var mutations = final.CarrierContributions
             .SelectMany(static value => value.Mutations)
             .ToArray();
+
+        if (prepared.TreatmentContinuationAuthority is not null)
+        {
+            return ComposeAcceptedTreatmentContinuation(
+                input,
+                prepared,
+                mutations);
+        }
+
         var issues = new List<ValidationIssue>();
         var notifications = new List<WoundPlayerNotification>(transitions.Count);
         var matchedWoundIds = new HashSet<string>(StringComparer.Ordinal);
@@ -204,6 +213,68 @@ internal sealed record WoundPlayerNotification(
                     }
                     : issues);
     }
+
+    private static WoundAcceptedTurnOutputBindingResult
+        ComposeAcceptedTreatmentContinuation(
+            WoundAcceptedTurnInput input,
+            WoundPreparedAcceptedTurnPlan prepared,
+            IReadOnlyList<WoundCarrierMutation> mutations)
+    {
+        if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                prepared.TreatmentContinuationAuthority,
+                out var continuation) ||
+            !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) ||
+            input.Transitions.Count != 0 ||
+            prepared.EffectOperationBatches.Count != 0 ||
+            mutations.Count != 1)
+        {
+            return TreatmentContinuationBindingFailure(
+                $"transitions={input.Transitions.Count}," +
+                $"batches={prepared.EffectOperationBatches.Count}," +
+                $"mutations={mutations.Count}");
+        }
+
+        var mutation = mutations[0];
+        if (mutation.BeforeWound is not { } before ||
+            mutation.AfterWound is not { } after ||
+            !string.Equals(mutation.Operation, "update", StringComparison.Ordinal) ||
+            !string.Equals(
+                mutation.WoundId,
+                continuation.Before.WoundId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                mutation.WoundId,
+                continuation.After.WoundId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                WoundMaterializationContract.SerializeCanonical(before),
+                WoundMaterializationContract.SerializeCanonical(
+                    continuation.Before),
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                WoundMaterializationContract.SerializeCanonical(after),
+                WoundMaterializationContract.SerializeCanonical(
+                    continuation.After),
+                StringComparison.Ordinal))
+        {
+            return TreatmentContinuationBindingFailure(
+                $"operation={mutation.Operation},woundId={mutation.WoundId}");
+        }
+
+        return new WoundAcceptedTurnOutputBindingResult(
+            Array.Empty<WoundPlayerNotification>(),
+            Array.Empty<ValidationIssue>());
+    }
+
+    private static WoundAcceptedTurnOutputBindingResult
+        TreatmentContinuationBindingFailure(string actual) => new(
+            Array.Empty<WoundPlayerNotification>(),
+            new[]
+            {
+                AcceptedTurnBindingIssue(
+                    "one exact sealed treatment update",
+                    actual)
+            });
 
     private static WoundAcquisitionOutputResult ComposeCore(
         string localWoundRef,

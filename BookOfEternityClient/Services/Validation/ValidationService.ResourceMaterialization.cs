@@ -21,6 +21,11 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        var retainedTreatment = await
+            ValidateRetainedMortalWoundTreatmentPublicationAsync(writeLease);
+        if (retainedTreatment is not null)
+            return retainedTreatment;
+
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var keepCommonHandoff = false;
@@ -41,6 +46,113 @@ public partial class ValidationService
                 EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
             }
         }
+    }
+
+    private async Task<IReadOnlyList<ValidationIssue>?>
+        ValidateRetainedMortalWoundTreatmentPublicationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease)
+    {
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fs,
+                writeLease,
+                out _,
+                out var peeked) ||
+            !peeked.Success ||
+            peeked.Plan?.TreatmentResourcePublicationAuthority is not
+                { } authority)
+        {
+            return null;
+        }
+
+        var issues = new List<ValidationIssue>();
+        var authorityIssues = new List<ValidationIssue>();
+        var finalization = MortalWoundTreatmentResourceComposer.Finalize(
+            authority.ResolutionAuthority);
+        authorityIssues.AddRange(finalization.Issues);
+        if (finalization.Finalization is { } recomposedFinalization)
+        {
+            authorityIssues.AddRange(authority.ValidateCandidate(
+                peeked.Plan,
+                recomposedFinalization));
+        }
+        issues.AddRange(authorityIssues);
+
+        foreach (var pair in peeked.Plan.BeforeImages.OrderBy(
+                     static value => value.Key,
+                     StringComparer.Ordinal))
+        {
+            var current = await _fs.ReadFileBytesAsync(writeLease, pair.Key);
+            var expected = pair.Value.Bytes;
+            var agrees = pair.Value.Existed == (current is not null) &&
+                         (expected is null
+                             ? current is null
+                             : current is not null &&
+                               expected.AsSpan().SequenceEqual(current));
+            if (!agrees)
+            {
+                issues.Add(WoundIssue(
+                    pair.Key,
+                    "accepted_mechanics_wound_live_before_image_mismatch",
+                    "the exact sealed Mortal wound-treatment publication before-image",
+                    "canonical bytes changed after treatment-plan admission"));
+            }
+        }
+
+        var exactConfirmedHold = false;
+        if (authority.RequiresConfirmedHold)
+        {
+            var hold = AcceptedTurnAuthorityRegistry
+                .ProbeMortalWoundTreatmentResourcePublicationHold(
+                    _fs,
+                    writeLease,
+                    authority.AcceptedStateAuthority,
+                    authority.RequestAuthority,
+                    authority.Finalization);
+            issues.AddRange(hold.Issues);
+            exactConfirmedHold = hold.IsValid &&
+                                 hold.Issues.Count == 0 &&
+                                 hold.ChangedCount == 0 &&
+                                 hold.State ==
+                                 MortalWoundTreatmentResourceReservationState
+                                     .ConfirmedHeld &&
+                                 string.Equals(
+                                     hold.OperationKey,
+                                     authority.RequestAuthority.Coordinates
+                                         .OperationKey,
+                                     StringComparison.Ordinal) &&
+                                 string.Equals(
+                                     hold.AttemptId,
+                                     authority.RequestAuthority.Coordinates
+                                         .AttemptId,
+                                     StringComparison.Ordinal) &&
+                                 string.Equals(
+                                     hold.RequestFingerprint,
+                                     authority.RequestFingerprint,
+                                     StringComparison.Ordinal) &&
+                                 string.Equals(
+                                     hold.ResourceAuthorityFingerprint,
+                                     authority.Finalization
+                                         .ResourceAuthorityFingerprint,
+                                     StringComparison.Ordinal) &&
+                                 string.Equals(
+                                     hold.FinalizationFingerprint,
+                                     authority.FinalizationFingerprint,
+                                     StringComparison.Ordinal);
+        }
+
+        var retainForExactTerminalSettlement =
+            authority.RequiresConfirmedHold &&
+            authority.HasValidSeal() &&
+            exactConfirmedHold &&
+            !authorityIssues.Any(static issue =>
+                issue.Severity == IssueSeverity.Error);
+        if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) &&
+            !retainForExactTerminalSettlement)
+        {
+            AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
+            EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
+        }
+        return issues;
     }
 
     private async Task<IReadOnlyList<ValidationIssue>>

@@ -130,7 +130,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "effect materialization repair",
@@ -143,7 +143,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Null(gmFailure);
         Assert.True(readyOnlyRejected);
         Assert.True(partialEffectOnlyRejected);
-        Assert.True(accepted);
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, accepted);
         Assert.False(_fs.FileExists(EffectAcceptedTurnPlan.CommandPath));
         Assert.True(_fs.FileExists(EffectCarrierCatalog.PlayerPath));
         Assert.True(_fs.FileExists(EffectAcceptedTurnPlan.IdentityIndexPath));

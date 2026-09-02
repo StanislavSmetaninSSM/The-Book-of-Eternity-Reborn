@@ -1,4 +1,5 @@
 using System.Runtime.ExceptionServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -1526,7 +1527,241 @@ internal static class AcceptedTurnCanonicalStateRefresh
 {
     internal sealed record Result(
         IReadOnlyList<ValidationIssue> Issues,
-        AcceptedMechanicsPlan? MechanicsPlan);
+        AcceptedMechanicsPlan? MechanicsPlan,
+        MortalWoundTreatmentResourcePublicationTransaction?
+            TreatmentResourcePublicationTransaction = null);
+
+    private static Task<MortalWoundTreatmentPublicationProbeResult>
+        ProbeTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.ProbeAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        CompleteTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.CompleteAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        CompensateTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.CompensateAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        ReleaseTreatmentResourcePublicationTerminalAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction,
+            string reason) =>
+        transaction.ReleaseTerminalAsync(fs, reason);
+
+    internal static async Task<MortalWoundTreatmentPublicationOperationResult?>
+        ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync(
+            FileSystemManager fs,
+            string reason)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fs,
+                writeLease,
+                out var binding,
+                out var peeked))
+        {
+            return null;
+        }
+        if (!peeked.Success || peeked.Plan is null)
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup found an incomplete validated accepted-mechanics plan.");
+        }
+
+        var plan = peeked.Plan;
+        var authority = plan.TreatmentResourcePublicationAuthority;
+        if (authority is null || !authority.RequiresConfirmedHold)
+            return null;
+        if (!authority.HasValidSeal())
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup requires the exact sealed resource-publication authority.");
+        }
+
+        var liveHold = AcceptedTurnAuthorityRegistry
+            .ProbeMortalWoundTreatmentResourcePublicationHold(
+                fs,
+                writeLease,
+                authority.AcceptedStateAuthority,
+                authority.RequestAuthority,
+                authority.Finalization);
+        if (!liveHold.IsValid ||
+            liveHold.Issues.Count != 0 ||
+            liveHold.ChangedCount != 0 ||
+            liveHold.State !=
+                MortalWoundTreatmentResourceReservationState.ConfirmedHeld ||
+            !string.Equals(
+                liveHold.OperationKey,
+                authority.RequestAuthority.Coordinates.OperationKey,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                liveHold.AttemptId,
+                authority.RequestAuthority.Coordinates.AttemptId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                liveHold.RequestFingerprint,
+                authority.RequestFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                liveHold.ResourceAuthorityFingerprint,
+                authority.Finalization.ResourceAuthorityFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                liveHold.FinalizationFingerprint,
+                authority.FinalizationFingerprint,
+                StringComparison.Ordinal))
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup requires the unchanged live ConfirmedHeld agreement.");
+        }
+
+        if (!MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                fs,
+                writeLease,
+                binding.SessionId,
+                binding.SnapshotToken,
+                binding.Turn,
+                out var mortalItemSnapshot) ||
+            !mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
+                plan.OwnerAuthority))
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup could not capture the exact Mortal item authority snapshot.");
+        }
+
+        var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+        var commandBefore = beforeImages.SingleOrDefault(value => string.Equals(
+            value.Path,
+            AcceptedMechanicsPlan.WoundCommandPath,
+            StringComparison.Ordinal));
+        var pendingBefore = beforeImages.SingleOrDefault(value => string.Equals(
+            value.Path,
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+            StringComparison.Ordinal));
+        if (commandBefore?.Bytes is not { } commandBytes ||
+            pendingBefore is null)
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup requires exact command and pending before-images.");
+        }
+        var command = ParseTreatmentDurableRoot(
+            commandBytes,
+            AcceptedMechanicsPlan.WoundCommandPath);
+        var pending = pendingBefore.Bytes is { } pendingBytes
+            ? ParseTreatmentDurableRoot(
+                pendingBytes,
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
+            : null;
+        if (!MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(
+                command,
+                pending,
+                authority.RequestAuthority.Coordinates.OperationKey,
+                authority.RequestAuthority.Coordinates.AttemptId,
+                authority.RequestFingerprint))
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup could not prove the exact durable request row before take.");
+        }
+
+        MortalWoundTreatmentResourcePublicationTransaction? transaction = null;
+        try
+        {
+            if (!AcceptedMechanicsPlanAuthority
+                    .TryTakeValidatedTreatmentPublication(
+                        fs,
+                        writeLease,
+                        binding,
+                        mortalItemSnapshot,
+                        out var taken,
+                        out var receipt) ||
+                !taken.Success || taken.Plan is null ||
+                !ReferenceEquals(plan, taken.Plan))
+            {
+                throw new InvalidDataException(
+                    "Pre-canonical treatment cleanup could not take the exact validated publication plan.");
+            }
+
+            transaction = MortalWoundTreatmentResourcePublicationTransaction.Create(
+                fs,
+                plan,
+                binding,
+                receipt,
+                beforeImages);
+            var released = await transaction.ReleaseTerminalUnderLeaseAsync(
+                fs,
+                writeLease,
+                reason);
+            if (!released.IsValid ||
+                released.Issues.Count != 0 ||
+                released.ChangedCount != 1 ||
+                released.Outcome is not (
+                    MortalWoundTreatmentPublicationTransactionOutcome.Released or
+                    MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked))
+            {
+                throw new InvalidOperationException(
+                    "Pre-canonical treatment cleanup did not atomically quarantine and release the exact held request.");
+            }
+            return released;
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            if (transaction is null)
+                throw;
+
+            try
+            {
+                await transaction.FinishHelperFailureAsync(fs, writeLease);
+            }
+            catch (Exception settlementException)
+            {
+                throw new AggregateException(
+                    "Pre-canonical treatment cleanup failed and its transaction could not be settled safely.",
+                    exception,
+                    settlementException);
+            }
+            ExceptionDispatchInfo.Capture(exception).Throw();
+            throw;
+        }
+    }
+
+    private static JsonObject ParseTreatmentDurableRoot(
+        byte[] bytes,
+        string path)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+        try
+        {
+            return JsonNode.Parse(bytes.AsSpan(offset)) as JsonObject ??
+                   throw new InvalidDataException(
+                       $"Treatment durable root '{path}' is not a JSON object.");
+        }
+        catch (JsonException exception)
+        {
+            throw new InvalidDataException(
+                $"Treatment durable root '{path}' is malformed.",
+                exception);
+        }
+    }
 
     internal static async Task<IReadOnlyList<ValidationIssue>> NormalizeAndValidateAsync(
         FileSystemManager fs,
@@ -1555,10 +1790,48 @@ internal static class AcceptedTurnCanonicalStateRefresh
 
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
         var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+        MortalWoundTreatmentResourcePublicationTransaction? treatmentTransaction = null;
         try
         {
-            var mechanicsPlan = await normalizer.BindTo(writeLease)
-                .NormalizeAccumulatedStateWithPlanAsync(backups);
+            var boundNormalizer = normalizer.BindTo(writeLease);
+            var treatmentPreflight = await boundNormalizer
+                .PrevalidateTreatmentResourcePublicationTransactionAsync();
+            AcceptedMechanicsPlan? mechanicsPlan;
+            if (treatmentPreflight is null)
+            {
+                mechanicsPlan = await boundNormalizer
+                    .NormalizeAccumulatedStateWithPlanAsync(backups);
+            }
+            else
+            {
+                if (!AcceptedMechanicsPlanAuthority
+                        .TryTakeValidatedTreatmentPublication(
+                            fs,
+                            writeLease,
+                            treatmentPreflight.Binding,
+                            treatmentPreflight.MortalItemSnapshot,
+                            out var taken,
+                            out var receipt) ||
+                    !taken.Success || taken.Plan is null ||
+                    !ReferenceEquals(treatmentPreflight.Plan, taken.Plan))
+                {
+                    throw new InvalidDataException(
+                        "The held Mortal wound-treatment publication transaction could not take the exact validated plan.");
+                }
+
+                treatmentTransaction =
+                    MortalWoundTreatmentResourcePublicationTransaction.Create(
+                        fs,
+                        treatmentPreflight.Plan,
+                        treatmentPreflight.Binding,
+                        receipt,
+                        beforeImages);
+                mechanicsPlan = await boundNormalizer
+                    .NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync(
+                        backups,
+                        treatmentPreflight,
+                        receipt);
+            }
             var issues = new List<ValidationIssue>();
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
@@ -1586,20 +1859,45 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
                 mechanicsPlan = null;
             }
-            return new Result(issues, mechanicsPlan);
+            else if (treatmentTransaction is not null)
+            {
+                await treatmentTransaction.CapturePublishedAgreementAsync(
+                    fs,
+                    writeLease);
+            }
+            return new Result(issues, mechanicsPlan, treatmentTransaction);
         }
         catch (Exception exception)
         {
+            var rollbackFailures = new List<Exception>();
             try
             {
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             }
             catch (Exception rollbackException)
             {
+                rollbackFailures.Add(rollbackException);
+            }
+
+            if (treatmentTransaction is not null)
+            {
+                try
+                {
+                    await treatmentTransaction.FinishHelperFailureAsync(
+                        fs,
+                        writeLease);
+                }
+                catch (Exception rollbackException)
+                {
+                    rollbackFailures.Add(rollbackException);
+                }
+            }
+
+            if (rollbackFailures.Count != 0)
+            {
                 throw new AggregateException(
                     "Accepted-turn canonical normalization failed and exact rollback also failed.",
-                    exception,
-                    rollbackException);
+                    new[] { exception }.Concat(rollbackFailures));
             }
 
             ExceptionDispatchInfo.Capture(exception).Throw();
@@ -1607,16 +1905,17 @@ internal static class AcceptedTurnCanonicalStateRefresh
         }
     }
 
-    private static async Task<IReadOnlyList<CanonicalBeforeImage>> CaptureBeforeImagesAsync(
+    private static async Task<IReadOnlyList<
+        MortalWoundTreatmentPublicationBeforeImage>> CaptureBeforeImagesAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var beforeImages = new List<CanonicalBeforeImage>(
+        var beforeImages = new List<MortalWoundTreatmentPublicationBeforeImage>(
             CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Length);
         foreach (var path in CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            beforeImages.Add(new CanonicalBeforeImage(
+            beforeImages.Add(new MortalWoundTreatmentPublicationBeforeImage(
                 path,
                 await fs.ReadFileBytesAsync(writeLease, path)));
         }
@@ -1627,7 +1926,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
     private static async Task RestoreBeforeImagesAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
-        IReadOnlyList<CanonicalBeforeImage> beforeImages)
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
     {
         var failures = new List<Exception>();
         for (var index = beforeImages.Count - 1; index >= 0; index--)
@@ -1666,5 +1965,4 @@ internal static class AcceptedTurnCanonicalStateRefresh
         }
     }
 
-    private sealed record CanonicalBeforeImage(string Path, byte[]? Bytes);
 }

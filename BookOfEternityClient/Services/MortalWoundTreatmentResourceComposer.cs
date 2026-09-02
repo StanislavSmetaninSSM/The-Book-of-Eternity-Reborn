@@ -892,23 +892,25 @@ internal static class MortalWoundTreatmentResourceComposer
                     selectorIssue!);
             }
 
+            var claimsByFingerprint = resource.Claims.ToDictionary(
+                static claim => claim.ClaimFingerprint,
+                StringComparer.Ordinal);
             var consumptions = new List<MortalWoundTreatmentResourceConsumptionIntent>();
-            var released = new List<string>();
-            foreach (var claim in resource.Claims)
+            foreach (var claimFingerprint in selectedClaimFingerprints!)
             {
-                if (selectedClaimFingerprints!.Contains(claim.ClaimFingerprint))
-                {
-                    consumptions.Add(MortalWoundTreatmentResourceConsumptionIntent.Create(
-                        claim,
-                        claim.Scope == "course_milestone"
-                            ? resolution.CourseMilestoneOrdinal
-                            : null));
-                }
-                else
-                {
-                    released.Add(claim.ClaimFingerprint);
-                }
+                var claim = claimsByFingerprint[claimFingerprint];
+                consumptions.Add(MortalWoundTreatmentResourceConsumptionIntent.Create(
+                    claim,
+                    claim.Scope == "course_milestone"
+                        ? resolution.CourseMilestoneOrdinal
+                        : null));
             }
+            var selectedClaimSet = selectedClaimFingerprints.ToHashSet(
+                StringComparer.Ordinal);
+            var released = resource.Claims
+                .Where(claim => !selectedClaimSet.Contains(claim.ClaimFingerprint))
+                .Select(static claim => claim.ClaimFingerprint)
+                .ToList();
 
             if (resource.ReservationDisposition == "not_required")
             {
@@ -1078,10 +1080,12 @@ internal static class MortalWoundTreatmentResourceComposer
     private static bool TrySelectCurrentClaims(
         MortalWoundTreatmentResolution resolution,
         string trigger,
-        out HashSet<string>? selectedClaimFingerprints,
+        out IReadOnlyList<string>? selectedClaimFingerprints,
         out ValidationIssue? issue)
     {
-        selectedClaimFingerprints = new HashSet<string>(StringComparer.Ordinal);
+        var selected = new List<string>();
+        var selectedSet = new HashSet<string>(StringComparer.Ordinal);
+        selectedClaimFingerprints = selected;
         issue = null;
         if (trigger == "none")
             return true;
@@ -1107,7 +1111,7 @@ internal static class MortalWoundTreatmentResourceComposer
             if (matches.Length != 1 ||
                 matches[0].Kind is not ("item_quantity" or "resource_quantity") ||
                 matches[0].Quantity <= 0 ||
-                !selectedClaimFingerprints.Add(matches[0].ClaimFingerprint))
+                !selectedSet.Add(matches[0].ClaimFingerprint))
             {
                 issue = CreateFinalizationIssue(
                     "mortal_wound_treatment_resource_finalization_selector_invalid",
@@ -1116,6 +1120,7 @@ internal static class MortalWoundTreatmentResourceComposer
                 selectedClaimFingerprints = null;
                 return false;
             }
+            selected.Add(matches[0].ClaimFingerprint);
         }
         return true;
     }

@@ -1940,6 +1940,32 @@ internal static class MortalWoundTreatmentCommandCodec
                     sealMismatch + " carried authority fingerprint disagrees");
                 request = null;
             }
+            if (request is not null)
+            {
+                var rehydrated = MortalWoundTreatmentResourceComposer
+                    .RehydratePersistedAuthority(request);
+                var hydratedRequest = rehydrated.IsValid &&
+                                      rehydrated.Issues.Count == 0 &&
+                                      rehydrated.Authority is not null
+                    ? request.AttachRestoredResourceAuthority(
+                        rehydrated.Authority)
+                    : null;
+                if (hydratedRequest is null)
+                {
+                    Add(issues, path + ".resourceAuthority",
+                        "mortal_wound_treatment_persisted_resource_rehydration_invalid",
+                        "one resource authority rebuilt from its sealed requirement bindings",
+                        rehydrated.Issues.Count == 0
+                            ? "resource authority attachment failed"
+                            : string.Join(",", rehydrated.Issues.Select(static issue =>
+                                issue.Code)));
+                    request = null;
+                }
+                else
+                {
+                    request = hydratedRequest;
+                }
+            }
         }
         catch (Exception exception) when (exception is JsonException or
                                            NotSupportedException or

@@ -7253,6 +7253,21 @@ public partial class ValidationService
             return;
         }
 
+        if (string.Equals(
+                contextPrefix,
+                WoundCarrierCatalog.PlayerPath,
+                StringComparison.Ordinal))
+        {
+            var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
+            issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                playerWounds,
+                null,
+                null,
+                null,
+                null)).Issues);
+            return;
+        }
+
         if (HasAnyNonEmptyString(root, "woundName", "name"))
         {
             ValidateWoundObject(root, contextPrefix, issues);

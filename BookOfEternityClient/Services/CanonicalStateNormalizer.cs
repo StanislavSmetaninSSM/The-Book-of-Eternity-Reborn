@@ -283,8 +283,18 @@ public partial class CanonicalStateNormalizer
                 .NormalizeAccumulatedStateWithPlanAsync(backups);
         }
 
+        EnsureHeldTreatmentPublicationUsesCoordinator();
         var acceptedMechanicsPreflight =
             await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
+        if (acceptedMechanicsPreflight is
+                AcceptedMechanicsNormalizationPreflight.Validated
+                {
+                    Plan.TreatmentResourcePublicationAuthority.RequiresConfirmedHold: true
+                })
+        {
+            throw new InvalidOperationException(
+                "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
+        }
         var mortalItemMode = CaptureMortalItemAcceptedTurnNormalizationMode(
             acceptedMechanicsPreflight);
         if (acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated)
@@ -301,6 +311,35 @@ public partial class CanonicalStateNormalizer
                 backups,
                 mortalItemMode,
                 acceptedMechanicsPreflight);
+    }
+
+    internal async Task<AcceptedMechanicsPlan?>
+        NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync(
+            IReadOnlyDictionary<string, string>? backups,
+            TreatmentResourcePublicationPreflight preflight,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(preflight);
+        ArgumentNullException.ThrowIfNull(receipt);
+        if (_writeLease == null)
+        {
+            throw new InvalidOperationException(
+                "Held treatment publication normalization requires the owning canonical write lease.");
+        }
+        if (preflight.Plan.TreatmentResourcePublicationAuthority is not
+            { RequiresConfirmedHold: true })
+        {
+            throw new InvalidOperationException(
+                "Held treatment publication normalization requires one exact confirmed resource authority.");
+        }
+
+        var mortalItemMode = new MortalItemAcceptedTurnNormalizationMode.Validated(
+            preflight.MortalItemSnapshot);
+        return await NormalizeAccumulatedStateCoreAsync(
+            backups,
+            mortalItemMode,
+            preflight.Validated,
+            receipt);
     }
 
     internal async Task NormalizeClientOwnedBootstrapAccumulatedStateAsync(
@@ -324,7 +363,8 @@ public partial class CanonicalStateNormalizer
     private async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateCoreAsync(
         IReadOnlyDictionary<string, string>? backups,
         MortalItemAcceptedTurnNormalizationMode mortalItemMode,
-        AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight)
+        AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight,
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
@@ -381,10 +421,11 @@ public partial class CanonicalStateNormalizer
         return acceptedMechanicsPreflight == null
             ? null
             : await PublishAcceptedMechanicsAsync(
-                backups,
-                mortalLocationPlan,
-                acceptedMechanicsPreflight,
-                normalizedAcceptedCarrierBaselines: true);
+                 backups,
+                 mortalLocationPlan,
+                 acceptedMechanicsPreflight,
+                 normalizedAcceptedCarrierBaselines: true,
+                 treatmentPublicationReceipt);
     }
 
     private void EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority()

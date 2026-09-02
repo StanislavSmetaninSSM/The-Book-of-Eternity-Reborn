@@ -16,6 +16,14 @@ using Spectre.Console;
 
 namespace BookOfEternityClient.Core;
 
+internal enum AcceptedTurnValidationDisposition
+{
+    Accepted,
+    TerminalRejected,
+    RetryablePublicationRearmed,
+    RetryablePublicationHeldBlocked
+}
+
 public partial class GameEngine
 {
     private const string WoundNarrativeOutputPath =
@@ -30,6 +38,38 @@ public partial class GameEngine
     ];
     private WoundPlayerNotification[] _acceptedTurnWoundNotifications =
         Array.Empty<WoundPlayerNotification>();
+
+    private sealed class CompensatedTreatmentPublicationException : Exception
+    {
+        internal CompensatedTreatmentPublicationException(
+            Exception originalException,
+            MortalWoundTreatmentPublicationTransactionOutcome outcome)
+            : base(
+                "The held treatment publication failed after publication and was safely compensated.",
+                originalException)
+        {
+            Outcome = outcome;
+        }
+
+        internal MortalWoundTreatmentPublicationTransactionOutcome Outcome
+        {
+            get;
+        }
+    }
+
+    private sealed class UnsafeTreatmentPublicationSettlementException
+        : AggregateException
+    {
+        internal UnsafeTreatmentPublicationSettlementException(
+            Exception originalException,
+            Exception settlementException)
+            : base(
+                "Held treatment publication failed and its compensation did not reach one exact safe settlement.",
+                originalException,
+                settlementException)
+        {
+        }
+    }
 
     internal static WoundAcceptedTurnOutputBindingResult BindAcceptedWoundOutput(
         AcceptedMechanicsPlan plan,
@@ -131,7 +171,10 @@ public partial class GameEngine
         DateTime? initialCanonicalRepairBoundaryUtc = null,
         IReadOnlyCollection<ValidationIssue>? initialCanonicalRepairErrors = null,
         DateTime? initialCanonicalRepairStartedAtUtc = null,
-        byte[]? pendingResolutionRepairCheckpoint = null)
+        byte[]? pendingResolutionRepairCheckpoint = null,
+        Func<Task>? beforeRepairMutation = null,
+        Func<Task>? beforeTerminalRepairReturn = null,
+        bool applyProgressionOnSuccess = true)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
@@ -140,6 +183,7 @@ public partial class GameEngine
         var lastCanonicalRepairBoundaryUtc = initialCanonicalRepairBoundaryUtc;
         DateTime? lastCanonicalRepairStartedAtUtc = initialCanonicalRepairStartedAtUtc;
         string? lastRepairSessionGeneration = null;
+        var repairMutationPrepared = false;
 
         while (true)
         {
@@ -196,9 +240,17 @@ public partial class GameEngine
                 {
                     await DeleteValidationRepairFilesAsync();
                 }
-                if (progressionControl != null)
+                if (applyProgressionOnSuccess && progressionControl != null)
                     await _progressionSchedule.ApplyAcceptedTurnOutcomeAsync(progressionControl);
                 return true;
+            }
+
+            if (allowRepairLoop &&
+                !repairMutationPrepared &&
+                beforeRepairMutation is not null)
+            {
+                await beforeRepairMutation();
+                repairMutationPrepared = true;
             }
 
             if (allowRepairLoop && await TryAutoRollbackRealmSegregationViolationsAsync(source, errors))
@@ -240,7 +292,11 @@ public partial class GameEngine
                     rollbackSnapshot,
                     lastRepairSessionGeneration,
                     pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
+            {
+                if (beforeTerminalRepairReturn is not null)
+                    await beforeTerminalRepairReturn();
                 return false;
+            }
             var canonicalRepairErrors = errors
                 .Where(issue => IsCanonicalStateRepairIssue(issue) &&
                                 !IsPlayerFacingNeutralActorMemoryRepairIssue(issue))
@@ -267,7 +323,8 @@ public partial class GameEngine
         }
     }
 
-    private async Task<bool> ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+    private async Task<AcceptedTurnValidationDisposition>
+        ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
         string source,
         ValidatedPendingTurnSnapshotContext? activeSnapshotContext,
         RollbackSnapshot? rollbackSnapshot,
@@ -512,7 +569,11 @@ public partial class GameEngine
                         woundRepairRetryObligations,
                         woundRequiredResubmissionPaths,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                    return false;
+                {
+                    return await SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync(
+                        rollbackSnapshot,
+                        "validation_failed");
+                }
                 lastCriticalRepairStartedAtUtc = rawRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
                     rawErrors,
@@ -528,6 +589,19 @@ public partial class GameEngine
                     expectedTurn,
                     activeSnapshotContext);
             }
+            catch (CompensatedTreatmentPublicationException exception)
+            {
+                _logger.LogWarning(
+                    exception.InnerException ?? exception,
+                    "Held treatment publication failed after canonical publication and was compensated with {Outcome}.",
+                    exception.Outcome);
+                return MapTreatmentPublicationSettlementToDisposition(
+                    exception.Outcome);
+            }
+            catch (UnsafeTreatmentPublicationSettlementException)
+            {
+                throw;
+            }
             catch (SessionReplacedException)
             {
                 throw;
@@ -542,8 +616,10 @@ public partial class GameEngine
                     source,
                     exception,
                     rollbackSnapshot);
-                return false;
+                return AcceptedTurnValidationDisposition.TerminalRejected;
             }
+            await using var treatmentResourcePublicationTransaction =
+                canonicalRefresh.TreatmentResourcePublicationTransaction;
             if (!canonicalRefresh.BaselineUsable)
             {
                 criticalRepairAttempt++;
@@ -569,6 +645,8 @@ public partial class GameEngine
                 lastCriticalRepairAttempt = criticalRepairAttempt;
                 lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
                 var baselineRepairStartedAtUtc = DateTime.UtcNow;
+                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                    treatmentResourcePublicationTransaction);
                 if (!await WaitForContractRepairAsync(
                         source,
                         baselineErrors,
@@ -576,7 +654,13 @@ public partial class GameEngine
                         rollbackSnapshot,
                         lastCriticalRepairSessionGeneration,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                    return false;
+                {
+                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                        treatmentResourcePublicationTransaction,
+                        rollbackSnapshot,
+                        "validation_failed");
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
+                }
                 lastCriticalRepairStartedAtUtc = baselineRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
                     baselineErrors,
@@ -628,6 +712,8 @@ public partial class GameEngine
                         }
                     }
                 }
+                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                    treatmentResourcePublicationTransaction);
                 if (!await WaitForContractRepairAsync(
                         source,
                         postSealErrors,
@@ -638,7 +724,11 @@ public partial class GameEngine
                         woundRequiredResubmissionPaths: woundRequiredResubmissionPaths,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
                 {
-                    return false;
+                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                        treatmentResourcePublicationTransaction,
+                        rollbackSnapshot,
+                        "validation_failed");
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
                 }
 
                 lastCriticalRepairStartedAtUtc = postSealRepairStartedAtUtc;
@@ -671,6 +761,8 @@ public partial class GameEngine
                 lastCriticalRepairAttempt = criticalRepairAttempt;
                 lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
                 var pendingStartedAtUtc = DateTime.UtcNow;
+                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                    treatmentResourcePublicationTransaction);
                 if (!await WaitForBoundedPendingResolutionResubmissionAsync(
                         source,
                         pendingErrors,
@@ -679,7 +771,11 @@ public partial class GameEngine
                         lastCriticalRepairSessionGeneration,
                         pendingResolutionRepairCheckpoint))
                 {
-                    return false;
+                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                        treatmentResourcePublicationTransaction,
+                        rollbackSnapshot,
+                        "validation_failed");
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
                 }
                 lastCriticalRepairStartedAtUtc = pendingStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
@@ -716,6 +812,8 @@ public partial class GameEngine
                 lastCriticalRepairAttempt = criticalRepairAttempt;
                 lastCriticalRepairSessionGeneration = await CaptureCurrentSessionGenerationAsync();
                 var canonicalRepairStartedAtUtc = DateTime.UtcNow;
+                await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                    treatmentResourcePublicationTransaction);
                 if (!await WaitForContractRepairAsync(
                         source,
                         canonicalErrors,
@@ -723,7 +821,13 @@ public partial class GameEngine
                         rollbackSnapshot,
                         lastCriticalRepairSessionGeneration,
                         pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                    return false;
+                {
+                    await ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                        treatmentResourcePublicationTransaction,
+                        rollbackSnapshot,
+                        "validation_failed");
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
+                }
                 lastCriticalRepairStartedAtUtc = canonicalRepairStartedAtUtc;
                 lastCriticalRepairBoundaryUtc = ResolveCanonicalRepairOutputFreshnessBoundaryUtc(
                     canonicalErrors,
@@ -740,7 +844,8 @@ public partial class GameEngine
                     lastCriticalRepairStartedAtUtc.Value);
             }
 
-            if (!await ValidateCurrentGameStateOrShowErrorsAsync(
+            var treatmentPublicationCompensatedForRepair = false;
+            var currentStateValid = await ValidateCurrentGameStateOrShowErrorsAsync(
                     source,
                     rollbackSnapshot,
                     progressionControl,
@@ -748,8 +853,49 @@ public partial class GameEngine
                     initialCanonicalRepairBoundaryUtc: lastCriticalRepairBoundaryUtc,
                     initialCanonicalRepairErrors: lastCriticalRepairErrors,
                     initialCanonicalRepairStartedAtUtc: lastCriticalRepairStartedAtUtc,
-                    pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint))
-                return false;
+                    pendingResolutionRepairCheckpoint: pendingResolutionRepairCheckpoint,
+                    beforeRepairMutation: async () =>
+                    {
+                        treatmentPublicationCompensatedForRepair =
+                            await CompensateTreatmentResourcePublicationBeforeRepairAsync(
+                                treatmentResourcePublicationTransaction);
+                    },
+                    beforeTerminalRepairReturn: () =>
+                        ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+                            treatmentResourcePublicationTransaction,
+                            rollbackSnapshot,
+                            "validation_failed"),
+                    applyProgressionOnSuccess:
+                        treatmentResourcePublicationTransaction is null);
+            if (!currentStateValid)
+            {
+                return AcceptedTurnValidationDisposition.TerminalRejected;
+            }
+            if (treatmentPublicationCompensatedForRepair)
+                continue;
+
+            if (treatmentResourcePublicationTransaction is not null &&
+                progressionControl is not null)
+            {
+                var progressionAdvance = await treatmentResourcePublicationTransaction
+                    .AdvancePublishedAgreementWithProgressionAsync(
+                        _fs,
+                        _progressionSchedule,
+                        progressionControl);
+                if (!progressionAdvance.IsValid ||
+                    progressionAdvance.Issues.Count != 0 ||
+                    progressionAdvance.ChangedCount != 1 ||
+                    progressionAdvance.Outcome !=
+                        MortalWoundTreatmentPublicationTransactionOutcome
+                            .PublishedAgreementAdvanced)
+                {
+                    var settlement =
+                        await SettleTreatmentResourcePublicationCompletionFailureAsync(
+                            treatmentResourcePublicationTransaction);
+                    return MapTreatmentPublicationSettlementToDisposition(
+                        settlement);
+                }
+            }
 
             if (lastCriticalRepairErrors is { Count: > 0 })
             {
@@ -765,14 +911,208 @@ public partial class GameEngine
                 await CleanupAcceptedTurnCommandSurfacesAsync();
             }
             await RefreshRuntimeStateAsync();
+            if (treatmentResourcePublicationTransaction is null)
+            {
+                _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
+                    .Select(static value => value with
+                    {
+                        Text = value.Text with { }
+                    }).ToArray();
+                return CompleteAcceptedTurnWithoutTreatmentResourcePublication();
+            }
+
+            var treatmentResourcePublicationCompletion =
+                await treatmentResourcePublicationTransaction.CompleteAsync(_fs);
+            if (!treatmentResourcePublicationCompletion.IsValid ||
+                treatmentResourcePublicationCompletion.Issues.Count != 0 ||
+                treatmentResourcePublicationCompletion.ChangedCount != 1 ||
+                treatmentResourcePublicationCompletion.Outcome !=
+                    MortalWoundTreatmentPublicationTransactionOutcome.Finalized)
+            {
+                var settlement =
+                    await SettleTreatmentResourcePublicationCompletionFailureAsync(
+                        treatmentResourcePublicationTransaction);
+                return MapTreatmentPublicationSettlementToDisposition(
+                    settlement);
+            }
             _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                 .Select(static value => value with
                 {
                     Text = value.Text with { }
                 }).ToArray();
-            return true;
+            return AcceptedTurnValidationDisposition.Accepted;
         }
     }
+
+    private async Task<bool>
+        CompensateTreatmentResourcePublicationBeforeRepairAsync(
+            MortalWoundTreatmentResourcePublicationTransaction? transaction)
+    {
+        if (transaction is null)
+            return false;
+
+        var result = await transaction.CompensateAsync(_fs);
+        EnsureExactTreatmentResourcePublicationSettlement(
+            result,
+            MortalWoundTreatmentPublicationTransactionOutcome.Rearmed,
+            "prepare accepted-turn repair");
+        return true;
+    }
+
+    private async Task
+        ReleaseTreatmentResourcePublicationBeforeTerminalRollbackAsync(
+            MortalWoundTreatmentResourcePublicationTransaction? transaction,
+            RollbackSnapshot? rollbackSnapshot,
+            string reason)
+    {
+        if (transaction is null || !HasRollbackCapability(rollbackSnapshot))
+            return;
+
+        var result = await transaction.ReleaseTerminalAsync(_fs, reason);
+        EnsureExactTreatmentResourcePublicationSettlement(
+            result,
+            MortalWoundTreatmentPublicationTransactionOutcome.Released,
+            "settle terminal accepted-turn rollback");
+    }
+
+    private async Task<AcceptedTurnValidationDisposition>
+        SettlePreCanonicalTreatmentPublicationBeforeTerminalRollbackAsync(
+            RollbackSnapshot? rollbackSnapshot,
+            string reason)
+    {
+        if (!HasRollbackCapability(rollbackSnapshot))
+            return AcceptedTurnValidationDisposition.TerminalRejected;
+
+        var result = await AcceptedTurnCanonicalStateRefresh
+            .ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync(
+                _fs,
+                reason);
+        if (result is null)
+            return AcceptedTurnValidationDisposition.TerminalRejected;
+
+        if (IsExactSafeTreatmentResourcePublicationReleaseFailure(result))
+        {
+            _logger.LogError(
+                "Pre-canonical terminal treatment cleanup restored the exact durable request and retained its ConfirmedHeld authority behind a restart blocker.");
+            return AcceptedTurnValidationDisposition
+                .RetryablePublicationHeldBlocked;
+        }
+
+        EnsureExactTreatmentResourcePublicationSettlement(
+            result,
+            MortalWoundTreatmentPublicationTransactionOutcome.Released,
+            "settle pre-canonical terminal accepted-turn rollback");
+        return AcceptedTurnValidationDisposition.TerminalRejected;
+    }
+
+    private static bool IsExactSafeTreatmentResourcePublicationReleaseFailure(
+        MortalWoundTreatmentPublicationOperationResult result) =>
+        result.IsValid &&
+        result.ChangedCount == 1 &&
+        result.Outcome ==
+            MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked &&
+        result.Issues.Count == 0;
+
+    private async Task<MortalWoundTreatmentPublicationTransactionOutcome>
+        SettleTreatmentResourcePublicationCompletionFailureAsync(
+        MortalWoundTreatmentResourcePublicationTransaction transaction)
+    {
+        var result = await transaction.CompensateAsync(_fs);
+        if (result.IsValid &&
+            result.Issues.Count == 0 &&
+            result.ChangedCount == 1 &&
+            result.Outcome is
+                MortalWoundTreatmentPublicationTransactionOutcome.Rearmed or
+                MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked or
+                MortalWoundTreatmentPublicationTransactionOutcome.CommandQuarantined)
+        {
+            return result.Outcome;
+        }
+
+        var issueCoordinates = result.Issues.Count == 0
+            ? "none"
+            : string.Join(
+                ", ",
+                result.Issues.Select(static issue => issue.Code ?? issue.FilePath));
+        throw new InvalidOperationException(
+            "Treatment resource publication completion failure could not be " +
+            $"safely compensated: outcome={result.Outcome}, " +
+            $"changed={result.ChangedCount}, valid={result.IsValid}, " +
+            $"issues={issueCoordinates}.");
+    }
+
+    private async Task<CompensatedTreatmentPublicationException>
+        BuildCompensatedTreatmentPublicationExceptionAsync(
+            MortalWoundTreatmentResourcePublicationTransaction transaction,
+            Exception originalException)
+    {
+        try
+        {
+            var outcome =
+                await SettleTreatmentResourcePublicationCompletionFailureAsync(
+                    transaction);
+            return new CompensatedTreatmentPublicationException(
+                originalException,
+                outcome);
+        }
+        catch (Exception settlementException)
+        {
+            throw new UnsafeTreatmentPublicationSettlementException(
+                originalException,
+                settlementException);
+        }
+    }
+
+    private static AcceptedTurnValidationDisposition
+        MapTreatmentPublicationSettlementToDisposition(
+            MortalWoundTreatmentPublicationTransactionOutcome outcome) =>
+        outcome switch
+        {
+            MortalWoundTreatmentPublicationTransactionOutcome.Rearmed =>
+                AcceptedTurnValidationDisposition.RetryablePublicationRearmed,
+            MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked =>
+                AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked,
+            MortalWoundTreatmentPublicationTransactionOutcome.CommandQuarantined =>
+                AcceptedTurnValidationDisposition.TerminalRejected,
+            _ => throw new InvalidOperationException(
+                $"Treatment publication settlement outcome '{outcome}' cannot drive accepted-turn lifecycle disposition.")
+        };
+
+    private static bool IsExactTreatmentResourcePublicationSettlement(
+        MortalWoundTreatmentPublicationOperationResult result,
+        MortalWoundTreatmentPublicationTransactionOutcome expectedOutcome) =>
+        result.IsValid &&
+        result.Issues.Count == 0 &&
+        result.ChangedCount == 1 &&
+        result.Outcome == expectedOutcome;
+
+    private static void EnsureExactTreatmentResourcePublicationSettlement(
+        MortalWoundTreatmentPublicationOperationResult result,
+        MortalWoundTreatmentPublicationTransactionOutcome expectedOutcome,
+        string operation)
+    {
+        if (IsExactTreatmentResourcePublicationSettlement(
+                result,
+                expectedOutcome))
+        {
+            return;
+        }
+
+        var issueCoordinates = result.Issues.Count == 0
+            ? "none"
+            : string.Join(
+                ", ",
+                result.Issues.Select(static issue =>
+                    issue.Code ?? issue.FilePath));
+        throw new InvalidOperationException(
+            $"Treatment resource publication could not {operation}: " +
+            $"outcome={result.Outcome}, changed={result.ChangedCount}, " +
+            $"valid={result.IsValid}, issues={issueCoordinates}.");
+    }
+
+    private static AcceptedTurnValidationDisposition
+        CompleteAcceptedTurnWithoutTreatmentResourcePublication() =>
+        AcceptedTurnValidationDisposition.Accepted;
 
     private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()
     {
@@ -1326,32 +1666,76 @@ public partial class GameEngine
             return new AcceptedTurnCanonicalRefreshResult(false, Array.Empty<ValidationIssue>());
 
         var refresh = await RefreshCanonicalStateAsync(snapshot);
-        var postSealIssues = refresh.Issues.ToList();
-        IReadOnlyList<WoundPlayerNotification> woundNotifications =
+        if (refresh.TreatmentResourcePublicationTransaction is not null)
+        {
+            try
+            {
+                var postSealIssues = refresh.Issues.ToList();
+                IReadOnlyList<WoundPlayerNotification> woundNotifications =
+                    Array.Empty<WoundPlayerNotification>();
+                if (refresh.MechanicsPlan?.WoundStageBundle is not null)
+                {
+                    postSealIssues.AddRange(
+                        await ValidateAcceptedWoundPostPublicationAuthorityAsync(
+                            refresh.MechanicsPlan,
+                            activeSnapshotContext));
+                    var output = await BindPublishedAcceptedWoundOutputAsync(
+                        refresh.MechanicsPlan);
+                    if (output.Issues.Any(static issue =>
+                            !IsWoundNarrationRepairIssue(issue)))
+                    {
+                        throw new InvalidDataException(
+                            "The accepted wound output does not agree with its finalized typed stages.");
+                    }
+                    postSealIssues.AddRange(output.Issues);
+                    if (output.Success)
+                        woundNotifications = output.Notifications;
+                }
+                return new AcceptedTurnCanonicalRefreshResult(
+                    true,
+                    postSealIssues,
+                    refresh.MechanicsPlan,
+                    refresh.TreatmentResourcePublicationTransaction,
+                    woundNotifications);
+            }
+            catch (CompensatedTreatmentPublicationException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw await BuildCompensatedTreatmentPublicationExceptionAsync(
+                    refresh.TreatmentResourcePublicationTransaction,
+                    exception);
+            }
+        }
+
+        var resourceFreePostSealIssues = refresh.Issues.ToList();
+        IReadOnlyList<WoundPlayerNotification> resourceFreeWoundNotifications =
             Array.Empty<WoundPlayerNotification>();
         if (refresh.MechanicsPlan?.WoundStageBundle is not null)
         {
-            postSealIssues.AddRange(
+            resourceFreePostSealIssues.AddRange(
                 await ValidateAcceptedWoundPostPublicationAuthorityAsync(
                     refresh.MechanicsPlan,
                     activeSnapshotContext));
-            var output = await BindPublishedAcceptedWoundOutputAsync(
+            var resourceFreeOutput = await BindPublishedAcceptedWoundOutputAsync(
                 refresh.MechanicsPlan);
-            if (output.Issues.Any(static issue =>
+            if (resourceFreeOutput.Issues.Any(static issue =>
                     !IsWoundNarrationRepairIssue(issue)))
             {
                 throw new InvalidDataException(
                     "The accepted wound output does not agree with its finalized typed stages.");
             }
-            postSealIssues.AddRange(output.Issues);
-            if (output.Success)
-                woundNotifications = output.Notifications;
+            resourceFreePostSealIssues.AddRange(resourceFreeOutput.Issues);
+            if (resourceFreeOutput.Success)
+                resourceFreeWoundNotifications = resourceFreeOutput.Notifications;
         }
         return new AcceptedTurnCanonicalRefreshResult(
             true,
-            postSealIssues,
+            resourceFreePostSealIssues,
             refresh.MechanicsPlan,
-            woundNotifications);
+            AcceptedWoundNotifications: resourceFreeWoundNotifications);
     }
 
     private async Task<WoundAcceptedTurnOutputBindingResult>
@@ -1446,6 +1830,8 @@ public partial class GameEngine
         bool BaselineUsable,
         IReadOnlyList<ValidationIssue> PostSealIssues,
         AcceptedMechanicsPlan? MechanicsPlan = null,
+        MortalWoundTreatmentResourcePublicationTransaction?
+            TreatmentResourcePublicationTransaction = null,
         IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null)
     {
         internal IReadOnlyList<WoundPlayerNotification> WoundNotifications { get; } =
@@ -1602,6 +1988,7 @@ public partial class GameEngine
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "Failed to remove accepted-turn Guardian quest progress command surface.");
+            throw;
         }
     }
 

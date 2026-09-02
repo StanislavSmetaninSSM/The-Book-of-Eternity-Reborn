@@ -6,7 +6,7 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
-    private abstract record AcceptedMechanicsNormalizationPreflight
+    internal abstract record AcceptedMechanicsNormalizationPreflight
     {
         internal sealed record NoPlan : AcceptedMechanicsNormalizationPreflight;
 
@@ -16,6 +16,29 @@ public partial class CanonicalStateNormalizer
             IReadOnlyDictionary<string, CanonicalBeforeImage>
                 PublicationAuthorityBeforeImages)
             : AcceptedMechanicsNormalizationPreflight;
+    }
+
+    internal sealed class TreatmentResourcePublicationPreflight
+    {
+        private readonly AcceptedMechanicsNormalizationPreflight.Validated _validated;
+        private readonly MortalItemAcceptedTurnNormalizationSnapshot
+            _mortalItemSnapshot;
+
+        internal TreatmentResourcePublicationPreflight(
+            AcceptedMechanicsNormalizationPreflight.Validated validated,
+            MortalItemAcceptedTurnNormalizationSnapshot mortalItemSnapshot)
+        {
+            _validated = validated ?? throw new ArgumentNullException(nameof(validated));
+            _mortalItemSnapshot = mortalItemSnapshot ??
+                throw new ArgumentNullException(nameof(mortalItemSnapshot));
+        }
+
+        internal AcceptedMechanicsNormalizationPreflight.Validated Validated =>
+            _validated;
+        internal AcceptedMechanicsPlan Plan => _validated.Plan;
+        internal AcceptedMechanicsPlanBinding Binding => _validated.Binding;
+        internal MortalItemAcceptedTurnNormalizationSnapshot MortalItemSnapshot =>
+            _mortalItemSnapshot;
     }
 
     internal async Task<AcceptedMechanicsPlan?> NormalizeAcceptedMechanicsAsync(
@@ -30,6 +53,7 @@ public partial class CanonicalStateNormalizer
                 mortalLocationPlan);
         }
 
+        EnsureHeldTreatmentPublicationUsesCoordinator();
         var preflight = await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
         if (preflight is AcceptedMechanicsNormalizationPreflight.Validated)
         {
@@ -53,7 +77,8 @@ public partial class CanonicalStateNormalizer
         IReadOnlyDictionary<string, string>? backups,
         MortalLocationAcceptedTurnPlan? mortalLocationPlan,
         AcceptedMechanicsNormalizationPreflight preflight,
-        bool normalizedAcceptedCarrierBaselines)
+        bool normalizedAcceptedCarrierBaselines,
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(preflight);
         if (preflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
@@ -71,6 +96,26 @@ public partial class CanonicalStateNormalizer
         }
 
         var plan = validated.Plan;
+        var treatmentPublicationAuthority =
+            plan.TreatmentResourcePublicationAuthority;
+        if (treatmentPublicationAuthority is { RequiresConfirmedHold: true } &&
+            treatmentPublicationReceipt is null)
+        {
+            throw new InvalidOperationException(
+                "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
+        }
+        if (treatmentPublicationReceipt is not null &&
+            (treatmentPublicationAuthority is not { RequiresConfirmedHold: true } ||
+             !AcceptedMechanicsPlanAuthority.IsTakenTreatmentPublicationCurrent(
+                 _fs,
+                 _writeLease,
+                 validated.Binding,
+                 plan,
+                 treatmentPublicationReceipt)))
+        {
+            throw new InvalidDataException(
+                "The held Mortal wound-treatment resource publication transaction no longer owns this exact plan and binding.");
+        }
         try
         {
             if (plan.EffectPlan != null)
@@ -94,13 +139,14 @@ public partial class CanonicalStateNormalizer
             InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
-        if (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
-                _fs,
-                _writeLease,
-                validated.Binding,
-                out var taken) ||
-            !taken.Success || taken.Plan == null ||
-            !ReferenceEquals(plan, taken.Plan))
+        if (treatmentPublicationReceipt is null &&
+            (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
+                 _fs,
+                 _writeLease,
+                 validated.Binding,
+                 out var taken) ||
+             !taken.Success || taken.Plan == null ||
+             !ReferenceEquals(plan, taken.Plan)))
         {
             InvalidateAcceptedMechanicsHandoffs();
             throw new InvalidDataException(
@@ -110,9 +156,21 @@ public partial class CanonicalStateNormalizer
         var writes = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         if (!plan.AwaitsPendingResolution)
         {
-            writes[ResourceMaterializationContract.DefinitionsPath] = plan.DefinitionAfterImage;
-            writes[ResourceMaterializationContract.StatePath] = plan.StateAfterImage;
-            writes[ResourceMaterializationContract.HistoryPath] = plan.HistoryAfterImage;
+            AddTreatmentResourceWriteIfChanged(
+                plan,
+                writes,
+                ResourceMaterializationContract.DefinitionsPath,
+                plan.DefinitionAfterImage);
+            AddTreatmentResourceWriteIfChanged(
+                plan,
+                writes,
+                ResourceMaterializationContract.StatePath,
+                plan.StateAfterImage);
+            AddTreatmentResourceWriteIfChanged(
+                plan,
+                writes,
+                ResourceMaterializationContract.HistoryPath,
+                plan.HistoryAfterImage);
             var definitions = ResourceDefinitionCatalog.ParseCanonical(
                 plan.DefinitionAfterImage.ToJsonString(),
                 allowMissingPristine: false);
@@ -133,12 +191,15 @@ public partial class CanonicalStateNormalizer
                 throw new InvalidDataException(
                     "Accepted mechanics cannot compose canonical resource owner authority from invalid after-images.");
             }
-            writes[CanonicalResourceOwnerAuthorityComposer.AuthorityPath] =
+            AddTreatmentResourceWriteIfChanged(
+                plan,
+                writes,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                 JsonNode.Parse(
                     CanonicalResourceOwnerAuthorityComposer.CreateCanonicalAuthorityJson(
                         plan.OwnerAuthority,
                         state,
-                        history))!.AsObject();
+                        history))!.AsObject());
             writes[EffectAcceptedTurnPlan.IdentityIndexPath] = plan.EffectIdentityAfterImage;
             foreach (var pair in plan.OwnerCompanionAfterImages)
                 writes[pair.Key] = pair.Value;
@@ -200,6 +261,55 @@ public partial class CanonicalStateNormalizer
             await ValidatePublishedResourceAfterImagesAsync(plan);
         }
         return plan;
+    }
+
+    private static void AddTreatmentResourceWriteIfChanged(
+        AcceptedMechanicsPlan plan,
+        IDictionary<string, JsonObject> writes,
+        string path,
+        JsonObject afterImage)
+    {
+        if (plan.TreatmentResourcePublicationAuthority is not null &&
+            TreatmentResourceBeforeImageMatches(
+                plan,
+                path,
+                afterImage))
+        {
+            return;
+        }
+
+        writes[path] = afterImage;
+    }
+
+    private static bool TreatmentResourceBeforeImageMatches(
+        AcceptedMechanicsPlan plan,
+        string path,
+        JsonObject afterImage)
+    {
+        if (!plan.BeforeImages.TryGetValue(path, out var beforeImage) ||
+            !beforeImage.Existed ||
+            beforeImage.Bytes is not { Length: > 0 } bytes)
+        {
+            return false;
+        }
+
+        try
+        {
+            var json = DecodeUtf8Json(bytes);
+            return JsonNode.DeepEquals(JsonNode.Parse(json), afterImage);
+        }
+        catch (JsonException)
+        {
+            return false;
+        }
+    }
+
+    private static string DecodeUtf8Json(byte[] bytes)
+    {
+        var json = Encoding.UTF8.GetString(bytes);
+        return json.Length > 0 && json[0] == '\uFEFF'
+            ? json[1..]
+            : json;
     }
 
     private async Task<IReadOnlyDictionary<string, CanonicalBeforeImage>>
@@ -324,6 +434,23 @@ public partial class CanonicalStateNormalizer
         }
     }
 
+    private void EnsureHeldTreatmentPublicationUsesCoordinator()
+    {
+        var writeLease = _writeLease ?? throw new InvalidOperationException(
+            "Held treatment publication guard requires the owning canonical write lease.");
+        if (AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fs,
+                writeLease,
+                out _,
+                out var peeked) &&
+            peeked.Plan?.TreatmentResourcePublicationAuthority is
+                { RequiresConfirmedHold: true })
+        {
+            throw new InvalidOperationException(
+                "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
+        }
+    }
+
     private void EnsureNoPlanAcceptedMechanicsAuthorityStillAbsent()
     {
         var writeLease = _writeLease ?? throw new InvalidOperationException(
@@ -393,6 +520,29 @@ public partial class CanonicalStateNormalizer
                 new CanonicalBeforeImage(existed: true, beforeImage.Bytes));
         }
         return AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(result);
+    }
+
+    internal async Task<TreatmentResourcePublicationPreflight?>
+        PrevalidateTreatmentResourcePublicationTransactionAsync()
+    {
+        var preflight = await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
+        if (preflight is not AcceptedMechanicsNormalizationPreflight.Validated validated ||
+            validated.Plan.TreatmentResourcePublicationAuthority is not
+                { RequiresConfirmedHold: true })
+        {
+            return null;
+        }
+
+        var mortalItemMode = CaptureMortalItemAcceptedTurnNormalizationMode(
+            validated);
+        var mortalItemSnapshot = mortalItemMode is
+            MortalItemAcceptedTurnNormalizationMode.Validated itemMode
+                ? itemMode.Snapshot
+                : throw new InvalidOperationException(
+                    "Held treatment publication requires one validated Mortal item normalization snapshot.");
+        return new TreatmentResourcePublicationPreflight(
+            validated,
+            mortalItemSnapshot);
     }
 
     private static IReadOnlyDictionary<string, CanonicalBeforeImage>
@@ -893,13 +1043,16 @@ public partial class CanonicalStateNormalizer
     private async Task ValidatePublishedResourceAfterImagesAsync(
         AcceptedMechanicsPlan plan)
     {
-        var definitionsJson = await ReadExactPublishedAfterImageAsync(
+        var definitionsJson = await ReadPublishedTreatmentResourceAfterImageAsync(
+            plan,
             ResourceMaterializationContract.DefinitionsPath,
             plan.DefinitionAfterImage);
-        var stateJson = await ReadExactPublishedAfterImageAsync(
+        var stateJson = await ReadPublishedTreatmentResourceAfterImageAsync(
+            plan,
             ResourceMaterializationContract.StatePath,
             plan.StateAfterImage);
-        var historyJson = await ReadExactPublishedAfterImageAsync(
+        var historyJson = await ReadPublishedTreatmentResourceAfterImageAsync(
+            plan,
             ResourceMaterializationContract.HistoryPath,
             plan.HistoryAfterImage);
         if (_fs.FileExists(
@@ -930,7 +1083,8 @@ public partial class CanonicalStateNormalizer
                     plan.OwnerAuthority,
                     state.Ledger,
                     history.History))!.AsObject();
-            _ = await ReadExactPublishedAfterImageAsync(
+            _ = await ReadPublishedTreatmentResourceAfterImageAsync(
+                plan,
                 CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                 ownerAuthorityRoot);
         }
@@ -944,6 +1098,30 @@ public partial class CanonicalStateNormalizer
         }
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             throw InvalidPublishedResource(issues);
+    }
+
+    private async Task<string> ReadPublishedTreatmentResourceAfterImageAsync(
+        AcceptedMechanicsPlan plan,
+        string path,
+        JsonObject plannedAfterImage)
+    {
+        if (plan.TreatmentResourcePublicationAuthority is null ||
+            !TreatmentResourceBeforeImageMatches(plan, path, plannedAfterImage))
+        {
+            return await ReadExactPublishedAfterImageAsync(path, plannedAfterImage);
+        }
+
+        var beforeImage = plan.BeforeImages[path];
+        var current = await _fs.ReadFileBytesAsync(_writeLease!, path);
+        if (current is null ||
+            beforeImage.Bytes is null ||
+            !beforeImage.Bytes.AsSpan().SequenceEqual(current))
+        {
+            throw new InvalidDataException(
+                $"Accepted mechanics retained resource authority at '{path}' changed during publication.");
+        }
+
+        return DecodeUtf8Json(current);
     }
 
     private async Task<string> ReadExactPublishedAfterImageAsync(

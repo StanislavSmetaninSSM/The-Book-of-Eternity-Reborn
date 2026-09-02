@@ -105,7 +105,7 @@ public sealed class GameEngineSourceGuardTests
             "private async Task<bool> WaitForGmResponse()");
 
         var validationFailureIndex = method.IndexOf(
-            "if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(",
+            "if (validationDisposition !=",
             StringComparison.Ordinal);
         Assert.True(validationFailureIndex >= 0, "Expected transition wait validation failure branch.");
 
@@ -1131,7 +1131,7 @@ public sealed class GameEngineSourceGuardTests
         var validationSource = ReadGameEnginePartialSource("GameEngine.ValidationAndRepair.cs");
         var acceptedTurnValidation = ExtractMethodSource(
             validationSource,
-            "private async Task<bool> ValidateAcceptedTurnOutcomeWithRepairLoopAsync(");
+            "private async Task<AcceptedTurnValidationDisposition>");
 
         Assert.Contains("ValidateAcceptedTurnOutcomeWithRepairLoopAsync(", turnSource, StringComparison.Ordinal);
         Assert.Contains("activeSnapshotContext,", turnSource, StringComparison.Ordinal);

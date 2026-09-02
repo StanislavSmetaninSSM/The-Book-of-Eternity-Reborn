@@ -331,7 +331,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             MortalLocationMaterializationContract.CurrentLocationPath,
             new JsonObject { ["currentLocationData"] = rejected });
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "обработки хода без rollback snapshot",
@@ -340,7 +340,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             request.TurnNumber,
             request.ProgressionControl);
 
-        Assert.False(accepted);
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.TerminalRejected,
+            accepted);
         Assert.False(_fs.FileExists("game_state/control/validation_repair_request.json"));
         Assert.True(_fs.FileExists("game_state/control/validation_diagnostic_failure_report.json"));
     }
@@ -499,7 +501,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
         });
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "обработки хода",
@@ -510,7 +512,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await gmRepair;
 
         Assert.True(secondRequestObserved);
-        Assert.True(accepted);
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, accepted);
         var finalMap = JsonNode.Parse((await _fs.ReadFileAsync(
             MortalLocationMaterializationContract.WorldMapPath))!)!.AsObject();
         Assert.Single(finalMap["locations"]!.AsArray());
@@ -754,7 +756,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             });
         ArmCanonicalWriteFailure(MortalLocationIdentityState.StatePath);
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "обработки хода",
@@ -763,7 +765,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             request.TurnNumber,
             request.ProgressionControl);
 
-        Assert.False(accepted);
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.TerminalRejected,
+            accepted);
         InvokePrivate(engine, "ClearTransientOutputFiles");
         await InvokePrivateTaskAsync(
             engine,

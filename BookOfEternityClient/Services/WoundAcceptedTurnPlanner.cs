@@ -1109,6 +1109,7 @@ internal static class WoundAcceptedTurnPlannerCore
             WoundPreparedAcceptedTurnPlan prepared,
             WoundEffectBatchAcceptedPlan accepted)
     {
+        var stage = "authority_seal";
         try
         {
             if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
@@ -1124,6 +1125,7 @@ internal static class WoundAcceptedTurnPlannerCore
                     "missing or changed authority");
             }
 
+            stage = "baseline_agreement";
             var baseline = prepared.BaselineAuthority;
             var carrierCatalog = WoundCarrierCatalog.Build(baseline.PreTurnCarriers);
             var identityBefore = WoundIdentityState.Parse(
@@ -1157,6 +1159,7 @@ internal static class WoundAcceptedTurnPlannerCore
                     $"matches={matches.Length}");
             }
 
+            stage = "transition_reduction";
             var before = matches[0].Wound;
             var after = continuation.After;
             var coordinates = continuation.Resolution.Coordinates;
@@ -1198,6 +1201,7 @@ internal static class WoundAcceptedTurnPlannerCore
                     reduction.Issues.Select(CloneIssue).ToArray());
             }
 
+            stage = "history_intent";
             var proposed = reduction.ProposedAfter!;
             var transitions = new[]
             {
@@ -1230,9 +1234,11 @@ internal static class WoundAcceptedTurnPlannerCore
                 WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
                 Terminal: false,
                 TreatmentResult: continuation.PersistedResult);
+            stage = "carrier_contributions";
             var contributions = BuildCarrierContributions(
                 baseline.PreTurnCarriers,
                 transitions);
+            stage = "identity_after_image";
             var identityAfter = BuildIdentityAfterImage(
                 baseline.PreTurnIdentityIndex,
                 transitions);
@@ -1245,6 +1251,7 @@ internal static class WoundAcceptedTurnPlannerCore
             var identityAfterJson = JsonNode.Parse(
                 WoundIdentityState.SerializeCanonical(identityAfter.State))!
                 .AsObject();
+            stage = "history_after_image";
             var historyAfter = WoundHistoryState.CreateValidated(
                 historyBefore.State.NextOrdinal + 1,
                 historyBefore.State.Transitions.Append(historyRow));
@@ -1257,10 +1264,13 @@ internal static class WoundAcceptedTurnPlannerCore
             var historyAfterJson = JsonNode.Parse(
                 WoundHistoryState.SerializeCanonical(historyAfter.State))!
                 .AsObject();
+            stage = "apply_final_wounds";
             var carriersAfter = ApplyFinalWounds(
                 baseline.PreTurnCarriers,
                 transitions);
+            stage = "carrier_after_catalog";
             var carrierAfterCatalog = WoundCarrierCatalog.Build(carriersAfter);
+            stage = "history_carrier_agreement";
             var agreement = historyAfter.State.ValidateAgreement(
                 identityAfter.State,
                 carrierAfterCatalog);
@@ -1273,6 +1283,7 @@ internal static class WoundAcceptedTurnPlannerCore
                         .ToArray());
             }
 
+            stage = "final_fingerprint";
             var finalFingerprint = WoundAcceptedTurnFingerprints.ComputeFinal(
                 prepared,
                 accepted,
@@ -1305,7 +1316,7 @@ internal static class WoundAcceptedTurnPlannerCore
                 "wound_plan_treatment_continuation_invalid",
                 "The treatment continuation could not be finalized atomically.",
                 "one complete sealed treatment continuation",
-                exception.GetType().Name);
+                stage + ":" + exception.GetType().Name + ":" + exception.Message);
         }
     }
 
@@ -1522,12 +1533,14 @@ internal static class WoundAcceptedTurnPlannerCore
                 continue;
             }
 
-            var beforeNode = JsonNode.Parse(
-                WoundMaterializationContract.SerializeCanonical(
-                    transition.Before));
             var matches = collection
                 .Select((node, index) => (node, index))
-                .Where(value => JsonNode.DeepEquals(value.node, beforeNode))
+                .Where(value =>
+                    WoundCarrierCollectionAuthority.MatchesSemanticBeforeImage(
+                        value.node,
+                        transition.Before,
+                        wound.Owner,
+                        PlanPath + ".finalizedWoundBefore"))
                 .ToArray();
             if (matches.Length != 1)
             {
@@ -3626,10 +3639,10 @@ internal static class WoundAcceptedTurnPlannerCore
                     effectPlan.ActiveEffects,
                     carrierCatalog,
                     publicationCarrierCatalog,
-                    identityParse.State))
+                    identityParse.State,
+                    out var woundEffectDisagreement))
             {
-                return FailedDerivation(
-                    "Prepared wound-owned effects are not the exact reciprocal root set in active, carrier, and identity after-images.");
+                return FailedDerivation(woundEffectDisagreement);
             }
 
             return new EffectDerivation(
@@ -3654,8 +3667,10 @@ internal static class WoundAcceptedTurnPlannerCore
         IEnumerable<JsonObject> activeEffects,
         EffectCarrierCatalog carrierCatalog,
         EffectCarrierCatalog publicationCarrierCatalog,
-        EffectIdentityState identityAfter)
+        EffectIdentityState identityAfter,
+        out string disagreement)
     {
+        disagreement = string.Empty;
         var preparedWoundIds = prepared.AllocatedWoundIds.ToHashSet(StringComparer.Ordinal);
         var preparedWoundAliases = preparedWoundIds
             .Select(MortalLocationIdentityState.BuildConfusableKey)
@@ -3670,16 +3685,25 @@ internal static class WoundAcceptedTurnPlannerCore
                 identityBefore.Entries.Select(static entry => entry.Raw),
                 preparedWoundIds,
                 preparedWoundAliases,
-                out var beforeIdentityIds) ||
-            !TryCollectPreparedWoundOwnedEffectIds(
+                out var beforeIdentityIds))
+        {
+            disagreement = "The pre-turn wound-owned identity set is malformed or ambiguous.";
+            return false;
+        }
+        if (!TryCollectPreparedWoundOwnedEffectIds(
                 identityBefore.Entries
                     .Where(static entry => entry.State is "active" or "suspended")
                     .Select(static entry => entry.Raw),
                 preparedWoundIds,
                 preparedWoundAliases,
-                out var beforeActiveIdentityIds) ||
-            !terminationIds.IsSubsetOf(beforeActiveIdentityIds))
+                out var beforeActiveIdentityIds))
         {
+            disagreement = "The pre-turn active wound-owned identity set is malformed or ambiguous.";
+            return false;
+        }
+        if (!terminationIds.IsSubsetOf(beforeActiveIdentityIds))
+        {
+            disagreement = "Terminal wound-owned effects are not a subset of the pre-turn active identity set.";
             return false;
         }
         var expectedActiveIds = beforeActiveIdentityIds
@@ -3693,48 +3717,82 @@ internal static class WoundAcceptedTurnPlannerCore
             .Select(static entry => entry.Raw)
             .ToArray();
 
-        return TryCollectPreparedWoundOwnedEffectIds(
-                   activeEffects,
-                   preparedWoundIds,
-                   preparedWoundAliases,
-                   out var activeEffectIds) &&
-               activeEffectIds.SetEquals(applicationIds) &&
-               TryCollectPreparedWoundOwnedEffectIds(
-                   carrierCatalog.Occurrences.Select(static occurrence =>
-                       occurrence.Effect),
-                   preparedWoundIds,
-                   preparedWoundAliases,
-                   out var carrierEffectIds) &&
-               carrierEffectIds.SetEquals(expectedActiveIds) &&
-               TryCollectPreparedWoundOwnedEffectIds(
-                   publicationCarrierCatalog.Occurrences.Select(static occurrence =>
-                       occurrence.Effect),
-                   preparedWoundIds,
-                   preparedWoundAliases,
-                   out var publicationCarrierEffectIds) &&
-               publicationCarrierEffectIds.SetEquals(expectedActiveIds) &&
-               TryCollectPreparedWoundOwnedEffectIds(
-                   afterIdentityEntries,
-                   preparedWoundIds,
-                   preparedWoundAliases,
-                   out var identityEffectIds) &&
-               identityEffectIds.SetEquals(expectedIdentityIds) &&
-               TryCollectPreparedWoundOwnedEffectIds(
-                   afterIdentityEntries.Where(static entry =>
-                       entry["state"]?.GetValue<string>() is
-                           "active" or "suspended"),
-                   preparedWoundIds,
-                   preparedWoundAliases,
-                   out var activeIdentityEffectIds) &&
-               activeIdentityEffectIds.SetEquals(expectedActiveIds) &&
-               SurvivingWoundEffectViewsAgree(
-                   beforeActiveIdentityIds,
-                   terminationIds,
-                   identityBefore,
-                   identityAfter,
-                   beforeCarrierCatalog,
-                   carrierCatalog,
-                   publicationCarrierCatalog);
+        var exactViewFailure = string.Empty;
+        bool ExactView(
+            IEnumerable<JsonObject> values,
+            IReadOnlySet<string> expected,
+            string view,
+            out HashSet<string> actual)
+        {
+            var materialized = values.ToArray();
+            if (!TryCollectPreparedWoundOwnedEffectIds(
+                    materialized,
+                    preparedWoundIds,
+                    preparedWoundAliases,
+                    out actual))
+            {
+                exactViewFailure = view +
+                    " contains malformed, duplicate, or confusable wound-owned identities.";
+                return false;
+            }
+            if (actual.SetEquals(expected))
+                return true;
+            exactViewFailure = view + " set mismatch; expected=" +
+                               string.Join(",", expected.OrderBy(static value => value, StringComparer.Ordinal)) +
+                               "; actual=" +
+                               string.Join(",", actual.OrderBy(static value => value, StringComparer.Ordinal)) +
+                               "; observed=" + string.Join(",", materialized.Select(static value =>
+                                   (value["effectId"]?.GetValue<string>() ?? "missing") + "/" +
+                                   (value["source"]?["kind"]?.GetValue<string>() ?? "missing") + "/" +
+                                   (value["source"]?["sourceId"]?.GetValue<string>() ?? "missing")));
+            return false;
+        }
+
+        if (!ExactView(
+                activeEffects,
+                applicationIds,
+                "active effect result",
+                out _) ||
+            !ExactView(
+                carrierCatalog.Occurrences.Select(static occurrence => occurrence.Effect),
+                expectedActiveIds,
+                "runtime carrier",
+                out _) ||
+            !ExactView(
+                publicationCarrierCatalog.Occurrences.Select(static occurrence =>
+                    occurrence.Effect),
+                expectedActiveIds,
+                "publication carrier",
+                out _) ||
+            !ExactView(
+                afterIdentityEntries,
+                expectedIdentityIds,
+                "retained identity",
+                out _) ||
+            !ExactView(
+                afterIdentityEntries.Where(static entry =>
+                    entry["state"]?.GetValue<string>() is "active" or "suspended"),
+                expectedActiveIds,
+                "active identity",
+                out _))
+        {
+            disagreement = exactViewFailure;
+            return false;
+        }
+        if (!SurvivingWoundEffectViewsAgree(
+                beforeActiveIdentityIds,
+                terminationIds,
+                identityBefore,
+                identityAfter,
+                beforeCarrierCatalog,
+                carrierCatalog,
+                publicationCarrierCatalog))
+        {
+            disagreement = "A surviving wound-owned effect changed across identity, runtime carrier, or publication carrier views.";
+            return false;
+        }
+
+        return true;
     }
 
     private static bool SurvivingWoundEffectViewsAgree(
@@ -3828,10 +3886,28 @@ internal static class WoundAcceptedTurnPlannerCore
         EffectAcceptedTurnPlan effectPlan)
     {
         var afterImages = effectPlan.CarrierAfterImages;
-        JsonObject? Read(string path) =>
-            afterImages.TryGetValue(path, out var root)
-                ? root.DeepClone().AsObject()
-                : null;
+        var baselines = effectPlan.AcceptedCarrierBaselines;
+        JsonObject? Read(string path)
+        {
+            if (afterImages.TryGetValue(path, out var root))
+                return root.DeepClone().AsObject();
+            return path switch
+            {
+                EffectCarrierCatalog.PlayerPath =>
+                    baselines.PlayerEffects?.DeepClone().AsObject(),
+                EffectCarrierCatalog.NpcPath =>
+                    baselines.NpcEffects?.DeepClone().AsObject(),
+                EffectCarrierCatalog.EnemiesPath =>
+                    baselines.EnemyCombatants?.DeepClone().AsObject(),
+                EffectCarrierCatalog.AlliesPath =>
+                    baselines.AllyCombatants?.DeepClone().AsObject(),
+                EffectCarrierCatalog.AfterlifeProfilesPath =>
+                    baselines.AfterlifeProfiles?.DeepClone().AsObject(),
+                EffectCarrierCatalog.SpiritualConflictPath =>
+                    baselines.SpiritualConflict?.DeepClone().AsObject(),
+                _ => null
+            };
+        }
 
         return EffectCarrierCatalog.Build(new EffectCarrierCatalogInput(
             Read(EffectCarrierCatalog.PlayerPath),

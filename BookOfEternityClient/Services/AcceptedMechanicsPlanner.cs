@@ -1038,12 +1038,20 @@ internal static class AcceptedMechanicsCarrierAssembler
                 return null;
             case "update" when before is not null && after is not null &&
                                     matches.Length == 1 &&
-                                    JsonNode.DeepEquals(matches[0].Node, ParseWound(before)):
+                                    WoundCarrierCollectionAuthority.MatchesSemanticBeforeImage(
+                                        matches[0].Node,
+                                        before,
+                                        owner,
+                                        owner.CarrierPath + ".activeWounds.beforeImage"):
                 collection[matches[0].Index] = ParseWound(after);
                 return null;
             case "delete" when before is not null && after is null &&
                                     matches.Length == 1 &&
-                                    JsonNode.DeepEquals(matches[0].Node, ParseWound(before)):
+                                    WoundCarrierCollectionAuthority.MatchesSemanticBeforeImage(
+                                        matches[0].Node,
+                                        before,
+                                        owner,
+                                        owner.CarrierPath + ".activeWounds.beforeImage"):
                 collection.RemoveAt(matches[0].Index);
                 return null;
             default:
@@ -3957,7 +3965,9 @@ internal static class AcceptedMechanicsPlanner
                     ? null
                     : carrierComposition,
                 directWoundPublicationAuthority:
-                    context.DirectWoundPublicationAuthority),
+                    context.DirectWoundPublicationAuthority,
+                treatmentResourcePublicationAuthority:
+                    context.TreatmentResourcePublicationAuthority),
             Array.Empty<ValidationIssue>());
     }
 

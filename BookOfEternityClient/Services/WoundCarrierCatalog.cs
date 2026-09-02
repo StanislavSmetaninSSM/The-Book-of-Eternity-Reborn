@@ -64,6 +64,38 @@ internal static class WoundCarrierCollectionAuthority
         return collection;
     }
 
+    internal static bool MatchesSemanticBeforeImage(
+        JsonNode? node,
+        WoundMaterializationEnvelope expected,
+        WoundOwnerCoordinate owner,
+        string path)
+    {
+        ArgumentNullException.ThrowIfNull(expected);
+        ArgumentNullException.ThrowIfNull(owner);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        if (node is not JsonObject raw ||
+            !ExactString(raw["woundId"], expected.WoundId) ||
+            expected.Owner != owner)
+        {
+            return false;
+        }
+
+        var parsed = WoundMaterializationContract.Parse(
+            raw.ToJsonString(),
+            path);
+        return parsed.IsValid &&
+               parsed.Wound is { } actual &&
+               actual.Owner == owner &&
+               string.Equals(
+                   actual.WoundId,
+                   expected.WoundId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   WoundIdentityState.ComputeSemanticFingerprint(actual),
+                   WoundIdentityState.ComputeSemanticFingerprint(expected),
+                   StringComparison.Ordinal);
+    }
+
     internal static bool TryResolve(
         JsonObject root,
         WoundOwnerCoordinate owner,

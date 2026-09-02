@@ -342,7 +342,56 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 }
             }
 
+            MortalWoundTreatmentResourcePublicationAuthority?
+                treatmentResourcePublicationAuthority = null;
+            if (anchorPlan is null)
+            {
+                var resourcePublication = WoundAcceptedTurnPlanner
+                    .BuildTreatmentResourcePublication(
+                        treatmentContinuationAuthority!,
+                        treatmentReservationAuthority!,
+                        definitions,
+                        state,
+                        history,
+                        owners,
+                        beforeImages);
+                issues.AddRange(resourcePublication.Issues);
+                treatmentResourcePublicationAuthority =
+                    resourcePublication.Authority;
+                if (treatmentResourcePublicationAuthority is null ||
+                    issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+                foreach (var pair in treatmentResourcePublicationAuthority
+                             .RegisteredOutcome.ExpectedBeforeImages)
+                {
+                    _ = Read(pair.Key);
+                    var actual = beforeImages[pair.Key];
+                    if (pair.Value.Existed != actual.Existed ||
+                        !(pair.Value.Bytes ?? Array.Empty<byte>()).AsSpan()
+                        .SequenceEqual(actual.Bytes ?? Array.Empty<byte>()))
+                    {
+                        issues.Add(Issue(
+                            pair.Key,
+                            "mortal_wound_treatment_publication_resource_before_image_mismatch",
+                            "the exact sealed canonical resource before-image",
+                            "canonical bytes changed during composition"));
+                    }
+                }
+                if (issues.Count != 0)
+                {
+                    return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                        null,
+                        issues);
+                }
+            }
+
             var sourcesResult = ResourceMutationSourceCatalog.Create(
+                treatmentResourcePublicationAuthority?.RegisteredOutcome
+                    .SourceExports ??
                 Array.Empty<ResourceMutationSourceExport>());
             issues.AddRange(sourcesResult.Issues);
             if (sourcesResult.Catalog is not { } sources || issues.Count != 0)
@@ -395,8 +444,16 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             if (anchorPlan is not null)
                 internalInputs["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint;
             if (treatmentCurrentTimeInMinutes is not null)
+            {
                 internalInputs["treatmentSkillProjectionFingerprint"] =
                     treatmentSkillProjectionFingerprint;
+                internalInputs["treatmentResourceFinalizationFingerprint"] =
+                    treatmentResourcePublicationAuthority!.FinalizationFingerprint;
+                internalInputs["treatmentResourceDraftFingerprint"] =
+                    treatmentResourcePublicationAuthority.DraftFingerprint;
+                internalInputs["treatmentResourcePublicationAuthorityFingerprint"] =
+                    treatmentResourcePublicationAuthority.AuthorityFingerprint;
+            }
             var effectIdentityJson = Read(
                 EffectAcceptedTurnPlan.IdentityIndexPath);
             var effectIdentityRoot = stagedEffectPlan.IdentityIndexBeforeImage ??
@@ -421,6 +478,12 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             requiredPaths.UnionWith(stagedEffectPlan.DeletedPaths);
             requiredPaths.UnionWith(stagedEffectPlan.CarrierBeforeImages.Keys);
             requiredPaths.UnionWith(treatmentSkillBaselines.Keys);
+            if (treatmentResourcePublicationAuthority is not null)
+            {
+                requiredPaths.UnionWith(
+                    treatmentResourcePublicationAuthority.RegisteredOutcome
+                        .ExpectedBeforeImages.Keys);
+            }
             if (anchorPlan is not null)
             {
                 requiredPaths.UnionWith(
@@ -493,10 +556,21 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 effectIdentityRoot,
                 stagedEffectPlan,
                 ownerCompanionAfterImages: treatmentSkillAfterImages,
+                registeredSystemOutcomes:
+                    treatmentResourcePublicationAuthority is null
+                        ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>()
+                        : new[]
+                        {
+                            treatmentResourcePublicationAuthority.RegisteredOutcome
+                        },
                 pendingResolutionState: pendingResult.State,
+                resourceIdentityFactory:
+                    treatmentResourcePublicationAuthority?.CreateIdentityFactory(),
                 woundStageBundle: bundle,
                 woundAnchorPlan: anchorPlan,
-                directWoundPublicationAuthority: directPublicationAuthority);
+                directWoundPublicationAuthority: directPublicationAuthority,
+                treatmentResourcePublicationAuthority:
+                    treatmentResourcePublicationAuthority);
             var input = new AcceptedMechanicsInput(
                 binding.SessionId,
                 binding.RequestId,

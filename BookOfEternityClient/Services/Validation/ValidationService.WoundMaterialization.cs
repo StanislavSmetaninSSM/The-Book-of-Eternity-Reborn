@@ -374,33 +374,67 @@ public partial class ValidationService
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
 
-        var validationAuthority =
-            MortalWoundOpportunityValidationAuthority.Reconstruct(
-            manifest.SessionId,
-            manifest.RequestId,
-            manifest.ManifestPayloadHash,
-            realm,
-            manifest.TurnNumber,
-            draft.SignedOccurrences,
-            draft.SignedReceipts,
-            draft.PreTurnCarriers,
-            draft.ParsedCommands.Commands
-                .Select(static value => value.Opportunity)
-                .ToArray());
-        issues.AddRange(validationAuthority.Issues);
-        if (!validationAuthority.Success ||
-            validationAuthority.Binding is not { } binding)
+        WoundAcceptedTurnBinding binding;
+        IReadOnlyList<WoundOpportunityDecisionReceipt> priorReceipts;
+        if (draft.ParsedCommands.TreatmentCommands.Count != 0)
         {
-            AddMissingWoundStageIssue(
-                issues,
-                "wound_materialization_validation_authority_partial",
-                "independent occurrence validation authority");
-            return null;
+            var acceptedEvents = WoundAcceptedEventAuthorityComposer
+                .ComposeDefaultAcceptedTurn(
+                    manifest.SessionId,
+                    manifest.RequestId,
+                    manifest.ManifestPayloadHash,
+                    manifest.TurnNumber);
+            issues.AddRange(acceptedEvents.Issues);
+            if (!acceptedEvents.Success)
+            {
+                AddMissingWoundStageIssue(
+                    issues,
+                    "wound_materialization_treatment_validation_authority_partial",
+                    "independent accepted-turn treatment event authority");
+                return null;
+            }
+            binding = new WoundAcceptedTurnBinding(
+                manifest.SessionId,
+                manifest.RequestId,
+                manifest.ManifestPayloadHash,
+                realm,
+                manifest.TurnNumber,
+                acceptedEvents.Events,
+                acceptedEvents.EventsFingerprint);
+            priorReceipts = Array.Empty<WoundOpportunityDecisionReceipt>();
+        }
+        else
+        {
+            var validationAuthority =
+                MortalWoundOpportunityValidationAuthority.Reconstruct(
+                    manifest.SessionId,
+                    manifest.RequestId,
+                    manifest.ManifestPayloadHash,
+                    realm,
+                    manifest.TurnNumber,
+                    draft.SignedOccurrences,
+                    draft.SignedReceipts,
+                    draft.PreTurnCarriers,
+                    draft.ParsedCommands.Commands
+                        .Select(static value => value.Opportunity)
+                        .ToArray());
+            issues.AddRange(validationAuthority.Issues);
+            if (!validationAuthority.Success ||
+                validationAuthority.Binding is not { } occurrenceBinding)
+            {
+                AddMissingWoundStageIssue(
+                    issues,
+                    "wound_materialization_validation_authority_partial",
+                    "independent occurrence validation authority");
+                return null;
+            }
+            binding = occurrenceBinding;
+            priorReceipts = validationAuthority.PriorReceipts;
         }
         var recomposed = WoundResponseInputComposer.RecomposeCommandRoot(
             binding,
             draft.ParsedCommands,
-            validationAuthority.PriorReceipts);
+            priorReceipts);
         issues.AddRange(recomposed.Issues);
         if (!recomposed.Success || recomposed.CommandRoot is null)
         {

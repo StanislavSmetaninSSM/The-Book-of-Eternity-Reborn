@@ -7396,7 +7396,7 @@ internal static class EffectAcceptedTurnPlanner
         var resolution = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(realm, sourceKind, sourceId, definitionKey),
             targetKind);
-        return resolution.Source is { Active: true, Materializable: true } binding &&
+        return resolution.Source is { Active: true } binding &&
             (string.Equals(predicate, "active", StringComparison.Ordinal) ||
              binding.SatisfiedPredicates.Contains(predicate));
     }

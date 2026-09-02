@@ -379,6 +379,24 @@ public sealed class ValidationPhaseSelectionTests : IDisposable
     }
 
     [Fact]
+    public async Task ValidateGameStateAsync_CanonicalPlayerWoundRoot_DoesNotRunLegacyAliasContract()
+    {
+        await _fileSystem.WriteFileAtomicAsync(
+            WoundCarrierCatalog.PlayerPath,
+            WoundContractTestData.CreatePlayerCarrier(
+                WoundContractTestData.CreateActiveWound()).ToJsonString());
+        var selection = new GameStateValidationSelection(
+            GameStateValidationPhase.PlayerStateFiles,
+            new[] { WoundCarrierCatalog.PlayerPath });
+
+        var issues = await _validator.ValidateGameStateAsync(selection);
+
+        Assert.DoesNotContain(
+            issues,
+            issue => issue.Severity == IssueSeverity.Error);
+    }
+
+    [Fact]
     public async Task ValidateGameStateAsync_LocationIdentityIndexIssue_IsClientOwnedSurface()
     {
         var invalidIndex = MortalLocationIdentityState.CreateEmptyRoot();

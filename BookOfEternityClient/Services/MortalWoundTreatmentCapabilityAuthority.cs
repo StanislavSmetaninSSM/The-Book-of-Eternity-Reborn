@@ -916,10 +916,55 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     "The candidate plan lost its private treatment continuation authority.")
                     .Issues;
             }
-            return WoundAcceptedTurnPlanner.ValidateTreatmentSkillProjectionCandidate(
+            var skillIssues = WoundAcceptedTurnPlanner
+                .ValidateTreatmentSkillProjectionCandidate(
                 continuationAuthority,
                 continuation.ReservationAuthority,
                 candidate);
+            if (skillIssues.Count != 0)
+                return skillIssues;
+
+            var recomposedFinalization =
+                MortalWoundTreatmentResourceComposer.Finalize(resolution);
+            if (!recomposedFinalization.IsValid ||
+                recomposedFinalization.Finalization is null)
+            {
+                return Invalid(
+                    "treatmentCapability.publicationPlan.resources",
+                    "mortal_wound_treatment_publication_resource_finalization_mismatch",
+                    "The candidate resource finalization could not be independently recomposed.")
+                    .Issues;
+            }
+            var resourceAuthority =
+                candidate.TreatmentResourcePublicationAuthority;
+            if (resourceAuthority is null ||
+                !ReferenceEquals(
+                    resourceAuthority.AcceptedStateAuthority,
+                    acceptedState) ||
+                !ReferenceEquals(resourceAuthority.RequestAuthority, request) ||
+                !ReferenceEquals(
+                    resourceAuthority.ResolutionAuthority,
+                    resolution) ||
+                !ReferenceEquals(
+                    resourceAuthority.ContinuationAuthority,
+                    continuationAuthority) ||
+                !ReferenceEquals(
+                    resourceAuthority.PublicationReservationAuthority,
+                    continuation.ReservationAuthority) ||
+                !string.Equals(
+                    resourceAuthority.SemanticFingerprint,
+                    semanticFingerprint,
+                    StringComparison.Ordinal))
+            {
+                return Invalid(
+                    "treatmentCapability.publicationPlan.resources",
+                    "mortal_wound_treatment_publication_resource_authority_mismatch",
+                    "The candidate plan does not retain the exact private resource publication authority.")
+                    .Issues;
+            }
+            return resourceAuthority.ValidateCandidate(
+                candidate,
+                recomposedFinalization.Finalization);
         }
     }
 }

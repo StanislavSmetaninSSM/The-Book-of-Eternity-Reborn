@@ -2450,6 +2450,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             effects[ordinal]["chronology"]!["lastTransitionTurn"] = 30 + ordinal;
         }
 
+        if (scenario.SeedCanonicalWoundEffects)
+            effects.AddRange(CreateCanonicalWoundEffects(scenario.Before));
+
         var index = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
         var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
         for (var ordinal = 0; ordinal < entries.Length; ordinal++)
@@ -2472,6 +2475,97 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     effects.Select(static effect => (JsonNode)effect).ToArray())
             },
             index);
+    }
+
+    private static IReadOnlyList<JsonObject> CreateCanonicalWoundEffects(
+        JsonObject woundRoot)
+    {
+        var parsed = WoundMaterializationContract.Parse(
+            woundRoot.ToJsonString(),
+            "t070.resourcePublication.woundEffectSeed");
+        Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+        var wound = Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+        var definitions = wound.Consequences.OwnedEffectSources.Definitions
+            .Select(static definition =>
+                JsonNode.Parse(definition.GetRawText())!.AsObject())
+            .ToDictionary(
+                static definition =>
+                    definition["definitionKey"]!.GetValue<string>(),
+                StringComparer.Ordinal);
+        var targetKind = wound.Owner.OwnerKind switch
+        {
+            "player" or "player_soul" => "player",
+            "npc" => "npc",
+            "combatant" or "combatant_member" => "combatant",
+            "guardian" => "guardian",
+            "resident" => "resident",
+            "radiant_actor" => "radiant_actor",
+            "afterlife_actor" => "afterlife_actor",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(woundRoot),
+                wound.Owner.OwnerKind,
+                "Unsupported wound owner kind for canonical effect seeding.")
+        };
+        var effects = new List<JsonObject>();
+        foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
+        {
+            var definition = definitions[binding.DefinitionKey];
+            var profile = definition["components"]![0]!["profile"]!
+                .GetValue<string>();
+            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+                targetKind,
+                profile);
+            effect["effectId"] = binding.EffectId;
+            effect["realm"] = wound.Owner.Realm;
+            effect["target"] = new JsonObject
+            {
+                ["kind"] = targetKind,
+                ["targetId"] = wound.Owner.OwnerId
+            };
+            effect["display"] = definition["display"]!.DeepClone();
+            effect["source"] = new JsonObject
+            {
+                ["kind"] = "wound",
+                ["sourceId"] = wound.WoundId,
+                ["definitionKey"] = binding.DefinitionKey
+            };
+            effect["components"] = definition["components"]!.DeepClone();
+            effect["lifetime"] = new JsonObject
+            {
+                ["mode"] = "source_bound",
+                ["linkKind"] = "wound",
+                ["targetId"] = wound.WoundId,
+                ["activePredicate"] =
+                    definition["lifetime"]!["activePredicate"]!.DeepClone(),
+                ["onSourceLoss"] =
+                    definition["lifetime"]!["onSourceLoss"]!.DeepClone()
+            };
+            effect["stacking"] = new JsonObject
+            {
+                ["stackKey"] =
+                    definition["stacking"]!["stackKey"]!.DeepClone(),
+                ["policy"] = definition["stacking"]!["policy"]!.DeepClone(),
+                ["maxStacks"] =
+                    definition["stacking"]!["maxStacks"]!.DeepClone(),
+                ["currentStacks"] = 1,
+                ["refreshMode"] =
+                    definition["stacking"]!["refreshMode"]?.DeepClone(),
+                ["mergeRule"] =
+                    definition["stacking"]!["mergeRule"]?.DeepClone()
+            };
+            effect["triggers"] = definition["triggers"]!.DeepClone();
+            effect["removal"] = definition["removal"]!.DeepClone();
+            effect["links"] = definition["links"]!.DeepClone();
+            effect["chronology"] = new JsonObject
+            {
+                ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
+                ["createdEventRef"] = wound.Origin.EventRef,
+                ["lastTransitionId"] = "effect_transition_" + binding.EffectId,
+                ["lastTransitionTurn"] = wound.Origin.CreatedAtTurn
+            };
+            effects.Add(effect);
+        }
+        return effects;
     }
 
     private static JsonObject CreateCanonicalFateShield(string effectId)
@@ -4096,7 +4190,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         bool RequirementsAvailable,
         int ExpectedIntentCount,
         string? ExpectedFateEffectId,
-        string? SeedFateEffectId);
+        string? SeedFateEffectId,
+        bool SeedCanonicalWoundEffects = false);
 
     private sealed record ScenarioSemantics(
         string RollMode,
@@ -5091,7 +5186,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             return carrier["enemiesData"]![0]!["activeWounds"]![0]!.AsObject();
         }
 
-        private void PrepareFreshSnapshot(string label, bool preserveRequestId = false)
+        internal void PrepareFreshSnapshot(string label, bool preserveRequestId = false)
         {
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             var request = JsonNode.Parse(File.ReadAllText(FileSystem.ResolvePath(

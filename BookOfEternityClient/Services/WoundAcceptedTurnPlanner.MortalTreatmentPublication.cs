@@ -16,7 +16,10 @@ internal static partial class WoundAcceptedTurnPlanner
         internal TreatmentContinuationAuthority(
             WoundMaterializationEnvelope before,
             WoundMaterializationEnvelope after,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedStateAuthority,
+            MortalWoundTreatmentAttemptRequest requestAuthority,
             MortalWoundTreatmentResolution resolution,
+            MortalWoundTreatmentResourceFinalization resourceFinalization,
             string transitionId,
             MortalWoundTreatmentPersistedResult persistedResult,
             string acceptedStateFingerprint,
@@ -28,7 +31,10 @@ internal static partial class WoundAcceptedTurnPlanner
         {
             Before = before;
             After = after;
+            AcceptedStateAuthority = acceptedStateAuthority;
+            RequestAuthority = requestAuthority;
             Resolution = resolution;
+            ResourceFinalization = resourceFinalization;
             TransitionId = transitionId;
             PersistedResult = persistedResult;
             AcceptedStateFingerprint = acceptedStateFingerprint;
@@ -41,7 +47,10 @@ internal static partial class WoundAcceptedTurnPlanner
 
         internal WoundMaterializationEnvelope Before { get; }
         internal WoundMaterializationEnvelope After { get; }
+        internal MortalWoundTreatmentAcceptedStateAuthority AcceptedStateAuthority { get; }
+        internal MortalWoundTreatmentAttemptRequest RequestAuthority { get; }
         internal MortalWoundTreatmentResolution Resolution { get; }
+        internal MortalWoundTreatmentResourceFinalization ResourceFinalization { get; }
         internal string TransitionId { get; }
         internal MortalWoundTreatmentPersistedResult PersistedResult { get; }
         internal string AcceptedStateFingerprint { get; }
@@ -55,7 +64,10 @@ internal static partial class WoundAcceptedTurnPlanner
     internal sealed record TreatmentContinuationView(
         WoundMaterializationEnvelope Before,
         WoundMaterializationEnvelope After,
+        MortalWoundTreatmentAcceptedStateAuthority AcceptedStateAuthority,
+        MortalWoundTreatmentAttemptRequest RequestAuthority,
         MortalWoundTreatmentResolution Resolution,
+        MortalWoundTreatmentResourceFinalization ResourceFinalization,
         string TransitionId,
         MortalWoundTreatmentPersistedResult PersistedResult,
         string AcceptedStateFingerprint,
@@ -143,6 +155,14 @@ internal static partial class WoundAcceptedTurnPlanner
                 acceptedState,
                 semanticFingerprint);
         if (reservation.Status ==
+            MortalWoundTreatmentPublicationReservationStatus.RestartRequired)
+        {
+            return PublicationFailure(
+                "mortal_wound_treatment_publication_compensation_restart_required",
+                "a fresh session generation without an unresolved confirmed hold",
+                "the current generation is blocked by an unpublishable held command");
+        }
+        if (reservation.Status ==
             MortalWoundTreatmentPublicationReservationStatus.Conflict)
         {
             return PublicationFailure(
@@ -170,12 +190,12 @@ internal static partial class WoundAcceptedTurnPlanner
 
         try
         {
-            var shellIssues = ValidateGuaranteedStabilizationShell(
+            var shell = ValidateGuaranteedStabilizationShell(
                 acceptedState,
                 request,
                 resolution);
-            if (shellIssues.Count != 0)
-                return MortalWoundTreatmentPublicationResult.Invalid(shellIssues);
+            if (shell.Issues.Count != 0 || shell.Finalization is null)
+                return MortalWoundTreatmentPublicationResult.Invalid(shell.Issues);
 
             var skillProjection = CreateTreatmentSkillProjection(
                 fileSystem,
@@ -214,7 +234,9 @@ internal static partial class WoundAcceptedTurnPlanner
             var continuationAuthority = CreateTreatmentContinuationAuthority(
                 request.RouteSourceWound,
                 after,
+                request,
                 resolution,
+                shell.Finalization,
                 transitionId,
                 acceptedState,
                 baseSemanticFingerprint,
@@ -340,7 +362,9 @@ internal static partial class WoundAcceptedTurnPlanner
     private static object CreateTreatmentContinuationAuthority(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
+        MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentResourceFinalization resourceFinalization,
         string transitionId,
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
         string baseSemanticFingerprint,
@@ -362,6 +386,7 @@ internal static partial class WoundAcceptedTurnPlanner
             before,
             after,
             resolution,
+            resourceFinalization.FinalizationFingerprint,
             transitionId,
             acceptedState.AcceptedStateFingerprint,
             baseSemanticFingerprint,
@@ -370,7 +395,10 @@ internal static partial class WoundAcceptedTurnPlanner
         return new TreatmentContinuationAuthority(
             before,
             after,
+            acceptedState,
+            request,
             resolution,
+            resourceFinalization,
             transitionId,
             persisted,
             acceptedState.AcceptedStateFingerprint,
@@ -397,7 +425,30 @@ internal static partial class WoundAcceptedTurnPlanner
     {
         continuation = null!;
         if (authority is not TreatmentContinuationAuthority candidate ||
+            candidate.AcceptedStateAuthority is null ||
+            candidate.RequestAuthority is null ||
+            candidate.Resolution is null ||
+            candidate.ResourceFinalization is null ||
             candidate.ReservationAuthority is null ||
+            !ReferenceEquals(
+                candidate.Resolution.RequestAuthority,
+                candidate.RequestAuthority) ||
+            !string.Equals(
+                candidate.AcceptedStateAuthority.AcceptedStateFingerprint,
+                candidate.AcceptedStateFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                candidate.ResourceFinalization.RequestFingerprint,
+                candidate.RequestAuthority.RequestFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                candidate.ResourceFinalization.ResultFingerprint,
+                candidate.Resolution.ResultFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                candidate.ResourceFinalization.ResourceAuthorityFingerprint,
+                candidate.RequestAuthority.ResourceAuthority.AuthorityFingerprint,
+                StringComparison.Ordinal) ||
             !TryReadTreatmentSkillProjection(
                 candidate.SkillProjectionAuthority,
                 candidate.ReservationAuthority,
@@ -408,6 +459,7 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.Before,
             candidate.After,
             candidate.Resolution,
+            candidate.ResourceFinalization.FinalizationFingerprint,
             candidate.TransitionId,
             candidate.AcceptedStateFingerprint,
             candidate.BaseSemanticFingerprint,
@@ -423,7 +475,10 @@ internal static partial class WoundAcceptedTurnPlanner
         continuation = new TreatmentContinuationView(
             candidate.Before,
             candidate.After,
+            candidate.AcceptedStateAuthority,
+            candidate.RequestAuthority,
             candidate.Resolution,
+            candidate.ResourceFinalization,
             candidate.TransitionId,
             candidate.PersistedResult,
             candidate.AcceptedStateFingerprint,
@@ -516,7 +571,9 @@ internal static partial class WoundAcceptedTurnPlanner
             acceptedState,
             request,
             resolution);
-        return ReferenceEquals(continuation.Resolution, resolution) &&
+        return ReferenceEquals(continuation.AcceptedStateAuthority, acceptedState) &&
+               ReferenceEquals(continuation.RequestAuthority, request) &&
+               ReferenceEquals(continuation.Resolution, resolution) &&
                string.Equals(
                    continuation.AcceptedStateFingerprint,
                    acceptedState.AcceptedStateFingerprint,
@@ -635,6 +692,7 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
         MortalWoundTreatmentResolution resolution,
+        string resourceFinalizationFingerprint,
         string transitionId,
         string acceptedStateFingerprint,
         string baseSemanticFingerprint,
@@ -649,6 +707,7 @@ internal static partial class WoundAcceptedTurnPlanner
             resolution.RequestFingerprint,
             resolution.ResultFingerprint,
             resolution.ResolutionAuthorityFingerprint,
+            resourceFinalizationFingerprint,
             resolution.Coordinates.CoordinatesFingerprint,
             transitionId,
             acceptedStateFingerprint,
@@ -818,7 +877,11 @@ internal static partial class WoundAcceptedTurnPlanner
             issues);
     }
 
-    private static IReadOnlyList<ValidationIssue>
+    private sealed record GuaranteedStabilizationShellValidation(
+        MortalWoundTreatmentResourceFinalization? Finalization,
+        IReadOnlyList<ValidationIssue> Issues);
+
+    private static GuaranteedStabilizationShellValidation
         ValidateGuaranteedStabilizationShell(
             MortalWoundTreatmentAcceptedStateAuthority acceptedState,
             MortalWoundTreatmentAttemptRequest request,
@@ -835,6 +898,65 @@ internal static partial class WoundAcceptedTurnPlanner
                 resolution.RequestAuthority?.RequestFingerprint,
                 request.RequestFingerprint,
                 StringComparison.Ordinal);
+        var exactFinalization = finalized is not null &&
+            exactRequest &&
+            string.Equals(
+                finalized.RequestFingerprint,
+                request.RequestFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                finalized.ResultFingerprint,
+                resolution.ResultFingerprint,
+                StringComparison.Ordinal) &&
+            string.Equals(
+                finalized.ResourceAuthorityFingerprint,
+                request.ResourceAuthority.AuthorityFingerprint,
+                StringComparison.Ordinal);
+        if (finalized is not null && !exactFinalization)
+        {
+            return new GuaranteedStabilizationShellValidation(
+                null,
+                new[]
+                {
+                    PublicationIssue(
+                        "treatmentPublication.resources.finalization",
+                        "mortal_wound_treatment_publication_resource_finalization_mismatch",
+                        "the exact finalization recomposed from the supplied sealed request and result",
+                        finalized.FinalizationFingerprint)
+                });
+        }
+        if (finalized?.Consumptions.Any(static value =>
+                string.Equals(
+                    value.Kind,
+                    "item_quantity",
+                    StringComparison.Ordinal)) == true)
+        {
+            return new GuaranteedStabilizationShellValidation(
+                null,
+                new[]
+                {
+                    PublicationIssue(
+                        "treatmentPublication.resources.consumptions",
+                        "mortal_wound_treatment_publication_item_consumption_unsupported",
+                        "selected item_quantity consumption is deferred to T070-B.4",
+                        "selected item_quantity consumption")
+                });
+        }
+        var finalizationShape = finalized switch
+        {
+            { Disposition: "not_required", ReservationId: null } value =>
+                value.Consumptions.Count == 0 &&
+                value.ReleasedClaimFingerprints.Count == 0,
+            { Disposition: "release_only", ReservationId: not null } value =>
+                value.Consumptions.Count == 0,
+            { Disposition: "consume", ReservationId: not null } value =>
+                value.Consumptions.Count != 0 &&
+                value.Consumptions.All(static consumption => string.Equals(
+                    consumption.Kind,
+                    "resource_quantity",
+                    StringComparison.Ordinal)),
+            _ => false
+        };
         var exactCoordinates = coordinates.MatchesAcceptedState(acceptedState) &&
             string.Equals(
                 resolution.Coordinates.CoordinatesFingerprint,
@@ -863,48 +985,54 @@ internal static partial class WoundAcceptedTurnPlanner
                 actualIntent.IntentFingerprint,
                 expectedIntent.IntentFingerprint,
                 StringComparison.Ordinal);
-        if (!acceptedState.HasCurrentAdmissionAuthority() ||
-            !exactRequest || !exactCoordinates ||
-            request.Mode is not "guaranteed" ||
-            resolution.Mode is not "guaranteed" ||
-            resolution.AttemptDisposition is not "AcceptedTerminal" ||
-            resolution.ResultCategory is not "success" ||
-            resolution.SelectedOutcomeIndex != 0 ||
-            resolution.Interruption || !exactOutcome ||
-            resolution.CriticalReactionIntent is not null ||
-            resolution.CourseId is not null ||
+        var failedAxes = new List<string>();
+        if (!acceptedState.HasCurrentAdmissionAuthority())
+            failedAxes.Add("accepted_state");
+        if (!exactRequest)
+            failedAxes.Add("request");
+        if (!exactCoordinates)
+            failedAxes.Add("coordinates");
+        if (request.Mode is not "guaranteed" || resolution.Mode is not "guaranteed")
+            failedAxes.Add("mode");
+        if (resolution.AttemptDisposition is not "AcceptedTerminal")
+            failedAxes.Add("attempt_disposition");
+        if (resolution.ResultCategory is not "success" ||
+            resolution.SelectedOutcomeIndex != 0 || resolution.Interruption)
+        {
+            failedAxes.Add("result_selection");
+        }
+        if (!exactOutcome)
+            failedAxes.Add("outcome");
+        if (resolution.CriticalReactionIntent is not null)
+            failedAxes.Add("critical_reaction");
+        if (resolution.CourseId is not null ||
             resolution.CourseMilestoneOrdinal is not null ||
-            resolution.CourseDisposition is not null ||
-            resolution.RouteCompletion is not "AppendOnce" ||
-            !string.Equals(
+            resolution.CourseDisposition is not null)
+        {
+            failedAxes.Add("course");
+        }
+        if (resolution.RouteCompletion is not "AppendOnce")
+            failedAxes.Add("route_completion");
+        if (!string.Equals(
                 request.RouteSourceWoundFingerprint,
                 coordinates.ExpectedBeforeFingerprint,
-                StringComparison.Ordinal) ||
-            request.RouteSourceWound.Consequences.OwnedEffectSources
-                .Definitions.Count != 0 ||
-            request.RouteSourceWound.Consequences.OwnedEffectSources
-                .RootBindings.Count != 0 ||
-            finalized is null ||
-            finalized.Disposition is not "not_required" ||
-            finalized.ReservationId is not null ||
-            finalized.Consumptions.Count != 0 ||
-            finalized.ReleasedClaimFingerprints.Count != 0 ||
-            !string.Equals(
-                finalized.RequestFingerprint,
-                request.RequestFingerprint,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                finalized.ResultFingerprint,
-                resolution.ResultFingerprint,
                 StringComparison.Ordinal))
+        {
+            failedAxes.Add("before_wound");
+        }
+        if (finalized is null || !exactFinalization || !finalizationShape)
+            failedAxes.Add("resource_finalization");
+        if (failedAxes.Count != 0)
         {
             issues.Add(PublicationIssue(
                 "treatmentPublication.guaranteedStabilization",
                 "mortal_wound_treatment_publication_slice_unsupported",
-                "one fresh accepted-terminal guaranteed singleton stabilization with no effects, course, reaction, or resources",
-                "unsupported or mismatched treatment resolution"));
+                "one fresh accepted-terminal guaranteed singleton stabilization that preserves its sealed source graph, has no course or reaction, and has one valid resource finalization",
+                string.Join(",", failedAxes)));
         }
-        return issues;
+        return new GuaranteedStabilizationShellValidation(
+            issues.Count == 0 ? finalized : null,
+            issues);
     }
 
     private static string ComputeTreatmentPublicationFingerprint(

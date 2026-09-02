@@ -1425,40 +1425,12 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             string.Join(",", dice.Select(static die =>
                 die.ToString(CultureInfo.InvariantCulture))));
 
-        var eventRoot = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
-            signed.TurnNumber,
-            EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot());
-        if (eventRoot["events"] is not JsonArray eventRows || eventRows.Count == 0)
-        {
-            issues.Add(Issue(
-                "acceptedWoundEvents.events",
-                "mortal_wound_treatment_accepted_event_missing",
-                "one current accepted event",
-                "missing"));
-            return false;
-        }
-        var coordinates = new List<WoundAcceptedResponseEventCoordinate>(eventRows.Count);
-        foreach (var row in eventRows.OfType<JsonObject>())
-        {
-            if (!TryString(row, "eventRef", out var eventRef) ||
-                !TryString(row, "kind", out var kind) ||
-                !TryString(row, "authorityId", out var authorityId))
-            {
-                continue;
-            }
-            coordinates.Add(new WoundAcceptedResponseEventCoordinate(
-                eventRef,
-                kind,
-                authorityId));
-        }
-        var composed = WoundAcceptedEventAuthorityComposer.Compose(
-            new WoundAcceptedResponseEventProjection(
+        var composed = WoundAcceptedEventAuthorityComposer
+            .ComposeDefaultAcceptedTurn(
                 signed.SessionId,
                 signed.RequestId,
                 signed.SnapshotToken,
-                signed.TurnNumber,
-                coordinates),
-            Array.Empty<WoundSelectedEventEvidence>());
+                signed.TurnNumber);
         AddIssues(issues, composed.Issues);
         if (!composed.Success)
             return false;

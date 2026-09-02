@@ -30,6 +30,25 @@ public partial class GameEngine
         Completed
     }
 
+    private bool PreserveAcceptedTurnForTreatmentPublicationRetry(
+        AcceptedTurnValidationDisposition disposition)
+    {
+        if (disposition is not (
+                AcceptedTurnValidationDisposition.RetryablePublicationRearmed or
+                AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked))
+        {
+            return false;
+        }
+
+        ClearReadySignals();
+        var message = disposition ==
+                      AcceptedTurnValidationDisposition.RetryablePublicationRearmed
+            ? "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]"
+            : "[yellow]⚠ Финальная публикация лечения заблокирована безопасно. Ход и удержанный ресурс сохранены; требуется перезапуск или восстановление сессии.[/]";
+        AnsiConsole.MarkupLine(message);
+        return true;
+    }
+
     private async Task<bool> WaitForGmResponse()
     {
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
@@ -78,14 +97,22 @@ public partial class GameEngine
         {
             var signal = terminalOutcome.Signal;
             var expectedTurn = signal?.TurnNumber ?? snapshotContext?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
-            if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+            var validationDisposition =
+                await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                     "ответа GM",
                     snapshotContext,
                     rollbackSnapshot,
                     expectedTurn,
-                    snapshotContext?.ProgressionControl))
+                    snapshotContext?.ProgressionControl);
+            if (validationDisposition !=
+                AcceptedTurnValidationDisposition.Accepted)
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
+                if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                        validationDisposition))
+                {
+                    return false;
+                }
                 _fs.DeleteFile("input/turn_request.json");
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
@@ -821,12 +848,20 @@ public partial class GameEngine
                 }
 
                 var acceptedLateResponse = false;
-                if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                var validationDisposition =
+                    await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
                         snapshotContext,
                         rollbackSnapshot,
                         signalTurn ?? expectedTurn,
-                        snapshotContext?.ProgressionControl))
+                        snapshotContext?.ProgressionControl);
+                if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                        validationDisposition))
+                {
+                    return true;
+                }
+                if (validationDisposition ==
+                    AcceptedTurnValidationDisposition.Accepted)
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
@@ -1341,13 +1376,21 @@ public partial class GameEngine
         }
 
         // Read and validate the response before accepting the turn
-        if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+        var validationDisposition =
+            await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                 "обработки хода",
                 activeSnapshotContext,
                 backedUpFiles,
                 request.TurnNumber,
-                request.ProgressionControl))
+                request.ProgressionControl);
+        if (validationDisposition !=
+            AcceptedTurnValidationDisposition.Accepted)
         {
+            if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                    validationDisposition))
+            {
+                return;
+            }
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
@@ -2183,13 +2226,21 @@ public partial class GameEngine
             {
                 var manifest = await LoadPendingTurnSnapshotManifestAsync();
                 var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
-                if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                var validationDisposition =
+                    await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "оценки жизни",
                         snapshotContext,
                         BuildValidatedRollbackSnapshot(snapshotContext),
                         _gameLoop.TurnNumber + 1,
-                        evalRequest.ProgressionControl))
+                        evalRequest.ProgressionControl);
+                if (validationDisposition !=
+                    AcceptedTurnValidationDisposition.Accepted)
                 {
+                    if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                            validationDisposition))
+                    {
+                        return true;
+                    }
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         BuildValidatedRollbackSnapshot(snapshotContext),

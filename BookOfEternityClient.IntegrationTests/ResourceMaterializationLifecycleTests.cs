@@ -352,7 +352,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "resource materialization repair",
@@ -366,7 +366,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(readyOnlyRejected);
         Assert.True(changedResourceSemanticRejected);
         Assert.True(partialResourceOnlyRejected);
-        Assert.True(accepted);
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, accepted);
         Assert.False(_fs.FileExists(ResourceMaterializationContract.CommandPath));
         Assert.True(_fs.FileExists("output/narrative_response.json"));
         Assert.True(_fs.FileExists("output/interface_updates.json"));
@@ -762,7 +762,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
         });
 
-        var accepted = await InvokePrivateAsync<bool>(
+        var accepted = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "bounded pending actual lifecycle",
@@ -773,7 +773,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await gmRepair;
 
         Assert.Null(gmFailure);
-        Assert.True(accepted);
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, accepted);
         Assert.NotNull(repairRequestJson);
         Assert.NotNull(staleOutputRepairRequestJson);
         Assert.NotNull(pendingAtDispatch);

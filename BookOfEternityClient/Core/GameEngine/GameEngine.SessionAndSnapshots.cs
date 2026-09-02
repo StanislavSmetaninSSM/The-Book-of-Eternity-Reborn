@@ -214,6 +214,26 @@ public partial class GameEngine
             _normalizer,
             _validator,
             backups);
+        if (result.TreatmentResourcePublicationTransaction is not null)
+        {
+            try
+            {
+                if (!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                    await RefreshRuntimeStateAsync();
+                return result;
+            }
+            catch (CompensatedTreatmentPublicationException)
+            {
+                throw;
+            }
+            catch (Exception exception)
+            {
+                throw await BuildCompensatedTreatmentPublicationExceptionAsync(
+                    result.TreatmentResourcePublicationTransaction,
+                    exception);
+            }
+        }
+
         if (!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
             await RefreshRuntimeStateAsync();
         return result;

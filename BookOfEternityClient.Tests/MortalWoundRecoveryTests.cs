@@ -1370,8 +1370,10 @@ public sealed class MortalWoundRecoveryTests
             Assert.True(treatmentPlanner is not null, "T067 treatment planner is absent.");
             var prepared = Invoke(ExactStatic(treatmentPlanner!, "PrepareProcedureRequest", 6),
                 acceptedState, history, before, "operation_t062_stabilize", routeId, eventRef);
+            AssertClosed(prepared, "IsValid", "Issues", "Request");
+            Assert.True(Assert.IsType<bool>(Required(prepared, "IsValid")));
+            Assert.Empty(Values(prepared, "Issues"));
             var request = Required(prepared, "Request");
-            AssertClosed(prepared, "Issues", "Request");
             var resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateProcedureAttempt", 4),
                 request, history, before, acceptedState);
             AssertClosed(resolutionResult, "Disposition", "Issues", "ReplayReceipt", "Resolution");
@@ -1381,6 +1383,14 @@ public sealed class MortalWoundRecoveryTests
             var governedBefore = CaptureAllGovernedBytes(fs);
             var wholeTreeBefore = CaptureTreeBytes(fs.GameSessionPath);
             var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
+            AssertClosed(composed, "IsValid", "Issues", "Plan");
+            var compositionIssues = Values(composed, "Issues")
+                .Select(Assert.IsType<ValidationIssue>)
+                .ToArray();
+            Assert.True(
+                Assert.IsType<bool>(Required(composed, "IsValid")),
+                Issues(compositionIssues));
+            Assert.Empty(compositionIssues);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(Required(composed, "Plan"));
             AssertPublishedWoundPlan(
                 plan,

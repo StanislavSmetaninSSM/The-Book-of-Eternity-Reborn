@@ -9,8 +9,39 @@ internal delegate AcceptedMechanicsPlanningResult AcceptedMechanicsPlanFactory(
 
 internal sealed class AcceptedMechanicsPlanCache
 {
+    internal sealed class ValidatedPublicationTakeSnapshot
+    {
+        internal ValidatedPublicationTakeSnapshot(
+            object cacheAuthority,
+            object fence,
+            string bindingFingerprint,
+            AcceptedMechanicsPlanBinding binding,
+            AcceptedMechanicsPlanningResult result,
+            AcceptedMechanicsPlan plan,
+            string preparedPlanFingerprint)
+        {
+            CacheAuthority = cacheAuthority;
+            Fence = fence;
+            BindingFingerprint = bindingFingerprint;
+            Binding = binding;
+            Result = result;
+            Plan = plan;
+            PreparedPlanFingerprint = preparedPlanFingerprint;
+        }
+
+        internal object CacheAuthority { get; }
+        internal object Fence { get; }
+        internal string BindingFingerprint { get; }
+        internal AcceptedMechanicsPlanBinding Binding { get; }
+        internal AcceptedMechanicsPlanningResult Result { get; }
+        internal AcceptedMechanicsPlan Plan { get; }
+        internal string PreparedPlanFingerprint { get; }
+    }
+
     private readonly object _gate = new();
+    private readonly object _cacheAuthority = new();
     private readonly AcceptedMechanicsPlanFactory _planner;
+    private object _validatedFence = new();
     private string? _inputFingerprint;
     private AcceptedMechanicsPlanningResult? _planningResult;
     private string? _validatedBindingFingerprint;
@@ -227,6 +258,107 @@ internal sealed class AcceptedMechanicsPlanCache
         return false;
     }
 
+    internal bool TryTakeValidatedTreatmentPublication(
+        AcceptedMechanicsPlanBinding liveBinding,
+        AcceptedMechanicsPlan expectedPlan,
+        out AcceptedMechanicsPlanningResult result,
+        out ValidatedPublicationTakeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(liveBinding);
+        ArgumentNullException.ThrowIfNull(expectedPlan);
+        var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
+        lock (_gate)
+        {
+            if (_validatedBinding is not null &&
+                _validatedResult is { Plan: { } plan } current &&
+                ReferenceEquals(plan, expectedPlan) &&
+                string.Equals(
+                    _validatedBindingFingerprint,
+                    fingerprint,
+                    StringComparison.Ordinal) &&
+                PreparedFingerprintAgrees(current))
+            {
+                var frozenBinding = CloneBinding(_validatedBinding);
+                result = current;
+                snapshot = new ValidatedPublicationTakeSnapshot(
+                    _cacheAuthority,
+                    _validatedFence,
+                    fingerprint,
+                    frozenBinding,
+                    current,
+                    plan,
+                    plan.PreparedPlanFingerprint);
+                ClearValidatedSlotCore();
+                return true;
+            }
+
+        }
+
+        result = null!;
+        snapshot = null!;
+        return false;
+    }
+
+    internal bool IsTreatmentPublicationTakeCurrent(
+        ValidatedPublicationTakeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        lock (_gate)
+        {
+            return PublicationTakeSnapshotAgrees(snapshot) &&
+                   ReferenceEquals(_validatedFence, snapshot.Fence) &&
+                   _validatedBindingFingerprint is null &&
+                   _validatedBinding is null &&
+                   _validatedResult is null;
+        }
+    }
+
+    internal bool TryRearmValidatedTreatmentPublication(
+        ValidatedPublicationTakeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        lock (_gate)
+        {
+            if (!PublicationTakeSnapshotAgrees(snapshot) ||
+                !ReferenceEquals(_validatedFence, snapshot.Fence) ||
+                _validatedBindingFingerprint is not null ||
+                _validatedBinding is not null ||
+                _validatedResult is not null)
+            {
+                return false;
+            }
+
+            _validatedBindingFingerprint = snapshot.BindingFingerprint;
+            _validatedBinding = CloneBinding(snapshot.Binding);
+            _validatedResult = snapshot.Result;
+            return true;
+        }
+    }
+
+    internal bool IsTreatmentPublicationRearmed(
+        ValidatedPublicationTakeSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        lock (_gate)
+        {
+            return PublicationTakeSnapshotAgrees(snapshot) &&
+                   ReferenceEquals(_validatedFence, snapshot.Fence) &&
+                   string.Equals(
+                       _validatedBindingFingerprint,
+                       snapshot.BindingFingerprint,
+                       StringComparison.Ordinal) &&
+                   _validatedBinding is not null &&
+                   string.Equals(
+                       AcceptedMechanicsPlanFingerprints.ComputeInput(
+                           _validatedBinding),
+                       snapshot.BindingFingerprint,
+                       StringComparison.Ordinal) &&
+                   ReferenceEquals(_validatedResult, snapshot.Result) &&
+                   ReferenceEquals(_validatedResult?.Plan, snapshot.Plan) &&
+                   PreparedFingerprintAgrees(snapshot.Result);
+        }
+    }
+
     internal void InvalidateValidated()
     {
         lock (_gate)
@@ -254,21 +386,7 @@ internal sealed class AcceptedMechanicsPlanCache
                     result = null!;
                     return false;
                 }
-                binding = new AcceptedMechanicsPlanBinding(
-                    _validatedBinding.SessionId,
-                    _validatedBinding.RequestId,
-                    _validatedBinding.SnapshotToken,
-                    _validatedBinding.Realm,
-                    _validatedBinding.Turn,
-                    _validatedBinding.AcceptedEvents,
-                    _validatedBinding.ResourceCommands,
-                    _validatedBinding.EffectCommands,
-                    _validatedBinding.PendingInput,
-                    _validatedBinding.InternalInputs,
-                    _validatedBinding.AuthorityFingerprints,
-                    _validatedBinding.BeforeImages,
-                    _validatedBinding.WoundCommands,
-                    _validatedBinding.WoundInput);
+                binding = CloneBinding(_validatedBinding);
                 result = _validatedResult;
                 return true;
             }
@@ -279,6 +397,12 @@ internal sealed class AcceptedMechanicsPlanCache
     }
 
     private void InvalidateValidatedCore()
+    {
+        _validatedFence = new object();
+        ClearValidatedSlotCore();
+    }
+
+    private void ClearValidatedSlotCore()
     {
         _validatedBindingFingerprint = null;
         _validatedBinding = null;
@@ -292,6 +416,43 @@ internal sealed class AcceptedMechanicsPlanCache
         InvalidateValidatedCore();
         ClearWoundRepairWaveCore();
     }
+
+    private bool PublicationTakeSnapshotAgrees(
+        ValidatedPublicationTakeSnapshot snapshot)
+    {
+        if (!ReferenceEquals(snapshot.CacheAuthority, _cacheAuthority) ||
+            !ReferenceEquals(snapshot.Result.Plan, snapshot.Plan) ||
+            !string.Equals(
+                snapshot.BindingFingerprint,
+                AcceptedMechanicsPlanFingerprints.ComputeInput(snapshot.Binding),
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                snapshot.PreparedPlanFingerprint,
+                snapshot.Plan.PreparedPlanFingerprint,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        return PreparedFingerprintAgrees(snapshot.Result);
+    }
+
+    private static AcceptedMechanicsPlanBinding CloneBinding(
+        AcceptedMechanicsPlanBinding binding) => new(
+        binding.SessionId,
+        binding.RequestId,
+        binding.SnapshotToken,
+        binding.Realm,
+        binding.Turn,
+        binding.AcceptedEvents,
+        binding.ResourceCommands,
+        binding.EffectCommands,
+        binding.PendingInput,
+        binding.InternalInputs,
+        binding.AuthorityFingerprints,
+        binding.BeforeImages,
+        binding.WoundCommands,
+        binding.WoundInput);
 
     private void ClearWoundRepairWaveCore()
     {
@@ -718,6 +879,156 @@ internal static class AcceptedMechanicsPlanAuthority
             writeLease,
             liveBinding,
             out result);
+    }
+
+    internal static bool TryTakeValidatedTreatmentPublication(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsPlanBinding liveBinding,
+        MortalItemAcceptedTurnNormalizationSnapshot mortalItemSnapshot,
+        out AcceptedMechanicsPlanningResult result,
+        out MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(liveBinding);
+        ArgumentNullException.ThrowIfNull(mortalItemSnapshot);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .TryTakeCommonMortalWoundTreatmentPublication(
+                fileSystem,
+                writeLease,
+                liveBinding,
+                mortalItemSnapshot,
+                out result,
+                out receipt);
+    }
+
+    internal static bool IsTakenTreatmentPublicationCurrent(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsPlanBinding liveBinding,
+        AcceptedMechanicsPlan plan,
+        MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(liveBinding);
+        ArgumentNullException.ThrowIfNull(plan);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .IsTakenMortalWoundTreatmentPublicationCurrent(
+                fileSystem,
+                writeLease,
+                liveBinding,
+                plan,
+                receipt);
+    }
+
+    internal static MortalWoundTreatmentPublicationProbeResult
+        ProbeTakenTreatmentPublication(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .ProbeTakenMortalWoundTreatmentPublication(
+                fileSystem,
+                writeLease,
+                receipt);
+    }
+
+    internal static MortalWoundTreatmentPublicationOperationResult
+        CompleteTakenTreatmentPublication(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .CompleteTakenMortalWoundTreatmentPublication(
+                fileSystem,
+                writeLease,
+                receipt);
+    }
+
+    internal static MortalWoundTreatmentPublicationOperationResult
+        RearmTakenTreatmentPublication(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .RearmTakenMortalWoundTreatmentPublication(
+                fileSystem,
+                writeLease,
+                receipt);
+    }
+
+    internal static MortalWoundTreatmentPublicationOperationResult
+        CloseTakenTreatmentPublicationAfterQuarantine(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .CloseTakenMortalWoundTreatmentPublicationAfterQuarantine(
+                fileSystem,
+                writeLease,
+                receipt);
+    }
+
+    internal static MortalWoundTreatmentPublicationOperationResult
+        ReleaseTakenTreatmentPublicationTerminal(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt,
+            string reason)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .ReleaseTakenMortalWoundTreatmentPublicationTerminal(
+                fileSystem,
+                writeLease,
+                receipt,
+                reason);
+    }
+
+    internal static MortalWoundTreatmentPublicationOperationResult
+        FailTakenTreatmentPublicationTerminal(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(receipt);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .FailTakenMortalWoundTreatmentPublicationTerminal(
+                fileSystem,
+                writeLease,
+                receipt);
     }
 
     internal static bool TryRegisterWoundRepairWave(

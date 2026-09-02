@@ -735,6 +735,8 @@ internal sealed class AcceptedMechanicsPlanningContext
     private readonly MortalWoundCanonicalAnchorPlan? _woundAnchorPlan;
     private readonly AcceptedMechanicsDirectWoundPublicationAuthority?
         _directWoundPublicationAuthority;
+    private readonly MortalWoundTreatmentResourcePublicationAuthority?
+        _treatmentResourcePublicationAuthority;
 
     internal AcceptedMechanicsPlanningContext(
         JsonObject definitionRoot,
@@ -759,7 +761,9 @@ internal sealed class AcceptedMechanicsPlanningContext
         AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
         MortalWoundCanonicalAnchorPlan? woundAnchorPlan = null,
         AcceptedMechanicsDirectWoundPublicationAuthority?
-            directWoundPublicationAuthority = null)
+            directWoundPublicationAuthority = null,
+        MortalWoundTreatmentResourcePublicationAuthority?
+            treatmentResourcePublicationAuthority = null)
     {
         _definitionRoot = (definitionRoot ?? throw new ArgumentNullException(nameof(definitionRoot)))
             .DeepClone().AsObject();
@@ -853,6 +857,26 @@ internal sealed class AcceptedMechanicsPlanningContext
                 "Direct wound publication authority must bind the exact wound stages and canonical anchor plan.",
                 nameof(directWoundPublicationAuthority));
         }
+        _treatmentResourcePublicationAuthority =
+            treatmentResourcePublicationAuthority;
+        if (_treatmentResourcePublicationAuthority is not null &&
+            (_woundStageBundle is null || _woundAnchorPlan is not null ||
+             !_treatmentResourcePublicationAuthority.HasValidSeal() ||
+             !ReferenceEquals(
+                 _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
+                 _treatmentResourcePublicationAuthority.ContinuationAuthority)))
+        {
+            throw new ArgumentException(
+                "Treatment resource publication authority must bind the exact treatment continuation stages.",
+                nameof(treatmentResourcePublicationAuthority));
+        }
+        if (_woundStageBundle?.PreparedPlan.TreatmentContinuationAuthority is not null &&
+            _treatmentResourcePublicationAuthority is null)
+        {
+            throw new ArgumentException(
+                "A completed treatment continuation plan requires resource publication authority, including not-required finalization.",
+                nameof(treatmentResourcePublicationAuthority));
+        }
         if (executionSequenceOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(executionSequenceOffset));
         ExecutionSequenceOffset = executionSequenceOffset;
@@ -874,6 +898,9 @@ internal sealed class AcceptedMechanicsPlanningContext
     internal AcceptedMechanicsDirectWoundPublicationAuthority?
         DirectWoundPublicationAuthority =>
         _directWoundPublicationAuthority?.DetachedCopy();
+    internal MortalWoundTreatmentResourcePublicationAuthority?
+        TreatmentResourcePublicationAuthority =>
+        _treatmentResourcePublicationAuthority;
 
     internal AcceptedMechanicsPlanningContext WithWoundAnchorPlan(
         MortalWoundCanonicalAnchorPlan woundAnchorPlan)
@@ -909,7 +936,8 @@ internal sealed class AcceptedMechanicsPlanningContext
             ExecutionSequenceOffset,
             _woundStageBundle,
             woundAnchorPlan,
-            directWoundPublicationAuthority: null);
+            directWoundPublicationAuthority: null,
+            treatmentResourcePublicationAuthority: null);
     }
 
     internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
@@ -1183,6 +1211,8 @@ internal sealed class AcceptedMechanicsPlan
     private readonly AcceptedMechanicsWoundPublication? _woundPublication;
     private readonly AcceptedMechanicsDirectWoundPublicationAuthority?
         _directWoundPublicationAuthority;
+    private readonly MortalWoundTreatmentResourcePublicationAuthority?
+        _treatmentResourcePublicationAuthority;
 
     internal AcceptedMechanicsPlan(
         string inputFingerprint,
@@ -1207,7 +1237,9 @@ internal sealed class AcceptedMechanicsPlan
         AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
         AcceptedMechanicsCarrierCompositionResult? carrierComposition = null,
         AcceptedMechanicsDirectWoundPublicationAuthority?
-            directWoundPublicationAuthority = null)
+            directWoundPublicationAuthority = null,
+        MortalWoundTreatmentResourcePublicationAuthority?
+            treatmentResourcePublicationAuthority = null)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(inputFingerprint))
             throw new ArgumentException("Expected a lowercase SHA-256 plan fingerprint.", nameof(inputFingerprint));
@@ -1266,6 +1298,27 @@ internal sealed class AcceptedMechanicsPlan
             throw new ArgumentException(
                 "Direct wound publication authority requires one completed anchored wound publication and cannot authorize a pending plan.",
                 nameof(directWoundPublicationAuthority));
+        }
+        _treatmentResourcePublicationAuthority =
+            treatmentResourcePublicationAuthority;
+        if (_treatmentResourcePublicationAuthority is not null &&
+            (_pendingGmPacket is not null || _woundStageBundle is null ||
+             _woundPublication?.WoundAnchorPlanFingerprint is not null ||
+             !_treatmentResourcePublicationAuthority.HasValidSeal() ||
+             !ReferenceEquals(
+                 _woundStageBundle.PreparedPlan.TreatmentContinuationAuthority,
+                 _treatmentResourcePublicationAuthority.ContinuationAuthority)))
+        {
+            throw new ArgumentException(
+                "Treatment resource publication authority requires the exact completed treatment continuation plan.",
+                nameof(treatmentResourcePublicationAuthority));
+        }
+        if (_woundStageBundle?.PreparedPlan.TreatmentContinuationAuthority is not null &&
+            _treatmentResourcePublicationAuthority is null)
+        {
+            throw new ArgumentException(
+                "A completed treatment continuation plan requires resource publication authority, including not-required finalization.",
+                nameof(treatmentResourcePublicationAuthority));
         }
         if (_woundStageBundle is not null &&
             _woundPublication is not null &&
@@ -1377,6 +1430,10 @@ internal sealed class AcceptedMechanicsPlan
     internal AcceptedMechanicsDirectWoundPublicationAuthority?
         DirectWoundPublicationAuthority =>
         _directWoundPublicationAuthority?.DetachedCopy();
+
+    internal MortalWoundTreatmentResourcePublicationAuthority?
+        TreatmentResourcePublicationAuthority =>
+        _treatmentResourcePublicationAuthority;
 
     internal string PreparedPlanFingerprint { get; }
 
@@ -1770,6 +1827,7 @@ internal static class AcceptedMechanicsPlanFingerprints
         AppendWoundStages(fields, plan.WoundStageBundle);
         fields.Add(plan.WoundAnchorPlanFingerprint);
         fields.Add(plan.DirectWoundPublicationAuthority?.Fingerprint);
+        fields.Add(plan.TreatmentResourcePublicationAuthority?.AuthorityFingerprint);
         AppendObjectMap(fields, plan.WoundCarrierAfterImages);
         AppendOptionalJson(fields, plan.WoundIdentityAfterImage);
         AppendOptionalJson(fields, plan.WoundHistoryAfterImage);
@@ -1810,6 +1868,9 @@ internal static class AcceptedMechanicsPlanFingerprints
         fields.Add(input.PlanningContext?.WoundAnchorPlan?.Fingerprint);
         fields.Add(
             input.PlanningContext?.DirectWoundPublicationAuthority?.Fingerprint);
+        fields.Add(
+            input.PlanningContext?.TreatmentResourcePublicationAuthority
+                ?.AuthorityFingerprint);
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 

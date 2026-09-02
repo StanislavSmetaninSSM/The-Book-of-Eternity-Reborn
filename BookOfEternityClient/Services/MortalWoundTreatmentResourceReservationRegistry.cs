@@ -14,6 +14,17 @@ internal sealed record MortalWoundTreatmentResourceLifecycleResult(
     IReadOnlyList<ValidationIssue> Issues,
     int ChangedCount);
 
+internal sealed record MortalWoundTreatmentResourceConfirmedHoldProbe(
+    bool IsValid,
+    IReadOnlyList<ValidationIssue> Issues,
+    MortalWoundTreatmentResourceReservationState? State,
+    string? OperationKey,
+    string? AttemptId,
+    string? RequestFingerprint,
+    string? ResourceAuthorityFingerprint,
+    string? FinalizationFingerprint,
+    string? AgreementFingerprint);
+
 internal enum MortalWoundTreatmentResourceReservationState
 {
     ProvisionalHeld,
@@ -562,7 +573,9 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
                     return LifecycleInvalid(
                         "mortal_wound_treatment_resource_release_conflict",
                         "the exact already released request and agreement",
-                        request.RequestFingerprint);
+                        $"requestMatch={string.Equals(released.RequestFingerprint, request.RequestFingerprint, StringComparison.Ordinal)};" +
+                        $"agreementMatch={string.Equals(released.AgreementFingerprint, rebuiltAgreement.AgreementFingerprint, StringComparison.Ordinal)};" +
+                        $"reasonMatch={string.Equals(released.Reason, reason, StringComparison.Ordinal)}");
                 }
                 continue;
             }
@@ -602,6 +615,100 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
             changed++;
         }
         return LifecycleValid(changed);
+    }
+
+    internal MortalWoundTreatmentResourceConfirmedHoldProbe ProbeConfirmed(
+        object registryCapability,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourceFinalization finalization)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(finalization);
+        if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
+                registryCapability))
+        {
+            return ProbeInvalid(
+                "mortal_wound_treatment_resource_probe_authority_invalid",
+                "registry-authorized non-mutating confirmed-hold access",
+                "missing registry authority");
+        }
+
+        if (!TryValidateRequestBatch(
+                registryCapability,
+                new[] { request },
+                out var agreements,
+                out var failure))
+        {
+            return new MortalWoundTreatmentResourceConfirmedHoldProbe(
+                false,
+                failure!.Issues,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+        }
+
+        var agreement = agreements![0].Agreement!;
+        if (agreement.State !=
+            MortalWoundTreatmentResourceReservationState.ConfirmedHeld)
+        {
+            return new MortalWoundTreatmentResourceConfirmedHoldProbe(
+                false,
+                Invalid(
+                    "mortal_wound_treatment_resource_probe_not_confirmed",
+                    "one exact confirmed persisted reservation",
+                    agreement.State.ToString()).Issues,
+                agreement.State,
+                agreement.OperationKey,
+                agreement.AttemptId,
+                agreement.PersistedRequestFingerprint,
+                agreement.AuthorityFingerprint,
+                null,
+                agreement.AgreementFingerprint);
+        }
+
+        if (!string.Equals(
+                agreement.PersistedRequestFingerprint,
+                request.RequestFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                finalization.RequestFingerprint,
+                request.RequestFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                finalization.ResourceAuthorityFingerprint,
+                agreement.AuthorityFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                finalization.ReservationId,
+                agreement.Authority.ReservationId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                ComputeFinalizationFingerprint(
+                    agreement.PolicyFingerprint,
+                    finalization),
+                finalization.FinalizationFingerprint,
+                StringComparison.Ordinal))
+        {
+            return ProbeInvalid(
+                "mortal_wound_treatment_resource_probe_conflict",
+                "one exact confirmed persisted reservation and finalization",
+                request.RequestFingerprint);
+        }
+
+        return new MortalWoundTreatmentResourceConfirmedHoldProbe(
+            true,
+            Array.Empty<ValidationIssue>(),
+            agreement.State,
+            agreement.OperationKey,
+            agreement.AttemptId,
+            request.RequestFingerprint,
+            agreement.AuthorityFingerprint,
+            finalization.FinalizationFingerprint,
+            agreement.AgreementFingerprint);
     }
 
     internal MortalWoundTreatmentResourceLifecycleResult Commit(
@@ -929,6 +1036,20 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
         false,
         Invalid(code, expected, actual).Issues,
         0);
+
+    private static MortalWoundTreatmentResourceConfirmedHoldProbe ProbeInvalid(
+        string code,
+        string expected,
+        string actual) => new(
+        false,
+        Invalid(code, expected, actual).Issues,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null);
 
     internal static MortalWoundTreatmentResourceLifecycleResult LifecycleFailure(
         string code,

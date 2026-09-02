@@ -146,6 +146,26 @@ internal static class WoundAcceptedEventAuthorityComposer
             Array.Empty<ValidationIssue>());
     }
 
+    internal static WoundAcceptedEventAuthorityCompositionResult
+        ComposeDefaultAcceptedTurn(
+            string sessionId,
+            string requestId,
+            string snapshotToken,
+            int turn) => Compose(
+        new WoundAcceptedResponseEventProjection(
+            sessionId,
+            requestId,
+            snapshotToken,
+            turn,
+            new[]
+            {
+                new WoundAcceptedResponseEventCoordinate(
+                    $"turn_{turn}:accepted_effect",
+                    "accepted_turn",
+                    $"turn_{turn}")
+            }),
+        Array.Empty<WoundSelectedEventEvidence>());
+
     /// <summary>
     /// Verifies the complete historical event vector sealed by a Mortal occurrence,
     /// then derives the equivalent vector for the active decision snapshot. Generic

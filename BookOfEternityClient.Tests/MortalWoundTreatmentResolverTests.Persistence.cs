@@ -233,7 +233,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         string mode,
         string scenarioName)
     {
-        var scenario = CreateScenario(scenarioName, mode);
+        var unresolvedScenario = CreateScenario(scenarioName, mode);
+        var scenario = unresolvedScenario with
+        {
+            History = CreateCurrentWoundHistory(unresolvedScenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = ResolveCurrentTreatment(
             fixture,
@@ -304,7 +309,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Equal(8, publicationFixture.ReadPlayerItemCount("antibiotic_dose"));
         }
         Assert.Equal(2, publicationFixture.ReadNpcItemCount("sterile_thread"));
-        Assert.Empty(publicationFixture.ReadActivePlayerEffectIds());
+        Assert.Equal(
+            new[] { "effect_wound_test_bleeding" },
+            publicationFixture.ReadActivePlayerEffectIds());
         var persistedHistory = publicationFixture.ReadCurrentHistory();
         var treatmentTransition = Assert.Single(
             persistedHistory.State!.Transitions,
@@ -707,6 +714,51 @@ public sealed partial class MortalWoundTreatmentResolverTests
             issue.Code,
             "mortal_wound_treatment_persisted_request_roundtrip_mismatch",
             StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void TreatmentCommand_ResourceClaimHiddenWitnessRehydratesBeforeCodecReturn()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "guaranteed",
+            scenario.OperationKey + "_codec_hidden_witness",
+            scenario.RouteId);
+        var fresh = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+
+        var command = ComposeTreatmentCommand(
+            flow,
+            "The persisted claim rehydrates its sealed quantity witness.");
+        var decoded = Assert.Single(ParseTreatmentRequests(command));
+
+        Assert.Equal(
+            fresh.ResourceAuthority.Claims.Select(static claim =>
+                (claim.AvailableQuantity, claim.BindingFingerprint)),
+            decoded.ResourceAuthority.Claims.Select(static claim =>
+                (claim.AvailableQuantity, claim.BindingFingerprint)));
+        var claim = Assert.Single(decoded.ResourceAuthority.Claims);
+        Assert.Equal(10, claim.AvailableQuantity);
+        Assert.False(string.IsNullOrWhiteSpace(claim.BindingFingerprint));
+
+        var serializedRequest = FindSerializedTreatmentRequests(command.Root)[0];
+        var resourceAuthority = ReadJsonObject(serializedRequest, "ResourceAuthority");
+        var serializedClaim = Assert.IsType<JsonObject>(Assert.Single(
+            Assert.IsType<JsonArray>(resourceAuthority[
+                FindJsonPropertyName(resourceAuthority, "Claims")])));
+        Assert.Equal(
+            new[]
+            {
+                "authorityRef", "claimFingerprint", "kind", "ownerId", "ownerKind",
+                "quantity", "realm", "requirementIndex", "scope",
+                "successWitnessFingerprint"
+            },
+            serializedClaim.Select(static pair => pair.Key)
+                .OrderBy(static name => name, StringComparer.Ordinal));
     }
 
     [Theory]

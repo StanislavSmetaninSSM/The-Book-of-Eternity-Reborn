@@ -76,6 +76,55 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         }
         return true;
     }
+
+    internal bool MatchesExactCacheState(
+        string? sessionId,
+        string? snapshotToken,
+        IReadOnlyDictionary<string, string> itemIdsByCreationRef)
+    {
+        ArgumentNullException.ThrowIfNull(itemIdsByCreationRef);
+        if (!string.Equals(SessionId, sessionId, StringComparison.Ordinal) ||
+            !string.Equals(SnapshotToken, snapshotToken, StringComparison.Ordinal) ||
+            _itemIdsByCreationRef.Count != itemIdsByCreationRef.Count)
+        {
+            return false;
+        }
+
+        foreach (var allocation in _itemIdsByCreationRef)
+        {
+            if (!itemIdsByCreationRef.TryGetValue(
+                    allocation.Key,
+                    out var itemId) ||
+                !string.Equals(allocation.Value, itemId, StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    internal string ComputePublicationFingerprint(string cacheFingerprint)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(cacheFingerprint);
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_item.accepted_turn_publication_take",
+            "1",
+            SessionId,
+            SnapshotToken,
+            Turn.ToString(System.Globalization.CultureInfo.InvariantCulture),
+            cacheFingerprint,
+            _itemIdsByCreationRef.Count.ToString(
+                System.Globalization.CultureInfo.InvariantCulture)
+        };
+        foreach (var allocation in _itemIdsByCreationRef
+                     .OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        {
+            fields.Add(allocation.Key);
+            fields.Add(allocation.Value);
+        }
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
 }
 
 internal static class MortalItemAcceptedTurnAuthority
@@ -397,7 +446,33 @@ internal static class MortalItemAcceptedTurnAuthority
 
     internal sealed class Cache
     {
+        internal sealed class ValidatedPublicationTakeSnapshot
+        {
+            internal ValidatedPublicationTakeSnapshot(
+                object cacheAuthority,
+                object fence,
+                string cacheFingerprint,
+                MortalItemAcceptedTurnNormalizationSnapshot normalizationSnapshot)
+            {
+                CacheAuthority = cacheAuthority;
+                Fence = fence;
+                CacheFingerprint = cacheFingerprint;
+                NormalizationSnapshot = normalizationSnapshot;
+                PublicationFingerprint = normalizationSnapshot
+                    .ComputePublicationFingerprint(cacheFingerprint);
+            }
+
+            internal object CacheAuthority { get; }
+            internal object Fence { get; }
+            internal string CacheFingerprint { get; }
+            internal MortalItemAcceptedTurnNormalizationSnapshot
+                NormalizationSnapshot { get; }
+            internal string PublicationFingerprint { get; }
+        }
+
         private readonly object _gate = new();
+        private readonly object _cacheAuthority = new();
+        private object _validatedFence = new();
         private string? _sessionId;
         private string? _snapshotToken;
         private string? _fingerprint;
@@ -427,6 +502,7 @@ internal static class MortalItemAcceptedTurnAuthority
         {
             lock (_gate)
             {
+                _validatedFence = new object();
                 if (string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
                     string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal) &&
                     string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal))
@@ -521,7 +597,83 @@ internal static class MortalItemAcceptedTurnAuthority
         internal void InvalidateValidated()
         {
             lock (_gate)
+            {
+                _validatedFence = new object();
                 _validated = false;
+            }
+        }
+
+        internal bool TryTakeValidatedTreatmentPublication(
+            MortalItemAcceptedTurnNormalizationSnapshot expected,
+            out ValidatedPublicationTakeSnapshot snapshot)
+        {
+            ArgumentNullException.ThrowIfNull(expected);
+            lock (_gate)
+            {
+                if (_validated &&
+                    _fingerprint is not null &&
+                    expected.MatchesExactCacheState(
+                        _sessionId,
+                        _snapshotToken,
+                        _itemIdsByCreationRef))
+                {
+                    snapshot = new ValidatedPublicationTakeSnapshot(
+                        _cacheAuthority,
+                        _validatedFence,
+                        _fingerprint,
+                        expected);
+                    _validated = false;
+                    return true;
+                }
+
+                snapshot = null!;
+                return false;
+            }
+        }
+
+        internal bool IsTreatmentPublicationTakeCurrent(
+            ValidatedPublicationTakeSnapshot snapshot)
+        {
+            ArgumentNullException.ThrowIfNull(snapshot);
+            lock (_gate)
+            {
+                return PublicationTakeSnapshotAgrees(snapshot) &&
+                       ReferenceEquals(_validatedFence, snapshot.Fence) &&
+                       !_validated &&
+                       CurrentCacheStateAgrees(snapshot);
+            }
+        }
+
+        internal bool TryRearmValidatedTreatmentPublication(
+            ValidatedPublicationTakeSnapshot snapshot)
+        {
+            ArgumentNullException.ThrowIfNull(snapshot);
+            lock (_gate)
+            {
+                if (!PublicationTakeSnapshotAgrees(snapshot) ||
+                    !ReferenceEquals(_validatedFence, snapshot.Fence) ||
+                    _validated ||
+                    !CurrentCacheStateAgrees(snapshot))
+                {
+                    return false;
+                }
+
+                _validated = true;
+                return true;
+            }
+        }
+
+        internal bool IsTreatmentPublicationRearmed(
+            ValidatedPublicationTakeSnapshot snapshot)
+        {
+            ArgumentNullException.ThrowIfNull(snapshot);
+            lock (_gate)
+            {
+                return PublicationTakeSnapshotAgrees(snapshot) &&
+                       ReferenceEquals(_validatedFence, snapshot.Fence) &&
+                       _validated &&
+                       CurrentCacheStateAgrees(snapshot);
+            }
         }
 
         internal IReadOnlyList<EffectSourceExport> GetSources(
@@ -630,6 +782,26 @@ internal static class MortalItemAcceptedTurnAuthority
             _validated &&
             string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
             string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal);
+
+        private bool PublicationTakeSnapshotAgrees(
+            ValidatedPublicationTakeSnapshot snapshot) =>
+            ReferenceEquals(snapshot.CacheAuthority, _cacheAuthority) &&
+            string.Equals(
+                snapshot.PublicationFingerprint,
+                snapshot.NormalizationSnapshot.ComputePublicationFingerprint(
+                    snapshot.CacheFingerprint),
+                StringComparison.Ordinal);
+
+        private bool CurrentCacheStateAgrees(
+            ValidatedPublicationTakeSnapshot snapshot) =>
+            string.Equals(
+                _fingerprint,
+                snapshot.CacheFingerprint,
+                StringComparison.Ordinal) &&
+            snapshot.NormalizationSnapshot.MatchesExactCacheState(
+                _sessionId,
+                _snapshotToken,
+                _itemIdsByCreationRef);
     }
 
     internal sealed record NewCandidate(
