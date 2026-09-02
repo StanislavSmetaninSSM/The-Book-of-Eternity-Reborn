@@ -175,15 +175,22 @@ public sealed class MortalItemConsumptionPlannerTests
         RequireProperties(resultType, "CarrierAfterImages", "IdentityIndexAfterImage", "IdentityTransitions", "CapacityTransitions", "TerminalOwners", "Issues", "Fingerprint");
         var plan = Assert.Single(planner.GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public), method => method.Name == "Plan" && method.GetParameters().Length == 1 && method.GetParameters()[0].ParameterType == inputType && method.ReturnType == resultType);
         var commands = Array.CreateInstance(commandType, quantities.Length);
-        for (var i = 0; i < quantities.Length; i++) commands.SetValue(Activator.CreateInstance(commandType, i + 1, itemId, quantities[i], $"sha256:claim_{i}", $"mitr_consume_{i}", "treatment", "authority")!, i);
+        for (var i = 0; i < quantities.Length; i++) commands.SetValue(Activator.CreateInstance(commandType, i + 1, itemId, quantities[i], Fingerprint("claim" + i), $"mitr_consume_{i + 1:D4}", "treatment", "authority")!, i);
         var carrierRoots = new MortalItemCarrierCatalogInput(null, MortalItemTestFixture.CreateCarrier(item, "npc_inventory", "npc_test"), null, null, null, new Dictionary<string, JsonObject>());
         var identity = MortalItemIdentityState.Parse(index.ToJsonString());
         var definitions = ResourceDefinitionCatalog.ParseCanonical(null, allowMissingPristine: true).Catalog!;
-        var input = Activator.CreateInstance(inputType, 42, "sha256:baseline", carrierRoots, identity, commands, definitions, new ResourceStateLedger(Array.Empty<ResourceStateEntry>()), new ResourceSourceEvidence("treatment", "attempt_t070b4", "sha256:authority"), "sha256:policy")!;
+        var input = Activator.CreateInstance(inputType, 42, Fingerprint("baseline"), carrierRoots, identity, commands, definitions, new ResourceStateLedger(Array.Empty<ResourceStateEntry>()), new ResourceSourceEvidence("treatment", "attempt_t070b4", Fingerprint("authority")), Fingerprint("policy"))!;
         return plan.Invoke(null, new[] { input })!;
     }
 
-    private static Type RequireExactType(string name) => Assert.IsType<Type>(typeof(MortalItemIdentityState).Assembly.GetType(name));
+    private static Type RequireExactType(string name)
+    {
+        var type = typeof(MortalItemIdentityState).Assembly.GetType(name);
+        Assert.True(type is not null, $"The frozen production type '{name}' is absent.");
+        Assert.True(string.Equals(name, type!.FullName, StringComparison.Ordinal));
+        return type;
+    }
+    private static string Fingerprint(string value) => "sha256:" + Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(value))).ToLowerInvariant();
     private static void RequireProperties(Type type, params string[] names) => Assert.All(names, name => Assert.NotNull(type.GetProperty(name)));
     private static object? Read(object value, string property) => value.GetType().GetProperty(property)!.GetValue(value);
     private static string Describe(object value) => string.Join("|", value.GetType().GetProperties().OrderBy(p => p.Name).Select(p => p.Name + "=" + p.GetValue(value)));

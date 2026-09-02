@@ -190,21 +190,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
             resourceQuantities: new[] { 2 },
             selectedResourceOrder: new[] { 0 },
             includeReusableItem: true,
-            selectReusableItem: true);
+            selectReusableItem: true,
+            reusableItemCount: 2);
         using var fixture = AcceptedStateFixture.Create(scenario);
         fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
         var flow = PersistAndRehydrateResourcePublication(
             fixture,
             scenario,
             "mixed_item_resource");
+        var itemBytesBefore = CaptureItemCarrierBytes(fixture);
+        var resourceBytesBefore = CaptureResourceBytes(fixture);
         var composed = ComposeResourcePublicationResult(fixture, flow);
 
         Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
-        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
-        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
+        Assert.Equal(1, ReadPlanNpcItemCount(plan, "reusable_field_kit"));
+        Assert.Equal(8m, plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>().Single(entry => entry["resourceKey"]!.GetValue<string>() == "energy")["current"]!.GetValue<decimal>());
+        Assert.Equal(2, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+        AssertItemCarrierBytesEqual(fixture, itemBytesBefore);
+        AssertResourceBytesEqual(fixture, resourceBytesBefore);
         Assert.DoesNotContain(
             composed.Issues,
             issue => issue.Code == DeferredItemConsumptionCode);
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+            Assert.Equal(8, ReadPlayerEnergy(fixture));
+            publication.CompleteAtFullPipelineEnd();
+        }
+        fixture.PrepareFreshSnapshot("mixed_item_replay");
+        fixture.RestartForReplay();
+        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
     }
 
     [Fact]
@@ -1144,7 +1162,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         IReadOnlyList<int> resourceQuantities,
         IReadOnlyList<int> selectedResourceOrder,
         bool includeReusableItem = false,
-        bool selectReusableItem = false)
+        bool selectReusableItem = false,
+        int reusableItemCount = 1)
     {
         var source = CreateScenario(
             "guaranteed_current_capability_proof_stabilizes",
@@ -1191,7 +1210,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ["quantity"] = 1,
                 ["ownerRole"] = "provider"
             });
-            source.AcceptedState["reusableToolCount"] = 1;
+            source.AcceptedState["reusableToolCount"] = reusableItemCount;
         }
 
         var mutations = new JsonArray();
@@ -1263,6 +1282,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(flow.AcceptedState),
             Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request),
             Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution));
+
+    private static int ReadPlanNpcItemCount(AcceptedMechanicsPlan plan, string itemId)
+    {
+        var root = plan.OwnerCompanionAfterImages[NpcCoreChangesContract.NpcCorePath];
+        return root["NPCsInScene"]!.AsArray().OfType<JsonObject>()
+            .SelectMany(npc => npc["inventory"]!.AsArray().OfType<JsonObject>())
+            .Single(item => item["itemId"]!.GetValue<string>() == itemId)["count"]!.GetValue<int>();
+    }
 
     private static AcceptedMechanicsPlan ComposeResourcePublication(
         AcceptedStateFixture fixture,
