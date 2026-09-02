@@ -105,6 +105,13 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         return (factory.CreateOperationId(intent), factory.CreateTransitionId(intent));
     }
 
+    internal static (string OperationId, string TransitionId)
+        CreateMutationIdentities(string identitySeed, ResourceCapacityIntent intent)
+    {
+        var factory = new TreatmentPublicationIdentityFactory(identitySeed);
+        return (factory.CreateOperationId(intent), factory.CreateTransitionId(intent));
+    }
+
     internal bool HasValidSeal()
     {
         if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
@@ -435,13 +442,6 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             value.ClaimFingerprint,
             value.IntentFingerprint
         });
-
-    private static Guid CreateDeterministicGuid(string seed, int ordinal)
-    {
-        var bytes = SHA256.HashData(Encoding.UTF8.GetBytes(
-            seed + "\0" + ordinal.ToString(CultureInfo.InvariantCulture)));
-        return new Guid(bytes.AsSpan(0, 16));
-    }
 
     private static bool BeforeImagesEqual(
         CanonicalBeforeImage left,
@@ -1397,36 +1397,41 @@ internal static partial class WoundAcceptedTurnPlanner
                 consumption.IdentityIndexAfterImage.DeepClone().AsObject();
         }
 
-        var existingHistoricalOwners = owners.ExportInput().HistoricalOwners;
-        var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
-                definitions,
-                path => Task.FromResult(finalRoots.TryGetValue(path, out var root)
-                    ? root?.ToJsonString()
-                    : readDocument(path)),
-                state: null,
-                history: null,
-                CanonicalResourceOwnerAuthorityPurpose.FinalAfterImage,
-                existingHistoricalOwners.Concat(consumption.TerminalOwners)
-                    .Distinct()
-                    .ToArray())
-            .GetAwaiter()
-            .GetResult();
+        var ownerResult = MortalWoundTreatmentItemOwnerSuccessor.Compose(
+            owners,
+            consumption.TerminalOwners);
         if (!ownerResult.IsValid || ownerResult.Authority is null)
             return new TreatmentItemPublicationBuild(null, ownerResult.Issues);
 
-        var normalizedEffectSourceRoots = new Dictionary<string, JsonNode?>(
+        var effectSourceBeforeRoots = new Dictionary<string, JsonNode?>(
             StringComparer.Ordinal);
         foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
         {
-            if (baseline.FinalCarrierRoots.TryGetValue(path, out var baselineRoot))
-            {
-                normalizedEffectSourceRoots[path] = baselineRoot?.DeepClone();
-                continue;
-            }
             var json = readDocument(path);
-            normalizedEffectSourceRoots[path] = json is null
+            effectSourceBeforeRoots[path] = json is null
                 ? null
                 : JsonNode.Parse(json);
+        }
+        var effectSourceBeforeAuthority =
+            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+                effectSourceBeforeRoots,
+                preparedWoundPlan);
+        if (effectSourceBeforeAuthority.Issues.Count != 0 ||
+            !string.Equals(
+                effectSourceBeforeAuthority.CanonicalFingerprint,
+                effectSourceBeforeFingerprint,
+                StringComparison.Ordinal))
+        {
+            return ItemUnsupported(
+                "effect source before-authority did not recompose exactly");
+        }
+        var normalizedEffectSourceRoots =
+            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                effectSourceBeforeRoots);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            if (baseline.FinalCarrierRoots.TryGetValue(path, out var baselineRoot))
+                normalizedEffectSourceRoots[path] = baselineRoot?.DeepClone();
         }
         var normalizedEffectSourceAuthority =
             EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
@@ -1458,6 +1463,8 @@ internal static partial class WoundAcceptedTurnPlanner
             finalRoots,
             publicationAfterImages,
             owners,
+            effectSourceBeforeRoots,
+            preparedWoundPlan,
             effectSourceBeforeFingerprint,
             normalizedEffectSourceAuthority.CanonicalFingerprint,
             ownerResult.Authority);

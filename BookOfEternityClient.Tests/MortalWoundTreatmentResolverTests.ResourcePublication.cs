@@ -359,6 +359,182 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void GuaranteedItemConsumption_RepeatedItemCapacityTransitionsChainAcrossCommonOrdinalGap()
+    {
+        var scenario = CreateRepeatedItemCapacityPublicationScenario();
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        fixture.SetCanonicalReusableItemDurabilityForResourcePublicationTest(
+            current: 8,
+            maximum: 8);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "repeated_item_capacity_chain");
+
+        var composed = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(composed.IsValid, DescribeIssues(composed.Issues));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composed.Plan);
+        var publication = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            publication.ItemPublicationAuthority);
+        var capacities = itemPublication.CapacityTransitions;
+        Assert.Equal(2, capacities.Count);
+        Assert.Contains(":0001:", capacities[0].EventRef, StringComparison.Ordinal);
+        Assert.Contains(":0003:", capacities[1].EventRef, StringComparison.Ordinal);
+        Assert.Equal(capacities[0].Coordinate, capacities[1].Coordinate);
+        Assert.Equal(6m, capacities[0].ResolvedCapacity!.Maximum);
+        Assert.Equal(4m, capacities[1].ResolvedCapacity!.Maximum);
+        var durability = Assert.Single(
+            plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>(),
+            entry => entry["resourceKey"]?.GetValue<string>() == "durability" &&
+                     entry["resourceOwnerId"]?.GetValue<string>() ==
+                     "reusable_field_kit");
+        Assert.Equal(4m, durability["current"]!.GetValue<decimal>());
+        Assert.Equal(4m, durability["maximum"]!.GetValue<decimal>());
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_FinalOwnerPreservesSurvivingSameTurnItemRefsExactly()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "same_turn_owner_successor");
+
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(
+                    plan.TreatmentResourcePublicationAuthority)
+                .ItemPublicationAuthority);
+        var baselineOwnerField = typeof(MortalWoundTreatmentItemPublicationAuthority)
+            .GetField(
+                "_baselineOwnerAuthority",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+        var baselineOwnerAuthority = Assert.IsType<ResourceOwnerAuthority>(
+            Assert.IsAssignableFrom<FieldInfo>(baselineOwnerField)
+                .GetValue(itemPublication));
+        var baselineOwners = baselineOwnerAuthority.ExportInput();
+        var finalOwners = plan.OwnerAuthority.ExportInput();
+
+        Assert.NotEmpty(baselineOwners.SameTurnOwners);
+        AssertExactOwnerExports(
+            baselineOwners.SameTurnOwners,
+            finalOwners.SameTurnOwners);
+        Assert.All(itemPublication.TerminalOwners, terminal =>
+        {
+            Assert.DoesNotContain(finalOwners.PreTurnOwners, owner =>
+                owner.Key == terminal);
+            Assert.DoesNotContain(finalOwners.SameTurnOwners, owner =>
+                owner.Key == terminal);
+            Assert.Contains(terminal, finalOwners.HistoricalOwners);
+        });
+
+        var sameTurnTerminal = baselineOwners.SameTurnOwners[0].Key;
+        var sameTurnTerminalSuccessor =
+            MortalWoundTreatmentItemOwnerSuccessor.Compose(
+                baselineOwnerAuthority,
+                new[] { sameTurnTerminal });
+        Assert.True(
+            sameTurnTerminalSuccessor.IsValid,
+            DescribeIssues(sameTurnTerminalSuccessor.Issues));
+        var terminalSuccessorOwners = sameTurnTerminalSuccessor.Authority!.ExportInput();
+        Assert.DoesNotContain(terminalSuccessorOwners.SameTurnOwners, owner =>
+            owner.Key == sameTurnTerminal);
+        Assert.Contains(sameTurnTerminal, terminalSuccessorOwners.HistoricalOwners);
+        AssertExactOwnerExports(
+            baselineOwners.SameTurnOwners
+                .Where(owner => owner.Key != sameTurnTerminal)
+                .ToArray(),
+            terminalSuccessorOwners.SameTurnOwners);
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_SealRejectsChangedBaselinePayloadWithOriginalFingerprint()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 2);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "same_fingerprint_payload_adversary");
+        var plan = ComposeResourcePublication(fixture, flow);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(
+                    plan.TreatmentResourcePublicationAuthority)
+                .ItemPublicationAuthority);
+        Assert.True(itemPublication.HasValidSeal());
+        var baselineField = typeof(MortalWoundTreatmentItemPublicationAuthority)
+            .GetField("_baseline", BindingFlags.Instance | BindingFlags.NonPublic);
+        var baseline = Assert.IsType<MortalItemPublicationBaselineResult>(
+            Assert.IsAssignableFrom<FieldInfo>(baselineField)
+                .GetValue(itemPublication));
+        var npc = Assert.IsType<JsonObject>(baseline.FinalCarrierRoots[
+            NpcCoreChangesContract.NpcCorePath]);
+        npc["forgedPayloadWithOriginalFingerprint"] = true;
+
+        Assert.False(itemPublication.HasValidSeal());
+    }
+
+    [Fact]
+    public void GuaranteedItemConsumption_NpcProofRejectsMismatchedSkillIntermediate()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 2);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "mismatched_skill_intermediate");
+        var plan = ComposeResourcePublication(fixture, flow);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            Assert.IsType<MortalWoundTreatmentResourcePublicationAuthority>(
+                    plan.TreatmentResourcePublicationAuthority)
+                .ItemPublicationAuthority);
+        var inputField = typeof(MortalWoundTreatmentItemPublicationAuthority)
+            .GetField("_consumptionInput", BindingFlags.Instance | BindingFlags.NonPublic);
+        var input = Assert.IsType<MortalItemConsumptionPlanningInput>(
+            Assert.IsAssignableFrom<FieldInfo>(inputField)
+                .GetValue(itemPublication));
+        var forgedSkillIntermediate = input.CarrierRoots.NpcCore!
+            .DeepClone()
+            .AsObject();
+        forgedSkillIntermediate["forgedSkillIntermediate"] = true;
+        var finalNpc = Assert.IsType<JsonObject>(
+            itemPublication.PublicationAfterImages[NpcCoreChangesContract.NpcCorePath]);
+
+        Assert.False(itemPublication.ProvesNpcRootTransition(
+            forgedSkillIntermediate,
+            finalNpc));
+    }
+
+    [Fact]
     public void GuaranteedItemConsumption_ClosedItemEnvelopePreservesEverySupportedFieldAndRejectsEveryOtherField()
     {
         var scenario = CreateGuaranteedResourcePublicationScenario(
@@ -2237,6 +2413,72 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
     }
 
+    private static ResolverScenario CreateRepeatedItemCapacityPublicationScenario()
+    {
+        var source = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: Array.Empty<int>(),
+            includeReusableItem: true,
+            reusableItemCount: 4);
+        var before = source.Before.DeepClone().AsObject();
+        var route = before["treatment"]!["routes"]![0]!.AsObject();
+        var requirements = route["requirements"]!.AsArray();
+        var firstItemIndex = requirements
+            .Select((requirement, index) => (Requirement: requirement, Index: index))
+            .Single(row => row.Requirement?["kind"]?.GetValue<string>() ==
+                           "item_quantity")
+            .Index;
+        var resourceIndex = requirements
+            .Select((requirement, index) => (Requirement: requirement, Index: index))
+            .Single(row => row.Requirement?["kind"]?.GetValue<string>() ==
+                           "resource_quantity")
+            .Index;
+        var secondItemIndex = requirements.Count;
+        requirements.Add(requirements[firstItemIndex]!.DeepClone());
+        route["resourcePolicy"]!["mutations"] = new JsonArray(
+            CreateRequirementConsumption(firstItemIndex),
+            CreateRequirementConsumption(resourceIndex),
+            CreateRequirementConsumption(secondItemIndex));
+        return source with
+        {
+            Before = before,
+            History = CreateCurrentWoundHistory(before),
+            OperationKey = source.OperationKey + "_repeated_item_capacity"
+        };
+    }
+
+    private static JsonObject CreateRequirementConsumption(int requirementIndex) =>
+        new()
+        {
+            ["kind"] = "consume_requirement",
+            ["scope"] = "common",
+            ["milestoneOrdinal"] = null,
+            ["requirementIndex"] = requirementIndex
+        };
+
+    private static void AssertExactOwnerExports(
+        IReadOnlyList<ResourceOwnerExport> expected,
+        IReadOnlyList<ResourceOwnerExport> actual)
+    {
+        Assert.Equal(expected.Count, actual.Count);
+        foreach (var expectedOwner in expected)
+        {
+            var actualOwner = Assert.Single(actual, owner =>
+                owner.Key == expectedOwner.Key);
+            Assert.Equal(expectedOwner.Lifecycle, actualOwner.Lifecycle);
+            Assert.Equal(expectedOwner.SameTurn, actualOwner.SameTurn);
+            Assert.Equal(expectedOwner.OwnerRef, actualOwner.OwnerRef);
+            Assert.Equal(expectedOwner.BoundNpcId, actualOwner.BoundNpcId);
+            Assert.Equal(
+                expectedOwner.AuthorityFingerprint,
+                actualOwner.AuthorityFingerprint);
+            Assert.True(expectedOwner.ResourceCapabilities.SetEquals(
+                actualOwner.ResourceCapabilities));
+            Assert.True(expectedOwner.RealmIndependentResourceCapabilities.SetEquals(
+                actualOwner.RealmIndependentResourceCapabilities));
+        }
+    }
+
     private static TreatmentFlow PersistAndRehydrateResourcePublication(
         AcceptedStateFixture fixture,
         ResolverScenario scenario,
@@ -2477,12 +2719,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
             outerGraph,
             value => value.GetType() == itemAuthorityType);
         var itemGraph = EnumerateObjectGraph(itemAuthority, maximumDepth: 12).ToArray();
-        var itemEnvelope = Assert.Single(
-            itemGraph,
-            value => value.GetType() == itemEnvelopeType);
-        var baselineResult = Assert.Single(
-            itemGraph,
-            value => value.GetType() == baselineType);
+        Assert.Contains(itemGraph, value => value.GetType() == itemEnvelopeType);
+        var itemEnvelope = ReadExactDeclaredInternalProperty(
+            itemAuthority,
+            itemAuthorityType,
+            "ItemEnvelope");
+        Assert.Equal(itemEnvelopeType, itemEnvelope.GetType());
+        Assert.Contains(itemGraph, value => value.GetType() == baselineType);
+        var baselineResult = ReadExactDeclaredInternalProperty(
+            itemAuthority,
+            itemAuthorityType,
+            "Baseline");
+        Assert.Equal(baselineType, baselineResult.GetType());
+        var preparedField = itemAuthorityType.GetField(
+            "_preparedWoundPlan",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(preparedField);
+        Assert.Equal(itemAuthorityType, preparedField.DeclaringType);
+        var preparedProof = Assert.IsType<WoundPreparedAcceptedTurnPlan>(
+            preparedField.GetValue(itemAuthority));
+        Assert.Empty(WoundAcceptedTurnPlannerCore.ValidatePreparedAuthority(
+            preparedProof));
         var skillProjection = Assert.Single(
             outerGraph,
             value =>
@@ -2493,11 +2750,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 HasReadableProperty(value, "CommandEnvelopeFingerprint"));
 
         Assert.Contains(outerGraph, value => ReferenceEquals(value, itemAuthority));
-        Assert.Contains(outerGraph, value => ReferenceEquals(value, itemEnvelope));
-        Assert.Contains(outerGraph, value => ReferenceEquals(value, baselineResult));
         Assert.Contains(outerGraph, value => ReferenceEquals(value, skillProjection));
-        Assert.Contains(itemGraph, value => ReferenceEquals(value, itemEnvelope));
-        Assert.Contains(itemGraph, value => ReferenceEquals(value, baselineResult));
+        Assert.All(
+            itemGraph.Where(value => value.GetType() == itemEnvelopeType),
+            nestedEnvelope => Assert.Equal(
+                ReadRequiredStringProperty(itemEnvelope, "Fingerprint"),
+                ReadRequiredStringProperty(nestedEnvelope, "Fingerprint")));
         var dispositions = itemGraph
             .Where(value => value.GetType() == dispositionType)
             .Select(static value => value.ToString())
@@ -2519,6 +2777,28 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredProperty(baselineResult, "Issues")).Cast<object>());
         Assert.True(ResourceMaterializationContract.IsAuthorityFingerprint(
             baselineFingerprint));
+        var snapshotField = itemAuthorityType.GetField(
+            "_snapshot",
+            BindingFlags.Instance | BindingFlags.NonPublic |
+            BindingFlags.DeclaredOnly);
+        Assert.NotNull(snapshotField);
+        Assert.Equal(itemAuthorityType, snapshotField.DeclaringType);
+        var nestedBaseline = Assert.IsType<
+            MortalItemAcceptedTurnNormalizationSnapshot>(
+            snapshotField.GetValue(itemAuthority))
+            .CloneFinalBaseline();
+        Assert.NotNull(nestedBaseline);
+        Assert.Equal(baselineFingerprint, nestedBaseline.Fingerprint);
+        Assert.Equal(roots.Count, nestedBaseline.FinalCarrierRoots.Count);
+        Assert.All(roots, pair => Assert.True(
+            nestedBaseline.FinalCarrierRoots.TryGetValue(
+                pair.Key,
+                out var nestedRoot) &&
+            JsonNode.DeepEquals(pair.Value, nestedRoot)));
+        Assert.True(JsonNode.DeepEquals(
+            identity,
+            nestedBaseline.IdentityIndexAfterImage));
+        Assert.Equal(appliedTransformIds, nestedBaseline.AppliedTransformIds);
 
         return new SealedTreatmentPublicationProbe(
             outer,
@@ -2554,6 +2834,24 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         throw new InvalidOperationException(
             "The production-created treatment item authority exposes no sealed fingerprint.");
+    }
+
+    private static object ReadExactDeclaredInternalProperty(
+        object instance,
+        Type declaringType,
+        string propertyName)
+    {
+        Assert.Equal(declaringType, instance.GetType());
+        var property = declaringType.GetProperty(
+            propertyName,
+            BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.DeclaredOnly);
+        Assert.NotNull(property);
+        Assert.Equal(declaringType, property.DeclaringType);
+        Assert.NotNull(property.GetMethod);
+        Assert.True(property.GetMethod.IsAssembly);
+        var value = property.GetValue(instance);
+        Assert.NotNull(value);
+        return value;
     }
 
     private static void AssertSealedFinalBaselineAuthorityInputs(
