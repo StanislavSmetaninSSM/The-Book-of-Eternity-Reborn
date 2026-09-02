@@ -563,6 +563,81 @@ keeps the client harness responsible for making forged state unrepresentable.
 - Add placeholder adapters and replace them later: introduces two competing contracts
   and recreates the fragile half-model explicitly rejected for this feature.
 
+## R-020: Consume treatment item stacks through one pure common-plan projection
+
+**Decision**: T070-B.4 uses one write-free ordered pre-publication projection shared with
+the ordinary Mortal normalizer pipeline and the common accepted-mechanics planner. The
+projection derives the exact final carrier/index roots immediately before
+`PublishAcceptedMechanicsAsync`, then applies every selected `item_quantity` intent in
+frozen finalization order. It is not limited to the output of `NormalizeMortalItemsAsync`:
+accepted item transfer/materialization/equipment/identity, ordinary NPC core processing,
+NPC trade canonicalization, and inventory journal normalization are factored into shared
+pure transforms and replayed in their production order for every selected
+`items.json`/`npc_core.json` root. The B.2 treatment skill projection remains a later
+common-plan mutation. The pure NPC-core input includes detached
+`NpcCoreChangesContract.Authority`
+plus exact NPC-trade and training pending-file bytes, and their semantic/byte fingerprints
+are part of the seal. The ordinary normalizers and treatment authority call the same
+ordinary transforms, and the live final roots must equal the sealed projection before the
+common plan applies the B.2 skill projection and item consumption.
+
+The item phase also owns a shared pure transfer transform. It classifies transfers from
+detached complete backup/current carrier roots, applies them before accepted creation,
+removes the exact consumed command rows, and never calls the writing transition service.
+The accepted snapshot privately derives creation root receipt/create-transition IDs and
+transfer-transition IDs from session, snapshot, turn, exact route or transfer authority,
+and ordinal. Ordinary normalization and treatment projection therefore recompute byte-
+identical item receipts/history without random ID reallocation or a live cache lookup.
+
+The treatment response envelope remains closed. In addition to the existing six skill
+properties, B.4 admits only `UpdateInventory`, `moveInventoryItems`,
+`removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`,
+`NPCInventoryRemovals`, and `NPCEquipmentChanges`; every other non-null response property
+is rejected. Partial consumption preserves the permanent item identity and carrier while
+reducing count. Full consumption clears only supported inline equipment and retires the
+identity; a container, quest, bond, or other companion reference without its own genuine
+atomic transition authority rejects the entire plan. Repeated claims remain separate
+sequential transitions whose identities are derived from the sealed request,
+result/finalization, claim fingerprint, and ordinal.
+
+A partial resource-bearing stack uses the existing resource model's strict ratio rule:
+every live item-owned resource must be `instance_fixed`, and both maximum and current are
+scaled by `remainingCount/sourceCount` with exact decimal and quantum representability.
+The common reducer receives private registered capacity intents and validates their exact
+history result. Full consumption makes the item a historical owner and retires every live
+coordinate. The final item carrier/index roots, resource state/history/owner authority,
+skill projection, wound/effect/history/output, and command consumption are one plan and
+one normalizer transaction.
+
+The final pre-publication projection is mandatory because accepted item normalization is
+followed by other ordinary normalizers before common-plan publication. NPC inventory and
+the plan-owned treatment skill projection share `npc_core.json`, while inventory journal
+normalization can rewrite `items.json`; sealing only the earlier item-phase output would
+therefore reject or erase valid same-turn work. The planner first verifies the complete
+ordinary live baseline, then composes the B.2 skill projection and item consumption into
+one exact common-plan root and independently re-derives the final skill catalog. It never
+lets one whole-root producer overwrite the other.
+
+**Rationale**: Calling `MortalItemTransitionWriter` would write outside the common
+transaction and currently supports terminal whole-stack consumption only. Planning from
+raw pre-normalization roots could erase same-turn item work, while ignoring item-owned
+capacities would leave invalid live resource authority. A shared pure projection makes
+the state transition deterministic, testable before writes, and reusable by the ordinary
+item writer instead of creating a wound-only item implementation.
+
+**Alternatives rejected**:
+
+- Reject every partial resource-bearing stack: contradicts declared quantity semantics
+  and makes otherwise valid stacked supplies unusable for treatment.
+- Round proportional capacity values: invents canonical resources and makes replay depend
+  on an unstated rounding policy.
+- Aggregate repeated selected claims: loses per-selector authority and changes durable
+  transition history.
+- Apply live JSON patches after item normalization without a sealed projection: creates a
+  mutable publication-time plan and a second item mutation authority.
+- Keep a treatment-only item writer: duplicates item identity/resource lifecycle logic and
+  can diverge from crafting, transfer, and ordinary consumption.
+
 ## Resolved research conclusion
 
 All design-critical unknowns are resolved. Implementation can proceed without a

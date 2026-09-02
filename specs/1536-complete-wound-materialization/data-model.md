@@ -843,6 +843,101 @@ bytes and the exact durable command, retains `ConfirmedHeld`, and re-arms only t
 receipt-owned plan slot; this compensation is not the lifecycle outcome `rolled_back`.
 Exact replay calls neither prepare nor finalize.
 
+### T070-B.4 treatment item publication
+
+`MortalWoundTreatmentItemPublicationAuthority` is a private production-minted capability
+owned by the existing treatment publication authority; it is not a new proposal, request,
+resolution, or public finalization surface. It seals the exact accepted-state, request,
+result, finalization, continuation, publication reservation, ordered selected
+`item_quantity` claims, item-normalization projection, item consumption projection,
+capacity intents, terminal owner keys, canonical before-images, and one recomputable
+authority fingerprint. The existing selected-item unsupported diagnostic remains the
+default whenever this complete authority cannot be built and independently validated.
+
+The treatment command envelope is closed. It contains the existing six skill-operation
+properties plus only `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`,
+`NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and
+`NPCEquipmentChanges`; every other non-null response property is invalid for this
+publication path.
+
+The item projection is write-free and deterministic and has two explicit stages. The item
+phase uses the same accepted allocation/route authority consumed by
+`CanonicalStateNormalizer` for transfer, materialization, equipment, and identity. The
+final pre-publication baseline then applies every later ordinary transformation that can
+touch a selected carrier root in actual production order: ordinary NPC core processing and
+NPC trade canonicalization for `npc_core.json`, plus inventory-journal normalization for
+`items.json`. The NPC-core projection input owns detached
+`NpcCoreChangesContract.Authority`, exact bytes for
+`NpcTradeRequestState.PendingRequestPath` and `TrainingRequestState.PendingRequestPath`,
+and their semantic/byte fingerprints. Those transforms are extracted once and used by both
+the ordinary normalizers and treatment composition; neither path reimplements them. The
+result contains the exact carrier roots and `item_identity_index.json` immediately before
+`PublishAcceptedMechanicsAsync`, not merely after `NormalizeMortalItemsAsync`. It excludes
+the B.2 treatment skill projection, which is applied later by the common candidate. Its
+fingerprint binds the session/snapshot/turn, allocation map, closed envelope, backup and
+complete input roots, NPC authority/pending snapshots, accepted item commands/routes,
+ordered transform versions, exact output roots, and every created/updated identity entry.
+A live final pre-publication root that differs from the sealed projection invalidates the
+plan before treatment publication rather than being patched opportunistically.
+
+`MortalItemAcceptedTurnNormalizationSnapshot` additionally seals all complete backup and
+current roots used to classify same-turn transfers and ordered private maps of accepted
+creation root receipt/create-transition IDs plus transfer-transition IDs. Each ID is
+derived from session/snapshot/turn, operation kind, exact route or transfer authority
+fingerprint, and ordinal. A pure
+`MortalItemTransferPlanner` applies whole-stack transfers and removes the matching command
+rows before creation/materialization; the ordinary normalizer and treatment projector use
+the same result. The writing transition service and random receipt/transition overloads are
+outside this accepted item phase.
+
+The pure item-consumption projection then processes selected finalization intents in their
+frozen order. One intent produces one `consume` identity transition with sequential
+`quantityBefore`/`quantityAfter`. `transitionId`, capacity event/operation/transition IDs,
+and source evidence are privately derived from the request fingerprint, result and
+finalization fingerprints, claim fingerprint, and finalization ordinal. They never depend
+on display names, array order, random allocation order, caller IDs, or carried raw history.
+All partial item-capacity rows use one attempt-derived registered-system origin, fixed
+priority `70`, and an invariant four-digit zero-padded finalization ordinal in `EventRef`;
+the existing common capacity sort therefore preserves finalization order. Terminal owner
+retirement remains priority `90` and follows every partial reconfiguration for that
+attempt.
+
+For `0 < quantityAfter < quantityBefore`, the same item ID, immutable receipt, carrier,
+materialization/origin evidence, and active index entry remain. Only count and the appended
+transition change. Every live item-owned resource must have `instance_fixed` capacity; its
+maximum and current are reconfigured by the exact ratio
+`quantityAfter / quantityBefore` using `scale_ratio_exact`. Both decimal values must be
+representable at the definition's quantum without rounding. The capacity transition is a
+private registered-system outcome in the same common resource reduction; an unsupported
+binding, overflow, non-exact division, missing coordinate, or changed state rejects the
+complete item/resource plan.
+
+For `quantityAfter = 0`, the item is removed from its exact carrier and only a supported
+inline equipment reference is cleared automatically. A container, quest, bond, or other
+companion reference requires a separately genuine atomic transition authority; B.4 has no
+such authority and rejects the whole plan before writes. The index entry becomes terminal
+`consumed`, and its resource owner key becomes historical. Every live item-owned coordinate
+receives one terminal `retire` transition in the same resource plan. No current carrier,
+active owner, or live resource coordinate may survive.
+
+The projection returns detached exact final-baseline carrier/index roots, ordered item
+transitions, registered capacity intents, terminal owner keys, and a fingerprint; it never
+writes. NPC item carriers and NPC skills share `npc_core.json`, so composition order is
+exactly item phase, ordinary NPC core/trade tail, verified live baseline, sealed B.2 skill
+projection, then item consumption, yielding one final whole-root after-image. `items.json`
+similarly includes ordinary journal normalization before consumption. Candidate admission
+permits this overlap only through the genuine closed-envelope, final-baseline, skill, and
+item authorities, verifies the live baseline before plan-owned mutations, and independently
+re-derives the final actor skill catalog. Generic whole-root producer relaxation is
+forbidden.
+
+The final `ResourceOwnerAuthority` is composed from the projected active items plus every
+new terminal item owner before resource validation. Item carrier/index after-images,
+registered capacity/retirement transitions, the resource quartet, wound/effect/history/
+output, and command state are fingerprinted by one `AcceptedMechanicsPlan`. Retryable
+failure restores all of those roots byte-for-byte and re-arms only the same fenced plan;
+exact accepted or cold replay emits no second item or resource transition.
+
 `MortalWoundTreatmentResolutionResult` contains exactly `Disposition`, frozen `Issues`,
 nullable immutable `Resolution`, and nullable immutable `ReplayReceipt`; disposition is
 `Rejected|Resolved|ExactReplay|Conflict`. The accepted resolution contains exact mode/

@@ -971,6 +971,84 @@ publication compensation restores the bytes and durable command, retains the exa
 tools, downstream validation, and replay implementable without granting T061 raw mutation
 authority or leaving a durable command without a hold.
 
+T070-B.4 adds selected `item_quantity` without changing any frozen T067/T068 or public
+publication surface. Freeze one closed treatment response envelope: the existing six skill
+properties plus only `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`,
+`NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and
+`NPCEquipmentChanges`; reject every other non-null property. Extract a write-free
+`MortalItemCanonicalProjectionPlanner` from accepted Mortal item normalization and an
+ordered `MortalItemPublicationBaselinePlanner` for the complete root-touching tail. Given
+canonical item carrier/command/index roots, backup roots, route catalog, the closed
+envelope, and the exact `MortalItemAcceptedTurnNormalizationSnapshot`, the planners replay
+accepted item transfer/materialization/equipment/identity, ordinary NPC core processing,
+NPC trade canonicalization, and inventory journal normalization in the same production
+order. The NPC-core input includes detached `NpcCoreChangesContract.Authority` plus exact
+NPC-trade and training pending-file bytes, all sealed by semantic/byte fingerprint. Each
+ordinary normalizer calls the same extracted pure transform. The sealed baseline is the
+deterministic carrier/index state immediately before `PublishAcceptedMechanicsAsync`, not
+the earlier output of `NormalizeMortalItemsAsync`; live roots must match it before common
+publication. It excludes the B.2 treatment skill projection, which remains a common-plan
+mutation applied to this verified baseline before item consumption. This prevents a
+pre-normalization plan from rejecting or erasing valid same-turn work.
+
+The item phase includes one shared pure `MortalItemTransferPlanner`: it derives accepted
+transfers from complete detached backup/current roots, applies them before creation, and
+removes their exact command rows. The accepted snapshot derives creation root receipt/
+create-transition IDs and transfer-transition IDs from session/snapshot/turn, exact route
+or transfer authority, and ordinal. The ordinary normalizer and treatment projection pass
+those same IDs into the shared pure receipt/transition logic; neither invokes the writing
+transfer service or allocates a fresh random receipt/history row.
+
+On that baseline, a pure `MortalItemConsumptionPlanner` accepts only exact selected claims
+and processes one transition per finalization intent in frozen order. Partial consumption
+retains item identity/receipt/carrier and decrements count. Full consumption removes the
+item, clears only supported inline equipment, records `consumed`, and returns a terminal
+item owner. A container, quest, bond, or other companion reference requires its own genuine
+atomic transition authority; B.4 mints none and rejects the complete plan. Explicit
+transition IDs and all item-resource identities are derived
+from request/result/finalization/claim/ordinal authority, never from caller input or a
+shared allocation counter. The ordinary `MortalItemTransitionWriter` is refactored to use
+the same pure planner before its own commit path, so treatment does not create a divergent
+second item model.
+
+For each partial transition, extract the existing proportional resource policy into one
+pure item-owned-resource planner. Every live coordinate must have `instance_fixed`
+capacity, and maximum/current must scale by `remainingCount/sourceCount` with exact decimal
+and quantum representation. Add a private registered-capacity draft alongside
+`IResourceRegisteredSystemOutcomeDraft`; `AcceptedMechanicsPlanner` includes those intents
+without pretending they came from a GM resource command, and the treatment draft verifies
+the exact applied/replay capacity transitions. Every partial capacity row uses one
+attempt-derived origin, fixed registered-system priority `70`, and an invariant four-digit
+zero-padded finalization ordinal in its event key, so the existing stable capacity sort
+executes repeated claims in finalization order. Full consumption supplies the terminal
+owner key so the common reducer retires all coordinates. Compose the final owner authority
+from projected active items plus terminal historical item keys before final resource-state
+agreement.
+
+The existing `MortalWoundTreatmentResourcePublicationAuthority` privately owns the item
+publication capability and seals the item-normalization projection, item-consumption
+projection, capacities/terminal owners, exact before-images, and final owner authority.
+Selected item consumption remains fail-closed unless that genuine authority is present.
+The common input composer contributes its exact carrier/index after-images, registered
+capacities, and final owner authority to the same B.3 plan/transaction. `npc_core.json` is
+composed in the strict order item phase -> ordinary NPC core/trade tail -> verified live
+pre-publication baseline -> sealed B.2 skill projection -> item consumption; `items.json`
+likewise includes its ordinary inventory-journal tail before consumption. Candidate
+admission allows overlap only through the genuine envelope, baseline, skill, and item
+authorities, verifies the live final pre-publication roots before applying plan-owned
+mutations, and independently re-derives the final active/passive skill catalogs. No global
+subtree ignore or last-writer-wins rule is permitted.
+
+RED coverage precedes each extraction/integration step: deterministic write-free item
+normalization; partial and full resource-free stacks; exact/inexact resource-bearing
+partials; sequential repeated claims; mixed selected item/resource publication; NPC
+skill/item root composition; stale count/carrier/index/capacity; cold replay; and every
+post-write compensation boundary. B.4 ends only when carrier/index/resource owner/state/
+history/wound/output/command roots restore atomically on failure and exact replay produces
+no second transition. Procedure/course/Fate/heal/recovery and T069-C remain later T070
+contours. B.4 proves its publication/replay authority through guaranteed-treatment cases;
+it does not require a procedure/course publication test to become GREEN.
+
 Procedure route resolution has a closed `modifierSource`: exact zero/provider roll actor,
 or one zero-based satisfied T060 `skill_tier` requirement whose current tier and resolved
 owner become modifier and roll actor. The check factory sums every active complication's

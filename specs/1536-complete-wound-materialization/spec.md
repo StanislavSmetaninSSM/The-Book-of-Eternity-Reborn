@@ -44,6 +44,13 @@
 
 - Q: What is the canonical source for a Mortal treatment facility, environmental condition, or current provider/target consent when the existing location and NPC contracts have no such registries? → A: The exact validated current Mortal location may carry closed version-1 registered rows inside its existing location `customStates[]`: `mortal_wound_treatment_facility`, `mortal_wound_treatment_environment`, and `mortal_wound_treatment_consent`. Their identifiers and environment state values remain setting-specific exact IDs rather than a universal catalog. The client validates each recognized row's closed shape, identifier uniqueness, availability/status, and actor bindings; the lease-bound treatment exporter additionally proves exact current-location identity and actor co-presence. These reserved kinds are invalid in link `customStates[]`. For an existing location the GM replaces the complete location `customStates[]` only through `worldMapUpdates.locationUpdates[]`, preserving every unrelated sibling; a same-turn new selected or remote location carries the complete array in its ordinary `currentLocationData` or `worldMapUpdates.newLocations[]` creation envelope. Unrecognized custom states remain ordinary setting data and never grant treatment authority.
 
+### Session 2026-09-02
+
+- Q: What happens when treatment consumes only part of a stack that owns live resources? → A: The same permanent item identity and carrier remain active with the exact reduced count; every live item-owned `instance_fixed` maximum and current value is scaled by the exact remaining/source-count ratio with quantum alignment and no rounding. An inexact or non-`instance_fixed` projection rejects the entire publication. Consuming the complete remaining stack instead retires every live item-owned resource and terminally consumes the item.
+- Q: How are repeated selected treatment claims against one item represented? → A: Finalization order is authoritative: each selected claim emits one sequential item `consume` transition with its own exact before/after quantity, and all item/resource operation identities are privately derived from the sealed request, result/finalization, claim fingerprint, and ordinal. Claims are never silently aggregated and callers cannot supply IDs or history.
+- Q: Which same-turn response fields and normalized roots may participate in T070-B.4 treatment item publication? → A: Alongside the existing six closed skill-operation fields, B.4 admits only the ordinary Mortal item command properties `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and `NPCEquipmentChanges`; every other non-null response property remains unsupported. The sealed live item baseline is the exact output immediately before common-plan publication after every ordinary normalizer transformation that can touch the selected carrier roots: accepted item transfer/materialization/equipment/identity, ordinary NPC core processing, NPC trade canonicalization, and inventory journal normalization in production order. It explicitly excludes the B.2 treatment skill projection, which is a common-plan mutation applied to that baseline before item consumption. Each ordinary transformation must be shared with the normalizer rather than duplicated, and every authority or pending-file byte input on which it depends must be detached and sealed. Accepted same-turn creations use snapshot-owned deterministic root receipt and create-transition IDs, and transfers use deterministic transition IDs, all derived from session/snapshot/turn, exact route or transfer authority, and ordinal; neither the projector nor normalizer may invoke the writing transfer service or allocate a second random receipt/history row.
+- Q: What may full treatment consumption unlink automatically? → A: Only an existing supported inline equipment reference may be cleared by the shared Mortal item transition contract. A container, quest, bond, or any other companion reference requires its own genuine atomic transition authority; because B.4 does not mint that authority, the complete mixed publication rejects before any write.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receive a Complete and Fair Wound (Priority: P1)
@@ -421,6 +428,34 @@ The destination-strain ceiling used by FR-032 is exact:
   kinds. `no_improvement`, `add_complication`, and `apply_deterioration` MUST be forbidden
   there and confined to the separately validated interruption branch.
 - **FR-063**: The client MUST validate and provisionally reserve exact resources before semantic treatment resolution, seal the resulting full requirement/resource authorities inside one immutable request, and consume/release them only through post-resolution `Finalize(resolution)`. Command, pending, and accepted history MUST persist that complete request; exact command/pending duplicates MUST coalesce by operation/attempt/request fingerprint and divergent duplicates MUST conflict. A cold restart from the same durable bytes under a new filesystem root and fresh process-local registries MUST reconstruct the same request and claims without relying on cached root identity. The reconstructed request MUST pass through the ordinary mode-specific T067 reducer with parsed history and fresh canonical before/accepted-state authority to recreate the exact full Resolution, including ordered outcome intents and nullable critical-reaction intent, before the existing six-argument T070 publication consumes that typed pair. Actionable intents MUST NOT be copied from raw persisted command result JSON; every nested request/result seal MUST be recomputed and any post-seal result tamper MUST fail parsing or recomposition. A failure before durable confirmation MUST release every provisional die, Fate, and resource claim, leave no command/pending/history duplicate, and permit the exact logical operation to reserve again. A terminal accepted-turn rollback or cancellation after confirmation MUST atomically remove the exact durable command/pending copies and release the matching confirmed hold; if either half fails, it MUST restore the removed bytes and retain the hold so no dangling or overbookable state is exposed. A retryable in-flight publication failure after treatment-specific writes but before full-pipeline completion MUST compensate those writes, retain the exact durable request and confirmed hold, and re-arm the original exact plan only when its cache slot and receipt fence are still valid; otherwise it MUST preserve any competing admitted plan and fail closed with a restart-required blocker. The detached replay receipt MAY expose only verified fingerprints. Resolution emits only a declared `success|partial_success|failed_attempt|none` trigger; course interruption consumes neither the unmet/current nor future step, reusable requirements MAY be reserved without consumption, and raw item/resource mutations remain outside the resolver.
+  Every selected `item_quantity` claim MUST publish through that same immutable common plan
+  and transaction in frozen finalization order. A partial consume retains the permanent
+  active item identity, receipt, and carrier, decrements its count exactly, and scales every
+  live item-owned `instance_fixed` resource maximum and current by the exact remaining/
+  source-count ratio with quantum alignment and no rounding; any unsupported or inexact
+  capacity makes the complete mixed item/resource plan invalid before publication. A full
+  consume removes the item, clears only supported inline equipment, records terminal
+  `consumed` identity authority, and retires every live item-owned resource; a container,
+  quest, bond, or other companion reference without its own genuine transition authority
+  rejects the complete plan. Repeated selected claims emit sequential transitions
+  rather than one aggregate transition, with private deterministic identities bound to the
+  sealed request, result/finalization, claim fingerprint, and ordinal. Item carrier/index,
+  shared NPC skill/item roots, the resource quartet, wound/effect/history/output, and
+  command state MUST be composed without an alternate writer or lost same-turn work and
+  MUST roll back or replay as one unit. B.4 MAY admit only the seven closed ordinary Mortal
+  item command properties named in the 2026-09-02 clarification alongside the existing six
+  skill fields; every other non-null response property remains unsupported. Consumption
+  MUST apply to a sealed exact baseline equal to the output immediately before common-plan
+  publication of every ordinary normalizer transform that can touch the selected carrier
+  roots, and the live roots MUST match that baseline before publication. The baseline MUST
+  seal detached `NpcCoreChangesContract.Authority` plus exact NPC-trade and training pending
+  bytes used by ordinary NPC-core processing. It MUST exclude the treatment B.2 skill
+  projection; the common candidate applies that sealed projection to the verified baseline
+  and applies item consumption to the resulting skill root. The accepted item snapshot MUST
+  seal complete backup/current carrier roots plus privately derived deterministic root
+  receipt and create/transfer transition IDs; the ordinary normalizer and treatment
+  projector MUST use one shared pure transfer transform and produce the same receipt/history
+  without a direct writer call.
   Before any new live procedure reservation, accepted-state binding MUST perform exactly
   one atomic claim-recovery phase in the persisted catalog's coalesced first-authoritative
   order. Recovery MUST restore exact dice spans; prove every carried player natural-1

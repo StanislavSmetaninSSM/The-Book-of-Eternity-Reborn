@@ -1141,6 +1141,56 @@ scope mutation selectors and releases every other claim. Trigger `None` is relea
 `not_required` is empty. Any policy/category/reservation mismatch rejects. The resolver
 owns neither registry mutation nor item/resource mutation.
 
+Selected `item_quantity` finalization is a client-owned T070 publication contract, not a
+new request field. Alongside the existing six closed skill-operation properties, the
+six-argument publication entry point may freeze only `UpdateInventory`,
+`moveInventoryItems`, `removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`,
+`NPCInventoryRemovals`, and `NPCEquipmentChanges`; any other non-null response property
+remains unsupported. It must derive the same exact final pre-publication carrier/index
+baseline produced by the ordinary accepted normalizer pipeline, then apply one item
+`consume` transition per selected claim in finalization order. The baseline is the output
+immediately before `PublishAcceptedMechanicsAsync`, not merely the output of
+`NormalizeMortalItemsAsync`: every ordinary transform that can touch a selected
+`items.json` or `npc_core.json` root, including item transfer/materialization/equipment/
+identity, ordinary NPC core processing, NPC trade canonicalization, and inventory journal
+normalization, executes in production order through shared pure projectors. The baseline
+seals detached `NpcCoreChangesContract.Authority` and exact NPC-trade/training pending-file
+bytes used by NPC core processing. It excludes the B.2 treatment skill projection because
+that projection is a common-plan mutation, not a live ordinary-normalizer output. The live
+roots must equal the sealed baseline before the common plan applies the B.2 skill projection
+and then item consumption. Item-phase projection includes complete current and backup
+carrier roots, pure accepted-transfer classification/application, and command removal.
+Accepted creation root receipt/create-transition IDs and transfer-transition IDs are
+privately derived from session/snapshot/turn, the exact route or transfer authority, and
+ordinal; both the ordinary normalizer and treatment projector use those same IDs and the
+same pure transfer transform. Neither calls the writing `MortalItemTransitionWriter` or
+allocates a second random receipt/history row.
+
+A partial transition preserves item ID, receipt, and carrier and decreases count; all live
+item-owned resources must be `instance_fixed` and scale maximum/current exactly by the
+remaining/source-count ratio with quantum alignment and no rounding. A full transition
+removes the item, clears only a supported inline equipment reference, marks its identity
+`consumed`, makes its owner historical, and retires all live item-owned resources. A
+container, quest, bond, or any other companion reference requires its own genuine atomic
+transition authority; B.4 does not mint one and therefore rejects the complete mixed plan.
+Any inexact capacity, stale count/carrier/index, missing owner, changed resource state, or
+unsupported companion rejects before a canonical write.
+
+All item and item-resource event/operation/transition identities are privately derived from
+the sealed request, result/finalization, claim fingerprint, and ordinal. The caller supplies
+none. Partial item-capacity rows share one attempt-derived origin, use registered-system
+priority `70`, and encode the finalization ordinal as four invariant zero-padded digits in
+their event key; terminal owner retirement remains priority `90`. Thus the common resource
+sort cannot reorder repeated claims. The item projection is write-free;
+`MortalItemTransitionWriter` is not a treatment
+publication shortcut. When an NPC skill and item share `npc_core.json`, the client composes
+one final root and revalidates both authorities rather than allowing either producer to
+overwrite the other. Item carrier/index, resource state/history/owner authority, wound/
+effect/history/output, and command consumption publish through the same common plan and
+normalizer transaction. Exact replay produces no second decrement, retirement, or resource
+transition; retryable failure restores every touched root byte-for-byte and may re-arm only
+the exact original fenced plan.
+
 The production resolver returns
 `MortalWoundTreatmentResolutionResult` with exactly `Disposition`, frozen `Issues`,
 nullable `Resolution`, and nullable `ReplayReceipt`, not wound, inventory, resource,
@@ -1399,6 +1449,14 @@ round restores the same reservation authority and never reserves or consumes a s
 set. The private take receipt is production-minted from the exact cached plan and registry
 generation, is one-use, and cannot be forged, swapped, replayed, or used after
 invalidation/session replacement.
+
+For a selected stack, "full quantity" means the authored requirement quantity, not
+necessarily the stack's entire count. Repeated selectors remain separate sequential
+transitions. Partial resource-bearing stacks are accepted only when every capacity/current
+projection is exact; otherwise the item and every separately selected resource remain
+unchanged. Same-turn item creation, transfer, and equipment normalization must be present
+in the sealed baseline used for treatment publication and cannot be erased by its final
+carrier root.
 
 ## Natural recovery
 

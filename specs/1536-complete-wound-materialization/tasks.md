@@ -1432,6 +1432,51 @@ entrypoints require no update for T065.
   already forbids authoring clocks, anchors, history, fingerprints, or canonical carrier
   post-state. Phase B remains explicitly open for treatment, recovery, re-entry, durable
   evidence, and remaining publication integration.
+  T070 Phase B.3 closure (2026-09-02): `7857df41` publishes selected
+  `resource_quantity` finalization through one write-free registered outcome, common plan,
+  sole normalizer, and full-pipeline confirmed-hold transaction. Final owning controls are
+  25/25 unit (`20260902-124035-530-11756-2da0987683f74a3ebec0879a06da0684-focused`),
+  28/28 integration (`20260902-124346-656-40908-4e79ed903f354238a83160ff41d1d54c-focused`),
+  2/2 lifecycle/source guards (`20260902-125026-454-19140-c838ea5b0683479a9bb008aa57660749-focused`),
+  36/36 B.1/B.2 controls (`20260902-125101-008-48304-dd449cdecf9f4b6585010a60ff04270c-focused`),
+  and 26/26 T068 controls (`20260902-125306-555-48744-17bdc653820c4df1a8757995911bb371-focused`).
+  The Fast checkpoint completed its first host 1,296/1,296 before the lane limit; the
+  separately measured recovery diagnostic contained 16 exact B.4 selected-item failures,
+  6 still-open recovery-composer failures, and 1 earlier request-preparation failure. B.3
+  changes only client-owned publication machinery and adds no GM-authored surface.
+  T070 Phase B.4 is the next mandatory bounded contour and executes test-first in this
+  order:
+  1. freeze the existing six skill fields plus only the seven ordinary Mortal item command
+     properties named in the spec; extract deterministic write-free shared transforms for
+     the item phase, including pure transfer classification/application from complete
+     backup/current roots and deterministic snapshot-owned creation receipt/create-
+     transition plus transfer-transition IDs,
+     and every later ordinary NPC core/trade or inventory-journal transform that can touch
+     a selected carrier root; seal their exact production-order output, detached NPC-core
+     authority, and NPC-trade/training pending bytes immediately before common publication,
+     with same-turn creation/transfer/equipment parity and unsupported-envelope tests;
+     exclude the plan-owned B.2 skill projection from this live baseline;
+  2. add a pure shared `MortalItemConsumptionPlanner` for sequential partial/full stack
+     identity transitions, clear only supported inline equipment, reject container/quest/
+     bond/other companion references without separate atomic authority, and refactor the
+     ordinary writer to consume that same result;
+  3. add exact `instance_fixed` proportional item-owned capacity projection, full terminal
+     owner retirement, and private registered-capacity integration in the common reducer;
+  4. compose item carrier/index and the B.2 skill projection over the exact final
+     pre-publication baseline into one shared `npc_core.json`/`items.json` root set,
+     preserving NPC trade, inventory journal, mirror, and actor-catalog validation;
+  5. integrate mixed selected item/resource finalization into the existing B.3 authority,
+     one-use take receipt, transaction compensation, cold recovery, and exact replay;
+  6. retain the six-argument publication API, single `Finalize(resolution)`, and all public
+     request/resolution/finalization DTOs; no direct item writer, raw patch, caller ID, or
+     alternate normalizer is permitted.
+  B.4 owning RED/GREEN files are
+  `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.ResourcePublication.cs`,
+  `BookOfEternityClient.Tests/MortalItemConsumptionPlannerTests.cs`,
+  and `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs`.
+  Procedure/course/Fate/heal/recovery and T069-C remain later T070 contours; B.4 uses new
+  guaranteed-treatment cold/replay cases and does not require an existing procedure/course
+  publication test to become GREEN.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution

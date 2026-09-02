@@ -241,6 +241,30 @@ healing, and history survival after later effect removal. Treat an exact combata
 course and a provider-owned guarantee; require accepted promotion before a target-owned
 combatant guarantee.
 
+For treatment item publication, consume one unit from a three-unit stack and prove the
+same permanent identity/receipt/carrier remains active at count two with one exact
+`consume` transition. Repeat two selected claims against one stack and prove two sequential
+before/after transitions rather than one aggregate row. Add item-owned `instance_fixed`
+resources and prove maximum/current scale exactly by each remaining/source-count ratio;
+reject an inexact quantum or non-instance-fixed capacity without spending a separately
+selected resource. Consume the final unit and prove carrier/equipment removal, terminal
+`consumed` identity, historical owner authority, and retirement of every live coordinate.
+Repeat the final consume with a container, quest, bond, and other companion reference and
+prove each rejects before any write; only supported inline equipment clears automatically.
+Using only the seven closed ordinary item response properties, repeat with same-turn item
+creation/transfer and an NPC guarantee touching the same `npc_core.json`. Prove the sealed
+baseline exactly matches the live root after item, ordinary NPC core/trade, and inventory
+journal normalizers. Change NPC-core authority, NPC-trade pending bytes, and training
+pending bytes independently and prove each invalidates recomposition. Then prove the common
+candidate applies the B.2 NPC skill projection and item consumption over that verified
+baseline so one final root preserves every change. Set one unrelated response property
+non-null and prove the treatment envelope rejects it. Inject a post-write failure and cold
+replay, proving byte-exact rollback and no second item/resource transition. Project the
+same accepted create/transfer phase twice from detached current/backup roots and prove its
+privately derived root receipt/create/transfer transition IDs, command removal, carrier/
+index roots, and fingerprint are identical; source-guard that neither path calls the writing
+item transition service or random receipt/transition overloads.
+
 For Mortal recovery, create an untreated `requires_stabilization` wound at minute 100,
 stabilize it through the sealed treatment/publication path at minute 150, and assert the
 condition anchor is cleared while recovery is rebased to 150. At minute 170 submit a
