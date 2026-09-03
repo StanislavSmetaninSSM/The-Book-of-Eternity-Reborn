@@ -1523,15 +1523,16 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 "Pre-canonical treatment cleanup requires the unchanged live ConfirmedHeld agreement.");
         }
 
-        if (!MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+        var hasCurrentMortalItemSnapshot =
+            MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
                 fs,
                 writeLease,
                 binding.SessionId,
                 binding.SnapshotToken,
                 binding.Turn,
-                out var mortalItemSnapshot) ||
-            !mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
-                plan.OwnerAuthority))
+                out var mortalItemSnapshot);
+        if (hasCurrentMortalItemSnapshot &&
+            !mortalItemSnapshot.MatchesAcceptedOwnerAuthority(plan.OwnerAuthority))
         {
             throw new InvalidDataException(
                 "Pre-canonical treatment cleanup could not capture the exact Mortal item authority snapshot.");
@@ -1574,14 +1575,22 @@ internal static class AcceptedTurnCanonicalStateRefresh
         MortalWoundTreatmentResourcePublicationTransaction? transaction = null;
         try
         {
-            if (!AcceptedMechanicsPlanAuthority
-                    .TryTakeValidatedTreatmentPublication(
+            var tookPublication = hasCurrentMortalItemSnapshot
+                ? AcceptedMechanicsPlanAuthority.TryTakeValidatedTreatmentPublication(
+                    fs,
+                    writeLease,
+                    binding,
+                    mortalItemSnapshot,
+                    out var taken,
+                    out var receipt)
+                : AcceptedMechanicsPlanAuthority
+                    .TryTakeValidatedTreatmentPublicationForTerminalRelease(
                         fs,
                         writeLease,
                         binding,
-                        mortalItemSnapshot,
-                        out var taken,
-                        out var receipt) ||
+                        out taken,
+                        out receipt);
+            if (!tookPublication ||
                 !taken.Success || taken.Plan is null ||
                 !ReferenceEquals(plan, taken.Plan))
             {

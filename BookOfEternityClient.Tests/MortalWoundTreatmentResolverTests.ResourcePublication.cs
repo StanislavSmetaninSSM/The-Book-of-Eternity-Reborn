@@ -1024,6 +1024,90 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void GuaranteedItemConsumption_InvalidatedTerminalTakeIsQuarantineReleaseOnlyByShapeAndSource()
+    {
+        var terminalCacheTake = Assert.Single(
+            typeof(MortalItemAcceptedTurnAuthority.Cache)
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic),
+            method => string.Equals(
+                method.Name,
+                "TryTakeInvalidatedTreatmentPublicationForTerminalRelease",
+                StringComparison.Ordinal));
+        var terminalCacheParameter = Assert.Single(terminalCacheTake.GetParameters());
+        Assert.True(terminalCacheParameter.IsOut);
+        Assert.Equal(
+            typeof(MortalItemAcceptedTurnAuthority.Cache.ValidatedPublicationTakeSnapshot)
+                .MakeByRefType(),
+            terminalCacheParameter.ParameterType);
+
+        var terminalFacadeTake = Assert.Single(
+            typeof(AcceptedMechanicsPlanAuthority)
+                .GetMethods(BindingFlags.Static | BindingFlags.NonPublic),
+            method => string.Equals(
+                method.Name,
+                "TryTakeValidatedTreatmentPublicationForTerminalRelease",
+                StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            terminalFacadeTake.GetParameters(),
+            parameter => parameter.ParameterType ==
+                         typeof(MortalItemAcceptedTurnNormalizationSnapshot));
+        var terminalReceiptPurpose = typeof(MortalWoundTreatmentPublicationTakeReceipt)
+            .GetProperty(
+                "IsTerminalReleaseOnly",
+                BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(terminalReceiptPurpose);
+        Assert.Equal(typeof(bool), terminalReceiptPurpose.PropertyType);
+
+        var repositoryRoot = FindRepositoryRootForB4SourceGuard();
+        var authoritySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "MortalItemAcceptedEffectSourceAuthority.cs")));
+        var registrySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "AcceptedTurnAuthorityRegistry.cs")));
+        var transactionSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "MortalWoundTreatmentResourcePublicationTransaction.cs")));
+        var normalizerSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                repositoryRoot,
+                "BookOfEternityClient",
+                "Services",
+                "CanonicalStateNormalizer",
+                "CanonicalStateNormalizer.MortalItems.cs")));
+
+        var terminalTake = ExtractB4MethodSource(
+            authoritySource,
+            "internal bool TryTakeInvalidatedTreatmentPublicationForTerminalRelease(");
+        Assert.Contains("_treatmentPublicationBaselineSnapshot", terminalTake);
+        Assert.Contains("RecomputesFinalPublicationBaseline(", terminalTake);
+        Assert.Contains("MatchesExactCacheState(", terminalTake);
+        Assert.Contains("terminalReleaseOnly: true", terminalTake);
+        var rearm = ExtractB4MethodSource(
+            authoritySource,
+            "internal bool TryRearmValidatedTreatmentPublication(");
+        Assert.Contains("snapshot.TerminalReleaseOnly", rearm);
+
+        Assert.Contains(
+            "TryTakeInvalidatedTreatmentPublicationForTerminalRelease(",
+            registrySource);
+        Assert.Contains("receipt.IsTerminalReleaseOnly", registrySource);
+        Assert.Contains("receipt.IsTerminalReleaseOnly", transactionSource);
+        Assert.Contains(
+            "TryTakeValidatedTreatmentPublicationForTerminalRelease(",
+            normalizerSource);
+    }
+
+    [Fact]
     public void GuaranteedItemConsumption_FinalPrepublicationBaselineIncludesEveryRootTouchingNormalizer()
     {
         var scenario = CreateGuaranteedResourcePublicationScenario(

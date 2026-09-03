@@ -139,6 +139,7 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
     internal MortalWoundTreatmentResourcePublicationAuthority PublicationAuthority { get; }
     internal string SemanticFingerprint { get; }
     internal string GenerationFingerprint { get; }
+    internal bool IsTerminalReleaseOnly => MortalItemCacheSnapshot.TerminalReleaseOnly;
     internal bool IsConsumed => Volatile.Read(ref _consumed) != 0;
 
     internal static MortalWoundTreatmentPublicationTakeReceipt Mint(

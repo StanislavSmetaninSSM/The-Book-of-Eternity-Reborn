@@ -1310,14 +1310,18 @@ internal static class MortalItemAcceptedTurnAuthority
                 object cacheAuthority,
                 object fence,
                 string cacheFingerprint,
-                MortalItemAcceptedTurnNormalizationSnapshot normalizationSnapshot)
+                MortalItemAcceptedTurnNormalizationSnapshot normalizationSnapshot,
+                bool terminalReleaseOnly)
             {
                 CacheAuthority = cacheAuthority;
                 Fence = fence;
                 CacheFingerprint = cacheFingerprint;
                 NormalizationSnapshot = normalizationSnapshot;
-                PublicationFingerprint = normalizationSnapshot
-                    .ComputePublicationFingerprint(cacheFingerprint);
+                TerminalReleaseOnly = terminalReleaseOnly;
+                PublicationFingerprint = ComputePublicationTakeFingerprint(
+                    normalizationSnapshot,
+                    cacheFingerprint,
+                    terminalReleaseOnly);
             }
 
             internal object CacheAuthority { get; }
@@ -1325,7 +1329,22 @@ internal static class MortalItemAcceptedTurnAuthority
             internal string CacheFingerprint { get; }
             internal MortalItemAcceptedTurnNormalizationSnapshot
                 NormalizationSnapshot { get; }
+            internal bool TerminalReleaseOnly { get; }
             internal string PublicationFingerprint { get; }
+
+            internal static string ComputePublicationTakeFingerprint(
+                MortalItemAcceptedTurnNormalizationSnapshot normalizationSnapshot,
+                string cacheFingerprint,
+                bool terminalReleaseOnly) =>
+                WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+                {
+                    "book_of_eternity.mortal_item.accepted_turn_publication_take_receipt",
+                    "1",
+                    normalizationSnapshot.ComputePublicationFingerprint(cacheFingerprint),
+                    terminalReleaseOnly
+                        ? "terminal_release_only"
+                        : "normal_publication"
+                });
         }
 
         private readonly object _gate = new();
@@ -1620,13 +1639,44 @@ internal static class MortalItemAcceptedTurnAuthority
                         _cacheAuthority,
                         _validatedFence,
                         _fingerprint,
-                        expected);
+                        expected,
+                        terminalReleaseOnly: false);
                     _validated = false;
                     return true;
                 }
 
                 snapshot = null!;
                 return false;
+            }
+        }
+
+        internal bool TryTakeInvalidatedTreatmentPublicationForTerminalRelease(
+            out ValidatedPublicationTakeSnapshot snapshot)
+        {
+            lock (_gate)
+            {
+                var retainedBaseline = _treatmentPublicationBaselineSnapshot?.Clone();
+                if (_validated ||
+                    _fingerprint is null ||
+                    retainedBaseline is null ||
+                    !retainedBaseline.RecomputesFinalPublicationBaseline() ||
+                    !retainedBaseline.MatchesExactCacheState(
+                        _sessionId,
+                        _snapshotToken,
+                        _itemIdsByCreationRef,
+                        _normalizationProofFingerprint))
+                {
+                    snapshot = null!;
+                    return false;
+                }
+
+                snapshot = new ValidatedPublicationTakeSnapshot(
+                    _cacheAuthority,
+                    _validatedFence,
+                    _fingerprint,
+                    retainedBaseline,
+                    terminalReleaseOnly: true);
+                return true;
             }
         }
 
@@ -1651,6 +1701,7 @@ internal static class MortalItemAcceptedTurnAuthority
             {
                 if (!PublicationTakeSnapshotAgrees(snapshot) ||
                     !ReferenceEquals(_validatedFence, snapshot.Fence) ||
+                    snapshot.TerminalReleaseOnly ||
                     _validated ||
                     !CurrentCacheStateAgrees(snapshot))
                 {
@@ -1670,6 +1721,7 @@ internal static class MortalItemAcceptedTurnAuthority
             {
                 return PublicationTakeSnapshotAgrees(snapshot) &&
                        ReferenceEquals(_validatedFence, snapshot.Fence) &&
+                       !snapshot.TerminalReleaseOnly &&
                        _validated &&
                        CurrentCacheStateAgrees(snapshot);
             }
@@ -1806,8 +1858,10 @@ internal static class MortalItemAcceptedTurnAuthority
             ReferenceEquals(snapshot.CacheAuthority, _cacheAuthority) &&
             string.Equals(
                 snapshot.PublicationFingerprint,
-                snapshot.NormalizationSnapshot.ComputePublicationFingerprint(
-                    snapshot.CacheFingerprint),
+                ValidatedPublicationTakeSnapshot.ComputePublicationTakeFingerprint(
+                    snapshot.NormalizationSnapshot,
+                    snapshot.CacheFingerprint,
+                    snapshot.TerminalReleaseOnly),
                 StringComparison.Ordinal);
 
         private bool CurrentCacheStateAgrees(

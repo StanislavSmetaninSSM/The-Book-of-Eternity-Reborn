@@ -1767,6 +1767,14 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(
             context.FileSystem,
             context.Lease));
+        Assert.False(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out _));
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
         await context.ReleaseLeaseAsync();
 
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(

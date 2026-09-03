@@ -904,6 +904,26 @@ internal static class AcceptedMechanicsPlanAuthority
                 out receipt);
     }
 
+    internal static bool TryTakeValidatedTreatmentPublicationForTerminalRelease(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsPlanBinding liveBinding,
+        out AcceptedMechanicsPlanningResult result,
+        out MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(liveBinding);
+        fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
+        return AcceptedTurnAuthorityRegistry
+            .TryTakeCommonMortalWoundTreatmentPublicationForTerminalRelease(
+                fileSystem,
+                writeLease,
+                liveBinding,
+                out result,
+                out receipt);
+    }
+
     internal static bool IsTakenTreatmentPublicationCurrent(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,

@@ -349,6 +349,7 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         var publicationAuthority = _plan.TreatmentResourcePublicationAuthority;
         var itemAuthority = publicationAuthority?.ItemPublicationAuthority;
         if (issues.Count == 0 ||
+            _receipt.IsTerminalReleaseOnly ||
             !ReferenceEquals(fileSystem, _fileSystem) ||
             Volatile.Read(ref _closed) != 0 ||
             itemAuthority is null ||
@@ -437,7 +438,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
-        if (!ReferenceEquals(fileSystem, _fileSystem) ||
+        if (_receipt.IsTerminalReleaseOnly ||
+            !ReferenceEquals(fileSystem, _fileSystem) ||
             Volatile.Read(ref _closed) != 0 ||
             Volatile.Read(ref _publishedAgreement) is not null)
         {
@@ -475,6 +477,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(progressionSchedule);
         ArgumentNullException.ThrowIfNull(control);
+        if (_receipt.IsTerminalReleaseOnly)
+            return TerminalReleaseOnlyFailure("advance progression publication");
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
         var ownsAdvance = false;
@@ -602,6 +606,8 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         CompleteAsync(FileSystemManager fileSystem)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
+        if (_receipt.IsTerminalReleaseOnly)
+            return TerminalReleaseOnlyFailure("finalize publication");
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         MortalWoundTreatmentPublicationOperationResult? result = null;
         try
@@ -673,7 +679,13 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         try
         {
             writeLease = await fileSystem.AcquireCanonicalWriteLeaseAsync();
-            result = await RestoreAndSettleAsync(fileSystem, writeLease);
+            result = _receipt.IsTerminalReleaseOnly
+                ? await ReleaseTerminalWithLeaseAsync(
+                    fileSystem,
+                    writeLease,
+                    "validation_failed",
+                    fromRearmed: false)
+                : await RestoreAndSettleAsync(fileSystem, writeLease);
             ObserveClosure(result);
             return result;
         }
@@ -761,7 +773,13 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
-        var result = await RestoreAndSettleAsync(fileSystem, writeLease);
+        var result = _receipt.IsTerminalReleaseOnly
+            ? await ReleaseTerminalWithLeaseAsync(
+                fileSystem,
+                writeLease,
+                "validation_failed",
+                fromRearmed: false)
+            : await RestoreAndSettleAsync(fileSystem, writeLease);
         ObserveClosure(result);
         if (!result.IsValid)
         {
@@ -1403,6 +1421,24 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
         0,
         MortalWoundTreatmentPublicationTransactionOutcome
             .PublishedAgreementChanged);
+
+    private static MortalWoundTreatmentPublicationOperationResult
+        TerminalReleaseOnlyFailure(string attemptedOperation) => new(
+        false,
+        new[]
+        {
+            new ValidationIssue(
+                AcceptedMechanicsPlan.WoundCommandPath,
+                IssueSeverity.Error,
+                "The terminal-release-only Mortal wound-treatment receipt cannot be used for normal publication.",
+                TokenStaleCode,
+                actor: "accepted_turn",
+                section: "wound_materialization",
+                expected: "quarantine or terminal release",
+                actual: attemptedOperation)
+        },
+        0,
+        MortalWoundTreatmentPublicationTransactionOutcome.Stale);
 
     private static string DecodeUtf8(byte[] bytes)
     {
