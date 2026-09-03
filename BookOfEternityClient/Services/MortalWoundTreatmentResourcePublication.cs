@@ -1618,7 +1618,13 @@ internal static partial class WoundAcceptedTurnPlanner
         var finalRoots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
             skillComposedRoots);
         foreach (var pair in consumption.CarrierAfterImages)
-            finalRoots[pair.Key] = pair.Value.DeepClone();
+        {
+            finalRoots[pair.Key] =
+                MortalItemProjectionRootParser.RestorePublicationRoot(
+                    skillComposedRoots.GetValueOrDefault(pair.Key),
+                    pair.Value,
+                    pair.Key);
+        }
         finalRoots[MortalItemIdentityState.StatePath] =
             consumption.IdentityIndexAfterImage.DeepClone();
 
@@ -1633,9 +1639,10 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         foreach (var pair in consumption.CarrierAfterImages)
         {
+            var publicationRoot = finalRoots[pair.Key];
             if (!JsonNode.DeepEquals(
                     skillComposedRoots.GetValueOrDefault(pair.Key),
-                    pair.Value))
+                    publicationRoot))
             {
                 publicationAfterImages[pair.Key] =
                     pair.Value.DeepClone().AsObject();

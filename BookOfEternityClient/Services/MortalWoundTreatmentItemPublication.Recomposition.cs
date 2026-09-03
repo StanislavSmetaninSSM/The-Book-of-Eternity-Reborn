@@ -103,6 +103,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
             recomposedConsumption);
         var recomposedPublicationAfterImages = ComposePublicationAfterImages(
             skillRoots,
+            recomposedFinalRoots,
             baseline,
             recomposedSkillAfterImages,
             recomposedConsumption);
@@ -314,7 +315,13 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
     {
         var roots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(skillRoots);
         foreach (var pair in consumption.CarrierAfterImages)
-            roots[pair.Key] = pair.Value.DeepClone();
+        {
+            roots[pair.Key] =
+                MortalItemProjectionRootParser.RestorePublicationRoot(
+                    skillRoots.GetValueOrDefault(pair.Key),
+                    pair.Value,
+                    pair.Key);
+        }
         roots[MortalItemIdentityState.StatePath] =
             consumption.IdentityIndexAfterImage!.DeepClone();
         return roots;
@@ -322,6 +329,7 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
 
     private static Dictionary<string, JsonObject> ComposePublicationAfterImages(
         IReadOnlyDictionary<string, JsonNode?> skillRoots,
+        IReadOnlyDictionary<string, JsonNode?> finalRoots,
         MortalItemPublicationBaselineResult baseline,
         IReadOnlyDictionary<string, JsonObject> skillAfterImages,
         MortalItemConsumptionPlanningResult consumption)
@@ -336,8 +344,12 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
         }
         foreach (var pair in consumption.CarrierAfterImages)
         {
-            if (!JsonNode.DeepEquals(skillRoots.GetValueOrDefault(pair.Key), pair.Value))
+            if (!JsonNode.DeepEquals(
+                    skillRoots.GetValueOrDefault(pair.Key),
+                    finalRoots.GetValueOrDefault(pair.Key)))
+            {
                 afterImages[pair.Key] = pair.Value.DeepClone().AsObject();
+            }
         }
         if (!JsonNode.DeepEquals(
                 baseline.IdentityIndexAfterImage,

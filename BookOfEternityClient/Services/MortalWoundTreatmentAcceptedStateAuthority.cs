@@ -449,6 +449,24 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         var roots = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in requiredPaths)
         {
+            if (string.Equals(
+                    path,
+                    StorageTransportMoveService.VehiclesPath,
+                    StringComparison.Ordinal))
+            {
+                if (!TryParseProjectionCatalogObject(
+                        signed.ReadRequiredBytes(path),
+                        path,
+                        issues,
+                        out var vehicleRoot))
+                {
+                    continue;
+                }
+
+                roots.Add(path, vehicleRoot!);
+                continue;
+            }
+
             if (!TryParseObject(signed.ReadRequiredBytes(path), path, issues, out var root))
                 continue;
             roots.Add(path, root!);
@@ -2003,6 +2021,51 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                 path,
                 "mortal_wound_treatment_accepted_state_root_invalid",
                 "one strict canonical object root",
+                exception.GetType().Name));
+            return false;
+        }
+    }
+
+    private static bool TryParseProjectionCatalogObject(
+        byte[] bytes,
+        string path,
+        ICollection<ValidationIssue> issues,
+        out JsonObject? root)
+    {
+        root = null;
+        try
+        {
+            var parsed = MortalItemProjectionRootParser.Parse(
+                CanonicalJsonUtf8.DecodeOneOptionalBom(bytes),
+                path);
+            if (!parsed.IsValid || parsed.Root is null)
+            {
+                issues.Add(Issue(
+                    path,
+                    "mortal_wound_treatment_accepted_state_root_invalid",
+                    "one strict object or legacy vehicle array root without duplicate properties",
+                    parsed.Issues.FirstOrDefault()?.Actual ?? "invalid topology"));
+                return false;
+            }
+
+            root = MortalItemProjectionRootParser.ToCarrierCatalogObject(
+                parsed.Root,
+                path);
+            if (root is not null)
+                return true;
+
+            throw new InvalidDataException(
+                "A required treatment projection root cannot be absent.");
+        }
+        catch (Exception exception) when (exception is JsonException or
+                                           InvalidDataException or
+                                           InvalidOperationException or
+                                           ArgumentException)
+        {
+            issues.Add(Issue(
+                path,
+                "mortal_wound_treatment_accepted_state_root_invalid",
+                "one strict object or legacy vehicle array root without duplicate properties",
                 exception.GetType().Name));
             return false;
         }

@@ -87,6 +87,43 @@ internal static class MortalItemProjectionRootParser
                 $"Projection root '{path}' has unsupported topology.")
         };
 
+    internal static JsonNode RestorePublicationRoot(
+        JsonNode? baselineRoot,
+        JsonObject plannerRoot,
+        string path)
+    {
+        ArgumentNullException.ThrowIfNull(plannerRoot);
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+
+        if (!string.Equals(
+                path,
+                StorageTransportMoveService.VehiclesPath,
+                StringComparison.Ordinal))
+        {
+            if (baselineRoot is not JsonObject)
+            {
+                throw new InvalidOperationException(
+                    $"Projection root '{path}' has no sealed object publication topology.");
+            }
+            return plannerRoot.DeepClone();
+        }
+
+        if (baselineRoot is JsonObject)
+            return plannerRoot.DeepClone();
+        if (baselineRoot is not JsonArray)
+        {
+            throw new InvalidOperationException(
+                $"Projection root '{path}' has no sealed publication topology.");
+        }
+        if (plannerRoot.Count != 1 ||
+            plannerRoot["vehicles"] is not JsonArray vehicles)
+        {
+            throw new InvalidOperationException(
+                $"Projection root '{path}' cannot restore its sealed legacy array topology.");
+        }
+        return vehicles.DeepClone();
+    }
+
     private static MortalItemProjectionRootParseResult Invalid(
         string path,
         string actual) => new(

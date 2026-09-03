@@ -231,6 +231,9 @@ public partial class CanonicalStateNormalizer
         if (!plan.AwaitsPendingResolution)
             await AddOwnerTransitionWritesAsync(plan, writes);
 
+        var exactItemPublicationAfterImages =
+            CloneExactTreatmentItemPublicationAfterImages(plan, writes);
+
         var deletePaths = plan.PendingAfterImages
             .Where(static pair => pair.Value == null)
             .Select(static pair => pair.Key)
@@ -246,9 +249,14 @@ public partial class CanonicalStateNormalizer
 
         foreach (var pair in writes.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
         {
+            var publicationRoot = exactItemPublicationAfterImages.TryGetValue(
+                pair.Key,
+                out var exactItemRoot)
+                ? exactItemRoot
+                : pair.Value;
             await WriteCanonicalFileAtomicAsync(
                 pair.Key,
-                pair.Value.ToJsonString(JsonOpts));
+                publicationRoot.ToJsonString(JsonOpts));
         }
         foreach (var path in deletePaths)
         {
@@ -257,6 +265,7 @@ public partial class CanonicalStateNormalizer
 
         await ValidateAcceptedMechanicsPublicationAgreementAsync(
             writes,
+            exactItemPublicationAfterImages,
             deletePaths,
             retainedPublicationBeforeImages);
 
@@ -277,6 +286,38 @@ public partial class CanonicalStateNormalizer
             await ValidatePublishedResourceAfterImagesAsync(plan);
         }
         return plan;
+    }
+
+    private static IReadOnlyDictionary<string, JsonNode>
+        CloneExactTreatmentItemPublicationAfterImages(
+            AcceptedMechanicsPlan plan,
+            IReadOnlyDictionary<string, JsonObject> writes)
+    {
+        var itemAuthority = plan.TreatmentResourcePublicationAuthority?
+            .ItemPublicationAuthority;
+        if (itemAuthority is null)
+            return new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+
+        var objectAfterImages = itemAuthority.PublicationAfterImages;
+        var exactAfterImages = itemAuthority.CloneExactPublicationAfterImages();
+        if (objectAfterImages.Count != exactAfterImages.Count)
+        {
+            throw new InvalidDataException(
+                "Treatment item publication after-image key sets changed.");
+        }
+
+        foreach (var pair in objectAfterImages)
+        {
+            if (!exactAfterImages.ContainsKey(pair.Key) ||
+                !writes.TryGetValue(pair.Key, out var plannedAfterImage) ||
+                !JsonNode.DeepEquals(pair.Value, plannedAfterImage))
+            {
+                throw new InvalidDataException(
+                    $"Treatment item publication after-image at '{pair.Key}' changed before normalization.");
+            }
+        }
+
+        return exactAfterImages;
     }
 
     private static void AddTreatmentResourceWriteIfChanged(
@@ -353,6 +394,7 @@ public partial class CanonicalStateNormalizer
 
     private async Task ValidateAcceptedMechanicsPublicationAgreementAsync(
         IReadOnlyDictionary<string, JsonObject> writes,
+        IReadOnlyDictionary<string, JsonNode> exactItemPublicationAfterImages,
         IReadOnlyList<string> deletePaths,
         IReadOnlyDictionary<string, CanonicalBeforeImage> retainedBeforeImages)
     {
@@ -360,7 +402,14 @@ public partial class CanonicalStateNormalizer
                      static value => value.Key,
                      StringComparer.Ordinal))
         {
-            _ = await ReadExactPublishedAfterImageAsync(pair.Key, pair.Value);
+            var publicationRoot = exactItemPublicationAfterImages.TryGetValue(
+                pair.Key,
+                out var exactItemRoot)
+                ? exactItemRoot
+                : pair.Value;
+            _ = await ReadExactPublishedAfterImageAsync(
+                pair.Key,
+                publicationRoot);
         }
 
         foreach (var path in deletePaths)
@@ -1142,7 +1191,7 @@ public partial class CanonicalStateNormalizer
 
     private async Task<string> ReadExactPublishedAfterImageAsync(
         string path,
-        JsonObject plannedAfterImage)
+        JsonNode plannedAfterImage)
     {
         var current = await _fs.ReadFileBytesAsync(_writeLease!, path);
         var expectedJson = plannedAfterImage.ToJsonString(JsonOpts);

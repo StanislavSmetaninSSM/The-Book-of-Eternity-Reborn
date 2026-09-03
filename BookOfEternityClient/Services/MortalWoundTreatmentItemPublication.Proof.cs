@@ -5,6 +5,45 @@ namespace BookOfEternityClient.Services;
 
 internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
 {
+    internal IReadOnlyDictionary<string, JsonNode>
+        CloneExactPublicationAfterImages()
+    {
+        if (!HasValidSeal())
+        {
+            throw new InvalidDataException(
+                "Treatment item publication authority has no valid seal.");
+        }
+
+        var exact = new Dictionary<string, JsonNode>(StringComparer.Ordinal);
+        foreach (var path in _publicationAfterImages.Keys.OrderBy(
+                     static path => path,
+                     StringComparer.Ordinal))
+        {
+            if (!_finalRoots.TryGetValue(path, out var finalRoot) ||
+                finalRoot is null ||
+                finalRoot is not JsonObject &&
+                (finalRoot is not JsonArray ||
+                 !string.Equals(
+                     path,
+                     StorageTransportMoveService.VehiclesPath,
+                     StringComparison.Ordinal)))
+            {
+                throw new InvalidDataException(
+                    $"Treatment item publication authority has no exact final root for '{path}'.");
+            }
+
+            exact.Add(path, finalRoot.DeepClone());
+        }
+
+        if (exact.Count != _publicationAfterImages.Count)
+        {
+            throw new InvalidDataException(
+                "Treatment item publication authority exact-root keys changed.");
+        }
+
+        return exact;
+    }
+
     internal IReadOnlyList<ValidationIssue> ValidateCandidate(
         AcceptedMechanicsPlan candidate)
     {
