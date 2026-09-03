@@ -343,19 +343,32 @@ only its now-obsolete final-gate deadline after new measured suite growth.
 6. Run one bounded Fast checkpoint. If wall time is above four minutes or does
    not retain at least one minute of hard-limit headroom, continue through the
    already-measured ranking and move only sources that satisfy the same
-   semantic rule. The reviewed second group is:
-   `ShiningCoreActionResolutionValidationTests.cs`,
-   `GuardianCorrectionServiceTests.cs`,
-   `ShiningBlessingEffectStateTests.cs`,
-   `AfterlifeNotificationStateTests.cs`, `DarenQteShowcaseTests.cs`,
-   `ShiningTradeRequestStateTests.cs`, `BrowserLocalWriteCoordinatorTests.cs`,
-   `TrainingServiceTests.cs`, `NpcTradeServiceRequestFlowTests.cs`,
-   `MortalWoundOpportunityAdapterTests.cs`,
-   `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs`, and the measured
-   browser parity sources for relic forge, resident interactions, archive,
-   incarnation gates, ink-feather Fate, NPC social, and trade. Classify these
-   as `RegressionIntegration`; any measured real-worker source instead uses
-   `ProcessIntegration`. Update both exact manifests in the same group.
+   semantic rule. The reviewed second group is the following exact relative
+   source paths under `BookOfEternityClient.Tests`:
+   - `ShiningCoreActionResolutionValidationTests.cs`
+   - `GuardianCorrectionServiceTests.cs`
+   - `ShiningBlessingEffectStateTests.cs`
+   - `AfterlifeNotificationStateTests.cs`
+   - `DarenQteShowcaseTests.cs`
+   - `ShiningTradeRequestStateTests.cs`
+   - `BrowserLocalWriteCoordinatorTests.cs`
+   - `TrainingServiceTests.cs`
+   - `NpcTradeServiceRequestFlowTests.cs`
+   - `MortalWoundOpportunityAdapterTests.cs`
+   - `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs`
+   - `WebUi/BrowserShiningRelicForgeParityTests.cs`
+   - `WebUi/BrowserResidentInteractionsParityTests.cs`
+   - `WebUi/BrowserAfterlifeArchiveParityTests.cs`
+   - `WebUi/BrowserShiningIncarnationGatesParityTests.cs`
+   - `WebUi/BrowserInkFeatherFateParityTests.cs`
+   - `WebUi/BrowserNpcSocialParityTests.cs`
+   - `WebUi/BrowserTradeParityTests.cs`
+   If retained after measurement as a real-worker candidate, also include the
+   exact path `GmWorkerValidationRepairDelegatorTests.cs` and classify it as
+   `ProcessIntegration`; classify the other listed sources as
+   `RegressionIntegration`. For every moved source, preserve the same relative
+   path below `BookOfEternityClient.IntegrationTests`, update both exact
+   manifests in the same group, and retain every test row and assertion.
 7. Repeat focused category verification and Fast PlanOnly after any second
    group, then run two representative Fast controls. Both must finish below the
    unchanged five-minute hard limit; approximately three minutes is the

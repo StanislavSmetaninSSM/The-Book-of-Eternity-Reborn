@@ -152,6 +152,13 @@ Add immediately before each public test class:
 
 Expected: every previously green contour remains green; known deferred wound REDs retain their existing issue classification rather than becoming skipped or missing.
 
+After the mandatory canonical group is green, record a Fast PlanOnly checkpoint
+before continuing to the next coherent group:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Fast -PlanOnly
+```
+
 - [ ] **Step 4: Commit the canonical group**
 
 ```powershell
@@ -218,6 +225,13 @@ public sealed class QteSceneServiceTests : IDisposable
 Require the two result sets together to equal the pre-split 117 discovered
 cases, with no duplicate fully-qualified test IDs.
 
+After the QTE split is verified, record a Fast PlanOnly checkpoint before
+continuing to the process and host smoke group:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Fast -PlanOnly
+```
+
 - [ ] **Step 4: Commit the QTE split**
 
 ```powershell
@@ -258,6 +272,13 @@ public sealed class LocalWebUiSmokeTests : IDisposable
 ```
 
 Expected: 2 worker tests and 3 web-host tests remain discovered; owned cleanup succeeds.
+
+After the mandatory smoke group is verified, record a Fast PlanOnly checkpoint
+before measuring headroom and considering the conditional second group:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Fast -PlanOnly
+```
 
 - [ ] **Step 4: Commit the smoke-test moves**
 
@@ -308,7 +329,47 @@ discovered once and Fast is at most four minutes.
 - [ ] **Step 4: Commit the measured second group if used**
 
 ```powershell
-git add -- BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests
+git add -- `
+  BookOfEternityClient.Tests/ShiningCoreActionResolutionValidationTests.cs `
+  BookOfEternityClient.IntegrationTests/ShiningCoreActionResolutionValidationTests.cs `
+  BookOfEternityClient.Tests/GuardianCorrectionServiceTests.cs `
+  BookOfEternityClient.IntegrationTests/GuardianCorrectionServiceTests.cs `
+  BookOfEternityClient.Tests/ShiningBlessingEffectStateTests.cs `
+  BookOfEternityClient.IntegrationTests/ShiningBlessingEffectStateTests.cs `
+  BookOfEternityClient.Tests/AfterlifeNotificationStateTests.cs `
+  BookOfEternityClient.IntegrationTests/AfterlifeNotificationStateTests.cs `
+  BookOfEternityClient.Tests/DarenQteShowcaseTests.cs `
+  BookOfEternityClient.IntegrationTests/DarenQteShowcaseTests.cs `
+  BookOfEternityClient.Tests/ShiningTradeRequestStateTests.cs `
+  BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs `
+  BookOfEternityClient.Tests/BrowserLocalWriteCoordinatorTests.cs `
+  BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs `
+  BookOfEternityClient.Tests/TrainingServiceTests.cs `
+  BookOfEternityClient.IntegrationTests/TrainingServiceTests.cs `
+  BookOfEternityClient.Tests/NpcTradeServiceRequestFlowTests.cs `
+  BookOfEternityClient.IntegrationTests/NpcTradeServiceRequestFlowTests.cs `
+  BookOfEternityClient.Tests/MortalWoundOpportunityAdapterTests.cs `
+  BookOfEternityClient.IntegrationTests/MortalWoundOpportunityAdapterTests.cs `
+  BookOfEternityClient.Tests/ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs `
+  BookOfEternityClient.IntegrationTests/ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserShiningRelicForgeParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserShiningRelicForgeParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserResidentInteractionsParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserResidentInteractionsParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserAfterlifeArchiveParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserAfterlifeArchiveParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserShiningIncarnationGatesParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserShiningIncarnationGatesParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserInkFeatherFateParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserInkFeatherFateParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserNpcSocialParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserNpcSocialParityTests.cs `
+  BookOfEternityClient.Tests/WebUi/BrowserTradeParityTests.cs `
+  BookOfEternityClient.IntegrationTests/WebUi/BrowserTradeParityTests.cs `
+  BookOfEternityClient.Tests/GmWorkerValidationRepairDelegatorTests.cs `
+  BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs `
+  BookOfEternityClient.Tests/FastTestBoundaryTests.cs `
+  BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
 git commit -m "test(tests): restore Fast runtime headroom (#1551)"
 ```
 
@@ -387,8 +448,8 @@ git commit -m "docs(tests): record repaired Fast lane evidence (#1551)"
 
 ```powershell
 git status --short
-git diff --check origin/main...HEAD
-git diff --stat origin/main...HEAD
+git diff --check 3dbf0572...HEAD
+git diff --stat 3dbf0572...HEAD
 ```
 
 - [ ] **Step 2: Run Spec Kit consistency analysis**
