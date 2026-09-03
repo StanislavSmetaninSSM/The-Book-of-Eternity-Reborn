@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "E2E")]
 public sealed class LocalWebUiSmokeTests : IDisposable
 {
     private readonly string _rootPath;
