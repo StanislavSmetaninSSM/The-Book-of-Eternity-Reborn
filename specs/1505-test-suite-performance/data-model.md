@@ -86,7 +86,7 @@ domain.
 | Lane | Project/selection | Hard limit | Purpose |
 |---|---|---:|---|
 | `Fast` | Entire fast project; no category filter | 5 min | Ordinary local changes |
-| `Focused` | Caller-supplied VSTest filter in the fast project | 5 min | One class/method/domain |
+| `Focused` | Caller-supplied VSTest filter in the selected fast or integration project | 5 min by default; explicit override up to 15 min | One class/method/domain |
 | `FullValidation` | Integration project; `Category=FullValidation` | 15 min | Diagnostic full-pipeline sentinels |
 | `RegressionIntegration` | Integration project; `Category=RegressionIntegration` | 15 min | Diagnostic file-backed workflows |
 | `ProcessIntegration` | Integration project; `Category=ProcessIntegration` | 15 min | Diagnostic real child-process tests |
@@ -108,6 +108,27 @@ Canonical file/restart/rollback/lifecycle and lease-contention sources carry
 `ProcessIntegration`; full host/browser flows carry `E2E`. A mixed source is
 split so fixture-free deterministic logic remains in Fast and its integration
 lifecycle has exactly one categorized owner in Integration.
+
+Fast therefore means the complete physically isolated
+`BookOfEternityClient.Tests` project, not every repository test. Its project
+selection has no negative category filter, its hard limit remains five minutes,
+and its external-host ceiling remains two. The exact semantic mapping is:
+
+```text
+canonical file/restart/rollback/lifecycle/contention -> RegressionIntegration
+real child process -> ProcessIntegration
+complete HTTP host/browser flow -> E2E
+fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
+```
+
+`QteDeterministicLogicTests` is the fixture-free Fast owner for 66 input and
+grading rows. `QteSceneServiceTests` is the Integration owner for 51 canonical
+persistence, rollback, console, save/archive, and service lifecycle rows.
+`UiTestTextCollector` is a test-free TestSupport helper shared by moved WebUi
+sources so Integration has no dependency on the Fast project. The exact
+32-entry reviewed-heavy manifest and 35-entry
+`RegressionIntegrationSources` array at `b1165f27` are recorded in
+`research.md`; the executable guard arrays remain authoritative.
 
 PreMerge has one deadline across frontend verification, both project builds,
 discovery, tests, and cleanup. Its parallel phase selects the complete fast
@@ -161,6 +182,7 @@ Diagnostic lanes are not serial final gates and do not run after every edit.
 ```powershell
 .\scripts\test-csharp.ps1
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~QteSceneServiceTests"
 .\scripts\test-csharp.ps1 -Lane FullValidation
 .\scripts\test-csharp.ps1 -Lane RegressionIntegration
 .\scripts\test-csharp.ps1 -Lane ProcessIntegration
@@ -169,6 +191,45 @@ Diagnostic lanes are not serial final gates and do not run after every edit.
 .\scripts\test-csharp.ps1 -Lane DeepValidation
 .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
+
+## #1551 Final Result State
+
+The final PlanOnly result
+`20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast`
+contains 29 unique, well-formed Fast-project descriptors and 6,994 estimated
+cases/cost, with zero moved-class membership, duplicate IDs, timeout, or cleanup
+debt.
+
+The two final Fast controls
+`20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast`
+and
+`20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast`
+finished in `00:02:45.7436920` and `00:02:22.0382468`. Each executed
+`4,682`, passed `4,617`, and failed the exact retained 65 #1536 T067 rows;
+exit was `1`, timeout was false, duplicate IDs were zero, and cleanup was
+complete. Their capacity result satisfies the five-minute bound, but their
+functional result is official RED and their fail-fast contour is incomplete:
+five of 29 descriptors completed and 24 lack complete TRX evidence. The
+measured pre/post contour is Task 6A `3:47.106` partial to Task 6B `2:30.342`
+partial.
+
+Task 7's environment-valid E2E rerun
+`20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e`
+passed frontend verification `141/141` and E2E `18/18` in
+`00:01:28.5961264`, with exit `0`, no timeout/duplicates, and complete cleanup.
+The exact two built-frontend smoke methods also passed `2/2` in
+`20260904-061737-528-23048-28391b77381c455c95ebccb5d5de8fff-focused`.
+RegressionIntegration remains official RED with 20 unrelated, reproduced
+Guardian trade/offering/resonance rows, and one ProcessIntegration QTE helper
+failure passed on exact rerun and remains intermittent. These results are lane
+artifacts only and do not add persisted game state.
+
+Issue #1551 changes only internal test placement and scheduling. No production
+game capability, command, mechanic, state/validation/normalizer contract,
+player-visible UI, GM-authored output, afterlife pending/control/action/receipt
+or report surface, or daemon/launcher prompt changed. Mortal World/afterlife
+prompts, gameplay examples, validation manifests, afterlife contract matrix,
+and source guards therefore require no update.
 
 ## TestLaneResult
 

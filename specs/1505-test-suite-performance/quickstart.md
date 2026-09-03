@@ -18,6 +18,7 @@ dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.Integrat
 ```powershell
 .\scripts\test-csharp.ps1
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~QteSceneServiceTests"
 .\scripts\test-csharp.ps1 -Lane FullValidation
 .\scripts\test-csharp.ps1 -Lane RegressionIntegration
 .\scripts\test-csharp.ps1 -Lane ProcessIntegration
@@ -171,3 +172,68 @@ The rejected historical all-inclusive attempt ended at `15:00.393` with exit
 `124`: all `4,738/4,738` completed tests passed, failures and duplicates were
 `0`, cleanup succeeded, and the projected lower bound was `25:37.741`. This was
 a capacity limit, not a correctness failure, and motivated the two-tier design.
+
+## Current #1551 Boundary and Evidence
+
+Fast is the complete physically isolated `BookOfEternityClient.Tests` project,
+not shorthand for all repository tests. It retains no negative category filter,
+the five-minute hard limit, and the two-host ceiling. Use this exact placement
+rule:
+
+```text
+canonical file/restart/rollback/lifecycle/contention -> RegressionIntegration
+real child process -> ProcessIntegration
+complete HTTP host/browser flow -> E2E
+fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
+```
+
+For moved classes, iterate in the Integration project:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ClassOrMethod"
+```
+
+The QTE split keeps 66 deterministic input/grading rows in Fast
+`QteDeterministicLogicTests` and 51 canonical lifecycle rows in Integration
+`QteSceneServiceTests`. Moved WebUi classes use the test-free
+`UiTestTextCollector` helper from TestSupport so Integration never references
+Fast. The exact final 32-entry reviewed-heavy manifest and 35-entry regression
+category array are recorded in `research.md` directly from the executable
+guards.
+
+Final PlanOnly artifact
+`20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast`
+contains 29 unique Fast-project descriptors and 6,994 estimated cases/cost,
+with no moved second-group class and zero duplicates. The final Fast controls
+are:
+
+| Run ID | Executed / passed / failed | Wall | Exit | Timeout / duplicates / cleanup |
+|---|---:|---:|---:|---|
+| `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast` | `4682/4617/65` | `00:02:45.7436920` | 1 | `false/0/complete` |
+| `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast` | `4682/4617/65` | `00:02:22.0382468` | 1 | `false/0/complete` |
+
+Both satisfy the Fast capacity, duplicate, and cleanup requirements, but both
+remain official RED and incomplete. All 65 failures exactly match the retained
+#1536 T067 display names and stable TRX IDs; fail-fast completed five of 29
+descriptors, leaving 24 without complete TRX evidence. The measured contour
+improved from Task 6A `3:47.106` partial to Task 6B `2:30.342` partial.
+
+Task 7's required diagnostics retained a `151/151/131/20` unrelated Guardian
+RED in RegressionIntegration and an initial `555/555/552/3` ProcessIntegration
+RED. The first E2E attempt could not start because ignored frontend dependencies
+were absent after restart. After `npm ci`, the environment-valid E2E artifact
+`20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e`
+passed frontend `141/141` and E2E `18/18` in `00:01:28.5961264`; the exact two
+built-frontend ProcessIntegration smoke methods then passed `2/2` in
+`20260904-061737-528-23048-28391b77381c455c95ebccb5d5de8fff-focused`.
+The third ProcessIntegration failure, a QTE helper method, passed within the
+exact failed-method diagnostic and remains intermittent. The 20 Guardian rows
+reproduced exactly and remain unrelated pre-existing/current-branch functional
+RED, not #1551 work.
+
+#1551 changes only test placement and scheduling. It changes no production game
+capability, command, mechanic, state/validation/normalizer contract,
+player-visible UI, GM-authored output, afterlife pending/control/action/receipt
+or report surface, or daemon/launcher prompt. Mortal World/afterlife prompts,
+gameplay examples, validation manifests, afterlife contract matrix, and source
+guards require no update.

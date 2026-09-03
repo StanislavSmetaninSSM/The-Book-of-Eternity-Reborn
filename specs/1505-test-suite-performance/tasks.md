@@ -227,44 +227,52 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   `specs/1505-test-suite-performance/spec.md`, `plan.md`, and `tasks.md` with
   the measured 7,797-case boundary regression and no-gameplay/no-GM-contract
   scope.
-- [ ] T055 [US4] Add RED exact relative-path and category expectations for the
+- [x] T055 [US4] Add RED exact relative-path and category expectations for the
   reviewed #1551 sources in
   `BookOfEternityClient.Tests/FastTestBoundaryTests.cs` and
   `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, then
   run both focused guards while the sources are still in Fast.
-- [ ] T056 [US3] Move the canonical wound and browser transport group into
+- [x] T056 [US3] Move the canonical wound and browser transport group into
   `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`:
   `MortalWoundRecoveryTests.cs`,
   `MortalWoundTreatmentCapabilityAuthorityTests.cs`,
   `WebUi/BrowserMortalWorldGenerationFencingTests.cs`, and
   `WebUi/BrowserStorageTransportParityTests.cs`.
-- [ ] T057 [US3] Extract every deterministic QTE input/grading assertion into
+- [x] T057 [US3] Extract every deterministic QTE input/grading assertion into
   fixture-free `BookOfEternityClient.Tests/QteDeterministicLogicTests.cs`, move
   the remaining canonical lifecycle in `QteSceneServiceTests.cs` to
   `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`, and
   prove every original test method/theory row exists exactly once.
-- [ ] T058 [US3] Move `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` to
+- [x] T058 [US3] Move `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` to
   Integration with `ProcessIntegration` and
   `BookOfEternityClient.Tests/LocalWebUiSmokeTests.cs` to Integration with
   `E2E`, preserving existing method-level traits and process/host cleanup.
-- [ ] T059 [US3] Run focused Fast QTE logic, focused Integration selections for
+- [x] T059 [US3] Run focused Fast QTE logic, focused Integration selections for
   the three changed categories, and both exact boundary guards through
   `scripts/test-csharp.ps1`.
-- [ ] T060 [US4] Run Fast PlanOnly plus one bounded Fast checkpoint, retain
+- [x] T060 [US4] Run Fast PlanOnly plus one bounded Fast checkpoint, retain
   counts/timings/duplicate/cleanup evidence, and compare the wall time with the
   four pre-change descriptor measurements.
-- [ ] T061 [US3] If T060 exceeds four minutes, move the exact measured
+- [x] T061 [US3] Because T060's fail-fast contour did not complete full planned
+  membership, move the exact measured
   file-backed second group listed in `plan.md` to Integration with
   `RegressionIntegration` (or `ProcessIntegration` for real-worker sources),
   update both manifests, and rerun focused category plus PlanOnly controls.
-- [ ] T062 [US3] Synchronize the final #1551 placement rules and evidence in
+- [x] T062 [US3] Synchronize the final #1551 placement rules and evidence in
   `docs/testing.md`, `specs/1505-test-suite-performance/research.md`,
   `data-model.md`, and `quickstart.md`; record that GM prompts, examples,
   manifests, client UI, and afterlife runtime docs are unchanged because this
   is internal test scheduling only.
-- [ ] T063 [US3] Run two representative Fast controls below the unchanged
+- [x] T063 [US3] Run two representative Fast controls below the unchanged
   five-minute hard limit, preferably around three minutes, with zero duplicate
-  IDs and complete owned-process cleanup.
+  IDs and complete owned-process cleanup. The retained runs are
+  `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast`
+  (`00:02:45.7436920`) and
+  `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast`
+  (`00:02:22.0382468`). Both had timeout false, zero duplicates, and complete
+  cleanup, but remain official RED/incomplete: each executed `4,682`, passed
+  `4,617`, and failed the exact retained 65 #1536 T067 rows; fail-fast left 24
+  of 29 planned descriptors without complete TRX evidence.
 - [ ] T064 [US4] Inspect exact diffs, run `git diff --check`, complete
   independent code review and Spec Kit consistency analysis, and retain the
   branch ready for the wound-materialization continuation without running

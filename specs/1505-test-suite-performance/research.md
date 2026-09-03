@@ -410,3 +410,193 @@ fixture now captures one prepared 47-file snapshot in memory per test host and
 materializes independent physical roots per test. An isolation regression
 proves that two roots do not share writes and that the repository baseline is
 unchanged. No mutable on-disk template or hard link is shared.
+
+## Issue #1551 Final Boundary and Evidence
+
+Fast is not an alias for all repository tests. It is the entire physically
+isolated `BookOfEternityClient.Tests` project, selected without a negative
+category filter under the unchanged five-minute limit and two-host ceiling.
+The final placement rule is:
+
+```text
+canonical file/restart/rollback/lifecycle/contention -> RegressionIntegration
+real child process -> ProcessIntegration
+complete HTTP host/browser flow -> E2E
+fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
+```
+
+### Exact executable manifests at `b1165f27`
+
+The 32 entries below are the complete, ordinal contents of
+`FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
+Integration ownership enforced at the same HEAD. The three historical special
+groups retain their complete class categories; method-level
+`PreMergeSentinel` traits are not expanded here.
+
+| Reviewed-heavy relative path | Exact Integration category ownership |
+|---|---|
+| `AfterlifeSpiritualConflictValidationTests.cs` | `RegressionIntegration`, `RegressionIntegrationOnly` |
+| `GameEngineTurnLifecycleTests.cs` | `LifecycleIntegration` |
+| `GuardianSystemRegressionTests.cs` | `RegressionIntegration`, `DeepValidation` |
+| `FileSystemManagerTests.cs` | `ProcessIntegration` |
+| `ConsoleE2ESmokeTests.cs` | `ProcessIntegration`, `E2E` |
+| `LocalWebUiBuiltFrontendSmokeTests.cs` | `ProcessIntegration`, `E2E` |
+| `MortalWoundRecoveryTests.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentCapabilityAuthorityTests.cs` | `RegressionIntegration` |
+| `QteSceneServiceTests.cs` | `RegressionIntegration` |
+| `GmWorkerLiveSmokeTests.cs` | `ProcessIntegration` |
+| `LocalWebUiSmokeTests.cs` | `E2E` |
+| `ShiningCoreActionResolutionValidationTests.cs` | `RegressionIntegration` |
+| `GuardianCorrectionServiceTests.cs` | `RegressionIntegration` |
+| `ShiningBlessingEffectStateTests.cs` | `RegressionIntegration` |
+| `AfterlifeNotificationStateTests.cs` | `RegressionIntegration` |
+| `DarenQteShowcaseTests.cs` | `RegressionIntegration` |
+| `ShiningTradeRequestStateTests.cs` | `RegressionIntegration` |
+| `BrowserLocalWriteCoordinatorTests.cs` | `RegressionIntegration` |
+| `TrainingServiceTests.cs` | `RegressionIntegration` |
+| `NpcTradeServiceRequestFlowTests.cs` | `RegressionIntegration` |
+| `MortalWoundOpportunityAdapterTests.cs` | `RegressionIntegration` |
+| `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs` | `RegressionIntegration` |
+| `GmWorkerValidationRepairDelegatorTests.cs` | `ProcessIntegration` |
+| `WebUi/BrowserMortalWorldGenerationFencingTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserStorageTransportParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserShiningRelicForgeParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserResidentInteractionsParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserAfterlifeArchiveParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserShiningIncarnationGatesParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserInkFeatherFateParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserNpcSocialParityTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserTradeParityTests.cs` | `RegressionIntegration` |
+
+The second executable array,
+`IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
+these 35 ordinal entries at the same HEAD:
+
+```text
+ActorMaterializationValidationTests.cs
+AfterlifeEntityProfileValidationTests.cs
+AfterlifeSpiritualConflictValidationTests.cs
+BrowserCommandPresentationAuditTests.cs
+ExplorerModeCommandTests.cs
+ExplorerWebCommandServiceTests.cs
+ExplorerWebCommandServiceTests.Effects.cs
+ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs
+ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs
+GuardianSystemRegressionTests.cs
+LocalWebUiHostTests.cs
+ResourceConsoleBrowserParityTests.cs
+MortalWoundRecoveryTests.cs
+MortalWoundTreatmentCapabilityAuthorityTests.cs
+QteSceneServiceTests.cs
+ShiningCoreActionResolutionValidationTests.cs
+GuardianCorrectionServiceTests.cs
+ShiningBlessingEffectStateTests.cs
+AfterlifeNotificationStateTests.cs
+DarenQteShowcaseTests.cs
+ShiningTradeRequestStateTests.cs
+BrowserLocalWriteCoordinatorTests.cs
+TrainingServiceTests.cs
+NpcTradeServiceRequestFlowTests.cs
+MortalWoundOpportunityAdapterTests.cs
+ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs
+WebUi/BrowserMortalWorldGenerationFencingTests.cs
+WebUi/BrowserStorageTransportParityTests.cs
+WebUi/BrowserShiningRelicForgeParityTests.cs
+WebUi/BrowserResidentInteractionsParityTests.cs
+WebUi/BrowserAfterlifeArchiveParityTests.cs
+WebUi/BrowserShiningIncarnationGatesParityTests.cs
+WebUi/BrowserInkFeatherFateParityTests.cs
+WebUi/BrowserNpcSocialParityTests.cs
+WebUi/BrowserTradeParityTests.cs
+```
+
+The QTE split preserves all 117 prior rows exactly once: 66 fixture-free
+input/grading rows moved to Fast `QteDeterministicLogicTests`, while 51
+canonical filesystem/persistence/rollback/console/service lifecycle rows remain
+in Integration `QteSceneServiceTests`. The conditional second group also moved
+`UiTestTextCollector` unchanged into TestSupport because five moved WebUi
+sources required it; it contains no tests and prevents an Integration-to-Fast
+dependency.
+
+### Retained Tasks 2-6 evidence
+
+Counts below are `total/executed/passed/failed`; `T/D/C` is
+timeout/duplicate IDs/cleanup complete. Every listed C# build had zero warnings
+and errors. PlanOnly rows execute no tests, so their membership is stated in
+the selection column.
+
+| Task / selection | Run ID | Counts | Wall | Exit | T/D/C |
+|---|---|---:|---:|---:|---|
+| T2 Fast ownership expected RED | `20260904-032527-671-56936-b77c2f42039440cbbc971eb993ccb0de-focused` | `1/1/0/1` | `00:01:07.7403826` | 1 | `false/0/true` |
+| T2 Integration categories expected RED | `20260904-032643-161-24968-fbdda59496a84196811d003d7ad99c84-focused` | `2/2/0/2` | `00:00:26.6363529` | 1 | `false/0/true` |
+| T3 wound Integration, exact retained 23-row #1536 RED | `20260904-034612-251-20992-58eadf68ae95438a8eb131fd940a28e6-focused` | `171/171/148/23` | `00:04:23.7597787` | 1 | `false/0/true` |
+| T3 browser Integration | `20260904-035149-444-40188-95f7936a168b447ebe87add44d0f4185-focused` | `32/32/32/0` | `00:00:42.1181461` | 0 | `false/0/true` |
+| T3 carrier RED then GREEN | `20260904-040609-753-19200-2bae51006f0d47bc86517d3fcde17c8c-focused` / `20260904-040734-196-54420-b09496576a0f400796c0979396c60d0d-focused` | `2/2/0/2` / `2/2/2/0` | `00:01:11.3016198` / `00:00:18.0064888` | 1 / 0 | both `false/0/true` |
+| T3 final PlanOnly, 29 descriptors; moved sources absent | `20260904-040819-457-508-ded67e79bbfb4ff3a24b01a36d466da3-fast` | `0/0/0/0` | `00:00:08.0616409` | 0 | `false/0/true` |
+| T4 deterministic QTE Fast | `20260904-042302-971-39008-83794b0d29f74765859b33d86de41d7e-focused` | `66/66/66/0` | `00:00:14.5095196` | 0 | `false/0/true` |
+| T4 lifecycle QTE Integration | `20260904-042325-116-19364-2df389aa065b49e99339ea3f49a679cb-focused` | `51/51/51/0` | `00:01:44.4049944` | 0 | `false/0/true` |
+| T4 split guard | `20260904-042657-556-10772-ff09b0b7f0af4c608491d131af29151e-focused` | `1/1/1/0` | `00:00:14.7060732` | 0 | `false/0/true` |
+| T4 PlanOnly, deterministic source present and lifecycle source absent | `20260904-042717-466-38408-2df7736da83b46c8a8030afcb9592639-fast` | `0/0/0/0` | `00:00:07.6248356` | 0 | `false/0/true` |
+| T5 worker / web-host / ownership / category controls | `20260904-044800-283-22496-eabbfe7297ff45469bc78a89d8d95b01-focused`; `20260904-044925-973-19340-48e8e96251ac463da74dfbc29afd6a27-focused`; `20260904-045001-024-24176-34c38db24f52419ca5b5406f9a65c7f7-focused`; `20260904-045046-960-38728-bd1e2492908c4e6d9dca910be1929cb4-focused` | `2/2/2/0`; `3/3/3/0`; `1/1/1/0`; `1/1/1/0` | `00:01:19.9493842`; `00:00:25.4680317`; `00:00:41.4962020`; `00:00:14.4963618` | 0 | all `false/0/true` |
+| T5 PlanOnly, both moved sources absent | `20260904-045107-726-53268-4268c88108c44461bab8e4171b5d882a-fast` | `0/0/0/0` | `00:00:07.2837745` | 0 | `false/0/true` |
+| T6A ownership/category guards | `20260904-050338-928-27936-004e14ec35404ad5a05af2db9385378e-focused`; `20260904-050532-534-23532-7e16380a5946400e8eca589bac2e7383-focused` | `16/16/16/0`; `2/2/2/0` | `00:01:32.8347878`; `00:00:43.9099028` | 0 | both `false/0/true` |
+| T6A PlanOnly, 29 descriptors / 7,642 estimated cases | `20260904-050628-477-30176-f8fc8029c0f94ae5bc3700dd289bbb6f-fast` | `0/0/0/0` | `00:00:07.6398781` | 0 | `false/0/true` |
+| T6A Fast, 3/29 descriptors complete | `20260904-050716-260-14408-92e55dd08bfa4578873420c86eb28c98-fast` | `3851/3851/3786/65` | `00:03:47.1066186` | 1 | `false/0/true` |
+| T6B moved regression / worker | `20260904-053040-565-34500-b84b30e475884b2c922c5a52ba047d63-focused`; `20260904-053341-627-49856-1c21d778852943e1b4deb4a6ced5f24f-focused` | `618/618/618/0`; `30/30/30/0` | `00:02:55.2524909`; `00:00:56.0599022` | 0 | both `false/0/true` |
+| T6B ownership/category guards | `20260904-053445-341-1908-863c48ead0974db6a4159b550b0d83ab-focused`; `20260904-053553-202-34096-7d3ebf58ffb5443a8bbfa652f1b84cbe-focused` | `16/16/16/0`; `2/2/2/0` | `00:01:03.0061816`; `00:00:17.1607749` | 0 | both `false/0/true` |
+| T6B PlanOnly, 29 unique descriptors / 6,994 estimated cases | `20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast` | `0/0/0/0` | `00:00:07.5797893` | 0 | `false/0/true` |
+| T6B Fast, 5/29 descriptors complete | `20260904-053631-589-34832-f506ebe681e0413d938c1dd5e2b4132d-fast` | `4682/4682/4617/65` | `00:02:30.3420234` | 1 | `false/0/true` |
+
+Task 6B also retained the expected post-move compile RED
+`20260904-052658-019-10816-c9138e1055d04779933dc0470e1fe37c-focused`
+(`0/0`, exit `1`, `00:00:23.8396194`, timeout false, zero duplicates, cleanup
+complete, six `CS0103` errors) that motivated the unchanged
+`UiTestTextCollector` TestSupport move. The same exact 18-class selection then
+passed `618/618` in the T6B row above.
+
+### Task 7 diagnostics and final Fast controls
+
+| Lane | Run ID | Counts | Wall | Exit | T/D/C |
+|---|---|---:|---:|---:|---|
+| RegressionIntegration | `20260904-055025-376-22060-7926a0cfbbcb44d09641bbd2a0ae58ec-regressionintegration` | `151/151/131/20` | `00:07:01.9184530` | 1 | `false/0/true` |
+| ProcessIntegration | `20260904-055735-809-43312-0548bbcf39b94f25a30c6bcb39a6d205-processintegration` | `555/555/552/3` | `00:03:19.8007804` | 1 | `false/0/true` |
+| E2E, first required attempt before ignored dependencies were restored | `20260904-060102-849-34064-63d1263e811b4726bd91d4a26b905ec9-e2e` | `0/0/0/0` | `00:00:03.3535784` | 1 | `false/0/true` |
+| Fast 1 | `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast` | `4682/4682/4617/65` | `00:02:45.7436920` | 1 | `false/0/true` |
+| Fast 2 | `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast` | `4682/4682/4617/65` | `00:02:22.0382468` | 1 | `false/0/true` |
+| Exact 20-method Integration diagnostic | `20260904-060841-723-34880-f4ad580b841f4876bd16d455655f0f84-focused` | `23/23/1/22` | `00:01:14.5117495` | 1 | `false/0/true` |
+| E2E after `npm ci` restored ignored dependencies | `20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e` | `18/18/18/0` | `00:01:28.5961264` | 0 | `false/0/true` |
+| Exact two built-frontend smoke methods after `dist` build | `20260904-061737-528-23048-28391b77381c455c95ebccb5d5de8fff-focused` | `2/2/2/0` | `00:00:22.0749183` | 0 | `false/0/true` |
+
+All available TRX files parsed cleanly and reported zero TRX errors, timeouts,
+or not-executed rows. Every C# build reported zero warnings/errors. The first
+E2E attempt failed before C# build/discovery only because the ignored
+`node_modules/.bin/tsc.cmd` was absent after a workstation restart. `npm ci`
+changed no tracked package file; the authorized rerun passed frontend
+verification `141/141`, built `dist`, and passed E2E `18/18`. The two original
+built-frontend ProcessIntegration failures then passed their exact Focused
+rerun. The exact diagnostic reproduced all 20 Guardian
+TradeOfferingResonance failures with the same stable IDs. Its other pass was
+`GmTurnHelperContractTests.Daemon_QteEffectResolutionDispatchesWithoutOrdinaryTurnAuthority`,
+so that ProcessIntegration failure is also a one-run intermittent concern.
+The 20 Guardian rows are unrelated pre-existing/current-branch functional RED,
+not #1551 repair work.
+
+Both final Fast controls are capacity successes below five minutes, with zero
+duplicates and complete cleanup, but they are official RED and incomplete.
+Fail-fast completed five of 29 planned descriptors and left 24 without complete
+TRX evidence. Each control's 65 failure display names and stable IDs exactly
+match the retained #1536 T067 oracle with zero differences. The display-name
+and ID hashes remain
+`61ed2c828bc81212d76ec589671d5423bbab0d97871dfa9d455458c296af59c6`
+and `4179c375351d0dd2ba976cb4b941768462fd09136db95e025c1555ddc919a264`.
+The measured contour improved from the T6A `3:47.106` partial wall to the T6B
+`2:30.342` partial wall; functional green and complete Fast membership remain
+blocked on #1536 turning those 65 rows green.
+
+This work is internal test placement and scheduling only. It changes no
+production game capability, command, mechanic, state/validation/normalizer
+contract, player-visible UI, GM-authored output, afterlife
+pending/control/action/receipt/report surface, or daemon/launcher prompt.
+Mortal World and afterlife prompts, gameplay examples, validation manifests,
+the afterlife contract matrix, and their source guards therefore require no
+update.
