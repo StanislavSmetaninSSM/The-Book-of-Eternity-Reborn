@@ -483,6 +483,16 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         return true;
     }
 
+    internal bool MatchesTransfers(
+        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
+    {
+        ArgumentNullException.ThrowIfNull(transfers);
+        return _transfers.Length == transfers.Count &&
+               _transfers.Select(TransferFingerprint).SequenceEqual(
+                   transfers.Select(TransferFingerprint),
+                   StringComparer.Ordinal);
+    }
+
     internal bool MatchesProjectionRoots(
         IReadOnlyDictionary<string, JsonNode?> currentRoots,
         IReadOnlyDictionary<string, JsonNode?> backupRoots)

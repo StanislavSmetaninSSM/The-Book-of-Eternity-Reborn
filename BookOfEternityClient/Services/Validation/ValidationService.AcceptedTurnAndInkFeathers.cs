@@ -3143,9 +3143,12 @@ public partial class ValidationService
             : string.Empty;
     }
 
-    private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidationPendingTurnSnapshotManifestAsync()
+    private async Task<ValidationPendingTurnSnapshotManifest?> LoadValidationPendingTurnSnapshotManifestAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(PendingTurnSnapshotManifestPath);
+        var json = await ReadAcceptedTurnValidationFileAsync(
+            PendingTurnSnapshotManifestPath,
+            writeLease);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -3594,7 +3597,8 @@ public partial class ValidationService
 
     private async Task<string?> ReadValidatedPendingTurnSnapshotFileAsync(
         ValidationPendingTurnSnapshotManifest manifest,
-        string relativePath)
+        string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (manifest.Files == null ||
             !manifest.Files.TryGetValue(relativePath, out var snapshotPath) ||
@@ -3611,11 +3615,14 @@ public partial class ValidationService
             return null;
         }
 
-        var snapshotBytes = await _fs.ReadFileBytesAsync(snapshotPath);
+        var snapshotBytes = writeLease == null
+            ? await _fs.ReadFileBytesAsync(snapshotPath)
+            : await _fs.ReadFileBytesAsync(writeLease, snapshotPath);
         if (snapshotBytes == null)
             return null;
 
-        var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync();
+        var authorityPayload = await LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
+            writeLease);
         if (authorityPayload == null &&
             !ReferenceEquals(manifest, _prevalidatedPendingTurnSnapshotOverride))
         {
@@ -4093,9 +4100,15 @@ public partial class ValidationService
         GuardianPowerJournalIdentityState? IdentityState,
         string FailureDescription);
 
-    private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(string requestPath)
+    private PendingTurnRequestValidationContext? LoadPendingTurnRequestValidationContextSync(
+        string requestPath,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = _fs.ReadFileSync(requestPath);
+        var json = writeLease == null
+            ? _fs.ReadFileSync(requestPath)
+            : _fs.ReadFileAsync(writeLease, requestPath)
+                .GetAwaiter()
+                .GetResult();
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -5155,14 +5168,19 @@ public partial class ValidationService
         return $"{firstIssue.FilePath}: {firstIssue.Message}";
     }
 
-    private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync()
+    private async Task<ValidatedPendingTurnSnapshotLookup> LoadValidatedPendingTurnSnapshotLookupAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (_prevalidatedPendingTurnSnapshotOverride != null)
             return new ValidatedPendingTurnSnapshotLookup(ValidatedPendingTurnSnapshotStatus.Usable, _prevalidatedPendingTurnSnapshotOverride);
 
-        var manifestExists = _fs.FileExists(PendingTurnSnapshotManifestPath);
-        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync();
-        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        var manifestExists = writeLease == null
+            ? _fs.FileExists(PendingTurnSnapshotManifestPath)
+            : _fs.FileExists(writeLease, PendingTurnSnapshotManifestPath);
+        var manifest = await LoadValidationPendingTurnSnapshotManifestAsync(writeLease);
+        var authorityJson = await ReadAcceptedTurnValidationFileAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            writeLease);
         if (manifest == null)
         {
             return new ValidatedPendingTurnSnapshotLookup(
@@ -5171,26 +5189,35 @@ public partial class ValidationService
         }
 
         return new ValidatedPendingTurnSnapshotLookup(
-            IsValidatedPendingTurnSnapshotManifestUsable(manifest, authorityJson)
+            IsValidatedPendingTurnSnapshotManifestUsable(
+                manifest,
+                authorityJson,
+                writeLease)
                 ? ValidatedPendingTurnSnapshotStatus.Usable
                 : ValidatedPendingTurnSnapshotStatus.Unusable,
             manifest);
     }
 
-    private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync()
+    private async Task<PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload?> LoadCurrentDetachedPendingTurnSnapshotAuthorityPayloadAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var authorityJson = await _fs.ReadFileAsync(PendingTurnSnapshotAuthority.AuthorityPath);
+        var authorityJson = await ReadAcceptedTurnValidationFileAsync(
+            PendingTurnSnapshotAuthority.AuthorityPath,
+            writeLease);
         if (!PendingTurnSnapshotAuthority.TryReadDetachedAuthorityPayload(authorityJson, out var payload) || payload == null)
             return null;
 
-        return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(payload)
+        return IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
+                payload,
+                writeLease)
             ? payload
             : null;
     }
 
     private bool IsValidatedPendingTurnSnapshotManifestUsable(
         ValidationPendingTurnSnapshotManifest? manifest,
-        string? authorityJson)
+        string? authorityJson,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (manifest == null)
             return false;
@@ -5210,50 +5237,63 @@ public partial class ValidationService
                 static snapshotManifest => snapshotManifest.RollbackBaselineFiles,
                 static snapshotManifest => snapshotManifest.SourceLabel,
                 static snapshotManifest => snapshotManifest.RollbackBackups,
-                ReadRelativeFileBytesFromWorkspace,
+                relativePath => ReadRelativeFileBytesFromWorkspace(
+                    relativePath,
+                    writeLease),
                 out _,
                 out _))
         {
             return false;
         }
 
-        return IsValidatedPendingTurnSnapshotManifestCurrent(manifest);
+        return IsValidatedPendingTurnSnapshotManifestCurrent(
+            manifest,
+            writeLease);
     }
 
-    private bool IsValidatedPendingTurnSnapshotManifestCurrent(ValidationPendingTurnSnapshotManifest manifest)
+    private bool IsValidatedPendingTurnSnapshotManifestCurrent(
+        ValidationPendingTurnSnapshotManifest manifest,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
         var repairContext = LoadPendingTurnRequestValidationContextSync(
-            repairRequestPath);
+            repairRequestPath,
+            writeLease);
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, repairContext))
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(
-            "input/turn_request.json");
+            "input/turn_request.json",
+            writeLease);
         if (DoesPendingTurnRequestValidationContextMatchManifest(manifest, turnContext))
             return true;
 
         var completionContext = LoadPendingTurnRequestValidationContextSync(
-            "ready/turn_complete.json");
+            "ready/turn_complete.json",
+            writeLease);
         return DoesPendingTurnRequestValidationContextMatchManifest(manifest, completionContext);
     }
 
     private bool IsCurrentDetachedPendingTurnSnapshotAuthorityPayload(
-        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload)
+        PendingTurnSnapshotAuthority.PendingTurnSnapshotAuthorityPayload payload,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         const string repairRequestPath = "game_state/control/validation_repair_request.json";
         var repairContext = LoadPendingTurnRequestValidationContextSync(
-            repairRequestPath);
+            repairRequestPath,
+            writeLease);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, repairContext))
             return true;
 
         var turnContext = LoadPendingTurnRequestValidationContextSync(
-            "input/turn_request.json");
+            "input/turn_request.json",
+            writeLease);
         if (DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, turnContext))
             return true;
 
         var completionContext = LoadPendingTurnRequestValidationContextSync(
-            "ready/turn_complete.json");
+            "ready/turn_complete.json",
+            writeLease);
         return DoesPendingTurnRequestValidationContextMatchAuthorityPayload(payload, completionContext);
     }
 
@@ -5274,6 +5314,27 @@ public partial class ValidationService
             return false;
 
         return true;
+    }
+
+    private Task<string?> ReadAcceptedTurnValidationFileAsync(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        writeLease == null
+            ? _fs.ReadFileAsync(path)
+            : _fs.ReadFileAsync(writeLease, path);
+
+    private byte[]? ReadRelativeFileBytesFromWorkspace(
+        string relativePath,
+        FileSystemManager.CanonicalWriteLease? writeLease)
+    {
+        if (!PendingTurnSnapshotAuthority.IsSafeRelativePath(relativePath))
+            return null;
+
+        return writeLease == null
+            ? _fs.ReadFileBytesSync(relativePath)
+            : _fs.ReadFileBytesAsync(writeLease, relativePath)
+                .GetAwaiter()
+                .GetResult();
     }
 
     private static bool DoesPendingTurnContextIdMatch(string manifestId, string contextId)

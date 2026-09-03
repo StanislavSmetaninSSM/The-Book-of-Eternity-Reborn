@@ -2008,6 +2008,135 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void GuaranteedItemConsumption_ColdConfirmedHeldCommandPublishesItemAndResourcesOnceThenAcceptedReplayIsInert()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 2);
+        using var warmFixture = AcceptedStateFixture.Create(scenario);
+        warmFixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        warmFixture.SetCanonicalReusableItemDurabilityForResourcePublicationTest(
+            current: 8,
+            maximum: 8);
+        _ = PersistAndRehydrateResourcePublication(
+            warmFixture,
+            scenario,
+            "cold_confirmed_item_before_publication");
+
+        using var coldFixture = CreateColdRootCopy(warmFixture);
+        var catalog = Assert.IsType<MortalWoundTreatmentPersistedRequestCatalogResult>(
+            RestoreCurrentPersistedTreatmentCatalog(coldFixture));
+        var restored = Assert.Single(AssertValidPersistedCatalog(
+            catalog,
+            "cold confirmed B.4 item command"));
+        Assert.Single(catalog.HeldRequests);
+        Assert.Empty(catalog.FinalizedRequests);
+        var coldFlow = RehydratePersistedTreatment(
+            coldFixture,
+            "guaranteed",
+            restored);
+        AssertConfirmedHeldResourceAgreement(coldFixture, coldFlow.Request);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            coldFlow.Request);
+        Assert.Contains(request.ResourceAuthority.Claims, static claim =>
+            string.Equals(claim.Kind, "resource_quantity", StringComparison.Ordinal) &&
+            string.Equals(claim.AuthorityRef, "energy", StringComparison.Ordinal) &&
+            claim.Quantity == 2);
+        Assert.Contains(request.ResourceAuthority.Claims, static claim =>
+            string.Equals(claim.Kind, "item_quantity", StringComparison.Ordinal) &&
+            string.Equals(
+                claim.AuthorityRef,
+                "reusable_field_kit",
+                StringComparison.Ordinal) &&
+            claim.Quantity == 1);
+        var itemTransitionsBefore = ReadIdentityTransitionCount(
+            ReadItemIdentityEntry(coldFixture, "reusable_field_kit"));
+        var resourceHistoryBefore = ReadResourceHistory(coldFixture);
+        var energySpendsBefore = ReadTreatmentResourceSpendTransitions(
+            coldFixture).Count;
+        var durabilityReconfiguresBefore =
+            CountReusableItemDurabilityReconfigures(coldFixture);
+
+        var plan = ComposeResourcePublication(coldFixture, coldFlow);
+        Assert.Equal(1, ReadPlanNpcItemCount(plan, "reusable_field_kit"));
+        var plannedDurability = Assert.Single(
+            plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>(),
+            IsReusableItemDurabilityState);
+        Assert.Equal(4m, plannedDurability["current"]!.GetValue<decimal>());
+        Assert.Equal(4m, plannedDurability["maximum"]!.GetValue<decimal>());
+
+        using (var publication = PublishCachedResourcePlanOpen(
+                   coldFixture,
+                   coldFlow,
+                   plan))
+        {
+            Assert.Equal(1, coldFixture.ReadNpcItemCount("reusable_field_kit"));
+            Assert.Equal(8, ReadPlayerEnergy(coldFixture));
+            var liveDurability = ReadReusableItemDurability(coldFixture);
+            Assert.Equal(4m, liveDurability.Current);
+            Assert.Equal(4m, liveDurability.Maximum);
+            Assert.Equal(
+                itemTransitionsBefore + 1,
+                ReadIdentityTransitionCount(ReadItemIdentityEntry(
+                    coldFixture,
+                    "reusable_field_kit")));
+            Assert.Equal(
+                resourceHistoryBefore.Transitions.Count + 2,
+                ReadResourceHistory(coldFixture).Transitions.Count);
+            Assert.Equal(
+                energySpendsBefore + 1,
+                ReadTreatmentResourceSpendTransitions(coldFixture).Count);
+            Assert.Equal(
+                durabilityReconfiguresBefore + 1,
+                CountReusableItemDurabilityReconfigures(coldFixture));
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        var finalizedItemBytes = CaptureItemCarrierBytes(coldFixture);
+        var finalizedResourceBytes = CaptureResourceBytes(coldFixture);
+        var finalizedItemTransitions = ReadIdentityTransitionCount(
+            ReadItemIdentityEntry(coldFixture, "reusable_field_kit"));
+        var finalizedResourceTransitions =
+            ReadResourceHistory(coldFixture).Transitions.Count;
+        coldFixture.PrepareFreshSnapshot(
+            "cold_item_resource_publication_history_replay");
+        using var replayFixture = CreateColdRootCopy(coldFixture);
+        var replayCatalog = Assert.IsType<
+            MortalWoundTreatmentPersistedRequestCatalogResult>(
+            RestoreCurrentPersistedTreatmentCatalog(replayFixture));
+        Assert.True(replayCatalog.IsValid, DescribeIssues(replayCatalog.Issues));
+        Assert.Empty(replayCatalog.HeldRequests);
+        Assert.Single(replayCatalog.FinalizedRequests);
+
+        var replay = ProbePublishedTreatment(replayFixture, coldFlow.Request);
+
+        Assert.Equal(
+            "ExactReplay",
+            Convert.ToString(ReadRequiredProperty(replay, "Status")));
+        AssertItemCarrierBytesEqual(replayFixture, finalizedItemBytes);
+        AssertResourceBytesEqual(replayFixture, finalizedResourceBytes);
+        Assert.Equal(1, replayFixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(8, ReadPlayerEnergy(replayFixture));
+        var replayDurability = ReadReusableItemDurability(replayFixture);
+        Assert.Equal(4m, replayDurability.Current);
+        Assert.Equal(4m, replayDurability.Maximum);
+        Assert.Equal(
+            finalizedItemTransitions,
+            ReadIdentityTransitionCount(ReadItemIdentityEntry(
+                replayFixture,
+                "reusable_field_kit")));
+        Assert.Equal(
+            finalizedResourceTransitions,
+            ReadResourceHistory(replayFixture).Transitions.Count);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            replayFixture.FileSystem,
+            replayFixture.Lease));
+    }
+
+    [Fact]
     public void GuaranteedResourceQuantity_DurableCommandProofFailureQuarantinesCommandAndNeverRearms()
     {
         var fault = new DurableCommandProofFailureInjection();
@@ -4926,6 +5055,60 @@ public sealed partial class MortalWoundTreatmentResolverTests
             StringComparison.Ordinal) &&
         string.Equals(entry.Coordinate.ResourceKey, "energy", StringComparison.Ordinal);
 
+    private static bool IsReusableItemDurabilityState(JsonObject entry) =>
+        string.Equals(
+            entry["ownerKind"]?.GetValue<string>(),
+            "item",
+            StringComparison.Ordinal) &&
+        string.Equals(
+            entry["resourceOwnerId"]?.GetValue<string>(),
+            "reusable_field_kit",
+            StringComparison.Ordinal) &&
+        string.Equals(
+            entry["resourceKey"]?.GetValue<string>(),
+            "durability",
+            StringComparison.Ordinal);
+
+    private static ResourceStateEntry ReadReusableItemDurability(
+        AcceptedStateFixture fixture)
+    {
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            File.ReadAllText(fixture.FileSystem.ResolvePath(
+                ResourceMaterializationContract.DefinitionsPath)),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, DescribeIssues(definitions.Issues));
+        var state = ResourceStateContract.ParseCanonical(
+            File.ReadAllText(fixture.FileSystem.ResolvePath(
+                ResourceMaterializationContract.StatePath)),
+            definitions.Catalog!,
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, DescribeIssues(state.Issues));
+        return Assert.Single(state.Ledger!.Entries, static entry =>
+            entry.Coordinate.OwnerKind == ResourceOwnerKind.Item &&
+            string.Equals(
+                entry.Coordinate.ResourceOwnerId,
+                "reusable_field_kit",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                entry.Coordinate.ResourceKey,
+                "durability",
+                StringComparison.Ordinal));
+    }
+
+    private static int CountReusableItemDurabilityReconfigures(
+        AcceptedStateFixture fixture) => ReadResourceHistory(fixture).Transitions.Count(
+        static transition =>
+            transition.Operation == ResourceTransitionOperation.Reconfigure &&
+            transition.Coordinate.OwnerKind == ResourceOwnerKind.Item &&
+            string.Equals(
+                transition.Coordinate.ResourceOwnerId,
+                "reusable_field_kit",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                transition.Coordinate.ResourceKey,
+                "durability",
+                StringComparison.Ordinal));
+
     private static IReadOnlyList<ResourceTransition> ReadTreatmentResourceSpendTransitions(
         AcceptedStateFixture fixture) => ReadResourceHistory(fixture).Transitions
         .Where(static transition =>
@@ -5247,6 +5430,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static IReadOnlyDictionary<string, byte[]> CaptureItemCarrierBytes(
         AcceptedStateFixture fixture) => new Dictionary<string, byte[]>(StringComparer.Ordinal)
     {
+        [InventoryEquipmentService.ItemsPath] = ReadCanonicalBytes(
+            fixture,
+            InventoryEquipmentService.ItemsPath),
         ["game_state/npcs/npc_core.json"] = ReadCanonicalBytes(
             fixture,
             "game_state/npcs/npc_core.json"),

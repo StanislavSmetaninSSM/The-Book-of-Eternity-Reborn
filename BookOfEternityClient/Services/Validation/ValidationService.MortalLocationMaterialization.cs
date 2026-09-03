@@ -46,24 +46,32 @@ public partial class ValidationService
 
     private async Task<MortalLocationAcceptedTurnPlan?>
         ValidateRawMortalLocationAcceptedTurnPlanAsync(
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var currentRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.CurrentLocationPath);
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            writeLease);
         var mapRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.WorldMapPath);
+            MortalLocationMaterializationContract.WorldMapPath,
+            writeLease);
         var indexRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationIdentityState.StatePath);
+            MortalLocationIdentityState.StatePath,
+            writeLease);
         var rawNpcCore = await ReadOptionalLocationObjectAsync(
-            NpcCoreChangesContract.NpcCorePath);
+            NpcCoreChangesContract.NpcCorePath,
+            writeLease);
         var rawFactionCore = await ReadOptionalLocationObjectAsync(
-            FactionCoreChangesContract.FactionCorePath);
+            FactionCoreChangesContract.FactionCorePath,
+            writeLease);
         var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
                              mapRoot?["worldMapUpdates"] is JsonObject;
 
-        var scaffoldJson = await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath);
+        var scaffoldJson = await ReadMortalLocationValidationFileAsync(
+            MortalBootstrapLocationScaffold.StatePath,
+            writeLease);
 
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
         {
@@ -88,41 +96,51 @@ public partial class ValidationService
         var preMap = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationMaterializationContract.WorldMapPath));
+                MortalLocationMaterializationContract.WorldMapPath,
+                writeLease));
         var preCurrent = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationMaterializationContract.CurrentLocationPath));
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                writeLease));
         var preIndex = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationIdentityState.StatePath));
+                MortalLocationIdentityState.StatePath,
+                writeLease));
         var preStorageContents = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationStorageContentsState.StatePath));
+                MortalLocationStorageContentsState.StatePath,
+                writeLease));
         var companionAuthority = MortalLocationCompanionAuthority.FromCanonicalRoots(
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.CodexPath)),
+                    MortalLocationCompanionAuthority.CodexPath,
+                    writeLease)),
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.RegularQuestsPath)),
+                    MortalLocationCompanionAuthority.RegularQuestsPath,
+                    writeLease)),
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.WorldEventsPath)));
+                    MortalLocationCompanionAuthority.WorldEventsPath,
+                    writeLease)));
         var preScaffoldJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            MortalBootstrapLocationScaffold.StatePath);
+            MortalBootstrapLocationScaffold.StatePath,
+            writeLease);
         ValidateRawMortalLocationCanonicalAuthority(
             MortalLocationMaterializationContract.WorldMapPath,
             preMap,
             mapRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.WorldMapPath),
-            _fs.FileExists(MortalLocationMaterializationContract.WorldMapPath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationMaterializationContract.WorldMapPath,
+                writeLease),
             "worldMapUpdates",
             "mortal_location:map",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -133,7 +151,9 @@ public partial class ValidationService
             preCurrent,
             currentRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.CurrentLocationPath),
-            _fs.FileExists(MortalLocationMaterializationContract.CurrentLocationPath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                writeLease),
             "currentLocationData",
             "mortal_location:current",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -144,7 +164,9 @@ public partial class ValidationService
             preIndex,
             indexRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationIdentityState.StatePath),
-            _fs.FileExists(MortalLocationIdentityState.StatePath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationIdentityState.StatePath,
+                writeLease),
             rawWrapper: null,
             "mortal_location:index",
             "mortal_location_identity_index_client_owned_mutation",
@@ -512,8 +534,19 @@ public partial class ValidationService
         string EntityKind,
         string IdentityField);
 
-    private async Task<JsonObject?> ReadOptionalLocationObjectAsync(string path) =>
-        ParseOptionalLocationObject(await _fs.ReadFileAsync(path));
+    private async Task<JsonObject?> ReadOptionalLocationObjectAsync(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease = null) =>
+        ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(
+            path,
+            writeLease));
+
+    private bool FileExistsForMortalLocationValidation(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease) =>
+        writeLease == null
+            ? _fs.FileExists(path)
+            : _fs.FileExists(writeLease, path);
 
     private static JsonObject? ParseOptionalLocationObject(string? json)
     {

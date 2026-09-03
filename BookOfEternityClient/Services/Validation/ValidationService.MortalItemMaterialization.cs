@@ -62,180 +62,200 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(_fs, writeLease);
-        var locationPlanningIssues = new List<ValidationIssue>();
-        var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
-            locationPlanningIssues);
-        var current = await LoadMortalItemCatalogAsync(
-            writeLease: null,
-            includeNpcInventoryCommands: true,
-            issues,
-            locationPlanningIssues.Any(issue => issue.Severity == IssueSeverity.Error)
-                ? null
-                : locationPlan);
-        MortalItemRouteAuthorityCatalog? routeAuthorities = null;
-        MortalItemAcceptedTransferCatalog? transferCatalog = null;
-        MortalItemCatalogFiles? previous = null;
-        MortalItemIdentityParseResult? currentIndex = null;
-        ValidationPendingTurnSnapshotManifest? validatedManifest = null;
+        var retainedTreatment = await CaptureRetainedTreatmentItemAdmissionAsync(
+            writeLease,
+            issues);
+        var keepRetainedTreatment = false;
+        if (retainedTreatment is null)
+        {
+            MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(
+                _fs,
+                writeLease);
+        }
         try
         {
-        AddCatalogIssues(current.Catalog, issues);
-        ValidateMortalItemCompanionReferences(
-            current.Catalog,
-            MortalItemMaterializationPhase.RawPreSeal,
-            issues);
-
-        foreach (var occurrence in current.Catalog.Occurrences)
-        {
-            if (IsRawMortalItemCreation(occurrence.Item))
+            var locationPlanningIssues = new List<ValidationIssue>();
+            var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
+                locationPlanningIssues,
+                writeLease);
+            var current = await LoadMortalItemCatalogAsync(
+                writeLease,
+                includeNpcInventoryCommands: true,
+                issues,
+                locationPlanningIssues.Any(issue => issue.Severity == IssueSeverity.Error)
+                ? null
+                : locationPlan);
+            MortalItemRouteAuthorityCatalog? routeAuthorities = null;
+            MortalItemAcceptedTransferCatalog? transferCatalog = null;
+            MortalItemCatalogFiles? previous = null;
+            MortalItemIdentityParseResult? currentIndex = null;
+            ValidationPendingTurnSnapshotManifest? validatedManifest = null;
+            try
             {
-                AddContractIssues(
-                    occurrence,
+                AddCatalogIssues(current.Catalog, issues);
+                ValidateMortalItemCompanionReferences(
+                    current.Catalog,
                     MortalItemMaterializationPhase.RawPreSeal,
                     issues);
-                continue;
-            }
 
-            if (IsDurableCanonicalCarrierPath(occurrence.JsonPath))
-            {
-                AddContractIssues(
-                    occurrence,
-                    MortalItemMaterializationPhase.CanonicalPostSeal,
-                    issues);
-            }
-        }
-
-        routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(
-            _fs,
-            acceptedStorageCoordinates: locationPlanningIssues.Any(issue =>
-                issue.Severity == IssueSeverity.Error)
-                ? null
-                : locationPlan?.AcceptedStorageCoordinates);
-        AddRouteAuthorityIssues(routeAuthorities, issues);
-
-        currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
-        issues.AddRange(currentIndex.Issues);
-
-        var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        var hasRawCreations = current.Catalog.Occurrences.Any(occurrence =>
-            IsRawMortalItemCreation(occurrence.Item));
-        if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
-            snapshotLookup.Manifest == null)
-        {
-            if (hasRawCreations)
-                issues.Add(MissingItemSnapshotBaselineIssue("raw item creation"));
-            return;
-        }
-        validatedManifest = snapshotLookup.Manifest;
-
-        await ValidateRawOffscreenLocationStorageAuthorityAsync(
-            snapshotLookup.Manifest,
-            issues);
-
-        foreach (var occurrence in current.Catalog.Occurrences.Where(occurrence =>
-                     IsRawMortalItemCreation(occurrence.Item)))
-        {
-            ValidateRawSnapshotBinding(
-                occurrence,
-                snapshotLookup.Manifest.TurnNumber,
-                issues);
-        }
-
-        previous = await LoadPreTurnMortalItemCatalogAsync(
-            snapshotLookup,
-            includeNpcInventoryCommands: false,
-            issues);
-        if (previous == null)
-        {
-            if (hasRawCreations || current.Catalog.Occurrences.Count > 0)
-                issues.Add(MissingItemSnapshotBaselineIssue("tracked item authority"));
-            return;
-        }
-
-        var previousIndex = MortalItemIdentityState.Parse(previous.IdentityIndexJson);
-        if (previousIndex.Issues.Count > 0)
-        {
-            issues.Add(MissingItemSnapshotBaselineIssue("valid pre-turn item identity index"));
-            return;
-        }
-
-        ValidateRawCreationHistory(
-            current.Catalog,
-            MortalItemIdentityState.BuildAcceptedRootCreationEvidence(previousIndex),
-            issues);
-
-        if (!MortalItemMaterializationContract.ImmutableEvidenceEquals(
-                previousIndex.Root,
-                currentIndex.Root))
-        {
-            issues.Add(new ValidationIssue(
-                MortalItemIdentityState.StatePath,
-                IssueSeverity.Error,
-                "The GM-authored raw package changed the client-owned Mortal item identity index before sealing.",
-                code: "mortal_item_materialization_gm_authored_client_field",
-                actor: "mortal_item:index",
-                section: "MortalItemMaterialization",
-                expected: "index exactly equal to the validated pre-turn snapshot",
-                actual: "client-owned index differs before normalization",
-                repairHint: "Восстанови item_identity_index.json из validated pre-turn snapshot и убери любые GM-authored receipt/index изменения.",
-                repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
-        }
-
-        transferCatalog = await MortalItemAcceptedTransferCatalog.BuildAsync(
-            _fs,
-            writeLease: null,
-            previous.Catalog,
-            current.Catalog,
-            snapshotLookup.Manifest.TurnNumber);
-        issues.AddRange(transferCatalog.Issues);
-        ValidateRawCurrentItemContinuity(previous.Catalog, current.Catalog, issues);
-        }
-        finally
-        {
-            AttachMortalItemRepairContexts(
-                issues,
-                current.Catalog,
-                routeAuthorities,
-                currentIndex);
-        }
-
-        if (issues.All(issue => issue.Severity != IssueSeverity.Error))
-        {
-            if (validatedManifest != null)
-            {
-                var currentProjectionRoots = ProjectionRoots(current, issues);
-                currentProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
-                    ParseProjectionRoot(
-                        await ReadCurrentItemFileAsync(
-                            writeLease: null,
-                            path: MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
-                        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
-                        issues);
-                var backupProjectionRoots = previous is null
-                    ? MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
-                        static path => path,
-                        static _ => (JsonNode?)null,
-                        StringComparer.Ordinal)
-                    : ProjectionRoots(previous, issues);
-                backupProjectionRoots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] =
-                    ParseProjectionRoot(
-                        await ReadValidatedPendingTurnSnapshotFileAsync(
-                            validatedManifest,
-                            MortalItemAcceptedTransferCatalog.NpcCommandsPath),
-                        MortalItemAcceptedTransferCatalog.NpcCommandsPath,
-                        issues);
-                backupProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
-                    ParseProjectionRoot(
-                        await ReadValidatedPendingTurnSnapshotFileAsync(
-                            validatedManifest,
-                            MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
-                        MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
-                        issues);
-                if (issues.All(issue => issue.Severity != IssueSeverity.Error))
+                foreach (var occurrence in current.Catalog.Occurrences)
                 {
-                    MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
-                        _fs,
+                    if (IsRawMortalItemCreation(occurrence.Item))
+                    {
+                        AddContractIssues(
+                            occurrence,
+                            MortalItemMaterializationPhase.RawPreSeal,
+                            issues);
+                        continue;
+                    }
+
+                    if (IsDurableCanonicalCarrierPath(occurrence.JsonPath))
+                    {
+                        AddContractIssues(
+                            occurrence,
+                            MortalItemMaterializationPhase.CanonicalPostSeal,
+                            issues);
+                    }
+                }
+
+                routeAuthorities = await MortalItemRouteAuthorityCatalog.BuildAsync(
+                    _fs,
+                    writeLease,
+                    acceptedStorageCoordinates: locationPlanningIssues.Any(issue =>
+                        issue.Severity == IssueSeverity.Error)
+                        ? null
+                : locationPlan?.AcceptedStorageCoordinates);
+                AddRouteAuthorityIssues(routeAuthorities, issues);
+
+                currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
+                issues.AddRange(currentIndex.Issues);
+
+                var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync(
+                    writeLease);
+                var hasRawCreations = current.Catalog.Occurrences.Any(occurrence =>
+                    IsRawMortalItemCreation(occurrence.Item));
+                if (snapshotLookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
+            snapshotLookup.Manifest == null)
+                {
+                    if (hasRawCreations)
+                        issues.Add(MissingItemSnapshotBaselineIssue("raw item creation"));
+                    return;
+                }
+                validatedManifest = snapshotLookup.Manifest;
+
+                await ValidateRawOffscreenLocationStorageAuthorityAsync(
+                    snapshotLookup.Manifest,
+                    issues,
+                    writeLease);
+
+                foreach (var occurrence in current.Catalog.Occurrences.Where(occurrence =>
+                             IsRawMortalItemCreation(occurrence.Item)))
+                {
+                    ValidateRawSnapshotBinding(
+                        occurrence,
+                        snapshotLookup.Manifest.TurnNumber,
+                        issues);
+                }
+
+                previous = await LoadPreTurnMortalItemCatalogAsync(
+                    snapshotLookup,
+                    includeNpcInventoryCommands: false,
+                    issues,
+                    writeLease);
+                if (previous == null)
+                {
+                    if (hasRawCreations || current.Catalog.Occurrences.Count > 0)
+                        issues.Add(MissingItemSnapshotBaselineIssue("tracked item authority"));
+                    return;
+                }
+
+                var previousIndex = MortalItemIdentityState.Parse(previous.IdentityIndexJson);
+                if (previousIndex.Issues.Count > 0)
+                {
+                    issues.Add(MissingItemSnapshotBaselineIssue("valid pre-turn item identity index"));
+                    return;
+                }
+
+                ValidateRawCreationHistory(
+                    current.Catalog,
+                    MortalItemIdentityState.BuildAcceptedRootCreationEvidence(previousIndex),
+                    issues);
+
+                if (!MortalItemMaterializationContract.ImmutableEvidenceEquals(
+                        previousIndex.Root,
+                        currentIndex.Root))
+                {
+                    issues.Add(new ValidationIssue(
+                        MortalItemIdentityState.StatePath,
+                        IssueSeverity.Error,
+                        "The GM-authored raw package changed the client-owned Mortal item identity index before sealing.",
+                        code: "mortal_item_materialization_gm_authored_client_field",
+                        actor: "mortal_item:index",
+                        section: "MortalItemMaterialization",
+                        expected: "index exactly equal to the validated pre-turn snapshot",
+                        actual: "client-owned index differs before normalization",
+                        repairHint: "Восстанови item_identity_index.json из validated pre-turn snapshot и убери любые GM-authored receipt/index изменения.",
+                        repairTargetFiles: new[] { MortalItemIdentityState.StatePath }));
+                }
+
+                transferCatalog = await MortalItemAcceptedTransferCatalog.BuildAsync(
+                    _fs,
+                    writeLease,
+                    previous.Catalog,
+                    current.Catalog,
+                    snapshotLookup.Manifest.TurnNumber);
+                issues.AddRange(transferCatalog.Issues);
+                ValidateRawCurrentItemContinuity(previous.Catalog, current.Catalog, issues);
+            }
+            finally
+            {
+                AttachMortalItemRepairContexts(
+                    issues,
+                    current.Catalog,
+                    routeAuthorities,
+                    currentIndex);
+            }
+
+            if (issues.All(issue => issue.Severity != IssueSeverity.Error))
+            {
+                if (validatedManifest != null)
+                {
+                    var currentProjectionRoots = ProjectionRoots(current, issues);
+                    currentProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
+                        ParseProjectionRoot(
+                            await ReadCurrentItemFileAsync(
+                                writeLease,
+                                path: MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
+                            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                            issues);
+                    var backupProjectionRoots = previous is null
+                        ? MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+                            static path => path,
+                            static _ => (JsonNode?)null,
+                            StringComparer.Ordinal)
+                        : ProjectionRoots(previous, issues);
+                    backupProjectionRoots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] =
+                            ParseProjectionRoot(
+                                await ReadValidatedPendingTurnSnapshotFileAsync(
+                                    validatedManifest,
+                                    MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+                                    writeLease),
+                                MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+                                issues);
+                    backupProjectionRoots[MortalItemAcceptedTransferCatalog.PlayerRemovalPath] =
+                        ParseProjectionRoot(
+                            await ReadValidatedPendingTurnSnapshotFileAsync(
+                                validatedManifest,
+                                MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                                writeLease),
+                            MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                            issues);
+                    if (issues.All(issue => issue.Severity != IssueSeverity.Error))
+                    {
+                        if (retainedTreatment is null)
+                        {
+                            MortalItemAcceptedTurnAuthority.RegisterValidatedItems(
+                                _fs,
                         writeLease,
                         validatedManifest.SessionId,
                         validatedManifest.ManifestPayloadHash,
@@ -243,12 +263,219 @@ public partial class ValidationService
                         currentIndex?.EntriesByItemId.Keys ?? Array.Empty<string>(),
                         routeAuthorities,
                         transferCatalog,
-                        currentProjectionRoots,
-                        backupProjectionRoots);
+                                currentProjectionRoots,
+                                backupProjectionRoots);
+                        }
+                        else if (routeAuthorities is not null &&
+                                 transferCatalog is not null &&
+                                 RetainedTreatmentItemAdmissionStillMatches(
+                                     writeLease,
+                                     retainedTreatment,
+                                     validatedManifest,
+                                     routeAuthorities,
+                                     transferCatalog,
+                                     currentProjectionRoots,
+                                     backupProjectionRoots))
+                        {
+                            keepRetainedTreatment = true;
+                        }
+                        else
+                        {
+                            issues.Add(RetainedTreatmentItemAuthorityChangedIssue(
+                                "the repeated raw item projection no longer matches the sealed publication"));
+                        }
+                    }
                 }
             }
         }
+        finally
+        {
+            if (retainedTreatment is not null && !keepRetainedTreatment)
+            {
+                MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(
+                    _fs,
+                    writeLease);
+            }
+        }
     }
+
+    private async Task<RetainedTreatmentItemAdmission?>
+        CaptureRetainedTreatmentItemAdmissionAsync(
+            FileSystemManager.CanonicalWriteLease writeLease,
+            List<ValidationIssue> issues)
+    {
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fs,
+                writeLease,
+                out var binding,
+                out var peeked) ||
+            !peeked.Success ||
+            peeked.Plan is not { } plan ||
+            plan.TreatmentResourcePublicationAuthority is not
+                { RequiresConfirmedHold: true } publicationAuthority ||
+            !publicationAuthority.HasValidSeal())
+        {
+            return null;
+        }
+        var itemPublication = publicationAuthority.ItemPublicationAuthority;
+
+        var retainedIssues = await
+            ValidateRetainedMortalWoundTreatmentPublicationAsync(writeLease);
+        if (retainedIssues is null)
+        {
+            issues.Add(RetainedTreatmentItemAuthorityChangedIssue(
+                "the retained treatment publication was no longer available"));
+            return null;
+        }
+        issues.AddRange(retainedIssues);
+        if (retainedIssues.Any(static issue =>
+                issue.Severity == IssueSeverity.Error))
+        {
+            return null;
+        }
+        if (!HasExactConfirmedTreatmentPublicationHold(
+                writeLease,
+                publicationAuthority))
+        {
+            issues.Add(RetainedTreatmentItemAuthorityChangedIssue(
+                "the exact confirmed treatment resource hold changed"));
+            return null;
+        }
+
+        if (!MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                _fs,
+                writeLease,
+                binding.SessionId,
+                binding.SnapshotToken,
+                binding.Turn,
+                out var snapshot) ||
+            !snapshot.HasFinalPublicationBaseline ||
+            !(itemPublication is { }
+                ? itemPublication.MatchesNormalizationSnapshot(
+                    snapshot,
+                    plan.OwnerAuthority)
+                : snapshot.MatchesAcceptedOwnerAuthority(plan.OwnerAuthority)))
+        {
+            issues.Add(RetainedTreatmentItemAuthorityChangedIssue(
+                "the sealed item snapshot or final owner proof changed"));
+            return null;
+        }
+
+        return new RetainedTreatmentItemAdmission(
+            binding,
+            plan,
+            itemPublication,
+            snapshot);
+    }
+
+    private bool RetainedTreatmentItemAdmissionStillMatches(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        RetainedTreatmentItemAdmission retained,
+        ValidationPendingTurnSnapshotManifest manifest,
+        MortalItemRouteAuthorityCatalog routeAuthorities,
+        MortalItemAcceptedTransferCatalog transferCatalog,
+        IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
+        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
+    {
+        if (!string.Equals(
+                manifest.SessionId,
+                retained.Binding.SessionId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                manifest.ManifestPayloadHash,
+                retained.Binding.SnapshotToken,
+                StringComparison.Ordinal) ||
+            manifest.TurnNumber != retained.Binding.Turn ||
+            !retained.Snapshot.MatchesRouteCatalog(routeAuthorities) ||
+            !retained.Snapshot.MatchesTransfers(transferCatalog.Transfers) ||
+            !retained.Snapshot.MatchesProjectionRoots(
+                currentProjectionRoots,
+                backupProjectionRoots))
+        {
+            return false;
+        }
+
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                _fs,
+                writeLease,
+                out var currentBinding,
+                out var current) ||
+            !current.Success ||
+            !ReferenceEquals(retained.Plan, current.Plan) ||
+            !string.Equals(
+                AcceptedMechanicsPlanFingerprints.ComputeInput(retained.Binding),
+                AcceptedMechanicsPlanFingerprints.ComputeInput(currentBinding),
+                StringComparison.Ordinal) ||
+            !MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                _fs,
+                writeLease,
+                retained.Binding.SessionId,
+                retained.Binding.SnapshotToken,
+                retained.Binding.Turn,
+                out var currentSnapshot))
+        {
+            return false;
+        }
+
+        return retained.Snapshot.MatchesFinalPublicationBaseline(currentSnapshot) &&
+               (retained.ItemPublication is { } itemPublication
+                   ? itemPublication.MatchesNormalizationSnapshot(
+                       currentSnapshot,
+                       retained.Plan.OwnerAuthority)
+                   : currentSnapshot.MatchesAcceptedOwnerAuthority(
+                       retained.Plan.OwnerAuthority));
+    }
+
+    private bool HasExactConfirmedTreatmentPublicationHold(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentResourcePublicationAuthority publicationAuthority)
+    {
+        var hold = AcceptedTurnAuthorityRegistry
+            .ProbeMortalWoundTreatmentResourcePublicationHold(
+                _fs,
+                writeLease,
+                publicationAuthority.AcceptedStateAuthority,
+                publicationAuthority.RequestAuthority,
+                publicationAuthority.Finalization);
+        return hold.IsValid &&
+               hold.Issues.Count == 0 &&
+               hold.ChangedCount == 0 &&
+               hold.State ==
+               MortalWoundTreatmentResourceReservationState.ConfirmedHeld &&
+               string.Equals(
+                   hold.OperationKey,
+                   publicationAuthority.RequestAuthority.Coordinates.OperationKey,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   hold.AttemptId,
+                   publicationAuthority.RequestAuthority.Coordinates.AttemptId,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   hold.RequestFingerprint,
+                   publicationAuthority.RequestFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   hold.ResourceAuthorityFingerprint,
+                   publicationAuthority.Finalization.ResourceAuthorityFingerprint,
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   hold.FinalizationFingerprint,
+                   publicationAuthority.FinalizationFingerprint,
+                   StringComparison.Ordinal);
+    }
+
+    private static ValidationIssue RetainedTreatmentItemAuthorityChangedIssue(
+        string actual) => WoundIssue(
+        MortalItemIdentityState.StatePath,
+        "mortal_wound_treatment_publication_item_authority_changed",
+        "the exact raw-revalidated session, snapshot, item projection, live before-images, and final owner proof",
+        actual);
+
+    private sealed record RetainedTreatmentItemAdmission(
+        AcceptedMechanicsPlanBinding Binding,
+        AcceptedMechanicsPlan Plan,
+        MortalWoundTreatmentItemPublicationAuthority? ItemPublication,
+        MortalItemAcceptedTurnNormalizationSnapshot Snapshot);
 
     private static void ValidateRawCreationHistory(
         MortalItemCarrierCatalog catalog,
@@ -595,11 +822,14 @@ public partial class ValidationService
 
     private async Task ValidateRawOffscreenLocationStorageAuthorityAsync(
         ValidationPendingTurnSnapshotManifest manifest,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         var path = MortalLocationStorageContentsState.StatePath;
         var preTurnExists = manifest.Files.ContainsKey(path);
-        var currentExists = _fs.FileExists(path);
+        var currentExists = writeLease == null
+            ? _fs.FileExists(path)
+            : _fs.FileExists(writeLease, path);
         if (!preTurnExists && !currentExists)
             return;
 
@@ -609,12 +839,15 @@ public partial class ValidationService
         MortalLocationStorageContentsParseResult? current = null;
         if (preTurnExists)
         {
-            preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, path);
+            preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(
+                manifest,
+                path,
+                writeLease);
             preTurn = TryParseOffscreenLocationStorageState(preTurnJson);
         }
         if (currentExists)
         {
-            currentJson = await _fs.ReadFileAsync(path);
+            currentJson = await ReadCurrentItemFileAsync(writeLease, path);
             current = TryParseOffscreenLocationStorageState(currentJson);
         }
 
@@ -730,7 +963,8 @@ public partial class ValidationService
     private async Task<MortalItemCatalogFiles?> LoadPreTurnMortalItemCatalogAsync(
         ValidatedPendingTurnSnapshotLookup lookup,
         bool includeNpcInventoryCommands,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
@@ -740,27 +974,34 @@ public partial class ValidationService
 
         var playerJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            InventoryEquipmentService.ItemsPath);
+            InventoryEquipmentService.ItemsPath,
+            writeLease);
         var npcCoreJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            NpcCoreChangesContract.NpcCorePath);
+            NpcCoreChangesContract.NpcCorePath,
+            writeLease);
         var npcCommandsJson = includeNpcInventoryCommands
             ? await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                "game_state/npcs/npc_inventory.json")
+                "game_state/npcs/npc_inventory.json",
+                writeLease)
             : null;
         var currentLocationJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            StorageTransportMoveService.CurrentLocationPath);
+            StorageTransportMoveService.CurrentLocationPath,
+            writeLease);
         var offscreenLocationStorageJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            MortalLocationStorageContentsState.StatePath);
+            MortalLocationStorageContentsState.StatePath,
+            writeLease);
         var vehiclesJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            StorageTransportMoveService.VehiclesPath);
+            StorageTransportMoveService.VehiclesPath,
+            writeLease);
         var identityIndexJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            MortalItemIdentityState.StatePath);
+            MortalItemIdentityState.StatePath,
+            writeLease);
         if (identityIndexJson == null)
             return null;
 
@@ -770,7 +1011,8 @@ public partial class ValidationService
         {
             var json = await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                path);
+                path,
+                writeLease);
             var companion = ParseProjectionRoot(
                 json,
                 path,

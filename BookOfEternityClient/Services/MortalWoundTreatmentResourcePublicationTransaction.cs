@@ -339,6 +339,75 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
                 _receipt);
     }
 
+    internal async Task<IReadOnlyList<ValidationIssue>>
+        FilterExactPublishedItemValidationIssuesAsync(
+            FileSystemManager fileSystem,
+            IReadOnlyList<ValidationIssue> issues)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(issues);
+        var publicationAuthority = _plan.TreatmentResourcePublicationAuthority;
+        var itemAuthority = publicationAuthority?.ItemPublicationAuthority;
+        if (issues.Count == 0 ||
+            !ReferenceEquals(fileSystem, _fileSystem) ||
+            Volatile.Read(ref _closed) != 0 ||
+            itemAuthority is null ||
+            !ReferenceEquals(_plan, _receipt.Plan) ||
+            !ReferenceEquals(publicationAuthority, _receipt.PublicationAuthority) ||
+            !publicationAuthority!.HasValidSeal() ||
+            !itemAuthority.HasValidSeal() ||
+            !string.Equals(
+                _bindingFingerprint,
+                AcceptedMechanicsPlanFingerprints.ComputeInput(_receipt.Binding),
+                StringComparison.Ordinal))
+        {
+            return issues;
+        }
+
+        await using var writeLease =
+            await fileSystem.AcquireCanonicalWriteLeaseAsync();
+        if (Volatile.Read(ref _closed) != 0 ||
+            ToOperationFailure(AcceptedTurnAuthorityRegistry
+                .ProbeTakenMortalWoundTreatmentPublication(
+                    fileSystem,
+                    writeLease,
+                    _receipt)) is not null ||
+            !await PublishedAgreementStillExactAsync(fileSystem, writeLease))
+        {
+            return issues;
+        }
+
+        var agreement = Volatile.Read(ref _publishedAgreement);
+        var npcAgreement = agreement?.SingleOrDefault(static image =>
+            string.Equals(
+                image.Path,
+                NpcCoreChangesContract.NpcCorePath,
+                StringComparison.Ordinal));
+        if (npcAgreement?.Bytes is not { } npcBytes)
+            return issues;
+
+        JsonObject publishedNpcRoot;
+        try
+        {
+            publishedNpcRoot = JsonNode.Parse(DecodeUtf8(npcBytes)) as JsonObject ??
+                throw new InvalidDataException(
+                    "The exact published NPC agreement is not a JSON object.");
+        }
+        catch (Exception exception) when (
+            exception is JsonException or DecoderFallbackException or
+            InvalidDataException)
+        {
+            return issues;
+        }
+
+        return issues
+            .Where(issue => !itemAuthority
+                .ProvesExactPublishedNpcInventoryContinuityIssue(
+                    issue,
+                    publishedNpcRoot))
+            .ToArray();
+    }
+
     internal async Task CapturePublishedAgreementAsync(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)

@@ -29,9 +29,374 @@ public sealed partial class GameEngineTurnLifecycleTests
         "SettleTreatmentResourcePublicationCompletionFailureAsync";
 
     [Fact]
-    public async Task GuaranteedMixedItemAndResourceConsumption_PostWriteFailureRestoresEveryRootAndRearmsSamePlan()
+    public async Task GuaranteedItemConsumption_HeldLeaseRawAdmissionDoesNotReacquireCanonicalLock()
     {
-        var fault = new AcceptedTreatmentPipelineFault("wound_output", 1);
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack(),
+            composePublication: false);
+        var before = await CaptureExplicitTreatmentEnvelopeBytesAsync(context);
+
+        await RestoreHeldTreatmentAndComposeSameSemanticPlanAsync(context);
+
+        await AssertExactTreatmentTransactionBytesAsync(context, before);
+        Assert.True(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            context.Lease));
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_RepeatedRawItemAdmissionPreservesExactSealedSnapshotAndPlan()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack());
+        var originalPlan = context.Plan;
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedBefore));
+        Assert.True(sealedBefore.HasFinalPublicationBaseline);
+        var before = await CaptureExactTreatmentTransactionBytesAsync(context);
+
+        await context.ReleaseLeaseAsync();
+        var issues = await new ValidationService(
+                context.FileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        Assert.True(
+            issues.All(static issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(issues));
+        await context.AcquireLeaseAsync();
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            context.Lease,
+            out var repeatedBinding,
+            out var repeated));
+        Assert.True(repeated.Success, DescribeValidationIssues(repeated.Issues));
+        Assert.Same(originalPlan, repeated.Plan);
+        Assert.Equal(
+            AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding),
+            AcceptedMechanicsPlanFingerprints.ComputeInput(repeatedBinding));
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedAfter));
+        Assert.True(sealedAfter.HasFinalPublicationBaseline);
+        Assert.True(sealedBefore.MatchesFinalPublicationBaseline(sealedAfter));
+        var itemPublication = Assert.IsType<MortalWoundTreatmentItemPublicationAuthority>(
+            originalPlan.TreatmentResourcePublicationAuthority?.ItemPublicationAuthority);
+        Assert.True(itemPublication.MatchesNormalizationSnapshot(
+            sealedAfter,
+            originalPlan.OwnerAuthority));
+        await AssertExactTreatmentTransactionBytesAsync(context, before);
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+    }
+
+    [Fact]
+    public async Task GuaranteedResourceQuantity_RepeatedRawItemAdmissionPreservesExactSealedSnapshotAndPlan()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null);
+        var originalPlan = context.Plan;
+        Assert.Null(originalPlan.TreatmentResourcePublicationAuthority?
+            .ItemPublicationAuthority);
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedBefore));
+        Assert.True(sealedBefore.HasFinalPublicationBaseline);
+        Assert.True(sealedBefore.MatchesAcceptedOwnerAuthority(
+            originalPlan.OwnerAuthority));
+        var before = await CaptureExactTreatmentTransactionBytesAsync(context);
+
+        await context.ReleaseLeaseAsync();
+        var issues = await new ValidationService(
+                context.FileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        Assert.True(
+            issues.All(static issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(issues));
+        await context.AcquireLeaseAsync();
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            context.Lease,
+            out var repeatedBinding,
+            out var repeated));
+        Assert.True(repeated.Success, DescribeValidationIssues(repeated.Issues));
+        Assert.Same(originalPlan, repeated.Plan);
+        Assert.Equal(
+            AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding),
+            AcceptedMechanicsPlanFingerprints.ComputeInput(repeatedBinding));
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedAfter));
+        Assert.True(sealedAfter.HasFinalPublicationBaseline);
+        Assert.True(sealedBefore.MatchesFinalPublicationBaseline(sealedAfter));
+        Assert.True(sealedAfter.MatchesAcceptedOwnerAuthority(
+            originalPlan.OwnerAuthority));
+        await AssertExactTreatmentTransactionBytesAsync(context, before);
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+    }
+
+    [Fact]
+    public async Task GuaranteedResourceQuantity_RepeatedRawItemAdmissionRejectsChangedItemRoot()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null);
+        Assert.Null(context.Plan.TreatmentResourcePublicationAuthority?
+            .ItemPublicationAuthority);
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedBefore));
+        Assert.True(sealedBefore.HasFinalPublicationBaseline);
+        var playerItems = await ReadJsonObjectAsync(
+            context,
+            InventoryEquipmentService.ItemsPath);
+        var changedItem = Assert.Single(
+            playerItems["items"]!.AsArray().OfType<JsonObject>());
+        changedItem["count"] = 2;
+        MortalItemTestFixture.ResealCanonical(changedItem);
+        await context.FileSystem.WriteFileAtomicAsync(
+            context.Lease,
+            InventoryEquipmentService.ItemsPath,
+            playerItems.ToJsonString());
+        var afterDrift = await CaptureExactTreatmentTransactionBytesAsync(context);
+        var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
+            await ReadTreatmentResourceHistoryAsync(context.FileSystem));
+
+        await context.ReleaseLeaseAsync();
+        var issues = await new ValidationService(
+                context.FileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        Assert.Contains(issues, static issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(
+                issue.Code,
+                "accepted_mechanics_wound_live_before_image_mismatch",
+                StringComparison.Ordinal));
+        await context.AcquireLeaseAsync();
+        Assert.False(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out _));
+        await AssertExactTreatmentTransactionBytesAsync(context, afterDrift);
+        Assert.Equal(resourceSpendsBefore, CountHeldTreatmentEnergySpends(
+            await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_RepeatedRawItemAdmissionRejectsChangedLiveItemBeforeImage()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack());
+        await ApplySelectedItemPostSealDriftAsync(context, "count");
+        var afterDrift = await CaptureExactTreatmentTransactionBytesAsync(context);
+        var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
+            await ReadTreatmentResourceHistoryAsync(context.FileSystem));
+
+        await context.ReleaseLeaseAsync();
+        var issues = await new ValidationService(
+                context.FileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+
+        Assert.Contains(issues, static issue =>
+            issue.Severity == IssueSeverity.Error);
+        await context.AcquireLeaseAsync();
+        Assert.False(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out _));
+        await AssertExactTreatmentTransactionBytesAsync(context, afterDrift);
+        Assert.Equal(resourceSpendsBefore, CountHeldTreatmentEnergySpends(
+            await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+    }
+
+    [Fact]
+    public async Task GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack());
+        var probe = await CreatePublishedTreatmentFullStateProbeAsync(context);
+        try
+        {
+            var filtered = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                probe.Transaction,
+                "FilterExactPublishedItemValidationIssuesAsync",
+                context.FileSystem,
+                probe.Issues);
+
+            Assert.DoesNotContain(filtered, static issue =>
+                issue.Severity == IssueSeverity.Error);
+        }
+        finally
+        {
+            await Assert.IsAssignableFrom<IAsyncDisposable>(probe.Transaction)
+                .DisposeAsync();
+        }
+
+        var retry = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+            probe.Engine,
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+            "exact published NPC inventory retry oracle",
+            probe.SnapshotContext,
+            null,
+            HeldTreatmentPipelineContext.Turn,
+            null);
+
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, retry);
+        Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
+    }
+
+    [Theory]
+    [InlineData("no_open_receipt")]
+    [InlineData("root_drift")]
+    [InlineData("foreign_actor")]
+    [InlineData("foreign_path")]
+    [InlineData("extra_inventory_mutation")]
+    public async Task GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof(
+        string adversarialAxis)
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack());
+        var probe = await CreatePublishedTreatmentFullStateProbeAsync(context);
+        try
+        {
+            var issue = Assert.Single(probe.Issues, static candidate =>
+                string.Equals(
+                    candidate.Code,
+                    "npc_existing_inventory_resend_forbidden",
+                    StringComparison.Ordinal));
+            IReadOnlyList<ValidationIssue> supplied = probe.Issues;
+            switch (adversarialAxis)
+            {
+                case "no_open_receipt":
+                    _ = await InvokePrivateTaskResultAsync(
+                        probe.Transaction,
+                        "CompleteAsync",
+                        context.FileSystem);
+                    break;
+                case "root_drift":
+                {
+                    var root = await ReadJsonObjectAsync(
+                        context.FileSystem,
+                        NpcCoreChangesContract.NpcCorePath);
+                    ReadProvider(root)["displayName"] = "unplanned root drift";
+                    await context.FileSystem.WriteFileAtomicAsync(
+                        NpcCoreChangesContract.NpcCorePath,
+                        root.ToJsonString());
+                    break;
+                }
+                case "foreign_actor":
+                    supplied = new[]
+                    {
+                        CloneValidationIssue(
+                            issue,
+                            actor: "mortal_npc:unrelated_actor")
+                    };
+                    break;
+                case "foreign_path":
+                    supplied = new[]
+                    {
+                        CloneValidationIssue(
+                            issue,
+                            filePath:
+                                NpcCoreChangesContract.NpcCorePath +
+                                ".NPCsInScene[1].inventory")
+                    };
+                    break;
+                case "extra_inventory_mutation":
+                {
+                    var root = await ReadJsonObjectAsync(
+                        context.FileSystem,
+                        NpcCoreChangesContract.NpcCorePath);
+                    var provider = ReadProvider(root);
+                    var inventory = provider["inventory"]!.AsArray();
+                    var selected = Assert.IsType<JsonObject>(Assert.Single(inventory));
+                    selected["count"] = 0;
+                    await context.FileSystem.WriteFileAtomicAsync(
+                        NpcCoreChangesContract.NpcCorePath,
+                        root.ToJsonString());
+                    supplied = new[]
+                    {
+                        CloneValidationIssue(
+                            issue,
+                            actual: inventory.ToJsonString())
+                    };
+                    break;
+                }
+                default:
+                    throw new InvalidOperationException(
+                        $"Unknown adversarial axis '{adversarialAxis}'.");
+            }
+
+            var filtered = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                probe.Transaction,
+                "FilterExactPublishedItemValidationIssuesAsync",
+                context.FileSystem,
+                supplied);
+
+            Assert.Contains(filtered, candidate =>
+                string.Equals(
+                    candidate.Code,
+                    "npc_existing_inventory_resend_forbidden",
+                    StringComparison.Ordinal));
+        }
+        finally
+        {
+            await Assert.IsAssignableFrom<IAsyncDisposable>(probe.Transaction)
+                .DisposeAsync();
+        }
+    }
+
+    [Theory]
+    [InlineData("runtime_refresh", 1)]
+    [InlineData("wound_post_seal", 1)]
+    [InlineData("wound_output", 1)]
+    [InlineData("critical_validation", 1)]
+    [InlineData("full_state_validation", 1)]
+    [InlineData("cleanup", 1)]
+    [InlineData("runtime_refresh", 2)]
+    public async Task GuaranteedMixedItemAndResourceConsumption_EveryPipelineFailureRestoresExpandedRootsAndExactRetryCommitsOnce(
+        string boundary,
+        int occurrence)
+    {
+        var fault = new AcceptedTreatmentPipelineFault(boundary, occurrence);
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
             fault,
             itemScenario: HeldTreatmentItemScenario.SelectedStack());
@@ -40,6 +405,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
         var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
             await ReadTreatmentResourceHistoryAsync(context.FileSystem));
+        var itemCapacityTransitionsBefore =
+            CountSelectedItemDurabilityCapacityTransitions(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem));
         var originalPlan = context.Plan;
         var originalBindingFingerprint =
             AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding);
@@ -47,19 +415,40 @@ public sealed partial class GameEngineTurnLifecycleTests
         var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context);
 
         fault.Arm(context);
-        var firstDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
-            engine,
-            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
-            "selected item rollback oracle",
-            snapshotContext,
-            null,
-            HeldTreatmentPipelineContext.Turn,
-            null);
+        AcceptedTurnValidationDisposition? firstDisposition = null;
+        var firstException = await Record.ExceptionAsync(async () =>
+        {
+            firstDisposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+                engine,
+                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "selected item rollback oracle",
+                snapshotContext,
+                null,
+                HeldTreatmentPipelineContext.Turn,
+                null);
+        });
 
-        Assert.True(fault.Fired, string.Join(", ", fault.ObservedPhases));
-        Assert.Equal(
-            AcceptedTurnValidationDisposition.RetryablePublicationRearmed,
-            firstDisposition);
+        Assert.True(
+            fault.Fired,
+            $"Observed={string.Join(", ", fault.ObservedPhases)}; " +
+            $"Disposition={firstDisposition?.ToString() ?? "null"}; " +
+            $"Exception={firstException}");
+        if (boundary is "critical_validation" or
+            "full_state_validation" or
+            "cleanup" ||
+            string.Equals(boundary, "runtime_refresh", StringComparison.Ordinal) &&
+            occurrence == 2)
+        {
+            Assert.IsType<IOException>(firstException);
+            Assert.Null(firstDisposition);
+        }
+        else
+        {
+            Assert.Null(firstException);
+            Assert.Equal(
+                AcceptedTurnValidationDisposition.RetryablePublicationRearmed,
+                firstDisposition);
+        }
         await AssertExactTreatmentTransactionBytesAsync(context, before);
         Assert.Equal(
             itemTransitionsBefore,
@@ -67,6 +456,10 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(
             resourceSpendsBefore,
             CountHeldTreatmentEnergySpends(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        Assert.Equal(
+            itemCapacityTransitionsBefore,
+            CountSelectedItemDurabilityCapacityTransitions(
                 await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
 
         await context.AcquireLeaseAsync();
@@ -99,24 +492,39 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(resourceSpendsBefore + 1,
             CountHeldTreatmentEnergySpends(
                 await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        Assert.Equal(itemCapacityTransitionsBefore + 1,
+            CountSelectedItemDurabilityCapacityTransitions(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        var durability = await ReadSelectedItemDurabilityAsync(context);
+        Assert.Equal(4m, durability.Current);
+        Assert.Equal(4m, durability.Maximum);
     }
 
     [Theory]
     [InlineData("count")]
     [InlineData("carrier")]
     [InlineData("index")]
-    public async Task GuaranteedItemConsumption_PostSealCountCarrierOrIndexDriftRejectsBeforeAnySpend(
+    [InlineData("resource_capacity")]
+    [InlineData("resource_current")]
+    [InlineData("shared_npc_mirror")]
+    public async Task GuaranteedItemConsumption_PostSealDriftRejectsBeforeAnySpend(
         string driftAxis)
     {
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
             fault: null,
-            itemScenario: HeldTreatmentItemScenario.SelectedStack());
-        var itemTransitionsBefore = await CountSelectedItemConsumeTransitionsAsync(context);
+            itemScenario: HeldTreatmentItemScenario.SelectedStack(
+                publishNpcSkillChange: string.Equals(
+                    driftAxis,
+                    "shared_npc_mirror",
+                    StringComparison.Ordinal)));
         var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
             await ReadTreatmentResourceHistoryAsync(context.FileSystem));
         await ApplySelectedItemPostSealDriftAsync(context, driftAxis);
+        var itemTransitionsAfterDrift =
+            await CountSelectedItemConsumeTransitionsAsync(context);
         var postDrift = await CaptureExactTreatmentTransactionBytesAsync(context);
         AssertTreatmentItemTransactionEnvelopeCaptured(postDrift);
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
         AcceptedMechanicsPlanAuthority.InvalidateValidated(
             context.FileSystem,
             context.Lease);
@@ -131,20 +539,20 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         Assert.False(rejected.IsValid);
         Assert.Null(rejected.Plan);
-        Assert.Equal(
-            "mortal_wound_treatment_publication_item_baseline_changed",
-            Assert.Single(rejected.Issues).Code);
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Severity == IssueSeverity.Error);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             context.FileSystem,
             context.Lease));
         await AssertExactTreatmentTransactionBytesAsync(context, postDrift);
-        Assert.Equal(itemTransitionsBefore,
+        Assert.Equal(itemTransitionsAfterDrift,
             await CountSelectedItemConsumeTransitionsAsync(context));
         Assert.Equal(resourceSpendsBefore,
             CountHeldTreatmentEnergySpends(
                 await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
-        Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(context.FileSystem));
-        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+        Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(context));
+        Assert.True(await ContainsCurrentExactTreatmentRequestAsync(context));
+        Assert.Equal("held", context.Request.ResourceAuthority.ReservationDisposition);
     }
 
     [Fact]
@@ -204,7 +612,29 @@ public sealed partial class GameEngineTurnLifecycleTests
         var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
             await ReadTreatmentResourceHistoryAsync(context.FileSystem));
         await context.ReleaseLeaseAsync();
+        var validator = new ValidationService(
+            context.FileSystem,
+            NullLogger<ValidationService>.Instance);
+        var rawItemIssues = await validator
+            .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
+        Assert.True(
+            rawItemIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(rawItemIssues));
+        var rawResourceIssues = await validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        Assert.True(
+            rawResourceIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(rawResourceIssues));
         var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context);
+        await InvokePrivateTaskAsync(
+            engine,
+            "EnsureClientOwnedSystemFilesHealthyAsync");
+        var aggregateRawIssues = await InvokePrivateAsync<List<ValidationIssue>>(
+            engine,
+            "CollectAcceptedTurnRawStateIssuesAsync");
+        Assert.True(
+            aggregateRawIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(aggregateRawIssues));
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
             engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
@@ -277,23 +707,76 @@ public sealed partial class GameEngineTurnLifecycleTests
             fault: null,
             itemScenario: HeldTreatmentItemScenario.SelectedStack(
                 createUnrelatedSameTurnItem: true));
-        var plannedPlayerItems = context.Plan.OwnerCompanionAfterImages[
-            InventoryEquipmentService.ItemsPath];
-        var plannedUnrelated = Assert.Single(
-            plannedPlayerItems["items"]!.AsArray().OfType<JsonObject>(),
-            HasUnrelatedCreationReceipt);
-        var plannedUnrelatedId = plannedUnrelated["itemId"]!.GetValue<string>();
+        Assert.DoesNotContain(
+            InventoryEquipmentService.ItemsPath,
+            context.Plan.OwnerCompanionAfterImages.Keys);
+        Assert.True(MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+            context.FileSystem,
+            context.Lease,
+            context.OriginalBinding.SessionId,
+            context.OriginalBinding.SnapshotToken,
+            context.OriginalBinding.Turn,
+            out var sealedItemSnapshot));
+        Assert.True(sealedItemSnapshot.TryGetAllocatedItemId(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            out var reservedUnrelatedItemId));
+        Assert.True(sealedItemSnapshot.TryGetRootReceiptId(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            out var reservedUnrelatedReceiptId));
+        Assert.True(sealedItemSnapshot.TryGetCreateTransitionId(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            out var reservedUnrelatedTransitionId));
+        var rawPlayerItems = await ReadJsonObjectAsync(
+            context,
+            InventoryEquipmentService.ItemsPath);
+        var rawUnrelated = Assert.Single(
+            rawPlayerItems["UpdateInventory"]!.AsArray().OfType<JsonObject>());
+        Assert.Equal(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            rawUnrelated["creationRef"]!.GetValue<string>());
+        Assert.Equal(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            rawUnrelated["materialization"]!["creationRef"]!.GetValue<string>());
+        Assert.Null(rawUnrelated["itemId"]);
         Assert.Equal(1, ReadNpcItemCount(
             context.Plan.OwnerCompanionAfterImages[NpcCoreChangesContract.NpcCorePath],
             HeldTreatmentPipelineContext.SelectedItemId));
         await context.ReleaseLeaseAsync();
-        var (engine, snapshotContext) = await CreateHeldTreatmentValidationEngineAsync(context);
+        var validationEngine = CreateGameEngine(
+            new QueuedConsoleInputSource(new[] { Key(ConsoleKey.Escape) }),
+            fileSystem: context.FileSystem);
+        await InvokePrivateTaskAsync(
+            validationEngine,
+            "EnsureClientOwnedSystemFilesHealthyAsync");
+        var rawIssues = await InvokePrivateAsync<List<ValidationIssue>>(
+            validationEngine,
+            "CollectAcceptedTurnRawStateIssuesAsync");
+        Assert.True(
+            rawIssues.All(static issue => issue.Severity != IssueSeverity.Error),
+            DescribeValidationIssues(rawIssues));
+        var probe = await CreatePublishedTreatmentFullStateProbeAsync(context);
+        try
+        {
+            var filtered = await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                probe.Transaction,
+                "FilterExactPublishedItemValidationIssuesAsync",
+                context.FileSystem,
+                probe.Issues);
+            Assert.True(
+                filtered.All(static issue => issue.Severity != IssueSeverity.Error),
+                DescribeValidationIssues(filtered));
+        }
+        finally
+        {
+            await Assert.IsAssignableFrom<IAsyncDisposable>(probe.Transaction)
+                .DisposeAsync();
+        }
 
         var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
-            engine,
+            probe.Engine,
             "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
             "same-turn item plus selected treatment item oracle",
-            snapshotContext,
+            probe.SnapshotContext,
             null,
             HeldTreatmentPipelineContext.Turn,
             null);
@@ -305,9 +788,36 @@ public sealed partial class GameEngineTurnLifecycleTests
         var persistedUnrelated = Assert.Single(
             playerItems["items"]!.AsArray().OfType<JsonObject>(),
             HasUnrelatedCreationReceipt);
-        Assert.Equal(plannedUnrelatedId, persistedUnrelated["itemId"]!.GetValue<string>());
+        var persistedUnrelatedId = persistedUnrelated["itemId"]!.GetValue<string>();
+        Assert.Equal(reservedUnrelatedItemId, persistedUnrelatedId);
+        var receipt = Assert.IsType<JsonObject>(
+            persistedUnrelated["materializationReceipt"]);
+        Assert.Equal(
+            reservedUnrelatedReceiptId,
+            receipt["receiptId"]!.GetValue<string>());
+        Assert.Equal(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            receipt["creationRef"]!.GetValue<string>());
         var identity = await ReadTreatmentItemIdentityAsync(context.FileSystem);
-        Assert.Equal("active", identity.EntriesByItemId[plannedUnrelatedId]["state"]!.GetValue<string>());
+        var identityEntry = identity.EntriesByItemId[persistedUnrelatedId];
+        Assert.Equal("active", identityEntry["state"]!.GetValue<string>());
+        Assert.Equal(
+            reservedUnrelatedReceiptId,
+            identityEntry["receiptId"]!.GetValue<string>());
+        Assert.Equal(
+            HeldTreatmentPipelineContext.UnrelatedCreationRef,
+            Assert.Single(identityEntry["originCreationRefs"]!.AsArray())!
+                .GetValue<string>());
+        var createTransition = Assert.IsType<JsonObject>(
+            Assert.Single(identityEntry["transitions"]!.AsArray()));
+        Assert.Equal(
+            reservedUnrelatedTransitionId,
+            createTransition["transitionId"]!.GetValue<string>());
+        Assert.Equal("create", createTransition["kind"]!.GetValue<string>());
+        Assert.Equal(HeldTreatmentPipelineContext.Turn,
+            createTransition["turn"]!.GetValue<int>());
+        Assert.Equal(0, createTransition["quantityBefore"]!.GetValue<int>());
+        Assert.Equal(1, createTransition["quantityAfter"]!.GetValue<int>());
         Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
         Assert.Equal(1, await CountSelectedItemConsumeTransitionsAsync(context));
     }
@@ -351,7 +861,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             context.Lease));
         await AssertExactTreatmentTransactionBytesAsync(context, before);
         Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
-        Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(context.FileSystem));
+        Assert.Equal(2, await ReadCurrentTreatmentEnergyAsync(context));
         Assert.Equal(0, await CountSelectedItemConsumeTransitionsAsync(context));
     }
 
@@ -2499,9 +3009,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     private static async Task<bool> ContainsCurrentExactTreatmentRequestAsync(
         HeldTreatmentPipelineContext context)
     {
-        var commandBytes = await context.FileSystem.ReadFileBytesAsync(
+        var commandBytes = await context.ReadFileBytesAsync(
             AcceptedMechanicsPlan.WoundCommandPath);
-        var pendingBytes = await context.FileSystem.ReadFileBytesAsync(
+        var pendingBytes = await context.ReadFileBytesAsync(
             WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
         var command = commandBytes is null
             ? new JsonObject()
@@ -2744,6 +3254,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 ResourceMaterializationContract.DefinitionsPath,
                 ResourceMaterializationContract.StatePath,
                 ResourceMaterializationContract.HistoryPath,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                 ResourceMaterializationContract.CommandPath,
                 WoundCarrierCatalog.PlayerPath,
                 WoundIdentityState.StatePath,
@@ -2791,6 +3302,78 @@ public sealed partial class GameEngineTurnLifecycleTests
         return (engine, snapshotContext);
     }
 
+    private async Task<PublishedTreatmentFullStateProbe>
+        CreatePublishedTreatmentFullStateProbeAsync(
+            HeldTreatmentPipelineContext context)
+    {
+        await context.ReleaseLeaseAsync();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(context);
+        var refresh = await InvokePrivateTaskResultAsync(
+            engine,
+            "RefreshAcceptedTurnCanonicalStateForValidationAsync",
+            HeldTreatmentPipelineContext.Turn,
+            snapshotContext);
+        var baselineUsable = Assert.IsType<bool>(refresh.GetType().GetProperty(
+            "BaselineUsable",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+            .GetValue(refresh));
+        Assert.True(baselineUsable);
+        var postSealIssues = Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
+            refresh.GetType().GetProperty(
+                "PostSealIssues",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+                .GetValue(refresh));
+        Assert.DoesNotContain(postSealIssues, static issue =>
+            issue.Severity == IssueSeverity.Error);
+        var transaction = Assert.IsAssignableFrom<IAsyncDisposable>(
+            refresh.GetType().GetProperty(
+                "TreatmentResourcePublicationTransaction",
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!
+                .GetValue(refresh));
+        await InvokePrivateTaskAsync(
+            engine,
+            "EnsureClientOwnedSystemFilesHealthyAsync");
+        var fullStateIssues = await new ValidationService(
+                context.FileSystem,
+                NullLogger<ValidationService>.Instance)
+            .ValidateGameStateAsync();
+        var errors = fullStateIssues.Where(static issue =>
+            issue.Severity == IssueSeverity.Error).ToArray();
+        var continuityIssue = Assert.Single(errors);
+        Assert.Equal(
+            "npc_existing_inventory_resend_forbidden",
+            continuityIssue.Code);
+        return new PublishedTreatmentFullStateProbe(
+            engine,
+            snapshotContext,
+            transaction,
+            fullStateIssues);
+    }
+
+    private static ValidationIssue CloneValidationIssue(
+        ValidationIssue issue,
+        string? filePath = null,
+        string? actor = null,
+        string? actual = null) => new(
+        filePath ?? issue.FilePath,
+        issue.Severity,
+        issue.Message,
+        code: issue.Code,
+        actor: actor ?? issue.Actor,
+        section: issue.Section,
+        expected: issue.Expected,
+        actual: actual ?? issue.Actual,
+        repairHint: issue.RepairHint,
+        category: issue.Category,
+        repairTargetFiles: issue.RepairTargetFiles);
+
+    private sealed record PublishedTreatmentFullStateProbe(
+        GameEngine Engine,
+        object SnapshotContext,
+        object Transaction,
+        IReadOnlyList<ValidationIssue> Issues);
+
     private static async Task<IReadOnlyDictionary<string, ExactFileImage>>
         CaptureExplicitTreatmentEnvelopeBytesAsync(
             HeldTreatmentPipelineContext context)
@@ -2804,6 +3387,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ResourceMaterializationContract.DefinitionsPath,
             ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
             ResourceMaterializationContract.CommandPath,
             WoundCarrierCatalog.PlayerPath,
             WoundIdentityState.StatePath,
@@ -2826,10 +3410,13 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var requiredPath in new[]
                  {
                      NpcCoreChangesContract.NpcCorePath,
+                     MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+                     InventoryEquipmentService.ItemsPath,
                      MortalItemIdentityState.StatePath,
                      ResourceMaterializationContract.DefinitionsPath,
                      ResourceMaterializationContract.StatePath,
                      ResourceMaterializationContract.HistoryPath,
+                     CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
                      ResourceMaterializationContract.CommandPath,
                      WoundCarrierCatalog.PlayerPath,
                      WoundIdentityState.StatePath,
@@ -2847,6 +3434,12 @@ public sealed partial class GameEngineTurnLifecycleTests
         FileSystemManager fileSystem,
         string path) => Assert.IsType<JsonObject>(JsonNode.Parse(
         Assert.IsType<string>(await fileSystem.ReadFileAsync(path))));
+
+    private static async Task<JsonObject> ReadJsonObjectAsync(
+        HeldTreatmentPipelineContext context,
+        string path) => Assert.IsType<JsonObject>(JsonNode.Parse(
+        Encoding.UTF8.GetString(Assert.IsType<byte[]>(
+            await context.ReadFileBytesAsync(path))).TrimStart('\uFEFF')));
 
     private static JsonObject ReadProvider(JsonObject npcCore) => Assert.Single(
         npcCore["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
@@ -2869,7 +3462,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     private static async Task<int> ReadSelectedNpcItemCountAsync(
         HeldTreatmentPipelineContext context) => ReadNpcItemCount(
         await ReadJsonObjectAsync(
-            context.FileSystem,
+            context,
             NpcCoreChangesContract.NpcCorePath),
         HeldTreatmentPipelineContext.SelectedItemId);
 
@@ -2882,10 +3475,21 @@ public sealed partial class GameEngineTurnLifecycleTests
         return parsed;
     }
 
+    private static async Task<MortalItemIdentityParseResult>
+        ReadTreatmentItemIdentityAsync(HeldTreatmentPipelineContext context)
+    {
+        var bytes = Assert.IsType<byte[]>(await context.ReadFileBytesAsync(
+            MortalItemIdentityState.StatePath));
+        var parsed = MortalItemIdentityState.Parse(
+            Encoding.UTF8.GetString(bytes).TrimStart('\uFEFF'));
+        Assert.Empty(parsed.Issues);
+        return parsed;
+    }
+
     private static async Task<int> CountSelectedItemConsumeTransitionsAsync(
         HeldTreatmentPipelineContext context)
     {
-        var index = await ReadTreatmentItemIdentityAsync(context.FileSystem);
+        var index = await ReadTreatmentItemIdentityAsync(context);
         if (!index.EntriesByItemId.TryGetValue(
                 HeldTreatmentPipelineContext.SelectedItemId,
                 out var entry))
@@ -2900,14 +3504,18 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private static async Task<int> ReadCurrentTreatmentEnergyAsync(
-        FileSystemManager fileSystem)
+        HeldTreatmentPipelineContext context)
     {
         var definitions = ResourceDefinitionCatalog.ParseCanonical(
-            await fileSystem.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            Encoding.UTF8.GetString(Assert.IsType<byte[]>(
+                await context.ReadFileBytesAsync(
+                    ResourceMaterializationContract.DefinitionsPath))).TrimStart('\uFEFF'),
             allowMissingPristine: false);
         Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
         var state = ResourceStateContract.ParseCanonical(
-            await fileSystem.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            Encoding.UTF8.GetString(Assert.IsType<byte[]>(
+                await context.ReadFileBytesAsync(
+                    ResourceMaterializationContract.StatePath))).TrimStart('\uFEFF'),
             Assert.IsType<ResourceDefinitionCatalog>(definitions.Catalog),
             allowMissingPristine: false);
         Assert.True(state.IsValid, DescribeValidationIssues(state.Issues));
@@ -2918,6 +3526,44 @@ public sealed partial class GameEngineTurnLifecycleTests
             "energy");
         Assert.True(state.Ledger!.TryResolveExact(coordinate, out var entry));
         return decimal.ToInt32(Assert.IsType<ResourceStateEntry>(entry).Current);
+    }
+
+    private static int CountSelectedItemDurabilityCapacityTransitions(
+        ResourceHistoryState history) => history.Transitions.Count(transition =>
+        transition.Coordinate.OwnerKind == ResourceOwnerKind.Item &&
+        string.Equals(
+            transition.Coordinate.ResourceOwnerId,
+            HeldTreatmentPipelineContext.SelectedItemId,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            transition.Coordinate.ResourceKey,
+            "durability",
+            StringComparison.Ordinal) &&
+        transition.Operation == ResourceTransitionOperation.Reconfigure);
+
+    private static async Task<ResourceStateEntry> ReadSelectedItemDurabilityAsync(
+        HeldTreatmentPipelineContext context)
+    {
+        var definitions = ResourceDefinitionCatalog.ParseCanonical(
+            Encoding.UTF8.GetString(Assert.IsType<byte[]>(
+                await context.ReadFileBytesAsync(
+                    ResourceMaterializationContract.DefinitionsPath))).TrimStart('\uFEFF'),
+            allowMissingPristine: false);
+        Assert.True(definitions.IsValid, DescribeValidationIssues(definitions.Issues));
+        var state = ResourceStateContract.ParseCanonical(
+            Encoding.UTF8.GetString(Assert.IsType<byte[]>(
+                await context.ReadFileBytesAsync(
+                    ResourceMaterializationContract.StatePath))).TrimStart('\uFEFF'),
+            Assert.IsType<ResourceDefinitionCatalog>(definitions.Catalog),
+            allowMissingPristine: false);
+        Assert.True(state.IsValid, DescribeValidationIssues(state.Issues));
+        var coordinate = new ResourceCoordinate(
+            "mortal_world",
+            ResourceOwnerKind.Item,
+            HeldTreatmentPipelineContext.SelectedItemId,
+            "durability");
+        Assert.True(state.Ledger!.TryResolveExact(coordinate, out var entry));
+        return Assert.IsType<ResourceStateEntry>(entry);
     }
 
     private static bool HasUnrelatedCreationReceipt(JsonObject item) =>
@@ -2935,7 +3581,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             case "count":
             {
                 var npcCore = await ReadJsonObjectAsync(
-                    context.FileSystem,
+                    context,
                     NpcCoreChangesContract.NpcCorePath);
                 var item = Assert.Single(
                     ReadProvider(npcCore)["inventory"]!.AsArray().OfType<JsonObject>());
@@ -2945,7 +3591,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     context.Lease,
                     NpcCoreChangesContract.NpcCorePath,
                     npcCore.ToJsonString());
-                var identity = await ReadTreatmentItemIdentityAsync(context.FileSystem);
+                var identity = await ReadTreatmentItemIdentityAsync(context);
                 var entry = identity.EntriesByItemId[
                     HeldTreatmentPipelineContext.SelectedItemId];
                 var lastTransition = Assert.IsType<JsonObject>(
@@ -2962,13 +3608,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             case "carrier":
             {
                 var npcCore = await ReadJsonObjectAsync(
-                    context.FileSystem,
+                    context,
                     NpcCoreChangesContract.NpcCorePath);
                 var inventory = ReadProvider(npcCore)["inventory"]!.AsArray();
                 var item = Assert.Single(inventory.OfType<JsonObject>());
                 inventory.Clear();
                 var playerItems = await ReadJsonObjectAsync(
-                    context.FileSystem,
+                    context,
                     InventoryEquipmentService.ItemsPath);
                 playerItems["items"] ??= new JsonArray();
                 playerItems["items"]!.AsArray().Add(item.DeepClone());
@@ -2980,7 +3626,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     context.Lease,
                     InventoryEquipmentService.ItemsPath,
                     playerItems.ToJsonString());
-                var identity = await ReadTreatmentItemIdentityAsync(context.FileSystem);
+                var identity = await ReadTreatmentItemIdentityAsync(context);
                 var entry = identity.EntriesByItemId[
                     HeldTreatmentPipelineContext.SelectedItemId];
                 var sourceCarrier = Assert.IsType<JsonObject>(
@@ -3015,30 +3661,83 @@ public sealed partial class GameEngineTurnLifecycleTests
             }
             case "index":
             {
-                var index = await ReadTreatmentItemIdentityAsync(context.FileSystem);
+                var index = await ReadTreatmentItemIdentityAsync(context);
                 var entry = index.EntriesByItemId[
                     HeldTreatmentPipelineContext.SelectedItemId];
-                var carrier = entry["currentCarrier"]!.DeepClone();
-                entry["transitions"]!.AsArray().Add(new JsonObject
-                {
-                    ["transitionId"] = "mitrn_t070b4_post_seal_index_drift",
-                    ["kind"] = "semantic_update",
-                    ["turn"] = HeldTreatmentPipelineContext.Turn,
-                    ["sourceItemIds"] = new JsonArray(
-                        HeldTreatmentPipelineContext.SelectedItemId),
-                    ["sourceCarrier"] = carrier.DeepClone(),
-                    ["destinationCarrier"] = carrier,
-                    ["quantityBefore"] = 2,
-                    ["quantityAfter"] = 2,
-                    ["authorityKind"] = "test_post_seal_drift",
-                    ["authorityId"] = "t070b4_index_drift"
-                });
+                var carrier = Assert.IsType<JsonObject>(
+                    entry["currentCarrier"]!.DeepClone());
+                MortalItemIdentityState.AppendTransition(
+                    entry,
+                    MortalItemIdentityState.CreateTransition(
+                        "consume",
+                        HeldTreatmentPipelineContext.Turn,
+                        new[] { HeldTreatmentPipelineContext.SelectedItemId },
+                        carrier,
+                        carrier.DeepClone().AsObject(),
+                        quantityBefore: 2,
+                        quantityAfter: 1,
+                        authorityKind: "test_post_seal_drift",
+                        authorityId: "t070b4_index_drift"));
                 var reparsed = MortalItemIdentityState.Parse(index.Root);
                 Assert.Empty(reparsed.Issues);
                 await context.FileSystem.WriteFileAtomicAsync(
                     context.Lease,
                     MortalItemIdentityState.StatePath,
                     index.Root.ToJsonString());
+                break;
+            }
+            case "resource_capacity":
+            case "resource_current":
+            {
+                var state = await ReadJsonObjectAsync(
+                    context,
+                    ResourceMaterializationContract.StatePath);
+                var durability = Assert.Single(
+                    state["entries"]!.AsArray().OfType<JsonObject>(),
+                    entry => string.Equals(
+                                 entry["ownerKind"]?.GetValue<string>(),
+                                 "item",
+                                 StringComparison.Ordinal) &&
+                             string.Equals(
+                                 entry["resourceOwnerId"]?.GetValue<string>(),
+                                 HeldTreatmentPipelineContext.SelectedItemId,
+                                 StringComparison.Ordinal) &&
+                             string.Equals(
+                                 entry["resourceKey"]?.GetValue<string>(),
+                                 "durability",
+                                 StringComparison.Ordinal));
+                durability[string.Equals(
+                    driftAxis,
+                    "resource_capacity",
+                    StringComparison.Ordinal)
+                        ? "maximum"
+                        : "current"] = 7;
+                if (string.Equals(
+                        driftAxis,
+                        "resource_capacity",
+                        StringComparison.Ordinal))
+                {
+                    durability["maximum"] = 9;
+                }
+                await context.FileSystem.WriteFileAtomicAsync(
+                    context.Lease,
+                    ResourceMaterializationContract.StatePath,
+                    state.ToJsonString());
+                break;
+            }
+            case "shared_npc_mirror":
+            {
+                var npcCore = await ReadJsonObjectAsync(
+                    context,
+                    NpcCoreChangesContract.NpcCorePath);
+                var provider = ReadProvider(npcCore);
+                var skill = Assert.Single(
+                    provider["activeSkills"]!.AsArray().OfType<JsonObject>());
+                skill["displayName"] = "Drifted shared NPC skill/item root";
+                await context.FileSystem.WriteFileAtomicAsync(
+                    context.Lease,
+                    NpcCoreChangesContract.NpcCorePath,
+                    npcCore.ToJsonString());
                 break;
             }
             default:
@@ -3175,8 +3874,33 @@ public sealed partial class GameEngineTurnLifecycleTests
             NpcCoreChangesContract.NpcCorePath,
             new JsonObject
             {
-                ["NPCsInScene"] = new JsonArray(provider)
+                [GuardianPolicyContracts.NpcCoreSceneSectionName] =
+                    new JsonArray(provider)
             }.ToJsonString());
+        if (itemScenario?.PublishNpcSkillChange == true)
+        {
+            await fileSystem.WriteFileAtomicAsync(
+                "game_state/npcs/npc_skills.json",
+                new JsonObject
+                {
+                    ["NPCActiveSkillChanges"] = new JsonArray(new JsonObject
+                    {
+                        ["NPCId"] = HeldTreatmentPipelineContext.ProviderId,
+                        ["skillChanges"] = new JsonArray(
+                            CreateGuaranteedTreatmentSkill())
+                    }),
+                    ["NPCPassiveSkillChanges"] = new JsonArray(),
+                    ["NPCSkillMasteryChanges"] = new JsonArray(new JsonObject
+                    {
+                        ["NPCId"] = HeldTreatmentPipelineContext.ProviderId,
+                        ["skillName"] = "Guaranteed Care",
+                        ["newMasteryLevel"] = 3,
+                        ["newCurrentMasteryProgress"] = 0,
+                        ["newMasteryProgressNeeded"] = 9
+                    }),
+                    ["NPCPassiveSkillMasteryChanges"] = new JsonArray()
+                }.ToJsonString());
+        }
         if (selectedItem is not null)
         {
             var currentIndex = JsonNode.Parse(
@@ -3284,7 +4008,10 @@ public sealed partial class GameEngineTurnLifecycleTests
             }.ToJsonString());
         await WriteCanonicalPlayerTreatmentResourceAuthorityAsync(
             fileSystem,
-            currentEnergy: 2);
+            currentEnergy: 2,
+            itemResourceOwnerId: itemScenario is null
+                ? null
+                : HeldTreatmentPipelineContext.SelectedItemId);
     }
 
     private static IReadOnlyList<JsonObject>
@@ -3487,7 +4214,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private static async Task WriteCanonicalPlayerTreatmentResourceAuthorityAsync(
         FileSystemManager fileSystem,
-        int currentEnergy)
+        int currentEnergy,
+        string? itemResourceOwnerId = null)
     {
         const string initializeFingerprint =
             "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -3495,6 +4223,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
         const string healthInitializeFingerprint =
             "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        const string itemInitializeFingerprint =
+            "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
         var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
         Assert.True(definitions.TryResolveExact("energy", out var definition));
         var coordinate = new ResourceCoordinate(
@@ -3598,15 +4328,15 @@ public sealed partial class GameEngineTurnLifecycleTests
             healthInitializeFingerprint,
             null,
             1);
-        var historyResult = ResourceHistoryState.CreateValidated(
-            new[] { initialize, spent, healthInitialize },
-            definitions);
-        Assert.True(
-            historyResult.IsValid,
-            DescribeValidationIssues(historyResult.Issues));
-        var state = new ResourceStateLedger(new[]
+        var transitions = new List<ResourceTransition>
         {
-            new ResourceStateEntry(
+            initialize,
+            spent,
+            healthInitialize
+        };
+        var entries = new List<ResourceStateEntry>
+        {
+            new(
                 coordinate,
                 currentEnergy,
                 10,
@@ -3618,7 +4348,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     spent.TransitionId,
                     spent.EventRef,
                     spent.Turn)),
-            new ResourceStateEntry(
+            new(
                 healthCoordinate,
                 10,
                 10,
@@ -3630,7 +4360,74 @@ public sealed partial class GameEngineTurnLifecycleTests
                     healthInitialize.TransitionId,
                     healthInitialize.EventRef,
                     healthInitialize.Turn))
-        });
+        };
+        if (itemResourceOwnerId is not null)
+        {
+            Assert.True(definitions.TryResolveExact(
+                "durability",
+                out var durabilityDefinition));
+            Assert.Equal(
+                ResourceCapacityKind.InstanceFixed,
+                durabilityDefinition!.CapacityPolicy.Kind);
+            var durabilityCoordinate = new ResourceCoordinate(
+                "mortal_world",
+                ResourceOwnerKind.Item,
+                itemResourceOwnerId,
+                "durability");
+            var durabilityBinding = new ResourceCapacityBinding(
+                ResourceCapacityKind.InstanceFixed,
+                itemResourceOwnerId,
+                itemInitializeFingerprint);
+            var durabilityInitialized = new ResourceStateSnapshot(
+                8,
+                8,
+                durabilityBinding,
+                ResourceLifecycleState.Active);
+            var durabilityInitialize = new ResourceTransition(
+                "transition_selected_dressing_durability_initialize",
+                "operation_selected_dressing_durability_initialize",
+                "turn_3:resource:selected_dressing:durability",
+                "bootstrap_materialization",
+                "selected_dressing_durability_fixture",
+                ResourceMutationPhase.RegisteredSystemOutcome,
+                40,
+                2,
+                durabilityCoordinate,
+                ResourceTransitionOperation.Initialize,
+                0,
+                0,
+                ResourceTransitionOutcome.Applied,
+                ResourceCapacityDisposition.InitializeFromDefinition,
+                null,
+                durabilityInitialized,
+                new ResourceSourceEvidence(
+                    "bootstrap_materialization",
+                    "selected_dressing_durability_fixture",
+                    itemInitializeFingerprint),
+                itemInitializeFingerprint,
+                null,
+                3);
+            transitions.Add(durabilityInitialize);
+            entries.Add(new ResourceStateEntry(
+                durabilityCoordinate,
+                8,
+                8,
+                durabilityBinding,
+                ResourceLifecycleState.Active,
+                new ResourceChronology(
+                    3,
+                    durabilityInitialize.EventRef,
+                    durabilityInitialize.TransitionId,
+                    durabilityInitialize.EventRef,
+                    durabilityInitialize.Turn)));
+        }
+        var historyResult = ResourceHistoryState.CreateValidated(
+            transitions,
+            definitions);
+        Assert.True(
+            historyResult.IsValid,
+            DescribeValidationIssues(historyResult.Issues));
+        var state = new ResourceStateLedger(entries);
         Assert.Empty(historyResult.History!.ValidateStateAgreement(state));
         await fileSystem.WriteFileAtomicAsync(
             ResourceMaterializationContract.DefinitionsPath,
@@ -3748,6 +4545,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     materializationId:
                         HeldTreatmentPipelineContext.UnrelatedMaterializationId);
                 item["name"] = "Unrelated same-turn suture case";
+                item["quality"] = "Rare";
+                item["rarity"] = "Rare";
                 proposal.UpdateInventory = new[]
                 {
                     JsonSerializer.SerializeToElement(item)

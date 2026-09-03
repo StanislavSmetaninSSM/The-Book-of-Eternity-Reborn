@@ -174,7 +174,9 @@ public partial class GameEngine
         byte[]? pendingResolutionRepairCheckpoint = null,
         Func<Task>? beforeRepairMutation = null,
         Func<Task>? beforeTerminalRepairReturn = null,
-        bool applyProgressionOnSuccess = true)
+        bool applyProgressionOnSuccess = true,
+        MortalWoundTreatmentResourcePublicationTransaction?
+            treatmentResourcePublicationTransaction = null)
     {
         var repairAttempt = 0;
         List<ValidationIssue>? lastRepairErrors = null;
@@ -220,6 +222,12 @@ public partial class GameEngine
             issues.AddRange(await _validator.ValidatePendingMemoryLegacyApplicationAsync());
             if (progressionControl != null)
                 issues.AddRange(await _progressionSchedule.ValidateAcceptedTurnOutcomeAsync(progressionControl));
+            if (treatmentResourcePublicationTransaction is not null)
+            {
+                issues = (await treatmentResourcePublicationTransaction
+                    .FilterExactPublishedItemValidationIssuesAsync(_fs, issues))
+                    .ToList();
+            }
             var errors = PrioritizeValidationErrors(issues.Where(i => i.Severity == IssueSeverity.Error)).ToList();
 
             if (allowRepairLoop)
@@ -866,7 +874,9 @@ public partial class GameEngine
                             rollbackSnapshot,
                             "validation_failed"),
                     applyProgressionOnSuccess:
-                        treatmentResourcePublicationTransaction is null);
+                        treatmentResourcePublicationTransaction is null,
+                    treatmentResourcePublicationTransaction:
+                        treatmentResourcePublicationTransaction);
             if (!currentStateValid)
             {
                 return AcceptedTurnValidationDisposition.TerminalRejected;
