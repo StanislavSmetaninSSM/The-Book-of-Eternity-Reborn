@@ -2107,21 +2107,37 @@ public sealed partial class MortalWoundTreatmentResolverTests
             CountReusableItemDurabilityReconfigures(coldFixture);
         coldFixture.PrepareFreshSnapshot(
             "cold_item_resource_publication_history_replay");
-        using var replayFixture = CreateColdRootCopy(coldFixture);
+        using var replayFixture = CreateColdRootCopy(
+            coldFixture,
+            carrySourceTreatmentContext: false);
         Assert.NotEqual(coldFixture.Root, replayFixture.Root);
         Assert.NotSame(coldFixture.FileSystem, replayFixture.FileSystem);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             replayFixture.FileSystem,
             replayFixture.Lease));
-        var replayCatalog = Assert.IsType<
-            MortalWoundTreatmentPersistedRequestCatalogResult>(
-            RestoreCurrentPersistedTreatmentCatalog(replayFixture));
-        Assert.True(replayCatalog.IsValid, DescribeIssues(replayCatalog.Issues));
-        Assert.Empty(replayCatalog.HeldRequests);
-        var finalizedRequest = Assert.Single(replayCatalog.FinalizedRequests);
-        Assert.NotSame(request, finalizedRequest);
+        Assert.False(replayFixture.HasParserProvenancedTreatmentContext());
+        Assert.False(replayFixture.SharesTreatmentContextWith(coldFixture));
 
-        var replayCoordinates = finalizedRequest.Coordinates;
+        var replayHistory = replayFixture.ReadCurrentHistory();
+        var replayCommandRoot = ReadOptionalDurableTreatmentRoot(
+            replayFixture,
+            AcceptedMechanicsPlan.WoundCommandPath);
+        var replayPendingRoot = ReadOptionalDurableTreatmentRoot(
+            replayFixture,
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        var rawReplayCatalog = MortalWoundTreatmentPersistedRequestCatalog.Parse(
+            replayCommandRoot,
+            replayPendingRoot,
+            replayHistory);
+        Assert.True(
+            rawReplayCatalog.IsValid,
+            DescribeIssues(rawReplayCatalog.Issues));
+        Assert.Empty(rawReplayCatalog.HeldRequests);
+        var rawFinalizedRequest = Assert.Single(
+            rawReplayCatalog.FinalizedRequests);
+        Assert.NotSame(request, rawFinalizedRequest);
+
+        var replayCoordinates = rawFinalizedRequest.Coordinates;
         var parsedReplayContext = MortalWoundTreatmentAuthority.ParseContext(
             new JsonObject
             {
@@ -2137,12 +2153,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(
             parsedReplayContext.IsValid,
             DescribeIssues(parsedReplayContext.Issues));
+        var freshReplayContext = Assert.IsType<
+            MortalWoundTreatmentAuthority.Context>(parsedReplayContext.Context);
+        Assert.True(freshReplayContext.HasValidParserProvenance());
         var replayAcceptedStateResult =
             MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
                 replayFixture.FileSystem,
                 replayFixture.Lease,
-                Assert.IsType<MortalWoundTreatmentAuthority.Context>(
-                    parsedReplayContext.Context),
+                freshReplayContext,
                 replayCoordinates.WoundId);
         Assert.True(
             replayAcceptedStateResult.IsValid,
@@ -2151,8 +2169,22 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
                 replayAcceptedStateResult.Authority);
         Assert.NotSame(coldFlow.AcceptedState, replayAcceptedState);
-        var replayHistory = replayFixture.ReadCurrentHistory();
-        var replayWound = replayFixture.ReadCurrentWound();
+        var replayCatalog = replayAcceptedState.RestorePersistedTreatmentRequests(
+            replayHistory);
+        Assert.True(replayCatalog.IsValid, DescribeIssues(replayCatalog.Issues));
+        Assert.Empty(replayCatalog.HeldRequests);
+        var finalizedRequest = Assert.Single(replayCatalog.FinalizedRequests);
+        Assert.NotSame(request, finalizedRequest);
+        Assert.NotSame(rawFinalizedRequest, finalizedRequest);
+        Assert.Equal(
+            rawFinalizedRequest.RequestFingerprint,
+            finalizedRequest.RequestFingerprint);
+        Assert.Equal(replayCoordinates.WoundId, replayFixture.WoundId);
+        var replayWound = replayFixture.AssertCurrentWoundCoordinate(
+            replayCoordinates.TargetKind,
+            replayCoordinates.TargetId,
+            AcceptedStateFixture.ResolveTargetCarrierPath(
+                replayCoordinates.TargetKind));
 
         var replay = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(
             finalizedRequest,
@@ -5417,6 +5449,43 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private sealed partial class AcceptedStateFixture
     {
+        internal AcceptedStateFixture AttachColdRootWithUnprovenancedTreatmentContext(
+            string root,
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease)
+        {
+            var current = Assert.IsType<MortalWoundTreatmentAuthority.Context>(
+                TreatmentContext);
+            var unavailable = new MortalWoundTreatmentAuthority.Context(
+                current.SchemaVersion,
+                current.Realm,
+                current.TargetKind,
+                current.TargetId,
+                current.ProviderKind,
+                current.ProviderId,
+                current.CurrentLocationId)
+            {
+                SourcePath = current.SourcePath
+            };
+            Assert.False(unavailable.HasValidParserProvenance());
+            return new AcceptedStateFixture(
+                root,
+                fileSystem,
+                lease,
+                unavailable,
+                WoundId,
+                TargetKind,
+                TargetId,
+                TargetCarrierPath);
+        }
+
+        internal bool HasParserProvenancedTreatmentContext() =>
+            Assert.IsType<MortalWoundTreatmentAuthority.Context>(TreatmentContext)
+                .HasValidParserProvenance();
+
+        internal bool SharesTreatmentContextWith(AcceptedStateFixture other) =>
+            ReferenceEquals(TreatmentContext, other.TreatmentContext);
+
         internal void SetCanonicalPlayerEnergyForResourcePublicationTest(int current)
         {
             WriteCanonicalPlayerEnergyAuthority(FileSystem, current);
@@ -5480,6 +5549,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static byte[] ReadCanonicalBytes(
         AcceptedStateFixture fixture,
         string path) => File.ReadAllBytes(fixture.FileSystem.ResolvePath(path));
+
+    private static JsonElement? ReadOptionalDurableTreatmentRoot(
+        AcceptedStateFixture fixture,
+        string path)
+    {
+        var physicalPath = fixture.FileSystem.ResolvePath(path);
+        if (!File.Exists(physicalPath))
+            return null;
+        using var document = JsonDocument.Parse(File.ReadAllText(physicalPath));
+        return document.RootElement.Clone();
+    }
 
     private static IReadOnlyDictionary<string, byte[]> CaptureItemCarrierBytes(
         AcceptedStateFixture fixture) => new Dictionary<string, byte[]>(StringComparer.Ordinal)

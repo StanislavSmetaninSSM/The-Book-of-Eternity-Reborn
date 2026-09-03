@@ -2273,7 +2273,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
     }
 
-    private static AcceptedStateFixture CreateColdRootCopy(AcceptedStateFixture source)
+    private static AcceptedStateFixture CreateColdRootCopy(
+        AcceptedStateFixture source,
+        bool carrySourceTreatmentContext = true)
     {
         var root = Path.Combine(
             Path.GetTempPath(),
@@ -2289,7 +2291,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
             lease = fileSystem.AcquireCanonicalWriteLeaseAsync()
                 .GetAwaiter()
                 .GetResult();
-            return source.AttachColdRoot(root, fileSystem, lease);
+            return carrySourceTreatmentContext
+                ? source.AttachColdRoot(root, fileSystem, lease)
+                : source.AttachColdRootWithUnprovenancedTreatmentContext(
+                    root,
+                    fileSystem,
+                    lease);
         }
         catch
         {
