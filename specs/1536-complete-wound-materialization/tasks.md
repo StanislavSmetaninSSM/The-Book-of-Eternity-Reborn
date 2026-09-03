@@ -1535,6 +1535,21 @@ entrypoints require no update for T065.
   is proven at the pure topology seam because the current accepted contract cannot select a
   vehicle-owned treatment item; untouched legacy-array treatment is proven end to end.
   T070, #1536, procedure/course/Fate/heal/recovery publication, and T069-C remain open.
+  T070 Phase B.5 is the next bounded contour and follows
+  `docs/superpowers/plans/2026-09-03-t070b5-procedure-publication.md`. It replaces the
+  guaranteed-only successor gate with a typed scalar outcome-publication planner and admits
+  exactly guaranteed/procedure singleton `stabilize` plus procedure singleton
+  `no_improvement`. Natural-one Fate mitigation is published only from the sealed T067
+  critical-reaction intent through #1535's accepted lifecycle-event seam; legacy
+  `EffectEventReports` remains forbidden and a typed-plus-legacy duplicate receives the
+  exact cross-surface diagnostic. The existing resource transaction becomes a coordinated
+  treatment transaction for every procedure, including `not_required` resources: exact
+  dice/Fate/resource claims are checked before publication, retained across compensation,
+  remain unavailable after successful publication, and are released only after terminal
+  durable-command quarantine. B.5 does not admit `reduce_severity`, recovery,
+  complication-effect batches, course, heal/legacy, or T069-C and does not widen the public
+  response/request/resolution contract. It is a client-owned Mortal contour with no new GM,
+  browser/console, migration, or afterlife documentation surface.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution
