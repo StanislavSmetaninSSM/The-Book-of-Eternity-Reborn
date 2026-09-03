@@ -488,8 +488,10 @@ Run the smallest Fast and Integration boundary/QTE/Daren selections, Fast
 PlanOnly, and exactly two sequential Fast controls under the unchanged
 five-minute cap. Accept only the known 65 #1536
 `MortalWoundDiagnosisTests` failures, with unchanged display-name and stable-ID
-hashes, no timeout, zero duplicates, and complete cleanup. Keep T064 unchecked
-until a separate agent independently re-reviews the complete range.
+hashes, no timeout, zero duplicates, and complete cleanup. T064 remains
+unchecked until a separate agent independently re-reviews the complete range;
+the final review of `3dbf0572..4c8dc6aa` completed that gate with no Critical
+or Important findings.
 
 ---
 

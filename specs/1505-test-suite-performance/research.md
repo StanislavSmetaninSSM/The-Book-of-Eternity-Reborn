@@ -662,7 +662,9 @@ differences from the retained #1536 oracle; hashes remain
 `61ed2c828bc81212d76ec589671d5423bbab0d97871dfa9d455458c296af59c6`
 and `4179c375351d0dd2ba976cb4b941768462fd09136db95e025c1555ddc919a264`.
 Both are below five minutes with no timeout, zero duplicate IDs, and complete
-cleanup. T064 remains unchecked pending independent re-review.
+cleanup. Final independent whole-range review of `3dbf0572..4c8dc6aa`
+confirmed exact QTE/Daren body and assertion preservation, closed every
+Critical/Important finding, and released T064 without a merge-only PreMerge run.
 
 This work is internal test placement and scheduling only. It changes no
 production game capability, command, mechanic, state/validation/normalizer
