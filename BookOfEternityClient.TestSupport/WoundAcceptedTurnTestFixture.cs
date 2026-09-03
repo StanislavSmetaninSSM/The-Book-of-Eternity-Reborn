@@ -100,6 +100,19 @@ internal static class WoundAcceptedTurnTestFixture
                     ["authorityId"] = value.AuthorityId
                 }).ToArray())
         };
+        var woundCarriers = prepared.BaselineAuthority.PreTurnCarriers;
+        var hasSharedCarrier = woundCarriers.EnemyCombatants is not null ||
+            woundCarriers.AllyCombatants is not null ||
+            woundCarriers.AfterlifeProfiles is not null;
+        var preTurnCarriers = !hasSharedCarrier
+            ? null
+            : new EffectCarrierCatalogInput(
+                null,
+                null,
+                woundCarriers.EnemyCombatants,
+                woundCarriers.AllyCombatants,
+                woundCarriers.AfterlifeProfiles,
+                null);
 
         return new EffectAcceptedTurnInput(
             prepared.Binding.SessionId,
@@ -109,7 +122,7 @@ internal static class WoundAcceptedTurnTestFixture
             targetAuthority,
             eventInput,
             prepared.Binding.Realm,
-            PreTurnCarriers: null,
+            PreTurnCarriers: preTurnCarriers,
             PreTurnIdentityIndex: new JsonObject
             {
                 ["schemaVersion"] = 1,
