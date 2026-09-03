@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using Xunit;
@@ -205,8 +207,6 @@ public sealed class IntegrationTestBoundaryTests
 
     private static readonly string[] RegressionIntegrationSources =
     [
-        "ActorMaterializationValidationTests.cs",
-        "AfterlifeEntityProfileValidationTests.cs",
         "AfterlifeSpiritualConflictValidationTests.cs",
         "BrowserCommandPresentationAuditTests.cs",
         "ExplorerModeCommandTests.cs",
@@ -1802,10 +1802,12 @@ public sealed class IntegrationTestBoundaryTests
         {
             (
                 RelativePath: "Expected.cs",
-                Source: ProcessIntegrationTrait + Environment.NewLine + E2ETrait),
+                Source: ProcessIntegrationTrait + Environment.NewLine + E2ETrait +
+                    Environment.NewLine + "public sealed class Expected {}"),
             (
                 RelativePath: "Unexpected.cs",
-                Source: ProcessIntegrationTrait)
+                Source: ProcessIntegrationTrait + Environment.NewLine +
+                    "public sealed class Unexpected {}")
         };
 
         var violations = ExactCategoryManifestViolations(
@@ -1825,6 +1827,204 @@ public sealed class IntegrationTestBoundaryTests
             $"Unexpected.cs: unreviewed classification {ProcessIntegrationTrait}",
             violations,
             StringComparer.Ordinal);
+    }
+
+    [Fact]
+    public void ExactCategoryManifest_RequiresClassLevelTraits()
+    {
+        var expected = new Dictionary<string, string[]>(StringComparer.Ordinal)
+        {
+            ["CommentOnly.cs"] = [ProcessIntegrationTrait],
+            ["StringOnly.cs"] = [E2ETrait],
+            ["MethodOnly.cs"] = [RegressionIntegrationTrait],
+            ["WrongClass.cs"] = [ProcessIntegrationTrait],
+            [Path.Combine("WebUi", "Valid.cs")] = [E2ETrait]
+        };
+        var sources = new[]
+        {
+            (
+                RelativePath: "CommentOnly.cs",
+                Source: "// " + ProcessIntegrationTrait + Environment.NewLine +
+                    "public sealed class CommentOnly {}"),
+            (
+                RelativePath: "StringOnly.cs",
+                Source: "public sealed class StringOnly { " +
+                    "private const string Decoy = \"" +
+                    E2ETrait.Replace("\"", "\\\"") + "\"; }"),
+            (
+                RelativePath: "MethodOnly.cs",
+                Source: "public sealed class MethodOnly { " +
+                    RegressionIntegrationTrait + " public void Test() {} }"),
+            (
+                RelativePath: "WrongClass.cs",
+                Source: ProcessIntegrationTrait + Environment.NewLine +
+                    "public sealed class Decoy {} public sealed class WrongClass {}"),
+            (
+                RelativePath: Path.Combine("WebUi", "Valid.cs"),
+                Source: E2ETrait + Environment.NewLine +
+                    "public sealed class Valid {}"),
+            (
+                RelativePath: "UnreviewedMethodOnly.cs",
+                Source: "public sealed class UnreviewedMethodOnly { " +
+                    ProcessIntegrationTrait + " public void Test() {} }")
+        };
+
+        var violations = ExactCategoryManifestViolations(
+            expected,
+            sources,
+            [ProcessIntegrationTrait, E2ETrait, RegressionIntegrationTrait]);
+
+        Assert.Contains(
+            $"CommentOnly.cs: missing {ProcessIntegrationTrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.Contains(
+            $"StringOnly.cs: missing {E2ETrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.Contains(
+            $"MethodOnly.cs: missing {RegressionIntegrationTrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.Contains(
+            $"WrongClass.cs: missing {ProcessIntegrationTrait}",
+            violations,
+            StringComparer.Ordinal);
+        Assert.DoesNotContain(
+            violations,
+            violation => violation.Contains("Valid.cs", StringComparison.Ordinal));
+        Assert.DoesNotContain(
+            violations,
+            violation => violation.Contains("UnreviewedMethodOnly.cs", StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void QteAndDarenSplitSources_PreserveReviewedExecutableInventories()
+    {
+        var contracts = new[]
+        {
+            (
+                Directory: FastTestsDirectory,
+                FileName: "QteDeterministicLogicTests.cs",
+                ClassName: "QteDeterministicLogicTests",
+                Manifest: FastBoundaryTestInventories.QteDeterministicLogic),
+            (
+                Directory: IntegrationTestsDirectory,
+                FileName: "QteSceneServiceTests.cs",
+                ClassName: "QteSceneServiceTests",
+                Manifest: FastBoundaryTestInventories.QteSceneService),
+            (
+                Directory: FastTestsDirectory,
+                FileName: "DarenQteDeterministicLogicTests.cs",
+                ClassName: "DarenQteDeterministicLogicTests",
+                Manifest: FastBoundaryTestInventories.DarenDeterministicLogic),
+            (
+                Directory: IntegrationTestsDirectory,
+                FileName: "DarenQteShowcaseTests.cs",
+                ClassName: "DarenQteShowcaseTests",
+                Manifest: FastBoundaryTestInventories.DarenQteShowcase)
+        };
+
+        foreach (var contract in contracts)
+        {
+            var violations = ExactTestInventoryViolations(
+                SourcePath(contract.Directory, contract.FileName),
+                contract.ClassName,
+                ManifestLines(contract.Manifest));
+
+            Assert.True(
+                violations.Length == 0,
+                $"{contract.ClassName} executable inventory differs from the reviewed manifest:" +
+                Environment.NewLine +
+                string.Join(Environment.NewLine, violations));
+        }
+    }
+
+    [Fact]
+    public void ExactTestInventory_RejectsMissingChangedAndDuplicateRows()
+    {
+        const string source = """
+            public sealed class SampleTests
+            {
+                [Fact]
+                public void Kept() {}
+
+                [Theory]
+                [InlineData(1)]
+                [InlineData(1)]
+                public void Rows(int value) {}
+
+                [Theory]
+                [InlineData(2)]
+                public void ChangedKind(int value) {}
+            }
+            """;
+        string[] expected =
+        [
+            "Fact|Kept",
+            "Theory|Rows|literal:1",
+            "Theory|Rows|literal:2",
+            "Fact|ChangedKind"
+        ];
+
+        var violations = ExactTestInventoryViolations(
+            "Synthetic.cs",
+            "SampleTests",
+            expected,
+            source);
+
+        Assert.Contains("missing (1x): Fact|ChangedKind", violations, StringComparer.Ordinal);
+        Assert.Contains("missing (1x): Theory|Rows|literal:2", violations, StringComparer.Ordinal);
+        Assert.Contains("unexpected (1x): Theory|ChangedKind|literal:2", violations, StringComparer.Ordinal);
+        Assert.Contains("unexpected (1x): Theory|Rows|literal:1", violations, StringComparer.Ordinal);
+    }
+
+    [Fact]
+    public void DarenQteSources_AreSemanticallySplitAcrossTestAssemblies()
+    {
+        var fastPath = SourcePath(FastTestsDirectory, "DarenQteDeterministicLogicTests.cs");
+        var integrationPath = SourcePath(IntegrationTestsDirectory, "DarenQteShowcaseTests.cs");
+
+        Assert.True(File.Exists(fastPath), "The fixture-free Daren QTE source must exist in Fast.");
+        Assert.True(File.Exists(integrationPath), "The file-backed Daren QTE source must remain in Integration.");
+
+        var fastRoot = CSharpSyntaxTree.ParseText(File.ReadAllText(fastPath)).GetCompilationUnitRoot();
+        var fastClass = Assert.Single(
+            fastRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            declaration => declaration.Identifier.ValueText == "DarenQteDeterministicLogicTests");
+        Assert.Empty(CategoryTraits(fastClass));
+        Assert.DoesNotContain(
+            fastClass.BaseList?.Types ?? [],
+            type => type.Type.ToString() == "IDisposable");
+        Assert.Empty(fastClass.Members.OfType<ConstructorDeclarationSyntax>());
+        Assert.DoesNotContain(
+            fastClass.Members.OfType<FieldDeclarationSyntax>(),
+            field =>
+                !field.Modifiers.Any(SyntaxKind.StaticKeyword) &&
+                !field.Modifiers.Any(SyntaxKind.ConstKeyword));
+
+        var forbiddenFastTypes = new[]
+        {
+            "FileSystemManager",
+            "StateManager",
+            "QteWebInteractionService",
+            "LocalUiSessionLockService"
+        };
+        var fastTypes = fastClass.DescendantNodes()
+            .OfType<TypeSyntax>()
+            .Select(type => type.ToString())
+            .ToArray();
+        Assert.All(
+            forbiddenFastTypes,
+            forbidden => Assert.DoesNotContain(forbidden, fastTypes, StringComparer.Ordinal));
+        Assert.DoesNotContain(
+            fastClass.DescendantNodes().OfType<ObjectCreationExpressionSyntax>(),
+            creation => creation.Type.ToString() == "DarenQteRewardProfileService");
+        Assert.DoesNotContain("Path.GetTempPath", fastClass.ToString(), StringComparison.Ordinal);
+
+        Assert.Equal(
+            ["RegressionIntegration"],
+            CategoryTraits("DarenQteShowcaseTests.cs"));
     }
 
     [Fact]
@@ -2140,11 +2340,23 @@ public sealed class IntegrationTestBoundaryTests
         IEnumerable<(string RelativePath, string Source)> sources,
         string[] classifiedTraits)
     {
+        var classified = classifiedTraits.ToHashSet(StringComparer.Ordinal);
         var actual = sources
             .Select(source => (
                 source.RelativePath,
-                Traits: classifiedTraits
-                    .Where(trait => source.Source.Contains(trait, StringComparison.Ordinal))
+                Traits: CSharpSyntaxTree
+                    .ParseText(source.Source)
+                    .GetCompilationUnitRoot()
+                    .DescendantNodes()
+                    .OfType<ClassDeclarationSyntax>()
+                    .Where(IsTopLevelClass)
+                    .Where(declaration => declaration.Identifier.ValueText ==
+                        ExpectedTestClassName(source.RelativePath))
+                    .SelectMany(CategoryTraits)
+                    .Select(CategoryTraitSource)
+                    .Where(classified.Contains)
+                    .Distinct(StringComparer.Ordinal)
+                    .Order(StringComparer.Ordinal)
                     .ToArray()))
             .Where(source => source.Traits.Length > 0)
             .ToDictionary(
@@ -2175,6 +2387,201 @@ public sealed class IntegrationTestBoundaryTests
             .Order(StringComparer.Ordinal)
             .ToArray();
     }
+
+    private static bool IsTopLevelClass(ClassDeclarationSyntax declaration) =>
+        declaration.Parent is CompilationUnitSyntax or
+            NamespaceDeclarationSyntax or
+            FileScopedNamespaceDeclarationSyntax;
+
+    private static string ExpectedTestClassName(string relativePath)
+    {
+        if (relativePath.Replace('\\', '/') ==
+            "ExplorerWebCommandServiceTests.Effects.cs")
+        {
+            return "ExplorerWebCommandServiceEffectTests";
+        }
+
+        var stem = Path.GetFileNameWithoutExtension(relativePath);
+        var partialSeparator = stem.IndexOf('.', StringComparison.Ordinal);
+        return partialSeparator < 0 ? stem : stem[..partialSeparator];
+    }
+
+    private static string CategoryTraitSource(string category) =>
+        $"[Trait(\"Category\", \"{category}\")]";
+
+    private static string[] ManifestLines(string manifest) =>
+        manifest.Split(
+            ["\r\n", "\n"],
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    private static string[] ExactTestInventoryViolations(
+        string sourcePath,
+        string className,
+        IReadOnlyCollection<string> expected)
+    {
+        if (!File.Exists(sourcePath))
+            return [$"missing source: {sourcePath}"];
+
+        return ExactTestInventoryViolations(
+            sourcePath,
+            className,
+            expected,
+            File.ReadAllText(sourcePath));
+    }
+
+    private static string[] ExactTestInventoryViolations(
+        string sourceName,
+        string className,
+        IReadOnlyCollection<string> expected,
+        string source)
+    {
+        var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
+        var violations = root.GetDiagnostics()
+            .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+            .Select(diagnostic => $"{sourceName}: parse error {diagnostic}")
+            .ToList();
+        var classes = root.DescendantNodes()
+            .OfType<ClassDeclarationSyntax>()
+            .Where(declaration => declaration.Identifier.ValueText == className)
+            .ToArray();
+        if (classes.Length != 1)
+        {
+            violations.Add(
+                $"{sourceName}: expected one class '{className}', found {classes.Length}");
+            return violations.Order(StringComparer.Ordinal).ToArray();
+        }
+
+        var actual = new List<string>();
+        foreach (var method in classes[0].Members.OfType<MethodDeclarationSyntax>())
+        {
+            var attributes = method.AttributeLists
+                .SelectMany(static list => list.Attributes)
+                .ToArray();
+            var facts = attributes
+                .Where(attribute => AttributeNameIs(attribute, "Fact"))
+                .ToArray();
+            var theories = attributes
+                .Where(attribute => AttributeNameIs(attribute, "Theory"))
+                .ToArray();
+            var rows = attributes
+                .Where(attribute => AttributeNameIs(attribute, "InlineData"))
+                .ToArray();
+
+            if (facts.Length == 0 && theories.Length == 0)
+                continue;
+
+            if (facts.Length == 1 && theories.Length == 0)
+            {
+                actual.Add($"Fact|{method.Identifier.ValueText}");
+                if (rows.Length > 0)
+                {
+                    violations.Add(
+                        $"{sourceName}: Fact '{method.Identifier.ValueText}' carries " +
+                        $"{rows.Length} InlineData row(s)");
+                }
+
+                continue;
+            }
+
+            if (facts.Length == 0 && theories.Length == 1)
+            {
+                if (rows.Length == 0)
+                {
+                    violations.Add(
+                        $"{sourceName}: Theory '{method.Identifier.ValueText}' has no InlineData rows");
+                }
+
+                foreach (var row in rows)
+                {
+                    var arguments = row.ArgumentList?.Arguments
+                        .Select(argument => TestArgumentSignature(argument.Expression))
+                        .ToArray() ?? [];
+                    actual.Add(
+                        $"Theory|{method.Identifier.ValueText}|{string.Join('|', arguments)}");
+                }
+
+                continue;
+            }
+
+            violations.Add(
+                $"{sourceName}: test '{method.Identifier.ValueText}' must carry exactly " +
+                "one Fact or one Theory attribute");
+        }
+
+        var expectedCounts = expected
+            .GroupBy(static entry => entry, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        var actualCounts = actual
+            .GroupBy(static entry => entry, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        foreach (var entry in expectedCounts.Keys
+                     .Concat(actualCounts.Keys)
+                     .Distinct(StringComparer.Ordinal)
+                     .Order(StringComparer.Ordinal))
+        {
+            var expectedCount = expectedCounts.GetValueOrDefault(entry);
+            var actualCount = actualCounts.GetValueOrDefault(entry);
+            if (expectedCount > actualCount)
+                violations.Add($"missing ({expectedCount - actualCount}x): {entry}");
+            if (actualCount > expectedCount)
+                violations.Add($"unexpected ({actualCount - expectedCount}x): {entry}");
+        }
+
+        return violations.Order(StringComparer.Ordinal).ToArray();
+    }
+
+    private static bool AttributeNameIs(AttributeSyntax attribute, string expectedName) =>
+        attribute.Name.ToString() is var name &&
+        (string.Equals(name, expectedName, StringComparison.Ordinal) ||
+            string.Equals(name, expectedName + "Attribute", StringComparison.Ordinal));
+
+    private static string TestArgumentSignature(ExpressionSyntax expression)
+    {
+        if (expression is LiteralExpressionSyntax literal)
+        {
+            var value = literal.Token.ValueText;
+            if (literal.IsKind(SyntaxKind.StringLiteralExpression))
+            {
+                if (value.Length > 80 ||
+                    value.IndexOfAny(['\r', '\n']) >= 0 ||
+                    string.IsNullOrWhiteSpace(value))
+                {
+                    var digest = Convert
+                        .ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)))
+                        .ToLowerInvariant();
+                    return $"string(len={value.Length},sha256={digest})";
+                }
+
+                return $"string:{EscapeTestManifestValue(value)}";
+            }
+
+            if (literal.IsKind(SyntaxKind.CharacterLiteralExpression))
+            {
+                var character = Assert.IsType<char>(literal.Token.Value);
+                return $"char:U+{(int)character:X4}";
+            }
+
+            if (literal.IsKind(SyntaxKind.NullLiteralExpression))
+                return "null";
+            if (literal.IsKind(SyntaxKind.TrueLiteralExpression) ||
+                literal.IsKind(SyntaxKind.FalseLiteralExpression))
+            {
+                return $"bool:{value.ToLowerInvariant()}";
+            }
+
+            return $"literal:{EscapeTestManifestValue(value)}";
+        }
+
+        var syntax = Regex.Replace(expression.ToString(), @"\s+", "");
+        return $"syntax:{EscapeTestManifestValue(syntax)}";
+    }
+
+    private static string EscapeTestManifestValue(string value) =>
+        value
+            .Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("|", "\\|", StringComparison.Ordinal)
+            .Replace("\r", "\\r", StringComparison.Ordinal)
+            .Replace("\n", "\\n", StringComparison.Ordinal);
 
     private static string[] ScopedValidationDeclarationLocations(
         IEnumerable<(string RelativePath, string Source)> sources)
