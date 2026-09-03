@@ -932,6 +932,48 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
+    internal static bool RollbackNewMortalWoundProcedureTreatmentReservations(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        object resourceReservationCapability,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        MortalWoundProcedureReservationOwnership procedureOwnership,
+        MortalWoundTreatmentResourceReservationOwnership resourceOwnership,
+        MortalWoundTreatmentResourceReservationAuthority resourceAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(diceReservation);
+        ArgumentNullException.ThrowIfNull(procedureOwnership);
+        ArgumentNullException.ThrowIfNull(resourceOwnership);
+        ArgumentNullException.ThrowIfNull(resourceAuthority);
+        try
+        {
+            return GetState(fileSystem, writeLease)
+                .RollbackNewMortalWoundProcedureTreatmentReservations(
+                    fileSystem,
+                    writeLease,
+                    acceptedState,
+                    resourceReservationCapability,
+                    diceReservation,
+                    criticalReactionReservation,
+                    criticalReactionAgreement,
+                    procedureOwnership,
+                    resourceOwnership,
+                    resourceAuthority);
+        }
+        catch (Exception exception) when (
+            exception is InvalidOperationException or ObjectDisposedException or
+                ArgumentException or IOException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
     internal static MortalWoundTreatmentResourceReservationResult
         ReserveMortalWoundTreatmentResources(
             FileSystemManager fileSystem,
@@ -1956,6 +1998,58 @@ internal static class AcceptedTurnAuthorityRegistry
                 }
                 if (ownership.DiceWasCreated)
                     _procedureDice.ReleaseUnchecked(diceReservation);
+                return true;
+            }
+        }
+
+        internal bool RollbackNewMortalWoundProcedureTreatmentReservations(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            object resourceReservationCapability,
+            MortalWoundProcedureDiceReservation diceReservation,
+            MortalWoundCriticalReactionReservation? criticalReactionReservation,
+            MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+            MortalWoundProcedureReservationOwnership procedureOwnership,
+            MortalWoundTreatmentResourceReservationOwnership resourceOwnership,
+            MortalWoundTreatmentResourceReservationAuthority resourceAuthority)
+        {
+            lock (_gate)
+            {
+                if (!MortalWoundTreatmentResourceComposer
+                        .IsResourceReservationCapability(resourceReservationCapability) ||
+                    !ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                    !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
+                    !string.Equals(
+                        diceReservation.AcceptedStateFingerprint,
+                        acceptedState.AcceptedStateFingerprint,
+                        StringComparison.Ordinal) ||
+                    !procedureOwnership.Matches(
+                        diceReservation,
+                        criticalReactionReservation,
+                        criticalReactionAgreement) ||
+                    !_procedureDice.CanRelease(diceReservation) ||
+                    !_criticalReactions.MatchesReleaseAgreement(
+                        diceReservation,
+                        criticalReactionReservation,
+                        criticalReactionAgreement) ||
+                    !_treatmentResources.CanRollbackNew(
+                        TreatmentResourceRegistryCapability,
+                        resourceOwnership,
+                        resourceAuthority))
+                {
+                    return false;
+                }
+
+                if (procedureOwnership.CriticalReactionWasCreated)
+                {
+                    _criticalReactions.ReleaseUnchecked(
+                        diceReservation,
+                        criticalReactionAgreement);
+                }
+                if (procedureOwnership.DiceWasCreated)
+                    _procedureDice.ReleaseUnchecked(diceReservation);
+                _treatmentResources.RollbackNewUnchecked(resourceOwnership);
                 return true;
             }
         }

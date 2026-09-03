@@ -976,6 +976,27 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             criticalReactionAgreement,
             ownership);
 
+    internal bool RollbackNewProcedureTreatmentReservations(
+        object resourceReservationCapability,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement,
+        MortalWoundProcedureReservationOwnership procedureOwnership,
+        MortalWoundTreatmentResourceReservationOwnership resourceOwnership,
+        MortalWoundTreatmentResourceReservationAuthority resourceAuthority) =>
+        AcceptedTurnAuthorityRegistry
+            .RollbackNewMortalWoundProcedureTreatmentReservations(
+                _fileSystem,
+                _writeLease,
+                this,
+                resourceReservationCapability,
+                diceReservation,
+                criticalReactionReservation,
+                criticalReactionAgreement,
+                procedureOwnership,
+                resourceOwnership,
+                resourceAuthority);
+
     internal MortalWoundTreatmentResourceReservationResult ReserveTreatmentResources(
         object reservationCapability,
         MortalWoundTreatmentAttemptCoordinates coordinates,

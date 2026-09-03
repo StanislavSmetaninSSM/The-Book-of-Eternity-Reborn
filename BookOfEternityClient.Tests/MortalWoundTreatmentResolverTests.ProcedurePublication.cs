@@ -268,6 +268,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
     }
 
+    private static ResolverScenario PrepareProcedurePublicationScenario(
+        ResolverScenario scenario) => scenario with
+    {
+        History = CreateCurrentWoundHistory(scenario.Before),
+        SeedCanonicalWoundEffects = true
+    };
+
     private static TreatmentFlow PersistAndRehydrateProcedurePublication(
         AcceptedStateFixture fixture,
         TreatmentFlow initial,
@@ -278,9 +285,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ComposeTreatmentCommand(
                 initial,
                 "The accepted procedure is persisted before canonical publication."));
-        var restored = Assert.Single(AssertValidPersistedCatalog(
-            RestoreCurrentPersistedTreatmentCatalog(fixture),
-            boundary + " persisted procedure"));
+        var initialRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            initial.Request);
+        var restored = Assert.Single(
+            AssertValidPersistedCatalog(
+                RestoreCurrentPersistedTreatmentCatalog(fixture),
+                boundary + " persisted procedure"),
+            candidate => string.Equals(
+                Assert.IsType<MortalWoundTreatmentAttemptRequest>(candidate)
+                    .RequestFingerprint,
+                initialRequest.RequestFingerprint,
+                StringComparison.Ordinal));
         var rehydrated = RehydratePersistedTreatment(
             fixture,
             "procedure",

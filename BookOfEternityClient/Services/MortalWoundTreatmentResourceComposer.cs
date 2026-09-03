@@ -712,6 +712,30 @@ internal static class MortalWoundTreatmentResourceComposer
             preparation.Authority);
     }
 
+    internal static bool RollbackNewProcedureAndResources(
+        MortalWoundProcedureCheckAuthority? procedure,
+        MortalWoundTreatmentResourcePreparationResult? preparation)
+    {
+        if (procedure is null ||
+            preparation is not
+            {
+                IsValid: true,
+                Authority: not null,
+                AcceptedState: not null,
+                Ownership: not null
+            } ||
+            preparation.Issues.Count != 0)
+        {
+            return false;
+        }
+
+        return procedure.RollbackNewProvisionalReservationsWithResources(
+            preparation.AcceptedState,
+            ResourceReservationCapability,
+            preparation.Ownership,
+            preparation.Authority);
+    }
+
     internal static MortalWoundTreatmentResourceRehydrationResult
         RehydratePersistedAuthority(MortalWoundTreatmentAttemptRequest? request)
     {

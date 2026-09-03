@@ -29,6 +29,40 @@ internal sealed partial class MortalWoundTreatmentAttemptRequestResult
     }
 }
 
+internal sealed class MortalWoundTreatmentProvisionalClaimCleanup
+{
+    private readonly MortalWoundTreatmentAcceptedStateAuthority _acceptedState;
+    private readonly MortalWoundProcedureCheckAuthority _procedure;
+    private readonly MortalWoundTreatmentResourcePreparationResult _resources;
+
+    internal MortalWoundTreatmentProvisionalClaimCleanup(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundProcedureCheckAuthority procedure,
+        MortalWoundTreatmentResourcePreparationResult resources)
+    {
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        ArgumentNullException.ThrowIfNull(procedure);
+        ArgumentNullException.ThrowIfNull(resources);
+        _acceptedState = acceptedState;
+        _procedure = procedure;
+        _resources = resources;
+    }
+
+    internal bool Rollback(
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        ArgumentNullException.ThrowIfNull(acceptedState);
+        return ReferenceEquals(_acceptedState, acceptedState) &&
+               ReferenceEquals(request.ModeAuthority, _procedure) &&
+               ReferenceEquals(request.ResourceAuthority, _resources.Authority) &&
+               MortalWoundTreatmentResourceComposer.RollbackNewProcedureAndResources(
+                   _procedure,
+                   _resources);
+    }
+}
+
 internal sealed partial class MortalWoundTreatmentAttemptRequest
 {
     private const string FingerprintDomain =
@@ -42,7 +76,8 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         WoundMaterializationEnvelope routeSourceWound,
         MortalWoundTreatmentModeAuthority modeAuthority,
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
-        MortalWoundTreatmentResourceReservationAuthority resourceAuthority)
+        MortalWoundTreatmentResourceReservationAuthority resourceAuthority,
+        MortalWoundTreatmentProvisionalClaimCleanup? provisionalClaimCleanup)
     {
         MortalWoundTreatmentPlanner.RequestMintCapability.RequireAuthority(mintCapability);
         ArgumentException.ThrowIfNullOrWhiteSpace(mode);
@@ -87,6 +122,7 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
             modeAuthority,
             requirementAuthority,
             resourceAuthority,
+            provisionalClaimCleanup,
             ComputeFingerprint(
                 mode,
                 coordinates,
@@ -159,6 +195,7 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
             modeAuthority,
             requirementAuthority,
             resourceAuthority,
+            provisionalClaimCleanup: null,
             requestFingerprint);
         return restored.HasMatchingFingerprint() ? restored : null;
     }
@@ -349,16 +386,23 @@ internal static partial class MortalWoundTreatmentPlanner
             return MortalWoundTreatmentAttemptRequestResult.Invalid(resourceResult.Issues);
         }
 
-        var sealedResult = SealProcedureRequest(
+        var sealedResult = SealRequest(
+            "procedure",
             coordinates,
+            milestoneOrdinal: null,
+            before,
             modeResult.Authority,
             requirementResult.Authority,
             resourceResult.Authority,
-            before);
+            new MortalWoundTreatmentProvisionalClaimCleanup(
+                acceptedState!,
+                modeResult.Authority,
+                resourceResult));
         if (!sealedResult.IsValid)
         {
-            MortalWoundTreatmentResourceComposer.RollbackNew(resourceResult);
-            modeResult.Authority.RollbackNewProvisionalReservations(acceptedState!);
+            MortalWoundTreatmentResourceComposer.RollbackNewProcedureAndResources(
+                modeResult.Authority,
+                resourceResult);
         }
         return sealedResult;
     }
@@ -539,7 +583,8 @@ internal static partial class MortalWoundTreatmentPlanner
         WoundMaterializationEnvelope? routeSourceWound,
         MortalWoundTreatmentModeAuthority? modeAuthority,
         MortalWoundTreatmentRequirementAuthorityBundle? requirementAuthority,
-        MortalWoundTreatmentResourceReservationAuthority? resourceAuthority)
+        MortalWoundTreatmentResourceReservationAuthority? resourceAuthority,
+        MortalWoundTreatmentProvisionalClaimCleanup? provisionalClaimCleanup = null)
     {
         var issues = new List<ValidationIssue>();
         if (coordinates is null)
@@ -600,7 +645,8 @@ internal static partial class MortalWoundTreatmentPlanner
                     routeSourceWound!,
                     modeAuthority!,
                     requirementAuthority!,
-                    resourceAuthority!));
+                    resourceAuthority!,
+                    provisionalClaimCleanup));
         }
         catch (Exception exception) when (exception is ArgumentException or
                                            InvalidOperationException or

@@ -443,26 +443,35 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
     {
         ArgumentNullException.ThrowIfNull(ownership);
         ArgumentNullException.ThrowIfNull(authority);
-        if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
-                registryCapability) ||
-            !_byOperationKey.TryGetValue(
-                ownership.OperationKey,
-                out var current) ||
-            !ownership.Matches(current, authority))
-        {
+        if (!CanRollbackNew(registryCapability, ownership, authority))
             return false;
-        }
-
-        if (current.State !=
-            MortalWoundTreatmentResourceReservationState.ProvisionalHeld)
-        {
-            return false;
-        }
-
-        if (!ownership.WasCreated)
-            return true;
-        _byOperationKey.Remove(ownership.OperationKey);
+        RollbackNewUnchecked(ownership);
         return true;
+    }
+
+    internal bool CanRollbackNew(
+        object registryCapability,
+        MortalWoundTreatmentResourceReservationOwnership ownership,
+        MortalWoundTreatmentResourceReservationAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(ownership);
+        ArgumentNullException.ThrowIfNull(authority);
+        return AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
+                   registryCapability) &&
+               _byOperationKey.TryGetValue(
+                   ownership.OperationKey,
+                   out var current) &&
+               ownership.Matches(current, authority) &&
+               current.State ==
+               MortalWoundTreatmentResourceReservationState.ProvisionalHeld;
+    }
+
+    internal void RollbackNewUnchecked(
+        MortalWoundTreatmentResourceReservationOwnership ownership)
+    {
+        ArgumentNullException.ThrowIfNull(ownership);
+        if (ownership.WasCreated)
+            _byOperationKey.Remove(ownership.OperationKey);
     }
 
     internal MortalWoundTreatmentResourceLifecycleResult ConfirmPersisted(

@@ -422,6 +422,23 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             _criticalReactionAgreement,
             _reservationOwnership);
 
+    internal bool RollbackNewProvisionalReservationsWithResources(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        object resourceReservationCapability,
+        MortalWoundTreatmentResourceReservationOwnership resourceOwnership,
+        MortalWoundTreatmentResourceReservationAuthority resourceAuthority) =>
+        acceptedState is not null &&
+        _diceReservation is not null &&
+        _reservationOwnership is not null &&
+        acceptedState.RollbackNewProcedureTreatmentReservations(
+            resourceReservationCapability,
+            _diceReservation,
+            _criticalReactionReservation,
+            _criticalReactionAgreement,
+            _reservationOwnership,
+            resourceOwnership,
+            resourceAuthority);
+
     internal bool HasLiveReservationAgreement(
         object liveCheckCapability,
         MortalWoundProcedureDiceReservationRegistry diceRegistry,

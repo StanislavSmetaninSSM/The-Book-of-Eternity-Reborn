@@ -55,6 +55,7 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         MortalWoundTreatmentModeAuthority modeAuthority,
         MortalWoundTreatmentRequirementAuthorityBundle requirementAuthority,
         MortalWoundTreatmentResourceReservationAuthority resourceAuthority,
+        MortalWoundTreatmentProvisionalClaimCleanup? provisionalClaimCleanup,
         string requestFingerprint)
     {
         Mode = mode;
@@ -65,8 +66,12 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
         ModeAuthority = modeAuthority;
         RequirementAuthority = requirementAuthority;
         ResourceAuthority = resourceAuthority;
+        _provisionalClaimCleanup = provisionalClaimCleanup;
         RequestFingerprint = requestFingerprint;
     }
+
+    private readonly MortalWoundTreatmentProvisionalClaimCleanup?
+        _provisionalClaimCleanup;
 
     public string Mode { get; }
     public MortalWoundTreatmentAttemptCoordinates Coordinates { get; }
@@ -77,6 +82,10 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
     public MortalWoundTreatmentRequirementAuthorityBundle RequirementAuthority { get; }
     public MortalWoundTreatmentResourceReservationAuthority ResourceAuthority { get; }
     public string RequestFingerprint { get; }
+
+    internal bool RollbackNewProvisionalClaims(
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
+        _provisionalClaimCleanup?.Rollback(this, acceptedState) == true;
 }
 
 internal sealed partial class MortalWoundTreatmentResolutionResult

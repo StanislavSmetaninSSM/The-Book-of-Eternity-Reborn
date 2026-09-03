@@ -1494,9 +1494,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void ProcedureFailedAttempt_ConsumesExactlyItsDeclaredQuantityOnce()
     {
-        var scenario = CreateScenario(
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_disadvantage_uses_two_contiguous_dice",
-            "procedure");
+            "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = PersistAndRehydrateProcedurePublication(
             fixture,
@@ -1572,7 +1572,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         route["resolution"]!["modifierSource"]!["requirementIndex"] = 2;
         if (!consumesSupply)
             route["resourcePolicy"]!["consumeOn"] = new JsonArray("success");
-        scenario = scenario with { ExpectedIntentCount = 1 };
+        scenario = PrepareProcedurePublicationScenario(
+            scenario with { ExpectedIntentCount = 1 });
 
         using var fixture = AcceptedStateFixture.Create(scenario);
         Assert.Equal(
@@ -1630,9 +1631,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void ProcedureFateReaction_ConsumesOldestAtomicallyThenExposesNextShield()
     {
-        var scenario = CreateScenario(
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_player_natural_one_reserves_oldest_fate_shield",
-            "procedure");
+            "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
         var first = PersistAndRehydrateProcedurePublication(
             fixture,
@@ -1643,7 +1644,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 scenario.RouteId),
             "first Fate reaction");
         ComposeAndPublishCoordinatedProcedureTreatment(fixture, first);
-        Assert.Equal(new[] { "effect_fate_shield_newer" }, fixture.ReadActivePlayerEffectIds());
+        Assert.Equal(
+            new[] { "effect_fate_shield_newer" },
+            fixture.ReadActivePlayerEffectIds().Where(static effectId =>
+                effectId.StartsWith("effect_fate_shield_", StringComparison.Ordinal)));
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
 
         fixture.PrepareNextTurn(
@@ -1665,7 +1669,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 "PreparedCriticalReaction"),
             "EffectId")));
         ComposeAndPublishCoordinatedProcedureTreatment(fixture, second);
-        Assert.Empty(fixture.ReadActivePlayerEffectIds());
+        Assert.DoesNotContain(
+            fixture.ReadActivePlayerEffectIds(),
+            static effectId => effectId.StartsWith(
+                "effect_fate_shield_",
+                StringComparison.Ordinal));
         Assert.Equal(0, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();
     }
@@ -2589,7 +2597,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         effect["display"] = new JsonObject
         {
             ["name"] = "Щит Судьбы",
-            ["description"] = "Смягчает следующий критический провал.",
+            ["description"] =
+                "Чернила Судьбы смягчают следующий критический провал до обычного провала.",
             ["category"] = "buff",
             ["visibility"] = "visible",
             ["sourceLabel"] = "Чернильное Перо"
