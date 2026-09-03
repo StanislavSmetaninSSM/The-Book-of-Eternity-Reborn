@@ -141,6 +141,19 @@ public partial class CanonicalStateNormalizer
             InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
+        try
+        {
+            await ValidateMortalItemFinalPublicationBaselineAsync(plan);
+        }
+        catch
+        {
+            // A held publication was already taken by the top-level transaction.
+            // Keep its exact handoffs intact so byte-exact compensation can rearm
+            // this same plan. A non-held plan still owns its invalidation here.
+            if (treatmentPublicationReceipt is null)
+                InvalidateAcceptedMechanicsHandoffs();
+            throw;
+        }
         if (treatmentPublicationReceipt is null &&
             (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
                  _fs,

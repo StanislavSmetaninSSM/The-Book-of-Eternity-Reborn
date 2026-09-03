@@ -73,13 +73,16 @@ public partial class CanonicalStateNormalizer
             IReadOnlyDictionary<string, JsonNode?> projectedRoots;
             if (validated.Snapshot.CloneFinalBaseline() is { } finalBaseline)
             {
+                var itemPhase = validated.Snapshot.CloneItemPhase();
                 if (finalBaseline.Issues.Count != 0 ||
+                    itemPhase is null ||
+                    itemPhase.Issues.Count != 0 ||
                     !validated.Snapshot.RecomputesFinalPublicationBaseline())
                 {
                     throw new InvalidDataException(
                         "Accepted Mortal item final publication baseline is invalid.");
                 }
-                projectedRoots = finalBaseline.FinalCarrierRoots;
+                projectedRoots = itemPhase.ItemPhaseAfterImages;
             }
             else
             {

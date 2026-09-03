@@ -565,6 +565,165 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(4m, durability.Maximum);
     }
 
+    [Fact]
+    public async Task GuaranteedItemConsumption_AcceptedNormalizerWritesOnlySealedItemPhaseBeforeOrdinaryTail()
+    {
+        var probe = new MortalItemFinalBaselineFault("observe_item_phase");
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack(),
+            hooks: probe.Hooks,
+            baselineFixture:
+                MortalItemPublicationBaselineFixture.ItemJournalTailDelta |
+                MortalItemPublicationBaselineFixture.CanonicalNpcTradeReceipts);
+        var itemPublication = Assert.IsType<
+            MortalWoundTreatmentItemPublicationAuthority>(
+            context.Plan.TreatmentResourcePublicationAuthority?
+                .ItemPublicationAuthority);
+        const string tailPath = "game_state/npcs/item_journals.json";
+        Assert.False(JsonNode.DeepEquals(
+            itemPublication.ItemPhase.ItemPhaseAfterImages[tailPath],
+            itemPublication.Baseline.FinalCarrierRoots[tailPath]));
+
+        await context.ReleaseLeaseAsync();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(context);
+        probe.Arm(context);
+
+        var disposition =
+            await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+                engine,
+                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "sealed item-phase boundary oracle",
+                snapshotContext,
+                null,
+                HeldTreatmentPipelineContext.Turn,
+                null);
+
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, disposition);
+        Assert.True(probe.Fired);
+        Assert.True(probe.ItemPhaseDiffersFromFinalBaseline);
+        Assert.True(probe.LiveItemPhaseMatchedBeforeTail);
+    }
+
+    [Theory]
+    [InlineData("pass_through_presence")]
+    [InlineData("pass_through_content")]
+    [InlineData("identity_index")]
+    [InlineData("vehicle_topology")]
+    public async Task GuaranteedItemConsumption_PostTailFinalBaselineDriftRejectsBeforeCommonWriteAndExactRetryCommitsOnce(
+        string driftAxis)
+    {
+        var fixture = driftAxis switch
+        {
+            "pass_through_content" =>
+                MortalItemPublicationBaselineFixture.PassThroughRecipeObject,
+            "vehicle_topology" =>
+                MortalItemPublicationBaselineFixture.LegacyVehicleObject,
+            _ => MortalItemPublicationBaselineFixture.None
+        };
+        var fault = new MortalItemFinalBaselineFault(driftAxis);
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack(),
+            hooks: fault.Hooks,
+            baselineFixture: fixture);
+        var before = await CaptureExactTreatmentTransactionBytesAsync(context);
+        AssertTreatmentItemTransactionEnvelopeCaptured(before);
+        var itemTransitionsBefore =
+            await CountSelectedItemConsumeTransitionsAsync(context);
+        var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
+            await ReadTreatmentResourceHistoryAsync(context.FileSystem));
+        var itemCapacityTransitionsBefore =
+            CountSelectedItemDurabilityCapacityTransitions(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem));
+        var originalPlan = context.Plan;
+        var originalBindingFingerprint =
+            AcceptedMechanicsPlanFingerprints.ComputeInput(
+                context.OriginalBinding);
+
+        await context.ReleaseLeaseAsync();
+        fault.Arm(context);
+        var firstException = await Record.ExceptionAsync(() =>
+            AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                context.FileSystem,
+                new CanonicalStateNormalizer(
+                    context.FileSystem,
+                    NullLogger<CanonicalStateNormalizer>.Instance),
+                new ValidationService(
+                    context.FileSystem,
+                    NullLogger<ValidationService>.Instance),
+                new Dictionary<string, string>()));
+
+        Assert.True(
+            firstException is InvalidDataException,
+            firstException?.ToString());
+        var mismatch = (InvalidDataException)firstException!;
+        Assert.StartsWith(
+            "mortal_wound_treatment_publication_live_item_baseline_mismatch:",
+            mismatch.Message,
+            StringComparison.Ordinal);
+        Assert.Contains(fault.DriftPath, mismatch.Message, StringComparison.Ordinal);
+        Assert.True(fault.Fired);
+        Assert.True(fault.FinalBaselineMatchedBeforeDrift);
+        Assert.False(fault.CommonPublicationMutationObserved);
+        await AssertExactTreatmentTransactionBytesAsync(context, before);
+        Assert.Equal(
+            itemTransitionsBefore,
+            await CountSelectedItemConsumeTransitionsAsync(context));
+        Assert.Equal(
+            resourceSpendsBefore,
+            CountHeldTreatmentEnergySpends(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        Assert.Equal(
+            itemCapacityTransitionsBefore,
+            CountSelectedItemDurabilityCapacityTransitions(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+
+        await context.AcquireLeaseAsync();
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            context.Lease,
+            out var rearmedBinding,
+            out var rearmed));
+        Assert.True(rearmed.Success, DescribeValidationIssues(rearmed.Issues));
+        Assert.Same(originalPlan, rearmed.Plan);
+        Assert.Equal(
+            originalBindingFingerprint,
+            AcceptedMechanicsPlanFingerprints.ComputeInput(rearmedBinding));
+        await AssertConfirmedHeldLiveRegistryProbeAsync(context);
+        await context.ReleaseLeaseAsync();
+
+        fault.Disarm();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(context);
+        var retryDisposition =
+            await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+                engine,
+                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "exact live item baseline retry oracle",
+                snapshotContext,
+                null,
+                HeldTreatmentPipelineContext.Turn,
+                null);
+
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.Accepted,
+            retryDisposition);
+        Assert.Equal(1, await ReadSelectedNpcItemCountAsync(context));
+        Assert.Equal(
+            itemTransitionsBefore + 1,
+            await CountSelectedItemConsumeTransitionsAsync(context));
+        Assert.Equal(
+            resourceSpendsBefore + 1,
+            CountHeldTreatmentEnergySpends(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        Assert.Equal(
+            itemCapacityTransitionsBefore + 1,
+            CountSelectedItemDurabilityCapacityTransitions(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+    }
+
     [Theory]
     [InlineData(
         "count",
@@ -2806,8 +2965,16 @@ public sealed partial class GameEngineTurnLifecycleTests
         AcceptedTreatmentPipelineFault? fault,
         bool withRollbackAuthority = false,
         HeldTreatmentItemScenario? itemScenario = null,
-        bool composePublication = true)
+        bool composePublication = true,
+        FileSystemManagerHooks? hooks = null,
+        MortalItemPublicationBaselineFixture baselineFixture =
+            MortalItemPublicationBaselineFixture.None)
     {
+        Assert.True(
+            fault is null || hooks is null,
+            "A held-treatment fixture accepts either its pipeline fault hooks or " +
+            "its Mortal-item baseline hooks, never both.");
+        var effectiveHooks = hooks ?? fault?.Hooks;
         var root = Path.Combine(
             Path.GetTempPath(),
             "boe-held-treatment-pipeline-" + Guid.NewGuid().ToString("N"));
@@ -2816,7 +2983,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             root,
             NullLogger<FileSystemManager>.Instance,
             PhysicalLoadTransactionOperations.Instance,
-            fault?.Hooks);
+            effectiveHooks);
         fileSystem.EnsureDirectoryStructure();
         HeldTreatmentPipelineContext? context = null;
         try
@@ -2825,6 +2992,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             var wound = CreateGuaranteedResourceTreatmentWound(
                 includeItemRequirement: itemScenario is not null);
             await SeedHeldTreatmentAuthorityAsync(fileSystem, wound, itemScenario);
+            await SeedMortalItemPublicationBaselineFixtureAsync(
+                fileSystem,
+                baselineFixture);
             var prepared = await new LiveTurnPreparationService(fileSystem)
                 .PrepareAsync(new LiveTurnPreparationOptions
                 {
@@ -2878,7 +3048,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 fileSystem,
                 Assert.IsType<MortalWoundTreatmentAuthority.Context>(
                     parsedContext.Context),
-                fault?.Hooks,
+                effectiveHooks,
                 itemScenario);
             await context.AcquireLeaseAsync();
 
@@ -4125,6 +4295,61 @@ public sealed partial class GameEngineTurnLifecycleTests
                 : HeldTreatmentPipelineContext.SelectedItemId);
     }
 
+    private static async Task SeedMortalItemPublicationBaselineFixtureAsync(
+        FileSystemManager fileSystem,
+        MortalItemPublicationBaselineFixture fixture)
+    {
+        if (fixture.HasFlag(
+                MortalItemPublicationBaselineFixture.ItemJournalTailDelta))
+        {
+            const string path = "game_state/npcs/item_journals.json";
+            var root = JsonNode.Parse(await fileSystem.ReadFileAsync(path) ?? "{}")
+                ?.AsObject() ?? new JsonObject();
+            root["itemJournalUpdates"] = new JsonArray(new JsonObject
+            {
+                ["itemId"] = HeldTreatmentPipelineContext.SelectedItemId,
+                ["itemName"] = "Sealed field dressing",
+                ["entryToAppend"] = "Sealed ordinary tail marker"
+            });
+            await fileSystem.WriteFileAtomicAsync(path, root.ToJsonString());
+        }
+
+        if (fixture.HasFlag(
+                MortalItemPublicationBaselineFixture.PassThroughRecipeObject))
+        {
+            await fileSystem.WriteFileAtomicAsync(
+                "game_state/inventory/recipes.json",
+                new JsonObject
+                {
+                    ["addOrUpdateRecipes"] = new JsonArray()
+                }.ToJsonString());
+        }
+
+        if (fixture.HasFlag(
+                MortalItemPublicationBaselineFixture.LegacyVehicleObject))
+        {
+            await fileSystem.WriteFileAtomicAsync(
+                StorageTransportMoveService.VehiclesPath,
+                new JsonObject
+                {
+                    ["vehicles"] = new JsonArray()
+                }.ToJsonString());
+        }
+
+        if (fixture.HasFlag(
+                MortalItemPublicationBaselineFixture.CanonicalNpcTradeReceipts))
+        {
+            var npcRoot = JsonNode.Parse(await fileSystem.ReadFileAsync(
+                    NpcCoreChangesContract.NpcCorePath) ?? "{}")
+                ?.AsObject() ?? new JsonObject();
+            var provider = ReadProvider(npcRoot);
+            provider["tradeInventoryReceipts"] = new JsonArray();
+            await fileSystem.WriteFileAtomicAsync(
+                NpcCoreChangesContract.NpcCorePath,
+                npcRoot.ToJsonString());
+        }
+    }
+
     private static IReadOnlyList<JsonObject>
         CreateCanonicalHeldTreatmentWoundEffects(JsonObject woundRoot)
     {
@@ -4606,6 +4831,16 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private sealed record ExactFileImage(bool Exists, byte[]? Bytes);
 
+    [Flags]
+    private enum MortalItemPublicationBaselineFixture
+    {
+        None = 0,
+        ItemJournalTailDelta = 1,
+        PassThroughRecipeObject = 2,
+        LegacyVehicleObject = 4,
+        CanonicalNpcTradeReceipts = 8
+    }
+
     private enum HeldTreatmentItemCompanion
     {
         None,
@@ -4841,6 +5076,207 @@ public sealed partial class GameEngineTurnLifecycleTests
             await ReleaseLeaseAsync();
             DeleteHeldTreatmentRootBestEffort(Root);
         }
+    }
+
+    private sealed class MortalItemFinalBaselineFault
+    {
+        private const string ItemJournalPath =
+            "game_state/npcs/item_journals.json";
+        private const string RecipePath =
+            "game_state/inventory/recipes.json";
+        private readonly string _axis;
+        private bool _armed;
+        private HeldTreatmentPipelineContext? _context;
+        private MortalItemCanonicalProjectionResult? _itemPhase;
+        private MortalItemPublicationBaselineResult? _finalBaseline;
+
+        internal MortalItemFinalBaselineFault(string axis)
+        {
+            _axis = axis;
+            DriftPath = axis switch
+            {
+                "observe_item_phase" => ItemJournalPath,
+                "pass_through_presence" or "pass_through_content" => RecipePath,
+                "identity_index" => MortalItemIdentityState.StatePath,
+                "vehicle_topology" => StorageTransportMoveService.VehiclesPath,
+                _ => throw new ArgumentOutOfRangeException(
+                    nameof(axis),
+                    axis,
+                    null)
+            };
+            Hooks = new FileSystemManagerHooks
+            {
+                AfterCanonicalReadInitialValidationAsync = OnCanonicalReadAsync,
+                BeforeCanonicalMutationAsync = OnCanonicalMutationAsync
+            };
+        }
+
+        internal FileSystemManagerHooks Hooks { get; }
+        internal string DriftPath { get; }
+        internal bool Fired { get; private set; }
+        internal bool ItemPhaseDiffersFromFinalBaseline { get; private set; }
+        internal bool LiveItemPhaseMatchedBeforeTail { get; private set; }
+        internal bool FinalBaselineMatchedBeforeDrift { get; private set; }
+        internal bool CommonPublicationMutationObserved { get; private set; }
+
+        internal void Arm(HeldTreatmentPipelineContext context)
+        {
+            _context = context;
+            var authority = Assert.IsType<
+                MortalWoundTreatmentItemPublicationAuthority>(
+                context.Plan.TreatmentResourcePublicationAuthority?
+                    .ItemPublicationAuthority);
+            _itemPhase = authority.ItemPhase;
+            _finalBaseline = authority.Baseline;
+            _armed = true;
+        }
+
+        internal void Disarm() => _armed = false;
+
+        private Task OnCanonicalReadAsync(string path)
+        {
+            if (!_armed || Fired)
+                return Task.CompletedTask;
+
+            if (string.Equals(_axis, "observe_item_phase", StringComparison.Ordinal))
+            {
+                if (!string.Equals(
+                        path,
+                        "game_state/meta/guardians.json",
+                        StringComparison.Ordinal) ||
+                    !StackContains("NormalizeGuardiansAsync"))
+                {
+                    return Task.CompletedTask;
+                }
+
+                var itemPhase = Assert.IsType<MortalItemCanonicalProjectionResult>(
+                    _itemPhase);
+                var finalBaseline =
+                    Assert.IsType<MortalItemPublicationBaselineResult>(
+                        _finalBaseline);
+                ItemPhaseDiffersFromFinalBaseline = !JsonNode.DeepEquals(
+                    itemPhase.ItemPhaseAfterImages[DriftPath],
+                    finalBaseline.FinalCarrierRoots[DriftPath]);
+                LiveItemPhaseMatchedBeforeTail = JsonNode.DeepEquals(
+                    itemPhase.ItemPhaseAfterImages[DriftPath],
+                    ReadPhysicalProjectionRoot(DriftPath));
+                Fired = true;
+                return Task.CompletedTask;
+            }
+
+            if (!string.Equals(
+                    path,
+                    "game_state/player/skills_active.json",
+                    StringComparison.Ordinal) ||
+                !StackContains("NormalizePlayerSkillStateAsync"))
+            {
+                return Task.CompletedTask;
+            }
+
+            AssertFinalBaselineMatchesLive();
+            FinalBaselineMatchedBeforeDrift = true;
+            ApplyDrift();
+            Fired = true;
+            return Task.CompletedTask;
+        }
+
+        private Task OnCanonicalMutationAsync(string path)
+        {
+            if (_armed &&
+                StackContains("PublishAcceptedMechanicsAsync"))
+            {
+                CommonPublicationMutationObserved = true;
+            }
+            return Task.CompletedTask;
+        }
+
+        private void AssertFinalBaselineMatchesLive()
+        {
+            var baseline = Assert.IsType<MortalItemPublicationBaselineResult>(
+                _finalBaseline);
+            Assert.Equal(
+                MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.Count,
+                baseline.FinalCarrierRoots.Count);
+            foreach (var path in
+                     MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+            {
+                Assert.True(baseline.FinalCarrierRoots.ContainsKey(path));
+                var actual = ReadPhysicalProjectionRoot(path);
+                Assert.True(
+                    JsonNode.DeepEquals(
+                        baseline.FinalCarrierRoots[path],
+                        actual),
+                    $"Expected the sealed final baseline at '{path}' before drift. " +
+                    $"Expected={baseline.FinalCarrierRoots[path]?.ToJsonString() ?? "<missing>"}; " +
+                    $"Actual={actual?.ToJsonString() ?? "<missing>"}.");
+            }
+        }
+
+        private JsonNode? ReadPhysicalProjectionRoot(string path)
+        {
+            var context = Assert.IsType<HeldTreatmentPipelineContext>(_context);
+            var fullPath = context.FileSystem.ResolvePath(path);
+            if (!File.Exists(fullPath))
+                return null;
+            var json = new UTF8Encoding(
+                    encoderShouldEmitUTF8Identifier: false,
+                    throwOnInvalidBytes: true)
+                .GetString(File.ReadAllBytes(fullPath))
+                .TrimStart('\uFEFF');
+            var parsed = MortalItemProjectionRootParser.Parse(json, path);
+            Assert.True(parsed.IsValid, DescribeValidationIssues(parsed.Issues));
+            return parsed.Root;
+        }
+
+        private void ApplyDrift()
+        {
+            var baseline = Assert.IsType<MortalItemPublicationBaselineResult>(
+                _finalBaseline);
+            var expected = baseline.FinalCarrierRoots[DriftPath];
+            JsonNode drifted = _axis switch
+            {
+                "pass_through_presence" when expected is null => new JsonObject
+                {
+                    ["recipes"] = new JsonArray()
+                },
+                "pass_through_content" when expected is JsonObject obj =>
+                    AddFaultMarker(obj),
+                "identity_index" when expected is JsonObject obj =>
+                    AddFaultMarker(obj),
+                "vehicle_topology" when expected is JsonObject obj &&
+                                                obj["vehicles"] is JsonArray vehicles =>
+                    vehicles.DeepClone(),
+                _ => throw new InvalidOperationException(
+                    $"The '{_axis}' baseline fixture has unexpected topology.")
+            };
+
+            var context = Assert.IsType<HeldTreatmentPipelineContext>(_context);
+            var fullPath = context.FileSystem.ResolvePath(DriftPath);
+            var parentPath = Path.GetDirectoryName(fullPath);
+            Assert.NotNull(parentPath);
+            Assert.True(Directory.Exists(parentPath));
+            File.WriteAllText(
+                fullPath,
+                drifted.ToJsonString(),
+                new UTF8Encoding(encoderShouldEmitUTF8Identifier: false));
+        }
+
+        private static JsonObject AddFaultMarker(JsonObject source)
+        {
+            var result = source.DeepClone().AsObject();
+            result["postTailFaultMarker"] = true;
+            return result;
+        }
+
+        private static bool StackContains(string marker) =>
+            new StackTrace().GetFrames().Any(frame =>
+            {
+                var method = frame.GetMethod();
+                return method?.Name.Contains(marker, StringComparison.Ordinal) == true ||
+                       method?.DeclaringType?.FullName?.Contains(
+                           marker,
+                           StringComparison.Ordinal) == true;
+            });
     }
 
     private sealed class AcceptedTreatmentPipelineFault
