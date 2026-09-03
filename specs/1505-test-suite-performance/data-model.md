@@ -124,11 +124,21 @@ fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 `QteDeterministicLogicTests` is the fixture-free Fast owner for 66 input and
 grading rows. `QteSceneServiceTests` is the Integration owner for 51 canonical
 persistence, rollback, console, save/archive, and service lifecycle rows.
+`DarenQteDeterministicLogicTests` is the fixture-free Fast owner for 77
+route/prose/reducer/contract rows; `DarenQteShowcaseTests` remains the
+Integration owner for its 12 profile/filesystem/service/browser-projection
+rows. Executable Roslyn manifests compare every Fact/Theory name and normalized
+InlineData argument row for QTE `66/51` and Daren `77/12`, failing on missing,
+extra, changed, or duplicated rows. Category manifests inspect attributes on
+the expected top-level class only, so comments, strings, and method traits
+cannot satisfy ownership.
 `UiTestTextCollector` is a test-free TestSupport helper shared by moved WebUi
 sources so Integration has no dependency on the Fast project. The exact
-32-entry reviewed-heavy manifest and 35-entry
-`RegressionIntegrationSources` array at `b1165f27` are recorded in
-`research.md`; the executable guard arrays remain authoritative.
+32-entry reviewed-heavy manifest and current 33-entry class-level
+`RegressionIntegrationSources` array are recorded in `research.md`; the
+executable guard arrays remain authoritative. Two FullValidation-owned sources
+with only method-level Regression traits are intentionally excluded from that
+class-level manifest.
 
 PreMerge has one deadline across frontend verification, both project builds,
 discovery, tests, and cleanup. Its parallel phase selects the complete fast
@@ -194,24 +204,26 @@ Diagnostic lanes are not serial final gates and do not run after every edit.
 
 ## #1551 Final Result State
 
-The final PlanOnly result
-`20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast`
-contains 29 unique, well-formed Fast-project descriptors and 6,994 estimated
-cases/cost, with zero moved-class membership, duplicate IDs, timeout, or cleanup
-debt.
+The post-remediation PlanOnly result
+`20260904-070836-796-19044-f3c6b8f4a7364bb1913611176107307a-fast`
+contains 29 unique, well-formed Fast-project descriptors and 7,071 estimated
+cases/cost, including exactly one descriptor for the 77-row Daren deterministic
+owner, with zero Integration Daren membership, duplicate IDs, timeout, or
+cleanup debt.
 
-The two final Fast controls
-`20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast`
+The two post-remediation Fast controls
+`20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast`
 and
-`20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast`
-finished in `00:02:45.7436920` and `00:02:22.0382468`. Each executed
-`4,682`, passed `4,617`, and failed the exact retained 65 #1536 T067 rows;
+`20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast`
+finished in `00:02:17.7762792` and `00:02:13.7896671`. Each executed
+`4,759`, passed `4,694`, and failed the exact retained 65 #1536 T067 rows;
 exit was `1`, timeout was false, duplicate IDs were zero, and cleanup was
 complete. Their capacity result satisfies the five-minute bound, but their
 functional result is official RED and their fail-fast contour is incomplete:
-five of 29 descriptors completed and 24 lack complete TRX evidence. The
-measured pre/post contour is Task 6A `3:47.106` partial to Task 6B `2:30.342`
-partial.
+five of 29 descriptors completed and 24 lack complete TRX evidence. Compared
+with the pre-remediation `4,682/4,617/65` contour, the additional 77 passes are
+exactly the restored Daren deterministic rows; the known failure-name and ID
+hashes are unchanged.
 
 Task 7's environment-valid E2E rerun
 `20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e`

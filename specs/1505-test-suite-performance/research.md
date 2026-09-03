@@ -470,11 +470,9 @@ groups retain their complete class categories; method-level
 
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
-these 35 ordinal entries at the same HEAD:
+these 33 ordinal entries after class-level ownership hardening:
 
 ```text
-ActorMaterializationValidationTests.cs
-AfterlifeEntityProfileValidationTests.cs
 AfterlifeSpiritualConflictValidationTests.cs
 BrowserCommandPresentationAuditTests.cs
 ExplorerModeCommandTests.cs
@@ -510,10 +508,23 @@ WebUi/BrowserNpcSocialParityTests.cs
 WebUi/BrowserTradeParityTests.cs
 ```
 
+`ActorMaterializationValidationTests.cs` and
+`AfterlifeEntityProfileValidationTests.cs` were removed from this class-level
+manifest because their owning classes carry `FullValidation`; only reviewed
+individual methods carry `RegressionIntegration`. Those method traits remain
+unchanged and covered by their dedicated guards, but they no longer masquerade
+as whole-class ownership through source-text matching.
+
 The QTE split preserves all 117 prior rows exactly once: 66 fixture-free
 input/grading rows moved to Fast `QteDeterministicLogicTests`, while 51
 canonical filesystem/persistence/rollback/console/service lifecycle rows remain
-in Integration `QteSceneServiceTests`. The conditional second group also moved
+in Integration `QteSceneServiceTests`. Final-review remediation pins those
+methods and exact normalized InlineData arguments in an executable Roslyn
+manifest. It also corrects the mixed Daren move: 67 fixture-free methods / 77
+rows now live in Fast `DarenQteDeterministicLogicTests`, while the 12
+profile/filesystem/service/browser-projection methods / 12 rows remain in
+Integration `DarenQteShowcaseTests`. A second executable manifest proves each
+Daren row has exactly one semantic owner. The conditional second group also moved
 `UiTestTextCollector` unchanged into TestSupport because five moved WebUi
 sources required it; it contains no tests and prevents an Integration-to-Fast
 dependency.
@@ -554,7 +565,7 @@ complete, six `CS0103` errors) that motivated the unchanged
 `UiTestTextCollector` TestSupport move. The same exact 18-class selection then
 passed `618/618` in the T6B row above.
 
-### Task 7 diagnostics and final Fast controls
+### Pre-remediation Task 7 diagnostics and Fast controls
 
 | Lane | Run ID | Counts | Wall | Exit | T/D/C |
 |---|---|---:|---:|---:|---|
@@ -581,7 +592,7 @@ so that ProcessIntegration failure is also a one-run intermittent concern.
 The 20 Guardian rows are unrelated pre-existing/current-branch functional RED,
 not #1551 repair work.
 
-Both final Fast controls are capacity successes below five minutes, with zero
+Both pre-remediation Fast controls are capacity successes below five minutes, with zero
 duplicates and complete cleanup, but they are official RED and incomplete.
 Fail-fast completed five of 29 planned descriptors and left 24 without complete
 TRX evidence. Each control's 65 failure display names and stable IDs exactly
@@ -592,6 +603,66 @@ and `4179c375351d0dd2ba976cb4b941768462fd09136db95e025c1555ddc919a264`.
 The measured contour improved from the T6A `3:47.106` partial wall to the T6B
 `2:30.342` partial wall; functional green and complete Fast membership remain
 blocked on #1536 turning those 65 rows green.
+
+### Accepted final-review remediation and current controls
+
+The accepted whole-range review found three related guard gaps: Daren had been
+moved wholesale despite containing mostly deterministic coverage; QTE row
+preservation was prose-only; and category ownership used source-text matching.
+The remediation split Daren semantically, added exact executable QTE/Daren
+Fact/Theory/InlineData manifests, and changed category ownership to Roslyn
+parsing of attributes on the expected top-level class. Synthetic comment,
+string, and method-level trait decoys now fail closed.
+
+The expected RED and GREEN evidence is:
+
+| Selection | Run ID | Counts | Wall | Exit | T/D/C | Result |
+|---|---|---:|---:|---:|---|---|
+| Three accepted-finding guards, initial RED | `20260904-065523-376-53800-730a3ecb969a45029e491f3cf1b70d72-focused` | `3/3/0/3` | `00:01:18.0284395` | 1 | `false/0/true` | expected: inventory stub, absent Fast Daren owner, category decoys |
+| Exact-inventory mutation guard, RED | `20260904-065717-934-24148-4e93e4930c214c9f98975442806ca717-focused` | `1/1/0/1` | `00:00:42.7053343` | 1 | `false/0/true` | expected inventory stub failure |
+| Intermediate guards | `20260904-065859-543-10480-ca7b28e02fff438c9600dac312413c21-focused` | `4/4/2/2` | `00:00:42.7426224` | 1 | `false/0/true` | category and mutation guards GREEN; Daren source still absent |
+| New exact guards before full real-manifest replay | `20260904-070425-608-24244-c45c2f13227646ceb27cd60c34a4e256-focused` | `4/4/4/0` | `00:00:42.9439882` | 0 | `false/0/true` | GREEN |
+| Fast QTE + Daren inventories | `20260904-070626-646-41228-234615f3240c48cc94c9f4eff5ede765-focused` | `143/143/143/0` | `00:00:38.6772669` | 0 | `false/0/true` | QTE 66 + Daren 77 GREEN |
+| Integration QTE + Daren inventories | `20260904-070710-393-7732-24492aa15afe432096dda850d82631b9-focused` | `63/63/63/0` | `00:01:20.3481739` | 0 | `false/0/true` | QTE 51 + Daren 12 GREEN |
+| Current Fast PlanOnly | `20260904-070836-796-19044-f3c6b8f4a7364bb1913611176107307a-fast` | `0/0/0/0` | `00:00:07.2951573` | 0 | `false/0/true` | 29 descriptors / 7,071 estimated cases; Daren Fast owner exactly once |
+| Current Fast 1 | `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast` | `4759/4759/4694/65` | `00:02:17.7762792` | 1 | `false/0/true` | exact known #1536 RED |
+| Current Fast 2 | `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast` | `4759/4759/4694/65` | `00:02:13.7896671` | 1 | `false/0/true` | exact known #1536 RED |
+| Full real category/inventory guard replay, first diagnostic | `20260904-072235-522-29092-da02a9a9e38645c58a69b42c7079c258-focused` | `7/7/5/2` | `00:00:22.9540006` | 1 | `false/0/true` | exposed two method-only Regression sources and stale synthetic input |
+| Full real category/inventory guard replay, second diagnostic | `20260904-072435-554-43092-99522e9cfe8a4704a780f3cad28e11b5-focused` | `7/7/6/1` | `00:00:48.7572847` | 1 | `false/0/true` | exposed the `*.Effects.cs` class-name exception |
+| Full real category/inventory guard replay, final | `20260904-072614-482-29264-42280f9c7c514b2c81a8105cc709fa63-focused` | `7/7/7/0` | `00:00:53.3636176` | 0 | `false/0/true` | GREEN |
+| Final Fast source-boundary guard replay | `20260904-072739-105-12356-0b5fbbe5653545e7b6524678c509a1af-focused` | `3/3/3/0` | `00:00:15.2320432` | 0 | `false/0/true` | GREEN |
+
+Two compile REDs during extraction,
+`20260904-070515-491-49892-cbedf0525c914d379bca1c5212f71dbe-focused`
+and
+`20260904-070548-130-53152-9062058882bb47ceaf895e97a5117aba-focused`,
+each reported 41 missing `Characteristics` references and were corrected by
+restoring the required Configuration namespace. The fresh-build semantic guard
+`20260904-070318-617-31520-bf31057ac2bf4ce091f44387ffe06cf9-focused`
+then exposed an over-broad test assertion: static deterministic
+`DarenQteRewardProfileService.ResolveEnding` is valid Fast logic, while
+constructing the file-backed service is forbidden. The guard was narrowed to
+that actual boundary. The earlier `-NoBuild` artifact
+`20260904-070259-895-58596-1b61ace80e2a4424bca527ed55c34076-focused`
+used stale binaries and is explicitly not acceptance evidence.
+
+The final full-manifest replay removed two false whole-class entries rather
+than broadening runtime selection: `ActorMaterializationValidationTests` and
+`AfterlifeEntityProfileValidationTests` remain class-owned by FullValidation,
+and their reviewed method-level Regression traits remain unchanged. The
+class-name resolver preserves the existing
+`ExplorerWebCommandServiceTests.Effects.cs` ->
+`ExplorerWebCommandServiceEffectTests` convention while still requiring the
+attribute on that expected class.
+
+Both current Fast controls execute the restored 77 deterministic Daren rows:
+the pre-remediation `4,682/4,617/65` contour is now
+`4,759/4,694/65`. Their 65 failure display names and stable IDs have zero set
+differences from the retained #1536 oracle; hashes remain
+`61ed2c828bc81212d76ec589671d5423bbab0d97871dfa9d455458c296af59c6`
+and `4179c375351d0dd2ba976cb4b941768462fd09136db95e025c1555ddc919a264`.
+Both are below five minutes with no timeout, zero duplicate IDs, and complete
+cleanup. T064 remains unchecked pending independent re-review.
 
 This work is internal test placement and scheduling only. It changes no
 production game capability, command, mechanic, state/validation/normalizer

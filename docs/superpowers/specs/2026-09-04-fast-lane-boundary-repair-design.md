@@ -89,6 +89,14 @@ at a semantic boundary:
 No theory row or assertion is deleted. The split must use named source and
 method manifests, not a runtime duration check or an order-dependent filter.
 
+`DarenQteShowcaseTests` is a concrete mixed-source example. Its 67 detached
+route/prose/reducer/contract methods (77 discovered rows) belong in fixture-free
+Fast `DarenQteDeterministicLogicTests`; its 12 canonical profile, filesystem,
+service, and browser-projection methods (12 rows) remain in Integration
+`DarenQteShowcaseTests` with `RegressionIntegration`. The split duplicates only
+the static constants/helpers required by both owners and preserves every test
+method, theory row, and assertion exactly once.
+
 ### Category routing
 
 | Behavior | Project/category |
@@ -111,7 +119,13 @@ Extend the existing exact source/category guards rather than adding a permissive
 
 - `FastTestBoundaryTests` names every reviewed integration-heavy source and
   proves it exists only in the integration project;
-- `IntegrationTestBoundaryTests` owns the exact category manifest;
+- `IntegrationTestBoundaryTests` owns the exact category manifest and parses
+  the expected test class with Roslyn so only class-level
+  `Trait("Category", ...)` attributes satisfy ownership; comments, string
+  literals, and method-level traits are rejected;
+- executable Roslyn manifests pin every Fact/Theory method and normalized
+  `InlineData` row for QTE (66 Fast / 51 Integration) and Daren (77 Fast / 12
+  Integration), failing on missing, extra, duplicated, or changed rows;
 - the integration project must not reference the fast test project;
 - shared helpers required by both projects move to the dependency-free
   `BookOfEternityClient.TestSupport` assembly only when duplication cannot be

@@ -195,28 +195,36 @@ For moved classes, iterate in the Integration project:
 
 The QTE split keeps 66 deterministic input/grading rows in Fast
 `QteDeterministicLogicTests` and 51 canonical lifecycle rows in Integration
-`QteSceneServiceTests`. Moved WebUi classes use the test-free
-`UiTestTextCollector` helper from TestSupport so Integration never references
-Fast. The exact final 32-entry reviewed-heavy manifest and 35-entry regression
-category array are recorded in `research.md` directly from the executable
-guards.
+`QteSceneServiceTests`. The Daren split keeps 77 deterministic
+route/prose/reducer/contract rows in Fast `DarenQteDeterministicLogicTests` and
+12 profile/filesystem/service/browser-projection rows in Integration
+`DarenQteShowcaseTests`. Executable Roslyn manifests pin each Fact/Theory and
+normalized InlineData row at QTE `66/51` and Daren `77/12`; category ownership
+comes only from attributes on the expected top-level class. Moved WebUi classes
+use the test-free `UiTestTextCollector` helper from TestSupport so Integration
+never references Fast. The exact final 32-entry reviewed-heavy manifest and
+33-entry class-level regression category array are recorded in `research.md`
+directly from the executable guards. Method-only Regression traits do not count
+as class ownership.
 
-Final PlanOnly artifact
-`20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast`
-contains 29 unique Fast-project descriptors and 6,994 estimated cases/cost,
-with no moved second-group class and zero duplicates. The final Fast controls
+Post-remediation PlanOnly artifact
+`20260904-070836-796-19044-f3c6b8f4a7364bb1913611176107307a-fast`
+contains 29 unique Fast-project descriptors and 7,071 estimated cases/cost,
+with the 77-row Daren deterministic owner exactly once, no Integration Daren
+owner, and zero duplicates. The current Fast controls
 are:
 
 | Run ID | Executed / passed / failed | Wall | Exit | Timeout / duplicates / cleanup |
 |---|---:|---:|---:|---|
-| `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast` | `4682/4617/65` | `00:02:45.7436920` | 1 | `false/0/complete` |
-| `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast` | `4682/4617/65` | `00:02:22.0382468` | 1 | `false/0/complete` |
+| `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast` | `4759/4694/65` | `00:02:17.7762792` | 1 | `false/0/complete` |
+| `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast` | `4759/4694/65` | `00:02:13.7896671` | 1 | `false/0/complete` |
 
 Both satisfy the Fast capacity, duplicate, and cleanup requirements, but both
 remain official RED and incomplete. All 65 failures exactly match the retained
 #1536 T067 display names and stable TRX IDs; fail-fast completed five of 29
 descriptors, leaving 24 without complete TRX evidence. The measured contour
-improved from Task 6A `3:47.106` partial to Task 6B `2:30.342` partial.
+now contains 77 additional passing rows, exactly the Daren deterministic rows
+restored to Fast, while the known failure set remains unchanged.
 
 Task 7's required diagnostics retained a `151/151/131/20` unrelated Guardian
 RED in RegressionIntegration and an initial `555/555/552/3` ProcessIntegration

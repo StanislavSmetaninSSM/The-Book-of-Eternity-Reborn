@@ -68,7 +68,14 @@ fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 The #1551 QTE split follows this rule: fixture-free input and grading coverage
 is in Fast `QteDeterministicLogicTests`, while canonical persistence, rollback,
 console, save/archive, and service lifecycle coverage remains in Integration
-`QteSceneServiceTests` with `RegressionIntegration`. Moved WebUi tests share
+`QteSceneServiceTests` with `RegressionIntegration`. The Daren split likewise
+keeps 77 detached route/prose/reducer/contract rows in Fast
+`DarenQteDeterministicLogicTests` and the 12 file/service/browser-profile rows in
+Integration `DarenQteShowcaseTests` with `RegressionIntegration`. Executable
+Roslyn manifests pin QTE at `66/51` rows and Daren at `77/12`, including exact
+Fact/Theory kind and normalized InlineData arguments. Category ownership is
+read only from attributes on the expected class; comment, string, and
+method-level decoys do not count. Moved WebUi tests share
 `UiTestTextCollector` from `BookOfEternityClient.TestSupport`; the helper has no
 tests and was moved there unchanged so Integration does not reference Fast.
 The exact reviewed-heavy source/category manifest is recorded in
@@ -374,28 +381,42 @@ wall times of 7.92, 7.32, and 7.64 seconds. The 3-second median is at least
 
 ## Current #1551 Fast Boundary Evidence
 
-The final Fast PlanOnly artifact
-`20260904-053617-304-25836-62faa02a7bc841e59d2103d3bd628f9c-fast`
+The post-remediation Fast PlanOnly artifact
+`20260904-070836-796-19044-f3c6b8f4a7364bb1913611176107307a-fast`
 contains 29 unique, well-formed descriptors, all targeting
-`BookOfEternityClient.Tests.csproj`, with 6,994 estimated cases/cost, unit
-weights, zero duplicate IDs, and no occurrence of any of the 19 conditional
-second-group classes. It exited `0` in `00:00:07.5797893`, did not time out,
-and completed owned-tree cleanup.
+`BookOfEternityClient.Tests.csproj`, with 7,071 estimated cases/cost, unit
+weights, zero duplicate IDs, and exactly one descriptor containing the restored
+77-row Daren deterministic class. The 12-row file/service Daren class remains
+outside Fast in Integration. PlanOnly exited `0` in `00:00:07.2951573`, did not
+time out, and completed owned-tree cleanup.
 
-The final Task 7 controls are retained as follows. `T/D/C` means timed out,
-duplicate IDs, and cleanup complete.
+The final combined real-manifest and Roslyn guard selection passed `7/7` in
+`20260904-072614-482-29264-42280f9c7c514b2c81a8105cc709fa63-focused`.
+The class-level Regression manifest now has 33 entries: two
+FullValidation-owned sources with only method-level Regression traits retain
+their method routing but are no longer counted as whole-class ownership.
+The Fast source-boundary selection passed `3/3` in
+`20260904-072739-105-12356-0b5fbbe5653545e7b6524678c509a1af-focused`.
+Combined Fast QTE+Daren selection passed `143/143` in
+`20260904-070626-646-41228-234615f3240c48cc94c9f4eff5ede765-focused`;
+the Integration owners passed `63/63` in
+`20260904-070710-393-7732-24492aa15afe432096dda850d82631b9-focused`.
+
+The retained diagnostic and post-remediation controls are as follows. `T/D/C`
+means timed out, duplicate IDs, and cleanup complete.
 
 | Lane | Run ID | Total / executed / passed / failed | Wall | Exit | T/D/C | Classification |
 |---|---|---:|---:|---:|---|---|
 | RegressionIntegration | `20260904-055025-376-22060-7926a0cfbbcb44d09641bbd2a0ae58ec-regressionintegration` | `151/151/131/20` | `00:07:01.9184530` | 1 | `false/0/true` | RED: 20 unrelated Guardian trade/offering/resonance rows |
 | ProcessIntegration | `20260904-055735-809-43312-0548bbcf39b94f25a30c6bcb39a6d205-processintegration` | `555/555/552/3` | `00:03:19.8007804` | 1 | `false/0/true` | RED: two missing built-frontend rows and one intermittent QTE helper row |
 | E2E | `20260904-060102-849-34064-63d1263e811b4726bd91d4a26b905ec9-e2e` | `0/0/0/0` | `00:00:03.3535784` | 1 | `false/0/true` | RED before C# execution: frontend verification could not find `tsc` |
-| Fast 1 | `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast` | `4682/4682/4617/65` | `00:02:45.7436920` | 1 | `false/0/true` | exact retained #1536 T067 RED |
-| Fast 2 | `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast` | `4682/4682/4617/65` | `00:02:22.0382468` | 1 | `false/0/true` | exact retained #1536 T067 RED |
+| Post-remediation Fast 1 | `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast` | `4759/4759/4694/65` | `00:02:17.7762792` | 1 | `false/0/true` | exact retained #1536 T067 RED |
+| Post-remediation Fast 2 | `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast` | `4759/4759/4694/65` | `00:02:13.7896671` | 1 | `false/0/true` | exact retained #1536 T067 RED |
 | E2E after ignored dependencies restored | `20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e` | `18/18/18/0` | `00:01:28.5961264` | 0 | `false/0/true` | GREEN; frontend verification also passed `141/141` |
 | Exact two built-frontend smoke methods | `20260904-061737-528-23048-28391b77381c455c95ebccb5d5de8fff-focused` | `2/2/2/0` | `00:00:22.0749183` | 0 | `false/0/true` | GREEN after `dist` was rebuilt |
 
-Both Fast controls satisfy the five-minute capacity, duplicate, and cleanup
+Both post-remediation Fast controls satisfy the five-minute capacity,
+duplicate, and cleanup
 requirements, but neither is functionally green or a complete membership run.
 Fail-fast stopped after five of 29 descriptors, leaving 24 without complete
 TRX evidence. In both controls, all 65 failed display names and stable TRX IDs
@@ -404,9 +425,10 @@ exactly match the retained #1536 set: display-name SHA-256
 and ID SHA-256
 `4179c375351d0dd2ba976cb4b941768462fd09136db95e025c1555ddc919a264`,
 with zero set differences. This is a capacity success and an official RED.
-The measured contour improved from the Task 6A `00:03:47.1066186` partial run
-to the Task 6B `00:02:30.3420234` partial run; the two post-review partial
-controls remained under the unchanged cap.
+The Daren semantic correction restored exactly 77 deterministic rows to the
+executed Fast contour without changing the known failure set: the previous
+`4,682/4,617/65` contour is now `4,759/4,694/65`. Both current controls remain
+under the unchanged cap.
 
 The exact 20-method Focused Integration diagnostic is retained at
 `20260904-060841-723-34880-f4ad580b841f4876bd16d455655f0f84-focused`:

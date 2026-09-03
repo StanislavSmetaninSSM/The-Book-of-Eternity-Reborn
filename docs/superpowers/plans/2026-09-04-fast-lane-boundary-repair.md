@@ -294,6 +294,9 @@ git commit -m "test(tests): route process and web smokes (#1551)"
 **Files:**
 - Modify: `BookOfEternityClient.Tests/FastTestBoundaryTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`
+- Create: `BookOfEternityClient.Tests/DarenQteDeterministicLogicTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/DarenQteShowcaseTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs`
 - Move conditionally: exact measured file-backed sources listed in Phase 7 of `specs/1505-test-suite-performance/plan.md`
 
 **Interfaces:**
@@ -320,7 +323,9 @@ exact second group in the Spec Kit plan, including the required
 `GmWorkerValidationRepairDelegatorTests.cs` real-worker source. Add every path
 to both exact manifests before moving it, observe RED, then add class-level
 `RegressionIntegration` or `ProcessIntegration` according to the source's
-required category.
+required category. `DarenQteShowcaseTests.cs` is the mixed-source exception:
+retain its 12 file/service rows in Integration and extract its 77 deterministic
+rows to fixture-free Fast `DarenQteDeterministicLogicTests.cs`.
 
 - [ ] **Step 3: Verify any second group**
 
@@ -341,6 +346,7 @@ git add -- `
   BookOfEternityClient.Tests/AfterlifeNotificationStateTests.cs `
   BookOfEternityClient.IntegrationTests/AfterlifeNotificationStateTests.cs `
   BookOfEternityClient.Tests/DarenQteShowcaseTests.cs `
+  BookOfEternityClient.Tests/DarenQteDeterministicLogicTests.cs `
   BookOfEternityClient.IntegrationTests/DarenQteShowcaseTests.cs `
   BookOfEternityClient.Tests/ShiningTradeRequestStateTests.cs `
   BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs `
@@ -371,13 +377,14 @@ git add -- `
   BookOfEternityClient.Tests/GmWorkerValidationRepairDelegatorTests.cs `
   BookOfEternityClient.IntegrationTests/GmWorkerValidationRepairDelegatorTests.cs `
   BookOfEternityClient.Tests/FastTestBoundaryTests.cs `
-  BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+  BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs `
+  BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs
 git commit -m "test(tests): restore Fast runtime headroom (#1551)"
 ```
 
 Before commit, inspect the staged names and abort if anything beyond the complete
 exact second-group source moves (including the required worker delegator),
-category attributes, and two boundary guards is staged.
+the semantic Daren split, category attributes, and boundary guards is staged.
 
 ---
 
@@ -435,6 +442,52 @@ from inspected diffs and executable evidence.
 git add -- docs/testing.md specs/1505-test-suite-performance/research.md specs/1505-test-suite-performance/data-model.md specs/1505-test-suite-performance/quickstart.md specs/1505-test-suite-performance/tasks.md
 git commit -m "docs(tests): record repaired Fast lane evidence (#1551)"
 ```
+
+---
+
+### Task 7A: Apply Accepted Whole-Range Review Remediation
+
+**Files:**
+- Create: `BookOfEternityClient.Tests/DarenQteDeterministicLogicTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/DarenQteShowcaseTests.cs`
+- Create: `BookOfEternityClient.IntegrationTests/FastBoundaryTestInventories.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`
+- Modify: the #1551 design, testing guide, and Spec Kit artifacts
+
+**Interfaces:**
+- Consumes: accepted review findings against `3dbf0572..eb82ad94`.
+- Produces: semantic Daren ownership, executable QTE/Daren row preservation,
+  syntax-aware class-category ownership, and refreshed bounded evidence.
+
+- [ ] **Step 1: Add RED preservation and category-decoy tests**
+
+Require exact Fact/Theory/InlineData inventories for QTE and Daren. Add
+synthetic sources proving comments, strings, and method-level category traits
+cannot masquerade as class ownership, and proving missing, changed, extra, or
+duplicated rows fail the inventory guard.
+
+- [ ] **Step 2: Split Daren at its semantic boundary**
+
+Move all 67 fixture-free methods / 77 rows into Fast
+`DarenQteDeterministicLogicTests`; retain only 12 file/service methods / 12 rows
+in categorized Integration `DarenQteShowcaseTests`. The Fast class must have no
+constructor, `IDisposable`, mutable instance fixture, temp root, filesystem or
+host/browser setup, or diagnostic category.
+
+- [ ] **Step 3: Implement syntax-aware exact guards**
+
+Use Roslyn to compare exact test methods, Fact/Theory kind, and normalized
+InlineData arguments for QTE `66/51` and Daren `77/12`. Resolve category
+ownership only from attributes on the expected top-level class.
+
+- [ ] **Step 4: Verify and refresh evidence**
+
+Run the smallest Fast and Integration boundary/QTE/Daren selections, Fast
+PlanOnly, and exactly two sequential Fast controls under the unchanged
+five-minute cap. Accept only the known 65 #1536
+`MortalWoundDiagnosisTests` failures, with unchanged display-name and stable-ID
+hashes, no timeout, zero duplicates, and complete cleanup. Keep T064 unchecked
+until a separate agent independently re-reviews the complete range.
 
 ---
 

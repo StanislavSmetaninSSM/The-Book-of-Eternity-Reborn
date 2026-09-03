@@ -32,7 +32,10 @@ The #1551 Fast-boundary repair keeps the five-minute Fast contract and existing
 runner ceilings unchanged. It moves measured canonical I/O, restart,
 contention, process, host, and end-to-end workflows into the Integration
 project with exact category manifests, while extracting deterministic QTE
-grading/input tests from their file-backed fixture so they remain in Fast.
+grading/input tests from their file-backed fixture so they remain in Fast. Its
+final-review remediation applies the same semantic split to Daren and protects
+both splits with executable Roslyn method/row inventories plus syntax-aware
+class-category ownership.
 
 ## Technical Context
 
@@ -144,6 +147,7 @@ BookOfEternityClient/
 BookOfEternityClient.Tests/
 ├── ValidationPhaseSelectionTests.cs
 ├── QteDeterministicLogicTests.cs
+├── DarenQteDeterministicLogicTests.cs
 ├── FastTestBoundaryTests.cs
 └── ordinary fast sources
 
@@ -155,8 +159,10 @@ BookOfEternityClient.IntegrationTests/
 ├── GuardianSystemRegressionTests*.cs
 ├── GameEngineTurnLifecycleTests.cs
 ├── IntegrationTestBoundaryTests.cs
+├── FastBoundaryTestInventories.cs
 ├── TestLaneSourceGuardTests.cs
 ├── QteSceneServiceTests.cs
+├── DarenQteShowcaseTests.cs
 ├── MortalWoundRecoveryTests.cs
 ├── MortalWoundTreatmentCapabilityAuthorityTests.cs
 ├── GmWorkerLiveSmokeTests.cs
@@ -349,7 +355,9 @@ only its now-obsolete final-gate deadline after new measured suite growth.
    - `GuardianCorrectionServiceTests.cs`
    - `ShiningBlessingEffectStateTests.cs`
    - `AfterlifeNotificationStateTests.cs`
-   - `DarenQteShowcaseTests.cs`
+   - `DarenQteShowcaseTests.cs` (mixed: move only its 12 file/service rows and
+     retain its 77 deterministic rows in Fast as
+     `DarenQteDeterministicLogicTests.cs`)
    - `ShiningTradeRequestStateTests.cs`
    - `BrowserLocalWriteCoordinatorTests.cs`
    - `TrainingServiceTests.cs`
@@ -369,12 +377,17 @@ only its now-obsolete final-gate deadline after new measured suite growth.
    `RegressionIntegration`. For every moved source, preserve the same relative
    path below `BookOfEternityClient.IntegrationTests`, update both exact
    manifests in the same group, and retain every test row and assertion.
-7. Repeat focused category verification and Fast PlanOnly after any second
+7. Protect both semantic splits with exact Roslyn inventories of Fact/Theory
+   method names and normalized InlineData arguments: QTE `66/51` and Daren
+   `77/12`. Resolve required categories only from attributes on the expected
+   top-level class; comments, strings, and method-level traits are decoys, not
+   ownership.
+8. Repeat focused category verification and Fast PlanOnly after any second
    group, then run two representative Fast controls. Both must finish below the
    unchanged five-minute hard limit; approximately three minutes is the
    preferred operating target. Require zero duplicate test IDs and complete
    owned-process cleanup.
-8. Update `docs/testing.md`, `research.md`, `data-model.md`, and `quickstart.md`
+9. Update `docs/testing.md`, `research.md`, `data-model.md`, and `quickstart.md`
    with the final source/category manifest and retained run IDs. This is an
    internal test-scheduling correction only, so Mortal World and afterlife GM
    prompts, examples, manifests, client commands, and runtime contract docs do

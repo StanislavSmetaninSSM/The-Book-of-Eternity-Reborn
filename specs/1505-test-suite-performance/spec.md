@@ -272,7 +272,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   `E2E`; detached deterministic unit, parser, reducer, contract, and source-guard
   coverage MUST remain in Fast. A mixed source MUST be split at that semantic
   boundary when moving it wholesale would remove meaningful deterministic
-  feedback from Fast.
+  feedback from Fast. Exact executable Roslyn manifests MUST preserve each QTE
+  and Daren Fact/Theory method and InlineData row once across that split, and
+  category ownership MUST be read from class-level attributes on the expected
+  test class rather than source-text tokens or method-level traits.
 
 ### Key Entities
 
@@ -310,6 +313,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
    measured canonical workflows to the Integration project with exact category
    manifests, and split QTE deterministic grading/input coverage away from its
    file-backed scene lifecycle so the former remains fixture-free in Fast.
+   Apply the same boundary to Daren: 77 detached route/prose/reducer/contract
+   rows remain in Fast and 12 profile/filesystem/service/browser-projection rows
+   remain categorized in Integration. Pin QTE `66/51` and Daren `77/12` with
+   executable method/row manifests.
 
 ## Success Criteria
 
@@ -339,7 +346,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-012**: Every moved test remains discoverable through its explicit
   Integration category and Focused Integration selection; exact guards prove
   that no reviewed source exists in both projects and no test or assertion was
-  removed to obtain the Fast result.
+  removed to obtain the Fast result. QTE manifests contain exactly 66 Fast and
+  51 Integration rows; Daren manifests contain exactly 77 Fast and 12
+  Integration rows. The guard rejects missing, extra, duplicated, or changed
+  rows and ignores category text outside the expected class-level attributes.
 
 ## Verification Plan
 
@@ -372,7 +382,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
     each group, run only the diagnostic categories actually changed, and retain
     two final Fast controls under five minutes with approximately three minutes
     as the preferred target. Known wound-contour REDs remain discoverable and
-    classified; they are not skipped or used to excuse a timeout.
+    classified; they are not skipped or used to excuse a timeout. Final-review
+    remediation additionally requires exact Roslyn QTE/Daren row inventories,
+    a semantic 77/12 Daren split, synthetic category-decoy coverage, refreshed
+    PlanOnly membership, and two new sequential Fast controls.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.

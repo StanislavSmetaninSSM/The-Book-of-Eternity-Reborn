@@ -231,7 +231,9 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   reviewed #1551 sources in
   `BookOfEternityClient.Tests/FastTestBoundaryTests.cs` and
   `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, then
-  run both focused guards while the sources are still in Fast.
+  run both focused guards while the sources are still in Fast. The final-review
+  remediation also makes category ownership Roslyn/class-level and adds
+  synthetic comment/string/method-attribute decoys.
 - [x] T056 [US3] Move the canonical wound and browser transport group into
   `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`:
   `MortalWoundRecoveryTests.cs`,
@@ -242,7 +244,8 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   fixture-free `BookOfEternityClient.Tests/QteDeterministicLogicTests.cs`, move
   the remaining canonical lifecycle in `QteSceneServiceTests.cs` to
   `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`, and
-  prove every original test method/theory row exists exactly once.
+  prove every original test method/theory row exists exactly once through an
+  executable 66 Fast / 51 Integration Roslyn inventory.
 - [x] T058 [US3] Move `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` to
   Integration with `ProcessIntegration` and
   `BookOfEternityClient.Tests/LocalWebUiSmokeTests.cs` to Integration with
@@ -258,6 +261,11 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   file-backed second group listed in `plan.md` to Integration with
   `RegressionIntegration` (or `ProcessIntegration` for real-worker sources),
   update both manifests, and rerun focused category plus PlanOnly controls.
+  Final-review remediation semantically splits the mixed Daren source: 67
+  fixture-free methods / 77 rows are Fast
+  `DarenQteDeterministicLogicTests`, while its 12 file/service methods / 12 rows
+  remain Integration `DarenQteShowcaseTests`; executable Roslyn manifests prove
+  exact ownership and row preservation.
 - [x] T062 [US3] Synchronize the final #1551 placement rules and evidence in
   `docs/testing.md`, `specs/1505-test-suite-performance/research.md`,
   `data-model.md`, and `quickstart.md`; record that GM prompts, examples,
@@ -266,13 +274,14 @@ has no duplicate membership, and two Fast controls finish below five minutes.
 - [x] T063 [US3] Run two representative Fast controls below the unchanged
   five-minute hard limit, preferably around three minutes, with zero duplicate
   IDs and complete owned-process cleanup. The retained runs are
-  `20260904-060112-027-15080-3aabb9b5b4d24f6a9b9b0490dc98e97a-fast`
-  (`00:02:45.7436920`) and
-  `20260904-060403-781-54340-98a04ba1518640079b30995f87620ccc-fast`
-  (`00:02:22.0382468`). Both had timeout false, zero duplicates, and complete
-  cleanup, but remain official RED/incomplete: each executed `4,682`, passed
-  `4,617`, and failed the exact retained 65 #1536 T067 rows; fail-fast left 24
-  of 29 planned descriptors without complete TRX evidence.
+  `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast`
+  (`00:02:17.7762792`) and
+  `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast`
+  (`00:02:13.7896671`). Both had timeout false, zero duplicates, and complete
+  cleanup, but remain official RED/incomplete: each executed `4,759`, passed
+  `4,694`, and failed the exact retained 65 #1536 T067 rows; fail-fast left 24
+  of 29 planned descriptors without complete TRX evidence. The +77 passes are
+  exactly the Daren deterministic rows restored to Fast.
 - [ ] T064 [US4] Inspect exact diffs, run `git diff --check`, complete
   independent code review and Spec Kit consistency analysis, and retain the
   branch ready for the wound-materialization continuation without running
@@ -299,9 +308,10 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   contract before T053 runs the exact final gate.
 - T054–T064 are the #1551 Fast physical-boundary repair. T055 must be RED before
   T056–T058; T059 proves the moved groups; T060 decides whether the exact
-  second group in T061 is required; T062 follows the final placement; T063 is
-  exactly two post-review Fast controls; T064 performs review without a
-  merge-only PreMerge run.
+  second group in T061 is required; accepted whole-range findings are remediated
+  within T055/T057/T061 before T062 follows the final placement; T063 is exactly
+  two post-remediation Fast controls; T064 performs independent re-review
+  without a merge-only PreMerge run.
 
 ## Notes
 
