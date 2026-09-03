@@ -381,7 +381,8 @@ only its now-obsolete final-gate deadline after new measured suite growth.
    method names and normalized InlineData arguments: QTE `66/51` and Daren
    `77/12`. Resolve required categories only from attributes on the expected
    top-level class; comments, strings, and method-level traits are decoys, not
-   ownership.
+   ownership. These inventories do not hash method bodies; T064 whole-range diff
+   review verifies body and assertion preservation.
 8. Repeat focused category verification and Fast PlanOnly after any second
    group, then run two representative Fast controls. Both must finish below the
    unchanged five-minute hard limit; approximately three minutes is the

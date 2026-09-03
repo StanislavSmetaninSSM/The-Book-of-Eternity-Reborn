@@ -65,6 +65,12 @@ complete HTTP host/browser flow -> E2E
 fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 ```
 
+Measured duration never overrides this taxonomy. Detached deterministic
+coverage remains in Fast regardless of its size or timing;
+`RegressionIntegrationOnly` is reserved for genuinely integration-backed
+exhaustive matrices. Reclassifying those semantics requires a separately
+approved tracked requirement.
+
 The #1551 QTE split follows this rule: fixture-free input and grading coverage
 is in Fast `QteDeterministicLogicTests`, while canonical persistence, rollback,
 console, save/archive, and service lifecycle coverage remains in Integration

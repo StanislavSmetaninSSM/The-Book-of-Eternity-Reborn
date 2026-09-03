@@ -275,7 +275,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   feedback from Fast. Exact executable Roslyn manifests MUST preserve each QTE
   and Daren Fact/Theory method and InlineData row once across that split, and
   category ownership MUST be read from class-level attributes on the expected
-  test class rather than source-text tokens or method-level traits.
+  test class rather than source-text tokens or method-level traits. Measured
+  duration MUST NOT override this taxonomy; `RegressionIntegrationOnly` applies
+  only to genuinely integration-backed exhaustive matrices, and any taxonomy
+  change requires a separately approved tracked requirement.
 
 ### Key Entities
 
@@ -344,12 +347,15 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   preferably around three minutes, with zero duplicate test IDs, no timeout,
   and complete owned-process cleanup.
 - **SC-012**: Every moved test remains discoverable through its explicit
-  Integration category and Focused Integration selection; exact guards prove
-  that no reviewed source exists in both projects and no test or assertion was
-  removed to obtain the Fast result. QTE manifests contain exactly 66 Fast and
-  51 Integration rows; Daren manifests contain exactly 77 Fast and 12
-  Integration rows. The guard rejects missing, extra, duplicated, or changed
-  rows and ignores category text outside the expected class-level attributes.
+  Integration category and Focused Integration selection, and no test body or
+  assertion may be removed or weakened to obtain the Fast result. Exact Roslyn
+  guards prove source ownership, class-level categories, Fact/Theory kind,
+  method names, and InlineData rows: QTE contains exactly 66 Fast and 51
+  Integration rows; Daren contains exactly 77 Fast and 12 Integration rows.
+  The guards reject missing, extra, duplicated, or changed inventory rows and
+  ignore category text outside the expected class-level attributes. T064
+  whole-range diff review, not the row manifests, verifies source/body/assertion
+  preservation.
 
 ## Verification Plan
 

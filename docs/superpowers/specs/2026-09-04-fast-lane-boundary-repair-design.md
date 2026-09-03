@@ -73,29 +73,32 @@ reviewed in descending elapsed-time order until two representative Fast runs
 have honest headroom below the hard limit. A file is never moved merely because
 its name contains `Browser`, `Service`, or `Validation`.
 
-### Large pure matrices
+### Detached deterministic matrices
 
-A detached, deterministic parser/reducer/contract class stays in Fast by
-default. If its measured class time still threatens the lane, split its source
-at a semantic boundary:
+Detached deterministic unit, parser, reducer, contract, and source-guard
+coverage remains in Fast regardless of measured duration. Timing can prioritize
+optimization or separately tracked structural work, but it cannot reclassify
+deterministic coverage as Integration. `RegressionIntegrationOnly` is reserved
+for genuinely integration-backed exhaustive matrices whose file, process,
+host, lifecycle, or comparable boundary independently requires Integration.
+Changing that taxonomy requires a separately approved tracked requirement; it
+must never be the result of a timing threshold alone.
 
-- keep a small, explicitly reviewed happy-path and fail-closed sentinel set in
-  the fast project;
-- move the exhaustive matrix to the integration project with
-  `RegressionIntegration` and `RegressionIntegrationOnly`;
-- add the exact sentinels to `PreMergeSentinel` only when the ordinary core
-  integration filter would otherwise exclude the complete matrix.
-
-No theory row or assertion is deleted. The split must use named source and
-method manifests, not a runtime duration check or an order-dependent filter.
+A genuinely mixed source is split only at its semantic boundary: detached
+deterministic coverage stays in Fast and integration-backed coverage moves to
+Integration. No theory row, method body, or assertion may be deleted or
+weakened. Exact Roslyn manifests prove Fact/Theory kind, method names, and
+InlineData rows; T064 whole-range diff review verifies method-body and assertion
+preservation.
 
 `DarenQteShowcaseTests` is a concrete mixed-source example. Its 67 detached
 route/prose/reducer/contract methods (77 discovered rows) belong in fixture-free
 Fast `DarenQteDeterministicLogicTests`; its 12 canonical profile, filesystem,
 service, and browser-projection methods (12 rows) remain in Integration
 `DarenQteShowcaseTests` with `RegressionIntegration`. The split duplicates only
-the static constants/helpers required by both owners and preserves every test
-method, theory row, and assertion exactly once.
+the static constants/helpers required by both owners. The executable inventory
+proves every test method and theory row has exactly one owner; T064 verifies the
+unchanged bodies and assertions in the whole-range diff.
 
 ### Category routing
 

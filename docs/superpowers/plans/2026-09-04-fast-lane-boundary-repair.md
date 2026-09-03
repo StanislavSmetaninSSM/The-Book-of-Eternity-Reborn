@@ -478,7 +478,9 @@ host/browser setup, or diagnostic category.
 
 Use Roslyn to compare exact test methods, Fact/Theory kind, and normalized
 InlineData arguments for QTE `66/51` and Daren `77/12`. Resolve category
-ownership only from attributes on the expected top-level class.
+ownership only from attributes on the expected top-level class. Do not claim
+that these inventories verify method bodies or assertion text; that evidence
+belongs to T064 whole-range diff review.
 
 - [ ] **Step 4: Verify and refresh evidence**
 
@@ -515,9 +517,10 @@ Resolve every critical/high inconsistency before continuing.
 
 - [ ] **Step 3: Perform independent code review**
 
-Review test ownership, exact category manifests, QTE test inventory, project
-dependency direction, process cleanup, duplicate detection, and docs. Resolve
-all Critical or Important findings with the smallest focused rerun.
+Review test ownership, exact category manifests, QTE/Daren test inventories,
+whole-range method-body and assertion preservation, project dependency
+direction, process cleanup, duplicate detection, and docs. Resolve all Critical
+or Important findings with the smallest focused rerun.
 
 - [ ] **Step 4: Mark T064 complete and resume #1536**
 

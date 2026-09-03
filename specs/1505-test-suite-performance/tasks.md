@@ -283,9 +283,10 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   of 29 planned descriptors without complete TRX evidence. The +77 passes are
   exactly the Daren deterministic rows restored to Fast.
 - [ ] T064 [US4] Inspect exact diffs, run `git diff --check`, complete
-  independent code review and Spec Kit consistency analysis, and retain the
-  branch ready for the wound-materialization continuation without running
-  PreMerge until merge is explicitly requested.
+  independent code review and Spec Kit consistency analysis, explicitly verify
+  source/method-body/assertion preservation not covered by the executable row
+  manifests, and retain the branch ready for the wound-materialization
+  continuation without running PreMerge until merge is explicitly requested.
 
 ## Dependencies and Execution Order
 
