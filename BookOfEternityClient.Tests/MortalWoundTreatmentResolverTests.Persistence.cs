@@ -78,9 +78,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void PersistedCommand_ColdRestartReconstructsExactRetryAndKeepsDiceFateAndResourceHeld()
     {
-        var scenario = CreateScenario(
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_player_natural_one_reserves_oldest_fate_shield",
-            "procedure");
+            "procedure"));
         scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 17);
         using var fixture = AcceptedStateFixture.Create(scenario);
         var operationKey = scenario.OperationKey + "_persisted_restart";
@@ -158,11 +158,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 CanonicalValue(first.Resolution),
                 CanonicalValue(publicationFlow.Resolution));
 
-            ComposeAndPublishTreatment(publicationFixture, publicationFlow);
+            ComposeAndPublishCoordinatedProcedureTreatment(
+                publicationFixture,
+                publicationFlow);
 
             Assert.Equal(1, publicationFixture.ReadNpcItemCount("sterile_thread"));
             Assert.Equal(
-                new[] { "effect_fate_shield_newer" },
+                new[]
+                {
+                    "effect_fate_shield_newer",
+                    "effect_wound_test_bleeding"
+                },
                 publicationFixture.ReadActivePlayerEffectIds());
             publicationFixture.AssertItemIdentityIndexValid();
             var publishedHistory = JsonNode.Parse(File.ReadAllText(
@@ -203,7 +209,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Convert.ToString(ReadRequiredProperty(freshResource, "ReservationId")));
         var firstClaim = Assert.Single(AsObjects(ReadRequiredProperty(firstResource, "Claims")));
         var freshClaim = Assert.Single(AsObjects(ReadRequiredProperty(freshResource, "Claims")));
-        Assert.NotEqual(
+        // Distinct reservations contend for the same witnessed semantic capacity.
+        Assert.Equal(
             Convert.ToString(ReadRequiredProperty(firstClaim, "ClaimFingerprint")),
             Convert.ToString(ReadRequiredProperty(freshClaim, "ClaimFingerprint")));
 
