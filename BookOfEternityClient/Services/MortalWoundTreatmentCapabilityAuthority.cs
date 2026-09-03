@@ -834,8 +834,7 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 .SingleOrDefault(value => string.Equals(
                     value.RouteId,
                     request.Coordinates.RouteId,
-                    StringComparison.Ordinal)) as
-                MortalWoundGuaranteedRouteDefinition;
+                    StringComparison.Ordinal));
             AcceptedMechanicsWoundStageBundle? bundle;
             try
             {
@@ -850,11 +849,13 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     "The candidate plan carries a changed treatment continuation authority.")
                     .Issues;
             }
-            if (request.ModeAuthority is not
-                    MortalWoundTreatmentCapabilityProof acceptedProof ||
-                request.Mode is not "guaranteed" ||
-                route is null ||
+            if (route is null ||
                 bundle is null ||
+                !HasCurrentModeAuthority(
+                    acceptedState,
+                    request,
+                    route,
+                    bundle) ||
                 !WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
                     continuationAuthority,
                     bundle,
@@ -883,28 +884,32 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                     .Issues;
             }
 
-            var exported = Export(
-                acceptedState,
-                request.Coordinates,
-                route.Resolution.CapabilityRef,
-                route.Resolution.ActorRole,
-                candidate,
-                forPublication: true,
-                CandidateReadCapability);
-            if (!exported.IsValid || exported.Proof is null)
-                return exported.Issues;
-            if (!string.Equals(
-                    exported.Proof.ProofFingerprint,
-                    acceptedProof.ProofFingerprint,
-                    StringComparison.Ordinal) ||
-                !string.Equals(
-                    exported.Proof.SourceSemanticFingerprint,
-                    acceptedProof.SourceSemanticFingerprint,
-                    StringComparison.Ordinal))
+            if (route is MortalWoundGuaranteedRouteDefinition guaranteedRoute &&
+                request.ModeAuthority is MortalWoundTreatmentCapabilityProof acceptedProof)
             {
-                return PublicationMismatch(
-                    "The final candidate capability differs from the sealed accepted proof.")
-                    .Issues;
+                var exported = Export(
+                    acceptedState,
+                    request.Coordinates,
+                    guaranteedRoute.Resolution.CapabilityRef,
+                    guaranteedRoute.Resolution.ActorRole,
+                    candidate,
+                    forPublication: true,
+                    CandidateReadCapability);
+                if (!exported.IsValid || exported.Proof is null)
+                    return exported.Issues;
+                if (!string.Equals(
+                        exported.Proof.ProofFingerprint,
+                        acceptedProof.ProofFingerprint,
+                        StringComparison.Ordinal) ||
+                    !string.Equals(
+                        exported.Proof.SourceSemanticFingerprint,
+                        acceptedProof.SourceSemanticFingerprint,
+                        StringComparison.Ordinal))
+                {
+                    return PublicationMismatch(
+                        "The final candidate capability differs from the sealed accepted proof.")
+                        .Issues;
+                }
             }
             if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
                     continuationAuthority,
@@ -965,6 +970,36 @@ internal static class MortalWoundTreatmentCapabilityAuthority
             return resourceAuthority.ValidateCandidate(
                 candidate,
                 recomposedFinalization.Finalization);
+        }
+
+        private static bool HasCurrentModeAuthority(
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentRouteDefinition route,
+            AcceptedMechanicsWoundStageBundle bundle)
+        {
+            if (request.Mode is "guaranteed")
+            {
+                return route is MortalWoundGuaranteedRouteDefinition &&
+                       request.ModeAuthority is MortalWoundTreatmentCapabilityProof;
+            }
+            if (request.Mode is not "procedure" ||
+                route is not MortalWoundProcedureRouteDefinition ||
+                request.ModeAuthority is not MortalWoundProcedureCheckAuthority)
+            {
+                return false;
+            }
+
+            var history = WoundHistoryState.Parse(
+                bundle.Input.PreTurnHistory.ToJsonString(),
+                WoundHistoryState.HistoryPath);
+            return history.IsValid &&
+                   MortalWoundTreatmentFreshAuthorityValidator.FindMismatch(
+                       request,
+                       history,
+                       request.RouteSourceWound,
+                       acceptedState,
+                       route) is null;
         }
     }
 }

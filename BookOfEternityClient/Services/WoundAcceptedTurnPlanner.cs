@@ -1163,21 +1163,7 @@ internal static class WoundAcceptedTurnPlannerCore
             var before = matches[0].Wound;
             var after = continuation.After;
             var coordinates = continuation.Resolution.Coordinates;
-            var outcome = new WoundDeclaredTransitionOutcome(
-                after.Severity.Rank,
-                after.Care.State,
-                after.Recovery.CurrentStepProgress,
-                Heals: false,
-                TerminalAttempt: true,
-                AllowsWorsening: false,
-                after.Complications.Select(static value => value.ComplicationId)
-                    .ToArray(),
-                after.Consequences.OwnedEffectSources.RootBindings
-                    .Select(static value => value.EffectId)
-                    .OrderBy(static value => value, StringComparer.Ordinal)
-                    .ToArray(),
-                after.Recovery.Blockers.ToArray(),
-                after.Treatment.CompletedRouteIds.ToArray());
+            var outcome = continuation.DeclaredOutcome;
             var reduction = WoundTransitionReducer.Reduce(
                 new WoundTransitionRequest(
                     "treat",

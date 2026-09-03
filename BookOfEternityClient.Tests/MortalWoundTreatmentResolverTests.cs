@@ -4356,12 +4356,30 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 File.WriteAllText(
                     fileSystem.ResolvePath(WoundHistoryState.HistoryPath),
                     scenario.History.ToJsonString());
+                var playerTreatmentSkill = CreateTreatmentSkill(
+                    "skill_field_medicine_01",
+                    "field_medicine");
+                if (scenario.RollMode is "advantage" or "disadvantage")
+                {
+                    var rollDefinition = EffectMaterializationTestFixture
+                        .CreateDefinition("roll_modifier");
+                    rollDefinition["definitionKey"] =
+                        "t061-treatment-roll-" + scenario.RollMode;
+                    rollDefinition["display"]!["name"] =
+                        "T061 " + scenario.RollMode;
+                    rollDefinition["components"]![0]!["payload"] = new JsonObject
+                    {
+                        ["operations"] = new JsonArray("skill_check"),
+                        ["contribution"] = scenario.RollMode
+                    };
+                    playerTreatmentSkill["activeEffectDefinitions"] =
+                        new JsonArray(rollDefinition);
+                }
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_active.json"),
                     new JsonObject
                     {
-                        ["activeSkillChanges"] = new JsonArray(
-                            CreateTreatmentSkill("skill_field_medicine_01", "field_medicine"))
+                        ["activeSkillChanges"] = new JsonArray(playerTreatmentSkill)
                     }.ToJsonString());
                 File.WriteAllText(
                     fileSystem.ResolvePath("game_state/player/skills_passive.json"),

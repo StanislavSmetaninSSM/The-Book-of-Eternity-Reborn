@@ -1544,9 +1544,11 @@ entrypoints require no update for T065.
   `EffectEventReports` remains forbidden and a typed-plus-legacy duplicate receives the
   exact cross-surface diagnostic. The existing resource transaction becomes a coordinated
   treatment transaction for every procedure, including `not_required` resources: exact
-  dice/Fate/resource claims are checked before publication, retained across compensation,
-  remain unavailable after successful publication, and are released only after terminal
-  durable-command quarantine. B.5 does not admit `reduce_severity`, recovery,
+  dice/Fate/resource claims and the persisted zero-claim resource agreement are checked
+  before publication, retained across compensation, finalized without same-turn reuse, and
+  released only after terminal durable-command quarantine. Cold recovery must reconstruct a
+  finalized natural-one Fate claim from persisted reaction evidence without requiring the
+  now-expired shield to remain an active candidate. B.5 does not admit `reduce_severity`, recovery,
   complication-effect batches, course, heal/legacy, or T069-C and does not widen the public
   response/request/resolution contract. It is a client-owned Mortal contour with no new GM,
   browser/console, migration, or afterlife documentation surface.

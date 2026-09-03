@@ -17,7 +17,7 @@
 - B.5 supports guaranteed singleton `stabilize`, procedure singleton `stabilize`, and procedure singleton `no_improvement`. It does not claim `reduce_severity`, recovery, complication effect batches, courses, heal/legacy, or T069-C.
 - Natural-one Fate mitigation selects the failed-attempt band; it is therefore proved with singleton `no_improvement`, not stabilization.
 - Fate expiration enters #1535 only through `EffectAcceptedTurnInputComposer.Compose(... acceptedReportedLifecycleEvents:)`, derived from the typed sealed reaction intent. `GameResponse.EffectEventReports` remains forbidden.
-- A procedure with `Finalization.Disposition == "not_required"` still requires the coordinated publication transaction because dice and optional Fate are resources of the attempt.
+- A procedure with `Finalization.Disposition == "not_required"` still requires the coordinated publication transaction because dice and optional Fate are resources of the attempt. Its zero-claim resource agreement is still persisted, confirmed, probed, and finalized; `not_required` does not bypass resource lifecycle authority.
 - Successful publication must not make a used die/Fate claim reusable in the same accepted turn. Keep the exact reservations occupied as spent until accepted-state rebind reconstructs them from durable history.
 - Retryable post-write failure restores every governed byte and rearms the exact same plan while retaining dice/Fate/resource claims. Terminal rejection removes the exact durable command and pending request first, then releases all relevant claim families.
 - Composition and planning remain write-free. The sole canonical publisher remains `CanonicalStateNormalizer` under the top-level accepted-turn coordinator.
@@ -113,7 +113,9 @@ git commit -m "test(wounds): specify procedure publication transaction (#1536)"
 - Create: `BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`
+- Modify: `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`
 - Modify: `BookOfEternityClient/Services/WoundTransitionReducer.cs`
+- Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs`
 - Test: `BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs`
 
 **Interfaces:**
@@ -143,7 +145,7 @@ Call the planner twice with detached equivalent inputs and assert equal after-im
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ProcedureSingletonStabilization_|FullyQualifiedName~ProcedureNoImprovement_|FullyQualifiedName~GuaranteedStabilization"
-git add -- BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundTransitionReducer.cs BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs
+git add -- BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs BookOfEternityClient/Services/WoundTransitionReducer.cs BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.cs BookOfEternityClient.Tests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs
 git commit -m "feat(wounds): publish typed scalar treatment outcomes (#1536)"
 ```
 
@@ -211,7 +213,7 @@ git commit -m "feat(wounds): publish sealed treatment Fate reactions (#1536)"
 
 - [ ] **Step 1: Generalize transaction admission**
 
-Replace every `RequiresConfirmedHold`-only coordinator gate with `RequiresCoordinatedSettlement`. Resource probes/commit remain conditional on `RequiresConfirmedHold`; procedure liveness is mandatory when `RequiresProcedureSettlement`. A guaranteed no-resource publication may stay outside the transaction; a procedure no-resource publication may not.
+Replace every `RequiresConfirmedHold`-only coordinator gate with `RequiresCoordinatedSettlement`. Every coordinated transaction probes and commits the exact persisted resource agreement, including a procedure's zero-claim `not_required` agreement; procedure liveness is additionally mandatory when `RequiresProcedureSettlement`. A guaranteed no-resource publication may stay outside the transaction; a procedure no-resource publication may not.
 
 - [ ] **Step 2: Seal and probe procedure claims**
 
@@ -219,7 +221,7 @@ Add private registry operations that atomically validate the exact dice reservat
 
 - [ ] **Step 3: Finalize success without reopening spent claims**
 
-After the complete accepted-turn pipeline, published readback/agreement, validation, cleanup, and final refresh succeed, commit item/resource finalization when required and close the receipt while leaving exact procedure reservations occupied. The next semantically changed accepted-state bind invalidates process-local state and reconstructs both held and finalized procedure claims from durable request/history evidence. Prove the same-turn pool cannot reuse the spent indices.
+After the complete accepted-turn pipeline, published readback/agreement, validation, cleanup, and final refresh succeed, commit the exact resource finalization (including `not_required`) and close the receipt while leaving exact procedure reservations occupied. The next semantically changed accepted-state bind invalidates process-local state and reconstructs both held and finalized procedure claims from durable request/history evidence. Extend finalized natural-one recovery so it can restore the spent Fate agreement from the persisted reaction evidence even though the now-inactive shield is no longer an eligible current candidate. Prove the same-turn pool cannot reuse the spent indices and cold recovery cannot require an already-expired shield to remain active.
 
 - [ ] **Step 4: Preserve retry compensation**
 
@@ -261,7 +263,7 @@ Run the smallest relevant retained selections for guaranteed stabilization, B.3 
 - [ ] **Step 3: Run exactly one meaningful Fast checkpoint**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Fast -TimeoutSeconds 900
+pwsh .\scripts\test-csharp.ps1 -Lane Fast -TimeoutMinutes 15
 ```
 
 Classify every failure against the pre-B.5 signature and rerun only a genuinely load-sensitive unrelated failure in isolation. Do not spend time shaving seconds from a historically expanded suite; increase the documented bound when the lane cannot honestly finish within it.

@@ -21,7 +21,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         scenario = scenario with
         {
             OperationKey = scenario.OperationKey + "_singleton_stabilization",
-            ExpectedIntentCount = 1
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
         };
 
         using var fixture = AcceptedStateFixture.Create(scenario);
@@ -72,10 +74,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreateScenario(
             "procedure_disadvantage_uses_two_contiguous_dice",
-            "procedure") with
+            "procedure");
+        scenario = scenario with
         {
             OperationKey =
-                "operation_t070_b5_procedure_no_improvement_publication"
+                "operation_t070_b5_procedure_no_improvement_publication",
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
         };
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = PersistAndRehydrateProcedurePublication(
@@ -161,6 +166,89 @@ public sealed partial class MortalWoundTreatmentResolverTests
             static row => string.Equals(row.Kind, "treat", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void ProcedureScalarOutcomePlanner_IsDeterministicWriteFreeAndRejectsChangedCompletion()
+    {
+        var scenario = CreateScenario(
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure");
+        scenario = scenario with
+        {
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true,
+            OperationKey = "operation_t070_b5_scalar_outcome_planner"
+        };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var carrierBefore = ReadCanonicalBytes(fixture, fixture.TargetCarrierPath);
+        var identityBefore = ReadCanonicalBytes(fixture, WoundIdentityState.StatePath);
+        var historyBefore = ReadCanonicalBytes(fixture, WoundHistoryState.HistoryPath);
+
+        var first = MortalWoundTreatmentOutcomePublicationPlanner.Compose(
+            acceptedState,
+            request,
+            resolution,
+            acceptedState.CurrentGameMinute);
+        var second = MortalWoundTreatmentOutcomePublicationPlanner.Compose(
+            acceptedState,
+            request,
+            resolution,
+            acceptedState.CurrentGameMinute);
+
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        Assert.True(second.IsValid, DescribeIssues(second.Issues));
+        Assert.Equal(first.Fingerprint, second.Fingerprint);
+        Assert.Equal(first.TransitionId, second.TransitionId);
+        Assert.Equal(
+            WoundMaterializationContract.SerializeCanonical(first.After!),
+            WoundMaterializationContract.SerializeCanonical(second.After!));
+        Assert.Equal(carrierBefore, ReadCanonicalBytes(fixture, fixture.TargetCarrierPath));
+        Assert.Equal(identityBefore, ReadCanonicalBytes(fixture, WoundIdentityState.StatePath));
+        Assert.Equal(historyBefore, ReadCanonicalBytes(fixture, WoundHistoryState.HistoryPath));
+
+        var changedCompletion = MortalWoundTreatmentResolution.Create(
+            resolution.Mode,
+            resolution.Coordinates,
+            resolution.AttemptDisposition,
+            resolution.ResultCategory,
+            resolution.SelectedOutcomeIndex,
+            resolution.Interruption,
+            resolution.DeclaredResult,
+            resolution.OutcomeIntents,
+            resolution.CriticalReactionIntent,
+            resolution.ConsumptionTrigger,
+            resolution.CourseId,
+            resolution.CourseMilestoneOrdinal,
+            resolution.CourseDisposition,
+            request,
+            resolution.ModeEvidence,
+            resolution.RouteFingerprint,
+            "AppendOnce");
+        var rejected = MortalWoundTreatmentOutcomePublicationPlanner.Compose(
+            acceptedState,
+            request,
+            changedCompletion,
+            acceptedState.CurrentGameMinute);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.After);
+        Assert.Contains(
+            rejected.Issues,
+            static issue => issue.Code ==
+                "mortal_wound_treatment_publication_slice_unsupported");
+        Assert.Equal(carrierBefore, ReadCanonicalBytes(fixture, fixture.TargetCarrierPath));
+        Assert.Equal(identityBefore, ReadCanonicalBytes(fixture, WoundIdentityState.StatePath));
+        Assert.Equal(historyBefore, ReadCanonicalBytes(fixture, WoundHistoryState.HistoryPath));
+    }
+
     private static ResolverScenario CreateNoResourceNoImprovementProcedureScenario()
     {
         var scenario = CreateScenario(
@@ -174,7 +262,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return scenario with
         {
             OperationKey = "operation_t070_b5_no_resource_procedure",
-            ExpectedIntentCount = 1
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
         };
     }
 
