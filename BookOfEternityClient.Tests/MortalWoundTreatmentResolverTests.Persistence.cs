@@ -231,6 +231,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "Request",
             "persisted plus fresh resource claims exhaust the two-item fixture");
         Assert.NotEmpty(AsObjects(ReadRequiredProperty(exhausted, "Issues")));
+        Assert.Contains(
+            Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
+                ReadRequiredProperty(exhausted, "Issues")),
+            static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_resource_reservation_overbooked",
+                StringComparison.Ordinal));
     }
 
     [Theory]
