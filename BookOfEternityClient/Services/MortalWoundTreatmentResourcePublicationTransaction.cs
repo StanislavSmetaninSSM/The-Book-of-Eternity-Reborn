@@ -400,12 +400,35 @@ internal sealed class MortalWoundTreatmentResourcePublicationTransaction
             return issues;
         }
 
-        return issues
-            .Where(issue => !itemAuthority
-                .ProvesExactPublishedNpcInventoryContinuityIssue(
-                    issue,
+        var matchingIndex = -1;
+        var matchingCount = 0;
+        for (var index = 0; index < issues.Count; index++)
+        {
+            if (!itemAuthority.ProvesExactPublishedNpcInventoryContinuityIssue(
+                    issues[index],
                     publishedNpcRoot))
-            .ToArray();
+            {
+                continue;
+            }
+
+            matchingIndex = index;
+            matchingCount++;
+        }
+
+        if (matchingCount != 1)
+            return issues;
+
+        var filtered = new ValidationIssue[issues.Count - 1];
+        var filteredIndex = 0;
+        for (var index = 0; index < issues.Count; index++)
+        {
+            if (index == matchingIndex)
+                continue;
+
+            filtered[filteredIndex++] = issues[index];
+        }
+
+        return filtered;
     }
 
     internal async Task CapturePublishedAgreementAsync(

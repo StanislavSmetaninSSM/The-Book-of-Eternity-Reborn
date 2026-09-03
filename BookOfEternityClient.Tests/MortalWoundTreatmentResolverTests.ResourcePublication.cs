@@ -2101,21 +2101,69 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadItemIdentityEntry(coldFixture, "reusable_field_kit"));
         var finalizedResourceTransitions =
             ReadResourceHistory(coldFixture).Transitions.Count;
+        var finalizedEnergySpends =
+            ReadTreatmentResourceSpendTransitions(coldFixture).Count;
+        var finalizedDurabilityReconfigures =
+            CountReusableItemDurabilityReconfigures(coldFixture);
         coldFixture.PrepareFreshSnapshot(
             "cold_item_resource_publication_history_replay");
         using var replayFixture = CreateColdRootCopy(coldFixture);
+        Assert.NotEqual(coldFixture.Root, replayFixture.Root);
+        Assert.NotSame(coldFixture.FileSystem, replayFixture.FileSystem);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            replayFixture.FileSystem,
+            replayFixture.Lease));
         var replayCatalog = Assert.IsType<
             MortalWoundTreatmentPersistedRequestCatalogResult>(
             RestoreCurrentPersistedTreatmentCatalog(replayFixture));
         Assert.True(replayCatalog.IsValid, DescribeIssues(replayCatalog.Issues));
         Assert.Empty(replayCatalog.HeldRequests);
-        Assert.Single(replayCatalog.FinalizedRequests);
+        var finalizedRequest = Assert.Single(replayCatalog.FinalizedRequests);
+        Assert.NotSame(request, finalizedRequest);
 
-        var replay = ProbePublishedTreatment(replayFixture, coldFlow.Request);
+        var replayCoordinates = finalizedRequest.Coordinates;
+        var parsedReplayContext = MortalWoundTreatmentAuthority.ParseContext(
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["realm"] = replayCoordinates.Realm,
+                ["targetKind"] = replayCoordinates.TargetKind,
+                ["targetId"] = replayCoordinates.TargetId,
+                ["providerKind"] = replayCoordinates.ProviderKind,
+                ["providerId"] = replayCoordinates.ProviderId,
+                ["currentLocationId"] = replayCoordinates.LocationId
+            }.ToJsonString(),
+            "durableAcceptedReplay.treatmentContext");
+        Assert.True(
+            parsedReplayContext.IsValid,
+            DescribeIssues(parsedReplayContext.Issues));
+        var replayAcceptedStateResult =
+            MortalWoundTreatmentAcceptedStateAuthority.ExportCurrent(
+                replayFixture.FileSystem,
+                replayFixture.Lease,
+                Assert.IsType<MortalWoundTreatmentAuthority.Context>(
+                    parsedReplayContext.Context),
+                replayCoordinates.WoundId);
+        Assert.True(
+            replayAcceptedStateResult.IsValid,
+            DescribeIssues(replayAcceptedStateResult.Issues));
+        var replayAcceptedState =
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+                replayAcceptedStateResult.Authority);
+        Assert.NotSame(coldFlow.AcceptedState, replayAcceptedState);
+        var replayHistory = replayFixture.ReadCurrentHistory();
+        var replayWound = replayFixture.ReadCurrentWound();
 
-        Assert.Equal(
-            "ExactReplay",
-            Convert.ToString(ReadRequiredProperty(replay, "Status")));
+        var replay = MortalWoundTreatmentPlanner.CreateGuaranteedAttempt(
+            finalizedRequest,
+            replayHistory,
+            replayWound,
+            replayAcceptedState);
+
+        Assert.Equal("ExactReplay", replay.Disposition);
+        Assert.Empty(replay.Issues);
+        Assert.Null(replay.Resolution);
+        Assert.NotNull(replay.ReplayReceipt);
         AssertItemCarrierBytesEqual(replayFixture, finalizedItemBytes);
         AssertResourceBytesEqual(replayFixture, finalizedResourceBytes);
         Assert.Equal(1, replayFixture.ReadNpcItemCount("reusable_field_kit"));
@@ -2131,6 +2179,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(
             finalizedResourceTransitions,
             ReadResourceHistory(replayFixture).Transitions.Count);
+        Assert.Equal(
+            finalizedEnergySpends,
+            ReadTreatmentResourceSpendTransitions(replayFixture).Count);
+        Assert.Equal(
+            finalizedDurabilityReconfigures,
+            CountReusableItemDurabilityReconfigures(replayFixture));
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             replayFixture.FileSystem,
             replayFixture.Lease));

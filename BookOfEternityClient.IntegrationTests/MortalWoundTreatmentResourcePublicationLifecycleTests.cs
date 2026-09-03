@@ -384,6 +384,71 @@ public sealed partial class GameEngineTurnLifecycleTests
         }
     }
 
+    [Fact]
+    public async Task GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch()
+    {
+        await using var context = await CreateHeldTreatmentPipelineContextAsync(
+            fault: null,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack());
+        var probe = await CreatePublishedTreatmentFullStateProbeAsync(context);
+        try
+        {
+            var issue = Assert.Single(probe.Issues, static candidate =>
+                string.Equals(
+                    candidate.Code,
+                    "npc_existing_inventory_resend_forbidden",
+                    StringComparison.Ordinal));
+
+            IReadOnlyList<ValidationIssue> repeatedInstance = new[] { issue, issue };
+            var repeatedInstanceResult =
+                await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                    probe.Transaction,
+                    "FilterExactPublishedItemValidationIssuesAsync",
+                    context.FileSystem,
+                    repeatedInstance);
+            Assert.Same(repeatedInstance, repeatedInstanceResult);
+            Assert.Collection(
+                repeatedInstanceResult,
+                candidate => Assert.Same(issue, candidate),
+                candidate => Assert.Same(issue, candidate));
+
+            var equivalentFirst = CloneValidationIssue(issue);
+            var equivalentSecond = CloneValidationIssue(issue);
+            IReadOnlyList<ValidationIssue> equivalentInstances =
+                new[] { equivalentFirst, equivalentSecond };
+            var equivalentInstancesResult =
+                await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                    probe.Transaction,
+                    "FilterExactPublishedItemValidationIssuesAsync",
+                    context.FileSystem,
+                    equivalentInstances);
+            Assert.Same(equivalentInstances, equivalentInstancesResult);
+            Assert.Collection(
+                equivalentInstancesResult,
+                candidate => Assert.Same(equivalentFirst, candidate),
+                candidate => Assert.Same(equivalentSecond, candidate));
+
+            var unrelated = new ValidationIssue(
+                "game_state/unrelated.json",
+                IssueSeverity.Error,
+                "An unrelated validation error must remain.",
+                code: "unrelated_validation_error");
+            IReadOnlyList<ValidationIssue> oneProvenMatch = new[] { unrelated, issue };
+            var oneProvenMatchResult =
+                await InvokePrivateAsync<IReadOnlyList<ValidationIssue>>(
+                    probe.Transaction,
+                    "FilterExactPublishedItemValidationIssuesAsync",
+                    context.FileSystem,
+                    oneProvenMatch);
+            Assert.Same(unrelated, Assert.Single(oneProvenMatchResult));
+        }
+        finally
+        {
+            await Assert.IsAssignableFrom<IAsyncDisposable>(probe.Transaction)
+                .DisposeAsync();
+        }
+    }
+
     [Theory]
     [InlineData("runtime_refresh", 1)]
     [InlineData("wound_post_seal", 1)]
@@ -501,14 +566,48 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Theory]
-    [InlineData("count")]
-    [InlineData("carrier")]
-    [InlineData("index")]
-    [InlineData("resource_capacity")]
-    [InlineData("resource_current")]
-    [InlineData("shared_npc_mirror")]
+    [InlineData(
+        "count",
+        "mortal_wound_treatment_publication_item_authority_changed",
+        "game_state/wounds/accepted_turn_plan",
+        "the exact already validated item projection authority",
+        "missing or changed item cache proof")]
+    [InlineData(
+        "carrier",
+        "mortal_wound_treatment_publication_item_authority_changed",
+        "game_state/wounds/accepted_turn_plan",
+        "the exact already validated item projection authority",
+        "missing or changed item cache proof")]
+    [InlineData(
+        "index",
+        "mortal_wound_treatment_publication_item_authority_changed",
+        "game_state/wounds/accepted_turn_plan",
+        "the exact already validated item projection authority",
+        "missing or changed item cache proof")]
+    [InlineData(
+        "resource_capacity",
+        "resource_state_history_snapshot_mismatch",
+        ResourceMaterializationContract.StatePath,
+        "live snapshot equals latest immutable history after-state",
+        "transition_selected_dressing_durability_initialize")]
+    [InlineData(
+        "resource_current",
+        "resource_state_history_snapshot_mismatch",
+        ResourceMaterializationContract.StatePath,
+        "live snapshot equals latest immutable history after-state",
+        "transition_selected_dressing_durability_initialize")]
+    [InlineData(
+        "shared_npc_mirror",
+        "mortal_wound_treatment_publication_item_authority_changed",
+        "game_state/wounds/accepted_turn_plan",
+        "the exact already validated item projection authority",
+        "missing or changed item cache proof")]
     public async Task GuaranteedItemConsumption_PostSealDriftRejectsBeforeAnySpend(
-        string driftAxis)
+        string driftAxis,
+        string expectedCode,
+        string expectedPath,
+        string expected,
+        string actual)
     {
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
             fault: null,
@@ -539,8 +638,12 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         Assert.False(rejected.IsValid);
         Assert.Null(rejected.Plan);
-        Assert.Contains(rejected.Issues, issue =>
-            issue.Severity == IssueSeverity.Error);
+        var driftIssue = Assert.Single(rejected.Issues, issue =>
+            issue.Severity == IssueSeverity.Error &&
+            string.Equals(issue.Code, expectedCode, StringComparison.Ordinal) &&
+            string.Equals(issue.FilePath, expectedPath, StringComparison.Ordinal));
+        Assert.Equal(expected, driftIssue.Expected);
+        Assert.Equal(actual, driftIssue.Actual);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             context.FileSystem,
             context.Lease));
