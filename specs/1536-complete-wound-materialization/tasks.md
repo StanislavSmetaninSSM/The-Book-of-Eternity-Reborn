@@ -1507,6 +1507,34 @@ entrypoints require no update for T065.
   Procedure/course/Fate/heal/recovery and T069-C remain later T070 contours; B.4 uses new
   guaranteed-treatment cold/replay cases and does not require an existing procedure/course
   publication test to become GREEN.
+  T070 Phase B.4 bounded closure (2026-09-03): complete through `fdf27a20`. The final
+  complete controls passed the final vehicle-topology remediation 13/13
+  (`20260903-165600-005-52272-92bd7d09dd054aed9eb95fcfcd8a6bfd-focused`), 166/166 unit
+  (`20260903-170208-682-26064-ec892393511e419aba517c704686ce75-focused`), 25/25
+  integration (`20260903-171229-681-544-4e82f8d5e4da41fe89fb3b55977238da-focused`),
+  retained B.3 30/30
+  (`20260903-171938-916-58752-f9f55aa7ac8c4f3292a532c6e877918b-focused`), retained
+  B.1/B.2 accepted stale-oracle RED 28/36
+  (`20260903-172451-949-45224-6ae414a8253e489ba2fb9eb6032491c3-focused`) and 36/36 after
+  the independently reviewed test-only oracle correction
+  (`20260903-173926-467-1364-9cb5a800955d42a9be052a4ff93e4a8e-focused`), and retained
+  T068 26/26 (`20260903-175602-771-57288-cbec96e4bb244bacabfbe7be839298c3-focused`),
+  all with warning/error-free builds, no timeout or duplicate IDs, and complete cleanup.
+  Exactly one Fast checkpoint executed 1,313 tests with 1,312 PASS, no lane timeout,
+  duplicate IDs, build warning/error, or cleanup leak
+  (`20260903-175817-440-17720-05436190c30e49168b09a74f2613a130-fast`). Its sole
+  official failure was an unrelated seven-second browser canonical-lease fencing timeout;
+  the exact test passed 1/1 in isolation
+  (`20260903-180606-032-29292-b79b33e83fd04206be5dc6c3bf840ed3-focused`). An unfinished
+  no-TRX shard printed ten procedure/recovery rows, all at the explicit deferred
+  `mortal_wound_treatment_publication_slice_unsupported@treatmentPublication.guaranteedStabilization`
+  boundary. Independent cumulative review of `9aa64764^..fdf27a20` returned PASS with
+  zero P0/P1/P2 findings. Structural inspection is clean except the pre-existing untracked
+  `.serena/`; no migration, raw writer, public DTO/`GameResponse`, GM/browser/console, or
+  afterlife contract surface changed. Selected legacy-array vehicle partial/full behavior
+  is proven at the pure topology seam because the current accepted contract cannot select a
+  vehicle-owned treatment item; untouched legacy-array treatment is proven end to end.
+  T070, #1536, procedure/course/Fate/heal/recovery publication, and T069-C remain open.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution
