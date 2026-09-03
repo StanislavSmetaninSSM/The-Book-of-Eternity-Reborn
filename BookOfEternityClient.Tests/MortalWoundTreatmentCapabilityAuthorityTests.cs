@@ -4573,7 +4573,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             var afterImages = Assert.IsAssignableFrom<IReadOnlyDictionary<string, JsonObject>>(
                 ReadRequiredProperty(plan, "OwnerCompanionAfterImages"));
             var expectedRoots = UsesFinalAfterImage
-                ? ExpectedPublicationRoots(FinalSource)
+                ? ExpectedCommonPlanPublicationRoots(FinalSource)
                 : new Dictionary<string, JsonObject>(StringComparer.Ordinal);
             Assert.Equal(expectedRoots.Keys.OrderBy(static path => path),
                 afterImages.Keys.OrderBy(static path => path));
@@ -4683,7 +4683,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 return;
             }
 
-            var expectedRoots = ExpectedPublicationRoots(FinalSource);
+            var expectedRoots = ExpectedCommonPlanPublicationRoots(FinalSource);
             Assert.Equal(expectedRoots.Keys.OrderBy(static path => path),
                 afterImages.Keys.OrderBy(static path => path));
             foreach (var (path, expected) in expectedRoots)
@@ -4780,16 +4780,24 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                     Assert.NotEqual(string.Empty, finalRoot.ToJsonString());
                 }
             }
-            else if (Scenario.SourceOwner == "npc")
-            {
-                Assert.True(binding.BeforeImages.TryGetValue(SelectedSkillRootPath, out var before));
-                Assert.True(before!.Existed);
-                Assert.Equal(
-                    File.ReadAllBytes(FileSystem.ResolvePath(SelectedSkillRootPath)),
-                    before.Bytes);
-            }
             else
-                Assert.DoesNotContain(SelectedSkillRootPath, binding.BeforeImages.Keys);
+            {
+                var expectedSourcePaths = Scenario.SourceOwner == "player"
+                    ? new[]
+                    {
+                        "game_state/player/skills_active.json",
+                        "game_state/player/skills_passive.json"
+                    }
+                    : new[] { SelectedSkillRootPath };
+                foreach (var path in expectedSourcePaths)
+                {
+                    Assert.True(binding.BeforeImages.TryGetValue(path, out var before));
+                    Assert.True(before!.Existed);
+                    Assert.Equal(
+                        File.ReadAllBytes(FileSystem.ResolvePath(path)),
+                        before.Bytes);
+                }
+            }
         }
 
         private static void AssertAcceptedBindingMatchesCommonBinding(
@@ -4897,6 +4905,35 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 if (path == selectedPath || !JsonNode.DeepEquals(current, final))
                     roots.Add(path, PublicationRoot(source, path));
             }
+            return roots;
+        }
+
+        private IReadOnlyDictionary<string, JsonObject> ExpectedCommonPlanPublicationRoots(
+            JsonObject source)
+        {
+            var roots = ExpectedPublicationRoots(source).ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            if (!UsesFinalAfterImage || Scenario.SourceOwner != "npc")
+                return roots;
+
+            var npcRoot = roots[NpcCoreChangesContract.NpcCorePath];
+            Assert.False(npcRoot.ContainsKey("UpdateNpcTradeInventoryReceipts"));
+            var actors = new List<JsonObject>();
+            foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+            {
+                if (npcRoot[section] is not JsonArray rows)
+                    continue;
+                actors.AddRange(rows.Select(static row => Assert.IsType<JsonObject>(row)));
+            }
+            Assert.NotEmpty(actors);
+            foreach (var actor in actors)
+            {
+                Assert.False(actor.ContainsKey("tradeInventoryReceipts"));
+                actor["tradeInventoryReceipts"] = new JsonArray();
+            }
+
             return roots;
         }
 
