@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class BrowserMortalWorldGenerationFencingTests : IDisposable
 {
     private readonly string _rootPath =

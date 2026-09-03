@@ -3448,7 +3448,9 @@ public sealed partial class WoundEffectBatchPlannerTests
 
     internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(
         int transitionCount = 1) =>
-        CreateInput(transitionCount);
+        transitionCount == 1
+            ? WoundAcceptedTurnTestFixture.CreateDefaultInput()
+            : CreateInput(transitionCount);
 
     internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(
         OwnerFlavor flavor) =>
@@ -3460,14 +3462,11 @@ public sealed partial class WoundEffectBatchPlannerTests
             flavor: flavor);
 
     internal static WoundAcceptedTurnInput CreateNoMechanicsInputForAcceptedCache() =>
-        CreateInput(
-            transitionCount: 1,
-            shape: CandidateShape.NoMechanics,
-            flavor: OwnerFlavor.Player);
+        WoundAcceptedTurnTestFixture.CreateNoMechanicsInput();
 
     internal static EffectAcceptedTurnInput CreateEffectInputForAcceptedCache(
         WoundPreparedAcceptedTurnPlan prepared) =>
-        CreateEffectInput(prepared);
+        WoundAcceptedTurnTestFixture.CreateEffectInput(prepared);
 
     internal static EffectAcceptedTurnInput CreateEffectInputForAcceptedCache(
         WoundPreparedAcceptedTurnPlan prepared,

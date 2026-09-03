@@ -16,6 +16,7 @@ namespace BookOfEternityClient.Tests;
 /// deliberately source-shaped only: canonical accepted state, coordinates, proof
 /// sealing, and final-plan after-images must remain production-owned.
 /// </summary>
+[Trait("Category", "RegressionIntegration")]
 public sealed class MortalWoundTreatmentCapabilityAuthorityTests
 {
     private const string CapabilityRef = "field_medicine_guaranteed_care";
@@ -694,12 +695,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var continuationAuthority = Assert.IsAssignableFrom<object>(
             bundle.PreparedPlan.TreatmentContinuationAuthority);
 
-        var ordinaryInput = WoundEffectBatchPlannerTests
-            .CreateNoMechanicsInputForAcceptedCache();
+        var ordinaryInput = WoundAcceptedTurnTestFixture.CreateNoMechanicsInput();
         var ordinaryPrepared = WoundAcceptedTurnPlanner.Prepare(ordinaryInput);
         Assert.True(ordinaryPrepared.Success, DescribeIssues(ordinaryPrepared.Issues));
-        var ordinaryEffectInput = WoundEffectBatchPlannerTests
-            .CreateEffectInputForAcceptedCache(ordinaryPrepared.Plan!);
+        var ordinaryEffectInput = WoundAcceptedTurnTestFixture
+            .CreateEffectInput(ordinaryPrepared.Plan!);
         var ordinaryEffect = WoundEffectBatchPlanner.Build(
             ordinaryPrepared.Plan!,
             ordinaryEffectInput,

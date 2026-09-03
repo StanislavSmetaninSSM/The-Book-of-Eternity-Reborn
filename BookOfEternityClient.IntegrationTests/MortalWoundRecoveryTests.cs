@@ -35,6 +35,7 @@ namespace BookOfEternityClient.Tests;
 /// MortalWoundDeteriorationPolicyAuthority.Create(FileSystemManager, CanonicalWriteLease,
 /// WoundAcceptedTurnBinding, string woundId, string policyRef).
 /// </summary>
+[Trait("Category", "RegressionIntegration")]
 public sealed class MortalWoundRecoveryTests
 {
     private const string PlannerName = "BookOfEternityClient.Services.MortalWoundRecoveryPlanner";
@@ -1001,8 +1002,8 @@ public sealed class MortalWoundRecoveryTests
                 WriteCanonicalTreatmentAuthorityRoots(fs);
                 AssertCanonicalTreatmentAuthorityRoots(fs);
                 var creationInput = scenario.NoMechanics
-                    ? WoundEffectBatchPlannerTests.CreateNoMechanicsInputForAcceptedCache()
-                    : WoundEffectBatchPlannerTests.CreateInputForAcceptedCache();
+                    ? WoundAcceptedTurnTestFixture.CreateNoMechanicsInput()
+                    : WoundAcceptedTurnTestFixture.CreateDefaultInput();
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
                 creationInput = PrepareSignedCreationTurn(fs, creationInput);
                 AssertLiveTurnCorrelation(fs, creationInput.Binding, creationInput);
@@ -1019,7 +1020,7 @@ public sealed class MortalWoundRecoveryTests
                 Assert.Empty(preparedResult.Issues);
                 var prepared = Assert.IsType<WoundPreparedAcceptedTurnPlan>(preparedResult.Plan);
                 var effect = WoundEffectBatchPlanner.Build(prepared,
-                    WoundEffectBatchPlannerTests.CreateEffectInputForAcceptedCache(prepared),
+                    WoundAcceptedTurnTestFixture.CreateEffectInput(prepared),
                     new EffectIdentityFactory());
                 Assert.True(effect.Success, Issues(effect.Issues));
                 var finalizedResult = WoundAcceptedTurnPlanner.Finalize(prepared, effect);
