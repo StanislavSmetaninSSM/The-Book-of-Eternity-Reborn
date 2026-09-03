@@ -263,10 +263,10 @@ Run the smallest relevant retained selections for guaranteed stabilization, B.3 
 - [ ] **Step 3: Run exactly one meaningful Fast checkpoint**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Fast -TimeoutMinutes 15
+pwsh .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
-Classify every failure against the pre-B.5 signature and rerun only a genuinely load-sensitive unrelated failure in isolation. Do not spend time shaving seconds from a historically expanded suite; increase the documented bound when the lane cannot honestly finish within it.
+Classify every failure against the pre-B.5 signature and rerun only a genuinely load-sensitive unrelated failure in isolation. Fast keeps its five-minute hard limit; issue #1551 restored the semantic project boundary instead of extending that limit. Do not spend time shaving seconds from a historically expanded Focused selection: use its documented bounded override when measurement proves the default cannot honestly finish, but never apply that override to Fast.
 
 - [ ] **Step 4: Request independent review**
 
