@@ -715,28 +715,65 @@ internal sealed class MortalItemRouteAuthorityCatalog
         JsonObject? root,
         TradeAuthorityWorkCounter? work = null)
     {
-        var mutable = new Dictionary<string, List<JsonObject>>(StringComparer.Ordinal);
+        var mutable = new Dictionary<
+            string,
+            List<(string Section, JsonObject Actor)>>(StringComparer.Ordinal);
         if (root != null)
         {
-            foreach (var npc in EnumerateNpcObjects(root))
+            foreach (var section in GuardianPolicyContracts
+                         .NpcCoreCanonicalNpcObjectSections)
             {
-                work?.Visit();
-                var npcId = ReadNpcIdentity(npc);
-                if (npcId == null)
+                if (root[section] is not JsonArray npcs)
                     continue;
-                if (!mutable.TryGetValue(npcId, out var owners))
+                foreach (var npc in npcs.OfType<JsonObject>())
                 {
-                    owners = new List<JsonObject>();
-                    mutable.Add(npcId, owners);
+                    work?.Visit();
+                    var npcId = ReadNpcIdentity(npc);
+                    if (npcId == null)
+                        continue;
+                    if (!mutable.TryGetValue(npcId, out var owners))
+                    {
+                        owners = new List<(string Section, JsonObject Actor)>();
+                        mutable.Add(npcId, owners);
+                    }
+                    owners.Add((section, npc));
                 }
-                owners.Add(npc);
             }
         }
 
+        var confusableIds = mutable.Keys
+            .GroupBy(
+                ResourceMaterializationContract.BuildConfusableKey,
+                StringComparer.Ordinal)
+            .Where(static group => group.Count() > 1)
+            .SelectMany(static group => group)
+            .ToHashSet(StringComparer.Ordinal);
         return mutable.ToDictionary(
             pair => pair.Key,
-            pair => (IReadOnlyList<JsonObject>)pair.Value.ToArray(),
+            pair => ResolveLogicalNpcOwners(
+                pair.Key,
+                pair.Value,
+                confusableIds.Contains(pair.Key)),
             StringComparer.Ordinal);
+    }
+
+    private static IReadOnlyList<JsonObject> ResolveLogicalNpcOwners(
+        string actorId,
+        IReadOnlyList<(string Section, JsonObject Actor)> physicalOwners,
+        bool hasConfusableIdentity)
+    {
+        if (!hasConfusableIdentity &&
+            MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(
+                actorId,
+                physicalOwners))
+        {
+            return new[] { physicalOwners[0].Actor };
+        }
+
+        // Route validation accepts exactly one logical owner. Preserve a
+        // deterministic ambiguous cardinality even when the invalid topology
+        // consists of one malformed row or two distinct confusable IDs.
+        return new[] { physicalOwners[0].Actor, physicalOwners[0].Actor };
     }
 
     private static Dictionary<string, NpcAddAuthorityCandidate>

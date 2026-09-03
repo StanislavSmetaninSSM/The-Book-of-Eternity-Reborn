@@ -100,6 +100,463 @@ public sealed class MortalItemConsumptionPlannerTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Plan_FullNpcStackClearsOnlyExactSourceEquipmentAndPreservesNpcSiblings(
+        bool legacyEquipmentSurface)
+    {
+        var fixture = CreateNpcEquipmentFixture(
+            "itm_npc_terminal",
+            legacyEquipmentSurface);
+        var catalog = MortalItemCarrierCatalog.Build(fixture.Roots);
+        var equipment = Assert.Single(catalog.ByCompanionReference[fixture.ItemId]);
+        Assert.Equal(NpcPath, equipment.FilePath);
+        Assert.Equal("mainHand", equipment.PropertyName);
+        Assert.Equal("npc_inventory", equipment.ExpectedCarrier?.Kind);
+        Assert.Equal("npc_terminal_owner", equipment.ExpectedCarrier?.OwnerId);
+        Assert.Empty(equipment.ExpectedCarrier!.ContainerPath);
+        var beforeCarrier = Entry(fixture.Index, fixture.ItemId)["currentCarrier"]!.DeepClone();
+        var otherNpcBefore = Assert.Single(Npcs(
+            fixture.Roots.NpcCore!,
+            "npc_terminal_other")).DeepClone();
+        const string transitionId = "mitrn_t070b4_npc_terminal_0001";
+
+        var result = Plan(fixture, BuildCommand(1, fixture.ItemId, 1, transitionId));
+
+        AssertValid(result);
+        Assert.False(HasItem(result.Roots, fixture.ItemId));
+        Assert.DoesNotContain(fixture.ItemId, result.Roots.Values.SelectMany(Strings));
+        var npcAfterImage = result.Roots[NpcPath];
+        var ownerCopiesAfter = Npcs(npcAfterImage, "npc_terminal_owner");
+        Assert.Equal(2, ownerCopiesAfter.Count);
+        Assert.True(JsonNode.DeepEquals(ownerCopiesAfter[0], ownerCopiesAfter[1]));
+        Assert.All(ownerCopiesAfter, ownerAfter =>
+        {
+            Assert.Empty(ownerAfter["inventory"]!.AsArray());
+            Assert.Null(ownerAfter["equippedItems"]!["mainHand"]);
+            Assert.Equal("itm_npc_equipment_sibling",
+                ownerAfter["equippedItems"]!["offHand"]!.GetValue<string>());
+            Assert.Null(ownerAfter["equipment"]!["mainHand"]);
+            Assert.Equal("itm_npc_legacy_equipment_sibling",
+                ownerAfter["equipment"]!["offHand"]!.GetValue<string>());
+            Assert.Equal("preserve owner sibling", ownerAfter["unchanged"]!.GetValue<string>());
+        });
+        Assert.True(JsonNode.DeepEquals(
+            otherNpcBefore,
+            Assert.Single(Npcs(npcAfterImage, "npc_terminal_other"))));
+        var afterEntry = Entry(result.Index!, fixture.ItemId);
+        Assert.Equal("consumed", afterEntry["state"]!.GetValue<string>());
+        Assert.Null(afterEntry["currentCarrier"]);
+        AssertConsume(Assert.Single(result.Transitions), transitionId, fixture.ItemId,
+            1, 0, beforeCarrier, null);
+        Assert.Equal(transitionId, LastTransition(afterEntry)["transitionId"]!.GetValue<string>());
+        Assert.Empty(result.Capacities);
+        Assert.Equal(new ResourceOwnerKey("mortal_world", ResourceOwnerKind.Item, fixture.ItemId),
+            Assert.Single(result.TerminalOwners));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Plan_FullNpcStackRejectsCrossCarrierOrConfusableEquipmentReference(
+        bool confusable)
+    {
+        var fixture = CreateNpcEquipmentFixture("itm_npc_guarded");
+        var roots = Clone(fixture.Roots);
+        var owners = Npcs(roots.NpcCore!, "npc_terminal_owner");
+        var other = Assert.Single(Npcs(roots.NpcCore!, "npc_terminal_other"));
+        if (!confusable)
+        {
+            Assert.All(owners, owner =>
+                owner["equippedItems"]!["mainHand"] = null);
+        }
+        other["equippedItems"]!["mainHand"] = confusable
+            ? fixture.ItemId.ToUpperInvariant()
+            : fixture.ItemId;
+        var catalog = MortalItemCarrierCatalog.Build(roots);
+        if (confusable)
+        {
+            Assert.Contains(catalog.Issues, issue =>
+                issue.Code == "mortal_item_materialization_identity_ambiguity");
+        }
+        else
+        {
+            Assert.Empty(catalog.Issues);
+            var reference = Assert.Single(catalog.ByCompanionReference[fixture.ItemId]);
+            Assert.Equal("npc_terminal_other", reference.ExpectedCarrier?.OwnerId);
+        }
+
+        var result = PlanWithRoots(
+            fixture,
+            roots,
+            BuildCommand(1, fixture.ItemId, 1, "mitrn_t070b4_npc_guarded_0001"));
+
+        AssertInvalidEmpty(result);
+    }
+
+    [Fact]
+    public void FinalBaseline_PlayerItemAllowsIdenticalPermanentNpcCrossSectionMirror()
+    {
+        var currentNpcRoot = CreateMirroredNpcRoot();
+        var backupNpcRoot = CreateMirroredNpcRoot();
+        foreach (var current in Npcs(currentNpcRoot, "npc_baseline_mirror"))
+        {
+            current["equipment"] = new JsonObject
+            {
+                ["mainHand"] = null,
+                ["offHand"] = "itm_baseline_equipment_current"
+            };
+        }
+        currentNpcRoot[NpcCoreChangesContract.PropertyName] = new JsonArray(
+            new JsonObject
+            {
+                ["NPCId"] = "npc_baseline_mirror",
+                ["reason"] = "The item transfer and this profile update share one turn.",
+                ["profile"] = new JsonObject
+                {
+                    ["worldview"] = "Mirrors preserve exact evidence."
+                }
+            });
+        foreach (var backup in Npcs(backupNpcRoot, "npc_baseline_mirror"))
+        {
+            backup["equipment"] = new JsonObject
+            {
+                ["mainHand"] = "itm_baseline_equipment_removed",
+                ["offHand"] = "itm_baseline_equipment_backup"
+            };
+        }
+        var input = CreateBaselineInput(currentNpcRoot, backupNpcRoot);
+
+        var result = MortalItemPublicationBaselinePlanner.Project(input);
+
+        Assert.Empty(result.Issues);
+        AssertFingerprint(result.Fingerprint);
+        Assert.Equal(
+            "itm_baseline_player",
+            FindItem(result.FinalCarrierRoots, "itm_baseline_player")["itemId"]!
+                .GetValue<string>());
+        var npcRoot = Assert.IsType<JsonObject>(result.FinalCarrierRoots[NpcPath]);
+        var copies = Npcs(npcRoot, "npc_baseline_mirror");
+        Assert.Equal(2, copies.Count);
+        Assert.True(JsonNode.DeepEquals(copies[0], copies[1]));
+        Assert.Null(copies[0]["equipment"]!["mainHand"]);
+        Assert.Equal("itm_baseline_equipment_current",
+            copies[0]["equipment"]!["offHand"]!.GetValue<string>());
+        Assert.Equal("Mirrors preserve exact evidence.",
+            copies[0]["worldview"]!.GetValue<string>());
+        Assert.False(npcRoot.ContainsKey(NpcCoreChangesContract.PropertyName));
+    }
+
+    [Fact]
+    public void FinalBaseline_PlayerItemAllowsSameTurnNewNpcAbsentFromBackup()
+    {
+        var existingNpc = new JsonObject
+        {
+            ["NPCId"] = "npc_baseline_existing_control",
+            ["name"] = "Existing baseline control",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject()
+        };
+        var newNpc = new JsonObject
+        {
+            ["initialId"] = "npc_baseline_same_turn_new",
+            ["name"] = "Same-turn baseline NPC",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject()
+        };
+        var current = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(newNpc),
+            ["NPCsInScene"] = new JsonArray(existingNpc.DeepClone()),
+            [NpcCoreChangesContract.PropertyName] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_baseline_existing_control",
+                ["reason"] = "Exercise the real NPC semantic comparison baseline.",
+                ["profile"] = new JsonObject
+                {
+                    ["worldview"] = "New actors remain new during comparison."
+                }
+            })
+        };
+        var backup = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(),
+            ["NPCsInScene"] = new JsonArray(existingNpc.DeepClone())
+        };
+
+        var result = MortalItemPublicationBaselinePlanner.Project(
+            CreateBaselineInput(current, backup));
+
+        Assert.Empty(result.Issues);
+        AssertFingerprint(result.Fingerprint);
+        Assert.Equal(
+            "itm_baseline_player",
+            FindItem(result.FinalCarrierRoots, "itm_baseline_player")["itemId"]!
+                .GetValue<string>());
+        var npcRoot = Assert.IsType<JsonObject>(result.FinalCarrierRoots[NpcPath]);
+        var created = Assert.Single(npcRoot["UpdateNPCs"]!.AsArray());
+        Assert.Equal("npc_baseline_same_turn_new",
+            created!["initialId"]!.GetValue<string>());
+        var existing = Assert.Single(Npcs(npcRoot, "npc_baseline_existing_control"));
+        Assert.Equal("New actors remain new during comparison.",
+            existing["worldview"]!.GetValue<string>());
+        Assert.False(npcRoot.ContainsKey(NpcCoreChangesContract.PropertyName));
+    }
+
+    [Theory]
+    [InlineData("UpdateNPCs", "NPCsInScene")]
+    [InlineData("NPCsInScene", "UpdateNPCs")]
+    public void FinalBaseline_PlayerItemAllowsExactExistingNpcSectionMove(
+        string currentSection,
+        string backupSection)
+    {
+        var actor = new JsonObject
+        {
+            ["NPCId"] = "npc_baseline_section_move",
+            ["name"] = "Section-moving baseline NPC",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject()
+        };
+        JsonObject Root(string section)
+        {
+            var update = new JsonArray();
+            var scene = new JsonArray();
+            (section == "UpdateNPCs" ? update : scene).Add(actor.DeepClone());
+            return new JsonObject
+            {
+                ["UpdateNPCs"] = update,
+                ["NPCsInScene"] = scene
+            };
+        }
+
+        var result = MortalItemPublicationBaselinePlanner.Project(
+            CreateBaselineInput(Root(currentSection), Root(backupSection)));
+
+        Assert.Empty(result.Issues);
+        var npcRoot = Assert.IsType<JsonObject>(result.FinalCarrierRoots[NpcPath]);
+        Assert.Single(npcRoot[currentSection]!.AsArray());
+        Assert.Empty(npcRoot[backupSection]!.AsArray());
+        Assert.Equal("npc_baseline_section_move",
+            Assert.Single(Npcs(npcRoot, "npc_baseline_section_move"))["NPCId"]!
+                .GetValue<string>());
+    }
+
+    [Theory]
+    [InlineData("divergent_cross_section")]
+    [InlineData("same_section_duplicate")]
+    [InlineData("confusable_cross_section")]
+    [InlineData("homoglyph_cross_section")]
+    public void FinalBaseline_RejectsInvalidNpcDuplicateTopology(string mutation)
+    {
+        var npcRoot = CreateMirroredNpcRoot();
+        switch (mutation)
+        {
+            case "divergent_cross_section":
+                npcRoot["NPCsInScene"]![0]!["name"] = "Divergent mirror";
+                break;
+            case "same_section_duplicate":
+                npcRoot["UpdateNPCs"]!.AsArray().Add(
+                    npcRoot["UpdateNPCs"]![0]!.DeepClone());
+                npcRoot["NPCsInScene"] = new JsonArray();
+                break;
+            case "confusable_cross_section":
+                npcRoot["NPCsInScene"]![0]!["NPCId"] = "NPC_BASELINE_MIRROR";
+                break;
+            case "homoglyph_cross_section":
+                npcRoot["NPCsInScene"]![0]!["NPCId"] =
+                    "np\u0441_baseline_mirror";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var result = MortalItemPublicationBaselinePlanner.Project(
+            CreateBaselineInput(npcRoot));
+
+        Assert.NotEmpty(result.Issues);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_publication_baseline_semantic_npc_invalid");
+        Assert.Empty(result.FinalCarrierRoots);
+    }
+
+    [Theory]
+    [InlineData("backup_only_existing")]
+    [InlineData("current_only_permanent")]
+    public void FinalBaseline_RejectsNpcActorSetChangeWithoutCreationOrDeleteAuthority(
+        string mutation)
+    {
+        var mirrored = CreateMirroredNpcRoot();
+        var empty = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(),
+            ["NPCsInScene"] = new JsonArray()
+        };
+        var current = mutation == "backup_only_existing" ? empty : mirrored;
+        var backup = mutation == "backup_only_existing" ? mirrored : empty;
+
+        var result = MortalItemPublicationBaselinePlanner.Project(
+            CreateBaselineInput(current, backup));
+
+        Assert.NotEmpty(result.Issues);
+        Assert.Contains(result.Issues, issue =>
+            issue.Code == "mortal_item_publication_baseline_semantic_npc_invalid");
+        Assert.Empty(result.FinalCarrierRoots);
+    }
+
+    [Theory]
+    [InlineData("divergent_cross_section")]
+    [InlineData("same_section_duplicate")]
+    [InlineData("confusable_cross_section")]
+    [InlineData("conflicting_alias")]
+    public void MortalNpcCommandIndex_RejectsInvalidNpcDuplicateTopology(
+        string mutation)
+    {
+        var npcRoot = CreateMirroredNpcRoot();
+        switch (mutation)
+        {
+            case "divergent_cross_section":
+                npcRoot["NPCsInScene"]![0]!["name"] = "Divergent command mirror";
+                break;
+            case "same_section_duplicate":
+                npcRoot["UpdateNPCs"]!.AsArray().Add(
+                    npcRoot["UpdateNPCs"]![0]!.DeepClone());
+                npcRoot["NPCsInScene"] = new JsonArray();
+                break;
+            case "confusable_cross_section":
+                npcRoot["NPCsInScene"]![0]!["NPCId"] = "NPC_BASELINE_MIRROR";
+                break;
+            case "conflicting_alias":
+                foreach (var owner in Npcs(npcRoot, "npc_baseline_mirror"))
+                    owner["id"] = "npc_conflicting_alias";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var index = CanonicalStateNormalizer.MortalNpcCommandIndex.Build(npcRoot);
+
+        Assert.False(index.TryGetOwners("npc_baseline_mirror", out var owners));
+        Assert.Empty(owners);
+    }
+
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    public void TransferPlanner_UpdatesEveryIdenticalPermanentNpcMirror(
+        bool fromNpc,
+        bool legacyEquipmentSurface)
+    {
+        const string itemId = "itm_transfer_npc_mirror";
+        const string npcId = "npc_transfer_mirror";
+        var item = MortalItemTestFixture.CreateCanonicalRoot(itemId);
+        item["count"] = 1;
+        MortalItemTestFixture.ResealCanonical(item);
+        var player = fromNpc
+            ? new JsonObject
+            {
+                ["items"] = new JsonArray(),
+                ["equippedItems"] = new JsonObject()
+            }
+            : MortalItemTestFixture.CreateCarrier(item, "player_inventory", "player");
+        var npc = new JsonObject
+        {
+            ["NPCId"] = npcId,
+            ["name"] = "Transfer mirror",
+            ["inventory"] = fromNpc
+                ? new JsonArray(item.DeepClone())
+                : new JsonArray(),
+            ["equippedItems"] = new JsonObject
+            {
+                ["mainHand"] = fromNpc && !legacyEquipmentSurface ? itemId : null,
+                ["offHand"] = "itm_transfer_mirror_sibling"
+            },
+            ["equipment"] = new JsonObject
+            {
+                ["mainHand"] = fromNpc && legacyEquipmentSurface ? itemId : null,
+                ["offHand"] = "itm_transfer_legacy_mirror_sibling"
+            }
+        };
+        var npcRoot = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(npc.DeepClone()),
+            ["NPCsInScene"] = new JsonArray(npc.DeepClone())
+        };
+        var source = fromNpc
+            ? new MortalItemCarrierCoordinate(
+                "npc_inventory", npcId, null, Array.Empty<string>())
+            : new MortalItemCarrierCoordinate(
+                "player_inventory", "player", null, Array.Empty<string>());
+        var destination = fromNpc
+            ? new MortalItemCarrierCoordinate(
+                "player_inventory", "player", null, Array.Empty<string>())
+            : new MortalItemCarrierCoordinate(
+                "npc_inventory", npcId, null, Array.Empty<string>());
+        var index = MortalItemTestFixture.CreateIndexForCarrier(
+            item,
+            source.Kind,
+            source.OwnerId);
+        var roots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+        {
+            [PlayerPath] = player,
+            [NpcPath] = npcRoot,
+            [MortalItemIdentityState.StatePath] = index
+        };
+        var transfer = new MortalItemAcceptedTransfer(
+            itemId,
+            source,
+            destination,
+            1,
+            Turn,
+            "mortal_item_transfer",
+            "mita_transfer_npc_mirror",
+            fromNpc
+                ? MortalItemTransferCommandSurface.PlayerUpdate
+                : MortalItemTransferCommandSurface.NpcAdd,
+            0,
+            fromNpc
+                ? MortalItemTransferCommandSurface.NpcRemoval
+                : MortalItemTransferCommandSurface.PlayerRemoval,
+            0);
+
+        var result = MortalItemTransferPlanner.Plan(
+            roots,
+            MortalItemIdentityState.Parse(index.ToJsonString()),
+            new[] { transfer },
+            new Dictionary<string, string>(StringComparer.Ordinal)
+            {
+                [itemId] = "mitrn_transfer_npc_mirror"
+            },
+            removeAcceptedCommands: false);
+
+        Assert.True(result.IsValid, string.Join(
+            Environment.NewLine,
+            result.Issues.Select(issue => $"{issue.Code}: {issue.Actual}")));
+        Assert.Empty(result.Issues);
+        var npcAfter = Assert.IsType<JsonObject>(result.Roots[NpcPath]);
+        var copies = Npcs(npcAfter, npcId);
+        Assert.Equal(2, copies.Count);
+        Assert.True(JsonNode.DeepEquals(copies[0], copies[1]));
+        Assert.All(copies, copy =>
+        {
+            Assert.Equal(fromNpc ? 0 : 1, copy["inventory"]!.AsArray().Count);
+            Assert.Null(copy["equippedItems"]!["mainHand"]);
+            Assert.Equal("itm_transfer_mirror_sibling",
+                copy["equippedItems"]!["offHand"]!.GetValue<string>());
+            Assert.Null(copy["equipment"]!["mainHand"]);
+            Assert.Equal("itm_transfer_legacy_mirror_sibling",
+                copy["equipment"]!["offHand"]!.GetValue<string>());
+        });
+        Assert.Equal(fromNpc ? 1 : 0,
+            result.Roots[PlayerPath]!["items"]!.AsArray().Count);
+        var entry = Entry(result.IdentityIndexAfterImage, itemId);
+        Assert.Equal(destination.Kind, entry["currentCarrier"]!["kind"]!.GetValue<string>());
+        Assert.Equal(destination.OwnerId,
+            entry["currentCarrier"]!["ownerId"]!.GetValue<string>());
+    }
+
+    [Theory]
     [InlineData("container")]
     [InlineData("quest")]
     [InlineData("bond")]
@@ -653,6 +1110,49 @@ public sealed class MortalItemConsumptionPlannerTests
                 Assert.True(receiptIds.Add(receiptId));
                 Assert.True(transitionIds.Add(transitionId));
             }
+
+            var projected = MortalItemCanonicalProjectionPlanner.Project(
+                new MortalItemCanonicalProjectionInput(
+                    turn,
+                    snapshot,
+                    routeCatalog,
+                    currentRoots,
+                    backupRoots,
+                    MortalItemIdentityState.Parse(
+                        MortalItemIdentityState.CreateEmptyRoot())));
+
+            Assert.True(projected.IsValid, string.Join(
+                Environment.NewLine,
+                projected.Issues.Select(issue => $"{issue.Code}: {issue.Actual}")));
+            Assert.Empty(projected.Issues);
+            var npcAfter = Assert.IsType<JsonObject>(
+                projected.ItemPhaseAfterImages[NpcPath]);
+            var commandOwnerCopies = Npcs(npcAfter, "npc_five_command");
+            Assert.Equal(2, commandOwnerCopies.Count);
+            Assert.True(JsonNode.DeepEquals(
+                commandOwnerCopies[0],
+                commandOwnerCopies[1]));
+            var commandItemId = SnapshotOwnedMapValue(
+                snapshot,
+                expectedCreationRefs[2],
+                "itm_");
+            Assert.All(commandOwnerCopies, owner =>
+            {
+                var created = Assert.Single(owner["inventory"]!.AsArray());
+                Assert.Equal(commandItemId, created!["itemId"]!.GetValue<string>());
+                Assert.Equal(commandItemId,
+                    owner["equippedItems"]!["mainHand"]!.GetValue<string>());
+                Assert.Empty(owner["equipment"]!.AsObject());
+            });
+            var commandsAfter = Assert.IsType<JsonObject>(
+                projected.ItemPhaseAfterImages[NpcCommandsPath]);
+            Assert.False(commandsAfter.ContainsKey("NPCInventoryAdds"));
+            Assert.False(commandsAfter.ContainsKey("NPCEquipmentChanges"));
+            Assert.Single(projected.IdentityIndexAfterImage["entries"]!.AsArray()
+                .OfType<JsonObject>(), entry => string.Equals(
+                    entry["itemId"]?.GetValue<string>(),
+                    commandItemId,
+                    StringComparison.Ordinal));
         }
         finally
         {
@@ -664,6 +1164,107 @@ public sealed class MortalItemConsumptionPlannerTests
             {
                 throw new InvalidOperationException(
                     $"Unsafe five-collector test root '{fullRoot}'.");
+            }
+            if (Directory.Exists(fullRoot))
+                Directory.Delete(fullRoot, recursive: true);
+        }
+    }
+
+    [Fact]
+    public async Task RouteCatalog_RejectsDirectRawCreationInPermanentNpcMirrorAfterCatalogCoalescing()
+    {
+        const int turn = 45;
+        const string npcId = "npc_mirrored_raw_creation";
+        const string creationRef = "new_item_mirrored_raw_creation";
+        var rawItem = MortalItemTestFixture.CreateRawRoot(
+            "new_npc_inventory",
+            "new_npc",
+            npcId,
+            turn,
+            creationRef,
+            "mat_item_mirrored_raw_creation");
+        var owner = new JsonObject
+        {
+            ["NPCId"] = npcId,
+            ["name"] = "Permanent mirrored raw owner",
+            ["inventory"] = new JsonArray(rawItem.DeepClone()),
+            ["equippedItems"] = new JsonObject()
+        };
+        var npcRoot = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(owner.DeepClone()),
+            ["NPCsInScene"] = new JsonArray(owner.DeepClone())
+        };
+        var physicalCatalog = MortalItemCarrierCatalog.Build(
+            new MortalItemCarrierCatalogInput(
+                null,
+                npcRoot,
+                null,
+                null,
+                null,
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal)));
+        Assert.Empty(physicalCatalog.Issues);
+        Assert.Single(physicalCatalog.ByCreationRef[creationRef]);
+
+        var root = Path.Combine(
+            Path.GetTempPath(),
+            "boe-t070b4-mirrored-raw-route-" + Guid.NewGuid().ToString("N"));
+        var expectedParent = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
+            Path.DirectorySeparatorChar,
+            Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+        try
+        {
+            var fileSystem = new FileSystemManager(
+                root,
+                NullLogger<FileSystemManager>.Instance);
+            fileSystem.EnsureDirectoryStructure();
+            await SeedProjectionBootstrapAsync(fileSystem);
+            await WriteJsonAsync(fileSystem, NpcPath, npcRoot);
+            await WriteJsonAsync(fileSystem, NpcCommandsPath, new JsonObject());
+            await WriteJsonAsync(fileSystem, "input/turn_request.json", new JsonObject
+            {
+                ["sessionId"] = "session_t070b4_mirrored_raw_route",
+                ["requestId"] = "request_t070b4_mirrored_raw_route",
+                ["turnNumber"] = turn,
+                ["playerAction"] = "Prove direct raw permanent-NPC creation is not routable."
+            });
+            const string snapshotPath =
+                "game_state/control/mirrored_raw_route/npc_core.json";
+            var backupOwner = owner.DeepClone().AsObject();
+            backupOwner["inventory"] = new JsonArray();
+            await WriteJsonAsync(fileSystem, snapshotPath, new JsonObject
+            {
+                ["UpdateNPCs"] = new JsonArray(backupOwner.DeepClone()),
+                ["NPCsInScene"] = new JsonArray(backupOwner.DeepClone())
+            });
+            await WriteJsonAsync(
+                fileSystem,
+                "game_state/control/pending_turn_snapshot.json",
+                new JsonObject
+                {
+                    ["files"] = new JsonObject
+                    {
+                        [NpcPath] = snapshotPath
+                    }
+                });
+
+            var routeCatalog = await MortalItemRouteAuthorityCatalog.BuildAsync(fileSystem);
+
+            Assert.False(routeCatalog.ByCreationRef.ContainsKey(creationRef));
+            var issue = Assert.Single(routeCatalog.Issues);
+            Assert.Equal("mortal_item_materialization_route_authority_missing", issue.Code);
+            Assert.Equal(creationRef, issue.CreationRef);
+        }
+        finally
+        {
+            var fullRoot = Path.GetFullPath(root);
+            if (!fullRoot.StartsWith(expectedParent, StringComparison.OrdinalIgnoreCase) ||
+                !Path.GetFileName(fullRoot).StartsWith(
+                    "boe-t070b4-mirrored-raw-route-",
+                    StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    $"Unsafe mirrored raw-route test root '{fullRoot}'.");
             }
             if (Directory.Exists(fullRoot))
                 Directory.Delete(fullRoot, recursive: true);
@@ -764,6 +1365,129 @@ public sealed class MortalItemConsumptionPlannerTests
         return BuildFixture(id,
             new MortalItemCarrierCatalogInput(root, null, null, null, null,
                 new Dictionary<string, JsonObject>(StringComparer.Ordinal)), index, resource);
+    }
+
+    private static Fixture CreateNpcEquipmentFixture(
+        string id,
+        bool legacyEquipmentSurface = false)
+    {
+        const string ownerId = "npc_terminal_owner";
+        var item = MortalItemTestFixture.CreateCanonicalRoot(id);
+        item["count"] = 1;
+        Populate(item, "equipment");
+        item["equipmentSlot"] = "MainHand";
+        MortalItemTestFixture.ResealCanonical(item);
+        var owner = new JsonObject
+        {
+            ["NPCId"] = ownerId,
+            ["name"] = "Terminal NPC owner",
+            ["inventory"] = new JsonArray(item.DeepClone()),
+            ["equippedItems"] = new JsonObject
+            {
+                ["mainHand"] = legacyEquipmentSurface ? null : id,
+                ["offHand"] = "itm_npc_equipment_sibling"
+            },
+            ["equipment"] = new JsonObject
+            {
+                ["mainHand"] = legacyEquipmentSurface ? id : null,
+                ["offHand"] = "itm_npc_legacy_equipment_sibling"
+            },
+            ["unchanged"] = "preserve owner sibling"
+        };
+        var npcRoot = new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(owner.DeepClone()),
+            ["NPCsInScene"] = new JsonArray(
+                owner.DeepClone(),
+                new JsonObject
+                {
+                    ["NPCId"] = "npc_terminal_other",
+                    ["name"] = "Other preserved NPC",
+                    ["inventory"] = new JsonArray(),
+                    ["equippedItems"] = new JsonObject
+                    {
+                        ["mainHand"] = "itm_other_npc_equipment"
+                    },
+                    ["unchanged"] = "preserve other NPC"
+                })
+        };
+        var index = MortalItemTestFixture.CreateIndexForCarrier(
+            item,
+            "npc_inventory",
+            ownerId);
+        return BuildFixture(
+            id,
+            new MortalItemCarrierCatalogInput(
+                null,
+                npcRoot,
+                null,
+                null,
+                null,
+                new Dictionary<string, JsonObject>(StringComparer.Ordinal)),
+            index,
+            null);
+    }
+
+    private static MortalItemPublicationBaselineInput CreateBaselineInput(
+        JsonObject npcRoot,
+        JsonObject? backupNpcRoot = null)
+    {
+        const string itemId = "itm_baseline_player";
+        var fixture = CreateFixture(itemId, 1);
+        var roots = ProjectionRootPaths.ToDictionary(
+            static path => path,
+            static _ => (JsonNode?)null,
+            StringComparer.Ordinal);
+        roots[PlayerPath] = fixture.Roots.PlayerInventory!.DeepClone();
+        roots[NpcPath] = npcRoot.DeepClone();
+        roots[MortalItemIdentityState.StatePath] = fixture.Index.DeepClone();
+        var itemPhase = new MortalItemCanonicalProjectionResult(
+            roots,
+            fixture.Index.DeepClone().AsObject(),
+            Array.Empty<ValidationIssue>(),
+            Fingerprint("baseline_item_phase"));
+        var backupRoots = roots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
+        if (backupNpcRoot != null)
+            backupRoots[NpcPath] = backupNpcRoot.DeepClone();
+        return new MortalItemPublicationBaselineInput(
+            itemPhase,
+            new MortalTreatmentItemCommandEnvelope(
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null),
+            new NpcCoreChangesContract.Authority(
+                new HashSet<string>(StringComparer.Ordinal),
+                new HashSet<string>(StringComparer.Ordinal),
+                new Dictionary<string, string>(StringComparer.Ordinal),
+                new HashSet<string>(StringComparer.Ordinal)),
+            new CanonicalBeforeImage(false, null),
+            new CanonicalBeforeImage(false, null),
+            MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation,
+            backupRoots);
+    }
+
+    private static JsonObject CreateMirroredNpcRoot()
+    {
+        var npc = new JsonObject
+        {
+            ["NPCId"] = "npc_baseline_mirror",
+            ["name"] = "Baseline mirror",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject(),
+            ["unchanged"] = "preserve baseline mirror"
+        };
+        return new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(npc.DeepClone()),
+            ["NPCsInScene"] = new JsonArray(npc.DeepClone())
+        };
     }
 
     private static Companion CreateCompanionFixture(string kind)
@@ -1135,6 +1859,14 @@ public sealed class MortalItemConsumptionPlannerTests
             "storage_placement",
             "location_storage",
             "loc_five_storage:storage_five_offscreen");
+        var mirroredCommandOwner = new JsonObject
+        {
+            ["NPCId"] = "npc_five_command",
+            ["name"] = "Five collector mirrored command owner",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject(),
+            ["equipment"] = new JsonObject()
+        };
 
         return new MortalItemCarrierCatalogInput(
             new JsonObject
@@ -1145,20 +1877,16 @@ public sealed class MortalItemConsumptionPlannerTests
             },
             new JsonObject
             {
-                ["UpdateNPCs"] = new JsonArray(new JsonObject
-                {
-                    ["initialId"] = "npc_five_new",
-                    ["name"] = "Five collector new NPC",
-                    ["inventory"] = new JsonArray(npcCoreItem),
-                    ["equippedItems"] = new JsonObject()
-                }),
-                ["NPCsInScene"] = new JsonArray(new JsonObject
-                {
-                    ["NPCId"] = "npc_five_command",
-                    ["name"] = "Five collector command owner",
-                    ["inventory"] = new JsonArray(),
-                    ["equippedItems"] = new JsonObject()
-                })
+                ["UpdateNPCs"] = new JsonArray(
+                    new JsonObject
+                    {
+                        ["initialId"] = "npc_five_new",
+                        ["name"] = "Five collector new NPC",
+                        ["inventory"] = new JsonArray(npcCoreItem),
+                        ["equippedItems"] = new JsonObject()
+                    },
+                    mirroredCommandOwner.DeepClone()),
+                ["NPCsInScene"] = new JsonArray(mirroredCommandOwner.DeepClone())
             },
             new JsonObject
             {
@@ -1168,6 +1896,13 @@ public sealed class MortalItemConsumptionPlannerTests
                     ["NPCName"] = "Five collector command owner",
                     ["item"] = npcCommandItem,
                     ["destinationContainerId"] = null
+                }),
+                ["NPCEquipmentChanges"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "npc_five_command",
+                    ["itemId"] = creationRefs[2],
+                    ["action"] = "equip",
+                    ["targetSlots"] = new JsonArray("mainHand")
                 })
             },
             new JsonObject
@@ -1272,16 +2007,18 @@ public sealed class MortalItemConsumptionPlannerTests
             "game_state/control/five_collectors_snapshot/npc_core.json";
         const string locationSnapshotPath =
             "game_state/control/five_collectors_snapshot/current_location.json";
+        var mirroredCommandOwner = new JsonObject
+        {
+            ["NPCId"] = "npc_five_command",
+            ["name"] = "Five collector mirrored command owner",
+            ["inventory"] = new JsonArray(),
+            ["equippedItems"] = new JsonObject(),
+            ["equipment"] = new JsonObject()
+        };
         await WriteJsonAsync(fileSystem, npcSnapshotPath, new JsonObject
         {
-            ["UpdateNPCs"] = new JsonArray(),
-            ["NPCsInScene"] = new JsonArray(new JsonObject
-            {
-                ["NPCId"] = "npc_five_command",
-                ["name"] = "Five collector command owner",
-                ["inventory"] = new JsonArray(),
-                ["equippedItems"] = new JsonObject()
-            })
+            ["UpdateNPCs"] = new JsonArray(mirroredCommandOwner.DeepClone()),
+            ["NPCsInScene"] = new JsonArray(mirroredCommandOwner.DeepClone())
         });
         await WriteJsonAsync(fileSystem, locationSnapshotPath, new JsonObject
         {
@@ -1645,7 +2382,9 @@ public sealed class MortalItemConsumptionPlannerTests
 
     private static void AssertValid(Result result)
     {
-        Assert.True(result.IsValid);
+        Assert.True(result.IsValid, string.Join(
+            Environment.NewLine,
+            result.Issues.Select(issue => $"{issue.Code}: {issue.Actual}")));
         Assert.Empty(result.Issues);
         Assert.NotNull(result.Index);
         Assert.NotEmpty(result.Roots);
@@ -1804,6 +2543,17 @@ public sealed class MortalItemConsumptionPlannerTests
         roots.Values.SelectMany(Objects).Any(value =>
             string.Equals(value["itemId"]?.GetValue<string>(), id, StringComparison.Ordinal) &&
             value["materializationReceipt"] is JsonObject);
+
+    private static IReadOnlyList<JsonObject> Npcs(JsonObject root, string npcId) =>
+        new[] { "UpdateNPCs", "NPCsInScene" }
+            .SelectMany(section => root[section] is JsonArray values
+                ? values.OfType<JsonObject>()
+                : Enumerable.Empty<JsonObject>())
+            .Where(npc => string.Equals(
+                npc["NPCId"]?.GetValue<string>(),
+                npcId,
+                StringComparison.Ordinal))
+            .ToArray();
 
     private static IEnumerable<JsonObject> Objects(JsonNode? node)
     {

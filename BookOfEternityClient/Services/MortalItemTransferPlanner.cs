@@ -140,36 +140,49 @@ internal static class MortalItemTransferPlanner
             return "The item identity is not active at the accepted source carrier.";
         }
 
-        var source = ResolveCarrierArray(roots, transfer.SourceCarrier, false, out var error);
-        if (source == null)
+        var sources = ResolveCarrierArrays(roots, transfer.SourceCarrier, false, out var error);
+        if (sources == null)
             return error;
-        var matches = source.OfType<JsonObject>().Where(item => string.Equals(
-            ReadExactString(item["itemId"]),
-            transfer.ItemId,
-            StringComparison.Ordinal)).ToArray();
-        if (matches.Length != 1)
+        var sourceItems = new List<JsonObject>(sources.Count);
+        foreach (var source in sources)
+        {
+            var matches = source.OfType<JsonObject>().Where(item => string.Equals(
+                ReadExactString(item["itemId"]),
+                transfer.ItemId,
+                StringComparison.Ordinal)).ToArray();
+            if (matches.Length != 1)
+                return "The accepted source item is missing or ambiguous.";
+            sourceItems.Add(matches[0]);
+        }
+        if (sourceItems.Count == 0 || sourceItems.Any(candidate =>
+                !JsonNode.DeepEquals(candidate, sourceItems[0])))
+        {
             return "The accepted source item is missing or ambiguous.";
-        var item = matches[0];
+        }
+        var item = sourceItems[0];
         if (!TryReadPositiveInt(item["count"], out var quantity) ||
             quantity != transfer.Quantity)
         {
             return "The accepted transfer quantity differs from the source stack.";
         }
 
-        var destination = ResolveCarrierArray(
+        var destinations = ResolveCarrierArrays(
             roots,
             transfer.DestinationCarrier,
             true,
             out error);
-        if (destination == null)
+        if (destinations == null)
             return error;
-        if (!ValidateDestinationContainerPath(
-                destination,
-                transfer.ItemId,
-                transfer.DestinationCarrier.ContainerPath,
-                out error))
+        foreach (var destination in destinations)
         {
-            return error;
+            if (!ValidateDestinationContainerPath(
+                    destination,
+                    transfer.ItemId,
+                    transfer.DestinationCarrier.ContainerPath,
+                    out error))
+            {
+                return error;
+            }
         }
 
         var immutableEnvelope = item[MortalItemMaterializationContract.EnvelopeProperty]
@@ -177,7 +190,8 @@ internal static class MortalItemTransferPlanner
         var immutableReceipt = item[MortalItemMaterializationContract.ReceiptProperty]
             ?.DeepClone();
         ClearInlineEquipmentReference(roots, transfer.SourceCarrier, transfer.ItemId);
-        source.Remove(item);
+        foreach (var pair in sources.Zip(sourceItems))
+            pair.First.Remove(pair.Second);
         item["contentsPath"] = transfer.DestinationCarrier.ContainerPath.Count == 0
             ? null
             : new JsonArray(transfer.DestinationCarrier.ContainerPath
@@ -185,7 +199,9 @@ internal static class MortalItemTransferPlanner
         MortalItemLocalActionPolicy.NormalizePlacementForDestination(
             item,
             transfer.DestinationCarrier);
-        destination.Add(item);
+        for (var destinationIndex = 0; destinationIndex < destinations.Count; destinationIndex++)
+            destinations[destinationIndex].Add(
+                destinationIndex == 0 ? item : item.DeepClone());
 
         entry["currentCarrier"] = CreateCarrierNode(transfer.DestinationCarrier);
         MortalItemIdentityState.AppendTransition(
@@ -258,7 +274,7 @@ internal static class MortalItemTransferPlanner
         _ => null
     };
 
-    private static JsonArray? ResolveCarrierArray(
+    private static IReadOnlyList<JsonArray>? ResolveCarrierArrays(
         IReadOnlyDictionary<string, JsonNode?> roots,
         MortalItemCarrierCoordinate carrier,
         bool createIfMissing,
@@ -268,26 +284,46 @@ internal static class MortalItemTransferPlanner
         switch (carrier.Kind)
         {
             case "player_inventory":
-                return ResolvePropertyArray(
+                return Single(ResolvePropertyArray(
                     roots.GetValueOrDefault(InventoryEquipmentService.ItemsPath) as JsonObject,
                     "items",
                     createIfMissing,
                     "Player inventory is absent.",
-                    out error);
+                    out error));
             case "npc_inventory":
             {
-                var npc = ResolveNpc(
-                    roots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject,
-                    carrier.OwnerId,
-                    out error);
-                return npc == null
-                    ? null
-                    : ResolvePropertyArray(
+                IReadOnlyList<JsonObject> npcs;
+                try
+                {
+                    npcs = MortalItemNpcMirrorPolicy.ResolveExactActors(
+                        roots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject,
+                        carrier.OwnerId,
+                        "Mortal item transfer");
+                }
+                catch (InvalidDataException exception)
+                {
+                    error = exception.Message;
+                    return null;
+                }
+                if (npcs.Count == 0)
+                {
+                    error = "The exact NPC is missing or ambiguous.";
+                    return null;
+                }
+                var arrays = new List<JsonArray>(npcs.Count);
+                foreach (var npc in npcs)
+                {
+                    var inventory = ResolvePropertyArray(
                         npc,
                         "inventory",
                         createIfMissing,
                         "NPC inventory is absent.",
                         out error);
+                    if (inventory == null)
+                        return null;
+                    arrays.Add(inventory);
+                }
+                return arrays;
             }
             case "location_storage":
             {
@@ -309,12 +345,12 @@ internal static class MortalItemTransferPlanner
                     error = "The exact current location storage is missing or ambiguous.";
                     return null;
                 }
-                return ResolvePropertyArray(
+                return Single(ResolvePropertyArray(
                     matches[0],
                     "contents",
                     createIfMissing,
                     "Location storage contents are absent.",
-                    out error);
+                    out error));
             }
             case "vehicle_inventory":
             {
@@ -339,18 +375,21 @@ internal static class MortalItemTransferPlanner
                     error = "The exact vehicle is missing or ambiguous.";
                     return null;
                 }
-                return ResolvePropertyArray(
+                return Single(ResolvePropertyArray(
                     matches[0],
                     "inventory",
                     createIfMissing,
                     "Vehicle inventory is absent.",
-                    out error);
+                    out error));
             }
             default:
                 error = "The accepted carrier kind is unsupported.";
                 return null;
         }
     }
+
+    private static IReadOnlyList<JsonArray>? Single(JsonArray? value) =>
+        value == null ? null : new[] { value };
 
     private static JsonArray? ResolvePropertyArray(
         JsonObject? owner,
@@ -370,25 +409,6 @@ internal static class MortalItemTransferPlanner
         var created = new JsonArray();
         owner[property] = created;
         return created;
-    }
-
-    private static JsonObject? ResolveNpc(
-        JsonObject? root,
-        string npcId,
-        out string? error)
-    {
-        error = null;
-        var matches = new List<JsonObject>();
-        foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
-        {
-            if (root?[section] is JsonArray npcs)
-                matches.AddRange(npcs.OfType<JsonObject>().Where(npc =>
-                    MatchesAnyIdentity(npc, npcId, "NPCId", "npcId", "id", "initialId")));
-        }
-        if (matches.Count == 1)
-            return matches[0];
-        error = "The exact NPC is missing or ambiguous.";
-        return null;
     }
 
     private static bool ValidateDestinationContainerPath(
@@ -422,20 +442,37 @@ internal static class MortalItemTransferPlanner
         MortalItemCarrierCoordinate source,
         string itemId)
     {
-        JsonObject? owner = source.Kind switch
+        IReadOnlyList<JsonObject> owners = source.Kind switch
         {
             "player_inventory" =>
-                roots.GetValueOrDefault(InventoryEquipmentService.ItemsPath) as JsonObject,
-            "npc_inventory" => ResolveNpc(
-                roots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject,
-                source.OwnerId,
-                out _),
-            _ => null
+                roots.GetValueOrDefault(InventoryEquipmentService.ItemsPath) is JsonObject player
+                    ? new[] { player }
+                    : Array.Empty<JsonObject>(),
+            "npc_inventory" => ResolveNpcCopies(roots, source.OwnerId),
+            _ => Array.Empty<JsonObject>()
         };
-        if (owner == null)
-            return;
-        RemoveExactEquipmentReference(owner["equipment"], itemId);
-        RemoveExactEquipmentReference(owner["equippedItems"], itemId);
+        foreach (var owner in owners)
+        {
+            RemoveExactEquipmentReference(owner["equipment"], itemId);
+            RemoveExactEquipmentReference(owner["equippedItems"], itemId);
+        }
+    }
+
+    private static IReadOnlyList<JsonObject> ResolveNpcCopies(
+        IReadOnlyDictionary<string, JsonNode?> roots,
+        string npcId)
+    {
+        try
+        {
+            return MortalItemNpcMirrorPolicy.ResolveExactActors(
+                roots.GetValueOrDefault(NpcCoreChangesContract.NpcCorePath) as JsonObject,
+                npcId,
+                "Mortal item transfer equipment");
+        }
+        catch (InvalidDataException)
+        {
+            return Array.Empty<JsonObject>();
+        }
     }
 
     private static void RemoveExactEquipmentReference(JsonNode? node, string itemId)

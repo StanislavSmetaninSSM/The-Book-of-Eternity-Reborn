@@ -771,17 +771,22 @@ public partial class CanonicalStateNormalizer
             var npcId = ReadMortalNpcIdentity(command) ??
                         throw new InvalidDataException(
                             $"NPCInventoryAdds[{index}] requires one exact NPC identity.");
-            if (!npcCommandIndex.TryGetUniqueOwner(npcId, out var owner))
+            if (!npcCommandIndex.TryGetOwners(npcId, out var owners))
             {
                 throw new InvalidDataException(
-                    $"NPCInventoryAdds[{index}] must resolve exact NPC '{npcId}' once.");
+                    $"NPCInventoryAdds[{index}] must resolve one exact logical NPC '{npcId}'.");
             }
 
-            var inventory = owner["inventory"] as JsonArray;
-            if (inventory == null)
+            var inventories = new List<JsonArray>(owners.Count);
+            foreach (var owner in owners)
             {
-                inventory = new JsonArray();
-                owner["inventory"] = inventory;
+                var inventory = owner["inventory"] as JsonArray;
+                if (inventory == null)
+                {
+                    inventory = new JsonArray();
+                    owner["inventory"] = inventory;
+                }
+                inventories.Add(inventory);
             }
 
             if (ReadExactMortalItemIdentity(command["destinationContainerId"]) is { } containerId)
@@ -791,7 +796,11 @@ public partial class CanonicalStateNormalizer
 
             var itemPath =
                 $"game_state/npcs/npc_inventory.json.NPCInventoryAdds[{index}].item";
-            addPending(item, itemPath, canonical => inventory.Add(canonical));
+            addPending(item, itemPath, canonical =>
+            {
+                foreach (var inventory in inventories)
+                    inventory.Add(canonical.DeepClone());
+            });
             commandsChanged = true;
             npcCoreChanged = true;
         }
@@ -915,10 +924,10 @@ public partial class CanonicalStateNormalizer
             var npcId = ReadMortalNpcIdentity(command) ??
                         throw new InvalidDataException(
                             "NPCEquipmentChanges requires one exact NPC identity.");
-            if (!npcCommandIndex.TryGetUniqueOwner(npcId, out var owner))
+            if (!npcCommandIndex.TryGetOwners(npcId, out var owners))
             {
                 throw new InvalidDataException(
-                    $"NPCEquipmentChanges must resolve exact NPC '{npcId}' once.");
+                    $"NPCEquipmentChanges must resolve one exact logical NPC '{npcId}'.");
             }
 
             if (!npcCommandIndex.InventoryItemOccursExactlyOnce(npcId, itemId))
@@ -928,40 +937,43 @@ public partial class CanonicalStateNormalizer
             }
 
             var action = ReadExactMortalItemIdentity(command["action"]);
-            var equipped = owner["equippedItems"] as JsonObject;
-            if (equipped == null)
+            foreach (var owner in owners)
             {
-                equipped = new JsonObject();
-                owner["equippedItems"] = equipped;
-            }
+                var equipped = owner["equippedItems"] as JsonObject;
+                if (equipped == null)
+                {
+                    equipped = new JsonObject();
+                    owner["equippedItems"] = equipped;
+                }
 
-            switch (action)
-            {
-                case "equip":
-                    foreach (var slot in ReadMortalItemEquipmentSlots(
-                                 command["targetSlots"],
-                                 "targetSlots"))
-                    {
-                        equipped[slot] = itemId;
-                    }
-                    break;
-                case "unequip":
-                    foreach (var slot in ReadMortalItemEquipmentSlots(
-                                 command["sourceSlots"],
-                                 "sourceSlots"))
-                    {
-                        if (string.Equals(
-                                ReadExactMortalItemIdentity(equipped[slot]),
-                                itemId,
-                                StringComparison.Ordinal))
+                switch (action)
+                {
+                    case "equip":
+                        foreach (var slot in ReadMortalItemEquipmentSlots(
+                                     command["targetSlots"],
+                                     "targetSlots"))
                         {
-                            equipped.Remove(slot);
+                            equipped[slot] = itemId;
                         }
-                    }
-                    break;
-                default:
-                    throw new InvalidDataException(
-                        "NPCEquipmentChanges.action must be exact 'equip' or 'unequip'.");
+                        break;
+                    case "unequip":
+                        foreach (var slot in ReadMortalItemEquipmentSlots(
+                                     command["sourceSlots"],
+                                     "sourceSlots"))
+                        {
+                            if (string.Equals(
+                                    ReadExactMortalItemIdentity(equipped[slot]),
+                                    itemId,
+                                    StringComparison.Ordinal))
+                            {
+                                equipped.Remove(slot);
+                            }
+                        }
+                        break;
+                    default:
+                        throw new InvalidDataException(
+                            "NPCEquipmentChanges.action must be exact 'equip' or 'unequip'.");
+                }
             }
 
             applied = true;
@@ -1029,7 +1041,7 @@ public partial class CanonicalStateNormalizer
                     IsRawMortalItemCreation(item) &&
                     ReadMortalNpcIdentity(command) is { } npcId)
                 {
-                    _ = index.TryGetUniqueOwner(npcId, out _);
+                    _ = index.TryGetOwners(npcId, out _);
                 }
             }
         }
@@ -1043,7 +1055,7 @@ public partial class CanonicalStateNormalizer
                     ReadMortalNpcIdentity(command) is { } npcId &&
                     ReadExactMortalItemIdentity(command["itemId"]) is { } itemId)
                 {
-                    _ = index.TryGetUniqueOwner(npcId, out _);
+                    _ = index.TryGetOwners(npcId, out _);
                     _ = index.InventoryItemOccursExactlyOnce(npcId, itemId);
                 }
             }
@@ -1060,7 +1072,11 @@ public partial class CanonicalStateNormalizer
 
     internal sealed class MortalNpcCommandIndex
     {
-        private readonly Dictionary<string, List<JsonObject>> _ownersById =
+        private readonly Dictionary<
+            string,
+            List<(string Section, JsonObject Actor)>> _ownersById =
+            new(StringComparer.Ordinal);
+        private readonly HashSet<string> _confusableOwnerIds =
             new(StringComparer.Ordinal);
         private readonly Dictionary<string, Dictionary<string, int>>
             _inventoryItemCountsByNpcId = new(StringComparer.Ordinal);
@@ -1070,34 +1086,52 @@ public partial class CanonicalStateNormalizer
         internal static MortalNpcCommandIndex Build(JsonObject? root)
         {
             var result = new MortalNpcCommandIndex();
-            foreach (var npc in EnumerateMortalNpcObjects(root))
+            if (root == null)
+                return result;
+            foreach (var section in GuardianPolicyContracts
+                         .NpcCoreCanonicalNpcObjectSections)
             {
-                result.WorkUnits++;
-                var npcId = ReadMortalNpcIdentity(npc);
-                if (npcId == null)
+                if (root[section] is not JsonArray npcs)
                     continue;
-                if (!result._ownersById.TryGetValue(npcId, out var owners))
+                foreach (var npc in npcs.OfType<JsonObject>())
                 {
-                    owners = new List<JsonObject>();
-                    result._ownersById.Add(npcId, owners);
+                    result.WorkUnits++;
+                    var npcId = ReadMortalNpcIdentity(npc);
+                    if (npcId == null)
+                        continue;
+                    if (!result._ownersById.TryGetValue(npcId, out var owners))
+                    {
+                        owners = new List<(string Section, JsonObject Actor)>();
+                        result._ownersById.Add(npcId, owners);
+                    }
+                    owners.Add((section, npc));
                 }
-                owners.Add(npc);
+            }
+
+            foreach (var group in result._ownersById.Keys.GroupBy(
+                         ResourceMaterializationContract.BuildConfusableKey,
+                         StringComparer.Ordinal).Where(static group => group.Count() > 1))
+            {
+                result._confusableOwnerIds.UnionWith(group);
             }
 
             return result;
         }
 
-        internal bool TryGetUniqueOwner(string npcId, out JsonObject owner)
+        internal bool TryGetOwners(
+            string npcId,
+            out IReadOnlyList<JsonObject> owners)
         {
             WorkUnits++;
-            if (_ownersById.TryGetValue(npcId, out var owners) &&
-                owners.Count == 1)
+            if (!_confusableOwnerIds.Contains(npcId) &&
+                _ownersById.TryGetValue(npcId, out var copies) &&
+                MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(npcId, copies))
             {
-                owner = owners[0];
+                owners = copies.Select(static copy => copy.Actor).ToArray();
                 return true;
             }
 
-            owner = null!;
+            owners = Array.Empty<JsonObject>();
             return false;
         }
 
@@ -1107,11 +1141,14 @@ public partial class CanonicalStateNormalizer
             foreach (var pair in _ownersById)
             {
                 WorkUnits++;
-                if (pair.Value.Count != 1)
+                if (_confusableOwnerIds.Contains(pair.Key) ||
+                    !MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(
+                        pair.Key,
+                        pair.Value))
                     continue;
 
                 var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-                if (pair.Value[0]["inventory"] is JsonArray inventory)
+                if (pair.Value[0].Actor["inventory"] is JsonArray inventory)
                 {
                     foreach (var node in inventory)
                     {

@@ -1,4 +1,3 @@
-using System.Text;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 
@@ -256,98 +255,51 @@ internal static class MortalItemPublicationBaselinePlanner
                 "NPC item-phase and backup roots must both have object topology.");
         }
 
-        var currentActors = BuildExactNpcActorCatalog(current, "item phase");
-        var backupActors = BuildExactNpcActorCatalog(backup, "backup");
-        if (!currentActors.Keys.ToHashSet(StringComparer.Ordinal).SetEquals(
-                backupActors.Keys))
+        var currentActors = MortalItemNpcMirrorPolicy.BuildExactActorCatalog(
+            current,
+            "item phase");
+        var backupActors = MortalItemNpcMirrorPolicy.BuildExactActorCatalog(
+            backup,
+            "backup");
+        var missingExistingActors = backupActors.Keys
+            .Where(actorId => !currentActors.ContainsKey(actorId))
+            .ToArray();
+        if (missingExistingActors.Length > 0)
         {
             throw new InvalidDataException(
-                "NPC item-phase and backup actor identity sets differ.");
+                "NPC item-phase state is missing one or more exact backup actors.");
         }
-        if (currentActors.Values.Any(static matches => matches.Count != 1) ||
-            backupActors.Values.Any(static matches => matches.Count != 1))
+        var unsupportedNewActors = currentActors
+            .Where(pair => !backupActors.ContainsKey(pair.Key) &&
+                           !MortalItemNpcMirrorPolicy.IsSameTurnCreation(pair.Value))
+            .Select(static pair => pair.Key)
+            .ToArray();
+        if (unsupportedNewActors.Length > 0)
         {
             throw new InvalidDataException(
-                "NPC item-phase and backup actor identities must each occur exactly once.");
+                "NPC item-phase state contains an unbacked actor outside the exact " +
+                "same-turn UpdateNPCs initialId surface.");
         }
 
         var result = backup.DeepClone().AsObject();
-        var resultActors = BuildExactNpcActorCatalog(result, "comparison baseline");
-        if (resultActors.Values.Any(static matches => matches.Count != 1))
-        {
-            throw new InvalidDataException(
-                "NPC comparison-baseline actor identities must each occur exactly once.");
-        }
+        var resultActors = MortalItemNpcMirrorPolicy.BuildExactActorCatalog(
+            result,
+            "comparison baseline");
 
-        foreach (var actorId in currentActors.Keys.OrderBy(
+        foreach (var actorId in backupActors.Keys.OrderBy(
                      static value => value,
                      StringComparer.Ordinal))
         {
-            var currentMatches = currentActors[actorId];
-            var resultMatches = resultActors[actorId];
-            CopyProperty(currentMatches[0], resultMatches[0], "inventory");
-            CopyProperty(currentMatches[0], resultMatches[0], "equippedItems");
+            var currentActor = currentActors[actorId][0].Actor;
+            foreach (var resultMirror in resultActors[actorId])
+            {
+                CopyProperty(currentActor, resultMirror.Actor, "inventory");
+                CopyProperty(currentActor, resultMirror.Actor, "equippedItems");
+                CopyProperty(currentActor, resultMirror.Actor, "equipment");
+            }
         }
 
         return result;
-    }
-
-    private static Dictionary<string, List<JsonObject>> BuildExactNpcActorCatalog(
-        JsonObject root,
-        string stage)
-    {
-        var result = new Dictionary<string, List<JsonObject>>(StringComparer.Ordinal);
-        var confusables = new Dictionary<string, string>(StringComparer.Ordinal);
-        foreach (var actor in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(root))
-        {
-            var identities = new[] { "NPCId", "npcId", "id", "initialId" }
-                .Where(actor.ContainsKey)
-                .Select(name => ReadExactNpcIdentity(actor[name], stage, name))
-                .ToArray();
-            if (identities.Length == 0 ||
-                identities.Any(identity => !string.Equals(
-                    identity,
-                    identities[0],
-                    StringComparison.Ordinal)))
-            {
-                throw new InvalidDataException(
-                    $"The {stage} NPC graph contains a missing or conflicting actor identity.");
-            }
-
-            var actorId = identities[0];
-            var confusableKey = actorId.Normalize(NormalizationForm.FormKC)
-                .ToUpperInvariant();
-            if (confusables.TryGetValue(confusableKey, out var existing) &&
-                !string.Equals(existing, actorId, StringComparison.Ordinal))
-            {
-                throw new InvalidDataException(
-                    $"The {stage} NPC graph contains confusable actor IDs '{existing}' and '{actorId}'.");
-            }
-            confusables[confusableKey] = actorId;
-            if (!result.TryGetValue(actorId, out var matches))
-            {
-                matches = new List<JsonObject>();
-                result.Add(actorId, matches);
-            }
-            matches.Add(actor);
-        }
-
-        return result;
-    }
-
-    private static string ReadExactNpcIdentity(
-        JsonNode? node,
-        string stage,
-        string property)
-    {
-        if (node is not JsonValue value ||
-            !value.TryGetValue<string>(out var text) ||
-            !ResourceMaterializationContract.IsExactIdentifier(text))
-        {
-            throw new InvalidDataException(
-                $"The {stage} NPC property '{property}' is not one exact actor ID.");
-        }
-        return text;
     }
 
     private static void CopyProperty(

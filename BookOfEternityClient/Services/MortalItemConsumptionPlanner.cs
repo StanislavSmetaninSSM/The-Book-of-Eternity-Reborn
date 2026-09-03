@@ -100,6 +100,7 @@ internal static class MortalItemConsumptionPlanner
                 rootMap,
                 out var occurrence,
                 out var item,
+                out var carrierItems,
                 out var entry,
                 out var sourceCount);
             if (commandIssue != null)
@@ -133,11 +134,15 @@ internal static class MortalItemConsumptionPlanner
                     return Invalid(input, resourcePlan.Issues);
                 resourceState = resourcePlan.StateAfterImage;
                 capacities.AddRange(resourcePlan.CapacityTransitions);
-                item!["count"] = remainingCount;
+                foreach (var carrierItem in carrierItems!)
+                    carrierItem["count"] = remainingCount;
             }
             else
             {
-                if (HasUnsafeCompanionReference(catalog, command.ItemId))
+                if (HasUnsafeCompanionReference(
+                        catalog,
+                        occurrence!.Carrier,
+                        command.ItemId))
                 {
                     return Invalid(input, new[]
                     {
@@ -149,9 +154,14 @@ internal static class MortalItemConsumptionPlanner
                     });
                 }
 
-                ClearInlineEquipmentReference(rootMap, occurrence!.Carrier, command.ItemId);
-                if (item!.Parent is not JsonArray carrierItems ||
-                    !carrierItems.Remove(item))
+                var removals = carrierItems!
+                    .Select(static carrierItem => (
+                        Item: carrierItem,
+                        Items: carrierItem.Parent as JsonArray))
+                    .ToArray();
+                if (removals.Any(static removal =>
+                        removal.Items == null ||
+                        removal.Items.IndexOf(removal.Item) < 0))
                 {
                     return Invalid(input, new[]
                     {
@@ -162,6 +172,9 @@ internal static class MortalItemConsumptionPlanner
                             "missing before terminal removal")
                     });
                 }
+                ClearInlineEquipmentReference(rootMap, occurrence.Carrier, command.ItemId);
+                foreach (var removal in removals)
+                    removal.Items!.Remove(removal.Item);
                 entry!["state"] = "consumed";
                 entry["currentCarrier"] = null;
                 entry["mergedIntoItemId"] = null;
@@ -300,11 +313,13 @@ internal static class MortalItemConsumptionPlanner
         IReadOnlyDictionary<string, JsonObject> roots,
         out MortalItemCarrierOccurrence? occurrence,
         out JsonObject? item,
+        out IReadOnlyList<JsonObject>? carrierItems,
         out JsonObject? entry,
         out int sourceCount)
     {
         occurrence = null;
         item = null;
+        carrierItems = null;
         entry = null;
         sourceCount = 0;
         var transitionKey = MortalItemIdentityRules.BuildConfusableKey(command.TransitionId);
@@ -326,8 +341,7 @@ internal static class MortalItemConsumptionPlanner
                 occurrences?.Count.ToString(CultureInfo.InvariantCulture) ?? "missing");
         }
         occurrence = occurrences[0];
-        if (!roots.TryGetValue(occurrence.FilePath, out var carrierRoot) ||
-            FindCanonicalItem(carrierRoot, command.ItemId) is not { } resolvedItem)
+        if (!roots.TryGetValue(occurrence.FilePath, out var carrierRoot))
         {
             return Issue(
                 command.ItemId,
@@ -335,7 +349,23 @@ internal static class MortalItemConsumptionPlanner
                 "one exact mutable detached carrier occurrence",
                 "missing");
         }
-        item = resolvedItem;
+        carrierItems = ResolveCarrierItems(
+            carrierRoot,
+            occurrence,
+            command.ItemId);
+        var resolvedCarrierItems = carrierItems;
+        if (resolvedCarrierItems.Count == 0 ||
+            resolvedCarrierItems.Skip(1).Any(candidate => !JsonNode.DeepEquals(
+                candidate,
+                resolvedCarrierItems[0])))
+        {
+            return Issue(
+                command.ItemId,
+                "mortal_item_consumption_carrier_mismatch",
+                "one exact logical mutable carrier occurrence",
+                "missing, ambiguous, or divergent physical mirror");
+        }
+        item = resolvedCarrierItems[0];
         if (!index.EntriesByItemId.TryGetValue(command.ItemId, out entry) ||
             !string.Equals(ReadExactString(entry["state"]), "active", StringComparison.Ordinal) ||
             !JsonNode.DeepEquals(entry["currentCarrier"], CreateCarrierNode(occurrence.Carrier)))
@@ -417,6 +447,42 @@ internal static class MortalItemConsumptionPlanner
     }
 
     private static readonly JsonObject MultipleMatches = new();
+
+    private static IReadOnlyList<JsonObject> ResolveCarrierItems(
+        JsonObject carrierRoot,
+        MortalItemCarrierOccurrence occurrence,
+        string itemId)
+    {
+        if (!string.Equals(
+                occurrence.Carrier.Kind,
+                "npc_inventory",
+                StringComparison.Ordinal))
+        {
+            return FindCanonicalItem(carrierRoot, itemId) is { } item
+                ? new[] { item }
+                : Array.Empty<JsonObject>();
+        }
+
+        try
+        {
+            var actors = MortalItemNpcMirrorPolicy.ResolveExactActors(
+                carrierRoot,
+                occurrence.Carrier.OwnerId,
+                "Mortal item consumption");
+            var result = new List<JsonObject>(actors.Count);
+            foreach (var actor in actors)
+            {
+                if (FindCanonicalItem(actor["inventory"], itemId) is not { } item)
+                    return Array.Empty<JsonObject>();
+                result.Add(item);
+            }
+            return result;
+        }
+        catch (InvalidDataException)
+        {
+            return Array.Empty<JsonObject>();
+        }
+    }
 
     private static IReadOnlyList<ValidationIssue> ValidateAfterImage(
         MortalItemCarrierCatalog beforeCatalog,
@@ -513,54 +579,107 @@ internal static class MortalItemConsumptionPlanner
 
     private static bool HasUnsafeCompanionReference(
         MortalItemCarrierCatalog catalog,
+        MortalItemCarrierCoordinate source,
         string itemId) =>
         catalog.ByCompanionReference.TryGetValue(itemId, out var references) &&
-        references.Any(static reference => !IsInlineEquipmentReference(reference));
+        references.Any(reference => !IsInlineEquipmentReference(reference, source));
 
-    private static bool IsInlineEquipmentReference(MortalItemCompanionReference reference) =>
-        string.Equals(
-            reference.FilePath,
-            StorageTransportMoveService.InventoryPath,
-            StringComparison.OrdinalIgnoreCase) &&
-        (reference.JsonPath.Contains(".equipment", StringComparison.OrdinalIgnoreCase) ||
-         reference.JsonPath.Contains(".equippedItems", StringComparison.OrdinalIgnoreCase));
+    private static bool IsInlineEquipmentReference(
+        MortalItemCompanionReference reference,
+        MortalItemCarrierCoordinate source)
+    {
+        if (reference.ExpectedCarrier == null ||
+            !SameCarrier(reference.ExpectedCarrier, source))
+        {
+            return false;
+        }
+
+        return source.Kind switch
+        {
+            "player_inventory" =>
+                string.Equals(reference.FilePath, PlayerPath, StringComparison.Ordinal) &&
+                IsAtOrBelow(reference.JsonPath, $"{PlayerPath}.equipment",
+                    $"{PlayerPath}.equippedItems"),
+            "npc_inventory" =>
+                string.Equals(reference.FilePath, NpcPath, StringComparison.Ordinal) &&
+                IsNpcInlineEquipmentPath(reference.JsonPath),
+            _ => false
+        };
+    }
+
+    private static bool IsNpcInlineEquipmentPath(string path)
+    {
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            var actorPrefix = $"{NpcPath}.{section}[";
+            if (!path.StartsWith(actorPrefix, StringComparison.Ordinal))
+                continue;
+            var closeIndex = path.IndexOf(']', actorPrefix.Length);
+            if (closeIndex == actorPrefix.Length || closeIndex < 0 ||
+                path.AsSpan(actorPrefix.Length, closeIndex - actorPrefix.Length)
+                    .IndexOfAnyExceptInRange('0', '9') >= 0)
+            {
+                return false;
+            }
+            var actorPath = path[..(closeIndex + 1)];
+            return IsAtOrBelow(
+                path,
+                $"{actorPath}.equipment",
+                $"{actorPath}.equippedItems");
+        }
+        return false;
+    }
+
+    private static bool IsAtOrBelow(string path, params string[] candidates) =>
+        candidates.Any(candidate =>
+            string.Equals(path, candidate, StringComparison.Ordinal) ||
+            path.StartsWith(candidate + ".", StringComparison.Ordinal) ||
+            path.StartsWith(candidate + "[", StringComparison.Ordinal));
 
     private static void ClearInlineEquipmentReference(
         IReadOnlyDictionary<string, JsonObject> roots,
         MortalItemCarrierCoordinate source,
         string itemId)
     {
-        JsonObject? owner = source.Kind switch
+        IReadOnlyList<JsonObject> owners = source.Kind switch
         {
-            "player_inventory" => roots.GetValueOrDefault(PlayerPath),
-            "npc_inventory" => ResolveNpc(
+            "player_inventory" => roots.GetValueOrDefault(PlayerPath) is { } player
+                ? new[] { player }
+                : Array.Empty<JsonObject>(),
+            "npc_inventory" => ResolveNpcCopies(
                 roots.GetValueOrDefault(NpcPath),
                 source.OwnerId),
-            _ => null
+            _ => Array.Empty<JsonObject>()
         };
-        if (owner == null)
-            return;
-        RemoveExactEquipmentReference(owner["equipment"], itemId);
-        RemoveExactEquipmentReference(owner["equippedItems"], itemId);
+        foreach (var owner in owners)
+        {
+            RemoveExactEquipmentReference(owner["equipment"], itemId);
+            RemoveExactEquipmentReference(owner["equippedItems"], itemId);
+        }
     }
 
-    private static JsonObject? ResolveNpc(JsonObject? root, string npcId)
+    private static IReadOnlyList<JsonObject> ResolveNpcCopies(JsonObject? root, string npcId)
     {
-        var matches = new List<JsonObject>();
-        foreach (var section in new[] { "UpdateNPCs", "NPCsInScene" })
+        try
         {
-            if (root?[section] is JsonArray npcs)
-            {
-                matches.AddRange(npcs.OfType<JsonObject>().Where(npc =>
-                    new[] { "NPCId", "npcId", "id", "initialId" }.Any(property =>
-                        string.Equals(
-                            ReadExactString(npc[property]),
-                            npcId,
-                            StringComparison.Ordinal))));
-            }
+            return MortalItemNpcMirrorPolicy.ResolveExactActors(
+                root,
+                npcId,
+                "Mortal item consumption equipment");
         }
-        return matches.Count == 1 ? matches[0] : null;
+        catch (InvalidDataException)
+        {
+            return Array.Empty<JsonObject>();
+        }
     }
+
+    private static bool SameCarrier(
+        MortalItemCarrierCoordinate left,
+        MortalItemCarrierCoordinate right) =>
+        string.Equals(left.Kind, right.Kind, StringComparison.Ordinal) &&
+        string.Equals(left.OwnerId, right.OwnerId, StringComparison.Ordinal) &&
+        string.Equals(left.ContainerId, right.ContainerId, StringComparison.Ordinal) &&
+        left.ContainerPath.SequenceEqual(right.ContainerPath, StringComparer.Ordinal);
 
     private static void RemoveExactEquipmentReference(JsonNode? node, string itemId)
     {
