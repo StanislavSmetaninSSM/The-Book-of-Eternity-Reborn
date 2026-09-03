@@ -3854,10 +3854,19 @@ internal static class AcceptedTurnAuthorityRegistry
                     return ItemAuthorityChangedIssue();
                 }
 
-                var npcTradeDisposition = ownsNpcTail
-                    ? MortalItemNpcTradeTailDisposition.Apply
-                    : MortalItemNpcTradeTailDisposition
-                        .SkipUntouchedTreatmentContinuation;
+                if (!MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(
+                        ownsNpcTail,
+                        continuation.ResourceFinalization.Consumptions,
+                        _mortalItems.GetOwners(sessionId, snapshotToken),
+                        out var ownsNpcRoot))
+                {
+                    return ItemAuthorityChangedIssue();
+                }
+
+                var npcTradeDisposition =
+                    MortalItemNpcTradeTailPolicy.SelectDisposition(
+                        hasTreatmentContinuation: true,
+                        ownsNpcRoot);
                 if (baseSnapshot.HasFinalPublicationBaseline)
                 {
                     return baseSnapshot.MatchesTreatmentPublicationBaseline(

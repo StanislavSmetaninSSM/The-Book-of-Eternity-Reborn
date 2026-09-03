@@ -168,11 +168,13 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         const string path = "game_state/npcs/npc_core.json";
-        var disposition = acceptedMechanicsPlan?.WoundStageBundle?.PreparedPlan
-                .TreatmentContinuationAuthority is not null &&
-            !acceptedMechanicsPlan.OwnerCompanionAfterImages.ContainsKey(path)
-                ? MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation
-                : MortalItemNpcTradeTailDisposition.Apply;
+        var hasTreatmentContinuation = acceptedMechanicsPlan?.WoundStageBundle
+            ?.PreparedPlan.TreatmentContinuationAuthority is not null;
+        var ownsNpcRoot = acceptedMechanicsPlan?.OwnerCompanionAfterImages
+            .ContainsKey(path) == true;
+        var disposition = MortalItemNpcTradeTailPolicy.SelectDisposition(
+            hasTreatmentContinuation,
+            ownsNpcRoot);
         var currentNode = await ReadNodeAsync(path);
         if (currentNode is not JsonObject currentObj)
             return;

@@ -1243,6 +1243,87 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void GuaranteedNpcItemConsumption_NpcTradeDispositionAndTopLevelPublicationAgree()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 2);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        SeedNpcTradeTailBehaviorInput(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "npc_item_trade_tail_disposition");
+        var resourceTransitionsBefore =
+            ReadResourceHistory(fixture).Transitions.Count;
+
+        var plan = ComposeResourcePublication(fixture, flow);
+        var sealedPublication = ReadSealedTreatmentPublication(plan);
+        var baselineNpcRoot = Assert.IsType<JsonObject>(
+            sealedPublication.Baseline.Roots[NpcCoreChangesContract.NpcCorePath]);
+
+        Assert.Equal("Apply", sealedPublication.NpcTradeDisposition);
+        Assert.Equal(1, ReadPlanNpcItemCount(plan, "reusable_field_kit"));
+        Assert.Equal(
+            8m,
+            plan.StateAfterImage["entries"]!.AsArray().OfType<JsonObject>()
+                .Single(entry => entry["resourceKey"]!.GetValue<string>() == "energy")
+                ["current"]!.GetValue<decimal>());
+        Assert.False(baselineNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.True(HasNpcTradeTailBehaviorReceipt(baselineNpcRoot));
+        Assert.Equal(2, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.False(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.True(HasNpcTradeTailBehaviorReceipt(publishedNpcRoot));
+            Assert.Equal(1, CountNpcTradeTailBehaviorReceipts(publishedNpcRoot));
+            Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+            Assert.Equal(8, ReadPlayerEnergy(fixture));
+            Assert.Equal(
+                resourceTransitionsBefore + 1,
+                ReadResourceHistory(fixture).Transitions.Count);
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        var finalizedNpcRoot = ReadPublishedCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        var finalizedResourceTransitions =
+            ReadResourceHistory(fixture).Transitions.Count;
+        fixture.PrepareFreshSnapshot("npc_item_trade_tail_replay");
+        fixture.RestartForReplay();
+
+        var replay = ProbePublishedTreatment(fixture, flow.Request);
+
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(
+            replay,
+            "Status")));
+        var replayedNpcRoot = ReadPublishedCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        Assert.True(JsonNode.DeepEquals(finalizedNpcRoot, replayedNpcRoot));
+        Assert.False(replayedNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.Equal(1, CountNpcTradeTailBehaviorReceipts(replayedNpcRoot));
+        Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        Assert.Equal(
+            finalizedResourceTransitions,
+            ReadResourceHistory(fixture).Transitions.Count);
+    }
+
+    [Fact]
     public void FinalBaselinePlanner_DispatchesAndRecordsOnlyTheFrozenTransformRegistry()
     {
         var plannerType = RequireB4Type(
@@ -4052,14 +4133,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     private static bool HasNpcTradeTailBehaviorReceipt(JsonObject npcRoot)
+        => CountNpcTradeTailBehaviorReceipts(npcRoot) != 0;
+
+    private static int CountNpcTradeTailBehaviorReceipts(JsonObject npcRoot)
     {
         var medic = Assert.Single(
             npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
             actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
-        return medic[NpcTradeRequestState.ReceiptsProperty] is JsonArray receipts &&
-               receipts.OfType<JsonObject>().Any(receipt =>
-                   receipt["requestId"]?.GetValue<string>() ==
-                   "trade_tail_disposition_request");
+        return medic[NpcTradeRequestState.ReceiptsProperty] is JsonArray receipts
+            ? receipts.OfType<JsonObject>().Count(receipt =>
+                receipt["requestId"]?.GetValue<string>() ==
+                "trade_tail_disposition_request")
+            : 0;
     }
 
     private static GameResponse SeedFinalBaselineProductionInputs(
@@ -4418,6 +4503,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AcceptedStateFixture fixture,
         string path) => JsonNode.Parse(ReadCanonicalBytes(fixture, path).AsSpan())!
             .AsObject();
+
+    private static JsonObject ReadPublishedCanonicalObject(
+        AcceptedStateFixture fixture,
+        string path) => JsonNode.Parse(File.ReadAllText(
+            fixture.FileSystem.ResolvePath(path)))!.AsObject();
 
     private static JsonObject ReadCanonicalObjectOrEmpty(
         AcceptedStateFixture fixture,
