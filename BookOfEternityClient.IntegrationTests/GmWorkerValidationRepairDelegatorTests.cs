@@ -8,6 +8,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class GmWorkerValidationRepairDelegatorTests
 {
     private const string WeatherPath = "game_state/world/weather.json";

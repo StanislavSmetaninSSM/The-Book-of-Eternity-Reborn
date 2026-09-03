@@ -12,6 +12,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class ShiningCoreActionResolutionValidationTests : IDisposable
 {
     private readonly string _rootPath;

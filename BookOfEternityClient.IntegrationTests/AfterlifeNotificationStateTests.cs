@@ -7,6 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class AfterlifeNotificationStateTests : IDisposable
 {
     private readonly string _rootPath;

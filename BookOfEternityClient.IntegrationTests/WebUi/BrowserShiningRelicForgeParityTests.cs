@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class BrowserShiningRelicForgeParityTests : IDisposable
 {
     private const string OwnerId = "browser-shining-relic-forge-test";

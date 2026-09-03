@@ -30,8 +30,27 @@ public sealed class FastTestBoundaryTests
         "QteSceneServiceTests.cs",
         "GmWorkerLiveSmokeTests.cs",
         "LocalWebUiSmokeTests.cs",
+        "ShiningCoreActionResolutionValidationTests.cs",
+        "GuardianCorrectionServiceTests.cs",
+        "ShiningBlessingEffectStateTests.cs",
+        "AfterlifeNotificationStateTests.cs",
+        "DarenQteShowcaseTests.cs",
+        "ShiningTradeRequestStateTests.cs",
+        "BrowserLocalWriteCoordinatorTests.cs",
+        "TrainingServiceTests.cs",
+        "NpcTradeServiceRequestFlowTests.cs",
+        "MortalWoundOpportunityAdapterTests.cs",
+        "ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs",
+        "GmWorkerValidationRepairDelegatorTests.cs",
         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
-        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs")
+        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs"),
+        Path.Combine("WebUi", "BrowserShiningRelicForgeParityTests.cs"),
+        Path.Combine("WebUi", "BrowserResidentInteractionsParityTests.cs"),
+        Path.Combine("WebUi", "BrowserAfterlifeArchiveParityTests.cs"),
+        Path.Combine("WebUi", "BrowserShiningIncarnationGatesParityTests.cs"),
+        Path.Combine("WebUi", "BrowserInkFeatherFateParityTests.cs"),
+        Path.Combine("WebUi", "BrowserNpcSocialParityTests.cs"),
+        Path.Combine("WebUi", "BrowserTradeParityTests.cs")
     ];
 
     [Fact]

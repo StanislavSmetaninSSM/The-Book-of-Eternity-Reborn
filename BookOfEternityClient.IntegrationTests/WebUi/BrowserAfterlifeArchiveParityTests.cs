@@ -11,6 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests.WebUi;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class BrowserAfterlifeArchiveParityTests : IDisposable
 {
     private readonly string _rootPath;

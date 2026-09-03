@@ -8,6 +8,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class GuardianCorrectionServiceTests : IDisposable
 {
     private static readonly string[] ChangedCorrectionTransactionPaths =

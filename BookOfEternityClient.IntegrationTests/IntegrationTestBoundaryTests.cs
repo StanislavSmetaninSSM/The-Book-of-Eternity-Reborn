@@ -191,6 +191,7 @@ public sealed class IntegrationTestBoundaryTests
             ["GmWorkerProcessHostTests.cs"] = [ProcessIntegrationTrait],
             ["GmWorkerProcessTreeTests.cs"] = [ProcessIntegrationTrait],
             ["GmWorkerProposalStoreTests.cs"] = [ProcessIntegrationTrait],
+            ["GmWorkerValidationRepairDelegatorTests.cs"] = [ProcessIntegrationTrait],
             ["ImageServiceTests.cs"] = [ProcessIntegrationTrait],
             ["LocalWebUiBuiltFrontendSmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
             ["GmWorkerLiveSmokeTests.cs"] = [ProcessIntegrationTrait],
@@ -219,8 +220,26 @@ public sealed class IntegrationTestBoundaryTests
         "MortalWoundRecoveryTests.cs",
         "MortalWoundTreatmentCapabilityAuthorityTests.cs",
         "QteSceneServiceTests.cs",
+        "ShiningCoreActionResolutionValidationTests.cs",
+        "GuardianCorrectionServiceTests.cs",
+        "ShiningBlessingEffectStateTests.cs",
+        "AfterlifeNotificationStateTests.cs",
+        "DarenQteShowcaseTests.cs",
+        "ShiningTradeRequestStateTests.cs",
+        "BrowserLocalWriteCoordinatorTests.cs",
+        "TrainingServiceTests.cs",
+        "NpcTradeServiceRequestFlowTests.cs",
+        "MortalWoundOpportunityAdapterTests.cs",
+        "ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs",
         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
-        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs")
+        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs"),
+        Path.Combine("WebUi", "BrowserShiningRelicForgeParityTests.cs"),
+        Path.Combine("WebUi", "BrowserResidentInteractionsParityTests.cs"),
+        Path.Combine("WebUi", "BrowserAfterlifeArchiveParityTests.cs"),
+        Path.Combine("WebUi", "BrowserShiningIncarnationGatesParityTests.cs"),
+        Path.Combine("WebUi", "BrowserInkFeatherFateParityTests.cs"),
+        Path.Combine("WebUi", "BrowserNpcSocialParityTests.cs"),
+        Path.Combine("WebUi", "BrowserTradeParityTests.cs")
     ];
 
     private static readonly IReadOnlyDictionary<string, string[]>

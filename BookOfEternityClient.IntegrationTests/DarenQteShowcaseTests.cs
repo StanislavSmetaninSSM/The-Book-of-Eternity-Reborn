@@ -9,6 +9,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class DarenQteShowcaseTests : IDisposable
 {
     private static readonly string[] OriginalHeistBeatIds =
