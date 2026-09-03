@@ -1519,7 +1519,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedMechanicsPlanFingerprints.ComputeInput(context.OriginalBinding),
                 AcceptedMechanicsPlanFingerprints.ComputeInput(rearmedBinding));
         }
-        AssertConfirmedHeldBlocksCompetingTreatment(context);
+        AssertConfirmedHeldBlocksCompetingTreatment(
+            context,
+            string.Equals(
+                boundary,
+                "transaction_commit_conflict",
+                StringComparison.Ordinal)
+                ? "mortal_wound_treatment_resource_reservation_authority_invalid"
+                : "mortal_wound_treatment_resource_reservation_overbooked");
     }
 
     [Fact]
@@ -3471,7 +3478,9 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     private static void AssertConfirmedHeldBlocksCompetingTreatment(
-        HeldTreatmentPipelineContext context)
+        HeldTreatmentPipelineContext context,
+        string expectedIssueCode =
+            "mortal_wound_treatment_resource_reservation_overbooked")
     {
         var acceptedState = ExportCurrentTreatmentAcceptedState(context);
         var history = ReadCurrentTreatmentHistory(context.FileSystem);
@@ -3497,7 +3506,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(competing.IsValid);
         Assert.Null(competing.Request);
         Assert.Equal(
-            "mortal_wound_treatment_resource_reservation_overbooked",
+            expectedIssueCode,
             Assert.Single(competing.Issues).Code);
     }
 
