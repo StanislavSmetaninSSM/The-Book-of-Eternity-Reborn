@@ -28,6 +28,11 @@ The #1547 measured deadline correction preserves that complete schedule and
 raises only the globally bounded PreMerge deadline from 20 to 30 minutes after
 the green core plus isolated process/E2E lower bound stopped fitting the former
 cap.
+The #1551 Fast-boundary repair keeps the five-minute Fast contract and existing
+runner ceilings unchanged. It moves measured canonical I/O, restart,
+contention, process, host, and end-to-end workflows into the Integration
+project with exact category manifests, while extracting deterministic QTE
+grading/input tests from their file-backed fixture so they remain in Fast.
 
 ## Technical Context
 
@@ -39,9 +44,10 @@ cap.
 `TestResults/test-lanes/` logs, summaries, and TRX output.
 
 **Testing**: xUnit focused filters, source/project guards, bounded benchmark
-runs, two final Fast controls, one conditional DeepValidation control for this
+runs, two final Fast controls, the diagnostic Integration categories changed by
+the source moves, one conditional DeepValidation control for the historical
 category-boundary change, one conditional LifecycleIntegration control, and
-one final bounded PreMerge control.
+one final bounded PreMerge control only when merge is explicitly requested.
 
 **Target Platform**: Local Windows development machine; implementation remains portable .NET code.
 
@@ -58,9 +64,13 @@ DeepValidation at most 15 minutes; PreMerge at most 30 minutes.
 
 **Constraints**: Public validation still runs all 26 phases in canonical order; no gameplay, state schema, issue-code, prompt, documentation-example, console, browser, or frontend behavior changes; no unbounded full-suite run.
 
-**Scale/Scope**: 6,560 discovered cases, 965 broad validation calls, 460 guardian cases, and 295 broad guardian calls across eight partial source files.
+**Scale/Scope**: The original baseline contained 6,560 discovered cases, 965
+broad validation calls, 460 guardian cases, and 295 broad guardian calls across
+eight partial source files. The #1551 amendment starts from 7,797 Fast cases in
+29 descriptors and four measured mixed-descriptor walls of approximately
+3:30, 3:55, 1:05, and 4:00 without build time.
 
-**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source Issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 **Contract Scope**: Internal validation orchestration and test infrastructure only.
 
@@ -93,9 +103,9 @@ branch ran each once because their category boundaries changed.
 
 *GATE before research: PASS. Re-check after design: PASS.*
 
-- **GitHub traceability**: #1505/#1526 retain the accepted historical evidence;
-  the current deadline correction is tracked by open issue #1547 and linked
-  from the active Spec Kit artifacts.
+- **GitHub traceability**: #1505/#1526/#1547 retain accepted historical
+  evidence; the current Fast project-boundary repair is tracked by open issue
+  #1551 and linked from the active Spec Kit artifacts.
 - **Spec Kit fit**: The implementation spans production validation orchestration, many guardian test files, traits/source guards, scripts, documentation, and multiple sessions.
 - **Player-facing integrity**: No console, browser, copy, or player interaction changes.
 - **Contract/state authority**: Validation rule bodies, issue codes, canonical schemas, state normalization, and GM-authored contracts remain unchanged. Mortal/afterlife prompts, examples, manifests, and contract matrices therefore need no update.
@@ -133,6 +143,7 @@ BookOfEternityClient/
 
 BookOfEternityClient.Tests/
 ├── ValidationPhaseSelectionTests.cs
+├── QteDeterministicLogicTests.cs
 ├── FastTestBoundaryTests.cs
 └── ordinary fast sources
 
@@ -145,6 +156,13 @@ BookOfEternityClient.IntegrationTests/
 ├── GameEngineTurnLifecycleTests.cs
 ├── IntegrationTestBoundaryTests.cs
 ├── TestLaneSourceGuardTests.cs
+├── QteSceneServiceTests.cs
+├── MortalWoundRecoveryTests.cs
+├── MortalWoundTreatmentCapabilityAuthorityTests.cs
+├── GmWorkerLiveSmokeTests.cs
+├── LocalWebUiSmokeTests.cs
+├── WebUi/BrowserMortalWorldGenerationFencingTests.cs
+├── WebUi/BrowserStorageTransportParityTests.cs
 └── full-validation, regression-integration, process, and E2E sources
 
 scripts/
@@ -293,6 +311,61 @@ only its now-obsolete final-gate deadline after new measured suite growth.
 6. Run one updated PlanOnly contract and one exact PreMerge control. Require
    completed ProcessIntegration and E2E, all official results green, zero
    duplicate IDs, timeout false, and complete owned-tree cleanup.
+
+## Phase 7: Fast Physical-Boundary Repair
+
+1. Extend `FastTestBoundaryTests.ReviewedHeavySources` into an exact relative
+   path manifest and add the #1551 canonical, process, and host sources before
+   moving them. Extend `IntegrationTestBoundaryTests` with their required
+   `RegressionIntegration`, `ProcessIntegration`, or `E2E` categories. Run the
+   two boundary tests first and retain the expected RED result while the files
+   are still in Fast.
+2. Move the mandatory canonical group into Integration with
+   `RegressionIntegration`: `MortalWoundRecoveryTests.cs`,
+   `MortalWoundTreatmentCapabilityAuthorityTests.cs`,
+   `WebUi/BrowserMortalWorldGenerationFencingTests.cs`, and
+   `WebUi/BrowserStorageTransportParityTests.cs`.
+3. Split `QteSceneServiceTests.cs` at its semantic boundary. Keep all
+   deterministic key normalization and grading/effective-requirement tests in
+   fixture-free `QteDeterministicLogicTests.cs` under Fast. Move the canonical
+   runtime, persistence, rollback, console, and save/archive tests plus their
+   fixture helpers to Integration as `QteSceneServiceTests.cs` with
+   `RegressionIntegration`. Preserve every theory row and assertion exactly
+   once.
+4. Move `GmWorkerLiveSmokeTests.cs` into Integration with
+   `ProcessIntegration`, because it launches a real PowerShell worker. Move
+   `LocalWebUiSmokeTests.cs` into Integration with `E2E`, because it exercises
+   an in-process HTTP host and complete browser API flow without launching a
+   child process.
+5. Run `Focused` Integration selections for each moved category group and a
+   focused Fast selection for `QteDeterministicLogicTests`. Replay Fast
+   `PlanOnly` and require unique, non-overlapping membership.
+6. Run one bounded Fast checkpoint. If wall time is above four minutes or does
+   not retain at least one minute of hard-limit headroom, continue through the
+   already-measured ranking and move only sources that satisfy the same
+   semantic rule. The reviewed second group is:
+   `ShiningCoreActionResolutionValidationTests.cs`,
+   `GuardianCorrectionServiceTests.cs`,
+   `ShiningBlessingEffectStateTests.cs`,
+   `AfterlifeNotificationStateTests.cs`, `DarenQteShowcaseTests.cs`,
+   `ShiningTradeRequestStateTests.cs`, `BrowserLocalWriteCoordinatorTests.cs`,
+   `TrainingServiceTests.cs`, `NpcTradeServiceRequestFlowTests.cs`,
+   `MortalWoundOpportunityAdapterTests.cs`,
+   `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs`, and the measured
+   browser parity sources for relic forge, resident interactions, archive,
+   incarnation gates, ink-feather Fate, NPC social, and trade. Classify these
+   as `RegressionIntegration`; any measured real-worker source instead uses
+   `ProcessIntegration`. Update both exact manifests in the same group.
+7. Repeat focused category verification and Fast PlanOnly after any second
+   group, then run two representative Fast controls. Both must finish below the
+   unchanged five-minute hard limit; approximately three minutes is the
+   preferred operating target. Require zero duplicate test IDs and complete
+   owned-process cleanup.
+8. Update `docs/testing.md`, `research.md`, `data-model.md`, and `quickstart.md`
+   with the final source/category manifest and retained run IDs. This is an
+   internal test-scheduling correction only, so Mortal World and afterlife GM
+   prompts, examples, manifests, client commands, and runtime contract docs do
+   not change.
 
 ## Complexity Tracking
 

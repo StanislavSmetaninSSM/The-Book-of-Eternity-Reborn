@@ -1,6 +1,6 @@
 # Data Model: Validation Selection and Test Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 This feature adds no persisted gameplay data. The model consists of internal
 runtime/test values and lane-result artifacts.
@@ -101,6 +101,13 @@ not use negative category filters: it discovers
 `BookOfEternityClient.Tests.csproj` directly. Slow categories remain useful for
 focused diagnostic selection inside
 `BookOfEternityClient.IntegrationTests.csproj`.
+
+Under #1551, exact relative source paths form the reviewed-heavy manifest.
+Canonical file/restart/rollback/lifecycle and lease-contention sources carry
+`RegressionIntegration`; real child-process sources carry
+`ProcessIntegration`; full host/browser flows carry `E2E`. A mixed source is
+split so fixture-free deterministic logic remains in Fast and its integration
+lifecycle has exactly one categorized owner in Integration.
 
 PreMerge has one deadline across frontend verification, both project builds,
 discovery, tests, and cleanup. Its parallel phase selects the complete fast

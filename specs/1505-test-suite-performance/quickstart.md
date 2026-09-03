@@ -1,6 +1,6 @@
 # Quickstart: C# Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 Run commands from the repository root with PowerShell 7.
 
@@ -29,6 +29,15 @@ dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.Integrat
 
 The default/Fast lane selects the fast test project directly and has no
 category-exclusion filter. Its one hard limit is five minutes.
+
+Fast contains fixture-free deterministic unit, parser, reducer, contract, and
+source-guard coverage. Canonical file/restart/rollback/lifecycle and
+lease-contention tests live in Integration with `RegressionIntegration`; real
+child-process tests use `ProcessIntegration`; complete host/browser flows use
+`E2E`. For a mixed class, split deterministic tests from the integration
+fixture rather than adding a negative Fast filter. Use
+`-Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~..."`
+to iterate on a moved class.
 
 The explicit diagnostic lanes select categories in the integration test
 project. They are not ordinary post-edit controls. Use them only for a relevant

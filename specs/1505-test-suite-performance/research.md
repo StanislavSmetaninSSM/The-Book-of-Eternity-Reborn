@@ -1,6 +1,6 @@
 # Research: Test Suite Performance and Verification Lanes
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 ## Baseline Findings
 
@@ -361,6 +361,32 @@ IDs, and complete owned-tree cleanup. All `26` official TRX files completed:
 Fast `4,339/4,339`, core integration `2,269/2,269`, ProcessIntegration
 `508/508`, and E2E `15/15`, totaling `7,131/7,131`. Frontend verification also
 passed `141/141`, and both C# builds reported zero warnings/errors.
+
+## Decision 11: Restore the Physical Fast Boundary Instead of Raising Its Limit
+
+**Evidence**: The #1551 baseline discovers 7,797 Fast cases in 29 descriptors
+and reaches the unchanged five-minute hard stop. Four mixed descriptors run in
+about `3:30`, `3:55`, `1:05`, and `4:00` without build time. Aggregate TRX
+ranking identifies canonical file/restart/rollback workflows, lease contention,
+real worker processes, HTTP hosting, browser transport parity, and large
+file-backed state machines as the dominant work. Detached wound/effect
+contracts, parsers, reducers, and source guards are not the primary cost.
+
+**Decision**: Preserve Fast as the complete fast-project selection with no
+negative category filter and keep its five-minute hard limit and two-host
+ceiling. Move reviewed integration-heavy sources physically into
+`BookOfEternityClient.IntegrationTests` with `RegressionIntegration`,
+`ProcessIntegration`, or `E2E` according to behavior. Split mixed QTE coverage
+so deterministic input/grading tests remain fixture-free in Fast while its
+canonical persistence/rollback lifecycle moves to Integration. Exact
+source/category manifests protect both placement and discovery.
+
+**Alternatives rejected**: Raising the Fast timeout would rename the regression
+instead of restoring ordinary feedback. `Category!=Slow` would make the fast
+assembly depend on a permissive negative filter. More process concurrency is
+unsafe before removing contention-heavy work. A numeric duration threshold is
+not a semantic test boundary and would move detached unit contracts merely for
+being large.
 
 The documented runner interface is:
 

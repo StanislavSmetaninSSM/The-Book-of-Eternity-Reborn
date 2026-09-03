@@ -10,7 +10,7 @@
 
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 - **Issue type**: Test-infrastructure performance, reliability, and developer experience.
 - **Spec Kit justification**: The implementation spans the production validation orchestrator, a large multi-file guardian regression suite, test classification and source guards, verification scripts or documentation, and performance evidence across multiple sessions.
 - **Contract scope**: Internal validation orchestration and test infrastructure. There is no player-facing, GM-facing, gameplay, canonical-state schema, console, browser, frontend, prompt, documentation-example, or afterlife contract change.
@@ -76,6 +76,19 @@ raises only the globally bounded PreMerge deadline to 30 minutes. It does not
 remove coverage or change filters, cases, assertions, scheduling phases,
 ordering, or concurrency ceilings.
 
+Later Fast growth exposed a separate physical-boundary regression under #1551.
+The lane now discovers 7,797 cases across 29 descriptors and reaches its
+five-minute hard stop. Four isolated mixed Fast descriptors measured about
+3:30, 3:55, 1:05, and 4:00 without build time. Their dominant classes perform
+canonical file/restart/rollback lifecycles, real worker execution, in-process
+HTTP hosting, browser transport parity, lease contention, or large file-backed
+state-machine workflows. Detached wound/effect parsers, reducers, contracts,
+and source guards remain comparatively cheap. This amendment restores the
+already-approved physical project boundary: semantic integration sources move
+to Integration with explicit categories, while deterministic logic extracted
+from a mixed source remains in Fast. The five-minute limit, runner filters,
+process ceilings, test cases, and assertions remain unchanged.
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Fast Rule-Focused Guardian Tests (Priority: P1)
@@ -134,7 +147,8 @@ changed boundary, and one final PreMerge control.
    command runs, **then** it selects only
    `BookOfEternityClient.Tests.csproj`, uses no category-exclusion filter,
    cannot discover integration tests, and completes within five minutes on the
-   baseline Windows machine.
+   baseline Windows machine, with approximately three minutes as the preferred
+   operating target so normal suite growth retains headroom.
 2. **Given** a validation-orchestration change, **when** the documented full-validation command runs, **then** all intentional full-pipeline sentinels can be selected explicitly.
 3. **Given** a file-backed Guardian, Explorer, GameEngine, browser-command, or host change, **when** the regression-integration lane runs, **then** its workflow regressions are selected explicitly without destabilizing the Fast lane.
 4. **Given** a process-host or end-to-end change, **when** its documented lane runs, **then** process-starting tests are selected explicitly and retain bounded cleanup.
@@ -190,6 +204,11 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   must terminate only the run's owned process tree and must not target
   unrelated developer processes.
 - Performance evidence must distinguish `dotnet test` startup wall time from runner-reported test duration and use the same build configuration for comparisons.
+- A measured slow class may mix deterministic logic with file-backed lifecycle
+  tests. The deterministic portion remains in Fast under a fixture-free test
+  class, while the canonical I/O portion moves to Integration; no row or
+  assertion may be duplicated, deleted, skipped, or hidden behind a negative
+  Fast filter.
 
 ## Requirements
 
@@ -216,7 +235,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   `PreMerge`.
 - **FR-013**: The fast lane MUST select the physically isolated fast project
   directly, without a slow-category exclusion filter, and that project MUST NOT
-  discover integration sources.
+  discover integration sources. Exact source guards MUST name every reviewed
+  integration-heavy source and fail if it is copied back into Fast or loses its
+  required diagnostic category.
 - **FR-014**: DeepValidation MUST select the Integration-only union of
   FullValidation and DeepValidation, excluding LifecycleIntegration,
   ProcessIntegration, and E2E. LifecycleIntegration MUST select the complete
@@ -244,6 +265,14 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   `Microsoft.NET.Test.Sdk`; IntegrationTests MUST NOT reference Tests; every
   partial test class MUST belong to exactly one test project.
 - **FR-016**: Production validation rules, canonical-state schemas, issue codes, player-facing behavior, GM prompts, gameplay documentation, worked examples, console behavior, and browser behavior MUST remain unchanged.
+- **FR-018**: Test placement MUST be determined by behavior rather than elapsed
+  time alone. Canonical file/restart/rollback/lifecycle and lease-contention
+  workflows MUST use `RegressionIntegration`; real child-process workflows MUST
+  use `ProcessIntegration`; true host/browser end-to-end workflows MUST use
+  `E2E`; detached deterministic unit, parser, reducer, contract, and source-guard
+  coverage MUST remain in Fast. A mixed source MUST be split at that semantic
+  boundary when moving it wholesale would remove meaningful deterministic
+  feedback from Fast.
 
 ### Key Entities
 
@@ -256,6 +285,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **Verification lane**: A documented project/selection with a purpose, hard
   limit, expected duration, and retained-result policy.
 - **Performance baseline**: Reproducible pre-change counts and bounded timings used to compare the same benchmark and complete suite after implementation.
+- **Reviewed heavy source**: A source whose canonical I/O, process, host, or
+  end-to-end behavior has been explicitly assigned to Integration and protected
+  by exact source/category manifests.
 
 ## Design Direction
 
@@ -274,6 +306,10 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
    complete lifecycle class to LifecycleIntegration and the complete
    spiritual-conflict matrix to RegressionIntegration.
 8. Treat fixture-copy optimization as secondary. Because bounded post-selection evidence missed the Fast budget, capture one immutable in-memory prepared Guardian snapshot per test host and materialize independent roots per test.
+9. Repair later Fast drift through semantic source placement under #1551. Move
+   measured canonical workflows to the Integration project with exact category
+   manifests, and split QTE deterministic grading/input coverage away from its
+   file-backed scene lifecycle so the former remains fixture-free in Fast.
 
 ## Success Criteria
 
@@ -297,6 +333,13 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-008**: Public full validation and explicit all-phase validation produce identical ordered issues on representative valid and invalid fixtures.
 - **SC-009**: The guardian source guard fails deterministically when the broad-call budget or sentinel category rule is violated.
 - **SC-010**: Bounded verification leaves no owned `dotnet`, testhost, client, worker-host, PowerShell helper, Agent Console, or related child process running.
+- **SC-011**: Two consecutive #1551 Fast controls complete within five minutes,
+  preferably around three minutes, with zero duplicate test IDs, no timeout,
+  and complete owned-process cleanup.
+- **SC-012**: Every moved test remains discoverable through its explicit
+  Integration category and Focused Integration selection; exact guards prove
+  that no reviewed source exists in both projects and no test or assertion was
+  removed to obtain the Fast result.
 
 ## Verification Plan
 
@@ -324,6 +367,12 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
     ProcessIntegration control, a RED/GREEN runner-contract guard, one updated
     PlanOnly contract, and one exact final PreMerge control under the new
     30-minute bound.
+  - For #1551, add RED/GREEN exact source/category guards, move each semantic
+    group with focused Integration verification, replay Fast PlanOnly after
+    each group, run only the diagnostic categories actually changed, and retain
+    two final Fast controls under five minutes with approximately three minutes
+    as the preferred target. Known wound-contour REDs remain discoverable and
+    classified; they are not skipped or used to excuse a timeout.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.

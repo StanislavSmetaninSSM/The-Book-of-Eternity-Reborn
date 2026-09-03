@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `specs/1505-test-suite-performance/`
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
 
@@ -211,6 +211,65 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   failures/duplicates, timeout false, and complete cleanup, then record the
   result in `docs/testing.md` and `specs/1505-test-suite-performance/quickstart.md`.
 
+---
+
+## Phase 11: Issue #1551 Fast Physical-Boundary Repair
+
+**Goal**: Restore Fast to honest unit/contract feedback with approximately
+three-minute operating time while retaining its five-minute hard limit and all
+existing test cases and assertions.
+
+**Independent test**: Exact source/category guards pass, every moved source is
+discoverable through Focused Integration and its diagnostic lane, Fast PlanOnly
+has no duplicate membership, and two Fast controls finish below five minutes.
+
+- [x] T054 [US3] Record the approved #1551 design and amend
+  `specs/1505-test-suite-performance/spec.md`, `plan.md`, and `tasks.md` with
+  the measured 7,797-case boundary regression and no-gameplay/no-GM-contract
+  scope.
+- [ ] T055 [US4] Add RED exact relative-path and category expectations for the
+  reviewed #1551 sources in
+  `BookOfEternityClient.Tests/FastTestBoundaryTests.cs` and
+  `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, then
+  run both focused guards while the sources are still in Fast.
+- [ ] T056 [US3] Move the canonical wound and browser transport group into
+  `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`:
+  `MortalWoundRecoveryTests.cs`,
+  `MortalWoundTreatmentCapabilityAuthorityTests.cs`,
+  `WebUi/BrowserMortalWorldGenerationFencingTests.cs`, and
+  `WebUi/BrowserStorageTransportParityTests.cs`.
+- [ ] T057 [US3] Extract every deterministic QTE input/grading assertion into
+  fixture-free `BookOfEternityClient.Tests/QteDeterministicLogicTests.cs`, move
+  the remaining canonical lifecycle in `QteSceneServiceTests.cs` to
+  `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`, and
+  prove every original test method/theory row exists exactly once.
+- [ ] T058 [US3] Move `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` to
+  Integration with `ProcessIntegration` and
+  `BookOfEternityClient.Tests/LocalWebUiSmokeTests.cs` to Integration with
+  `E2E`, preserving existing method-level traits and process/host cleanup.
+- [ ] T059 [US3] Run focused Fast QTE logic, focused Integration selections for
+  the three changed categories, and both exact boundary guards through
+  `scripts/test-csharp.ps1`.
+- [ ] T060 [US4] Run Fast PlanOnly plus one bounded Fast checkpoint, retain
+  counts/timings/duplicate/cleanup evidence, and compare the wall time with the
+  four pre-change descriptor measurements.
+- [ ] T061 [US3] If T060 exceeds four minutes, move the exact measured
+  file-backed second group listed in `plan.md` to Integration with
+  `RegressionIntegration` (or `ProcessIntegration` for real-worker sources),
+  update both manifests, and rerun focused category plus PlanOnly controls.
+- [ ] T062 [US3] Synchronize the final #1551 placement rules and evidence in
+  `docs/testing.md`, `specs/1505-test-suite-performance/research.md`,
+  `data-model.md`, and `quickstart.md`; record that GM prompts, examples,
+  manifests, client UI, and afterlife runtime docs are unchanged because this
+  is internal test scheduling only.
+- [ ] T063 [US3] Run two representative Fast controls below the unchanged
+  five-minute hard limit, preferably around three minutes, with zero duplicate
+  IDs and complete owned-process cleanup.
+- [ ] T064 [US4] Inspect exact diffs, run `git diff --check`, complete
+  independent code review and Spec Kit consistency analysis, and retain the
+  branch ready for the wound-materialization continuation without running
+  PreMerge until merge is explicitly requested.
+
 ## Dependencies and Execution Order
 
 - T005 completes setup.
@@ -230,6 +289,11 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - T049–T053 are the #1547 deadline correction. T049 supplies the measured
   lower bound; T050 must be RED before T051; T052 verifies the executable
   contract before T053 runs the exact final gate.
+- T054–T064 are the #1551 Fast physical-boundary repair. T055 must be RED before
+  T056–T058; T059 proves the moved groups; T060 decides whether the exact
+  second group in T061 is required; T062 follows the final placement; T063 is
+  exactly two post-review Fast controls; T064 performs review without a
+  merge-only PreMerge run.
 
 ## Notes
 
