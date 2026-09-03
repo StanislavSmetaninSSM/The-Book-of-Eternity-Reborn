@@ -1518,49 +1518,12 @@ internal static class AcceptedTurnCanonicalStateRefresh
 
         var plan = peeked.Plan;
         var authority = plan.TreatmentResourcePublicationAuthority;
-        if (authority is null || !authority.RequiresConfirmedHold)
+        if (authority is null || !authority.RequiresCoordinatedSettlement)
             return null;
         if (!authority.HasValidSeal())
         {
             throw new InvalidDataException(
                 "Pre-canonical treatment cleanup requires the exact sealed resource-publication authority.");
-        }
-
-        var liveHold = AcceptedTurnAuthorityRegistry
-            .ProbeMortalWoundTreatmentResourcePublicationHold(
-                fs,
-                writeLease,
-                authority.AcceptedStateAuthority,
-                authority.RequestAuthority,
-                authority.Finalization);
-        if (!liveHold.IsValid ||
-            liveHold.Issues.Count != 0 ||
-            liveHold.ChangedCount != 0 ||
-            liveHold.State !=
-                MortalWoundTreatmentResourceReservationState.ConfirmedHeld ||
-            !string.Equals(
-                liveHold.OperationKey,
-                authority.RequestAuthority.Coordinates.OperationKey,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                liveHold.AttemptId,
-                authority.RequestAuthority.Coordinates.AttemptId,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                liveHold.RequestFingerprint,
-                authority.RequestFingerprint,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                liveHold.ResourceAuthorityFingerprint,
-                authority.Finalization.ResourceAuthorityFingerprint,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                liveHold.FinalizationFingerprint,
-                authority.FinalizationFingerprint,
-                StringComparison.Ordinal))
-        {
-            throw new InvalidDataException(
-                "Pre-canonical treatment cleanup requires the unchanged live ConfirmedHeld agreement.");
         }
 
         var hasCurrentMortalItemSnapshot =
@@ -1616,7 +1579,8 @@ internal static class AcceptedTurnCanonicalStateRefresh
         try
         {
             var tookPublication = hasCurrentMortalItemSnapshot
-                ? AcceptedMechanicsPlanAuthority.TryTakeValidatedTreatmentPublication(
+                ? AcceptedMechanicsPlanAuthority
+                    .TryTakeCurrentValidatedTreatmentPublicationForTerminalRelease(
                     fs,
                     writeLease,
                     binding,
@@ -1648,12 +1612,16 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 fs,
                 writeLease,
                 reason);
-            if (!released.IsValid ||
-                released.Issues.Count != 0 ||
-                released.ChangedCount != 1 ||
-                released.Outcome is not (
-                    MortalWoundTreatmentPublicationTransactionOutcome.Released or
-                    MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked))
+            var releasedExactly = released.IsValid &&
+                                  released.Issues.Count == 0 &&
+                                  released.ChangedCount == 1 &&
+                                  released.Outcome ==
+                                      MortalWoundTreatmentPublicationTransactionOutcome
+                                          .Released;
+            var safelyRestartBlocked =
+                MortalWoundTreatmentResourcePublicationTransaction
+                    .IsExactProvenTerminalReleaseFailure(released);
+            if (!releasedExactly && !safelyRestartBlocked)
             {
                 throw new InvalidOperationException(
                     "Pre-canonical treatment cleanup did not atomically quarantine and release the exact held request.");

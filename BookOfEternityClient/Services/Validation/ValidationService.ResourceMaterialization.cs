@@ -99,7 +99,7 @@ public partial class ValidationService
         }
 
         var exactConfirmedHold = false;
-        if (authority.RequiresConfirmedHold)
+        if (authority.RequiresCoordinatedSettlement)
         {
             var hold = AcceptedTurnAuthorityRegistry
                 .ProbeMortalWoundTreatmentResourcePublicationHold(
@@ -141,7 +141,7 @@ public partial class ValidationService
         }
 
         var retainForExactTerminalSettlement =
-            authority.RequiresConfirmedHold &&
+            authority.RequiresCoordinatedSettlement &&
             authority.HasValidSeal() &&
             exactConfirmedHold &&
             !authorityIssues.Any(static issue =>

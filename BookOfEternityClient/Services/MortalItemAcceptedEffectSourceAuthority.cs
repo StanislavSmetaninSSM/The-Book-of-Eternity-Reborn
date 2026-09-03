@@ -1657,6 +1657,39 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        internal bool TryTakeCurrentTreatmentPublicationForTerminalRelease(
+            MortalItemAcceptedTurnNormalizationSnapshot expected,
+            out ValidatedPublicationTakeSnapshot snapshot)
+        {
+            ArgumentNullException.ThrowIfNull(expected);
+            lock (_gate)
+            {
+                if (_validated &&
+                    _fingerprint is not null &&
+                    _treatmentPublicationBaselineSnapshot is not null &&
+                    expected.MatchesFinalPublicationBaseline(
+                        _treatmentPublicationBaselineSnapshot) &&
+                    expected.MatchesExactCacheState(
+                        _sessionId,
+                        _snapshotToken,
+                        _itemIdsByCreationRef,
+                        _normalizationProofFingerprint))
+                {
+                    snapshot = new ValidatedPublicationTakeSnapshot(
+                        _cacheAuthority,
+                        _validatedFence,
+                        _fingerprint,
+                        expected,
+                        terminalReleaseOnly: true);
+                    _validated = false;
+                    return true;
+                }
+
+                snapshot = null!;
+                return false;
+            }
+        }
+
         internal bool TryTakeInvalidatedTreatmentPublicationForTerminalRelease(
             out ValidatedPublicationTakeSnapshot snapshot)
         {

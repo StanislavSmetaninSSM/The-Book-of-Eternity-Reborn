@@ -289,7 +289,7 @@ public partial class CanonicalStateNormalizer
         if (acceptedMechanicsPreflight is
                 AcceptedMechanicsNormalizationPreflight.Validated
                 {
-                    Plan.TreatmentResourcePublicationAuthority.RequiresConfirmedHold: true
+                    Plan.TreatmentResourcePublicationAuthority.RequiresCoordinatedSettlement: true
                 })
         {
             throw new InvalidOperationException(
@@ -327,7 +327,7 @@ public partial class CanonicalStateNormalizer
                 "Held treatment publication normalization requires the owning canonical write lease.");
         }
         if (preflight.Plan.TreatmentResourcePublicationAuthority is not
-            { RequiresConfirmedHold: true })
+            { RequiresCoordinatedSettlement: true })
         {
             throw new InvalidOperationException(
                 "Held treatment publication normalization requires one exact confirmed resource authority.");

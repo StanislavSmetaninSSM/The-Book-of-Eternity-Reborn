@@ -134,6 +134,57 @@ public sealed partial class MortalWoundTreatmentResolverTests
             treatmentResult.Receipt.AttemptDisposition);
     }
 
+    [Theory]
+    [InlineData("combatant", "combatant_wounded_01")]
+    [InlineData("combatant_member", "combatant_member_wounded_01")]
+    public void ProcedureNoImprovement_CombatantCarriersPublishOnlyTheExactTarget(
+        string targetKind,
+        string targetId)
+    {
+        var scenario = CreateCombatNoImprovementProcedureScenario(
+            targetKind,
+            targetId);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var targetBefore = ReadCanonicalBytes(fixture, fixture.TargetCarrierPath);
+        var playerBefore = ReadCanonicalBytes(
+            fixture,
+            WoundCarrierCatalog.PlayerPath);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            targetKind + " no-improvement procedure");
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("failed_attempt", resolution.ResultCategory);
+        Assert.Collection(
+            resolution.OutcomeIntents,
+            static intent => Assert.Equal("no_improvement", intent.Kind));
+
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+
+        Assert.False(targetBefore.SequenceEqual(
+            ReadCanonicalBytes(fixture, fixture.TargetCarrierPath)));
+        Assert.Equal(
+            playerBefore,
+            ReadCanonicalBytes(fixture, WoundCarrierCatalog.PlayerPath));
+        var after = fixture.AssertCurrentWoundCoordinate(
+            targetKind,
+            targetId,
+            fixture.TargetCarrierPath);
+        Assert.Equal(flow.Before.Severity.Rank, after.Severity.Rank);
+        Assert.Equal(request.Coordinates.AttemptId, after.Care.LastAttemptId);
+        Assert.Single(
+            fixture.ReadCurrentHistory().State!.Transitions,
+            static row => string.Equals(
+                row.Kind,
+                "treat",
+                StringComparison.Ordinal));
+    }
+
     [Fact]
     public void ProcedureNoResourceAttempt_StillRequiresCoordinatedTransaction()
     {
@@ -264,6 +315,60 @@ public sealed partial class MortalWoundTreatmentResolverTests
             OperationKey = "operation_t070_b5_no_resource_procedure",
             ExpectedIntentCount = 1,
             History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+    }
+
+    private static ResolverScenario CreateCombatNoImprovementProcedureScenario(
+        string targetKind,
+        string targetId)
+    {
+        var scenario = CreateScenario(
+            "procedure_disadvantage_uses_two_contiguous_dice",
+            "procedure");
+        var carrierPath = AcceptedStateFixture.ResolveTargetCarrierPath(targetKind);
+        var before = WoundContractTestData.CreateActiveWound(
+            woundId: scenario.Before["woundId"]!.GetValue<string>(),
+            ownerKind: targetKind,
+            ownerId: targetId,
+            carrierPath: carrierPath);
+        before["consequences"]!["ownedEffectSources"]!["definitions"]!
+            .AsArray().RemoveAt(1);
+        before["consequences"]!["ownedEffectSources"]!["rootBindings"]!
+            .AsArray().RemoveAt(1);
+        before["consequences"]!["entries"]!.AsArray().RemoveAt(1);
+        before["consequences"]!["slotsUsed"] = 1;
+        var route = scenario.Before["treatment"]!["routes"]![0]!
+            .DeepClone()
+            .AsObject();
+        route["requirements"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "skill_tier",
+            ["capabilityRef"] = "field_medicine",
+            ["minimumTier"] = 2,
+            ["actorRole"] = "provider"
+        });
+        route["resourcePolicy"] = Policy(new JsonArray(), new JsonArray());
+        route["resolution"]!["modifierSource"] = new JsonObject
+        {
+            ["kind"] = "resolved_skill_tier",
+            ["requirementIndex"] = 0
+        };
+        before["treatment"]!["routes"] = new JsonArray(route);
+        before["treatment"]!["knownRouteIds"] = new JsonArray(
+            route["routeId"]!.DeepClone());
+        var acceptedState = scenario.AcceptedState.DeepClone().AsObject();
+        acceptedState["targetKind"] = targetKind;
+        acceptedState["targetId"] = targetId;
+        acceptedState["skillRows"] = new JsonArray(
+            "skill_field_medicine_npc_01");
+        return scenario with
+        {
+            AcceptedState = acceptedState,
+            Before = before,
+            OperationKey =
+                "operation_t070_b5_no_improvement_" + targetKind,
+            History = CreateCurrentWoundHistory(before),
             SeedCanonicalWoundEffects = true
         };
     }

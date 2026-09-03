@@ -456,6 +456,32 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                    _criticalReactionAgreement);
     }
 
+    internal MortalWoundProcedurePublicationClaimProof?
+        CreatePublicationClaimProof(object mintCapability)
+    {
+        if (!AcceptedTurnAuthorityRegistry
+                .IsTreatmentPublicationTransactionCapability(mintCapability) ||
+            _diceReservation is null)
+        {
+            return null;
+        }
+
+        try
+        {
+            return MortalWoundProcedurePublicationClaimProof.Mint(
+                mintCapability,
+                this,
+                _diceReservation,
+                _criticalReactionReservation,
+                _criticalReactionAgreement);
+        }
+        catch (Exception exception) when (
+            exception is ArgumentException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
     internal MortalWoundProcedureCheckAuthority AttachRestoredReservations(
         MortalWoundProcedureDiceReservation diceReservation,
         MortalWoundCriticalReactionReservation? criticalReactionReservation,

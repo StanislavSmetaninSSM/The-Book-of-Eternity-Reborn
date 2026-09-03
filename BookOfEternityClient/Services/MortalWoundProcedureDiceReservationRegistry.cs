@@ -81,11 +81,14 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
     private readonly Dictionary<string, MortalWoundProcedureDiceReservation>
         _byCoordinatesFingerprint = new(StringComparer.Ordinal);
     private readonly HashSet<int> _occupiedSourceIndices = new();
+    private readonly HashSet<string> _finalizedCoordinatesFingerprints =
+        new(StringComparer.Ordinal);
 
     internal bool IsEmpty =>
         _coordinatesByOperationKey.Count == 0 &&
         _byCoordinatesFingerprint.Count == 0 &&
-        _occupiedSourceIndices.Count == 0;
+        _occupiedSourceIndices.Count == 0 &&
+        _finalizedCoordinatesFingerprints.Count == 0;
 
     internal MortalWoundProcedureDiceReservationResult Reserve(
         object acceptedPoolReadCapability,
@@ -148,6 +151,14 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
                 coordinates.CoordinatesFingerprint,
                 out var existing))
         {
+            if (_finalizedCoordinatesFingerprints.Contains(
+                    coordinates.CoordinatesFingerprint))
+            {
+                return Invalid(
+                    "mortal_wound_treatment_procedure_dice_reservation_finalized",
+                    "a fresh operation that does not reuse finalized accepted-turn dice",
+                    coordinates.OperationKey);
+            }
             var sourceAgreement = existing.SourceIndices.Count == requiredCount;
             for (var offset = 0; sourceAgreement && offset < requiredCount; offset++)
             {
@@ -233,6 +244,31 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
         foreach (var sourceIndex in indices)
             _occupiedSourceIndices.Add(sourceIndex);
         return Valid(reservation, wasCreated: true);
+    }
+
+    internal MortalWoundProcedureDiceReservationResult RestoreFinalizedExact(
+        object acceptedPoolReadCapability,
+        MortalWoundTreatmentAttemptCoordinates coordinates,
+        string rollMode,
+        IReadOnlyList<int> sourceIndices,
+        IReadOnlyList<int> sourceRolls,
+        ReadOnlySpan<int> acceptedD20EventValues,
+        string poolFingerprint)
+    {
+        var restored = RestoreExact(
+            acceptedPoolReadCapability,
+            coordinates,
+            rollMode,
+            sourceIndices,
+            sourceRolls,
+            acceptedD20EventValues,
+            poolFingerprint);
+        if (restored.IsValid && restored.Reservation is not null)
+        {
+            _finalizedCoordinatesFingerprints.Add(
+                restored.Reservation.CoordinatesFingerprint);
+        }
+        return restored;
     }
 
     internal MortalWoundProcedureDiceReservationResult RestoreExact(
@@ -485,6 +521,8 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
         return _coordinatesByOperationKey.TryGetValue(
                    reservation.OperationKey,
                    out var coordinatesFingerprint) &&
+               !_finalizedCoordinatesFingerprints.Contains(
+                   reservation.CoordinatesFingerprint) &&
                string.Equals(
                    coordinatesFingerprint,
                    reservation.CoordinatesFingerprint,
@@ -499,6 +537,11 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
 
     internal void ReleaseUnchecked(MortalWoundProcedureDiceReservation reservation)
     {
+        if (_finalizedCoordinatesFingerprints.Contains(
+                reservation.CoordinatesFingerprint))
+        {
+            return;
+        }
         _coordinatesByOperationKey.Remove(reservation.OperationKey);
         _byCoordinatesFingerprint.Remove(reservation.CoordinatesFingerprint);
         foreach (var sourceIndex in reservation.SourceIndices)
@@ -510,6 +553,7 @@ internal sealed class MortalWoundProcedureDiceReservationRegistry
         _coordinatesByOperationKey.Clear();
         _byCoordinatesFingerprint.Clear();
         _occupiedSourceIndices.Clear();
+        _finalizedCoordinatesFingerprints.Clear();
     }
 
     private int FindFirstFreeSpan(int poolCount, int requiredCount)

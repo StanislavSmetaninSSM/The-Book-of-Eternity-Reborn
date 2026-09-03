@@ -98,14 +98,14 @@ public partial class CanonicalStateNormalizer
         var plan = validated.Plan;
         var treatmentPublicationAuthority =
             plan.TreatmentResourcePublicationAuthority;
-        if (treatmentPublicationAuthority is { RequiresConfirmedHold: true } &&
+        if (treatmentPublicationAuthority is { RequiresCoordinatedSettlement: true } &&
             treatmentPublicationReceipt is null)
         {
             throw new InvalidOperationException(
                 "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
         }
         if (treatmentPublicationReceipt is not null &&
-            (treatmentPublicationAuthority is not { RequiresConfirmedHold: true } ||
+            (treatmentPublicationAuthority is not { RequiresCoordinatedSettlement: true } ||
              !AcceptedMechanicsPlanAuthority.IsTakenTreatmentPublicationCurrent(
                  _fs,
                  _writeLease,
@@ -509,7 +509,7 @@ public partial class CanonicalStateNormalizer
                 out _,
                 out var peeked) &&
             peeked.Plan?.TreatmentResourcePublicationAuthority is
-                { RequiresConfirmedHold: true })
+                { RequiresCoordinatedSettlement: true })
         {
             throw new InvalidOperationException(
                 "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
@@ -593,7 +593,7 @@ public partial class CanonicalStateNormalizer
         var preflight = await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
         if (preflight is not AcceptedMechanicsNormalizationPreflight.Validated validated ||
             validated.Plan.TreatmentResourcePublicationAuthority is not
-                { RequiresConfirmedHold: true })
+                { RequiresCoordinatedSettlement: true })
         {
             return null;
         }

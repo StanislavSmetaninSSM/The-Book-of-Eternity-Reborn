@@ -1017,11 +1017,8 @@ public partial class GameEngine
 
     private static bool IsExactSafeTreatmentResourcePublicationReleaseFailure(
         MortalWoundTreatmentPublicationOperationResult result) =>
-        result.IsValid &&
-        result.ChangedCount == 1 &&
-        result.Outcome ==
-            MortalWoundTreatmentPublicationTransactionOutcome.HeldBlocked &&
-        result.Issues.Count == 0;
+        MortalWoundTreatmentResourcePublicationTransaction
+            .IsExactProvenTerminalReleaseFailure(result);
 
     private async Task<MortalWoundTreatmentPublicationTransactionOutcome>
         SettleTreatmentResourcePublicationCompletionFailureAsync(

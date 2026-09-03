@@ -133,6 +133,13 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
     internal string Fingerprint => AuthorityFingerprint;
     internal bool RequiresConfirmedHold =>
         !string.Equals(Finalization.Disposition, "not_required", StringComparison.Ordinal);
+    internal bool RequiresProcedureSettlement =>
+        string.Equals(RequestAuthority.Mode, "procedure", StringComparison.Ordinal) ||
+        RequestAuthority.ModeAuthority is MortalWoundProcedureCheckAuthority ||
+        string.Equals(ResolutionAuthority.Mode, "procedure", StringComparison.Ordinal) ||
+        ResolutionAuthority.ModeEvidence is MortalWoundProcedureModeEvidence;
+    internal bool RequiresCoordinatedSettlement =>
+        RequiresConfirmedHold || RequiresProcedureSettlement;
     internal IResourceRegisteredSystemOutcomeDraft RegisteredOutcome => _draft;
     internal MortalWoundTreatmentItemPublicationAuthority?
         ItemPublicationAuthority => _itemPublicationAuthority;
@@ -220,6 +227,21 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
 
     internal bool HasValidSeal()
     {
+        if (RequiresProcedureSettlement &&
+            (!string.Equals(
+                 RequestAuthority.Mode,
+                 "procedure",
+                 StringComparison.Ordinal) ||
+             RequestAuthority.ModeAuthority is not MortalWoundProcedureCheckAuthority ||
+             !string.Equals(
+                 ResolutionAuthority.Mode,
+                 "procedure",
+                 StringComparison.Ordinal) ||
+             ResolutionAuthority.ModeEvidence is not MortalWoundProcedureModeEvidence))
+        {
+            return false;
+        }
+
         if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
                 ContinuationAuthority,
                 out var continuation) ||

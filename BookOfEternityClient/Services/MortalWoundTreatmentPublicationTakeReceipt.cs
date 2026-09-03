@@ -90,6 +90,104 @@ internal sealed class MortalWoundTreatmentPublicationProbeResult
     internal string? GenerationFingerprint { get; }
 }
 
+internal sealed class MortalWoundProcedurePublicationClaimProof
+{
+    private readonly MortalWoundProcedureCheckAuthority _procedureAuthority;
+
+    private MortalWoundProcedurePublicationClaimProof(
+        object mintCapability,
+        MortalWoundProcedureCheckAuthority procedureAuthority,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement)
+    {
+        if (!AcceptedTurnAuthorityRegistry
+                .IsTreatmentPublicationTransactionCapability(mintCapability))
+        {
+            throw new InvalidOperationException(
+                "Only the accepted-turn registry may seal procedure publication claims.");
+        }
+        ArgumentNullException.ThrowIfNull(procedureAuthority);
+        ArgumentNullException.ThrowIfNull(diceReservation);
+        if (!ReferenceEquals(
+                criticalReactionAgreement?.Reservation,
+                criticalReactionReservation) ||
+            criticalReactionAgreement is not null &&
+            !criticalReactionAgreement.Agrees(diceReservation))
+        {
+            throw new InvalidOperationException(
+                "The procedure Fate reservation must match its exact dice agreement.");
+        }
+
+        _procedureAuthority = procedureAuthority;
+        DiceReservation = diceReservation;
+        CriticalReactionReservation = criticalReactionReservation;
+        CriticalReactionAgreement = criticalReactionAgreement;
+        Fingerprint = ComputeFingerprint(
+            procedureAuthority,
+            diceReservation,
+            criticalReactionReservation,
+            criticalReactionAgreement);
+    }
+
+    internal MortalWoundProcedureDiceReservation DiceReservation { get; }
+    internal MortalWoundCriticalReactionReservation? CriticalReactionReservation { get; }
+    internal MortalWoundCriticalReactionReservationAgreement?
+        CriticalReactionAgreement { get; }
+    internal string Fingerprint { get; }
+
+    internal static MortalWoundProcedurePublicationClaimProof Mint(
+        object mintCapability,
+        MortalWoundProcedureCheckAuthority procedureAuthority,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement) => new(
+        mintCapability,
+        procedureAuthority,
+        diceReservation,
+        criticalReactionReservation,
+        criticalReactionAgreement);
+
+    internal bool MatchesAuthority(
+        MortalWoundProcedureCheckAuthority procedureAuthority) =>
+        ReferenceEquals(_procedureAuthority, procedureAuthority) &&
+        string.Equals(
+            Fingerprint,
+            ComputeFingerprint(
+                _procedureAuthority,
+                DiceReservation,
+                CriticalReactionReservation,
+                CriticalReactionAgreement),
+            StringComparison.Ordinal);
+
+    private static string ComputeFingerprint(
+        MortalWoundProcedureCheckAuthority procedureAuthority,
+        MortalWoundProcedureDiceReservation diceReservation,
+        MortalWoundCriticalReactionReservation? criticalReactionReservation,
+        MortalWoundCriticalReactionReservationAgreement? criticalReactionAgreement) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.procedure_publication_claim",
+            "1",
+            procedureAuthority.AuthorityFingerprint,
+            diceReservation.ClaimFingerprint,
+            diceReservation.OperationKey,
+            diceReservation.AttemptId,
+            diceReservation.CoordinatesFingerprint,
+            diceReservation.AcceptedStateFingerprint,
+            criticalReactionAgreement is null
+                ? "absent"
+                : criticalReactionReservation is null
+                    ? "empty"
+                    : "claimed",
+            criticalReactionReservation?.ClaimFingerprint,
+            criticalReactionAgreement?.OperationKey,
+            criticalReactionAgreement?.AttemptId,
+            criticalReactionAgreement?.CoordinatesFingerprint,
+            criticalReactionAgreement?.AcceptedStateFingerprint
+        });
+}
+
 internal sealed class MortalWoundTreatmentPublicationTakeReceipt
 {
     private int _consumed;
@@ -106,6 +204,7 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResourceFinalization finalization,
         MortalWoundTreatmentResourcePublicationAuthority publicationAuthority,
+        MortalWoundProcedurePublicationClaimProof? procedureClaimProof,
         string semanticFingerprint,
         string generationFingerprint)
     {
@@ -119,6 +218,7 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
         Request = request;
         Finalization = finalization;
         PublicationAuthority = publicationAuthority;
+        ProcedureClaimProof = procedureClaimProof;
         SemanticFingerprint = semanticFingerprint;
         GenerationFingerprint = generationFingerprint;
     }
@@ -137,10 +237,30 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
     internal MortalWoundTreatmentAttemptRequest Request { get; }
     internal MortalWoundTreatmentResourceFinalization Finalization { get; }
     internal MortalWoundTreatmentResourcePublicationAuthority PublicationAuthority { get; }
+    internal MortalWoundProcedurePublicationClaimProof? ProcedureClaimProof { get; }
     internal string SemanticFingerprint { get; }
     internal string GenerationFingerprint { get; }
     internal bool IsTerminalReleaseOnly => MortalItemCacheSnapshot.TerminalReleaseOnly;
     internal bool IsConsumed => Volatile.Read(ref _consumed) != 0;
+    internal bool HasValidSeal() =>
+        PublicationAuthority.RequiresProcedureSettlement ==
+            (ProcedureClaimProof is not null) &&
+        (ProcedureClaimProof is null ||
+         Request.ModeAuthority is MortalWoundProcedureCheckAuthority procedure &&
+         ProcedureClaimProof.MatchesAuthority(procedure)) &&
+        string.Equals(
+            GenerationFingerprint,
+            ComputeGenerationFingerprint(
+                SessionGeneration,
+                SessionGenerationRevision,
+                CacheSnapshot,
+                MortalItemCacheSnapshot,
+                PublicationAuthority,
+                ProcedureClaimProof,
+                Request,
+                Finalization,
+                SemanticFingerprint),
+            StringComparison.Ordinal);
 
     internal static MortalWoundTreatmentPublicationTakeReceipt Mint(
         object mintCapability,
@@ -155,6 +275,7 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResourceFinalization finalization,
         MortalWoundTreatmentResourcePublicationAuthority publicationAuthority,
+        MortalWoundProcedurePublicationClaimProof? procedureClaimProof,
         string semanticFingerprint)
     {
         if (!AcceptedTurnAuthorityRegistry
@@ -173,22 +294,22 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
         ArgumentNullException.ThrowIfNull(finalization);
         ArgumentNullException.ThrowIfNull(publicationAuthority);
         ArgumentException.ThrowIfNullOrWhiteSpace(semanticFingerprint);
-        var generationFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[]
-            {
-                "book_of_eternity.mortal_wound_treatment.publication_take_receipt",
-                "2",
-                sessionGeneration,
-                sessionGenerationRevision.ToString(
-                    System.Globalization.CultureInfo.InvariantCulture),
-                cacheSnapshot.BindingFingerprint,
-                cacheSnapshot.PreparedPlanFingerprint,
-                mortalItemCacheSnapshot.PublicationFingerprint,
-                publicationAuthority.AuthorityFingerprint,
-                request.RequestFingerprint,
-                finalization.FinalizationFingerprint,
-                semanticFingerprint
-            });
+        if (publicationAuthority.RequiresProcedureSettlement !=
+            (procedureClaimProof is not null))
+        {
+            throw new InvalidOperationException(
+                "A procedure settlement receipt requires its exact private claim proof.");
+        }
+        var generationFingerprint = ComputeGenerationFingerprint(
+            sessionGeneration,
+            sessionGenerationRevision,
+            cacheSnapshot,
+            mortalItemCacheSnapshot,
+            publicationAuthority,
+            procedureClaimProof,
+            request,
+            finalization,
+            semanticFingerprint);
         return new MortalWoundTreatmentPublicationTakeReceipt(
             fileSystem,
             authorityStateToken,
@@ -200,9 +321,38 @@ internal sealed class MortalWoundTreatmentPublicationTakeReceipt
             request,
             finalization,
             publicationAuthority,
+            procedureClaimProof,
             semanticFingerprint,
             generationFingerprint);
     }
+
+    private static string ComputeGenerationFingerprint(
+        string sessionGeneration,
+        long sessionGenerationRevision,
+        AcceptedMechanicsPlanCache.ValidatedPublicationTakeSnapshot cacheSnapshot,
+        MortalItemAcceptedTurnAuthority.Cache.ValidatedPublicationTakeSnapshot
+            mortalItemCacheSnapshot,
+        MortalWoundTreatmentResourcePublicationAuthority publicationAuthority,
+        MortalWoundProcedurePublicationClaimProof? procedureClaimProof,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResourceFinalization finalization,
+        string semanticFingerprint) =>
+        WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.publication_take_receipt",
+            "3",
+            sessionGeneration,
+            sessionGenerationRevision.ToString(
+                System.Globalization.CultureInfo.InvariantCulture),
+            cacheSnapshot.BindingFingerprint,
+            cacheSnapshot.PreparedPlanFingerprint,
+            mortalItemCacheSnapshot.PublicationFingerprint,
+            publicationAuthority.AuthorityFingerprint,
+            procedureClaimProof?.Fingerprint,
+            request.RequestFingerprint,
+            finalization.FinalizationFingerprint,
+            semanticFingerprint
+        });
 
     internal bool TryConsume(object capability)
     {

@@ -312,7 +312,7 @@ public partial class ValidationService
             !peeked.Success ||
             peeked.Plan is not { } plan ||
             plan.TreatmentResourcePublicationAuthority is not
-                { RequiresConfirmedHold: true } publicationAuthority ||
+                { RequiresCoordinatedSettlement: true } publicationAuthority ||
             !publicationAuthority.HasValidSeal())
         {
             return null;

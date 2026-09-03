@@ -2201,7 +2201,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return MortalItemTestFixture.CreateIndexForCarriers(carriers.ToArray());
     }
 
-    private static void WriteCanonicalResourceAuthority(FileSystemManager fileSystem)
+    private static void WriteCanonicalResourceAuthority(
+        FileSystemManager fileSystem,
+        string? treatmentTargetKind = null,
+        string? treatmentTargetId = null)
     {
         Directory.CreateDirectory(Path.GetDirectoryName(fileSystem.ResolvePath(
             ResourceMaterializationContract.DefinitionsPath))!);
@@ -2217,6 +2220,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
         var state = Assert.IsType<ResourceStateLedger>(bootstrap.State);
         var history = Assert.IsType<ResourceHistoryState>(bootstrap.History);
+        if (treatmentTargetKind is "combatant" or "combatant_member")
+        {
+            Assert.False(string.IsNullOrWhiteSpace(treatmentTargetId));
+            (state, history) = AddCanonicalCombatTargetHealth(
+                definitions,
+                state,
+                history,
+                treatmentTargetKind,
+                treatmentTargetId!);
+        }
         File.WriteAllText(
             fileSystem.ResolvePath(ResourceMaterializationContract.DefinitionsPath),
             definitions.ToCanonicalJson());
@@ -2242,6 +2255,87 @@ public sealed partial class MortalWoundTreatmentResolverTests
         File.WriteAllText(
             fileSystem.ResolvePath(CanonicalResourceOwnerAuthorityComposer.AuthorityPath),
             composed.CanonicalAuthorityJson);
+    }
+
+    private static (ResourceStateLedger State, ResourceHistoryState History)
+        AddCanonicalCombatTargetHealth(
+            ResourceDefinitionCatalog definitions,
+            ResourceStateLedger state,
+            ResourceHistoryState history,
+            string targetKind,
+            string targetId)
+    {
+        const string authorityFingerprint =
+            "sha256:cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
+        const string policyFingerprint =
+            "sha256:dddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd";
+        var ownerKind = targetKind == "combatant_member"
+            ? ResourceOwnerKind.CombatGroupMember
+            : ResourceOwnerKind.Combatant;
+        Assert.True(definitions.TryResolveExact("health", out var definition));
+        var coordinate = new ResourceCoordinate(
+            "mortal_world",
+            ownerKind,
+            targetId,
+            "health");
+        var binding = new ResourceCapacityBinding(
+            definition!.CapacityPolicy.Kind,
+            definition.CapacityPolicy.FormulaKey!,
+            authorityFingerprint);
+        var snapshot = new ResourceStateSnapshot(
+            100,
+            100,
+            binding,
+            ResourceLifecycleState.Active);
+        var suffix = targetKind + "_" + targetId;
+        var executionSequence = history.Transitions
+            .Where(static row => row.Turn == 1)
+            .Select(static row => row.ExecutionSequence)
+            .DefaultIfEmpty(-1)
+            .Max() + 1;
+        var transition = new ResourceTransition(
+            "transition_t070_health_initialize_" + suffix,
+            "operation_t070_health_initialize_" + suffix,
+            "turn_1:t070_resource_bootstrap:" + suffix,
+            "owner_materialization",
+            "t070_" + suffix,
+            ResourceMutationPhase.RegisteredSystemOutcome,
+            40,
+            executionSequence,
+            coordinate,
+            ResourceTransitionOperation.Initialize,
+            0,
+            0,
+            ResourceTransitionOutcome.Applied,
+            ResourceCapacityDisposition.InitializeFromDefinition,
+            null,
+            snapshot,
+            new ResourceSourceEvidence(
+                "owner_materialization",
+                "t070_" + suffix,
+                authorityFingerprint),
+            policyFingerprint,
+            null,
+            1);
+        var historyResult = ResourceHistoryState.CreateValidated(
+            history.Transitions.Append(transition),
+            definitions);
+        Assert.True(historyResult.IsValid, DescribeIssues(historyResult.Issues));
+        var updatedState = new ResourceStateLedger(
+            state.Entries.Append(new ResourceStateEntry(
+                coordinate,
+                snapshot.Current,
+                snapshot.Maximum,
+                snapshot.CapacityBinding,
+                snapshot.State,
+                new ResourceChronology(
+                    1,
+                    transition.EventRef,
+                    transition.TransitionId,
+                    transition.EventRef,
+                    1))));
+        Assert.Empty(historyResult.History!.ValidateStateAgreement(updatedState));
+        return (updatedState, historyResult.History);
     }
 
     private static void WriteCanonicalPlayerHealthAuthority(
@@ -4514,8 +4608,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     {
                         ["quests"] = new JsonArray(CreateProductionRegularQuest())
                     }.ToJsonString());
-                WriteCanonicalResourceAuthority(fileSystem);
+                WriteCanonicalResourceAuthority(
+                    fileSystem,
+                    targetKind,
+                    targetId);
                 var effectState = CreateCanonicalPlayerEffectState(scenario);
+                RelocateCanonicalCombatEffects(
+                    fileSystem,
+                    targetKind,
+                    targetId,
+                    targetCarrierPath,
+                    effectState.Carrier,
+                    effectState.IdentityIndex);
                 File.WriteAllText(
                     fileSystem.ResolvePath(EffectCarrierCatalog.PlayerPath),
                     effectState.Carrier.ToJsonString());
@@ -4552,7 +4656,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     .GetResult();
                 Assert.True(effectSnapshot.IsAccepted, DescribeIssues(effectSnapshot.Issues));
                 Assert.Equal(
-                    effectState.Carrier["activeEffects"]!.AsArray().Count,
+                    effectState.IdentityIndex["entries"]!.AsArray().Count,
                     effectSnapshot.Effects.Count);
                 var treatmentAuthority = typeof(WoundMaterializationContract).Assembly.GetType(
                     "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",
@@ -4655,6 +4759,100 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 {
                     [collectionName] = new JsonArray(combatant)
                 }.ToJsonString());
+        }
+
+        private static void RelocateCanonicalCombatEffects(
+            FileSystemManager fileSystem,
+            string targetKind,
+            string targetId,
+            string targetCarrierPath,
+            JsonObject playerEffectCarrier,
+            JsonObject identityIndex)
+        {
+            if (targetKind is not ("combatant" or "combatant_member"))
+                return;
+
+            var playerEffects = playerEffectCarrier["activeEffects"]!.AsArray();
+            var targetEffects = playerEffects
+                .OfType<JsonObject>()
+                .Where(effect =>
+                    string.Equals(
+                        effect["target"]?["kind"]?.GetValue<string>(),
+                        "combatant",
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        effect["target"]?["targetId"]?.GetValue<string>(),
+                        targetId,
+                        StringComparison.Ordinal))
+                .Select(static effect => effect.DeepClone().AsObject())
+                .ToArray();
+            if (targetEffects.Length == 0)
+                return;
+
+            for (var index = playerEffects.Count - 1; index >= 0; index--)
+            {
+                if (playerEffects[index] is JsonObject effect &&
+                    targetEffects.Any(candidate => string.Equals(
+                        candidate["effectId"]!.GetValue<string>(),
+                        effect["effectId"]!.GetValue<string>(),
+                        StringComparison.Ordinal)))
+                {
+                    playerEffects.RemoveAt(index);
+                }
+            }
+
+            var carrier = JsonNode.Parse(File.ReadAllText(
+                fileSystem.ResolvePath(targetCarrierPath)))!.AsObject();
+            var combatants = carrier[
+                targetKind == "combatant_member"
+                    ? "alliesData"
+                    : "enemiesData"]!.AsArray();
+            var owner = targetKind == "combatant_member"
+                ? combatants
+                    .OfType<JsonObject>()
+                    .SelectMany(static combatant =>
+                        combatant["members"]?.AsArray().OfType<JsonObject>() ??
+                        Enumerable.Empty<JsonObject>())
+                    .Single(member => string.Equals(
+                        member["memberId"]?.GetValue<string>(),
+                        targetId,
+                        StringComparison.Ordinal))
+                : combatants
+                    .OfType<JsonObject>()
+                    .Single(combatant => string.Equals(
+                        combatant["combatantId"]?.GetValue<string>(),
+                        targetId,
+                        StringComparison.Ordinal));
+            var identityEntries = identityIndex["entries"]!.AsArray()
+                .OfType<JsonObject>()
+                .ToDictionary(
+                    static entry => entry["effectId"]!.GetValue<string>(),
+                    StringComparer.Ordinal);
+
+            foreach (var effect in targetEffects)
+            {
+                var collection = string.Equals(
+                    effect["display"]?["category"]?.GetValue<string>(),
+                    "buff",
+                    StringComparison.Ordinal)
+                    ? "activeBuffs"
+                    : "activeDebuffs";
+                if (owner[collection] is not JsonArray collectionRows)
+                {
+                    collectionRows = new JsonArray();
+                    owner[collection] = collectionRows;
+                }
+                collectionRows.Add(effect);
+
+                var effectId = effect["effectId"]!.GetValue<string>();
+                var identityOwner = identityEntries[effectId]["owner"]!.AsObject();
+                identityOwner["carrierPath"] = targetCarrierPath;
+                identityOwner["collection"] = collection;
+            }
+
+            File.WriteAllText(
+                fileSystem.ResolvePath(targetCarrierPath),
+                carrier.ToJsonString());
         }
 
         internal object ExportCurrent()

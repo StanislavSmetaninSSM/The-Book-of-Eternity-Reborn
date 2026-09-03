@@ -1041,6 +1041,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
             typeof(MortalItemAcceptedTurnAuthority.Cache.ValidatedPublicationTakeSnapshot)
                 .MakeByRefType(),
             terminalCacheParameter.ParameterType);
+        var currentTerminalCacheTake = Assert.Single(
+            typeof(MortalItemAcceptedTurnAuthority.Cache)
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic),
+            method => string.Equals(
+                method.Name,
+                "TryTakeCurrentTreatmentPublicationForTerminalRelease",
+                StringComparison.Ordinal));
+        Assert.Equal(
+            typeof(MortalItemAcceptedTurnNormalizationSnapshot),
+            currentTerminalCacheTake.GetParameters()[0].ParameterType);
+        Assert.True(currentTerminalCacheTake.GetParameters()[1].IsOut);
 
         var terminalFacadeTake = Assert.Single(
             typeof(AcceptedMechanicsPlanAuthority)
@@ -1051,6 +1062,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 StringComparison.Ordinal));
         Assert.DoesNotContain(
             terminalFacadeTake.GetParameters(),
+            parameter => parameter.ParameterType ==
+                         typeof(MortalItemAcceptedTurnNormalizationSnapshot));
+        var currentTerminalFacadeTake = Assert.Single(
+            typeof(AcceptedMechanicsPlanAuthority)
+                .GetMethods(BindingFlags.Static | BindingFlags.NonPublic),
+            method => string.Equals(
+                method.Name,
+                "TryTakeCurrentValidatedTreatmentPublicationForTerminalRelease",
+                StringComparison.Ordinal));
+        Assert.Contains(
+            currentTerminalFacadeTake.GetParameters(),
             parameter => parameter.ParameterType ==
                          typeof(MortalItemAcceptedTurnNormalizationSnapshot));
         var terminalReceiptPurpose = typeof(MortalWoundTreatmentPublicationTakeReceipt)
@@ -1094,6 +1116,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Contains("RecomputesFinalPublicationBaseline(", terminalTake);
         Assert.Contains("MatchesExactCacheState(", terminalTake);
         Assert.Contains("terminalReleaseOnly: true", terminalTake);
+        var currentTerminalTake = ExtractB4MethodSource(
+            authoritySource,
+            "internal bool TryTakeCurrentTreatmentPublicationForTerminalRelease(");
+        Assert.Contains("MatchesFinalPublicationBaseline(", currentTerminalTake);
+        Assert.Contains("MatchesExactCacheState(", currentTerminalTake);
+        Assert.Contains("terminalReleaseOnly: true", currentTerminalTake);
         var rearm = ExtractB4MethodSource(
             authoritySource,
             "internal bool TryRearmValidatedTreatmentPublication(");
@@ -1106,6 +1134,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Contains("receipt.IsTerminalReleaseOnly", transactionSource);
         Assert.Contains(
             "TryTakeValidatedTreatmentPublicationForTerminalRelease(",
+            normalizerSource);
+        Assert.Contains(
+            "TryTakeCurrentValidatedTreatmentPublicationForTerminalRelease(",
             normalizerSource);
     }
 

@@ -14,6 +14,16 @@ internal sealed record MortalWoundTreatmentResourceLifecycleResult(
     IReadOnlyList<ValidationIssue> Issues,
     int ChangedCount);
 
+internal sealed record MortalWoundTreatmentResourcePreparedReleaseResult(
+    bool IsValid,
+    IReadOnlyList<ValidationIssue> Issues,
+    MortalWoundTreatmentResourcePreparedRelease? PreparedRelease);
+
+internal sealed record MortalWoundTreatmentResourcePreparedRelease(
+    MortalWoundTreatmentAttemptRequest Request,
+    MortalWoundTreatmentResourceReservationAgreement Agreement,
+    string Reason);
+
 internal sealed record MortalWoundTreatmentResourceConfirmedHoldProbe(
     bool IsValid,
     IReadOnlyList<ValidationIssue> Issues,
@@ -624,6 +634,89 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
             changed++;
         }
         return LifecycleValid(changed);
+    }
+
+    internal MortalWoundTreatmentResourcePreparedReleaseResult PrepareActiveRelease(
+        object registryCapability,
+        MortalWoundTreatmentAttemptRequest request,
+        string reason)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        if (reason is not ("cancelled" or "validation_failed" or "rolled_back"))
+        {
+            var invalid = LifecycleInvalid(
+                "mortal_wound_treatment_resource_release_reason_invalid",
+                "cancelled | validation_failed | rolled_back",
+                reason);
+            return new MortalWoundTreatmentResourcePreparedReleaseResult(
+                false,
+                invalid.Issues,
+                null);
+        }
+        if (!TryValidateRequestBatch(
+                registryCapability,
+                new[] { request },
+                out var agreements,
+                out var failure))
+        {
+            return new MortalWoundTreatmentResourcePreparedReleaseResult(
+                false,
+                failure!.Issues,
+                null);
+        }
+
+        var agreement = agreements![0].Agreement!;
+        if (!string.Equals(
+                agreement.PersistedRequestFingerprint,
+                request.RequestFingerprint,
+                StringComparison.Ordinal) ||
+            string.Equals(reason, "rolled_back", StringComparison.Ordinal) &&
+            agreement.State !=
+                MortalWoundTreatmentResourceReservationState.ProvisionalHeld)
+        {
+            var invalid = LifecycleInvalid(
+                "mortal_wound_treatment_resource_release_conflict",
+                "the exact active request-owned agreement eligible for this release",
+                request.RequestFingerprint);
+            return new MortalWoundTreatmentResourcePreparedReleaseResult(
+                false,
+                invalid.Issues,
+                null);
+        }
+
+        return new MortalWoundTreatmentResourcePreparedReleaseResult(
+            true,
+            Array.Empty<ValidationIssue>(),
+            new MortalWoundTreatmentResourcePreparedRelease(
+                request,
+                agreement,
+                reason));
+    }
+
+    internal bool ReleasePreparedUnchecked(
+        object registryCapability,
+        MortalWoundTreatmentResourcePreparedRelease preparedRelease)
+    {
+        ArgumentNullException.ThrowIfNull(preparedRelease);
+        var request = preparedRelease.Request;
+        var agreement = preparedRelease.Agreement;
+        if (!AcceptedTurnAuthorityRegistry.IsTreatmentResourceRegistryCapability(
+                registryCapability) ||
+            !_byOperationKey.TryGetValue(
+                request.Coordinates.OperationKey,
+                out var current) ||
+            !ReferenceEquals(current, agreement))
+        {
+            return false;
+        }
+
+        _byOperationKey.Remove(request.Coordinates.OperationKey);
+        _releasedByOperationKey[request.Coordinates.OperationKey] =
+            new ReleasedTombstone(
+                request.RequestFingerprint,
+                agreement.AgreementFingerprint,
+                preparedRelease.Reason);
+        return true;
     }
 
     internal MortalWoundTreatmentResourceConfirmedHoldProbe ProbeConfirmed(

@@ -99,6 +99,23 @@ internal static class AcceptedTurnAuthorityRegistry
                 out result,
                 out receipt);
 
+    internal static bool
+        TryTakeCurrentCommonMortalWoundTreatmentPublicationForTerminalRelease(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            AcceptedMechanicsPlanBinding liveBinding,
+            MortalItemAcceptedTurnNormalizationSnapshot mortalItemSnapshot,
+            out AcceptedMechanicsPlanningResult result,
+            out MortalWoundTreatmentPublicationTakeReceipt receipt) =>
+        GetState(fileSystem, writeLease)
+            .TryTakeCurrentCommonMortalWoundTreatmentPublicationForTerminalRelease(
+                fileSystem,
+                writeLease,
+                liveBinding,
+                mortalItemSnapshot,
+                out result,
+                out receipt);
+
     internal static bool IsTakenMortalWoundTreatmentPublicationCurrent(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -138,6 +155,17 @@ internal static class AcceptedTurnAuthorityRegistry
                 acceptedState,
                 request,
                 finalization);
+
+    internal static MortalWoundTreatmentPublicationProbeResult
+        ProbeMortalWoundTreatmentCoordinatedPublicationClaims(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            MortalWoundTreatmentPublicationTakeReceipt receipt) =>
+        GetState(fileSystem, writeLease)
+            .ProbeMortalWoundTreatmentCoordinatedPublicationClaims(
+                fileSystem,
+                writeLease,
+                receipt);
 
     internal static MortalWoundTreatmentPublicationOperationResult
         CompleteTakenMortalWoundTreatmentPublication(
@@ -1256,6 +1284,7 @@ internal static class AcceptedTurnAuthorityRegistry
             MortalWoundTreatmentAttemptRequest Request,
             MortalWoundTreatmentResourceFinalization Finalization,
             MortalWoundTreatmentResourcePublicationAuthority PublicationAuthority,
+            MortalWoundProcedurePublicationClaimProof? ProcedureClaimProof,
             AcceptedMechanicsPlan Plan,
             string SemanticFingerprint);
 
@@ -1452,6 +1481,14 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (_treatmentPublicationRestartBlockerFingerprint is not null)
+                {
+                    return AcceptedTurnAuthorityRegistry
+                        .MortalWoundProcedureReservationSetRegistryFailure(
+                            "no unresolved terminal publication blocker",
+                            "treatment publication compensation requires a session restart");
+                }
+
                 if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
                     !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
                     !coordinates.AgreesWithAcceptedStateSemantics(acceptedState) ||
@@ -1606,7 +1643,9 @@ internal static class AcceptedTurnAuthorityRegistry
                 var reconstruction =
                     new MortalWoundProcedureClaimRecoveryCoordinator().Restore(
                         acceptedState,
-                        requests);
+                        requests,
+                        heldRequests,
+                        finalizedRequests);
                 if (!reconstruction.IsValid ||
                     reconstruction.DiceRegistry is null ||
                     reconstruction.ReactionRegistry is null)
@@ -1821,6 +1860,14 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
+                if (_treatmentPublicationRestartBlockerFingerprint is not null)
+                {
+                    return MortalWoundTreatmentResourceReservationRegistry.Invalid(
+                        "mortal_wound_treatment_resource_reservation_authority_invalid",
+                        "no unresolved terminal publication blocker",
+                        "treatment publication compensation requires a session restart");
+                }
+
                 if (!MortalWoundTreatmentResourceComposer
                         .IsResourceReservationCapability(reservationCapability) ||
                     !ReferenceEquals(
@@ -1866,7 +1913,8 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
-                return MortalWoundTreatmentResourceComposer
+                return _treatmentPublicationRestartBlockerFingerprint is null &&
+                       MortalWoundTreatmentResourceComposer
                            .IsResourceReservationCapability(reservationCapability) &&
                        ReferenceEquals(
                            _mortalWoundTreatmentAcceptedState,
@@ -1894,6 +1942,10 @@ internal static class AcceptedTurnAuthorityRegistry
                             "mortal_wound_treatment_resource_lifecycle_authority_invalid",
                             "resource-composer-owned lifecycle authority",
                             "missing lifecycle capability");
+                }
+                if (_treatmentPublicationRestartBlockerFingerprint is not null)
+                {
+                    return TreatmentPublicationRestartRequiredLifecycleFailure();
                 }
                 return _treatmentResources.ConfirmPersisted(
                     TreatmentResourceRegistryCapability,
@@ -1929,6 +1981,10 @@ internal static class AcceptedTurnAuthorityRegistry
                             "resource-composer-owned lifecycle authority",
                             "missing lifecycle capability");
                 }
+                if (_treatmentPublicationRestartBlockerFingerprint is not null)
+                {
+                    return TreatmentPublicationRestartRequiredLifecycleFailure();
+                }
                 return _treatmentResources.Release(
                     TreatmentResourceRegistryCapability,
                     requests,
@@ -1951,6 +2007,10 @@ internal static class AcceptedTurnAuthorityRegistry
                             "resource-composer-owned lifecycle authority",
                             "missing lifecycle capability");
                 }
+                if (_treatmentPublicationRestartBlockerFingerprint is not null)
+                {
+                    return TreatmentPublicationRestartRequiredLifecycleFailure();
+                }
                 return _treatmentResources.Commit(
                     TreatmentResourceRegistryCapability,
                     finalization);
@@ -1969,7 +2029,8 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
-                if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                if (_treatmentPublicationRestartBlockerFingerprint is not null ||
+                    !ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
                     !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
                     !string.Equals(
                         diceReservation.AcceptedStateFingerprint,
@@ -2016,7 +2077,8 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
-                if (!MortalWoundTreatmentResourceComposer
+                if (_treatmentPublicationRestartBlockerFingerprint is not null ||
+                    !MortalWoundTreatmentResourceComposer
                         .IsResourceReservationCapability(resourceReservationCapability) ||
                     !ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
                     !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
@@ -2064,7 +2126,8 @@ internal static class AcceptedTurnAuthorityRegistry
         {
             lock (_gate)
             {
-                if (!ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
+                if (_treatmentPublicationRestartBlockerFingerprint is not null ||
+                    !ReferenceEquals(_mortalWoundTreatmentAcceptedState, acceptedState) ||
                     !acceptedState.IsLeaseBoundTo(fileSystem, writeLease) ||
                     !string.Equals(
                         diceReservation.AcceptedStateFingerprint,
@@ -2086,6 +2149,13 @@ internal static class AcceptedTurnAuthorityRegistry
                 return true;
             }
         }
+
+        private static MortalWoundTreatmentResourceLifecycleResult
+            TreatmentPublicationRestartRequiredLifecycleFailure() =>
+            MortalWoundTreatmentResourceReservationRegistry.LifecycleFailure(
+                "mortal_wound_treatment_resource_lifecycle_restart_required",
+                "no unresolved terminal publication blocker",
+                "treatment publication compensation requires a session restart");
 
         private static bool RequiresPlayerFateReservation(
             MortalWoundProcedureDiceReservation reservation,
@@ -2519,7 +2589,9 @@ internal static class AcceptedTurnAuthorityRegistry
                                 };
                             }
 
-                            if (authority.RequiresConfirmedHold)
+                            MortalWoundProcedurePublicationClaimProof?
+                                procedureClaimProof = null;
+                            if (authority.RequiresCoordinatedSettlement)
                             {
                                 var hold = _treatmentResources.ProbeConfirmed(
                                     TreatmentResourceRegistryCapability,
@@ -2541,6 +2613,28 @@ internal static class AcceptedTurnAuthorityRegistry
                                             "missing reservation")
                                     };
                                 }
+
+                                if (authority.RequiresProcedureSettlement)
+                                {
+                                    procedureClaimProof =
+                                        request.ModeAuthority is
+                                            MortalWoundProcedureCheckAuthority procedure
+                                            ? procedure.CreatePublicationClaimProof(
+                                                TreatmentPublicationTransactionCapability)
+                                            : null;
+                                    if (!ProcedurePublicationClaimsAgree(
+                                            authority,
+                                            procedureClaimProof))
+                                    {
+                                        return new[]
+                                        {
+                                            WoundIssue(
+                                                "mortal_wound_treatment_publication_procedure_reservation_missing",
+                                                "one exact live private procedure dice and Fate claim agreement",
+                                                "missing, stale, foreign, released, or changed procedure claims")
+                                        };
+                                    }
+                                }
                             }
 
                             admitted = new ValidatedTreatmentPublicationHandoff(
@@ -2548,6 +2642,7 @@ internal static class AcceptedTurnAuthorityRegistry
                                 request,
                                 authority.Finalization,
                                 authority,
+                                procedureClaimProof,
                                 candidate,
                                 semanticFingerprint);
                             return Array.Empty<ValidationIssue>();
@@ -3045,7 +3140,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (_treatmentPublicationRestartBlockerFingerprint is not null ||
                     _openTreatmentPublicationReceipt is not null ||
                     handoff is null ||
-                    !handoff.PublicationAuthority.RequiresConfirmedHold ||
+                    !handoff.PublicationAuthority.RequiresCoordinatedSettlement ||
                     !TreatmentPublicationHandoffAgrees(handoff))
                 {
                     return false;
@@ -3124,6 +3219,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     handoff.Request,
                     handoff.Finalization,
                     handoff.PublicationAuthority,
+                    handoff.ProcedureClaimProof,
                     handoff.SemanticFingerprint);
                 _openTreatmentPublicationReceipt = receipt;
                 _effectPlan.InvalidateAll();
@@ -3146,102 +3242,138 @@ internal static class AcceptedTurnAuthorityRegistry
             ArgumentNullException.ThrowIfNull(liveBinding);
             lock (_gate)
             {
-                result = null!;
-                receipt = null!;
-                var handoff = _validatedTreatmentPublicationHandoff;
-                if (_treatmentPublicationRestartBlockerFingerprint is not null ||
-                    _openTreatmentPublicationReceipt is not null ||
-                    handoff is null ||
-                    !handoff.PublicationAuthority.RequiresConfirmedHold ||
-                    !TreatmentPublicationHandoffAgrees(handoff))
-                {
-                    return false;
-                }
-
-                var hold = _treatmentResources.ProbeConfirmed(
-                    TreatmentResourceRegistryCapability,
-                    handoff.Request,
-                    handoff.Finalization);
-                if (!hold.IsValid)
-                {
-                    InvalidateExactTreatmentPublicationPlan(handoff);
-                    ClearValidatedTreatmentPublicationCore();
-                    return false;
-                }
-
-                if (!_mortalItems
-                        .TryTakeInvalidatedTreatmentPublicationForTerminalRelease(
-                            out var mortalItemCacheSnapshot))
-                {
-                    return false;
-                }
-
-                var mortalItemSnapshot = mortalItemCacheSnapshot.NormalizationSnapshot;
-                if (!string.Equals(
-                        mortalItemSnapshot.SessionId,
-                        liveBinding.SessionId,
-                        StringComparison.Ordinal) ||
-                    !string.Equals(
-                        mortalItemSnapshot.SnapshotToken,
-                        liveBinding.SnapshotToken,
-                        StringComparison.Ordinal) ||
-                    mortalItemSnapshot.Turn != liveBinding.Turn ||
-                    !(handoff.PublicationAuthority.ItemPublicationAuthority is
-                        { } itemPublication
-                        ? itemPublication.MatchesNormalizationSnapshot(
-                            mortalItemSnapshot,
-                            handoff.Plan.OwnerAuthority)
-                        : mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
-                            handoff.Plan.OwnerAuthority)))
-                {
-                    _mortalItems.InvalidateValidated();
-                    InvalidateExactTreatmentPublicationPlan(handoff);
-                    ClearValidatedTreatmentPublicationCore();
-                    return false;
-                }
-
-                if (!_commonPlan.TryTakeValidatedTreatmentPublication(
-                        liveBinding,
-                        handoff.Plan,
-                        out result,
-                        out var cacheSnapshot))
-                {
-                    _mortalItems.InvalidateValidated();
-                    InvalidateExactTreatmentPublicationPlan(handoff);
-                    ClearValidatedTreatmentPublicationCore();
-                    return false;
-                }
-
-                if (!ReferenceEquals(
-                        result.Plan?.TreatmentResourcePublicationAuthority,
-                        handoff.PublicationAuthority))
-                {
-                    _commonPlan.InvalidateAll();
-                    _mortalItems.InvalidateValidated();
-                    ClearValidatedTreatmentPublicationCore();
-                    result = null!;
-                    return false;
-                }
-
-                receipt = MortalWoundTreatmentPublicationTakeReceipt.Mint(
-                    TreatmentPublicationTransactionCapability,
+                return TryTakeCommonMortalWoundTreatmentPublicationForTerminalReleaseCore(
                     fileSystem,
-                    _authorityStateToken,
-                    _sessionGeneration,
-                    _sessionGenerationRevision,
-                    cacheSnapshot,
-                    mortalItemCacheSnapshot,
-                    handoff.AcceptedState,
-                    handoff.Request,
-                    handoff.Finalization,
-                    handoff.PublicationAuthority,
-                    handoff.SemanticFingerprint);
-                _openTreatmentPublicationReceipt = receipt;
-                _effectPlan.InvalidateAll();
-                ClearWoundEffectCore();
-                _woundPlan.InvalidateAll();
-                return true;
+                    liveBinding,
+                    currentMortalItemSnapshot: null,
+                    out result,
+                    out receipt);
             }
+        }
+
+        internal bool
+            TryTakeCurrentCommonMortalWoundTreatmentPublicationForTerminalRelease(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                AcceptedMechanicsPlanBinding liveBinding,
+                MortalItemAcceptedTurnNormalizationSnapshot mortalItemSnapshot,
+                out AcceptedMechanicsPlanningResult result,
+                out MortalWoundTreatmentPublicationTakeReceipt receipt)
+        {
+            ArgumentNullException.ThrowIfNull(fileSystem);
+            ArgumentNullException.ThrowIfNull(writeLease);
+            ArgumentNullException.ThrowIfNull(liveBinding);
+            ArgumentNullException.ThrowIfNull(mortalItemSnapshot);
+            lock (_gate)
+            {
+                return TryTakeCommonMortalWoundTreatmentPublicationForTerminalReleaseCore(
+                    fileSystem,
+                    liveBinding,
+                    mortalItemSnapshot,
+                    out result,
+                    out receipt);
+            }
+        }
+
+        private bool
+            TryTakeCommonMortalWoundTreatmentPublicationForTerminalReleaseCore(
+                FileSystemManager fileSystem,
+                AcceptedMechanicsPlanBinding liveBinding,
+                MortalItemAcceptedTurnNormalizationSnapshot? currentMortalItemSnapshot,
+                out AcceptedMechanicsPlanningResult result,
+                out MortalWoundTreatmentPublicationTakeReceipt receipt)
+        {
+            result = null!;
+            receipt = null!;
+            var handoff = _validatedTreatmentPublicationHandoff;
+            if (_treatmentPublicationRestartBlockerFingerprint is not null ||
+                _openTreatmentPublicationReceipt is not null ||
+                handoff is null ||
+                !handoff.PublicationAuthority.RequiresCoordinatedSettlement ||
+                !TreatmentPublicationHandoffSealAgrees(handoff))
+            {
+                return false;
+            }
+
+            MortalItemAcceptedTurnAuthority.Cache.ValidatedPublicationTakeSnapshot
+                mortalItemCacheSnapshot;
+            var tookMortalItemSnapshot = currentMortalItemSnapshot is null
+                ? _mortalItems
+                    .TryTakeInvalidatedTreatmentPublicationForTerminalRelease(
+                        out mortalItemCacheSnapshot)
+                : _mortalItems
+                    .TryTakeCurrentTreatmentPublicationForTerminalRelease(
+                        currentMortalItemSnapshot,
+                        out mortalItemCacheSnapshot);
+            if (!tookMortalItemSnapshot)
+                return false;
+
+            var mortalItemSnapshot = mortalItemCacheSnapshot.NormalizationSnapshot;
+            if (!string.Equals(
+                    mortalItemSnapshot.SessionId,
+                    liveBinding.SessionId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    mortalItemSnapshot.SnapshotToken,
+                    liveBinding.SnapshotToken,
+                    StringComparison.Ordinal) ||
+                mortalItemSnapshot.Turn != liveBinding.Turn ||
+                !(handoff.PublicationAuthority.ItemPublicationAuthority is
+                    { } itemPublication
+                    ? itemPublication.MatchesNormalizationSnapshot(
+                        mortalItemSnapshot,
+                        handoff.Plan.OwnerAuthority)
+                    : mortalItemSnapshot.MatchesAcceptedOwnerAuthority(
+                        handoff.Plan.OwnerAuthority)))
+            {
+                _mortalItems.InvalidateValidated();
+                InvalidateExactTreatmentPublicationPlan(handoff);
+                ClearValidatedTreatmentPublicationCore();
+                return false;
+            }
+
+            if (!_commonPlan.TryTakeValidatedTreatmentPublication(
+                    liveBinding,
+                    handoff.Plan,
+                    out result,
+                    out var cacheSnapshot))
+            {
+                _mortalItems.InvalidateValidated();
+                InvalidateExactTreatmentPublicationPlan(handoff);
+                ClearValidatedTreatmentPublicationCore();
+                return false;
+            }
+
+            if (!ReferenceEquals(
+                    result.Plan?.TreatmentResourcePublicationAuthority,
+                    handoff.PublicationAuthority))
+            {
+                _commonPlan.InvalidateAll();
+                _mortalItems.InvalidateValidated();
+                ClearValidatedTreatmentPublicationCore();
+                result = null!;
+                return false;
+            }
+
+            receipt = MortalWoundTreatmentPublicationTakeReceipt.Mint(
+                TreatmentPublicationTransactionCapability,
+                fileSystem,
+                _authorityStateToken,
+                _sessionGeneration,
+                _sessionGenerationRevision,
+                cacheSnapshot,
+                mortalItemCacheSnapshot,
+                handoff.AcceptedState,
+                handoff.Request,
+                handoff.Finalization,
+                handoff.PublicationAuthority,
+                handoff.ProcedureClaimProof,
+                handoff.SemanticFingerprint);
+            _openTreatmentPublicationReceipt = receipt;
+            _effectPlan.InvalidateAll();
+            ClearWoundEffectCore();
+            _woundPlan.InvalidateAll();
+            return true;
         }
 
         internal bool IsTakenMortalWoundTreatmentPublicationCurrent(
@@ -3267,6 +3399,9 @@ internal static class AcceptedTurnAuthorityRegistry
                            receipt.CacheSnapshot) &&
                        _mortalItems.IsTreatmentPublicationTakeCurrent(
                            receipt.MortalItemCacheSnapshot) &&
+                       ProcedurePublicationClaimsAgree(
+                           receipt.PublicationAuthority,
+                           receipt.ProcedureClaimProof) &&
                        _treatmentResources.ProbeConfirmed(
                            TreatmentResourceRegistryCapability,
                            receipt.Request,
@@ -3336,6 +3471,58 @@ internal static class AcceptedTurnAuthorityRegistry
         }
 
         internal MortalWoundTreatmentPublicationProbeResult
+            ProbeMortalWoundTreatmentCoordinatedPublicationClaims(
+                FileSystemManager fileSystem,
+                FileSystemManager.CanonicalWriteLease writeLease,
+                MortalWoundTreatmentPublicationTakeReceipt receipt)
+        {
+            ArgumentNullException.ThrowIfNull(receipt);
+            lock (_gate)
+            {
+                if (!ReceiptIdentityAgrees(fileSystem, writeLease, receipt) ||
+                    !CurrentTreatmentPublicationAcceptedStateAgrees(
+                        receipt.AcceptedState))
+                {
+                    return TreatmentPublicationProbeFailure(
+                        TransactionTokenMismatchCode,
+                        "the exact filesystem, generation, and accepted-state lineage");
+                }
+                if (!ProcedurePublicationClaimsAgree(
+                        receipt.PublicationAuthority,
+                        receipt.ProcedureClaimProof))
+                {
+                    return TreatmentPublicationProbeFailure(
+                        TransactionReservationChangedCode,
+                        "the exact unchanged procedure dice and Fate claims");
+                }
+
+                var hold = _treatmentResources.ProbeConfirmed(
+                    TreatmentResourceRegistryCapability,
+                    receipt.Request,
+                    receipt.Finalization);
+                if (!hold.IsValid)
+                {
+                    return TreatmentPublicationProbeFailure(
+                        TransactionReservationChangedCode,
+                        "the exact unchanged confirmed resource agreement");
+                }
+                return new MortalWoundTreatmentPublicationProbeResult(
+                    true,
+                    Array.Empty<ValidationIssue>(),
+                    hold.State,
+                    hold.OperationKey,
+                    hold.AttemptId,
+                    hold.RequestFingerprint,
+                    hold.ResourceAuthorityFingerprint,
+                    hold.FinalizationFingerprint,
+                    hold.AgreementFingerprint,
+                    receipt.SessionGeneration,
+                    receipt.SessionGenerationRevision,
+                    receipt.GenerationFingerprint);
+            }
+        }
+
+        internal MortalWoundTreatmentPublicationProbeResult
             ProbeTakenMortalWoundTreatmentPublication(
                 FileSystemManager fileSystem,
                 FileSystemManager.CanonicalWriteLease writeLease,
@@ -3366,6 +3553,15 @@ internal static class AcceptedTurnAuthorityRegistry
                     return TreatmentPublicationProbeFailure(
                         TransactionStaleCode,
                         "one current vacant cache slot owned by the exact take receipt");
+                }
+
+                if (!ProcedurePublicationClaimsAgree(
+                        receipt.PublicationAuthority,
+                        receipt.ProcedureClaimProof))
+                {
+                    return TreatmentPublicationProbeFailure(
+                        TransactionReservationChangedCode,
+                        "the exact unchanged procedure dice and Fate claims");
                 }
 
                 var hold = _treatmentResources.ProbeConfirmed(
@@ -3426,6 +3622,17 @@ internal static class AcceptedTurnAuthorityRegistry
                         TransactionStaleCode,
                         MortalWoundTreatmentPublicationTransactionOutcome.Stale,
                         "one current vacant cache slot owned by the exact take receipt");
+                }
+
+                if (!ProcedurePublicationClaimsAgree(
+                        receipt.PublicationAuthority,
+                        receipt.ProcedureClaimProof))
+                {
+                    return TreatmentPublicationFailure(
+                        TransactionReservationChangedCode,
+                        MortalWoundTreatmentPublicationTransactionOutcome
+                            .ReservationChanged,
+                        "the exact unchanged procedure dice and Fate claims");
                 }
 
                 var hold = _treatmentResources.ProbeConfirmed(
@@ -3500,6 +3707,17 @@ internal static class AcceptedTurnAuthorityRegistry
                         "the exact accepted-state authority lineage");
                 }
 
+                if (!ProcedurePublicationClaimsAgree(
+                        receipt.PublicationAuthority,
+                        receipt.ProcedureClaimProof))
+                {
+                    return TreatmentPublicationFailure(
+                        TransactionReservationChangedCode,
+                        MortalWoundTreatmentPublicationTransactionOutcome
+                            .ReservationChanged,
+                        "the exact unchanged procedure dice and Fate claims");
+                }
+
                 var hold = _treatmentResources.ProbeConfirmed(
                     TreatmentResourceRegistryCapability,
                     receipt.Request,
@@ -3562,28 +3780,17 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (identityFailure is not null)
                     return identityFailure;
 
-                var hold = _treatmentResources.ProbeConfirmed(
-                    TreatmentResourceRegistryCapability,
-                    receipt.Request,
-                    receipt.Finalization);
-                if (hold.IsValid ||
-                    hold.State ==
-                    MortalWoundTreatmentResourceReservationState.ProvisionalHeld)
+                var released = ReleaseCoordinatedTreatmentPublicationClaims(
+                    receipt,
+                    "validation_failed");
+                if (!released.IsValid)
                 {
-                    var released = _treatmentResources.Release(
-                        TreatmentResourceRegistryCapability,
-                        new[] { receipt.Request },
-                        "validation_failed");
-                    if (!released.IsValid)
-                    {
-                        var terminal =
-                            FailTreatmentPublicationTerminalCore(receipt);
-                        return new MortalWoundTreatmentPublicationOperationResult(
-                            false,
-                            released.Issues.Concat(terminal.Issues),
-                            0,
-                            terminal.Outcome);
-                    }
+                    var terminal = FailTreatmentPublicationTerminalCore(receipt);
+                    return new MortalWoundTreatmentPublicationOperationResult(
+                        false,
+                        released.Issues.Concat(terminal.Issues),
+                        0,
+                        terminal.Outcome);
                 }
 
                 if (!receipt.TryConsume(TreatmentPublicationTransactionCapability))
@@ -3617,9 +3824,8 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (identityFailure is not null)
                     return identityFailure;
 
-                var released = _treatmentResources.Release(
-                    TreatmentResourceRegistryCapability,
-                    new[] { receipt.Request },
+                var released = ReleaseCoordinatedTreatmentPublicationClaims(
+                    receipt,
                     reason);
                 if (!released.IsValid)
                 {
@@ -3681,9 +3887,8 @@ internal static class AcceptedTurnAuthorityRegistry
                 if (identityFailure is not null)
                     return identityFailure;
 
-                var released = _treatmentResources.Release(
-                    TreatmentResourceRegistryCapability,
-                    new[] { receipt.Request },
+                var released = ReleaseCoordinatedTreatmentPublicationClaims(
+                    receipt,
                     reason);
                 if (!released.IsValid)
                 {
@@ -4107,7 +4312,8 @@ internal static class AcceptedTurnAuthorityRegistry
                 receipt.SessionGeneration,
                 _sessionGeneration,
                 StringComparison.Ordinal) &&
-            receipt.SessionGenerationRevision == _sessionGenerationRevision;
+            receipt.SessionGenerationRevision == _sessionGenerationRevision &&
+            receipt.HasValidSeal();
 
         private bool TreatmentPublicationReceiptSidecarAgrees(
             MortalWoundTreatmentPublicationTakeReceipt receipt) =>
@@ -4203,6 +4409,15 @@ internal static class AcceptedTurnAuthorityRegistry
         private bool TreatmentPublicationHandoffAgrees(
             ValidatedTreatmentPublicationHandoff handoff)
         {
+            return TreatmentPublicationHandoffSealAgrees(handoff) &&
+                   ProcedurePublicationClaimsAgree(
+                       handoff.PublicationAuthority,
+                       handoff.ProcedureClaimProof);
+        }
+
+        private bool TreatmentPublicationHandoffSealAgrees(
+            ValidatedTreatmentPublicationHandoff handoff)
+        {
             try
             {
                 return CurrentTreatmentPublicationAcceptedStateAgrees(
@@ -4237,6 +4452,78 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        private bool ProcedurePublicationClaimsAgree(
+            MortalWoundTreatmentResourcePublicationAuthority publicationAuthority,
+            MortalWoundProcedurePublicationClaimProof? proof)
+        {
+            if (!publicationAuthority.RequiresProcedureSettlement)
+                return proof is null;
+            if (publicationAuthority.RequestAuthority.ModeAuthority is not
+                    MortalWoundProcedureCheckAuthority procedure ||
+                proof is null ||
+                !proof.MatchesAuthority(procedure))
+            {
+                return false;
+            }
+
+            return _procedureDice.CanRelease(proof.DiceReservation) &&
+                   _criticalReactions.MatchesReleaseAgreement(
+                       proof.DiceReservation,
+                       proof.CriticalReactionReservation,
+                       proof.CriticalReactionAgreement);
+        }
+
+        private MortalWoundTreatmentResourceLifecycleResult
+            ReleaseCoordinatedTreatmentPublicationClaims(
+                MortalWoundTreatmentPublicationTakeReceipt receipt,
+                string reason)
+        {
+            var prepared = _treatmentResources.PrepareActiveRelease(
+                TreatmentResourceRegistryCapability,
+                receipt.Request,
+                reason);
+            if (!prepared.IsValid || prepared.PreparedRelease is null)
+            {
+                return new MortalWoundTreatmentResourceLifecycleResult(
+                    false,
+                    prepared.Issues,
+                    0);
+            }
+            if (!ProcedurePublicationClaimsAgree(
+                    receipt.PublicationAuthority,
+                    receipt.ProcedureClaimProof))
+            {
+                return MortalWoundTreatmentResourceReservationRegistry
+                    .LifecycleFailure(
+                        "mortal_wound_treatment_procedure_release_conflict",
+                        "the exact request-owned live procedure dice and Fate claims",
+                        "missing, stale, foreign, released, or changed procedure claims");
+            }
+
+            if (!_treatmentResources.ReleasePreparedUnchecked(
+                    TreatmentResourceRegistryCapability,
+                    prepared.PreparedRelease))
+            {
+                return MortalWoundTreatmentResourceReservationRegistry
+                    .LifecycleFailure(
+                        "mortal_wound_treatment_resource_release_conflict",
+                        "the exact prepared active resource agreement",
+                        receipt.Request.RequestFingerprint);
+            }
+
+            if (receipt.ProcedureClaimProof is { } proof)
+            {
+                _procedureDice.ReleaseUnchecked(proof.DiceReservation);
+                _criticalReactions.ReleaseUnchecked(
+                    proof.DiceReservation,
+                    proof.CriticalReactionAgreement);
+            }
+            return new MortalWoundTreatmentResourceLifecycleResult(
+                true,
+                Array.Empty<ValidationIssue>(),
+                1);
+        }
+
         private void InvalidateExactTreatmentPublicationPlan(
             ValidatedTreatmentPublicationHandoff handoff)
         {
@@ -4258,12 +4545,15 @@ internal static class AcceptedTurnAuthorityRegistry
                    ReferenceEquals(
                        handoff.PublicationAuthority,
                        receipt.PublicationAuthority) &&
+                   ReferenceEquals(
+                       handoff.ProcedureClaimProof,
+                       receipt.ProcedureClaimProof) &&
                    ReferenceEquals(handoff.Plan, receipt.Plan) &&
                    string.Equals(
                        handoff.SemanticFingerprint,
                        receipt.SemanticFingerprint,
                        StringComparison.Ordinal) &&
-                   TreatmentPublicationHandoffAgrees(handoff);
+                   TreatmentPublicationHandoffSealAgrees(handoff);
         }
 
         private static bool BindingAgrees(
@@ -4497,10 +4787,10 @@ internal static class AcceptedTurnAuthorityRegistry
             ClearWoundEffectCore();
             _woundPlan.InvalidateAll();
             _mortalItems.InvalidateValidated();
-            _procedureDice.InvalidateAll();
-            _criticalReactions.InvalidateAll();
             if (_treatmentPublicationRestartBlockerFingerprint is null)
             {
+                _procedureDice.InvalidateAll();
+                _criticalReactions.InvalidateAll();
                 _treatmentResources.InvalidateAll();
                 ResetProcedureClaimRecovery();
                 _mortalWoundTreatmentAcceptedState = null;
