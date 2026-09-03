@@ -354,7 +354,7 @@ internal static class MortalItemCanonicalProjectionPlanner
         }
     }
 
-    private static MortalItemCarrierCatalog BuildCatalog(
+    internal static MortalItemCarrierCatalog BuildCatalog(
         IReadOnlyDictionary<string, JsonNode?> roots,
         bool includeNpcCommands)
     {

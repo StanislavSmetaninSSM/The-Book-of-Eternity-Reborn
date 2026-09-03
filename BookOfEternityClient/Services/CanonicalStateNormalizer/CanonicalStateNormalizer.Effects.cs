@@ -10,7 +10,8 @@ public partial class CanonicalStateNormalizer
         bool normalizedAcceptedCarrierBaselines,
         AcceptedMechanicsWoundStageBundle? woundStageBundle,
         bool allowDirectWoundBootstrap,
-        MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority)
+        MortalWoundTreatmentResourcePublicationAuthority?
+            resourcePublicationAuthority)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
@@ -78,7 +79,7 @@ public partial class CanonicalStateNormalizer
             !(allowDirectWoundBootstrap &&
               plan.SourceAuthority.IsCanonicalPublicationSubsetOf(
                   sourceAuthority)) &&
-            itemPublicationAuthority?.ProvesNormalizedEffectSourceTransition(
+            resourcePublicationAuthority?.ProvesNormalizedEffectSourceTransition(
                 plan.SourceAuthorityFingerprint,
                 sourceAuthority.CanonicalFingerprint) != true)
         {

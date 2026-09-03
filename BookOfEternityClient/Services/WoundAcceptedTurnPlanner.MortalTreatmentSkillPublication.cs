@@ -1127,8 +1127,8 @@ internal static partial class WoundAcceptedTurnPlanner
             StringComparer.Ordinal);
         var candidateAfterImages = candidate.OwnerCompanionAfterImages;
         var candidateBeforeImages = candidate.BeforeImages;
-        var itemPublication = candidate.TreatmentResourcePublicationAuthority
-            ?.ItemPublicationAuthority;
+        var resourcePublication = candidate.TreatmentResourcePublicationAuthority;
+        var itemPublication = resourcePublication?.ItemPublicationAuthority;
         var itemPublicationPaths = itemPublication?.PublicationAfterImages.Keys
             .ToHashSet(StringComparer.Ordinal) ??
             new HashSet<string>(StringComparer.Ordinal);
@@ -1174,7 +1174,8 @@ internal static partial class WoundAcceptedTurnPlanner
             }
             if (!JsonNode.DeepEquals(expected, actual) &&
                 !(string.Equals(path, NpcSkillPath, StringComparison.Ordinal) &&
-                  itemPublication?.ProvesNpcRootTransition(expected, actual) == true))
+                  (itemPublication?.ProvesNpcRootTransition(expected, actual) == true ||
+                   resourcePublication?.ProvesNpcRootTransition(expected, actual) == true)))
             {
                 return new[]
                 {
@@ -1207,14 +1208,16 @@ internal static partial class WoundAcceptedTurnPlanner
             projection,
             candidateBeforeImages,
             candidateAfterImages,
-            itemPublication);
+            itemPublication,
+            resourcePublication);
     }
 
     private static IReadOnlyList<ValidationIssue> ValidateTreatmentSkillActorPreservation(
         TreatmentSkillProjectionAuthority projection,
         IReadOnlyDictionary<string, CanonicalBeforeImage> candidateBeforeImages,
         IReadOnlyDictionary<string, JsonObject> candidateAfterImages,
-        MortalWoundTreatmentItemPublicationAuthority? itemPublication)
+        MortalWoundTreatmentItemPublicationAuthority? itemPublication,
+        MortalWoundTreatmentResourcePublicationAuthority? resourcePublication)
     {
         if (!TryDeriveTreatmentSkillActorCatalogs(
                 projection,
@@ -1241,7 +1244,8 @@ internal static partial class WoundAcceptedTurnPlanner
         var itemProvesNpcSuccessor =
             projection.AfterImages.TryGetValue(NpcSkillPath, out var skillNpc) &&
             candidateAfterImages.TryGetValue(NpcSkillPath, out var finalNpc) &&
-            itemPublication?.ProvesNpcRootTransition(skillNpc, finalNpc) == true;
+            (itemPublication?.ProvesNpcRootTransition(skillNpc, finalNpc) == true ||
+             resourcePublication?.ProvesNpcRootTransition(skillNpc, finalNpc) == true);
         if (!actorAfterMatches && !itemProvesNpcSuccessor)
         {
             return new[]

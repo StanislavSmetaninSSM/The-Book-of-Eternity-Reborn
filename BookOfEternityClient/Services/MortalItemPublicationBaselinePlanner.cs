@@ -244,7 +244,7 @@ internal static class MortalItemPublicationBaselinePlanner
         return new AppliedTransform(roots, appliedId);
     }
 
-    private static JsonNode? ComposeNpcItemPhaseComparisonBaseline(
+    internal static JsonNode? ComposeNpcItemPhaseComparisonBaseline(
         JsonNode? itemPhaseRoot,
         JsonNode? backupRoot)
     {

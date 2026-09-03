@@ -5,7 +5,9 @@ namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
-    private async Task NormalizeNpcCoreChangesAsync(IReadOnlyDictionary<string, string>? backups)
+    private async Task NormalizeNpcCoreChangesAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        AcceptedMechanicsPlan? acceptedMechanicsPlan)
     {
         var currentNode = await ReadNodeAsync(NpcCoreChangesContract.NpcCorePath);
         if (currentNode is not JsonObject currentRoot ||
@@ -14,19 +16,37 @@ public partial class CanonicalStateNormalizer
             return;
         }
 
-        var preTurnRoot = await ReadBackupObjectAsync(NpcCoreChangesContract.NpcCorePath, backups);
+        var resourcePublication = acceptedMechanicsPlan?
+            .TreatmentResourcePublicationAuthority;
+        if (resourcePublication is not null && !resourcePublication.HasValidSeal())
+        {
+            throw new InvalidDataException(
+                "Treatment NPC-core baseline authority changed before normalization.");
+        }
+        var preTurnRoot = resourcePublication?.NpcCoreBackupRoot ??
+                          await ReadBackupObjectAsync(
+                              NpcCoreChangesContract.NpcCorePath,
+                              backups);
         if (preTurnRoot == null)
             return;
-
-        var authority = await ReadNpcCoreAuthorityAsync();
-        var tradePending = await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath);
-        var trainingPending = await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath);
+        var authority = resourcePublication?.NpcCoreAuthority ??
+                        await ReadNpcCoreAuthorityAsync();
+        var tradePending = resourcePublication?.NpcTradePending ?? BeforeImage(
+            await _fs.ReadFileAsync(NpcTradeRequestState.PendingRequestPath));
+        var trainingPending = resourcePublication?.TrainingPending ?? BeforeImage(
+            await _fs.ReadFileAsync(TrainingRequestState.PendingRequestPath));
+        var comparisonBaseline = resourcePublication is null
+            ? preTurnRoot
+            : MortalItemPublicationBaselinePlanner
+                .ComposeNpcItemPhaseComparisonBaseline(
+                    currentRoot,
+                    preTurnRoot);
         if (MortalItemPublicationTailTransforms.NpcCore(
                 currentRoot,
-                preTurnRoot,
+                comparisonBaseline,
                 authority,
-                BeforeImage(tradePending),
-                BeforeImage(trainingPending)) is not JsonObject result)
+                tradePending,
+                trainingPending) is not JsonObject result)
         {
             return;
         }
@@ -170,16 +190,24 @@ public partial class CanonicalStateNormalizer
         const string path = "game_state/npcs/npc_core.json";
         var hasTreatmentContinuation = acceptedMechanicsPlan?.WoundStageBundle
             ?.PreparedPlan.TreatmentContinuationAuthority is not null;
-        var ownsNpcRoot = acceptedMechanicsPlan?.OwnerCompanionAfterImages
-            .ContainsKey(path) == true;
-        var disposition = MortalItemNpcTradeTailPolicy.SelectDisposition(
+        var resourcePublication = acceptedMechanicsPlan?
+            .TreatmentResourcePublicationAuthority;
+        if (resourcePublication is not null && !resourcePublication.HasValidSeal())
+        {
+            throw new InvalidDataException(
+                "Treatment NPC-trade disposition authority changed before normalization.");
+        }
+        var disposition = MortalItemNpcTradeTailPolicy.SelectRuntimeDisposition(
             hasTreatmentContinuation,
-            ownsNpcRoot);
+            hasTreatmentContinuation
+                ? resourcePublication?.NpcTradeDisposition
+                : null);
         var currentNode = await ReadNodeAsync(path);
         if (currentNode is not JsonObject currentObj)
             return;
 
-        var previousObj = await ReadBackupObjectAsync(path, backups);
+        var previousObj = resourcePublication?.NpcCoreBackupRoot ??
+                          await ReadBackupObjectAsync(path, backups);
         if (MortalItemPublicationTailTransforms.NpcTrade(
                 currentObj,
                 previousObj,

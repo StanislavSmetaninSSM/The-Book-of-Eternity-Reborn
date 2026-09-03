@@ -12,23 +12,34 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsPlan plan)
     {
         ArgumentNullException.ThrowIfNull(plan);
-        var itemAuthority = plan.TreatmentResourcePublicationAuthority?
-            .ItemPublicationAuthority;
-        if (itemAuthority is null)
+        var resourceAuthority = plan.TreatmentResourcePublicationAuthority;
+        if (resourceAuthority is null)
             return;
 
         var writeLease = _writeLease ?? throw new InvalidOperationException(
             "Mortal item final publication baseline validation requires the " +
             "owning canonical write lease.");
-        if (!itemAuthority.HasValidSeal())
+        var itemAuthority = resourceAuthority.ItemPublicationAuthority;
+        if (!resourceAuthority.HasValidSeal() ||
+            (itemAuthority is not null && !itemAuthority.HasValidSeal()))
         {
             throw FinalBaselineMismatch(
                 "game_state/wounds/accepted_turn_plan",
-                "sealed item publication authority changed");
+                "sealed resource or item publication authority changed");
         }
 
         var paths = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths;
-        var baseline = itemAuthority.Baseline;
+        var baseline = resourceAuthority.ItemPublicationBaseline;
+        if (itemAuthority is not null &&
+            !string.Equals(
+                itemAuthority.Baseline.Fingerprint,
+                baseline.Fingerprint,
+                StringComparison.Ordinal))
+        {
+            throw FinalBaselineMismatch(
+                "game_state/wounds/accepted_turn_plan",
+                "sealed resource and item baselines disagree");
+        }
         var distinctPaths = paths.ToHashSet(StringComparer.Ordinal);
         if (paths.Count != distinctPaths.Count ||
             baseline.Issues.Count != 0 ||

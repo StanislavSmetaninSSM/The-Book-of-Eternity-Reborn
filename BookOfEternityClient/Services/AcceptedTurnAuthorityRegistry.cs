@@ -3854,10 +3854,15 @@ internal static class AcceptedTurnAuthorityRegistry
                     return ItemAuthorityChangedIssue();
                 }
 
-                if (!MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(
+                if (!baseSnapshot.TryProjectItemPhase(
+                        out var projectedItemPhase,
+                        out _) ||
+                    projectedItemPhase is null ||
+                    !MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(
                         ownsNpcTail,
                         continuation.ResourceFinalization.Consumptions,
                         _mortalItems.GetOwners(sessionId, snapshotToken),
+                        projectedItemPhase.ItemPhaseAfterImages,
                         out var ownsNpcRoot))
                 {
                     return ItemAuthorityChangedIssue();

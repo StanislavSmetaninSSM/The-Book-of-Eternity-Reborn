@@ -19,6 +19,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
     private readonly MortalWoundTreatmentResourcePublicationDraft _draft;
     private readonly string _finalizationSeal;
     private readonly string _requestResourceSeal;
+    private readonly MortalItemAcceptedTurnNormalizationSnapshot _itemSnapshot;
+    private readonly Dictionary<string, JsonNode?> _effectSourceBeforeRoots;
+    private readonly WoundPreparedAcceptedTurnPlan _preparedWoundPlan;
+    private readonly string _effectSourceBeforeFingerprint;
+    private readonly string _normalizedEffectSourceFingerprint;
     private readonly MortalWoundTreatmentItemPublicationAuthority?
         _itemPublicationAuthority;
 
@@ -33,6 +38,12 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         string semanticFingerprint,
         string identitySeed,
         MortalWoundTreatmentResourcePublicationDraft draft,
+        MortalItemAcceptedTurnNormalizationSnapshot itemSnapshot,
+        IReadOnlyDictionary<string, JsonNode?> effectSourceBeforeRoots,
+        WoundPreparedAcceptedTurnPlan preparedWoundPlan,
+        string effectSourceBeforeFingerprint,
+        string normalizedEffectSourceFingerprint,
+        MortalItemNpcTradeTailDisposition npcTradeDisposition,
         MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority)
     {
         if (!WoundAcceptedTurnPlanner
@@ -41,6 +52,11 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             throw new InvalidOperationException(
                 "Treatment resource publication authority requires the private planner mint.");
         }
+        ArgumentNullException.ThrowIfNull(itemSnapshot);
+        ArgumentNullException.ThrowIfNull(effectSourceBeforeRoots);
+        ArgumentNullException.ThrowIfNull(preparedWoundPlan);
+        ArgumentException.ThrowIfNullOrWhiteSpace(effectSourceBeforeFingerprint);
+        ArgumentException.ThrowIfNullOrWhiteSpace(normalizedEffectSourceFingerprint);
         AcceptedStateAuthority = acceptedStateAuthority;
         RequestAuthority = requestAuthority;
         ResolutionAuthority = resolutionAuthority;
@@ -49,7 +65,15 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         PublicationReservationAuthority = publicationReservationAuthority;
         SemanticFingerprint = semanticFingerprint;
         IdentitySeed = identitySeed;
+        NpcTradeDisposition = npcTradeDisposition;
         _draft = draft;
+        _itemSnapshot = itemSnapshot.Clone();
+        _effectSourceBeforeRoots =
+            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                effectSourceBeforeRoots);
+        _preparedWoundPlan = preparedWoundPlan.ClonePreservingCacheAuthority();
+        _effectSourceBeforeFingerprint = effectSourceBeforeFingerprint;
+        _normalizedEffectSourceFingerprint = normalizedEffectSourceFingerprint;
         _itemPublicationAuthority = itemPublicationAuthority;
         _finalizationSeal = ComputeFinalizationSeal(finalization);
         _requestResourceSeal = ComputeRequestResourceSeal(
@@ -65,6 +89,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             _finalizationSeal,
             _requestResourceSeal,
             draft.Fingerprint,
+            _itemSnapshot.ProofFingerprint,
+            effectSourceBeforeFingerprint,
+            normalizedEffectSourceFingerprint,
+            npcTradeDisposition,
             itemPublicationAuthority?.Fingerprint);
     }
 
@@ -83,6 +111,24 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
             ContinuationAuthority);
     internal string DraftFingerprint => _draft.Fingerprint;
+    internal MortalItemNpcTradeTailDisposition NpcTradeDisposition { get; }
+    internal NpcCoreChangesContract.Authority NpcCoreAuthority =>
+        _itemSnapshot.CloneNpcCoreAuthority() ?? throw new InvalidOperationException(
+            "The sealed treatment NPC-core authority is missing.");
+    internal CanonicalBeforeImage NpcTradePending =>
+        _itemSnapshot.CloneNpcTradePending() ?? throw new InvalidOperationException(
+            "The sealed treatment NPC-trade pending before-image is missing.");
+    internal CanonicalBeforeImage TrainingPending =>
+        _itemSnapshot.CloneTrainingPending() ?? throw new InvalidOperationException(
+            "The sealed treatment training pending before-image is missing.");
+    internal JsonObject NpcCoreBackupRoot =>
+        _itemSnapshot.CloneBackupProjectionRoots().GetValueOrDefault(
+            NpcCoreChangesContract.NpcCorePath) as JsonObject ??
+        throw new InvalidOperationException(
+            "The sealed treatment NPC-core backup root is missing.");
+    internal MortalItemPublicationBaselineResult ItemPublicationBaseline =>
+        _itemSnapshot.CloneFinalBaseline() ?? throw new InvalidOperationException(
+            "The sealed treatment item publication baseline is missing.");
     internal string AuthorityFingerprint { get; }
     internal string Fingerprint => AuthorityFingerprint;
     internal bool RequiresConfirmedHold =>
@@ -94,6 +140,66 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         _itemPublicationAuthority?.FinalOwnerAuthority;
     internal IReadOnlyList<ResourceOwnerKey> ItemTerminalOwners =>
         _itemPublicationAuthority?.TerminalOwners ?? Array.Empty<ResourceOwnerKey>();
+
+    internal bool ProvesNpcRootTransition(
+        JsonObject suppliedSkillAfterImage,
+        JsonObject rebasedSkillAfterImage)
+    {
+        if (!HasValidSeal() ||
+            ItemPublicationBaseline.FinalCarrierRoots.GetValueOrDefault(
+                NpcCoreChangesContract.NpcCorePath) is not JsonObject finalNpcBaseline ||
+            !WoundAcceptedTurnPlanner.TryReadTreatmentSkillProjection(
+                ContinuationAuthority,
+                PublicationReservationAuthority,
+                out _,
+                out var sealedSkillAfterImages,
+                out var sealedSkillFingerprint) ||
+            !sealedSkillAfterImages.TryGetValue(
+                NpcCoreChangesContract.NpcCorePath,
+                out var sealedSuppliedSkillRoot))
+        {
+            return false;
+        }
+
+        var issues = WoundAcceptedTurnPlanner
+            .ComposeTreatmentSkillProjectionOnFinalItemBaseline(
+                ContinuationAuthority,
+                PublicationReservationAuthority,
+                finalNpcBaseline,
+                out var recomposedSkillAfterImages,
+                out _,
+                out var recomposedSkillFingerprint);
+        return issues.Count == 0 &&
+               string.Equals(
+                   sealedSkillFingerprint,
+                   recomposedSkillFingerprint,
+                   StringComparison.Ordinal) &&
+               recomposedSkillAfterImages.TryGetValue(
+                   NpcCoreChangesContract.NpcCorePath,
+                   out var expectedRebasedSkillRoot) &&
+               JsonNode.DeepEquals(
+                   sealedSuppliedSkillRoot,
+                   suppliedSkillAfterImage) &&
+               JsonNode.DeepEquals(
+                   expectedRebasedSkillRoot,
+                   rebasedSkillAfterImage);
+    }
+
+    internal bool ProvesNormalizedEffectSourceTransition(
+        string beforeFingerprint,
+        string normalizedFingerprint) =>
+        HasValidSeal() &&
+        TryRecomposeEffectSourceSuccessor(
+            out var recomposedBeforeFingerprint,
+            out var recomposedNormalizedFingerprint) &&
+        string.Equals(
+            beforeFingerprint,
+            recomposedBeforeFingerprint,
+            StringComparison.Ordinal) &&
+        string.Equals(
+            normalizedFingerprint,
+            recomposedNormalizedFingerprint,
+            StringComparison.Ordinal);
 
     internal AcceptedMechanicsIdentityFactory CreateIdentityFactory() =>
         new TreatmentPublicationIdentityFactory(IdentitySeed);
@@ -144,6 +250,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             _finalizationSeal,
             _requestResourceSeal,
             _draft.Fingerprint,
+            _itemSnapshot.ProofFingerprint,
+            _effectSourceBeforeFingerprint,
+            _normalizedEffectSourceFingerprint,
+            NpcTradeDisposition,
             _itemPublicationAuthority?.Fingerprint);
         return string.Equals(
                    _finalizationSeal,
@@ -153,6 +263,16 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
                    _requestResourceSeal,
                    ComputeRequestResourceSeal(RequestAuthority.ResourceAuthority),
                    StringComparison.Ordinal) &&
+               _itemSnapshot.HasFinalPublicationBaseline &&
+               _itemSnapshot.RecomputesFinalPublicationBaseline() &&
+               _itemSnapshot.NpcTradeDisposition == NpcTradeDisposition &&
+               TryRecomposeEffectSourceSuccessor(out _, out _) &&
+               (_itemPublicationAuthority is null ||
+                (_itemPublicationAuthority.NpcTradeDisposition == NpcTradeDisposition &&
+                 string.Equals(
+                     _itemPublicationAuthority.ItemSnapshotProofFingerprint,
+                     _itemSnapshot.ProofFingerprint,
+                     StringComparison.Ordinal))) &&
                (_itemPublicationAuthority?.HasValidSeal() ?? true) &&
                string.Equals(expected, AuthorityFingerprint, StringComparison.Ordinal);
     }
@@ -240,6 +360,12 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         string semanticFingerprint,
         string identitySeed,
         MortalWoundTreatmentResourcePublicationDraft draft,
+        MortalItemAcceptedTurnNormalizationSnapshot itemSnapshot,
+        IReadOnlyDictionary<string, JsonNode?> effectSourceBeforeRoots,
+        WoundPreparedAcceptedTurnPlan preparedWoundPlan,
+        string effectSourceBeforeFingerprint,
+        string normalizedEffectSourceFingerprint,
+        MortalItemNpcTradeTailDisposition npcTradeDisposition,
         MortalWoundTreatmentItemPublicationAuthority? itemPublicationAuthority) => new(
         mintCapability,
         acceptedStateAuthority,
@@ -251,6 +377,12 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         semanticFingerprint,
         identitySeed,
         draft,
+        itemSnapshot,
+        effectSourceBeforeRoots,
+        preparedWoundPlan,
+        effectSourceBeforeFingerprint,
+        normalizedEffectSourceFingerprint,
+        npcTradeDisposition,
         itemPublicationAuthority);
 
     private static string ComputeAuthorityFingerprint(
@@ -264,6 +396,10 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
         string finalizationSeal,
         string requestResourceSeal,
         string draftFingerprint,
+        string itemSnapshotProofFingerprint,
+        string effectSourceBeforeFingerprint,
+        string normalizedEffectSourceFingerprint,
+        MortalItemNpcTradeTailDisposition npcTradeDisposition,
         string? itemPublicationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
@@ -283,8 +419,59 @@ internal sealed class MortalWoundTreatmentResourcePublicationAuthority
             semanticFingerprint,
             identitySeed,
             draftFingerprint,
+            itemSnapshotProofFingerprint,
+            effectSourceBeforeFingerprint,
+            normalizedEffectSourceFingerprint,
+            npcTradeDisposition.ToString(),
             itemPublicationFingerprint
         });
+
+    private bool TryRecomposeEffectSourceSuccessor(
+        out string beforeFingerprint,
+        out string normalizedFingerprint)
+    {
+        beforeFingerprint = string.Empty;
+        normalizedFingerprint = string.Empty;
+        var before = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                _effectSourceBeforeRoots),
+            _preparedWoundPlan.ClonePreservingCacheAuthority());
+        if (before.Issues.Count != 0 ||
+            !string.Equals(
+                before.CanonicalFingerprint,
+                _effectSourceBeforeFingerprint,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var normalizedRoots = MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+            _effectSourceBeforeRoots);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            if (ItemPublicationBaseline.FinalCarrierRoots.TryGetValue(
+                    path,
+                    out var baselineRoot))
+            {
+                normalizedRoots[path] = baselineRoot?.DeepClone();
+            }
+        }
+        var normalized = EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+            normalizedRoots,
+            _preparedWoundPlan.ClonePreservingCacheAuthority());
+        if (normalized.Issues.Count != 0 ||
+            !string.Equals(
+                normalized.CanonicalFingerprint,
+                _normalizedEffectSourceFingerprint,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        beforeFingerprint = before.CanonicalFingerprint;
+        normalizedFingerprint = normalized.CanonicalFingerprint;
+        return true;
+    }
 
     private sealed class TreatmentPublicationIdentityFactory(string identitySeed)
         : AcceptedMechanicsIdentityFactory
@@ -929,6 +1116,63 @@ internal static partial class WoundAcceptedTurnPlanner
         }
 
         var finalization = continuation.ResourceFinalization;
+        if (itemSnapshot is null ||
+            !itemSnapshot.HasFinalPublicationBaseline ||
+            !itemSnapshot.RecomputesFinalPublicationBaseline() ||
+            itemSnapshot.NpcTradeDisposition is not { } npcTradeDisposition)
+        {
+            return Invalid(
+                "mortal_wound_treatment_publication_item_authority_changed",
+                "one authenticated NPC-trade disposition from the sealed item snapshot",
+                "missing or unsealed NPC-trade disposition");
+        }
+        var finalBaseline = itemSnapshot.CloneFinalBaseline()!;
+        var effectSourceBeforeRoots = new Dictionary<string, JsonNode?>(
+            StringComparer.Ordinal);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            var json = readDocument(path);
+            effectSourceBeforeRoots[path] = json is null
+                ? null
+                : JsonNode.Parse(json);
+        }
+        var effectSourceBeforeAuthority =
+            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+                effectSourceBeforeRoots,
+                preparedWoundPlan);
+        if (effectSourceBeforeAuthority.Issues.Count != 0 ||
+            !string.Equals(
+                effectSourceBeforeAuthority.CanonicalFingerprint,
+                effectSourceBeforeFingerprint,
+                StringComparison.Ordinal))
+        {
+            return Invalid(
+                "mortal_wound_treatment_publication_item_authority_changed",
+                "the exact pre-normalization effect source authority",
+                "effect source before-authority did not recompose exactly");
+        }
+        var normalizedEffectSourceRoots =
+            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
+                effectSourceBeforeRoots);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            if (finalBaseline.FinalCarrierRoots.TryGetValue(
+                    path,
+                    out var baselineRoot))
+            {
+                normalizedEffectSourceRoots[path] = baselineRoot?.DeepClone();
+            }
+        }
+        var normalizedEffectSourceAuthority =
+            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
+                normalizedEffectSourceRoots,
+                preparedWoundPlan);
+        if (normalizedEffectSourceAuthority.Issues.Count != 0)
+        {
+            return new MortalWoundTreatmentResourcePublicationBuildResult(
+                null,
+                normalizedEffectSourceAuthority.Issues);
+        }
         var sources = new List<ResourceMutationSourceExport>();
         var mutations = new List<ResourceMutationIntent>();
         var expected = new List<
@@ -974,7 +1218,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 identitySeed,
                 preparedWoundPlan,
                 effectSourceBeforeFingerprint,
-                readDocument);
+                effectSourceBeforeRoots,
+                normalizedEffectSourceAuthority.CanonicalFingerprint);
             issues.AddRange(itemPublication.Issues);
             itemPublicationAuthority = itemPublication.Authority;
             if (itemPublicationAuthority is null || issues.Count != 0)
@@ -1221,6 +1466,12 @@ internal static partial class WoundAcceptedTurnPlanner
             continuation.SemanticFingerprint,
             identitySeed,
             draft,
+            itemSnapshot,
+            effectSourceBeforeRoots,
+            preparedWoundPlan,
+            effectSourceBeforeFingerprint,
+            normalizedEffectSourceAuthority.CanonicalFingerprint,
+            npcTradeDisposition,
             itemPublicationAuthority);
         return new MortalWoundTreatmentResourcePublicationBuildResult(
             authority,
@@ -1240,7 +1491,8 @@ internal static partial class WoundAcceptedTurnPlanner
         string identitySeed,
         WoundPreparedAcceptedTurnPlan preparedWoundPlan,
         string effectSourceBeforeFingerprint,
-        Func<string, string?> readDocument)
+        IReadOnlyDictionary<string, JsonNode?> effectSourceBeforeRoots,
+        string normalizedEffectSourceFingerprint)
     {
         var itemPhase = snapshot.CloneItemPhase();
         var baseline = snapshot.CloneFinalBaseline();
@@ -1403,47 +1655,6 @@ internal static partial class WoundAcceptedTurnPlanner
         if (!ownerResult.IsValid || ownerResult.Authority is null)
             return new TreatmentItemPublicationBuild(null, ownerResult.Issues);
 
-        var effectSourceBeforeRoots = new Dictionary<string, JsonNode?>(
-            StringComparer.Ordinal);
-        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
-        {
-            var json = readDocument(path);
-            effectSourceBeforeRoots[path] = json is null
-                ? null
-                : JsonNode.Parse(json);
-        }
-        var effectSourceBeforeAuthority =
-            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
-                effectSourceBeforeRoots,
-                preparedWoundPlan);
-        if (effectSourceBeforeAuthority.Issues.Count != 0 ||
-            !string.Equals(
-                effectSourceBeforeAuthority.CanonicalFingerprint,
-                effectSourceBeforeFingerprint,
-                StringComparison.Ordinal))
-        {
-            return ItemUnsupported(
-                "effect source before-authority did not recompose exactly");
-        }
-        var normalizedEffectSourceRoots =
-            MortalItemAcceptedTurnNormalizationSnapshot.CloneRoots(
-                effectSourceBeforeRoots);
-        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
-        {
-            if (baseline.FinalCarrierRoots.TryGetValue(path, out var baselineRoot))
-                normalizedEffectSourceRoots[path] = baselineRoot?.DeepClone();
-        }
-        var normalizedEffectSourceAuthority =
-            EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
-                normalizedEffectSourceRoots,
-                preparedWoundPlan);
-        if (normalizedEffectSourceAuthority.Issues.Count != 0)
-        {
-            return new TreatmentItemPublicationBuild(
-                null,
-                normalizedEffectSourceAuthority.Issues);
-        }
-
         var authority = MortalWoundTreatmentItemPublicationAuthority.Create(
             TreatmentResourcePublicationMintCapability,
             continuation.AcceptedStateAuthority,
@@ -1466,7 +1677,7 @@ internal static partial class WoundAcceptedTurnPlanner
             effectSourceBeforeRoots,
             preparedWoundPlan,
             effectSourceBeforeFingerprint,
-            normalizedEffectSourceAuthority.CanonicalFingerprint,
+            normalizedEffectSourceFingerprint,
             ownerResult.Authority);
         return authority.HasValidSeal()
             ? new TreatmentItemPublicationBuild(

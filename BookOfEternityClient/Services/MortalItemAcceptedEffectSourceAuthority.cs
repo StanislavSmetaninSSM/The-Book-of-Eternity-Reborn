@@ -270,6 +270,38 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 Array.Empty<ValidationIssue>(),
                 _itemPhaseFingerprint);
 
+    internal bool TryProjectItemPhase(
+        out MortalItemCanonicalProjectionResult? itemPhase,
+        out IReadOnlyList<ValidationIssue> issues)
+    {
+        if (HasFinalPublicationBaseline)
+        {
+            itemPhase = CloneItemPhase();
+            issues = itemPhase?.Issues ?? Array.Empty<ValidationIssue>();
+            return itemPhase?.IsValid == true;
+        }
+
+        var identityState = MortalItemIdentityState.Parse(
+            _currentRoots.GetValueOrDefault(MortalItemIdentityState.StatePath));
+        if (identityState.Issues.Count != 0)
+        {
+            itemPhase = null;
+            issues = identityState.Issues.ToArray();
+            return false;
+        }
+
+        itemPhase = MortalItemCanonicalProjectionPlanner.Project(
+            new MortalItemCanonicalProjectionInput(
+                Turn,
+                this,
+                CloneRouteCatalog(),
+                CloneCurrentProjectionRoots(),
+                CloneBackupProjectionRoots(),
+                identityState));
+        issues = itemPhase.Issues.ToArray();
+        return itemPhase.IsValid;
+    }
+
     internal MortalItemPublicationBaselineResult? CloneFinalBaseline() =>
         !HasFinalPublicationBaseline
             ? null
@@ -329,27 +361,12 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
                 "a final baseline is already attached");
         }
 
-        var identityState = MortalItemIdentityState.Parse(
-            _currentRoots.GetValueOrDefault(MortalItemIdentityState.StatePath));
-        if (identityState.Issues.Count != 0)
+        if (!TryProjectItemPhase(out var itemPhase, out var itemPhaseIssues) ||
+            itemPhase is null)
         {
             return new MortalItemTreatmentPublicationBaselineSealResult(
                 null,
-                identityState.Issues.ToArray());
-        }
-        var itemPhase = MortalItemCanonicalProjectionPlanner.Project(
-            new MortalItemCanonicalProjectionInput(
-                Turn,
-                this,
-                CloneRouteCatalog(),
-                CloneCurrentProjectionRoots(),
-                CloneBackupProjectionRoots(),
-                identityState));
-        if (!itemPhase.IsValid)
-        {
-            return new MortalItemTreatmentPublicationBaselineSealResult(
-                null,
-                itemPhase.Issues.ToArray());
+                itemPhaseIssues);
         }
         var finalBaseline = MortalItemPublicationBaselinePlanner.Project(
             new MortalItemPublicationBaselineInput(
@@ -402,19 +419,9 @@ internal sealed class MortalItemAcceptedTurnNormalizationSnapshot
         if (!HasFinalPublicationBaseline)
             return false;
         var baseSnapshot = CreateClone(includeFinalBaseline: false);
-        var identityState = MortalItemIdentityState.Parse(
-            baseSnapshot._currentRoots.GetValueOrDefault(
-                MortalItemIdentityState.StatePath));
-        if (identityState.Issues.Count != 0)
+        if (!baseSnapshot.TryProjectItemPhase(out var itemPhase, out _) ||
+            itemPhase is null)
             return false;
-        var itemPhase = MortalItemCanonicalProjectionPlanner.Project(
-            new MortalItemCanonicalProjectionInput(
-                Turn,
-                baseSnapshot,
-                baseSnapshot.CloneRouteCatalog(),
-                baseSnapshot.CloneCurrentProjectionRoots(),
-                baseSnapshot.CloneBackupProjectionRoots(),
-                identityState));
         if (!ItemPhaseAgrees(itemPhase))
             return false;
         var finalBaseline = MortalItemPublicationBaselinePlanner.Project(

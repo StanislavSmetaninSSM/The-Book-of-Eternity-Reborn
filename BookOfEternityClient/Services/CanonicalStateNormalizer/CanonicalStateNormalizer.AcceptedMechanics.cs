@@ -126,8 +126,8 @@ public partial class CanonicalStateNormalizer
                     plan.WoundStageBundle,
                     allowDirectWoundBootstrap:
                         plan.DirectWoundPublicationAuthority is not null,
-                    itemPublicationAuthority: plan.TreatmentResourcePublicationAuthority
-                        ?.ItemPublicationAuthority);
+                    resourcePublicationAuthority:
+                        plan.TreatmentResourcePublicationAuthority);
             }
 
             // Other normalizers may intentionally consume plan before-images. The exact
@@ -138,7 +138,8 @@ public partial class CanonicalStateNormalizer
         }
         catch
         {
-            InvalidateAcceptedMechanicsHandoffs();
+            if (treatmentPublicationReceipt is null)
+                InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
         try

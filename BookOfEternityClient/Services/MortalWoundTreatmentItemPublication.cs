@@ -187,6 +187,10 @@ internal sealed partial class MortalWoundTreatmentItemPublicationAuthority
             "The sealed treatment item phase is missing.");
     internal MortalItemPublicationBaselineResult Baseline =>
         Clone(_baseline);
+    internal MortalItemNpcTradeTailDisposition NpcTradeDisposition =>
+        _snapshot.NpcTradeDisposition ?? throw new InvalidOperationException(
+            "The sealed treatment item NPC-trade disposition is missing.");
+    internal string ItemSnapshotProofFingerprint => _snapshot.ProofFingerprint;
     internal MortalItemConsumptionPlanningResult Consumption => Clone(_consumption);
     internal IReadOnlyList<ResourceCapacityIntent> CapacityTransitions =>
         Array.AsReadOnly(_capacityTransitions.ToArray());

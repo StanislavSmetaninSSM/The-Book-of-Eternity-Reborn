@@ -33,6 +33,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         "mortal_wound_treatment_publication_published_agreement_changed";
     private const string ItemBaselineChangedCode =
         "mortal_wound_treatment_publication_item_baseline_changed";
+    private const string LiveItemBaselineMismatchCode =
+        "mortal_wound_treatment_publication_live_item_baseline_mismatch";
 
     private static readonly HashSet<string> TreatmentItemAllowedResponsePropertyNames =
         new(
@@ -1166,6 +1168,245 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
     }
 
+    [Theory]
+    [InlineData("npc_authority")]
+    [InlineData("npc_trade_pending_bytes")]
+    [InlineData("training_pending_bytes")]
+    public void GuaranteedResourceOnlyTreatment_PostSealNpcDependencyDriftRejectsBeforeWritesAndCanRetry(
+        string axis)
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "resource_only_post_seal_npc_dependency_" + axis);
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var resourceAuthority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Null(resourceAuthority.ItemPublicationAuthority);
+        var originalTree = CaptureResolverFixtureTree(fixture.Root);
+
+        MutateFinalBaselineAuthorityInput(fixture, axis);
+        var driftedTree = CaptureResolverFixtureTree(fixture.Root);
+        var expectedPath = FinalBaselineAuthorityInputPath(axis);
+        fixture.ReleaseLeaseForExternalDistribution();
+        Exception? exception;
+        try
+        {
+            exception = Record.Exception(() =>
+                AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                        fixture.FileSystem,
+                        new CanonicalStateNormalizer(
+                            fixture.FileSystem,
+                            NullLogger<CanonicalStateNormalizer>.Instance),
+                        new ValidationService(
+                            fixture.FileSystem,
+                            NullLogger<ValidationService>.Instance),
+                        new Dictionary<string, string>(StringComparer.Ordinal))
+                    .GetAwaiter()
+                    .GetResult());
+        }
+        finally
+        {
+            fixture.ReacquireLeaseAfterExternalDistribution();
+        }
+
+        var invalid = Assert.IsType<InvalidDataException>(exception);
+        Assert.Contains(expectedPath, invalid.Message, StringComparison.Ordinal);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, driftedTree);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+        Assert.Equal(
+            "held",
+            Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request)
+                .ResourceAuthority.ReservationDisposition);
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+
+        RestoreResolverFixtureTree(fixture, originalTree);
+        fixture.RestartForReplay();
+        var restored = Assert.Single(AssertValidPersistedCatalog(
+            RestoreCurrentPersistedTreatmentCatalog(fixture),
+            "resource-only post-seal dependency retry"));
+        var retryFlow = RehydratePersistedTreatment(
+            fixture,
+            "guaranteed",
+            restored);
+        var retryPlan = ComposeResourcePublication(fixture, retryFlow, response);
+        using var publication = PublishCachedResourcePlanOpen(
+            fixture,
+            retryFlow,
+            retryPlan);
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        publication.CompleteAtFullPipelineEnd();
+    }
+
+    [Fact]
+    public void GuaranteedResourceOnlyTreatment_PostOrdinaryItemBaselineDriftRollsBackAndRearmsExactPlan()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true);
+        var observer = new ResourceOnlyFinalBaselineDriftObserver();
+        using var fixture = AcceptedStateFixture.Create(
+            scenario,
+            new FileSystemManagerHooks
+            {
+                AfterCanonicalMutationBoundaryValidatedAsync =
+                    observer.AfterMutationBoundaryValidatedAsync
+            });
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "resource_only_live_item_baseline_drift");
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var resourceAuthority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Null(resourceAuthority.ItemPublicationAuthority);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var originalBinding,
+            out var cached));
+        Assert.Same(plan, cached.Plan);
+        var before = CaptureResolverFixtureTree(fixture.Root);
+        observer.Arm(
+            fixture.FileSystem,
+            resourceAuthority.ItemPublicationBaseline,
+            NpcCoreChangesContract.NpcCorePath);
+
+        fixture.ReleaseLeaseForExternalDistribution();
+        Exception? exception;
+        try
+        {
+            exception = Record.Exception(() =>
+                AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                        fixture.FileSystem,
+                        new CanonicalStateNormalizer(
+                            fixture.FileSystem,
+                            NullLogger<CanonicalStateNormalizer>.Instance),
+                        new ValidationService(
+                            fixture.FileSystem,
+                            NullLogger<ValidationService>.Instance),
+                        new Dictionary<string, string>(StringComparer.Ordinal))
+                    .GetAwaiter()
+                    .GetResult());
+        }
+        finally
+        {
+            fixture.ReacquireLeaseAfterExternalDistribution();
+        }
+
+        Assert.True(observer.Fired, observer.DescribeFailure());
+        Assert.True(observer.OnlyCurrentBaselineWriteRemainedBeforeDrift);
+        Assert.InRange(observer.CompletedMutationBoundariesBeforeDrift, 7, int.MaxValue);
+        var invalid = Assert.IsType<InvalidDataException>(exception);
+        Assert.Contains(LiveItemBaselineMismatchCode, invalid.Message,
+            StringComparison.Ordinal);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, before);
+        AssertExactCachedPlanAndBinding(fixture, plan, originalBinding);
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+
+        using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        publication.CompleteAtFullPipelineEnd();
+    }
+
+    [Fact]
+    public void GuaranteedResourceOnlyTreatment_PostTailEffectAuthorityDriftRollsBackAndRearmsExactPlan()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true);
+        var observer = new ResourceOnlyFinalBaselineDriftObserver(
+            driftNpcActorIdentity: true);
+        using var fixture = AcceptedStateFixture.Create(
+            scenario,
+            new FileSystemManagerHooks
+            {
+                AfterCanonicalMutationBoundaryValidatedAsync =
+                    observer.AfterMutationBoundaryValidatedAsync
+            });
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "resource_only_post_tail_effect_authority_drift");
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var resourceAuthority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Null(resourceAuthority.ItemPublicationAuthority);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var originalBinding,
+            out var cached));
+        Assert.Same(plan, cached.Plan);
+        var before = CaptureResolverFixtureTree(fixture.Root);
+        var resourceSpendsBefore =
+            ReadTreatmentResourceSpendTransitions(fixture).Count;
+        observer.Arm(
+            fixture.FileSystem,
+            resourceAuthority.ItemPublicationBaseline,
+            NpcCoreChangesContract.NpcCorePath);
+
+        fixture.ReleaseLeaseForExternalDistribution();
+        Exception? exception;
+        try
+        {
+            exception = Record.Exception(() =>
+                AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                        fixture.FileSystem,
+                        new CanonicalStateNormalizer(
+                            fixture.FileSystem,
+                            NullLogger<CanonicalStateNormalizer>.Instance),
+                        new ValidationService(
+                            fixture.FileSystem,
+                            NullLogger<ValidationService>.Instance),
+                        new Dictionary<string, string>(StringComparer.Ordinal))
+                    .GetAwaiter()
+                    .GetResult());
+        }
+        finally
+        {
+            fixture.ReacquireLeaseAfterExternalDistribution();
+        }
+
+        Assert.True(observer.Fired, observer.DescribeFailure());
+        Assert.True(observer.OnlyCurrentBaselineWriteRemainedBeforeDrift);
+        var invalid = Assert.IsType<InvalidDataException>(exception);
+        Assert.Contains(
+            "effect target authority catalog",
+            invalid.Message,
+            StringComparison.Ordinal);
+        AssertResolverFixtureTreeUnchanged(fixture.Root, before);
+        AssertExactCachedPlanAndBinding(fixture, plan, originalBinding);
+        Assert.Equal(resourceSpendsBefore,
+            ReadTreatmentResourceSpendTransitions(fixture).Count);
+        Assert.Equal(10, ReadPlayerEnergy(fixture));
+
+        using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
+        Assert.Equal(8, ReadPlayerEnergy(fixture));
+        publication.CompleteAtFullPipelineEnd();
+        Assert.Equal(
+            resourceSpendsBefore + 1,
+            ReadTreatmentResourceSpendTransitions(fixture).Count);
+    }
+
     [Fact]
     public void GuaranteedPlayerItemConsumption_NpcTradeDispositionIsSealedByNpcTailOwnership()
     {
@@ -1240,6 +1481,437 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.False(HasNpcTradeTailBehaviorReceipt(skippedNpcRoot));
         Assert.True(HasNpcTradeTailBehaviorReceipt(appliedNpcRoot));
         Assert.False(JsonNode.DeepEquals(skippedNpcRoot, appliedNpcRoot));
+    }
+
+    [Fact]
+    public void GuaranteedResourceOnlyTreatment_AuthenticatesNpcTradeDispositionWithoutItemPublication()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 });
+
+        object skipAuthority;
+        using (var fixture = AcceptedStateFixture.Create(scenario))
+        {
+            fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            SeedNpcTradeTailBehaviorInput(fixture);
+            var flow = PersistAndRehydrateResourcePublication(
+                fixture,
+                scenario,
+                "resource_only_npc_trade_disposition");
+            var plan = ComposeResourcePublication(fixture, flow);
+            skipAuthority = Assert.IsType<
+                MortalWoundTreatmentResourcePublicationAuthority>(
+                plan.TreatmentResourcePublicationAuthority);
+            Assert.Null(((MortalWoundTreatmentResourcePublicationAuthority)
+                skipAuthority).ItemPublicationAuthority);
+            using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.True(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.Equal(0, CountNpcTradeTailBehaviorReceipts(publishedNpcRoot));
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        object applyAuthority;
+        using (var fixture = AcceptedStateFixture.Create(scenario))
+        {
+            fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+            SeedNpcTradeTailBehaviorInput(fixture);
+            var flow = PersistAndRehydrateResourcePublication(
+                fixture,
+                scenario,
+                "resource_only_npc_trade_disposition");
+            var plan = ComposeResourcePublication(
+                fixture,
+                flow,
+                CreateNpcSkillOnlyResponse(fixture));
+            applyAuthority = Assert.IsType<
+                MortalWoundTreatmentResourcePublicationAuthority>(
+                plan.TreatmentResourcePublicationAuthority);
+            Assert.Null(((MortalWoundTreatmentResourcePublicationAuthority)
+                applyAuthority).ItemPublicationAuthority);
+            using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.False(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.Equal(1, CountNpcTradeTailBehaviorReceipts(publishedNpcRoot));
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        var dispositionProperty = Assert.Single(
+            skipAuthority.GetType().GetProperties(
+                BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic),
+            property => property.Name == "NpcTradeDisposition");
+        Assert.Equal(
+            "SkipUntouchedTreatmentContinuation",
+            Convert.ToString(dispositionProperty.GetValue(skipAuthority)));
+        Assert.Equal(
+            "Apply",
+            Convert.ToString(dispositionProperty.GetValue(applyAuthority)));
+        Assert.NotEqual(
+            ReadRequiredStringProperty(skipAuthority, "AuthorityFingerprint"),
+            ReadRequiredStringProperty(applyAuthority, "AuthorityFingerprint"));
+
+        var dispositionField = skipAuthority.GetType().GetField(
+            "<NpcTradeDisposition>k__BackingField",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(dispositionField);
+        dispositionField!.SetValue(
+            skipAuthority,
+            MortalItemNpcTradeTailDisposition.Apply);
+        Assert.False(((MortalWoundTreatmentResourcePublicationAuthority)
+            skipAuthority).HasValidSeal());
+
+        var effectBeforeField = applyAuthority.GetType().GetField(
+            "_effectSourceBeforeFingerprint",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var effectProofField = applyAuthority.GetType().GetField(
+            "_normalizedEffectSourceFingerprint",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(effectBeforeField);
+        Assert.NotNull(effectProofField);
+        var exactEffectBefore = Assert.IsType<string>(
+            effectBeforeField!.GetValue(applyAuthority));
+        var exactEffectSuccessor = Assert.IsType<string>(
+            effectProofField!.GetValue(applyAuthority));
+        var typedApplyAuthority =
+            (MortalWoundTreatmentResourcePublicationAuthority)applyAuthority;
+        Assert.True(typedApplyAuthority.ProvesNormalizedEffectSourceTransition(
+            exactEffectBefore,
+            exactEffectSuccessor));
+        Assert.False(typedApplyAuthority.ProvesNormalizedEffectSourceTransition(
+            B4Fingerprint("tampered_resource_only_effect_candidate_before"),
+            exactEffectSuccessor));
+        Assert.False(typedApplyAuthority.ProvesNormalizedEffectSourceTransition(
+            exactEffectBefore,
+            B4Fingerprint("tampered_resource_only_effect_candidate_successor")));
+        effectProofField!.SetValue(
+            applyAuthority,
+            B4Fingerprint("tampered_resource_only_effect_successor"));
+        Assert.False(typedApplyAuthority.HasValidSeal());
+    }
+
+    [Fact]
+    public void GuaranteedResourceOnlyTreatment_ItemPhaseDeltaUsesFrozenNpcBaseline()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        response.NPCActiveSkillChanges = Array.Empty<JsonElement>();
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "resource_only_item_phase_delta");
+
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var resourceAuthority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Null(resourceAuthority.ItemPublicationAuthority);
+        Assert.Equal(
+            MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation,
+            resourceAuthority.NpcTradeDisposition);
+        AssertResourceOnlyEffectTargetAuthorityRemainsExact(
+            fixture,
+            plan,
+            resourceAuthority);
+        var expectedNpcRoot = Assert.IsType<JsonObject>(
+            resourceAuthority.ItemPublicationBaseline.FinalCarrierRoots[
+                NpcCoreChangesContract.NpcCorePath]);
+
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+            Assert.Equal(8, fixture.ReadNpcItemCount("antibiotic_dose"));
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.False(publishedNpcRoot.ContainsKey(
+                NpcCoreChangesContract.PropertyName));
+            Assert.True(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.Equal(0, CountNpcTradeReceipts(
+                publishedNpcRoot,
+                "trade_baseline_request"));
+            Assert.True(
+                JsonNode.DeepEquals(expectedNpcRoot, publishedNpcRoot),
+                "Resource-only publication diverged from its sealed final NPC baseline.");
+            publication.CompleteAtFullPipelineEnd();
+        }
+    }
+
+    [Fact]
+    public void GuaranteedResourceOnlyTreatment_NpcSkillRebasesOnSealedItemPhase()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "resource_only_npc_skill_rebase");
+
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var resourceAuthority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Null(resourceAuthority.ItemPublicationAuthority);
+        Assert.Equal(
+            MortalItemNpcTradeTailDisposition.Apply,
+            resourceAuthority.NpcTradeDisposition);
+
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+            Assert.Equal(8, fixture.ReadNpcItemCount("antibiotic_dose"));
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.False(publishedNpcRoot.ContainsKey(
+                NpcCoreChangesContract.PropertyName));
+            Assert.False(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.Equal(1, CountNpcTradeReceipts(
+                publishedNpcRoot,
+                "trade_baseline_request"));
+            var medic = Assert.Single(
+                publishedNpcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+                actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+            var skill = Assert.Single(
+                medic["activeSkills"]!.AsArray().OfType<JsonObject>(),
+                value => value["skillId"]?.GetValue<string>() ==
+                         "skill_field_medicine_npc_01");
+            Assert.Equal(
+                "B.2 skill projection applied after ordinary baseline",
+                skill["displayName"]!.GetValue<string>());
+            publication.CompleteAtFullPipelineEnd();
+        }
+    }
+
+    [Fact]
+    public void NpcTradeTreatmentFallback_SkipsPendingAndOrdinaryTurnApplies()
+    {
+        Assert.Equal(
+            MortalItemNpcTradeTailDisposition.SkipUntouchedTreatmentContinuation,
+            MortalItemNpcTradeTailPolicy.SelectRuntimeDisposition(
+                hasTreatmentContinuation: true,
+                authenticatedDisposition: null));
+        Assert.Equal(
+            MortalItemNpcTradeTailDisposition.Apply,
+            MortalItemNpcTradeTailPolicy.SelectRuntimeDisposition(
+                hasTreatmentContinuation: false,
+                authenticatedDisposition: null));
+        Assert.Equal(
+            MortalItemNpcTradeTailDisposition.Apply,
+            MortalItemNpcTradeTailPolicy.SelectRuntimeDisposition(
+                hasTreatmentContinuation: true,
+                authenticatedDisposition: MortalItemNpcTradeTailDisposition.Apply));
+
+        var normalizerSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                FindRepositoryRootForB4SourceGuard(),
+                "BookOfEternityClient",
+                "Services",
+                "CanonicalStateNormalizer",
+                "CanonicalStateNormalizer.Npcs.cs")));
+        var npcCore = ExtractB4MethodSource(
+            normalizerSource,
+            "private async Task NormalizeNpcCoreChangesAsync(");
+        Assert.Contains("TreatmentResourcePublicationAuthority", npcCore);
+        Assert.Contains("ComposeNpcItemPhaseComparisonBaseline", npcCore);
+        Assert.DoesNotContain("ItemPublicationAuthority", npcCore);
+        var npcTrade = ExtractB4MethodSource(
+            normalizerSource,
+            "private async Task NormalizeNpcTradeCoreAsync(");
+        Assert.Contains("TreatmentResourcePublicationAuthority", npcTrade);
+        Assert.Contains("NpcTradeDisposition", npcTrade);
+        Assert.Contains("SelectRuntimeDisposition", npcTrade);
+        Assert.DoesNotContain("OwnerCompanionAfterImages", npcTrade);
+
+        var effectSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                FindRepositoryRootForB4SourceGuard(),
+                "BookOfEternityClient",
+                "Services",
+                "CanonicalStateNormalizer",
+                "CanonicalStateNormalizer.Effects.cs")));
+        var effectBinding = ExtractB4MethodSource(
+            effectSource,
+            "private async Task ValidateEffectPlanPublicationBindingAsync(");
+        Assert.Contains(
+            "MortalWoundTreatmentResourcePublicationAuthority",
+            effectBinding);
+        Assert.Contains(
+            "resourcePublicationAuthority?.ProvesNormalizedEffectSourceTransition",
+            effectBinding);
+        Assert.DoesNotContain("itemPublicationAuthority", effectBinding);
+        var targetGateStart = effectBinding.IndexOf(
+            "plan.TargetAuthorityFingerprint",
+            StringComparison.Ordinal);
+        var targetGateEnd = effectBinding.IndexOf(
+            "var issues",
+            targetGateStart,
+            StringComparison.Ordinal);
+        Assert.True(targetGateStart >= 0 && targetGateEnd > targetGateStart);
+        Assert.DoesNotContain(
+            "resourcePublicationAuthority",
+            effectBinding[targetGateStart..targetGateEnd]);
+
+        var acceptedMechanicsSource = StripB4CSharpCommentsAndLiterals(
+            File.ReadAllText(Path.Combine(
+                FindRepositoryRootForB4SourceGuard(),
+                "BookOfEternityClient",
+                "Services",
+                "CanonicalStateNormalizer",
+                "CanonicalStateNormalizer.AcceptedMechanics.cs")));
+        var commonPublication = ExtractB4MethodSource(
+            acceptedMechanicsSource,
+            "private async Task<AcceptedMechanicsPlan?> PublishAcceptedMechanicsAsync(");
+        var effectValidationStart = commonPublication.IndexOf(
+            "ValidateEffectPlanPublicationBindingAsync(",
+            StringComparison.Ordinal);
+        var liveBaselineStart = commonPublication.IndexOf(
+            "ValidateMortalItemFinalPublicationBaselineAsync(plan)",
+            effectValidationStart,
+            StringComparison.Ordinal);
+        Assert.True(effectValidationStart >= 0 &&
+                    liveBaselineStart > effectValidationStart);
+        var effectFailureCatch =
+            commonPublication[effectValidationStart..liveBaselineStart];
+        Assert.Contains("if (treatmentPublicationReceipt is null)",
+            effectFailureCatch);
+        Assert.Contains("InvalidateAcceptedMechanicsHandoffs()",
+            effectFailureCatch);
+
+        var baselineSource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                FindRepositoryRootForB4SourceGuard(),
+                "BookOfEternityClient",
+                "Services",
+                "CanonicalStateNormalizer",
+                "CanonicalStateNormalizer.MortalItemPublicationBaseline.cs")));
+        var baselineValidation = ExtractB4MethodSource(
+            baselineSource,
+            "private async Task ValidateMortalItemFinalPublicationBaselineAsync(");
+        Assert.Contains("TreatmentResourcePublicationAuthority", baselineValidation);
+        Assert.Contains("resourceAuthority.ItemPublicationBaseline", baselineValidation);
+        Assert.DoesNotContain("if (itemAuthority is null)", baselineValidation);
+    }
+
+    [Fact]
+    public void NpcTradeDisposition_SameTurnReferenceUsesProjectedCanonicalCarrier()
+    {
+        const string itemRef = "new_item_same_turn_treatment";
+        const string itemId = "itm_same_turn_treatment";
+        var constructor = Assert.Single(
+            typeof(MortalWoundTreatmentResourceConsumptionIntent).GetConstructors(
+                BindingFlags.Instance | BindingFlags.NonPublic));
+        var consumption = Assert.IsType<
+            MortalWoundTreatmentResourceConsumptionIntent>(constructor.Invoke(
+            new object?[]
+            {
+                "common",
+                null,
+                1,
+                "item_quantity",
+                itemRef,
+                "mortal_world",
+                "player",
+                "player_current",
+                1,
+                B4Fingerprint("same_turn_claim"),
+                B4Fingerprint("same_turn_intent")
+            }));
+        var item = MortalItemTestFixture.CreateCanonicalRootAtTurn(
+            itemId,
+            42,
+            "npc_acquisition",
+            "npc_inventory_add",
+            "npc_inventory_add:42:0:field_medic_01",
+            name: "Same-turn projected treatment item");
+        var acceptedOwner = new MortalItemAcceptedTurnOwner(
+            itemId,
+            itemRef,
+            InventoryEquipmentService.ItemsPath,
+            InventoryEquipmentService.ItemsPath + ".UpdateInventory[0]",
+            new MortalItemCarrierCoordinate(
+                "player_inventory",
+                "player",
+                null,
+                Array.Empty<string>()),
+            item.DeepClone().AsObject(),
+            SameTurn: true);
+        var projectedRoots = MortalItemCanonicalProjectionPlanner.ProjectionRootPaths
+            .ToDictionary(
+                static path => path,
+                static _ => (JsonNode?)null,
+                StringComparer.Ordinal);
+        projectedRoots[InventoryEquipmentService.ItemsPath] = new JsonObject
+        {
+            ["items"] = new JsonArray()
+        };
+        projectedRoots[NpcCoreChangesContract.NpcCorePath] = new JsonObject
+        {
+            ["NPCsInScene"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "field_medic_01",
+                ["inventory"] = new JsonArray(item.DeepClone())
+            })
+        };
+        projectedRoots[MortalItemAcceptedTransferCatalog.NpcCommandsPath] =
+            new JsonObject();
+
+        Assert.True(MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(
+            ownsNpcSkillProjection: false,
+            new[] { consumption },
+            new[] { acceptedOwner },
+            projectedRoots,
+            out var ownsNpcRoot));
+        Assert.True(ownsNpcRoot);
+
+        var confusableOwner = acceptedOwner with
+        {
+            ItemId = "itm_same_turn_treatment_confusable",
+            ItemRef = itemRef.ToUpperInvariant()
+        };
+        Assert.False(MortalItemNpcTradeTailPolicy.TryPredictNpcRootOwnership(
+            ownsNpcSkillProjection: false,
+            new[] { consumption },
+            new[] { acceptedOwner, confusableOwner },
+            projectedRoots,
+            out _));
+
+        var policySource = StripB4CSharpCommentsAndLiterals(File.ReadAllText(
+            Path.Combine(
+                FindRepositoryRootForB4SourceGuard(),
+                "BookOfEternityClient",
+                "Services",
+                "MortalItemNpcTradeTailPolicy.cs")));
+        var resolver = ExtractB4MethodSource(
+            policySource,
+            "private static bool TryResolveCanonicalItemId(");
+        Assert.Contains("owner.SameTurn", resolver);
+        Assert.Contains("owner.ItemRef", resolver);
+        Assert.Contains("exactOwner.ItemId", resolver);
+        Assert.DoesNotContain("exactOwner.FilePath", resolver);
+        var predictor = ExtractB4MethodSource(
+            policySource,
+            "internal static bool TryPredictNpcRootOwnership(");
+        Assert.Contains("TryResolveCanonicalItemId", predictor);
+        Assert.Contains("exactOccurrence!.FilePath", predictor);
     }
 
     [Fact]
@@ -1321,6 +1993,126 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(
             finalizedResourceTransitions,
             ReadResourceHistory(fixture).Transitions.Count);
+    }
+
+    [Fact]
+    public void GuaranteedPlayerItemTransferredToNpcBeforeConsumption_UsesProjectedNpcOwnership()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includePlayerItem: true,
+            selectPlayerItem: true);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        var response = SeedFinalBaselineProductionInputs(fixture);
+        response.NPCActiveSkillChanges = Array.Empty<JsonElement>();
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "player_item_transferred_to_npc_before_consumption");
+
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var sealedPublication = ReadSealedTreatmentPublication(plan);
+        var baselineNpcRoot = Assert.IsType<JsonObject>(
+            sealedPublication.Baseline.Roots[NpcCoreChangesContract.NpcCorePath]);
+
+        Assert.Equal("Apply", sealedPublication.NpcTradeDisposition);
+        Assert.Equal(7, ReadPlanNpcItemCount(plan, "antibiotic_dose"));
+        Assert.False(baselineNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.Equal(1, CountNpcTradeReceipts(
+            baselineNpcRoot,
+            "trade_baseline_request"));
+        Assert.Equal(8, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        Assert.Equal(0, fixture.ReadNpcItemCount("antibiotic_dose"));
+
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+            Assert.Equal(7, fixture.ReadNpcItemCount("antibiotic_dose"));
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        var finalizedNpcRoot = ReadPublishedCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        fixture.PrepareFreshSnapshot("player_item_transferred_to_npc_replay");
+        fixture.RestartForReplay();
+
+        var replay = ProbePublishedTreatment(fixture, flow.Request);
+
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(
+            replay,
+            "Status")));
+        Assert.True(JsonNode.DeepEquals(
+            finalizedNpcRoot,
+            ReadPublishedCanonicalObject(fixture, NpcCoreChangesContract.NpcCorePath)));
+        Assert.Equal(0, fixture.ReadPlayerItemCount("antibiotic_dose"));
+        Assert.Equal(7, fixture.ReadNpcItemCount("antibiotic_dose"));
+    }
+
+    [Fact]
+    public void GuaranteedNpcItemTransferredToPlayerBeforeConsumption_UsesProjectedPlayerOwnership()
+    {
+        var scenario = CreateGuaranteedResourcePublicationScenario(
+            resourceQuantities: new[] { 2 },
+            selectedResourceOrder: new[] { 0 },
+            includeReusableItem: true,
+            selectReusableItem: true,
+            reusableItemCount: 2);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.SetCanonicalPlayerEnergyForResourcePublicationTest(10);
+        SeedNpcTradeTailBehaviorInput(fixture);
+        var response = SeedNpcItemTransferToPlayer(fixture, "reusable_field_kit");
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "npc_item_transferred_to_player_before_consumption");
+
+        var plan = ComposeResourcePublication(fixture, flow, response);
+        var sealedPublication = ReadSealedTreatmentPublication(plan);
+        var baselineNpcRoot = Assert.IsType<JsonObject>(
+            sealedPublication.Baseline.Roots[NpcCoreChangesContract.NpcCorePath]);
+
+        Assert.Equal(
+            "SkipUntouchedTreatmentContinuation",
+            sealedPublication.NpcTradeDisposition);
+        Assert.True(baselineNpcRoot.ContainsKey(
+            NpcTradeRequestState.UpdateReceiptsProperty));
+        Assert.Equal(0, CountNpcTradeTailBehaviorReceipts(baselineNpcRoot));
+        Assert.Equal(0, fixture.ReadPlayerItemCount("reusable_field_kit"));
+        Assert.Equal(2, fixture.ReadNpcItemCount("reusable_field_kit"));
+
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        {
+            Assert.Equal(1, fixture.ReadPlayerItemCount("reusable_field_kit"));
+            Assert.Equal(0, fixture.ReadNpcItemCount("reusable_field_kit"));
+            var publishedNpcRoot = ReadPublishedCanonicalObject(
+                fixture,
+                NpcCoreChangesContract.NpcCorePath);
+            Assert.True(publishedNpcRoot.ContainsKey(
+                NpcTradeRequestState.UpdateReceiptsProperty));
+            Assert.Equal(0, CountNpcTradeTailBehaviorReceipts(publishedNpcRoot));
+            publication.CompleteAtFullPipelineEnd();
+        }
+
+        var finalizedNpcRoot = ReadPublishedCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        fixture.PrepareFreshSnapshot("npc_item_transferred_to_player_replay");
+        fixture.RestartForReplay();
+
+        var replay = ProbePublishedTreatment(fixture, flow.Request);
+
+        Assert.Equal("ExactReplay", Convert.ToString(ReadRequiredProperty(
+            replay,
+            "Status")));
+        Assert.True(JsonNode.DeepEquals(
+            finalizedNpcRoot,
+            ReadPublishedCanonicalObject(fixture, NpcCoreChangesContract.NpcCorePath)));
+        Assert.Equal(1, fixture.ReadPlayerItemCount("reusable_field_kit"));
+        Assert.Equal(0, fixture.ReadNpcItemCount("reusable_field_kit"));
     }
 
     [Fact]
@@ -4107,6 +4899,54 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
     }
 
+    private static void AssertResourceOnlyEffectTargetAuthorityRemainsExact(
+        AcceptedStateFixture fixture,
+        AcceptedMechanicsPlan plan,
+        MortalWoundTreatmentResourcePublicationAuthority resourceAuthority)
+    {
+        var effectPlan = Assert.IsType<EffectAcceptedTurnPlan>(plan.EffectPlan);
+        var baseline = resourceAuthority.ItemPublicationBaseline;
+        var sourceRoots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
+        {
+            if (baseline.FinalCarrierRoots.TryGetValue(path, out var projected))
+            {
+                sourceRoots[path] = projected?.DeepClone();
+                continue;
+            }
+            var physical = fixture.FileSystem.ResolvePath(path);
+            sourceRoots[path] = File.Exists(physical)
+                ? JsonNode.Parse(ReadCanonicalBytes(fixture, path).AsSpan())
+                : null;
+        }
+        var target = EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(
+            effectPlan.AcceptedCarrierBaselines,
+            sourceRoots);
+        Assert.Empty(target.Issues);
+        Assert.Equal(
+            effectPlan.TargetAuthorityFingerprint,
+            target.CanonicalFingerprint);
+
+        var driftedRoots = sourceRoots.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value?.DeepClone(),
+            StringComparer.Ordinal);
+        var npcRoot = Assert.IsType<JsonObject>(
+            driftedRoots[NpcCoreChangesContract.NpcCorePath]);
+        var actor = Assert.Single(
+            npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            value => value["NPCId"]?.GetValue<string>() == "field_medic_01");
+        actor["NPCId"] = "field_medic_drifted";
+        var driftedTarget = EffectAcceptedTurnInputComposer
+            .BuildCanonicalTargetAuthority(
+                effectPlan.AcceptedCarrierBaselines,
+                driftedRoots);
+        Assert.Empty(driftedTarget.Issues);
+        Assert.NotEqual(
+            effectPlan.TargetAuthorityFingerprint,
+            driftedTarget.CanonicalFingerprint);
+    }
+
     private static void SeedNpcTradeTailBehaviorInput(
         AcceptedStateFixture fixture)
     {
@@ -4136,15 +4976,74 @@ public sealed partial class MortalWoundTreatmentResolverTests
         => CountNpcTradeTailBehaviorReceipts(npcRoot) != 0;
 
     private static int CountNpcTradeTailBehaviorReceipts(JsonObject npcRoot)
+        => CountNpcTradeReceipts(npcRoot, "trade_tail_disposition_request");
+
+    private static int CountNpcTradeReceipts(JsonObject npcRoot, string requestId)
     {
         var medic = Assert.Single(
             npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
             actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
         return medic[NpcTradeRequestState.ReceiptsProperty] is JsonArray receipts
             ? receipts.OfType<JsonObject>().Count(receipt =>
-                receipt["requestId"]?.GetValue<string>() ==
-                "trade_tail_disposition_request")
+                receipt["requestId"]?.GetValue<string>() == requestId)
             : 0;
+    }
+
+    private static GameResponse SeedNpcItemTransferToPlayer(
+        AcceptedStateFixture fixture,
+        string itemId)
+    {
+        var npcRoot = ReadCanonicalObject(
+            fixture,
+            NpcCoreChangesContract.NpcCorePath);
+        var medic = Assert.Single(
+            npcRoot["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+            actor => actor["NPCId"]?.GetValue<string>() == "field_medic_01");
+        var transferredItem = Assert.Single(
+                medic["inventory"]!.AsArray().OfType<JsonObject>(),
+                item => item["itemId"]?.GetValue<string>() == itemId)
+            .DeepClone()
+            .AsObject();
+        var playerRoot = ReadCanonicalObject(
+            fixture,
+            InventoryEquipmentService.ItemsPath);
+        var destinations = new JsonArray(transferredItem.DeepClone());
+        playerRoot["UpdateInventory"] = destinations.DeepClone();
+        WriteCanonicalBytes(
+            fixture,
+            InventoryEquipmentService.ItemsPath,
+            Encoding.UTF8.GetBytes(playerRoot.ToJsonString()));
+
+        var removals = new JsonArray(new JsonObject
+        {
+            ["NPCId"] = "field_medic_01",
+            ["NPCName"] = "Field medic",
+            ["itemId"] = itemId
+        });
+        WriteCanonicalBytes(
+            fixture,
+            MortalItemAcceptedTransferCatalog.NpcCommandsPath,
+            Encoding.UTF8.GetBytes(new JsonObject
+            {
+                ["NPCInventoryRemovals"] = removals.DeepClone()
+            }.ToJsonString()));
+
+        return new GameResponse
+        {
+            ActiveSkillChanges = Array.Empty<JsonElement>(),
+            RemoveActiveSkills = Array.Empty<string>(),
+            PassiveSkillChanges = Array.Empty<JsonElement>(),
+            RemovePassiveSkills = Array.Empty<string>(),
+            NPCActiveSkillChanges = Array.Empty<JsonElement>(),
+            NPCPassiveSkillChanges = Array.Empty<JsonElement>(),
+            UpdateInventory = ToResponseElements(destinations),
+            MoveInventoryItems = Array.Empty<JsonElement>(),
+            RemoveInventoryItems = Array.Empty<JsonElement>(),
+            NPCInventoryAdds = Array.Empty<JsonElement>(),
+            NPCInventoryUpdates = Array.Empty<JsonElement>(),
+            NPCInventoryRemovals = ToResponseElements(removals),
+            NPCEquipmentChanges = Array.Empty<JsonElement>()
+        };
     }
 
     private static GameResponse SeedFinalBaselineProductionInputs(
@@ -4487,6 +5386,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
         }
     }
+
+    private static string FinalBaselineAuthorityInputPath(string axis) => axis switch
+    {
+        "npc_authority" => "game_state/misc/characteristics.json",
+        "npc_trade_pending_bytes" => NpcTradeRequestState.PendingRequestPath,
+        "training_pending_bytes" => TrainingRequestState.PendingRequestPath,
+        _ => throw new ArgumentOutOfRangeException(nameof(axis), axis, null)
+    };
 
     private static void AppendCanonicalWhitespace(
         AcceptedStateFixture fixture,
@@ -6248,6 +7155,168 @@ public sealed partial class MortalWoundTreatmentResolverTests
             {
                 return false;
             }
+        }
+
+        private static JsonNode ParseCanonicalBytes(byte[] bytes)
+        {
+            var preamble = Encoding.UTF8.GetPreamble();
+            var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+            return JsonNode.Parse(bytes.AsSpan(offset))!;
+        }
+    }
+
+    private sealed class ResourceOnlyFinalBaselineDriftObserver
+    {
+        private readonly object _gate = new();
+        private readonly bool _driftNpcActorIdentity;
+        private FileSystemManager? _fileSystem;
+        private IReadOnlyDictionary<string, JsonNode?>? _expectedRoots;
+        private string? _driftPath;
+        private int _validatedMutationBoundaries;
+
+        internal bool Fired { get; private set; }
+        internal bool OnlyCurrentBaselineWriteRemainedBeforeDrift { get; private set; }
+        internal int CompletedMutationBoundariesBeforeDrift { get; private set; }
+
+        internal ResourceOnlyFinalBaselineDriftObserver(
+            bool driftNpcActorIdentity = false)
+        {
+            _driftNpcActorIdentity = driftNpcActorIdentity;
+        }
+
+        internal void Arm(
+            FileSystemManager fileSystem,
+            MortalItemPublicationBaselineResult baseline,
+            string driftPath)
+        {
+            ArgumentNullException.ThrowIfNull(fileSystem);
+            ArgumentNullException.ThrowIfNull(baseline);
+            ArgumentException.ThrowIfNullOrWhiteSpace(driftPath);
+            _fileSystem = fileSystem;
+            _expectedRoots = baseline.FinalCarrierRoots.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value?.DeepClone(),
+                StringComparer.Ordinal);
+            _driftPath = driftPath;
+            Assert.False(LiveRootsMatchExpected());
+        }
+
+        internal Task AfterMutationBoundaryValidatedAsync(string relativePath)
+        {
+            lock (_gate)
+            {
+                if (Fired)
+                    return Task.CompletedTask;
+
+                if (IsLastPendingBaselineWrite(relativePath))
+                {
+                    OnlyCurrentBaselineWriteRemainedBeforeDrift = true;
+                    CompletedMutationBoundariesBeforeDrift =
+                        _validatedMutationBoundaries;
+                    WriteDriftedRoot(relativePath);
+                    Fired = true;
+                }
+                _validatedMutationBoundaries++;
+            }
+            return Task.CompletedTask;
+        }
+
+        internal string DescribeFailure() =>
+            "The resource-only publication never reached the last write of its " +
+            "sealed 13-root ordinary item baseline before common publication.";
+
+        private bool IsLastPendingBaselineWrite(string relativePath)
+        {
+            if (_fileSystem is null ||
+                _expectedRoots is null ||
+                !_expectedRoots.ContainsKey(relativePath) ||
+                (_driftNpcActorIdentity && string.Equals(
+                    relativePath,
+                    _driftPath,
+                    StringComparison.Ordinal)))
+            {
+                return false;
+            }
+            var pendingWriteWasDifferent = false;
+            try
+            {
+                foreach (var pair in _expectedRoots)
+                {
+                    var matches = LiveRootMatches(pair.Key, pair.Value);
+                    if (string.Equals(pair.Key, relativePath, StringComparison.Ordinal))
+                    {
+                        pendingWriteWasDifferent = !matches;
+                        continue;
+                    }
+                    if (!matches)
+                        return false;
+                }
+                return pendingWriteWasDifferent;
+            }
+            catch (Exception exception) when (
+                exception is IOException or UnauthorizedAccessException or
+                    JsonException or InvalidOperationException)
+            {
+                return false;
+            }
+        }
+
+        private bool LiveRootsMatchExpected()
+        {
+            if (_fileSystem is null || _expectedRoots is null)
+                return false;
+            try
+            {
+                foreach (var pair in _expectedRoots)
+                {
+                    if (!LiveRootMatches(pair.Key, pair.Value))
+                        return false;
+                }
+                return true;
+            }
+            catch (Exception exception) when (
+                exception is IOException or UnauthorizedAccessException or
+                    JsonException or InvalidOperationException)
+            {
+                return false;
+            }
+        }
+
+        private bool LiveRootMatches(string path, JsonNode? expected)
+        {
+            var physical = _fileSystem!.ResolvePath(path);
+            return expected is null
+                ? !File.Exists(physical)
+                : File.Exists(physical) && JsonNode.DeepEquals(
+                    expected,
+                    ParseCanonicalBytes(File.ReadAllBytes(physical)));
+        }
+
+        private void WriteDriftedRoot(string pendingWritePath)
+        {
+            var driftPath = !string.Equals(
+                    pendingWritePath,
+                    _driftPath,
+                    StringComparison.Ordinal)
+                ? _driftPath!
+                : InventoryEquipmentService.ItemsPath;
+            var physical = _fileSystem!.ResolvePath(driftPath);
+            var root = ParseCanonicalBytes(File.ReadAllBytes(physical)).AsObject();
+            if (_driftNpcActorIdentity)
+            {
+                var actor = Assert.Single(
+                    root["NPCsInScene"]!.AsArray().OfType<JsonObject>(),
+                    value => value["NPCId"]?.GetValue<string>() ==
+                             "field_medic_01");
+                actor["NPCId"] = "field_medic_effect_authority_drift";
+            }
+            else
+            {
+                root["postSealPublicationDrift"] = true;
+            }
+            File.WriteAllBytes(
+                physical,
+                Encoding.UTF8.GetBytes(root.ToJsonString()));
         }
 
         private static JsonNode ParseCanonicalBytes(byte[] bytes)

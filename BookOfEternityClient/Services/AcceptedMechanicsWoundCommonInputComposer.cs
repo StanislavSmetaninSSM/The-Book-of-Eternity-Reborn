@@ -506,6 +506,51 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                     }
                     treatmentPlanSkillAfterImages = nonOverlappingSkillAfterImages;
                 }
+                else
+                {
+                    var treatmentBaseline = treatmentResourcePublicationAuthority
+                        .ItemPublicationBaseline;
+                    if (treatmentBaseline.FinalCarrierRoots.GetValueOrDefault(
+                            NpcCoreChangesContract.NpcCorePath) is not JsonObject
+                        finalNpcBaseline)
+                    {
+                        issues.Add(Issue(
+                            NpcCoreChangesContract.NpcCorePath,
+                            "mortal_wound_treatment_publication_item_authority_changed",
+                            "the exact sealed final NPC baseline",
+                            "missing final NPC baseline"));
+                    }
+                    else
+                    {
+                        var skillIssues = WoundAcceptedTurnPlanner
+                            .ComposeTreatmentSkillProjectionOnFinalItemBaseline(
+                                treatmentContinuationAuthority!,
+                                treatmentReservationAuthority!,
+                                finalNpcBaseline,
+                                out var rebasedSkillAfterImages,
+                                out _,
+                                out var rebasedSkillFingerprint);
+                        issues.AddRange(skillIssues);
+                        if (skillIssues.Count == 0 && !string.Equals(
+                                treatmentSkillProjectionFingerprint,
+                                rebasedSkillFingerprint,
+                                StringComparison.Ordinal))
+                        {
+                            issues.Add(Issue(
+                                NpcCoreChangesContract.NpcCorePath,
+                                "mortal_wound_treatment_publication_projection_mismatch",
+                                treatmentSkillProjectionFingerprint,
+                                rebasedSkillFingerprint));
+                        }
+                        treatmentPlanSkillAfterImages = rebasedSkillAfterImages;
+                    }
+                    if (issues.Count != 0)
+                    {
+                        return new AcceptedMechanicsWoundCommonInputCompositionResult(
+                            null,
+                            issues);
+                    }
+                }
             }
 
             var sourcesResult = ResourceMutationSourceCatalog.Create(
