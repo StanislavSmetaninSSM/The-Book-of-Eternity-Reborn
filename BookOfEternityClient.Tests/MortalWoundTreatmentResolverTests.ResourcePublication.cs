@@ -5573,7 +5573,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     private static ResourcePublicationTransactionScope PublishCachedResourcePlanOpen(
         AcceptedStateFixture fixture,
         TreatmentFlow flow,
-        AcceptedMechanicsPlan expectedPlan)
+        AcceptedMechanicsPlan expectedPlan,
+        bool requiresConfirmedResourceHold = true)
     {
         Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             fixture.FileSystem,
@@ -5624,10 +5625,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Assert.Empty(result.Issues);
             var plan = Assert.IsType<AcceptedMechanicsPlan>(result.MechanicsPlan);
             Assert.Same(expectedPlan, plan);
+            var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
             Assert.Equal(
-                "held",
-                Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request)
-                    .ResourceAuthority.ReservationDisposition);
+                requiresConfirmedResourceHold ? "held" : "not_required",
+                request.ResourceAuthority.ReservationDisposition);
             Assert.Empty(transaction.GetType().GetConstructors(
                 BindingFlags.Instance | BindingFlags.Public));
             var publishedTree = CaptureResolverFixtureTree(fixture.Root);
@@ -5635,7 +5636,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 fixture,
                 transaction,
                 "probe");
-            AssertConfirmedHeldTransactionProbe(flow, probe);
+            if (requiresConfirmedResourceHold)
+            {
+                AssertConfirmedHeldTransactionProbe(flow, probe);
+            }
+            else
+            {
+                AssertCoordinatedProcedureTransactionProbe(flow, probe);
+            }
             AssertResolverFixtureTreeUnchanged(fixture.Root, publishedTree);
             return scope;
         }
@@ -5872,6 +5880,29 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "ChangedCount")));
         Assert.Equal("ConfirmedHeld", Convert.ToString(
             ReadRequiredTransactionProperty(typed, "State")));
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var finalized = MortalWoundTreatmentResourceComposer.Finalize(resolution);
+        Assert.True(finalized.IsValid, DescribeIssues(finalized.Issues));
+        Assert.Equal(request.RequestFingerprint, Convert.ToString(
+            ReadRequiredTransactionProperty(typed, "RequestFingerprint")));
+        Assert.Equal(finalized.Finalization!.FinalizationFingerprint, Convert.ToString(
+            ReadRequiredTransactionProperty(typed, "FinalizationFingerprint")));
+    }
+
+    private static void AssertCoordinatedProcedureTransactionProbe(
+        TreatmentFlow flow,
+        object? result)
+    {
+        var typed = Assert.IsAssignableFrom<object>(result);
+        Assert.True(Assert.IsType<bool>(ReadRequiredTransactionProperty(
+            typed,
+            "IsValid")));
+        Assert.Empty(Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
+            ReadRequiredTransactionProperty(typed, "Issues")));
+        Assert.Equal(0, Assert.IsType<int>(ReadRequiredTransactionProperty(
+            typed,
+            "ChangedCount")));
         var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
         var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
         var finalized = MortalWoundTreatmentResourceComposer.Finalize(resolution);

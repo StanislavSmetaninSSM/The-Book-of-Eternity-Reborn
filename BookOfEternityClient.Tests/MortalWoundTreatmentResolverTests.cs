@@ -1498,15 +1498,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_disadvantage_uses_two_contiguous_dice",
             "procedure");
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = ResolveCurrentTreatment(
+        var flow = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_failed_consumption",
-            scenario.RouteId);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_failed_consumption",
+                scenario.RouteId),
+            "failed-attempt declared consumption");
         Assert.Equal("failed_attempt", Convert.ToString(ReadRequiredProperty(
             flow.Resolution,
             "ResultCategory")));
-        ComposeAndPublishTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();
         Assert.Equal("active", fixture.ReadCurrentWound().Lifecycle);
@@ -1576,11 +1579,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
             consumesSupply ? 2 : 1,
             fixture.ReadNpcItemCount("sterile_thread"));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
-        var flow = ResolveCurrentTreatment(
+        var flow = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_resource_release",
-            scenario.RouteId);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_resource_release",
+                scenario.RouteId),
+            "selected-supply finalization");
         Assert.Equal(expectedTrigger, Convert.ToString(ReadRequiredProperty(
             flow.Resolution,
             "ConsumptionTrigger")));
@@ -1592,7 +1598,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "reusable_field_kit",
             "sterile_thread");
 
-        ComposeAndPublishTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
 
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
@@ -1628,12 +1634,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure");
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var first = ResolveCurrentTreatment(
+        var first = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_publish_first_fate",
-            scenario.RouteId);
-        ComposeAndPublishTreatment(fixture, first);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_publish_first_fate",
+                scenario.RouteId),
+            "first Fate reaction");
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, first);
         Assert.Equal(new[] { "effect_fate_shield_newer" }, fixture.ReadActivePlayerEffectIds());
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
 
@@ -1642,17 +1651,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
             1_261,
             "publish_second_fate",
             new[] { 1, 17 });
-        var second = ResolveCurrentTreatment(
+        var second = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_publish_second_fate",
-            scenario.RouteId);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_publish_second_fate",
+                scenario.RouteId),
+            "second Fate reaction");
         Assert.Equal("effect_fate_shield_newer", Convert.ToString(ReadRequiredProperty(
             ReadRequiredProperty(
                 ReadRequiredProperty(second.Request, "ModeAuthority"),
                 "PreparedCriticalReaction"),
             "EffectId")));
-        ComposeAndPublishTreatment(fixture, second);
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, second);
         Assert.Empty(fixture.ReadActivePlayerEffectIds());
         Assert.Equal(0, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();
