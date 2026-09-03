@@ -193,6 +193,8 @@ public sealed class IntegrationTestBoundaryTests
             ["GmWorkerProposalStoreTests.cs"] = [ProcessIntegrationTrait],
             ["ImageServiceTests.cs"] = [ProcessIntegrationTrait],
             ["LocalWebUiBuiltFrontendSmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
+            ["GmWorkerLiveSmokeTests.cs"] = [ProcessIntegrationTrait],
+            ["LocalWebUiSmokeTests.cs"] = [E2ETrait],
             ["SaveLoadServiceTests.cs"] = [ProcessIntegrationTrait],
             [Path.Combine("WebUi", "BrowserMediaGenerationServiceTests.cs")] =
                 [ProcessIntegrationTrait],
@@ -213,7 +215,12 @@ public sealed class IntegrationTestBoundaryTests
         "ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs",
         "GuardianSystemRegressionTests.cs",
         "LocalWebUiHostTests.cs",
-        "ResourceConsoleBrowserParityTests.cs"
+        "ResourceConsoleBrowserParityTests.cs",
+        "MortalWoundRecoveryTests.cs",
+        "MortalWoundTreatmentCapabilityAuthorityTests.cs",
+        "QteSceneServiceTests.cs",
+        Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
+        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs")
     ];
 
     private static readonly IReadOnlyDictionary<string, string[]>

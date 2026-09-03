@@ -17,14 +17,21 @@ public sealed class FastTestBoundaryTests
     private const string TestSupportDirectory = "BookOfEternityClient.TestSupport";
     private const string TestSupportProjectFile = "BookOfEternityClient.TestSupport.csproj";
 
-    private static readonly string[] ReviewedHeavySources =
+    private static readonly string[] ReviewedHeavySourcePaths =
     [
         "AfterlifeSpiritualConflictValidationTests.cs",
         "GameEngineTurnLifecycleTests.cs",
         "GuardianSystemRegressionTests.cs",
         "FileSystemManagerTests.cs",
         "ConsoleE2ESmokeTests.cs",
-        "LocalWebUiBuiltFrontendSmokeTests.cs"
+        "LocalWebUiBuiltFrontendSmokeTests.cs",
+        "MortalWoundRecoveryTests.cs",
+        "MortalWoundTreatmentCapabilityAuthorityTests.cs",
+        "QteSceneServiceTests.cs",
+        "GmWorkerLiveSmokeTests.cs",
+        "LocalWebUiSmokeTests.cs",
+        Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
+        Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs")
     ];
 
     [Fact]
@@ -517,17 +524,17 @@ public sealed class FastTestBoundaryTests
         var integrationRoot = Path.Combine(TestRepoPaths.RepoRoot, IntegrationTestsDirectory);
         var supportRoot = Path.Combine(TestRepoPaths.RepoRoot, TestSupportDirectory);
 
-        foreach (var fileName in ReviewedHeavySources)
+        foreach (var relativePath in ReviewedHeavySourcePaths)
         {
             var matches = new[] { fastRoot, integrationRoot, supportRoot }
                 .SelectMany(root => Directory.EnumerateFiles(
                     root,
-                    fileName,
+                    Path.GetFileName(relativePath),
                     SearchOption.AllDirectories))
                 .Select(Path.GetFullPath)
                 .Order(StringComparer.OrdinalIgnoreCase)
                 .ToArray();
-            var expectedIntegrationPath = Path.GetFullPath(Path.Combine(integrationRoot, fileName));
+            var expectedIntegrationPath = Path.GetFullPath(Path.Combine(integrationRoot, relativePath));
 
             Assert.Equal(new[] { expectedIntegrationPath }, matches);
         }
