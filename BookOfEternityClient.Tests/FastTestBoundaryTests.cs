@@ -541,6 +541,51 @@ public sealed class FastTestBoundaryTests
     }
 
     [Fact]
+    public void QteDeterministicLogicSource_ExistsOnlyInFastAndIsFixtureFree()
+    {
+        const string fileName = "QteDeterministicLogicTests.cs";
+        var fastRoot = Path.Combine(TestRepoPaths.RepoRoot, FastTestsDirectory);
+        var integrationRoot = Path.Combine(TestRepoPaths.RepoRoot, IntegrationTestsDirectory);
+        var supportRoot = Path.Combine(TestRepoPaths.RepoRoot, TestSupportDirectory);
+        var expectedFastPath = Path.GetFullPath(Path.Combine(fastRoot, fileName));
+        var matches = new[] { fastRoot, integrationRoot, supportRoot }
+            .SelectMany(root => Directory.EnumerateFiles(
+                root,
+                fileName,
+                SearchOption.AllDirectories))
+            .Select(Path.GetFullPath)
+            .Order(StringComparer.OrdinalIgnoreCase)
+            .ToArray();
+
+        Assert.Equal(new[] { expectedFastPath }, matches);
+
+        var source = File.ReadAllText(expectedFastPath);
+        var forbiddenMarkers = new[]
+        {
+            "public QteDeterministicLogicTests(",
+            ": IDisposable",
+            "FileSystemManager",
+            "Path.GetTempPath(",
+            "private readonly",
+            "ILogger<",
+            "NullLogger<",
+            "IHost",
+            "WebApplication",
+            "[Trait(",
+            "QteNormalizerBackupDirectory",
+            "QteRuntimePath",
+            "CreateRuntimeCapableService(",
+            "CreateSaveLoadServiceAsync(",
+            ".WriteFileAtomicAsync(",
+            ".ReadFileAsync("
+        };
+
+        Assert.All(
+            forbiddenMarkers,
+            marker => Assert.DoesNotContain(marker, source, StringComparison.Ordinal));
+    }
+
+    [Fact]
     public void TestProjectTopology_SeparatesFastIntegrationAndSupportAssemblies()
     {
         var fastProject = ReadProject(FastTestsDirectory, FastTestsProjectFile);
