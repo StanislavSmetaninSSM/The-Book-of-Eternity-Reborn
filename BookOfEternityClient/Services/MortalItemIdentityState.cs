@@ -525,19 +525,19 @@ internal static class MortalItemIdentityState
                 "parentItemIds",
                 itemId,
                 issues);
-            ValidateOriginContinuity(previousEntry, currentEntry, itemId, issues);
-            ValidateOriginCreationRefContinuity(
-                previousEntry,
-                currentEntry,
-                itemId,
-                issues);
             ValidateTransitionContinuity(previousEntry, currentEntry, itemId, issues);
             ValidateAppendedTransitionQuantityContinuity(
                 previousEntry,
                 currentEntry,
                 itemId,
                 issues);
-            ValidateTransitionBackedStateChange(previousEntry, currentEntry, itemId, issues);
+            ValidateTransitionBackedStateChange(
+                previousEntry,
+                currentEntry,
+                itemId,
+                previous.EntriesByItemId,
+                current.EntriesByItemId,
+                issues);
             ValidateRetirementContinuity(previousEntry, currentEntry, itemId, issues);
         }
 
@@ -561,72 +561,6 @@ internal static class MortalItemIdentityState
             Describe(previous[field]),
             Describe(current[field]),
             itemId));
-    }
-
-    private static void ValidateOriginContinuity(
-        JsonObject previous,
-        JsonObject current,
-        string itemId,
-        List<ValidationIssue> issues)
-    {
-        var previousOrigins = ReadValidIdentitySet(previous["originMaterializationIds"]);
-        var currentOrigins = ReadValidIdentitySet(current["originMaterializationIds"]);
-        if (!previousOrigins.IsSubsetOf(currentOrigins))
-        {
-            issues.Add(Issue(
-                $"{StatePath}.entries[{itemId}].originMaterializationIds",
-                "mortal_item_identity_origin_history_rewrite",
-                "Accepted origin materialization history is append-only.",
-                string.Join(", ", previousOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                itemId));
-            return;
-        }
-
-        if (currentOrigins.Count > previousOrigins.Count &&
-            !string.Equals(ReadLastTransitionKind(current), "merge", StringComparison.Ordinal))
-        {
-            issues.Add(Issue(
-                $"{StatePath}.entries[{itemId}].originMaterializationIds",
-                "mortal_item_identity_origin_history_rewrite",
-                "Only an appended merge transition may extend origin materialization history.",
-                "unchanged origins or a merge-authorized ordinal union",
-                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                itemId));
-        }
-    }
-
-    private static void ValidateOriginCreationRefContinuity(
-        JsonObject previous,
-        JsonObject current,
-        string itemId,
-        List<ValidationIssue> issues)
-    {
-        var previousOrigins = ReadValidIdentitySet(previous["originCreationRefs"]);
-        var currentOrigins = ReadValidIdentitySet(current["originCreationRefs"]);
-        if (!previousOrigins.IsSubsetOf(currentOrigins))
-        {
-            issues.Add(Issue(
-                $"{StatePath}.entries[{itemId}].originCreationRefs",
-                "mortal_item_identity_origin_creation_history_rewrite",
-                "Accepted root creation-reference history is append-only.",
-                string.Join(", ", previousOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                itemId));
-            return;
-        }
-
-        if (currentOrigins.Count > previousOrigins.Count &&
-            !string.Equals(ReadLastTransitionKind(current), "merge", StringComparison.Ordinal))
-        {
-            issues.Add(Issue(
-                $"{StatePath}.entries[{itemId}].originCreationRefs",
-                "mortal_item_identity_origin_creation_history_rewrite",
-                "Only an appended merge transition may extend root creation-reference history.",
-                "unchanged references or a merge-authorized ordinal union",
-                string.Join(", ", currentOrigins.OrderBy(value => value, StringComparer.Ordinal)),
-                itemId));
-        }
     }
 
     private static void ValidateTransitionContinuity(
@@ -725,10 +659,35 @@ internal static class MortalItemIdentityState
             itemId));
     }
 
+    private sealed class TransitionCursor
+    {
+        internal TransitionCursor(
+            string? state,
+            JsonNode? carrier,
+            int quantity,
+            HashSet<string> materializationOrigins,
+            HashSet<string> creationOrigins)
+        {
+            State = state;
+            Carrier = carrier;
+            Quantity = quantity;
+            MaterializationOrigins = materializationOrigins;
+            CreationOrigins = creationOrigins;
+        }
+
+        internal string? State { get; set; }
+        internal JsonNode? Carrier { get; set; }
+        internal int Quantity { get; set; }
+        internal HashSet<string> MaterializationOrigins { get; set; }
+        internal HashSet<string> CreationOrigins { get; set; }
+    }
+
     private static void ValidateTransitionBackedStateChange(
         JsonObject previous,
         JsonObject current,
         string itemId,
+        IReadOnlyDictionary<string, JsonObject> previousEntries,
+        IReadOnlyDictionary<string, JsonObject> currentEntries,
         List<ValidationIssue> issues)
     {
         var protectedStateChanged =
@@ -737,100 +696,531 @@ internal static class MortalItemIdentityState
             !JsonNode.DeepEquals(previous["mergedIntoItemId"], current["mergedIntoItemId"]) ||
             !JsonNode.DeepEquals(previous["originMaterializationIds"], current["originMaterializationIds"]) ||
             !JsonNode.DeepEquals(previous["originCreationRefs"], current["originCreationRefs"]);
-        if (!protectedStateChanged)
-            return;
-
+        var cursor = CreateInitialTransitionCursor(previous);
         var previousTransitions = previous["transitions"] as JsonArray;
         var currentTransitions = current["transitions"] as JsonArray;
-        if (previousTransitions == null || currentTransitions == null ||
-            currentTransitions.Count <= previousTransitions.Count ||
-            currentTransitions[^1] is not JsonObject lastTransition)
+        var hasAppendedSuffix = previousTransitions != null &&
+                                currentTransitions != null &&
+                                currentTransitions.Count > previousTransitions.Count;
+        if (!hasAppendedSuffix)
         {
-            issues.Add(UnrecordedStateChangeIssue(itemId, previous, current));
+            ReportDerivedOriginMismatches(cursor, current, itemId, issues);
+            if (protectedStateChanged)
+                issues.Add(UnrecordedStateChangeIssue(itemId, previous, current));
             return;
         }
 
-        var previousState = ReadExactIdentity(previous["state"]);
-        var currentState = ReadExactIdentity(current["state"]);
-        var kind = ReadExactIdentity(lastTransition["kind"]);
-        var carrierChanged = !JsonNode.DeepEquals(
-            previous["currentCarrier"],
-            current["currentCarrier"]);
-        var valid = JsonNode.DeepEquals(
-            lastTransition["destinationCarrier"],
-            current["currentCarrier"]);
-        var reportedSpecificMismatch = false;
-        if (previousState == "active" && currentState == "active" && carrierChanged)
+        var valid = TryReplayTransitionSuffix(
+            previous,
+            current,
+            itemId,
+            previousEntries,
+            currentEntries,
+            currentTransitions!.Count,
+            new HashSet<string>(StringComparer.Ordinal),
+            issues,
+            out var reportedSpecificMismatch,
+            out cursor);
+        ReportDerivedOriginMismatches(cursor, current, itemId, issues);
+        if (!valid)
         {
-            valid &= string.Equals(kind, "transfer", StringComparison.Ordinal) &&
-                     JsonNode.DeepEquals(
-                         lastTransition["sourceCarrier"],
-                         previous["currentCarrier"]);
-            if (valid && !ValidateTransferTransitionContinuity(
-                    previous,
-                    lastTransition,
-                    itemId,
-                    issues))
-            {
-                valid = false;
-                reportedSpecificMismatch = true;
-            }
-        }
-        else if (previousState == "active" && currentState is "merged" or "consumed" or "destroyed")
-        {
-            var requiredKind = currentState switch
-            {
-                "merged" => "merge",
-                "consumed" => "consume",
-                "destroyed" => "destroy",
-                _ => string.Empty
-            };
-            valid &= string.Equals(kind, requiredKind, StringComparison.Ordinal) &&
-                     lastTransition["destinationCarrier"] == null;
+            if (!reportedSpecificMismatch)
+                issues.Add(UnrecordedStateChangeIssue(itemId, previous, current));
+            return;
         }
 
-        if (!valid && !reportedSpecificMismatch)
+        if (!string.Equals(
+                cursor.State,
+                ReadExactIdentity(current["state"]),
+                StringComparison.Ordinal) ||
+            !JsonNode.DeepEquals(cursor.Carrier, current["currentCarrier"]))
+        {
             issues.Add(UnrecordedStateChangeIssue(itemId, previous, current));
+        }
     }
 
-    private static bool ValidateTransferTransitionContinuity(
+    private static TransitionCursor CreateInitialTransitionCursor(JsonObject previous)
+    {
+        var quantity = -1;
+        if (previous["transitions"] is JsonArray { Count: > 0 } transitions &&
+            transitions[^1] is JsonObject lastTransition)
+        {
+            TryGetInt(lastTransition, "quantityAfter", out quantity);
+        }
+
+        return new TransitionCursor(
+            ReadExactIdentity(previous["state"]),
+            previous["currentCarrier"],
+            quantity,
+            ReadValidIdentitySet(previous["originMaterializationIds"]),
+            ReadValidIdentitySet(previous["originCreationRefs"]));
+    }
+
+    private static bool TryReplayTransitionSuffix(
         JsonObject previous,
+        JsonObject current,
+        string itemId,
+        IReadOnlyDictionary<string, JsonObject> previousEntries,
+        IReadOnlyDictionary<string, JsonObject> currentEntries,
+        int endExclusive,
+        HashSet<string> replayStack,
+        List<ValidationIssue>? issues,
+        out bool reportedSpecificMismatch,
+        out TransitionCursor cursor)
+    {
+        reportedSpecificMismatch = false;
+        cursor = CreateInitialTransitionCursor(previous);
+        if (previous["transitions"] is not JsonArray { Count: > 0 } previousTransitions ||
+            current["transitions"] is not JsonArray currentTransitions ||
+            cursor.Quantity < 0 ||
+            endExclusive < previousTransitions.Count ||
+            endExclusive > currentTransitions.Count)
+        {
+            return false;
+        }
+
+        for (var index = 0; index < previousTransitions.Count; index++)
+        {
+            if (!JsonNode.DeepEquals(previousTransitions[index], currentTransitions[index]))
+                return false;
+        }
+
+        var replayKey = $"{itemId}\u001f{endExclusive}";
+        if (!replayStack.Add(replayKey))
+            return false;
+
+        try
+        {
+            for (var index = previousTransitions.Count; index < endExclusive; index++)
+            {
+                var transitionReportedSpecificMismatch = false;
+                if (currentTransitions[index] is not JsonObject transition ||
+                    !TryApplyTransitionAtCursor(
+                        previousEntries,
+                        currentEntries,
+                        current,
+                        transition,
+                        index,
+                        itemId,
+                        cursor,
+                        replayStack,
+                        issues,
+                        out transitionReportedSpecificMismatch))
+                {
+                    reportedSpecificMismatch |= transitionReportedSpecificMismatch;
+                    return false;
+                }
+
+                reportedSpecificMismatch |= transitionReportedSpecificMismatch;
+            }
+
+            return true;
+        }
+        finally
+        {
+            replayStack.Remove(replayKey);
+        }
+    }
+
+    private static bool TryApplyTransitionAtCursor(
+        IReadOnlyDictionary<string, JsonObject> previousEntries,
+        IReadOnlyDictionary<string, JsonObject> currentEntries,
+        JsonObject current,
+        JsonObject transition,
+        int transitionIndex,
+        string itemId,
+        TransitionCursor cursor,
+        HashSet<string> replayStack,
+        List<ValidationIssue>? issues,
+        out bool reportedSpecificMismatch)
+    {
+        reportedSpecificMismatch = false;
+        if (!string.Equals(cursor.State, "active", StringComparison.Ordinal) ||
+            !TryGetInt(transition, "quantityBefore", out var quantityBefore) ||
+            !TryGetInt(transition, "quantityAfter", out var quantityAfter))
+        {
+            return false;
+        }
+
+        var kind = ReadExactIdentity(transition["kind"]);
+        if (string.Equals(kind, "transfer", StringComparison.Ordinal))
+        {
+            if (!IsValidTransferTransition(cursor, transition, itemId))
+            {
+                if (issues != null)
+                {
+                    ReportTransferTransitionMismatch(
+                        cursor,
+                        transition,
+                        itemId,
+                        issues);
+                    reportedSpecificMismatch = true;
+                }
+                return false;
+            }
+
+            cursor.Carrier = transition["destinationCarrier"];
+            cursor.Quantity = quantityAfter;
+            return true;
+        }
+
+        var hasExactSourceIdentity = HasExactSourceIdentity(transition, itemId);
+        var startsAtCursor = quantityBefore == cursor.Quantity &&
+                             cursor.Quantity > 0 &&
+                             JsonNode.DeepEquals(transition["sourceCarrier"], cursor.Carrier);
+        var destinationCarrier = transition["destinationCarrier"];
+        var nextMaterializationOrigins = cursor.MaterializationOrigins;
+        var nextCreationOrigins = cursor.CreationOrigins;
+        var valid = kind switch
+        {
+            "consume" => hasExactSourceIdentity && startsAtCursor &&
+                         quantityAfter >= 0 && quantityAfter < quantityBefore &&
+                         (quantityAfter == 0
+                             ? destinationCarrier == null
+                             : JsonNode.DeepEquals(destinationCarrier, cursor.Carrier)),
+            "destroy" => hasExactSourceIdentity && startsAtCursor &&
+                         quantityAfter == 0 && destinationCarrier == null,
+            "split" => hasExactSourceIdentity && startsAtCursor &&
+                       quantityAfter > 0 && quantityAfter < quantityBefore &&
+                       JsonNode.DeepEquals(destinationCarrier, cursor.Carrier),
+            "merge" => ValidateMergeTransitionAtCursor(
+                previousEntries,
+                currentEntries,
+                current,
+                transition,
+                transitionIndex,
+                itemId,
+                cursor,
+                replayStack,
+                out nextMaterializationOrigins,
+                out nextCreationOrigins),
+            "semantic_update" => hasExactSourceIdentity && startsAtCursor &&
+                                 quantityAfter > 0 &&
+                                 quantityAfter != quantityBefore &&
+                                 JsonNode.DeepEquals(destinationCarrier, cursor.Carrier),
+            _ => false
+        };
+        if (!valid)
+            return false;
+
+        cursor.Quantity = quantityAfter;
+        cursor.MaterializationOrigins = nextMaterializationOrigins;
+        cursor.CreationOrigins = nextCreationOrigins;
+        if (destinationCarrier != null)
+        {
+            cursor.Carrier = destinationCarrier;
+            return true;
+        }
+
+        cursor.Carrier = null;
+        cursor.State = kind switch
+        {
+            "consume" => "consumed",
+            "destroy" => "destroyed",
+            "merge" => "merged",
+            _ => cursor.State
+        };
+        return true;
+    }
+
+    private static bool IsValidTransferTransition(
+        TransitionCursor cursor,
+        JsonObject transition,
+        string itemId) =>
+        HasExactSourceIdentity(transition, itemId) &&
+        cursor.Quantity > 0 &&
+        TryGetInt(transition, "quantityBefore", out var quantityBefore) &&
+        TryGetInt(transition, "quantityAfter", out var quantityAfter) &&
+        quantityBefore == cursor.Quantity &&
+        quantityAfter == quantityBefore &&
+        JsonNode.DeepEquals(transition["sourceCarrier"], cursor.Carrier) &&
+        transition["destinationCarrier"] is JsonObject &&
+        !JsonNode.DeepEquals(transition["destinationCarrier"], cursor.Carrier);
+
+    private static void ReportTransferTransitionMismatch(
+        TransitionCursor cursor,
         JsonObject transition,
         string itemId,
-        List<ValidationIssue> issues)
-    {
-        var sourceItemIds = transition["sourceItemIds"] as JsonArray;
-        var hasExactSourceIdentity = sourceItemIds is { Count: 1 } &&
-                                     string.Equals(
-                                         ReadExactIdentity(sourceItemIds[0]),
-                                         itemId,
-                                         StringComparison.Ordinal);
-        var previousTransitions = previous["transitions"] as JsonArray;
-        var previousLast = previousTransitions is { Count: > 0 }
-            ? previousTransitions[^1] as JsonObject
-            : null;
-        var previousQuantity = -1;
-        var quantityBefore = -1;
-        var quantityAfter = -1;
-        var hasQuantities = previousLast != null &&
-                            TryGetInt(previousLast, "quantityAfter", out previousQuantity) &&
-                            TryGetInt(transition, "quantityBefore", out quantityBefore) &&
-                            TryGetInt(transition, "quantityAfter", out quantityAfter);
-        var preservesQuantity = hasQuantities &&
-                                previousQuantity > 0 &&
-                                quantityBefore == previousQuantity &&
-                                quantityAfter == quantityBefore;
-        if (hasExactSourceIdentity && preservesQuantity)
-            return true;
-
+        List<ValidationIssue> issues) =>
         issues.Add(Issue(
             $"{StatePath}.entries[{itemId}].transitions",
             "mortal_item_identity_transfer_transition_mismatch",
-            "A Mortal item transfer must name the exact moved identity and preserve its recorded quantity.",
-            $"sourceItemIds=[{itemId}]; quantityBefore=quantityAfter={Describe(previousLast?["quantityAfter"])}",
+            "A Mortal item transfer must start at the exact carrier/quantity cursor, name the moved identity, and preserve quantity.",
+            $"sourceItemIds=[{itemId}]; sourceCarrier={Describe(cursor.Carrier)}; quantityBefore=quantityAfter={cursor.Quantity}",
             transition.ToJsonString(),
             itemId));
-        return false;
+
+    private static bool HasExactSourceIdentity(JsonObject transition, string itemId) =>
+        transition["sourceItemIds"] is JsonArray { Count: 1 } sourceItemIds &&
+        string.Equals(
+            ReadExactIdentity(sourceItemIds[0]),
+            itemId,
+            StringComparison.Ordinal);
+
+    private static bool ValidateMergeTransitionAtCursor(
+        IReadOnlyDictionary<string, JsonObject> previousEntries,
+        IReadOnlyDictionary<string, JsonObject> currentEntries,
+        JsonObject current,
+        JsonObject transition,
+        int transitionIndex,
+        string itemId,
+        TransitionCursor cursor,
+        HashSet<string> replayStack,
+        out HashSet<string> nextMaterializationOrigins,
+        out HashSet<string> nextCreationOrigins)
+    {
+        nextMaterializationOrigins = new HashSet<string>(
+            cursor.MaterializationOrigins,
+            StringComparer.Ordinal);
+        nextCreationOrigins = new HashSet<string>(
+            cursor.CreationOrigins,
+            StringComparer.Ordinal);
+        if (transition["sourceItemIds"] is not JsonArray { Count: >= 2 } sourceItemIdNodes)
+            return false;
+        var sourceItemIds = ReadValidIdentitySet(sourceItemIdNodes);
+        if (sourceItemIds.Count != sourceItemIdNodes.Count ||
+            !sourceItemIds.Contains(itemId) ||
+            !TryGetInt(transition, "quantityBefore", out var quantityBefore) ||
+            !TryGetInt(transition, "quantityAfter", out var quantityAfter) ||
+            quantityBefore != cursor.Quantity ||
+            cursor.Quantity <= 0 ||
+            !JsonNode.DeepEquals(transition["sourceCarrier"], cursor.Carrier))
+        {
+            return false;
+        }
+
+        if (transition["destinationCarrier"] != null)
+        {
+            if (!JsonNode.DeepEquals(transition["destinationCarrier"], cursor.Carrier))
+                return false;
+
+            long expectedQuantity = cursor.Quantity;
+            foreach (var sourceItemId in sourceItemIds)
+            {
+                if (string.Equals(sourceItemId, itemId, StringComparison.Ordinal))
+                    continue;
+                if (!TryResolvePairedMergeParticipant(
+                        previousEntries,
+                        currentEntries,
+                        transition,
+                        sourceItemId,
+                        itemId,
+                        survivorRole: false,
+                        replayStack,
+                        out var sourceCursor,
+                        out _))
+                {
+                    return false;
+                }
+
+                expectedQuantity += sourceCursor.Quantity;
+                if (expectedQuantity > int.MaxValue)
+                    return false;
+                nextMaterializationOrigins.UnionWith(sourceCursor.MaterializationOrigins);
+                nextCreationOrigins.UnionWith(sourceCursor.CreationOrigins);
+            }
+
+            return quantityAfter == expectedQuantity;
+        }
+
+        var mergedIntoItemId = ReadExactIdentity(current["mergedIntoItemId"]);
+        if (quantityAfter != 0 ||
+            mergedIntoItemId == null ||
+            string.Equals(mergedIntoItemId, itemId, StringComparison.Ordinal) ||
+            !sourceItemIds.Contains(mergedIntoItemId) ||
+            current["transitions"] is not JsonArray currentTransitions ||
+            transitionIndex != currentTransitions.Count - 1 ||
+            !string.Equals(ReadExactIdentity(current["state"]), "merged", StringComparison.Ordinal) ||
+            current["currentCarrier"] != null ||
+            !TryResolvePairedMergeParticipant(
+                previousEntries,
+                currentEntries,
+                transition,
+                mergedIntoItemId,
+                mergedIntoItemId,
+                survivorRole: true,
+                replayStack,
+                out var survivorCursor,
+                out var survivorTransition))
+        {
+            return false;
+        }
+
+        long survivorQuantityAfter = 0;
+        foreach (var sourceItemId in sourceItemIds)
+        {
+            TransitionCursor sourceCursor;
+            if (string.Equals(sourceItemId, itemId, StringComparison.Ordinal))
+            {
+                sourceCursor = cursor;
+            }
+            else if (string.Equals(sourceItemId, mergedIntoItemId, StringComparison.Ordinal))
+            {
+                sourceCursor = survivorCursor;
+            }
+            else if (!TryResolvePairedMergeParticipant(
+                         previousEntries,
+                         currentEntries,
+                         transition,
+                         sourceItemId,
+                         mergedIntoItemId,
+                         survivorRole: false,
+                         replayStack,
+                         out sourceCursor,
+                         out _))
+            {
+                return false;
+            }
+
+            if (!JsonNode.DeepEquals(sourceCursor.Carrier, cursor.Carrier))
+                return false;
+            survivorQuantityAfter += sourceCursor.Quantity;
+            if (survivorQuantityAfter > int.MaxValue)
+                return false;
+        }
+
+        return TryGetInt(survivorTransition, "quantityAfter", out var recordedQuantityAfter) &&
+               recordedQuantityAfter == survivorQuantityAfter;
+    }
+
+    private static bool TryResolvePairedMergeParticipant(
+        IReadOnlyDictionary<string, JsonObject> previousEntries,
+        IReadOnlyDictionary<string, JsonObject> currentEntries,
+        JsonObject referenceTransition,
+        string participantItemId,
+        string survivorItemId,
+        bool survivorRole,
+        HashSet<string> replayStack,
+        out TransitionCursor participantCursor,
+        out JsonObject participantTransition)
+    {
+        participantCursor = null!;
+        participantTransition = null!;
+        if (!previousEntries.TryGetValue(participantItemId, out var previousParticipant) ||
+            !currentEntries.TryGetValue(participantItemId, out var currentParticipant) ||
+            previousParticipant["transitions"] is not JsonArray previousTransitions ||
+            currentParticipant["transitions"] is not JsonArray currentTransitions ||
+            currentTransitions.Count <= previousTransitions.Count)
+        {
+            return false;
+        }
+
+        var matchingIndex = -1;
+        for (var index = previousTransitions.Count; index < currentTransitions.Count; index++)
+        {
+            if (currentTransitions[index] is not JsonObject candidate ||
+                !HasMatchingMergeEnvelope(candidate, referenceTransition, survivorRole))
+            {
+                continue;
+            }
+
+            if (matchingIndex >= 0)
+                return false;
+            matchingIndex = index;
+            participantTransition = candidate;
+        }
+
+        if (matchingIndex < 0 ||
+            !TryReplayTransitionSuffix(
+                previousParticipant,
+                currentParticipant,
+                participantItemId,
+                previousEntries,
+                currentEntries,
+                matchingIndex,
+                replayStack,
+                issues: null,
+                out _,
+                out participantCursor) ||
+            !string.Equals(participantCursor.State, "active", StringComparison.Ordinal) ||
+            participantCursor.Quantity <= 0 ||
+            !JsonNode.DeepEquals(
+                participantTransition["sourceCarrier"],
+                participantCursor.Carrier) ||
+            !TryGetInt(
+                participantTransition,
+                "quantityBefore",
+                out var quantityBefore) ||
+            quantityBefore != participantCursor.Quantity ||
+            !TryGetInt(participantTransition, "quantityAfter", out var quantityAfter))
+        {
+            return false;
+        }
+
+        if (survivorRole)
+        {
+            return quantityAfter > 0 &&
+                   JsonNode.DeepEquals(
+                       participantTransition["destinationCarrier"],
+                       participantCursor.Carrier);
+        }
+
+        return matchingIndex == currentTransitions.Count - 1 &&
+               quantityAfter == 0 &&
+               participantTransition["destinationCarrier"] == null &&
+               string.Equals(
+                   ReadExactIdentity(currentParticipant["state"]),
+                   "merged",
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   ReadExactIdentity(currentParticipant["mergedIntoItemId"]),
+                   survivorItemId,
+                   StringComparison.Ordinal) &&
+               currentParticipant["currentCarrier"] == null;
+    }
+
+    private static bool HasMatchingMergeEnvelope(
+        JsonObject candidate,
+        JsonObject reference,
+        bool survivorRole) =>
+        string.Equals(ReadExactIdentity(candidate["kind"]), "merge", StringComparison.Ordinal) &&
+        JsonNode.DeepEquals(candidate["sourceItemIds"], reference["sourceItemIds"]) &&
+        JsonNode.DeepEquals(candidate["sourceCarrier"], reference["sourceCarrier"]) &&
+        (survivorRole
+            ? JsonNode.DeepEquals(candidate["destinationCarrier"], candidate["sourceCarrier"])
+            : candidate["destinationCarrier"] == null) &&
+        JsonNode.DeepEquals(candidate["authorityKind"], reference["authorityKind"]) &&
+        JsonNode.DeepEquals(candidate["authorityId"], reference["authorityId"]) &&
+        JsonNode.DeepEquals(candidate["turn"], reference["turn"]);
+
+    private static void ReportDerivedOriginMismatches(
+        TransitionCursor cursor,
+        JsonObject current,
+        string itemId,
+        List<ValidationIssue> issues)
+    {
+        var currentMaterializationOrigins = ReadValidIdentitySet(
+            current["originMaterializationIds"]);
+        if (!cursor.MaterializationOrigins.SetEquals(currentMaterializationOrigins))
+        {
+            issues.Add(Issue(
+                $"{StatePath}.entries[{itemId}].originMaterializationIds",
+                "mortal_item_identity_origin_history_rewrite",
+                "Accepted origin materialization history must equal the exact union derived by the appended transition suffix.",
+                string.Join(", ", cursor.MaterializationOrigins.OrderBy(
+                    value => value,
+                    StringComparer.Ordinal)),
+                string.Join(", ", currentMaterializationOrigins.OrderBy(
+                    value => value,
+                    StringComparer.Ordinal)),
+                itemId));
+        }
+
+        var currentCreationOrigins = ReadValidIdentitySet(current["originCreationRefs"]);
+        if (!cursor.CreationOrigins.SetEquals(currentCreationOrigins))
+        {
+            issues.Add(Issue(
+                $"{StatePath}.entries[{itemId}].originCreationRefs",
+                "mortal_item_identity_origin_creation_history_rewrite",
+                "Accepted root creation-reference history must equal the exact union derived by the appended transition suffix.",
+                string.Join(", ", cursor.CreationOrigins.OrderBy(
+                    value => value,
+                    StringComparer.Ordinal)),
+                string.Join(", ", currentCreationOrigins.OrderBy(
+                    value => value,
+                    StringComparer.Ordinal)),
+                itemId));
+        }
     }
 
     private static ValidationIssue UnrecordedStateChangeIssue(
@@ -869,16 +1259,6 @@ internal static class MortalItemIdentityState
                 result.Add(value);
         }
         return result;
-    }
-
-    private static string? ReadLastTransitionKind(JsonObject entry)
-    {
-        if (entry["transitions"] is not JsonArray { Count: > 0 } transitions ||
-            transitions[^1] is not JsonObject transition)
-        {
-            return null;
-        }
-        return ReadExactIdentity(transition["kind"]);
     }
 
     private static void ValidateEntry(
