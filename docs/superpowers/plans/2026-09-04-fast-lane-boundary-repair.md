@@ -315,10 +315,12 @@ git commit -m "test(tests): route process and web smokes (#1551)"
 ```
 
 If wall time is at most four minutes with no timeout, proceed to Task 7. If it
-exceeds four minutes, use the retained TRX class ranking and move the exact
-second group in the Spec Kit plan. Add each path to both exact manifests before
-moving it, observe RED, then add class-level `RegressionIntegration` or
-`ProcessIntegration` according to whether it launches a real worker.
+exceeds four minutes, use the retained TRX class ranking and move the complete
+exact second group in the Spec Kit plan, including the required
+`GmWorkerValidationRepairDelegatorTests.cs` real-worker source. Add every path
+to both exact manifests before moving it, observe RED, then add class-level
+`RegressionIntegration` or `ProcessIntegration` according to the source's
+required category.
 
 - [ ] **Step 3: Verify any second group**
 
@@ -326,7 +328,7 @@ Run one combined Focused Integration filter for the moved class names, then
 Fast PlanOnly and one Fast checkpoint. Expected: all moved tests remain
 discovered once and Fast is at most four minutes.
 
-- [ ] **Step 4: Commit the measured second group if used**
+- [ ] **Step 4: Commit the measured second group**
 
 ```powershell
 git add -- `
@@ -373,8 +375,9 @@ git add -- `
 git commit -m "test(tests): restore Fast runtime headroom (#1551)"
 ```
 
-Before commit, inspect the staged names and abort if anything beyond the exact
-source moves, category attributes, and two boundary guards is staged.
+Before commit, inspect the staged names and abort if anything beyond the complete
+exact second-group source moves (including the required worker delegator),
+category attributes, and two boundary guards is staged.
 
 ---
 

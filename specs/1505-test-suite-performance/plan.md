@@ -363,9 +363,9 @@ only its now-obsolete final-gate deadline after new measured suite growth.
    - `WebUi/BrowserInkFeatherFateParityTests.cs`
    - `WebUi/BrowserNpcSocialParityTests.cs`
    - `WebUi/BrowserTradeParityTests.cs`
-   If retained after measurement as a real-worker candidate, also include the
-   exact path `GmWorkerValidationRepairDelegatorTests.cs` and classify it as
-   `ProcessIntegration`; classify the other listed sources as
+   When T061 is triggered, the exact group also unconditionally includes the
+   real-worker candidate `GmWorkerValidationRepairDelegatorTests.cs`, classified
+   as `ProcessIntegration`; classify every other listed source as
    `RegressionIntegration`. For every moved source, preserve the same relative
    path below `BookOfEternityClient.IntegrationTests`, update both exact
    manifests in the same group, and retain every test row and assertion.
