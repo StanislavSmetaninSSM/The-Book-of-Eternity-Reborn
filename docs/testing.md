@@ -94,10 +94,12 @@ read only from attributes on the expected class; comment, string, and
 method-level decoys do not count. Moved WebUi tests share
 `UiTestTextCollector` from `BookOfEternityClient.TestSupport`; the helper has no
 tests and was moved there unchanged so Integration does not reference Fast.
-The exact reviewed-heavy source/category manifest is recorded in
-`specs/1505-test-suite-performance/research.md` and is enforced by
-`FastTestBoundaryTests.ReviewedHeavySourcePaths` plus the Integration category
-manifests.
+The exact reviewed-heavy source/category manifest contains 58
+`FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
+class-level Integration manifest contains 35
+`IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are
+recorded in `specs/1505-test-suite-performance/research.md` and enforced by
+their respective boundary guards.
 
 The diagnostic lanes select
 `BookOfEternityClient.IntegrationTests.csproj`. They are available when a
