@@ -457,6 +457,7 @@ git commit -m "feat(effects): bind exact target skill authority (#1536)"
 - Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs`
+- Modify: `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
 - Modify: `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
 - Modify: `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
@@ -570,7 +571,7 @@ Run the Step 2 command again.
 Expected: PASS with cache invalidation on catalog-only changes.
 
 ```powershell
-git add BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/WoundResponseInputComposer.cs BookOfEternityClient/Services/WoundRepairPacketBuilder.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs
+git add BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs BookOfEternityClient/Services/WoundResponseInputComposer.cs BookOfEternityClient/Services/WoundRepairPacketBuilder.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs
 git commit -m "feat(effects): seal skill scope in accepted plans (#1536)"
 ```
 
