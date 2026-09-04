@@ -97,16 +97,135 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
                 return false;
         }
 
-        return string.Equals(
-            Fingerprint,
-            MortalWoundTreatmentOutcomePublicationPlanner.ComputePreparationFingerprint(
-                _before,
-                _provisionalAfter,
-                resolution,
-                TransitionId,
-                CurrentGameMinute,
-                _severityReduction?.Fingerprint),
-            StringComparison.Ordinal);
+        try
+        {
+            var reductions = _intentSeals
+                .Where(static seal => seal.Kind == "reduce_severity")
+                .ToArray();
+            if (reductions.Any(static seal =>
+                    seal.ReductionSteps is not (>= 1 and <= 2)))
+            {
+                return false;
+            }
+            var aggregateReductionSteps = reductions.Aggregate(
+                0,
+                static (sum, seal) => checked(sum + seal.ReductionSteps!.Value));
+            if ((reductions.Length == 0) != (_severityReduction is null) ||
+                aggregateReductionSteps is < 0 or > 2)
+            {
+                return false;
+            }
+
+            if (resolution.RequestAuthority is not null)
+            {
+                var expectedScalar =
+                    MortalWoundTreatmentOutcomePublicationPlanner.CreateScalarShell(
+                        _before,
+                        resolution.RequestAuthority,
+                        resolution,
+                        TransitionId,
+                        CurrentGameMinute,
+                        resolution.OutcomeIntents);
+                var expectedBeforeProjection = _severityReduction?.Before ??
+                    _provisionalAfter;
+                if (!CanonicalWoundsEqual(expectedScalar, expectedBeforeProjection))
+                    return false;
+            }
+            else
+            {
+                var expectedBeforeProjection = _severityReduction?.Before ??
+                    _provisionalAfter;
+                if (!CanonicalWoundsEqual(_before, expectedBeforeProjection))
+                    return false;
+            }
+
+            if (_severityReduction is not null)
+            {
+                if (_severityReduction.Steps != aggregateReductionSteps ||
+                    !CanonicalWoundsEqual(
+                        _severityReduction.ProvisionalAfter,
+                        _provisionalAfter))
+                {
+                    return false;
+                }
+                var recomposed = MortalWoundTreatmentSeverityReductionPlanner.Project(
+                    _severityReduction.Before,
+                    aggregateReductionSteps,
+                    _severityReduction.ProvisionalAfter.Severity.LastChangeEventRef);
+                if (!recomposed.IsValid || recomposed.Projection is null ||
+                    !ProjectionsEqual(_severityReduction, recomposed.Projection))
+                {
+                    return false;
+                }
+            }
+
+            return string.Equals(
+                Fingerprint,
+                MortalWoundTreatmentOutcomePublicationPlanner
+                    .ComputePreparationFingerprint(
+                        _before,
+                        _provisionalAfter,
+                        resolution,
+                        TransitionId,
+                        CurrentGameMinute,
+                        _severityReduction?.Fingerprint),
+                StringComparison.Ordinal);
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           OverflowException)
+        {
+            return false;
+        }
+    }
+
+    private static bool CanonicalWoundsEqual(
+        WoundMaterializationEnvelope left,
+        WoundMaterializationEnvelope right) => string.Equals(
+        WoundMaterializationContract.SerializeCanonical(left),
+        WoundMaterializationContract.SerializeCanonical(right),
+        StringComparison.Ordinal);
+
+    private static bool ProjectionsEqual(
+        MortalWoundTreatmentSeverityReductionProjection left,
+        MortalWoundTreatmentSeverityReductionProjection right)
+    {
+        if (left.Steps != right.Steps ||
+            !string.Equals(left.Fingerprint, right.Fingerprint,
+                StringComparison.Ordinal) ||
+            !CanonicalWoundsEqual(left.Before, right.Before) ||
+            !CanonicalWoundsEqual(left.ProvisionalAfter, right.ProvisionalAfter))
+        {
+            return false;
+        }
+        var leftRoots = left.Roots;
+        var rightRoots = right.Roots;
+        if (leftRoots.Count != rightRoots.Count)
+            return false;
+        for (var rootIndex = 0; rootIndex < leftRoots.Count; rootIndex++)
+        {
+            var leftRoot = leftRoots[rootIndex];
+            var rightRoot = rightRoots[rootIndex];
+            if (!string.Equals(leftRoot.PriorEffectId, rightRoot.PriorEffectId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(leftRoot.DefinitionKey, rightRoot.DefinitionKey,
+                    StringComparison.Ordinal) ||
+                !string.Equals(leftRoot.OwnershipDomain.Kind,
+                    rightRoot.OwnershipDomain.Kind, StringComparison.Ordinal) ||
+                !string.Equals(leftRoot.OwnershipDomain.ComplicationId,
+                    rightRoot.OwnershipDomain.ComplicationId,
+                    StringComparison.Ordinal) ||
+                leftRoot.Slots.Count != rightRoot.Slots.Count)
+            {
+                return false;
+            }
+            for (var slotIndex = 0; slotIndex < leftRoot.Slots.Count; slotIndex++)
+            {
+                if (leftRoot.Slots[slotIndex] != rightRoot.Slots[slotIndex])
+                    return false;
+            }
+        }
+        return true;
     }
 
     private static MortalWoundTreatmentSeverityReductionProjection? CloneProjection(
@@ -230,35 +349,14 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         try
         {
             var transitionId = CreateTransitionId(resolution);
-            var completedRoutes = resolution.RouteCompletion switch
-            {
-                "AppendOnce" => request.RouteSourceWound.Treatment.CompletedRouteIds
-                    .Append(request.Coordinates.RouteId)
-                    .Distinct(StringComparer.Ordinal)
-                    .ToImmutableArray(),
-                "None" => request.RouteSourceWound.Treatment.CompletedRouteIds
-                    .ToImmutableArray(),
-                _ => throw new InvalidOperationException(
-                    "Validated treatment route completion is not closed.")
-            };
-
             var before = request.RouteSourceWound;
-            var scalarAfter = before with
-            {
-                Care = before.Care with
-                {
-                    LastAttemptId = request.Coordinates.AttemptId
-                },
-                Treatment = before.Treatment with
-                {
-                    CompletedRouteIds = completedRoutes
-                },
-                LastTransition = new WoundLastTransition(
-                    transitionId,
-                    checked(before.LastTransition.Ordinal + 1),
-                    request.Coordinates.Turn,
-                    "treat")
-            };
+            var scalarAfter = CreateScalarShell(
+                before,
+                request,
+                resolution,
+                transitionId,
+                currentGameMinute,
+                orderedIntents);
 
             var aggregateReductionSteps = 0;
             foreach (var intent in orderedIntents)
@@ -268,8 +366,6 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
                     case MortalWoundNoImprovementOutcomeIntent:
                         break;
                     case MortalWoundStabilizeOutcomeIntent:
-                        scalarAfter = ApplyStabilization(
-                            scalarAfter, transitionId, currentGameMinute);
                         break;
                     case MortalWoundReduceSeverityOutcomeIntent reduction:
                         aggregateReductionSteps = checked(
@@ -362,7 +458,8 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
                     "changed preparation or resolution")
             });
         }
-        if (preparation.SeverityReduction is not null)
+        if (resolution.OutcomeIntents.Any(
+                static intent => intent is MortalWoundReduceSeverityOutcomeIntent))
         {
             return Invalid(new[]
             {
@@ -712,6 +809,51 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
                 DeteriorationAnchor = deteriorationAnchor
             }
         };
+    }
+
+    internal static WoundMaterializationEnvelope CreateScalarShell(
+        WoundMaterializationEnvelope before,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution,
+        string transitionId,
+        long currentGameMinute,
+        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> orderedIntents)
+    {
+        var completedRoutes = resolution.RouteCompletion switch
+        {
+            "AppendOnce" => before.Treatment.CompletedRouteIds
+                .Append(request.Coordinates.RouteId)
+                .Distinct(StringComparer.Ordinal)
+                .ToImmutableArray(),
+            "None" => before.Treatment.CompletedRouteIds.ToImmutableArray(),
+            _ => throw new InvalidOperationException(
+                "Validated treatment route completion is not closed.")
+        };
+        var scalarAfter = before with
+        {
+            Care = before.Care with
+            {
+                LastAttemptId = request.Coordinates.AttemptId
+            },
+            Treatment = before.Treatment with
+            {
+                CompletedRouteIds = completedRoutes
+            },
+            LastTransition = new WoundLastTransition(
+                transitionId,
+                checked(before.LastTransition.Ordinal + 1),
+                request.Coordinates.Turn,
+                "treat")
+        };
+        foreach (var intent in orderedIntents)
+        {
+            if (intent is MortalWoundStabilizeOutcomeIntent)
+            {
+                scalarAfter = ApplyStabilization(
+                    scalarAfter, transitionId, currentGameMinute);
+            }
+        }
+        return scalarAfter;
     }
 
     private static WoundDeclaredTransitionOutcome CreateDeclaredOutcome(

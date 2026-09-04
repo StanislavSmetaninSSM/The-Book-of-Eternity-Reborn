@@ -9,6 +9,80 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    [Fact]
+    public void ProcedureScalarOutcomePlanner_WarmExactReplayReturnsSameCachedPlan()
+    {
+        var scenario = CreateWarmCacheStabilizationScenario("exact_replay");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "warm exact outcome replay");
+
+        var first = ComposeResourcePublicationResult(fixture, flow);
+        var second = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        Assert.True(second.IsValid, DescribeIssues(second.Issues));
+        Assert.Same(first.Plan, second.Plan);
+    }
+
+    [Fact]
+    public void ProcedureScalarOutcomePlanner_WarmIntentFingerprintMismatchCannotReuseCachedPlan()
+    {
+        var scenario = CreateWarmCacheStabilizationScenario("intent_mismatch");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "warm changed outcome seal");
+        var first = ComposeResourcePublicationResult(fixture, flow);
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        var originalPlan = Assert.IsType<AcceptedMechanicsPlan>(first.Plan);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var intent = Assert.IsType<MortalWoundStabilizeOutcomeIntent>(
+            Assert.Single(resolution.OutcomeIntents));
+        var changedIntent = MortalWoundStabilizeOutcomeIntent.Create(
+            intent.OperationOrdinal,
+            intent.DeclaredOperationFingerprint,
+            intent.IntentFingerprint + "_changed");
+        var changedResolution = CloneResolutionWithIntentsUnchecked(
+            resolution,
+            new MortalWoundTreatmentOutcomeIntent[] { changedIntent });
+        Assert.Equal(
+            resolution.ResolutionAuthorityFingerprint,
+            changedResolution.ResolutionAuthorityFingerprint);
+        Assert.Equal(resolution.ResultFingerprint, changedResolution.ResultFingerprint);
+        var changedFlow = new TreatmentFlow(
+            flow.AcceptedState,
+            flow.Request,
+            changedResolution,
+            flow.Before,
+            flow.History);
+
+        var changed = ComposeResourcePublicationResult(fixture, changedFlow);
+
+        Assert.False(changed.IsValid);
+        Assert.Null(changed.Plan);
+        Assert.Contains(changed.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var cached));
+        Assert.True(cached.Success, DescribeIssues(cached.Issues));
+        Assert.Same(originalPlan, cached.Plan);
+    }
+
     [Theory]
     [InlineData("procedure", "success", "s,r1", 2, "II")]
     [InlineData("procedure", "success", "r1", 1, "II")]
@@ -1448,6 +1522,27 @@ public sealed partial class MortalWoundTreatmentResolverTests
             OperationKey = $"operation_t070_b6_{mode}_{category}_{shape.Replace(',', '_')}",
             ExpectedCategory = category,
             ExpectedIntentCount = expectedIntentCount,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+    }
+
+    private static ResolverScenario CreateWarmCacheStabilizationScenario(string suffix)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "stabilize"
+        });
+        scenario.Before["treatment"]!["completedRouteIds"] = new JsonArray(
+            scenario.RouteId);
+        return scenario with
+        {
+            OperationKey = scenario.OperationKey + "_warm_" + suffix,
+            ExpectedIntentCount = 1,
             History = CreateCurrentWoundHistory(scenario.Before),
             SeedCanonicalWoundEffects = true
         };

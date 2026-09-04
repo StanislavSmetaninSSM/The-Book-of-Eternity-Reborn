@@ -159,6 +159,78 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
             issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
     }
 
+    [Fact]
+    public void FinalizeReduction_NullProjectionCannotBypassFailClosedBoundary()
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            severityReduction: null,
+            provisionalAfter: before);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            null,
+            new Dictionary<string, EffectAcceptedApplicationResult>(
+                StringComparer.Ordinal));
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.After);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_outcome_preparation_mismatch");
+    }
+
+    [Theory]
+    [InlineData("projection_steps")]
+    [InlineData("projection_fingerprint")]
+    [InlineData("projection_after")]
+    [InlineData("non_reduction_projection")]
+    public void Prepare_InconsistentProjectionSealCannotFinalize(string mutation)
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var resolution = CreateSyntheticResolution(
+            mutation == "non_reduction_projection" ? "n" : "r1",
+            mutation == "non_reduction_projection" ? "None" : "AppendOnce");
+        var valid = AssertValidProjection(
+            before,
+            mutation == "projection_steps" ? 2 : 1);
+        var projection = mutation switch
+        {
+            "projection_fingerprint" =>
+                new MortalWoundTreatmentSeverityReductionProjection(
+                    valid.Before,
+                    valid.ProvisionalAfter,
+                    valid.Steps,
+                    valid.Roots,
+                    valid.Fingerprint + "_changed"),
+            "projection_after" =>
+                new MortalWoundTreatmentSeverityReductionProjection(
+                    valid.Before,
+                    before,
+                    valid.Steps,
+                    valid.Roots,
+                    valid.Fingerprint),
+            _ => valid
+        };
+        var preparation = CreateSyntheticPreparation(resolution, projection);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            null,
+            new Dictionary<string, EffectAcceptedApplicationResult>(
+                StringComparer.Ordinal));
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.After);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_outcome_preparation_mismatch");
+    }
+
     [Theory]
     [InlineData(1, "II", 2)]
     [InlineData(2, "I", 1)]

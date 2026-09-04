@@ -204,10 +204,23 @@ internal static partial class WoundAcceptedTurnPlanner
                 frozenItemCommands.Issues);
         }
         var itemCommandEnvelope = frozenItemCommands.Envelope;
+        var outcomePreparationResult =
+            MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
+                acceptedState,
+                request,
+                resolution,
+                acceptedState.CurrentGameMinute);
+        if (!outcomePreparationResult.IsValid)
+        {
+            return MortalWoundTreatmentPublicationResult.Invalid(
+                outcomePreparationResult.Issues);
+        }
+        var preparation = outcomePreparationResult.Preparation!;
         var baseSemanticFingerprint = ComputeTreatmentPublicationFingerprint(
             acceptedState,
             request,
-            resolution);
+            resolution,
+            preparation.Fingerprint);
         var semanticFingerprint = ComputeTreatmentPublicationEnvelopeFingerprint(
             baseSemanticFingerprint,
             commandEnvelope,
@@ -265,17 +278,6 @@ internal static partial class WoundAcceptedTurnPlanner
             if (shell.Issues.Count != 0 || shell.Finalization is null)
                 return MortalWoundTreatmentPublicationResult.Invalid(shell.Issues);
 
-            var outcomePreparation =
-                MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
-                    acceptedState,
-                    request,
-                    resolution,
-                    acceptedState.CurrentGameMinute);
-            if (!outcomePreparation.IsValid)
-            {
-                return MortalWoundTreatmentPublicationResult.Invalid(
-                    outcomePreparation.Issues);
-            }
             var criticalReactionPublication =
                 MortalWoundCriticalReactionPublicationPlanner.Compose(
                     acceptedState,
@@ -325,7 +327,6 @@ internal static partial class WoundAcceptedTurnPlanner
                     baselines.Issues);
             }
 
-            var preparation = outcomePreparation.Preparation!;
             var transitionId = preparation.TransitionId;
             var expectedEffectCommandRoot =
                 EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
@@ -795,7 +796,8 @@ internal static partial class WoundAcceptedTurnPlanner
         var recomputedBaseSemantic = ComputeTreatmentPublicationFingerprint(
             acceptedState,
             request,
-            resolution);
+            resolution,
+            continuation.OutcomePreparationFingerprint);
         return ReferenceEquals(continuation.AcceptedStateAuthority, acceptedState) &&
                ReferenceEquals(continuation.RequestAuthority, request) &&
                ReferenceEquals(continuation.Resolution, resolution) &&
@@ -1169,18 +1171,20 @@ internal static partial class WoundAcceptedTurnPlanner
     private static string ComputeTreatmentPublicationFingerprint(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
         MortalWoundTreatmentAttemptRequest request,
-        MortalWoundTreatmentResolution resolution) =>
+        MortalWoundTreatmentResolution resolution,
+        string outcomePreparationFingerprint) =>
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.mortal_wound_treatment.publication",
-            "2",
+            "3",
             acceptedState.AcceptedStateFingerprint,
             acceptedState.BindingFingerprint,
             request.RequestFingerprint,
             request.Coordinates.OperationKey,
             request.Coordinates.AttemptId,
             resolution.ResolutionAuthorityFingerprint,
-            resolution.ResultFingerprint
+            resolution.ResultFingerprint,
+            outcomePreparationFingerprint
         });
 
     private static MortalWoundTreatmentPublicationResult PublicationFailure(
