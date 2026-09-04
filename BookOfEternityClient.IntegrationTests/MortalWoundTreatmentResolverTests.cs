@@ -2622,7 +2622,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 "Unsupported wound owner kind for canonical effect seeding.")
         };
         var effects = new List<JsonObject>();
-        foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
+        foreach (var (binding, index) in wound.Consequences.OwnedEffectSources
+                     .RootBindings.Select((value, index) => (value, index)))
         {
             var definition = definitions[binding.DefinitionKey];
             var profile = definition["components"]![0]!["profile"]!
@@ -2674,7 +2675,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             effect["chronology"] = new JsonObject
             {
                 ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
-                ["createdEventRef"] = wound.Origin.EventRef,
+                ["createdEventRef"] =
+                    $"{wound.Origin.EventRef}:effect:{index + 1:D3}",
                 ["lastTransitionId"] = "effect_transition_" + binding.EffectId,
                 ["lastTransitionTurn"] = wound.Origin.CreatedAtTurn
             };

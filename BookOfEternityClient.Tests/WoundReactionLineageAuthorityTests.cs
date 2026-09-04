@@ -1,10 +1,12 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
+using static BookOfEternityClient.Tests.WoundEffectLineagePlannerTests;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed partial class WoundEffectLineagePlannerTests
+public sealed class WoundReactionLineageAuthorityTests
 {
     [Fact]
     public void ReactionExecutor_WoundApplyDefinitionRequiresTypedLineageAuthority()
@@ -366,6 +368,58 @@ public sealed partial class WoundEffectLineagePlannerTests
         Assert.False(resolution.Success);
         Assert.Contains(resolution.Issues, static issue =>
             issue.Code == "effect_reaction_wound_lineage_edge_invalid");
+    }
+
+    [Fact]
+    public void ReactionAuthority_ExactSameDefinitionApplyEdgeCannotMasqueradeAsSeverityGeneration()
+    {
+        var wound = CreateSameDefinitionReactionForgeryWound();
+        var root = CreateEffectFromDefinition(
+            wound,
+            RootEffectId,
+            RootDefinitionKey);
+        var sourceAuthority = CreateReactionSourceAuthority(
+            CreateLineageWound());
+        ReplaceWoundGroupForTest(sourceAuthority, wound);
+        var authority = WoundReactionLineageAuthority.Build(
+            sourceAuthority,
+            CreateSameDefinitionReactionForgeryIdentities(),
+            EffectCarrierCatalog.Build(CreatePlayerCarriers(root)),
+            Array.Empty<WoundApplicationRootEffectBinding>());
+
+        Assert.False(authority.Success);
+        Assert.Contains(authority.Issues, static issue => issue.Code is
+            "effect_reaction_wound_lineage_generation_invalid" or
+            "effect_reaction_wound_lineage_edge_invalid");
+    }
+
+    private static void ReplaceWoundGroupForTest(
+        EffectSourceAuthority authority,
+        WoundMaterializationEnvelope wound)
+    {
+        var field = typeof(EffectSourceAuthority).GetField(
+            "_woundGroups",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var groups = Assert.IsType<Dictionary<
+            EffectIdentitySourceGroup,
+            WoundSourceGroupAuthority>>(field!.GetValue(authority));
+        var original = Assert.Single(groups.Values);
+        var definitions = wound.Consequences.OwnedEffectSources.Definitions
+            .Select(static value => JsonNode.Parse(value.GetRawText())!.AsObject())
+            .Select(static value => new WoundEffectSourceDefinition(
+                value["definitionKey"]!.GetValue<string>(),
+                value))
+            .ToArray();
+        groups[original.Key] = new WoundSourceGroupAuthority(
+            original.Key,
+            original.Owner,
+            original.Target,
+            original.SameTurn,
+            original.SourceRef,
+            original.PreparedSourceExportFingerprint,
+            definitions,
+            original.ApplicationRootLineage,
+            original.ExistingRootLineage);
     }
 
     private static EffectSourceAuthority CreateReactionSourceAuthority(

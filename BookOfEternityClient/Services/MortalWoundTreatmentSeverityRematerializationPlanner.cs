@@ -151,13 +151,14 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             string expectedBeforeFingerprint)
     {
         var projection = preparation.SeverityReduction!;
-        var before = projection.Before;
+        var before = preparation.Before;
+        var projectionBefore = projection.Before;
         var after = projection.ProvisionalAfter;
         var inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
         var actualBeforeFingerprint =
             WoundIdentityState.ComputeSemanticFingerprint(before);
         var recomputedProjection = MortalWoundTreatmentSeverityReductionPlanner.Project(
-            before,
+            projectionBefore,
             projection.Steps,
             after.Severity.LastChangeEventRef);
         var acceptedEvents = input.Binding.AcceptedEvents.Where(value =>
@@ -177,7 +178,6 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 expectedBeforeFingerprint,
                 actualBeforeFingerprint,
                 StringComparison.Ordinal) ||
-            !CanonicalEquals(preparation.Before, before) ||
             !CanonicalEquals(preparation.ProvisionalAfter, after) ||
             !recomputedProjection.IsValid ||
             recomputedProjection.Projection is null ||

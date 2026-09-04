@@ -1789,5 +1789,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         internal JsonObject ReadPlayerEffectCarrier() =>
             ReadObject(EffectCarrierCatalog.PlayerPath);
+
+        internal JsonObject ReadEffectIdentityIndex() =>
+            ReadObject(EffectIdentityState.StatePath);
     }
 }

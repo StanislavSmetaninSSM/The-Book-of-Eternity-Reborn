@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
@@ -7,12 +8,12 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class WoundEffectLineagePlannerTests
 {
-    private const string WoundId = "wound_lineage_planner";
-    private const string RootEffectId = "effect_wound_lineage_root";
-    private const string ChildEffectId = "effect_wound_lineage_child";
-    private const string RootDefinitionKey = "definition_wound_lineage_root";
-    private const string ChildDefinitionKey = "definition_wound_lineage_child";
-    private const string ComplicationId = "complication_wound_lineage";
+    internal const string WoundId = "wound_lineage_planner";
+    internal const string RootEffectId = "effect_wound_lineage_root";
+    internal const string ChildEffectId = "effect_wound_lineage_child";
+    internal const string RootDefinitionKey = "definition_wound_lineage_root";
+    internal const string ChildDefinitionKey = "definition_wound_lineage_child";
+    internal const string ComplicationId = "complication_wound_lineage";
 
     [Fact]
     public void Plan_TraversesActiveChildFromTerminalComplicationRootOnce()
@@ -386,6 +387,20 @@ public sealed partial class WoundEffectLineagePlannerTests
     }
 
     [Fact]
+    public void Plan_ExactSameDefinitionApplyEdgeCannotMasqueradeAsSeverityGeneration()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateSameDefinitionReactionForgeryWound(),
+            CreateSameDefinitionReactionForgeryIdentities(),
+            new[] { RootEffectId });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue => issue.Code is
+            "accepted_mechanics_wound_lineage_generation_invalid" or
+            "accepted_mechanics_wound_lineage_edge_invalid");
+    }
+
+    [Fact]
     public void Plan_RetiredGenerationWithActiveMember_IsRejected()
     {
         var result = WoundEffectLineagePlanner.Plan(
@@ -645,7 +660,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         Assert.Contains(result.Issues, issue => issue.Code == expectedCode);
     }
 
-    private static WoundMaterializationEnvelope CreateLineageWound(
+    internal static WoundMaterializationEnvelope CreateLineageWound(
         string eventType = "owner_damaged",
         string triggerId = "on_owner_damaged")
     {
@@ -704,7 +719,76 @@ public sealed partial class WoundEffectLineagePlannerTests
         return parsed.Wound!;
     }
 
-    private static WoundMaterializationEnvelope CreateSharedDefinitionDomainWound(
+    internal static WoundMaterializationEnvelope
+        CreateSameDefinitionReactionForgeryWound()
+    {
+        var wound = CreateLineageWound();
+        var definitions = wound.Consequences.OwnedEffectSources.Definitions
+            .Select(static value => JsonNode.Parse(value.GetRawText())!.AsObject())
+            .Where(value => string.Equals(
+                value["definitionKey"]!.GetValue<string>(),
+                RootDefinitionKey,
+                StringComparison.Ordinal))
+            .ToArray();
+        var root = Assert.Single(definitions);
+        Assert.Equal(
+            RootDefinitionKey,
+            root["definitionKey"]!.GetValue<string>());
+        root["components"]![0]!["payload"]!["definitionKey"] = RootDefinitionKey;
+        var detachedDefinitions = definitions.Select(static value =>
+        {
+            using var document = JsonDocument.Parse(value.ToJsonString());
+            return document.RootElement.Clone();
+        }).ToImmutableArray();
+        var facts = wound.Consequences.OwnedEffectSources.DefinitionFacts
+            .Where(fact => string.Equals(
+                fact.DefinitionKey,
+                RootDefinitionKey,
+                StringComparison.Ordinal))
+            .Select(fact => string.Equals(
+                    fact.DefinitionKey,
+                    RootDefinitionKey,
+                    StringComparison.Ordinal)
+                ? fact with
+                {
+                    CanonicalJson = root.ToJsonString(),
+                    ApplyDefinitionTargets = ImmutableArray.Create(
+                        RootDefinitionKey)
+                }
+                : fact)
+            .ToImmutableArray();
+        return wound with
+        {
+            Consequences = wound.Consequences with
+            {
+                OwnedEffectSources = new WoundOwnedEffectSources(
+                    detachedDefinitions,
+                    wound.Consequences.OwnedEffectSources.RootBindings)
+                {
+                    DefinitionFacts = facts
+                }
+            }
+        };
+    }
+
+    internal static EffectIdentityState
+        CreateSameDefinitionReactionForgeryIdentities()
+    {
+        var current = CreateEffect(RootEffectId, RootDefinitionKey);
+        var retired = CreateEffect(
+            "effect_wound_lineage_generation_1",
+            RootDefinitionKey);
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(
+            current,
+            retired);
+        var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
+        ConfigureCreate(entries[0], 0, new[] { retired["effectId"]!.GetValue<string>() });
+        ConfigureCreate(entries[1], 1, Array.Empty<string>());
+        SetState(entries[1], "removed", 1);
+        return ParseIdentityState(index);
+    }
+
+    internal static WoundMaterializationEnvelope CreateSharedDefinitionDomainWound(
         string secondRootEffectId,
         string secondRootDefinitionKey)
     {
@@ -779,7 +863,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         };
     }
 
-    private static EffectIdentityState CreateLineageIdentities(
+    internal static EffectIdentityState CreateLineageIdentities(
         string rootState,
         string childState,
         Action<JsonObject, JsonObject>? configure = null,
@@ -907,7 +991,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         return ParseIdentityState(index);
     }
 
-    private static EffectIdentityState CreateGenerationIdentities(
+    internal static EffectIdentityState CreateGenerationIdentities(
         int retiredGenerationCount,
         Action<JsonObject[], List<JsonObject>>? configure = null,
         Action<JsonObject>? configureAddedEntry = null)
@@ -959,13 +1043,13 @@ public sealed partial class WoundEffectLineagePlannerTests
         return ParseIdentityState(preliminary);
     }
 
-    private static string DescribeLineageIssues(
+    internal static string DescribeLineageIssues(
         IEnumerable<ValidationIssue> issues) => string.Join(
         Environment.NewLine,
         issues.Select(static issue =>
             $"{issue.Code}@{issue.FilePath}: expected={issue.Expected}; actual={issue.Actual}"));
 
-    private static EffectIdentityState ParseIdentityState(JsonObject index)
+    internal static EffectIdentityState ParseIdentityState(JsonObject index)
     {
         using var document = JsonDocument.Parse(index.ToJsonString());
         var parsed = EffectIdentityState.Parse(
@@ -975,7 +1059,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         return Assert.IsType<EffectIdentityState>(parsed.State);
     }
 
-    private static JsonObject CreateEffect(
+    internal static JsonObject CreateEffect(
         string effectId,
         string definitionKey)
     {
@@ -1036,7 +1120,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         }
     }
 
-    private static EffectCarrierCatalogInput CreatePlayerCarriers(
+    internal static EffectCarrierCatalogInput CreatePlayerCarriers(
         params JsonObject[] effects) => new(
         new JsonObject
         {
@@ -1071,7 +1155,7 @@ public sealed partial class WoundEffectLineagePlannerTests
         null,
         null);
 
-    private static void ConfigureCreate(
+    internal static void ConfigureCreate(
         JsonObject entry,
         int ordinal,
         IReadOnlyList<string> parents)
@@ -1083,7 +1167,7 @@ public sealed partial class WoundEffectLineagePlannerTests
             parents.Select(static parent => (JsonNode)parent).ToArray());
     }
 
-    private static void SetState(
+    internal static void SetState(
         JsonObject entry,
         string state,
         int ordinal)

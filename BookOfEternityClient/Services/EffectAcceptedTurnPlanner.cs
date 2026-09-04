@@ -3102,8 +3102,10 @@ internal static class EffectAcceptedTurnPlanner
             return;
         }
         if (roots.Count != 0 && !ValidateGenerationPredecessors(
+                input,
                 transitionAuthority.TransitionKind,
                 terminalWound,
+                definitions,
                 roots,
                 path,
                 issues))
@@ -3530,8 +3532,10 @@ internal static class EffectAcceptedTurnPlanner
     }
 
     private static bool ValidateGenerationPredecessors(
+        EffectAcceptedTurnInput input,
         string transitionKind,
         WoundMaterializationEnvelope beforeWound,
+        IReadOnlyDictionary<string, WoundEffectSourceDefinition> definitions,
         IReadOnlyList<WoundRootEffectApplication> roots,
         string path,
         List<ValidationIssue> issues)
@@ -3560,6 +3564,25 @@ internal static class EffectAcceptedTurnPlanner
                     beforeDomains[binding.EffectId].Kind,
                     beforeDomains[binding.EffectId].ComplicationId),
                 static binding => binding.EffectId);
+        EffectCarrierCatalog? effectCatalog = null;
+        EffectIdentityState? effectIdentities = null;
+        if (transitionKind is "worsen" or "treat" &&
+            input.PreTurnCarriers is not null &&
+            input.PreTurnIdentityIndex is not null)
+        {
+            effectCatalog = EffectCarrierCatalog.Build(input.PreTurnCarriers);
+            using var document = JsonDocument.Parse(
+                input.PreTurnIdentityIndex.ToJsonString());
+            var parsed = EffectIdentityState.Parse(
+                document.RootElement,
+                EffectIdentityState.StatePath);
+            if (effectCatalog.Issues.Count != 0 ||
+                parsed.Issues.Count != 0)
+            {
+                effectCatalog = null;
+            }
+            effectIdentities = parsed.State;
+        }
         var suppliedPredecessors = new HashSet<string>(StringComparer.Ordinal);
         var valid = true;
         foreach (var root in roots)
@@ -3569,6 +3592,33 @@ internal static class EffectAcceptedTurnPlanner
                 root.OwnershipDomain.Kind,
                 root.OwnershipDomain.ComplicationId);
             beforeByCoordinate.TryGetValue(coordinate, out var expectedPrior);
+            if (expectedPrior is not null &&
+                (!definitions.TryGetValue(root.DefinitionKey, out var definition) ||
+                 !WoundEffectCarrierAdapter.TryCreateTargetKey(
+                     beforeWound.Owner,
+                     out var expectedTarget) ||
+                 !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
+                     beforeWound.Owner,
+                     expectedTarget,
+                     definition.Definition,
+                     out var expectedCarrier) ||
+                 effectCatalog is null ||
+                 effectIdentities is null ||
+                 !WoundAcceptedTurnPlannerCore.PriorRootHasExactGenerationAuthority(
+                     expectedPrior,
+                     new EffectSourceKey(
+                         beforeWound.Owner.Realm,
+                         "wound",
+                         beforeWound.WoundId,
+                         root.DefinitionKey),
+                     expectedTarget,
+                     expectedCarrier,
+                     definition.Definition,
+                     effectCatalog,
+                     effectIdentities)))
+            {
+                expectedPrior = null;
+            }
             var expected = transitionKind switch
             {
                 "create" => null,
@@ -5879,15 +5929,6 @@ internal static class EffectAcceptedTurnPlanner
             !string.Equals(
                 occurrence.FilePath,
                 operation.ExpectedCarrierFilePath,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                occurrence.JsonPath,
-                operation.ExpectedCarrierJsonPath,
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                WoundEffectTerminalOperationPlanner.ComputeEffectFingerprint(
-                    occurrence),
-                operation.ExpectedEffectFingerprint,
                 StringComparison.Ordinal) ||
             !string.Equals(
                 WoundEffectTerminalOperationPlanner.ComputeIdentityFingerprint(

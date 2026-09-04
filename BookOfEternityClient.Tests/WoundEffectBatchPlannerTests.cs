@@ -1311,6 +1311,100 @@ public sealed partial class WoundEffectBatchPlannerTests
     }
 
     [Theory]
+    [InlineData("stack")]
+    [InlineData("carrier")]
+    public void Prepare_WorsenChangedCompleteAuthorityCoordinateLeavesRetainedKeyParentless(
+        string mutation)
+    {
+        var flavor = string.Equals(mutation, "carrier", StringComparison.Ordinal)
+            ? OwnerFlavor.Combatant
+            : OwnerFlavor.Player;
+        var input = CreateWorsenInputWithRetainedAndNewRoot(flavor);
+        var transition = input.Transitions[0];
+        var definitions = transition.EffectDefinitions.ToArray();
+        var changedDefinition = definitions[0].Definition;
+        if (string.Equals(mutation, "stack", StringComparison.Ordinal))
+        {
+            changedDefinition["stacking"]!["stackKey"] =
+                "stack_worsen_generation_relocated";
+        }
+        else
+        {
+            Assert.Equal("debuff", changedDefinition["display"]!["category"]!
+                .GetValue<string>());
+            changedDefinition["display"]!["category"] = "buff";
+        }
+        definitions[0] = new WoundAcceptedEffectDefinitionDraft(
+            definitions[0].LocalEffectRef,
+            changedDefinition);
+        input = input with
+        {
+            Transitions = new[]
+            {
+                transition with { EffectDefinitions = definitions }
+            }
+        };
+
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+
+        Assert.All(batch.RootApplications,
+            static root => Assert.Null(root.PriorRootEffectId));
+    }
+
+    [Theory]
+    [InlineData("stack")]
+    [InlineData("carrier")]
+    public void EffectStage_WorsenRejectsForgedPredecessorForChangedAuthorityCoordinate(
+        string mutation)
+    {
+        const string priorEffectId = "effect_worsen_generation_prior";
+        var flavor = string.Equals(mutation, "carrier", StringComparison.Ordinal)
+            ? OwnerFlavor.Combatant
+            : OwnerFlavor.Player;
+        var input = CreateWorsenInputWithRetainedAndNewRoot(flavor);
+        var transition = input.Transitions[0];
+        var definitions = transition.EffectDefinitions.ToArray();
+        var changedDefinition = definitions[0].Definition;
+        if (string.Equals(mutation, "stack", StringComparison.Ordinal))
+        {
+            changedDefinition["stacking"]!["stackKey"] =
+                "stack_worsen_generation_relocated";
+        }
+        else
+        {
+            changedDefinition["display"]!["category"] = "buff";
+        }
+        definitions[0] = new WoundAcceptedEffectDefinitionDraft(
+            definitions[0].LocalEffectRef,
+            changedDefinition);
+        input = input with
+        {
+            Transitions = new[]
+            {
+                transition with { EffectDefinitions = definitions }
+            }
+        };
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        var forged = RewrapPreparedWithForgedFirstPredecessor(
+            prepared,
+            priorEffectId);
+        var effectInput = CreateEffectInput(
+            forged,
+            preTurnCarriersOverride: input.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: input.PreTurnEffectIdentityIndex);
+
+        var result = WoundEffectBatchPlanner.Build(
+            forged,
+            effectInput,
+            new ScriptedEffectIdentityFactory("forged_worsen_predecessor"));
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "wound_plan_effect_handoff_invalid");
+    }
+
+    [Theory]
     [InlineData("carrier")]
     [InlineData("identity")]
     public void DeriveEffectResults_RejectsMutatedUnselectedSurvivingWoundEffect(
@@ -3504,23 +3598,31 @@ public sealed partial class WoundEffectBatchPlannerTests
             WoundContractTestData.CreateHistory());
     }
 
-    internal static WoundAcceptedTurnInput CreateWorsenInputWithRetainedAndNewRoot()
+    internal static WoundAcceptedTurnInput CreateWorsenInputWithRetainedAndNewRoot(
+        OwnerFlavor flavor = OwnerFlavor.Player)
     {
         const string woundId = "wound_worsen_generation";
         const string priorEffectId = "effect_worsen_generation_prior";
-        var input = CreateInput(shape: CandidateShape.TwoRoots);
+        var input = CreateInput(
+            shape: CandidateShape.TwoRoots,
+            flavor: flavor);
         var draft = input.Transitions[0];
         var opportunity = input.Opportunities[0];
         var retainedDefinitionKey = draft.EffectDefinitions[0].Definition["definitionKey"]!
             .GetValue<string>();
         var retainedSources = WoundContractTestData.CreateOwnedEffectSourcesForTarget(
             woundId,
-            "mortal_world",
-            "player",
+            draft.ProposedAfter.Owner.Realm,
+            ResolveEffectTargetKind(draft.ProposedAfter.Owner.OwnerKind),
             (priorEffectId, retainedDefinitionKey, "periodic_damage"));
         var retainedDefinition = Assert.IsType<JsonObject>(Assert.Single(
             retainedSources["definitions"]!.AsArray())).DeepClone().AsObject();
-        var beforeJson = WoundContractTestData.CreateActiveWound(woundId);
+        var beforeJson = WoundContractTestData.CreateActiveWound(
+            woundId,
+            draft.ProposedAfter.Owner.Realm,
+            draft.ProposedAfter.Owner.OwnerKind,
+            draft.ProposedAfter.Owner.OwnerId,
+            draft.ProposedAfter.Owner.CarrierPath);
         var priorEventRef = $"turn_{Turn - 1}:worsen_generation:prior";
         beforeJson["origin"]!["eventRef"] = priorEventRef;
         beforeJson["origin"]!["createdAtTurn"] = Turn - 1;
@@ -3631,29 +3733,74 @@ public sealed partial class WoundEffectBatchPlannerTests
         {
             Opportunities = new[] { worseningOpportunity },
             Transitions = new[] { transition },
-            PreTurnCarriers = input.PreTurnCarriers with
-            {
-                PlayerWounds = WoundContractTestData.CreatePlayerCarrier(
-                    JsonNode.Parse(WoundMaterializationContract
-                        .SerializeCanonical(before))!.AsObject())
-            },
+            PreTurnCarriers = CreatePreTurnWoundCarriers(
+                flavor,
+                JsonNode.Parse(WoundMaterializationContract
+                    .SerializeCanonical(before))!.AsObject()),
             PreTurnIdentityIndex = WoundContractTestData.CreateIdentityIndex(
                 woundIdentity),
             PreTurnHistory = WoundContractTestData.CreateHistory(history),
-            PreTurnEffectCarriers = new EffectCarrierCatalogInput(
-                new JsonObject
-                {
-                    ["schemaVersion"] = 1,
-                    ["activeEffects"] = new JsonArray(priorEffect.DeepClone())
-                },
-                null,
-                null,
-                null,
-                null,
-                null),
+            PreTurnEffectCarriers = CreatePreTurnEffectCarriers(
+                flavor,
+                priorEffect),
             PreTurnEffectIdentityIndex = effectIdentity
         };
     }
+
+    private static WoundCarrierCatalogInput CreatePreTurnWoundCarriers(
+        OwnerFlavor flavor,
+        JsonObject wound) => flavor switch
+        {
+            OwnerFlavor.Player => new WoundCarrierCatalogInput(
+                WoundContractTestData.CreatePlayerCarrier(wound),
+                null, null, null, null),
+            OwnerFlavor.Combatant => new WoundCarrierCatalogInput(
+                null,
+                null,
+                WoundContractTestData.CreateCombatantCarrier(
+                    CreateCombatantWoundRoot(),
+                    "/enemiesData/0",
+                    wound),
+                null,
+                null),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(flavor),
+                flavor,
+                "The retained-worsen fixture supports player and combatant owners.")
+        };
+
+    private static EffectCarrierCatalogInput CreatePreTurnEffectCarriers(
+        OwnerFlavor flavor,
+        JsonObject effect) => flavor switch
+        {
+            OwnerFlavor.Player => new EffectCarrierCatalogInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["activeEffects"] = new JsonArray(effect.DeepClone())
+                },
+                null, null, null, null, null),
+            OwnerFlavor.Combatant => new EffectCarrierCatalogInput(
+                null,
+                null,
+                new JsonObject
+                {
+                    ["enemiesData"] = new JsonArray(new JsonObject
+                    {
+                        ["combatantId"] = "combatant_wound_batch",
+                        ["displayName"] = "Exact wounded combatant",
+                        ["isGroup"] = false,
+                        ["activeBuffs"] = new JsonArray(),
+                        ["activeDebuffs"] = new JsonArray(effect.DeepClone()),
+                        ["activeWounds"] = new JsonArray()
+                    })
+                },
+                null, null, null),
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(flavor),
+                flavor,
+                "The retained-worsen fixture supports player and combatant owners.")
+        };
 
     internal static (
         WoundAcceptedTurnInput Input,
@@ -3689,12 +3836,13 @@ public sealed partial class WoundEffectBatchPlannerTests
         string effectId,
         JsonObject definition)
     {
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        var targetKind = ResolveEffectTargetKind(wound.Owner.OwnerKind);
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(targetKind);
         effect["effectId"] = effectId;
         effect["realm"] = wound.Owner.Realm;
         effect["target"] = new JsonObject
         {
-            ["kind"] = "player",
+            ["kind"] = targetKind,
             ["targetId"] = wound.Owner.OwnerId
         };
         effect["source"] = new JsonObject
@@ -3730,6 +3878,18 @@ public sealed partial class WoundEffectBatchPlannerTests
         };
         return effect;
     }
+
+    private static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
+    {
+        "player" or "player_soul" => "player",
+        "npc" => "npc",
+        "combatant" or "combatant_member" => "combatant",
+        "guardian" => "guardian",
+        "resident" => "resident",
+        "radiant_actor" => "radiant_actor",
+        "afterlife_actor" => "afterlife_actor",
+        _ => throw new ArgumentOutOfRangeException(nameof(ownerKind), ownerKind, null)
+    };
 
     internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(
         int transitionCount = 1) =>
@@ -4614,6 +4774,73 @@ public sealed partial class WoundEffectBatchPlannerTests
             prepared.AllocatedWoundIds,
             prepared.AllocatedTransitionIds,
             new[] { wound },
+            new[] { batch },
+            prepared.BaselineAuthority);
+        return new WoundPreparedAcceptedTurnPlan(
+            provisional.Binding,
+            provisional.BindingFingerprint,
+            provisional.InputFingerprint,
+            WoundAcceptedTurnFingerprints.ComputePreparation(provisional),
+            provisional.AllocatedWoundIds,
+            provisional.AllocatedTransitionIds,
+            provisional.PreparedWounds,
+            provisional.EffectOperationBatches,
+            provisional.BaselineAuthority);
+    }
+
+    private static WoundPreparedAcceptedTurnPlan
+        RewrapPreparedWithForgedFirstPredecessor(
+            WoundPreparedAcceptedTurnPlan prepared,
+            string priorEffectId)
+    {
+        var originalBatch = Assert.Single(prepared.EffectOperationBatches);
+        var roots = originalBatch.RootApplications.ToArray();
+        var root = roots[0];
+        roots[0] = new WoundRootEffectApplication(
+            root.ApplicationRef,
+            root.MechanicsOrdinal,
+            root.OperationOrdinal,
+            root.OperationKind,
+            root.OperationKey,
+            root.DefinitionKey,
+            root.TargetSelector,
+            root.ExpectedTargetKey,
+            root.SourceSelector,
+            root.ExpectedSourceKey,
+            root.Parameters,
+            root.SlotBindings,
+            root.ExpectedComponentCount,
+            root.ExpectedMaterializationFingerprint,
+            root.OwnershipDomain,
+            root.CausalEventRef,
+            root.ExpectedCarrierCoordinate,
+            priorEffectId);
+        var provisionalBatch = new WoundEffectOperationBatch(
+            originalBatch.LocalWoundRef,
+            originalBatch.PreparedWoundId,
+            originalBatch.SourceExport,
+            roots,
+            originalBatch.TerminalOperations,
+            originalBatch.RootLineageAuthority,
+            string.Empty,
+            originalBatch.TransitionAuthority);
+        var batch = new WoundEffectOperationBatch(
+            provisionalBatch.LocalWoundRef,
+            provisionalBatch.PreparedWoundId,
+            provisionalBatch.SourceExport,
+            provisionalBatch.RootApplications,
+            provisionalBatch.TerminalOperations,
+            provisionalBatch.RootLineageAuthority,
+            WoundAcceptedTurnFingerprints.ComputeSourceExport(provisionalBatch),
+            provisionalBatch.TransitionAuthority);
+        var provisional = new WoundPreparedAcceptedTurnPlan(
+            prepared.Binding,
+            prepared.BindingFingerprint,
+            prepared.InputFingerprint,
+            string.Empty,
+            prepared.AllocatedWoundIds,
+            prepared.AllocatedTransitionIds,
+            prepared.PreparedWounds,
             new[] { batch },
             prepared.BaselineAuthority);
         return new WoundPreparedAcceptedTurnPlan(

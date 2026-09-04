@@ -2609,6 +2609,10 @@ internal static class WoundAcceptedTurnPlannerCore
             var priorRoots = candidate.BeforeWound is null
                 ? new Dictionary<(string DefinitionKey, string DomainKind, string? ComplicationId), string>()
                 : BuildPriorRootCoordinateMap(candidate.BeforeWound);
+            var priorEffectCatalog = candidate.BeforeWound is null ||
+                input.PreTurnEffectCarriers is null
+                    ? null
+                    : EffectCarrierCatalog.Build(input.PreTurnEffectCarriers);
             for (var rootIndex = 0; rootIndex < candidate.Graph.Roots.Count; rootIndex++)
             {
                 var root = candidate.Graph.Roots[rootIndex];
@@ -2626,6 +2630,27 @@ internal static class WoundAcceptedTurnPlannerCore
                     allocation.WoundId,
                     root.DefinitionKey);
                 var targetKey = CreateTargetKey(candidate.Draft.ProposedAfter.Owner);
+                var carrierCoordinate = CreateEffectCarrierCoordinate(
+                    candidate.Draft.ProposedAfter.Owner,
+                    definitionJson);
+                priorRoots.TryGetValue((
+                    root.DefinitionKey,
+                    root.Draft.OwnershipDomain.Kind,
+                    root.Draft.OwnershipDomain.ComplicationId), out var priorRootEffectId);
+                if (priorRootEffectId is not null &&
+                    (priorEffectCatalog is null ||
+                     effectIdentities is null ||
+                     !PriorRootHasExactGenerationAuthority(
+                         priorRootEffectId,
+                         sourceKey,
+                         targetKey,
+                         carrierCoordinate,
+                         definitionJson,
+                         priorEffectCatalog,
+                         effectIdentities)))
+                {
+                    priorRootEffectId = null;
+                }
                 applications.Add(new WoundRootEffectApplication(
                     applicationRef,
                     candidate.MechanicsOrdinal,
@@ -2658,13 +2683,8 @@ internal static class WoundAcceptedTurnPlannerCore
                         components),
                     root.Draft.OwnershipDomain,
                     candidate.AcceptedEvent.EventRef,
-                    CreateEffectCarrierCoordinate(
-                        candidate.Draft.ProposedAfter.Owner,
-                        definitionJson),
-                    priorRoots.GetValueOrDefault((
-                        root.DefinitionKey,
-                        root.Draft.OwnershipDomain.Kind,
-                        root.Draft.OwnershipDomain.ComplicationId))));
+                    carrierCoordinate,
+                    priorRootEffectId));
                 lineage.Add(new WoundRootLineageAuthorityRow(
                     applicationRef,
                     null,
@@ -2807,6 +2827,44 @@ internal static class WoundAcceptedTurnPlannerCore
                     ownership[value.EffectId].Kind,
                     ownership[value.EffectId].ComplicationId),
                 static value => value.EffectId);
+    }
+
+    internal static bool PriorRootHasExactGenerationAuthority(
+        string priorEffectId,
+        EffectSourceKey expectedSource,
+        EffectTargetKey expectedTarget,
+        EffectCarrierCoordinate expectedCarrier,
+        JsonObject definition,
+        EffectCarrierCatalog catalog,
+        EffectIdentityState identities)
+    {
+        if (!catalog.TryResolveOne(priorEffectId, out var occurrence) ||
+            !identities.TryGetEntry(priorEffectId, out var identity) ||
+            !WoundEffectTerminalOperationPlanner.TryCreateExpectedIdentityOwner(
+                expectedTarget,
+                expectedCarrier,
+                out var expectedOwner) ||
+            definition["stacking"] is not JsonObject stacking ||
+            !TryString(stacking["stackKey"], out var stackKey))
+        {
+            return false;
+        }
+
+        var expectedStack = new EffectStackCoordinate(
+            expectedTarget.Realm,
+            expectedTarget.Kind,
+            expectedTarget.TargetId,
+            expectedSource.Kind,
+            expectedSource.SourceId,
+            stackKey);
+        return WoundEffectTerminalOperationPlanner.OccurrenceAndIdentityAgree(
+            occurrence,
+            identity,
+            expectedSource,
+            expectedTarget,
+            expectedCarrier,
+            expectedOwner,
+            expectedStack);
     }
 
     internal static WoundPreparedBaselineAuthority CreateBaselineAuthority(

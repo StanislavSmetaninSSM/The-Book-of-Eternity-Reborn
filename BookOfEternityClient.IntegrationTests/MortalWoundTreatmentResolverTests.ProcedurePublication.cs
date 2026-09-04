@@ -172,6 +172,142 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Theory]
+    [InlineData("root_reorder")]
+    [InlineData("root_delete")]
+    [InlineData("lineage_change")]
+    [InlineData("terminal_reorder")]
+    [InlineData("terminal_delete")]
+    [InlineData("terminal_change")]
+    public void ProcedureReduction_TreatmentCacheRejectsPubliclyResealedTopologyTamper(
+        string mutation)
+    {
+        var scenario = CreateDestinationReductionScenario(
+            "cache",
+            "action_control",
+            "resistance_modifier");
+        scenario = scenario with { SeedCanonicalWoundEffects = true };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "treatment rematerialization cache topology");
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var outcome = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
+            acceptedState,
+            request,
+            resolution,
+            acceptedState.CurrentGameMinute);
+        Assert.True(outcome.IsValid, DescribeIssues(outcome.Issues));
+        var outcomePreparation = Assert.IsType<MortalWoundTreatmentOutcomePreparation>(
+            outcome.Preparation);
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(request.RouteSourceWound),
+            WoundIdentityState.ComputeSemanticFingerprint(outcomePreparation.Before));
+        Assert.Single(acceptedState.Binding.AcceptedEvents, value => string.Equals(
+            value.EventRef,
+            outcomePreparation.ProvisionalAfter.Severity.LastChangeEventRef,
+            StringComparison.Ordinal));
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(
+            request.Coordinates.AttemptId), request.Coordinates.AttemptId);
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(
+            request.Coordinates.OperationKey), request.Coordinates.OperationKey);
+        Assert.True(ResourceMaterializationContract.IsExactIdentifier(
+            outcomePreparation.TransitionId), outcomePreparation.TransitionId);
+        var projection = Assert.IsType<MortalWoundTreatmentSeverityReductionProjection>(
+            outcomePreparation.SeverityReduction);
+        var recomputedProjection = MortalWoundTreatmentSeverityReductionPlanner.Project(
+            projection.Before,
+            projection.Steps,
+            projection.ProvisionalAfter.Severity.LastChangeEventRef);
+        Assert.True(recomputedProjection.IsValid,
+            DescribeIssues(recomputedProjection.Issues));
+        Assert.Equal(
+            projection.Fingerprint,
+            Assert.IsType<MortalWoundTreatmentSeverityReductionProjection>(
+                recomputedProjection.Projection).Fingerprint);
+        var repeatedOutcome = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
+            acceptedState,
+            request,
+            resolution,
+            acceptedState.CurrentGameMinute);
+        Assert.True(repeatedOutcome.IsValid, DescribeIssues(repeatedOutcome.Issues));
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(request.RouteSourceWound),
+            WoundIdentityState.ComputeSemanticFingerprint(
+                Assert.IsType<MortalWoundTreatmentOutcomePreparation>(
+                    repeatedOutcome.Preparation).Before));
+
+        WoundPreparedAcceptedTurnPlan? capturedPrepared = null;
+        CaptureTreatmentPreparedAtFinalization(
+            fixture,
+            prepared => capturedPrepared = prepared);
+        var publication = ComposeResourcePublicationResult(fixture, flow);
+
+        Assert.False(publication.IsValid);
+        Assert.Contains(publication.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+        var authentic = Assert.IsType<WoundPreparedAcceptedTurnPlan>(
+            capturedPrepared);
+        Assert.Empty(WoundAcceptedTurnPlannerCore.ValidatePreparedAuthority(authentic));
+        var continuation = authentic.TreatmentContinuationAuthority;
+        Assert.NotNull(continuation);
+        var input = new WoundAcceptedTurnInput(
+            authentic.Binding,
+            Array.Empty<WoundOpportunityAuthority>(),
+            Array.Empty<WoundAcceptedTransitionDraft>(),
+            authentic.BaselineAuthority.PreTurnCarriers,
+            authentic.BaselineAuthority.PreTurnIdentityIndex,
+            authentic.BaselineAuthority.PreTurnHistory,
+            new EffectCarrierCatalogInput(
+                fixture.ReadPlayerEffectCarrier(),
+                null, null, null, null, null),
+            fixture.ReadEffectIdentityIndex());
+        var cache = new WoundAcceptedTurnPlanCache();
+        var first = cache.GetOrBuildTreatmentContinuationPrepared(
+            input,
+            continuation,
+            out var firstReused);
+        var replay = cache.GetOrBuildTreatmentContinuationPrepared(
+            input,
+            continuation,
+            out var replayReused);
+        Assert.True(first.Success, DescribeIssues(first.Issues));
+        Assert.False(firstReused);
+        Assert.True(replay.Success, DescribeIssues(replay.Issues));
+        Assert.True(replayReused);
+
+        var forged = ResealTreatmentPreparedTopology(
+            Assert.IsType<WoundPreparedAcceptedTurnPlan>(first.Plan),
+            mutation);
+        Assert.Contains(
+            WoundAcceptedTurnPlannerCore.ValidatePreparedAuthority(forged),
+            static issue => issue.Code == "wound_plan_prepared_seal_mismatch");
+        typeof(WoundAcceptedTurnPlanCache).GetField(
+                "_preparedResult",
+                BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(cache, new WoundAcceptedTurnPreparationResult(
+                forged,
+                Array.Empty<ValidationIssue>()));
+
+        var rejected = cache.GetOrBuildTreatmentContinuationPrepared(
+            input,
+            continuation,
+            out var tamperedReused);
+
+        Assert.False(rejected.Success);
+        Assert.False(tamperedReused);
+        Assert.Contains(rejected.Issues, static issue =>
+            issue.Code == "wound_plan_prepared_seal_mismatch");
+    }
+
+    [Theory]
     [InlineData("steps")]
     [InlineData("ordinal")]
     [InlineData("intent_fingerprint")]
@@ -1546,6 +1682,121 @@ public sealed partial class MortalWoundTreatmentResolverTests
             History = CreateCurrentWoundHistory(scenario.Before),
             SeedCanonicalWoundEffects = true
         };
+    }
+
+    private static WoundPreparedAcceptedTurnPlan ResealTreatmentPreparedTopology(
+        WoundPreparedAcceptedTurnPlan source,
+        string mutation)
+    {
+        var original = Assert.Single(source.EffectOperationBatches);
+        var roots = mutation switch
+        {
+            "root_reorder" => original.RootApplications.Reverse().ToArray(),
+            "root_delete" => original.RootApplications.Skip(1).ToArray(),
+            _ => original.RootApplications.ToArray()
+        };
+        var lineage = mutation == "lineage_change"
+            ? original.RootLineageAuthority.Select((row, index) => index == 0
+                ? row with { DefinitionKey = row.DefinitionKey + "_changed" }
+                : row).ToArray()
+            : original.RootLineageAuthority.ToArray();
+        var terminals = mutation switch
+        {
+            "terminal_reorder" => original.TerminalOperations.Reverse().ToArray(),
+            "terminal_delete" => original.TerminalOperations.Skip(1).ToArray(),
+            "terminal_change" => original.TerminalOperations.Select((value, index) =>
+                index == 0
+                    ? new WoundTerminalEffectOperation(
+                        value.OperationRef + "_changed",
+                        value.OperationKey,
+                        value.EffectId,
+                        value.MechanicsOrdinal,
+                        value.OperationOrdinal,
+                        value.OperationKind,
+                        value.CausalEventRef,
+                        value.ExpectedSourceKey,
+                        value.ExpectedTargetKey,
+                        value.ExpectedCarrierCoordinate,
+                        value.ExpectedCarrierFilePath,
+                        value.ExpectedCarrierJsonPath,
+                        value.ExpectedIdentityOwner,
+                        value.ExpectedStackCoordinate,
+                        value.ExpectedEffectFingerprint,
+                        value.ExpectedIdentityFingerprint,
+                        value.OwnershipDomain)
+                    : value).ToArray(),
+            _ => original.TerminalOperations.ToArray()
+        };
+        var provisionalBatch = new WoundEffectOperationBatch(
+            original.LocalWoundRef,
+            original.PreparedWoundId,
+            original.SourceExport,
+            roots,
+            terminals,
+            lineage,
+            string.Empty,
+            original.TransitionAuthority);
+        var batch = new WoundEffectOperationBatch(
+            provisionalBatch.LocalWoundRef,
+            provisionalBatch.PreparedWoundId,
+            provisionalBatch.SourceExport,
+            provisionalBatch.RootApplications,
+            provisionalBatch.TerminalOperations,
+            provisionalBatch.RootLineageAuthority,
+            WoundAcceptedTurnFingerprints.ComputeSourceExport(provisionalBatch),
+            provisionalBatch.TransitionAuthority);
+        var provisional = new WoundPreparedAcceptedTurnPlan(
+            source.Binding,
+            source.BindingFingerprint,
+            source.InputFingerprint,
+            string.Empty,
+            source.AllocatedWoundIds,
+            source.AllocatedTransitionIds,
+            source.PreparedWounds,
+            new[] { batch },
+            source.BaselineAuthority,
+            source.TreatmentContinuationAuthority);
+        return new WoundPreparedAcceptedTurnPlan(
+            provisional.Binding,
+            provisional.BindingFingerprint,
+            provisional.InputFingerprint,
+            WoundAcceptedTurnFingerprints.ComputePreparation(provisional),
+            provisional.AllocatedWoundIds,
+            provisional.AllocatedTransitionIds,
+            provisional.PreparedWounds,
+            provisional.EffectOperationBatches,
+            provisional.BaselineAuthority,
+            source.TreatmentContinuationAuthority);
+    }
+
+    private static void CaptureTreatmentPreparedAtFinalization(
+        AcceptedStateFixture fixture,
+        Action<WoundPreparedAcceptedTurnPlan> capture)
+    {
+        var getState = typeof(AcceptedTurnAuthorityRegistry).GetMethod(
+            "GetState",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(getState);
+        var state = getState!.Invoke(null, new object?[]
+        {
+            fixture.FileSystem,
+            fixture.Lease
+        });
+        Assert.NotNull(state);
+        var woundPlan = state!.GetType().GetField(
+                "_woundPlan",
+                BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(state);
+        Assert.NotNull(woundPlan);
+        WoundAcceptedTurnFinalizationFactory forwarding = (prepared, effect) =>
+        {
+            capture(prepared.ClonePreservingCacheAuthority());
+            return WoundAcceptedTurnPlanner.Finalize(prepared, effect);
+        };
+        typeof(WoundAcceptedTurnPlanCache).GetField(
+                "_finalizer",
+                BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(woundPlan, forwarding);
     }
 
     private static MortalWoundTreatmentResolution CloneResolutionWithIntentsUnchecked(

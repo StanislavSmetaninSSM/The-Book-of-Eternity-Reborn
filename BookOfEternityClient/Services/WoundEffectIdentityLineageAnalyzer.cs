@@ -130,6 +130,21 @@ internal static class WoundEffectIdentityLineageAnalyzer
         var rootsById = new Dictionary<
             string,
             WoundEffectIdentityLineageRoot>(StringComparer.Ordinal);
+        foreach (var definition in currentDefinitions.Values)
+        {
+            if (definition.ApplyDefinitionTargets.Contains(
+                    definition.DefinitionKey))
+            {
+                Add(
+                    issues,
+                    diagnosticProfile,
+                    "edge_invalid",
+                    definition.DefinitionKey,
+                    "A wound reaction edge must target a different definition; same-definition first-create provenance is reserved for sealed severity generations.",
+                    "different-definition apply_definition target",
+                    definition.DefinitionKey);
+            }
+        }
         foreach (var root in currentRoots)
         {
             if (root is null ||

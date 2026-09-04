@@ -126,8 +126,18 @@ internal sealed class WoundAcceptedTurnPlanCache
                     _preparedTreatmentContinuationAuthority,
                     treatmentContinuationAuthority))
             {
+                var validatedReplay = ValidatePreparedResult(
+                    input,
+                    inputFingerprint,
+                    Detach(_preparedResult));
+                if (!validatedReplay.Success)
+                {
+                    InvalidateAllCore();
+                    return validatedReplay;
+                }
+
                 reused = true;
-                return Detach(_preparedResult);
+                return validatedReplay;
             }
 
             InvalidateAllCore();
