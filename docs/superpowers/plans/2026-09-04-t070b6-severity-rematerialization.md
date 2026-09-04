@@ -555,31 +555,31 @@ git commit -m "feat(wounds): publish lower severity with fresh effects (#1536)"
 
 - Reuse the B.5 one-use transaction receipt, before-image inventory, compensation, rearm, quarantine, and cold request reconstruction. Add no severity-specific writer or second transaction.
 
-- [ ] **Step 1: Add the full-engine RED fixture before coordinator changes**
+- [x] **Step 1: Add the full-engine RED fixture before coordinator changes**
 
 Extend the existing `GameEngineTurnLifecycleTests` partial class; do not create a new fixture/category. Add standard compound, singleton two-step, partial/failed route completion, guaranteed, zero-root, failure compensation, exact retry, cold replay, carrier parity, and two-distinct-treatment cases. Capture wound/effect/resource/history/source roots, output, command/pending files, and claim state. Run the exact `GameEngineTurnLifecycleTests&SeverityReduction` Integration selector and retain any behavioral RED before altering coordinator code.
 
-- [ ] **Step 2: Publish the complete player contour**
+- [x] **Step 2: Publish the complete player contour**
 
 Prove old roots/descendants become terminal, all new roots are active with fresh IDs and exact wound source keys, wound carrier/index/history and effect carriers/index/history/source authority agree, only selected resources are consumed, unrelated effects and all untouched files remain unchanged, and player output contains one accepted treatment result.
 
-- [ ] **Step 3: Inject failures after effect and common-plan writes**
+- [x] **Step 3: Inject failures after effect and common-plan writes**
 
 At each existing coordinator fault seam, assert every governed byte and claim family returns to its exact before state, the durable command/pending request and confirmed hold remain for retryable compensation, and only the original receipt-owned plan is rearmed. A competing or changed plan must remain protected and force restart-required failure.
 
-- [ ] **Step 4: Retry and cold replay exactly once**
+- [x] **Step 4: Retry and cold replay exactly once**
 
 The exact retry must reuse reference-equivalent cached plan authority and the same created effect IDs; successful completion must quarantine durable command/pending authority before claim release. After copying canonical roots to a fresh filesystem and clearing process-local registries, replay must return `ExactReplay` and change no wound/effect/resource/history/output byte.
 
-- [ ] **Step 5: Prove owner carrier parity**
+- [x] **Step 5: Prove owner carrier parity**
 
 Run the same procedure rematerialization for player, NPC, and combatant/member targets selected through the existing nearby/canonical target authority. Assert the wound and new effects land only in the correct carrier, the player carrier is untouched for non-player targets, and no caller supplies a target ID outside accepted state.
 
-- [ ] **Step 6: Prove repeated treatment across generations**
+- [x] **Step 6: Prove repeated treatment across generations**
 
 Publish two distinct accepted reduction attempts against the same wound (for example III->II and II->I, using a graph legal at I). Assert the second attempt validates the retired predecessor generation, creates a third fresh root, terminates only the then-current root/descendants, preserves earlier terminal history, appends exactly one treatment transition/history row per attempt, spends each attempt exactly once, and survives restart/replay. Pair it with the unchanged forged-disconnected-terminal negative in the fixture-free lineage suite.
 
-- [ ] **Step 7: Run the coherent Integration contour with measured headroom**
+- [x] **Step 7: Run the coherent Integration contour with measured headroom**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~GameEngineTurnLifecycleTests&FullyQualifiedName~SeverityReduction" -TimeoutMinutes 15
@@ -588,7 +588,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: all selected cases pass with no warning/error, duplicate test ID, timeout, or cleanup failure. Record measured wall time; do not move these workflows back into Fast to save a lane command.
 
-- [ ] **Step 8: Commit lifecycle closure**
+- [x] **Step 8: Commit lifecycle closure**
 
 ```powershell
 git add -- BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Severity.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs
