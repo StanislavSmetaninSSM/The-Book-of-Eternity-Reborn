@@ -832,6 +832,30 @@ internal static class EffectAcceptedTurnInputComposer
             _ => acceptedRoot?.DeepClone()
         };
 
+    internal static EffectRollSkillScopeAuthority ComposeSkillScopeAuthority(
+        IReadOnlyDictionary<string, JsonNode?> preTurnRoots,
+        IReadOnlyDictionary<string, JsonNode?>? acceptedRoots = null)
+    {
+        var currentRoots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
+        foreach (var (path, changes, removals) in new[]
+        {
+            ("game_state/player/skills_active.json", "activeSkillChanges", "removeActiveSkills"),
+            ("game_state/player/skills_passive.json", "passiveSkillChanges", "removePassiveSkills")
+        })
+        {
+            preTurnRoots.TryGetValue(path, out var preTurnRoot);
+            JsonNode? acceptedRoot = null;
+            acceptedRoots?.TryGetValue(path, out acceptedRoot);
+            currentRoots[path] = ComposeSkillAcceptedRoot(preTurnRoot, acceptedRoot, changes, removals, path);
+        }
+
+        const string npcPath = "game_state/npcs/npc_core.json";
+        currentRoots[npcPath] = acceptedRoots != null && acceptedRoots.TryGetValue(npcPath, out var acceptedNpcRoot)
+            ? acceptedNpcRoot
+            : preTurnRoots.GetValueOrDefault(npcPath);
+        return EffectRollSkillScopeAuthority.Build(new EffectRollSkillScopeAuthorityInput(preTurnRoots, currentRoots));
+    }
+
     internal static JsonObject ComposeSkillAcceptedRoot(
         JsonNode? preTurnRoot,
         JsonNode? acceptedRoot,
@@ -2444,7 +2468,7 @@ internal static class EffectAcceptedTurnInputComposer
         }
     }
 
-    private static IEnumerable<JsonObject> EnumerateCanonicalNpcActors(JsonNode? root)
+    internal static IEnumerable<JsonObject> EnumerateCanonicalNpcActors(JsonNode? root)
     {
         if (root is not JsonObject objectRoot)
             yield break;
