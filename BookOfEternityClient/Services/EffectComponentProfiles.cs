@@ -561,9 +561,51 @@ internal static class EffectComponentProfiles
         string path,
         List<ValidationIssue> issues)
     {
-        ValidateClosedObject(payload, path, Set("operations", "contribution"), issues);
-        RequireClosedStringArray(payload, path, "operations", RollOperations, issues);
+        ValidateClosedObject(
+            payload,
+            path,
+            Set("operations", "contribution", "scope"),
+            issues);
+        var operations = TryReadClosedStringArray(
+            payload,
+            path,
+            "operations",
+            RollOperations,
+            issues);
         RequireClosedString(payload, path, "contribution", Contributions, issues);
+
+        if (!payload.TryGetProperty("scope", out var scope) ||
+            scope.ValueKind != JsonValueKind.Object)
+        {
+            Add(issues, path + ".scope", "effect_materialization_invalid_component",
+                "closed roll scope object", Describe(payload, "scope"));
+            return;
+        }
+
+        var scopePath = path + ".scope";
+        var kind = RequireClosedString(
+            scope,
+            scopePath,
+            "kind",
+            Set("all", "skill"),
+            issues);
+        switch (kind)
+        {
+            case "all":
+                ValidateClosedObject(scope, scopePath, Set("kind"), issues);
+                break;
+            case "skill":
+                ValidateClosedObject(scope, scopePath, Set("kind", "skillId"), issues);
+                RequireExactIdentifier(scope, scopePath, "skillId", issues);
+                if (operations is not ["skill_check"])
+                {
+                    Add(issues, path + ".operations",
+                        "effect_materialization_invalid_component",
+                        "exactly [\"skill_check\"] for scope.kind=skill",
+                        Describe(payload, "operations"));
+                }
+                break;
+        }
     }
 
     private static void ValidateResistanceModifier(
@@ -872,6 +914,39 @@ internal static class EffectComponentProfiles
                 Add(issues, itemPath, "effect_materialization_invalid_component", "one unique registered value", item.GetRawText());
             }
         }
+    }
+
+    private static string[]? TryReadClosedStringArray(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlySet<string> allowed,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Array || value.GetArrayLength() == 0)
+        {
+            Add(issues, path + "." + field, "effect_materialization_invalid_component", "non-empty closed string array", Describe(root, field));
+            return null;
+        }
+
+        var values = new List<string>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var index = 0;
+        foreach (var item in value.EnumerateArray())
+        {
+            var itemPath = $"{path}.{field}[{index++}]";
+            if (item.ValueKind != JsonValueKind.String || item.GetString() is not string text ||
+                text.Length == 0 || !string.Equals(text, text.Trim(), StringComparison.Ordinal) ||
+                !allowed.Contains(text) || !seen.Add(text))
+            {
+                Add(issues, itemPath, "effect_materialization_invalid_component", "one unique registered value", item.GetRawText());
+                return null;
+            }
+
+            values.Add(text);
+        }
+
+        return values.ToArray();
     }
 
     private static void RequireExactStringArray(

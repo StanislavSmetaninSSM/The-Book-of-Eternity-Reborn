@@ -482,6 +482,61 @@ public sealed class EffectSourceDefinitionContractTests
     }
 
     [Theory]
+    [MemberData(nameof(RollModifierScopeCases))]
+    public void ValidateArray_RollModifier_RequiresClosedStructuralScopeUnion(
+        JsonObject? scope,
+        JsonArray operations,
+        string? expectedPath)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        var payload = definition["components"]![0]!["payload"]!.AsObject();
+        if (scope == null)
+            payload.Remove("scope");
+        else
+            payload["scope"] = scope;
+        payload["operations"] = operations;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        if (expectedPath == null)
+        {
+            Assert.Empty(issues);
+            return;
+        }
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_invalid_components" &&
+            issue.FilePath == $"source.activeEffectDefinitions[0].components[0].{expectedPath}");
+    }
+
+    [Fact]
+    public void ValidateArray_RollModifier_RejectsUnknownPayloadAndScopeFields()
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        var payload = definition["components"]![0]!["payload"]!.AsObject();
+        payload["unknownPayloadField"] = true;
+        payload["scope"] = new JsonObject { ["kind"] = "all" };
+        payload["scope"]!["unknownScopeField"] = true;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_invalid_components" &&
+            issue.FilePath == "source.activeEffectDefinitions[0].components[0].payload.unknownPayloadField");
+        Assert.Contains(issues, issue =>
+            issue.Code == "effect_source_definition_invalid_components" &&
+            issue.FilePath == "source.activeEffectDefinitions[0].components[0].payload.scope.unknownScopeField");
+    }
+
+    [Theory]
     [InlineData("remove", "deterministic")]
     [InlineData("suspend", "deterministic")]
     [InlineData("event_outcome", "deterministic")]
@@ -804,4 +859,64 @@ public sealed class EffectSourceDefinitionContractTests
 
     private static JsonDocument Parse(JsonNode node) =>
         JsonDocument.Parse(node.ToJsonString());
+
+    public static IEnumerable<object[]> RollModifierScopeCases()
+    {
+        yield return ValidScope(new JsonObject { ["kind"] = "all" });
+        yield return ValidScope(new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_lockpicking"
+        });
+        yield return InvalidScope(null, "payload.scope");
+        yield return InvalidScope(new JsonObject(), "payload.scope.kind");
+        yield return InvalidScope(new JsonObject
+        {
+            ["kind"] = "all",
+            ["skillId"] = "skill_lockpicking"
+        }, "payload.scope.skillId");
+        yield return InvalidScope(new JsonObject
+        {
+            ["kind"] = "skill"
+        }, "payload.scope.skillId");
+        yield return InvalidScope(
+            new JsonObject
+            {
+                ["kind"] = "skill",
+                ["skillId"] = "skill_lockpicking"
+            },
+            "payload.operations",
+            new JsonArray("attack_roll"));
+        yield return InvalidScope(
+            new JsonObject
+            {
+                ["kind"] = "skill",
+                ["skillId"] = "skill_lockpicking"
+            },
+            "payload.operations",
+            new JsonArray("skill_check", "attack_roll"));
+    }
+
+    private static object[] ValidScope(JsonObject scope) =>
+        new object[]
+        {
+            scope,
+            scope["kind"]!.GetValue<string>() == "skill"
+                ? new JsonArray("skill_check")
+                : new JsonArray("attack_roll"),
+            null!
+        };
+
+    private static object[] InvalidScope(
+        JsonObject? scope,
+        string expectedPath,
+        JsonArray? operations = null) =>
+        new object[]
+        {
+            scope!,
+            operations ?? (scope?["kind"]?.GetValue<string>() == "skill"
+                ? new JsonArray("skill_check")
+                : new JsonArray("attack_roll")),
+            expectedPath
+        };
 }

@@ -617,7 +617,8 @@ internal static class EffectMaterializationTestFixture
             "roll_modifier" => CreateProfileComponent(profile, new JsonObject
             {
                 ["operations"] = new JsonArray("attack_roll"),
-                ["contribution"] = "disadvantage"
+                ["contribution"] = "disadvantage",
+                ["scope"] = new JsonObject { ["kind"] = "all" }
             }),
             "resistance_modifier" => CreateProfileComponent(profile, new JsonObject
             {
