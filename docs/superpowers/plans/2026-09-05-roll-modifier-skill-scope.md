@@ -192,8 +192,8 @@ Also assert that `kind=skill` rejects any operation set other than exactly one o
 - [ ] **Step 2: Run the smallest RED selections**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMaterializationContractTests&Name~RollModifier"
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectSourceDefinitionContractTests&Name~RollModifier"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMaterializationContractTests&FullyQualifiedName~RollModifier"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectSourceDefinitionContractTests&FullyQualifiedName~RollModifier"
 ```
 
 Expected: FAIL because `scope` is currently unknown or missing scope is still accepted.
@@ -455,6 +455,9 @@ git commit -m "feat(effects): bind exact target skill authority (#1536)"
 - Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs`
 - Modify: `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`
 - Modify: `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs`
+- Modify: `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
+- Modify: `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs`
 - Modify: `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`
@@ -462,6 +465,7 @@ git commit -m "feat(effects): bind exact target skill authority (#1536)"
 - Modify: `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`
 - Modify: `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs`
 - Modify: `BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`
 - Modify: `BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs`
 - Modify: `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 
@@ -487,7 +491,7 @@ failed binding allocates/publishes no effect, component, transition, wound, or p
 - [ ] **Step 2: Run RED planner selections**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectAcceptedTurnPlannerTests&Name~SkillScope|FullyQualifiedName~EffectAcceptedTurnPlanCacheTests&Name~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&Name~SkillScope"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectAcceptedTurnPlannerTests&FullyQualifiedName~SkillScope|FullyQualifiedName~EffectAcceptedTurnPlanCacheTests&FullyQualifiedName~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&FullyQualifiedName~SkillScope"
 ```
 
 Expected: FAIL because accepted input and planner do not carry or enforce skill authority.
@@ -510,7 +514,7 @@ In `EffectAcceptedTurnPlanCache.CreateFingerprint`, bump `schemaVersion` from `3
     input.SkillScopeAuthority?.Fingerprint ?? "none"
 ```
 
-Add the same fingerprint field to `WoundAcceptedTurnFingerprints.ComputeEffectInput`; do not create a second wound plan authority field.
+Add the same fingerprint field to `WoundAcceptedTurnFingerprints.ComputeEffectInput`; do not create a second wound plan authority field. Also bind the retained `plan.SkillScopeAuthority` fingerprint into `WoundAcceptedTurnFingerprints.ComputeEffectPlan`, the accepted-boundary transcript authority stamp/fingerprint, `AcceptedMechanicsPlanner.CreateEffectPlanAuthority`, and `FinalEffectAuthorityAgrees`. A detached plan with a dropped or changed retained authority must fail both wound candidate acceptance and transcript completion before reaction allocation.
 
 - [ ] **Step 4: Build scope authority in every production composer path**
 
@@ -527,6 +531,8 @@ var components = definition["components"]!.DeepClone().AsArray();
 BindParameters(components, application.Parameters);
 ```
 
+Re-run the registered component-profile structural validator over every bound component before scope resolution. This is required because scalar source parameters replace top-level payload members; malformed post-binding `scope`, `operations`, or another closed member must fail before any lifecycle or application mutation. The source-definition contract must reject `parameterBounds.scope`: the closed scope object is source-authored authority and is not a scalar application parameter.
+
 execute:
 
 ```csharp
@@ -541,6 +547,8 @@ if (scopeIssues.Count != 0)
 ```
 
 Extend the private `Application` record with `string Path` and `string Section`. Ordinary commands use their exact `effectChanges[n].apply` coordinate, reactions use `effect.reactions[eventRef]`, and wound roots use the original proposal component coordinate described in Step 6.
+
+Treat only a typed, authenticated `treat` rematerialization as continuation of an already accepted definition graph: it preserves the exact sealed selector and must not re-run new-binding availability after later skill loss. Create, worsen, ordinary, and reaction applications remain new-binding gated. Existing source/fingerprint agreement must reject any selector rewrite.
 
 - [ ] **Step 6: Preserve wound proposal coordinates for repair**
 
@@ -559,7 +567,7 @@ Add a wound with a valid exact selector, then variants for wrong-owner, unknown,
 Run:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundRepairPacketBuilderTests&Name~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&Name~SkillScope"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundRepairPacketBuilderTests&FullyQualifiedName~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&FullyQualifiedName~SkillScope"
 ```
 
 Expected: PASS; every selector authority error is repairable and atomic.
@@ -570,8 +578,10 @@ Run the Step 2 command again.
 
 Expected: PASS with cache invalidation on catalog-only changes.
 
+Before committing, add RED/GREEN tamper regressions for both retained-authority seals and a post-binding regression proving that a scalar `scope` override cannot bypass the closed structural union or allocate/publish state.
+
 ```powershell
-git add BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs BookOfEternityClient/Services/WoundResponseInputComposer.cs BookOfEternityClient/Services/WoundRepairPacketBuilder.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs
+git add BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/AcceptedEffectBoundaryTranscript.cs BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs BookOfEternityClient/Services/EffectSourceDefinitionContract.cs BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs BookOfEternityClient/Services/WoundResponseInputComposer.cs BookOfEternityClient/Services/WoundRepairPacketBuilder.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs
 git commit -m "feat(effects): seal skill scope in accepted plans (#1536)"
 ```
 
@@ -688,7 +698,7 @@ changed/tampered RollSkillId -> detached replay rejects
 - [ ] **Step 2: Run the smallest treatment RED selection**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&Name~SkillScopedRoll"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~SkillScopedRoll"
 ```
 
 Expected: FAIL because treatment currently applies every `skill_check` modifier and has no exact roll skill identity.
@@ -775,7 +785,7 @@ all outputs -> do not contain "skill_" or the actual skillId
 - [ ] **Step 2: Run RED**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectPlayerProjectionTests&Name~RollScope"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectPlayerProjectionTests&FullyQualifiedName~RollScope"
 ```
 
 Expected: FAIL because projection currently renders only the operations array and contribution token.
@@ -818,7 +828,7 @@ Create player and nearby-NPC skills, stage one live-helper request and one ordin
 - [ ] **Step 2: Run RED Integration selection**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectSkillScopeLifecycleTests&Name~TurnRequestCatalog"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectSkillScopeLifecycleTests&FullyQualifiedName~TurnRequestCatalog"
 ```
 
 Expected: FAIL because `TurnRequest` has no catalog property.
@@ -874,7 +884,7 @@ Assert that one focused component binds exactly one slot, two focused components
 - [ ] **Step 2: Run RED**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundConsequenceEnvelopeTests&Name~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&Name~SkillScope"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundConsequenceEnvelopeTests&FullyQualifiedName~SkillScope|FullyQualifiedName~WoundEffectBatchPlannerTests&FullyQualifiedName~SkillScope"
 ```
 
 Expected: at least one assertion FAIL until scope is explicitly accounted for and preserved.
@@ -961,7 +971,7 @@ Expected: PASS. If measured beyond five minutes, record the first run and repeat
 - [ ] **Step 6: Run focused treatment scope lifecycle rows**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&Name~SkillScopedRoll" -TimeoutMinutes 15
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~SkillScopedRoll" -TimeoutMinutes 15
 ```
 
 Expected: PASS with exact replay and publication evidence.
@@ -1016,7 +1026,7 @@ Require examples for a broad physical wound, an exact-skill physical wound, and 
 - [ ] **Step 2: Run RED documentation guards**
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests&Name~RollScope|FullyQualifiedName~AfterlifeDocumentationCoverageTests&Name~RollScope"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests&FullyQualifiedName~RollScope|FullyQualifiedName~AfterlifeDocumentationCoverageTests&FullyQualifiedName~RollScope"
 ```
 
 Expected: FAIL because current guides/examples teach the old two-field payload.
@@ -1038,7 +1048,7 @@ Verify that `BookOfEternityClient/game_master_daemon.ps1` already loads both aut
 Run the Step 2 command and:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests&Name~Effect|FullyQualifiedName~ExampleDocumentationValidationTests&Name~Wound"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests&FullyQualifiedName~Effect|FullyQualifiedName~ExampleDocumentationValidationTests&FullyQualifiedName~Wound"
 ```
 
 Expected: PASS; examples parse and the GM/player contract contains no legacy payload.

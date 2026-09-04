@@ -1455,9 +1455,14 @@ closed three-field payload; no migration or compatibility reader is added:
    player/NPC active/passive catalogs. It binds new focused components by exact ordinal
    permanent identity, rejects duplicate/confusable/wrong-owner/stale authority, creates
    the advisory `effectSkillScopeCatalog`, and fingerprints both catalog halves.
-3. Ordinary, reaction, and wound applications seal that authority after parameter
-   binding and before identity allocation or mutation. Final revalidation rejects a
-   same-response removal/disable; a same-response new skill was never offered.
+3. Ordinary, reaction, and wound applications structurally revalidate bound components
+   and seal that authority after parameter binding and before identity allocation or
+   mutation; the closed `scope` object is never a scalar `parameterBounds` target. The
+   retained authority fingerprint participates in wound-candidate, accepted-boundary
+   transcript, and staged/final seals. Final revalidation rejects a same-response
+   removal/disable; a same-response new skill was never offered. Only an authenticated
+   treatment rematerialization continues the unchanged accepted selector without
+   rebinding it after later skill loss.
 4. `EffectMechanicsSnapshot` carries current scope authority. The sole
    `EffectRollContributionResolver` filters exact actor, realm, operation, and scope from
    a trusted context before the unchanged contribution reducer. Legitimate later absence
