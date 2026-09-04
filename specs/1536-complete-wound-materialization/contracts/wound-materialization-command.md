@@ -218,7 +218,11 @@ player output is published when any gate fails.
    for ordinary GM effect commands; the typed batch is the sole direct-root allowlist.
    Each root also carries an internally derived expected component count and versioned
    fingerprint of its exact source coordinate, schema, parameters, and ordered fully
-   bound components.
+   bound components. An original or genuinely new root has no first-create
+   parent. A root replacing an exact prior canonical root during severity
+   rematerialization additionally carries that prior root as sealed internal generation
+   provenance; this is never a GM-authored selector and is distinct from a reaction
+   child's persisted `apply_definition` parent.
 3. `EffectAcceptedTurnInputComposer` resolves the closed owner-to-target mapping,
    requires `sourceRef` for a new same-turn wound (`sourceId` for an existing stable
    wound), and derives a distinct internal operation event for each batch member from

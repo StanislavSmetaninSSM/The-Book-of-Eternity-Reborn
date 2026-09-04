@@ -130,7 +130,10 @@ mutation. Cleanup begins even from a terminal declared root and follows only exa
 `create` reaction-parent lineage (`sourceEffectIds`) inside the same wound source,
 definition graph, and ownership domain, visiting each group identity at most once.
 Replacement succession remains separate lifecycle evidence and is not an ownership
-parent. It terminates only the active/suspended descendants of those roots; unrelated
+parent. A same-definition first-create generation edge points from a retired canonical
+root to its severity-rematerialized successor and is classified separately; selective
+cleanup starts from the exact current root and does not treat that edge as a reaction.
+It terminates only the active/suspended descendants of those roots; unrelated
 wound roots survive.
 The resolved complication, its declared root bindings, and reciprocal slots leave the
 active wound; `slotsUsed` is recomputed. Only definitions no longer reachable from any

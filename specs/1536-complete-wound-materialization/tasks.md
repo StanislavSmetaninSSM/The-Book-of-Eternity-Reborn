@@ -56,6 +56,11 @@ finite condition adapter, and keep the corresponding persistent-actor
 - [X] T012 [P] Add RED wound command/input/fingerprint/before-image/cache equality, internally computed common `PreparedPlanFingerprint`, independent cache recomputation, source/export/result/event/effect-after-image/final-binding cross-plan tamper rejection, stale generation, take-once, and invalidation tests in `BookOfEternityClient.Tests/AcceptedMechanicsPlanCacheTests.Wounds.cs`
 - [X] T013 [P] Add RED wound carrier/index/history/command/pending/scheduler/output snapshot inclusion and missing-before-image rejection tests in `BookOfEternityClient.Tests/PendingTurnSnapshotAuthorityTests.Wounds.cs`
 - [X] T014 [P] Add RED exact persisted/same-turn wound source export, `Materializable=false` raw-GM-apply rejection with typed-root and reaction-only authorization, mandatory `sourceRef` for new wounds, closed wound-owner/effect-target mapping, exact `SourceExportFingerprint` and reconstructed `base_wound | complicationId` root-lineage-authority coverage including existing canonical `EffectId` versus new `applicationRef` selectors, full-key/group and first-create causal-parent indexes, direct-root empty versus reaction-child exact singleton `sourceEffectIds`, legal mixed create-causality plus replacement-succession evidence, terminal-root descendant traversal, independent wound-owned effect terminalization that preserves byte-identical canonical wound state, semantic fingerprint, complete definition graph, root bindings, entries, severity, care, recovery, and history, root-bound target exact same-domain `replace` plus pre-mutation cross-domain stack/refresh/merge/replace rejection, cyclic/multiple-causal-create-parent/duplicate-same-kind/foreign-lineage rejection, 160 same-turn and 10,000 pre-turn definition/root bounds, at-most-five simultaneous source members and one-visit-per-parsed-source-member linear work, exact created-event/causal-event agreement, trusted common composition/finalization and cross-plan tamper rejection, and version-1 aggregate tests in `BookOfEternityClient.Tests/EffectIdentityStateTests.Wounds.cs`, `BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs`, `BookOfEternityClient.Tests/EffectAcceptedTurnInputComposerTests.Wounds.cs`, `BookOfEternityClient.Tests/WoundEffectLineagePlannerTests.cs`, `BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.Wounds.cs`, and `BookOfEternityClient.IntegrationTests/WoundAcceptedMechanicsScaleTests.cs`
+  T014's “direct-root empty” boundary applies to an original or genuinely new root.
+  T070-B.6 extends the same persisted first-create field with one exact same-definition
+  prior canonical root whenever a definition/ownership coordinate survives severity
+  rematerialization; removed definitions retain terminal history and runtime authority
+  distinguishes the retained generation edge from a reaction edge.
 
 ### GREEN implementation
 
@@ -75,6 +80,9 @@ finite condition adapter, and keep the corresponding persistent-actor
 
 - [X] T021 Extend generation-scoped accepted authority and cache invalidation with prepared/final wound plans, internally computed common `PreparedPlanFingerprint`, independent detached-plan recomputation, and publication-time take/peek verification in `BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanCache.cs`
 - [X] T022 Replace loose wound-source scans with canonical persisted definition graphs and accepted same-turn wound source exports, enforce checked 160 same-turn and 10,000 pre-turn wound definition/root aggregate bounds before composition, export wounds as `Materializable=false`, reject ordinary GM wound-definition apply, add an exact fingerprinted typed-root canonical-binding resolver without granting whole-source materialization, require `sourceRef` for new wound applications, implement the closed owner-to-target adapter, independently recompute `SourceExportFingerprint` and `WoundPreparationFingerprint` from detached payload in `EffectAcceptedTurnInputComposer`, reconstruct and seal root lineage authority as `base_wound | complicationId`, index exact `(realm, wound, woundId, definitionKey)` source coordinates plus `(realm, wound, woundId)` groups and first-create causal parent/child identity lineage, record exactly the producing effect in reaction-created first-create `sourceEffectIds`, ignore replacement succession for ownership traversal while preserving it as lifecycle evidence, reject cross-domain stack/refresh/merge/replace before mutation, admit every graph definition, and resolve later `apply_definition` descendants only through the sealed reaction executor when their definition and causal parent lineage belong to the active source graph while preserving existing static wound-source validation in `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectIdentityState.cs`, and `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`
+  T070-B.6 adds a shared origin/generation/reaction classifier: a same-definition
+  first-create parent is legal only as sealed severity-generation provenance, while a
+  reaction parent must remain an exact persisted `apply_definition` edge.
 - [X] T023 Add the canonical common-plan detached-payload fingerprint writer and extend common input bindings, authority and non-interchangeable stage fingerprint fields, planning context, exact subordinate result maps and after-images, trusted common `PreparedPlanFingerprint`, touched/consumed paths, and path coverage for wounds in `BookOfEternityClient/Services/AcceptedMechanicsPlan.cs`
 - [X] T024 Compose prepare -> typed wound-effect batch -> effect-owned ID/result map -> finalize -> resource ordering, derive globally unique internal effect-operation events for every batch member while retaining the shared wound event as separate causal chronology, require exact result set/cardinality/new-identity/source/target/event/carrier outcomes, compose same-root results, reject cross-plan stage mixing, terminate pairwise-disjoint declared complication first-create causal-lineage closures (including from terminal roots), remove those roots/slots, prune only definitions unreachable from all remaining roots, recompute slot use, and retain terminal provenance in effect identity history; perform full old source-group teardown before severity rematerialization, terminate the complete active wound-source group on healing, preserve byte-identical canonical wound state and fingerprint when one wound-owned effect independently expires, is suppressed, or is dispelled, preserve no wound mutation for ordinary descendant reaction materialization, and expose linear work statistics proving visited identities do not exceed parsed exact source-group membership in `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [X] T025 Add the explicit accepted-turn wound completeness phase plus strict raw input/root composition and planning handoff in `BookOfEternityClient/Services/Validation/GameStateValidationPhase.cs`, `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs`
@@ -1586,6 +1594,50 @@ entrypoints require no update for T065.
   carrier post-state to the client. Therefore no GM prompt, worked example,
   manifest, browser/console, migration, or afterlife documentation update is
   required. T070 and #1536 remain open.
+  T070 Phase B.6 is the next bounded contour and follows
+  `docs/superpowers/plans/2026-09-04-t070b6-severity-rematerialization.md`. It
+  extends the existing two-phase accepted-turn wound/effect pipeline rather than
+  adding a scalar severity shortcut. The shared pure destination-rank projection
+  preserves the complete authored consequence graph. It reconstructs the full
+  persisted root/reaction envelope, invokes the severity-aware component-power
+  catalog, requires exact derived-slot agreement, and separately canonical-
+  reparses the projected wound; a lower rank whose unchanged graph no longer
+  fits is rejected before an attempt can claim a die or resource. Accepted
+  procedure/guaranteed results composed only from zero or one `stabilize` and one
+  or two `reduce_severity` operations whose aggregate steps are one or two retain
+  their sealed order,
+  including every legal three-operation placement of stabilization among two
+  one-step reductions, and produce one atomic final destination. The private treatment continuation uses a
+  non-cyclic seed -> batch-topology -> final-seal authority DAG, expires the
+  complete current active/suspended wound-source root/descendant group, and
+  rematerializes every retained root through #1535; only that cached effect plan
+  allocates fresh permanent effect identities. Every retained definition/
+  ownership coordinate, through both existing `worsen` and new `treat`, records
+  its exact prior root in first-create provenance; genuinely new roots remain
+  parentless and removed definitions retain only terminal history. The lineage
+  authority accepts only one acyclic, non-branching same-definition
+  generation chain with fully terminal
+  retired generations, so repeated legitimate treatment remains possible while
+  forged disconnected terminal identities remain invalid. Final wound bindings,
+  complication ownership, declared outcome, reducer/history evidence, and
+  common-plan authority are derived after the exact result map is accepted. The
+  contour includes the standard `[stabilize, reduce_severity]` success, retained
+  selected-resource RED, failed/partial route-completion semantics, legal zero-
+  root rematerialization, two distinct treatments, rollback/retry/cold-replay,
+  and player/NPC/combatant carrier parity.
+  It does not silently prune or weaken arbitrary GM-authored consequences and
+  does not admit add-recovery, complication mutation, deterioration, course,
+  recovery scheduling, heal/legacy, spiritual healing, or T069-C. Deterministic
+  fixture-free projection/authority tests remain in Fast; the complete file-backed
+  `MortalWoundTreatmentResolverTests*` family moves to RegressionIntegration under
+  the approved #1551 lane correction, while full-engine filesystem/transaction/
+  restart/replay cases extend the existing LifecycleIntegration fixture. The GM-
+  facing Mortal wound guide/example/manifest gain a production-validated
+  `stabilize + reduce_severity(1)` route; no afterlife runtime contract changes.
+  B.6 remains open until its plan, implementation, retained controls, one Fast
+  checkpoint, one bounded exhaustive run of the complete moved resolver family,
+  lifecycle Integration evidence, documentation validation, and independent
+  review are complete.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution

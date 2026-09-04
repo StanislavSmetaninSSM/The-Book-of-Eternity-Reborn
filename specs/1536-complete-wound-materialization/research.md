@@ -227,6 +227,17 @@ terminates the complete old active/suspended wound source group and then creates
 new root; full healing finds and terminates all active roots and descendants through an
 indexed exact wound-source coordinate.
 
+An original or genuinely new direct root has empty first-create parent
+evidence. Every root replacing an exact canonical root during a severity change records
+that old same-definition root as its singleton first-create generation parent. The rule
+is shared by retained coordinates in worsen, treatment, and later recovery; removed
+definitions leave terminal history and newly introduced coordinates remain parentless.
+It needs no schema migration because
+the identity format already admits a singleton `sourceEffectIds`. Runtime authority
+classifies generation edges separately from reaction edges and requires one sealed,
+acyclic, non-branching ownership-preserving spine whose retired generations are fully
+terminal.
+
 Wound source exports set `Materializable = false`, so ordinary GM `effectChanges[]`
 cannot apply graph definitions. The sealed typed batch is a one-shot internal allowlist
 for exact roots; downstream definitions remain reaction-only. Every graph definition
@@ -507,13 +518,17 @@ and mechanical leaf exceeds the slot envelope before the optional marker is cons
 A zero-edge graph remains legal.
 
 Selective lineage work is linear in the already parsed exact source-group membership:
-build the first-create causal parent/child index once, enqueue each member at most once,
-and reject cycles, more than one causal `sourceEffectId` on first create, duplicate
-same-kind causal evidence, foreign-source/domain edges, or definition keys absent from
-the persisted graph before mutation. Legal replacement succession is ignored for
-ownership traversal. Statistics prove visited identities do not exceed the parsed exact
-source-group identity count; no unrelated global effect-history limit is invented inside
-#1536.
+build the first-create causal parent/child index once, classify each zero/singleton
+parent as origin, sealed same-definition severity generation, or persisted
+different-definition reaction, and visit each member at most once. Reject cycles,
+generation forks, disconnected siblings, more than one causal `sourceEffectId`,
+same-definition parents without exact prior-root authority, foreign-source/domain
+edges, or current/active/reaction-visited definition keys absent from the persisted
+graph before mutation. Fully terminal identities whose definitions were removed by a
+legal graph-changing worsen remain historical and need not rejoin a current spine. Legal
+replacement succession is ignored for ownership traversal. Statistics prove visited
+identities do not exceed the parsed exact source-group identity count; no unrelated
+global effect-history limit is invented inside #1536.
 
 **Rationale**: The repository's test runner and mature effect/resource planners already
 enforce bounded execution and report artifacts. Explicit limits prevent malicious or

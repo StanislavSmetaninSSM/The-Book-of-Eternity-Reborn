@@ -1369,9 +1369,16 @@ source fingerprint; prepared accepted-turn plans carry their own immutable
 
 Every `complication.ownedEffectIds` value resolves to a root binding; complications do
 not list reaction-descendant IDs or duplicate slot truth, and their owned root sets are
-pairwise disjoint. A direct root create transition has empty `sourceEffectIds`; a
-reaction-created child's first `create` transition records exactly its producing effect
-ID. Later replace/stack/refresh transition arrays are not ownership-parent edges.
+pairwise disjoint. An original or genuinely new direct root has empty
+first-create `sourceEffectIds`. A severity-rematerialized direct root records exactly
+its prior canonical root of the same wound source, definition, target/carrier authority,
+and ownership domain whenever that coordinate survives worsen, treatment, or later
+recovery severity changes. A removed definition leaves terminal history without a new
+generation, while a new coordinate starts parentless. A reaction-created child's first `create` transition records exactly its
+producing effect ID through a persisted `apply_definition` edge. Runtime authority
+classifies these singleton-parent forms before using them: generation provenance is a
+unique same-definition spine, while reaction provenance follows a graph edge. Later
+replace/stack/refresh transition arrays are not ownership-parent edges.
 Removing a complication
 starts from its declared roots even when a root is terminal, traverses only validated
 first-`create` causal parent-to-child identity edges inside the same exact wound source,

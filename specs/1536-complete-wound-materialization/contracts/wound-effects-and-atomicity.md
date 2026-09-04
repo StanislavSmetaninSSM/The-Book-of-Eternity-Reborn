@@ -263,11 +263,17 @@ the whole finalization.
 
 `complication.ownedEffectIds` is an exact subset of canonical root-binding effect IDs;
 the sets are pairwise disjoint between complications. A complication neither lists
-reaction descendants nor duplicates consequence slot truth. A reaction-created effect's
-create transition records its exact producing effect in `sourceEffectIds`; a direct root
-create transition has an empty source set. Ownership indexes read only the new identity's
-first `create` transition; `replace`, stack, refresh, and other transition result arrays
-are lifecycle evidence, not additional ownership parents.
+reaction descendants nor duplicates consequence slot truth. An original or genuinely
+new direct root has an empty first-create source set. A direct root retaining a
+definition/ownership coordinate through severity rematerialization records exactly its
+prior canonical same-definition root in `sourceEffectIds`; this rule is shared by
+worsen, treatment, and later recovery. A removed definition leaves only terminal
+history, and a newly introduced coordinate remains parentless.
+A reaction-created effect instead records its exact producing effect through an
+authorized different-definition `apply_definition` edge. Ownership/lineage analysis
+must classify these two singleton-parent forms before traversal. `replace`, stack,
+refresh, and other transition result arrays are lifecycle evidence, not additional
+ownership parents.
 
 The planner reconstructs one ephemeral `WoundRootLineageAuthority` from root bindings
 and complication ownership: every root is assigned `base_wound` or one exact
@@ -526,9 +532,20 @@ A change of severity does not incrementally patch arbitrary effects. The planner
 3. plans terminal transitions for every active/suspended old root and descendant in the
    exact wound source group, even when a definition remains semantically unchanged;
 4. applies every new root after that full teardown and requires a fresh effect identity
-   result for each application;
+   result for each application, with the exact old canonical root recorded as sealed
+   same-definition first-create generation provenance;
 5. validates exact reciprocal root links, graph membership, and unrelated-effect preservation;
 6. commits wound, index, history, effect carriers/index/history, and output together.
+
+The same generation rule applies to worsening, treatment reduction, and recovery-driven
+severity change. Graph-preserving treatment binds every old/new root pair. A
+graph-changing worsen binds only retained definition/ownership coordinates; removed
+roots remain terminal history and genuinely new coordinates are parentless. A full
+rematerialization exposes only the new applications as current root-lineage rows; old
+roots remain in terminal operations, nullable exact `PriorRootEffectId` authority, and
+durable identity history. The client rejects forks, cycles, disconnected terminal
+siblings whose definition remains current, wrong-domain predecessors, and any active
+member in a retired generation before allocating a new effect identity.
 
 There is never an accepted intermediate state where the wound says severity II while
 its consequence set is still the severity IV set.

@@ -390,6 +390,15 @@ No production code is edited in this phase.
    in active effects, runtime carriers, publication carriers, and identity entries;
    verify full identity semantics and allocator-backed create-transition evidence after
    resealing.
+   Classify first-create provenance through one shared linear analyzer: original and
+   genuinely new roots are parentless, severity-rematerialized roots retaining a
+   definition/ownership coordinate record the exact prior canonical same-definition
+   root, removed definitions leave terminal history, and reaction children record an
+   exact persisted different-definition `apply_definition` producer. Use the same
+   generation rule for worsen, treatment, and later recovery, require a unique acyclic
+   non-branching ownership-preserving spine, and require every retired generation and
+   its reaction closure to be terminal. Full rematerialization exports only new
+   application roots as current lineage; old roots remain predecessor/terminal evidence.
    Reconcile the optional wound single-leaf expansion with #1535 by requiring exact
    `apply_definition.maxExpansion = 2` when present, requiring same-domain `replace` for
    a root-bound target, and recording the producing effect in every reaction-created
