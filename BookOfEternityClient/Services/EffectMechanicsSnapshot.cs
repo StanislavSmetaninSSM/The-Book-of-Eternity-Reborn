@@ -7,7 +7,8 @@ namespace BookOfEternityClient.Services;
 
 internal sealed record EffectMechanicsInput(
     EffectCarrierCatalogInput Carriers,
-    JsonObject? IdentityIndex);
+    JsonObject? IdentityIndex,
+    EffectRollSkillScopeAuthority? SkillScopeAuthority = null);
 
 internal sealed record EffectMechanicalComponent(
     string EffectId,
@@ -47,12 +48,18 @@ internal sealed record EffectMechanicsSnapshot(
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal const string Source = "accepted_effect_mechanics_snapshot_v1";
+    private static readonly EffectRollSkillScopeAuthority EmptySkillScopeAuthority =
+        EffectRollSkillScopeAuthority.Build(new EffectRollSkillScopeAuthorityInput(
+            new Dictionary<string, JsonNode?>(),
+            new Dictionary<string, JsonNode?>()));
 
     internal IReadOnlyList<EffectAcceptedInstance> Effects { get; init; } =
         Array.Empty<EffectAcceptedInstance>();
 
     internal IReadOnlyList<FateShieldReactionCandidate> FateShieldReactionCandidates
         { get; init; } = Array.Empty<FateShieldReactionCandidate>();
+
+    internal EffectRollSkillScopeAuthority SkillScopeAuthority { get; init; } = EmptySkillScopeAuthority;
 
     internal static EffectMechanicsSnapshot Build(EffectMechanicsInput input)
     {
@@ -177,7 +184,8 @@ internal sealed record EffectMechanicsSnapshot(
         {
             Effects = ReadOnly(effects),
             FateShieldReactionCandidates =
-                FateShieldReactionArbiter.ProjectEligibleCandidates(catalog.Occurrences)
+                FateShieldReactionArbiter.ProjectEligibleCandidates(catalog.Occurrences),
+            SkillScopeAuthority = input.SkillScopeAuthority ?? EmptySkillScopeAuthority
         };
     }
 
@@ -198,6 +206,27 @@ internal sealed record EffectMechanicsSnapshot(
         fs.EnsureCanonicalWriteLeaseActive(readLease);
         var readIssues = new List<ValidationIssue>();
 
+        var activeSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_active.json", readIssues);
+        var passiveSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_passive.json", readIssues);
+        var npcSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/npcs/npc_core.json", readIssues);
+        var skillScopeAuthority = EffectRollSkillScopeAuthority.Build(
+            new EffectRollSkillScopeAuthorityInput(
+                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+                {
+                    ["game_state/player/skills_active.json"] = activeSkills,
+                    ["game_state/player/skills_passive.json"] = passiveSkills,
+                    ["game_state/npcs/npc_core.json"] = npcSkills
+                },
+                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+                {
+                    ["game_state/player/skills_active.json"] = activeSkills,
+                    ["game_state/player/skills_passive.json"] = passiveSkills,
+                    ["game_state/npcs/npc_core.json"] = npcSkills
+                }));
+
         var input = new EffectMechanicsInput(
             new EffectCarrierCatalogInput(
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.PlayerPath, readIssues),
@@ -206,7 +235,8 @@ internal sealed record EffectMechanicsSnapshot(
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.AlliesPath, readIssues),
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.AfterlifeProfilesPath, readIssues),
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.SpiritualConflictPath, readIssues)),
-            await ReadObjectAsync(fs, readLease, EffectIdentityState.StatePath, readIssues));
+            await ReadObjectAsync(fs, readLease, EffectIdentityState.StatePath, readIssues),
+            skillScopeAuthority);
 
         var built = Build(input);
         if (readIssues.Count == 0)
