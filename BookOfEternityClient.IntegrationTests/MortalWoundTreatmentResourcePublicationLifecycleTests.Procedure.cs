@@ -1791,9 +1791,23 @@ public sealed partial class GameEngineTurnLifecycleTests
         foreach (var pair in expected)
         {
             var actual = await context.ReadFileBytesAsync(pair.Key);
-            Assert.Equal(pair.Value.Exists, actual is not null);
+            Assert.True(
+                pair.Value.Exists == (actual is not null),
+                $"Published path existence changed at '{pair.Key}'.");
             if (pair.Value.Exists)
-                Assert.Equal(pair.Value.Bytes, actual);
+            {
+                var expectedRoot = JsonNode.Parse(Encoding.UTF8.GetString(
+                    pair.Value.Bytes!).TrimStart('\uFEFF'));
+                var actualRoot = JsonNode.Parse(Encoding.UTF8.GetString(
+                    actual!).TrimStart('\uFEFF'));
+                var semanticallyEqual = JsonNode.DeepEquals(
+                    expectedRoot,
+                    actualRoot);
+                Assert.True(
+                    pair.Value.Bytes!.SequenceEqual(actual!),
+                    $"Published bytes changed at '{pair.Key}'; " +
+                    $"JSON semantic equality={semanticallyEqual}.");
+            }
         }
     }
 }

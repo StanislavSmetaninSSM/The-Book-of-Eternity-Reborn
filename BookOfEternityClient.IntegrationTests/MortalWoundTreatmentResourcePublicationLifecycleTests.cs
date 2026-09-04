@@ -4377,56 +4377,75 @@ public sealed partial class GameEngineTurnLifecycleTests
         var effects = new List<JsonObject>();
         foreach (var binding in wound.Consequences.OwnedEffectSources.RootBindings)
         {
-            var definition = definitions[binding.DefinitionKey];
-            var profile = definition["components"]![0]!["profile"]!
-                .GetValue<string>();
-            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
-                "player",
-                profile);
-            effect["effectId"] = binding.EffectId;
-            effect["realm"] = wound.Owner.Realm;
-            effect["target"] = new JsonObject
-            {
-                ["kind"] = "player",
-                ["targetId"] = wound.Owner.OwnerId
-            };
-            effect["display"] = definition["display"]!.DeepClone();
-            effect["source"] = new JsonObject
-            {
-                ["kind"] = "wound",
-                ["sourceId"] = wound.WoundId,
-                ["definitionKey"] = binding.DefinitionKey
-            };
-            effect["components"] = definition["components"]!.DeepClone();
-            effect["lifetime"] = new JsonObject
-            {
-                ["mode"] = "source_bound",
-                ["linkKind"] = "wound",
-                ["targetId"] = wound.WoundId,
-                ["activePredicate"] =
-                    definition["lifetime"]!["activePredicate"]!.DeepClone(),
-                ["onSourceLoss"] =
-                    definition["lifetime"]!["onSourceLoss"]!.DeepClone()
-            };
-            effect["stacking"] = new JsonObject
-            {
-                ["stackKey"] =
-                    definition["stacking"]!["stackKey"]!.DeepClone(),
-                ["policy"] = definition["stacking"]!["policy"]!.DeepClone(),
-                ["maxStacks"] =
-                    definition["stacking"]!["maxStacks"]!.DeepClone(),
-                ["currentStacks"] = 1,
-                ["refreshMode"] =
-                    definition["stacking"]!["refreshMode"]?.DeepClone(),
-                ["mergeRule"] =
-                    definition["stacking"]!["mergeRule"]?.DeepClone()
-            };
-            effect["triggers"] = definition["triggers"]!.DeepClone();
-            effect["removal"] = definition["removal"]!.DeepClone();
-            effect["links"] = definition["links"]!.DeepClone();
-            effects.Add(effect);
+            effects.Add(CreateCanonicalHeldTreatmentWoundEffect(
+                wound,
+                definitions[binding.DefinitionKey],
+                binding.EffectId));
         }
         return effects;
+    }
+
+    private static JsonObject CreateCanonicalHeldTreatmentWoundEffect(
+        WoundMaterializationEnvelope wound,
+        JsonObject definition,
+        string effectId)
+    {
+        var profile = definition["components"]![0]!["profile"]!
+            .GetValue<string>();
+        var targetKind = wound.Owner.OwnerKind switch
+        {
+            "player" => "player",
+            "npc" => "npc",
+            "combatant" => "combatant",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(wound),
+                wound.Owner.OwnerKind,
+                "Unsupported severity-reduction effect owner.")
+        };
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            targetKind,
+            profile);
+        effect["effectId"] = effectId;
+        effect["realm"] = wound.Owner.Realm;
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = targetKind,
+            ["targetId"] = wound.Owner.OwnerId
+        };
+        effect["display"] = definition["display"]!.DeepClone();
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "wound",
+            ["sourceId"] = wound.WoundId,
+            ["definitionKey"] = definition["definitionKey"]!.DeepClone()
+        };
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["linkKind"] = "wound",
+            ["targetId"] = wound.WoundId,
+            ["activePredicate"] =
+                definition["lifetime"]!["activePredicate"]!.DeepClone(),
+            ["onSourceLoss"] =
+                definition["lifetime"]!["onSourceLoss"]!.DeepClone()
+        };
+        effect["stacking"] = new JsonObject
+        {
+            ["stackKey"] = definition["stacking"]!["stackKey"]!.DeepClone(),
+            ["policy"] = definition["stacking"]!["policy"]!.DeepClone(),
+            ["maxStacks"] =
+                definition["stacking"]!["maxStacks"]!.DeepClone(),
+            ["currentStacks"] = 1,
+            ["refreshMode"] =
+                definition["stacking"]!["refreshMode"]?.DeepClone(),
+            ["mergeRule"] =
+                definition["stacking"]!["mergeRule"]?.DeepClone()
+        };
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        effect["removal"] = definition["removal"]!.DeepClone();
+        effect["links"] = definition["links"]!.DeepClone();
+        return effect;
     }
 
     private static JsonObject CreateGuaranteedResourceTreatmentWound(
@@ -5316,6 +5335,8 @@ public sealed partial class GameEngineTurnLifecycleTests
 
         internal FileSystemManagerHooks Hooks { get; }
         internal bool Fired { get; private set; }
+        internal AcceptedMechanicsPlan? ForeignPlan { get; private set; }
+        internal string? ForeignBindingFingerprint { get; private set; }
         internal IReadOnlyCollection<string> ObservedPhases => _observedPhases;
 
         internal void Arm(HeldTreatmentPipelineContext? context = null)
@@ -5548,6 +5569,103 @@ public sealed partial class GameEngineTurnLifecycleTests
             AcceptedMechanicsPlanAuthority.InvalidateValidated(
                 competingFileSystem,
                 lease);
+            var foreignInput = CreateForeignAcceptedMechanicsInput();
+            var foreign = AcceptedMechanicsPlanAuthority.GetOrBuildValidated(
+                competingFileSystem,
+                lease,
+                foreignInput);
+            Assert.True(
+                foreign.Success,
+                DescribeValidationIssues(foreign.Issues));
+            ForeignPlan = Assert.IsType<AcceptedMechanicsPlan>(foreign.Plan);
+            ForeignBindingFingerprint =
+                AcceptedMechanicsPlanFingerprints.ComputeInput(
+                    foreignInput.CreateBinding());
+        }
+
+        private static AcceptedMechanicsInput CreateForeignAcceptedMechanicsInput()
+        {
+            var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+            var history = ResourceHistoryState.CreateValidated(
+                Array.Empty<ResourceTransition>(),
+                definitions).History!;
+            var owners = ResourceOwnerAuthority.Build(
+                new ResourceOwnerAuthorityInput(
+                    Array.Empty<ResourceOwnerExport>(),
+                    Array.Empty<ResourceOwnerExport>(),
+                    Array.Empty<ResourceOwnerKey>()));
+            var sources = ResourceMutationSourceCatalog.Create(
+                Array.Empty<ResourceMutationSourceExport>()).Catalog!;
+            var commands = ResourceAcceptedTurnInputComposer.Parse(null);
+            Assert.Empty(commands.Issues);
+            var context = new AcceptedMechanicsPlanningContext(
+                definitions.ToCanonicalRoot(),
+                definitions,
+                new ResourceStateLedger(Array.Empty<ResourceStateEntry>()),
+                history,
+                owners,
+                sources,
+                commands,
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["entries"] = new JsonArray()
+                },
+                effectPlan: null);
+            const string hash =
+                "sha256:ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+            return new AcceptedMechanicsInput(
+                SessionId: "session_t070b6_foreign_common_plan",
+                RequestId: "request_t070b6_foreign_common_plan",
+                SnapshotToken: "snapshot_t070b6_foreign_common_plan",
+                Realm: "mortal_world",
+                Turn: 777,
+                AcceptedEvents: new JsonObject
+                {
+                    ["acceptedEvents"] = new JsonArray()
+                },
+                ResourceCommands: commands.Root,
+                EffectCommands: new JsonObject(),
+                PendingInput: new JsonObject(),
+                InternalInputs: new JsonObject(),
+                AuthorityFingerprints: new AcceptedMechanicsAuthorityFingerprints(
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash,
+                    hash),
+                BeforeImages: new Dictionary<string, CanonicalBeforeImage>(
+                    StringComparer.Ordinal)
+                {
+                    ["game_state/effects/effect_commands.json"] =
+                        new(true, new byte[] { 1 }),
+                    ["game_state/effects/effect_identity_index.json"] =
+                        new(true, new byte[] { 2 }),
+                    ["game_state/effects/effects.json"] =
+                        new(true, new byte[] { 3 }),
+                    ["game_state/resources/resource_commands.json"] =
+                        new(true, new byte[] { 4 }),
+                    ["game_state/resources/resource_definitions.json"] =
+                        new(true, new byte[] { 5 }),
+                    ["game_state/resources/resource_history.json"] =
+                        new(true, new byte[] { 6 }),
+                    [CanonicalResourceOwnerAuthorityComposer.AuthorityPath] =
+                        new(true, new byte[] { 7 }),
+                    ["game_state/resources/resource_state.json"] =
+                        new(true, new byte[] { 8 })
+                },
+                ValidationIssues: Array.Empty<ValidationIssue>(),
+                PlanningContext: context);
         }
 
         private static string? ClassifyCurrentPhase(string path, bool isMutation)

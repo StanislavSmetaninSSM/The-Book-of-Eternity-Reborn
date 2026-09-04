@@ -1,5 +1,7 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
@@ -11,6 +13,11 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class GameEngineTurnLifecycleTests
 {
+    private const string SeverityReactionChildDefinitionKey =
+        "definition_t070b6_reaction_child";
+    private const string SeverityReactionChildEffectId =
+        "effect_t070b6_reaction_child";
+
     [Theory]
     [InlineData("procedure", "success", 2, 1, 20)]
     [InlineData("procedure", "partial_success", 2, 1, 10)]
@@ -71,7 +78,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(reductionSteps == 1 ? "II" : "I", published.Severity.Value);
         Assert.Equal(3 - reductionSteps, published.Severity.Rank);
         Assert.Equal(rootCount, currentRootIds.Length);
-        Assert.Empty(priorRootIds.Intersect(currentRootIds, StringComparer.Ordinal));
+        AssertFreshSeverityEffectIds(priorRootIds, currentRootIds);
         var identity = ReadSeverityEffectIdentity(context.FileSystem);
         foreach (var priorRootId in priorRootIds)
         {
@@ -111,6 +118,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             AssertSeverityGenerationCreatedFrom(
                 active,
                 priorRootsByDefinition[binding.DefinitionKey]);
+            AssertSingleSeverityGenerationSuccessor(
+                identity,
+                priorRootsByDefinition[binding.DefinitionKey],
+                binding.DefinitionKey,
+                binding.EffectId);
         }
         Assert.True(JsonNode.DeepEquals(
             unrelatedEffectBefore,
@@ -132,12 +144,90 @@ public sealed partial class GameEngineTurnLifecycleTests
                 await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
         Assert.Equal(transitionsBefore + 1, CountProcedureTreatmentTransitions(context));
         Assert.False(await ContainsCurrentExactTreatmentRequestAsync(context));
+        AssertSeverityWoundIndexAndHistoryAgreement(
+            context,
+            beforeWound,
+            published);
         var output = JsonNode.Parse(Assert.IsType<string>(
             await context.FileSystem.ReadFileAsync(
                 "output/narrative_response.json")))!.AsObject();
         Assert.Equal(
             HeldTreatmentPipelineContext.FinalSceneText,
             output["response"]?.GetValue<string>());
+    }
+
+    [Fact]
+    public async Task SeverityReduction_RealReactionDescendantIsRetiredWithItsSourceGeneration()
+    {
+        await using var context = await CreateSeverityReductionPipelineContextAsync(
+            fault: null,
+            rootCount: 1,
+            reductionSteps: 1,
+            acceptedDie: 20,
+            includeEnergyResource: false,
+            initialSeverityRank: 4,
+            includeReactionDescendant: true);
+        var before = ReadCurrentTreatmentWound(context.FileSystem);
+        var priorRootId = Assert.Single(
+            before.Consequences.OwnedEffectSources.RootBindings).EffectId;
+        var priorClosureIds = ReadSeverityTargetEffects(
+                context.FileSystem,
+                "player",
+                "player_current")
+            .Where(static effect => string.Equals(
+                effect["source"]?["kind"]?.GetValue<string>(),
+                "wound",
+                StringComparison.Ordinal))
+            .Select(static effect => effect["effectId"]!.GetValue<string>())
+            .ToArray();
+        Assert.Equal(
+            new[] { priorRootId, SeverityReactionChildEffectId }
+                .OrderBy(static value => value, StringComparer.Ordinal),
+            priorClosureIds.OrderBy(static value => value, StringComparer.Ordinal));
+
+        await context.ReleaseLeaseAsync();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(context);
+        var disposition = await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+            engine,
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+            "severity reduction reaction-descendant publication oracle",
+            snapshotContext,
+            null,
+            HeldTreatmentPipelineContext.Turn,
+            null);
+
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, disposition);
+        var published = ReadCurrentTreatmentWound(context.FileSystem);
+        Assert.Equal("III", published.Severity.Value);
+        var freshRootId = Assert.Single(
+            published.Consequences.OwnedEffectSources.RootBindings).EffectId;
+        AssertFreshSeverityEffectIds(priorClosureIds, new[] { freshRootId });
+        var identity = ReadSeverityEffectIdentity(context.FileSystem);
+        AssertSeverityGenerationExpired(
+            RequireSeverityEffectIdentity(identity, priorRootId));
+        AssertSeverityGenerationExpired(
+            RequireSeverityEffectIdentity(identity, SeverityReactionChildEffectId));
+        var fresh = RequireSeverityEffectIdentity(identity, freshRootId);
+        Assert.Equal("active", fresh.State);
+        AssertSeverityGenerationCreatedFrom(fresh, priorRootId);
+        AssertSingleSeverityGenerationSuccessor(
+            identity,
+            priorRootId,
+            Assert.Single(published.Consequences.OwnedEffectSources.RootBindings)
+                .DefinitionKey,
+            freshRootId);
+        var activeWoundEffects = ReadSeverityTargetEffects(
+                context.FileSystem,
+                "player",
+                "player_current")
+            .Where(static effect => string.Equals(
+                effect["source"]?["kind"]?.GetValue<string>(),
+                "wound",
+                StringComparison.Ordinal))
+            .Select(static effect => effect["effectId"]!.GetValue<string>())
+            .ToArray();
+        Assert.Equal(new[] { freshRootId }, activeWoundEffects);
     }
 
     [Theory]
@@ -298,9 +388,18 @@ public sealed partial class GameEngineTurnLifecycleTests
         await context.AcquireLeaseAsync();
         AssertProcedureReservationIsLive(context);
         await AssertConfirmedHeldLiveRegistryProbeAsync(context);
-        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+        var competingPlan = Assert.IsType<AcceptedMechanicsPlan>(fault.ForeignPlan);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             context.FileSystem,
-            context.Lease));
+            context.Lease,
+            out var competingBinding,
+            out var competingCached));
+        Assert.Same(competingPlan, competingCached.Plan);
+        Assert.NotSame(context.Plan, competingCached.Plan);
+        Assert.Equal(
+            fault.ForeignBindingFingerprint,
+            AcceptedMechanicsPlanFingerprints.ComputeInput(
+                competingBinding));
         AssertTreatmentPublicationRestartBlocked(context);
 
         var acceptedState = ExportCurrentTreatmentAcceptedState(context);
@@ -328,6 +427,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             reductionSteps: 1,
             acceptedDie: 20,
             includeEnergyResource: true);
+        var replayCommand = Assert.IsType<byte[]>(await context.ReadFileBytesAsync(
+            AcceptedMechanicsPlan.WoundCommandPath));
+        var replayPending = await context.ReadFileBytesAsync(
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        var finalizedRequest = context.Request;
         await context.ReleaseLeaseAsync();
         var (engine, snapshotContext) =
             await CreateHeldTreatmentValidationEngineAsync(context);
@@ -388,20 +492,59 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.True(recovered.IsValid, DescribeValidationIssues(recovered.Issues));
         Assert.Empty(recovered.HeldRequests);
         var finalized = Assert.Single(recovered.FinalizedRequests);
+        Assert.Equal(finalizedRequest.RequestFingerprint, finalized.RequestFingerprint);
         var replay = MortalWoundTreatmentPlanner.CreateProcedureAttempt(
             finalized,
             history,
             ReadCurrentTreatmentWound(coldContext.FileSystem),
             acceptedState);
-
         Assert.Equal("ExactReplay", replay.Disposition);
         Assert.NotNull(replay.ReplayReceipt);
+
+        await RestoreSeverityReplayCommandSurfacesAsync(
+            coldContext,
+            replayCommand,
+            replayPending);
+        Assert.True(await ContainsExactTreatmentRequestAsync(coldContext, finalized));
+        await AssertColdReplayAcceptedThroughGameEngineAsync(
+            coldContext,
+            HeldTreatmentPipelineContext.Turn,
+            "severity reduction cold replay coordinator",
+            copied);
         await AssertProcedurePublishedStateBytesAsync(coldContext, copied);
+        Assert.False(await ContainsExactTreatmentRequestAsync(coldContext, finalized));
         Assert.Equal(
             resourceSpends,
             CountHeldTreatmentEnergySpends(
                 await ReadTreatmentResourceHistoryAsync(coldContext.FileSystem)));
         Assert.Equal(transitions, CountProcedureTreatmentTransitions(coldContext));
+
+        await coldContext.AcquireLeaseAsync();
+        var mismatchedCommand = ParseJsonObjectBytes(replayCommand);
+        var mismatchedResult = Assert.IsType<JsonObject>(
+            Assert.IsType<JsonObject>(Assert.Single(
+                mismatchedCommand["commands"]!.AsArray()))["result"]);
+        mismatchedResult["resultFingerprint"] =
+            "sha256:" + new string('0', 64);
+        await coldContext.FileSystem.WriteFileAtomicAsync(
+            coldContext.Lease,
+            AcceptedMechanicsPlan.WoundCommandPath,
+            mismatchedCommand.ToJsonString(
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var mismatchedBytes = Assert.IsType<byte[]>(
+            await coldContext.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
+        var mismatchedDisposition = await RunColdReplayThroughGameEngineAsync(
+            coldContext,
+            HeldTreatmentPipelineContext.Turn,
+            "severity reduction mismatched cold replay coordinator");
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.TerminalRejected,
+            mismatchedDisposition);
+        Assert.Equal(
+            mismatchedBytes,
+            await coldContext.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
     }
 
     [Theory]
@@ -437,10 +580,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         var unrelatedBefore = ReadPlayerEffectById(
             context.FileSystem,
             ProcedureFateShieldEffectId);
-        var playerWoundsBefore = await context.FileSystem.ReadFileBytesAsync(
-            WoundCarrierCatalog.PlayerPath);
-        var playerEffectsBefore = await context.FileSystem.ReadFileBytesAsync(
-            EffectCarrierCatalog.PlayerPath);
+        var carrierBytesBefore = await CaptureAllSeverityCarrierBytesAsync(
+            context.FileSystem);
         await context.ReleaseLeaseAsync();
         var (engine, snapshotContext) =
             await CreateHeldTreatmentValidationEngineAsync(context);
@@ -508,16 +649,30 @@ public sealed partial class GameEngineTurnLifecycleTests
             ReadPlayerEffectById(
                 context.FileSystem,
                 ProcedureFateShieldEffectId)));
-        if (!string.Equals(targetKind, "player", StringComparison.Ordinal))
+        var targetCarrierPaths = targetKind switch
         {
-            Assert.Equal(
-                playerWoundsBefore,
-                await context.FileSystem.ReadFileBytesAsync(
-                    WoundCarrierCatalog.PlayerPath));
-            Assert.Equal(
-                playerEffectsBefore,
-                await context.FileSystem.ReadFileBytesAsync(
-                    EffectCarrierCatalog.PlayerPath));
+            "player" => new HashSet<string>(StringComparer.Ordinal)
+            {
+                WoundCarrierCatalog.PlayerPath,
+                EffectCarrierCatalog.PlayerPath
+            },
+            "npc" => new HashSet<string>(StringComparer.Ordinal)
+            {
+                WoundCarrierCatalog.NpcPath,
+                EffectCarrierCatalog.NpcPath
+            },
+            "combatant" => new HashSet<string>(StringComparer.Ordinal)
+            {
+                WoundCarrierCatalog.EnemiesPath
+            },
+            _ => throw new ArgumentOutOfRangeException(nameof(targetKind))
+        };
+        foreach (var pair in carrierBytesBefore.Where(pair =>
+                     !targetCarrierPaths.Contains(pair.Key)))
+        {
+            AssertExactOptionalBytes(
+                pair.Value,
+                await context.FileSystem.ReadFileBytesAsync(pair.Key));
         }
     }
 
@@ -534,10 +689,13 @@ public sealed partial class GameEngineTurnLifecycleTests
             includeEnergyResource: true,
             expectedCategory: "partial_success",
             currentEnergy: 4);
-        var originalRootId = Assert.Single(ReadCurrentTreatmentWound(
-                context.FileSystem)
+        var originalWound = ReadCurrentTreatmentWound(context.FileSystem);
+        var originalRootId = Assert.Single(originalWound
             .Consequences.OwnedEffectSources.RootBindings)
             .EffectId;
+        var firstRequest = context.Request;
+        var firstResolution = context.Resolution;
+        var firstPlan = context.Plan;
         var resourceSpendsBefore = CountHeldTreatmentEnergySpends(
             await ReadTreatmentResourceHistoryAsync(context.FileSystem));
         var woundTransitionsBefore = CountProcedureTreatmentTransitions(context);
@@ -560,7 +718,9 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal("II", firstPublished.Severity.Value);
         var firstFreshRootId = Assert.Single(
             firstPublished.Consequences.OwnedEffectSources.RootBindings).EffectId;
-        Assert.NotEqual(originalRootId, firstFreshRootId);
+        AssertFreshSeverityEffectIds(
+            new[] { originalRootId },
+            new[] { firstFreshRootId });
         var identityAfterFirst = ReadSeverityEffectIdentity(context.FileSystem);
         var originalTerminalAfterFirst = RequireSeverityEffectIdentity(
             identityAfterFirst,
@@ -573,17 +733,58 @@ public sealed partial class GameEngineTurnLifecycleTests
         AssertSeverityGenerationCreatedFrom(
             firstFreshAfterFirst,
             originalRootId);
+        AssertSingleSeverityGenerationSuccessor(
+            identityAfterFirst,
+            originalRootId,
+            Assert.Single(firstPublished.Consequences.OwnedEffectSources.RootBindings)
+                .DefinitionKey,
+            firstFreshRootId);
         var preservedOriginalHistory = originalTerminalAfterFirst.Raw.DeepClone();
+        var preservedFirstFreshCreate = Assert.Single(
+            firstFreshAfterFirst.Transitions,
+            static transition => string.Equals(
+                transition.Kind,
+                "create",
+                StringComparison.Ordinal)).Raw.DeepClone();
+        var preservedFirstTreatmentHistory = ReadSeverityHistoryRowJson(
+            context.FileSystem,
+            firstRequest.Coordinates.OperationKey).DeepClone();
+        Assert.Equal(
+            resourceSpendsBefore + 1,
+            CountHeldTreatmentEnergySpends(
+                await ReadTreatmentResourceHistoryAsync(context.FileSystem)));
+        Assert.Equal(
+            woundTransitionsBefore + 1,
+            CountProcedureTreatmentTransitions(context));
+        await AssertSeverityTreatmentSpendAgreementAsync(
+            context.FileSystem,
+            firstRequest,
+            firstResolution,
+            firstPlan);
+        AssertSeverityWoundIndexAndHistoryAgreement(
+            context,
+            originalWound,
+            firstPublished);
+        Assert.False(await ContainsCurrentExactTreatmentRequestAsync(context));
+        await AssertSeverityProcedureClaimReleasedAsync(context, firstRequest);
 
         await PrepareNextSeverityReductionAttemptAsync(
             context,
             secondOperationKey,
             acceptedDie: 20,
             expectedCategory: "success");
+        var secondRequest = context.Request;
+        var secondResolution = context.Resolution;
+        var secondPlan = context.Plan;
         var secondAllocatedEffectIds = Assert.IsType<EffectAcceptedTurnPlan>(
                 context.Plan.EffectPlan)
             .AllocatedEffectIds
             .ToArray();
+        var secondReplayCommand = Assert.IsType<byte[]>(
+            await context.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
+        var secondReplayPending = await context.ReadFileBytesAsync(
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
         await context.ReleaseLeaseAsync();
         var (secondEngine, secondSnapshotContext) =
             await CreateHeldTreatmentValidationEngineAsync(context);
@@ -609,6 +810,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             new[] { originalRootId, firstFreshRootId, secondFreshRootId }
                 .Distinct(StringComparer.Ordinal)
                 .Count());
+        AssertFreshSeverityEffectIds(
+            new[] { originalRootId, firstFreshRootId },
+            new[] { secondFreshRootId });
 
         var identityAfterSecond = ReadSeverityEffectIdentity(context.FileSystem);
         var originalTerminalAfterSecond = RequireSeverityEffectIdentity(
@@ -619,6 +823,18 @@ public sealed partial class GameEngineTurnLifecycleTests
             originalTerminalAfterSecond.Raw));
         AssertSeverityGenerationExpired(
             RequireSeverityEffectIdentity(identityAfterSecond, firstFreshRootId));
+        var firstFreshAfterSecond = RequireSeverityEffectIdentity(
+            identityAfterSecond,
+            firstFreshRootId);
+        var firstFreshCreateAfterSecond = Assert.Single(
+            firstFreshAfterSecond.Transitions,
+            static transition => string.Equals(
+                transition.Kind,
+                "create",
+                StringComparison.Ordinal));
+        Assert.True(JsonNode.DeepEquals(
+            preservedFirstFreshCreate,
+            firstFreshCreateAfterSecond.Raw));
         var secondFreshAfterSecond = RequireSeverityEffectIdentity(
             identityAfterSecond,
             secondFreshRootId);
@@ -626,6 +842,17 @@ public sealed partial class GameEngineTurnLifecycleTests
         AssertSeverityGenerationCreatedFrom(
             secondFreshAfterSecond,
             firstFreshRootId);
+        AssertSingleSeverityGenerationSuccessor(
+            identityAfterSecond,
+            firstFreshRootId,
+            Assert.Single(secondPublished.Consequences.OwnedEffectSources.RootBindings)
+                .DefinitionKey,
+            secondFreshRootId);
+        Assert.True(JsonNode.DeepEquals(
+            preservedFirstTreatmentHistory,
+            ReadSeverityHistoryRowJson(
+                context.FileSystem,
+                firstRequest.Coordinates.OperationKey)));
         Assert.Equal(
             resourceSpendsBefore + 2,
             CountHeldTreatmentEnergySpends(
@@ -635,16 +862,21 @@ public sealed partial class GameEngineTurnLifecycleTests
             CountProcedureTreatmentTransitions(context));
         Assert.Equal(0, await ReadCurrentTreatmentEnergyAsync(context));
         Assert.False(await ContainsCurrentExactTreatmentRequestAsync(context));
-
-        await context.AcquireLeaseAsync();
-        var releasedState = ExportCurrentTreatmentAcceptedState(context);
-        Assert.False(AcceptedTurnAuthorityRegistry
-            .HasLiveMortalWoundProcedureReservationAgreement(
-                context.FileSystem,
-                context.Lease,
-                releasedState,
-                RequireProcedureAuthority(context.Request)));
-        await context.ReleaseLeaseAsync();
+        await AssertSeverityTreatmentSpendAgreementAsync(
+            context.FileSystem,
+            firstRequest,
+            firstResolution,
+            firstPlan);
+        await AssertSeverityTreatmentSpendAgreementAsync(
+            context.FileSystem,
+            secondRequest,
+            secondResolution,
+            secondPlan);
+        AssertSeverityWoundIndexAndHistoryAgreement(
+            context,
+            firstPublished,
+            secondPublished);
+        await AssertSeverityProcedureClaimReleasedAsync(context, secondRequest);
 
         var publishedBytes = await CaptureProcedurePublishedStateBytesAsync(context);
         var coldRoot = Path.Combine(
@@ -699,7 +931,22 @@ public sealed partial class GameEngineTurnLifecycleTests
             coldAcceptedState);
         Assert.Equal("ExactReplay", replay.Disposition);
         Assert.NotNull(replay.ReplayReceipt);
+        await RestoreSeverityReplayCommandSurfacesAsync(
+            coldContext,
+            secondReplayCommand,
+            secondReplayPending);
+        Assert.True(await ContainsExactTreatmentRequestAsync(
+            coldContext,
+            finalized));
+        await AssertColdReplayAcceptedThroughGameEngineAsync(
+            coldContext,
+            HeldTreatmentPipelineContext.Turn + 1,
+            "severity reduction second-generation cold replay coordinator",
+            copiedBytes);
         await AssertProcedurePublishedStateBytesAsync(coldContext, copiedBytes);
+        Assert.False(await ContainsExactTreatmentRequestAsync(
+            coldContext,
+            finalized));
         Assert.Equal(
             resourceSpendsBefore + 2,
             CountHeldTreatmentEnergySpends(
@@ -707,6 +954,79 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.Equal(
             woundTransitionsBefore + 2,
             CountProcedureTreatmentTransitions(coldContext));
+    }
+
+    private async Task AssertColdReplayAcceptedThroughGameEngineAsync(
+        HeldTreatmentPipelineContext coldContext,
+        int expectedTurn,
+        string source,
+        IReadOnlyDictionary<string, ExactFileImage> expectedBytes)
+    {
+        var disposition = await RunColdReplayThroughGameEngineAsync(
+            coldContext,
+            expectedTurn,
+            source);
+        Assert.Equal(AcceptedTurnValidationDisposition.Accepted, disposition);
+        await AssertProcedurePublishedStateBytesAsync(coldContext, expectedBytes);
+    }
+
+    private async Task<AcceptedTurnValidationDisposition>
+        RunColdReplayThroughGameEngineAsync(
+        HeldTreatmentPipelineContext coldContext,
+        int expectedTurn,
+        string source)
+    {
+        await coldContext.ReleaseLeaseAsync();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(coldContext);
+        return await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+            engine,
+            "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+            source,
+            snapshotContext,
+            null,
+            expectedTurn,
+            null);
+    }
+
+    private static async Task RestoreSeverityReplayCommandSurfacesAsync(
+        HeldTreatmentPipelineContext context,
+        byte[] command,
+        byte[]? pending)
+    {
+        await context.FileSystem.WriteFileAtomicAsync(
+            context.Lease,
+            AcceptedMechanicsPlan.WoundCommandPath,
+            Encoding.UTF8.GetString(command).TrimStart('\uFEFF'));
+        if (pending is not null)
+        {
+            await context.FileSystem.WriteFileAtomicAsync(
+                context.Lease,
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+                Encoding.UTF8.GetString(pending).TrimStart('\uFEFF'));
+        }
+    }
+
+    private static async Task<bool> ContainsExactTreatmentRequestAsync(
+        HeldTreatmentPipelineContext context,
+        MortalWoundTreatmentAttemptRequest request)
+    {
+        var commandBytes = await context.ReadFileBytesAsync(
+            AcceptedMechanicsPlan.WoundCommandPath);
+        var pendingBytes = await context.ReadFileBytesAsync(
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath);
+        var command = commandBytes is null
+            ? new JsonObject()
+            : ParseJsonObjectBytes(commandBytes);
+        var pending = pendingBytes is null
+            ? null
+            : ParseJsonObjectBytes(pendingBytes);
+        return MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(
+            command,
+            pending,
+            request.Coordinates.OperationKey,
+            request.Coordinates.AttemptId,
+            request.RequestFingerprint);
     }
 
     private async Task<HeldTreatmentPipelineContext>
@@ -720,7 +1040,9 @@ public sealed partial class GameEngineTurnLifecycleTests
             string expectedCategory = "success",
             string targetKind = "player",
             string targetId = "player_current",
-            int currentEnergy = 2)
+            int currentEnergy = 2,
+            int initialSeverityRank = 3,
+            bool includeReactionDescendant = false)
     {
         var root = Path.Combine(
             Path.GetTempPath(),
@@ -742,7 +1064,9 @@ public sealed partial class GameEngineTurnLifecycleTests
                 includeEnergyResource,
                 mode,
                 targetKind,
-                targetId);
+                targetId,
+                initialSeverityRank,
+                includeReactionDescendant);
             await SeedHeldTreatmentAuthorityAsync(fileSystem, wound);
             if (currentEnergy != 2)
             {
@@ -762,6 +1086,10 @@ public sealed partial class GameEngineTurnLifecycleTests
                 fileSystem,
                 targetKind,
                 targetId);
+            await NormalizeSeverityFixtureJsonBytesAsync(
+                fileSystem,
+                ResourceMaterializationContract.DefinitionsPath,
+                CanonicalResourceOwnerAuthorityComposer.AuthorityPath);
             var prepared = await new LiveTurnPreparationService(fileSystem)
                 .PrepareAsync(new LiveTurnPreparationOptions
                 {
@@ -928,6 +1256,23 @@ public sealed partial class GameEngineTurnLifecycleTests
             Assert.Equal(expected, actual);
     }
 
+    private static async Task<IReadOnlyDictionary<string, byte[]?>>
+        CaptureAllSeverityCarrierBytesAsync(FileSystemManager fileSystem)
+    {
+        var paths = new[]
+        {
+            WoundCarrierCatalog.PlayerPath,
+            WoundCarrierCatalog.NpcPath,
+            WoundCarrierCatalog.EnemiesPath,
+            EffectCarrierCatalog.PlayerPath,
+            EffectCarrierCatalog.NpcPath
+        }.Distinct(StringComparer.Ordinal);
+        var result = new Dictionary<string, byte[]?>(StringComparer.Ordinal);
+        foreach (var path in paths)
+            result.Add(path, await fileSystem.ReadFileBytesAsync(path));
+        return result;
+    }
+
     private static async Task RestoreSeverityReductionAndComposeSameSemanticPlanAsync(
         HeldTreatmentPipelineContext context,
         bool includeEnergyResource,
@@ -1089,6 +1434,176 @@ public sealed partial class GameEngineTurnLifecycleTests
         return Assert.IsType<EffectIdentityState>(parsed.State);
     }
 
+    private static WoundIdentityState ReadSeverityWoundIdentity(
+        FileSystemManager fileSystem)
+    {
+        var parsed = WoundIdentityState.Parse(
+            File.ReadAllText(fileSystem.ResolvePath(WoundIdentityState.StatePath)),
+            WoundIdentityState.StatePath);
+        Assert.True(parsed.IsValid, DescribeValidationIssues(parsed.Issues));
+        return Assert.IsType<WoundIdentityState>(parsed.State);
+    }
+
+    private static WoundHistoryTransition
+        AssertSeverityWoundIndexAndHistoryAgreement(
+            HeldTreatmentPipelineContext context,
+            WoundMaterializationEnvelope before,
+            WoundMaterializationEnvelope published)
+    {
+        var identity = ReadSeverityWoundIdentity(context.FileSystem);
+        var identityEntry = Assert.Single(identity.Entries, entry => string.Equals(
+            entry.WoundId,
+            published.WoundId,
+            StringComparison.Ordinal));
+        Assert.Empty(WoundIdentityState.ValidateActiveAgreement(
+            identityEntry,
+            published,
+            WoundIdentityState.StatePath));
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(published),
+            identityEntry.SemanticFingerprint);
+
+        var history = ReadCurrentTreatmentHistory(context.FileSystem);
+        var row = Assert.Single(history.State!.Transitions, transition =>
+            string.Equals(
+                transition.OperationKey,
+                context.Request.Coordinates.OperationKey,
+                StringComparison.Ordinal));
+        Assert.Equal(published.WoundId, row.WoundId);
+        Assert.Equal("treat", row.Kind);
+        Assert.Equal(published.LastTransition.TransitionId, row.TransitionId);
+        Assert.Equal(published.LastTransition.Ordinal, row.WoundTransitionOrdinal);
+        Assert.Equal(context.Request.Coordinates.Turn, row.Turn);
+        Assert.Equal(context.Request.Coordinates.EventRef, row.EventRef);
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(before),
+            row.BeforeFingerprint);
+        Assert.Equal(
+            WoundIdentityState.ComputeSemanticFingerprint(published),
+            row.AfterFingerprint);
+        Assert.Equal(context.Request.RequestFingerprint, row.SourceFingerprint);
+        Assert.Equal(context.Request.Coordinates.AttemptId, row.AttemptId);
+        Assert.False(row.Terminal);
+        Assert.Equal(WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
+            row.ReadableSummary);
+        Assert.Equal(
+            WoundHistoryState.ComputeOutputFingerprint(
+                row.OperationKey,
+                row.EventRef,
+                row.ReadableSummary),
+            row.OutputFingerprint);
+
+        var result = Assert.IsType<MortalWoundTreatmentPersistedResult>(
+            row.TreatmentResult);
+        Assert.Equal(context.Request.RequestFingerprint,
+            result.Request.RequestFingerprint);
+        Assert.Equal(context.Request.Coordinates.CoordinatesFingerprint,
+            result.Request.Coordinates.CoordinatesFingerprint);
+        Assert.Equal(context.Request.Coordinates.OperationKey,
+            result.Request.Coordinates.OperationKey);
+        Assert.Equal(context.Request.Coordinates.AttemptId,
+            result.Request.Coordinates.AttemptId);
+        Assert.Equal(context.Request.Coordinates.WoundId,
+            result.Request.Coordinates.WoundId);
+        Assert.Equal(context.Request.Coordinates.RouteId,
+            result.Request.Coordinates.RouteId);
+        Assert.Equal(context.Resolution.RequestFingerprint,
+            result.Receipt.RequestFingerprint);
+        Assert.Equal(context.Resolution.ResultFingerprint,
+            result.Receipt.ResultFingerprint);
+        Assert.Equal(context.Resolution.ResultCategory,
+            result.Receipt.ResultCategory);
+        Assert.Equal(context.Resolution.RouteCompletion,
+            result.Receipt.RouteCompletion);
+        Assert.True(result.Receipt.HasMatchingFingerprint());
+
+        var physicalIdentity = JsonNode.Parse(File.ReadAllText(
+            context.FileSystem.ResolvePath(WoundIdentityState.StatePath)));
+        var physicalHistory = JsonNode.Parse(File.ReadAllText(
+            context.FileSystem.ResolvePath(WoundHistoryState.HistoryPath)));
+        Assert.True(JsonNode.DeepEquals(
+            context.Plan.WoundIdentityAfterImage,
+            physicalIdentity));
+        Assert.True(JsonNode.DeepEquals(
+            context.Plan.WoundHistoryAfterImage,
+            physicalHistory));
+        return row;
+    }
+
+    private static JsonObject ReadSeverityHistoryRowJson(
+        FileSystemManager fileSystem,
+        string operationKey)
+    {
+        var root = JsonNode.Parse(File.ReadAllText(
+            fileSystem.ResolvePath(WoundHistoryState.HistoryPath)))!.AsObject();
+        return root["transitions"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(row => string.Equals(
+                row["operationKey"]?.GetValue<string>(),
+                operationKey,
+                StringComparison.Ordinal));
+    }
+
+    private static async Task AssertSeverityTreatmentSpendAgreementAsync(
+        FileSystemManager fileSystem,
+        MortalWoundTreatmentAttemptRequest request,
+        MortalWoundTreatmentResolution resolution,
+        AcceptedMechanicsPlan plan)
+    {
+        var authority = Assert.IsType<
+            MortalWoundTreatmentResourcePublicationAuthority>(
+            plan.TreatmentResourcePublicationAuthority);
+        Assert.Equal(request.RequestFingerprint, authority.RequestFingerprint);
+        Assert.Equal(resolution.ResultFingerprint, authority.ResultFingerprint);
+        var planned = Assert.Single(plan.ResourceEvents, candidate =>
+            string.Equals(
+                candidate.EventKind,
+                "resource_spent",
+                StringComparison.Ordinal) &&
+            candidate.Coordinate.OwnerKind == ResourceOwnerKind.Player &&
+            string.Equals(
+                candidate.Coordinate.ResourceOwnerId,
+                "player_current",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                candidate.Coordinate.ResourceKey,
+                "energy",
+                StringComparison.Ordinal));
+        var history = await ReadTreatmentResourceHistoryAsync(fileSystem);
+        var actual = Assert.Single(history.Transitions, transition =>
+            string.Equals(
+                transition.OperationId,
+                planned.OperationId,
+                StringComparison.Ordinal));
+        Assert.Equal(ResourceTransitionOperation.Spend, actual.Operation);
+        Assert.Equal(ResourceMutationPhase.RegisteredSystemOutcome, actual.Phase);
+        Assert.Equal(planned.EventRef, actual.EventRef);
+        Assert.Equal(planned.Coordinate, actual.Coordinate);
+        Assert.Equal(planned.Before, actual.BeforeState?.Current);
+        Assert.Equal(planned.After, actual.AfterState?.Current);
+        Assert.Equal(planned.AppliedAmount, actual.AppliedAmount);
+        Assert.Equal(planned.Turn, actual.Turn);
+        Assert.Equal(planned.ExecutionSequence, actual.ExecutionSequence);
+        Assert.Equal(
+            planned.SourceFingerprint,
+            actual.SourceEvidence.AuthorityFingerprint);
+    }
+
+    private static async Task AssertSeverityProcedureClaimReleasedAsync(
+        HeldTreatmentPipelineContext context,
+        MortalWoundTreatmentAttemptRequest request)
+    {
+        await context.AcquireLeaseAsync();
+        var releasedState = ExportCurrentTreatmentAcceptedState(context);
+        Assert.False(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                context.FileSystem,
+                context.Lease,
+                releasedState,
+                RequireProcedureAuthority(request)));
+        await context.ReleaseLeaseAsync();
+    }
+
     private static EffectIdentityEntry RequireSeverityEffectIdentity(
         EffectIdentityState identity,
         string effectId)
@@ -1120,7 +1635,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 candidate.Kind,
                 "expire",
                 StringComparison.Ordinal)));
-        Assert.Contains(entry.EffectId, transition.SourceEffectIds);
+        Assert.Equal(new[] { entry.EffectId }, transition.SourceEffectIds);
         Assert.Empty(transition.ResultEffectIds);
     }
 
@@ -1133,8 +1648,52 @@ public sealed partial class GameEngineTurnLifecycleTests
                 candidate.Kind,
                 "create",
                 StringComparison.Ordinal)));
-        Assert.Contains(predecessorEffectId, create.SourceEffectIds);
-        Assert.Contains(entry.EffectId, create.ResultEffectIds);
+        Assert.Equal(new[] { predecessorEffectId }, create.SourceEffectIds);
+        Assert.Equal(new[] { entry.EffectId }, create.ResultEffectIds);
+    }
+
+    private static void AssertFreshSeverityEffectIds(
+        IEnumerable<string> retiredEffectIds,
+        IEnumerable<string> freshEffectIds)
+    {
+        var retired = retiredEffectIds.ToArray();
+        var fresh = freshEffectIds.ToArray();
+        Assert.Empty(retired.Intersect(fresh, StringComparer.Ordinal));
+        var retiredConfusable = retired
+            .Select(ResourceMaterializationContract.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        Assert.DoesNotContain(
+            fresh,
+            effectId => retiredConfusable.Contains(
+                ResourceMaterializationContract.BuildConfusableKey(effectId)));
+    }
+
+    private static void AssertSingleSeverityGenerationSuccessor(
+        EffectIdentityState identity,
+        string predecessorEffectId,
+        string definitionKey,
+        string expectedEffectId)
+    {
+        var successors = identity.Entries.Where(entry =>
+                string.Equals(
+                    entry.Source["kind"]?.GetValue<string>(),
+                    "wound",
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    entry.Source["sourceId"]?.GetValue<string>(),
+                    HeldTreatmentPipelineContext.WoundId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    entry.Source["definitionKey"]?.GetValue<string>(),
+                    definitionKey,
+                    StringComparison.Ordinal) &&
+                entry.Transitions.Any(transition =>
+                    string.Equals(transition.Kind, "create", StringComparison.Ordinal) &&
+                    transition.SourceEffectIds.SequenceEqual(
+                        new[] { predecessorEffectId },
+                        StringComparer.Ordinal)))
+            .ToArray();
+        Assert.Equal(expectedEffectId, Assert.Single(successors).EffectId);
     }
 
     private static JsonObject CreateSeverityReductionTreatmentWound(
@@ -1143,20 +1702,25 @@ public sealed partial class GameEngineTurnLifecycleTests
             bool includeEnergyResource,
             string mode,
             string targetKind = "player",
-            string targetId = "player_current")
+            string targetId = "player_current",
+            int initialSeverityRank = 3,
+            bool includeReactionDescendant = false)
     {
         Assert.InRange(rootCount, 0, 2);
         Assert.InRange(reductionSteps, 1, 2);
+        Assert.InRange(initialSeverityRank, 3, 4);
+        Assert.True(initialSeverityRank - reductionSteps >= 1);
         var wound = WoundContractTestData.CreateActiveWound(
             HeldTreatmentPipelineContext.WoundId,
             "mortal_world",
             targetKind,
             targetId,
             ResolveSeverityCarrierPath(targetKind));
-        wound["severity"]!["value"] = "III";
-        wound["severity"]!["rank"] = 3;
-        wound["severity"]!["maximumAtCreation"] = "III";
-        wound["consequences"]!["slotBudget"] = 3;
+        var initialSeverity = initialSeverityRank == 4 ? "IV" : "III";
+        wound["severity"]!["value"] = initialSeverity;
+        wound["severity"]!["rank"] = initialSeverityRank;
+        wound["severity"]!["maximumAtCreation"] = initialSeverity;
+        wound["consequences"]!["slotBudget"] = initialSeverityRank;
         if (rootCount == 0)
         {
             wound["consequences"]!["slotsUsed"] = 0;
@@ -1175,6 +1739,11 @@ public sealed partial class GameEngineTurnLifecycleTests
             wound["consequences"]!["entries"]!.AsArray().RemoveAt(0);
             wound["consequences"]!["entries"]![0]!["slot"] = 1;
             wound["consequences"]!["slotsUsed"] = 1;
+        }
+        if (includeReactionDescendant)
+        {
+            Assert.True(rootCount > 0);
+            AddSeverityReactionDefinitionGraph(wound, targetKind);
         }
 
         var guaranteed = string.Equals(mode, "guaranteed", StringComparison.Ordinal);
@@ -1278,6 +1847,53 @@ public sealed partial class GameEngineTurnLifecycleTests
         return wound;
     }
 
+    private static void AddSeverityReactionDefinitionGraph(
+        JsonObject wound,
+        string targetKind)
+    {
+        var effectTargetKind = targetKind switch
+        {
+            "player" => "player",
+            "npc" => "npc",
+            "combatant" => "combatant",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(targetKind), targetKind, null)
+        };
+        var sources = wound["consequences"]!["ownedEffectSources"]!.AsObject();
+        var rootBinding = Assert.IsType<JsonObject>(sources["rootBindings"]![0]);
+        var rootEffectId = rootBinding["effectId"]!.GetValue<string>();
+        var rootDefinitionKey = rootBinding["definitionKey"]!.GetValue<string>();
+        var definitions = sources["definitions"]!.AsArray();
+        var rootIndex = definitions.Select((definition, index) => (definition, index))
+            .Single(pair => string.Equals(
+                pair.definition!["definitionKey"]!.GetValue<string>(),
+                rootDefinitionKey,
+                StringComparison.Ordinal))
+            .index;
+        var reactionRoot = WoundContractTestData.CreateApplyDefinitionRoot(
+            HeldTreatmentPipelineContext.WoundId,
+            "mortal_world",
+            rootDefinitionKey,
+            SeverityReactionChildDefinitionKey);
+        reactionRoot["allowedTargetKinds"] = new JsonArray(effectTargetKind);
+        definitions[rootIndex] = reactionRoot;
+        definitions.Add(WoundContractTestData.CreateOwnedEffectDefinition(
+            HeldTreatmentPipelineContext.WoundId,
+            "mortal_world",
+            SeverityReactionChildDefinitionKey,
+            "wound_consequence",
+            targetKind: effectTargetKind));
+        var entry = wound["consequences"]!["entries"]!.AsArray()
+            .OfType<JsonObject>()
+            .Single(candidate => string.Equals(
+                candidate["effectId"]!.GetValue<string>(),
+                rootEffectId,
+                StringComparison.Ordinal));
+        entry["profileKey"] = "event_reaction";
+        entry["readableSummary"] =
+            "The wound reaction owns one real materialized descendant.";
+    }
+
     private static void AssertSeverityClaims(
         MortalWoundTreatmentAttemptRequest request,
         bool includeEnergyResource,
@@ -1328,8 +1944,42 @@ public sealed partial class GameEngineTurnLifecycleTests
         var effects = originalEffectCarrier["activeEffects"]!.AsArray()
             .OfType<JsonObject>()
             .Select(static effect => effect.DeepClone().AsObject())
-            .ToArray();
-        for (var index = 0; index < effects.Length; index++)
+            .ToList();
+        var parsedWound = WoundMaterializationContract.Parse(
+            wound.ToJsonString(),
+            ResolveSeverityCarrierPath(targetKind));
+        Assert.True(
+            parsedWound.IsValid,
+            DescribeValidationIssues(parsedWound.Issues));
+        var canonicalWound = Assert.IsType<WoundMaterializationEnvelope>(
+            parsedWound.Wound);
+        var reactionFact = canonicalWound.Consequences.OwnedEffectSources
+            .DefinitionFacts.SingleOrDefault(fact =>
+                fact.ApplyDefinitionTargets.Contains(
+                    SeverityReactionChildDefinitionKey,
+                    StringComparer.Ordinal));
+        string? reactionRootEffectId = null;
+        if (reactionFact is not null)
+        {
+            reactionRootEffectId = canonicalWound.Consequences.OwnedEffectSources
+                .RootBindings.Single(binding => string.Equals(
+                    binding.DefinitionKey,
+                    reactionFact.DefinitionKey,
+                    StringComparison.Ordinal)).EffectId;
+            var childDefinition = canonicalWound.Consequences.OwnedEffectSources
+                .Definitions
+                .Select(static definition =>
+                    JsonNode.Parse(definition.GetRawText())!.AsObject())
+                .Single(definition => string.Equals(
+                    definition["definitionKey"]!.GetValue<string>(),
+                    SeverityReactionChildDefinitionKey,
+                    StringComparison.Ordinal));
+            effects.Add(CreateCanonicalHeldTreatmentWoundEffect(
+                canonicalWound,
+                childDefinition,
+                SeverityReactionChildEffectId));
+        }
+        for (var index = 0; index < effects.Count; index++)
         {
             var ordinal = index + 1;
             var eventRef = $"turn_42:t070b6_seed:{ordinal}";
@@ -1422,14 +2072,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             WoundCarrierCatalog.EnemiesPath,
             enemies.ToJsonString());
 
-        var parsedWound = WoundMaterializationContract.Parse(
-            wound.ToJsonString(),
-            ResolveSeverityCarrierPath(targetKind));
-        Assert.True(
-            parsedWound.IsValid,
-            DescribeValidationIssues(parsedWound.Issues));
         var woundFingerprint = WoundIdentityState.ComputeSemanticFingerprint(
-            Assert.IsType<WoundMaterializationEnvelope>(parsedWound.Wound));
+            canonicalWound);
         await fileSystem.WriteFileAtomicAsync(
             WoundIdentityState.StatePath,
             WoundContractTestData.CreateIdentityIndex(
@@ -1439,7 +2083,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                     carrierPath: ResolveSeverityCarrierPath(targetKind),
                     semanticFingerprint: woundFingerprint)).ToJsonString());
 
-        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effects);
+        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
         var entries = identity["entries"]!.AsArray().OfType<JsonObject>().ToArray();
         for (var index = 0; index < entries.Length; index++)
         {
@@ -1448,6 +2092,14 @@ public sealed partial class GameEngineTurnLifecycleTests
                 entries[index]["transitions"]!.AsArray()));
             transition["transitionId"] = $"effect_transition_t070b6_seed_{ordinal}";
             transition["eventRef"] = $"turn_42:t070b6_seed:{ordinal}";
+            if (string.Equals(
+                    entries[index]["effectId"]!.GetValue<string>(),
+                    SeverityReactionChildEffectId,
+                    StringComparison.Ordinal))
+            {
+                transition["sourceEffectIds"] =
+                    new JsonArray(Assert.IsType<string>(reactionRootEffectId));
+            }
         }
         await fileSystem.WriteFileAtomicAsync(
             EffectIdentityState.StatePath,
@@ -1477,9 +2129,26 @@ public sealed partial class GameEngineTurnLifecycleTests
         skill["mortalWoundTreatmentCapabilities"]![0]!["capabilityRef"] =
             "field_medicine";
         provider["activeSkills"]!.AsArray().Add(skill);
+        provider["tradeInventoryReceipts"] ??= new JsonArray();
         await fileSystem.WriteFileAtomicAsync(
             NpcCoreChangesContract.NpcCorePath,
             npcCore.ToJsonString());
+    }
+
+    private static async Task NormalizeSeverityFixtureJsonBytesAsync(
+        FileSystemManager fileSystem,
+        params string[] paths)
+    {
+        foreach (var path in paths)
+        {
+            var root = JsonNode.Parse(Assert.IsType<string>(
+                await fileSystem.ReadFileAsync(path)));
+            Assert.NotNull(root);
+            await fileSystem.WriteFileAtomicAsync(
+                path,
+                root.ToJsonString(
+                    SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        }
     }
 
     private static async Task ResealAllSeverityEffectIdentityAsync(
@@ -1519,6 +2188,8 @@ public sealed partial class GameEngineTurnLifecycleTests
                     targetId)
                 .Select(static effect => effect.DeepClone().AsObject()));
         }
+        var reactionRootEffectId = FindSeverityReactionRootEffectId(
+            ReadSeverityTreatmentWound(fileSystem, targetKind, targetId));
         var identity = EffectMaterializationTestFixture.CreateIdentityIndex(
             allEffects.ToArray());
         var entries = identity["entries"]!.AsArray()
@@ -1548,10 +2219,35 @@ public sealed partial class GameEngineTurnLifecycleTests
                 : effect["chronology"]?["lastTransitionTurn"]?.GetValue<int>();
             if (fate)
                 entries[index]["createdAtTurn"] = 30;
+            if (string.Equals(
+                    effectId,
+                    SeverityReactionChildEffectId,
+                    StringComparison.Ordinal))
+            {
+                transition["sourceEffectIds"] =
+                    new JsonArray(Assert.IsType<string>(reactionRootEffectId));
+            }
         }
         await fileSystem.WriteFileAtomicAsync(
             EffectIdentityState.StatePath,
             identity.ToJsonString());
+    }
+
+    private static string? FindSeverityReactionRootEffectId(
+        WoundMaterializationEnvelope wound)
+    {
+        var reactionFact = wound.Consequences.OwnedEffectSources.DefinitionFacts
+            .SingleOrDefault(fact => fact.ApplyDefinitionTargets.Contains(
+                SeverityReactionChildDefinitionKey,
+                StringComparer.Ordinal));
+        return reactionFact is null
+            ? null
+            : wound.Consequences.OwnedEffectSources.RootBindings
+                .Single(binding => string.Equals(
+                    binding.DefinitionKey,
+                    reactionFact.DefinitionKey,
+                    StringComparison.Ordinal))
+                .EffectId;
     }
 
     private static JsonObject CreateSeverityCombatant(
