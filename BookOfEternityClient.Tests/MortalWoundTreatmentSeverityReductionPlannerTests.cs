@@ -151,7 +151,7 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
     [Fact]
     public void Project_DestinationEnvelopeRejectsReactionExpansionPowerWithoutWeakening()
     {
-        var source = CreateRankThreeReactionWound();
+        var source = CreateRankFourReactionWound();
         var before = Parse(source);
         var canonicalBefore = WoundMaterializationContract.SerializeCanonical(before);
 
@@ -162,7 +162,15 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
 
         Assert.False(result.IsValid);
         Assert.Null(result.Projection);
-        Assert.NotEmpty(result.Issues);
+        Assert.Contains(result.Issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "wound_consequence_magnitude_exceeded",
+                StringComparison.Ordinal) &&
+            string.Equals(
+                issue.FilePath,
+                "mortalWoundTreatment.severityReductionProjection.before.consequences.ownedEffectSources.definitions[0].components[0].payload.value",
+                StringComparison.Ordinal));
         Assert.Equal(canonicalBefore, WoundMaterializationContract.SerializeCanonical(before));
         var definitions = before.Consequences.OwnedEffectSources.Definitions;
         Assert.Equal(2, definitions.Count);
@@ -200,9 +208,13 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
         return wound;
     }
 
-    private static JsonObject CreateRankThreeReactionWound()
+    private static JsonObject CreateRankFourReactionWound()
     {
         var wound = CreateRankThreeWound("event_reaction", "characteristic_modifier");
+        wound["severity"]!["value"] = "IV";
+        wound["severity"]!["rank"] = 4;
+        wound["severity"]!["maximumAtCreation"] = "IV";
+        wound["consequences"]!["slotBudget"] = 4;
         var sources = wound["consequences"]!["ownedEffectSources"]!.AsObject();
         var root = WoundContractTestData.CreateApplyDefinitionRoot(
             wound["woundId"]!.GetValue<string>(),
@@ -215,7 +227,7 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
             "definition_destination_leaf",
             "characteristic_modifier");
         leaf["components"]![0]!["payload"]!["operation"] = "flat";
-        leaf["components"]![0]!["payload"]!["value"] = 3;
+        leaf["components"]![0]!["payload"]!["value"] = 4;
         sources["definitions"] = new JsonArray(root, leaf);
         sources["rootBindings"] = new JsonArray(
             WoundContractTestData.CreateRootBinding(

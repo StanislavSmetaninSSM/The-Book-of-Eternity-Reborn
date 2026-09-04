@@ -409,7 +409,7 @@ internal static partial class MortalWoundTreatmentContract
                     string.Empty)).ToArray(),
                 root.Slots?.Select(static slot => slot.Path).ToArray()))
             .ToArray();
-        var validation = WoundPersistedConsequenceEnvelopeAdapter.ValidateDetached(
+        var validation = WoundPersistedConsequenceEnvelopeAdapter.ValidatePrevalidatedDetached(
             severityRank,
             collectionPath,
             definitions,

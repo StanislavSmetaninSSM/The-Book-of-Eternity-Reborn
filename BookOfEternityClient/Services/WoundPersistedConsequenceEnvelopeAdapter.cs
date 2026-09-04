@@ -43,9 +43,8 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         ArgumentNullException.ThrowIfNull(definitions);
         ArgumentNullException.ThrowIfNull(roots);
 
+        var graph = BuildGraph(definitions);
         var issues = new List<ValidationIssue>();
-        var byRef = new Dictionary<string, DefinitionNode>(StringComparer.Ordinal);
-        var byKey = new Dictionary<string, DefinitionNode>(StringComparer.Ordinal);
         var exactRefs = new HashSet<string>(StringComparer.Ordinal);
         var confusableRefs = new HashSet<string>(StringComparer.Ordinal);
         var exactKeys = new HashSet<string>(StringComparer.Ordinal);
@@ -73,12 +72,6 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                     "one exact/confusable-unique definitionKey",
                     key.Length == 0 ? "missing or invalid" : key);
             }
-
-            var node = BuildDefinitionNode(definition, key);
-            if (definition.DefinitionRef.Length > 0 && !byRef.ContainsKey(definition.DefinitionRef))
-                byRef.Add(definition.DefinitionRef, node);
-            if (key.Length > 0 && !byKey.ContainsKey(key))
-                byKey.Add(key, node);
         }
 
         var directKeys = new HashSet<string>(StringComparer.Ordinal);
@@ -96,7 +89,7 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                     "one exact/confusable-unique direct-root effect reference",
                     root.EffectRef);
             }
-            if (!byRef.TryGetValue(root.DefinitionRef, out var definition))
+            if (!graph.ByRef.TryGetValue(root.DefinitionRef, out var definition))
             {
                 AddGraphIssue(
                     issues,
@@ -118,17 +111,74 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         if (issues.Count != 0)
             return Invalid(issues);
 
-        var effects = new List<WoundDetachedMortalEffectRef>(roots.Count);
-        foreach (var root in roots)
+        return ValidateResolvedGraph(
+            severityRank,
+            authorPath,
+            graph,
+            roots,
+            requireExactGlobalSlotAgreement,
+            persistedSlotsUsed);
+    }
+
+    /// <summary>
+    /// Runs shared catalog traversal and slot reciprocity for a graph whose
+    /// owning contract already diagnosed identifiers and root bindings.
+    /// Unresolved roots are skipped, but resolvable roots remain independently
+    /// eligible for catalog and slot diagnostics.
+    /// </summary>
+    internal static WoundPersistedConsequenceEnvelopeValidationResult ValidatePrevalidatedDetached(
+        int severityRank,
+        string authorPath,
+        IReadOnlyList<WoundPersistedConsequenceDefinition> definitions,
+        IReadOnlyList<WoundPersistedConsequenceRoot> roots,
+        bool requireExactGlobalSlotAgreement,
+        int? persistedSlotsUsed = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorPath);
+        ArgumentNullException.ThrowIfNull(definitions);
+        ArgumentNullException.ThrowIfNull(roots);
+
+        return ValidateResolvedGraph(
+            severityRank,
+            authorPath,
+            BuildGraph(definitions),
+            roots,
+            requireExactGlobalSlotAgreement,
+            persistedSlotsUsed);
+    }
+
+    private static WoundPersistedConsequenceEnvelopeValidationResult ValidateResolvedGraph(
+        int severityRank,
+        string authorPath,
+        DefinitionGraph graph,
+        IReadOnlyList<WoundPersistedConsequenceRoot> roots,
+        bool requireExactGlobalSlotAgreement,
+        int? persistedSlotsUsed)
+    {
+        var issues = new List<ValidationIssue>();
+        var resolvedRoots = roots
+            .Select(root => graph.ByRef.TryGetValue(root.DefinitionRef, out var definition)
+                ? new ResolvedRoot(root, definition)
+                : null)
+            .Where(static root => root is not null)
+            .Select(static root => root!)
+            .ToArray();
+        var directKeys = resolvedRoots
+            .Select(static root => root.Definition.DefinitionKey)
+            .ToHashSet(StringComparer.Ordinal);
+
+        var effects = new List<WoundDetachedMortalEffectRef>(resolvedRoots.Length);
+        foreach (var resolved in resolvedRoots)
         {
-            var definition = byRef[root.DefinitionRef];
+            var root = resolved.Root;
+            var definition = resolved.Definition;
             var expansions = new List<WoundDetachedMortalReactionExpansionRef>();
             foreach (var edge in definition.Edges)
             {
                 IReadOnlyList<JsonElement> childComponents = Array.Empty<JsonElement>();
                 var childPath = edge.AuthorPath;
                 if (!directKeys.Contains(edge.TargetDefinitionKey) &&
-                    byKey.TryGetValue(edge.TargetDefinitionKey, out var child))
+                    graph.ByKey.TryGetValue(edge.TargetDefinitionKey, out var child))
                 {
                     childComponents = child.Components;
                     childPath = child.AuthorPath;
@@ -153,15 +203,22 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                 effects));
         issues.AddRange(validation.Issues);
 
-        var expectedSlotCount = roots.Sum(static root => root.ExpectedSlots?.Count ?? 0);
-        if (Math.Max(validation.Slots.Length, expectedSlotCount) > severityRank)
+        var resolvedRootValues = resolvedRoots
+            .Select(static resolved => resolved.Root)
+            .ToArray();
+        if (requireExactGlobalSlotAgreement)
         {
-            AddSlotIssue(
-                issues,
-                authorPath,
-                $"at most {severityRank} aggregate consequence slots at severity {severityRank}",
-                Math.Max(validation.Slots.Length, expectedSlotCount)
-                    .ToString(CultureInfo.InvariantCulture));
+            var expectedSlotCount = resolvedRootValues.Sum(
+                static root => root.ExpectedSlots?.Count ?? 0);
+            if (Math.Max(validation.Slots.Length, expectedSlotCount) > severityRank)
+            {
+                AddSlotIssue(
+                    issues,
+                    authorPath,
+                    $"at most {severityRank} aggregate consequence slots at severity {severityRank}",
+                    Math.Max(validation.Slots.Length, expectedSlotCount)
+                        .ToString(CultureInfo.InvariantCulture));
+            }
         }
 
         if (persistedSlotsUsed is not null && persistedSlotsUsed.Value != validation.Slots.Length)
@@ -174,13 +231,40 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         }
 
         if (requireExactGlobalSlotAgreement)
-            ValidateGlobalSlotAgreement(validation.Slots, roots, authorPath, issues);
+            ValidateGlobalSlotAgreement(
+                validation.Slots,
+                resolvedRootValues,
+                authorPath,
+                issues);
         else
-            ValidatePerRootProfileAgreement(validation.Slots, roots, issues);
+            ValidatePrevalidatedPerRootProfileAgreement(
+                resolvedRoots,
+                directKeys,
+                graph,
+                authorPath,
+                severityRank,
+                issues);
 
         return new WoundPersistedConsequenceEnvelopeValidationResult(
             validation.Slots,
             issues.ToImmutableArray());
+    }
+
+    private static DefinitionGraph BuildGraph(
+        IReadOnlyList<WoundPersistedConsequenceDefinition> definitions)
+    {
+        var byRef = new Dictionary<string, DefinitionNode>(StringComparer.Ordinal);
+        var byKey = new Dictionary<string, DefinitionNode>(StringComparer.Ordinal);
+        foreach (var definition in definitions)
+        {
+            var key = ReadString(definition.Definition, "definitionKey");
+            var node = BuildDefinitionNode(definition, key);
+            if (definition.DefinitionRef.Length > 0 && !byRef.ContainsKey(definition.DefinitionRef))
+                byRef.Add(definition.DefinitionRef, node);
+            if (key.Length > 0 && !byKey.ContainsKey(key))
+                byKey.Add(key, node);
+        }
+        return new DefinitionGraph(byRef, byKey);
     }
 
     private static void ValidateGlobalSlotAgreement(
@@ -225,22 +309,30 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         }
     }
 
-    private static void ValidatePerRootProfileAgreement(
-        ImmutableArray<WoundDetachedMortalEnvelopeSlot> derived,
-        IReadOnlyList<WoundPersistedConsequenceRoot> roots,
+    private static void ValidatePrevalidatedPerRootProfileAgreement(
+        IReadOnlyList<ResolvedRoot> roots,
+        IReadOnlySet<string> directKeys,
+        DefinitionGraph graph,
+        string authorPath,
+        int severityRank,
         List<ValidationIssue> issues)
     {
-        foreach (var root in roots)
+        var derivedSlotCount = 0;
+        foreach (var resolved in roots)
         {
+            var root = resolved.Root;
             if (root.ExpectedSlots is null)
                 continue;
-            var remaining = derived
-                .Where(slot => string.Equals(
-                    slot.EffectRef,
-                    root.EffectRef,
-                    StringComparison.Ordinal))
-                .Select(static slot => slot.ProfileKey)
-                .ToList();
+            var remaining = DirectMechanicalProfiles(resolved.Definition);
+            foreach (var edge in resolved.Definition.Edges)
+            {
+                if (!directKeys.Contains(edge.TargetDefinitionKey) &&
+                    graph.ByKey.TryGetValue(edge.TargetDefinitionKey, out var child))
+                {
+                    remaining.AddRange(DirectMechanicalProfiles(child));
+                }
+            }
+            derivedSlotCount += remaining.Count;
             for (var index = 0; index < root.ExpectedSlots.Count; index++)
             {
                 var expected = root.ExpectedSlots[index];
@@ -272,6 +364,39 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                     string.Join(",", remaining));
             }
         }
+
+        var maximum = Math.Min(WoundMaterializationContract.MaxConsequences, severityRank);
+        if (derivedSlotCount > maximum)
+        {
+            AddSlotIssue(
+                issues,
+                authorPath,
+                $"at most {maximum} aggregate consequence slots at severity {severityRank}",
+                derivedSlotCount.ToString(CultureInfo.InvariantCulture));
+        }
+    }
+
+    private static List<string> DirectMechanicalProfiles(DefinitionNode definition)
+    {
+        var profiles = new List<string>();
+        foreach (var component in definition.Components)
+        {
+            var profile = ReadString(component, "profile");
+            if (string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
+                continue;
+            if (string.Equals(profile, "roll_modifier", StringComparison.Ordinal) &&
+                component.TryGetProperty("payload", out var payload) &&
+                payload.ValueKind == JsonValueKind.Object &&
+                payload.TryGetProperty("operations", out var operations) &&
+                operations.ValueKind == JsonValueKind.Array)
+            {
+                for (var index = 0; index < operations.GetArrayLength(); index++)
+                    profiles.Add(profile);
+                continue;
+            }
+            profiles.Add(profile);
+        }
+        return profiles;
     }
 
     private static DefinitionNode BuildDefinitionNode(
@@ -387,6 +512,14 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         string AuthorPath,
         ImmutableArray<JsonElement> Components,
         ImmutableArray<ApplyEdge> Edges);
+
+    private sealed record DefinitionGraph(
+        IReadOnlyDictionary<string, DefinitionNode> ByRef,
+        IReadOnlyDictionary<string, DefinitionNode> ByKey);
+
+    private sealed record ResolvedRoot(
+        WoundPersistedConsequenceRoot Root,
+        DefinitionNode Definition);
 
     private sealed record ApplyEdge(
         string TargetDefinitionKey,

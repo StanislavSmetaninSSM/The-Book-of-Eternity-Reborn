@@ -1501,6 +1501,86 @@ public sealed class MortalWoundTreatmentContractTests
     }
 
     [Fact]
+    public void Parse_EffectfulComplicationMissingRoot_PreservesExactEstablishedDiagnostics()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        var definitions = CreateEffectfulComplicationDefinitions();
+        AddSecondRootDefinition(definitions, reuseStackKey: false);
+        definitions[0]!["definition"] = null;
+        operation["complicationDraft"]!["consequenceDefinitions"] = definitions;
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        Assert.Equal(
+            new[]
+            {
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition",
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].root",
+            },
+            IssueCoordinates(result));
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Parse_EffectfulComplicationDuplicateOrConfusableDefinitionKey_PreservesExactEstablishedDiagnostics(
+        bool confusable)
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        var definitions = CreateEffectfulComplicationDefinitions();
+        AddSecondRootDefinition(definitions, reuseStackKey: false);
+        definitions[0]!["definition"]!["definitionKey"] = "irritation-grip-limit";
+        definitions[1]!["definition"]!["definitionKey"] = confusable
+            ? "irritation‐grip‐limit"
+            : "irritation-grip-limit";
+        operation["complicationDraft"]!["consequenceDefinitions"] = definitions;
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        var expected = new List<string>
+        {
+            "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.definitionKey"
+        };
+        if (!confusable)
+        {
+            expected.Add(
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].root");
+        }
+        expected.Add(
+            "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.components[0].payload.action");
+        Assert.Equal(expected, IssueCoordinates(result));
+    }
+
+    [Fact]
+    public void Parse_EffectfulComplicationMultiErrorGraph_SkipsMissingRootAndValidatesResolvableRoot()
+    {
+        var wound = CreateWoundWithStrictRoute("procedure");
+        var operation = CreateEffectlessComplicationOperation();
+        var definitions = CreateEffectfulComplicationDefinitions();
+        AddSecondRootDefinition(definitions, reuseStackKey: false);
+        definitions[0]!["definition"] = null;
+        definitions[1]!["definition"]!["components"]![0]!["payload"]!["operation"] =
+            "forbid";
+        operation["complicationDraft"]!["consequenceDefinitions"] = definitions;
+        Route(wound)["outcomes"]![3]!["result"] = new JsonArray(operation);
+
+        var result = Parse(wound);
+
+        Assert.Equal(
+            new[]
+            {
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].definition",
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[0].root",
+                "wound_materialization_invalid_field@wound.treatment.routes[0].outcomes[3].result[0].complicationDraft.consequenceDefinitions[1].definition.components[0].payload.operation",
+            },
+            IssueCoordinates(result));
+    }
+
+    [Fact]
     public void Parse_EffectfulComplicationAcceptsClientBoundWoundMarker()
     {
         var wound = CreateWoundWithStrictRoute("procedure");
@@ -3162,4 +3242,9 @@ public sealed class MortalWoundTreatmentContractTests
             Environment.NewLine,
             issues.Select(issue =>
                 $"{issue.Code} {issue.FilePath}: {issue.Expected} / {issue.Actual}"));
+
+    private static string[] IssueCoordinates(WoundMaterializationParseResult result) =>
+        result.Issues
+            .Select(static issue => $"{issue.Code}@{issue.FilePath}")
+            .ToArray();
 }
