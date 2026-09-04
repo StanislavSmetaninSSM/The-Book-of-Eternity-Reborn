@@ -290,11 +290,11 @@ internal static MortalWoundTreatmentOutcomePublicationResult Finalize(
 - In `TreatmentContinuationAuthority` and `TreatmentContinuationView`, replace the pre-effect final-state fields `After`, `DeclaredOutcome`, and `OutcomePublicationFingerprint` with detached `OutcomePreparation` plus its recomputed fingerprint. Task 4 adds nullable `MortalWoundTreatmentRematerializationAuthority`. The continuation must never carry a supposedly final wound or resulting effect-ID list before #1535 returns.
 - In `WoundAcceptedTurnPlanner.ComposeTreatmentContinuationFinalPlan`, replace the old direct reads of `continuation.After` and `continuation.DeclaredOutcome` in the same Task 3 commit. The B.5 branch calls `Finalize(continuation.OutcomePreparation, resolution, null, emptyApplicationMap)` and consumes that verified result; a severity-changing preparation still returns the explicit unsupported/fail-closed result until Task 5 supplies the authenticated batch and map. Do not leave an intermediate uncompilable consumer for a later task.
 
-- [ ] **Step 1: Add compile-safe ordered-outcome REDs**
+- [x] **Step 1: Add compile-safe ordered-outcome REDs**
 
 Through the existing composer/resolution surface, add discovered tests for standard `[stabilize, reduce_severity(1)]`, singleton one/two-step reduction, two ordered one-step reductions, both two-operation stabilize/reduce orders, all three legal placements of stabilization among two one-step reductions, guaranteed mode, failed-category reduction without route completion, and these resealed mismatches: changed steps, ordinal, intent fingerprint, and route completion. Do not reference `Prepare` until its production signature exists; use the existing composer or reflection for the initial RED. Require the standard successful route to fail only at the current explicit unsupported-slice boundary.
 
-- [ ] **Step 2: Generalize exact intent agreement to an ordered list**
+- [x] **Step 2: Generalize exact intent agreement to an ordered list**
 
 Recompose intents only through `MortalWoundTreatmentOutcomeIntentComposer.TryCompose`. Require exact count/order/type, operation ordinal, kind, declared-operation fingerprint, intent fingerprint, and typed fields (`Steps` for reduction). Accept exactly the following grammar rather than a finite shape list:
 
@@ -310,11 +310,11 @@ Recompose intents only through `MortalWoundTreatmentOutcomeIntentComposer.TryCom
 
 Equivalently, outside the two singleton cases, accept an ordered list containing one or two `reduce_severity` operations and zero or one `stabilize`, with aggregate reduction `1..2`; a two-reduction list therefore requires two one-step reductions. Reject every other kind/count/aggregate and any mixed `no_improvement`. Do not infer the selected category from this grammar and do not parse route JSON. This must remain aligned with T067's already-valid three-operation results instead of introducing a narrower publication contract.
 
-- [ ] **Step 3: Apply scalar operations in sealed ordinal order**
+- [x] **Step 3: Apply scalar operations in sealed ordinal order**
 
 Start from the exact route-source wound with accepted attempt metadata, route completion, and one deterministic `treat` transition. Recompute the declared ordinal list and apply its scalar state semantics in that order; stabilization reuses the B.5 anchor/blocker transform. Sum checked reduction steps, then invoke the shared projector once against the fully transformed scalar shell using `request.Coordinates.EventRef`. Because B.6 reduction does not change any non-severity field, this single aggregate projection is state-equivalent while retaining the exact authored order in the preparation fingerprint. Multiple reduction operations produce one final-rank projection and one later effect batch, not an observable intermediate canonical state.
 
-- [ ] **Step 4: Separate provisional and final fingerprints**
+- [x] **Step 4: Separate provisional and final fingerprints**
 
 Use distinct domains/versions:
 
@@ -325,15 +325,15 @@ book_of_eternity.mortal_wound_treatment.outcome_publication / 2
 
 The preparation seal binds exact before, provisional after, request/result/resolution fingerprints, ordered intent fingerprints, transition ID, route completion, current minute, and nullable severity-projection fingerprint. The final seal additionally binds the accepted final wound and `WoundDeclaredTransitionOutcome`, including fresh resulting effect IDs.
 
-- [ ] **Step 5: Freeze a fail-closed finalization seam for later identity allocation**
+- [x] **Step 5: Freeze a fail-closed finalization seam for later identity allocation**
 
 For no reduction, require a null rematerialization batch, an empty application map, and canonical equality with `ProvisionalAfter`; create the final declaration only from that sealed preparation. For reduction, Task 3 must fail closed before creating `DeclaredOutcome` even if a caller hands it arbitrary effect results. Do not invent a projection-root-to-ID correspondence here: projection roots intentionally have no `applicationRef`, and only Task 4's authenticated batch can establish that mapping. Task 5 completes this branch by passing that exact batch and the independently verified result map into the same `Finalize` surface.
 
-- [ ] **Step 6: Add direct tests after the typed surface exists and make them GREEN**
+- [x] **Step 6: Add direct tests after the typed surface exists and make them GREEN**
 
 Add fixture-free tests for `Prepare_StabilizeThenReducePreservesDeclaredOrdinalOrder`, `Prepare_TwoOneStepReductionsAggregateToOneAtomicDestination`, all three placements of stabilization among two one-step reductions, the four sealed mismatch cases, exact unchanged-result finalization, and fail-closed reduction finalization without an authenticated batch. Direct tests may name the new `Prepare`/`Finalize` types only after their production declarations compile. Mapping, fresh-ID, complication-ownership, and canonical slot-reindex tests belong to Task 5, where the real batch/result authority exists.
 
-- [ ] **Step 7: Run ordered preparation/finalization controls**
+- [x] **Step 7: Run ordered preparation/finalization controls**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests&FullyQualifiedName~Prepare_|FullyQualifiedName~FinalizeReduction_"
@@ -342,7 +342,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: new ordered/provisional/final contract tests pass and every B.5 scalar test remains green.
 
-- [ ] **Step 8: Commit the two-phase outcome planner**
+- [x] **Step 8: Commit the two-phase outcome planner**
 
 ```powershell
 git add -- BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs

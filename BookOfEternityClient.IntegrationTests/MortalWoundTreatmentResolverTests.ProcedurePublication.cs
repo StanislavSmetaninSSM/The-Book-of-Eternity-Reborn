@@ -9,6 +9,165 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    [Theory]
+    [InlineData("procedure", "success", "s,r1", 2, "II")]
+    [InlineData("procedure", "success", "r1", 1, "II")]
+    [InlineData("procedure", "success", "r2", 1, "I")]
+    [InlineData("procedure", "success", "r1,r1", 2, "I")]
+    [InlineData("procedure", "success", "r1,s", 2, "II")]
+    [InlineData("procedure", "success", "s,r1,r1", 3, "I")]
+    [InlineData("procedure", "success", "r1,s,r1", 3, "I")]
+    [InlineData("procedure", "success", "r1,r1,s", 3, "I")]
+    [InlineData("guaranteed", "success", "s,r1", 2, "II")]
+    [InlineData("procedure", "partial_success", "r1", 1, "II")]
+    [InlineData("procedure", "failed_attempt", "r1", 1, "II")]
+    public void ProcedureScalarOutcomePlanner_OrderedReductionRequiresPreparationSeam(
+        string mode,
+        string category,
+        string shape,
+        int expectedIntentCount,
+        string expectedSeverity)
+    {
+        var scenario = CreateOrderedReductionScenario(
+            mode,
+            category,
+            shape,
+            expectedIntentCount);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            mode,
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal(category, resolution.ResultCategory);
+        Assert.Equal(expectedIntentCount, resolution.OutcomeIntents.Count);
+        Assert.Equal(
+            category == "success" ? "AppendOnce" : "None",
+            resolution.RouteCompletion);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
+            acceptedState,
+            request,
+            resolution,
+            acceptedState.CurrentGameMinute);
+
+        Assert.True(result.IsValid, DescribeIssues(result.Issues));
+        var preparation = Assert.IsType<MortalWoundTreatmentOutcomePreparation>(
+            result.Preparation);
+        var after = preparation.ProvisionalAfter;
+        Assert.Equal(expectedSeverity, after.Severity.Value);
+        Assert.Equal(request.Coordinates.AttemptId, after.Care.LastAttemptId);
+        Assert.Equal(
+            category == "success",
+            after.Treatment.CompletedRouteIds.Contains(
+                request.Coordinates.RouteId,
+                StringComparer.Ordinal));
+    }
+
+    [Fact]
+    public void ProcedureScalarOutcomePlanner_SuccessfulReductionRemainsFinalizationUnsupported()
+    {
+        var scenario = CreateOrderedReductionScenario(
+            "procedure",
+            "success",
+            "s,r1",
+            expectedIntentCount: 2);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey,
+            scenario.RouteId);
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Compose(
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(flow.AcceptedState),
+            Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request),
+            Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution),
+            1_260);
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_publication_slice_unsupported",
+                StringComparison.Ordinal));
+    }
+
+    [Theory]
+    [InlineData("steps")]
+    [InlineData("ordinal")]
+    [InlineData("intent_fingerprint")]
+    [InlineData("route_completion")]
+    public void ProcedureScalarOutcomePlanner_RejectsResealedOrderedOutcomeMismatch(
+        string mutation)
+    {
+        var scenario = CreateOrderedReductionScenario(
+            "procedure", "success", "r1", expectedIntentCount: 1);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture, "procedure", scenario.OperationKey, scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var intent = Assert.IsType<MortalWoundReduceSeverityOutcomeIntent>(
+            Assert.Single(resolution.OutcomeIntents));
+        var changedIntent = mutation switch
+        {
+            "steps" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                0,
+                intent.DeclaredOperationFingerprint,
+                intent.IntentFingerprint,
+                2),
+            "ordinal" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                1,
+                intent.DeclaredOperationFingerprint,
+                intent.IntentFingerprint,
+                1),
+            "intent_fingerprint" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                0,
+                intent.DeclaredOperationFingerprint,
+                intent.IntentFingerprint + "_changed",
+                1),
+            _ => intent
+        };
+        var changed = mutation == "ordinal"
+            ? CloneResolutionWithIntentsUnchecked(resolution, new[] { changedIntent })
+            : MortalWoundTreatmentResolution.Create(
+                resolution.Mode,
+                resolution.Coordinates,
+                resolution.AttemptDisposition,
+                resolution.ResultCategory,
+                resolution.SelectedOutcomeIndex,
+                resolution.Interruption,
+                resolution.DeclaredResult,
+                new[] { changedIntent },
+                resolution.CriticalReactionIntent,
+                resolution.ConsumptionTrigger,
+                resolution.CourseId,
+                resolution.CourseMilestoneOrdinal,
+                resolution.CourseDisposition,
+                request,
+                resolution.ModeEvidence,
+                resolution.RouteFingerprint,
+                mutation == "route_completion" ? "None" : resolution.RouteCompletion);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(
+            acceptedState,
+            request,
+            changed,
+            acceptedState.CurrentGameMinute);
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.Preparation);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+    }
+
     [Fact]
     public void ProcedureReduction_DestinationSlotOverflowRejectsBeforeDieClaim()
     {
@@ -1237,6 +1396,95 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ExpectedIntentCount = 1,
             History = CreateCurrentWoundHistory(scenario.Before)
         };
+    }
+
+    private static ResolverScenario CreateOrderedReductionScenario(
+        string mode,
+        string category,
+        string shape,
+        int expectedIntentCount)
+    {
+        var scenario = CreateScenario(
+            mode == "guaranteed"
+                ? "guaranteed_current_capability_proof_stabilizes"
+                : category == "failed_attempt"
+                    ? "procedure_disadvantage_uses_two_contiguous_dice"
+                    : "procedure_normal_uses_lowest_free_die",
+            mode);
+        scenario.Before["severity"]!["value"] = "III";
+        scenario.Before["severity"]!["rank"] = 3;
+        scenario.Before["severity"]!["maximumAtCreation"] = "III";
+        scenario.Before["consequences"]!["slotBudget"] = 3;
+        var operations = new JsonArray(shape.Split(',').Select(static token =>
+            (JsonNode)(token switch
+            {
+                "s" => new JsonObject { ["kind"] = "stabilize" },
+                "r1" => new JsonObject
+                {
+                    ["kind"] = "reduce_severity",
+                    ["steps"] = 1
+                },
+                "r2" => new JsonObject
+                {
+                    ["kind"] = "reduce_severity",
+                    ["steps"] = 2
+                },
+                _ => throw new ArgumentOutOfRangeException(nameof(shape), token, null)
+            })).ToArray());
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        if (category == "partial_success")
+            scenario.AcceptedState["acceptedDice"] = new JsonArray(13, 7);
+        if (category == "success" || mode == "guaranteed")
+        {
+            route["outcomes"]![0]!["result"] = operations;
+        }
+        else
+        {
+            foreach (var outcome in route["outcomes"]!.AsArray().OfType<JsonObject>())
+                outcome["result"] = operations.DeepClone();
+        }
+        return scenario with
+        {
+            OperationKey = $"operation_t070_b6_{mode}_{category}_{shape.Replace(',', '_')}",
+            ExpectedCategory = category,
+            ExpectedIntentCount = expectedIntentCount,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+    }
+
+    private static MortalWoundTreatmentResolution CloneResolutionWithIntentsUnchecked(
+        MortalWoundTreatmentResolution resolution,
+        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
+    {
+        var constructor = typeof(MortalWoundTreatmentResolution)
+            .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Single();
+        return Assert.IsType<MortalWoundTreatmentResolution>(constructor.Invoke(new object?[]
+        {
+            resolution.Mode,
+            resolution.Coordinates,
+            resolution.AttemptDisposition,
+            resolution.ResultCategory,
+            resolution.SelectedOutcomeIndex,
+            resolution.Interruption,
+            resolution.DeclaredResult,
+            intents,
+            resolution.CriticalReactionIntent,
+            resolution.ConsumptionTrigger,
+            resolution.CourseId,
+            resolution.CourseMilestoneOrdinal,
+            resolution.CourseDisposition,
+            resolution.RequestAuthority,
+            resolution.RequirementAuthority,
+            resolution.ResourceAuthority,
+            resolution.ModeEvidence,
+            resolution.RouteFingerprint,
+            resolution.ResolutionAuthorityFingerprint,
+            resolution.RequestFingerprint,
+            resolution.ResultFingerprint,
+            resolution.RouteCompletion
+        }));
     }
 
     private static ResolverScenario CreateCombatNoImprovementProcedureScenario(

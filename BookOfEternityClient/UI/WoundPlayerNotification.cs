@@ -244,7 +244,7 @@ internal sealed record WoundPlayerNotification(
                 StringComparison.Ordinal) ||
             !string.Equals(
                 mutation.WoundId,
-                continuation.After.WoundId,
+                continuation.OutcomePreparation.ProvisionalAfter.WoundId,
                 StringComparison.Ordinal) ||
             !string.Equals(
                 WoundMaterializationContract.SerializeCanonical(before),
@@ -254,7 +254,7 @@ internal sealed record WoundPlayerNotification(
             !string.Equals(
                 WoundMaterializationContract.SerializeCanonical(after),
                 WoundMaterializationContract.SerializeCanonical(
-                    continuation.After),
+                    continuation.OutcomePreparation.ProvisionalAfter),
                 StringComparison.Ordinal))
         {
             return TreatmentContinuationBindingFailure(

@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -1161,9 +1162,21 @@ internal static class WoundAcceptedTurnPlannerCore
 
             stage = "transition_reduction";
             var before = matches[0].Wound;
-            var after = continuation.After;
             var coordinates = continuation.Resolution.Coordinates;
-            var outcome = continuation.DeclaredOutcome;
+            var outcomePublication =
+                MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+                    continuation.OutcomePreparation,
+                    continuation.Resolution,
+                    null,
+                    ImmutableDictionary<string, EffectAcceptedApplicationResult>.Empty);
+            if (!outcomePublication.IsValid)
+            {
+                return new WoundAcceptedTurnPlanningResult(
+                    null,
+                    outcomePublication.Issues.Select(CloneIssue).ToArray());
+            }
+            var after = outcomePublication.After!;
+            var outcome = outcomePublication.DeclaredOutcome!;
             var reduction = WoundTransitionReducer.Reduce(
                 new WoundTransitionRequest(
                     "treat",

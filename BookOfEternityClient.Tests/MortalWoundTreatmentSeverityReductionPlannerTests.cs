@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +7,158 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
 {
+    [Fact]
+    public void Prepare_StabilizeThenReducePreservesDeclaredOrdinalOrder()
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var projected = AssertValidProjection(before, 1);
+        var firstResolution = CreateSyntheticResolution("s,r1");
+        var secondResolution = CreateSyntheticResolution("r1,s");
+        var first = CreateSyntheticPreparation(firstResolution, projected);
+        var second = CreateSyntheticPreparation(secondResolution, projected);
+
+        Assert.True(first.AgreesWith(firstResolution));
+        Assert.True(second.AgreesWith(secondResolution));
+        Assert.NotEqual(first.Fingerprint, second.Fingerprint);
+        Assert.Equal(1, first.SeverityReduction!.Steps);
+        Assert.Equal("II", first.ProvisionalAfter.Severity.Value);
+        Assert.NotSame(first.Before, first.Before);
+        Assert.NotSame(first.ProvisionalAfter, first.ProvisionalAfter);
+        Assert.NotSame(first.SeverityReduction, first.SeverityReduction);
+    }
+
+    [Fact]
+    public void Prepare_TwoOneStepReductionsAggregateToOneAtomicDestination()
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var projected = AssertValidProjection(before, 2);
+        var resolution = CreateSyntheticResolution("r1,r1");
+        var preparation = CreateSyntheticPreparation(resolution, projected);
+
+        Assert.True(preparation.AgreesWith(resolution));
+        Assert.Equal(2, preparation.SeverityReduction!.Steps);
+        Assert.Equal("I", preparation.ProvisionalAfter.Severity.Value);
+        Assert.Equal(1, preparation.ProvisionalAfter.Severity.Rank);
+    }
+
+    [Theory]
+    [InlineData("s,r1,r1")]
+    [InlineData("r1,s,r1")]
+    [InlineData("r1,r1,s")]
+    public void Prepare_StabilizationPlacementIsBoundInOrderedPreparation(string shape)
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var projected = AssertValidProjection(before, 2);
+        var resolution = CreateSyntheticResolution(shape);
+        var preparation = CreateSyntheticPreparation(resolution, projected);
+
+        Assert.True(preparation.AgreesWith(resolution));
+        Assert.False(string.IsNullOrWhiteSpace(preparation.Fingerprint));
+        Assert.Equal("I", preparation.ProvisionalAfter.Severity.Value);
+    }
+
+    [Theory]
+    [InlineData("steps")]
+    [InlineData("ordinal")]
+    [InlineData("intent_fingerprint")]
+    [InlineData("route_completion")]
+    public void Prepare_SealedMismatchIsRejected(string mutation)
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var projected = AssertValidProjection(before, 1);
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(resolution, projected);
+        var original = Assert.IsType<MortalWoundReduceSeverityOutcomeIntent>(
+            Assert.Single(resolution.OutcomeIntents));
+        var changedIntent = mutation switch
+        {
+            "steps" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                0,
+                original.DeclaredOperationFingerprint,
+                original.IntentFingerprint,
+                2),
+            "ordinal" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                1,
+                original.DeclaredOperationFingerprint,
+                original.IntentFingerprint,
+                1),
+            "intent_fingerprint" => MortalWoundReduceSeverityOutcomeIntent.Create(
+                0,
+                original.DeclaredOperationFingerprint,
+                original.IntentFingerprint + "_changed",
+                1),
+            _ => original
+        };
+        var changed = CreateSyntheticResolution(
+            new MortalWoundTreatmentOperation[] { new MortalWoundReduceSeverityOperation(1) },
+            new MortalWoundTreatmentOutcomeIntent[] { changedIntent },
+            mutation == "route_completion" ? "None" : "AppendOnce");
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            changed,
+            null,
+            new Dictionary<string, EffectAcceptedApplicationResult>(
+                StringComparer.Ordinal));
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_outcome_preparation_mismatch");
+    }
+
+    [Fact]
+    public void Prepare_UnchangedResultFinalizesOnlyFromExactProvisionalAfter()
+    {
+        var before = Parse(WoundContractTestData.CreateActiveWound());
+        var resolution = CreateSyntheticResolution("n", routeCompletion: "None");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            severityReduction: null,
+            provisionalAfter: before);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            null,
+            new Dictionary<string, EffectAcceptedApplicationResult>(
+                StringComparer.Ordinal));
+
+        Assert.True(result.IsValid, Describe(result.Issues));
+        Assert.Equal(
+            WoundMaterializationContract.SerializeCanonical(preparation.ProvisionalAfter),
+            WoundMaterializationContract.SerializeCanonical(result.After!));
+        Assert.Equal(before.Severity.Rank, result.DeclaredOutcome!.ResultingSeverityRank);
+        Assert.False(string.IsNullOrWhiteSpace(result.Fingerprint));
+    }
+
+    [Fact]
+    public void FinalizeReduction_WithoutAuthenticatedBatchFailsClosed()
+    {
+        var before = Parse(CreateRankThreeWound("action_control"));
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            AssertValidProjection(before, 1));
+        var arbitrary = new Dictionary<string, EffectAcceptedApplicationResult>(
+            StringComparer.Ordinal)
+        {
+            ["application_arbitrary"] = null!
+        };
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            null,
+            arbitrary);
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.After);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+    }
+
     [Theory]
     [InlineData(1, "II", 2)]
     [InlineData(2, "I", 1)]
@@ -206,6 +359,121 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
                 ["readableSummary"] = $"Preserved destination slot {index + 1}."
             }).ToArray());
         return wound;
+    }
+
+    private static MortalWoundTreatmentSeverityReductionProjection AssertValidProjection(
+        WoundMaterializationEnvelope before,
+        int steps)
+    {
+        var result = MortalWoundTreatmentSeverityReductionPlanner.Project(
+            before,
+            steps,
+            "turn_43:treatment_projection");
+        Assert.True(result.IsValid, Describe(result.Issues));
+        return Assert.IsType<MortalWoundTreatmentSeverityReductionProjection>(
+            result.Projection);
+    }
+
+    private static MortalWoundTreatmentOutcomePreparation CreateSyntheticPreparation(
+        MortalWoundTreatmentResolution resolution,
+        MortalWoundTreatmentSeverityReductionProjection? severityReduction,
+        WoundMaterializationEnvelope? provisionalAfter = null)
+    {
+        var before = severityReduction?.Before ?? provisionalAfter ??
+            throw new InvalidOperationException("A synthetic preparation needs a wound.");
+        var after = provisionalAfter ?? severityReduction!.ProvisionalAfter;
+        const string transitionId = "wound_transition_t070_b6_direct";
+        const long currentMinute = 1_260;
+        var fingerprint =
+            MortalWoundTreatmentOutcomePublicationPlanner.ComputePreparationFingerprint(
+                before,
+                after,
+                resolution,
+                transitionId,
+                currentMinute,
+                severityReduction?.Fingerprint);
+        return new MortalWoundTreatmentOutcomePreparation(
+            before,
+            after,
+            transitionId,
+            severityReduction,
+            resolution.RequestFingerprint,
+            resolution.ResultFingerprint,
+            resolution.ResolutionAuthorityFingerprint,
+            resolution.OutcomeIntents,
+            resolution.RouteCompletion,
+            resolution.ResultCategory,
+            resolution.SelectedOutcomeIndex,
+            currentMinute,
+            fingerprint);
+    }
+
+    private static MortalWoundTreatmentResolution CreateSyntheticResolution(
+        string shape,
+        string routeCompletion = "AppendOnce")
+    {
+        var operations = shape.Split(',').Select(static token => token switch
+        {
+            "n" => (MortalWoundTreatmentOperation)new MortalWoundNoImprovementOperation(),
+            "s" => new MortalWoundStabilizeOperation(),
+            "r1" => new MortalWoundReduceSeverityOperation(1),
+            _ => throw new ArgumentOutOfRangeException(nameof(shape), token, null)
+        }).ToArray();
+        var intents = operations.Select((operation, ordinal) =>
+        {
+            var declared = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(
+                ordinal, operation);
+            var intent = $"sha256:intent_{ordinal}_{operation.Kind}";
+            return operation switch
+            {
+                MortalWoundNoImprovementOperation =>
+                    (MortalWoundTreatmentOutcomeIntent)
+                    MortalWoundNoImprovementOutcomeIntent.Create(
+                        ordinal, declared, intent),
+                MortalWoundStabilizeOperation => MortalWoundStabilizeOutcomeIntent.Create(
+                    ordinal, declared, intent),
+                MortalWoundReduceSeverityOperation reduction =>
+                    MortalWoundReduceSeverityOutcomeIntent.Create(
+                        ordinal, declared, intent, reduction.Steps),
+                _ => throw new InvalidOperationException()
+            };
+        }).ToArray();
+        return CreateSyntheticResolution(operations, intents, routeCompletion);
+    }
+
+    private static MortalWoundTreatmentResolution CreateSyntheticResolution(
+        IReadOnlyList<MortalWoundTreatmentOperation> operations,
+        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents,
+        string routeCompletion)
+    {
+        var constructor = typeof(MortalWoundTreatmentResolution)
+            .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic)
+            .Single();
+        return Assert.IsType<MortalWoundTreatmentResolution>(constructor.Invoke(new object?[]
+        {
+            "procedure",
+            null,
+            "AcceptedTerminal",
+            routeCompletion == "AppendOnce" ? "success" : "failed_attempt",
+            0,
+            false,
+            operations,
+            intents,
+            null,
+            "never",
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            "sha256:route",
+            "sha256:resolution",
+            "sha256:request",
+            "sha256:result",
+            routeCompletion
+        }));
     }
 
     private static JsonObject CreateRankFourReactionWound()
