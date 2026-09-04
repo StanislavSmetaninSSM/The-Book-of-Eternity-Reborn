@@ -2948,6 +2948,16 @@ internal static class AcceptedTurnAuthorityRegistry
                         "the current exact private treatment publication reservation",
                         "stale or cancelled treatment publication reservation");
                 }
+                if (treatmentContinuationAuthority is not null &&
+                    !WoundAcceptedTurnPlanner.TreatmentContinuationEffectInputAgrees(
+                        treatmentContinuationAuthority,
+                        input))
+                {
+                    return FailedWoundEffect(
+                        "mortal_wound_treatment_publication_lifecycle_mismatch",
+                        "the exact canonical base lifecycle array followed by the sealed typed Fate reaction array",
+                        "missing, changed, reordered, or additional treatment lifecycle event");
+                }
                 var preparedMismatch =
                     _woundPlan.GetPreparedMismatchCode(prepared);
                 if (preparedMismatch is not null)

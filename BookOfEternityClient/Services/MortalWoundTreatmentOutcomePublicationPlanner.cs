@@ -232,30 +232,26 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         else
         {
             recomposedIntent = recomposedIntents[0];
-            var resultShape = recomposedIntent switch
-            {
-                MortalWoundStabilizeOutcomeIntent =>
-                    string.Equals(
-                        resolution.ResultCategory,
-                        "success",
-                        StringComparison.Ordinal) &&
-                    resolution.SelectedOutcomeIndex is not null &&
-                    string.Equals(
-                        resolution.RouteCompletion,
-                        "AppendOnce",
-                        StringComparison.Ordinal),
-                MortalWoundNoImprovementOutcomeIntent =>
-                    string.Equals(
-                        resolution.ResultCategory,
-                        "failed_attempt",
-                        StringComparison.Ordinal) &&
-                    resolution.SelectedOutcomeIndex is not null &&
-                    string.Equals(
-                        resolution.RouteCompletion,
-                        "None",
-                        StringComparison.Ordinal),
-                _ => false
-            };
+            var routeAlreadyCompleted = request.RouteSourceWound.Treatment
+                .CompletedRouteIds.Contains(
+                    request.Coordinates.RouteId,
+                    StringComparer.Ordinal);
+            var selectedSuccess = string.Equals(
+                resolution.ResultCategory,
+                "success",
+                StringComparison.Ordinal);
+            var expectedRouteCompletion = selectedSuccess && !routeAlreadyCompleted
+                ? "AppendOnce"
+                : "None";
+            var supportedScalar = recomposedIntent is
+                MortalWoundStabilizeOutcomeIntent or
+                MortalWoundNoImprovementOutcomeIntent;
+            var resultShape = supportedScalar &&
+                              resolution.SelectedOutcomeIndex is not null &&
+                              string.Equals(
+                                  resolution.RouteCompletion,
+                                  expectedRouteCompletion,
+                                  StringComparison.Ordinal);
             if (!resultShape)
                 failedAxes.Add("result_selection");
         }

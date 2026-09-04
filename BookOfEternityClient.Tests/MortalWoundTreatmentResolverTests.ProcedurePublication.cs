@@ -1,3 +1,5 @@
+using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -7,6 +9,484 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    [Fact]
+    public void ProcedureRepeatedStabilization_PublishesWithoutAppendingCompletedRouteAgain()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "stabilize"
+        });
+        scenario.Before["treatment"]!["completedRouteIds"] = new JsonArray(
+            scenario.RouteId);
+        scenario = scenario with
+        {
+            OperationKey = scenario.OperationKey + "_repeated_stabilization",
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "repeated procedure stabilization");
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("success", resolution.ResultCategory);
+        Assert.Equal("None", resolution.RouteCompletion);
+
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+
+        var wound = fixture.ReadCurrentWound();
+        Assert.Equal("stabilized", wound.Care.State);
+        Assert.Equal(new[] { scenario.RouteId }, wound.Treatment.CompletedRouteIds);
+    }
+
+    [Fact]
+    public void ProcedureRepeatedStabilization_RejectsResealedFalseAppendOnceCompletion()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "stabilize"
+        });
+        scenario.Before["treatment"]!["completedRouteIds"] = new JsonArray(
+            scenario.RouteId);
+        scenario = scenario with
+        {
+            OperationKey = scenario.OperationKey + "_false_append_once",
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("None", resolution.RouteCompletion);
+        var falseCompletion = MortalWoundTreatmentResolution.Create(
+            resolution.Mode,
+            resolution.Coordinates,
+            resolution.AttemptDisposition,
+            resolution.ResultCategory,
+            resolution.SelectedOutcomeIndex,
+            resolution.Interruption,
+            resolution.DeclaredResult,
+            resolution.OutcomeIntents,
+            resolution.CriticalReactionIntent,
+            resolution.ConsumptionTrigger,
+            resolution.CourseId,
+            resolution.CourseMilestoneOrdinal,
+            resolution.CourseDisposition,
+            request,
+            resolution.ModeEvidence,
+            resolution.RouteFingerprint,
+            "AppendOnce");
+
+        var rejected = MortalWoundTreatmentOutcomePublicationPlanner.Compose(
+            acceptedState,
+            request,
+            falseCompletion,
+            acceptedState.CurrentGameMinute);
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.After);
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            fixture.FileSystem,
+            fixture.Lease));
+    }
+
+    [Fact]
+    public async Task GuaranteedRepeatedStabilization_PublishesWithoutAppendingCompletedRouteAgain()
+    {
+        var scenario = CreateScenario(
+            "guaranteed_current_capability_proof_stabilizes",
+            "guaranteed");
+        scenario.Before["treatment"]!["completedRouteIds"] = new JsonArray(
+            scenario.RouteId);
+        scenario = scenario with
+        {
+            OperationKey = scenario.OperationKey + "_repeated_stabilization",
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateResourcePublication(
+            fixture,
+            scenario,
+            "repeated_guaranteed_stabilization");
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("success", resolution.ResultCategory);
+        Assert.Equal("None", resolution.RouteCompletion);
+        var composition = ComposeResourcePublicationResult(fixture, flow);
+        Assert.True(composition.IsValid, DescribeIssues(composition.Issues));
+        var plan = Assert.IsType<AcceptedMechanicsPlan>(composition.Plan);
+
+        fixture.ReleaseLeaseForExternalDistribution();
+        AcceptedTurnCanonicalStateRefresh.Result published;
+        try
+        {
+            published = await AcceptedTurnCanonicalStateRefresh
+                .NormalizeAndValidateWithPlanAsync(
+                    fixture.FileSystem,
+                    new CanonicalStateNormalizer(
+                        fixture.FileSystem,
+                        Microsoft.Extensions.Logging.Abstractions.NullLogger<
+                            CanonicalStateNormalizer>.Instance),
+                    new ValidationService(
+                        fixture.FileSystem,
+                        Microsoft.Extensions.Logging.Abstractions.NullLogger<
+                            ValidationService>.Instance),
+                    new Dictionary<string, string>(StringComparer.Ordinal));
+        }
+        finally
+        {
+            fixture.ReacquireLeaseAfterExternalDistribution();
+        }
+
+        Assert.Same(plan, published.MechanicsPlan);
+        Assert.Null(published.TreatmentResourcePublicationTransaction);
+        Assert.DoesNotContain(
+            published.Issues,
+            static issue => issue.Severity == IssueSeverity.Error);
+        var wound = fixture.ReadCurrentWound();
+        Assert.Equal("stabilized", wound.Care.State);
+        Assert.Equal(new[] { scenario.RouteId }, wound.Treatment.CompletedRouteIds);
+    }
+
+    [Theory]
+    [InlineData("stabilize")]
+    [InlineData("no_improvement")]
+    public void ProcedurePartialSuccessSingleton_PublishesItsDeclaredScalarOutcome(
+        string operationKind)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![1]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = operationKind
+        });
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(13, 7);
+        scenario = scenario with
+        {
+            OperationKey = scenario.OperationKey + "_partial_" + operationKind,
+            ExpectedCategory = "partial_success",
+            ExpectedNaturalRoll = 13,
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "partial-success " + operationKind);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        Assert.Equal("partial_success", resolution.ResultCategory);
+        Assert.Equal("None", resolution.RouteCompletion);
+        Assert.Collection(
+            resolution.OutcomeIntents,
+            intent => Assert.Equal(operationKind, intent.Kind));
+
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+
+        var wound = fixture.ReadCurrentWound();
+        Assert.Empty(wound.Treatment.CompletedRouteIds);
+        Assert.Equal(request.Coordinates.AttemptId, wound.Care.LastAttemptId);
+        Assert.Equal(
+            operationKind == "stabilize" ? "stabilized" : "untreated",
+            wound.Care.State);
+        var transition = Assert.Single(
+            fixture.ReadCurrentHistory().State!.Transitions,
+            static row => string.Equals(row.Kind, "treat", StringComparison.Ordinal));
+        Assert.Equal(
+            "partial_success",
+            transition.TreatmentResult!.Receipt.ResultCategory);
+    }
+
+    [Theory]
+    [InlineData("remove_sealed_reaction")]
+    [InlineData("retarget_sealed_reaction")]
+    [InlineData("append_second_reaction")]
+    public void ProcedureTreatmentLifecycleAgreement_RejectsAlteredCompleteOrderedArray(
+        string alteration)
+    {
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure"));
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_lifecycle_" + alteration,
+                scenario.RouteId),
+            "treatment lifecycle " + alteration);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        var prepared = original.PreparedPlan;
+        var authority = prepared.TreatmentContinuationAuthority;
+        Assert.NotNull(authority);
+        Assert.True(WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+            authority!,
+            out var continuation));
+        Assert.True(WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+            authority!,
+            original,
+            acceptedState,
+            request,
+            resolution,
+            continuation.SemanticFingerprint));
+
+        var originalEffectInput = original.EffectBatchPlan.EffectInput;
+        var eventInput = originalEffectInput.EventInput.DeepClone().AsObject();
+        var lifecycle = Assert.IsType<JsonArray>(eventInput["lifecycleEvents"]);
+        var baseEventIndex = lifecycle
+            .Select(static (value, index) => (value, index))
+            .First(static pair => pair.value is JsonObject value &&
+                string.Equals(
+                    value["phase"]?.GetValue<string>(),
+                    "owner_turn_end",
+                    StringComparison.Ordinal))
+            .index;
+        var reaction = Assert.Single(lifecycle.OfType<JsonObject>(), static value =>
+            string.Equals(
+                value["phase"]?.GetValue<string>(),
+                "owner_critical_failure",
+                StringComparison.Ordinal));
+        Assert.True(baseEventIndex < lifecycle.IndexOf(reaction));
+        switch (alteration)
+        {
+            case "remove_sealed_reaction":
+                lifecycle.Remove(reaction);
+                break;
+            case "retarget_sealed_reaction":
+                reaction["effectId"] = "effect_fate_shield_newer";
+                break;
+            case "append_second_reaction":
+                var second = reaction.DeepClone().AsObject();
+                second["eventRef"] =
+                    reaction["eventRef"]!.GetValue<string>() + ":forged_second";
+                second["effectId"] = "effect_fate_shield_newer";
+                lifecycle.Add(second);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(alteration), alteration, null);
+        }
+
+        var alteredInput = originalEffectInput with { EventInput = eventInput };
+        var ordinaryCache = new EffectAcceptedTurnPlanCache();
+        var ordinary = ordinaryCache.GetOrBuildWoundValidated(
+            prepared,
+            alteredInput,
+            out _);
+        Assert.True(ordinary.Success, DescribeIssues(ordinary.Issues));
+        var accepted = WoundEffectBatchPlanner.AcceptEffectResult(
+            prepared,
+            alteredInput,
+            ordinary);
+        Assert.True(accepted.Success, DescribeIssues(accepted.Issues));
+        Assert.True(AcceptedTurnAuthorityRegistry.TryPeekEffectValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var genericBeforeRejection));
+        RearmTreatmentPublicationReservationForEffectStageTest(
+            fixture,
+            continuation);
+        var stageRejection = WoundAcceptedTurnPlanAuthority
+            .GetOrBuildTreatmentContinuationEffectValidated(
+                fixture.FileSystem,
+                fixture.Lease,
+                prepared,
+                alteredInput,
+                authority!,
+                continuation.ReservationAuthority);
+        Assert.False(stageRejection.Success);
+        Assert.Null(stageRejection.Plan);
+        Assert.Equal(
+            "mortal_wound_treatment_publication_lifecycle_mismatch",
+            Assert.Single(stageRejection.Issues).Code);
+        Assert.True(AcceptedTurnAuthorityRegistry.TryPeekEffectValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var genericAfterRejection));
+        Assert.Same(genericBeforeRejection.Plan, genericAfterRejection.Plan);
+        AcceptedTurnAuthorityRegistry.AbortMortalWoundTreatmentPublication(
+            fixture.FileSystem,
+            fixture.Lease,
+            continuation.ReservationAuthority);
+        var final = WoundAcceptedTurnPlanner.Finalize(prepared, accepted);
+        Assert.True(final.Success, DescribeIssues(final.Issues));
+        var altered = new AcceptedMechanicsWoundStageBundle(
+            original.Input,
+            prepared,
+            accepted.Plan!,
+            final.Plan!);
+
+        Assert.False(WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+            authority!,
+            altered,
+            acceptedState,
+            request,
+            resolution,
+            continuation.SemanticFingerprint));
+    }
+
+    private static void RearmTreatmentPublicationReservationForEffectStageTest(
+        AcceptedStateFixture fixture,
+        WoundAcceptedTurnPlanner.TreatmentContinuationView continuation)
+    {
+        AcceptedTurnAuthorityRegistry.InvalidateCommonValidated(
+            fixture.FileSystem,
+            fixture.Lease);
+        var getState = typeof(AcceptedTurnAuthorityRegistry).GetMethod(
+            "GetState",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(getState);
+        var state = getState.Invoke(
+            null,
+            new object[] { fixture.FileSystem, fixture.Lease });
+        Assert.NotNull(state);
+        var stateType = state.GetType();
+        var reservation = stateType.GetField(
+            "_mortalWoundTreatmentPublicationReservation",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var fingerprint = stateType.GetField(
+            "_mortalWoundTreatmentReservedFingerprint",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(reservation);
+        Assert.NotNull(fingerprint);
+        reservation.SetValue(state, continuation.ReservationAuthority);
+        fingerprint.SetValue(state, continuation.SemanticFingerprint);
+    }
+
+    [Fact]
+    public void ProcedureFreshFateDuplicateAgainstExactCachedPlan_RetainsPlanAndClaims()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        var skillRequirement = route["requirements"]![1]!.DeepClone();
+        route["requirements"] = new JsonArray(skillRequirement);
+        route["resourcePolicy"] = Policy(new JsonArray(), new JsonArray());
+        route["resolution"]!["modifierSource"]!["requirementIndex"] = 0;
+        scenario = scenario with
+        {
+            OperationKey = scenario.OperationKey + "_fresh_cached_duplicate",
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before),
+            SeedCanonicalWoundEffects = true
+        };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey,
+            scenario.RouteId);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var procedure = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+        Assert.True(request.HasNewProvisionalClaimCleanup);
+        var confirmation = ConfirmTreatmentResources(
+            fixture,
+            new[] { request });
+        Assert.True(confirmation.IsValid, DescribeIssues(confirmation.Issues));
+        var first = ComposeResourcePublicationResult(fixture, flow);
+        Assert.True(first.IsValid, DescribeIssues(first.Issues));
+        var originalPlan = Assert.IsType<AcceptedMechanicsPlan>(first.Plan);
+        Assert.True(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                fixture.FileSystem,
+                fixture.Lease,
+                acceptedState,
+                procedure));
+        var legacyReport = new JsonObject
+        {
+            ["eventType"] = "owner_critical_failure",
+            ["target"] = new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            ["evidence"] = new JsonObject
+            {
+                ["kind"] = "mortal_action_roll",
+                ["rollMode"] = "normal",
+                ["diceIndexes"] = new JsonArray(0),
+                ["selectedIndex"] = 0,
+                ["selectedValue"] = 1,
+                ["originalOutcome"] = "critical_failure",
+                ["resolvedOutcome"] = "failure"
+            },
+            ["reason"] = "An exact cached plan must retain its claims."
+        };
+        using var reportDocument = JsonDocument.Parse(legacyReport.ToJsonString());
+
+        var duplicate = ComposeResourcePublicationResult(
+            fixture,
+            flow,
+            new GameResponse
+            {
+                EffectEventReports =
+                    new[] { reportDocument.RootElement.Clone() }
+            });
+
+        Assert.False(duplicate.IsValid);
+        Assert.Null(duplicate.Plan);
+        Assert.Equal(
+            "wound_treatment_fate_reaction_cross_surface_duplicate",
+            Assert.Single(duplicate.Issues).Code);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out _,
+            out var retained));
+        Assert.True(retained.Success, DescribeIssues(retained.Issues));
+        Assert.Same(originalPlan, retained.Plan);
+        Assert.True(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                fixture.FileSystem,
+                fixture.Lease,
+                acceptedState,
+                procedure));
+    }
+
     [Fact]
     public void ProcedureSingletonStabilization_PublishesWoundAnchorsRouteAndHistoryOnce()
     {

@@ -172,7 +172,8 @@ internal static partial class WoundAcceptedTurnPlanner
         IReadOnlyList<ValidationIssue> Issues);
 
     private static TreatmentSkillCommandEnvelopeResult FreezeTreatmentSkillCommands(
-        GameResponse response)
+        GameResponse response,
+        bool ignoreLegacyFateDuplicate = false)
     {
         var issues = new List<ValidationIssue>();
         foreach (var property in response.GetType().GetProperties(
@@ -183,6 +184,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 continue;
             if (!TreatmentSkillResponseProperties.Contains(property.Name) &&
                 !TreatmentItemResponseProperties.Contains(property.Name) &&
+                !(ignoreLegacyFateDuplicate && string.Equals(
+                    property.Name,
+                    nameof(GameResponse.EffectEventReports),
+                    StringComparison.Ordinal)) &&
                 property.GetValue(response) is not null)
             {
                 issues.Add(PublicationIssue(

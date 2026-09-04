@@ -328,6 +328,163 @@ public sealed partial class GameEngineTurnLifecycleTests
         Assert.False(await ContainsCurrentExactTreatmentRequestAsync(context));
     }
 
+    [Fact]
+    public async Task ProcedurePersistedFateDuplicate_QuarantinesDurableRowsThenReleasesEveryClaim()
+    {
+        await using var context = await CreateProcedureTreatmentPipelineContextAsync(
+            fault: null,
+            includeEnergyResource: true,
+            itemScenario: HeldTreatmentItemScenario.SelectedStack(),
+            includeFateShield: true,
+            composePublicationPlan: false);
+        var resourceStateBefore = Assert.IsType<byte[]>(
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.StatePath));
+        var resourceHistoryBefore = Assert.IsType<byte[]>(
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.HistoryPath));
+        var itemCountBefore = await ReadSelectedNpcItemCountAsync(context);
+        var fateTransitionsBefore =
+            await CountProcedureFateTransitionsAsync(context);
+        var treatmentTransitionsBefore =
+            CountProcedureTreatmentTransitions(context);
+        var legacyReport = new JsonObject
+        {
+            ["eventType"] = "owner_critical_failure",
+            ["target"] = new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            ["evidence"] = new JsonObject
+            {
+                ["kind"] = "mortal_action_roll",
+                ["rollMode"] = "normal",
+                ["diceIndexes"] = new JsonArray(0),
+                ["selectedIndex"] = 0,
+                ["selectedValue"] = 1,
+                ["originalOutcome"] = "critical_failure",
+                ["resolvedOutcome"] = "failure"
+            },
+            ["reason"] =
+                "Legacy report is rejected while durable authority is quarantined."
+        };
+        using var reportDocument = JsonDocument.Parse(legacyReport.ToJsonString());
+        var proposal = context.CreateMechanicsOnlyTreatmentProposal();
+        proposal.EffectEventReports =
+            new[] { reportDocument.RootElement.Clone() };
+
+        var duplicate = WoundAcceptedTurnPlanner
+            .ComposeMortalWoundTreatmentPublication(
+                context.FileSystem,
+                context.Lease,
+                proposal,
+                context.AcceptedState,
+                context.Request,
+                context.Resolution);
+
+        Assert.False(duplicate.IsValid);
+        Assert.Null(duplicate.Plan);
+        Assert.Equal(
+            "wound_treatment_fate_reaction_cross_surface_duplicate",
+            Assert.Single(duplicate.Issues).Code);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            context.Lease,
+            out _,
+            out var retained));
+        Assert.True(retained.Success, DescribeValidationIssues(retained.Issues));
+        Assert.NotNull(retained.Plan);
+        Assert.True(await ContainsCurrentExactTreatmentRequestAsync(context));
+        Assert.Equal(
+            resourceStateBefore,
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.StatePath));
+        Assert.Equal(
+            resourceHistoryBefore,
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.HistoryPath));
+        Assert.Equal(itemCountBefore, await ReadSelectedNpcItemCountAsync(context));
+        Assert.Equal(
+            fateTransitionsBefore,
+            await CountProcedureFateTransitionsAsync(context));
+        Assert.Equal(
+            treatmentTransitionsBefore,
+            CountProcedureTreatmentTransitions(context));
+        Assert.Equal(
+            new[] { ProcedureFateShieldEffectId },
+            await ReadActiveProcedureFateShieldIdsAsync(context));
+
+        await context.ReleaseLeaseAsync();
+        var released = await AcceptedTurnCanonicalStateRefresh
+            .ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync(
+                context.FileSystem,
+                "validation_failed");
+
+        Assert.NotNull(released);
+        Assert.True(released!.IsValid, DescribeValidationIssues(released.Issues));
+        Assert.Empty(released.Issues);
+        Assert.Equal(1, released.ChangedCount);
+        Assert.Equal(
+            MortalWoundTreatmentPublicationTransactionOutcome.Released,
+            released.Outcome);
+        Assert.False(await ContainsCurrentExactTreatmentRequestAsync(context));
+        Assert.Equal(
+            resourceStateBefore,
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.StatePath));
+        Assert.Equal(
+            resourceHistoryBefore,
+            await context.ReadFileBytesAsync(
+                ResourceMaterializationContract.HistoryPath));
+        Assert.Equal(itemCountBefore, await ReadSelectedNpcItemCountAsync(context));
+        Assert.Equal(
+            fateTransitionsBefore,
+            await CountProcedureFateTransitionsAsync(context));
+        Assert.Equal(
+            treatmentTransitionsBefore,
+            CountProcedureTreatmentTransitions(context));
+        Assert.Equal(
+            new[] { ProcedureFateShieldEffectId },
+            await ReadActiveProcedureFateShieldIdsAsync(context));
+
+        await context.AcquireLeaseAsync();
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
+            context.FileSystem,
+            context.Lease));
+        Assert.False(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                context.FileSystem,
+                context.Lease,
+                context.AcceptedState,
+                RequireProcedureAuthority(context.Request)));
+        var reboundState = ExportCurrentTreatmentAcceptedState(context);
+        var history = ReadCurrentTreatmentHistory(context.FileSystem);
+        var recovered = reboundState.RestorePersistedTreatmentRequests(history);
+        Assert.True(recovered.IsValid, DescribeValidationIssues(recovered.Issues));
+        Assert.Empty(recovered.HeldRequests);
+        Assert.Empty(recovered.FinalizedRequests);
+        var replacement = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            reboundState,
+            history,
+            ReadCurrentTreatmentWound(context.FileSystem),
+            HeldTreatmentPipelineContext.OperationKey +
+            "_after_persisted_fate_duplicate",
+            HeldTreatmentPipelineContext.RouteId,
+            Assert.Single(reboundState.Binding.AcceptedEvents).EventRef);
+        Assert.True(
+            replacement.IsValid,
+            DescribeValidationIssues(replacement.Issues));
+        var replacementRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            replacement.Request);
+        AssertProcedureClaims(
+            replacementRequest,
+            includeEnergyResource: true,
+            itemScenario: context.ItemScenario,
+            includeFateShield: true);
+        Assert.True(replacementRequest.RollbackNewProvisionalClaims(reboundState));
+    }
+
     [Theory]
     [InlineData("dice")]
     [InlineData("fate")]
@@ -841,7 +998,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             bool withRollbackAuthority = false,
             bool includeEnergyResource = true,
             HeldTreatmentItemScenario? itemScenario = null,
-            bool includeFateShield = false)
+            bool includeFateShield = false,
+            bool composePublicationPlan = true)
     {
         var root = Path.Combine(
             Path.GetTempPath(),
@@ -999,7 +1157,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             await RestoreProcedureTreatmentAndComposeSameSemanticPlanAsync(
                 context,
                 includeEnergyResource,
-                includeFateShield);
+                includeFateShield,
+                composePublicationPlan);
             return context;
         }
         catch
@@ -1015,7 +1174,8 @@ public sealed partial class GameEngineTurnLifecycleTests
     private static async Task RestoreProcedureTreatmentAndComposeSameSemanticPlanAsync(
         HeldTreatmentPipelineContext context,
         bool includeEnergyResource,
-        bool includeFateShield)
+        bool includeFateShield,
+        bool composePublicationPlan)
     {
         var acceptedState = ExportCurrentTreatmentAcceptedState(context);
         var history = ReadCurrentTreatmentHistory(context.FileSystem);
@@ -1045,6 +1205,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             resolved.Resolution);
         Assert.Equal("failed_attempt", resolution.ResultCategory);
         context.SetResolvedAuthorities(acceptedState, request, resolution);
+        if (!composePublicationPlan)
+            return;
         var publication = WoundAcceptedTurnPlanner
             .ComposeMortalWoundTreatmentPublication(
                 context.FileSystem,

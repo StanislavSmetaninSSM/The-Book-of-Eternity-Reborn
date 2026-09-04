@@ -165,17 +165,19 @@ internal static partial class WoundAcceptedTurnPlanner
                 exception.GetType().Name);
         }
 
-        if (resolution.CriticalReactionIntent is not null &&
-            response.EffectEventReports is not null)
+        var hasCrossSurfaceFateDuplicate =
+            resolution.CriticalReactionIntent is not null &&
+            response.EffectEventReports is not null;
+        if (hasCrossSurfaceFateDuplicate &&
+            request.HasNewProvisionalClaimCleanup)
         {
             request.RollbackNewProvisionalClaims(acceptedState);
-            return PublicationFailure(
-                "wound_treatment_fate_reaction_cross_surface_duplicate",
-                "the sealed typed Fate reaction as the only reaction authority",
-                "effectEventReports was also supplied");
+            return CrossSurfaceFateDuplicateFailure();
         }
 
-        var frozenCommands = FreezeTreatmentSkillCommands(response);
+        var frozenCommands = FreezeTreatmentSkillCommands(
+            response,
+            ignoreLegacyFateDuplicate: hasCrossSurfaceFateDuplicate);
         if (frozenCommands.Envelope is null)
             return MortalWoundTreatmentPublicationResult.Invalid(frozenCommands.Issues);
         var commandEnvelope = frozenCommands.Envelope;
@@ -228,7 +230,9 @@ internal static partial class WoundAcceptedTurnPlanner
                     out var cached) &&
                 cached.Success && cached.Plan is not null)
             {
-                return MortalWoundTreatmentPublicationResult.Valid(cached.Plan);
+                return hasCrossSurfaceFateDuplicate
+                    ? CrossSurfaceFateDuplicateFailure()
+                    : MortalWoundTreatmentPublicationResult.Valid(cached.Plan);
             }
             return PublicationFailure(
                 "mortal_wound_treatment_publication_cache_missing",
@@ -417,10 +421,14 @@ internal static partial class WoundAcceptedTurnPlanner
                     semanticFingerprint,
                     continuationAuthority,
                     reservation.Authority!);
-            return commonResult.Success && commonResult.Plan is not null
-                ? MortalWoundTreatmentPublicationResult.Valid(commonResult.Plan)
-                : MortalWoundTreatmentPublicationResult.Invalid(
+            if (!commonResult.Success || commonResult.Plan is null)
+            {
+                return MortalWoundTreatmentPublicationResult.Invalid(
                     commonResult.Issues);
+            }
+            return hasCrossSurfaceFateDuplicate
+                ? CrossSurfaceFateDuplicateFailure()
+                : MortalWoundTreatmentPublicationResult.Valid(commonResult.Plan);
         }
         catch (Exception exception) when (
             exception is ArgumentException or InvalidOperationException or
@@ -441,6 +449,12 @@ internal static partial class WoundAcceptedTurnPlanner
                 reservation.Authority);
         }
     }
+
+    private static MortalWoundTreatmentPublicationResult
+        CrossSurfaceFateDuplicateFailure() => PublicationFailure(
+            "wound_treatment_fate_reaction_cross_surface_duplicate",
+            "the sealed typed Fate reaction as the only reaction authority",
+            "effectEventReports was also supplied");
 
     private static object CreateTreatmentContinuationAuthority(
         WoundMaterializationEnvelope before,
@@ -681,6 +695,45 @@ internal static partial class WoundAcceptedTurnPlanner
             semanticFingerprint,
             StringComparison.Ordinal);
 
+    internal static bool TreatmentContinuationEffectInputAgrees(
+        object authority,
+        EffectAcceptedTurnInput input)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(input);
+        if (!TryReadTreatmentContinuation(authority, out var continuation) ||
+            !string.Equals(
+                input.SessionId,
+                continuation.Resolution.Coordinates.SessionId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                input.SnapshotToken,
+                continuation.Resolution.Coordinates.SnapshotToken,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                input.Realm,
+                continuation.Resolution.Coordinates.Realm,
+                StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        var recomposed = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
+            continuation.Resolution.Coordinates.Turn,
+            input.RawCommands,
+            continuation.AcceptedStateAuthority.CurrentGameMinute,
+            input.PreTurnCarriers,
+            input.AcceptedCarrierBaselines,
+            continuation.Resolution.Coordinates.Realm,
+            continuation.CriticalReactionLifecycleEvents);
+        return recomposed["lifecycleEvents"] is JsonArray expected &&
+               input.EventInput["lifecycleEvents"] is JsonArray actual &&
+               string.Equals(
+                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(expected),
+                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(actual),
+                   StringComparison.Ordinal);
+    }
+
     internal static bool TreatmentContinuationPublicationAgrees(
         object authority,
         AcceptedMechanicsWoundStageBundle bundle,
@@ -693,7 +746,10 @@ internal static partial class WoundAcceptedTurnPlanner
                 bundle.PreparedPlan.TreatmentContinuationAuthority,
                 authority) ||
             !TryReadTreatmentContinuation(authority, out var continuation) ||
-            !TreatmentContinuationPreparedAgrees(bundle.PreparedPlan))
+            !TreatmentContinuationPreparedAgrees(bundle.PreparedPlan) ||
+            !TreatmentContinuationEffectInputAgrees(
+                authority,
+                bundle.EffectBatchPlan.EffectInput))
         {
             return false;
         }

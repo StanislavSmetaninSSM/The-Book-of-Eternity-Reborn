@@ -83,6 +83,9 @@ internal sealed partial class MortalWoundTreatmentAttemptRequest
     public MortalWoundTreatmentResourceReservationAuthority ResourceAuthority { get; }
     public string RequestFingerprint { get; }
 
+    internal bool HasNewProvisionalClaimCleanup =>
+        _provisionalClaimCleanup is not null;
+
     internal bool RollbackNewProvisionalClaims(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState) =>
         _provisionalClaimCleanup?.Rollback(this, acceptedState) == true;
