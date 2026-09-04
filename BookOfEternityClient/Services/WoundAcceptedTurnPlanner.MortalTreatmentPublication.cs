@@ -13,6 +13,8 @@ internal static partial class WoundAcceptedTurnPlanner
 
     private sealed class TreatmentContinuationAuthority
     {
+        private readonly JsonObject _expectedEffectCommandRoot;
+        private readonly JsonObject[] _expectedEffectLifecycleEvents;
         private readonly JsonObject[] _criticalReactionLifecycleEvents;
 
         internal TreatmentContinuationAuthority(
@@ -22,6 +24,8 @@ internal static partial class WoundAcceptedTurnPlanner
             MortalWoundTreatmentAttemptRequest requestAuthority,
             MortalWoundTreatmentResolution resolution,
             MortalWoundTreatmentResourceFinalization resourceFinalization,
+            JsonObject expectedEffectCommandRoot,
+            IReadOnlyList<JsonObject> expectedEffectLifecycleEvents,
             IReadOnlyList<JsonObject> criticalReactionLifecycleEvents,
             string criticalReactionPublicationFingerprint,
             WoundDeclaredTransitionOutcome declaredOutcome,
@@ -42,6 +46,12 @@ internal static partial class WoundAcceptedTurnPlanner
             RequestAuthority = requestAuthority;
             Resolution = resolution;
             ResourceFinalization = resourceFinalization;
+            _expectedEffectCommandRoot = expectedEffectCommandRoot
+                .DeepClone()
+                .AsObject();
+            _expectedEffectLifecycleEvents = expectedEffectLifecycleEvents
+                .Select(static value => value.DeepClone().AsObject())
+                .ToArray();
             _criticalReactionLifecycleEvents = criticalReactionLifecycleEvents
                 .Select(static value => value.DeepClone().AsObject())
                 .ToArray();
@@ -66,6 +76,12 @@ internal static partial class WoundAcceptedTurnPlanner
         internal MortalWoundTreatmentAttemptRequest RequestAuthority { get; }
         internal MortalWoundTreatmentResolution Resolution { get; }
         internal MortalWoundTreatmentResourceFinalization ResourceFinalization { get; }
+        internal JsonObject ExpectedEffectCommandRoot =>
+            _expectedEffectCommandRoot.DeepClone().AsObject();
+        internal IReadOnlyList<JsonObject> ExpectedEffectLifecycleEvents =>
+            Array.AsReadOnly(_expectedEffectLifecycleEvents
+                .Select(static value => value.DeepClone().AsObject())
+                .ToArray());
         internal IReadOnlyList<JsonObject> CriticalReactionLifecycleEvents =>
             Array.AsReadOnly(_criticalReactionLifecycleEvents
                 .Select(static value => value.DeepClone().AsObject())
@@ -91,6 +107,8 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentAttemptRequest RequestAuthority,
         MortalWoundTreatmentResolution Resolution,
         MortalWoundTreatmentResourceFinalization ResourceFinalization,
+        JsonObject ExpectedEffectCommandRoot,
+        IReadOnlyList<JsonObject> ExpectedEffectLifecycleEvents,
         IReadOnlyList<JsonObject> CriticalReactionLifecycleEvents,
         string CriticalReactionPublicationFingerprint,
         WoundDeclaredTransitionOutcome DeclaredOutcome,
@@ -311,12 +329,22 @@ internal static partial class WoundAcceptedTurnPlanner
 
             var transitionId = outcomePublication.TransitionId!;
             var after = outcomePublication.After!;
+            var expectedEffectCommandRoot =
+                EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot();
+            var expectedEffectLifecycleEvents =
+                CreateExpectedTreatmentEffectLifecycleEvents(
+                    acceptedState,
+                    expectedEffectCommandRoot,
+                    baselines.EffectCarriers!,
+                    criticalReactionPublication.LifecycleEvents);
             var continuationAuthority = CreateTreatmentContinuationAuthority(
                 request.RouteSourceWound,
                 after,
                 request,
                 resolution,
                 shell.Finalization,
+                expectedEffectCommandRoot,
+                expectedEffectLifecycleEvents,
                 criticalReactionPublication.LifecycleEvents,
                 criticalReactionPublication.Fingerprint!,
                 outcomePublication.DeclaredOutcome!,
@@ -354,7 +382,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 acceptedState.Binding.SessionId,
                 acceptedState.Binding.SnapshotToken,
                 acceptedState.Binding.Turn,
-                EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot(),
+                expectedEffectCommandRoot,
                 baselines.EffectCarriers!,
                 baselines.EffectCarriers!,
                 baselines.EffectIdentity,
@@ -462,6 +490,8 @@ internal static partial class WoundAcceptedTurnPlanner
         MortalWoundTreatmentAttemptRequest request,
         MortalWoundTreatmentResolution resolution,
         MortalWoundTreatmentResourceFinalization resourceFinalization,
+        JsonObject expectedEffectCommandRoot,
+        IReadOnlyList<JsonObject> expectedEffectLifecycleEvents,
         IReadOnlyList<JsonObject> criticalReactionLifecycleEvents,
         string criticalReactionPublicationFingerprint,
         WoundDeclaredTransitionOutcome declaredOutcome,
@@ -488,6 +518,8 @@ internal static partial class WoundAcceptedTurnPlanner
             after,
             resolution,
             resourceFinalization.FinalizationFingerprint,
+            expectedEffectCommandRoot,
+            expectedEffectLifecycleEvents,
             criticalReactionPublicationFingerprint,
             declaredOutcome,
             transitionId,
@@ -504,6 +536,8 @@ internal static partial class WoundAcceptedTurnPlanner
             request,
             resolution,
             resourceFinalization,
+            expectedEffectCommandRoot,
+            expectedEffectLifecycleEvents,
             criticalReactionLifecycleEvents,
             criticalReactionPublicationFingerprint,
             declaredOutcome,
@@ -563,6 +597,12 @@ internal static partial class WoundAcceptedTurnPlanner
                 candidate.ResourceFinalization.ResourceAuthorityFingerprint,
                 candidate.RequestAuthority.ResourceAuthority.AuthorityFingerprint,
                 StringComparison.Ordinal) ||
+            !string.Equals(
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                    candidate.ExpectedEffectCommandRoot),
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                    EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot()),
+                StringComparison.Ordinal) ||
             !TryReadTreatmentSkillProjectionForEnvelopeSemantics(
                 candidate.SkillProjectionAuthority,
                 candidate.ReservationAuthority,
@@ -595,6 +635,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.After,
             candidate.Resolution,
             candidate.ResourceFinalization.FinalizationFingerprint,
+            candidate.ExpectedEffectCommandRoot,
+            candidate.ExpectedEffectLifecycleEvents,
             candidate.CriticalReactionPublicationFingerprint,
             candidate.DeclaredOutcome,
             candidate.TransitionId,
@@ -618,6 +660,8 @@ internal static partial class WoundAcceptedTurnPlanner
             candidate.RequestAuthority,
             candidate.Resolution,
             candidate.ResourceFinalization,
+            candidate.ExpectedEffectCommandRoot,
+            candidate.ExpectedEffectLifecycleEvents,
             candidate.CriticalReactionLifecycleEvents,
             candidate.CriticalReactionPublicationFingerprint,
             candidate.DeclaredOutcome,
@@ -718,18 +762,18 @@ internal static partial class WoundAcceptedTurnPlanner
             return false;
         }
 
-        var recomposed = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
-            continuation.Resolution.Coordinates.Turn,
-            input.RawCommands,
-            continuation.AcceptedStateAuthority.CurrentGameMinute,
-            input.PreTurnCarriers,
-            input.AcceptedCarrierBaselines,
-            continuation.Resolution.Coordinates.Realm,
-            continuation.CriticalReactionLifecycleEvents);
-        return recomposed["lifecycleEvents"] is JsonArray expected &&
-               input.EventInput["lifecycleEvents"] is JsonArray actual &&
+        var expectedLifecycle = CreateLifecycleArray(
+            continuation.ExpectedEffectLifecycleEvents);
+        return input.EventInput["lifecycleEvents"] is JsonArray actual &&
                string.Equals(
-                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(expected),
+                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                       continuation.ExpectedEffectCommandRoot),
+                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                       input.RawCommands),
+                   StringComparison.Ordinal) &&
+               string.Equals(
+                   WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                       expectedLifecycle),
                    WoundAcceptedTurnFingerprintWriter.CanonicalJson(actual),
                    StringComparison.Ordinal);
     }
@@ -879,6 +923,8 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundMaterializationEnvelope after,
         MortalWoundTreatmentResolution resolution,
         string resourceFinalizationFingerprint,
+        JsonObject expectedEffectCommandRoot,
+        IReadOnlyList<JsonObject> expectedEffectLifecycleEvents,
         string criticalReactionPublicationFingerprint,
         WoundDeclaredTransitionOutcome declaredOutcome,
         string transitionId,
@@ -891,13 +937,17 @@ internal static partial class WoundAcceptedTurnPlanner
         WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
         {
             "book_of_eternity.wound.treatment_continuation_authority",
-            "3",
+            "4",
             WoundMaterializationContract.SerializeCanonical(before),
             WoundMaterializationContract.SerializeCanonical(after),
             resolution.RequestFingerprint,
             resolution.ResultFingerprint,
             resolution.ResolutionAuthorityFingerprint,
             resourceFinalizationFingerprint,
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                expectedEffectCommandRoot),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                CreateLifecycleArray(expectedEffectLifecycleEvents)),
             criticalReactionPublicationFingerprint,
             declaredOutcome.ResultingSeverityRank.ToString(
                 System.Globalization.CultureInfo.InvariantCulture),
@@ -917,6 +967,38 @@ internal static partial class WoundAcceptedTurnPlanner
             skillProjectionFingerprint,
             TreatmentPublicationSummary
         });
+
+    private static IReadOnlyList<JsonObject>
+        CreateExpectedTreatmentEffectLifecycleEvents(
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            JsonObject expectedEffectCommandRoot,
+            EffectCarrierCatalogInput effectCarriers,
+            IReadOnlyList<JsonObject> criticalReactionLifecycleEvents)
+    {
+        var eventInput = EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(
+            acceptedState.Binding.Turn,
+            expectedEffectCommandRoot,
+            acceptedState.CurrentGameMinute,
+            effectCarriers,
+            effectCarriers,
+            acceptedState.Binding.Realm,
+            criticalReactionLifecycleEvents);
+        if (eventInput["lifecycleEvents"] is not JsonArray lifecycleEvents ||
+            lifecycleEvents.Any(static value => value is not JsonObject))
+        {
+            throw new InvalidOperationException(
+                "Treatment continuation requires one complete canonical effect lifecycle array.");
+        }
+        return Array.AsReadOnly(lifecycleEvents
+            .Select(static value => value!.DeepClone().AsObject())
+            .ToArray());
+    }
+
+    private static JsonArray CreateLifecycleArray(
+        IReadOnlyList<JsonObject> lifecycleEvents) =>
+        new(lifecycleEvents
+            .Select(static value => (JsonNode)value.DeepClone())
+            .ToArray());
 
     private sealed record PublicationBaselines(
         WoundCarrierCatalogInput? WoundCarriers,

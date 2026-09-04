@@ -394,7 +394,47 @@ public sealed partial class GameEngineTurnLifecycleTests
             out _,
             out var retained));
         Assert.True(retained.Success, DescribeValidationIssues(retained.Issues));
-        Assert.NotNull(retained.Plan);
+        var retainedPlan = Assert.IsType<AcceptedMechanicsPlan>(retained.Plan);
+        Assert.True(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                context.FileSystem,
+                context.Lease,
+                context.AcceptedState,
+                RequireProcedureAuthority(context.Request)));
+        var retainedHandoff = ReadValidatedTreatmentPublicationHandoff(context);
+
+        var exactDuplicate = WoundAcceptedTurnPlanner
+            .ComposeMortalWoundTreatmentPublication(
+                context.FileSystem,
+                context.Lease,
+                proposal,
+                context.AcceptedState,
+                context.Request,
+                context.Resolution);
+
+        Assert.False(exactDuplicate.IsValid);
+        Assert.Null(exactDuplicate.Plan);
+        Assert.Equal(
+            "wound_treatment_fate_reaction_cross_surface_duplicate",
+            Assert.Single(exactDuplicate.Issues).Code);
+        Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+            context.FileSystem,
+            context.Lease,
+            out _,
+            out var retainedAfterExactDuplicate));
+        Assert.True(
+            retainedAfterExactDuplicate.Success,
+            DescribeValidationIssues(retainedAfterExactDuplicate.Issues));
+        Assert.Same(retainedPlan, retainedAfterExactDuplicate.Plan);
+        Assert.True(AcceptedTurnAuthorityRegistry
+            .HasLiveMortalWoundProcedureReservationAgreement(
+                context.FileSystem,
+                context.Lease,
+                context.AcceptedState,
+                RequireProcedureAuthority(context.Request)));
+        Assert.Same(
+            retainedHandoff,
+            ReadValidatedTreatmentPublicationHandoff(context));
         Assert.True(await ContainsCurrentExactTreatmentRequestAsync(context));
         Assert.Equal(
             resourceStateBefore,
@@ -1307,6 +1347,24 @@ public sealed partial class GameEngineTurnLifecycleTests
     private static MortalWoundProcedureCheckAuthority RequireProcedureAuthority(
         MortalWoundTreatmentAttemptRequest request) =>
         Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority);
+
+    private static object ReadValidatedTreatmentPublicationHandoff(
+        HeldTreatmentPipelineContext context)
+    {
+        var state = typeof(AcceptedTurnAuthorityRegistry)
+            .GetMethod(
+                "GetState",
+                BindingFlags.Static | BindingFlags.NonPublic)!
+            .Invoke(null, new object[] { context.FileSystem, context.Lease });
+        Assert.NotNull(state);
+        var handoff = state.GetType()
+            .GetField(
+                "_validatedTreatmentPublicationHandoff",
+                BindingFlags.Instance | BindingFlags.NonPublic)!
+            .GetValue(state);
+        Assert.NotNull(handoff);
+        return handoff;
+    }
 
     private static MortalWoundTreatmentAcceptedStateAuthority
         AssertProcedureReservationIsLive(

@@ -365,6 +365,258 @@ public sealed partial class MortalWoundTreatmentResolverTests
             continuation.SemanticFingerprint));
     }
 
+    [Fact]
+    public void ProcedureTreatmentAuthority_RejectsInjectedValidDispelWithOriginalLifecycle()
+    {
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure"));
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_injected_valid_dispel",
+                scenario.RouteId),
+            "injected valid dispel");
+        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        var commands = original.EffectBatchPlan.EffectInput.RawCommands
+            .DeepClone()
+            .AsObject();
+        commands["effectChanges"] = new JsonArray(new JsonObject
+        {
+            ["operation"] = "dispel",
+            ["effectId"] = "effect_fate_shield_newer",
+            ["target"] = new JsonObject
+            {
+                ["kind"] = "player",
+                ["targetId"] = "player_current"
+            },
+            ["authority"] = new JsonObject
+            {
+                ["kind"] = "fate",
+                ["authorityId"] = "turn_42"
+            },
+            ["eventRef"] = new JsonObject
+            {
+                ["kind"] = "accepted_turn",
+                ["authorityId"] = "turn_42"
+            },
+            ["reason"] =
+                "A detached caller must not add an otherwise valid Fate dispel."
+        });
+        var alteredInput = original.EffectBatchPlan.EffectInput with
+        {
+            RawCommands = commands
+        };
+        Assert.Equal(
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                original.EffectBatchPlan.EffectInput.EventInput["lifecycleEvents"]!),
+            WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                alteredInput.EventInput["lifecycleEvents"]!));
+
+        AssertTreatmentEffectInputRejectedAtStageAndFinal(
+            fixture,
+            flow,
+            original,
+            alteredInput);
+    }
+
+    [Fact]
+    public void ProcedureTreatmentAuthority_RejectsCoTamperedCarrierBaselineAndLifecycle()
+    {
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure"));
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        SeedPassiveNpcEffectForLifecycle(fixture);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_co_tampered_carrier_lifecycle",
+                scenario.RouteId),
+            "co-tampered carrier baseline and lifecycle");
+        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        var originalInput = original.EffectBatchPlan.EffectInput;
+        var acceptedCarriers = Assert.IsType<EffectCarrierCatalogInput>(
+            originalInput.AcceptedCarrierBaselines);
+        var npcs = Assert.IsType<JsonObject>(acceptedCarriers.NpcEffects)
+            .DeepClone()
+            .AsObject();
+        var npc = Assert.Single(
+            npcs["entries"]!.AsArray().OfType<JsonObject>(),
+            static row => string.Equals(
+                row["NPCId"]?.GetValue<string>(),
+                "field_medic_01",
+                StringComparison.Ordinal));
+        Assert.NotEmpty(npc["activeEffects"]!.AsArray());
+        npc["activeEffects"] = new JsonArray();
+        var eventInput = originalInput.EventInput.DeepClone().AsObject();
+        var lifecycle = Assert.IsType<JsonArray>(eventInput["lifecycleEvents"]);
+        var removedLifecycle = lifecycle
+            .OfType<JsonObject>()
+            .Where(static row => string.Equals(
+                row["target"]?["kind"]?.GetValue<string>(),
+                "npc",
+                StringComparison.Ordinal) && string.Equals(
+                row["target"]?["targetId"]?.GetValue<string>(),
+                "field_medic_01",
+                StringComparison.Ordinal))
+            .ToArray();
+        Assert.Single(removedLifecycle);
+        lifecycle.Remove(removedLifecycle[0]);
+        var alteredInput = originalInput with
+        {
+            AcceptedCarrierBaselines = acceptedCarriers with
+            {
+                NpcEffects = npcs
+            },
+            EventInput = eventInput
+        };
+
+        AssertTreatmentEffectInputRejectedAtStageAndFinal(
+            fixture,
+            flow,
+            original,
+            alteredInput);
+    }
+
+    private static void AssertTreatmentEffectInputRejectedAtStageAndFinal(
+        AcceptedStateFixture fixture,
+        TreatmentFlow flow,
+        AcceptedMechanicsWoundStageBundle original,
+        EffectAcceptedTurnInput alteredInput)
+    {
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
+        var prepared = original.PreparedPlan;
+        var authority = prepared.TreatmentContinuationAuthority;
+        Assert.NotNull(authority);
+        Assert.True(WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+            authority!,
+            out var continuation));
+        var ordinaryCache = new EffectAcceptedTurnPlanCache();
+        var ordinary = ordinaryCache.GetOrBuildWoundValidated(
+            prepared,
+            alteredInput,
+            out _);
+        Assert.True(ordinary.Success, DescribeIssues(ordinary.Issues));
+        var accepted = WoundEffectBatchPlanner.AcceptEffectResult(
+            prepared,
+            alteredInput,
+            ordinary);
+        Assert.True(accepted.Success, DescribeIssues(accepted.Issues));
+        var final = WoundAcceptedTurnPlanner.Finalize(prepared, accepted);
+        Assert.True(final.Success, DescribeIssues(final.Issues));
+        var altered = new AcceptedMechanicsWoundStageBundle(
+            original.Input,
+            prepared,
+            accepted.Plan!,
+            final.Plan!);
+
+        Assert.True(AcceptedTurnAuthorityRegistry.TryPeekEffectValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var genericBeforeRejection));
+        RearmTreatmentPublicationReservationForEffectStageTest(
+            fixture,
+            continuation);
+        var stage = WoundAcceptedTurnPlanAuthority
+            .GetOrBuildTreatmentContinuationEffectValidated(
+                fixture.FileSystem,
+                fixture.Lease,
+                prepared,
+                alteredInput,
+                authority!,
+                continuation.ReservationAuthority);
+        var finalAgrees = WoundAcceptedTurnPlanner
+            .TreatmentContinuationPublicationAgrees(
+                authority!,
+                altered,
+                acceptedState,
+                request,
+                resolution,
+                continuation.SemanticFingerprint);
+
+        Assert.Equal(
+            "stage=False;final=False",
+            $"stage={stage.Success};final={finalAgrees}");
+        Assert.Null(stage.Plan);
+        Assert.Equal(
+            "mortal_wound_treatment_publication_lifecycle_mismatch",
+            Assert.Single(stage.Issues).Code);
+        Assert.True(AcceptedTurnAuthorityRegistry.TryPeekEffectValidated(
+            fixture.FileSystem,
+            fixture.Lease,
+            out var genericAfterRejection));
+        Assert.Same(genericBeforeRejection.Plan, genericAfterRejection.Plan);
+        AcceptedTurnAuthorityRegistry.AbortMortalWoundTreatmentPublication(
+            fixture.FileSystem,
+            fixture.Lease,
+            continuation.ReservationAuthority);
+    }
+
+    private static void SeedPassiveNpcEffectForLifecycle(
+        AcceptedStateFixture fixture)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            "npc",
+            "characteristic_modifier");
+        effect["effectId"] = "effect_field_medic_passive_focus";
+        effect["target"]!["targetId"] = "field_medic_01";
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = "skill_field_medicine_01",
+            ["definitionKey"] = "t070b5-field-medic-passive-focus"
+        };
+        effect["chronology"]!["createdAtTurn"] = 40;
+        effect["chronology"]!["createdEventRef"] =
+            "turn_40:field_medic_passive_focus";
+        effect["chronology"]!["lastTransitionId"] =
+            "effect_transition_field_medic_passive_focus";
+        effect["chronology"]!["lastTransitionTurn"] = 40;
+        var npcRoot = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "field_medic_01",
+                ["activeEffects"] = new JsonArray(effect.DeepClone())
+            })
+        };
+        File.WriteAllText(
+            fixture.FileSystem.ResolvePath(EffectCarrierCatalog.NpcPath),
+            npcRoot.ToJsonString());
+        var identityRoot = JsonNode.Parse(File.ReadAllText(
+            fixture.FileSystem.ResolvePath(EffectIdentityState.StatePath)))!
+            .AsObject();
+        var newIdentity = Assert.IsType<JsonObject>(Assert.Single(
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect)
+                ["entries"]!
+                .AsArray()));
+        newIdentity["createdAtTurn"] = 40;
+        var transition = Assert.IsType<JsonObject>(Assert.Single(
+            newIdentity["transitions"]!.AsArray()));
+        transition["transitionId"] =
+            "effect_transition_field_medic_passive_focus";
+        transition["turn"] = 40;
+        transition["eventRef"] = "turn_40:field_medic_passive_focus";
+        identityRoot["entries"]!.AsArray().Add(newIdentity.DeepClone());
+        File.WriteAllText(
+            fixture.FileSystem.ResolvePath(EffectIdentityState.StatePath),
+            identityRoot.ToJsonString());
+    }
+
     private static void RearmTreatmentPublicationReservationForEffectStageTest(
         AcceptedStateFixture fixture,
         WoundAcceptedTurnPlanner.TreatmentContinuationView continuation)
@@ -394,7 +646,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
-    public void ProcedureFreshFateDuplicateAgainstExactCachedPlan_RetainsPlanAndClaims()
+    public void ProcedureFreshFateDuplicate_ProvisionalRollbackCannotCorruptConfirmedPlan()
     {
         var scenario = CreateScenario(
             "procedure_player_natural_one_reserves_oldest_fate_shield",
