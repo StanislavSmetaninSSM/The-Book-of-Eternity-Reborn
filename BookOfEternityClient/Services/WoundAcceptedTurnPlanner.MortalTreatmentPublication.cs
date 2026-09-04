@@ -848,6 +848,130 @@ internal static partial class WoundAcceptedTurnPlanner
                    StringComparison.Ordinal);
     }
 
+    internal static bool TreatmentContinuationFinalPlanAgrees(
+        object authority,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        ArgumentNullException.ThrowIfNull(bundle);
+        try
+        {
+            if (!ReferenceEquals(
+                    bundle.PreparedPlan.TreatmentContinuationAuthority,
+                    authority) ||
+                !TryReadTreatmentContinuation(authority, out var continuation) ||
+                !TreatmentContinuationPreparedAgrees(bundle.PreparedPlan) ||
+                !TreatmentContinuationEffectInputAgrees(
+                    authority,
+                    bundle.EffectBatchPlan.EffectInput))
+            {
+                return false;
+            }
+
+            var batch = continuation.OutcomePreparation.SeverityReduction is null
+                ? null
+                : bundle.PreparedPlan.EffectOperationBatches.Single();
+            var applicationByRef = new Dictionary<
+                string,
+                EffectAcceptedApplicationResult>(StringComparer.Ordinal);
+            foreach (var application in bundle.EffectBatchPlan.ApplicationResults)
+            {
+                if (!applicationByRef.TryAdd(
+                        application.ApplicationRef,
+                        application))
+                {
+                    return false;
+                }
+            }
+            var publication = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+                continuation.OutcomePreparation,
+                continuation.Resolution,
+                batch,
+                applicationByRef);
+            if (!publication.IsValid || publication.After is null)
+                return false;
+
+            var final = bundle.FinalPlan;
+            var mutations = final.CarrierContributions
+                .SelectMany(static contribution => contribution.Mutations)
+                .ToArray();
+            if (mutations.Length != 1 ||
+                !string.Equals(
+                    mutations[0].Operation,
+                    "update",
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    WoundMaterializationContract.SerializeCanonical(
+                        mutations[0].BeforeWound!),
+                    WoundMaterializationContract.SerializeCanonical(
+                        continuation.Before),
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    WoundMaterializationContract.SerializeCanonical(
+                        mutations[0].AfterWound!),
+                    WoundMaterializationContract.SerializeCanonical(
+                        publication.After),
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            var carrierIntents = final.TransitionIntents
+                .OfType<WoundCarrierTransitionIntent>().ToArray();
+            var historyIntents = final.TransitionIntents
+                .OfType<WoundTransitionHistoryIntent>().ToArray();
+            var terminalIntents = final.TransitionIntents
+                .OfType<WoundAttemptTerminalIntent>().ToArray();
+            if (carrierIntents.Length != 1 ||
+                !string.Equals(
+                    carrierIntents[0].Operation,
+                    "replace",
+                    StringComparison.Ordinal) ||
+                historyIntents.Length != 1 ||
+                !string.Equals(
+                    historyIntents[0].Kind,
+                    "treat",
+                    StringComparison.Ordinal) ||
+                historyIntents[0].Terminal ||
+                terminalIntents.Length != 1)
+            {
+                return false;
+            }
+
+            var beforeEffectIds = continuation.Before.Consequences
+                .OwnedEffectSources.RootBindings
+                .Select(static binding => binding.EffectId)
+                .ToArray();
+            var afterEffectIds = publication.After.Consequences
+                .OwnedEffectSources.RootBindings
+                .Select(static binding => binding.EffectId)
+                .ToArray();
+            var effectIntents = final.TransitionIntents
+                .OfType<WoundEffectTransitionIntent>().ToArray();
+            if (continuation.OutcomePreparation.SeverityReduction is null)
+                return effectIntents.Length == 0;
+            return beforeEffectIds.Length == 0 && afterEffectIds.Length == 0
+                ? effectIntents.Length == 0
+                : effectIntents.Length == 1 &&
+                  string.Equals(
+                      effectIntents[0].Operation,
+                      "replace",
+                      StringComparison.Ordinal) &&
+                  effectIntents[0].BeforeEffectIds.SequenceEqual(
+                      beforeEffectIds,
+                      StringComparer.Ordinal) &&
+                  effectIntents[0].AfterEffectIds.SequenceEqual(
+                      afterEffectIds,
+                      StringComparer.Ordinal);
+        }
+        catch (Exception exception) when (exception is ArgumentException or
+                                           InvalidOperationException or
+                                           NullReferenceException)
+        {
+            return false;
+        }
+    }
+
     internal static bool TreatmentContinuationPublicationAgrees(
         object authority,
         AcceptedMechanicsWoundStageBundle bundle,
@@ -863,7 +987,8 @@ internal static partial class WoundAcceptedTurnPlanner
             !TreatmentContinuationPreparedAgrees(bundle.PreparedPlan) ||
             !TreatmentContinuationEffectInputAgrees(
                 authority,
-                bundle.EffectBatchPlan.EffectInput))
+                bundle.EffectBatchPlan.EffectInput) ||
+            !TreatmentContinuationFinalPlanAgrees(authority, bundle))
         {
             return false;
         }

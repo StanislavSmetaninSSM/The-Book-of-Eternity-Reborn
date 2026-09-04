@@ -119,8 +119,7 @@ internal sealed record WoundPlayerNotification(
         if (prepared.TreatmentContinuationAuthority is not null)
         {
             return ComposeAcceptedTreatmentContinuation(
-                input,
-                prepared,
+                bundle,
                 mutations);
         }
 
@@ -216,22 +215,49 @@ internal sealed record WoundPlayerNotification(
 
     private static WoundAcceptedTurnOutputBindingResult
         ComposeAcceptedTreatmentContinuation(
-            WoundAcceptedTurnInput input,
-            WoundPreparedAcceptedTurnPlan prepared,
+            AcceptedMechanicsWoundStageBundle bundle,
             IReadOnlyList<WoundCarrierMutation> mutations)
     {
+        var input = bundle.Input;
+        var prepared = bundle.PreparedPlan;
         if (!WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
                 prepared.TreatmentContinuationAuthority,
                 out var continuation) ||
             !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) ||
             input.Transitions.Count != 0 ||
-            prepared.EffectOperationBatches.Count != 0 ||
+            prepared.EffectOperationBatches.Count !=
+                (continuation.OutcomePreparation.SeverityReduction is null ? 0 : 1) ||
             mutations.Count != 1)
         {
             return TreatmentContinuationBindingFailure(
                 $"transitions={input.Transitions.Count}," +
                 $"batches={prepared.EffectOperationBatches.Count}," +
                 $"mutations={mutations.Count}");
+        }
+
+        var applicationByRef = new Dictionary<
+            string,
+            EffectAcceptedApplicationResult>(StringComparer.Ordinal);
+        foreach (var application in bundle.EffectBatchPlan.ApplicationResults)
+        {
+            if (!applicationByRef.TryAdd(application.ApplicationRef, application))
+            {
+                return TreatmentContinuationBindingFailure(
+                    "duplicate accepted applicationRef");
+            }
+        }
+        var batch = continuation.OutcomePreparation.SeverityReduction is null
+            ? null
+            : prepared.EffectOperationBatches[0];
+        var publication = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            continuation.OutcomePreparation,
+            continuation.Resolution,
+            batch,
+            applicationByRef);
+        if (!publication.IsValid || publication.After is null)
+        {
+            return TreatmentContinuationBindingFailure(
+                "invalid authenticated treatment finalization");
         }
 
         var mutation = mutations[0];
@@ -244,7 +270,7 @@ internal sealed record WoundPlayerNotification(
                 StringComparison.Ordinal) ||
             !string.Equals(
                 mutation.WoundId,
-                continuation.OutcomePreparation.ProvisionalAfter.WoundId,
+                publication.After.WoundId,
                 StringComparison.Ordinal) ||
             !string.Equals(
                 WoundMaterializationContract.SerializeCanonical(before),
@@ -254,7 +280,7 @@ internal sealed record WoundPlayerNotification(
             !string.Equals(
                 WoundMaterializationContract.SerializeCanonical(after),
                 WoundMaterializationContract.SerializeCanonical(
-                    continuation.OutcomePreparation.ProvisionalAfter),
+                    publication.After),
                 StringComparison.Ordinal))
         {
             return TreatmentContinuationBindingFailure(

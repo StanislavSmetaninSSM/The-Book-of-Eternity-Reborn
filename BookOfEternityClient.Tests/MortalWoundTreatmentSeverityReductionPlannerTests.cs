@@ -157,7 +157,212 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
         Assert.Null(result.After);
         Assert.Null(result.DeclaredOutcome);
         Assert.Contains(result.Issues, static issue =>
-            issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
+            issue.Code == "mortal_wound_treatment_outcome_effect_handoff_mismatch");
+    }
+
+    [Fact]
+    public void FinalizeReduction_AuthenticatedResultsBuildOneFreshCanonicalWound()
+    {
+        var source = CreateRankThreeWound(
+            "action_control",
+            "resistance_modifier");
+        source["complications"] = new JsonArray(new JsonObject
+        {
+            ["complicationId"] = "complication_destination_restriction",
+            ["kind"] = "impairment",
+            ["state"] = "active",
+            ["displayName"] = "Restricted movement",
+            ["treatmentDifficultyModifier"] = 1,
+            ["ownedEffectIds"] = new JsonArray("effect_destination_2"),
+            ["visibility"] = "known_to_player"
+        });
+        var before = Parse(source);
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            AssertValidProjection(before, 1));
+        var input = CreateRematerializationInput(preparation);
+        var (batch, _) = InvokeRematerializationPrepare(
+            input,
+            preparation,
+            resolution);
+        var accepted = CreateAcceptedApplications(
+            batch,
+            "effect_final_zeta",
+            "effect_final_alpha");
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            batch,
+            CreateApplicationMap(accepted));
+
+        Assert.True(result.IsValid, Describe(result.Issues));
+        var after = Assert.IsType<WoundMaterializationEnvelope>(result.After);
+        Assert.Equal("II", after.Severity.Value);
+        Assert.Equal(2, after.Severity.Rank);
+        Assert.Equal(
+            new[] { "effect_final_alpha", "effect_final_zeta" },
+            after.Consequences.OwnedEffectSources.RootBindings
+                .Select(static binding => binding.EffectId));
+        Assert.Equal(
+            new[] { 1, 2 },
+            after.Consequences.Entries.Select(static entry => entry.Slot));
+        Assert.Equal(
+            new[] { "effect_final_alpha" },
+            Assert.Single(after.Complications).OwnedEffectIds);
+        Assert.DoesNotContain(
+            after.Consequences.OwnedEffectSources.RootBindings,
+            binding => before.Consequences.OwnedEffectSources.RootBindings.Any(
+                prior => string.Equals(
+                    prior.EffectId,
+                    binding.EffectId,
+                    StringComparison.Ordinal)));
+        Assert.Equal(
+            after.Consequences.OwnedEffectSources.RootBindings
+                .Select(static binding => binding.EffectId)
+                .Order(StringComparer.Ordinal),
+            result.DeclaredOutcome!.ResultingEffectIds);
+    }
+
+    [Fact]
+    public void FinalizeReduction_AuthenticatedEmptyBatchPublishesZeroRootSeverityChange()
+    {
+        var before = Parse(CreateRankThreeWound());
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            AssertValidProjection(before, 1));
+        var input = CreateRematerializationInput(preparation);
+        var (batch, _) = InvokeRematerializationPrepare(
+            input,
+            preparation,
+            resolution);
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            batch,
+            new Dictionary<string, EffectAcceptedApplicationResult>(
+                StringComparer.Ordinal));
+
+        Assert.True(result.IsValid, Describe(result.Issues));
+        Assert.Empty(batch.RootApplications);
+        Assert.Empty(batch.TerminalOperations);
+        Assert.Equal("II", result.After!.Severity.Value);
+        Assert.Empty(result.After.Consequences.OwnedEffectSources.RootBindings);
+        Assert.Empty(result.After.Consequences.Entries);
+        Assert.Empty(result.DeclaredOutcome!.ResultingEffectIds);
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("extra")]
+    [InlineData("reordered")]
+    [InlineData("borrowed")]
+    [InlineData("changed_result")]
+    [InlineData("malformed_result")]
+    [InlineData("changed_slots")]
+    [InlineData("duplicate_effect_id")]
+    [InlineData("confusable_effect_id")]
+    [InlineData("reused_prior_id")]
+    public void FinalizeReduction_InexactApplicationResultMapFailsClosed(string mutation)
+    {
+        var before = Parse(CreateRankThreeWound(
+            "action_control",
+            "resistance_modifier"));
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            AssertValidProjection(before, 1));
+        var input = CreateRematerializationInput(preparation);
+        var (batch, _) = InvokeRematerializationPrepare(
+            input,
+            preparation,
+            resolution);
+        var accepted = CreateAcceptedApplications(
+            batch,
+            "effect_final_alpha",
+            "effect_final_beta").ToList();
+        switch (mutation)
+        {
+            case "missing":
+                accepted.RemoveAt(1);
+                break;
+            case "extra":
+                accepted.Add(accepted[0] with
+                {
+                    ApplicationRef = "application_unexpected",
+                    EffectId = "effect_final_unexpected"
+                });
+                break;
+            case "reordered":
+                accepted.Reverse();
+                break;
+            case "borrowed":
+                accepted[0] = accepted[1] with
+                {
+                    ApplicationRef = accepted[0].ApplicationRef
+                };
+                break;
+            case "changed_result":
+                accepted[0] = accepted[0] with
+                {
+                    SourceKey = accepted[0].SourceKey with
+                    {
+                        DefinitionKey = "definition_changed"
+                    }
+                };
+                break;
+            case "malformed_result":
+                accepted[0] = accepted[0] with
+                {
+                    Materialization = null!
+                };
+                break;
+            case "changed_slots":
+                accepted[0] = accepted[0] with
+                {
+                    Materialization = new WoundEffectMaterializationAgreement(
+                        accepted[0].Materialization.SlotBindings.Select(slot =>
+                            slot with { Slot = slot.Slot + 1 }).ToArray(),
+                        accepted[0].Materialization.ComponentCount,
+                        accepted[0].Materialization.MaterializationFingerprint)
+                };
+                break;
+            case "duplicate_effect_id":
+                accepted[1] = accepted[1] with
+                {
+                    EffectId = accepted[0].EffectId
+                };
+                break;
+            case "confusable_effect_id":
+                accepted[1] = accepted[1] with
+                {
+                    EffectId = accepted[0].EffectId.ToUpperInvariant()
+                };
+                break;
+            case "reused_prior_id":
+                accepted[0] = accepted[0] with
+                {
+                    EffectId = batch.RootApplications[0].PriorRootEffectId!
+                };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation));
+        }
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            batch,
+            CreateApplicationMap(accepted));
+
+        Assert.False(result.IsValid);
+        Assert.Null(result.After);
+        Assert.Null(result.DeclaredOutcome);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "mortal_wound_treatment_outcome_effect_handoff_mismatch");
     }
 
     [Fact]
@@ -1138,6 +1343,62 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
         var batch = Assert.IsType<WoundEffectOperationBatch>(rawBatch);
         Assert.NotNull(authority);
         return (batch, authority!);
+    }
+
+    private static IReadOnlyList<EffectAcceptedApplicationResult>
+        CreateAcceptedApplications(
+            WoundEffectOperationBatch batch,
+            params string[] effectIds)
+    {
+        Assert.Equal(batch.RootApplications.Count, effectIds.Length);
+        var slotByApplicationRef = new Dictionary<
+            string,
+            IReadOnlyList<WoundEffectSlotAgreement>>(StringComparer.Ordinal);
+        var nextSlot = 1;
+        foreach (var pair in batch.RootApplications
+                     .Zip(effectIds)
+                     .OrderBy(static pair => pair.Second, StringComparer.Ordinal))
+        {
+            slotByApplicationRef.Add(
+                pair.First.ApplicationRef,
+                pair.First.SlotBindings.Select(slot =>
+                    new WoundEffectSlotAgreement(
+                        nextSlot++,
+                        slot.ProfileKey,
+                        slot.ReadableSummary)).ToArray());
+        }
+
+        return batch.RootApplications.Select((application, index) =>
+            new EffectAcceptedApplicationResult(
+                application.ApplicationRef,
+                "created_new_identity",
+                effectIds[index],
+                $"effect_transition_final_{index + 1}",
+                WoundEffectOperationEventRef.Create(
+                    application.CausalEventRef,
+                    application.MechanicsOrdinal,
+                    application.OperationOrdinal,
+                    application.OperationKind),
+                application.CausalEventRef,
+                application.ExpectedSourceKey,
+                application.ExpectedTargetKey,
+                application.ExpectedCarrierCoordinate,
+                new WoundEffectMaterializationAgreement(
+                    slotByApplicationRef[application.ApplicationRef],
+                    application.ExpectedComponentCount,
+                    application.ExpectedMaterializationFingerprint)))
+            .ToArray();
+    }
+
+    private static IReadOnlyDictionary<string, EffectAcceptedApplicationResult>
+        CreateApplicationMap(
+            IEnumerable<EffectAcceptedApplicationResult> applications)
+    {
+        var result = new Dictionary<string, EffectAcceptedApplicationResult>(
+            StringComparer.Ordinal);
+        foreach (var application in applications)
+            result.Add(application.ApplicationRef, application);
+        return result;
     }
 
     private static (object? Batch, object? Authority,

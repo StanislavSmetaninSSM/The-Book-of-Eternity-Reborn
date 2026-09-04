@@ -1152,10 +1152,18 @@ internal static class AcceptedMechanicsCarrierAssembler
 
         foreach (var result in woundStages.EffectBatchPlan.ApplicationResults)
         {
+            var preparedRoots = woundStages.PreparedPlan.EffectOperationBatches
+                .SelectMany(static batch => batch.RootApplications)
+                .Where(root => string.Equals(
+                    root.ApplicationRef,
+                    result.ApplicationRef,
+                    StringComparison.Ordinal))
+                .ToArray();
             var activeMatches = finalEffectPlan.ActiveEffects
                 .Where(effect => ExactString(effect["effectId"], result.EffectId))
                 .ToArray();
-            if (!stagedCatalog.TryResolveOne(result.EffectId, out var staged) ||
+            if (preparedRoots.Length != 1 ||
+                !stagedCatalog.TryResolveOne(result.EffectId, out var staged) ||
                 !finalRuntimeCatalog.TryResolveOne(
                     result.EffectId,
                     out var finalRuntime) ||
@@ -1197,7 +1205,8 @@ internal static class AcceptedMechanicsCarrierAssembler
                     identity,
                     finalRuntime.Effect,
                     result,
-                    woundStages.Input.Binding.Turn) ||
+                    woundStages.Input.Binding.Turn,
+                    preparedRoots[0].PriorRootEffectId) ||
                 !finalEffectPlan.AllocatedEffectIds.Contains(
                     result.EffectId,
                     StringComparer.Ordinal) ||
@@ -1476,7 +1485,8 @@ internal static class AcceptedMechanicsCarrierAssembler
         EffectIdentityEntry identity,
         JsonObject effect,
         EffectAcceptedApplicationResult result,
-        int acceptedTurn)
+        int acceptedTurn,
+        string? priorRootEffectId)
     {
         if (effect["chronology"] is not JsonObject chronology ||
             !ExactInt(chronology["createdAtTurn"], acceptedTurn) ||
@@ -1501,7 +1511,11 @@ internal static class AcceptedMechanicsCarrierAssembler
                     transition.EventRef,
                     result.CreatedEventRef,
                     StringComparison.Ordinal) &&
-                transition.SourceEffectIds.Count == 0 &&
+                transition.SourceEffectIds.SequenceEqual(
+                    priorRootEffectId is null
+                        ? Array.Empty<string>()
+                        : new[] { priorRootEffectId },
+                    StringComparer.Ordinal) &&
                 transition.ResultEffectIds.Count == 1 &&
                 string.Equals(
                     transition.ResultEffectIds[0],

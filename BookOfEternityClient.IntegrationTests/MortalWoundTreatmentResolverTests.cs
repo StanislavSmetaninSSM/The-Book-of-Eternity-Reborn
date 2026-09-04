@@ -1577,6 +1577,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario with { ExpectedIntentCount = 1 });
 
         using var fixture = AcceptedStateFixture.Create(scenario);
+        var priorRootIds = fixture.ReadCurrentWound()
+            .Consequences.OwnedEffectSources.RootBindings
+            .Select(static binding => binding.EffectId)
+            .ToArray();
         Assert.Equal(
             consumesSupply ? 2 : 1,
             fixture.ReadNpcItemCount("sterile_thread"));
@@ -1602,6 +1606,41 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
 
+        var publishedWound = fixture.ReadCurrentWound();
+        var publishedRootIds = publishedWound.Consequences.OwnedEffectSources
+            .RootBindings.Select(static binding => binding.EffectId).ToArray();
+        if (consumesSupply)
+        {
+            Assert.Equal("II", publishedWound.Severity.Value);
+            Assert.Equal(2, publishedWound.Severity.Rank);
+            Assert.NotEmpty(publishedRootIds);
+            Assert.Empty(priorRootIds.Intersect(
+                publishedRootIds,
+                StringComparer.Ordinal));
+            Assert.Empty(priorRootIds
+                .Select(MortalLocationIdentityState.BuildConfusableKey)
+                .Intersect(
+                    publishedRootIds.Select(
+                        MortalLocationIdentityState.BuildConfusableKey),
+                    StringComparer.Ordinal));
+            Assert.Equal(
+                Enumerable.Range(
+                    1,
+                    publishedWound.Consequences.Entries.Count),
+                publishedWound.Consequences.Entries.Select(
+                    static entry => entry.Slot));
+        }
+        else
+        {
+            Assert.Equal("III", publishedWound.Severity.Value);
+            Assert.Equal(3, publishedWound.Severity.Rank);
+        }
+        Assert.Single(
+            fixture.ReadCurrentHistory().State!.Transitions,
+            static row => string.Equals(
+                row.Kind,
+                "treat",
+                StringComparison.Ordinal));
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
         fixture.AssertItemIdentityIndexValid();

@@ -1,5 +1,6 @@
 using System.Collections.Immutable;
 using System.Globalization;
+using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
@@ -458,50 +459,80 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
                     "changed preparation or resolution")
             });
         }
-        if (resolution.OutcomeIntents.Any(
-                static intent => intent is MortalWoundReduceSeverityOutcomeIntent))
+        var hasReduction = resolution.OutcomeIntents.Any(
+            static intent => intent is MortalWoundReduceSeverityOutcomeIntent);
+        WoundMaterializationEnvelope after;
+        if (hasReduction)
         {
-            return Invalid(new[]
+            if (rematerializationBatch is null ||
+                preparation.SeverityReduction is null ||
+                !ReductionEffectHandoffAgrees(
+                    preparation,
+                    rematerializationBatch,
+                    applicationByRef))
             {
-                Issue(
-                    "mortal_wound_treatment_publication_slice_unsupported",
-                    "an authenticated severity-rematerialization batch and exact accepted application map",
-                    "severity-changing finalization is deferred to Task 5")
-            });
-        }
-        if (rematerializationBatch is not null || applicationByRef.Count != 0)
-        {
-            return Invalid(new[]
-            {
-                Issue(
-                    "mortal_wound_treatment_outcome_effect_handoff_mismatch",
-                    "null rematerialization batch and empty application map for an unchanged-severity result",
-                    $"batch={(rematerializationBatch is null ? "null" : "present")};applications={applicationByRef.Count}")
-            });
-        }
+                return Invalid(new[]
+                {
+                    Issue(
+                        "mortal_wound_treatment_outcome_effect_handoff_mismatch",
+                        "one exact authenticated rematerialization batch and its ordered accepted application results",
+                        $"batch={(rematerializationBatch is null ? "null" : "present")};applications={applicationByRef.Count}")
+                });
+            }
 
-        var provisionalAfter = preparation.ProvisionalAfter;
-        var parsed = WoundMaterializationContract.Parse(
-            WoundMaterializationContract.SerializeCanonical(provisionalAfter),
-            IssuePath + ".afterWound");
-        if (!parsed.IsValid || parsed.Wound is null ||
-            !string.Equals(
-                WoundMaterializationContract.SerializeCanonical(parsed.Wound),
-                WoundMaterializationContract.SerializeCanonical(provisionalAfter),
-                StringComparison.Ordinal))
-        {
-            return Invalid(parsed.Issues.Count == 0
-                ? new[]
+            var finalized = WoundAcceptedTurnPlannerCore.BuildFinalWound(
+                preparation.ProvisionalAfter,
+                rematerializationBatch,
+                applicationByRef);
+            if (finalized.Wound is null || finalized.Issues.Count != 0)
+            {
+                return Invalid(new[]
                 {
                     Issue(
                         "mortal_wound_treatment_outcome_final_wound_mismatch",
-                        "canonical equality with the sealed provisional after-image",
-                        "changed final wound")
-                }
-                : parsed.Issues);
+                        "one canonical lower-severity wound reconstructed from the authenticated effect result",
+                        string.Join(",", finalized.Issues.Select(
+                            static issue => issue.Code)))
+                });
+            }
+            after = finalized.Wound;
+        }
+        else
+        {
+            if (rematerializationBatch is not null || applicationByRef.Count != 0)
+            {
+                return Invalid(new[]
+                {
+                    Issue(
+                        "mortal_wound_treatment_outcome_effect_handoff_mismatch",
+                        "null rematerialization batch and empty application map for an unchanged-severity result",
+                        $"batch={(rematerializationBatch is null ? "null" : "present")};applications={applicationByRef.Count}")
+                });
+            }
+
+            var provisionalAfter = preparation.ProvisionalAfter;
+            var parsed = WoundMaterializationContract.Parse(
+                WoundMaterializationContract.SerializeCanonical(provisionalAfter),
+                IssuePath + ".afterWound");
+            if (!parsed.IsValid || parsed.Wound is null ||
+                !string.Equals(
+                    WoundMaterializationContract.SerializeCanonical(parsed.Wound),
+                    WoundMaterializationContract.SerializeCanonical(provisionalAfter),
+                    StringComparison.Ordinal))
+            {
+                return Invalid(parsed.Issues.Count == 0
+                    ? new[]
+                    {
+                        Issue(
+                            "mortal_wound_treatment_outcome_final_wound_mismatch",
+                            "canonical equality with the sealed provisional after-image",
+                            "changed final wound")
+                    }
+                    : parsed.Issues);
+            }
+            after = parsed.Wound;
         }
 
-        var after = parsed.Wound;
         var declaredOutcome = CreateDeclaredOutcome(after);
         var fingerprint = ComputePublicationFingerprint(
             preparation,
@@ -514,6 +545,190 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
             preparation.TransitionId,
             fingerprint,
             Array.Empty<ValidationIssue>());
+    }
+
+    private static bool ReductionEffectHandoffAgrees(
+        MortalWoundTreatmentOutcomePreparation preparation,
+        WoundEffectOperationBatch batch,
+        IReadOnlyDictionary<string, EffectAcceptedApplicationResult> applicationByRef)
+    {
+        var projection = preparation.SeverityReduction!;
+        var roots = batch.RootApplications;
+        var results = new List<EffectAcceptedApplicationResult>(roots.Count);
+        if (!string.Equals(
+                batch.PreparedWoundId,
+                preparation.ProvisionalAfter.WoundId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                batch.SourceExport.SourceId,
+                preparation.Before.WoundId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                batch.SourceExportFingerprint,
+                WoundAcceptedTurnFingerprints.ComputeSourceExport(batch),
+                StringComparison.Ordinal) ||
+            roots.Count != projection.Roots.Count ||
+            applicationByRef.Count != roots.Count ||
+            !applicationByRef.Keys.SequenceEqual(
+                roots.Select(static root => root.ApplicationRef),
+                StringComparer.Ordinal))
+        {
+            return false;
+        }
+
+        var exportedDefinitions = batch.SourceExport.Definitions;
+        var sealedDefinitions = preparation.Before.Consequences
+            .OwnedEffectSources.Definitions;
+        if (exportedDefinitions.Count != sealedDefinitions.Count)
+            return false;
+        for (var index = 0; index < exportedDefinitions.Count; index++)
+        {
+            if (!string.Equals(
+                    WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                        exportedDefinitions[index].Definition),
+                    WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                        JsonNode.Parse(sealedDefinitions[index].GetRawText())),
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        for (var index = 0; index < roots.Count; index++)
+        {
+            var root = roots[index];
+            var projected = projection.Roots[index];
+            if (!applicationByRef.TryGetValue(root.ApplicationRef, out var result) ||
+                result is null ||
+                !string.Equals(
+                    root.PriorRootEffectId,
+                    projected.PriorEffectId,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    root.DefinitionKey,
+                    projected.DefinitionKey,
+                    StringComparison.Ordinal) ||
+                root.OwnershipDomain != projected.OwnershipDomain ||
+                !root.SlotBindings.SequenceEqual(projected.Slots) ||
+                !ApplicationResultAgrees(root, result))
+            {
+                return false;
+            }
+            results.Add(result);
+        }
+
+        if (!ExactAndConfusableUnique(
+                results.Select(static result => result.EffectId)) ||
+            !ExactAndConfusableUnique(
+                results.Select(static result => result.CreateTransitionId)))
+        {
+            return false;
+        }
+        var priorIds = preparation.Before.Consequences.OwnedEffectSources
+            .RootBindings.Select(static binding => binding.EffectId).ToArray();
+        var priorAliases = priorIds.Select(
+                MortalLocationIdentityState.BuildConfusableKey)
+            .ToHashSet(StringComparer.Ordinal);
+        if (results.Any(result => priorIds.Contains(
+                                     result.EffectId,
+                                     StringComparer.Ordinal) ||
+                                 priorAliases.Contains(
+                                     MortalLocationIdentityState.BuildConfusableKey(
+                                         result.EffectId))))
+        {
+            return false;
+        }
+
+        var nextSlot = 1;
+        foreach (var result in results.OrderBy(
+                     static result => result.EffectId,
+                     StringComparer.Ordinal))
+        {
+            foreach (var slot in result.Materialization.SlotBindings)
+            {
+                if (slot.Slot != nextSlot++)
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool ApplicationResultAgrees(
+        WoundRootEffectApplication root,
+        EffectAcceptedApplicationResult result)
+    {
+        if (result.Materialization is null)
+            return false;
+        var slots = result.Materialization.SlotBindings;
+        var expectedSlots = root.SlotBindings;
+        if (slots is null ||
+            !string.Equals(
+                result.ApplicationRef,
+                root.ApplicationRef,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                result.Disposition,
+                "created_new_identity",
+                StringComparison.Ordinal) ||
+            !ResourceMaterializationContract.IsExactIdentifier(result.EffectId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                result.CreateTransitionId) ||
+            !string.Equals(
+                result.CreatedEventRef,
+                WoundEffectOperationEventRef.Create(
+                    root.CausalEventRef,
+                    root.MechanicsOrdinal,
+                    root.OperationOrdinal,
+                    root.OperationKind),
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                result.CausalEventRef,
+                root.CausalEventRef,
+                StringComparison.Ordinal) ||
+            result.SourceKey != root.ExpectedSourceKey ||
+            result.TargetKey != root.ExpectedTargetKey ||
+            result.CarrierCoordinate != root.ExpectedCarrierCoordinate ||
+            result.Materialization.ComponentCount != root.ExpectedComponentCount ||
+            !string.Equals(
+                result.Materialization.MaterializationFingerprint,
+                root.ExpectedMaterializationFingerprint,
+                StringComparison.Ordinal) ||
+            slots.Count != expectedSlots.Count)
+        {
+            return false;
+        }
+        for (var index = 0; index < slots.Count; index++)
+        {
+            if (!string.Equals(
+                    slots[index].ProfileKey,
+                    expectedSlots[index].ProfileKey,
+                    StringComparison.Ordinal) ||
+                !string.Equals(
+                    slots[index].ReadableSummary,
+                    expectedSlots[index].ReadableSummary,
+                    StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static bool ExactAndConfusableUnique(IEnumerable<string> values)
+    {
+        var exact = new HashSet<string>(StringComparer.Ordinal);
+        var confusable = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var value in values)
+        {
+            if (!ResourceMaterializationContract.IsExactIdentifier(value) ||
+                !exact.Add(value) ||
+                !confusable.Add(
+                    MortalLocationIdentityState.BuildConfusableKey(value)))
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     internal static string ComputePreparationFingerprint(

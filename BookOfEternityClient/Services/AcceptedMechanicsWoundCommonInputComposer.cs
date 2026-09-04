@@ -86,6 +86,9 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                  treatmentContinuationAuthority) ||
              !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(
                  bundle.PreparedPlan) ||
+             !WoundAcceptedTurnPlanner.TreatmentContinuationFinalPlanAgrees(
+                 treatmentContinuationAuthority,
+                 bundle) ||
              treatmentReservationAuthority is null ||
              !WoundAcceptedTurnPlanner.TreatmentContinuationReservationAgrees(
                  treatmentContinuationAuthority,

@@ -1,4 +1,3 @@
-using System.Collections.Immutable;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -853,7 +852,10 @@ internal static class WoundAcceptedTurnPlannerCore
         IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
         if (prepared.TreatmentContinuationAuthority is not null)
-            return ComposeTreatmentContinuationFinalPlan(prepared, accepted);
+            return ComposeTreatmentContinuationFinalPlan(
+                prepared,
+                accepted,
+                applications);
 
         try
         {
@@ -1108,7 +1110,8 @@ internal static class WoundAcceptedTurnPlannerCore
     private static WoundAcceptedTurnPlanningResult
         ComposeTreatmentContinuationFinalPlan(
             WoundPreparedAcceptedTurnPlan prepared,
-            WoundEffectBatchAcceptedPlan accepted)
+            WoundEffectBatchAcceptedPlan accepted,
+            IReadOnlyList<EffectAcceptedApplicationResult> applications)
     {
         var stage = "authority_seal";
         try
@@ -1163,12 +1166,21 @@ internal static class WoundAcceptedTurnPlannerCore
             stage = "transition_reduction";
             var before = matches[0].Wound;
             var coordinates = continuation.Resolution.Coordinates;
+            var reductionBatch = continuation.OutcomePreparation
+                .SeverityReduction is null
+                ? null
+                : prepared.EffectOperationBatches.Single();
+            var applicationByRef = new Dictionary<
+                string,
+                EffectAcceptedApplicationResult>(StringComparer.Ordinal);
+            foreach (var application in applications)
+                applicationByRef.Add(application.ApplicationRef, application);
             var outcomePublication =
                 MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
                     continuation.OutcomePreparation,
                     continuation.Resolution,
-                    null,
-                    ImmutableDictionary<string, EffectAcceptedApplicationResult>.Empty);
+                    reductionBatch,
+                    applicationByRef);
             if (!outcomePublication.IsValid)
             {
                 return new WoundAcceptedTurnPlanningResult(
@@ -1319,7 +1331,7 @@ internal static class WoundAcceptedTurnPlannerCore
         }
     }
 
-    private sealed record FinalWoundResult(
+    internal sealed record FinalWoundResult(
         WoundMaterializationEnvelope? Wound,
         IReadOnlyList<ValidationIssue> Issues);
 
@@ -1327,7 +1339,7 @@ internal static class WoundAcceptedTurnPlannerCore
         WoundMaterializationEnvelope? Before,
         WoundMaterializationEnvelope After);
 
-    private static FinalWoundResult BuildFinalWound(
+    internal static FinalWoundResult BuildFinalWound(
         WoundMaterializationEnvelope preparedWound,
         WoundEffectOperationBatch batch,
         IReadOnlyDictionary<string, EffectAcceptedApplicationResult> applicationByRef)
@@ -1339,31 +1351,48 @@ internal static class WoundAcceptedTurnPlannerCore
             (JsonNode)value.Definition).ToArray());
         var rootBindings = new JsonArray();
         var entries = new List<JsonObject>();
-        foreach (var application in batch.RootApplications)
-        {
-            if (!applicationByRef.TryGetValue(application.ApplicationRef, out var result))
+        var orderedApplications = batch.RootApplications.Select(application =>
+            new
             {
-                return new FinalWoundResult(
-                    null,
-                    new[]
-                    {
-                        NewIssue(
-                            "wound_plan_effect_result_set_mismatch",
-                            "A finalized wound root has no accepted effect result.",
-                            application.ApplicationRef,
-                            "missing")
-                    });
-            }
+                Application = application,
+                Result = applicationByRef.TryGetValue(
+                    application.ApplicationRef,
+                    out var result)
+                    ? result
+                    : null
+            }).ToArray();
+        if (orderedApplications.Any(static pair => pair.Result is null))
+        {
+            return new FinalWoundResult(
+                null,
+                new[]
+                {
+                    NewIssue(
+                        "wound_plan_effect_result_set_mismatch",
+                        "A finalized wound root has no accepted effect result.",
+                        "one result for every root application",
+                        "missing")
+                });
+        }
+        var sortedApplications = orderedApplications.OrderBy(
+                static pair => pair.Result!.EffectId,
+                StringComparer.Ordinal)
+            .ToArray();
+        var nextSlot = 1;
+        foreach (var pair in sortedApplications)
+        {
+            var application = pair.Application;
+            var result = pair.Result!;
             rootBindings.Add(new JsonObject
             {
                 ["effectId"] = result.EffectId,
                 ["definitionKey"] = application.DefinitionKey
             });
-            foreach (var slot in result.Materialization.SlotBindings)
+            foreach (var slot in application.SlotBindings)
             {
                 entries.Add(new JsonObject
                 {
-                    ["slot"] = slot.Slot,
+                    ["slot"] = nextSlot++,
                     ["profileKey"] = slot.ProfileKey,
                     ["effectId"] = result.EffectId,
                     ["readableSummary"] = slot.ReadableSummary
@@ -1383,22 +1412,23 @@ internal static class WoundAcceptedTurnPlannerCore
 
         if (root["complications"] is JsonArray complications)
         {
-            foreach (var application in batch.RootApplications)
+            foreach (var complication in complications.OfType<JsonObject>())
             {
-                if (!string.Equals(
-                        application.OwnershipDomain.Kind,
-                        "complication",
-                        StringComparison.Ordinal))
-                {
-                    continue;
-                }
-                var complication = complications.OfType<JsonObject>().SingleOrDefault(value =>
-                    string.Equals(
-                        value["complicationId"]?.GetValue<string>(),
-                        application.OwnershipDomain.ComplicationId,
-                        StringComparison.Ordinal));
-                if (complication?["ownedEffectIds"] is JsonArray owned)
-                    owned.Add(applicationByRef[application.ApplicationRef].EffectId);
+                var complicationId = complication["complicationId"]!
+                    .GetValue<string>();
+                complication["ownedEffectIds"] = new JsonArray(
+                    sortedApplications.Where(pair =>
+                            string.Equals(
+                                pair.Application.OwnershipDomain.Kind,
+                                "complication",
+                                StringComparison.Ordinal) &&
+                            string.Equals(
+                                pair.Application.OwnershipDomain.ComplicationId,
+                                complicationId,
+                                StringComparison.Ordinal))
+                        .Select(static pair =>
+                            (JsonNode)JsonValue.Create(pair.Result!.EffectId)!)
+                        .ToArray());
             }
         }
 
