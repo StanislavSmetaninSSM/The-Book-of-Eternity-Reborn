@@ -547,6 +547,131 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AcceptedMechanicsPlan.WoundCommandPath));
     }
 
+    [Fact]
+    public async Task SeverityReduction_ColdReplayRejectsChangedSceneTextWithValidCommandRef()
+    {
+        await using var context = await CreateSeverityReductionPipelineContextAsync(
+            fault: null,
+            rootCount: 2,
+            reductionSteps: 1,
+            acceptedDie: 20,
+            includeEnergyResource: true);
+        var replayCommand = Assert.IsType<byte[]>(await context.ReadFileBytesAsync(
+            AcceptedMechanicsPlan.WoundCommandPath));
+        await context.ReleaseLeaseAsync();
+        var (engine, snapshotContext) =
+            await CreateHeldTreatmentValidationEngineAsync(context);
+        var initialDisposition =
+            await InvokePrivateAsync<AcceptedTurnValidationDisposition>(
+                engine,
+                "ValidateAcceptedTurnOutcomeWithRepairLoopAsync",
+                "severity reduction changed scene replay initial publication",
+                snapshotContext,
+                null,
+                HeldTreatmentPipelineContext.Turn,
+                null);
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.Accepted,
+            initialDisposition);
+
+        var coldRoot = Path.Combine(
+            Path.GetTempPath(),
+            "boe-held-treatment-pipeline-severity-scene-replay-" +
+            Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(coldRoot);
+        var coldFileSystem = new FileSystemManager(
+            coldRoot,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance);
+        coldFileSystem.EnsureDirectoryStructure();
+        CopyDirectory(
+            context.FileSystem.GameSessionPath,
+            coldFileSystem.GameSessionPath);
+        await new LiveTurnPreparationService(coldFileSystem).PrepareAsync(
+            new LiveTurnPreparationOptions
+            {
+                SessionId = "session_t070b6_scene_replay",
+                RequestId = "request_t070b6_scene_replay",
+                TurnNumber = HeldTreatmentPipelineContext.Turn,
+                PlayerAction = "Replay a changed treatment scene.",
+                CurrentRealm = "Mortal World",
+                PreGeneratedDices1d20 = new[] { 20 }
+            });
+        await using var coldContext = new HeldTreatmentPipelineContext(
+            coldRoot,
+            coldFileSystem,
+            ParseSeverityTreatmentContext(),
+            hooks: null,
+            itemScenario: null);
+        await coldContext.AcquireLeaseAsync();
+        AcceptedTurnAuthorityRegistry.InvalidateAcceptedTurnValidated(
+            coldContext.FileSystem,
+            coldContext.Lease);
+        var copiedBytes = await CaptureProcedurePublishedStateBytesAsync(
+            coldContext);
+
+        var changed = ParseJsonObjectBytes(replayCommand);
+        var row = Assert.IsType<JsonObject>(Assert.Single(
+            changed["commands"]!.AsArray()));
+        var request = Assert.IsType<JsonObject>(
+            Assert.IsType<JsonObject>(row["authority"])["request"]);
+        var result = Assert.IsType<JsonObject>(row["result"]);
+        const string changedText =
+            "The wound closes beneath an account that was never published.";
+        row["finalSceneText"] = changedText;
+        row["commandRef"] = MortalWoundTreatmentCommandCodec.ComputeCommandRef(
+            changed["sessionId"]!.GetValue<string>(),
+            changed["requestId"]!.GetValue<string>(),
+            changed["snapshotToken"]!.GetValue<string>(),
+            row["operationKey"]!.GetValue<string>(),
+            request["requestFingerprint"]!.GetValue<string>(),
+            result["resultFingerprint"]!.GetValue<string>(),
+            changedText);
+        var strict = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(changed));
+        Assert.True(strict.Success, DescribeValidationIssues(strict.Issues));
+        await coldContext.FileSystem.WriteFileAtomicAsync(
+            coldContext.Lease,
+            AcceptedMechanicsPlan.WoundCommandPath,
+            changed.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var changedBytes = Assert.IsType<byte[]>(
+            await coldContext.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
+
+        var disposition = await RunColdReplayThroughGameEngineAsync(
+            coldContext,
+            HeldTreatmentPipelineContext.Turn,
+            "severity reduction changed scene replay coordinator");
+
+        Assert.Equal(
+            AcceptedTurnValidationDisposition.TerminalRejected,
+            disposition);
+        Assert.Equal(
+            changedBytes,
+            await coldContext.ReadFileBytesAsync(
+                AcceptedMechanicsPlan.WoundCommandPath));
+        var afterBytes = await CaptureProcedurePublishedStateBytesAsync(coldContext);
+        AssertPublishedImagesEqual(
+            copiedBytes
+                .Where(static pair => !string.Equals(
+                    pair.Key,
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    StringComparison.Ordinal))
+                .ToDictionary(
+                    static pair => pair.Key,
+                    static pair => pair.Value,
+                    StringComparer.Ordinal),
+            afterBytes
+                .Where(static pair => !string.Equals(
+                    pair.Key,
+                    AcceptedMechanicsPlan.WoundCommandPath,
+                    StringComparison.Ordinal))
+                .ToDictionary(
+                    static pair => pair.Key,
+                    static pair => pair.Value,
+                    StringComparer.Ordinal));
+    }
+
     [Theory]
     [InlineData("player", "player_current")]
     [InlineData("npc", "wounded_npc_t070b6")]

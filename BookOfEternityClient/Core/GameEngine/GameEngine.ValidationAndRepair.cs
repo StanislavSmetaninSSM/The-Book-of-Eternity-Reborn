@@ -994,6 +994,38 @@ public partial class GameEngine
             return null;
         }
 
+        string? finalizedSceneText;
+        try
+        {
+            var narrativeJson = await _fs.ReadFileAsync(
+                writeLease,
+                WoundNarrativeOutputPath);
+            if (string.IsNullOrWhiteSpace(narrativeJson))
+                return null;
+            var narrative = StrictJsonAuthority.Deserialize<JsonObject>(
+                narrativeJson,
+                SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed,
+                "finalized treatment replay narrative output");
+            finalizedSceneText = narrative?["response"] is JsonValue response &&
+                                 response.TryGetValue<string>(out var text)
+                ? text
+                : null;
+        }
+        catch (Exception exception) when (
+            exception is JsonException or InvalidDataException or
+                InvalidOperationException or NotSupportedException)
+        {
+            return null;
+        }
+        if (string.IsNullOrWhiteSpace(finalizedSceneText) ||
+            parsedCommand.TreatmentCommands.Any(draft => !string.Equals(
+                draft.FinalSceneText,
+                finalizedSceneText,
+                StringComparison.Ordinal)))
+        {
+            return null;
+        }
+
         var historyJson = await _fs.ReadFileAsync(
             writeLease,
             WoundHistoryState.HistoryPath);
