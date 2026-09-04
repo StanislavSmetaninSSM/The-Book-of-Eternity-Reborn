@@ -300,6 +300,48 @@ public sealed class EffectMaterializationContractTests
             issue.FilePath == "effects[0].components[0].payload.scope.unknownScopeField");
     }
 
+    [Theory]
+    [MemberData(nameof(RollModifierInvalidSkillOperationCases))]
+    public void Validate_RollModifier_InvalidSkillOperations_ReportOnlyEveryStructuralOperationIssue(
+        JsonNode? operations,
+        bool removeOperations,
+        string[] expectedOperationPaths)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "roll_modifier");
+        var payload = effect["components"]![0]!["payload"]!.AsObject();
+        payload["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_lockpicking"
+        };
+        if (removeOperations)
+            payload.Remove("operations");
+        else
+            payload["operations"] = operations;
+        using var document = Parse(effect);
+
+        var issues = EffectMaterializationContract.Validate(
+            document.RootElement,
+            "effects[0]",
+            EffectMaterializationPhase.CanonicalActive);
+        var operationPath = "effects[0].components[0].payload.operations";
+
+        Assert.Equal(
+            expectedOperationPaths.Length,
+            issues.Count(issue =>
+                issue.Code == "effect_materialization_invalid_component" &&
+                issue.FilePath.StartsWith(operationPath, StringComparison.Ordinal)));
+        foreach (var expectedPath in expectedOperationPaths)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "effect_materialization_invalid_component" &&
+                issue.FilePath == $"effects[0].components[0].{expectedPath}");
+        }
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "effect_materialization_invalid_component" &&
+            issue.Expected == "exactly [\"skill_check\"] for scope.kind=skill");
+    }
+
     [Fact]
     public void Validate_DisplayProseCannotReplaceRequiredMechanicalAmount()
     {
@@ -458,6 +500,27 @@ public sealed class EffectMaterializationContractTests
                 : new JsonArray("attack_roll")),
             expectedPath
         };
+
+    public static IEnumerable<object[]> RollModifierInvalidSkillOperationCases()
+    {
+        yield return InvalidSkillOperations(null, true, "payload.operations");
+        yield return InvalidSkillOperations(null, false, "payload.operations");
+        yield return InvalidSkillOperations(JsonValue.Create("not-an-array"), false, "payload.operations");
+        yield return InvalidSkillOperations(new JsonArray(), false, "payload.operations");
+        yield return InvalidSkillOperations(new JsonArray("skill_check", "skill_check"), false, "payload.operations[1]");
+        yield return InvalidSkillOperations(new JsonArray("not_registered"), false, "payload.operations[0]");
+        yield return InvalidSkillOperations(
+            new JsonArray("not_registered", "also_not_registered"),
+            false,
+            "payload.operations[0]",
+            "payload.operations[1]");
+    }
+
+    private static object[] InvalidSkillOperations(
+        JsonNode? operations,
+        bool removeOperations,
+        params string[] expectedOperationPaths) =>
+        new object[] { operations!, removeOperations, expectedOperationPaths };
 
     private static JsonDocument Parse(JsonNode node) =>
         JsonDocument.Parse(node.ToJsonString());

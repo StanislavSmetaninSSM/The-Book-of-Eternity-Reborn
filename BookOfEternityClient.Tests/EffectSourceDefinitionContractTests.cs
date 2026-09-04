@@ -537,6 +537,48 @@ public sealed class EffectSourceDefinitionContractTests
     }
 
     [Theory]
+    [MemberData(nameof(RollModifierInvalidSkillOperationCases))]
+    public void ValidateArray_RollModifier_InvalidSkillOperations_ReportOnlyEveryStructuralOperationIssue(
+        JsonNode? operations,
+        bool removeOperations,
+        string[] expectedOperationPaths)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        var payload = definition["components"]![0]!["payload"]!.AsObject();
+        payload["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_lockpicking"
+        };
+        if (removeOperations)
+            payload.Remove("operations");
+        else
+            payload["operations"] = operations;
+        using var document = Parse(new JsonArray(definition));
+
+        var issues = EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement,
+            "source.activeEffectDefinitions",
+            "mortal_world");
+        var operationPath = "source.activeEffectDefinitions[0].components[0].payload.operations";
+
+        Assert.Equal(
+            expectedOperationPaths.Length,
+            issues.Count(issue =>
+                issue.Code == "effect_source_definition_invalid_components" &&
+                issue.FilePath.StartsWith(operationPath, StringComparison.Ordinal)));
+        foreach (var expectedPath in expectedOperationPaths)
+        {
+            Assert.Contains(issues, issue =>
+                issue.Code == "effect_source_definition_invalid_components" &&
+                issue.FilePath == $"source.activeEffectDefinitions[0].components[0].{expectedPath}");
+        }
+        Assert.DoesNotContain(issues, issue =>
+            issue.Code == "effect_source_definition_invalid_components" &&
+            issue.Expected == "exactly [\"skill_check\"] for scope.kind=skill");
+    }
+
+    [Theory]
     [InlineData("remove", "deterministic")]
     [InlineData("suspend", "deterministic")]
     [InlineData("event_outcome", "deterministic")]
@@ -919,4 +961,25 @@ public sealed class EffectSourceDefinitionContractTests
                 : new JsonArray("attack_roll")),
             expectedPath
         };
+
+    public static IEnumerable<object[]> RollModifierInvalidSkillOperationCases()
+    {
+        yield return InvalidSkillOperations(null, true, "payload.operations");
+        yield return InvalidSkillOperations(null, false, "payload.operations");
+        yield return InvalidSkillOperations(JsonValue.Create("not-an-array"), false, "payload.operations");
+        yield return InvalidSkillOperations(new JsonArray(), false, "payload.operations");
+        yield return InvalidSkillOperations(new JsonArray("skill_check", "skill_check"), false, "payload.operations[1]");
+        yield return InvalidSkillOperations(new JsonArray("not_registered"), false, "payload.operations[0]");
+        yield return InvalidSkillOperations(
+            new JsonArray("not_registered", "also_not_registered"),
+            false,
+            "payload.operations[0]",
+            "payload.operations[1]");
+    }
+
+    private static object[] InvalidSkillOperations(
+        JsonNode? operations,
+        bool removeOperations,
+        params string[] expectedOperationPaths) =>
+        new object[] { operations!, removeOperations, expectedOperationPaths };
 }

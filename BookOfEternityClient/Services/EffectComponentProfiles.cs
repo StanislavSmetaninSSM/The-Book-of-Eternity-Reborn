@@ -597,7 +597,7 @@ internal static class EffectComponentProfiles
             case "skill":
                 ValidateClosedObject(scope, scopePath, Set("kind", "skillId"), issues);
                 RequireExactIdentifier(scope, scopePath, "skillId", issues);
-                if (operations is not ["skill_check"])
+                if (operations is not null && operations is not ["skill_check"])
                 {
                     Add(issues, path + ".operations",
                         "effect_materialization_invalid_component",
@@ -931,6 +931,7 @@ internal static class EffectComponentProfiles
 
         var values = new List<string>();
         var seen = new HashSet<string>(StringComparer.Ordinal);
+        var hasInvalidItem = false;
         var index = 0;
         foreach (var item in value.EnumerateArray())
         {
@@ -940,13 +941,14 @@ internal static class EffectComponentProfiles
                 !allowed.Contains(text) || !seen.Add(text))
             {
                 Add(issues, itemPath, "effect_materialization_invalid_component", "one unique registered value", item.GetRawText());
-                return null;
+                hasInvalidItem = true;
+                continue;
             }
 
             values.Add(text);
         }
 
-        return values.ToArray();
+        return hasInvalidItem ? null : values.ToArray();
     }
 
     private static void RequireExactStringArray(
