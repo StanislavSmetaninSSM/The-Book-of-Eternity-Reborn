@@ -8,7 +8,7 @@
 
 **Spec Kit feature**: `specs/1536-complete-wound-materialization/`
 
-**Status**: Design approved in conversation; written specification awaiting final review
+**Status**: Approved in conversation on 2026-09-05
 
 ## Purpose
 
