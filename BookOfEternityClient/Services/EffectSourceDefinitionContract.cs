@@ -137,6 +137,7 @@ internal static class EffectSourceDefinitionContract
             definition,
             path,
             componentValidation.ParameterNames,
+            componentValidation.Profiles,
             issues);
         ValidateStacking(
             definition,
@@ -478,6 +479,7 @@ internal static class EffectSourceDefinitionContract
         JsonElement root,
         string path,
         IReadOnlySet<string> componentParameters,
+        IReadOnlySet<string> componentProfiles,
         List<ValidationIssue> issues)
     {
         if (!TryGetObject(root, path, "parameterBounds", issues, out var bounds))
@@ -487,7 +489,12 @@ internal static class EffectSourceDefinitionContract
         foreach (var parameter in bounds.EnumerateObject())
         {
             var parameterPath = boundsPath + "." + parameter.Name;
-            if (parameter.Name.Length == 0 || !string.Equals(parameter.Name, parameter.Name.Trim(), StringComparison.Ordinal) ||
+            if (parameter.Name == "scope" && componentProfiles.Contains("roll_modifier"))
+            {
+                Add(issues, parameterPath, "effect_source_definition_invalid_parameter_bound",
+                    "closed roll scope authored in the component payload, not a scalar application parameter", parameter.Name);
+            }
+            else if (parameter.Name.Length == 0 || !string.Equals(parameter.Name, parameter.Name.Trim(), StringComparison.Ordinal) ||
                 !aliases.Add(MortalLocationIdentityState.BuildConfusableKey(parameter.Name)) ||
                 !componentParameters.Contains(parameter.Name))
             {

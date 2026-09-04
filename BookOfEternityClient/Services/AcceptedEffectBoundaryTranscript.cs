@@ -20,7 +20,8 @@ internal sealed record EffectAcceptedPlanAuthorityStamp(
     string InputFingerprint,
     string CarrierAuthorityFingerprint,
     string SourceAuthorityFingerprint,
-    string TargetAuthorityFingerprint);
+    string TargetAuthorityFingerprint,
+    string SkillScopeAuthorityFingerprint);
 
 internal sealed record EffectEventBoundaryStamp(
     long BoundaryOrdinal,
@@ -450,7 +451,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
         long? pendingFrontierBoundaryOrdinal)
     {
         using var material = new ResourceFingerprintBuilder(
-            "effect-boundary-transcript-v7");
+            "effect-boundary-transcript-v8");
         material.Append(planAuthority != null);
         if (planAuthority != null)
         {
@@ -458,6 +459,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
             material.Append(planAuthority.CarrierAuthorityFingerprint);
             material.Append(planAuthority.SourceAuthorityFingerprint);
             material.Append(planAuthority.TargetAuthorityFingerprint);
+            material.Append(planAuthority.SkillScopeAuthorityFingerprint);
         }
         material.Append(boundaries.Count);
         foreach (var boundary in boundaries)
@@ -1588,11 +1590,13 @@ internal sealed class AcceptedEffectBoundaryTranscript
              !IsExactPlanAuthorityToken(
                  _planAuthority.SourceAuthorityFingerprint) ||
              !IsExactPlanAuthorityToken(
-                 _planAuthority.TargetAuthorityFingerprint)))
+                 _planAuthority.TargetAuthorityFingerprint) ||
+             !IsExactPlanAuthorityToken(
+                 _planAuthority.SkillScopeAuthorityFingerprint)))
         {
             issues.Add(Issue(
                 "effect_boundary_plan_authority_invalid",
-                "one exact input identity and three accepted-effect authority fingerprints",
+                "one exact input identity and four accepted-effect authority fingerprints including skill scope",
                 "invalid"));
         }
         var closesByBoundary = new Dictionary<long, EffectEventBoundaryCloseStamp>();

@@ -2359,7 +2359,8 @@ internal static class WoundAcceptedTurnFingerprints
             plan.InputFingerprint,
             plan.CarrierAuthorityFingerprint,
             plan.SourceAuthorityFingerprint,
-            plan.TargetAuthorityFingerprint
+            plan.TargetAuthorityFingerprint,
+            plan.SkillScopeAuthority?.Fingerprint ?? "none"
         };
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);

@@ -1403,6 +1403,10 @@ internal static class AcceptedMechanicsCarrierAssembler
             final.TargetAuthorityFingerprint,
             StringComparison.Ordinal) &&
         string.Equals(
+            staged.SkillScopeAuthority?.Fingerprint ?? "none",
+            final.SkillScopeAuthority?.Fingerprint ?? "none",
+            StringComparison.Ordinal) &&
+        string.Equals(
             staged.SourceAuthority.CanonicalFingerprint,
             final.SourceAuthority.CanonicalFingerprint,
             StringComparison.Ordinal) &&
@@ -7240,7 +7244,8 @@ internal static class AcceptedMechanicsPlanner
             plan.InputFingerprint,
             plan.CarrierAuthorityFingerprint,
             plan.SourceAuthorityFingerprint,
-            plan.TargetAuthorityFingerprint);
+            plan.TargetAuthorityFingerprint,
+            plan.SkillScopeAuthority?.Fingerprint ?? "none");
     }
 
     private static string DescribeActivation(

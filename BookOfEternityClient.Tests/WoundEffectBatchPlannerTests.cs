@@ -36,6 +36,46 @@ public sealed partial class WoundEffectBatchPlannerTests
     private const string BaselineAuthorityDomain =
         "book_of_eternity.wound.prepared_baseline_authority";
 
+    [Theory]
+    [InlineData("dropped")]
+    [InlineData("changed")]
+    public void SkillScope_WoundCandidateSealRejectsChangedRetainedAuthority(string mutation)
+    {
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(CreateInput(shape: CandidateShape.SkillScopedRoot)));
+        var input = CreateEffectInput(prepared) with
+        {
+            SkillScopeAuthority = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact").SkillScopeAuthority,
+            WoundApplicationLocations = CreateSkillScopeLocations(prepared)
+        };
+        var accepted = AssertEffectPlan(WoundEffectBatchPlanner.Build(prepared, input, new CountingEffectIdentityFactory()));
+        var changed = CloneEffectPlanWithSkillScopeAuthority(accepted.EffectPlan,
+            mutation == "dropped" ? null : EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("disabled").SkillScopeAuthority);
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeEffectPlan(prepared, input, changed,
+            accepted.ApplicationResults, accepted.TerminationResults);
+        var result = WoundEffectBatchAcceptedPlan.AcceptCandidate(prepared, input, changed,
+            accepted.ApplicationResults, accepted.TerminationResults, accepted.WoundPreparationFingerprint,
+            accepted.EffectInputFingerprint, accepted.EffectAcceptedTurnPlanFingerprint);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Equal("wound_plan_effect_handoff_invalid", Assert.Single(result.Issues).Code);
+        Assert.NotEqual(accepted.EffectAcceptedTurnPlanFingerprint, fingerprint);
+        Assert.Equal(input.SkillScopeAuthority!.Fingerprint, accepted.EffectPlan.SkillScopeAuthority!.Fingerprint);
+    }
+
+    internal static EffectAcceptedTurnPlan CloneEffectPlanWithSkillScopeAuthority(
+        EffectAcceptedTurnPlan source, EffectRollSkillScopeAuthority? authority) => new(
+        source.InputFingerprint, source.CarrierAuthorityFingerprint, source.SourceAuthorityFingerprint,
+        source.TargetAuthorityFingerprint, source.AllocatedCombatantIds, source.AllocatedEffectIds,
+        source.AllocatedTransitionIds, source.Sources, source.Targets, source.SourceBindings,
+        source.DeferredReactions, source.ReactionExpansionCount, source.ReactionExpansionUsage,
+        source.ActiveEffects, source.ResourceTriggerCarriers, source.SourceAuthority, source.TargetAuthority,
+        source.EventInput, source.CarrierBeforeImages, source.CarrierAfterImages, source.IdentityIndexBeforeImage,
+        source.IdentityIndexAfterImage, source.TouchedPaths, source.DeletedPaths, source.AcceptedCarrierBaselines,
+        acceptedBoundaryCompletionProof: ReadAcceptedBoundaryCompletionProof(source),
+        acceptedBoundaryBasePlanFingerprint: source.AcceptedBoundaryBasePlanFingerprint,
+        woundApplicationRootEffectBindings: source.WoundApplicationRootEffectBindings,
+        skillScopeAuthority: authority);
+
     [Fact]
     public void SkillScope_WoundEffectFingerprintBindsBothCatalogsAndDetachedInput()
     {
@@ -201,7 +241,7 @@ public sealed partial class WoundEffectBatchPlannerTests
         var application = request!.GetType().GetProperty("Application")!.GetValue(request)!;
         Assert.Equal("woundEffectBatches[0].rootApplications[0].components", application.GetType().GetProperty("Path")!.GetValue(application));
         var scopeIssues = (IReadOnlyList<ValidationIssue>)typeof(EffectAcceptedTurnPlanner)
-            .GetMethod("ValidateApplicationSkillScopes", privateStatic)!
+            .GetMethod("ValidateBoundApplicationComponents", privateStatic)!
             .Invoke(null, new object?[] { application, definition.Definition["components"]!.AsArray(), input.SkillScopeAuthority })!;
         Assert.Empty(scopeIssues);
         Assert.Equal("skill_grip", definition.Definition["components"]![0]!["payload"]!["scope"]!["skillId"]!.GetValue<string>());

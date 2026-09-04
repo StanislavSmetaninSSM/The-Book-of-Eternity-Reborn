@@ -11,6 +11,74 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class EffectAcceptedTurnPlannerTests
 {
+    [Theory]
+    [InlineData("roll_modifier", "scope", false)]
+    [InlineData("roll_modifier", "scope", true)]
+    [InlineData("roll_modifier", "contribution", false)]
+    [InlineData("roll_modifier", "contribution", true)]
+    [InlineData("roll_modifier", "operations", false)]
+    [InlineData("roll_modifier", "operations", true)]
+    [InlineData("periodic_damage", "amount", false)]
+    [InlineData("periodic_damage", "amount", true)]
+    public void SkillScope_BoundScalarOverrideRejectsBeforeAllocation(string profile, string field, bool existingStack)
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact");
+        var definition = EffectMaterializationTestFixture.CreateDefinition(profile);
+        if (profile == "roll_modifier")
+        {
+            definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+            definition["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        }
+        definition["parameterBounds"] = new JsonObject
+        {
+            [field] = field == "amount"
+                ? new JsonObject { ["kind"] = "integer", ["minimum"] = 0, ["maximum"] = 0 }
+                : new JsonObject { ["kind"] = "enum", ["allowedValues"] = new JsonArray("scalar_override") }
+        };
+        input.RawCommands["effectChanges"]![0]!["parameters"] = new JsonObject
+        {
+            [field] = field == "amount" ? JsonValue.Create(0) : JsonValue.Create("scalar_override")
+        };
+        input = input with
+        {
+            SourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+                new[] { new EffectSourceExport("mortal_world", "quest", "quest_scope", new JsonArray(definition), true, true, false) },
+                Array.Empty<EffectSourceExport>(), new HashSet<string>(StringComparer.Ordinal)))
+        };
+        if (existingStack)
+        {
+            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: profile);
+            effect["source"]!["kind"] = "quest";
+            effect["source"]!["sourceId"] = "quest_scope";
+            effect["components"] = definition["components"]!.DeepClone();
+            effect["stacking"]!["currentStacks"] = 3;
+            input = input with
+            {
+                PreTurnCarriers = input.PreTurnCarriers! with
+                {
+                    PlayerEffects = new JsonObject { ["schemaVersion"] = 1, ["activeEffects"] = new JsonArray(effect) }
+                },
+                PreTurnIdentityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effect)
+            };
+        }
+        var commandsBefore = input.RawCommands.ToJsonString();
+        var carrierBefore = input.PreTurnCarriers!.PlayerEffects?.ToJsonString();
+        var indexBefore = input.PreTurnIdentityIndex?.ToJsonString();
+        var factory = new CountingFactory();
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+        Assert.Contains(result.Issues, issue => issue.Code == (field == "scope"
+            ? "effect_source_definition_invalid_parameter_bound" : "effect_materialization_invalid_component"));
+        if (field != "scope")
+            Assert.Contains(result.Issues, issue => issue.FilePath == $"effectChanges[0].apply.components[0].payload.{field}");
+        Assert.Equal(commandsBefore, input.RawCommands.ToJsonString());
+        Assert.Equal(carrierBefore, input.PreTurnCarriers.PlayerEffects?.ToJsonString());
+        Assert.Equal(indexBefore, input.PreTurnIdentityIndex?.ToJsonString());
+    }
+
     [Fact]
     public void SkillScope_RejectionPublishesNoPreparedCombatantOrCarrierAfterImage()
     {
@@ -93,10 +161,57 @@ public sealed class EffectAcceptedTurnPlannerTests
     }
 
     [Theory]
-    [InlineData("exact", true)]
-    [InlineData("none", false)]
-    [InlineData("disabled", false)]
-    public void SkillScope_ReleasedReactionUsesSealedAuthorityBeforeAllocation(string catalog, bool success)
+    [InlineData("dropped")]
+    [InlineData("changed")]
+    public void SkillScope_TranscriptFingerprintAndFinalAgreementBindRetainedAuthority(string mutation)
+    {
+        var plan = new EffectAcceptedTurnPlanCache().GetOrBuild(
+            EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact")).Plan!;
+        var changed = WoundEffectBatchPlannerTests.CloneEffectPlanWithSkillScopeAuthority(plan,
+            mutation == "dropped" ? null : EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("disabled").SkillScopeAuthority);
+        var before = FreezeEmptyScopeTranscript(AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan));
+        var after = FreezeEmptyScopeTranscript(AcceptedMechanicsPlanner.CreateEffectPlanAuthority(changed));
+        Assert.True(before.IsValid);
+        Assert.True(after.IsValid);
+        var agrees = typeof(AcceptedMechanicsCarrierAssembler).GetMethod("FinalEffectAuthorityAgrees",
+            BindingFlags.Static | BindingFlags.NonPublic)!;
+        Assert.True((bool)agrees.Invoke(null, new object[] { plan, EffectAcceptedTurnPlan.DetachedCopyOf(plan) })!);
+        Assert.False((bool)agrees.Invoke(null, new object[] { plan, changed })!);
+        Assert.NotEqual(before.Transcript!.Fingerprint, after.Transcript!.Fingerprint);
+    }
+
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    [InlineData(" padded ")]
+    public void SkillScope_TranscriptRejectsNonExactScopeAuthorityStamp(string? fingerprint)
+    {
+        var plan = new EffectAcceptedTurnPlanCache().GetOrBuild(
+            EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact")).Plan!;
+        var stamp = AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan) with
+        {
+            SkillScopeAuthorityFingerprint = fingerprint!
+        };
+        var result = FreezeEmptyScopeTranscript(stamp);
+        Assert.False(result.IsValid);
+        Assert.Null(result.Transcript);
+        Assert.Equal("effect_boundary_plan_authority_invalid", Assert.Single(result.Issues).Code);
+    }
+
+    private static AcceptedEffectBoundaryTranscriptResult FreezeEmptyScopeTranscript(EffectAcceptedPlanAuthorityStamp stamp)
+    {
+        var builder = new AcceptedEffectBoundaryTranscript.Builder(stamp);
+        builder.SealUseProjection();
+        return builder.Freeze();
+    }
+
+    [Theory]
+    [InlineData("exact", true, "unchanged")]
+    [InlineData("none", false, "unchanged")]
+    [InlineData("disabled", false, "unchanged")]
+    [InlineData("exact", false, "dropped")]
+    [InlineData("exact", false, "changed")]
+    public void SkillScope_ReleasedReactionUsesSealedAuthorityBeforeAllocation(string catalog, bool success, string retainedAuthority)
     {
         var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
         root["definitionKey"] = "reaction_root";
@@ -134,6 +249,9 @@ public sealed class EffectAcceptedTurnPlannerTests
             InitialEffectResolutionWork: due.Work,
             EffectPlanAuthority: AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan)), new AcceptedMechanicsIdentityFactory());
         Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
+        if (retainedAuthority != "unchanged")
+            plan = WoundEffectBatchPlannerTests.CloneEffectPlanWithSkillScopeAuthority(plan,
+                retainedAuthority == "dropped" ? null : EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("disabled").SkillScopeAuthority);
         var factory = new CountingFactory();
         var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(plan, resources.EffectBoundaryTranscript, factory);
         Assert.Equal(success, result.Success);
@@ -141,9 +259,18 @@ public sealed class EffectAcceptedTurnPlannerTests
         {
             Assert.Null(result.Plan);
             var issue = Assert.Single(result.Issues);
-            var reaction = Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions).Reaction;
-            Assert.Equal($"effect.reactions[{reaction.EventRef}].components[0].payload.scope.skillId", issue.FilePath);
-            Assert.Equal("effect_materialization", issue.Section);
+            if (retainedAuthority != "unchanged")
+            {
+                Assert.Equal("effect_boundary_transcript_plan_mismatch", issue.Code);
+                Assert.NotEqual(resources.EffectBoundaryTranscript.PlanAuthority,
+                    AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan));
+            }
+            else
+            {
+                var reaction = Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions).Reaction;
+                Assert.Equal($"effect.reactions[{reaction.EventRef}].components[0].payload.scope.skillId", issue.FilePath);
+                Assert.Equal("effect_materialization", issue.Section);
+            }
             Assert.Equal(0, factory.EffectCalls);
             Assert.Equal(0, factory.TransitionCalls);
         }

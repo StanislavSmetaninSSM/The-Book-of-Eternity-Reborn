@@ -7,6 +7,27 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class EffectSourceDefinitionContractTests
 {
+    [Theory]
+    [InlineData("all")]
+    [InlineData("skill")]
+    public void SkillScope_ScalarScopeParameterBoundIsForbidden(string scope)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        definition["components"]![0]!["payload"]!["scope"] = scope == "all"
+            ? new JsonObject { ["kind"] = "all" }
+            : new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        definition["parameterBounds"] = new JsonObject
+        {
+            ["scope"] = new JsonObject { ["kind"] = "enum", ["allowedValues"] = new JsonArray("scalar_override") }
+        };
+        using var document = Parse(new JsonArray(definition));
+        var issues = EffectSourceDefinitionContract.ValidateArray(document.RootElement, "source.activeEffectDefinitions", "mortal_world");
+        var issue = Assert.Single(issues);
+        Assert.Equal("effect_source_definition_invalid_parameter_bound", issue.Code);
+        Assert.Equal("source.activeEffectDefinitions[0].parameterBounds.scope", issue.FilePath);
+    }
+
     [Fact]
     public void ReactionResultCatalog_SealsEveryExecutionAndDependencyPolicy()
     {

@@ -2238,7 +2238,7 @@ internal static class EffectAcceptedTurnPlanner
                 mismatchIssues,
                 EffectAcceptedTurnPlan.CommandPath,
                 "effect_boundary_transcript_plan_mismatch",
-                "one complete transcript with the exact four-field accepted effect plan authority",
+                "one complete transcript with the exact five-field accepted effect plan authority including skill scope",
                 transcript.IsComplete
                     ? transcript.PlanAuthority?.InputFingerprint ?? "missing"
                     : "pending-frontier");
@@ -4489,7 +4489,7 @@ internal static class EffectAcceptedTurnPlanner
         {
             var components = application.Source.Definition["components"]!.DeepClone().AsArray();
             BindParameters(components, application.Parameters);
-            issues.AddRange(ValidateApplicationSkillScopes(application, components, input.SkillScopeAuthority));
+            issues.AddRange(ValidateBoundApplicationComponents(application, components, input.SkillScopeAuthority));
         }
         if (issues.Count != 0)
             return Failed(issues);
@@ -4791,11 +4791,13 @@ internal static class EffectAcceptedTurnPlanner
             }
             var components = source.Definition["components"]!.DeepClone().AsArray();
             BindParameters(components, reaction.Parameters);
-            var scopeIssues = skillScopeAuthority?.ValidateNewComponents(
-                reaction.Target, components, $"effect.reactions[{reaction.EventRef}].components")
-                ?? Array.Empty<ValidationIssue>();
-            issues.AddRange(scopeIssues);
-            if (scopeIssues.Count != 0)
+            var bindingIssues = ValidateBoundApplicationComponents(
+                new Application(source, reaction.Target, reaction.Parameters,
+                    reaction.EventRef, reaction.CausalEventRef,
+                    $"effect.reactions[{reaction.EventRef}].components", "effect_materialization"),
+                components, skillScopeAuthority);
+            issues.AddRange(bindingIssues);
+            if (bindingIssues.Count != 0)
                 continue;
 
             var coordinate = new EffectStackCoordinate(
@@ -6241,9 +6243,9 @@ internal static class EffectAcceptedTurnPlanner
 
         var components = definition["components"]!.DeepClone().AsArray();
         BindParameters(components, application.Parameters);
-        var scopeIssues = ValidateApplicationSkillScopes(application, components, skillScopeAuthority);
-        issues.AddRange(scopeIssues);
-        if (scopeIssues.Count != 0)
+        var bindingIssues = ValidateBoundApplicationComponents(application, components, skillScopeAuthority);
+        issues.AddRange(bindingIssues);
+        if (bindingIssues.Count != 0)
             return null;
         var existing = workspace.FindStackEffects(
             realm,
@@ -6465,16 +6467,20 @@ internal static class EffectAcceptedTurnPlanner
             provenance);
     }
 
-    private static IReadOnlyList<ValidationIssue> ValidateApplicationSkillScopes(
+    private static IReadOnlyList<ValidationIssue> ValidateBoundApplicationComponents(
         Application application,
         JsonArray boundComponents,
         EffectRollSkillScopeAuthority? authority)
     {
-        if (application.AcceptedContinuation)
-            return Array.Empty<ValidationIssue>();
-        var issues = authority?.ValidateNewComponents(
-            application.Target, boundComponents, application.Path, application.Section)
-            ?? Array.Empty<ValidationIssue>();
+        var issues = new List<ValidationIssue>();
+        var index = 0;
+        foreach (var component in JsonSerializer.SerializeToElement(boundComponents).EnumerateArray())
+            EffectComponentProfiles.ValidateComponent(component, $"{application.Path}[{index++}]", issues);
+        // Every application retains structural validation, including accepted continuations.
+        // Only a well-formed new selector reaches Offered/Current scope resolution.
+        if (issues.Count == 0 && !application.AcceptedContinuation && authority is not null)
+            issues.AddRange(authority.ValidateNewComponents(
+                application.Target, boundComponents, application.Path, application.Section));
         return application.Section != "wound_materialization" ? issues : issues.Select(issue =>
             new ValidationIssue(issue.FilePath, issue.Severity, issue.Message,
                 code: "wound_materialization_effect_binding_invalid", section: application.Section,
