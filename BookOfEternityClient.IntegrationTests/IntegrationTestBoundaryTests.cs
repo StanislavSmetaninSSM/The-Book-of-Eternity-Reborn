@@ -219,6 +219,8 @@ public sealed class IntegrationTestBoundaryTests
         "ResourceConsoleBrowserParityTests.cs",
         "MortalWoundRecoveryTests.cs",
         "MortalWoundTreatmentCapabilityAuthorityTests.cs",
+        "MortalWoundTreatmentAcceptedStateRegistryTests.cs",
+        "MortalWoundTreatmentResolverTests.cs",
         "QteSceneServiceTests.cs",
         "ShiningCoreActionResolutionValidationTests.cs",
         "GuardianCorrectionServiceTests.cs",

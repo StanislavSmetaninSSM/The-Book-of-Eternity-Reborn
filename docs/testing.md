@@ -71,6 +71,16 @@ coverage remains in Fast regardless of its size or timing;
 exhaustive matrices. Reclassifying those semantics requires a separately
 approved tracked requirement.
 
+Treatment resolver tests that require accepted-state files, persistence,
+leases, resource claims, publication, restart, or replay are
+`RegressionIntegration` sources. The complete
+`MortalWoundTreatmentResolverTests*.cs` partial family and its
+`MortalWoundTreatmentAcceptedStateRegistryTests.cs` companion move together so
+their fixture coupling remains auditable. Fixture-free treatment parsers,
+projectors, fingerprints, reducers, and pure policy tests remain in Fast. This
+placement does not raise Fast's five-minute hard limit or weaken assertions to
+save time.
+
 The #1551 QTE split follows this rule: fixture-free input and grading coverage
 is in Fast `QteDeterministicLogicTests`, while canonical persistence, rollback,
 console, save/archive, and service lifecycle coverage remains in Integration

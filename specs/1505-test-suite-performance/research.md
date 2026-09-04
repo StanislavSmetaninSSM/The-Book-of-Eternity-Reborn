@@ -425,9 +425,9 @@ complete HTTP host/browser flow -> E2E
 fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 ```
 
-### Exact executable manifests at `b1165f27`
+### Exact executable manifests after #1536 Task 1
 
-The 32 entries below are the complete, ordinal contents of
+The 58 entries below are the complete, ordinal contents of
 `FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
 Integration ownership enforced at the same HEAD. The three historical special
 groups retain their complete class categories; method-level
@@ -443,6 +443,32 @@ groups retain their complete class categories; method-level
 | `LocalWebUiBuiltFrontendSmokeTests.cs` | `ProcessIntegration`, `E2E` |
 | `MortalWoundRecoveryTests.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentCapabilityAuthorityTests.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentAcceptedStateRegistryTests.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.CourseContinuation.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.DetachedSourceValidation.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.DeteriorationPolicyAuthority.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.FreshAuthority.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.HistoryPersistence.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.Legacy.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.OutcomeIntents.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.PersistedRepairWave.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.Persistence.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.PersistenceHardening.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.PersistenceIngress.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ProcedureAuthority.ContractRegression.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ProcedureAuthority.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ProcedureAuthority.ReviewRegression.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ProcedurePublication.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.Replay.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ResourceAuthority.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ResourceFinalization.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.ResourcePublication.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.VehicleTopology.cs` | `RegressionIntegration` |
 | `QteSceneServiceTests.cs` | `RegressionIntegration` |
 | `GmWorkerLiveSmokeTests.cs` | `ProcessIntegration` |
 | `LocalWebUiSmokeTests.cs` | `E2E` |
@@ -470,7 +496,7 @@ groups retain their complete class categories; method-level
 
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
-these 33 ordinal entries after class-level ownership hardening:
+these 35 ordinal entries after class-level ownership hardening:
 
 ```text
 AfterlifeSpiritualConflictValidationTests.cs
@@ -485,6 +511,8 @@ LocalWebUiHostTests.cs
 ResourceConsoleBrowserParityTests.cs
 MortalWoundRecoveryTests.cs
 MortalWoundTreatmentCapabilityAuthorityTests.cs
+MortalWoundTreatmentAcceptedStateRegistryTests.cs
+MortalWoundTreatmentResolverTests.cs
 QteSceneServiceTests.cs
 ShiningCoreActionResolutionValidationTests.cs
 GuardianCorrectionServiceTests.cs
@@ -507,6 +535,13 @@ WebUi/BrowserInkFeatherFateParityTests.cs
 WebUi/BrowserNpcSocialParityTests.cs
 WebUi/BrowserTradeParityTests.cs
 ```
+
+Treatment resolver sources that require accepted-state files, persistence,
+leases, resource claims, publication, restart, or replay belong in
+Integration. The 25-file partial family moves intact with its registry
+companion; fixture-free parsers, projectors, fingerprints, reducers, and pure
+policy tests remain Fast. This semantic boundary leaves the Fast five-minute
+hard limit and all assertions unchanged.
 
 `ActorMaterializationValidationTests.cs` and
 `AfterlifeEntityProfileValidationTests.cs` were removed from this class-level

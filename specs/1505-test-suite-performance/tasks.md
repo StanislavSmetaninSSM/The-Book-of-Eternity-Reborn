@@ -298,6 +298,24 @@ has no duplicate membership, and two Fast controls finish below five minutes.
   status contained only the preserved untracked `.serena/`, and PreMerge was
   intentionally not run.
 
+---
+
+## Phase 12: Issue #1536 Treatment Resolver Lane Boundary
+
+- [x] T065 [US3] Extend the exact reviewed-heavy manifest from 32 to 58 paths
+  by moving `MortalWoundTreatmentAcceptedStateRegistryTests.cs` and the exact
+  25-file `MortalWoundTreatmentResolverTests*.cs` partial family into
+  Integration. Keep only the primary partial declaration and standalone
+  registry in the 35-entry class-level `RegressionIntegrationSources` manifest,
+  with literal class-level `RegressionIntegration` traits. The source guards
+  must require exact single Integration ownership and the complete partial
+  inventory. Record that accepted-state files, persistence, leases, resource
+  claims, publication, restart, and replay are Integration behavior, while
+  fixture-free treatment parsers, projectors, fingerprints, reducers, and pure
+  policy tests remain Fast. Do not change Fast's five-minute limit or remove
+  assertions; no production, gameplay, GM, or afterlife contract changes are
+  in scope.
+
 ## Dependencies and Execution Order
 
 - T005 completes setup.

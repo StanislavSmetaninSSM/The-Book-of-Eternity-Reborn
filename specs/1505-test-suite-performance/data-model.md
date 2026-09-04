@@ -134,11 +134,19 @@ the expected top-level class only, so comments, strings, and method traits
 cannot satisfy ownership.
 `UiTestTextCollector` is a test-free TestSupport helper shared by moved WebUi
 sources so Integration has no dependency on the Fast project. The exact
-32-entry reviewed-heavy manifest and current 33-entry class-level
+58-entry reviewed-heavy manifest and current 35-entry class-level
 `RegressionIntegrationSources` array are recorded in `research.md`; the
 executable guard arrays remain authoritative. Two FullValidation-owned sources
 with only method-level Regression traits are intentionally excluded from that
 class-level manifest.
+
+The complete file-backed `MortalWoundTreatmentResolverTests*.cs` partial family
+and `MortalWoundTreatmentAcceptedStateRegistryTests.cs` registry companion are
+owned by `RegressionIntegration` because they require accepted-state files,
+persistence, leases, resource claims, publication, restart, or replay.
+Fixture-free treatment parsers, projectors, fingerprints, reducers, and pure
+policy checks remain Fast; the five-minute Fast limit and all assertions are
+unchanged.
 
 PreMerge has one deadline across frontend verification, both project builds,
 discovery, tests, and cleanup. Its parallel phase selects the complete fast

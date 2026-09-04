@@ -40,6 +40,13 @@ fixture rather than adding a negative Fast filter. Use
 `-Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~..."`
 to iterate on a moved class.
 
+Treatment resolver tests requiring accepted-state files, persistence, leases,
+resource claims, publication, restart, or replay are `RegressionIntegration`.
+Move the entire `MortalWoundTreatmentResolverTests*.cs` partial family with its
+registry companion; fixture-free treatment parsers, projectors, fingerprints,
+reducers, and pure policy tests remain Fast. This does not raise Fast's
+five-minute limit or reduce assertions.
+
 The explicit diagnostic lanes select categories in the integration test
 project. They are not ordinary post-edit controls. Use them only for a relevant
 change or to narrow a bounded failure. DeepValidation selects the
@@ -202,8 +209,8 @@ route/prose/reducer/contract rows in Fast `DarenQteDeterministicLogicTests` and
 normalized InlineData row at QTE `66/51` and Daren `77/12`; category ownership
 comes only from attributes on the expected top-level class. Moved WebUi classes
 use the test-free `UiTestTextCollector` helper from TestSupport so Integration
-never references Fast. The exact final 32-entry reviewed-heavy manifest and
-33-entry class-level regression category array are recorded in `research.md`
+never references Fast. The exact final 58-entry reviewed-heavy manifest and
+35-entry class-level regression category array are recorded in `research.md`
 directly from the executable guards. Method-only Regression traits do not count
 as class ownership.
 

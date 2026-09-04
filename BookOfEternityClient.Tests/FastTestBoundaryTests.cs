@@ -27,6 +27,32 @@ public sealed class FastTestBoundaryTests
         "LocalWebUiBuiltFrontendSmokeTests.cs",
         "MortalWoundRecoveryTests.cs",
         "MortalWoundTreatmentCapabilityAuthorityTests.cs",
+        "MortalWoundTreatmentAcceptedStateRegistryTests.cs",
+        "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
+        "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
+        "MortalWoundTreatmentResolverTests.cs",
+        "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
+        "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
+        "MortalWoundTreatmentResolverTests.DetachedSourceValidation.cs",
+        "MortalWoundTreatmentResolverTests.DeteriorationPolicyAuthority.cs",
+        "MortalWoundTreatmentResolverTests.FreshAuthority.cs",
+        "MortalWoundTreatmentResolverTests.HistoryPersistence.cs",
+        "MortalWoundTreatmentResolverTests.Legacy.cs",
+        "MortalWoundTreatmentResolverTests.OutcomeIntents.cs",
+        "MortalWoundTreatmentResolverTests.PersistedRepairWave.cs",
+        "MortalWoundTreatmentResolverTests.Persistence.cs",
+        "MortalWoundTreatmentResolverTests.PersistenceHardening.cs",
+        "MortalWoundTreatmentResolverTests.PersistenceIngress.cs",
+        "MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.ContractRegression.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.ReviewRegression.cs",
+        "MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+        "MortalWoundTreatmentResolverTests.Replay.cs",
+        "MortalWoundTreatmentResolverTests.ResourceAuthority.cs",
+        "MortalWoundTreatmentResolverTests.ResourceFinalization.cs",
+        "MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "MortalWoundTreatmentResolverTests.VehicleTopology.cs",
         "QteSceneServiceTests.cs",
         "GmWorkerLiveSmokeTests.cs",
         "LocalWebUiSmokeTests.cs",
@@ -51,6 +77,35 @@ public sealed class FastTestBoundaryTests
         Path.Combine("WebUi", "BrowserInkFeatherFateParityTests.cs"),
         Path.Combine("WebUi", "BrowserNpcSocialParityTests.cs"),
         Path.Combine("WebUi", "BrowserTradeParityTests.cs")
+    ];
+
+    private static readonly string[] MortalWoundTreatmentResolverPartialSourcePaths =
+    [
+        "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
+        "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
+        "MortalWoundTreatmentResolverTests.cs",
+        "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
+        "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
+        "MortalWoundTreatmentResolverTests.DetachedSourceValidation.cs",
+        "MortalWoundTreatmentResolverTests.DeteriorationPolicyAuthority.cs",
+        "MortalWoundTreatmentResolverTests.FreshAuthority.cs",
+        "MortalWoundTreatmentResolverTests.HistoryPersistence.cs",
+        "MortalWoundTreatmentResolverTests.Legacy.cs",
+        "MortalWoundTreatmentResolverTests.OutcomeIntents.cs",
+        "MortalWoundTreatmentResolverTests.PersistedRepairWave.cs",
+        "MortalWoundTreatmentResolverTests.Persistence.cs",
+        "MortalWoundTreatmentResolverTests.PersistenceHardening.cs",
+        "MortalWoundTreatmentResolverTests.PersistenceIngress.cs",
+        "MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.ContractRegression.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.cs",
+        "MortalWoundTreatmentResolverTests.ProcedureAuthority.ReviewRegression.cs",
+        "MortalWoundTreatmentResolverTests.ProcedurePublication.cs",
+        "MortalWoundTreatmentResolverTests.Replay.cs",
+        "MortalWoundTreatmentResolverTests.ResourceAuthority.cs",
+        "MortalWoundTreatmentResolverTests.ResourceFinalization.cs",
+        "MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "MortalWoundTreatmentResolverTests.VehicleTopology.cs"
     ];
 
     [Fact]
@@ -557,6 +612,21 @@ public sealed class FastTestBoundaryTests
 
             Assert.Equal(new[] { expectedIntegrationPath }, matches);
         }
+    }
+
+    [Fact]
+    public void MortalWoundTreatmentResolverPartialFamily_HasExactIntegrationInventory()
+    {
+        var integrationRoot = Path.Combine(TestRepoPaths.RepoRoot, IntegrationTestsDirectory);
+        var actual = Directory
+            .EnumerateFiles(integrationRoot, "MortalWoundTreatmentResolverTests*.cs", SearchOption.TopDirectoryOnly)
+            .Select(Path.GetFileName)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+
+        Assert.Equal(
+            MortalWoundTreatmentResolverPartialSourcePaths.Order(StringComparer.Ordinal),
+            actual);
     }
 
     [Fact]

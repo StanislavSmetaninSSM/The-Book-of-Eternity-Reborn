@@ -16,6 +16,7 @@ namespace BookOfEternityClient.Tests;
 /// the reflection adapter below then drives only the public-to-assembly planner
 /// factories and mode resolver entries documented by the treatment contract.
 /// </summary>
+[Trait("Category", "RegressionIntegration")]
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     private const string PlannerTypeName =

@@ -377,12 +377,53 @@ public sealed partial class MortalWoundTreatmentResolverTests
         string candidateRef = "candidate_persisted_repair_001",
         string? semanticFingerprint = null)
     {
-        var packet = WoundAcceptedTurnPlanCacheTests.CreatePacket(
+        var issue = new ValidationIssue(
+            "woundDecisions[0].proposal.severity",
+            IssueSeverity.Error,
+            "Severity exceeds the sealed opportunity.",
+            code: "wound_severity_above_opportunity",
+            section: "wound_materialization",
+            expected: "validator-internal range",
+            actual: "III");
+        var candidate = new WoundRepairCandidateInput(
+            "repair_wound",
             candidateRef,
             semanticFingerprint ?? RepairWaveFingerprint('a'),
+            "opportunity_repair_cache_001",
+            new JsonObject
+            {
+                ["event"] = "осколок после обвала",
+                ["target"] = "игрок",
+                ["realm"] = "Смертный мир"
+            },
+            new[] { "none", "materialize" },
+            "I",
+            "II",
+            new JsonObject
+            {
+                ["opportunityRef"] = "opportunity_repair_cache_001",
+                ["decision"] = "materialize",
+                ["woundRef"] = "local_wound_ref_repair_cache_001",
+                ["proposal"] = new JsonObject
+                {
+                    ["classification"] = new JsonObject(),
+                    ["display"] = new JsonObject
+                    {
+                        ["acquisitionNarration"] = "Осколок рассекает предплечье."
+                    },
+                    ["severity"] = "III",
+                    ["complications"] = new JsonArray(),
+                    ["consequenceDefinitions"] = new JsonArray(),
+                    ["treatment"] = new JsonObject(),
+                    ["recovery"] = new JsonObject()
+                }
+            },
+            new[] { issue });
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(new WoundRepairBuildRequest(
             "session_persisted_repair",
             "request_persisted_repair",
-            "snapshot_persisted_repair");
+            "snapshot_persisted_repair",
+            new[] { candidate })));
         Assert.Equal("wound_materialization_repair", packet.Kind);
         return packet;
     }

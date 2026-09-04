@@ -5,6 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "RegressionIntegration")]
 public sealed class MortalWoundTreatmentAcceptedStateRegistryTests
 {
     [Fact]

@@ -50,13 +50,15 @@ Use one deterministic rematerialization of the unchanged semantic graph. The rej
 - Modify: `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`
 - Modify: `docs/testing.md`
 - Modify: `specs/1505-test-suite-performance/research.md`
+- Modify: `specs/1505-test-suite-performance/data-model.md`
+- Modify: `specs/1505-test-suite-performance/quickstart.md`
 - Modify: `specs/1505-test-suite-performance/tasks.md`
 
 **Boundary:**
 
 The partial resolver fixture persists canonical state, rehydrates it, exercises leases/registries/claims, publishes through the normalizer, and starts later turns. It is therefore `RegressionIntegration`, not Fast. Move the complete partial family together; moving isolated methods would keep hidden fixture coupling and make lane ownership harder to audit. This is the approved #1551 follow-up and remains in the current #1536 branch.
 
-- [ ] **Step 1: Make the exact boundary guards RED**
+- [x] **Step 1: Make the exact boundary guards RED**
 
 Add the full explicit resolver-family list and registry companion to `FastTestBoundaryTests.ReviewedHeavySourcePaths`, which requires each file to exist exactly once under Integration and nowhere in Fast/TestSupport. Add only the primary partial source and standalone registry source to `IntegrationTestBoundaryTests.RegressionIntegrationSources`, requiring literal class-level `[Trait("Category", "RegressionIntegration")]` there; one attribute on the primary partial declaration categorizes the merged resolver type without duplicating traits across all 25 source fragments. Add a boundary assertion that the exact 25-file partial-family inventory is present. Update the exact source manifests in the #1505 research/tasks artifacts. Run:
 
@@ -67,15 +69,15 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: the new exact-location assertions fail while the old files remain in Fast; the test projects still compile and discovery is non-empty.
 
-- [ ] **Step 2: Move the fixture mechanically and categorize it**
+- [x] **Step 2: Move the fixture mechanically and categorize it**
 
 Move all 25 `MortalWoundTreatmentResolverTests*.cs` sources and `MortalWoundTreatmentAcceptedStateRegistryTests.cs` without altering their namespace, class names, test bodies, or helper visibility. Add `RegressionIntegration` to the main partial resolver declaration and registry declaration. Do not duplicate any source across projects.
 
-- [ ] **Step 3: Document the durable lane rule**
+- [x] **Step 3: Document the durable lane rule**
 
-Record in `docs/testing.md` and the #1505 research/tasks addendum that treatment resolver tests requiring accepted-state files, persistence, leases, resource claims, publication, restart, or replay belong to Integration. Fixture-free parsers, projectors, fingerprints, reducers, and pure policy tests remain in Fast. Do not raise the five-minute Fast limit and do not optimize assertions merely to save seconds.
+Record in `docs/testing.md` and every #1505 exact-manifest artifact (`research.md`, `data-model.md`, `quickstart.md`, and `tasks.md`) that treatment resolver tests requiring accepted-state files, persistence, leases, resource claims, publication, restart, or replay belong to Integration. Update the executable-manifest descriptions from 32 to 58 reviewed-heavy sources and from 33 to 35 class-level RegressionIntegration sources. Fixture-free parsers, projectors, fingerprints, reducers, and pure policy tests remain in Fast. Do not raise the five-minute Fast limit and do not optimize assertions merely to save seconds.
 
-- [ ] **Step 4: Prove both projects and the retained RED**
+- [x] **Step 4: Prove both projects and the retained RED**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FastTestBoundaryTests"
@@ -85,7 +87,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: boundary/registry controls pass. The retained procedure theory is discovered in Integration; its no-improvement row passes and its selected successful reduction row remains RED only at `mortal_wound_treatment_publication_slice_unsupported`.
 
-- [ ] **Step 5: Commit the lane correction**
+- [x] **Step 5: Commit the lane correction**
 
 Stage the explicit moved files and boundary/docs manifests, never `.serena/`, then commit:
 
@@ -399,13 +401,13 @@ In `WoundReactionLineageAuthorityTests.cs`, call `WoundReactionLineageAuthority.
 
 Add outer batch tests using existing types/reflection for: a complete current teardown, private authority required for `treat`, missing/reordered terminal with all public outer fingerprints resealed, and changed projection/source export. Every test must compile and be discovered before implementation; obtain the expected behavioral RED rather than a missing-type build error.
 
-- [ ] **Step 2: Derive deterministic non-permanent root coordinates**
+- [ ] **Step 2: Derive deterministic non-permanent group and root coordinates**
 
-For each projection root in canonical order, derive `ApplicationRef` and root `OperationKey` from request fingerprint, result fingerprint, transition ID, root ordinal, prior effect ID, and definition key using a domain-separated SHA-256 writer. Use one positive mechanics ordinal and one-based apply operation ordinals. These are ephemeral plan coordinates, not effect IDs.
+Derive one exact/confusable-unique `LocalWoundRef` from the request fingerprint, result fingerprint, and transition ID through a domain-separated SHA-256 writer. For each projection root in canonical order, derive `ApplicationRef` and root `OperationKey` from those same sealed coordinates plus root ordinal, prior effect ID, and definition key. Use one positive mechanics ordinal and one-based apply operation ordinals. The group alias and root coordinates are ephemeral plan coordinates, not permanent wound/effect IDs.
 
 - [ ] **Step 3: Export the exact retained source graph and generation predecessor**
 
-Create a non-materializable `wound/<woundId>/<definitionKey>` source export containing every detached canonical definition. Bind owner/realm to the wound, causal event and event semantic fingerprint to the exact accepted event. Each root application uses empty parameters, exact target/source selectors, derived carrier coordinate, component count, materialization fingerprint, preserved slot semantics/ownership domain, and the projection root's exact old effect ID as `PriorRootEffectId`.
+Create one non-materializable source export containing every detached canonical `wound/<woundId>/<definitionKey>` definition key. Assign the same derived `LocalWoundRef` to `WoundEffectOperationBatch.LocalWoundRef`, `WoundEffectSourceExport.SourceRef`, and every root application's `SourceSelector.SourceRef`. Keep the stable wound ID in `WoundEffectSourceExport.SourceId` and in every root application's `ExpectedSourceKey.SourceId`; each same-turn application selector has `SourceId = null` exactly as the existing #1535 composer requires. Bind owner/realm to the wound, causal event and event semantic fingerprint to the exact accepted event. Each root application uses empty parameters, exact target/source selectors, derived carrier coordinate, component count, materialization fingerprint, preserved slot semantics/ownership domain, and the projection root's exact old effect ID as `PriorRootEffectId`.
 
 - [ ] **Step 4: Make lineage validation generation-aware without accepting garbage history**
 
@@ -468,6 +470,7 @@ Add fixture-free tests for complete terminal lineage, deterministic detached/wri
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests&FullyQualifiedName~PrepareReductionBatch_|FullyQualifiedName~ReductionEffectHandoff_"
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundEffectBatchPlannerTests|FullyQualifiedName~WoundEffectLineagePlannerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectIdentityStateWoundTests|FullyQualifiedName~EffectSourceAuthorityWoundTests|FullyQualifiedName~EffectAcceptedTurnInputComposerWoundTests|FullyQualifiedName~AcceptedMechanicsPlannerTests" -TimeoutMinutes 15
 ```
 
 Expected: all treatment rematerialization batch/tamper tests and the retained #1535 create/worsen suite pass with worsen now emitting the shared generation provenance and create remaining parentless.
@@ -523,6 +526,7 @@ A legal physical wound with zero mechanical roots still uses one sealed empty re
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~ProcedureFinalization_ConsumesOnlySelectedSupplyAndReleasesEveryOtherHeldClaim" -TimeoutMinutes 15
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests&FullyQualifiedName~FinalizeReduction_"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundTransitionReducerTests&FullyQualifiedName~Treat"
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&(FullyQualifiedName~ProcedureRepeatedStabilization_|FullyQualifiedName~ProcedureNoImprovement_)" -TimeoutMinutes 15
 ```
 
@@ -638,7 +642,7 @@ Expected: source guard and example-manifest validation pass, then the conditiona
 - [ ] **Step 3: Run the complete deterministic owning selection**
 
 ```powershell
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests|FullyQualifiedName~WoundEffectBatchPlannerTests|FullyQualifiedName~WoundEffectLineagePlannerTests|FullyQualifiedName~WoundTransitionReducerTests"
+pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests|FullyQualifiedName~WoundEffectBatchPlannerTests|FullyQualifiedName~WoundEffectLineagePlannerTests|FullyQualifiedName~WoundTransitionReducerTests|FullyQualifiedName~EffectIdentityStateWoundTests|FullyQualifiedName~EffectSourceAuthorityWoundTests|FullyQualifiedName~EffectAcceptedTurnInputComposerWoundTests|FullyQualifiedName~AcceptedMechanicsPlannerTests" -TimeoutMinutes 15
 ```
 
 Expected: every discovered owning case passes with pristine build and cleanup.
@@ -647,7 +651,6 @@ Expected: every discovered owning case passes with pristine build and cleanup.
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&(FullyQualifiedName~ProcedureRepeatedStabilization_|FullyQualifiedName~ProcedurePartialSuccessSingleton_|FullyQualifiedName~ProcedureTreatmentLifecycleAgreement_|FullyQualifiedName~ProcedureTreatmentAuthority_|FullyQualifiedName~ProcedureFinalization_ConsumesOnlySelectedSupplyAndReleasesEveryOtherHeldClaim)" -TimeoutMinutes 15
-pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundTransitionReducerTests&FullyQualifiedName~Treat"
 ```
 
 Expected: every retained case passes; no old-ID acceptance, scalar regression, or generic effect-command bypass appears.
