@@ -861,6 +861,12 @@ internal static partial class WoundRepairPacketBuilder
             expected = "one complete wound-owned effect definition with response-local links";
             return true;
         }
+        if (path.EndsWith(".payload.scope.skillId", StringComparison.Ordinal) &&
+            code == "wound_materialization_effect_binding_invalid")
+        {
+            expected = "one exact offered and currently usable skill of the wound owner";
+            return true;
+        }
         if (path.StartsWith("proposal.treatment.routes[", StringComparison.Ordinal) &&
             code == "wound_materialization_missing_field")
         {

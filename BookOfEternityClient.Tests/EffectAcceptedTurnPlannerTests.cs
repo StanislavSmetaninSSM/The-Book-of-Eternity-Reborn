@@ -12,6 +12,184 @@ namespace BookOfEternityClient.Tests;
 public sealed class EffectAcceptedTurnPlannerTests
 {
     [Fact]
+    public void SkillScope_RejectionPublishesNoPreparedCombatantOrCarrierAfterImage()
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("none");
+        var combatants = new JsonObject
+        {
+            ["enemiesData"] = new JsonArray(new JsonObject
+            {
+                ["combatantRef"] = "new_enemy", ["displayName"] = "New enemy", ["isGroup"] = false,
+                ["activeBuffs"] = new JsonArray(), ["activeDebuffs"] = new JsonArray()
+            })
+        };
+        var before = combatants.ToJsonString();
+        input = input with
+        {
+            PreTurnCarriers = input.PreTurnCarriers! with { EnemyCombatants = combatants },
+            TargetAuthorityInput = new EffectTargetAuthorityInput(
+                new[] { new EffectTargetExport("mortal_world", "player", "player_current", false) },
+                Array.Empty<EffectTargetExport>(), new HashSet<string>(StringComparer.Ordinal), null)
+        };
+        var factory = new CountingFactory();
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan); // The failed result has no ID or after-image publication surface.
+        Assert.StartsWith("effect_roll_skill_scope_", Assert.Single(result.Issues).Code);
+        Assert.Equal(before, combatants.ToJsonString());
+        Assert.Equal("new_enemy", combatants["enemiesData"]![0]!["combatantRef"]!.GetValue<string>());
+        Assert.Null(combatants["enemiesData"]![0]!["combatantId"]);
+        Assert.Null(input.PreTurnCarriers.PlayerEffects);
+        Assert.Null(input.PreTurnIdentityIndex);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
+    [Theory]
+    [InlineData("none", "exact")]
+    [InlineData("exact", "removed")]
+    [InlineData("exact", "disabled")]
+    public void SkillScope_ComposedAcceptedChangesCannotAuthorizeNewOrUnavailableSkill(string offered, string accepted)
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput(offered, acceptedScenario: accepted);
+        var factory = new CountingFactory();
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.StartsWith("effect_roll_skill_scope_", Assert.Single(result.Issues).Code);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
+    [Fact]
+    public void SkillScope_LaterInvalidApplicationRejectsWholeBatchBeforeAllocation()
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("none");
+        var skill = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        skill["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        skill["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        var all = skill.DeepClone().AsObject();
+        all["definitionKey"] = "all_definition";
+        all["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "all" };
+        var second = input.RawCommands["effectChanges"]![0]!.DeepClone().AsObject();
+        var first = second.DeepClone().AsObject();
+        first["source"]!["definitionKey"] = "all_definition";
+        first["eventRef"]!["authorityId"] = "turn_first";
+        input.RawCommands["effectChanges"] = new JsonArray(first, second);
+        input.EventInput["events"]!.AsArray().Insert(0, CreateAcceptedEvent("accepted_turn", "turn_first", "turn_42:first"));
+        input = input with
+        {
+            SourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+                new[] { new EffectSourceExport("mortal_world", "quest", "quest_scope", new JsonArray(all, skill), true, true, false) },
+                Array.Empty<EffectSourceExport>(), new HashSet<string>(StringComparer.Ordinal)))
+        };
+        var factory = new CountingFactory();
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Equal("effectChanges[1].apply.components[0].payload.scope.skillId", Assert.Single(result.Issues).FilePath);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
+    [Theory]
+    [InlineData("exact", true)]
+    [InlineData("none", false)]
+    [InlineData("disabled", false)]
+    public void SkillScope_ReleasedReactionUsesSealedAuthorityBeforeAllocation(string catalog, bool success)
+    {
+        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
+        root["definitionKey"] = "reaction_root";
+        root["components"]![0]!["payload"]!["resultKind"] = "apply_definition";
+        root["components"]![0]!["payload"]!["definitionKey"] = "reaction_child";
+        root["components"]![0]!["payload"]!["parameters"] = new JsonObject();
+        root["components"]![0]!["payload"]!["maxExpansion"] = 2;
+        var child = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        child["definitionKey"] = "reaction_child";
+        child["stacking"]!["stackKey"] = "reaction_child";
+        child["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        child["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "event_reaction");
+        effect["source"]!["definitionKey"] = "reaction_root";
+        effect["components"] = root["components"]!.DeepClone();
+        effect["triggers"] = root["triggers"]!.DeepClone();
+        var input = CreateReactionInput(effect, root, child) with
+        {
+            SkillScopeAuthority = EffectRollSkillScopeAuthority.Build(new(
+                EffectAcceptedTurnPlanCacheTests.SkillRoots("exact"), EffectAcceptedTurnPlanCacheTests.SkillRoots(catalog)))
+        };
+        var initial = new EffectAcceptedTurnPlanCache().GetOrBuild(input);
+        Assert.True(initial.Success, string.Join(Environment.NewLine, initial.Issues));
+        var plan = EffectAcceptedTurnPlan.DetachedCopyOf(initial.Plan!);
+        var before = plan.IdentityIndexAfterImage.ToJsonString();
+        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
+        var due = EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
+            plan, ResourceOwnerAuthority.CreateCurrentPlayerAuthority(definitions), definitions);
+        Assert.True(due.IsValid, string.Join(Environment.NewLine, due.Issues));
+        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
+        var sources = ResourceMutationSourceCatalog.Create(due.SourceExports);
+        var resources = AcceptedMechanicsPlanner.BuildResources(new AcceptedMechanicsResourceInput(
+            Turn: 42, Definitions: bootstrap.Definitions!, State: bootstrap.State!, History: bootstrap.History!,
+            Sources: sources.Catalog!, Mutations: due.Mutations, InitialTriggerCandidates: due.TriggerCandidates,
+            InitialEffectResolutionWork: due.Work,
+            EffectPlanAuthority: AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan)), new AcceptedMechanicsIdentityFactory());
+        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
+        var factory = new CountingFactory();
+        var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(plan, resources.EffectBoundaryTranscript, factory);
+        Assert.Equal(success, result.Success);
+        if (!success)
+        {
+            Assert.Null(result.Plan);
+            var issue = Assert.Single(result.Issues);
+            var reaction = Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions).Reaction;
+            Assert.Equal($"effect.reactions[{reaction.EventRef}].components[0].payload.scope.skillId", issue.FilePath);
+            Assert.Equal("effect_materialization", issue.Section);
+            Assert.Equal(0, factory.EffectCalls);
+            Assert.Equal(0, factory.TransitionCalls);
+        }
+        Assert.Equal(before, plan.IdentityIndexAfterImage.ToJsonString());
+    }
+
+    [Theory]
+    [InlineData("none")]
+    [InlineData("unknown")]
+    [InlineData("wrong_target")]
+    [InlineData("duplicate")]
+    [InlineData("confusable")]
+    [InlineData("idless")]
+    [InlineData("disabled")]
+    public void SkillScope_InvalidCatalogRejectsBeforeAllocation(string scenario)
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput(scenario);
+        var before = input.RawCommands.ToJsonString();
+        var factory = new CountingFactory();
+        var result = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        var issue = Assert.Single(result.Issues);
+        Assert.StartsWith("effect_roll_skill_scope_", issue.Code);
+        Assert.Equal("effectChanges[0].apply.components[0].payload.scope.skillId", issue.FilePath);
+        Assert.Equal("effect_materialization", issue.Section);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+        Assert.Equal(before, input.RawCommands.ToJsonString());
+        Assert.Null(input.PreTurnCarriers!.PlayerEffects);
+        Assert.Null(input.PreTurnIdentityIndex);
+    }
+
+    [Theory]
+    [InlineData("none", true)]
+    [InlineData("exact", false)]
+    public void SkillScope_ExplicitAllOrExactOfferedSkillApplies(string scenario, bool all)
+    {
+        var input = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput(scenario, all);
+        var result = new EffectAcceptedTurnPlanCache().GetOrBuild(input);
+        Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+        var effect = Assert.Single(result.Plan!.ActiveEffects);
+        Assert.Equal(all ? "all" : "skill", effect["components"]![0]!["payload"]!["scope"]!["kind"]!.GetValue<string>());
+    }
+
+    [Fact]
     public void ReactionEventRef_UsesTypedAuthorityAndUnambiguousTupleHashing()
     {
         var authority = new ResourcePendingAuthorityBinding(

@@ -17,7 +17,68 @@ internal sealed record EffectAcceptedTurnInput(
     EffectTargetAuthorityInput? TargetAuthorityInput = null,
     EffectCarrierCatalogInput? PublicationCarrierBaselines = null,
     CombatantIdentityState? PreallocatedCombatantIdentities = null,
-    EffectCarrierCatalogInput? AcceptedCarrierBaselines = null);
+    EffectCarrierCatalogInput? AcceptedCarrierBaselines = null,
+    EffectRollSkillScopeAuthority? SkillScopeAuthority = null,
+    EffectApplicationDiagnosticLocations? WoundApplicationLocations = null);
+
+internal sealed record EffectApplicationDiagnosticLocation(string Path, string Section);
+
+/// <summary>Detached, non-persisted proposal coordinates; never effect source authority.</summary>
+internal sealed class EffectApplicationDiagnosticLocations
+{
+    private readonly FrozenDictionary<EffectSourceKey, EffectApplicationDiagnosticLocation[]> _locations;
+    private readonly FrozenDictionary<EffectApplicationDiagnosticLocation, int> _coordinateCounts;
+
+    internal EffectApplicationDiagnosticLocations(
+        IEnumerable<KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>> locations)
+    {
+        var rows = locations.OrderBy(pair => pair.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(pair => pair.Key.Kind, StringComparer.Ordinal)
+            .ThenBy(pair => pair.Key.SourceId, StringComparer.Ordinal)
+            .ThenBy(pair => pair.Key.DefinitionKey, StringComparer.Ordinal)
+            .ThenBy(pair => pair.Value.Path, StringComparer.Ordinal)
+            .ThenBy(pair => pair.Value.Section, StringComparer.Ordinal).ToArray();
+        _locations = rows.GroupBy(pair => pair.Key).ToFrozenDictionary(group => group.Key,
+            group => group.Select(pair => pair.Value with { }).ToArray());
+        _coordinateCounts = rows.GroupBy(pair => pair.Value).ToFrozenDictionary(group => group.Key, group => group.Count());
+        Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "book_of_eternity.effect.application_diagnostic_locations", "1"
+        }.Concat(rows.SelectMany(pair => new[]
+        {
+            pair.Key.Realm, pair.Key.Kind, pair.Key.SourceId, pair.Key.DefinitionKey,
+            pair.Value.Path, pair.Value.Section
+        })));
+    }
+
+    internal string Fingerprint { get; }
+
+    internal bool TryResolve(EffectSourceKey key, out EffectApplicationDiagnosticLocation location)
+    {
+        location = null!;
+        if (!_locations.TryGetValue(key, out var matches) || matches.Length != 1 ||
+            _coordinateCounts[matches[0]] != 1 ||
+            matches[0].Section != "wound_materialization" ||
+            !WoundRepairPacketBuilder.TryParsePath(matches[0].Path, out var segments) ||
+            segments is not ["woundDecisions", int, "proposal", "consequenceDefinitions", int, "definition", "components"])
+            return false;
+        location = matches[0];
+        return true;
+    }
+
+    internal EffectApplicationDiagnosticLocations BindPreparedSources(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        var bound = new List<KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>>();
+        foreach (var batch in prepared.EffectOperationBatches)
+        foreach (var definition in batch.SourceExport.Definitions)
+        {
+            var source = batch.SourceExport;
+            if (TryResolve(new EffectSourceKey(source.Realm, source.Kind, batch.LocalWoundRef, definition.DefinitionKey), out var location))
+                bound.Add(new(new EffectSourceKey(source.Realm, source.Kind, source.SourceId, definition.DefinitionKey), location));
+        }
+        return new EffectApplicationDiagnosticLocations(bound);
+    }
+}
 
 internal sealed class EffectAcceptedTurnPlan
 {
@@ -82,9 +143,11 @@ internal sealed class EffectAcceptedTurnPlan
             acceptedBoundaryCompletionProof = null,
         string? acceptedBoundaryBasePlanFingerprint = null,
         IReadOnlyList<WoundApplicationRootEffectBinding>?
-            woundApplicationRootEffectBindings = null)
+            woundApplicationRootEffectBindings = null,
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null)
     {
         InputFingerprint = inputFingerprint;
+        SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
         TargetAuthorityFingerprint = targetAuthorityFingerprint;
@@ -172,6 +235,8 @@ internal sealed class EffectAcceptedTurnPlan
     }
 
     internal string InputFingerprint { get; }
+
+    internal EffectRollSkillScopeAuthority? SkillScopeAuthority { get; }
 
     internal string CarrierAuthorityFingerprint { get; }
 
@@ -332,7 +397,8 @@ internal sealed class EffectAcceptedTurnPlan
             source.AcceptedCarrierBaselines,
             source._acceptedBoundaryCompletionProof,
             source._acceptedBoundaryBasePlanFingerprint,
-            source.WoundApplicationRootEffectBindings);
+            source.WoundApplicationRootEffectBindings,
+            source.SkillScopeAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

@@ -198,13 +198,15 @@ internal sealed class EffectAcceptedTurnPlanCache
     {
         var root = new JsonObject
         {
-            ["schemaVersion"] = 3,
+            ["schemaVersion"] = 4,
             ["sessionId"] = input.SessionId,
             ["snapshotToken"] = input.SnapshotToken,
             ["realm"] = input.Realm,
             ["rawCommands"] = input.RawCommands.DeepClone(),
             ["sourceAuthorityFingerprint"] = input.SourceAuthority.Fingerprint,
             ["targetAuthorityFingerprint"] = input.TargetAuthority.Fingerprint,
+            ["skillScopeAuthorityFingerprint"] = input.SkillScopeAuthority?.Fingerprint ?? "none",
+            ["woundApplicationLocationsFingerprint"] = input.WoundApplicationLocations?.Fingerprint ?? "none",
             ["eventInput"] = input.EventInput.DeepClone(),
             ["preTurnCarriers"] = CloneCarriers(input.PreTurnCarriers),
             ["acceptedCarrierBaselines"] = CloneCarriers(

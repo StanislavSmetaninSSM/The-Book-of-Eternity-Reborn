@@ -1753,7 +1753,9 @@ internal static class WoundAcceptedTurnData
             CloneTargetAuthorityInput(value.TargetAuthorityInput),
             CloneEffectCarriers(value.PublicationCarrierBaselines),
             value.PreallocatedCombatantIdentities,
-            CloneEffectCarriers(value.AcceptedCarrierBaselines));
+            CloneEffectCarriers(value.AcceptedCarrierBaselines),
+            value.SkillScopeAuthority,
+            value.WoundApplicationLocations);
     }
 
     internal static EffectAcceptedTurnPlan CloneEffectPlan(
@@ -2326,6 +2328,8 @@ internal static class WoundAcceptedTurnFingerprints
         AppendEffectCarriers(fields, input.PublicationCarrierBaselines);
         fields.Add(input.PreallocatedCombatantIdentities?.Fingerprint);
         AppendEffectCarriers(fields, input.AcceptedCarrierBaselines);
+        fields.Add(input.SkillScopeAuthority?.Fingerprint ?? "none");
+        fields.Add(input.WoundApplicationLocations?.Fingerprint ?? "none");
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
@@ -2456,7 +2460,8 @@ internal static class WoundAcceptedTurnFingerprints
             plan.InputFingerprint,
             plan.CarrierAuthorityFingerprint,
             plan.SourceAuthorityFingerprint,
-            plan.TargetAuthorityFingerprint
+            plan.TargetAuthorityFingerprint,
+            plan.SkillScopeAuthority?.Fingerprint ?? "none"
         };
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);

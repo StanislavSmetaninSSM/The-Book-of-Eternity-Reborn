@@ -38,7 +38,8 @@ public partial class ValidationService
     private sealed record AcceptedTurnPreparedWoundHandoff(
         JsonObject Commands,
         WoundAcceptedTurnInput Input,
-        WoundPreparedAcceptedTurnPlan PreparedPlan);
+        WoundPreparedAcceptedTurnPlan PreparedPlan,
+        EffectApplicationDiagnosticLocations? EffectLocations);
 
     private sealed record AcceptedTurnWoundPlanningHandoff(
         JsonObject Commands,
@@ -480,6 +481,13 @@ public partial class ValidationService
                 return null;
         }
 
+        var skillScopeIssues = WoundResponseInputComposer.ValidateSkillScopes(
+            binding, draft.ParsedCommands.Commands, recomposed.Transitions,
+            effectInput.SkillScopeAuthority, out var effectLocations);
+        issues.AddRange(skillScopeIssues);
+        if (skillScopeIssues.Count != 0)
+            return null;
+
         var acceptedOwnerCarriers = WoundAcceptedOwnerCarrierAuthority.Compose(
             draft.PreTurnCarriers,
             effectInput.AcceptedCarrierBaselines ??
@@ -520,7 +528,8 @@ public partial class ValidationService
         return new AcceptedTurnPreparedWoundHandoff(
             recomposed.CommandRoot,
             WoundAcceptedTurnData.CloneInput(input)!,
-            prepared.Plan);
+            prepared.Plan,
+            effectLocations?.BindPreparedSources(prepared.Plan));
     }
 
     private static void AddMissingWoundStageIssue(

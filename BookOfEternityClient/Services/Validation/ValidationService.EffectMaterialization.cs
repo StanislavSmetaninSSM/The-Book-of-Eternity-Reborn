@@ -299,7 +299,8 @@ public partial class ValidationService
                     realm: acceptedRealm,
                     grantedBuiltInApplicationAuthorities:
                         builtInApplicationAuthorities,
-                    preparedWoundPlan: preparedWoundPlan);
+                    preparedWoundPlan: preparedWoundPlan,
+                    acceptedSourceRoots: acceptedSources);
 
             var identityInput = ComposeIdentityInput();
             var preparedWound = PrepareAcceptedTurnWoundHandoff(
@@ -324,7 +325,10 @@ public partial class ValidationService
                 return;
             }
 
-            identityInput = ComposeIdentityInput(preparedWound.PreparedPlan);
+            identityInput = ComposeIdentityInput(preparedWound.PreparedPlan) with
+            {
+                WoundApplicationLocations = preparedWound.EffectLocations
+            };
             var woundEffectResult = WoundAcceptedTurnPlanAuthority
                 .GetOrBuildEffectValidated(
                     _fs,
@@ -421,7 +425,8 @@ public partial class ValidationService
                 grantedBuiltInApplicationAuthorities:
                     builtInApplicationAuthorities,
                 acceptedReportedLifecycleEvents: reportedEvents.LifecycleEvents,
-                preparedWoundPlan: preparedWoundPlan);
+                preparedWoundPlan: preparedWoundPlan,
+                acceptedSourceRoots: acceptedSources);
         var input = ComposeInput();
         var prepared = PrepareAcceptedTurnWoundHandoff(
             rawWoundDraft,
@@ -436,7 +441,10 @@ public partial class ValidationService
         if (rawWoundDraft is not null && prepared is null)
             return;
         if (prepared is not null)
-            input = ComposeInput(prepared.PreparedPlan);
+            input = ComposeInput(prepared.PreparedPlan) with
+            {
+                WoundApplicationLocations = prepared.EffectLocations
+            };
         if (suppressEffectExecutionForTerminalReceiptReplay)
         {
             var replayEventInput = input.EventInput;

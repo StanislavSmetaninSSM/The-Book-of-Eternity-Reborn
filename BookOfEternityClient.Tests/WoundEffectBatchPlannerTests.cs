@@ -37,6 +37,182 @@ public sealed partial class WoundEffectBatchPlannerTests
         "book_of_eternity.wound.prepared_baseline_authority";
 
     [Fact]
+    public void SkillScope_WoundEffectFingerprintBindsBothCatalogsAndDetachedInput()
+    {
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(CreateInput()));
+        var input = CreateEffectInput(prepared) with
+        {
+            SkillScopeAuthority = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact").SkillScopeAuthority
+        };
+        var baseline = WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, input);
+        Assert.Equal(baseline, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, WoundAcceptedTurnData.CloneEffectInput(input)));
+        foreach (var (offered, current) in new[] { ("none", "exact"), ("exact", "none"), ("exact", "disabled"), ("duplicate", "exact") })
+        {
+            var changed = input with
+            {
+                SkillScopeAuthority = EffectRollSkillScopeAuthority.Build(new(
+                    EffectAcceptedTurnPlanCacheTests.SkillRoots(offered), EffectAcceptedTurnPlanCacheTests.SkillRoots(current)))
+            };
+            Assert.NotEqual(baseline, WoundAcceptedTurnFingerprints.ComputeEffectInput(prepared, changed));
+        }
+    }
+
+    [Theory]
+    [InlineData("exact", true)]
+    [InlineData("unknown", false)]
+    [InlineData("wrong_target", false)]
+    [InlineData("duplicate", false)]
+    [InlineData("confusable", false)]
+    [InlineData("none", false)]
+    [InlineData("disabled", false)]
+    public void SkillScope_WoundBatchRejectsBeforeAnyEffectAllocation(string catalog, bool success)
+    {
+        var woundInput = CreateInput(shape: CandidateShape.SkillScopedRoot);
+        var before = CapturePreTurn(woundInput);
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(woundInput));
+        var input = CreateEffectInput(prepared) with
+        {
+            WoundApplicationLocations = CreateSkillScopeLocations(prepared),
+            SkillScopeAuthority = EffectRollSkillScopeAuthority.Build(new(
+                EffectAcceptedTurnPlanCacheTests.SkillRoots("exact"), EffectAcceptedTurnPlanCacheTests.SkillRoots(catalog)))
+        };
+        var factory = new CountingEffectIdentityFactory();
+        var result = WoundEffectBatchPlanner.Build(prepared, input, factory);
+        Assert.Equal(success, result.Success);
+        if (!success)
+        {
+            Assert.Null(result.Plan);
+            Assert.Equal(0, factory.EffectCalls);
+            Assert.Equal(0, factory.TransitionCalls);
+            Assert.Equal(2, result.Issues.Count);
+            Assert.Contains(result.Issues, issue => issue.Code == "wound_plan_effect_stage_failed");
+            var issue = Assert.Single(result.Issues, issue => issue.Code == "wound_materialization_effect_binding_invalid");
+            Assert.Equal("woundDecisions[3].proposal.consequenceDefinitions[1].definition.components[0].payload.scope.skillId", issue.FilePath);
+            Assert.Equal("wound_materialization_effect_binding_invalid", issue.Code);
+            Assert.Equal("wound_materialization", issue.Section);
+        }
+        AssertPreTurnUnchanged(woundInput, before);
+    }
+
+    [Theory]
+    [InlineData("missing")]
+    [InlineData("duplicate")]
+    [InlineData("wrong_key")]
+    [InlineData("wrong_section")]
+    [InlineData("wrong_path")]
+    public void SkillScope_WoundRootRequiresOneExactDiagnosticMappingBeforeAllocation(string mutation)
+    {
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(CreateInput(shape: CandidateShape.SkillScopedRoot)));
+        var root = Assert.Single(Assert.Single(prepared.EffectOperationBatches).RootApplications);
+        var location = new EffectApplicationDiagnosticLocation(
+            mutation == "wrong_path" ? "woundDecisions[3].fake.definition.components" :
+                "woundDecisions[3].proposal.consequenceDefinitions[1].definition.components",
+            mutation == "wrong_section" ? "effect_materialization" : "wound_materialization");
+        var key = mutation == "wrong_key" ? root.ExpectedSourceKey with { DefinitionKey = "wrong_definition" } : root.ExpectedSourceKey;
+        var rows = new List<KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>> { new(key, location) };
+        if (mutation == "duplicate") rows.Add(new(key, location));
+        var input = CreateEffectInput(prepared) with
+        {
+            SkillScopeAuthority = EffectAcceptedTurnPlanCacheTests.CreateSkillScopeInput("exact").SkillScopeAuthority,
+            WoundApplicationLocations = mutation == "missing" ? null : new EffectApplicationDiagnosticLocations(rows)
+        };
+        var factory = new CountingEffectIdentityFactory();
+        var result = WoundEffectBatchPlanner.Build(prepared, input, factory);
+        Assert.False(result.Success);
+        Assert.Null(result.Plan);
+        Assert.Contains(result.Issues, issue => issue.Code == "wound_plan_effect_diagnostic_location_invalid");
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
+    [Theory]
+    [InlineData("none", false)]
+    [InlineData("disabled", false)]
+    [InlineData("exact", false)]
+    [InlineData("none", true)]
+    public void SkillScope_AcceptedTreatmentRematerializationDoesNotRebindOrRequireProposalCoordinates(string currentCatalog, bool changeSelector)
+    {
+        // Reuse the existing canonical treatment fixture without editing its Task 6-owned file.
+        // The real rematerialization producer supplies the typed treat batch and private seal.
+        var fixture = typeof(MortalWoundTreatmentSeverityReductionPlannerTests);
+        object InvokeFixture(string name, params object?[] arguments) => fixture
+            .GetMethods(System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+            .Single(method => method.Name == name && method.GetParameters().Length == arguments.Length &&
+                method.GetParameters().Zip(arguments).All(pair => pair.Second is null || pair.First.ParameterType.IsInstanceOfType(pair.Second)))
+            .Invoke(null, arguments)!;
+        var beforeJson = (JsonObject)InvokeFixture("CreateRankThreeWound", (object)new[] { "roll_modifier" });
+        var payload = beforeJson["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["payload"]!;
+        payload["operations"] = new JsonArray("skill_check");
+        payload["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        var before = ParseWound(beforeJson, "acceptedTreatment.before");
+        var projection = MortalWoundTreatmentSeverityReductionPlanner.Project(before, 1, "turn_43:treatment_projection");
+        Assert.True(projection.IsValid);
+        var resolution = (MortalWoundTreatmentResolution)InvokeFixture("CreateSyntheticResolution", "r1", "AppendOnce");
+        var preparation = (MortalWoundTreatmentOutcomePreparation)InvokeFixture(
+            "CreateSyntheticPreparation", resolution, projection.Projection, null);
+        var woundInput = (WoundAcceptedTurnInput)InvokeFixture("CreateRematerializationInput", preparation);
+        var rematerialization = MortalWoundTreatmentSeverityRematerializationPlanner.Prepare(
+            woundInput, preparation, resolution.RequestFingerprint, resolution.ResolutionAuthorityFingerprint,
+            resolution.ResultFingerprint, "wound_treatment_attempt_t070_b6", "operation_t070_b6",
+            WoundIdentityState.ComputeSemanticFingerprint(before));
+        Assert.True(rematerialization.IsValid, string.Join("; ", rematerialization.Issues.Select(issue => issue.Message)));
+        Assert.NotNull(rematerialization.Authority);
+        var batch = Assert.IsType<WoundEffectOperationBatch>(rematerialization.Batch);
+        Assert.Equal("treat", batch.TransitionAuthority.TransitionKind);
+        var root = Assert.Single(batch.RootApplications);
+        Assert.NotNull(root.PriorRootEffectId);
+        var definition = Assert.Single(batch.SourceExport.Definitions);
+        Assert.True(JsonNode.DeepEquals(beforeJson["consequences"]!["ownedEffectSources"]!["definitions"]![0], definition.Definition));
+
+        // Exercise the actual application preparation and shared early/late binding gate.
+        // Whole-plan treatment continuation authentication remains covered by its existing seal tests.
+        var prepared = new WoundPreparedAcceptedTurnPlan(woundInput.Binding, "", "", "",
+            new[] { before.WoundId }, new[] { preparation.TransitionId }, new[] { preparation.ProvisionalAfter },
+            new[] { batch }, WoundAcceptedTurnPlannerCore.CreateBaselineAuthority("fixture", woundInput));
+        var input = CreateEffectInput(prepared,
+            preTurnCarriersOverride: woundInput.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: woundInput.PreTurnEffectIdentityIndex) with
+        {
+            SkillScopeAuthority = EffectRollSkillScopeAuthority.Build(new(
+                EffectAcceptedTurnPlanCacheTests.SkillRoots("exact"), EffectAcceptedTurnPlanCacheTests.SkillRoots(currentCatalog)))
+        };
+        Assert.Null(input.WoundApplicationLocations);
+        if (changeSelector)
+        {
+            var changed = definition.Definition;
+            changed["components"]![0]!["payload"]!["scope"]!["skillId"] = "skill_other";
+            definition = new WoundEffectSourceDefinition(definition.DefinitionKey, changed);
+        }
+        var issues = new List<ValidationIssue>();
+        const System.Reflection.BindingFlags privateStatic = System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic;
+        var request = typeof(EffectAcceptedTurnPlanner).GetMethod("PrepareWoundApplication", privateStatic)!
+            .Invoke(null, new object[] { input, batch, batch.SourceExport, definition, root,
+                woundInput.Binding.AcceptedEvents.ToDictionary(value => value.EventRef, StringComparer.Ordinal),
+                "woundEffectBatches[0].rootApplications[0]", issues });
+        if (changeSelector)
+        {
+            Assert.Null(request);
+            Assert.Contains(issues, issue => issue.Code == "wound_plan_effect_handoff_invalid" &&
+                issue.FilePath == "woundEffectBatches[0].rootApplications[0].source");
+            return;
+        }
+        Assert.Empty(issues);
+        Assert.NotNull(request);
+        var application = request!.GetType().GetProperty("Application")!.GetValue(request)!;
+        Assert.Equal("woundEffectBatches[0].rootApplications[0].components", application.GetType().GetProperty("Path")!.GetValue(application));
+        var scopeIssues = (IReadOnlyList<ValidationIssue>)typeof(EffectAcceptedTurnPlanner)
+            .GetMethod("ValidateApplicationSkillScopes", privateStatic)!
+            .Invoke(null, new object?[] { application, definition.Definition["components"]!.AsArray(), input.SkillScopeAuthority })!;
+        Assert.Empty(scopeIssues);
+        Assert.Equal("skill_grip", definition.Definition["components"]![0]!["payload"]!["scope"]!["skillId"]!.GetValue<string>());
+    }
+
+    private static EffectApplicationDiagnosticLocations CreateSkillScopeLocations(WoundPreparedAcceptedTurnPlan prepared) => new(
+        prepared.EffectOperationBatches.SelectMany(batch => batch.RootApplications).Select(root =>
+            new KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>(root.ExpectedSourceKey,
+                new("woundDecisions[3].proposal.consequenceDefinitions[1].definition.components", "wound_materialization"))));
+
+    [Fact]
     public void MaterializationFingerprint_BindsExactSourceSchemaParametersAndOrderedComponents()
     {
         var first = EffectMaterializationTestFixture
@@ -3414,6 +3590,7 @@ public sealed partial class WoundEffectBatchPlannerTests
 
     private enum CandidateShape
     {
+        SkillScopedRoot,
         Standard,
         TwoRoots,
         OneRootTwoSlots,
@@ -3938,6 +4115,7 @@ public sealed partial class WoundEffectBatchPlannerTests
     {
         var roots = shape switch
         {
+            CandidateShape.SkillScopedRoot => new[] { "roll_modifier" },
             CandidateShape.Standard => new[] { "periodic_damage" },
             CandidateShape.TwoRoots => new[] { "periodic_damage", "action_control" },
             CandidateShape.OneRootTwoSlots => new[] { "periodic_damage" },
@@ -4000,6 +4178,13 @@ public sealed partial class WoundEffectBatchPlannerTests
                     $"draft_wound_{woundOrdinal:D3}";
             }
             var applicationSlots = new List<WoundAcceptedConsequenceSlotBinding>();
+
+            if (shape == CandidateShape.SkillScopedRoot)
+            {
+                definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+                definition["components"]![0]!["payload"]!["scope"] =
+                    new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+            }
 
             if (shape == CandidateShape.OneRootTwoSlots)
             {

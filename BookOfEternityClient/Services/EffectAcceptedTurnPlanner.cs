@@ -2476,6 +2476,7 @@ internal static class EffectAcceptedTurnPlanner
                 preMutationCatalog,
                 plan.SourceAuthority,
                 woundLineageAuthority,
+                plan.SkillScopeAuthority,
                 issues);
         if (issues.Count != 0)
             return Failed(issues);
@@ -2545,7 +2546,8 @@ internal static class EffectAcceptedTurnPlanner
                 plan.SourceAuthority,
                 reactionSourceBindings,
                 reactionApplicationPlans,
-                reactionApplicationResults);
+                reactionApplicationResults,
+                plan.SkillScopeAuthority);
             if (issues.Count != 0)
                 return Failed(issues);
         }
@@ -2718,7 +2720,8 @@ internal static class EffectAcceptedTurnPlanner
                     WoundAcceptedTurnFingerprints
                         .ComputeAcceptedEffectPlanPayload(plan),
                 woundApplicationRootEffectBindings:
-                    plan.WoundApplicationRootEffectBindings),
+                    plan.WoundApplicationRootEffectBindings,
+                skillScopeAuthority: plan.SkillScopeAuthority),
             Array.Empty<ValidationIssue>());
     }
 
@@ -3852,6 +3855,23 @@ internal static class EffectAcceptedTurnPlanner
             return null;
         }
 
+        // A typed, authenticated treatment batch re-materializes its sealed definition graph;
+        // it does not offer a new selector choice. Its structural diagnostics remain internal.
+        var acceptedContinuation = batch.TransitionAuthority.TransitionKind == "treat";
+        var diagnosticPath = path + ".components";
+        if (!acceptedContinuation &&
+            (input.SkillScopeAuthority is not null || input.WoundApplicationLocations is not null))
+        {
+            if (input.WoundApplicationLocations is null ||
+                !input.WoundApplicationLocations.TryResolve(resolvedSource.Key, out var location))
+            {
+                AddWoundBatchIssue(issues, path, "wound_plan_effect_diagnostic_location_invalid",
+                    "one exact immutable original wound proposal component coordinate", "missing or ambiguous mapping");
+                return null;
+            }
+            diagnosticPath = location.Path;
+        }
+
         return new WoundApplicationRequest(
             batch,
             root,
@@ -3862,7 +3882,10 @@ internal static class EffectAcceptedTurnPlanner
                 expectedTarget,
                 parameters.DeepClone().AsObject(),
                 createdEventRef,
-                root.CausalEventRef),
+                root.CausalEventRef,
+                diagnosticPath,
+                "wound_materialization",
+                acceptedContinuation),
             createdEventRef);
     }
 
@@ -4461,6 +4484,15 @@ internal static class EffectAcceptedTurnPlanner
             return Failed(issues);
 
         var workspace = new CarrierWorkspace(carriers);
+        // Reject the entire new-application batch before any lifecycle or application allocation.
+        foreach (var application in applications.Concat(woundApplications.Select(request => request.Application)))
+        {
+            var components = application.Source.Definition["components"]!.DeepClone().AsArray();
+            BindParameters(components, application.Parameters);
+            issues.AddRange(ValidateApplicationSkillScopes(application, components, input.SkillScopeAuthority));
+        }
+        if (issues.Count != 0)
+            return Failed(issues);
         workspace.IncludeRewrittenCombatantRoots(publicationCarrierBaselines);
         var effectIds = new List<string>();
         var transitionIds = new List<string>();
@@ -4532,7 +4564,8 @@ internal static class EffectAcceptedTurnPlanner
                 activeEffects,
                 processedEventRefs,
                 issues,
-                ApplicationProvenance.Direct);
+                ApplicationProvenance.Direct,
+                skillScopeAuthority: input.SkillScopeAuthority);
             usedSources.Add(application.Source);
             usedTargets.Add(application.Target);
         }
@@ -4558,7 +4591,8 @@ internal static class EffectAcceptedTurnPlanner
                 request.Root.PriorRootEffectId is null
                     ? ApplicationProvenance.Direct
                     : new ApplicationProvenance.SeverityGeneration(
-                        request.Root.PriorRootEffectId));
+                        request.Root.PriorRootEffectId),
+                skillScopeAuthority: input.SkillScopeAuthority);
             if (execution is null && issues.Count == issueCount)
             {
                 AddWoundBatchIssue(
@@ -4664,7 +4698,8 @@ internal static class EffectAcceptedTurnPlanner
                 acceptedCarrierBaselines:
                     input.AcceptedCarrierBaselines ?? carriers,
                 woundApplicationRootEffectBindings:
-                    woundApplicationRootEffectBindings),
+                    woundApplicationRootEffectBindings,
+                skillScopeAuthority: input.SkillScopeAuthority),
             Array.Empty<ValidationIssue>());
     }
 
@@ -4704,6 +4739,7 @@ internal static class EffectAcceptedTurnPlanner
             EffectCarrierCatalog preMutationCatalog,
             EffectSourceAuthority sourceAuthority,
             WoundReactionLineageAuthority woundLineageAuthority,
+            EffectRollSkillScopeAuthority? skillScopeAuthority,
             List<ValidationIssue> issues)
     {
         var plans = new Dictionary<string, ReactionApplicationPlan>(
@@ -4753,6 +4789,15 @@ internal static class EffectAcceptedTurnPlanner
                     reaction.EventRef);
                 continue;
             }
+            var components = source.Definition["components"]!.DeepClone().AsArray();
+            BindParameters(components, reaction.Parameters);
+            var scopeIssues = skillScopeAuthority?.ValidateNewComponents(
+                reaction.Target, components, $"effect.reactions[{reaction.EventRef}].components")
+                ?? Array.Empty<ValidationIssue>();
+            issues.AddRange(scopeIssues);
+            if (scopeIssues.Count != 0)
+                continue;
+
             var coordinate = new EffectStackCoordinate(
                 reaction.Target.Realm,
                 reaction.Target.Kind,
@@ -5755,7 +5800,9 @@ internal static class EffectAcceptedTurnPlanner
                 targetResolution.Target!,
                 parameters?.DeepClone().AsObject(),
                 acceptedEventRef,
-                acceptedEventRef));
+                acceptedEventRef,
+                path + ".apply.components",
+                "effect_materialization"));
         }
     }
 
@@ -6172,7 +6219,8 @@ internal static class EffectAcceptedTurnPlanner
         HashSet<string> processedEventRefs,
         List<ValidationIssue> issues,
         ApplicationProvenance provenance,
-        ReactionReplacementRuntimeExpectation? replacementExpectation = null)
+        ReactionReplacementRuntimeExpectation? replacementExpectation = null,
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null)
     {
         var definition = application.Source.Definition;
         if (definition["display"] is not JsonObject display ||
@@ -6193,6 +6241,10 @@ internal static class EffectAcceptedTurnPlanner
 
         var components = definition["components"]!.DeepClone().AsArray();
         BindParameters(components, application.Parameters);
+        var scopeIssues = ValidateApplicationSkillScopes(application, components, skillScopeAuthority);
+        issues.AddRange(scopeIssues);
+        if (scopeIssues.Count != 0)
+            return null;
         var existing = workspace.FindStackEffects(
             realm,
             application.Target,
@@ -6411,6 +6463,22 @@ internal static class EffectAcceptedTurnPlanner
             null,
             null,
             provenance);
+    }
+
+    private static IReadOnlyList<ValidationIssue> ValidateApplicationSkillScopes(
+        Application application,
+        JsonArray boundComponents,
+        EffectRollSkillScopeAuthority? authority)
+    {
+        if (application.AcceptedContinuation)
+            return Array.Empty<ValidationIssue>();
+        var issues = authority?.ValidateNewComponents(
+            application.Target, boundComponents, application.Path, application.Section)
+            ?? Array.Empty<ValidationIssue>();
+        return application.Section != "wound_materialization" ? issues : issues.Select(issue =>
+            new ValidationIssue(issue.FilePath, issue.Severity, issue.Message,
+                code: "wound_materialization_effect_binding_invalid", section: application.Section,
+                expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint)).ToArray();
     }
 
     private static void ApplyDueLifecycleEvents(
@@ -6745,7 +6813,8 @@ internal static class EffectAcceptedTurnPlanner
         IReadOnlyDictionary<string, ReactionApplicationPlan>?
             reactionApplicationPlans = null,
         IDictionary<string, ReactionApplicationResult>?
-            reactionApplicationResults = null)
+            reactionApplicationResults = null,
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null)
     {
         if (processedEventRefs.Contains(reaction.EventRef))
         {
@@ -6883,7 +6952,9 @@ internal static class EffectAcceptedTurnPlanner
                     reaction.Target,
                     reaction.Parameters?.DeepClone().AsObject(),
                     reaction.EventRef,
-                    reaction.CausalEventRef),
+                    reaction.CausalEventRef,
+                    $"effect.reactions[{reaction.EventRef}].components",
+                    "effect_materialization"),
                 realm,
                 eventInput,
                 workspace,
@@ -6896,7 +6967,8 @@ internal static class EffectAcceptedTurnPlanner
                 processedEventRefs,
                 issues,
                 new ApplicationProvenance.Reaction(reaction.EffectId),
-                replacementExpectation);
+                replacementExpectation,
+                skillScopeAuthority);
             var applicationResult = applicationExecution?.ReactionResult;
             if (issues.Count == 0 && applicationPlan?.IsReplacement == true)
             {
@@ -8672,7 +8744,10 @@ internal static class EffectAcceptedTurnPlanner
         EffectTargetKey Target,
         JsonObject? Parameters,
         string EventRef,
-        string CausalEventRef);
+        string CausalEventRef,
+        string Path,
+        string Section,
+        bool AcceptedContinuation = false);
 
     private sealed record WoundApplicationRequest(
         WoundEffectOperationBatch Batch,

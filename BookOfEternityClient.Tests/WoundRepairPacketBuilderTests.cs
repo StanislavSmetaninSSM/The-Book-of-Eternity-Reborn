@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -6,6 +7,131 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class WoundRepairPacketBuilderTests
 {
+    [Theory]
+    [InlineData("exact", "exact", true)]
+    [InlineData("exact", "wrong_target", false)]
+    [InlineData("exact", "unknown", false)]
+    [InlineData("exact", "duplicate", false)]
+    [InlineData("exact", "confusable", false)]
+    [InlineData("none", "exact", false)]
+    [InlineData("exact", "disabled", false)]
+    public void SkillScope_CanonicalPreflightPreservesOriginalSelectorCoordinateAndRejectedProposal(
+        string offered, string current, bool success)
+    {
+        var opportunity = CreateOpportunity();
+        var binding = new WoundAcceptedTurnBinding(
+            opportunity.SessionId, opportunity.RequestId, opportunity.SnapshotToken,
+            "mortal_world", 7, Array.Empty<WoundAcceptedEventAuthority>(), opportunity.AcceptedEventsFingerprint);
+        var proposal = CreateProposal();
+        var definition = EffectMaterializationTestFixture.CreateDefinition("roll_modifier");
+        definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        definition["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        proposal["consequenceDefinitions"]![0]!["definition"] = definition.DeepClone();
+        var allDefinition = definition.DeepClone().AsObject();
+        allDefinition["definitionKey"] = "all_definition";
+        allDefinition["components"]![0]!["payload"]!["scope"] = new JsonObject { ["kind"] = "all" };
+        proposal["consequenceDefinitions"]!.AsArray().Insert(0, new JsonObject
+        {
+            ["definitionRef"] = "local_all", ["definition"] = allDefinition.DeepClone()
+        });
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef, ["decision"] = "materialize",
+            ["woundRef"] = "local_wound", ["proposal"] = proposal
+        };
+        var commands = new[]
+        {
+            new WoundResponseCommandDraft(opportunity with { PublicRef = "opportunity_none" },
+                JsonSerializer.SerializeToElement(new JsonObject { ["decision"] = "none" }), "scene"),
+            new WoundResponseCommandDraft(opportunity, JsonSerializer.SerializeToElement(decision), "scene")
+        };
+        var wound = WoundMaterializationContract.Parse(WoundContractTestData.CreateActiveWound("local_wound").ToJsonString(), "test.wound").Wound!;
+        var transitions = new[] { new WoundAcceptedTransitionDraft(
+            "create", "operation_scope", "local_wound", "transition_local", opportunity.OpportunityId, "scope test",
+            wound, new[] { new WoundAcceptedEffectDefinitionDraft("local_all", allDefinition), new WoundAcceptedEffectDefinitionDraft("local_effect_definition_001", definition) },
+            new[]
+            {
+                new WoundAcceptedRootApplicationDraft("root_all", "local_all", "root_all_operation", WoundRootOwnershipDomain.BaseWound),
+                new WoundAcceptedRootApplicationDraft("root_local", "local_effect_definition_001", "root_operation", WoundRootOwnershipDomain.BaseWound)
+            },
+            Array.Empty<WoundAcceptedConsequenceSlotBinding>()) };
+        var authority = EffectRollSkillScopeAuthority.Build(new(
+            EffectAcceptedTurnPlanCacheTests.SkillRoots(offered), EffectAcceptedTurnPlanCacheTests.SkillRoots(current)));
+        var before = decision.ToJsonString();
+        var issues = WoundResponseInputComposer.ValidateSkillScopes(binding, commands, transitions, authority, out var locations);
+        Assert.Equal(before, decision.ToJsonString());
+        Assert.Equal(success, issues.Count == 0);
+        if (success)
+        {
+            Assert.NotNull(locations);
+            Assert.True(locations.TryResolve(new EffectSourceKey("mortal_world", "wound", "local_wound",
+                definition["definitionKey"]!.GetValue<string>()), out var location));
+            Assert.Equal("woundDecisions[1].proposal.consequenceDefinitions[1].definition.components", location.Path);
+            return;
+        }
+        Assert.Null(locations);
+        var issue = Assert.Single(issues);
+        const string path = "woundDecisions[1].proposal.consequenceDefinitions[1].definition.components[0].payload.scope.skillId";
+        Assert.Equal(path, issue.FilePath);
+        Assert.Equal("wound_materialization_effect_binding_invalid", issue.Code);
+        Assert.Equal("wound_materialization", issue.Section);
+        Assert.NotNull(issue.WoundRepairContext);
+        Assert.True(JsonNode.DeepEquals(decision, issue.WoundRepairContext.RejectedDecision));
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(issues));
+        Assert.True(packet.MatchesRejectedDecision(decision));
+        Assert.Equal(path["woundDecisions[1].".Length..], Assert.Single(packet.Issues).Path);
+        var safe = packet.SafeContext.ToJsonString();
+        Assert.DoesNotContain("game_state/", safe);
+        Assert.DoesNotContain("woundId", safe);
+        Assert.DoesNotContain("effectId", safe);
+        Assert.DoesNotContain("opportunity_internal", safe);
+        Assert.DoesNotContain("\"woundId\"", packet.ToJsonObject().ToJsonString());
+        Assert.DoesNotContain("\"effectId\"", packet.ToJsonObject().ToJsonString());
+        Assert.Equal("skill_grip", decision["proposal"]!["consequenceDefinitions"]![1]!["definition"]!["components"]![0]!["payload"]!["scope"]!["skillId"]!.GetValue<string>());
+    }
+
+    [Fact]
+    public void SkillScope_DirectSelectorCoordinateTakesPrecedenceOverLinkRepair()
+    {
+        var opportunity = CreateOpportunity();
+        var binding = new WoundAcceptedTurnBinding(opportunity.SessionId, opportunity.RequestId, opportunity.SnapshotToken,
+            "mortal_world", 7, Array.Empty<WoundAcceptedEventAuthority>(), opportunity.AcceptedEventsFingerprint);
+        var proposal = CreateProposal();
+        proposal["consequenceDefinitions"]![0]!["definition"]!["links"]!.AsArray().Add(new JsonObject
+        {
+            ["kind"] = "wound", ["targetRef"] = "local_wound", ["role"] = "source"
+        });
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef, ["decision"] = "materialize", ["woundRef"] = "local_wound", ["proposal"] = proposal
+        };
+        const string path = "woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.scope.skillId";
+        var issue = new ValidationIssue(path, IssueSeverity.Error, "unavailable skill",
+            code: "wound_materialization_effect_binding_invalid", section: "wound_materialization");
+        var result = WoundResponseInputComposer.AttachRepairContexts(binding, new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(decision) }, "scene", new[] { issue });
+        Assert.Equal(path, Assert.Single(result).FilePath);
+    }
+
+    [Fact]
+    public void SkillScope_SelectorFailureHasSafeRepairPacketAndExactCoordinate()
+    {
+        const string path = "woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.scope.skillId";
+        var proposal = CreateProposal();
+        proposal["consequenceDefinitions"]![0]!["definition"]!["components"]![0]!["payload"]!["scope"] =
+            new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" };
+        var candidate = CreateCandidate("candidate_scope", path,
+            "wound_materialization_effect_binding_invalid", "skill_grip", proposal);
+        var packets = WoundRepairPacketBuilder.Build(CreateRequest(candidate));
+        var packet = Assert.Single(packets);
+        var issue = Assert.Single(packet.Issues);
+        Assert.Equal(path["woundDecisions[0].".Length..], issue.Path);
+        Assert.Equal("one exact offered and currently usable skill of the wound owner", issue.Expected);
+        Assert.Equal("игрок", packet.SafeContext["target"]!.GetValue<string>());
+        Assert.DoesNotContain("validator-internal", packet.SafeContext.ToJsonString());
+        Assert.DoesNotContain("game_state/", packet.SafeContext.ToJsonString());
+    }
+
     [Theory]
     [InlineData(
         "woundDecisions[0].proposal.owner",

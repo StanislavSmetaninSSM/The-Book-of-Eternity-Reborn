@@ -88,6 +88,78 @@ internal static partial class WoundResponseInputComposer
         WoundAcceptedTransitionDraft? Transition,
         WoundPlayerNotification? Notification);
 
+    internal static IReadOnlyList<ValidationIssue> ValidateSkillScopes(
+        WoundAcceptedTurnBinding binding,
+        IReadOnlyList<WoundResponseCommandDraft> commands,
+        IReadOnlyList<WoundAcceptedTransitionDraft> transitions,
+        EffectRollSkillScopeAuthority? authority,
+        out EffectApplicationDiagnosticLocations? locations)
+    {
+        locations = null;
+        var issues = new List<ValidationIssue>();
+        var rows = new Dictionary<EffectSourceKey, EffectApplicationDiagnosticLocation>();
+        var decisions = commands.Select((command, index) => (
+            Index: index,
+            Decision: command.Decision.ValueKind == JsonValueKind.Object
+                ? JsonNode.Parse(command.Decision.GetRawText()) as JsonObject : null)).ToArray();
+        foreach (var transition in transitions)
+        {
+            var matches = decisions.Where(row =>
+                row.Decision?["decision"]?.GetValue<string>() == "materialize" &&
+                row.Decision?["woundRef"]?.GetValue<string>() == transition.LocalWoundRef).ToArray();
+            if (matches.Length != 1 ||
+                !WoundEffectCarrierAdapter.TryCreateTargetKey(transition.ProposedAfter.Owner, out var target))
+            {
+                InvalidLocation("woundDecisions");
+                continue;
+            }
+            var (decisionIndex, decision) = matches[0];
+            var prefix = $"woundDecisions[{decisionIndex}].proposal.consequenceDefinitions";
+            if (decision?["proposal"]?["consequenceDefinitions"] is not JsonArray rawDefinitions)
+            {
+                InvalidLocation(prefix);
+                continue;
+            }
+            foreach (var draft in transition.EffectDefinitions)
+            {
+                var definition = draft.Definition;
+                var definitionKey = definition["definitionKey"]?.GetValue<string>();
+                var definitions = rawDefinitions.Select((node, index) => (Node: node, Index: index))
+                    .Where(row => row.Node?["definitionRef"]?.GetValue<string>() == draft.LocalEffectRef &&
+                        row.Node?["definition"]?["definitionKey"]?.GetValue<string>() == definitionKey).ToArray();
+                if (definitions.Length != 1 || definitionKey is null || definition["components"] is not JsonArray components)
+                {
+                    InvalidLocation(prefix);
+                    continue;
+                }
+                var path = $"{prefix}[{definitions[0].Index}].definition.components";
+                var key = new EffectSourceKey(binding.Realm, "wound", transition.LocalWoundRef, definitionKey);
+                if (!rows.TryAdd(key, new(path, "wound_materialization")))
+                {
+                    InvalidLocation(path);
+                    continue;
+                }
+                var scopeIssues = authority?.ValidateNewComponents(target, components, path, "wound_materialization")
+                    ?? Array.Empty<ValidationIssue>();
+                foreach (var issue in scopeIssues)
+                    issues.Add(new ValidationIssue(issue.FilePath, issue.Severity, issue.Message,
+                        code: "wound_materialization_effect_binding_invalid", section: "wound_materialization",
+                        expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint));
+            }
+            foreach (var root in transition.RootApplications)
+                if (transition.EffectDefinitions.Count(definition => definition.LocalEffectRef == root.LocalEffectRef) != 1)
+                    InvalidLocation(prefix);
+        }
+        if (issues.Count == 0)
+            locations = new EffectApplicationDiagnosticLocations(rows);
+        return AttachRepairContexts(binding, commands.Select(command => command.Opportunity).ToArray(),
+            commands.Select(command => command.Decision).ToArray(), commands.FirstOrDefault()?.FinalSceneText, issues);
+
+        void InvalidLocation(string path) => issues.Add(new ValidationIssue(path, IssueSeverity.Error,
+            "Wound effect diagnostic coordinates must match one exact recomposed proposal.",
+            code: "wound_plan_effect_diagnostic_location_invalid", section: "wound_materialization"));
+    }
+
     internal static WoundResponseInputCompositionResult Compose(
         WoundAcceptedTurnBinding binding,
         IReadOnlyList<WoundOpportunityAuthority> opportunities,
@@ -769,6 +841,14 @@ internal static partial class WoundResponseInputComposer
         {
             return TryFindOverBudgetSlotPath(proposal, prefix, out path) &&
                    SetCode("wound_consequence_slot_budget_exceeded", ref code);
+        }
+        if (code == "wound_materialization_effect_binding_invalid" &&
+            issue.FilePath.StartsWith(prefix + "consequenceDefinitions[", StringComparison.Ordinal) &&
+            issue.FilePath.Contains(".definition.components[", StringComparison.Ordinal) &&
+            issue.FilePath.EndsWith(".payload.scope.skillId", StringComparison.Ordinal))
+        {
+            path = issue.FilePath;
+            return true;
         }
         if ((code == "wound_materialization_effect_binding_invalid" ||
              code == "wound_response_client_authority_forbidden") &&

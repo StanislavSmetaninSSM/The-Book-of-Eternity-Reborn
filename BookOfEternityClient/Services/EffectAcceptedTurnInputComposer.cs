@@ -124,7 +124,8 @@ internal static class EffectAcceptedTurnInputComposer
         string realm = "mortal_world",
         IReadOnlySet<string>? grantedBuiltInApplicationAuthorities = null,
         IReadOnlyList<JsonObject>? acceptedReportedLifecycleEvents = null,
-        WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null)
+        WoundPreparedAcceptedTurnPlan? preparedWoundPlan = null,
+        IReadOnlyDictionary<string, JsonNode?>? acceptedSourceRoots = null)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(sessionId);
         ArgumentException.ThrowIfNullOrWhiteSpace(snapshotToken);
@@ -280,7 +281,8 @@ internal static class EffectAcceptedTurnInputComposer
             PublicationCarrierBaselines: CloneCarriers(
                 publicationCarrierBaselines ?? acceptedCarriers),
             PreallocatedCombatantIdentities: preallocatedCombatantIdentities,
-            AcceptedCarrierBaselines: CloneCarriers(acceptedCarriers));
+            AcceptedCarrierBaselines: CloneCarriers(acceptedCarriers),
+            SkillScopeAuthority: ComposeSkillScopeAuthority(preTurnSourceRoots, acceptedSourceRoots));
     }
 
     private static EffectCarrierCatalogInput PreserveClosingSpiritualConflictCarrier(
@@ -846,7 +848,9 @@ internal static class EffectAcceptedTurnInputComposer
             preTurnRoots.TryGetValue(path, out var preTurnRoot);
             JsonNode? acceptedRoot = null;
             acceptedRoots?.TryGetValue(path, out acceptedRoot);
-            currentRoots[path] = ComposeSkillAcceptedRoot(preTurnRoot, acceptedRoot, changes, removals, path);
+            currentRoots[path] = acceptedRoot is null || JsonNode.DeepEquals(preTurnRoot, acceptedRoot)
+                ? preTurnRoot
+                : ComposeSkillAcceptedRoot(preTurnRoot, acceptedRoot, changes, removals, path);
         }
 
         const string npcPath = "game_state/npcs/npc_core.json";
