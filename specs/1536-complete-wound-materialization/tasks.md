@@ -1552,6 +1552,40 @@ entrypoints require no update for T065.
   complication-effect batches, course, heal/legacy, or T069-C and does not widen the public
   response/request/resolution contract. It is a client-owned Mortal contour with no new GM,
   browser/console, migration, or afterlife documentation surface.
+  T070 Phase B.5 bounded closure (2026-09-04): complete through `509554c2`.
+  Implementation commits are `e2ecb79b`, `c7bdb05d`, `77616367`, `045bb5de`,
+  `2e3defc0`, and `3dbf0572`; bounded-test corrections are `92831931`,
+  `a3eea647`, and `667f86b0`; final-review remediation is `0cca886e` and
+  `509554c2`. The final owning controls executed 39 tests: 38 passed and exactly
+  the deliberately deferred `reduce_severity` row remained RED at
+  `mortal_wound_treatment_publication_slice_unsupported`
+  (`20260904-111802-251-35456-36e973d8b89b47398bca5ca496dbbec1-focused`,
+  `20260904-112040-020-24580-584075d2043a4684b1c096225c62db82-focused`,
+  `20260904-112207-664-46008-b61ec756d4f34de9ac9ab29166d157e0-focused`,
+  `20260904-112426-554-35780-b945a21c74734e0aaa0ba290793774a5-focused`, and
+  `20260904-112648-390-46848-663010660e4e46ca86fc0b89b99f2f0f-focused`). Retained
+  B.1-B.4/T067/T068/#1535 controls passed 25/25
+  (`20260904-112823-975-16220-db7d8ce960b34eb59c7dde6e5420e857-focused`,
+  `20260904-112930-200-50480-f941f162fcc54513a6be33a5e41d9b8d-focused`,
+  `20260904-113027-183-33000-f7d5315e649f48748b7cf0627e62e09d-focused`,
+  `20260904-113122-794-38016-5f419a32d71d40b4ae0e8ea6b4821ea3-focused`, and
+  `20260904-113158-467-58940-2b41d1fd09e245dabcbcbe7396ef30a4-focused`). The one
+  required Fast checkpoint completed 4,759/4,759 in about 2:17 with 4,694 PASS
+  and exactly 65 classified known diagnosis REDs, without timeout, duplicate
+  IDs, warning/error, or cleanup debt
+  (`20260904-082214-233-26816-a885b4a8285c4923a09768dc3ed2363f-fast`). After two
+  remediation passes, fresh independent rereview reports zero
+  Critical/Important/Minor findings and `Ready: YES`. `reduce_severity`,
+  effect-bearing complications, course, recovery, heal/legacy, and T069-C remain
+  open. B.5 changed only private client-owned Mortal publication enforcement;
+  no public API/DTO, persisted schema, player command, GM-authored response
+  shape, or afterlife runtime surface changed. The existing common-plan
+  normalizer now applies already-specified client-owned after-images without a
+  new GM-authored field or side-effect shape; existing wound guidance/examples
+  already assign content to the GM and canonical identity/history/receipts/
+  carrier post-state to the client. Therefore no GM prompt, worked example,
+  manifest, browser/console, migration, or afterlife documentation update is
+  required. T070 and #1536 remain open.
 - [ ] T071 [US2] Remove loose Mortal aliases/wrappers, `generatedEffects`, `healingState.canBeImprovedBy`, `WoundReference`, `sourceWoundId`, `duration=999`, and NPC-effect-carrier fallbacks in `BookOfEternityClient/Services/Validation/ValidationService.PlayerAndInventory.cs`, `BookOfEternityClient/Services/Validation/ValidationService.NpcWorldAndMeta.cs`, and `BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs`
 
 **T066/T067-A/T068-A+T069-A/T070-A/T069-B/T067-B/T068-B/T070-B/T069-C execution
