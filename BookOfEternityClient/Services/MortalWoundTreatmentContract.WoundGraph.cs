@@ -79,7 +79,6 @@ internal static partial class MortalWoundTreatmentContract
         ValidateDetachedComplicationStaticEnvelope(
             graph,
             roots,
-            rootKeys,
             collectionPath,
             severityRank,
             issues);
@@ -88,14 +87,6 @@ internal static partial class MortalWoundTreatmentContract
             graph.ByKey,
             rootKeys,
             requireExactSingleInboundForUnbound: true,
-            issues);
-        ValidateComplicationSlotReciprocity(
-            graph.ByRef,
-            graph.ByKey,
-            roots,
-            rootKeys,
-            collectionPath,
-            severityRank,
             issues);
     }
 
@@ -397,49 +388,33 @@ internal static partial class MortalWoundTreatmentContract
     private static void ValidateDetachedComplicationStaticEnvelope(
         DetachedGraph graph,
         IReadOnlyList<DetachedEffectRootCandidate> roots,
-        IReadOnlySet<string> rootKeys,
         string collectionPath,
         int severityRank,
         List<ValidationIssue> issues)
     {
-        var effects = new List<WoundDetachedMortalEffectRef>();
-        foreach (var root in roots)
-        {
-            if (!graph.ByRef.TryGetValue(root.DefinitionRef, out var definition))
-                continue;
-            var expansions = new List<WoundDetachedMortalReactionExpansionRef>();
-            foreach (var edge in definition.Edges)
-            {
-                IReadOnlyList<JsonElement> childComponents = Array.Empty<JsonElement>();
-                var childPath = edge.Path;
-                if (!rootKeys.Contains(edge.TargetDefinitionKey) &&
-                    graph.ByKey.TryGetValue(edge.TargetDefinitionKey, out var leaf))
-                {
-                    childComponents = leaf.Profiles
-                        .Select(static profile => profile.Component.Clone())
-                        .ToArray();
-                    childPath = leaf.Candidate.DefinitionPath;
-                }
-                expansions.Add(new WoundDetachedMortalReactionExpansionRef(
-                    edge.ComponentId,
-                    childPath,
-                    childComponents,
-                    edge.Parameters));
-            }
-            effects.Add(new WoundDetachedMortalEffectRef(
-                root.DefinitionRef,
+        var definitions = graph.Definitions
+            .Select(static definition => new WoundPersistedConsequenceDefinition(
+                definition.Candidate.DefinitionRef,
                 definition.Candidate.DefinitionPath,
-                definition.Profiles
-                    .Select(static profile => profile.Component.Clone())
-                    .ToArray(),
-                expansions));
-        }
-
-        var validation = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
-            new WoundDetachedMortalEnvelopeRequest(
-                severityRank,
-                collectionPath,
-                effects));
+                definition.Candidate.Definition.Clone()))
+            .ToArray();
+        var persistedRoots = roots.Select(root =>
+            new WoundPersistedConsequenceRoot(
+                root.DefinitionRef,
+                root.DefinitionRef,
+                root.RootPath,
+                root.Slots?.Select((slot, index) => new WoundEffectSlotAgreement(
+                    index + 1,
+                    slot.ProfileKey,
+                    string.Empty)).ToArray(),
+                root.Slots?.Select(static slot => slot.Path).ToArray()))
+            .ToArray();
+        var validation = WoundPersistedConsequenceEnvelopeAdapter.ValidateDetached(
+            severityRank,
+            collectionPath,
+            definitions,
+            persistedRoots,
+            requireExactGlobalSlotAgreement: false);
         foreach (var issue in validation.Issues)
         {
             AddInvalid(
@@ -629,95 +604,6 @@ internal static partial class MortalWoundTreatmentContract
                         .ToString(CultureInfo.InvariantCulture));
             }
         }
-    }
-
-    private static void ValidateComplicationSlotReciprocity(
-        IReadOnlyDictionary<string, DetachedGraphDefinition> definitionsByRef,
-        IReadOnlyDictionary<string, DetachedGraphDefinition> definitionsByKey,
-        IReadOnlyList<DetachedEffectRootCandidate> roots,
-        IReadOnlySet<string> rootKeys,
-        string collectionPath,
-        int severityRank,
-        List<ValidationIssue> issues)
-    {
-        var derivedSlotCount = 0;
-        foreach (var root in roots)
-        {
-            if (root.Slots is null ||
-                !definitionsByRef.TryGetValue(root.DefinitionRef, out var definition))
-            {
-                continue;
-            }
-            var expected = DirectMechanicalProfiles(definition);
-            foreach (var edge in definition.Edges)
-            {
-                if (!rootKeys.Contains(edge.TargetDefinitionKey) &&
-                    definitionsByKey.TryGetValue(edge.TargetDefinitionKey, out var leaf))
-                {
-                    expected.AddRange(DirectMechanicalProfiles(leaf));
-                }
-            }
-            derivedSlotCount += expected.Count;
-
-            var remaining = new List<string>(expected);
-            foreach (var slot in root.Slots)
-            {
-                var match = remaining.FindIndex(profile => string.Equals(
-                    profile,
-                    slot.ProfileKey,
-                    StringComparison.Ordinal));
-                if (match >= 0)
-                {
-                    remaining.RemoveAt(match);
-                    continue;
-                }
-                AddInvalid(
-                    issues,
-                    slot.Path,
-                    "profile matching one derived mechanical slot of this root",
-                    slot.ProfileKey);
-            }
-            if (remaining.Count != 0)
-            {
-                AddInvalid(
-                    issues,
-                    root.RootPath + ".slots",
-                    "one reciprocal slot for every derived mechanical component",
-                    string.Join(",", remaining));
-            }
-        }
-
-        var maximum = Math.Min(WoundMaterializationContract.MaxConsequences, severityRank);
-        if (derivedSlotCount > maximum)
-        {
-            AddInvalid(
-                issues,
-                collectionPath,
-                $"at most {maximum} aggregate consequence slots at severity {severityRank}",
-                derivedSlotCount.ToString(CultureInfo.InvariantCulture));
-        }
-    }
-
-    private static List<string> DirectMechanicalProfiles(DetachedGraphDefinition definition)
-    {
-        var profiles = new List<string>();
-        foreach (var profile in definition.Profiles)
-        {
-            if (string.Equals(profile.Profile, "wound_consequence", StringComparison.Ordinal))
-                continue;
-            if (string.Equals(profile.Profile, "roll_modifier", StringComparison.Ordinal) &&
-                profile.Component.TryGetProperty("payload", out var payload) &&
-                payload.ValueKind == JsonValueKind.Object &&
-                payload.TryGetProperty("operations", out var operations) &&
-                operations.ValueKind == JsonValueKind.Array)
-            {
-                for (var index = 0; index < operations.GetArrayLength(); index++)
-                    profiles.Add(profile.Profile);
-                continue;
-            }
-            profiles.Add(profile.Profile);
-        }
-        return profiles;
     }
 
     private static string GraphString(JsonElement value, string field) =>

@@ -146,7 +146,7 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
 
 - The result exposes a projection only when every root, definition, slot, ownership domain, complication, and destination-rank power rule recomputes exactly; invalid results expose no actionable partial projection.
 
-- [ ] **Step 1: Add a compile-safe outer RED through existing APIs**
+- [x] **Step 1: Add a compile-safe outer RED through existing APIs**
 
 In the now-Integration resolver fixture, add/retain tests that invoke the existing six-argument composer and working-wound simulator, without naming a not-yet-created production type:
 
@@ -158,17 +158,17 @@ ProcedureReduction_RejectedBandLeavesLowestFreeDieForNextLegalRoute
 
 Use a valid rank-III wound reduced to II with (a) too many slots and (b) a one-slot `action_control.forbid` or `characteristic_modifier add 3`. Assert the attempt is inapplicable before any die/resource claim and that the next legal band obtains the same lowest free die. Run the exact Integration filter and retain the behavioral RED; compilation and discovery must succeed.
 
-- [ ] **Step 2: Implement detached root/ownership reconstruction**
+- [x] **Step 2: Implement detached root/ownership reconstruction**
 
 Build one exact ownership map from `rootBindings`, then replace base ownership with `ForComplication(complicationId)` for every pairwise-disjoint `ownedEffectIds` member. Order projection roots by canonical root-binding order and attach all reciprocal consequence entries for the old effect ID in one-based slot order. Reject missing/duplicate/confusable bindings, a complication-owned ID without one root, or one root owned by multiple complications.
 
-- [ ] **Step 3: Extract one persisted-graph envelope adapter**
+- [x] **Step 3: Extract one persisted-graph envelope adapter**
 
 Extract/reuse the graph traversal currently embedded in `MortalWoundTreatmentContract.WoundGraph.cs`: start from every persisted direct root definition, include its complete `event_reaction/apply_definition` expansion graph, and construct `WoundDetachedMortalEnvelopeRequest`. The shared adapter must call `WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(resultingRank, ...)`, require zero issues, and require its derived ordered slot/profile rows to agree exactly with persisted consequence entries and `SlotsUsed`. Keep the original treatment-contract validation on the same helper so creation and reduction cannot drift.
 
 This is the authoritative destination-rank component-power verdict. `WoundMaterializationContract.Parse` remains a separate canonical structural round-trip, not a substitute for the severity-aware catalog.
 
-- [ ] **Step 4: Project the destination envelope without allocating identity**
+- [x] **Step 4: Project the destination envelope without allocating identity**
 
 Clone through canonical serialization, compute `resultingRank = checked(before.Rank - steps)`, require `steps` in `1..2` and `resultingRank >= 1`, set:
 
@@ -191,7 +191,7 @@ Consequences = before.Consequences with { SlotBudget = resultingRank };
 
 Keep `MaximumAtCreation`, recovery, care, course, complications, definitions, bindings, entries, lifecycle, treatment routes, display, and origin unchanged. Validate the full persisted graph with the shared severity-aware adapter, require exact derived-slot agreement, then reparse with `WoundMaterializationContract.Parse` for canonical structural agreement. Do not prune, clamp, weaken, or rewrite authored components.
 
-- [ ] **Step 5: Add the fixture-free projector tests and make them GREEN**
+- [x] **Step 5: Add the fixture-free projector tests and make them GREEN**
 
 After the outer RED exists, add the new production type and direct tests together. If the typed surface is not yet implemented, use a minimal throwing shell only long enough to obtain a discovered behavioral RED; do not commit a CS0246/compile-failing test state. Cover:
 
@@ -204,11 +204,11 @@ Project_DestinationEnvelopeRejectsReactionExpansionPowerWithoutWeakening
 
 For the valid cases assert destination severity/value/slotBudget, exact definitions/root bindings/entries/complications/recovery/course preservation, and unchanged old effect IDs in the provisional projection. Explicitly prove that the projector allocates no replacement identity.
 
-- [ ] **Step 6: Seal the complete projection**
+- [x] **Step 6: Seal the complete projection**
 
 Compute a domain/versioned fingerprint over canonical before/provisional after, steps, event ref, and every ordered root's old ID, definition key, ownership domain, slot/profile/summary tuple. Clone every mutable member on construction and readback so later caller mutation cannot preserve the seal.
 
-- [ ] **Step 7: Reuse the projector in T067 simulation**
+- [x] **Step 7: Reuse the projector in T067 simulation**
 
 Replace the simulator's direct rank/value assignment with:
 
@@ -224,7 +224,7 @@ candidate = projection.Projection.ProvisionalAfter;
 
 The simulator still owns no permanent IDs and no accepted transition chronology; the existing event ref is used only to validate destination graph legality. This makes every authored band reject before dice/resource finalization if its unchanged graph cannot fit the lower rank.
 
-- [ ] **Step 8: Run pure projection and T067 applicability controls**
+- [x] **Step 8: Run pure projection and T067 applicability controls**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests&FullyQualifiedName~Project_"
@@ -233,7 +233,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: destination-rank projection tests and pre-attempt inapplicability/free-reroll guards pass with warning-free build and complete cleanup.
 
-- [ ] **Step 9: Commit the shared projection**
+- [x] **Step 9: Commit the shared projection**
 
 ```powershell
 git add -- BookOfEternityClient/Services/MortalWoundTreatmentSeverityReductionPlanner.cs BookOfEternityClient/Services/WoundPersistedConsequenceEnvelopeAdapter.cs BookOfEternityClient/Services/MortalWoundTreatmentWorkingWoundSimulator.cs BookOfEternityClient/Services/MortalWoundTreatmentContract.WoundGraph.cs BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs

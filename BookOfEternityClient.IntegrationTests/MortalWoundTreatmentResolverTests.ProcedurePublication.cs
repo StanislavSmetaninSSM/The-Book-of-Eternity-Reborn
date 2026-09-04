@@ -10,6 +10,150 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
+    public void ProcedureReduction_DestinationSlotOverflowRejectsBeforeDieClaim()
+    {
+        var scenario = CreateDestinationReductionScenario(
+            "destination_slot_overflow",
+            "periodic_damage",
+            "action_control",
+            "resistance_modifier");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var before = fixture.ReadCurrentWound();
+        var route = Assert.IsType<MortalWoundProcedureRouteDefinition>(
+            Assert.Single(acceptedState.TreatmentDefinition.Routes));
+        var success = Assert.Single(
+            route.Bands,
+            static band => string.Equals(band.Category, "success", StringComparison.Ordinal));
+
+        var simulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
+            before,
+            new[] { success.DeclaredResult });
+        var prepared = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            fixture.ReadCurrentHistory(),
+            before,
+            scenario.OperationKey,
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        Assert.False(simulation.IsApplicable);
+        Assert.Null(simulation.WorkingWound);
+        Assert.False(prepared.IsValid);
+        Assert.Null(prepared.Request);
+        Assert.Contains(
+            prepared.Issues,
+            static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_procedure_band_inapplicable",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ProcedureReduction_DestinationPowerOverflowRejectsBeforeDieClaim()
+    {
+        var scenario = CreateDestinationReductionScenario(
+            "destination_power_overflow",
+            "action_control");
+        var component = scenario.Before["consequences"]!["ownedEffectSources"]!
+            ["definitions"]![0]!["components"]![0]!.AsObject();
+        component["payload"]!["operation"] = "forbid";
+        scenario = scenario with
+        {
+            History = CreateCurrentWoundHistory(scenario.Before)
+        };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var before = fixture.ReadCurrentWound();
+        var route = Assert.IsType<MortalWoundProcedureRouteDefinition>(
+            Assert.Single(acceptedState.TreatmentDefinition.Routes));
+        var success = Assert.Single(
+            route.Bands,
+            static band => string.Equals(band.Category, "success", StringComparison.Ordinal));
+
+        var simulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
+            before,
+            new[] { success.DeclaredResult });
+        var prepared = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            fixture.ReadCurrentHistory(),
+            before,
+            scenario.OperationKey,
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        Assert.False(simulation.IsApplicable);
+        Assert.Null(simulation.WorkingWound);
+        Assert.False(prepared.IsValid);
+        Assert.Null(prepared.Request);
+        Assert.Contains(
+            prepared.Issues,
+            static issue => string.Equals(
+                issue.Code,
+                "mortal_wound_treatment_procedure_band_inapplicable",
+                StringComparison.Ordinal));
+    }
+
+    [Fact]
+    public void ProcedureReduction_RejectedBandLeavesLowestFreeDieForNextLegalRoute()
+    {
+        var scenario = CreateDestinationReductionScenario(
+            "rejected_band_die_reuse",
+            "action_control");
+        var component = scenario.Before["consequences"]!["ownedEffectSources"]!
+            ["definitions"]![0]!["components"]![0]!.AsObject();
+        component["payload"]!["operation"] = "forbid";
+        var invalidRoute = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        var legalRoute = invalidRoute.DeepClone().AsObject();
+        var legalRouteId = scenario.RouteId + "_legal_stabilization";
+        legalRoute["routeId"] = legalRouteId;
+        legalRoute["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "stabilize"
+        });
+        scenario.Before["treatment"]!["routes"] = new JsonArray(
+            invalidRoute.DeepClone(),
+            legalRoute);
+        scenario.Before["treatment"]!["knownRouteIds"] = new JsonArray(
+            scenario.RouteId,
+            legalRouteId);
+        scenario = scenario with
+        {
+            History = CreateCurrentWoundHistory(scenario.Before)
+        };
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            fixture.GetAcceptedState());
+        var before = fixture.ReadCurrentWound();
+        var history = fixture.ReadCurrentHistory();
+        var rejected = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            history,
+            before,
+            scenario.OperationKey + "_rejected",
+            scenario.RouteId,
+            fixture.AcceptedEventRef(acceptedState));
+        var legal = MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+            acceptedState,
+            history,
+            before,
+            scenario.OperationKey + "_legal",
+            legalRouteId,
+            fixture.AcceptedEventRef(acceptedState));
+
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Request);
+        Assert.True(legal.IsValid, DescribeIssues(legal.Issues));
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(legal.Request);
+        var procedure = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+        Assert.Equal(new[] { 0 }, procedure.SourceIndices);
+    }
+
+    [Fact]
     public void ProcedureRepeatedStabilization_PublishesWithoutAppendingCompletedRouteAgain()
     {
         var scenario = CreateScenario(
@@ -1048,6 +1192,50 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ExpectedIntentCount = 1,
             History = CreateCurrentWoundHistory(scenario.Before),
             SeedCanonicalWoundEffects = true
+        };
+    }
+
+    private static ResolverScenario CreateDestinationReductionScenario(
+        string suffix,
+        params string[] profiles)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        scenario.Before["severity"]!["value"] = "III";
+        scenario.Before["severity"]!["rank"] = 3;
+        scenario.Before["severity"]!["maximumAtCreation"] = "III";
+        scenario.Before["consequences"]!["slotBudget"] = 3;
+        scenario.Before["consequences"]!["slotsUsed"] = profiles.Length;
+        var roots = profiles.Select((profile, index) => (
+            EffectId: $"effect_destination_{index + 1}",
+            DefinitionKey: $"definition_destination_{index + 1}",
+            Profile: profile)).ToArray();
+        scenario.Before["consequences"]!["ownedEffectSources"] =
+            WoundContractTestData.CreateOwnedEffectSourcesForTarget(
+                scenario.Before["woundId"]!.GetValue<string>(),
+                "mortal_world",
+                "player",
+                roots);
+        scenario.Before["consequences"]!["entries"] = new JsonArray(
+            profiles.Select((profile, index) => (JsonNode)new JsonObject
+            {
+                ["slot"] = index + 1,
+                ["profileKey"] = profile,
+                ["effectId"] = roots[index].EffectId,
+                ["readableSummary"] = $"Destination projection slot {index + 1}."
+            }).ToArray());
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "reduce_severity",
+            ["steps"] = 1
+        });
+        return scenario with
+        {
+            OperationKey = scenario.OperationKey + "_" + suffix,
+            ExpectedIntentCount = 1,
+            History = CreateCurrentWoundHistory(scenario.Before)
         };
     }
 

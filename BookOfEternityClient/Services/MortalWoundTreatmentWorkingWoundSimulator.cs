@@ -145,18 +145,14 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
 
             case MortalWoundReduceSeverityOperation reduceSeverity:
             {
-                var resultingRank = checked(before.Severity.Rank - reduceSeverity.Steps);
-                if (resultingRank < 1)
+                var projection = MortalWoundTreatmentSeverityReductionPlanner.Project(
+                    before,
+                    reduceSeverity.Steps,
+                    before.Severity.LastChangeEventRef);
+                if (!projection.IsValid || projection.Projection is null)
                     return false;
-                candidate = before with
-                {
-                    Severity = before.Severity with
-                    {
-                        Value = SeverityValue(resultingRank),
-                        Rank = resultingRank
-                    }
-                };
-                improved = resultingRank < before.Severity.Rank;
+                candidate = projection.Projection.ProvisionalAfter;
+                improved = candidate.Severity.Rank < before.Severity.Rank;
                 break;
             }
 
@@ -301,13 +297,4 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
         parsedWound = parsed.Wound;
         return true;
     }
-
-    private static string SeverityValue(int rank) => rank switch
-    {
-        1 => "I",
-        2 => "II",
-        3 => "III",
-        4 => "IV",
-        _ => throw new ArgumentOutOfRangeException(nameof(rank), rank, null)
-    };
 }
