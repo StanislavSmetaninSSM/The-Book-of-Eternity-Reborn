@@ -501,27 +501,27 @@ git commit -m "feat(wounds): seal treatment effect rematerialization (#1536)"
 - `ComposeTreatmentContinuationFinalPlan` converts the already independently derived `EffectAcceptedApplicationResult` list to one exact-by-`applicationRef` map and supplies that map plus the authenticated treatment batch to `Finalize`; it does not inspect effect carrier JSON to guess IDs.
 - `MortalWoundTreatmentOutcomePublicationPlanner.Finalize` owns the only reduction branch that consumes the authenticated batch/result map, invokes the existing exact `BuildFinalWound` helper, and produces the final `After`, declared outcome, and outcome-publication fingerprint used by reducer/history/common agreement. No caller supplies a prebuilt final wound.
 
-- [ ] **Step 1: Add final handoff REDs through the existing publication API**
+- [x] **Step 1: Add final handoff REDs through the existing publication API**
 
 Add compile-safe Integration rows proving: standard procedure and guaranteed reduction are still unsupported before implementation; failed/partial reduction does not `AppendOnce`; a legal zero-root physical wound requests one authenticated empty rematerialization batch and no effect ID; and missing/extra/reordered/changed result mappings fail closed. Run the existing API surface first and retain discovered RED evidence before changing finalization.
 
-- [ ] **Step 2: Rebuild the final wound from exact #1535 results**
+- [x] **Step 2: Rebuild the final wound from exact #1535 results**
 
 Pass the verified application results into `ComposeTreatmentContinuationFinalPlan`, require exact/confusable-unique `applicationRef` coverage of the authenticated treatment batch, and call `Finalize(preparation, resolution, batch, applicationByRef)`. Make the existing `BuildFinalWound` helper internally reusable by the outcome finalizer. For a reduction, `Finalize` calls `BuildFinalWound(preparation.ProvisionalAfter, batch, applicationByRef)`; there is no overload accepting caller-authored `finalizedAfter`. Change complication ownership reconstruction from append semantics to exact replacement: every complication's final `ownedEffectIds` is the ordered set of accepted new root IDs whose sealed ownership domain names that complication; no prior root ID may remain.
 
-- [ ] **Step 3: Finalize outcome and reducer evidence after identity allocation**
+- [x] **Step 3: Finalize outcome and reducer evidence after identity allocation**
 
 Inside `Finalize`, key a one-to-one mapping by the batch's sealed `applicationRef` from every projected root to one fresh final root with the same definition, within-root ordered slot profile/summary semantics, and ownership domain. Reconstruct the only allowed final wound: substitute accepted effect IDs, sort roots by actual effect ID exactly as #1535 does, assign contiguous one-based slot ordinals in that root order while preserving within-root semantic order, and rebuild each complication's ordered owned-root set. Require the full contract, exact semantic equality on every other field, and FR-027 exact/confusable disjointness from all prior roots before creating `DeclaredOutcome`. Then feed the exact final wound and declared outcome into `WoundTransitionReducer.Reduce(kind: "treat")`. Require the reducer to emit one `WoundEffectTransitionIntent("replace", oldIds, newIds)` when either side is non-empty, one carrier update, and one ordinary treatment history intent. Keep the existing <=2 non-heal reduction and fresh-root checks as independent defense.
 
-- [ ] **Step 4: Seal final common-plan agreement**
+- [x] **Step 4: Seal final common-plan agreement**
 
 Update continuation/bundle/common-plan agreement so final after/outcome fingerprints are derived from the accepted effect result map and final plan, not stored before #1535. Reject a valid result map borrowed from another prepared plan, changed effect ID, changed application order, changed complication mapping, stale before wound, or post-seal carrier substitution.
 
-- [ ] **Step 5: Preserve zero-root and non-reduction behavior**
+- [x] **Step 5: Preserve zero-root and non-reduction behavior**
 
 A legal physical wound with zero mechanical roots still uses one sealed empty rematerialization batch on severity change so its source transition is authenticated; it allocates no effect ID but still publishes severity/history atomically. Existing singleton stabilization/no-improvement paths keep zero batches and byte-equivalent B.5 outcomes.
 
-- [ ] **Step 6: Turn the retained procedure success row GREEN**
+- [x] **Step 6: Turn the retained procedure success row GREEN**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~ProcedureFinalization_ConsumesOnlySelectedSupplyAndReleasesEveryOtherHeldClaim" -TimeoutMinutes 15
@@ -532,7 +532,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: both rows of the retained theory and all new finalization controls pass; the published successful row is severity II, has only fresh root IDs, spends only the selected supply, retains the reusable tool, and appends one treatment history row.
 
-- [ ] **Step 7: Commit final wound publication**
+- [x] **Step 7: Commit final wound publication**
 
 ```powershell
 git add -- BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient/Services/MortalWoundTreatmentOutcomePublicationPlanner.cs BookOfEternityClient/Services/WoundTransitionReducer.cs BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs
