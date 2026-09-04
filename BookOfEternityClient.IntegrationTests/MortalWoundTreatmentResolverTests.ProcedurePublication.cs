@@ -368,6 +368,93 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Theory]
+    [InlineData("extra_empty_contribution")]
+    [InlineData("substituted_owner")]
+    [InlineData("changed_collection_fingerprint")]
+    [InlineData("changed_mutation_wound_id")]
+    [InlineData("changed_history_transition_id")]
+    public void ProcedureReduction_FinalContinuationAgreementRejectsPubliclyResealedCarrierContourTamper(
+        string mutation)
+    {
+        var scenario = CreateOrderedReductionScenario(
+            "procedure",
+            "success",
+            "r1",
+            expectedIntentCount: 1);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey,
+                scenario.RouteId),
+            "publicly resealed final carrier contour");
+        var acceptedState = Assert.IsType<
+            MortalWoundTreatmentAcceptedStateAuthority>(flow.AcceptedState);
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            flow.Request);
+        var resolution = Assert.IsType<MortalWoundTreatmentResolution>(
+            flow.Resolution);
+        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var authentic = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        var authority = authentic.PreparedPlan.TreatmentContinuationAuthority;
+        Assert.NotNull(authority);
+        Assert.True(WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+            authority!,
+            out var continuation));
+
+        Assert.True(WoundAcceptedTurnPlanner.TreatmentContinuationPublicationAgrees(
+            authority!,
+            authentic,
+            acceptedState,
+            request,
+            resolution,
+            continuation.SemanticFingerprint));
+        RearmTreatmentPublicationReservationForEffectStageTest(
+            fixture,
+            continuation);
+        var authenticCommon = AcceptedMechanicsWoundCommonInputComposer
+            .ComposeTreatmentContinuation(
+                fixture.FileSystem,
+                fixture.Lease,
+                authentic,
+                authority!,
+                continuation.ReservationAuthority,
+                acceptedState.CurrentGameMinute);
+        Assert.True(authenticCommon.Success, DescribeIssues(authenticCommon.Issues));
+
+        var altered = InjectPubliclyResealedTreatmentFinalContour(
+            authentic,
+            mutation);
+        var finalAgrees = WoundAcceptedTurnPlanner
+            .TreatmentContinuationPublicationAgrees(
+                authority!,
+                altered,
+                acceptedState,
+                request,
+                resolution,
+                continuation.SemanticFingerprint);
+        var common = AcceptedMechanicsWoundCommonInputComposer
+            .ComposeTreatmentContinuation(
+                fixture.FileSystem,
+                fixture.Lease,
+                altered,
+                authority!,
+                continuation.ReservationAuthority,
+                acceptedState.CurrentGameMinute);
+
+        AcceptedTurnAuthorityRegistry.AbortMortalWoundTreatmentPublication(
+            fixture.FileSystem,
+            fixture.Lease,
+            continuation.ReservationAuthority);
+        Assert.Equal(
+            "final=False;common=False",
+            $"final={finalAgrees};common={common.Success}");
+    }
+
+    [Theory]
     [InlineData("root_reorder")]
     [InlineData("root_delete")]
     [InlineData("lineage_change")]
@@ -1974,6 +2061,103 @@ public sealed partial class MortalWoundTreatmentResolverTests
             provisional.EffectOperationBatches,
             provisional.BaselineAuthority,
             source.TreatmentContinuationAuthority);
+    }
+
+    private static AcceptedMechanicsWoundStageBundle
+        InjectPubliclyResealedTreatmentFinalContour(
+        AcceptedMechanicsWoundStageBundle source,
+        string mutation)
+    {
+        var prepared = source.PreparedPlan;
+        var effect = source.EffectBatchPlan;
+        var final = source.FinalPlan;
+        var contributions = final.CarrierContributions.ToList();
+        var intents = final.TransitionIntents.ToList();
+        var original = Assert.Single(contributions);
+        var foreignOwner = new WoundOwnerCoordinate(
+            "mortal_world",
+            "npc",
+            "field_medic_01",
+            "game_state/npcs/npc_wounds.json");
+        switch (mutation)
+        {
+            case "extra_empty_contribution":
+                contributions.Add(new WoundCarrierContribution(
+                    foreignOwner,
+                    "publicly_resealed_foreign_collection",
+                    Array.Empty<WoundCarrierMutation>()));
+                break;
+            case "substituted_owner":
+                contributions[0] = new WoundCarrierContribution(
+                    foreignOwner,
+                    original.ExpectedWoundCollectionFingerprint,
+                    original.Mutations);
+                break;
+            case "changed_collection_fingerprint":
+                contributions[0] = new WoundCarrierContribution(
+                    original.Owner,
+                    original.ExpectedWoundCollectionFingerprint + "_changed",
+                    original.Mutations);
+                break;
+            case "changed_mutation_wound_id":
+                var mutationToChange = Assert.Single(original.Mutations);
+                contributions[0] = new WoundCarrierContribution(
+                    original.Owner,
+                    original.ExpectedWoundCollectionFingerprint,
+                    new[]
+                    {
+                        new WoundCarrierMutation(
+                            mutationToChange.Operation,
+                            "wound_publicly_resealed_final_shell",
+                            mutationToChange.BeforeWound,
+                            mutationToChange.AfterWound)
+                    });
+                break;
+            case "changed_history_transition_id":
+                var historyIndex = intents.FindIndex(
+                    static intent => intent is WoundTransitionHistoryIntent);
+                Assert.True(historyIndex >= 0);
+                var history = Assert.IsType<WoundTransitionHistoryIntent>(
+                    intents[historyIndex]);
+                intents[historyIndex] = history with
+                {
+                    TransitionId = history.TransitionId + "_changed"
+                };
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(
+                    nameof(mutation),
+                    mutation,
+                    null);
+        }
+
+        var fingerprint = WoundAcceptedTurnFingerprints.ComputeFinal(
+            prepared,
+            effect,
+            contributions,
+            final.IdentityIndexAfterImage,
+            final.HistoryAfterImage,
+            intents);
+        var resealed = new WoundAcceptedTurnPlan(
+            final.Binding,
+            final.BindingFingerprint,
+            final.InputFingerprint,
+            final.WoundPreparationFingerprint,
+            final.EffectInputFingerprint,
+            final.EffectAcceptedTurnPlanFingerprint,
+            fingerprint,
+            final.AllocatedWoundIds,
+            final.AllocatedTransitionIds,
+            contributions,
+            final.IdentityIndexAfterImage,
+            final.HistoryAfterImage,
+            intents);
+        var altered = source.DetachedCopy();
+        typeof(AcceptedMechanicsWoundStageBundle).GetField(
+                "_finalPlan",
+                BindingFlags.Instance | BindingFlags.NonPublic)!
+            .SetValue(altered, resealed);
+        return altered;
     }
 
     private static void CaptureTreatmentPreparedAtFinalization(

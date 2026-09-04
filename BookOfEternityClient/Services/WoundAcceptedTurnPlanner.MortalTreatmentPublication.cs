@@ -888,81 +888,65 @@ internal static partial class WoundAcceptedTurnPlanner
                 continuation.Resolution,
                 batch,
                 applicationByRef);
-            if (!publication.IsValid || publication.After is null)
+            if (!publication.IsValid ||
+                publication.After is null ||
+                publication.DeclaredOutcome is null)
+                return false;
+
+            var coordinates = continuation.Resolution.Coordinates;
+            var expectedReduction = WoundTransitionReducer.Reduce(
+                new WoundTransitionRequest(
+                    "treat",
+                    continuation.TransitionId,
+                    coordinates.OperationKey,
+                    coordinates.EventRef,
+                    coordinates.Turn,
+                    continuation.Before,
+                    publication.After,
+                    new WoundTreatmentEvidence(
+                        continuation.Resolution.ResolutionAuthorityFingerprint,
+                        WoundIdentityState.ComputeSemanticFingerprint(
+                            continuation.Before),
+                        WoundIdentityState.ComputeSemanticFingerprint(
+                            publication.After),
+                        coordinates.RouteId,
+                        coordinates.AttemptId,
+                        publication.DeclaredOutcome)));
+            if (!expectedReduction.IsValid ||
+                expectedReduction.ProposedAfter is null)
+            {
+                return false;
+            }
+
+            var expectedContributions = WoundAcceptedTurnPlannerCore
+                .BuildCarrierContributionsForTransition(
+                    bundle.PreparedPlan.BaselineAuthority.PreTurnCarriers,
+                    continuation.Before,
+                    expectedReduction.ProposedAfter);
+            if (expectedContributions.Count != 1)
                 return false;
 
             var final = bundle.FinalPlan;
-            var mutations = final.CarrierContributions
-                .SelectMany(static contribution => contribution.Mutations)
-                .ToArray();
-            if (mutations.Length != 1 ||
-                !string.Equals(
-                    mutations[0].Operation,
-                    "update",
-                    StringComparison.Ordinal) ||
-                !string.Equals(
-                    WoundMaterializationContract.SerializeCanonical(
-                        mutations[0].BeforeWound!),
-                    WoundMaterializationContract.SerializeCanonical(
-                        continuation.Before),
-                    StringComparison.Ordinal) ||
-                !string.Equals(
-                    WoundMaterializationContract.SerializeCanonical(
-                        mutations[0].AfterWound!),
-                    WoundMaterializationContract.SerializeCanonical(
-                        publication.After),
-                    StringComparison.Ordinal))
-            {
-                return false;
-            }
-
-            var carrierIntents = final.TransitionIntents
-                .OfType<WoundCarrierTransitionIntent>().ToArray();
-            var historyIntents = final.TransitionIntents
-                .OfType<WoundTransitionHistoryIntent>().ToArray();
-            var terminalIntents = final.TransitionIntents
-                .OfType<WoundAttemptTerminalIntent>().ToArray();
-            if (carrierIntents.Length != 1 ||
-                !string.Equals(
-                    carrierIntents[0].Operation,
-                    "replace",
-                    StringComparison.Ordinal) ||
-                historyIntents.Length != 1 ||
-                !string.Equals(
-                    historyIntents[0].Kind,
-                    "treat",
-                    StringComparison.Ordinal) ||
-                historyIntents[0].Terminal ||
-                terminalIntents.Length != 1)
-            {
-                return false;
-            }
-
-            var beforeEffectIds = continuation.Before.Consequences
-                .OwnedEffectSources.RootBindings
-                .Select(static binding => binding.EffectId)
-                .ToArray();
-            var afterEffectIds = publication.After.Consequences
-                .OwnedEffectSources.RootBindings
-                .Select(static binding => binding.EffectId)
-                .ToArray();
-            var effectIntents = final.TransitionIntents
-                .OfType<WoundEffectTransitionIntent>().ToArray();
-            if (continuation.OutcomePreparation.SeverityReduction is null)
-                return effectIntents.Length == 0;
-            return beforeEffectIds.Length == 0 && afterEffectIds.Length == 0
-                ? effectIntents.Length == 0
-                : effectIntents.Length == 1 &&
-                  string.Equals(
-                      effectIntents[0].Operation,
-                      "replace",
-                      StringComparison.Ordinal) &&
-                  effectIntents[0].BeforeEffectIds.SequenceEqual(
-                      beforeEffectIds,
-                      StringComparer.Ordinal) &&
-                  effectIntents[0].AfterEffectIds.SequenceEqual(
-                      afterEffectIds,
-                      StringComparer.Ordinal);
+            var actualContourFingerprint = WoundAcceptedTurnFingerprints
+                .ComputeFinal(
+                    bundle.PreparedPlan,
+                    bundle.EffectBatchPlan,
+                    final.CarrierContributions,
+                    final.IdentityIndexAfterImage,
+                    final.HistoryAfterImage,
+                    final.TransitionIntents);
+            var expectedContourFingerprint = WoundAcceptedTurnFingerprints
+                .ComputeFinal(
+                    bundle.PreparedPlan,
+                    bundle.EffectBatchPlan,
+                    expectedContributions,
+                    final.IdentityIndexAfterImage,
+                    final.HistoryAfterImage,
+                    expectedReduction.Intents);
+            return string.Equals(
+                actualContourFingerprint,
+                expectedContourFingerprint,
+                StringComparison.Ordinal);
         }
         catch (Exception exception) when (exception is ArgumentException or
                                            InvalidOperationException or

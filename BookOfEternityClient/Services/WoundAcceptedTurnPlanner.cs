@@ -1470,6 +1470,15 @@ internal static class WoundAcceptedTurnPlannerCore
         return result;
     }
 
+    internal static IReadOnlyList<WoundCarrierContribution>
+        BuildCarrierContributionsForTransition(
+            WoundCarrierCatalogInput baseline,
+            WoundMaterializationEnvelope before,
+            WoundMaterializationEnvelope after) =>
+        BuildCarrierContributions(
+            baseline,
+            new[] { new FinalizedWoundTransition(before, after) });
+
     private static WoundIdentityParseResult BuildIdentityAfterImage(
         JsonObject baseline,
         IReadOnlyList<FinalizedWoundTransition> transitions)
