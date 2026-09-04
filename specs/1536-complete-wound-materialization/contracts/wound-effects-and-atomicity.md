@@ -415,8 +415,9 @@ The usable generic effect profiles are exactly `characteristic_modifier`,
 `roll_modifier`, `resistance_modifier`, `periodic_damage`, `periodic_restore`,
 `action_control`, and `event_reaction`. `wound_consequence` is a zero-slot marker, and
 at most one may appear across the wound-owned effect set. One independently affected
-characteristic, roll operation, resistance, periodic resource, action, or worst-case
-reaction component consumes one slot.
+characteristic, `roll_modifier` component, resistance, periodic resource, action, or
+worst-case reaction component consumes one slot. A focused roll component selects only
+one skill; selecting two skills requires two components and two slots.
 
 | Per-slot limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -436,7 +437,8 @@ amplify it past the severity limit. A finite number outside the exact decimal co
 is rejected and cannot silently remove a component from slot derivation.
 
 Periodic values are quantum-aligned without rounding above the cap and execute at most
-once for one accepted source event. Roll array entries consume one slot each. Every
+once for one accepted source event. Each `roll_modifier` component consumes one slot
+regardless of its operation list or `all|skill` scope. Every
 worst-case reaction result is counted before admission. The single wound expansion
 ceiling applies only to wound-owned effects; bounded independent siblings are preserved
 outside wound slot and expansion budgets. A separate structural work bound permits at
@@ -601,3 +603,42 @@ source graph or root bindings. A distinct trauma-caused memory-loss effect may i
 be explicitly materialized as its own wound-owned definition and direct root when
 applicable. Healing a spiritual wound must prove the independent
 Saref effect's before/after bytes are unchanged.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+Every wound-owned `roll_modifier` uses the completed #1535 common profile and its
+mandatory closed three-field payload:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+The closed scope union is either `{ "kind": "all" }` or exactly
+`{ "kind": "skill", "skillId": "<canonical-id>" }`. `kind=skill` requires exactly
+`operations: ["skill_check"]`; missing scope, extra fields, names, aliases, arrays, or
+multiple IDs reject structurally. Structural validation remains in the common profile.
+The wound/effect plan separately binds the focused identity against one usable offered
+and final canonical skill of the exact wound owner before allocating permanent IDs.
+
+An invalid binding rejects the complete wound transaction and reports the exact proposal
+coordinate under
+`woundDecisions[N].proposal.consequenceDefinitions[D].definition.components[C].payload.scope.skillId`.
+It never broadens to `all`, selects a similar skill, or accepts the remaining wound
+consequences. The GM selection catalog is advisory; accepted authority is rebuilt from
+canonical roots.
+
+One broad or focused component consumes exactly one consequence slot. Scope fields are
+semantic identity and do not add power or slot expansion. Retained consequence
+rematerialization preserves scope byte-for-byte while lifecycle-required effect and
+component identities remain fresh. Scope participates in source/instance agreement,
+materialization fingerprints, stage/cache seals, exact replay, changed-request
+classification, and byte/existence-exact rollback.
+
+Later removal or unavailability of the selected skill derives only that component as
+dormant. It does not heal, reduce, delete, retarget, or otherwise mutate the wound or
+effect. Restoration of the same permanent identity re-enables contribution; a similar
+name or Unicode-confusable replacement does not inherit it.

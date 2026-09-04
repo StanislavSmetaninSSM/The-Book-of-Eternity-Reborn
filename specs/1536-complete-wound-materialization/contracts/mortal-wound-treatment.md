@@ -53,15 +53,18 @@ result category. `modifierSource` is the closed union `{ "kind": "fixed_zero" }`
 index must name one exact satisfied route `skill_tier` requirement; the modifier is that
 T060 row's current tier and its resolved owner coordinate is the roll actor. This keeps
 both provider expertise and an explicitly authored target-role check legal. For
-`fixed_zero`, the provider is the roll actor. No characteristic, display text, or
-unrelated skill is an implicit bonus.
+`fixed_zero`, the provider is the roll actor. The resolved row's permanent canonical
+`skillId` is sealed separately as `RollSkillId`; `fixed_zero` seals null. No
+characteristic, display text, or unrelated skill is an implicit bonus.
 
 `effectiveDifficulty` is the authored non-negative signed-32-bit `difficulty` plus the
 sum of every active current complication's integer `treatmentDifficultyModifier`.
 That sum and its narrowing are checked; complication modifiers affect procedure checks
 only, not courses or guaranteed treatment. `naturalRoll` is exactly 1-20 from the sealed
-accepted pool. The accepted active effect snapshot contributes only exact roll-actor-
-targeted `roll_modifier` components whose operations contain `skill_check`: at least one
+accepted pool. The common resolver receives exact realm, roll actor, `skill_check`, and
+nullable sealed `RollSkillId`. It keeps only exact roll-actor-targeted `roll_modifier`
+components whose explicit scope is broad or matches the same usable skill, then reduces:
+at least one
 advantage and no disadvantage yields `advantage`, at least one disadvantage and no
 advantage yields `disadvantage`, both cancel to `normal`, and no contribution is
 `normal`. Stacks and multiple same-direction sources do not escalate the mode; version 1
@@ -842,7 +845,8 @@ Restart rebuild therefore cannot issue an index already held by an unaccepted pe
 request. Exact history replay probes before registry construction or claiming.
 
 The immutable `MortalWoundProcedureCheckAuthority` contains exactly `SourcePath`,
-`RollMode=normal|advantage|disadvantage`, `RollActorKind`, `RollActorId`, frozen ordered
+`RollMode=normal|advantage|disadvantage`, `RollActorKind`, `RollActorId`, nullable
+`RollSkillId`, frozen ordered
 `RollContributions` rows of exact `EffectId`, `ComponentId`, and
 `Contribution=advantage|disadvantage`, frozen `SourceIndices`, frozen `SourceRolls`,
 `SelectedSourceIndex`, `NaturalRoll`, `Modifier`, `ComplicationDifficultyModifier`,
@@ -1701,3 +1705,35 @@ catalog:
 Both use the same closed requirement/outcome primitives, exact authority, resource
 transaction, history, and UI projection, while their names, fiction, items, skills,
 and treatment logic are independently authored.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+Every active `roll_modifier` considered by a Mortal procedure carries an explicit closed
+scope, for example:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+`scope.kind=all` applies to any matching registered operation. `scope.kind=skill`
+requires exactly `operations: ["skill_check"]` and one exact canonical `skillId`.
+Missing scope has no legacy meaning.
+
+For `modifierSource.kind=resolved_skill_tier`, the requirement authority preserves the
+native row's permanent `skillId` separately from any extension `CapabilityRef`. The
+procedure check seals that exact value as `RollSkillId`, and broad plus exact-matching
+usable focused components may contribute. A focused component for another, missing, or
+unavailable skill does not. For `modifierSource.kind=fixed_zero`, `RollSkillId` is null,
+so only broad components may contribute.
+
+The same `{realm, actor kind, actor ID, operation=skill_check, RollSkillId}` context is
+recomputed during live resolution, fresh validation, detached replay, and final
+publication. `RollSkillId` participates in every nested authority and result fingerprint;
+changing or omitting it is tampering, not exact replay. Final treatment skill after-images
+are supplied as current scope authority while the pre-turn catalog remains the offered
+authority. Scope filtering occurs before the unchanged same-direction collapse,
+opposite-direction cancellation, die selection, and Fate Shield logic.

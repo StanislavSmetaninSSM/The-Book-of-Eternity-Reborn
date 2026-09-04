@@ -266,3 +266,26 @@ As a player, I want wounds and their symptoms to remain related but independentl
 - Wound lifecycle and healing remain owned by #1536; #1535 only establishes exact links and effect-side behavior.
 - Trigger execution, periodic damage/restoration, uses advancement, terminal cleanup, and bounded resource receipts in T042–T043/T047/T049–T050 use #1543 US4's single canonical resource ledger and accepted mechanics planner. The direct QTE damage adapter established by #1543 is only the canonical producer foundation; T042a/T047b independently own and verify its immutable deferred effect continuation. No effect-only adapter, live authority rebuild, random fallback, or legacy resource field is permitted; afterlife, projection, repair, and wound behavior remain independently owned by their recorded tasks and evidence.
 - All gameplay remains local/offline; the feature introduces no cloud service, telemetry, or GitHub Actions dependency.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+GitHub issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+extends the completed #1535 common `roll_modifier` profile. Every current modifier now
+has the closed three-field payload below; missing `scope` is invalid and never means
+`all`.
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+The closed scope union is either `{ "kind": "all" }` or exactly
+`{ "kind": "skill", "skillId": "<canonical-id>" }`; `kind=skill` is legal only
+with `operations: ["skill_check"]`. Exact target-skill binding, derived
+dormancy/reactivation, trusted roll-context filtering, treatment integration,
+projection, lifecycle/replay/rollback coverage, repository-wide direct cutover, and
+GM documentation are new #1536 work. Historical #1535 tasks remain complete and are
+not reopened or unchecked by this dependent contract amendment.

@@ -426,8 +426,10 @@ and its resolved owner is the roll actor. `fixed_zero` uses modifier zero and th
 provider roll actor. `MortalWoundProcedureCheckAuthority.Create(coordinates, route,
 before, requirementAuthority, acceptedState)` derives that fact, adds every active
 complication's `treatmentDifficultyModifier` to authored difficulty with checked
-arithmetic, and filters accepted active roll-actor effects to `roll_modifier` components
-containing `skill_check`. Advantage only selects `advantage`, disadvantage only selects
+arithmetic, and supplies the exact selected requirement row's canonical `skillId` as
+nullable sealed `RollSkillId`; `fixed_zero` supplies null. The shared resolver filters
+accepted active roll-actor `roll_modifier` components by exact realm, actor, operation,
+and explicit scope before reduction. Advantage only selects `advantage`, disadvantage only selects
 `disadvantage`, both cancel to `normal`; stacks/repetition do not escalate and version 1
 has no great/dire mode. Normal uses one die, the other modes two; advantage selects the
 higher and disadvantage the lower, with lower source index winning ties.
@@ -1424,8 +1426,10 @@ Allowed generic effect profiles are `characteristic_modifier`, `roll_modifier`,
 `resistance_modifier`, `periodic_damage`, `periodic_restore`, `action_control`, and
 `event_reaction`; `wound_consequence` is a zero-slot source/display marker, with at
 most one marker across the wound-owned effect set. One independent characteristic,
-roll operation, resistance, periodic resource operation, action, or worst-case reaction
-result consumes one slot.
+roll component, resistance, periodic resource operation, action, or worst-case reaction
+result consumes one slot. One `roll_modifier` component consumes one slot regardless of
+whether it covers all registered operations or one exact skill; targeting two skills
+requires two components and two slots.
 
 | Per-slot limit | I | II | III | IV |
 | --- | ---: | ---: | ---: | ---: |
@@ -2292,7 +2296,8 @@ Fate Shield may then remap final selection to the first failed index as ordinary
 the checked 64-bit margin. The closed modifier source is either exact zero/provider roll
 actor or the current tier and resolved actor of one indexed satisfied `skill_tier` row.
 Every active complication difficulty modifier is added to the authored non-negative
-signed-32-bit difficulty. Accepted roll-actor `skill_check` roll effects reduce to
+signed-32-bit difficulty. Accepted roll-actor `skill_check` roll effects first filter by
+their mandatory explicit scope against the sealed nullable `RollSkillId`, then reduce to
 normal/advantage/disadvantage by same-direction collapse and opposite-direction
 cancellation; normal claims one die, advantage/disadvantage two, and lower source index
 wins an equal-dice tie. The selected natural die is 1-20, modifier is signed 32-bit,
@@ -3663,3 +3668,93 @@ the choice revalidates target, wound, consent, provider, resources, and reachabi
 
 Planning and agreement use indexed `woundId`, owner coordinate, effect ID, operation
 key, and route ID maps. Limits fail closed before expensive cross-root composition.
+
+## 21. 2026-09-05 — exact skill scope extension from #1536
+
+The common #1535 `roll_modifier` payload is directly cut over to a closed object with
+exactly three fields:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+`scope` is the closed union `{kind=all}` or `{kind=skill, skillId}`. `all` forbids
+`skillId`; `skill` requires one non-empty permanent identifier, no aliases, names,
+arrays, or extra fields, and exactly `operations=[skill_check]`. Missing scope is
+invalid and never broad. `scope` and `skillId` are semantic effect data in definitions,
+bound instances, clones, snapshots, source/instance agreement, cache and materialization
+fingerprints, replay, rematerialization, rollback, and repair.
+
+### 21.1 Offered and current target-skill authority
+
+`EffectRollSkillScopeAuthority` owns detached immutable catalogs keyed by exact
+`EffectTargetKey`. Offered roots are the pre-turn canonical player active/passive skill
+roots and canonical NPC active/passive rows. Current roots are the composed accepted
+after-images. A new focused binding requires one offered usable and one current usable
+row with the same exact ordinal permanent `skillId`, the exact target owner, and no exact
+duplicate or Unicode-confusable competitor in either catalog. A same-response new row
+was not offered; a removed or disabled selected row is not valid at publication. Idless,
+stale, wrong-owner, ambiguous, over-bound, and missing-catalog authorities reject before
+permanent allocation.
+
+The catalog is bounded to 128 targets, 128 selectable skills per target, and 2,048 rows
+overall. Its deterministic detached GM projection has this shape and is advisory only:
+
+```json
+{
+  "schemaVersion": 1,
+  "targets": [{
+    "realm": "mortal_world",
+    "kind": "player",
+    "targetId": "player_current",
+    "skills": [{ "skillId": "skill_lockpicking", "displayName": "Взлом" }]
+  }]
+}
+```
+
+Acceptance always rebuilds offered/current authority from canonical roots and never
+trusts `turn_request.json.effectSkillScopeCatalog`.
+
+### 21.2 Current resolution and derived dormancy
+
+Current resolution is `Usable` for one exact usable row, `Unavailable` for one exact
+inactive/terminal row, `Missing` when no exact row exists, and `InvalidAuthority` for
+duplicate/confusable or otherwise corrupt current authority. A similar/confusable row
+without the exact selected identity is `Missing`, not inheritance. Missing or unavailable
+skills make only the component non-contributing; the accepted effect, source wound,
+severity, treatment state, duration, and history remain unchanged. Restoring the same
+permanent identity makes it eligible again. Invalid authority fails the mechanical
+resolution closed rather than becoming ordinary dormancy.
+
+### 21.3 Trusted roll context and treatment seal
+
+The sole resolver consumes `{Realm, ActorKind, ActorId, Operation, SkillId?}` and the
+accepted mechanics snapshot. It filters exact actor/realm/operation first. Broad scope
+passes. Focused scope passes only when the context `SkillId` is an exact match and current
+authority is usable; null, mismatch, missing, and unavailable do not contribute. Only
+then does the existing reducer collapse repeated same-direction contributions and cancel
+opposing contributions without escalation.
+
+`MortalWoundProcedureCheckAuthority` carries nullable `RollSkillId` immediately after
+`RollActorId`. `resolved_skill_tier` derives it from the exact selected requirement
+skill row, while `fixed_zero` stores null. The value participates in accepted-state,
+authority, detached replay, and result fingerprints. Final treatment skill after-images
+are the resolver's current authority, but the pre-turn roots remain the offered catalog.
+
+### 21.4 Projection, slots, and direct cutover
+
+Projection describes broad scope as all affected checks and a usable focused scope by
+its current canonical display name without exposing `skillId`. Unavailable retained rows
+add inactive wording; missing or invalid authority uses neutral “specific unavailable
+skill” wording and never selects a similar name. Existing visibility still suppresses a
+hidden effect.
+
+One broad or focused component is one wound consequence and one slot. Scope does not
+raise power, expand a component into several consequences, or create `great`/`dire`
+strength. Repository bootstrap state, built-in definitions, fixtures, examples, and tests
+all use explicit scope; old non-empty payloads without scope are unsupported and receive
+no migration or fallback.

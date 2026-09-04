@@ -379,3 +379,22 @@ These tests do not edit the same file. Production scheduler work begins only aft
 - Mark a task complete only after inspecting its diff and recording required RED/GREEN or verification evidence.
 - If implementation reveals a requirement conflict, stop the affected slice and update the Spec Kit artifact through the appropriate phase instead of silently drifting.
 - Do not add runtime migration, compatibility aliases, GitHub workflows, or cloud dependencies.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+extends the completed common `roll_modifier` contract to this mandatory closed payload:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+Historical #1535 tasks remain complete and MUST NOT be unchecked, renumbered, or
+reopened. The new structural validation, exact target-skill binding, runtime resolver,
+treatment, projection, direct cutover, GM catalog, lifecycle/replay/rollback,
+documentation, and verification tasks are owned and numbered only in the #1536 task
+artifact. Missing scope has no compatibility meaning.

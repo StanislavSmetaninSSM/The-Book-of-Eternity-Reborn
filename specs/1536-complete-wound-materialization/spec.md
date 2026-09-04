@@ -51,6 +51,12 @@
 - Q: Which same-turn response fields and normalized roots may participate in T070-B.4 treatment item publication? → A: Alongside the existing six closed skill-operation fields, B.4 admits only the ordinary Mortal item command properties `UpdateInventory`, `moveInventoryItems`, `removeInventoryItems`, `NPCInventoryAdds`, `NPCInventoryUpdates`, `NPCInventoryRemovals`, and `NPCEquipmentChanges`; every other non-null response property remains unsupported. The snapshot owns detached `JsonNode?` current/backup and output roots; every map retains the complete bidirectional path set, with a null value proving an absent file, and preserves exact content plus top-level object/array topology, including legacy vehicles and effective post-location roots. The sealed live item baseline is the exact output immediately before common-plan publication after only the ordinary transforms that can touch the selected item graph. `TransformRegistry` owns execution in exact base order `quest_history:v1`, `npc_core:v1`, `npc_trade:v1`, `inventory_items_journal:v1`, `item_bonds:v1`, `item_text_updates:v1`, `npc_item_journals:v1`; the same dispatch loop emits the fingerprinted `AppliedTransformIds`, specializing NPC trade to `npc_trade:apply:v1` or `npc_trade:skip_untouched_treatment_continuation:v1`. `Apply` consumes `UpdateNpcTradeInventoryReceipts` into canonical receipts, whereas `SkipUntouchedTreatmentContinuation` leaves the post-NPC-core root and command untouched and creates no receipt. The baseline explicitly excludes the B.2 treatment skill projection, which receives the supplied semantic final ordinary NPC root while transaction rollback retains its separate true live canonical before-image. Each ordinary transformation is shared with the normalizer rather than duplicated, and every authority, pending byte, route/transfer catalog, and snapshot on which it depends is detached, sealed, and forwarded from validation without reread or rebuild. Accepted same-turn creations use snapshot-owned deterministic root receipt and create-transition IDs in production collector order `UpdateInventory` -> NPC core -> NPC commands -> current location -> offscreen storage, and transfers use deterministic transition IDs; neither the projector nor normalizer may invoke the writing transfer service or allocate a second random receipt/history row.
 - Q: What may full treatment consumption unlink automatically? → A: Only an existing supported inline equipment reference may be cleared by the shared Mortal item transition contract. A container, quest, bond, or any other companion reference requires its own genuine atomic transition authority; because B.4 does not mint that authority, the complete mixed publication rejects before any write.
 
+### Session 2026-09-05
+
+- Q: How may a wound consequence affect either every skill check or one exact skill without creating wound-only roll mechanics? → A: The completed #1535 common `roll_modifier` gains one mandatory closed `scope`: either `{ "kind": "all" }` or `{ "kind": "skill", "skillId": "<canonical-id>" }`. Focused scope is legal only for exactly `operations: ["skill_check"]`; the client binds the selected permanent skill identity against the exact target's offered and final usable catalogs, and no missing-scope compatibility default exists.
+- Q: What happens after a valid focused modifier's selected skill becomes unavailable? → A: The effect and source wound remain unchanged; current authority derives only that component as dormant. The exact same permanent identity may reactivate it, while a similar name, alias, case variant, or Unicode-confusable identity cannot inherit it.
+- Q: Which skill identity is used by a Mortal treatment procedure? → A: `resolved_skill_tier` seals the exact selected requirement row's canonical `RollSkillId`; `fixed_zero` seals null. The shared resolver filters broad or exact-skill modifiers before the unchanged advantage/disadvantage reducer and Fate Shield logic.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receive a Complete and Fair Wound (Priority: P1)
@@ -188,6 +194,29 @@ As the game-running system, I can reject and repair an invalid wound proposal wi
 3. **Given** a changed event, roll, or target during repair, **When** the old pending packet is reused, **Then** the packet is rejected and a new event is required.
 4. **Given** a crash during publication, **When** recovery runs, **Then** wound, effects, resources, history, scheduler state, and player output are all restored or all committed.
 5. **Given** the same accepted attempt or cycle is replayed, **When** it is processed again, **Then** no duplicate state, charge, roll, notification, or recovery progress appears.
+
+### User Story 8 - Apply Roll Consequences to an Exact Skill (Priority: P1)
+
+As a player, I want a wound or ordinary effect to hinder one exact skill when that is the
+authored consequence, without silently affecting every skill or changing the wound when
+that skill later becomes unavailable.
+
+**Why this priority**: Arbitrary setting-specific wounds need precise mechanics, and an
+implicit or display-name selector would broaden GM output or bind it to the wrong actor.
+
+**Independent Test**: Materialize broad and focused `roll_modifier` components through
+ordinary and wound sources, resolve matching and non-matching checks and treatment
+procedures, remove/restore the selected skill, restart/replay, and inject publication
+failure while verifying exact scope, one-slot accounting, and unchanged source state.
+
+**Acceptance Scenarios**:
+
+1. **Given** a structurally valid exact-skill modifier and one offered/current usable canonical target skill, **When** the effect is accepted, **Then** the permanent `skillId` is bound exactly and no GM display name becomes authority.
+2. **Given** a missing scope, illegal field, wrong operation set, same-response new skill, final-disabled skill, wrong owner, duplicate, confusable, idless, unknown, or missing catalog selection, **When** validation runs, **Then** the complete ordinary or wound transaction rejects before any permanent identity or partial write.
+3. **Given** broad, matching focused, non-matching focused, and identity-less check contexts, **When** contributions resolve, **Then** scope filtering happens before the unchanged advantage/disadvantage cancellation.
+4. **Given** an accepted focused component whose skill later disappears or becomes unusable, **When** mechanics resolve, **Then** only that component is dormant and the effect, wound, severity, treatment, lifetime, and history remain unchanged; restoring the same permanent identity reactivates it.
+5. **Given** a Mortal procedure using `resolved_skill_tier` or `fixed_zero`, **When** roll mode is resolved, **Then** the former supplies the selected row's exact sealed `RollSkillId`, the latter supplies null, and focused modifiers contribute only on an exact usable match.
+6. **Given** visible broad, focused, dormant, or missing-skill effects, **When** console or browser projection runs, **Then** Russian text describes the scope without exposing a technical ID or revealing a hidden effect.
 
 ### Edge Cases
 
@@ -549,6 +578,21 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **FR-087**: Worked examples MUST include Mortal construction/treatment, spiritual optional and guaranteed wounds, rejected repair, active/natural healing, entity recovery, Elyara, Shining healer access, healed legacy, and independent Saref memory suppression.
 - **FR-088**: A wound or healing capability MUST NOT be considered complete while console/browser behavior, canonical detail authority, GM guidance, or required worked examples are missing.
 
+#### Exact skill scope for common roll modifiers
+
+- **FR-089**: Every accepted common `roll_modifier` payload MUST be a closed object containing exactly `operations`, `contribution`, and one explicit closed `scope`; missing scope MUST reject and MUST NOT imply `all`.
+- **FR-090**: `scope` MUST be exactly `{ "kind": "all" }` or `{ "kind": "skill", "skillId": "<canonical-id>" }`; `kind=all` MUST forbid `skillId`, and `kind=skill` MUST require exactly one non-empty permanent `skillId`, forbid aliases/names/arrays/extra fields, and require `operations` to equal exactly `["skill_check"]`.
+- **FR-091**: New focused modifiers MUST bind by exact ordinal permanent identity to exactly one current usable active/passive skill row owned by the exact effect target in both the offered pre-turn catalog and composed final accepted state; idless, inactive, terminal, stale, newly introduced, unknown, wrong-owner, exact-duplicate, Unicode-confusable, ambiguous, no-catalog, and over-bound authorities MUST reject atomically.
+- **FR-092**: The client MUST publish a bounded, deterministic, detached `effectSkillScopeCatalog` of selectable pre-turn target skill IDs and display names to the GM, while accepted-state validation MUST recompute authority from canonical roots and MUST NOT trust an edited request catalog.
+- **FR-093**: Runtime roll resolution MUST consume one trusted context containing exact realm, actor kind/ID, registered operation, and nullable canonical `skillId`; it MUST filter actor/realm/operation and scope before applying the existing non-escalating advantage/disadvantage reduction.
+- **FR-094**: A previously valid focused component MUST be derived as dormant when the selected skill is missing or unavailable, without mutating the effect, source wound, severity, treatment, duration, or history; only restoration of the same permanent canonical identity MAY reactivate it, and invalid/ambiguous current authority MUST fail closed.
+- **FR-095**: Mortal procedure authority MUST seal nullable `RollSkillId`: `resolved_skill_tier` MUST use the exact canonical skill row selected by its satisfied requirement, while `fixed_zero` MUST use null; live resolution, fresh validation, detached replay, fingerprints, and final treatment after-images MUST agree on that value.
+- **FR-096**: Each broad or focused `roll_modifier` component MUST consume exactly one wound-consequence slot; selecting two skills MUST require two components and two slots, while scope metadata MUST NOT raise contribution power or create an additional slot.
+- **FR-097**: `scope` and `skillId` MUST participate in every semantic clone, serialization, source/instance agreement check, cache key, snapshot, fingerprint, rematerialization, restart, replay, repair, and rollback boundary; selector changes MUST be changed requests, and failure MUST leave no partial carrier, index, wound, history, pending, or output publication.
+- **FR-098**: Player projection MUST translate broad, focused, unavailable, and missing-skill scopes into safe in-world Russian text without exposing technical `skillId`, selecting a similar name, or bypassing existing hidden-effect visibility.
+- **FR-099**: Repository bootstrap state, fixtures, built-in sources, tests, prompts, guides, examples, manifests, and source guards MUST move directly to explicit scope; no migration, fallback parser, dual schema, or implicit legacy default is permitted.
+- **FR-100**: Fast pure tests MUST own structural validation, skill authority, reduction, slot accounting, and projection; file/cache/restart/replay/rollback and treatment lifecycle evidence MUST remain in Integration or other appropriate lifecycle lanes, followed by focused documentation guards, one meaningful Fast checkpoint, conditional FullValidation, review, and PreMerge only at the actual merge boundary.
+
 ### Key Entities *(include if feature involves data)*
 
 - **Wound**: An independently treatable physical or spiritual injury with stable identity, owner, cause, severity, location, symptoms, care state, consequences, treatment/recovery policy, visibility, and history.
@@ -561,6 +605,8 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **Healing Service Profile**: A public provider's realm, location, availability, compensation, price, and access contract, separate from raw healing capability.
 - **Wound History**: Ordered immutable player-readable provenance backed by terminal transition authority.
 - **Independent Legacy/Effect**: A lasting result whose lifecycle is separate from a healed wound but whose origin may reference it.
+- **Roll Modifier Scope**: The closed common `all` or exact canonical `skill` selector carried by one #1535 `roll_modifier`, bound against one target and evaluated through a trusted current roll context.
+- **Skill Scope Authority**: Detached offered/current canonical player and NPC skill catalogs used for new binding, runtime usability, GM selection projection, deterministic fingerprints, and fail-closed ambiguity detection.
 
 ## Success Criteria *(mandatory)*
 
@@ -579,6 +625,9 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **SC-011**: Every materialized Shining faction has at least one visible valid `healing_support` resident, while factions without public access expose 0 unintended paid-service actions.
 - **SC-012**: Every required GM-authored contract has at least one validated worked example, and all changed Mortal/afterlife documentation manifests and source guards agree with runtime behavior.
 - **SC-013**: A GM can correct each representative invalid wound proposal using the bounded repair information without receiving hidden player/NPC authority or rewriting unrelated accepted content.
+- **SC-014**: Contract tests accept 100% of the two legal closed scope variants and reject every tested missing, extra, cross-field, wrong-target, stale, duplicate, confusable, idless, unavailable, or no-catalog variant before publication.
+- **SC-015**: Broad/exact/mismatch/identity-less, treatment, dormancy/restoration, replay, and rollback matrices produce the expected contribution and state outcomes with zero technical `skillId` leakage and zero wound mutation from skill availability alone.
+- **SC-016**: Semantic scans and executable documentation/source guards find zero active two-field `roll_modifier` payloads or implicit missing-scope behavior across repository state, fixtures, sources, examples, and GM guidance.
 
 ## Verification Plan *(mandatory)*
 

@@ -1829,7 +1829,7 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T156 Run focused `AfterlifeDocumentationCoverageTests|PromptDocumentationCoverageTests` and conditional `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation`, diagnose only related failures, and record artifacts in `specs/1536-complete-wound-materialization/tasks.md`
 - [ ] T157 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane RegressionIntegration` only if the complete spiritual-conflict matrix changed or focused evidence requires it, and record the measured rationale/result in `specs/1536-complete-wound-materialization/tasks.md`
 - [ ] T158 Run `npm run verify` and preferred rendered browser desktop/mobile/keyboard/privacy checks when browser source changed; record commands/screenshots/findings in `specs/1536-complete-wound-materialization/tasks.md`
-- [ ] T159 Execute every applicable scenario in `specs/1536-complete-wound-materialization/quickstart.md` and reconcile all 88 FRs, 47 acceptance scenarios, edge cases, contracts, current bootstrap roots, docs, examples, and manifests against implementation
+- [ ] T159 Execute every applicable scenario in `specs/1536-complete-wound-materialization/quickstart.md` and reconcile all 100 FRs, 53 acceptance scenarios, edge cases, contracts, current bootstrap roots, docs, examples, and manifests against implementation
 - [ ] T160 Request independent code review of #1536 focused on client/GM authority, staged wound/effect composition, same-root atomicity, replay/rollback, privacy, console/browser parity, and Mortal/afterlife documentation synchronization, and record findings in `specs/1536-complete-wound-materialization/tasks.md`
 - [ ] T161 Verify every review finding against code/spec, add a focused RED test for accepted defects, implement only substantiated changes, and rerun the smallest affected filters
 - [ ] T162 Inspect `git diff --check`, all changed files, generated state/examples, and `tasks.md`; remove placeholders, obsolete fallbacks, dead paths, and untracked artifacts while preserving unrelated user work
@@ -1837,6 +1837,27 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T164 Commit all verified #1536 code/tests/docs/spec task evidence, push `1536-complete-wound-materialization`, open a PR linked to #1536 with architecture/no-migration/GM-sync/verification/residual-risk summary, and record the PR URL in `specs/1536-complete-wound-materialization/tasks.md`
 - [ ] T165 Inspect the GitHub PR diff/checks and remote branch, address only verified issues with focused tests, and confirm every required file is present before approval
 - [ ] T166 Merge the approved PR into `main`, verify the merge commit on `origin/main`, close #1536 only when all accepted scope is present, and leave the linked Saref follow-up open if T148 required it
+
+### Exact skill scope insertion (appended IDs; execute before remaining Phase 10 work)
+
+**Purpose**: Extend the completed #1535 common `roll_modifier` with mandatory explicit
+scope, then resume paused wound documentation and final controls against one final schema.
+
+- [ ] T167 [US8] **Enforce the closed structural scope union**: add RED closed-union rows and require every `roll_modifier` payload to contain exactly `operations`, `contribution`, and `scope`; accept only closed `all` or exact `skill` scope, require focused scope to use exactly `operations=["skill_check"]`, and cut shared fixtures to explicit broad scope in `BookOfEternityClient/Services/EffectComponentProfiles.cs`, `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs`, `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs`, and `BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs`
+- [ ] T168 [US8] **Build canonical offered/current skill-scope authority**: add RED/GREEN `EffectRollSkillScopeAuthority` coverage and implementation for detached bounded offered/current player and NPC active/passive catalogs, exact/confusable authority, new binding, runtime usability, fingerprints, and GM catalog projection; expose canonical NPC enumeration and accepted-root composition in `BookOfEternityClient/Services/EffectRollSkillScopeAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, and `BookOfEternityClient.Tests/EffectRollSkillScopeAuthorityTests.cs`
+- [ ] T169 [US8] **Seal scope authority into accepted effect and wound planning**: add RED/GREEN planner, cache, reaction, wound-batch, and repair tests; seal the skill-scope authority fingerprint into ordinary/reaction/wound accepted planning after parameter binding and before mutation, revalidate composed final roots, preserve exact wound proposal repair coordinates, and prove zero partial allocation/publication across `BookOfEternityClient/Services/EffectAcceptedTurnPlan.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanCache.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs`, `BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs`, `BookOfEternityClient/Services/WoundResponseInputComposer.cs`, `BookOfEternityClient/Services/WoundRepairPacketBuilder.cs`, and their owning tests
+- [ ] T170 [US8] **Introduce the single scope-aware roll reducer**: add RED/GREEN pure reducer coverage and implement the sole `EffectRollContributionResolver.Resolve(EffectMechanicsSnapshot, EffectRollContext)` in `BookOfEternityClient/Services/EffectRollContributionResolver.cs` so exact actor/realm/operation and `all|skill` scope filter before unchanged same-direction collapse and opposite-direction cancellation; carry detached current authority in `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`
+- [ ] T171 [US2] [US8] **Bind Mortal treatment rolls to the exact selected skill ID**: add RED/GREEN Integration treatment rows and seal nullable `RollSkillId` through `MortalWoundTreatmentAuthority`, accepted canonical projection/state, requirement bundle, procedure authority/fresh validation, detached seal validation, and `WoundAcceptedTurnPlanner.MortalTreatmentPublication`; replace the local contribution loop with the shared resolver so `resolved_skill_tier` supplies its exact skill and `fixed_zero` supplies null
+- [ ] T172 [US5] [US8] **Project broad, focused, and dormant scopes safely**: add RED/GREEN projection rows and render broad, focused, unavailable, missing, and invalid current scopes as safe in-world Russian text without technical `skillId` leakage, similar-name selection, or hidden-effect visibility changes in `BookOfEternityClient/UI/EffectPlayerProjection.cs` and `BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs`
+- [ ] T173 [US8] **Supply the bounded selectable catalog to the GM**: add RED/GREEN `EffectSkillScopeLifecycleTests` request-staging coverage and attach detached bounded `turn_request.json.effectSkillScopeCatalog` through `BookOfEternityClient/Models/TurnRequest.cs`, `BookOfEternityClient/Services/LiveTurnPreparationService.cs`, and `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`, with an explicit empty default for other routes and accepted-state recomputation proving catalog edits are non-authoritative
+- [ ] T174 [US1] [US8] **Complete direct-cutover fixtures and wound slot accounting**: add RED/GREEN one-component/one-slot and rematerialization/fingerprint rows; keep scope semantic rather than a power or slot expansion in `WoundConsequenceEnvelopeCatalog`, `WoundMaterializationContract`, and `WoundPersistedConsequenceEnvelopeAdapter`, convert every executable `BookOfEternityClient.Tests`, `BookOfEternityClient.IntegrationTests`, and `BookOfEternityClient.TestSupport` payload to explicit broad scope unless it is an intentional focused case, and add semantic source guards proving no active payload lacks scope
+- [ ] T175 [US2] [US7] [US8] **Prove lifecycle, dormancy, replay, and rollback in Integration**: add file-backed `RegressionIntegration` lifecycle evidence for ordinary/wound materialization, final binding rejection, derived dormancy/exact restoration/non-inheritance, restart, exact and changed-selector replay, cache invalidation, rollback, and focused treatment behavior in `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs`, `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, and `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests*.cs`
+- [ ] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
+- [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
+
+**Checkpoint**: Every active payload has explicit closed scope; exact target-skill
+binding, runtime dormancy, treatment, projection, slot accounting, replay/rollback, and
+GM authoring agree before paused T148–T166 final work resumes.
 
 ---
 
@@ -1853,7 +1874,8 @@ hand-written history/after-images, or a raw mutation fallback.
 - **US4 (Phase 7)**: depends on US3 and the common US7 safety boundary.
 - **US5 (Phase 8)**: depends on complete Mortal US2 and spiritual US4 application semantics; commands are not exposed earlier.
 - **US6 (Phase 9)**: depends on US4 healing and US5 guided flow.
-- **Polish (Phase 10)**: depends on all desired stories; #1536 requires all seven.
+- **Exact skill scope insertion (T167–T177)**: depends on completed #1535 and the current #1536 wound/effect foundation; despite appended sequential IDs, it executes before remaining T148–T166 work and blocks their final documentation, review, and verification conclusions.
+- **Polish (Phase 10)**: depends on all desired stories plus T167–T177; #1536 requires all eight stories.
 
 ### User story independence
 
@@ -1885,6 +1907,7 @@ hand-written history/after-images, or a raw mutation fallback.
 - US5 projection/target/privacy/console/frontend tests T113-T118 can be authored in parallel after application semantics are fixed.
 - US6 quote/service/payment/Elyara/Shining tests T131-T135 can be authored in parallel.
 - Cross-cutting Saref/source/docs/terminology/untrusted-text audits T148-T152 own separate files.
+- Scope structural, authority, reducer, projection, GM-catalog, and lifecycle RED tests in T167–T175 own distinct first-failure surfaces; shared accepted-planner and documentation files remain sequential, and T176 incorporates rather than overwrites current Task 7 documentation work.
 
 ## Parallel Examples by Story
 
@@ -1919,8 +1942,8 @@ Mortal and spiritual wound lifecycles but still keeps guided commands disabled u
 1. Finish common foundation and safe creation/repair.
 2. Finish Mortal and spiritual domain lifecycles.
 3. Expose shared console/browser inspection and treatment only after both are complete.
-4. Add provider/faction access and synchronize every GM surface.
-5. Run cross-cutting audit/review/final controls, merge, then close #1536.
+4. Add provider/faction access, complete T167–T176 exact skill scope, and synchronize every GM surface against the final explicit-scope schema.
+5. Run T177 and the remaining cross-cutting audit/review/final controls, merge, then close #1536.
 
 No slice may ship a GM output path or player command whose accepted lifecycle is
 incomplete. Commits may follow checkpoints on the same branch; one final PR may contain
@@ -1934,5 +1957,6 @@ retaining this task/spec authority.
 - `memory_suppression` remains an independent Saref effect. T148 creates a follow-up
   issue only if current runtime authority is incomplete.
 - No migration, compatibility parser, dual write, or old-save fallback is permitted.
+- Historical #1535 tasks remain complete; the dependent global-contract extension and every new unchecked implementation task are owned by #1536 T167–T177.
 - Every dynamic wound/provider text surface is untrusted and must be escaped/sanitized.
 - Update task checkboxes only after inspecting implementation and verification evidence.

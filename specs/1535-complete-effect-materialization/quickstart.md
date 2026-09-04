@@ -827,3 +827,24 @@ No migration, compatibility reader, dual authority/write, raw fallback, GitHub
 Actions enablement, commit, push, PR, merge, or issue closure occurred. T118 is
 complete. T119 remains the owner-controlled final workspace/summary and
 integration boundary.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+The completed #1535 verification record is retained. Dependent issue
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+must now verify the common explicit-scope payload:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+Exercise the closed `all` and exact `skill` variants; reject missing/extra fields and
+illegal operation/scope combinations; prove exact offered/final target binding,
+dormancy/reactivation, scope-before-reduction behavior, safe projection, replay,
+rollback, and direct-cutover fixtures. There is no compatibility default for missing
+scope. Historical #1535 task evidence remains complete; all new RED/GREEN and
+lifecycle evidence is recorded under #1536.

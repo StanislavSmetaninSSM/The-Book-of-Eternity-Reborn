@@ -437,3 +437,28 @@ The extension is complete only when:
    projections, and documentation/source guards teach and prove the complete behavior.
 8. Focused, Fast, conditional documentation, lifecycle, and PreMerge controls pass in
    their appropriate lanes without making Fast a filesystem/lifecycle suite.
+
+## Durable Spec Kit and task mapping
+
+This approved design amends the completed #1535 common effect contract in place while
+leaving its historical tasks complete. The implementation and verification extension is
+owned entirely by #1536 through new sequential task IDs appended after T166:
+
+| Task | Approved execution slice |
+| --- | --- |
+| T167 | Closed structural `scope` union and broad fixture cutover |
+| T168 | Canonical offered/current target-skill authority and GM catalog projection |
+| T169 | Accepted ordinary/reaction/wound binding, cache seals, and repair coordinates |
+| T170 | One scope-aware shared roll contribution resolver |
+| T171 | Mortal treatment `RollSkillId` sealing and shared resolution |
+| T172 | Safe broad/focused/dormant player projection |
+| T173 | Bounded advisory `effectSkillScopeCatalog` at GM request staging |
+| T174 | Direct-cutover executable fixtures and one-component/one-slot accounting |
+| T175 | Integration lifecycle, dormancy, restart, replay, cache, and rollback evidence |
+| T176 | GM contracts, Mortal/afterlife examples, manifests, and source guards |
+| T177 | Semantic scans, lane-correct verification, independent review, and safety checks |
+
+T167–T177 execute before the currently paused #1536 Phase 10 documentation and control
+work resumes, so those files are completed against the final scope-aware schema once.
+No #1535 checkbox is reopened, no missing-scope compatibility behavior is introduced,
+and PreMerge remains reserved for an explicit later merge request.

@@ -1111,11 +1111,14 @@ contours. B.4 proves its publication/replay authority through guaranteed-treatme
 it does not require a procedure/course publication test to become GREEN.
 
 Procedure route resolution has a closed `modifierSource`: exact zero/provider roll actor,
-or one zero-based satisfied T060 `skill_tier` requirement whose current tier and resolved
-owner become modifier and roll actor. The check factory sums every active complication's
-difficulty modifier, then reduces accepted roll-actor `roll_modifier(skill_check)`
-effects: same-direction sources collapse, opposing sources cancel, and version 1 admits
-only normal/advantage/disadvantage. Normal claims one die; advantage/disadvantage claim
+or one zero-based satisfied T060 `skill_tier` requirement whose current tier, exact
+canonical `skillId`, and resolved owner become modifier, `RollSkillId`, and roll actor.
+`fixed_zero` uses null `RollSkillId`. The check factory sums every active complication's
+difficulty modifier, then asks the shared scope-aware resolver for accepted roll-actor
+`roll_modifier` components matching the trusted `skill_check` context. Broad scope and
+an exact usable focused scope pass; a different, missing, or unavailable skill does not.
+Filtering precedes the unchanged reduction: same-direction sources collapse, opposing
+sources cancel, and version 1 admits only normal/advantage/disadvantage. Normal claims one die; advantage/disadvantage claim
 two and choose high/low, with the lower source index winning a tie. A generation-scoped
 registry reconstructs all occupied indices from strictly valid full requests in typed
 wound commands, pending packets, and history for the same turn, then provisionally
@@ -1428,6 +1431,56 @@ History-only; docs teach every authoring/repair workflow.
 7. Run one final PreMerge control, record exact result artifacts/counts, update Spec Kit
    task checkboxes only from evidence, commit, push, open PR, review GitHub checks/diff,
    merge into `main`, verify remote main, and close #1536 only after all work is present.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+The approved design at
+`docs/superpowers/specs/2026-09-05-roll-modifier-skill-scope-design.md` extends the
+completed #1535 common profile. Every accepted `roll_modifier` is cut directly to the
+closed three-field payload; no migration or compatibility reader is added:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+### Architecture and data flow
+
+1. `EffectComponentProfiles` validates the closed `all|skill` discriminator and the
+   exact `skill_check` cross-field rule without reading target state.
+2. One detached `EffectRollSkillScopeAuthority` builds bounded offered and composed-final
+   player/NPC active/passive catalogs. It binds new focused components by exact ordinal
+   permanent identity, rejects duplicate/confusable/wrong-owner/stale authority, creates
+   the advisory `effectSkillScopeCatalog`, and fingerprints both catalog halves.
+3. Ordinary, reaction, and wound applications seal that authority after parameter
+   binding and before identity allocation or mutation. Final revalidation rejects a
+   same-response removal/disable; a same-response new skill was never offered.
+4. `EffectMechanicsSnapshot` carries current scope authority. The sole
+   `EffectRollContributionResolver` filters exact actor, realm, operation, and scope from
+   a trusted context before the unchanged contribution reducer. Legitimate later absence
+   or unavailability derives dormancy; corrupt or ambiguous authority fails closed.
+5. Mortal procedure authority seals nullable `RollSkillId`, derived from the exact
+   selected `resolved_skill_tier` row or null for `fixed_zero`, through live, detached,
+   fingerprint, replay, and final-treatment after-image paths.
+6. Player projection resolves readable current names without exposing IDs or changing
+   hidden-effect visibility. One scoped component remains one wound slot regardless of
+   scope, and every serialization/cache/snapshot/rematerialization/rollback path preserves
+   the selector exactly.
+
+### Delivery and lane placement
+
+Tasks T167–T177 own the scope sub-slice and execute before the still-pending Phase 10
+documentation/control tasks T148–T166 resume. T167–T175 follow RED/GREEN ownership from
+pure structural tests through accepted planning, the shared resolver, treatment,
+projection, GM catalog, direct-cutover fixtures, and file-backed lifecycle evidence.
+T176 synchronizes the effect/wound Mortal and afterlife GM contracts, examples,
+manifests, projections, and source guards, preserving the existing Task 7 documentation
+work. T177 runs semantic scans, one meaningful Fast checkpoint, required documentation
+and FullValidation controls, conditional regression integration, independent review,
+and diff/status safety checks; PreMerge remains reserved for an actual merge request.
 
 ## Risk controls
 

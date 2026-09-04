@@ -431,3 +431,53 @@ Completion evidence must name result directories and counts for focused controls
 conditional FullValidation, frontend/browser checks when applicable, and PreMerge. It
 must also record Mortal/afterlife prompt/doc/example updates or the explicit no-update
 rationale for each reviewed surface.
+
+## 9. 2026-09-05 — exact skill scope extension from #1536
+
+Use this focused component as the canonical exact-skill case:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+Also exercise the broad variant with `"scope": { "kind": "all" }`. Reject missing
+scope, extra payload/scope fields, `skillId` under `all`, missing `skillId` under
+`skill`, and every focused operation set other than exactly `["skill_check"]`.
+
+1. Stage one player active/passive catalog and one nearby-NPC catalog. Prove the GM
+   receives a bounded detached `effectSkillScopeCatalog`, inactive/idless/duplicate/
+   confusable rows are absent, an afterlife-only request receives an explicit empty
+   catalog, and editing the request never authorizes accepted state.
+2. Materialize broad and focused ordinary effects and wound-owned effects. Accept one
+   offered-and-current exact target row; reject same-response additions, final removals
+   or disables, wrong owners, unknown IDs, missing catalogs, duplicate/confusable rows,
+   and allocate or publish no permanent effect/component/transition/wound state on error.
+3. Resolve broad, exact match, exact mismatch, null identity, wrong actor/realm/operation,
+   repeated same-direction, and opposing contributions. Filtering must precede the
+   unchanged reduction.
+4. Remove or disable the selected skill in a later accepted state, add a similar or
+   confusable different identity, and finally restore the original permanent identity.
+   Expect `active -> dormant -> dormant -> active` contribution while effect ID, wound
+   ID, severity, treatment, lifetime, and history remain unchanged.
+5. Exercise Mortal procedures: `resolved_skill_tier` supplies the selected requirement
+   row's exact sealed `RollSkillId`; `fixed_zero` supplies null. Broad and matching
+   focused effects contribute as specified, other focused effects do not, and tampered
+   `RollSkillId` rejects detached replay before Fate Shield or publication.
+6. Prove one focused component consumes one consequence slot, two skill selectors need
+   two components and slots, semantic fingerprints change with `kind` or `skillId`, and
+   retained consequence rematerialization preserves the selector exactly.
+7. Restart, exact-replay, changed-selector, cache invalidation, and forced rollback cases
+   must preserve complete scope or restore every carrier/index/wound/history/output root
+   without a partially rebound component.
+8. Verify Russian broad/focused/dormant/missing-skill projection, no `skillId` leakage,
+   and unchanged hidden-effect suppression in both player clients.
+
+Keep structural/authority/reducer/slot/projection rows in Fast. Keep canonical-file,
+cache, restart, replay, rollback, and treatment lifecycle rows in Integration. After
+focused GREEN controls, run one meaningful Fast checkpoint, focused documentation
+guards, conditional FullValidation because shared Mortal/afterlife examples change,
+and independent review. Run PreMerge only when an actual merge is requested.
