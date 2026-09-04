@@ -29,6 +29,9 @@ internal static class EffectRollContributionResolver
         ArgumentNullException.ThrowIfNull(snapshot);
         ArgumentNullException.ThrowIfNull(context);
 
+        if (!snapshot.IsAccepted)
+            return Invalid(snapshot.Issues);
+
         var accepted = new List<EffectRollContributionEvidence>();
         foreach (var component in snapshot.Components)
         {

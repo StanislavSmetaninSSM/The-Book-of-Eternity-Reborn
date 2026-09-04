@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -27,6 +29,31 @@ public sealed class EffectRollContributionResolverTests
         Assert.Equal("advantage", contribution.Contribution);
         Assert.Empty(resolution.Issues);
         Assert.True(Assert.IsAssignableFrom<IList<EffectRollContributionEvidence>>(resolution.Contributions).IsReadOnly);
+    }
+
+    [Fact]
+    public void Resolve_RejectedSnapshot_FailsClosedAndCopiesItsDiagnostics()
+    {
+        var issue = new ValidationIssue(
+            "game_state/player/skills_active.json",
+            IssueSeverity.Error,
+            "Skill authority cannot be trusted.",
+            code: "effect_mechanics_authority_read_failed");
+        var rejected = Snapshot(Component("effect_rejected", "component_rejected", "advantage", Scope("all"))) with
+        {
+            IsAccepted = false,
+            Issues = new ReadOnlyCollection<ValidationIssue>(new[] { issue })
+        };
+
+        var resolution = EffectRollContributionResolver.Resolve(rejected, PlayerSkillCheck);
+
+        Assert.False(resolution.IsValid);
+        Assert.Equal("normal", resolution.RollMode);
+        Assert.Empty(resolution.Contributions);
+        Assert.Single(resolution.Issues);
+        Assert.Equal(issue.Code, resolution.Issues[0].Code);
+        Assert.NotSame(rejected.Issues, resolution.Issues);
+        Assert.True(Assert.IsAssignableFrom<IList<ValidationIssue>>(resolution.Issues).IsReadOnly);
     }
 
     [Fact]
@@ -123,6 +150,123 @@ public sealed class EffectRollContributionResolverTests
         Assert.Equal("normal", resolution.RollMode);
         Assert.Empty(resolution.Contributions);
         Assert.Contains(resolution.Issues, issue => issue.Code == "effect_roll_skill_scope_invalid_authority");
+    }
+
+    [Fact]
+    public void Resolve_OverBoundCurrentSkillAuthority_FailsClosedWithoutRollAuthority()
+    {
+        var authority = Authority(Enumerable.Range(0, 129)
+            .Select(index => Skill($"skill_{index:D3}", active: true))
+            .ToArray());
+        var context = PlayerSkillCheck with { SkillId = "skill_000" };
+        var resolution = EffectRollContributionResolver.Resolve(
+            Snapshot(Component("effect_bound", "component_bound", "advantage", Scope("skill", "skill_000")),
+                authority: authority),
+            context);
+
+        Assert.False(resolution.IsValid);
+        Assert.Equal("normal", resolution.RollMode);
+        Assert.Empty(resolution.Contributions);
+        Assert.Contains(resolution.Issues, issue => issue.Code == "effect_roll_skill_scope_invalid_authority");
+    }
+
+    [Fact]
+    public void Resolve_BuildDefaultAuthority_LeavesFocusedContributionDormant()
+    {
+        var snapshot = EffectMechanicsSnapshot.Build(new EffectMechanicsInput(
+            new EffectCarrierCatalogInput(null, null, null, null, null, null),
+            null)) with
+        {
+            Components = new ReadOnlyCollection<EffectMechanicalComponent>(new[]
+            {
+                Component("effect_default", "component_default", "advantage", Scope("skill", "skill_lockpicking"))
+            })
+        };
+
+        var resolution = EffectRollContributionResolver.Resolve(snapshot, PlayerSkillCheck);
+
+        Assert.True(snapshot.IsAccepted);
+        Assert.True(resolution.IsValid);
+        Assert.Equal("normal", resolution.RollMode);
+        Assert.Empty(resolution.Contributions);
+    }
+
+    [Fact]
+    public async Task Resolve_LoadAsyncMalformedSkillRoot_FailsClosedWithSnapshotDiagnostics()
+    {
+        var root = CreateTemporaryRoot();
+        try
+        {
+            var fileSystem = CreateFileSystem(root);
+            await fileSystem.WriteFileAtomicAsync(ActivePath, "[]");
+
+            var snapshot = await EffectMechanicsSnapshot.LoadAsync(fileSystem);
+            var resolution = EffectRollContributionResolver.Resolve(
+                snapshot with
+                {
+                    Components = new ReadOnlyCollection<EffectMechanicalComponent>(new[]
+                    {
+                        Component("effect_load_failure", "component_load_failure", "advantage", Scope("all"))
+                    })
+                },
+                PlayerSkillCheck);
+
+            Assert.False(snapshot.IsAccepted);
+            Assert.Contains(snapshot.Issues, issue => issue.Code == "effect_mechanics_invalid_authority_root");
+            Assert.False(resolution.IsValid);
+            Assert.Equal("normal", resolution.RollMode);
+            Assert.Empty(resolution.Contributions);
+            Assert.Contains(resolution.Issues, issue => issue.Code == "effect_mechanics_invalid_authority_root");
+        }
+        finally
+        {
+            DeleteTemporaryRoot(root);
+        }
+    }
+
+    [Fact]
+    public async Task Resolve_LoadAsyncWithExistingPublicationLease_UsesExactCurrentSkillAuthority()
+    {
+        var root = CreateTemporaryRoot();
+        try
+        {
+            var readPaths = new List<string>();
+            var fileSystem = CreateFileSystem(root, new FileSystemManagerHooks
+            {
+                BeforeCanonicalReadOpenAsync = path =>
+                {
+                    readPaths.Add(path);
+                    return Task.CompletedTask;
+                }
+            });
+            await fileSystem.WriteFileAtomicAsync(ActivePath, RootWithSkills(Skill("skill_lockpicking", active: true)).ToJsonString());
+            await fileSystem.WriteFileAtomicAsync("game_state/player/skills_passive.json", "{\"passiveSkillChanges\":[]}");
+            await fileSystem.WriteFileAtomicAsync("game_state/npcs/npc_core.json", "{\"UpdateNPCs\":[]}");
+
+            await using var lease = await fileSystem.AcquireCanonicalWriteLeaseAsync(
+                CanonicalWritePurpose.PublicationReadQuiescence);
+            var snapshot = await EffectMechanicsSnapshot.LoadAsync(fileSystem, lease);
+            var resolution = EffectRollContributionResolver.Resolve(
+                snapshot with
+                {
+                    Components = new ReadOnlyCollection<EffectMechanicalComponent>(new[]
+                    {
+                        Component("effect_loaded", "component_loaded", "advantage", Scope("skill", "skill_lockpicking"))
+                    })
+                },
+                PlayerSkillCheck);
+
+            Assert.True(snapshot.IsAccepted);
+            Assert.Equal("advantage", resolution.RollMode);
+            Assert.Single(resolution.Contributions);
+            Assert.Equal(1, readPaths.Count(path => string.Equals(path, ActivePath, StringComparison.Ordinal)));
+            Assert.Equal(1, readPaths.Count(path => string.Equals(path, "game_state/player/skills_passive.json", StringComparison.Ordinal)));
+            Assert.Equal(1, readPaths.Count(path => string.Equals(path, "game_state/npcs/npc_core.json", StringComparison.Ordinal)));
+        }
+        finally
+        {
+            DeleteTemporaryRoot(root);
+        }
     }
 
     [Theory]
@@ -227,6 +371,11 @@ public sealed class EffectRollContributionResolverTests
             Roots(skills),
             Roots(skills)));
 
+    private static JsonObject RootWithSkills(params JsonObject[] skills) => new()
+    {
+        ["activeSkillChanges"] = new JsonArray(skills.Select(static skill => (JsonNode?)skill.DeepClone()).ToArray())
+    };
+
     private static Dictionary<string, JsonNode?> Roots(params JsonObject[] skills) => new()
     {
         [ActivePath] = new JsonObject
@@ -242,4 +391,24 @@ public sealed class EffectRollContributionResolverTests
         ["lifecycle"] = active ? "active" : "inactive",
         ["active"] = active
     };
+
+    private static string CreateTemporaryRoot() =>
+        Path.Combine(Path.GetTempPath(), "boe-roll-contribution-" + Guid.NewGuid().ToString("N"));
+
+    private static FileSystemManager CreateFileSystem(string root, FileSystemManagerHooks? hooks = null)
+    {
+        var fileSystem = new FileSystemManager(
+            root,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance,
+            hooks);
+        fileSystem.EnsureDirectoryStructure();
+        return fileSystem;
+    }
+
+    private static void DeleteTemporaryRoot(string root)
+    {
+        if (Directory.Exists(root))
+            Directory.Delete(root, recursive: true);
+    }
 }
