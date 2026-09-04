@@ -102,9 +102,9 @@
 - Consumes: approved design `docs/superpowers/specs/2026-09-05-roll-modifier-skill-scope-design.md` and tracked issue #1536.
 - Produces: one aligned durable contract and explicit #1536 task IDs for Tasks 2–12 below.
 
-- [ ] **Step 1: Load the Spec Kit governance and bridge instructions**
+- [ ] **Step 1: Load governance and preserve the existing feature artifacts**
 
-Read `.specify/memory/constitution.md`, then invoke `spec-kit-superpowers-bridge`, `speckit-specify`, `speckit-clarify`, `speckit-plan`, and `speckit-tasks` in that order. Encode already-approved decisions directly; ask no new product question unless the artifacts reveal a genuine contradiction.
+Read `.specify/memory/constitution.md` and use `spec-kit-superpowers-bridge` to govern a controlled in-place amendment. Do not invoke the generative `speckit-specify`, `speckit-plan`, or `speckit-tasks` workflows: their new-feature/template behavior can create another branch or replace the mature #1535/#1536 artifacts. Treat the approved design as the clarification result and ask no new product question unless the existing artifacts reveal a genuine contradiction.
 
 - [ ] **Step 2: Amend #1535 as a completed-foundation extension**
 
@@ -126,7 +126,7 @@ Add requirements and task rows covering structural validation, offered/final bin
 
 - [ ] **Step 4: Run cross-artifact analysis**
 
-Invoke `speckit-analyze` and resolve every reported inconsistency in the files above.
+Invoke the read-only `speckit-analyze`. Under the user's 2026-09-05 approval, apply controlled remediation only inside the listed artifacts, then rerun the read-only analysis until every relevant inconsistency is resolved.
 
 Expected: no unresolved ERROR or HIGH finding; #1535 and #1536 agree on the three-field payload and exact-skill semantics.
 
