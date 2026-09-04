@@ -268,6 +268,235 @@ public sealed partial class WoundEffectLineagePlannerTests
     }
 
     [Fact]
+    public void Plan_CurrentRootWithAuthenticatedRetiredGeneration_IsAccepted()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(retiredGenerationCount: 1),
+            new[] { RootEffectId });
+
+        Assert.True(result.Success, DescribeLineageIssues(result.Issues));
+        Assert.Equal(new[] { ChildEffectId, RootEffectId }, result.ClosureEffectIds);
+        Assert.Equal(new[] { ChildEffectId, RootEffectId },
+            result.ActiveOrSuspendedEffectIds);
+        Assert.Equal(3, result.Work.SourceGroupIdentityCount);
+        Assert.Equal(2, result.Work.VisitedIdentityCount);
+    }
+
+    [Fact]
+    public void Plan_TwoRetiredGenerationsAndCurrentRoot_AreAccepted()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(retiredGenerationCount: 2),
+            new[] { RootEffectId });
+
+        Assert.True(result.Success, DescribeLineageIssues(result.Issues));
+        Assert.Equal(new[] { ChildEffectId, RootEffectId }, result.ClosureEffectIds);
+        Assert.Equal(4, result.Work.SourceGroupIdentityCount);
+        Assert.Equal(2, result.Work.VisitedIdentityCount);
+    }
+
+    [Theory]
+    [InlineData("fork")]
+    [InlineData("cycle")]
+    [InlineData("wrong_definition")]
+    [InlineData("cross_domain")]
+    public void Plan_GenerationForkCycleWrongDefinitionOrCrossDomain_IsRejected(
+        string mutation)
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(
+                retiredGenerationCount: 2,
+                configure: (entries, effects) =>
+                {
+                    var first = entries[2];
+                    var second = entries[3];
+                    switch (mutation)
+                    {
+                        case "fork":
+                        {
+                            var fork = CreateEffect(
+                                "effect_wound_lineage_generation_fork",
+                                RootDefinitionKey);
+                            effects.Add(fork);
+                            break;
+                        }
+                        case "cycle":
+                            ConfigureCreate(first, 20,
+                                new[] { second["effectId"]!.GetValue<string>() });
+                            break;
+                        case "wrong_definition":
+                            second["source"]!["definitionKey"] = ChildDefinitionKey;
+                            second["stackCoordinate"]!["stackKey"] =
+                                "stack_" + ChildDefinitionKey;
+                            break;
+                        case "cross_domain":
+                            second["owner"]!["ownerId"] = "player_foreign";
+                            second["target"]!["targetId"] = "player_foreign";
+                            second["stackCoordinate"]!["targetId"] = "player_foreign";
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException(
+                                nameof(mutation), mutation, null);
+                    }
+                },
+                configureAddedEntry: mutation == "fork"
+                    ? static entry =>
+                    {
+                        ConfigureCreate(entry, 21,
+                            new[] { "effect_wound_lineage_generation_1" });
+                        SetState(entry, "removed", 21);
+                    }
+                    : null),
+            new[] { RootEffectId });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue => issue.Code is
+            "accepted_mechanics_wound_lineage_cycle" or
+            "accepted_mechanics_wound_lineage_generation_invalid" or
+            "accepted_mechanics_wound_lineage_identity_authority_mismatch" or
+            "accepted_mechanics_wound_lineage_current_unreachable");
+    }
+
+    [Fact]
+    public void Plan_SameDefinitionReactionDescendantCannotMasqueradeAsGenerationPredecessor()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(
+                retiredGenerationCount: 1,
+                configure: static (entries, _) =>
+                {
+                    var retired = entries[2];
+                    var child = entries[1];
+                    ConfigureCreate(child, 1,
+                        new[] { retired["effectId"]!.GetValue<string>() });
+                    SetState(child, "removed", 31);
+                    ConfigureCreate(entries[0], 0,
+                        new[] { ChildEffectId });
+                }),
+            new[] { RootEffectId });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue => issue.Code is
+            "accepted_mechanics_wound_lineage_generation_invalid" or
+            "accepted_mechanics_wound_lineage_current_unreachable");
+    }
+
+    [Fact]
+    public void Plan_RetiredGenerationWithActiveMember_IsRejected()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(
+                retiredGenerationCount: 1,
+                configure: static (entries, _) =>
+                {
+                    entries[2]["state"] = "active";
+                    entries[2]["transitions"]!.AsArray().RemoveAt(1);
+                }),
+            new[] { RootEffectId });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue =>
+            issue.Code == "accepted_mechanics_wound_lineage_retired_active");
+    }
+
+    [Theory]
+    [InlineData("owner")]
+    [InlineData("target")]
+    [InlineData("stack")]
+    [InlineData("source")]
+    public void Plan_RetiredReactionDescendantRequiresExactIdentityAuthority(
+        string mutation)
+    {
+        var current = CreateEffect(RootEffectId, RootDefinitionKey);
+        var currentReaction = CreateEffect(ChildEffectId, ChildDefinitionKey);
+        var retiredRoot = CreateEffect(
+            "effect_wound_lineage_generation_1",
+            RootDefinitionKey);
+        var retiredReaction = CreateEffect(
+            "effect_wound_lineage_retired_reaction",
+            ChildDefinitionKey);
+        var index = EffectMaterializationTestFixture.CreateIdentityIndex(
+            current,
+            currentReaction,
+            retiredRoot,
+            retiredReaction);
+        var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
+        ConfigureCreate(entries[0], 0, new[] { "effect_wound_lineage_generation_1" });
+        ConfigureCreate(entries[1], 1, new[] { RootEffectId });
+        ConfigureCreate(entries[2], 2, Array.Empty<string>());
+        SetState(entries[2], "removed", 2);
+        ConfigureCreate(entries[3], 3, new[] { "effect_wound_lineage_generation_1" });
+        SetState(entries[3], "removed", 3);
+        switch (mutation)
+        {
+            case "owner":
+                entries[3]["owner"]!["ownerId"] = "player_forged";
+                break;
+            case "target":
+                entries[3]["target"]!["targetId"] = "player_forged";
+                break;
+            case "stack":
+                entries[3]["stackCoordinate"]!["stackKey"] = "stack_forged";
+                break;
+            case "source":
+                entries[3]["source"]!["sourceId"] = "wound_foreign";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+        }
+
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            ParseIdentityState(index),
+            new[] { RootEffectId });
+
+        Assert.False(result.Success);
+        Assert.Contains(result.Issues, static issue => issue.Code is
+            "accepted_mechanics_wound_lineage_identity_authority_mismatch" or
+            "accepted_mechanics_wound_lineage_foreign_child");
+    }
+
+    [Fact]
+    public void Plan_WorsenThenTreatSharesOneAuthenticatedGenerationChain()
+    {
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            CreateGenerationIdentities(retiredGenerationCount: 2),
+            new[] { RootEffectId });
+
+        Assert.True(result.Success, DescribeLineageIssues(result.Issues));
+        Assert.Equal(new[] { ChildEffectId, RootEffectId }, result.ClosureEffectIds);
+        Assert.DoesNotContain(
+            "effect_wound_lineage_generation_1",
+            result.ClosureEffectIds);
+        Assert.DoesNotContain(
+            "effect_wound_lineage_generation_2",
+            result.ClosureEffectIds);
+    }
+
+    [Fact]
+    public void Plan_InitialCreateRemainsParentless()
+    {
+        var identities = CreateLineageIdentities(
+            rootState: "active",
+            childState: "active");
+
+        var result = WoundEffectLineagePlanner.Plan(
+            CreateLineageWound(),
+            identities,
+            new[] { RootEffectId });
+
+        Assert.True(result.Success, DescribeLineageIssues(result.Issues));
+        Assert.True(identities.TryGetEntry(RootEffectId, out var root));
+        Assert.Empty(root.Transitions[0].SourceEffectIds);
+    }
+
+    [Fact]
     public void TerminalPlan_SealsExactActiveDescendantOccurrenceAndIdentity()
     {
         var wound = CreateLineageWound();
@@ -677,6 +906,64 @@ public sealed partial class WoundEffectLineagePlannerTests
 
         return ParseIdentityState(index);
     }
+
+    private static EffectIdentityState CreateGenerationIdentities(
+        int retiredGenerationCount,
+        Action<JsonObject[], List<JsonObject>>? configure = null,
+        Action<JsonObject>? configureAddedEntry = null)
+    {
+        var current = CreateEffect(RootEffectId, RootDefinitionKey);
+        var reaction = CreateEffect(ChildEffectId, ChildDefinitionKey);
+        var effects = new List<JsonObject> { current, reaction };
+        for (var generation = 1; generation <= retiredGenerationCount; generation++)
+        {
+            effects.Add(CreateEffect(
+                $"effect_wound_lineage_generation_{generation}",
+                RootDefinitionKey));
+        }
+
+        var preliminary = EffectMaterializationTestFixture.CreateIdentityIndex(
+            effects.ToArray());
+        var preliminaryEntries = preliminary["entries"]!.AsArray()
+            .OfType<JsonObject>()
+            .ToArray();
+        ConfigureCreate(
+            preliminaryEntries[0],
+            0,
+            retiredGenerationCount == 0
+                ? Array.Empty<string>()
+                : new[] { $"effect_wound_lineage_generation_{retiredGenerationCount}" });
+        ConfigureCreate(preliminaryEntries[1], 1, new[] { RootEffectId });
+        for (var generation = 1; generation <= retiredGenerationCount; generation++)
+        {
+            var entry = preliminaryEntries[generation + 1];
+            ConfigureCreate(
+                entry,
+                generation + 1,
+                generation == 1
+                    ? Array.Empty<string>()
+                    : new[] { $"effect_wound_lineage_generation_{generation - 1}" });
+            SetState(entry, "removed", generation + 1);
+        }
+
+        configure?.Invoke(preliminaryEntries, effects);
+        if (effects.Count != preliminaryEntries.Length)
+        {
+            var added = effects[^1];
+            var addedIndex = EffectMaterializationTestFixture.CreateIdentityIndex(added);
+            var addedEntry = Assert.Single(
+                addedIndex["entries"]!.AsArray().OfType<JsonObject>());
+            configureAddedEntry?.Invoke(addedEntry);
+            preliminary["entries"]!.AsArray().Add(addedEntry.DeepClone());
+        }
+        return ParseIdentityState(preliminary);
+    }
+
+    private static string DescribeLineageIssues(
+        IEnumerable<ValidationIssue> issues) => string.Join(
+        Environment.NewLine,
+        issues.Select(static issue =>
+            $"{issue.Code}@{issue.FilePath}: expected={issue.Expected}; actual={issue.Actual}"));
 
     private static EffectIdentityState ParseIdentityState(JsonObject index)
     {

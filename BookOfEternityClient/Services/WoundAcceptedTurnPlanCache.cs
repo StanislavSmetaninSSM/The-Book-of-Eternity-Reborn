@@ -571,7 +571,6 @@ internal sealed class WoundAcceptedTurnPlanCache
         {
             if (transitions.Count != 0 ||
                 input.Opportunities.Count != 0 ||
-                batches.Count != 0 ||
                 !WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(plan))
             {
                 mismatch = "treatment continuation authority";

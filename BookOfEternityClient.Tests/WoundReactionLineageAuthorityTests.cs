@@ -255,6 +255,119 @@ public sealed partial class WoundEffectLineagePlannerTests
             issue.Code == "effect_reaction_wound_lineage_cross_domain");
     }
 
+    [Fact]
+    public void ReactionAuthority_CurrentRootWithAuthenticatedRetiredGeneration_ResolvesReaction()
+    {
+        var wound = CreateLineageWound();
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var child = CreateEffectFromDefinition(wound, ChildEffectId, ChildDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root, child));
+        var authority = WoundReactionLineageAuthority.Build(
+            CreateReactionSourceAuthority(wound),
+            CreateGenerationIdentities(retiredGenerationCount: 1),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        Assert.True(catalog.TryResolveOne(RootEffectId, out var occurrence));
+        var resolution = authority.ResolveApplyDefinition(
+            occurrence,
+            Assert.Single(root["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            ChildDefinitionKey);
+
+        Assert.True(resolution.Success, DescribeLineageIssues(resolution.Issues));
+        Assert.Equal(ChildDefinitionKey, resolution.Source!.Key.DefinitionKey);
+    }
+
+    [Fact]
+    public void ReactionAuthority_TwoAuthenticatedRetiredGenerations_ResolvesCurrentReaction()
+    {
+        var wound = CreateLineageWound();
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var child = CreateEffectFromDefinition(wound, ChildEffectId, ChildDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root, child));
+        var authority = WoundReactionLineageAuthority.Build(
+            CreateReactionSourceAuthority(wound),
+            CreateGenerationIdentities(retiredGenerationCount: 2),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        Assert.True(catalog.TryResolveOne(RootEffectId, out var occurrence));
+        Assert.True(authority.ResolveApplyDefinition(
+            occurrence,
+            Assert.Single(root["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            ChildDefinitionKey).Success);
+    }
+
+    [Fact]
+    public void ReactionAuthority_TerminalGenerationPredecessorCannotBecomeReactionParent()
+    {
+        const string predecessorId = "effect_wound_lineage_generation_1";
+        var wound = CreateLineageWound();
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var child = CreateEffectFromDefinition(wound, ChildEffectId, ChildDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root, child));
+        var authority = WoundReactionLineageAuthority.Build(
+            CreateReactionSourceAuthority(wound),
+            CreateGenerationIdentities(retiredGenerationCount: 1),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        var predecessor = CreateEffectFromDefinition(
+            wound,
+            predecessorId,
+            RootDefinitionKey);
+        var forgedProducer = new EffectCarrierOccurrence(
+            predecessorId,
+            EffectCarrierCatalog.PlayerPath,
+            "$.activeEffects[0]",
+            new EffectCarrierCoordinate(
+                "player",
+                "player_current",
+                EffectCarrierCatalog.PlayerPath,
+                null),
+            predecessor);
+
+        var resolution = authority.ResolveApplyDefinition(
+            forgedProducer,
+            Assert.Single(predecessor["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            ChildDefinitionKey);
+
+        Assert.False(resolution.Success);
+        Assert.Contains(resolution.Issues, static issue =>
+            issue.Code == "effect_reaction_wound_lineage_producer_invalid");
+    }
+
+    [Fact]
+    public void ReactionAuthority_CurrentGenerationStillRequiresExactOutgoingApplyDefinitionEdge()
+    {
+        var wound = CreateLineageWound();
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var child = CreateEffectFromDefinition(wound, ChildEffectId, ChildDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root, child));
+        var authority = WoundReactionLineageAuthority.Build(
+            CreateReactionSourceAuthority(wound),
+            CreateGenerationIdentities(retiredGenerationCount: 2),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        Assert.True(catalog.TryResolveOne(RootEffectId, out var occurrence));
+
+        var resolution = authority.ResolveApplyDefinition(
+            occurrence,
+            Assert.Single(root["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            RootDefinitionKey);
+
+        Assert.False(resolution.Success);
+        Assert.Contains(resolution.Issues, static issue =>
+            issue.Code == "effect_reaction_wound_lineage_edge_invalid");
+    }
+
     private static EffectSourceAuthority CreateReactionSourceAuthority(
         WoundMaterializationEnvelope wound,
         bool sameTurn = false,

@@ -569,7 +569,8 @@ internal sealed class WoundRootEffectApplication
         string expectedMaterializationFingerprint,
         WoundRootOwnershipDomain ownershipDomain,
         string causalEventRef,
-        EffectCarrierCoordinate expectedCarrierCoordinate)
+        EffectCarrierCoordinate expectedCarrierCoordinate,
+        string? priorRootEffectId = null)
     {
         ApplicationRef = applicationRef;
         MechanicsOrdinal = mechanicsOrdinal;
@@ -591,6 +592,7 @@ internal sealed class WoundRootEffectApplication
         CausalEventRef = causalEventRef;
         _expectedCarrierCoordinate =
             WoundAcceptedTurnData.CloneEffectCarrierCoordinate(expectedCarrierCoordinate);
+        PriorRootEffectId = priorRootEffectId;
     }
 
     internal string ApplicationRef { get; }
@@ -620,6 +622,7 @@ internal sealed class WoundRootEffectApplication
     internal EffectCarrierCoordinate ExpectedCarrierCoordinate =>
         WoundAcceptedTurnData.CloneEffectCarrierCoordinate(
             _expectedCarrierCoordinate)!;
+    internal string? PriorRootEffectId { get; }
 }
 
 internal sealed class WoundTerminalEffectOperation
@@ -1596,7 +1599,8 @@ internal static class WoundAcceptedTurnData
             value.ExpectedMaterializationFingerprint,
             value.OwnershipDomain,
             value.CausalEventRef,
-            value.ExpectedCarrierCoordinate);
+            value.ExpectedCarrierCoordinate,
+            value.PriorRootEffectId);
 
     internal static WoundTerminalEffectOperation CloneTerminalOperation(
         WoundTerminalEffectOperation value) =>
@@ -2772,6 +2776,8 @@ internal static class WoundAcceptedTurnFingerprints
         fields.Add(value?.ExpectedCarrierCoordinate?.OwnerId);
         fields.Add(value?.ExpectedCarrierCoordinate?.Path);
         fields.Add(value?.ExpectedCarrierCoordinate?.Category);
+        if (value?.PriorRootEffectId is not null)
+            fields.Add(value.PriorRootEffectId);
     }
 
     private static void AppendTerminalOperation(

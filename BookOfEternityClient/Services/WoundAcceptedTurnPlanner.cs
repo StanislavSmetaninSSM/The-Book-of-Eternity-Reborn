@@ -2606,6 +2606,9 @@ internal static class WoundAcceptedTurnPlannerCore
 
             var applications = new List<WoundRootEffectApplication>(candidate.Graph.Roots.Count);
             var lineage = new List<WoundRootLineageAuthorityRow>(candidate.Graph.Roots.Count);
+            var priorRoots = candidate.BeforeWound is null
+                ? new Dictionary<(string DefinitionKey, string DomainKind, string? ComplicationId), string>()
+                : BuildPriorRootCoordinateMap(candidate.BeforeWound);
             for (var rootIndex = 0; rootIndex < candidate.Graph.Roots.Count; rootIndex++)
             {
                 var root = candidate.Graph.Roots[rootIndex];
@@ -2657,7 +2660,11 @@ internal static class WoundAcceptedTurnPlannerCore
                     candidate.AcceptedEvent.EventRef,
                     CreateEffectCarrierCoordinate(
                         candidate.Draft.ProposedAfter.Owner,
-                        definitionJson)));
+                        definitionJson),
+                    priorRoots.GetValueOrDefault((
+                        root.DefinitionKey,
+                        root.Draft.OwnershipDomain.Kind,
+                        root.Draft.OwnershipDomain.ComplicationId))));
                 lineage.Add(new WoundRootLineageAuthorityRow(
                     applicationRef,
                     null,
@@ -2696,10 +2703,6 @@ internal static class WoundAcceptedTurnPlannerCore
                         terminal.Issues.Select(CloneIssue).ToArray());
                 }
                 terminalOperations = terminal.Operations;
-                lineage.AddRange(BuildRetainedExistingRootLineage(
-                    beforeWound,
-                    definitions.Select(static value => value.DefinitionKey)
-                        .ToHashSet(StringComparer.Ordinal)));
             }
 
             var authoritySeal = WoundAcceptedTurnFingerprints.ComputeTransitionAuthority(
@@ -2774,10 +2777,10 @@ internal static class WoundAcceptedTurnPlannerCore
                     actual)
             });
 
-    private static IReadOnlyList<WoundRootLineageAuthorityRow>
-        BuildRetainedExistingRootLineage(
-            WoundMaterializationEnvelope beforeWound,
-            IReadOnlySet<string> retainedDefinitionKeys)
+    private static Dictionary<
+        (string DefinitionKey, string DomainKind, string? ComplicationId),
+        string> BuildPriorRootCoordinateMap(
+            WoundMaterializationEnvelope beforeWound)
     {
         var ownership = beforeWound.Consequences.OwnedEffectSources.RootBindings
             .ToDictionary(
@@ -2798,16 +2801,12 @@ internal static class WoundAcceptedTurnPlannerCore
         }
 
         return beforeWound.Consequences.OwnedEffectSources.RootBindings
-            .Where(value => retainedDefinitionKeys.Contains(
-                value.DefinitionKey))
-            .OrderBy(static value => value.EffectId, StringComparer.Ordinal)
-            .ThenBy(static value => value.DefinitionKey, StringComparer.Ordinal)
-            .Select(value => new WoundRootLineageAuthorityRow(
-                null,
-                value.EffectId,
-                value.DefinitionKey,
-                ownership[value.EffectId]))
-            .ToArray();
+            .ToDictionary(
+                value => (
+                    value.DefinitionKey,
+                    ownership[value.EffectId].Kind,
+                    ownership[value.EffectId].ComplicationId),
+                static value => value.EffectId);
     }
 
     internal static WoundPreparedBaselineAuthority CreateBaselineAuthority(
@@ -3416,7 +3415,13 @@ internal static class WoundAcceptedTurnPlannerCore
                     if (identity.Transitions.Count != 1 ||
                         createTransitions.Length != 1 ||
                         createTransitions[0].Turn != prepared.Binding.Turn ||
-                        createTransitions[0].SourceEffectIds.Count != 0 ||
+                        (expected.PriorRootEffectId is null
+                            ? createTransitions[0].SourceEffectIds.Count != 0
+                            : createTransitions[0].SourceEffectIds.Count != 1 ||
+                              !string.Equals(
+                                  createTransitions[0].SourceEffectIds[0],
+                                  expected.PriorRootEffectId,
+                                  StringComparison.Ordinal)) ||
                         createTransitions[0].ReceiptId is not null ||
                         !string.Equals(
                             createTransitions[0].TransitionId,

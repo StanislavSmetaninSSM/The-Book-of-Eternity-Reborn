@@ -72,6 +72,41 @@ public sealed class EffectIdentityStateWoundTests
         Assert.Empty(state.ResolveFirstCreateChildren(childId));
     }
 
+    [Fact]
+    public void Parse_IndexesRetiredAndCurrentSeverityGenerationsAtOneExactCoordinate()
+    {
+        var fixture = WoundEffectBatchPlannerTests.BuildRetainedWorsenPureFixture();
+        var retainedRoot = Assert.Single(
+            Assert.Single(fixture.Prepared.EffectOperationBatches).RootApplications,
+            static root => root.PriorRootEffectId is not null);
+        var current = Assert.Single(fixture.Accepted.ApplicationResults, result =>
+            string.Equals(
+                result.ApplicationRef,
+                retainedRoot.ApplicationRef,
+                StringComparison.Ordinal));
+        using var document = JsonDocument.Parse(
+            fixture.Accepted.EffectPlan.IdentityIndexAfterImage.ToJsonString());
+        var parsed = EffectIdentityState.Parse(
+            document.RootElement,
+            EffectIdentityState.StatePath);
+
+        Assert.Empty(parsed.Issues);
+        var state = Assert.IsType<EffectIdentityState>(parsed.State);
+        Assert.Equal(
+            current.EffectId,
+            Assert.Single(state.ResolveFirstCreateChildren(
+                retainedRoot.PriorRootEffectId!)).EffectId);
+        Assert.Equal(
+            new[] { retainedRoot.PriorRootEffectId, current.EffectId }
+                .OrderBy(static value => value, StringComparer.Ordinal),
+            state.ResolveSourceCoordinate(new EffectIdentitySourceCoordinate(
+                    fixture.Prepared.Binding.Realm,
+                    "wound",
+                    fixture.Prepared.PreparedWounds[0].WoundId,
+                    retainedRoot.DefinitionKey))
+                .Select(static entry => entry.EffectId));
+    }
+
     private static JsonObject CreateWoundEffect(
         string effectId,
         string woundId,

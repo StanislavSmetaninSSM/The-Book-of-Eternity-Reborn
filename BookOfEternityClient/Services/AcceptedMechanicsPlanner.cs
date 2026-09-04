@@ -1858,10 +1858,6 @@ internal static class WoundEffectLineagePlanner
             wound.Owner.Realm,
             "wound",
             wound.WoundId);
-        var sourceMembers = identities.ResolveSourceGroup(sourceGroup).ToArray();
-        var sourceMembersById = sourceMembers.ToDictionary(
-            static entry => entry.EffectId,
-            StringComparer.Ordinal);
         var definitionsByKey = wound.Consequences.OwnedEffectSources
             .DefinitionFacts
             .ToDictionary(
@@ -1882,251 +1878,62 @@ internal static class WoundEffectLineagePlanner
             selectedRootEffectIds,
             rootsById,
             issues);
-
-        ValidateActiveMembership(
-            sourceMembers,
-            definitionsByKey,
-            rootsById,
-            issues);
-        ValidateCurrentDefinitionAcyclicity(
-            sourceMembers,
-            definitionsByKey,
-            issues);
-
-        var visited = new HashSet<string>(StringComparer.Ordinal);
-        var originRootByEffect = new Dictionary<string, string>(
-            StringComparer.Ordinal);
-        var ownershipByEffect = new Dictionary<string, WoundRootOwnershipDomain>(
-            StringComparer.Ordinal);
-        var queue = new Queue<LineageVisit>();
-
-        foreach (var binding in rootsById.Values.OrderBy(
-                     static binding => binding.EffectId,
-                     StringComparer.Ordinal))
-        {
-            if (!sourceMembersById.TryGetValue(binding.EffectId, out var entry))
-            {
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage.rootBindings",
-                    "accepted_mechanics_wound_lineage_root_missing",
-                    "Every current wound root binding must resolve in its exact effect source group.",
-                    binding.EffectId,
-                    "missing");
-                continue;
-            }
-            if (!string.Equals(
-                    ReadDefinitionKey(entry),
-                    binding.DefinitionKey,
-                    StringComparison.Ordinal))
-            {
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage.rootBindings",
-                    "accepted_mechanics_wound_lineage_root_definition_mismatch",
-                    "A wound root identity must retain the definition bound by the wound.",
-                    binding.DefinitionKey,
-                    ReadDefinitionKey(entry));
-                continue;
-            }
-            if (!definitionsByKey.ContainsKey(binding.DefinitionKey))
-            {
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage.rootBindings",
-                    "accepted_mechanics_wound_lineage_definition_missing",
-                    "A current wound root must resolve in the persisted source graph.",
-                    binding.DefinitionKey,
-                    "missing");
-                continue;
-            }
-            if (!ValidateCreateEvidence(
-                    entry,
-                    Array.Empty<string>(),
-                    issues))
-            {
-                continue;
-            }
-
-            var domain = rootDomains.TryGetValue(binding.EffectId, out var owned)
-                ? owned
-                : WoundRootOwnershipDomain.BaseWound;
-            queue.Enqueue(new LineageVisit(
-                entry,
+        var analyzerDefinitions = definitionDomains
+            .Where(pair => definitionsByKey.ContainsKey(pair.Key))
+            .ToDictionary(
+                static pair => pair.Key,
+                pair => new WoundEffectIdentityLineageDefinition(
+                    pair.Key,
+                    definitionsByKey[pair.Key].ApplyDefinitionTargets
+                        .ToHashSet(StringComparer.Ordinal),
+                    pair.Value),
+                StringComparer.Ordinal);
+        var analyzerRoots = rootsById.Values
+            .Where(binding => rootDomains.ContainsKey(binding.EffectId))
+            .Select(binding => new WoundEffectIdentityLineageRoot(
                 binding.EffectId,
-                domain));
-        }
+                binding.DefinitionKey,
+                rootDomains[binding.EffectId]))
+            .ToArray();
+        var analysis = WoundEffectIdentityLineageAnalyzer.Analyze(
+            sourceGroup,
+            identities,
+            analyzerRoots,
+            analyzerDefinitions,
+            WoundEffectLineageDiagnosticProfile.AcceptedMechanics);
+        issues.AddRange(analysis.Issues);
 
-        while (queue.Count != 0)
+        foreach (var entry in analysis.CurrentEntries.Concat(
+                     analysis.RetiredEntries))
         {
-            var visit = queue.Dequeue();
-            if (!visited.Add(visit.Entry.EffectId))
+            var definitionKey = ReadDefinitionKey(entry);
+            if (!definitionsByKey.TryGetValue(definitionKey, out var definition) ||
+                IdentityAuthorityAgrees(wound, entry, definition))
             {
-                if (!originRootByEffect.TryGetValue(
-                        visit.Entry.EffectId,
-                        out var existingRoot) ||
-                    !string.Equals(
-                        existingRoot,
-                        visit.OriginRootEffectId,
-                        StringComparison.Ordinal) ||
-                    !ownershipByEffect.TryGetValue(
-                        visit.Entry.EffectId,
-                        out var existingDomain) ||
-                    existingDomain != visit.Domain)
-                {
-                    AddIssue(
-                        issues,
-                        "acceptedMechanics.woundEffectLineage",
-                        "accepted_mechanics_wound_lineage_ambiguous",
-                        "Each effect identity must belong to exactly one wound root lineage and ownership domain.",
-                        existingRoot ?? "one root",
-                        visit.OriginRootEffectId);
-                }
                 continue;
             }
-
-            originRootByEffect.Add(
-                visit.Entry.EffectId,
-                visit.OriginRootEffectId);
-            ownershipByEffect.Add(
-                visit.Entry.EffectId,
-                visit.Domain);
-
-            var parentDefinitionKey = ReadDefinitionKey(visit.Entry);
-            if (!definitionsByKey.TryGetValue(
-                    parentDefinitionKey,
-                    out var parentDefinition))
-            {
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage",
-                    "accepted_mechanics_wound_lineage_definition_missing",
-                    "Every identity in the current wound lineage must resolve in the persisted source graph.",
-                    parentDefinitionKey,
-                    "missing");
-                continue;
-            }
-
-            if (!IdentityAuthorityAgrees(
-                    wound,
-                    visit.Entry,
-                    parentDefinition))
-            {
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage." +
-                    visit.Entry.EffectId,
-                    "accepted_mechanics_wound_lineage_identity_authority_mismatch",
-                    "Every current wound-lineage identity must retain the exact wound owner, target, carrier owner, and stack coordinate derived from its definition.",
-                    wound.Owner.ToString(),
-                    visit.Entry.Owner + "/" + visit.Entry.StackCoordinate);
-            }
-
-            foreach (var child in identities.ResolveFirstCreateChildren(
-                         visit.Entry.EffectId)
-                     .OrderBy(static entry => entry.EffectId, StringComparer.Ordinal))
-            {
-                if (!IsExactSourceGroup(child, sourceGroup))
-                {
-                    AddIssue(
-                        issues,
-                        "acceptedMechanics.woundEffectLineage",
-                        "accepted_mechanics_wound_lineage_foreign_child",
-                        "A reaction-created wound descendant must retain the exact parent wound source group.",
-                        DescribeSourceGroup(sourceGroup),
-                        DescribeSourceGroup(child));
-                    continue;
-                }
-
-                var childDefinitionKey = ReadDefinitionKey(child);
-                if (!definitionsByKey.ContainsKey(childDefinitionKey))
-                {
-                    AddIssue(
-                        issues,
-                        "acceptedMechanics.woundEffectLineage",
-                        "accepted_mechanics_wound_lineage_definition_missing",
-                        "A reaction-created wound descendant must resolve in the current persisted source graph.",
-                        string.Join(",", parentDefinition.ApplyDefinitionTargets),
-                        childDefinitionKey);
-                    continue;
-                }
-                if (!parentDefinition.ApplyDefinitionTargets.Contains(
-                        childDefinitionKey,
-                        StringComparer.Ordinal))
-                {
-                    AddIssue(
-                        issues,
-                        "acceptedMechanics.woundEffectLineage",
-                        "accepted_mechanics_wound_lineage_edge_invalid",
-                        "A reaction-created child definition must be an exact apply_definition target of its causal parent.",
-                        string.Join(",", parentDefinition.ApplyDefinitionTargets),
-                        childDefinitionKey);
-                    continue;
-                }
-                if (!ValidateCreateEvidence(
-                        child,
-                        new[] { visit.Entry.EffectId },
-                        issues))
-                {
-                    continue;
-                }
-
-                if (!definitionDomains.TryGetValue(
-                        childDefinitionKey,
-                        out var childDefinitionDomain) ||
-                    childDefinitionDomain != visit.Domain)
-                {
-                    AddIssue(
-                        issues,
-                        "acceptedMechanics.woundEffectLineage",
-                        "accepted_mechanics_wound_lineage_cross_domain",
-                        "A reaction descendant may occupy only a definition in the same unique wound ownership domain.",
-                        DescribeDomain(visit.Domain),
-                        childDefinitionDomain is null
-                            ? "ambiguous or missing"
-                            : DescribeDomain(childDefinitionDomain));
-                    continue;
-                }
-
-                queue.Enqueue(new LineageVisit(
-                    child,
-                    visit.OriginRootEffectId,
-                    visit.Domain));
-            }
+            AddIssue(
+                issues,
+                "acceptedMechanics.woundEffectLineage." + entry.EffectId,
+                "accepted_mechanics_wound_lineage_identity_authority_mismatch",
+                "Every current or retired wound-lineage identity must retain the exact wound owner, target, carrier owner, and stack coordinate derived from its definition.",
+                wound.Owner.ToString(),
+                entry.Owner + "/" + entry.StackCoordinate);
         }
 
-        foreach (var current in sourceMembers.Where(entry =>
-                     definitionsByKey.ContainsKey(ReadDefinitionKey(entry))))
-        {
-            if (!visited.Contains(current.EffectId))
-            {
-                var active = IsActiveOrSuspended(current);
-                AddIssue(
-                    issues,
-                    "acceptedMechanics.woundEffectLineage",
-                    active
-                        ? "accepted_mechanics_wound_lineage_active_unreachable"
-                        : "accepted_mechanics_wound_lineage_current_unreachable",
-                    active
-                        ? "Every active or suspended identity in the exact wound source group must be reachable from one current root by first-create causality."
-                        : "Every terminal identity whose definition remains current in the exact wound source group must be reachable from one current root by first-create causality.",
-                    "reachable current wound lineage",
-                    current.EffectId);
-            }
-        }
-
-        var closure = originRootByEffect
+        var origins = analysis.CurrentOriginRootByEffectId;
+        var closure = origins
             .Where(pair => selectedRoots.Contains(pair.Value))
             .Select(static pair => pair.Key)
             .OrderBy(static effectId => effectId, StringComparer.Ordinal)
             .ToArray();
         var activeClosure = closure
-            .Where(effectId => sourceMembersById.TryGetValue(effectId, out var entry) &&
+            .Where(effectId => identities.TryGetEntry(effectId, out var entry) &&
                                IsActiveOrSuspended(entry))
             .ToArray();
         var selectedOwnership = closure.ToDictionary(
             static effectId => effectId,
-            effectId => ownershipByEffect[effectId],
+            effectId => analysis.CurrentOwnershipByEffectId[effectId],
             StringComparer.Ordinal);
         return new WoundEffectLineagePlanningResult(
             closure,
@@ -2134,9 +1941,9 @@ internal static class WoundEffectLineagePlanner
             selectedOwnership,
             definitionDomains,
             new WoundEffectLineageWorkStatistics(
-                sourceMembers.Length,
-                visited.Count),
-            issues);
+                analysis.SourceGroupIdentityCount,
+                analysis.VisitedCurrentIdentityCount),
+            issues.Take(MaxIssues).ToArray());
     }
 
     private static Dictionary<string, WoundRootOwnershipDomain>

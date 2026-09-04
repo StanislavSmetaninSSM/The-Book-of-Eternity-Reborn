@@ -293,6 +293,66 @@ public sealed class EffectSourceAuthorityWoundTests
             issue.Code == "effect_source_not_materializable");
     }
 
+    [Fact]
+    public void ResolveTypedWoundRootBinding_SeverityGenerationKeepsPredecessorOutOfCurrentLineage()
+    {
+        var fixture = WoundEffectBatchPlannerTests.BuildRetainedWorsenPureFixture();
+        var batch = Assert.Single(fixture.Prepared.EffectOperationBatches);
+        var root = Assert.Single(batch.RootApplications, static value =>
+            value.PriorRootEffectId is not null);
+        Assert.DoesNotContain(batch.RootLineageAuthority, static row =>
+            row.EffectId is not null);
+        var target = root.ExpectedTargetKey;
+        var export = new EffectSourceExport(
+            batch.SourceExport.Realm,
+            batch.SourceExport.Kind,
+            batch.SourceExport.SourceId,
+            new JsonArray(batch.SourceExport.Definitions.Select(static value =>
+                (JsonNode)value.Definition).ToArray()),
+            Materializable: false,
+            Active: true,
+            SameTurn: true,
+            SourceRef: batch.SourceExport.SourceRef);
+        var group = new WoundSourceGroupAuthority(
+            new EffectIdentitySourceGroup(
+                batch.SourceExport.Realm,
+                batch.SourceExport.Kind,
+                batch.SourceExport.SourceId),
+            batch.SourceExport.Owner,
+            target,
+            sameTurn: true,
+            batch.SourceExport.SourceRef,
+            batch.SourceExportFingerprint,
+            batch.SourceExport.Definitions,
+            batch.RootLineageAuthority,
+            Array.Empty<WoundRootLineageAuthorityRow>());
+        var authority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            Array.Empty<EffectSourceExport>(),
+            new[] { export },
+            new HashSet<string>(StringComparer.Ordinal),
+            WoundGroups: new[] { group }));
+
+        var result = authority.ResolveTypedWoundRootBinding(
+            new WoundTypedRootBindingRequest(
+                root.ExpectedSourceKey,
+                root.SourceSelector,
+                WoundTypedRootSourceIdentityKind.NewSourceRef,
+                target,
+                batch.SourceExportFingerprint,
+                root.ApplicationRef,
+                root.OwnershipDomain));
+
+        Assert.True(result.Success, string.Join(Environment.NewLine,
+            result.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        Assert.Equal(root.ApplicationRef, result.Root!.ApplicationRef);
+        Assert.Empty(result.Group!.ExistingRootLineage);
+        var priorIdentity = Assert.IsType<JsonObject>(Assert.Single(
+            fixture.Input.PreTurnEffectIdentityIndex!["entries"]!.AsArray()));
+        Assert.Equal(root.PriorRootEffectId,
+            priorIdentity["effectId"]!.GetValue<string>());
+    }
+
     [Theory]
     [InlineData("source_ref")]
     [InlineData("source_id_for_new")]

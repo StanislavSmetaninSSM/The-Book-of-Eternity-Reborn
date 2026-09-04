@@ -1252,6 +1252,64 @@ public sealed partial class WoundEffectBatchPlannerTests
             StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void EffectStage_InitialCreateWritesParentlessFirstCreateEvidence()
+    {
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(CreateInput()));
+        var stage = BuildEffectStage(
+            prepared,
+            new ScriptedEffectIdentityFactory("parentless_create"));
+        var accepted = AssertEffectPlan(stage.Result);
+        var result = Assert.Single(accepted.ApplicationResults);
+        var identity = FindIdentityIndexEffect(accepted.EffectPlan, result.EffectId);
+        var create = Assert.IsType<JsonObject>(
+            Assert.Single(identity["transitions"]!.AsArray()));
+
+        Assert.Equal("create", create["kind"]!.GetValue<string>());
+        Assert.Empty(create["sourceEffectIds"]!.AsArray());
+    }
+
+    [Fact]
+    public void EffectStage_WorsenWritesExactRetainedGenerationAndLeavesNewRootParentless()
+    {
+        var input = CreateWorsenInputWithRetainedAndNewRoot();
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        Assert.Equal(2, batch.RootApplications.Count);
+        var retained = Assert.Single(batch.RootApplications, static root =>
+            root.PriorRootEffectId is not null);
+        var added = Assert.Single(batch.RootApplications, static root =>
+            root.PriorRootEffectId is null);
+        var effectInput = CreateEffectInput(
+            prepared,
+            preTurnCarriersOverride: input.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: input.PreTurnEffectIdentityIndex);
+
+        var result = WoundEffectBatchPlanner.Build(
+            prepared,
+            effectInput,
+            new ScriptedEffectIdentityFactory("worsen_generation"));
+
+        var accepted = AssertEffectPlan(result);
+        var retainedResult = Assert.Single(accepted.ApplicationResults, value =>
+            string.Equals(value.ApplicationRef, retained.ApplicationRef,
+                StringComparison.Ordinal));
+        var addedResult = Assert.Single(accepted.ApplicationResults, value =>
+            string.Equals(value.ApplicationRef, added.ApplicationRef,
+                StringComparison.Ordinal));
+        var retainedCreate = Assert.IsType<JsonObject>(Assert.Single(
+            FindIdentityIndexEffect(accepted.EffectPlan, retainedResult.EffectId)
+                ["transitions"]!.AsArray()));
+        var addedCreate = Assert.IsType<JsonObject>(Assert.Single(
+            FindIdentityIndexEffect(accepted.EffectPlan, addedResult.EffectId)
+                ["transitions"]!.AsArray()));
+        Assert.Equal(
+            retained.PriorRootEffectId,
+            Assert.Single(retainedCreate["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
+        Assert.Empty(addedCreate["sourceEffectIds"]!.AsArray());
+    }
+
     [Theory]
     [InlineData("carrier")]
     [InlineData("identity")]
@@ -3444,6 +3502,233 @@ public sealed partial class WoundEffectBatchPlannerTests
             CreatePreTurnCarriers(OwnerFlavor.Player),
             WoundContractTestData.CreateIdentityIndex(),
             WoundContractTestData.CreateHistory());
+    }
+
+    internal static WoundAcceptedTurnInput CreateWorsenInputWithRetainedAndNewRoot()
+    {
+        const string woundId = "wound_worsen_generation";
+        const string priorEffectId = "effect_worsen_generation_prior";
+        var input = CreateInput(shape: CandidateShape.TwoRoots);
+        var draft = input.Transitions[0];
+        var opportunity = input.Opportunities[0];
+        var retainedDefinitionKey = draft.EffectDefinitions[0].Definition["definitionKey"]!
+            .GetValue<string>();
+        var retainedSources = WoundContractTestData.CreateOwnedEffectSourcesForTarget(
+            woundId,
+            "mortal_world",
+            "player",
+            (priorEffectId, retainedDefinitionKey, "periodic_damage"));
+        var retainedDefinition = Assert.IsType<JsonObject>(Assert.Single(
+            retainedSources["definitions"]!.AsArray())).DeepClone().AsObject();
+        var beforeJson = WoundContractTestData.CreateActiveWound(woundId);
+        var priorEventRef = $"turn_{Turn - 1}:worsen_generation:prior";
+        beforeJson["origin"]!["eventRef"] = priorEventRef;
+        beforeJson["origin"]!["createdAtTurn"] = Turn - 1;
+        beforeJson["origin"]!["opportunityId"] = "opportunity_worsen_generation_prior";
+        beforeJson["severity"]!["value"] = "I";
+        beforeJson["severity"]!["rank"] = 1;
+        beforeJson["severity"]!["maximumAtCreation"] = "II";
+        beforeJson["severity"]!["lastChangeEventRef"] = priorEventRef;
+        beforeJson["lastTransition"]!["transitionId"] =
+            "wound_transition_worsen_generation_prior";
+        beforeJson["lastTransition"]!["turn"] = Turn - 1;
+        beforeJson["consequences"] = new JsonObject
+        {
+            ["slotBudget"] = 2,
+            ["slotsUsed"] = 1,
+            ["ownedEffectSources"] = retainedSources,
+            ["entries"] = new JsonArray(new JsonObject
+            {
+                ["slot"] = 1,
+                ["profileKey"] = "periodic_damage",
+                ["effectId"] = priorEffectId,
+                ["readableSummary"] = "The prior wound deals periodic damage."
+            })
+        };
+        var before = ParseWound(beforeJson, "worsenGeneration.before");
+        var beforeFingerprint = WoundIdentityState.ComputeSemanticFingerprint(before);
+        var worseningOpportunity = opportunity with
+        {
+            WorseningTarget = new WoundOpportunityWorseningTargetAuthority(
+                before,
+                "retrauma",
+                beforeFingerprint)
+        };
+        worseningOpportunity = worseningOpportunity with
+        {
+            AuthorityFingerprint = WoundOpportunityAuthority
+                .RecomputeAuthorityFingerprint(worseningOpportunity)
+        };
+        var proposedJson = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        proposedJson["severity"]!["value"] = "II";
+        proposedJson["severity"]!["rank"] = 2;
+        proposedJson["severity"]!["lastChangeEventRef"] = opportunity.EventRef;
+        proposedJson["lastTransition"]!["transitionId"] = draft.LocalTransitionRef;
+        proposedJson["lastTransition"]!["ordinal"] = 2;
+        proposedJson["lastTransition"]!["turn"] = Turn;
+        proposedJson["lastTransition"]!["kind"] = "worsen";
+        proposedJson["consequences"] = new JsonObject
+        {
+            ["slotBudget"] = 2,
+            ["slotsUsed"] = 0,
+            ["entries"] = new JsonArray(),
+            ["ownedEffectSources"] = new JsonObject
+            {
+                ["definitions"] = new JsonArray(),
+                ["rootBindings"] = new JsonArray()
+            }
+        };
+        var proposed = ParseWound(proposedJson, "worsenGeneration.after");
+        var transition = new WoundAcceptedTransitionDraft(
+            "worsen",
+            draft.OperationKey,
+            "draft_worsen_generation",
+            draft.LocalTransitionRef,
+            worseningOpportunity.OpportunityId,
+            "Worsen one retained root and add one new root.",
+            proposed,
+            draft.EffectDefinitions,
+            draft.RootApplications,
+            draft.SlotBindings);
+        var woundIdentity = WoundContractTestData.CreateIdentityEntry(
+            woundId,
+            before.Owner.Realm,
+            before.Owner.OwnerKind,
+            before.Owner.OwnerId,
+            before.Owner.CarrierPath,
+            before.Classification.Domain,
+            createdAtTurn: Turn - 1,
+            createdEventRef: priorEventRef,
+            semanticFingerprint: beforeFingerprint);
+        var history = WoundContractTestData.CreateTransition();
+        history["transitionId"] = before.LastTransition.TransitionId;
+        history["woundId"] = woundId;
+        history["turn"] = Turn - 1;
+        history["eventRef"] = priorEventRef;
+        history["operationKey"] = "operation_worsen_generation_prior";
+        history["beforeFingerprint"] =
+            WoundHistoryState.ComputeNonexistentBeforeFingerprint(woundId);
+        history["afterFingerprint"] = beforeFingerprint;
+        history["sourceFingerprint"] = Fingerprint("worsen-generation-prior");
+        history["attemptId"] = null;
+        var priorEffect = CreateExistingEffectForWound(
+            before,
+            priorEffectId,
+            retainedDefinition);
+        var effectIdentity = EffectMaterializationTestFixture.CreateIdentityIndex(
+            priorEffect);
+        var effectIdentityEntry = Assert.Single(
+            effectIdentity["entries"]!.AsArray().OfType<JsonObject>());
+        effectIdentityEntry["createdAtTurn"] = Turn - 1;
+        effectIdentityEntry["transitions"]![0]!["turn"] = Turn - 1;
+        effectIdentityEntry["transitions"]![0]!["transitionId"] =
+            priorEffect["chronology"]!["lastTransitionId"]!.DeepClone();
+        effectIdentityEntry["transitions"]![0]!["eventRef"] =
+            priorEffect["chronology"]!["createdEventRef"]!.DeepClone();
+
+        return input with
+        {
+            Opportunities = new[] { worseningOpportunity },
+            Transitions = new[] { transition },
+            PreTurnCarriers = input.PreTurnCarriers with
+            {
+                PlayerWounds = WoundContractTestData.CreatePlayerCarrier(
+                    JsonNode.Parse(WoundMaterializationContract
+                        .SerializeCanonical(before))!.AsObject())
+            },
+            PreTurnIdentityIndex = WoundContractTestData.CreateIdentityIndex(
+                woundIdentity),
+            PreTurnHistory = WoundContractTestData.CreateHistory(history),
+            PreTurnEffectCarriers = new EffectCarrierCatalogInput(
+                new JsonObject
+                {
+                    ["schemaVersion"] = 1,
+                    ["activeEffects"] = new JsonArray(priorEffect.DeepClone())
+                },
+                null,
+                null,
+                null,
+                null,
+                null),
+            PreTurnEffectIdentityIndex = effectIdentity
+        };
+    }
+
+    internal static (
+        WoundAcceptedTurnInput Input,
+        WoundPreparedAcceptedTurnPlan Prepared,
+        WoundEffectBatchAcceptedPlan Accepted) BuildRetainedWorsenPureFixture()
+    {
+        var input = CreateWorsenInputWithRetainedAndNewRoot();
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        var effectInput = CreateEffectInput(
+            prepared,
+            preTurnCarriersOverride: input.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: input.PreTurnEffectIdentityIndex);
+        var accepted = AssertEffectPlan(WoundEffectBatchPlanner.Build(
+            prepared,
+            effectInput,
+            new ScriptedEffectIdentityFactory("shared_worsen_generation")));
+        return (input, prepared, accepted);
+    }
+
+    private static WoundMaterializationEnvelope ParseWound(
+        JsonObject value,
+        string path)
+    {
+        var parsed = WoundMaterializationContract.Parse(value.ToJsonString(), path);
+        Assert.True(parsed.IsValid, string.Join(Environment.NewLine,
+            parsed.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}; expected={issue.Expected}; actual={issue.Actual}")));
+        return Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+    }
+
+    private static JsonObject CreateExistingEffectForWound(
+        WoundMaterializationEnvelope wound,
+        string effectId,
+        JsonObject definition)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
+        effect["effectId"] = effectId;
+        effect["realm"] = wound.Owner.Realm;
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = "player",
+            ["targetId"] = wound.Owner.OwnerId
+        };
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "wound",
+            ["sourceId"] = wound.WoundId,
+            ["definitionKey"] = definition["definitionKey"]!.DeepClone()
+        };
+        effect["display"] = definition["display"]!.DeepClone();
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["stacking"] = definition["stacking"]!.DeepClone();
+        effect["stacking"]!.AsObject().Remove("atMaximum");
+        effect["stacking"]!["currentStacks"] = 1;
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        effect["removal"] = definition["removal"]!.DeepClone();
+        effect["links"] = definition["links"]!.DeepClone();
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["linkKind"] = "wound",
+            ["targetId"] = wound.WoundId,
+            ["activePredicate"] = "active",
+            ["onSourceLoss"] = "expire",
+            ["displayText"] = "While the wound remains active"
+        };
+        effect["chronology"] = new JsonObject
+        {
+            ["createdAtTurn"] = Turn - 1,
+            ["createdEventRef"] = $"turn_{Turn - 1}:worsen_generation:create",
+            ["causalEventRef"] = wound.Origin.EventRef,
+            ["lastTransitionId"] = "effect_transition_worsen_generation_create",
+            ["lastTransitionTurn"] = Turn - 1
+        };
+        return effect;
     }
 
     internal static WoundAcceptedTurnInput CreateInputForAcceptedCache(

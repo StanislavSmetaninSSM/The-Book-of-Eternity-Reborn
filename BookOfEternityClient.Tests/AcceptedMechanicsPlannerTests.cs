@@ -12,6 +12,51 @@ public sealed class AcceptedMechanicsPlannerTests
     private const string FingerprintB =
         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
 
+    [Fact]
+    public void WoundLineage_SeverityGenerationReturnsOnlyCurrentRematerializedClosure()
+    {
+        var fixture = WoundEffectBatchPlannerTests.BuildRetainedWorsenPureFixture();
+        var finalization = WoundAcceptedTurnPlanner.Finalize(
+            fixture.Prepared,
+            new WoundEffectBatchPlanningResult(
+                fixture.Accepted,
+                Array.Empty<ValidationIssue>()));
+        Assert.True(finalization.Success, string.Join(Environment.NewLine,
+            finalization.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        var finalPlan = Assert.IsType<WoundAcceptedTurnPlan>(finalization.Plan);
+        var wound = Assert.IsType<WoundMaterializationEnvelope>(Assert.Single(
+            Assert.Single(finalPlan.CarrierContributions).Mutations).AfterWound);
+        using var document = JsonDocument.Parse(
+            fixture.Accepted.EffectPlan.IdentityIndexAfterImage.ToJsonString());
+        var parsed = EffectIdentityState.Parse(
+            document.RootElement,
+            EffectIdentityState.StatePath);
+        Assert.Empty(parsed.Issues);
+        var identities = Assert.IsType<EffectIdentityState>(parsed.State);
+        var currentRoots = wound.Consequences.OwnedEffectSources.RootBindings
+            .Select(static root => root.EffectId)
+            .ToArray();
+
+        var result = WoundEffectLineagePlanner.Plan(
+            wound,
+            identities,
+            currentRoots);
+
+        Assert.True(result.Success, string.Join(Environment.NewLine,
+            result.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        Assert.Equal(
+            currentRoots.OrderBy(static value => value, StringComparer.Ordinal),
+            result.ClosureEffectIds);
+        Assert.Equal(3, result.Work.SourceGroupIdentityCount);
+        Assert.Equal(2, result.Work.VisitedIdentityCount);
+        var prior = Assert.Single(
+            Assert.Single(fixture.Prepared.EffectOperationBatches).RootApplications,
+            static root => root.PriorRootEffectId is not null).PriorRootEffectId;
+        Assert.DoesNotContain(prior, result.ClosureEffectIds);
+    }
+
     public static TheoryData<string, string, string, int, bool>
         RegisteredRouteCases => new()
         {

@@ -261,6 +261,42 @@ public sealed class EffectAcceptedTurnInputComposerWoundTests
     }
 
     [Fact]
+    public void Compose_FullWorsenRematerializationExportsOnlyNewCurrentHeads()
+    {
+        var input = WoundEffectBatchPlannerTests
+            .CreateWorsenInputWithRetainedAndNewRoot();
+        var preparation = WoundAcceptedTurnPlanner.Prepare(input);
+        Assert.True(preparation.Success, string.Join(Environment.NewLine,
+            preparation.Issues.Select(static issue =>
+                $"{issue.Code}: {issue.Message}")));
+        var prepared = Assert.IsType<WoundPreparedAcceptedTurnPlan>(
+            preparation.Plan);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+
+        var composed = EffectAcceptedTurnInputComposer.Compose(
+            prepared.Binding.SessionId,
+            prepared.Binding.SnapshotToken,
+            prepared.Binding.Turn,
+            EffectAcceptedTurnInputComposer.CreateEmptyCommandRoot(),
+            input.PreTurnEffectCarriers!,
+            input.PreTurnEffectCarriers!,
+            input.PreTurnEffectIdentityIndex,
+            CreateSourceRoots(input.PreTurnCarriers),
+            realm: prepared.Binding.Realm,
+            preparedWoundPlan: prepared);
+
+        Assert.Empty(composed.SourceAuthority.Issues);
+        var group = Assert.Single(
+            composed.SourceAuthority.SnapshotWoundGroupAuthorities());
+        Assert.Equal(batch.RootLineageAuthority, group.ApplicationRootLineage);
+        Assert.Empty(group.ExistingRootLineage);
+        Assert.Equal(1, batch.RootApplications.Count(static root =>
+            root.PriorRootEffectId is not null));
+        Assert.Equal(1, batch.RootApplications.Count(static root =>
+            root.PriorRootEffectId is null));
+    }
+
+    [Fact]
     public void Compose_RejectsCallerSuppliedGenericWoundExport()
     {
         var prepared = PrepareStandardPlan();

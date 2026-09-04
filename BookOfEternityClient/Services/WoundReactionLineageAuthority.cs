@@ -277,139 +277,75 @@ internal sealed class WoundReactionLineageAuthority
             edges,
             roots,
             issues);
-        var sourceMembers = identities.ResolveSourceGroup(group.Key).ToArray();
-        var sourceMembersById = sourceMembers.ToDictionary(
-            static entry => entry.EffectId,
-            StringComparer.Ordinal);
-        var activeMembers = sourceMembers.Where(IsActiveOrSuspended).ToArray();
-        if (activeMembers.Length > definitions.Count)
-        {
-            Add(
-                issues,
-                "effect.reactions.woundLineage",
-                "effect_reaction_wound_lineage_active_bound_exceeded",
-                "At most one simultaneous source member per bounded wound definition.",
-                definitions.Count.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                activeMembers.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
-        }
-        foreach (var duplicate in activeMembers
-                     .GroupBy(ReadDefinitionKey, StringComparer.Ordinal)
-                     .Where(static values => values.Count() > 1))
-        {
-            Add(
-                issues,
-                "effect.reactions.woundLineage",
-                "effect_reaction_wound_lineage_active_duplicate",
-                "At most one active or suspended identity may occupy each wound definition coordinate.",
-                "one identity",
-                string.Join(",", duplicate.Select(static entry => entry.EffectId)));
-        }
-
-        var rootIds = roots.Keys.ToHashSet(StringComparer.Ordinal);
-        foreach (var member in sourceMembers.Where(entry =>
-                     definitions.ContainsKey(ReadDefinitionKey(entry))))
-        {
-            var expectedParents = rootIds.Contains(member.EffectId)
-                ? 0
-                : 1;
-            if (!ValidateCreateEvidence(member, expectedParents))
-            {
-                Add(
-                    issues,
-                    "effect.reactions.woundLineage." + member.EffectId,
-                    "effect_reaction_wound_lineage_create_invalid",
-                    expectedParents == 0
-                        ? "A direct wound root must have exactly one first create transition with empty sourceEffectIds."
-                        : "A wound reaction descendant must have exactly one first create transition with one causal parent.",
-                    expectedParents.ToString(System.Globalization.CultureInfo.InvariantCulture),
-                    DescribeCreateParents(member));
-            }
-        }
-
         var groupState = new LineageGroup(
             group.DetachedCopy(),
             definitions,
             edges,
             definitionDomains);
-        var visited = new Dictionary<string, string>(StringComparer.Ordinal);
-        var queue = new Queue<LineageVisit>();
-        foreach (var root in roots.OrderBy(static pair => pair.Key, StringComparer.Ordinal))
+        var analyzerDefinitions = definitionDomains
+            .Where(pair => definitions.ContainsKey(pair.Key))
+            .ToDictionary(
+                static pair => pair.Key,
+                pair => new WoundEffectIdentityLineageDefinition(
+                    pair.Key,
+                    edges.TryGetValue(pair.Key, out var targets)
+                        ? targets
+                        : new HashSet<string>(StringComparer.Ordinal),
+                    pair.Value),
+                StringComparer.Ordinal);
+        var analyzerRoots = roots
+            .Select(pair => new WoundEffectIdentityLineageRoot(
+                pair.Key,
+                pair.Value.Row.DefinitionKey,
+                pair.Value.Row.OwnershipDomain))
+            .ToArray();
+        var analysis = WoundEffectIdentityLineageAnalyzer.Analyze(
+            group.Key,
+            identities,
+            analyzerRoots,
+            analyzerDefinitions,
+            WoundEffectLineageDiagnosticProfile.Reaction);
+        AddRange(issues, analysis.Issues);
+
+        foreach (var entry in analysis.RetiredEntries)
         {
-            if (!sourceMembersById.TryGetValue(root.Key, out var entry) ||
-                !string.Equals(
-                    ReadDefinitionKey(entry),
-                    root.Value.Row.DefinitionKey,
-                    StringComparison.Ordinal) ||
-                !definitions.ContainsKey(root.Value.Row.DefinitionKey))
+            var definitionKey = ReadDefinitionKey(entry);
+            if (definitions.TryGetValue(definitionKey, out var definition))
             {
-                Add(
+                ValidateIdentityAuthority(
+                    group,
+                    entry,
+                    definition,
+                    carriers,
                     issues,
-                    "effect.reactions.woundLineage.roots",
-                    "effect_reaction_wound_root_binding_invalid",
-                    "Every sealed direct wound root must resolve to the exact current source-group identity and definition.",
-                    root.Value.Row.DefinitionKey,
-                    root.Key);
-                continue;
+                    out _);
             }
-            queue.Enqueue(new LineageVisit(
-                entry,
-                root.Key,
-                root.Value.Row.OwnershipDomain));
         }
 
-        while (queue.Count != 0)
+        foreach (var entry in analysis.CurrentEntries)
         {
-            var visit = queue.Dequeue();
-            if (visited.TryGetValue(visit.Entry.EffectId, out var existingRoot))
-            {
-                if (!string.Equals(
-                        existingRoot,
-                        visit.OriginRootEffectId,
-                        StringComparison.Ordinal))
-                {
-                    Add(
-                        issues,
-                        "effect.reactions.woundLineage",
-                        "effect_reaction_wound_lineage_ambiguous",
-                        "Every wound identity must belong to exactly one first-create root lineage.",
-                        existingRoot,
-                        visit.OriginRootEffectId);
-                }
-                continue;
-            }
-            visited.Add(visit.Entry.EffectId, visit.OriginRootEffectId);
-
-            var definitionKey = ReadDefinitionKey(visit.Entry);
-            WoundRootOwnershipDomain? definitionDomain = null;
+            var definitionKey = ReadDefinitionKey(entry);
             if (!definitions.TryGetValue(definitionKey, out var definition) ||
-                !definitionDomains.TryGetValue(definitionKey, out definitionDomain) ||
-                definitionDomain != visit.OwnershipDomain)
+                !analysis.CurrentOwnershipByEffectId.TryGetValue(
+                    entry.EffectId,
+                    out var ownershipDomain))
             {
-                Add(
-                    issues,
-                    "effect.reactions.woundLineage." + visit.Entry.EffectId,
-                    "effect_reaction_wound_lineage_cross_domain",
-                    "Every current wound identity must resolve to one definition in its inherited ownership domain.",
-                    DescribeDomain(visit.OwnershipDomain),
-                    definitionDomain is null
-                        ? definitionKey + "/unresolved"
-                        : definitionKey + "/" + DescribeDomain(definitionDomain));
                 continue;
             }
             ValidateIdentityAuthority(
                 group,
-                visit.Entry,
+                entry,
                 definition,
                 carriers,
                 issues,
                 out var occurrence);
             if (!lineage.TryAdd(
-                    visit.Entry.EffectId,
+                    entry.EffectId,
                     new LineageIdentity(
                         groupState,
-                        visit.Entry.EffectId,
+                        entry.EffectId,
                         definitionKey,
-                        visit.OwnershipDomain,
+                        ownershipDomain,
                         occurrence)))
             {
                 Add(
@@ -418,63 +354,7 @@ internal sealed class WoundReactionLineageAuthority
                     "effect_reaction_wound_lineage_ambiguous",
                     "An effect identity may belong to only one sealed wound source group.",
                     "one source group",
-                    visit.Entry.EffectId);
-            }
-
-            foreach (var child in identities.ResolveFirstCreateChildren(
-                         visit.Entry.EffectId))
-            {
-                if (!IsExactSourceGroup(child, group.Key))
-                {
-                    Add(
-                        issues,
-                        "effect.reactions.woundLineage",
-                        "effect_reaction_wound_lineage_foreign",
-                        "A reaction-created wound child must retain the exact causal parent's source group.",
-                        DescribeGroup(group.Key),
-                        DescribeGroup(child));
-                    continue;
-                }
-                var childDefinitionKey = ReadDefinitionKey(child);
-                if (!definitions.ContainsKey(childDefinitionKey) ||
-                    !edges.TryGetValue(definitionKey, out var targets) ||
-                    !targets.Contains(childDefinitionKey) ||
-                    !ValidateCreateEvidence(child, expectedParentCount: 1) ||
-                    !string.Equals(
-                        child.Transitions[0].SourceEffectIds[0],
-                        visit.Entry.EffectId,
-                        StringComparison.Ordinal))
-                {
-                    Add(
-                        issues,
-                        "effect.reactions.woundLineage." + child.EffectId,
-                        "effect_reaction_wound_lineage_edge_invalid",
-                        "Every first-create child must be the exact persisted apply_definition target of its sole causal parent.",
-                        edges.TryGetValue(definitionKey, out var expectedTargets)
-                            ? string.Join(",", expectedTargets)
-                            : "no edge",
-                        childDefinitionKey);
-                    continue;
-                }
-                queue.Enqueue(new LineageVisit(
-                    child,
-                    visit.OriginRootEffectId,
-                    visit.OwnershipDomain));
-            }
-        }
-
-        foreach (var member in sourceMembers.Where(entry =>
-                     definitions.ContainsKey(ReadDefinitionKey(entry))))
-        {
-            if (!visited.ContainsKey(member.EffectId))
-            {
-                Add(
-                    issues,
-                    "effect.reactions.woundLineage." + member.EffectId,
-                    "effect_reaction_wound_lineage_unreachable",
-                    "Every current wound identity must be reachable from one sealed direct root through first-create causality.",
-                    "reachable current wound lineage",
-                    member.EffectId);
+                    entry.EffectId);
             }
         }
 
@@ -804,41 +684,11 @@ internal sealed class WoundReactionLineageAuthority
             HasExact(payload, "definitionKey", downstreamDefinitionKey);
     }
 
-    private static bool ValidateCreateEvidence(
-        EffectIdentityEntry identity,
-        int expectedParentCount)
-    {
-        var creates = identity.Transitions.Where(static transition =>
-                string.Equals(transition.Kind, "create", StringComparison.Ordinal))
-            .ToArray();
-        return creates.Length == 1 &&
-            string.Equals(
-                identity.Transitions[0].TransitionId,
-                creates[0].TransitionId,
-                StringComparison.Ordinal) &&
-            creates[0].SourceEffectIds.Count == expectedParentCount &&
-            creates[0].ResultEffectIds.SequenceEqual(
-                new[] { identity.EffectId },
-                StringComparer.Ordinal);
-    }
-
-    private static string DescribeCreateParents(EffectIdentityEntry identity) =>
-        identity.Transitions.Count == 0
-            ? "no transitions"
-            : string.Join(",", identity.Transitions[0].SourceEffectIds);
-
     private static bool IsActiveOrSuspended(EffectIdentityEntry identity) =>
         identity.State is "active" or "suspended";
 
     private static string ReadDefinitionKey(EffectIdentityEntry identity) =>
         identity.Source["definitionKey"]?.GetValue<string>() ?? string.Empty;
-
-    private static bool IsExactSourceGroup(
-        EffectIdentityEntry identity,
-        EffectIdentitySourceGroup expected) =>
-        string.Equals(identity.Realm, expected.Realm, StringComparison.Ordinal) &&
-        HasExact(identity.Source, "kind", expected.Kind) &&
-        HasExact(identity.Source, "sourceId", expected.SourceId);
 
     private static bool TryReadSourceGroup(
         JsonObject effect,
@@ -954,11 +804,6 @@ internal sealed class WoundReactionLineageAuthority
                 "Rebuild the accepted wound source group, exact root-result map, effect carriers, and first-create identity lineage before retrying the reaction.");
 
     private sealed record ResolvedRoot(WoundRootLineageAuthorityRow Row);
-
-    private sealed record LineageVisit(
-        EffectIdentityEntry Entry,
-        string OriginRootEffectId,
-        WoundRootOwnershipDomain OwnershipDomain);
 
     private sealed class LineageGroup
     {

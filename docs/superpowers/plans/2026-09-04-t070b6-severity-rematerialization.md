@@ -383,7 +383,7 @@ git commit -m "refactor(wounds): split treatment outcome publication (#1536)"
 - Keep `WoundPreparedTransitionAuthority` as the batch's structural adapter for existing #1535 code, with `TransitionKind = "treat"`; authorization comes from the independently recomputed private treatment seal, never from that discriminator alone.
 - Extend each rematerialized `WoundRootEffectApplication` with nullable exact `PriorRootEffectId`. `treat` supplies a full old-root/new-application bijection because B.6 preserves the graph. `worsen` supplies a bijection only for roots retaining the same definition and ownership domain; genuinely new roots at any severity are parentless, while removed old roots are terminal-only history. #1535 writes a non-null predecessor into the new root's first-create `sourceEffectIds`; it is provenance, not an instruction to mutate the retired identity.
 
-- [ ] **Step 1: Add compile-safe lineage and authority REDs through existing planners**
+- [x] **Step 1: Add compile-safe lineage and authority REDs through existing planners**
 
 Extend `WoundEffectLineagePlannerTests` through its existing production planner surface. Keep the existing forged-disconnected-terminal test unchanged and add:
 
@@ -401,15 +401,15 @@ In `WoundReactionLineageAuthorityTests.cs`, call `WoundReactionLineageAuthority.
 
 Add outer batch tests using existing types/reflection for: a complete current teardown, private authority required for `treat`, missing/reordered terminal with all public outer fingerprints resealed, and changed projection/source export. Every test must compile and be discovered before implementation; obtain the expected behavioral RED rather than a missing-type build error.
 
-- [ ] **Step 2: Derive deterministic non-permanent group and root coordinates**
+- [x] **Step 2: Derive deterministic non-permanent group and root coordinates**
 
 Derive one exact/confusable-unique `LocalWoundRef` from the request fingerprint, result fingerprint, and transition ID through a domain-separated SHA-256 writer. For each projection root in canonical order, derive `ApplicationRef` and root `OperationKey` from those same sealed coordinates plus root ordinal, prior effect ID, and definition key. Use one positive mechanics ordinal and one-based apply operation ordinals. The group alias and root coordinates are ephemeral plan coordinates, not permanent wound/effect IDs.
 
-- [ ] **Step 3: Export the exact retained source graph and generation predecessor**
+- [x] **Step 3: Export the exact retained source graph and generation predecessor**
 
 Create one non-materializable source export containing every detached canonical `wound/<woundId>/<definitionKey>` definition key. Assign the same derived `LocalWoundRef` to `WoundEffectOperationBatch.LocalWoundRef`, `WoundEffectSourceExport.SourceRef`, and every root application's `SourceSelector.SourceRef`. Keep the stable wound ID in `WoundEffectSourceExport.SourceId` and in every root application's `ExpectedSourceKey.SourceId`; each same-turn application selector has `SourceId = null` exactly as the existing #1535 composer requires. Bind owner/realm to the wound, causal event and event semantic fingerprint to the exact accepted event. Each root application uses empty parameters, exact target/source selectors, derived carrier coordinate, component count, materialization fingerprint, preserved slot semantics/ownership domain, and the projection root's exact old effect ID as `PriorRootEffectId`.
 
-- [ ] **Step 4: Make lineage validation generation-aware without accepting garbage history**
+- [x] **Step 4: Make lineage validation generation-aware without accepting garbage history**
 
 Create one linear `WoundEffectIdentityLineageAnalyzer` and make both the accepted-mechanics/terminal planner and `WoundReactionLineageAuthority` consume its detached classification; do not maintain two subtly different traversals. It distinguishes across both `worsen` and `treat`:
 
@@ -422,11 +422,11 @@ During full-rematerialization post-apply validation, `ApplicationRootLineage` ro
 
 Require each retained-coordinate predecessor chain to be finite, acyclic, unique, and non-branching, to end at exactly one zero-parent origin, and to preserve exact source group, definition, target, carrier owner/stack authority, and ownership domain. Exclude the same-definition successor edge while traversing a generation's reaction descendants. Reject a retired generation containing any active/suspended member, a successor fork, cross-domain or wrong-definition predecessor, cycle, current duplicate, or a disconnected terminal identity whose definition remains in the current graph. Historical terminal identities for definitions removed by a legal graph-changing worsen remain allowed, matching the existing validator contract; any active/suspended identity still requires a current definition and current closure. Return only the current active/suspended closure to the terminal-operation planner. Thus the existing forged-current-definition negative remains RED/GREEN while a second and third legitimate treatment and a graph-changing worsen remain valid.
 
-- [ ] **Step 5: Plan complete current-source teardown before apply**
+- [x] **Step 5: Plan complete current-source teardown before apply**
 
 Call `WoundEffectTerminalOperationPlanner.Plan` with every old root binding, the sealed pre-turn effect carriers/index, the accepted treatment event, the same mechanics ordinal, and an operation offset equal to the root-application count. For a full severity rematerialization, export only the new application rows as current `RootLineageAuthority`; bind every old root through the matching application's `PriorRootEffectId`, terminal operation, and durable first-create generation evidence. Reserve `ExistingRootLineage` for genuinely retained current roots in later partial same-rank graph changes. This must discover all active/suspended descendants even when their current root is terminal.
 
-- [ ] **Step 6: Add a non-cyclic private authority DAG**
+- [x] **Step 6: Add a non-cyclic private authority DAG**
 
 Seal:
 
@@ -453,17 +453,17 @@ The continuation owns a detached authority and binds its final seal. `PrepareTre
 
 Reorder the publication composition without changing its public entry point: read canonical baselines, build the empty-opportunity `WoundAcceptedTurnInput`, compute its input fingerprint, prepare the nullable rematerialization batch/private authority, and only then mint the treatment continuation. The prepared-plan cache invokes the same pure rematerialization planner again and compares the complete recomputed result. This ordering removes any continuation/batch construction cycle and lets neither object self-attest the other.
 
-- [ ] **Step 7: Admit exactly zero-or-one treatment batch**
+- [x] **Step 7: Admit exactly zero-or-one treatment batch**
 
 Keep zero batches for unchanged severity. Require exactly one batch for reduction, one prepared wound, the same existing wound ID, and the deterministic transition ID. Update preparation/cache/common fingerprints and replay comparison to bind a treatment batch's complete topology. Generic create/worsen validation still accepts only its existing authorities; a `treat` batch without the matching private continuation fails.
 
-- [ ] **Step 8: Teach #1535 all severity-rematerialization predecessor provenance**
+- [x] **Step 8: Teach #1535 all severity-rematerialization predecessor provenance**
 
 In `EffectAcceptedTurnPlanner`, select the exact pre-turn wound as `terminalWound` for both `worsen` and private-authorized `treat` batches. Update source-export and terminal-operation validation to obtain the effective operation key/before fingerprint from the verified authority. Before any allocation, require every non-null `PriorRootEffectId` to be the exact pre-turn canonical root of the same wound/source, definition, owner, target, stack/carrier authority, and ownership domain. Require a full old-root/new-application bijection for graph-preserving `treat`; for graph-changing `worsen`, require an exact bijection only across retained definition/domain coordinates, require genuinely new coordinates to be parentless, and require removed old roots only in terminal operations/history. A same-definition reaction descendant cannot satisfy this proof. Update the existing worsen batch builder and its cache/fingerprints/tests to supply this partial exact matching policy.
 
 Replace the ambiguous internal `createSourceEffectId` handoff with a closed runtime provenance discriminator: `Direct`, `Reaction(parentEffectId)`, or `SeverityGeneration(parentEffectId)`. Only the sealed reaction executor may produce `Reaction`; only an authenticated severity batch may produce `SeverityGeneration`; ordinary/raw applications cannot provide either. `CreateIdentityEntry` serializes the expected empty/singleton `sourceEffectIds`, and `IdentityEvidenceMatches` verifies it exactly. Keep the raw command root empty and the lifecycle array equal to the ordinary accepted lifecycle plus any separately sealed Fate event. Execution order remains typed wound terminations first and typed wound root applications afterward.
 
-- [ ] **Step 9: Add direct typed tests after interfaces exist and make all controls GREEN**
+- [x] **Step 9: Add direct typed tests after interfaces exist and make all controls GREEN**
 
 Add fixture-free tests for complete terminal lineage, deterministic detached/write-free planning, seed/topology/final-seal recomputation, every missing/extra/reordered/changed root or terminal, changed lineage/projection/source export, exact/confusable identity reuse, and exact first-create predecessor evidence. In Fast, obtain accepted effect results from the real pure `WoundEffectBatchPlanner.Build` result, not a hand-written result and not the filesystem/cache-backed prepared-plan API; mutate only detached copies for rejection cases. Any test that specifically exercises `WoundAcceptedTurnPlanCache` remains in Integration.
 
@@ -475,7 +475,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectI
 
 Expected: all treatment rematerialization batch/tamper tests and the retained #1535 create/worsen suite pass with worsen now emitting the shared generation provenance and create remaining parentless.
 
-- [ ] **Step 10: Commit the sealed effect bridge**
+- [x] **Step 10: Commit the sealed effect bridge**
 
 ```powershell
 git add -- BookOfEternityClient/Services/MortalWoundTreatmentSeverityRematerializationPlanner.cs BookOfEternityClient/Services/WoundEffectIdentityLineageAnalyzer.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanCache.cs BookOfEternityClient/Services/WoundAcceptedTurnPlan.cs BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs BookOfEternityClient/Services/EffectIdentityState.cs BookOfEternityClient/Services/EffectSourceAuthority.cs BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs BookOfEternityClient/Services/WoundReactionLineageAuthority.cs BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/WoundEffectLineagePlannerTests.cs BookOfEternityClient.Tests/WoundReactionLineageAuthorityTests.cs BookOfEternityClient.Tests/EffectIdentityStateTests.Wounds.cs BookOfEternityClient.Tests/EffectSourceAuthorityTests.Wounds.cs BookOfEternityClient.Tests/EffectAcceptedTurnInputComposerTests.Wounds.cs BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.cs
