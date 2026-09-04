@@ -45,7 +45,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var authorityType = RequireProcedureCheckAuthorityType();
         AssertImmutableConcreteSurface(authorityType, new[]
         {
-            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollContributions",
+            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollContributions",
             "SourceIndices", "SourceRolls", "SelectedSourceIndex", "NaturalRoll", "Modifier",
             "ComplicationDifficultyModifier", "EffectiveDifficulty", "RequirementAuthorityFingerprint",
             "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
@@ -943,6 +943,99 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "RollContributions")).Length);
     }
 
+    public static TheoryData<bool, string, string?, bool, string?> SkillScopedRollRows => new()
+    {
+        { false, "all", null, true, "skill_field_medicine_01" },
+        { false, "skill", "skill_field_medicine_01", true, "skill_field_medicine_01" },
+        { false, "skill", "skill_patient_observation_01", false, "skill_field_medicine_01" },
+        { true, "all", null, true, null },
+        { true, "skill", "skill_field_medicine_01", false, null }
+    };
+
+    [Theory]
+    [MemberData(nameof(SkillScopedRollRows))]
+    public void ProcedureCheckAuthority_SkillScopedRollUsesExactSelectedSkill(
+        bool fixedZero,
+        string scopeKind,
+        string? scopeSkillId,
+        bool expectedContribution,
+        string? expectedRollSkillId)
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        if (fixedZero)
+        {
+            const string fixedZeroRouteId = "procedure_t171_fixed_zero_skill_scope";
+            var fixedRoute = scenario.Before["treatment"]!["routes"]![0]!
+                .DeepClone()
+                .AsObject();
+            fixedRoute["routeId"] = fixedZeroRouteId;
+            fixedRoute["resolution"]!["modifierSource"] = new JsonObject
+            {
+                ["kind"] = "fixed_zero"
+            };
+            scenario.Before["treatment"]!["routes"]!.AsArray().Add(fixedRoute);
+            scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(fixedZeroRouteId);
+            scenario = scenario with { RouteId = fixedZeroRouteId };
+        }
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var effectSeed = new ProcedureSkillScopedRollEffectSeed(
+            "advantage", scopeKind, scopeSkillId);
+        if (fixedZero)
+        {
+            fixture.ReplaceNpcProcedureSkillScopedRollEffects(
+                "t171_" + scopeKind + "_" + (scopeSkillId ?? "none"),
+                effectSeed);
+        }
+        else
+        {
+            fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+                "t171_" + scopeKind + "_" + (scopeSkillId ?? "none"),
+                effectSeed);
+        }
+
+        var authority = AssertValidProcedureCheckAuthority(
+            InvokeProcedureCheckAuthority(
+                fixture,
+                scenario.OperationKey + "_t171_" + scopeKind,
+                scenario.RouteId));
+
+        Assert.Equal(expectedRollSkillId, ReadPropertyAllowingNull(authority, "RollSkillId"));
+        var contributions = AsObjects(ReadRequiredProperty(authority, "RollContributions"));
+        Assert.Equal(expectedContribution, contributions.Length == 1);
+        Assert.Equal(expectedContribution ? "advantage" : "normal", Convert.ToString(
+            ReadRequiredProperty(authority, "RollMode")));
+    }
+
+    [Fact]
+    public void ProcedureCheckAuthority_SkillScopedRollCancelsFocusedAdvantageBeforeFateShield()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 19);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffectsAndFate(
+            "t171_focused_advantage_broad_disadvantage",
+            new ProcedureSkillScopedRollEffectSeed(
+                "advantage", "skill", "skill_field_medicine_01"),
+            new ProcedureSkillScopedRollEffectSeed("disadvantage", "all", null));
+
+        var authority = AssertValidProcedureCheckAuthority(
+            InvokeProcedureCheckAuthority(
+                fixture,
+                scenario.OperationKey + "_t171_fate",
+                scenario.RouteId));
+
+        Assert.Equal("skill_field_medicine_01", ReadPropertyAllowingNull(
+            authority, "RollSkillId"));
+        Assert.Equal("normal", Convert.ToString(ReadRequiredProperty(authority, "RollMode")));
+        Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(authority, "SourceIndices")));
+        Assert.NotNull(ReadPropertyAllowingNull(authority, "PreparedCriticalReaction"));
+    }
+
     public static TheoryData<string, int, string?> ProcedureFateParityRows => new()
     {
         { "oldest", 1, "effect_fate_shield_older" },
@@ -1187,7 +1280,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         AssertClosedProperties(authority, new[]
         {
-            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollContributions",
+            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollContributions",
             "SourceIndices", "SourceRolls", "SelectedSourceIndex", "NaturalRoll", "Modifier",
             "ComplicationDifficultyModifier", "EffectiveDifficulty", "RequirementAuthorityFingerprint",
             "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
@@ -1200,6 +1293,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ReadRequiredProperty(authority, "RollActorKind")));
         Assert.Equal(expectedRollActorId, Convert.ToString(
             ReadRequiredProperty(authority, "RollActorId")));
+        Assert.Equal("skill_field_medicine_01", ReadPropertyAllowingNull(authority, "RollSkillId"));
         Assert.Equal(expectedSourceIndices, ReadIntSequence(
             ReadRequiredProperty(authority, "SourceIndices")));
         Assert.Equal(expectedSourceRolls, ReadIntSequence(
@@ -1264,7 +1358,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Invariant(ReadRequiredProperty(authority, "SourcePath")),
             Invariant(ReadRequiredProperty(authority, "RollMode")),
             Invariant(ReadRequiredProperty(authority, "RollActorKind")),
-            Invariant(ReadRequiredProperty(authority, "RollActorId"))
+            Invariant(ReadRequiredProperty(authority, "RollActorId")),
+            ReadPropertyAllowingNull(authority, "RollSkillId") is { } rollSkillId
+                ? Invariant(rollSkillId)
+                : null
         };
         var contributions = AsObjects(ReadRequiredProperty(authority, "RollContributions"));
         fields.Add(contributions.Length.ToString(CultureInfo.InvariantCulture));
@@ -1600,26 +1697,42 @@ public sealed partial class MortalWoundTreatmentResolverTests
     };
 
     private static (JsonObject Carrier, JsonObject IdentityIndex)
-        CreateProcedureRollEffectState(IReadOnlyList<string> contributions)
+        CreateProcedureRollEffectState(IReadOnlyList<string> contributions) =>
+        CreateProcedureSkillScopedRollEffectState(contributions.Select(
+            static contribution => new ProcedureSkillScopedRollEffectSeed(
+                contribution,
+                "all",
+                null)).ToArray());
+
+    private static (JsonObject Carrier, JsonObject IdentityIndex)
+        CreateProcedureSkillScopedRollEffectState(
+            IReadOnlyList<ProcedureSkillScopedRollEffectSeed> contributions)
     {
         var effects = contributions.Select((contribution, ordinal) =>
         {
             var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
                 "player",
                 "roll_modifier");
-            var suffix = $"{contribution}_{ordinal + 1}";
+            var suffix = $"{contribution.Contribution}_{ordinal + 1}";
             effect["effectId"] = "effect_roll_modifier_" + suffix;
-            effect["display"]!["name"] = "T067-A " + contribution;
+            effect["display"]!["name"] = "T067-A " + contribution.Contribution;
             effect["source"] = new JsonObject
             {
                 ["kind"] = "skill",
                 ["sourceId"] = "skill_field_medicine_01",
                 ["definitionKey"] = "t067a-treatment-roll-" + suffix
             };
+            var scope = new JsonObject
+            {
+                ["kind"] = contribution.ScopeKind
+            };
+            if (contribution.ScopeSkillId is not null)
+                scope["skillId"] = contribution.ScopeSkillId;
             effect["components"]![0]!["payload"] = new JsonObject
             {
                 ["operations"] = new JsonArray("skill_check"),
-                ["contribution"] = contribution
+                ["contribution"] = contribution.Contribution,
+                ["scope"] = scope
             };
             var createdAtTurn = 30 + ordinal;
             var eventRef = $"turn_{createdAtTurn}:t067a_effect_seed:{ordinal + 1}";
@@ -1654,6 +1767,69 @@ public sealed partial class MortalWoundTreatmentResolverTests
             effects[ordinal]["chronology"]!["lastTransitionTurn"] = turn;
         }
         return CreateProcedureEffectState(effects);
+    }
+
+    private static (JsonObject Carrier, JsonObject IdentityIndex)
+        CreateProcedureSkillScopedRollAndFateEffectState(
+            IReadOnlyList<ProcedureSkillScopedRollEffectSeed> contributions)
+    {
+        var rollState = CreateProcedureSkillScopedRollEffectState(contributions);
+        var effects = rollState.Carrier["activeEffects"]!.AsArray()
+            .OfType<JsonObject>()
+            .Select(static effect => effect.DeepClone().AsObject())
+            .ToList();
+        effects.Add(CreateCanonicalFateShield("effect_fate_shield_older"));
+        effects.Add(CreateCanonicalFateShield("effect_fate_shield_newer"));
+        for (var ordinal = 0; ordinal < effects.Count; ordinal++)
+        {
+            var turn = 30 + ordinal;
+            effects[ordinal]["chronology"]!["createdAtTurn"] = turn;
+            effects[ordinal]["chronology"]!["createdEventRef"] =
+                $"turn_{turn}:t171_mixed_effect_seed:{ordinal + 1}";
+            effects[ordinal]["chronology"]!["lastTransitionId"] =
+                $"effect_transition_t171_mixed_seed_{ordinal + 1}";
+            effects[ordinal]["chronology"]!["lastTransitionTurn"] = turn;
+        }
+        return CreateProcedureEffectState(effects);
+    }
+
+    private static (JsonObject Carrier, JsonObject IdentityIndex)
+        CreateNpcProcedureSkillScopedRollEffectState(
+            IReadOnlyList<ProcedureSkillScopedRollEffectSeed> contributions)
+    {
+        var playerState = CreateProcedureSkillScopedRollEffectState(contributions);
+        var effects = playerState.Carrier["activeEffects"]!.AsArray()
+            .OfType<JsonObject>()
+            .Select(static effect => effect.DeepClone().AsObject())
+            .ToArray();
+        foreach (var effect in effects)
+        {
+            effect["target"]!["kind"] = "npc";
+            effect["target"]!["targetId"] = "field_medic_01";
+        }
+        var identityIndex = EffectMaterializationTestFixture.CreateIdentityIndex(effects);
+        var entries = identityIndex["entries"]!.AsArray().OfType<JsonObject>().ToArray();
+        for (var ordinal = 0; ordinal < entries.Length; ordinal++)
+        {
+            var effect = effects[ordinal];
+            var transition = entries[ordinal]["transitions"]![0]!.AsObject();
+            entries[ordinal]["createdAtTurn"] = effect["chronology"]!["createdAtTurn"]!.DeepClone();
+            transition["transitionId"] = effect["chronology"]!["lastTransitionId"]!.DeepClone();
+            transition["turn"] = effect["chronology"]!["createdAtTurn"]!.DeepClone();
+            transition["eventRef"] = effect["chronology"]!["createdEventRef"]!.DeepClone();
+        }
+        return (
+            new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["entries"] = new JsonArray(new JsonObject
+                {
+                    ["NPCId"] = "field_medic_01",
+                    ["activeEffects"] = new JsonArray(
+                        effects.Select(static effect => (JsonNode)effect).ToArray())
+                })
+            },
+            identityIndex);
     }
 
     private static (JsonObject Carrier, JsonObject IdentityIndex)
@@ -1726,6 +1902,11 @@ public sealed partial class MortalWoundTreatmentResolverTests
         int CreatedAtTurn,
         bool Eligible);
 
+    private sealed record ProcedureSkillScopedRollEffectSeed(
+        string Contribution,
+        string ScopeKind,
+        string? ScopeSkillId);
+
     private sealed partial class AcceptedStateFixture
     {
         internal void ReplacePlayerProcedureRollEffects(
@@ -1744,6 +1925,36 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             var effectState = CreateProcedureRollAndFateEffectState(contribution);
             WriteObject(EffectCarrierCatalog.PlayerPath, effectState.Carrier);
+            WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
+            PrepareFreshSnapshot(label);
+        }
+
+        internal void ReplacePlayerProcedureSkillScopedRollEffects(
+            string label,
+            params ProcedureSkillScopedRollEffectSeed[] contributions)
+        {
+            var effectState = CreateProcedureSkillScopedRollEffectState(contributions);
+            WriteObject(EffectCarrierCatalog.PlayerPath, effectState.Carrier);
+            WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
+            PrepareFreshSnapshot(label);
+        }
+
+        internal void ReplacePlayerProcedureSkillScopedRollEffectsAndFate(
+            string label,
+            params ProcedureSkillScopedRollEffectSeed[] contributions)
+        {
+            var effectState = CreateProcedureSkillScopedRollAndFateEffectState(contributions);
+            WriteObject(EffectCarrierCatalog.PlayerPath, effectState.Carrier);
+            WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
+            PrepareFreshSnapshot(label);
+        }
+
+        internal void ReplaceNpcProcedureSkillScopedRollEffects(
+            string label,
+            params ProcedureSkillScopedRollEffectSeed[] contributions)
+        {
+            var effectState = CreateNpcProcedureSkillScopedRollEffectState(contributions);
+            WriteObject(EffectCarrierCatalog.NpcPath, effectState.Carrier);
             WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
             PrepareFreshSnapshot(label);
         }

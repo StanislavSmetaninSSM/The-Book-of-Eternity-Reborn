@@ -280,7 +280,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 route,
                 out var expectedModifier,
                 out var expectedActorKind,
-                out var expectedActorId) ||
+                out var expectedActorId,
+                out var expectedRollSkillId) ||
             value.Modifier != expectedModifier ||
             !string.Equals(
                 value.RollActorKind,
@@ -289,6 +290,10 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             !string.Equals(
                 value.RollActorId,
                 expectedActorId,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                value.RollSkillId,
+                expectedRollSkillId,
                 StringComparison.Ordinal) ||
             !HasValidDetachedProcedureContributions(value, out var expectedRollMode) ||
             !string.Equals(value.RollMode, expectedRollMode, StringComparison.Ordinal) ||
@@ -352,7 +357,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
             "1", value.SourcePath, value.RollMode, value.RollActorKind,
-            value.RollActorId, Number(value.RollContributions.Count)
+            value.RollActorId, value.RollSkillId, Number(value.RollContributions.Count)
         };
         for (var index = 0; index < value.RollContributions.Count; index++)
         {
@@ -389,11 +394,13 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         MortalWoundProcedureRouteDefinition route,
         out int modifier,
         out string? actorKind,
-        out string? actorId)
+        out string? actorId,
+        out string? rollSkillId)
     {
         modifier = 0;
         actorKind = null;
         actorId = null;
+        rollSkillId = null;
         var coordinates = request.Coordinates;
         var bundle = request.RequirementAuthority;
         if (!string.Equals(bundle.Mode, "procedure", StringComparison.Ordinal) ||
@@ -456,6 +463,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                         StringComparison.Ordinal) ||
                     row.MinimumTier != authored.MinimumTier ||
                     row.CurrentTier is null ||
+                    row.SkillId is null ||
                     !string.Equals(witness.Scope, "common", StringComparison.Ordinal) ||
                     witness.RequirementIndex != resolved.RequirementIndex ||
                     !string.Equals(witness.Kind, row.Kind, StringComparison.Ordinal) ||
@@ -469,6 +477,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                         StringComparison.Ordinal) ||
                     evidence.MinimumTier != authored.MinimumTier ||
                     evidence.CurrentTier != row.CurrentTier.Value ||
+                    !string.Equals(evidence.SkillId, row.SkillId, StringComparison.Ordinal) ||
                     !ValidActorCoordinate(row.OwnerKind, row.OwnerId))
                 {
                     return false;
@@ -476,7 +485,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 modifier = row.CurrentTier.Value;
                 actorKind = row.OwnerKind;
                 actorId = row.OwnerId;
-                return true;
+                rollSkillId = row.SkillId;
+                return ResourceMaterializationContract.IsExactIdentifier(rollSkillId);
 
             default:
                 return false;
@@ -2497,6 +2507,9 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         failure.RequirementIndex,
         failure.Kind,
         failure.AuthorityRef,
+        observation.Evidence is MortalWoundSkillTierRequirementEvidence skillId
+            ? skillId.SkillId
+            : null,
         observation.Realm,
         observation.OwnerKind,
         observation.OwnerId,
@@ -3115,6 +3128,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             case MortalWoundSkillTierRequirementEvidence skill
                 when row.MinimumTier == skill.MinimumTier &&
                      row.CurrentTier == skill.CurrentTier &&
+                     row.SkillId == skill.SkillId &&
                      row.OwnerKind is not null && row.OwnerId is not null:
                 fields = ActorFields(
                         row.OwnerKind,
@@ -3126,7 +3140,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                         skill.ActorReachable)
                     .Concat(new string?[]
                     {
-                        row.AuthorityRef, Number(skill.CurrentTier),
+                        row.SkillId, row.AuthorityRef, Number(skill.CurrentTier),
                         skill.SkillLifecycle, Boolean(skill.SkillActive)
                     }).ToArray();
                 return true;
@@ -3255,7 +3269,7 @@ internal static class MortalWoundTreatmentDetachedSealValidator
             case MortalWoundSkillTierRequirementEvidence skill:
                 fields.AddRange(new string?[]
                 {
-                    skill.ActorRole, Number(skill.MinimumTier), Number(skill.CurrentTier),
+                    skill.ActorRole, skill.SkillId, Number(skill.MinimumTier), Number(skill.CurrentTier),
                     skill.ActorCurrentLocationId, skill.RequiredLocationId,
                     skill.ActorLifecycle, Boolean(skill.ActorActive),
                     Boolean(skill.ActorReachable), Boolean(skill.ActorPresent),

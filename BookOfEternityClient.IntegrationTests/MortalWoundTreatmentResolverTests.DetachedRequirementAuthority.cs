@@ -14,6 +14,32 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
+    public void DetachedModeAuthority_SkillScopedRollTamperedRollSkillIdRejectsAfterReseal()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+            "t171_detached_roll_skill",
+            new ProcedureSkillScopedRollEffectSeed(
+                "advantage", "skill", "skill_field_medicine_01"));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_t171_roll_skill",
+            scenario.RouteId);
+        var request = SerializeDetachedRequirementRequest(flow);
+        AssertDetachedRequirementAccepted(request);
+        var authority = ReadJsonObject(request, "ModeAuthority");
+        authority[FindJsonPropertyName(authority, "RollSkillId")] =
+            "skill_patient_observation_01";
+
+        ResealDetachedProcedureAuthorityAndRequestWithRollSkillId(request);
+        AssertDetachedModeAuthorityRejected(request);
+    }
+
+    [Fact]
     public void DetachedRequirementAuthority_ProductionKindCompleteRequestRemainsAccepted()
     {
         var scenario = ConfigureAllRequirementKinds(
@@ -609,6 +635,63 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ReadJsonString(authority, "CoordinatesFingerprint"),
                 ReadJsonString(authority, "AcceptedStateFingerprint")
             });
+    }
+
+    private static void ResealDetachedProcedureAuthorityAndRequestWithRollSkillId(
+        JsonObject request)
+    {
+        var authority = ReadJsonObject(request, "ModeAuthority");
+        var contributions = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "RollContributions")]);
+        var sourceIndices = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceIndices")]);
+        var sourceRolls = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceRolls")]);
+        var fields = new List<string?>
+        {
+            "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
+            "1",
+            ReadJsonString(authority, "SourcePath"),
+            ReadJsonString(authority, "RollMode"),
+            ReadJsonString(authority, "RollActorKind"),
+            ReadJsonString(authority, "RollActorId"),
+            ReadOptionalJsonString(authority, "RollSkillId"),
+            DetachedNumber(contributions.Count)
+        };
+        for (var index = 0; index < contributions.Count; index++)
+        {
+            var contribution = Assert.IsType<JsonObject>(contributions[index]);
+            fields.Add(DetachedNumber(index));
+            fields.Add(ReadJsonString(contribution, "EffectId"));
+            fields.Add(ReadJsonString(contribution, "ComponentId"));
+            fields.Add(ReadJsonString(contribution, "Contribution"));
+        }
+        fields.Add(DetachedNumber(sourceIndices.Count));
+        for (var index = 0; index < sourceIndices.Count; index++)
+        {
+            fields.Add(DetachedNumber(index));
+            fields.Add(DetachedNumber(sourceIndices[index]!.GetValue<int>()));
+            fields.Add(DetachedNumber(sourceRolls[index]!.GetValue<int>()));
+        }
+        foreach (var property in new[]
+                 {
+                     "SelectedSourceIndex", "NaturalRoll", "Modifier",
+                     "ComplicationDifficultyModifier", "EffectiveDifficulty"
+                 })
+        {
+            fields.Add(DetachedNumber(authority[
+                FindJsonPropertyName(authority, property)]!.GetValue<int>()));
+        }
+        fields.Add(ReadJsonString(authority, "RequirementAuthorityFingerprint"));
+        fields.Add(ReadJsonString(authority, "CoordinatesFingerprint"));
+        fields.Add(ReadJsonString(authority, "AcceptedStateFingerprint"));
+        fields.Add(authority[FindJsonPropertyName(authority, "PreparedCriticalReaction")]
+            is JsonObject prepared
+            ? ReadJsonString(prepared, "PreparedReactionFingerprint")
+            : null);
+        authority[FindJsonPropertyName(authority, "AuthorityFingerprint")] =
+            WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        ResealDetachedRequestOnly(request);
     }
 
     private static void SetDetachedCapabilityLimitsToEmpty(

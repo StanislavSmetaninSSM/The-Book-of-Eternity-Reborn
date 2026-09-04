@@ -1563,6 +1563,20 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         IReadOnlyDictionary<string, JsonObject> roots,
         ICollection<ValidationIssue> issues)
     {
+        var skillScopeAuthority = EffectRollSkillScopeAuthority.Build(
+            new EffectRollSkillScopeAuthorityInput(
+                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+                {
+                    [PlayerActiveSkillsPath] = Get(roots, PlayerActiveSkillsPath),
+                    [PlayerPassiveSkillsPath] = Get(roots, PlayerPassiveSkillsPath),
+                    [NpcCorePath] = Get(roots, NpcCorePath)
+                },
+                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+                {
+                    [PlayerActiveSkillsPath] = Get(roots, PlayerActiveSkillsPath),
+                    [PlayerPassiveSkillsPath] = Get(roots, PlayerPassiveSkillsPath),
+                    [NpcCorePath] = Get(roots, NpcCorePath)
+                }));
         var snapshot = EffectMechanicsSnapshot.Build(new EffectMechanicsInput(
             new EffectCarrierCatalogInput(
                 Get(roots, EffectCarrierCatalog.PlayerPath),
@@ -1571,7 +1585,8 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                 Get(roots, EffectCarrierCatalog.AlliesPath),
                 Get(roots, EffectCarrierCatalog.AfterlifeProfilesPath),
                 Get(roots, EffectCarrierCatalog.SpiritualConflictPath)),
-            Get(roots, EffectIdentityState.StatePath)));
+            Get(roots, EffectIdentityState.StatePath),
+            skillScopeAuthority));
         AddIssues(issues, snapshot.Issues);
         return snapshot;
     }
@@ -1636,6 +1651,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["reachable"] = value.Reachable,
         ["skills"] = new JsonArray(value.Skills.Select(skill => (JsonNode)new JsonObject
         {
+            ["skillId"] = skill.SkillId,
             ["capabilityRef"] = skill.CapabilityRef,
             ["displayName"] = skill.DisplayName,
             ["tier"] = skill.Tier,
@@ -1784,6 +1800,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         ["reachable"] = value.Reachable,
         ["skills"] = new JsonArray(value.Skills.Select(skill => (JsonNode)new JsonObject
         {
+            ["skillId"] = skill.SkillId,
             ["capabilityRef"] = skill.CapabilityRef,
             ["tier"] = skill.Tier,
             ["lifecycle"] = skill.Lifecycle,

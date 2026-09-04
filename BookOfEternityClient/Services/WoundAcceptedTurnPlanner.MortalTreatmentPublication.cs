@@ -429,6 +429,11 @@ internal static partial class WoundAcceptedTurnPlanner
                 baselines.EffectCarriers!,
                 baselines.EffectIdentity,
                 baselines.SourceRoots!,
+                acceptedSourceRoots: ((TreatmentSkillProjectionAuthority)
+                    skillProjection.Authority).AfterImages.ToDictionary(
+                    static pair => pair.Key,
+                    static pair => (JsonNode?)pair.Value,
+                    StringComparer.Ordinal),
                 currentWorldTime: acceptedState.CurrentGameMinute,
                 publicationCarrierBaselines: baselines.EffectCarriers,
                 realm: acceptedState.Binding.Realm,

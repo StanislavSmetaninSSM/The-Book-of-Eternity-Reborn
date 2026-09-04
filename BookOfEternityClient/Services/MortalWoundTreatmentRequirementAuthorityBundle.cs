@@ -826,6 +826,7 @@ internal sealed record MortalWoundResourceQuantityRequirementEvidence(
 
 internal sealed record MortalWoundSkillTierRequirementEvidence(
     string ActorRole,
+    string SkillId,
     int MinimumTier,
     int CurrentTier,
     string ActorCurrentLocationId,
@@ -1442,15 +1443,18 @@ internal static class MortalWoundTreatmentRequirementWitnessFactory
                     : Single(actor.Skills.Where(candidate => string.Equals(
                         candidate.CapabilityRef,
                         row.AuthorityRef,
-                        StringComparison.Ordinal)));
+                        StringComparison.Ordinal) &&
+                        string.Equals(candidate.SkillId, row.SkillId,
+                            StringComparison.Ordinal)));
                 if (actor is null || skill is null || row.MinimumTier is null ||
-                    row.CurrentTier is null)
+                    row.CurrentTier is null || row.SkillId is null)
                 {
                     return false;
                 }
                 var present = IsPresent(snapshot, context.CurrentLocationId, actor);
                 evidence = new MortalWoundSkillTierRequirementEvidence(
                     String(requirement, "actorRole"),
+                    skill.SkillId,
                     row.MinimumTier.Value,
                     row.CurrentTier.Value,
                     actor.CurrentLocationId,
@@ -1463,7 +1467,7 @@ internal static class MortalWoundTreatmentRequirementWitnessFactory
                     skill.Active);
                 mechanicalFields = ActorFields(actor).Concat(new string?[]
                 {
-                    skill.CapabilityRef, Number(skill.Tier), skill.Lifecycle,
+                    skill.SkillId, skill.CapabilityRef, Number(skill.Tier), skill.Lifecycle,
                     Boolean(skill.Active)
                 }).ToArray();
                 return true;
@@ -1729,7 +1733,7 @@ internal static class MortalWoundTreatmentRequirementWitnessFactory
             case MortalWoundSkillTierRequirementEvidence skill:
                 fields.AddRange(new string?[]
                 {
-                    skill.ActorRole, Number(skill.MinimumTier), Number(skill.CurrentTier),
+                    skill.ActorRole, skill.SkillId, Number(skill.MinimumTier), Number(skill.CurrentTier),
                     skill.ActorCurrentLocationId, skill.RequiredLocationId,
                     skill.ActorLifecycle, Boolean(skill.ActorActive),
                     Boolean(skill.ActorReachable), Boolean(skill.ActorPresent),
@@ -2246,6 +2250,7 @@ internal static class MortalWoundTreatmentRequirementWitnessFactory
         requirementIndex,
         kind,
         authorityRef,
+        null,
         realm,
         ownerKind,
         ownerId,

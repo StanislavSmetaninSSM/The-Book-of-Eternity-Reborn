@@ -69,6 +69,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollMode,
         string rollActorKind,
         string rollActorId,
+        string? rollSkillId,
         IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -91,6 +92,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         RollMode = rollMode;
         RollActorKind = rollActorKind;
         RollActorId = rollActorId;
+        RollSkillId = rollSkillId;
         _rollContributions = MortalWoundTreatmentShellDetachment.Freeze(rollContributions);
         _sourceIndices = MortalWoundTreatmentShellDetachment.Freeze(sourceIndices);
         _sourceRolls = MortalWoundTreatmentShellDetachment.Freeze(sourceRolls);
@@ -116,6 +118,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollMode,
         string rollActorKind,
         string rollActorId,
+        string? rollSkillId,
         IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -134,6 +137,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             rollMode,
             rollActorKind,
             rollActorId,
+            rollSkillId,
             rollContributions,
             sourceIndices,
             sourceRolls,
@@ -158,6 +162,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
     public string RollMode { get; }
     public string RollActorKind { get; }
     public string RollActorId { get; }
+    public string? RollSkillId { get; }
     public IReadOnlyList<MortalWoundProcedureRollContribution> RollContributions =>
         _rollContributions;
     public IReadOnlyList<int> SourceIndices => _sourceIndices;
@@ -252,7 +257,8 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 commonScope!,
                 out var modifier,
                 out var rollActorKind,
-                out var rollActorId))
+                out var rollActorId,
+                out var rollSkillId))
         {
             return Invalid(
                 "treatmentAttempt.procedureCheck.modifierSource",
@@ -284,20 +290,28 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 "overflow");
         }
 
-        if (!TryComposeRollContributions(
-                acceptedState,
+        var resolution = EffectRollContributionResolver.Resolve(
+            acceptedState.EffectMechanics,
+            new EffectRollContext(
                 coordinates.Realm,
                 rollActorKind!,
                 rollActorId!,
-                out var rollContributions,
-                out var rollMode))
+                "skill_check",
+                rollSkillId));
+        if (!resolution.IsValid)
         {
             return Invalid(
                 "treatmentAttempt.procedureCheck.rollContributions",
                 "mortal_wound_treatment_procedure_roll_effect_invalid",
                 "accepted roll-actor roll_modifier(skill_check) evidence",
-                "malformed accepted component projection");
+                "invalid accepted roll contribution resolution");
         }
+        var rollContributions = resolution.Contributions.Select(static contribution =>
+            MortalWoundProcedureRollContribution.Create(
+                contribution.EffectId,
+                contribution.ComponentId,
+                contribution.Contribution)).ToArray();
+        var rollMode = resolution.RollMode;
 
         MortalWoundProcedureDiceReservation? reservation = null;
         MortalWoundCriticalReactionReservation? criticalReactionReservation = null;
@@ -340,6 +354,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 rollMode!,
                 rollActorKind!,
                 rollActorId!,
+                rollSkillId,
                 rollContributions!,
                 reservation.SourceIndices,
                 reservation.SourceRolls,
@@ -357,6 +372,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 rollMode!,
                 rollActorKind!,
                 rollActorId!,
+                rollSkillId,
                 rollContributions!,
                 reservation.SourceIndices,
                 reservation.SourceRolls,
@@ -493,6 +509,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             RollMode,
             RollActorKind,
             RollActorId,
+            RollSkillId,
             RollContributions,
             SourceIndices,
             SourceRolls,
@@ -573,11 +590,13 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         MortalWoundTreatmentRequirementScopeAuthority commonScope,
         out int modifier,
         out string? rollActorKind,
-        out string? rollActorId)
+        out string? rollActorId,
+        out string? rollSkillId)
     {
         modifier = 0;
         rollActorKind = null;
         rollActorId = null;
+        rollSkillId = null;
         switch (route.Resolution.ModifierSource)
         {
             case MortalWoundFixedZeroModifierSource:
@@ -624,85 +643,15 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 modifier = row.CurrentTier.Value;
                 rollActorKind = row.OwnerKind;
                 rollActorId = row.OwnerId;
+                rollSkillId = row.SkillId;
                 return ResourceMaterializationContract.IsExactIdentifier(rollActorKind) &&
-                       ResourceMaterializationContract.IsExactIdentifier(rollActorId);
+                       ResourceMaterializationContract.IsExactIdentifier(rollActorId) &&
+                       ResourceMaterializationContract.IsExactIdentifier(rollSkillId) &&
+                       string.Equals(evidence.SkillId, row.SkillId, StringComparison.Ordinal);
             }
             default:
                 return false;
         }
-    }
-
-    private static bool TryComposeRollContributions(
-        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
-        string realm,
-        string rollActorKind,
-        string rollActorId,
-        out IReadOnlyList<MortalWoundProcedureRollContribution>? contributions,
-        out string? rollMode)
-    {
-        var accepted = new List<MortalWoundProcedureRollContribution>();
-        var hasAdvantage = false;
-        var hasDisadvantage = false;
-        foreach (var component in acceptedState.EffectMechanics.Components)
-        {
-            if (!string.Equals(component.Realm, realm, StringComparison.Ordinal) ||
-                !string.Equals(component.TargetKind, rollActorKind, StringComparison.Ordinal) ||
-                !string.Equals(component.TargetId, rollActorId, StringComparison.Ordinal) ||
-                !string.Equals(component.Profile, "roll_modifier", StringComparison.Ordinal))
-            {
-                continue;
-            }
-
-            var payload = component.Payload;
-            if (payload.ValueKind != JsonValueKind.Object ||
-                !payload.TryGetProperty("operations", out var operations) ||
-                operations.ValueKind != JsonValueKind.Array ||
-                operations.EnumerateArray().Any(static operation =>
-                    operation.ValueKind != JsonValueKind.String))
-            {
-                contributions = null;
-                rollMode = null;
-                return false;
-            }
-            if (!operations.EnumerateArray().Any(operation => string.Equals(
-                    operation.GetString(),
-                    "skill_check",
-                    StringComparison.Ordinal)))
-            {
-                continue;
-            }
-            if (!payload.TryGetProperty("contribution", out var contributionNode) ||
-                contributionNode.ValueKind != JsonValueKind.String)
-            {
-                contributions = null;
-                rollMode = null;
-                return false;
-            }
-            var contribution = contributionNode.GetString();
-            switch (contribution)
-            {
-                case "advantage":
-                    hasAdvantage = true;
-                    break;
-                case "disadvantage":
-                    hasDisadvantage = true;
-                    break;
-                default:
-                    contributions = null;
-                    rollMode = null;
-                    return false;
-            }
-            accepted.Add(MortalWoundProcedureRollContribution.Create(
-                component.EffectId,
-                component.ComponentId,
-                contribution));
-        }
-
-        contributions = Array.AsReadOnly(accepted.ToArray());
-        rollMode = hasAdvantage == hasDisadvantage
-            ? "normal"
-            : hasAdvantage ? "advantage" : "disadvantage";
-        return true;
     }
 
     private static int SelectSourceOrdinal(
@@ -726,6 +675,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollMode,
         string rollActorKind,
         string rollActorId,
+        string? rollSkillId,
         IReadOnlyList<MortalWoundProcedureRollContribution> contributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -747,6 +697,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             rollMode,
             rollActorKind,
             rollActorId,
+            rollSkillId,
             contributions.Count.ToString(CultureInfo.InvariantCulture)
         };
         for (var index = 0; index < contributions.Count; index++)

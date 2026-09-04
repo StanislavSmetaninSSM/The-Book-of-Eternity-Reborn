@@ -69,7 +69,7 @@ internal sealed class MortalWoundTreatmentAuthority
 
     private static readonly string[] SkillFields =
     {
-        "capabilityRef", "displayName", "tier", "lifecycle", "active"
+        "skillId", "capabilityRef", "displayName", "tier", "lifecycle", "active"
     };
 
     private static readonly string[] CapabilityFields =
@@ -184,11 +184,23 @@ internal sealed class MortalWoundTreatmentAuthority
         IReadOnlyList<Consent> Consents);
 
     internal sealed record Skill(
+        string SkillId,
         string CapabilityRef,
         string DisplayName,
         int Tier,
         string Lifecycle,
-        bool Active);
+        bool Active)
+    {
+        internal Skill(
+            string capabilityRef,
+            string displayName,
+            int tier,
+            string lifecycle,
+            bool active)
+            : this(capabilityRef, capabilityRef, displayName, tier, lifecycle, active)
+        {
+        }
+    }
 
     internal sealed record Capability(
         string CapabilityRef,
@@ -850,6 +862,7 @@ internal sealed class MortalWoundTreatmentAuthority
             ActorMechanicalFields(actor)
                 .Concat(new string?[]
                 {
+                    skill.SkillId,
                     skill.CapabilityRef,
                     Number(skill.Tier),
                     skill.Lifecycle,
@@ -863,6 +876,7 @@ internal sealed class MortalWoundTreatmentAuthority
             targetKind: acceptedStateProjection ? context.TargetKind : null,
             targetId: acceptedStateProjection ? context.TargetId : null,
             locationId: acceptedStateProjection ? context.CurrentLocationId : null,
+            skillId: skill.SkillId,
             minimumTier: minimumTier,
             currentTier: skill.Tier);
     }
@@ -1567,7 +1581,8 @@ internal sealed class MortalWoundTreatmentAuthority
         int? requestedQuantity = null,
         int? minimumTier = null,
         int? currentTier = null,
-        string? currentState = null)
+        string? currentState = null,
+        string? skillId = null)
     {
         var fields = new List<string?>
         {
@@ -1576,6 +1591,7 @@ internal sealed class MortalWoundTreatmentAuthority
             Number(requirementIndex),
             kind,
             authorityRef,
+            skillId,
             realm,
             ownerKind,
             ownerId,
@@ -1597,6 +1613,7 @@ internal sealed class MortalWoundTreatmentAuthority
             requirementIndex,
             kind,
             authorityRef,
+            skillId,
             realm,
             ownerKind,
             ownerId,
@@ -1639,7 +1656,8 @@ internal sealed class MortalWoundTreatmentAuthority
             row.RequestedQuantity,
             row.MinimumTier,
             row.CurrentTier,
-            row.CurrentState).AuthorityFingerprint;
+            row.CurrentState,
+            row.SkillId).AuthorityFingerprint;
     }
 
     private static string ComputeResultFingerprint(
@@ -1817,6 +1835,7 @@ internal sealed class MortalWoundTreatmentAuthority
             AppendSequence(fields, ActorMechanicalFields(actor));
             AppendSequence(fields, actor.Skills.SelectMany(skill => new string?[]
             {
+                skill.SkillId,
                 skill.CapabilityRef,
                 Number(skill.Tier),
                 skill.Lifecycle,
@@ -2606,6 +2625,12 @@ internal sealed class MortalWoundTreatmentAuthority
             result.Add(new Skill(
                 ReadIdentifier(
                     value,
+                    "skillId",
+                    itemPath,
+                    SnapshotInvalidFieldCode,
+                    issues),
+                ReadIdentifier(
+                    value,
                     "capabilityRef",
                     itemPath,
                     SnapshotInvalidFieldCode,
@@ -3027,6 +3052,7 @@ internal sealed record MortalWoundResolvedRequirement(
     int RequirementIndex,
     string Kind,
     string AuthorityRef,
+    string? SkillId,
     string Realm,
     string? OwnerKind,
     string? OwnerId,

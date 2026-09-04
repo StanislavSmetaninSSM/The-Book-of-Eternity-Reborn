@@ -464,12 +464,14 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
             if (tier is null)
                 continue;
             var display = Text(skill, "displayName") ?? Text(skill, "skillName") ?? skillId;
-            yield return new MortalWoundTreatmentAuthority.Skill(skillId, display, tier.Value, "active", true);
+            yield return new MortalWoundTreatmentAuthority.Skill(
+                skillId, skillId, display, tier.Value, "active", true);
             foreach (var source in sources.Where(source =>
                          string.Equals(source.SkillKind, kind, StringComparison.Ordinal) &&
                          string.Equals(source.SkillId, skillId, StringComparison.Ordinal)))
             foreach (var capability in source.Capabilities)
-                yield return new MortalWoundTreatmentAuthority.Skill(capability.CapabilityRef, display, tier.Value, "active", true);
+                yield return new MortalWoundTreatmentAuthority.Skill(
+                    skillId, capability.CapabilityRef, display, tier.Value, "active", true);
         }
     }
 

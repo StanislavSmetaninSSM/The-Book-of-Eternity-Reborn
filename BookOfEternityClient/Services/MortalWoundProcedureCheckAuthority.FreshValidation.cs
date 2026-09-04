@@ -37,26 +37,37 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
                     commonScope,
                     out var expectedModifier,
                     out var expectedActorKind,
-                    out var expectedActorId) ||
-                !TryComposeRollContributions(
-                    acceptedState,
+                    out var expectedActorId,
+                    out var expectedRollSkillId))
+            {
+                return false;
+            }
+            var resolution = EffectRollContributionResolver.Resolve(
+                acceptedState.EffectMechanics,
+                new EffectRollContext(
                     coordinates.Realm,
                     expectedActorKind!,
                     expectedActorId!,
-                    out var expectedContributions,
-                    out var expectedRollMode) ||
-                expectedContributions is null ||
-                expectedRollMode is null ||
-                !string.Equals(RollMode, expectedRollMode, StringComparison.Ordinal) ||
+                    "skill_check",
+                    expectedRollSkillId));
+            if (!resolution.IsValid ||
+                !string.Equals(RollMode, resolution.RollMode, StringComparison.Ordinal) ||
                 !string.Equals(RollActorKind, expectedActorKind, StringComparison.Ordinal) ||
                 !string.Equals(RollActorId, expectedActorId, StringComparison.Ordinal) ||
+                !string.Equals(RollSkillId, expectedRollSkillId, StringComparison.Ordinal) ||
                 Modifier != expectedModifier ||
-                !ContributionsAgree(RollContributions, expectedContributions))
+                !ContributionsAgree(
+                    RollContributions,
+                    resolution.Contributions.Select(static contribution =>
+                        MortalWoundProcedureRollContribution.Create(
+                            contribution.EffectId,
+                            contribution.ComponentId,
+                            contribution.Contribution)).ToArray()))
             {
                 return false;
             }
 
-            var requiredDice = expectedRollMode == "normal" ? 1 : 2;
+            var requiredDice = resolution.RollMode == "normal" ? 1 : 2;
             if (SourceIndices.Count != requiredDice ||
                 SourceRolls.Count != requiredDice ||
                 !SourceIndices.Select((value, offset) => value - offset)
@@ -68,7 +79,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
             {
                 return false;
             }
-            var selectedOrdinal = SelectSourceOrdinal(SourceRolls, expectedRollMode);
+            var selectedOrdinal = SelectSourceOrdinal(SourceRolls, resolution.RollMode);
             if (SelectedSourceIndex != SourceIndices[selectedOrdinal] ||
                 NaturalRoll != SourceRolls[selectedOrdinal])
             {
