@@ -364,6 +364,7 @@ internal static class EffectPlayerProjection
     private static bool IsReadableSkillName(string? displayName, string skillId) =>
         !string.IsNullOrWhiteSpace(displayName) &&
         !string.Equals(displayName, skillId, StringComparison.Ordinal) &&
+        !displayName.Contains(skillId, StringComparison.Ordinal) &&
         !displayName.Contains("skill_", StringComparison.OrdinalIgnoreCase);
 
     private static bool HasExactlySkillCheckOperation(JsonElement payload) =>

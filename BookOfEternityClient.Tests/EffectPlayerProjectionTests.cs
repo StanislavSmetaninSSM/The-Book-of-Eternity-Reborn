@@ -252,6 +252,21 @@ public sealed class EffectPlayerProjectionTests
     }
 
     [Fact]
+    public void Build_RollScopeReadableNameContainingUnprefixedSkillIdentifierIsDormant()
+    {
+        var effect = CreateScopedRollModifier("skill", "knife");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("knife", "Ловкость [knife]", active: true))));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("knife", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void Build_RollScopeHiddenEffectRemainsAbsent()
     {
         var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
