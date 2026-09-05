@@ -189,18 +189,7 @@ internal sealed class MortalWoundTreatmentAuthority
         string DisplayName,
         int Tier,
         string Lifecycle,
-        bool Active)
-    {
-        internal Skill(
-            string capabilityRef,
-            string displayName,
-            int tier,
-            string lifecycle,
-            bool active)
-            : this(capabilityRef, capabilityRef, displayName, tier, lifecycle, active)
-        {
-        }
-    }
+        bool Active);
 
     internal sealed record Capability(
         string CapabilityRef,

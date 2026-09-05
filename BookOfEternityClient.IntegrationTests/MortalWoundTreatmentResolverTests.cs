@@ -2580,7 +2580,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             roll["components"]![0]!["payload"] = new JsonObject
             {
                 ["operations"] = new JsonArray("skill_check"),
-                ["contribution"] = scenario.RollMode
+                ["contribution"] = scenario.RollMode,
+                ["scope"] = new JsonObject { ["kind"] = "all" }
             };
             effects.Add(roll);
         }
@@ -4515,7 +4516,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     rollDefinition["components"]![0]!["payload"] = new JsonObject
                     {
                         ["operations"] = new JsonArray("skill_check"),
-                        ["contribution"] = scenario.RollMode
+                        ["contribution"] = scenario.RollMode,
+                        ["scope"] = new JsonObject { ["kind"] = "all" }
                     };
                     playerTreatmentSkill["activeEffectDefinitions"] =
                         new JsonArray(rollDefinition);

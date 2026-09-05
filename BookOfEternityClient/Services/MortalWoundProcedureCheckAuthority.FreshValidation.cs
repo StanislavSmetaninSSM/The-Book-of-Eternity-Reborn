@@ -42,14 +42,21 @@ internal sealed partial class MortalWoundProcedureCheckAuthority
             {
                 return false;
             }
+            var capture = EffectRollContributionResolver.Capture(acceptedState.EffectMechanics);
+            if (!capture.IsValid || capture.Authority is null ||
+                !RollSourceAuthority.SemanticallyEquals(capture.Authority))
+            {
+                return false;
+            }
             var resolution = EffectRollContributionResolver.Resolve(
-                acceptedState.EffectMechanics,
+                capture.Authority,
                 new EffectRollContext(
                     coordinates.Realm,
                     expectedActorKind!,
                     expectedActorId!,
                     "skill_check",
-                    expectedRollSkillId));
+                    expectedRollSkillId),
+                acceptedState.EffectMechanics.SkillScopeAuthority);
             if (!resolution.IsValid ||
                 !string.Equals(RollMode, resolution.RollMode, StringComparison.Ordinal) ||
                 !string.Equals(RollActorKind, expectedActorKind, StringComparison.Ordinal) ||

@@ -1843,7 +1843,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                             new[]
                             {
                                 new MortalWoundTreatmentAuthority.Skill(
-                                    "field_medicine", "Field medicine", 3,
+                                    "skill_field_medicine_01", "field_medicine", "Field medicine", 3,
                                     "active", true)
                             },
                             Array.Empty<MortalWoundTreatmentAuthority.Capability>(),

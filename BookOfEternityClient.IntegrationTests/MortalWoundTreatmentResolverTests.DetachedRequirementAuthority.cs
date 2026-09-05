@@ -40,6 +40,94 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public void DetachedModeAuthority_SkillScopedRollCompactContributionTamperRejectsWhenSourceIsUnchanged()
+    {
+        var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+            "t171_compact_tamper", new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var flow = ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey + "_compact_tamper", scenario.RouteId);
+        var request = SerializeDetachedRequirementRequest(flow);
+        var authority = ReadJsonObject(request, "ModeAuthority");
+        Assert.NotNull(authority[FindJsonPropertyName(authority, "RollSourceAuthority")]);
+        var contributions = Assert.IsType<JsonArray>(authority[FindJsonPropertyName(authority, "RollContributions")]);
+        Assert.Single(contributions).AsObject()["contribution"] = "disadvantage";
+        ResealDetachedProcedureAuthorityAndRequestWithRollSkillId(request);
+
+        AssertDetachedModeAuthorityRejected(request);
+    }
+
+    [Fact]
+    public void DetachedModeAuthority_DirectCutoverRequiresRollSkillAndSourceButAllowsFixedZeroNullSkill()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        const string fixedZeroRouteId = "procedure_t171_direct_cutover_fixed_zero";
+        var fixedZeroRoute = scenario.Before["treatment"]!["routes"]![0]!
+            .DeepClone()
+            .AsObject();
+        fixedZeroRoute["routeId"] = fixedZeroRouteId;
+        fixedZeroRoute["resolution"]!["modifierSource"] = new JsonObject
+        {
+            ["kind"] = "fixed_zero"
+        };
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(fixedZeroRoute);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(fixedZeroRouteId);
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var fixedZeroFlow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_direct_cutover_fixed_zero",
+            fixedZeroRouteId);
+        var fixedZeroRequest = SerializeDetachedRequirementRequest(fixedZeroFlow);
+        var fixedZeroAuthority = ReadJsonObject(fixedZeroRequest, "ModeAuthority");
+        Assert.Null(ReadOptionalJsonString(fixedZeroAuthority, "RollSkillId"));
+        AssertDetachedRequirementAccepted(fixedZeroRequest);
+
+        var missingSkill = fixedZeroRequest.DeepClone().AsObject();
+        var missingSkillAuthority = ReadJsonObject(missingSkill, "ModeAuthority");
+        missingSkillAuthority.Remove(FindJsonPropertyName(
+            missingSkillAuthority,
+            "RollSkillId"));
+        AssertDetachedRequestCannotDeserialize(missingSkill);
+
+        var missingSource = fixedZeroRequest.DeepClone().AsObject();
+        var missingSourceAuthority = ReadJsonObject(missingSource, "ModeAuthority");
+        missingSourceAuthority.Remove(FindJsonPropertyName(
+            missingSourceAuthority,
+            "RollSourceAuthority"));
+        AssertDetachedRequestCannotDeserialize(missingSource);
+
+        var nullRows = fixedZeroRequest.DeepClone().AsObject();
+        var nullRowsSource = ReadJsonObject(
+            ReadJsonObject(nullRows, "ModeAuthority"),
+            "RollSourceAuthority");
+        nullRowsSource[FindJsonPropertyName(nullRowsSource, "Rows")] = null;
+        AssertDetachedRequestCannotDeserialize(nullRows);
+
+        fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+            "t171_direct_cutover_malformed_source",
+            new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var normalFlow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_direct_cutover_malformed_source",
+            scenario.RouteId);
+        var missingOperations = SerializeDetachedRequirementRequest(normalFlow)
+            .DeepClone()
+            .AsObject();
+        var missingOperationsSource = ReadJsonObject(
+            ReadJsonObject(missingOperations, "ModeAuthority"),
+            "RollSourceAuthority");
+        var row = Assert.Single(Assert.IsType<JsonArray>(missingOperationsSource[
+            FindJsonPropertyName(missingOperationsSource, "Rows")])).AsObject();
+        row.Remove(FindJsonPropertyName(row, "Operations"));
+        AssertDetachedRequestCannotDeserialize(missingOperations);
+    }
+
+    [Fact]
     public void DetachedRequirementAuthority_ProductionKindCompleteRequestRemainsAccepted()
     {
         var scenario = ConfigureAllRequirementKinds(
@@ -650,12 +738,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
-            "1",
+            "2",
             ReadJsonString(authority, "SourcePath"),
             ReadJsonString(authority, "RollMode"),
             ReadJsonString(authority, "RollActorKind"),
             ReadJsonString(authority, "RollActorId"),
             ReadOptionalJsonString(authority, "RollSkillId"),
+            ReadJsonString(ReadJsonObject(authority, "RollSourceAuthority"), "AuthorityFingerprint"),
             DetachedNumber(contributions.Count)
         };
         for (var index = 0; index < contributions.Count; index++)
@@ -771,6 +860,19 @@ public sealed partial class MortalWoundTreatmentResolverTests
             Convert.ToString(issue.Actual)?.Contains(
                 "mode_authority",
                 StringComparison.Ordinal) == true);
+    }
+
+    private static void AssertDetachedRequestCannotDeserialize(JsonObject request)
+    {
+        var issues = new List<ValidationIssue>();
+        var accepted = MortalWoundTreatmentCommandCodec.TryParseRequest(
+            request,
+            "request",
+            issues,
+            out _);
+
+        Assert.False(accepted, DescribeIssues(issues));
+        Assert.NotEmpty(issues);
     }
 
     private static void PromoteDetachedCourseRequestToSecondMilestone(

@@ -45,7 +45,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var authorityType = RequireProcedureCheckAuthorityType();
         AssertImmutableConcreteSurface(authorityType, new[]
         {
-            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollContributions",
+            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollSourceAuthority", "RollContributions",
             "SourceIndices", "SourceRolls", "SelectedSourceIndex", "NaturalRoll", "Modifier",
             "ComplicationDifficultyModifier", "EffectiveDifficulty", "RequirementAuthorityFingerprint",
             "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
@@ -79,6 +79,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertImmutableConcreteSurface(
             contributionType,
             new[] { "EffectId", "ComponentId", "Contribution" });
+        var sourceAuthorityType = authorityType.GetProperty(
+            "RollSourceAuthority")!.PropertyType;
+        AssertImmutableConcreteSurface(
+            sourceAuthorityType,
+            new[] { "SchemaVersion", "Rows", "AuthorityFingerprint" });
+        var sourceRowType = SequenceElementType(
+            sourceAuthorityType.GetProperty("Rows")!.PropertyType);
+        AssertImmutableConcreteSurface(
+            sourceRowType,
+            new[]
+            {
+                "Ordinal", "EffectId", "ComponentId", "Realm", "TargetKind",
+                "TargetId", "Operations", "Contribution", "ScopeKind", "ScopeSkillId"
+            });
         var preparedType = authorityType.GetProperty("PreparedCriticalReaction")!.PropertyType;
         AssertImmutableConcreteSurface(preparedType, new[]
         {
@@ -88,6 +102,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertNoPublicConstructionFactories(authorityType, "Create");
         AssertNoPublicConstructionFactories(create.ReturnType);
         AssertNoPublicConstructionFactories(contributionType);
+        AssertNoPublicConstructionFactories(sourceAuthorityType);
+        AssertNoPublicConstructionFactories(sourceRowType);
         AssertNoPublicConstructionFactories(preparedType);
 
         var release = ExactInstanceMethod(
@@ -1280,7 +1296,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         AssertClosedProperties(authority, new[]
         {
-            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollContributions",
+            "SourcePath", "RollMode", "RollActorKind", "RollActorId", "RollSkillId", "RollSourceAuthority", "RollContributions",
             "SourceIndices", "SourceRolls", "SelectedSourceIndex", "NaturalRoll", "Modifier",
             "ComplicationDifficultyModifier", "EffectiveDifficulty", "RequirementAuthorityFingerprint",
             "CoordinatesFingerprint", "AcceptedStateFingerprint", "PreparedCriticalReaction",
@@ -1354,14 +1370,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
-            "1",
+            "2",
             Invariant(ReadRequiredProperty(authority, "SourcePath")),
             Invariant(ReadRequiredProperty(authority, "RollMode")),
             Invariant(ReadRequiredProperty(authority, "RollActorKind")),
             Invariant(ReadRequiredProperty(authority, "RollActorId")),
             ReadPropertyAllowingNull(authority, "RollSkillId") is { } rollSkillId
                 ? Invariant(rollSkillId)
-                : null
+                : null,
+            Invariant(ReadRequiredProperty(ReadRequiredProperty(authority, "RollSourceAuthority"), "AuthorityFingerprint"))
         };
         var contributions = AsObjects(ReadRequiredProperty(authority, "RollContributions"));
         fields.Add(contributions.Length.ToString(CultureInfo.InvariantCulture));

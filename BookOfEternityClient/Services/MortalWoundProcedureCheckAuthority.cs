@@ -70,6 +70,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollActorKind,
         string rollActorId,
         string? rollSkillId,
+        EffectDetachedRollSourceAuthority rollSourceAuthority,
         IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -93,6 +94,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         RollActorKind = rollActorKind;
         RollActorId = rollActorId;
         RollSkillId = rollSkillId;
+        RollSourceAuthority = rollSourceAuthority.CloneDetached();
         _rollContributions = MortalWoundTreatmentShellDetachment.Freeze(rollContributions);
         _sourceIndices = MortalWoundTreatmentShellDetachment.Freeze(sourceIndices);
         _sourceRolls = MortalWoundTreatmentShellDetachment.Freeze(sourceRolls);
@@ -119,6 +121,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollActorKind,
         string rollActorId,
         string? rollSkillId,
+        EffectDetachedRollSourceAuthority rollSourceAuthority,
         IReadOnlyList<MortalWoundProcedureRollContribution> rollContributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -138,6 +141,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             rollActorKind,
             rollActorId,
             rollSkillId,
+            rollSourceAuthority ?? throw new JsonException("rollSourceAuthority is required."),
             rollContributions,
             sourceIndices,
             sourceRolls,
@@ -162,7 +166,10 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
     public string RollMode { get; }
     public string RollActorKind { get; }
     public string RollActorId { get; }
-    public string? RollSkillId { get; }
+    [System.Text.Json.Serialization.JsonRequired]
+    [System.Text.Json.Serialization.JsonInclude]
+    public string? RollSkillId { get; private set; }
+    public EffectDetachedRollSourceAuthority RollSourceAuthority { get; }
     public IReadOnlyList<MortalWoundProcedureRollContribution> RollContributions =>
         _rollContributions;
     public IReadOnlyList<int> SourceIndices => _sourceIndices;
@@ -290,14 +297,25 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 "overflow");
         }
 
+        var sourceCapture = EffectRollContributionResolver.Capture(acceptedState.EffectMechanics);
+        if (!sourceCapture.IsValid || sourceCapture.Authority is null)
+        {
+            return Invalid(
+                "treatmentAttempt.procedureCheck.rollSourceAuthority",
+                "mortal_wound_treatment_procedure_roll_effect_invalid",
+                "one accepted normalized roll source authority",
+                "invalid accepted source capture");
+        }
+
         var resolution = EffectRollContributionResolver.Resolve(
-            acceptedState.EffectMechanics,
+            sourceCapture.Authority,
             new EffectRollContext(
                 coordinates.Realm,
                 rollActorKind!,
                 rollActorId!,
                 "skill_check",
-                rollSkillId));
+                rollSkillId),
+            acceptedState.EffectMechanics.SkillScopeAuthority);
         if (!resolution.IsValid)
         {
             return Invalid(
@@ -355,6 +373,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 rollActorKind!,
                 rollActorId!,
                 rollSkillId,
+                sourceCapture.Authority,
                 rollContributions!,
                 reservation.SourceIndices,
                 reservation.SourceRolls,
@@ -373,6 +392,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
                 rollActorKind!,
                 rollActorId!,
                 rollSkillId,
+                sourceCapture.Authority,
                 rollContributions!,
                 reservation.SourceIndices,
                 reservation.SourceRolls,
@@ -510,6 +530,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
             RollActorKind,
             RollActorId,
             RollSkillId,
+            RollSourceAuthority,
             RollContributions,
             SourceIndices,
             SourceRolls,
@@ -676,6 +697,7 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         string rollActorKind,
         string rollActorId,
         string? rollSkillId,
+        EffectDetachedRollSourceAuthority rollSourceAuthority,
         IReadOnlyList<MortalWoundProcedureRollContribution> contributions,
         IReadOnlyList<int> sourceIndices,
         IReadOnlyList<int> sourceRolls,
@@ -692,12 +714,13 @@ internal sealed partial class MortalWoundProcedureCheckAuthority :
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
-            "1",
+            "2",
             sourcePath,
             rollMode,
             rollActorKind,
             rollActorId,
             rollSkillId,
+            rollSourceAuthority.AuthorityFingerprint,
             contributions.Count.ToString(CultureInfo.InvariantCulture)
         };
         for (var index = 0; index < contributions.Count; index++)

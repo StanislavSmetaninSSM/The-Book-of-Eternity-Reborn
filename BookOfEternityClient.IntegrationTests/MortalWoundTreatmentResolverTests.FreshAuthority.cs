@@ -14,6 +14,66 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Fact]
+    public void FreshAuthority_RejectsJointlyResealedRollSourceAndResult()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+            "t171_fresh_joint_source_result",
+            new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_fresh_joint_source_result",
+            scenario.RouteId);
+        var request = SerializeDetachedRequirementRequest(flow);
+        var authority = ReadJsonObject(request, "ModeAuthority");
+        var source = ReadJsonObject(authority, "RollSourceAuthority");
+        var sourceRow = Assert.Single(Assert.IsType<JsonArray>(source[
+            FindJsonPropertyName(source, "Rows")])).AsObject();
+        sourceRow[FindJsonPropertyName(sourceRow, "Contribution")] = "disadvantage";
+        var resealedSource = JsonSerializer.Deserialize<EffectDetachedRollSourceAuthority>(
+            source.ToJsonString(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        Assert.NotNull(resealedSource);
+        authority[FindJsonPropertyName(authority, "RollSourceAuthority")] =
+            JsonNode.Parse(JsonSerializer.Serialize(
+                EffectDetachedRollSourceAuthority.Create(resealedSource.Rows),
+                new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                }));
+        var contribution = Assert.Single(Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "RollContributions")])).AsObject();
+        contribution[FindJsonPropertyName(contribution, "Contribution")] = "disadvantage";
+        authority[FindJsonPropertyName(authority, "RollMode")] = "disadvantage";
+        var sourceIndices = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceIndices")]);
+        var sourceRolls = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceRolls")]);
+        var selectedOffset = Enumerable.Range(0, sourceRolls.Count)
+            .OrderBy(index => sourceRolls[index]!.GetValue<int>())
+            .ThenBy(index => sourceIndices[index]!.GetValue<int>())
+            .First();
+        authority[FindJsonPropertyName(authority, "SelectedSourceIndex")] =
+            sourceIndices[selectedOffset]!.GetValue<int>();
+        authority[FindJsonPropertyName(authority, "NaturalRoll")] =
+            sourceRolls[selectedOffset]!.GetValue<int>();
+
+        ResealDetachedProcedureAuthorityAndRequest(request);
+        var parsed = ParseFreshAuthorityRequest(request);
+
+        AssertFreshAuthorityRejected(MortalWoundTreatmentPlanner.CreateProcedureAttempt(
+            parsed,
+            flow.History,
+            flow.Before,
+            Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+                flow.AcceptedState)));
+    }
+
+    [Fact]
     public void FreshAuthority_RejectsResealedProcedureDieOutsideAcceptedPoolEvidence()
     {
         var scenario = CreateScenario(
@@ -483,11 +543,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
-            "1",
+            "2",
             ReadJsonString(authority, "SourcePath"),
             ReadJsonString(authority, "RollMode"),
             ReadJsonString(authority, "RollActorKind"),
             ReadJsonString(authority, "RollActorId"),
+            ReadOptionalJsonString(authority, "RollSkillId"),
+            ReadJsonString(ReadJsonObject(authority, "RollSourceAuthority"), "AuthorityFingerprint"),
             DetachedNumber(contributions.Count)
         };
         for (var index = 0; index < contributions.Count; index++)

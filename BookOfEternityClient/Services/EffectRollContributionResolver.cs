@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
 
@@ -22,125 +23,314 @@ internal sealed record EffectRollContributionResolution(
 
 internal static class EffectRollContributionResolver
 {
+    internal static EffectRollSourceCaptureResult Capture(
+        EffectMechanicsSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+
+        if (!snapshot.IsAccepted)
+        {
+            return new EffectRollSourceCaptureResult(
+                false,
+                null,
+                ReadOnly(snapshot.Issues));
+        }
+
+        var rows = new List<EffectDetachedRollSourceRow>();
+        foreach (var component in snapshot.Components.Where(
+                     static value => value.Profile == "roll_modifier"))
+        {
+            if (!TryCapture(component, rows.Count, out var row))
+            {
+                return new EffectRollSourceCaptureResult(
+                    false,
+                    null,
+                    InvalidIssues("effect_roll_source_capture_invalid"));
+            }
+
+            rows.Add(row!);
+        }
+
+        var authority = EffectDetachedRollSourceAuthority.Create(rows);
+        return authority.HasValidSeal(out var issues)
+            ? new EffectRollSourceCaptureResult(
+                true,
+                authority,
+                Array.Empty<ValidationIssue>())
+            : new EffectRollSourceCaptureResult(false, null, issues);
+    }
+
     internal static EffectRollContributionResolution Resolve(
         EffectMechanicsSnapshot snapshot,
         EffectRollContext context)
     {
-        ArgumentNullException.ThrowIfNull(snapshot);
+        var capture = Capture(snapshot);
+        if (!capture.IsValid || capture.Authority is null)
+        {
+            return Invalid(capture.Issues);
+        }
+
+        return Resolve(capture.Authority, context, snapshot.SkillScopeAuthority);
+    }
+
+    internal static EffectRollContributionResolution Resolve(
+        EffectDetachedRollSourceAuthority source,
+        EffectRollContext context,
+        EffectRollSkillScopeAuthority currentSkills)
+    {
+        ArgumentNullException.ThrowIfNull(currentSkills);
+
+        return ResolveCore(
+            source,
+            context,
+            row =>
+            {
+                if (context.SkillId is null ||
+                    !string.Equals(
+                        row.ScopeSkillId,
+                        context.SkillId,
+                        StringComparison.Ordinal))
+                {
+                    return new ScopeDecision(false, null);
+                }
+
+                var authority = currentSkills.ResolveCurrent(
+                    new EffectTargetKey(
+                        context.Realm,
+                        context.ActorKind,
+                        context.ActorId),
+                    context.SkillId,
+                    "effects[" + row.EffectId + "].components[" +
+                    row.ComponentId + "].payload.scope.skillId");
+                return authority.State == EffectRollSkillScopeState.InvalidAuthority
+                    ? new ScopeDecision(false, authority.Issues)
+                    : new ScopeDecision(authority.IsUsable, null);
+            });
+    }
+
+    internal static EffectRollContributionResolution Resolve(
+        EffectDetachedRollSourceAuthority source,
+        EffectRollContext context,
+        EffectRollSkillUsabilityProof? selectedSkill)
+    {
+        return ResolveCore(
+            source,
+            context,
+            row =>
+            {
+                var accepted = context.SkillId is not null &&
+                    selectedSkill is not null &&
+                    string.Equals(
+                        row.ScopeSkillId,
+                        context.SkillId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        selectedSkill.Realm,
+                        context.Realm,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        selectedSkill.ActorKind,
+                        context.ActorKind,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        selectedSkill.ActorId,
+                        context.ActorId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        selectedSkill.SkillId,
+                        context.SkillId,
+                        StringComparison.Ordinal);
+                return new ScopeDecision(accepted, null);
+            });
+    }
+
+    private static EffectRollContributionResolution ResolveCore(
+        EffectDetachedRollSourceAuthority source,
+        EffectRollContext context,
+        Func<EffectDetachedRollSourceRow, ScopeDecision> scoped)
+    {
+        ArgumentNullException.ThrowIfNull(source);
         ArgumentNullException.ThrowIfNull(context);
 
-        if (!snapshot.IsAccepted)
-            return Invalid(snapshot.Issues);
+        if (!source.HasValidSeal(out var issues))
+        {
+            return Invalid(issues);
+        }
 
         var accepted = new List<EffectRollContributionEvidence>();
-        foreach (var component in snapshot.Components)
+        foreach (var row in source.Rows)
         {
-            if (!string.Equals(component.Profile, "roll_modifier", StringComparison.Ordinal) ||
-                !string.Equals(component.Realm, context.Realm, StringComparison.Ordinal) ||
-                !string.Equals(component.TargetKind, context.ActorKind, StringComparison.Ordinal) ||
-                !string.Equals(component.TargetId, context.ActorId, StringComparison.Ordinal) ||
-                !MatchesOperation(component.Payload, context.Operation) ||
-                !TryReadScope(component.Payload, out var scopeKind, out var scopedSkillId) ||
-                !TryReadContribution(component.Payload, out var contribution))
+            if (!string.Equals(row.Realm, context.Realm, StringComparison.Ordinal) ||
+                !string.Equals(
+                    row.TargetKind,
+                    context.ActorKind,
+                    StringComparison.Ordinal) ||
+                !string.Equals(row.TargetId, context.ActorId, StringComparison.Ordinal) ||
+                !row.Operations.Contains(context.Operation, StringComparer.Ordinal))
             {
                 continue;
             }
 
-            if (string.Equals(scopeKind, "skill", StringComparison.Ordinal))
+            if (row.ScopeKind == "skill")
             {
-                if (context.SkillId == null ||
-                    !string.Equals(scopedSkillId, context.SkillId, StringComparison.Ordinal))
+                var decision = scoped(row);
+                if (decision.Issues is not null)
                 {
-                    continue;
+                    return Invalid(decision.Issues);
                 }
 
-                var authority = snapshot.SkillScopeAuthority.ResolveCurrent(
-                    new EffectTargetKey(context.Realm, context.ActorKind, context.ActorId),
-                    context.SkillId,
-                    $"effects[{component.EffectId}].components[{component.ComponentId}].payload.scope.skillId");
-                if (authority.State == EffectRollSkillScopeState.InvalidAuthority)
-                {
-                    return Invalid(authority.Issues);
-                }
-                if (!authority.IsUsable)
+                if (!decision.Accepted)
                 {
                     continue;
                 }
-            }
-            else if (!string.Equals(scopeKind, "all", StringComparison.Ordinal))
-            {
-                continue;
             }
 
             accepted.Add(new EffectRollContributionEvidence(
-                component.EffectId,
-                component.ComponentId,
-                contribution));
+                row.EffectId,
+                row.ComponentId,
+                row.Contribution));
         }
 
-        var hasAdvantage = accepted.Any(static item => item.Contribution == "advantage");
-        var hasDisadvantage = accepted.Any(static item => item.Contribution == "disadvantage");
-        var mode = hasAdvantage == hasDisadvantage
+        var advantage = accepted.Any(
+            static value => value.Contribution == "advantage");
+        var disadvantage = accepted.Any(
+            static value => value.Contribution == "disadvantage");
+        var rollMode = advantage == disadvantage
             ? "normal"
-            : hasAdvantage ? "advantage" : "disadvantage";
+            : advantage
+                ? "advantage"
+                : "disadvantage";
         return new EffectRollContributionResolution(
             true,
-            mode,
+            rollMode,
             ReadOnly(accepted),
             Array.Empty<ValidationIssue>());
     }
 
-    private static EffectRollContributionResolution Invalid(IReadOnlyList<ValidationIssue> issues) => new(
-        false,
-        "normal",
-        Array.Empty<EffectRollContributionEvidence>(),
-        ReadOnly(issues));
+    private static bool TryCapture(
+        EffectMechanicalComponent component,
+        int ordinal,
+        out EffectDetachedRollSourceRow? row)
+    {
+        row = null;
+        var payload = component.Payload;
+        if (payload.ValueKind != JsonValueKind.Object ||
+            !TryOperations(payload, out var operations) ||
+            !TryString(payload, "contribution", out var contribution) ||
+            !TryScope(payload, out var scopeKind, out var scopeSkillId))
+        {
+            return false;
+        }
 
-    private static bool MatchesOperation(System.Text.Json.JsonElement payload, string operation) =>
-        payload.TryGetProperty("operations", out var operations) &&
-        operations.ValueKind == System.Text.Json.JsonValueKind.Array &&
-        operations.EnumerateArray().Any(value =>
-            value.ValueKind == System.Text.Json.JsonValueKind.String &&
-            string.Equals(value.GetString(), operation, StringComparison.Ordinal));
+        row = EffectDetachedRollSourceRow.Create(
+            ordinal,
+            component.EffectId,
+            component.ComponentId,
+            component.Realm,
+            component.TargetKind,
+            component.TargetId,
+            operations!,
+            contribution!,
+            scopeKind!,
+            scopeSkillId);
+        return row.IsValid(ordinal);
+    }
 
-    private static bool TryReadScope(
-        System.Text.Json.JsonElement payload,
+    private static bool TryOperations(
+        JsonElement payload,
+        out IReadOnlyList<string>? values)
+    {
+        values = null;
+        if (!payload.TryGetProperty("operations", out var operations) ||
+            operations.ValueKind != JsonValueKind.Array)
+        {
+            return false;
+        }
+
+        var result = new List<string>();
+        foreach (var value in operations.EnumerateArray())
+        {
+            if (value.ValueKind != JsonValueKind.String ||
+                value.GetString() is not { } operation)
+            {
+                return false;
+            }
+
+            result.Add(operation);
+        }
+
+        values = result;
+        return true;
+    }
+
+    private static bool TryScope(
+        JsonElement payload,
         out string? kind,
         out string? skillId)
     {
         kind = null;
         skillId = null;
         if (!payload.TryGetProperty("scope", out var scope) ||
-            scope.ValueKind != System.Text.Json.JsonValueKind.Object ||
-            !scope.TryGetProperty("kind", out var kindValue) ||
-            kindValue.ValueKind != System.Text.Json.JsonValueKind.String)
+            scope.ValueKind != JsonValueKind.Object ||
+            !TryString(scope, "kind", out kind))
         {
             return false;
         }
 
-        kind = kindValue.GetString();
-        if (string.Equals(kind, "skill", StringComparison.Ordinal) &&
-            scope.TryGetProperty("skillId", out var skillValue) &&
-            skillValue.ValueKind == System.Text.Json.JsonValueKind.String)
+        if (!scope.TryGetProperty("skillId", out var value))
         {
-            skillId = skillValue.GetString();
+            return true;
         }
-        return kind != null;
+
+        if (value.ValueKind != JsonValueKind.String)
+        {
+            return false;
+        }
+
+        skillId = value.GetString();
+        return true;
     }
 
-    private static bool TryReadContribution(System.Text.Json.JsonElement payload, out string contribution)
+    private static bool TryString(
+        JsonElement root,
+        string property,
+        out string? value)
     {
-        contribution = string.Empty;
-        if (!payload.TryGetProperty("contribution", out var value) ||
-            value.ValueKind != System.Text.Json.JsonValueKind.String)
-        {
-            return false;
-        }
-
-        contribution = value.GetString() ?? string.Empty;
-        return contribution is "advantage" or "disadvantage";
+        value = null;
+        return root.TryGetProperty(property, out var item) &&
+            item.ValueKind == JsonValueKind.String &&
+            (value = item.GetString()) is not null;
     }
 
-    private static IReadOnlyList<T> ReadOnly<T>(IEnumerable<T> values) =>
-        new ReadOnlyCollection<T>(values.ToArray());
+    private static EffectRollContributionResolution Invalid(
+        IReadOnlyList<ValidationIssue> issues)
+    {
+        return new EffectRollContributionResolution(
+            false,
+            "normal",
+            Array.Empty<EffectRollContributionEvidence>(),
+            ReadOnly(issues));
+    }
+
+    private static IReadOnlyList<ValidationIssue> InvalidIssues(string code)
+    {
+        return Array.AsReadOnly(new[]
+        {
+            new ValidationIssue(
+                "treatmentAttempt.procedureCheck.rollSourceAuthority",
+                IssueSeverity.Error,
+                "Roll sources must be complete normalized mechanics.",
+                code: code,
+                section: "effect_materialization")
+        });
+    }
+
+    private static IReadOnlyList<T> ReadOnly<T>(IEnumerable<T> values)
+    {
+        return new ReadOnlyCollection<T>(values.ToArray());
+    }
+
+    private sealed record ScopeDecision(
+        bool Accepted,
+        IReadOnlyList<ValidationIssue>? Issues);
 }

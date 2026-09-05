@@ -281,7 +281,8 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 out var expectedModifier,
                 out var expectedActorKind,
                 out var expectedActorId,
-                out var expectedRollSkillId) ||
+                out var expectedRollSkillId,
+                out var skillProof) ||
             value.Modifier != expectedModifier ||
             !string.Equals(
                 value.RollActorKind,
@@ -295,10 +296,25 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 value.RollSkillId,
                 expectedRollSkillId,
                 StringComparison.Ordinal) ||
-            !HasValidDetachedProcedureContributions(value, out var expectedRollMode) ||
-            !string.Equals(value.RollMode, expectedRollMode, StringComparison.Ordinal) ||
-            value.RollContributions.Any(static contribution => contribution is null) ||
-            !HasValidDetachedProcedureDice(value, expectedRollMode!))
+            value.RollContributions.Any(static contribution => contribution is null))
+        {
+            return false;
+        }
+        var resolution = EffectRollContributionResolver.Resolve(
+            value.RollSourceAuthority,
+            new EffectRollContext(
+                request.Coordinates.Realm,
+                expectedActorKind!,
+                expectedActorId!,
+                "skill_check",
+                expectedRollSkillId),
+            skillProof);
+        if (!resolution.IsValid ||
+            !string.Equals(value.RollMode, resolution.RollMode, StringComparison.Ordinal) ||
+            !DetachedContributionsAgree(
+                value.RollContributions,
+                resolution.Contributions) ||
+            !HasValidDetachedProcedureDice(value, resolution.RollMode))
         {
             return false;
         }
@@ -356,8 +372,14 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         var fields = new List<string?>
         {
             "book_of_eternity.mortal_wound_treatment.procedure_check_authority",
-            "1", value.SourcePath, value.RollMode, value.RollActorKind,
-            value.RollActorId, value.RollSkillId, Number(value.RollContributions.Count)
+            "2",
+            value.SourcePath,
+            value.RollMode,
+            value.RollActorKind,
+            value.RollActorId,
+            value.RollSkillId,
+            value.RollSourceAuthority.AuthorityFingerprint,
+            Number(value.RollContributions.Count)
         };
         for (var index = 0; index < value.RollContributions.Count; index++)
         {
@@ -395,12 +417,14 @@ internal static class MortalWoundTreatmentDetachedSealValidator
         out int modifier,
         out string? actorKind,
         out string? actorId,
-        out string? rollSkillId)
+        out string? rollSkillId,
+        out EffectRollSkillUsabilityProof? skillProof)
     {
         modifier = 0;
         actorKind = null;
         actorId = null;
         rollSkillId = null;
+        skillProof = null;
         var coordinates = request.Coordinates;
         var bundle = request.RequirementAuthority;
         if (!string.Equals(bundle.Mode, "procedure", StringComparison.Ordinal) ||
@@ -486,47 +510,41 @@ internal static class MortalWoundTreatmentDetachedSealValidator
                 actorKind = row.OwnerKind;
                 actorId = row.OwnerId;
                 rollSkillId = row.SkillId;
-                return ResourceMaterializationContract.IsExactIdentifier(rollSkillId);
+                skillProof = new EffectRollSkillUsabilityProof(
+                    request.Coordinates.Realm,
+                    actorKind!,
+                    actorId!,
+                    rollSkillId);
+                return ResourceMaterializationContract.IsExactIdentifier(rollSkillId) &&
+                    evidence.ActorReachable &&
+                    evidence.ActorPresent &&
+                    IsCurrentActive(evidence.ActorLifecycle, evidence.ActorActive) &&
+                    IsCurrentActive(evidence.SkillLifecycle, evidence.SkillActive);
 
             default:
                 return false;
         }
     }
 
-    private static bool HasValidDetachedProcedureContributions(
-        MortalWoundProcedureCheckAuthority value,
-        out string? rollMode)
+    private static bool DetachedContributionsAgree(
+        IReadOnlyList<MortalWoundProcedureRollContribution> actual,
+        IReadOnlyList<EffectRollContributionEvidence> expected)
     {
-        rollMode = null;
-        var exact = new HashSet<string>(StringComparer.Ordinal);
-        var confusable = new HashSet<string>(StringComparer.Ordinal);
-        var hasAdvantage = false;
-        var hasDisadvantage = false;
-        foreach (var contribution in value.RollContributions)
-        {
-            if (contribution is null ||
-                !IsExactIdentifier(contribution.EffectId) ||
-                !IsExactIdentifier(contribution.ComponentId) ||
-                contribution.Contribution is not ("advantage" or "disadvantage"))
-            {
-                return false;
-            }
-            var exactKey = contribution.EffectId + "\u001f" + contribution.ComponentId;
-            var confusableKey = ExactIdentifierConfusableKey.Build(
-                                    contribution.EffectId) +
-                                "\u001f" +
-                                ExactIdentifierConfusableKey.Build(
-                                    contribution.ComponentId);
-            if (!exact.Add(exactKey) || !confusable.Add(confusableKey))
-                return false;
-            hasAdvantage |= contribution.Contribution == "advantage";
-            hasDisadvantage |= contribution.Contribution == "disadvantage";
-        }
-
-        rollMode = hasAdvantage == hasDisadvantage
-            ? "normal"
-            : hasAdvantage ? "advantage" : "disadvantage";
-        return true;
+        return actual.Count == expected.Count &&
+            actual.Select(
+                (value, index) =>
+                    string.Equals(
+                        value.EffectId,
+                        expected[index].EffectId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        value.ComponentId,
+                        expected[index].ComponentId,
+                        StringComparison.Ordinal) &&
+                    string.Equals(
+                        value.Contribution,
+                        expected[index].Contribution,
+                        StringComparison.Ordinal)).All(static value => value);
     }
 
     private static bool HasValidDetachedProcedureDice(
