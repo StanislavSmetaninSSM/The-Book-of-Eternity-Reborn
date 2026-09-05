@@ -1096,20 +1096,36 @@ Critical, 0 Important, and 0 Minor findings.
 ### Task 9: Complete direct-cutover fixtures and wound slot accounting
 
 **Files:**
+- Modify: `specs/1536-complete-wound-materialization/spec.md`
 - Modify: `BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs`
 - Modify: `BookOfEternityClient.Tests/WoundContractTestData.cs`
+- Modify: `BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs`
+- Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs`
+- Modify: `BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs`
+- Modify: `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
 - Modify: `BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs`
 - Modify: `BookOfEternityClient/Services/WoundMaterializationContract.cs`
 - Modify: `BookOfEternityClient/Services/WoundPersistedConsequenceEnvelopeAdapter.cs`
+- Modify: `Examples/E_CLI_Effect_Materialization.txt` (schema cutover only; expanded GM guidance remains Task 11)
+- Modify: `Examples/E_CLI_Afterlife_Turns.txt` (schema cutover only; expanded GM guidance remains Task 11)
 - Modify: every active test/source fixture returned by `rg -l 'roll_modifier' BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests BookOfEternityClient.TestSupport`
 
 **Interfaces:**
 - Consumes: explicit structural scope and existing wound consequence power rules.
-- Produces: no old two-field payloads in executable data; scope is identity metadata, not a new slot or numeric power input.
+- Produces: no old two-field payloads in executable data; one whole `roll_modifier`
+  component consumes one slot regardless of its operation list; scope is identity
+  metadata, not a new slot or numeric power input.
 
 - [ ] **Step 1: Add RED slot and rematerialization rows**
 
-Assert that one focused component binds exactly one slot, two focused components for two skills require two distinct slots, and changing `skillId` changes the wound/effect semantic fingerprint. Assert retained consequence rematerialization preserves the selector byte-for-byte while lifecycle-required effect/component IDs remain fresh.
+Assert that one broad multi-operation component and one focused component each bind
+exactly one slot. Keep duplicate-coordinate validation separate from slot counting: the
+closed applicability coordinate is `(operation, scope.kind, exact skillId when focused)`,
+so two focused components for two different skills have distinct coordinates and require
+two slots, while a repeated component for the same operation and selector is rejected as
+a duplicate. Assert that changing `skillId` changes the wound/effect semantic fingerprint.
+Assert retained consequence rematerialization preserves the selector byte-for-byte while
+lifecycle-required effect/component IDs remain fresh.
 
 - [ ] **Step 2: Run RED**
 
@@ -1137,11 +1153,18 @@ For intentionally broad existing cases add:
 ["scope"] = new JsonObject { ["kind"] = "all" }
 ```
 
-Only the new focused tests use `kind=skill`. Do not change expected mechanics of unrelated cases.
+Only existing or new intentionally focused cases use `kind=skill`. Do not change expected
+mechanics of unrelated cases. Also cut over the imported executable profile matrix in
+`Examples/E_CLI_Effect_Materialization.txt` and the executable modifier in
+`Examples/E_CLI_Afterlife_Turns.txt`; Task 11 still owns their expanded narrative guidance
+and the remaining synchronized examples.
 
 - [ ] **Step 5: Prove no executable legacy payload remains**
 
-Add or update a source guard that parses every fixture/example payload and fails when a `roll_modifier` lacks `scope`. Do not use a regex-only assertion as the semantic proof.
+Add or update a source guard that parses every active C# fixture payload plus the two
+Task-9-owned executable examples and fails when a `roll_modifier` lacks `scope`. Do not
+use a regex-only assertion as the semantic proof. Task 11 remains responsible for the
+complete synchronized GM-documentation/example guard set.
 
 - [ ] **Step 6: Run GREEN and commit**
 
@@ -1154,7 +1177,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 Expected: PASS; one component equals one slot and all executable payloads use the new schema.
 
 ```powershell
-git add BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs BookOfEternityClient/Services/WoundMaterializationContract.cs BookOfEternityClient/Services/WoundPersistedConsequenceEnvelopeAdapter.cs BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests BookOfEternityClient.TestSupport
+git add -- specs/1536-complete-wound-materialization/spec.md specs/1536-complete-wound-materialization/tasks.md docs/superpowers/plans/2026-09-05-roll-modifier-skill-scope.md BookOfEternityClient/Services/WoundConsequenceEnvelopeCatalog.cs BookOfEternityClient/Services/WoundMaterializationContract.cs BookOfEternityClient/Services/WoundPersistedConsequenceEnvelopeAdapter.cs BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs BookOfEternityClient.Tests/WoundContractTestData.cs BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs Examples/E_CLI_Effect_Materialization.txt Examples/E_CLI_Afterlife_Turns.txt
 git commit -m "test(effects): cut fixtures to explicit roll scope (#1536)"
 ```
 

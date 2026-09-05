@@ -309,9 +309,11 @@ root-bound. A root-bound reaction target MUST use the exact legal `replace` poli
 MUST share its producer's reconstructed root-ownership domain; other stacking policies
 or cross-domain mutation are rejected before effect state changes. The reaction
 component itself consumes one consequence slot, and every flattened non-marker leaf
-component consumes another. Each independently affected
-characteristic, roll operation, resistance, periodic resource operation, action, or
-worst-case reaction result costs one slot.
+component consumes another. Each independently affected characteristic, resistance,
+periodic resource operation, action, or worst-case reaction result costs one slot. A
+complete `roll_modifier` component costs exactly one slot regardless of how many
+registered operations share its single contribution and scope; selecting another exact
+skill requires another component and another slot.
 
 Every wound-owned definition has an exact/confusable-unique `stackKey` and exact
 `maxStacks = 1`; all remaining stacking fields obey their #1535 policy combinations.
@@ -339,8 +341,10 @@ the severity envelope. A finite generic-effect number that cannot be represented
 exact wound decimal contract MUST be rejected rather than omitted from slot derivation.
 
 Periodic values MUST be quantum-aligned without rounding above the percentage cap and
-MUST execute at most once for one accepted source event. Roll contributions cost one
-slot per listed operation. Reaction slot cost includes every worst-case spawned
+MUST execute at most once for one accepted source event. Each complete `roll_modifier`
+component costs one slot regardless of its registered operation list or `all|skill`
+scope; the scope selects applicability and does not expand power or slot count. Reaction
+slot cost includes every worst-case spawned
 mechanical component. The single wound expansion ceiling counts wound-owned expansions
 only; bounded independent effect siblings neither consume this ceiling nor wound slots.
 Independently of that semantic ceiling, one raw effect proposal may carry at most 64
