@@ -1214,6 +1214,8 @@ found 0 Critical, 0 Important, and 0 Minor findings and marked the slice Ready.
 ### Task 10: Prove lifecycle, dormancy, replay, and rollback in Integration
 
 **Files:**
+- Modify: `BookOfEternityClient/Services/WoundResponseInputComposer.cs`
+- Modify: `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs`
@@ -1223,23 +1225,25 @@ found 0 Critical, 0 Important, and 0 Minor findings and marked the slice Ready.
 - Consumes: complete structural, planning, snapshot, resolver, treatment, and projection implementation.
 - Produces: file-backed evidence at the correct non-Fast boundary.
 
-- [ ] **Step 1: Add ordinary and wound materialization lifecycle cases**
+- [x] **Step 1: Add ordinary and wound materialization lifecycle cases**
 
 Use real canonical files and pending snapshots to prove ordinary source and wound source applications both publish exact scope, carrier/index agreement, and changed-selector rejection. Include wrong-owner and final same-turn disable cases; assert zero partial publication.
 
-- [ ] **Step 2: Add dormancy/reactivation cases**
+If the real wound path exposes a mismatch between GM-local `definitionRef` values and their canonical response-local identifiers, repair that mapping in `WoundResponseInputComposer` and cover it in `WoundRepairPacketBuilderTests`; do not weaken exact decision-authority or definition-key matching.
+
+- [x] **Step 2: Add dormancy/reactivation cases**
 
 Materialize an exact-skill modifier, then across later accepted states: remove the skill, add a similar/confusable different ID, and restore the original permanent ID. Assert contribution sequence `active -> dormant -> dormant -> active`, while effect ID, wound ID, severity, history, and lifetime are unchanged by availability alone.
 
-- [ ] **Step 3: Add restart/replay/cache/rollback cases**
+- [x] **Step 3: Add restart/replay/cache/rollback cases**
 
 Restart services between materialization and resolution. Prove exact replay accepts the sealed selector, changing only `kind` or `skillId` is not exact replay, cache input changes with skill authority, and a forced publication failure restores carriers/index/wounds/history/output without a partially rebound component.
 
-- [ ] **Step 4: Register Integration ownership**
+- [x] **Step 4: Register Integration ownership**
 
 Add exact source path `EffectSkillScopeLifecycleTests.cs` to `IntegrationTestBoundaryTests.RegressionIntegrationSources` and keep `[Trait("Category", "RegressionIntegration")]` at class level. Add no file-backed row to `BookOfEternityClient.Tests`.
 
-- [ ] **Step 5: Run the coherent Integration class**
+- [x] **Step 5: Run the coherent Integration class**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectSkillScopeLifecycleTests"
@@ -1247,7 +1251,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 
 Expected: PASS. If measured beyond five minutes, record the first run and repeat with `-TimeoutMinutes 15`; do not split one lifecycle assertion merely to game the limit.
 
-- [ ] **Step 6: Run focused treatment scope lifecycle rows**
+- [x] **Step 6: Run focused treatment scope lifecycle rows**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~SkillScopedRoll" -TimeoutMinutes 15
@@ -1255,12 +1259,27 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 
 Expected: PASS with exact replay and publication evidence.
 
-- [ ] **Step 7: Commit Integration evidence**
+- [x] **Step 7: Commit Integration evidence**
 
 ```powershell
-git add BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs
+git add -- docs/superpowers/plans/2026-09-05-roll-modifier-skill-scope.md specs/1536-complete-wound-materialization/tasks.md BookOfEternityClient/Services/WoundResponseInputComposer.cs BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs
 git commit -m "test(effects): prove skill scope lifecycle (#1536)"
 ```
+
+Task 10 completion evidence (verified 2026-09-06): lifecycle 16/16 in 1:19.658
+(`20260905-185327-418-29756-57f34ed39be740db8aad93040c34acc2-focused`),
+treatment SkillScopedRoll 14/14 in 0:57.475
+(`20260905-185635-191-21872-60a477632d4d4f1fb44d50e7a70130f7-focused`),
+repair packets 31/31
+(`20260905-185751-161-26656-ed7e0a39f84b4fac98f2311381441c5c-focused`),
+and Integration manifest 1/1
+(`20260905-185837-769-57600-cd9b3a9c81864fb79e8fc4bd6a61b570-focused`).
+All builds had zero warnings/errors; no timeout/duplicate IDs and complete cleanup.
+The real wound path exposed and repaired raw-to-canonical definition-ref mapping.
+Negative wound cases exercise exact ownership, final disable, and changed selectors;
+rollback fails after physical wound-history publication and restores every before-image.
+Independent final review found zero Critical/Important/Minor findings and marked T175 Ready.
+GM guide/example synchronization continues in T176 before feature completion.
 
 ---
 
@@ -1279,6 +1298,7 @@ git commit -m "test(effects): prove skill scope lifecycle (#1536)"
 - Modify: `BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs`
 - Modify: `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs`
 - Inspect, modify only if direct wording is required: `BookOfEternityClient/game_master_daemon.ps1`
 - Inspect, modify only if the afterlife matrix states the common payload shape: `OtherGuides/Afterlife_Contract_Matrix.md`
 

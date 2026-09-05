@@ -120,13 +120,37 @@ internal static partial class WoundResponseInputComposer
                 InvalidLocation(prefix);
                 continue;
             }
+            const string operationPrefix = "wound_operation_";
+            var decisionFingerprint = transition.OperationKey.StartsWith(
+                    operationPrefix,
+                    StringComparison.Ordinal)
+                ? "sha256:" + transition.OperationKey[operationPrefix.Length..]
+                : null;
+            if (!ResourceMaterializationContract.IsAuthorityFingerprint(
+                    decisionFingerprint))
+            {
+                InvalidLocation(prefix);
+                continue;
+            }
             foreach (var draft in transition.EffectDefinitions)
             {
                 var definition = draft.Definition;
                 var definitionKey = definition["definitionKey"]?.GetValue<string>();
                 var definitions = rawDefinitions.Select((node, index) => (Node: node, Index: index))
-                    .Where(row => row.Node?["definitionRef"]?.GetValue<string>() == draft.LocalEffectRef &&
-                        row.Node?["definition"]?["definitionKey"]?.GetValue<string>() == definitionKey).ToArray();
+                    .Where(row =>
+                    {
+                        var definitionRef = row.Node?["definitionRef"]?.GetValue<string>();
+                        return ResourceMaterializationContract.IsExactIdentifier(definitionRef) &&
+                               string.Equals(
+                                   CreateLocalIdentifier(
+                                       "wound_definition_ref",
+                                       decisionFingerprint,
+                                       definitionRef),
+                                   draft.LocalEffectRef,
+                                   StringComparison.Ordinal) &&
+                               row.Node?["definition"]?["definitionKey"]?.GetValue<string>() ==
+                               definitionKey;
+                    }).ToArray();
                 if (definitions.Length != 1 || definitionKey is null || definition["components"] is not JsonArray components)
                 {
                     InvalidLocation(prefix);

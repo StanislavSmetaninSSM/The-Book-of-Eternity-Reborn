@@ -45,14 +45,33 @@ public sealed class WoundRepairPacketBuilderTests
                 JsonSerializer.SerializeToElement(new JsonObject { ["decision"] = "none" }), "scene"),
             new WoundResponseCommandDraft(opportunity, JsonSerializer.SerializeToElement(decision), "scene")
         };
+        var acceptedDecision = WoundOpportunityDecisionAuthority.Evaluate(
+            opportunity,
+            new WoundOpportunityDecisionRequest(
+                opportunity.PublicRef,
+                "materialize",
+                2,
+                "local_wound"),
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(acceptedDecision.Success);
+        var decisionAuthority = Assert.IsType<WoundOpportunityDecisionAuthority>(
+            acceptedDecision.Decision);
+        var localAllRef = ResponseLocalIdentifier(
+            "wound_definition_ref",
+            decisionAuthority.DecisionFingerprint,
+            "local_all");
+        var localFocusedRef = ResponseLocalIdentifier(
+            "wound_definition_ref",
+            decisionAuthority.DecisionFingerprint,
+            "local_effect_definition_001");
         var wound = WoundMaterializationContract.Parse(WoundContractTestData.CreateActiveWound("local_wound").ToJsonString(), "test.wound").Wound!;
         var transitions = new[] { new WoundAcceptedTransitionDraft(
-            "create", "operation_scope", "local_wound", "transition_local", opportunity.OpportunityId, "scope test",
-            wound, new[] { new WoundAcceptedEffectDefinitionDraft("local_all", allDefinition), new WoundAcceptedEffectDefinitionDraft("local_effect_definition_001", definition) },
+            "create", decisionAuthority.OperationKey, "local_wound", "transition_local", opportunity.OpportunityId, "scope test",
+            wound, new[] { new WoundAcceptedEffectDefinitionDraft(localAllRef, allDefinition), new WoundAcceptedEffectDefinitionDraft(localFocusedRef, definition) },
             new[]
             {
-                new WoundAcceptedRootApplicationDraft("root_all", "local_all", "root_all_operation", WoundRootOwnershipDomain.BaseWound),
-                new WoundAcceptedRootApplicationDraft("root_local", "local_effect_definition_001", "root_operation", WoundRootOwnershipDomain.BaseWound)
+                new WoundAcceptedRootApplicationDraft("root_all", localAllRef, "root_all_operation", WoundRootOwnershipDomain.BaseWound),
+                new WoundAcceptedRootApplicationDraft("root_local", localFocusedRef, "root_operation", WoundRootOwnershipDomain.BaseWound)
             },
             Array.Empty<WoundAcceptedConsequenceSlotBinding>()) };
         var authority = EffectRollSkillScopeAuthority.Build(new(
@@ -769,4 +788,15 @@ public sealed class WoundRepairPacketBuilderTests
 
     private static string Fingerprint(char value) =>
         "sha256:" + new string(value, 64);
+
+    private static string ResponseLocalIdentifier(
+        string prefix,
+        params string?[] fields) => prefix + "_" +
+        WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.wound.response_local_coordinate",
+                "1",
+                prefix
+            }.Concat(fields))["sha256:".Length..];
 }

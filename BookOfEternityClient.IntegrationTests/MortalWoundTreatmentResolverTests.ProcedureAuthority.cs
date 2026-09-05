@@ -8,9 +8,9 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 /// <summary>
-/// T067-A RED coverage for the production procedure-check authority. These tests stop
-/// before request sealing, resources, semantic outcome resolution, persistence, or
-/// publication and never construct an accepted state, claim, authority, or fingerprint.
+/// T067-A coverage for the production procedure-check authority. The focused T175
+/// lifecycle row additionally proves that exact skill scope survives the durable
+/// treatment publication and replay boundaries.
 /// </summary>
 public sealed partial class MortalWoundTreatmentResolverTests
 {
@@ -1027,6 +1027,145 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     [Fact]
+    public async Task ProcedureLifecycle_SkillScopedRollPersistsPublishesAndExactReplaysAfterRestart()
+    {
+        const string skillId = "skill_field_medicine_01";
+        var scenario = PrepareProcedurePublicationScenario(
+            CreateScenario(
+                "procedure_advantage_uses_two_contiguous_dice",
+                "procedure") with
+            {
+                SeedFateEffectId = "effect_fate_shield_older"
+            });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var originalEffectIds = fixture.ReadActivePlayerEffectIds();
+        var woundEffectIds = fixture.ReadCurrentWound().Consequences
+            .OwnedEffectSources.RootBindings
+            .Select(static binding => binding.EffectId)
+            .ToArray();
+        Assert.NotEmpty(woundEffectIds);
+        Assert.All(woundEffectIds, effectId => Assert.Contains(
+            effectId,
+            originalEffectIds));
+        Assert.Contains("effect_fate_shield_older", originalEffectIds);
+        Assert.Contains("effect_fate_shield_newer", originalEffectIds);
+        fixture.FocusExistingPlayerProcedureRollEffectForPublication(
+            "t175_focused_roll_publication",
+            skillId);
+        Assert.Equal(originalEffectIds, fixture.ReadActivePlayerEffectIds());
+
+        var initial = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_t175_focused_roll_publication",
+            scenario.RouteId);
+        var initialRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            initial.Request);
+        AssertFocusedSkillScopedProcedureAuthority(initialRequest, skillId);
+
+        var flow = PersistAndRehydrateProcedurePublication(
+            fixture,
+            initial,
+            "focused skill-scoped roll publication");
+        var publishedRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            flow.Request);
+        Assert.Equal(
+            CanonicalValue(initialRequest),
+            CanonicalValue(publishedRequest));
+        AssertFocusedSkillScopedProcedureAuthority(publishedRequest, skillId);
+
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+
+        Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
+        fixture.AssertItemIdentityIndexValid();
+        Assert.Equal(fixture.WoundId, fixture.ReadCurrentWound().WoundId);
+        var publishedSnapshot = await EffectMechanicsSnapshot.LoadAsync(
+            fixture.FileSystem,
+            fixture.Lease);
+        Assert.True(
+            publishedSnapshot.IsAccepted,
+            DescribeIssues(publishedSnapshot.Issues));
+        var publishedHistory = fixture.ReadCurrentHistory();
+        var transition = Assert.Single(
+            publishedHistory.State!.Transitions,
+            static candidate => string.Equals(
+                candidate.Kind,
+                "treat",
+                StringComparison.Ordinal));
+        var persistedResult = Assert.IsType<MortalWoundTreatmentPersistedResult>(
+            transition.TreatmentResult);
+        Assert.Equal(
+            CanonicalValue(publishedRequest),
+            CanonicalValue(persistedResult.Request));
+        AssertFocusedSkillScopedProcedureAuthority(persistedResult.Request, skillId);
+        AssertClosedTreatmentReceipt(
+            persistedResult.Receipt,
+            persistedResult.Request,
+            flow.Resolution);
+
+        var publishedRequestJson = CanonicalValue(publishedRequest);
+        fixture.RestartForReplay();
+        var restartedHistory = fixture.ReadCurrentHistory();
+        var acceptedTree = CaptureResolverFixtureTree(fixture.Root);
+        var probe = ProbeTreatment(
+            restartedHistory,
+            publishedRequest.Coordinates.OperationKey,
+            publishedRequest.Coordinates.AttemptId,
+            publishedRequest.RequestFingerprint);
+        Assert.Equal(
+            "ExactReplay",
+            Convert.ToString(ReadRequiredProperty(probe, "Status")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(probe, "Issues")));
+        var restoredRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            ReadRequiredProperty(probe, "Request"));
+        var restoredReceipt = ReadRequiredProperty(probe, "Receipt");
+        Assert.NotSame(publishedRequest, restoredRequest);
+        Assert.Equal(publishedRequestJson, CanonicalValue(restoredRequest));
+        AssertFocusedSkillScopedProcedureAuthority(restoredRequest, skillId);
+        AssertClosedTreatmentReceipt(restoredReceipt, restoredRequest, flow.Resolution);
+
+        var replay = Invoke(
+            ExactStaticMethod(RequireOutcomeResolver(), "CreateProcedureAttempt", 4),
+            new object?[] { restoredRequest, restartedHistory, null, null });
+        Assert.Equal(
+            "ExactReplay",
+            Convert.ToString(ReadRequiredProperty(replay, "Disposition")));
+        Assert.Empty(AsObjects(ReadRequiredProperty(replay, "Issues")));
+        Assert.Null(ReadPropertyAllowingNull(replay, "Resolution"));
+        Assert.Equal(
+            CanonicalValue(restoredReceipt),
+            CanonicalValue(ReadRequiredProperty(replay, "ReplayReceipt")));
+
+        foreach (var selectorAxis in new[] { "kind", "skillId" })
+        {
+            var changedRequest = ResealProcedureScopeSelector(
+                restoredRequest,
+                selectorAxis,
+                "skill_trap_disarm");
+            Assert.Equal(
+                restoredRequest.Coordinates.OperationKey,
+                changedRequest.Coordinates.OperationKey);
+            Assert.Equal(
+                restoredRequest.Coordinates.AttemptId,
+                changedRequest.Coordinates.AttemptId);
+            Assert.NotEqual(
+                restoredRequest.RequestFingerprint,
+                changedRequest.RequestFingerprint);
+
+            var changedReplay = Invoke(
+                ExactStaticMethod(RequireOutcomeResolver(), "CreateProcedureAttempt", 4),
+                new object?[] { changedRequest, restartedHistory, null, null });
+            Assert.Equal(
+                "Conflict",
+                Convert.ToString(ReadRequiredProperty(changedReplay, "Disposition")));
+            Assert.NotEmpty(AsObjects(ReadRequiredProperty(changedReplay, "Issues")));
+            Assert.Null(ReadPropertyAllowingNull(changedReplay, "Resolution"));
+            Assert.Null(ReadPropertyAllowingNull(changedReplay, "ReplayReceipt"));
+        }
+        AssertResolverFixtureTreeUnchanged(fixture.Root, acceptedTree);
+    }
+
+    [Fact]
     public void ProcedureCheckAuthority_SkillScopedRollCancelsFocusedAdvantageBeforeFateShield()
     {
         var scenario = CreateScenario(
@@ -1728,6 +1867,126 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Throws<NotSupportedException>(() => list.Add(candidate));
     }
 
+    private static void AssertFocusedSkillScopedProcedureAuthority(
+        MortalWoundTreatmentAttemptRequest request,
+        string skillId)
+    {
+        var authority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+        Assert.Equal(skillId, authority.RollSkillId);
+        Assert.Equal("advantage", authority.RollMode);
+        var contribution = Assert.Single(authority.RollContributions);
+        Assert.Equal("advantage", contribution.Contribution);
+        var source = Assert.Single(authority.RollSourceAuthority.Rows);
+        Assert.Equal(contribution.EffectId, source.EffectId);
+        Assert.Equal(contribution.ComponentId, source.ComponentId);
+        Assert.Equal(new[] { "skill_check" }, source.Operations);
+        Assert.Equal("advantage", source.Contribution);
+        Assert.Equal("skill", source.ScopeKind);
+        Assert.Equal(skillId, source.ScopeSkillId);
+    }
+
+    private static MortalWoundTreatmentAttemptRequest ResealProcedureScopeSelector(
+        MortalWoundTreatmentAttemptRequest request,
+        string selectorAxis,
+        string alternateSkillId)
+    {
+        var original = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+        var originalSource = Assert.Single(original.RollSourceAuthority.Rows);
+        var changedSource = EffectDetachedRollSourceAuthority.Create(new[]
+        {
+            EffectDetachedRollSourceRow.Create(
+                originalSource.Ordinal,
+                originalSource.EffectId,
+                originalSource.ComponentId,
+                originalSource.Realm,
+                originalSource.TargetKind,
+                originalSource.TargetId,
+                originalSource.Operations,
+                originalSource.Contribution,
+                string.Equals(selectorAxis, "kind", StringComparison.Ordinal)
+                    ? "all"
+                    : originalSource.ScopeKind,
+                string.Equals(selectorAxis, "kind", StringComparison.Ordinal)
+                    ? null
+                    : alternateSkillId)
+        });
+        var fingerprintMethod = typeof(MortalWoundProcedureCheckAuthority).GetMethod(
+            "ComputeAuthorityFingerprint",
+            BindingFlags.Static | BindingFlags.NonPublic);
+        Assert.NotNull(fingerprintMethod);
+        var authorityFingerprint = Assert.IsType<string>(fingerprintMethod.Invoke(
+            null,
+            new object?[]
+            {
+                original.SourcePath,
+                original.RollMode,
+                original.RollActorKind,
+                original.RollActorId,
+                original.RollSkillId,
+                changedSource,
+                original.RollContributions,
+                original.SourceIndices,
+                original.SourceRolls,
+                original.SelectedSourceIndex,
+                original.NaturalRoll,
+                original.Modifier,
+                original.ComplicationDifficultyModifier,
+                original.EffectiveDifficulty,
+                original.RequirementAuthorityFingerprint,
+                original.CoordinatesFingerprint,
+                original.AcceptedStateFingerprint,
+                original.PreparedCriticalReaction?.PreparedReactionFingerprint
+            }));
+        var constructor = Assert.Single(
+            typeof(MortalWoundProcedureCheckAuthority).GetConstructors(
+                BindingFlags.Instance | BindingFlags.NonPublic),
+            static candidate => candidate.GetParameters().Length == 19);
+        var changedAuthority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            constructor.Invoke(new object?[]
+            {
+                original.SourcePath,
+                original.RollMode,
+                original.RollActorKind,
+                original.RollActorId,
+                original.RollSkillId,
+                changedSource,
+                original.RollContributions,
+                original.SourceIndices,
+                original.SourceRolls,
+                original.SelectedSourceIndex,
+                original.NaturalRoll,
+                original.Modifier,
+                original.ComplicationDifficultyModifier,
+                original.EffectiveDifficulty,
+                original.RequirementAuthorityFingerprint,
+                original.CoordinatesFingerprint,
+                original.AcceptedStateFingerprint,
+                original.PreparedCriticalReaction,
+                authorityFingerprint
+            }));
+        var requestFingerprint = MortalWoundTreatmentAttemptRequest.ComputeFingerprint(
+            request.Mode,
+            request.Coordinates,
+            request.MilestoneOrdinal,
+            request.RouteSourceWoundFingerprint,
+            changedAuthority,
+            request.RequirementAuthority,
+            request.ResourceAuthority);
+        return Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            MortalWoundTreatmentAttemptRequest.RestoreDetached(
+                request.Mode,
+                request.Coordinates,
+                request.MilestoneOrdinal,
+                request.RouteSourceWound,
+                request.RouteSourceWoundFingerprint,
+                changedAuthority,
+                request.RequirementAuthority,
+                request.ResourceAuthority,
+                requestFingerprint));
+    }
+
     private static JsonObject CreateProcedureCriticalFailureReport() => new()
     {
         ["eventType"] = "owner_critical_failure",
@@ -1985,6 +2244,65 @@ public sealed partial class MortalWoundTreatmentResolverTests
             params ProcedureSkillScopedRollEffectSeed[] contributions)
         {
             var effectState = CreateProcedureSkillScopedRollEffectState(contributions);
+            WriteObject(EffectCarrierCatalog.PlayerPath, effectState.Carrier);
+            WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
+            PrepareFreshSnapshot(label);
+        }
+
+        internal void FocusExistingPlayerProcedureRollEffectForPublication(
+            string label,
+            string skillId)
+        {
+            var skillRoot = ReadObject("game_state/player/skills_active.json");
+            var skill = Assert.IsType<JsonObject>(Assert.Single(
+                skillRoot["activeSkillChanges"]!.AsArray(),
+                candidate => string.Equals(
+                    candidate?["skillId"]?.GetValue<string>(),
+                    skillId,
+                    StringComparison.Ordinal)));
+            var definition = Assert.IsType<JsonObject>(Assert.Single(
+                skill["activeEffectDefinitions"]!.AsArray()));
+            var definitionKey = definition["definitionKey"]!.GetValue<string>();
+            var definitionComponent = Assert.IsType<JsonObject>(Assert.Single(
+                definition["components"]!.AsArray()));
+            Assert.Equal(
+                "roll_modifier",
+                definitionComponent["profile"]!.GetValue<string>());
+            definitionComponent["payload"] =
+                EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                    skillId,
+                    "advantage");
+            WriteObject("game_state/player/skills_active.json", skillRoot);
+
+            var effects = ReadPlayerEffectCarrier()["activeEffects"]!.AsArray()
+                .OfType<JsonObject>()
+                .Select(static effect => effect.DeepClone().AsObject())
+                .ToArray();
+            var occurrence = Assert.Single(effects, effect =>
+                effect["source"] is JsonObject source &&
+                string.Equals(
+                    source["kind"]?.GetValue<string>(),
+                    "skill",
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    source["sourceId"]?.GetValue<string>(),
+                    skillId,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    source["definitionKey"]?.GetValue<string>(),
+                    definitionKey,
+                    StringComparison.Ordinal));
+            var occurrenceComponent = Assert.IsType<JsonObject>(Assert.Single(
+                occurrence["components"]!.AsArray()));
+            Assert.Equal(
+                "roll_modifier",
+                occurrenceComponent["profile"]!.GetValue<string>());
+            occurrenceComponent["payload"] =
+                EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                    skillId,
+                    "advantage");
+
+            var effectState = CreateProcedureEffectState(effects);
             WriteObject(EffectCarrierCatalog.PlayerPath, effectState.Carrier);
             WriteObject(EffectIdentityState.StatePath, effectState.IdentityIndex);
             PrepareFreshSnapshot(label);
