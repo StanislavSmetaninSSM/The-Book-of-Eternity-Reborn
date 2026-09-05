@@ -683,6 +683,7 @@ git commit -m "feat(effects): centralize scoped roll reduction (#1536)"
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs`
 
 **Interfaces:**
 - Consumes: accepted `EffectMechanicsSnapshot`, the exact canonical skill row selected by an existing `skill_tier` requirement, and the T170 contribution semantics.
@@ -764,7 +765,7 @@ internal static EffectRollContributionResolution Resolve(
 
 The initial T171 pass at `887de325` already added `RollSkillId`, exact `SkillId`/`CapabilityRef` separation in canonical rows, live/fresh resolver calls, final skill roots, and the first Integration matrix. The following review correction is authoritative and completes the task.
 
-- [ ] **Step 1: Add RED pure normalized-source tests**
+- [x] **Step 1: Add RED pure normalized-source tests**
 
 Add tests whose names and assertions cover this matrix:
 
@@ -784,7 +785,7 @@ realms, operations, and skill IDs. Assert that `Rows` retains every active
 authority text contains none of the fixture's display name, description, owner ID,
 carrier field, or arbitrary non-roll payload sentinel.
 
-- [ ] **Step 2: Run the pure RED selection**
+- [x] **Step 2: Run the pure RED selection**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -Filter "FullyQualifiedName~EffectRollContributionResolverTests"
@@ -792,7 +793,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fa
 
 Expected: FAIL because the detached source authority and replay overload do not exist.
 
-- [ ] **Step 3: Implement the immutable normalized source authority**
+- [x] **Step 3: Implement the immutable normalized source authority**
 
 Create the exact public-getter shape above with private JSON construction and production-only
 creation. `SchemaVersion` is exactly `1`; cap `Rows` at `10_000`; require ordinals to equal
@@ -829,7 +830,7 @@ format. `HasValidSeal` independently validates every row before comparing the fi
 nullable skill position, and both independently valid fingerprints. Constructors and clone
 must freeze every input collection and allocate fresh row/operation instances.
 
-- [ ] **Step 4: Refactor the resolver to capture once and reduce through one core**
+- [x] **Step 4: Refactor the resolver to capture once and reduce through one core**
 
 `Capture` rejects a non-accepted snapshot with the snapshot's issues. For an accepted
 snapshot it visits every active `Profile == "roll_modifier"` component before any context
@@ -853,7 +854,7 @@ var mode = hasAdvantage == hasDisadvantage
 
 Run the Step 2 command. Expected: PASS.
 
-- [ ] **Step 5: Add RED procedure persistence, detached replay, and trust-boundary tests**
+- [x] **Step 5: Add RED procedure persistence, detached replay, and trust-boundary tests**
 
 Extend the existing `SkillScopedRoll` Integration matrix and typed-authority guards to prove:
 
@@ -892,7 +893,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 Expected: new rows FAIL because the authority is not persisted and detached validation still
 reduces only the submitted compact result.
 
-- [ ] **Step 6: Carry source authority through procedure creation, restore, and fresh validation**
+- [x] **Step 6: Carry source authority through procedure creation, restore, and fresh validation**
 
 At creation, call `Capture(acceptedState.EffectMechanics)`, fail when capture is invalid, and
 resolve that captured authority with `acceptedState.EffectMechanics.SkillScopeAuthority`
@@ -912,7 +913,12 @@ must execute before a recovered authority can be returned. Keep the existing reg
 transaction: any mismatch restores `previousDice`, `previousReactions`, and
 `previousResources` before failure.
 
-- [ ] **Step 7: Replace the detached local reducer with the common replay overload**
+The shared Mortal treatment fixture is also part of this direct cutover: both its
+materialized `roll_modifier` payload and the mirrored skill effect definition must carry
+explicit broad `scope: { kind: "all" }`. This keeps existing procedure scenarios valid
+without weakening production capture or postponing a required fixture correction.
+
+- [x] **Step 7: Replace the detached local reducer with the common replay overload**
 
 Delete `HasValidDetachedProcedureContributions`. Extend
 `TryResolveDetachedProcedureModifier` to return nullable
@@ -938,7 +944,7 @@ then validate dice from the recomputed mode. Remove the five-argument `Skill` co
 keep native `(skillId, skillId, ...)` and extension `(skillId, CapabilityRef, ...)` calls
 explicit. Preserve the already implemented final treatment skill after-images.
 
-- [ ] **Step 8: Run GREEN controls and commit the correction**
+- [x] **Step 8: Run GREEN controls and commit the correction**
 
 Run the Step 2 pure command and all three Step 5 Integration commands. If the coherent
 `ColdClaimRecovery` selection exceeds five minutes, record measured wall time and rerun that
@@ -948,9 +954,15 @@ Expected: all selected tests PASS; detached compact tamper fails semantically, j
 fails at fresh canonical comparison, and all prior registries remain exactly observable.
 
 ```powershell
-git add BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs BookOfEternityClient/Services/EffectRollContributionResolver.cs BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs
+git add BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs BookOfEternityClient/Services/EffectRollContributionResolver.cs BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs
 git commit -m "fix(wounds): verify detached roll source authority (#1536)"
 ```
+
+Closure (2026-09-05): implemented through `887de325`, `ba633ab1`, and
+`c1f455ee`. Final Focused controls are pure 46/46, SkillScopedRoll 13/13,
+DetachedModeAuthority 35/35, ColdClaimRecovery 20/20, and restored-source clone
+1/1, all within the default five-minute limit with clean owned-process cleanup.
+Independent final review found 0 Critical, 0 Important, and 0 Minor findings.
 
 ---
 
