@@ -287,6 +287,104 @@ full wound closure preserve their existing ownership. Reducing or healing a woun
 or replaces its linked consequences through the wound/effect plan; changing skill
 availability never impersonates healing.
 
+## Detached Treatment Roll Source Authority Amendment
+
+The treatment request must preserve enough normalized mechanical source data to run the
+same scope-aware resolver after typed serialization. Persisting only the already reduced
+`RollContributions` is insufficient: a detached validator can otherwise prove only that
+the submitted result is internally well formed, not that it follows from the submitted
+effect scopes. Reimplementing advantage/disadvantage reduction inside the detached
+validator is forbidden because it creates a second gameplay reducer.
+
+The selected design adds one immutable, versioned detached roll-source authority owned
+by the common effect resolver. It contains only the fields consumed by resolution:
+
+- `effectId` and `componentId`;
+- realm and exact target kind/ID;
+- the complete ordered operation set;
+- contribution;
+- scope kind and nullable exact scope `skillId`;
+- explicit row count/order and a deterministic authority fingerprint with fixed null
+  positions.
+
+Capture occurs before actor, realm, operation, or selected-skill filtering. It may omit
+non-`roll_modifier` profiles, but it must not discard a malformed, duplicate,
+confusable, foreign-target, foreign-operation, or other-skill roll row before the shared
+core validates and filters it. The authority does not contain display names,
+descriptions, effect owners, arbitrary payload members, carrier roots, or a full
+`EffectMechanicsSnapshot`; hidden narrative data therefore does not enter the persisted
+treatment request.
+
+`EffectRollContributionResolver` owns both capture and one reduction core:
+
+1. live creation captures normalized rows from the accepted mechanics snapshot and
+   resolves them with its current canonical skill authority;
+2. fresh validation captures the same rows again from current accepted state, requires
+   exact source-authority agreement, and independently compares `RollSkillId`, compact
+   contribution evidence, and roll mode;
+3. detached validation verifies the normalized authority and reconstructs the exact
+   target/skill usability proof from the recursively validated treatment requirement
+   binding, then invokes the same reduction core and compares the result with the
+   persisted compact rows, mode, and dice shape.
+
+For `resolved_skill_tier`, the detached usability proof is valid only when the selected
+requirement row and witness agree on realm, actor kind/ID, exact `SkillId`, lifecycle,
+active/reachable state, and current tier. `CapabilityRef` remains a separate capability
+axis and never supplies skill identity. For `fixed_zero`, there is no skill proof, so
+every focused row is ignored and only broad rows may contribute.
+
+The normalized source authority, its fingerprint, and nullable `RollSkillId` are carried
+by both procedure-authority constructors, typed serialization, restore/clone paths, the
+live procedure fingerprint, and the independently recomputed detached fingerprint.
+Missing fields are rejected under the direct cutover. The five-argument `Skill`
+constructor that inferred `SkillId` from `CapabilityRef` is removed; every native and
+extension construction must pass both identities explicitly.
+
+### Trust boundary
+
+Detached validation establishes semantic agreement between the persisted source
+authority and its persisted result. It cannot prove that a self-contained source was
+actually derived from a particular `AcceptedStateFingerprint`: ordinary hashes are
+recomputable, and serializing the full mechanics snapshot would not add authenticity.
+
+Therefore a jointly resealed source/result request must pass no authoritative gameplay
+boundary until fresh validation compares the normalized authority with current canonical
+mechanics. Cold claim recovery may construct tentative in-memory registries, but a fresh
+mismatch must restore the previous registries before returning; no resource, die, Fate,
+or publication authority from the changed request may remain observable. This is the
+existing canonical trust anchor and must receive an explicit joint-tamper regression.
+
+An independently authenticated external snapshot or secret MAC would be required for a
+stronger detached-only origin guarantee. Neither is introduced by this task.
+
+### Rejected alternatives
+
+- Persisting the full `EffectMechanicsSnapshot` is rejected because it stores unrelated
+  mechanics and hidden narrative data, couples replay to an internal snapshot layout,
+  and still supplies no cryptographic origin proof.
+- Keeping detached validation structural-only and relying exclusively on later fresh
+  validation is rejected because it leaves a second local reducer and does not satisfy
+  independent detached semantic replay.
+
+### Amendment verification
+
+In addition to the original treatment scope matrix, tests must prove:
+
+- detached deletion, addition, or mutation of compact contribution/mode/dice data is
+  rejected after outer fingerprints are recomputed while source authority is unchanged;
+- a jointly resealed normalized source/result change is rejected by fresh canonical
+  validation and leaves claim registries unchanged;
+- capture retains foreign realm/actor/operation/skill rows for the shared core to filter;
+- malformed, duplicate, confusable, or invalid normalized rows fail closed rather than
+  becoming a normal roll;
+- extension capability identity differing from canonical `SkillId` cannot bind a focused
+  selector by capability reference;
+- fixed-zero and cancellation survive typed detached round trip;
+- fingerprints and restore clones are sensitive to every source field, operation order,
+  and null/non-null skill position;
+- serialized procedure authority contains no effect display/description/owner/full
+  payload data.
+
 ## Canonical State, Replay, and Tamper Safety
 
 `scope` and `skillId` are semantic effect data. Every path that serializes, clones,
