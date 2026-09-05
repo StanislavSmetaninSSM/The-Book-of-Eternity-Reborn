@@ -113,6 +113,11 @@ internal sealed class LiveTurnPreparationService
                 request.TurnNumber,
                 request.PreGeneratedDices1d20,
                 currentRealm);
+        var effectMechanics = await EffectMechanicsSnapshot.LoadAsync(_fs, writeLease);
+        request.EffectSkillScopeCatalog = effectMechanics.SkillScopeAuthority
+            .CreateGmCatalog()
+            .DeepClone()
+            .AsObject();
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);

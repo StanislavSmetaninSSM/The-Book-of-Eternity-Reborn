@@ -1,0 +1,365 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging.Abstractions;
+using Xunit;
+
+namespace BookOfEternityClient.Tests;
+
+public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
+{
+    private const string ActiveSkillsPath = "game_state/player/skills_active.json";
+    private const string NpcCorePath = "game_state/npcs/npc_core.json";
+    private readonly string _rootPath;
+    private readonly FileSystemManager _fileSystem;
+
+    public EffectSkillScopeLifecycleTests()
+    {
+        _rootPath = Path.Combine(Path.GetTempPath(), "boe-effect-skill-scope-" + Guid.NewGuid().ToString("N"));
+        _fileSystem = new FileSystemManager(
+            _rootPath,
+            NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance);
+        _fileSystem.EnsureDirectoryStructure();
+    }
+
+    [Fact]
+    public async Task TurnRequestCatalog_LiveHelperPublishesExactPlayerAndNpcUsableCatalog()
+    {
+        await SeedScopedSkillsAsync(_fileSystem);
+
+        await new LiveTurnPreparationService(_fileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "scope-live",
+            RequestId = "scope-live-request",
+            TurnNumber = 42,
+            CurrentRealm = "Mortal World",
+            PlayerAction = "Осмотреть рану.",
+            PreGeneratedDices1d20 = new[] { 8 }
+        });
+
+        var request = await ReadTurnRequestAsync();
+        var catalog = Assert.IsType<JsonObject>(request["effectSkillScopeCatalog"]);
+
+        Assert.True(JsonNode.DeepEquals(CreateExpectedCatalog(), catalog));
+    }
+
+    [Fact]
+    public void TurnRequestCatalog_AfterlifeOnlyDirectRequestUsesExplicitEmptyCatalog()
+    {
+        var request = JsonSerializer.SerializeToNode(
+            new TurnRequest { PlayerAction = "Продолжить духовный путь." },
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed)!.AsObject();
+
+        var catalog = Assert.IsType<JsonObject>(request["effectSkillScopeCatalog"]);
+
+        Assert.True(JsonNode.DeepEquals(new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["targets"] = new JsonArray()
+        }, catalog));
+    }
+
+    [Fact]
+    public async Task TurnRequestCatalog_EditedRequestCatalogDoesNotChangeCanonicalScopeAuthority()
+    {
+        await SeedScopedSkillsAsync(_fileSystem);
+        await new LiveTurnPreparationService(_fileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "scope-tamper",
+            RequestId = "scope-tamper-request",
+            TurnNumber = 43,
+            CurrentRealm = "Mortal World",
+            PlayerAction = "Проверить замок.",
+            PreGeneratedDices1d20 = new[] { 9 }
+        });
+
+        var request = await ReadTurnRequestAsync();
+        request["effectSkillScopeCatalog"] = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["targets"] = new JsonArray(new JsonObject
+            {
+                ["realm"] = "mortal_world",
+                ["kind"] = "player",
+                ["targetId"] = "player_current",
+                ["skills"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_forged",
+                    ["displayName"] = "Подмена"
+                })
+            })
+        };
+        await _fileSystem.WriteFileAtomicAsync(
+            LiveTurnPreparationService.TurnRequestPath,
+            request.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        var mechanics = await EffectMechanicsSnapshot.LoadAsync(_fileSystem);
+        var planning = PlanFocusedForgedSkillApplication(mechanics.SkillScopeAuthority);
+
+        Assert.False(planning.Success);
+        Assert.Null(planning.Plan);
+        Assert.Contains(
+            planning.Issues,
+            issue => issue.Code == "effect_roll_skill_scope_unavailable");
+    }
+
+    public ValueTask DisposeAsync()
+    {
+        if (Directory.Exists(_rootPath))
+            Directory.Delete(_rootPath, recursive: true);
+        return ValueTask.CompletedTask;
+    }
+
+    internal static async Task SeedScopedSkillsAsync(FileSystemManager fileSystem)
+    {
+        await fileSystem.WriteFileAtomicAsync(ActiveSkillsPath, new JsonObject
+        {
+            ["activeSkillChanges"] = new JsonArray(
+                Skill("skill_lockpicking", "Взлом", active: true),
+                Skill("skill_inactive", "Спящий", active: false),
+                new JsonObject { ["skillName"] = "Без идентификатора" },
+                Skill("skill_duplicate", "Первый дубликат", active: true),
+                Skill("skill_duplicate", "Второй дубликат", active: true),
+                Skill("skill_confusable", "Первый похожий", active: true),
+                Skill("SKILL_CONFUSABLE", "Второй похожий", active: true))
+        }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await fileSystem.WriteFileAtomicAsync(NpcCorePath, new JsonObject
+        {
+            ["UpdateNPCs"] = new JsonArray(new JsonObject
+            {
+                ["NPCId"] = "npc_healer",
+                ["activeSkills"] = new JsonArray(
+                    Skill("skill_medicine", "Медицина", active: true),
+                    Skill("skill_npc_inactive", "Недоступный", active: false))
+            })
+        }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private async Task<JsonObject> ReadTurnRequestAsync() =>
+        (JsonNode.Parse(await _fileSystem.ReadFileAsync(LiveTurnPreparationService.TurnRequestPath)
+            ?? throw new InvalidOperationException("turn_request.json is missing.")) as JsonObject)
+        ?? throw new InvalidOperationException("turn_request.json is not an object.");
+
+    private Task WriteJsonAsync(string path, JsonObject root) =>
+        _fileSystem.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+    private static JsonObject Skill(string skillId, string skillName, bool active) => new()
+    {
+        ["skillId"] = skillId,
+        ["skillName"] = skillName,
+        ["lifecycle"] = active ? "active" : "inactive",
+        ["active"] = active
+    };
+
+    internal static JsonObject CreateExpectedCatalog() => new()
+    {
+        ["schemaVersion"] = 1,
+        ["targets"] = new JsonArray(
+            new JsonObject
+            {
+                ["realm"] = "mortal_world",
+                ["kind"] = "npc",
+                ["targetId"] = "npc_healer",
+                ["skills"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_medicine",
+                    ["displayName"] = "Медицина"
+                })
+            },
+            new JsonObject
+            {
+                ["realm"] = "mortal_world",
+                ["kind"] = "player",
+                ["targetId"] = "player_current",
+                ["skills"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_lockpicking",
+                    ["displayName"] = "Взлом"
+                })
+            })
+    };
+
+    private static EffectAcceptedTurnPlanningResult PlanFocusedForgedSkillApplication(
+        EffectRollSkillScopeAuthority skillScopeAuthority)
+    {
+        var definition = EffectMaterializationTestFixture.CreateDefinition(profile: "roll_modifier");
+        definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        definition["components"]![0]!["payload"]!["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_forged"
+        };
+        var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            new[]
+            {
+                new EffectSourceExport(
+                    "mortal_world",
+                    "quest",
+                    "quest_scope_test",
+                    new JsonArray(definition),
+                    Materializable: true,
+                    Active: true,
+                    SameTurn: false)
+            },
+            Array.Empty<EffectSourceExport>(),
+            new HashSet<string>(StringComparer.Ordinal)));
+        var targetAuthority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
+            new[] { new EffectTargetExport("mortal_world", "player", "player_current", SameTurn: false) },
+            Array.Empty<EffectTargetExport>(),
+            new HashSet<string>(StringComparer.Ordinal),
+            CombatantIdentities: null));
+        var commands = new JsonObject
+        {
+            ["effectChanges"] = new JsonArray(new JsonObject
+            {
+                ["operation"] = "apply",
+                ["target"] = new JsonObject
+                {
+                    ["kind"] = "player",
+                    ["targetId"] = "player_current"
+                },
+                ["source"] = new JsonObject
+                {
+                    ["kind"] = "quest",
+                    ["sourceId"] = "quest_scope_test",
+                    ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+                },
+                ["parameters"] = new JsonObject(),
+                ["eventRef"] = new JsonObject
+                {
+                    ["kind"] = "accepted_turn",
+                    ["authorityId"] = "turn_43"
+                },
+                ["reason"] = "Поддельный каталог не является authority."
+            }),
+            ["effectResolutionReceipts"] = new JsonArray(),
+            ["effectEventReports"] = new JsonArray()
+        };
+        return EffectAcceptedTurnPlanner.Build(
+            new EffectAcceptedTurnInput(
+                "scope-tamper",
+                "scope-tamper-snapshot",
+                commands,
+                sourceAuthority,
+                targetAuthority,
+                EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(43, commands),
+                PreTurnCarriers: new EffectCarrierCatalogInput(null, null, null, null, null, null),
+                SkillScopeAuthority: skillScopeAuthority),
+            "scope-tamper-fingerprint",
+            new EffectIdentityFactory());
+    }
+}
+
+public sealed partial class GameEngineTurnLifecycleTests
+{
+    [Fact]
+    public async Task EffectSkillScopeLifecycleTests_TurnRequestCatalog_OrdinaryGameEnginePublishesCanonicalCatalog()
+    {
+        CopyDirectory(TestRepoPaths.BaseSessionRoot, _fs.GameSessionPath);
+        await WriteOrdinaryTurnPlayerSkillAsync();
+        var preflightIssues = await new ValidationService(
+            _fs,
+            NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+        Assert.True(
+            preflightIssues.Count == 0,
+            string.Join(Environment.NewLine, preflightIssues.Select(static issue => issue.ToString())));
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([Key(ConsoleKey.Enter)]));
+        var capturedCatalog = new TaskCompletionSource<JsonObject?>(
+            TaskCreationOptions.RunContinuationsAsynchronously);
+        var terminalError = Task.Run(async () =>
+        {
+            var request = await WaitForTurnRequestAsync();
+            var root = JsonNode.Parse(await _fs.ReadFileAsync("input/turn_request.json")
+                ?? throw new InvalidOperationException("turn_request.json is missing."))!.AsObject();
+            capturedCatalog.TrySetResult(
+                root["effectSkillScopeCatalog"] is JsonObject requestedCatalog
+                    ? requestedCatalog.DeepClone().AsObject()
+                    : null);
+            await _fs.WriteFileAtomicAsync("ready/turn_error.json", JsonSerializer.Serialize(new
+            {
+                sessionId = request.SessionId,
+                requestId = request.RequestId,
+                turnNumber = request.TurnNumber,
+                timestamp = DateTime.UtcNow.ToString("o"),
+                status = "error",
+                error = "Test terminal cleanup."
+            }, SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        });
+
+        var processTurn = InvokePrivateTaskAsync(
+            engine,
+            "ProcessPlayerTurn",
+            "Осмотреть рану.",
+            null);
+        var catalog = await capturedCatalog.Task.WaitAsync(TimeSpan.FromSeconds(10));
+
+        await processTurn;
+        await terminalError.WaitAsync(TimeSpan.FromSeconds(5));
+        Assert.NotNull(catalog);
+        Assert.True(JsonNode.DeepEquals(CreatePlayerOnlyCatalog(), catalog));
+    }
+
+    private async Task WriteOrdinaryTurnPlayerSkillAsync()
+    {
+        await _fs.WriteFileAtomicAsync(
+            "game_state/player/skills_active.json",
+            new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_lockpicking",
+                    ["skillName"] = "Взлом",
+                    ["skillDescription"] = "Открывает сложные механизмы.",
+                    ["rarity"] = "Common",
+                    ["combatEffect"] = new JsonObject
+                    {
+                        ["actionName"] = "Взлом",
+                        ["actionCost"] = "Main",
+                        ["effects"] = new JsonArray(new JsonObject
+                        {
+                            ["effectType"] = "Damage",
+                            ["targetType"] = "Enemy",
+                            ["effectDescription"] = "Преодолевает сопротивление механизма.",
+                            ["value"] = "45%",
+                            ["poiseDamage"] = "0%"
+                        }),
+                        ["isActivatedEffect"] = true
+                    },
+                    ["scalingCharacteristic"] = "Intelligence"
+                })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        await _fs.WriteFileAtomicAsync(
+            "game_state/player/skill_mastery.json",
+            new JsonObject
+            {
+                ["skillMasteryChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillName"] = "Взлом",
+                    ["newMasteryLevel"] = 1,
+                    ["newCurrentMasteryProgress"] = 0,
+                    ["newMasteryProgressNeeded"] = 100,
+                    ["masteryLeveledUp"] = false
+                })
+            }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+    }
+
+    private static JsonObject CreatePlayerOnlyCatalog() => new()
+    {
+        ["schemaVersion"] = 1,
+        ["targets"] = new JsonArray(new JsonObject
+        {
+            ["realm"] = "mortal_world",
+            ["kind"] = "player",
+            ["targetId"] = "player_current",
+            ["skills"] = new JsonArray(new JsonObject
+            {
+                ["skillId"] = "skill_lockpicking",
+                ["displayName"] = "Взлом"
+            })
+        })
+    };
+}

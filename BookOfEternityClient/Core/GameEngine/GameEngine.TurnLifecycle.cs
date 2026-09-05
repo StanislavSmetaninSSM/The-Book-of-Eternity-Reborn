@@ -1247,6 +1247,11 @@ public partial class GameEngine
             request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
                 .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
             RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
+            var effectMechanics = await EffectMechanicsSnapshot.LoadAsync(_fs);
+            request.EffectSkillScopeCatalog = effectMechanics.SkillScopeAuthority
+                .CreateGmCatalog()
+                .DeepClone()
+                .AsObject();
             var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
             // Attach computed characteristics for GM reference
