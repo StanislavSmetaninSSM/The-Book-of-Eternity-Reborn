@@ -34,9 +34,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void Replay_PublishedCommonPlanRestartsIntoDetachedExactRequestAndReceiptWithoutNewWork()
     {
-        var scenario = CreateScenario(
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_normal_uses_lowest_free_die",
-            "procedure");
+            "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = ResolveCurrentTreatment(
             fixture,
@@ -98,9 +98,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void Replay_ChangedFingerprintConflictsButMalformedHistoryDominatesEveryCoordinate()
     {
-        var scenario = CreateScenario(
+        var scenario = PrepareProcedurePublicationScenario(CreateScenario(
             "procedure_normal_uses_lowest_free_die",
-            "procedure");
+            "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = ResolveCurrentTreatment(
             fixture,
