@@ -7457,6 +7457,11 @@ Worked accepted-condition fragment: the GM first reads the exact current contrib
 
 Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry. The runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM does not rescan raw effect values, decrement duration, or resend post-state.
 
+This source-policy example contributes only if the client resolves a real typed
+`defense_roll` for its exact target. It does not turn spiritual `guard` into that roll
+or grant a spiritual-conflict bonus through generic roll policy; those contributions
+belong to the dedicated afterlife condition/wound-profile contracts.
+
 ```json
 {
   "artId": "art_resonant_guard",
@@ -7466,7 +7471,7 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
       "definitionKey": "resonant-guard",
       "display": {
         "name": "Резонансный оберег",
-        "description": "Ритм души удерживает давление противника.",
+        "description": "Ритм души поддерживает защитный бросок.",
         "category": "buff",
         "visibility": "visible"
       },
@@ -7478,7 +7483,7 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
           "profile": "roll_modifier",
           "priority": 100,
           "payload": {
-            "operations": ["guard"],
+            "operations": ["defense_roll"],
             "contribution": "advantage",
             "scope": { "kind": "all" }
           }
@@ -7540,6 +7545,28 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
 `hidden` and `gm_only` definitions remain mechanically available only to the internal accepted snapshot. Ordinary narrative, player status, browser/console DTOs, action selectors, and audits must not reveal them.
 
 Shining blessing entitlement is not a generic active effect. Blessing allocation, freeShape/freeRetune, memory selection, and blessing rerolls stay on their dedicated Shining client-owned contracts.
+
+## afterlife_roll_scope_v1
+
+The complete `afterlife_effect_profile_v1` source immediately above deliberately uses
+`operations=["defense_roll"]` with `scope.kind=all`. The explicit broad selector is
+mandatory: it means only a real typed `defense_roll` for the exact afterlife target,
+not every actor or every operation. Spiritual guard is not a roll_modifier operation
+and is not an alias for `defense_roll`; this definition gives no generic bonus to a
+spiritual `guard` exchange. Use the dedicated afterlife condition/wound-profile contracts
+for that spiritual operation. This example does not alter the spiritual combat model.
+Focused scope is legal only for exactly `operations=["skill_check"]` and one canonical
+skill in the exact target row of `effectSkillScopeCatalog`.
+
+A source spiritual art is not the target skill authority: spiritual arts are not Mortal skill IDs.
+Do not reinterpret `art_resonant_guard`, an art's display name or tier, or `player_soul`
+as a Mortal `skillId`. The advisory catalog contains canonical Mortal player/NPC skills;
+an afterlife-only actor without a selectable exact Mortal skill row cannot receive a
+new focused binding. Keep this generic defense-roll source broad rather than fabricating
+such a row.
+The dedicated spiritual-wound profiles retain their own operation/axis/magnitude
+contract. All common definition, source, privacy, and lifecycle rules still apply in
+both Chaos Sea and Shining Abode; no spiritual art is converted into a Mortal skill.
 
 ## afterlife_resource_bounded_receipt_waves_v1 — sequential safe packets
 

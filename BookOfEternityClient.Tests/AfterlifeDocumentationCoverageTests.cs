@@ -4515,6 +4515,21 @@ public sealed class AfterlifeDocumentationCoverageTests
     }
 
     [Fact]
+    public void RollScopeAfterlifeDocumentation_KeepsSpiritualArtsSeparateFromMortalSkills()
+    {
+        var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        foreach (var document in new[] { common, examples })
+        {
+            Assert.Contains("effectSkillScopeCatalog", document, StringComparison.Ordinal);
+            Assert.Contains("scope.kind=all", document, StringComparison.Ordinal);
+            Assert.Contains("spiritual arts are not Mortal skill IDs", document, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("operations=[\"defense_roll\"]", document, StringComparison.Ordinal);
+        }
+        Assert.Contains("## afterlife_roll_scope_v1", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void CompleteEffectMaterializationAfterlifeAdapter_IsDocumentedWithoutLegacyFallback()
     {
         var common = ReadRepoFile("OtherGuides", "Effect_Materialization_Contract.md");

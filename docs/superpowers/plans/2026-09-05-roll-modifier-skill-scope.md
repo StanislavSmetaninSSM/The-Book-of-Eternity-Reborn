@@ -1306,7 +1306,7 @@ GM guide/example synchronization continues in T176 before feature completion.
 - Consumes: final scope-aware schema and the already-uncommitted approved Task 7 wound documentation changes.
 - Produces: one GM-authorable, executable, Mortal/afterlife-synchronized contract with source guards.
 
-- [ ] **Step 1: Turn documentation expectations RED**
+- [x] **Step 1: Turn documentation expectations RED**
 
 Add guards requiring all of these literal concepts:
 
@@ -1322,7 +1322,7 @@ later missing skill makes the component inactive without healing/removing the wo
 
 Require examples for a broad physical wound, an exact-skill physical wound, and a non-wound exact-skill effect. Require player-facing example text without a technical ID.
 
-- [ ] **Step 2: Run RED documentation guards**
+- [x] **Step 2: Run RED documentation guards**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests&FullyQualifiedName~RollScope|FullyQualifiedName~AfterlifeDocumentationCoverageTests&FullyQualifiedName~RollScope"
@@ -1330,19 +1330,19 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 Expected: FAIL because current guides/examples teach the old two-field payload.
 
-- [ ] **Step 3: Update the two authoritative GM guides**
+- [x] **Step 3: Update the two authoritative GM guides**
 
 Document the exact JSON union, cross-field restrictions, target catalog, repair behavior, slot accounting, dormancy, and no-fuzzy/no-name/no-multiple-ID rules. State explicitly that physical wounds remain free GM-authored setting-specific entities; this selector does not introduce a wound catalog.
 
-- [ ] **Step 4: Update all three examples and manifest**
+- [x] **Step 4: Update all three examples and manifest**
 
 Convert existing broad modifiers to `scope:{"kind":"all"}`. Add one Mortal wound using `skill_lockpicking` selected from `effectSkillScopeCatalog`, and one ordinary curse/Fate/structural source using the same profile to prove it is common. Keep afterlife broad unless a canonical Mortal skill target is actually present; do not reinterpret spiritual arts as skills. Register every changed example in `example_validation_manifest.json`.
 
-- [ ] **Step 5: Record prompt-entrypoint rationale**
+- [x] **Step 5: Record prompt-entrypoint rationale**
 
 Verify that `BookOfEternityClient/game_master_daemon.ps1` already loads both authoritative guides and examples into the GM context pack. If those entrypoints remain unchanged, record in the PR summary: “No daemon path change: existing mandatory context-pack entries load the updated effect/wound guides and examples.” If the prompt contains inline old schema wording, replace only that wording and add a source guard.
 
-- [ ] **Step 6: Run GREEN documentation guards**
+- [x] **Step 6: Run GREEN documentation guards**
 
 Run the Step 2 command and:
 
@@ -1352,15 +1352,36 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 
 Expected: PASS; examples parse and the GM/player contract contains no legacy payload.
 
-- [ ] **Step 7: Commit the synchronized documentation**
+- [x] **Step 7: Commit the synchronized documentation**
 
 ```powershell
-git add OtherGuides/Effect_Materialization_Contract.md OtherGuides/Wound_Materialization_Contract.md Examples/E_CLI_Effect_Materialization.txt Examples/E_CLI_Wound_Materialization.txt Examples/E_CLI_Afterlife_Turns.txt Examples/example_validation_manifest.json BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs BookOfEternityClient.Tests/EffectMaterializationSourceGuardTests.cs BookOfEternityClient.Tests/WoundMaterializationSourceGuardTests.cs BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
+git add OtherGuides/Effect_Materialization_Contract.md OtherGuides/Wound_Materialization_Contract.md Examples/E_CLI_Effect_Materialization.txt Examples/E_CLI_Wound_Materialization.txt Examples/E_CLI_Afterlife_Turns.txt Examples/example_validation_manifest.json BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs docs/superpowers/plans/2026-09-05-roll-modifier-skill-scope.md specs/1536-complete-wound-materialization/tasks.md
 git add BookOfEternityClient/game_master_daemon.ps1 OtherGuides/Afterlife_Contract_Matrix.md
 git commit -m "docs(effects): teach scoped roll modifiers (#1536)"
 ```
 
 Before committing, unstage either inspected optional file if it has no diff. Preserve and incorporate the existing Task 7 edits; never overwrite them wholesale.
+
+Task 11 completion evidence (2026-09-06): the two new documentation guards were
+RED for absent scope guidance (`20260906-073259-074-27856-2ca4cccc569e4433a3a80109e1180495-focused`).
+The initial three worked-example rows were RED for absent named examples
+(`20260906-073821-881-26028-ead9e69d51484265a137b1e1f9f27a4e-focused`).
+Production validation then caught empty Mortal treatment routes and the pre-existing
+invalid generic `guard` operation. The examples now have complete setting-specific
+procedures, and the afterlife generic source uses `defense_roll`, explicitly not a
+spiritual-guard alias. No production operation registry was extended.
+Final example controls passed 4/4
+(`20260906-075339-943-2656-8c0f567a35154780ba815b419d014bcc-focused`).
+The coherent afterlife plus wound-prompt control passed 127/127
+(`20260906-075511-954-13600-06f26c97083246b9af455d302cda8ba4-focused`),
+including both new guards and the preserved Task 7 parsed severity-reduction route.
+All builds were warning/error-free, with no timeout/duplicate IDs and complete cleanup.
+The broader example selection is covered by T177's required FullValidation run.
+Independent T176 review: zero Critical/Important/Minor findings, Ready YES.
+No daemon path change: existing mandatory context-pack entries load the updated
+effect/wound guides and examples. The afterlife matrix delegates to the common guide
+without duplicating this payload, so no matrix edit is required. Mortal and afterlife
+guidance, all three example families, manifest routes and source guards are synchronized.
 
 ---
 

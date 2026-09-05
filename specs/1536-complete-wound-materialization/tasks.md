@@ -1852,7 +1852,7 @@ scope, then resume paused wound documentation and final controls against one fin
 - [X] T173 [US8] **Supply the bounded selectable catalog to the GM**: add RED/GREEN `EffectSkillScopeLifecycleTests` request-staging coverage and attach detached bounded `turn_request.json.effectSkillScopeCatalog` through `BookOfEternityClient/Models/TurnRequest.cs`, an isolated strict skill-root loader in `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`, `BookOfEternityClient/Services/LiveTurnPreparationService.cs`, and `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`, with an explicit empty default for other routes and accepted-state recomputation proving catalog edits are non-authoritative
 - [X] T174 [US1] [US8] **Complete direct-cutover fixtures and wound slot accounting**: reconcile the superseded per-operation wording to the normative one-whole-component/one-slot rule; add RED/GREEN broad/focused slot, exact `(operation, scope.kind, focused skillId)` selector-coordinate, same-selector duplicate, rematerialization, and fingerprint rows; keep scope semantic rather than a power or slot expansion in `WoundConsequenceEnvelopeCatalog`, `WoundMaterializationContract`, and `WoundPersistedConsequenceEnvelopeAdapter`; convert every executable `BookOfEternityClient.Tests`, `BookOfEternityClient.IntegrationTests`, `BookOfEternityClient.TestSupport`, `Examples/E_CLI_Effect_Materialization.txt`, and `Examples/E_CLI_Afterlife_Turns.txt` payload to explicit broad scope unless it is an intentional focused case; and add semantic source guards proving no active payload lacks scope
 - [X] T175 [US2] [US7] [US8] **Prove lifecycle, dormancy, replay, and rollback in Integration**: add file-backed `RegressionIntegration` lifecycle evidence for ordinary/wound materialization, final binding rejection, derived dormancy/exact restoration/non-inheritance, restart, exact and changed-selector replay, cache invalidation, rollback, and focused treatment behavior in `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs`, `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, and `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests*.cs`; repair the raw-to-canonical definition-ref mapping in `WoundResponseInputComposer.cs` with deterministic `WoundRepairPacketBuilderTests` coverage
-- [ ] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
+- [X] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
 - [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
 
 **Checkpoint**: Every active payload has explicit closed scope; exact target-skill
@@ -1870,7 +1870,18 @@ and Integration manifest 1/1
 passed with clean builds and cleanup, no timeout or duplicate IDs.
 Independent final review: 0 Critical, 0 Important, 0 Minor; Ready for T175.
 Known 65 `MortalWoundDiagnosisTests` failures remain mandatory to fix in their
-owning T070 contour before #1536 completion and PreMerge; T176/T177 remain open.
+owning T070 contour before #1536 completion and PreMerge; T177 remains open.
+
+T176 completion evidence (2026-09-06): production-parsed broad/focused Mortal wound,
+ordinary focused effect, and afterlife broad source examples pass 4/4
+(`20260906-075339-943-2656-8c0f567a35154780ba815b419d014bcc-focused`);
+afterlife and wound-prompt controls pass 127/127
+(`20260906-075511-954-13600-06f26c97083246b9af455d302cda8ba4-focused`).
+The prior Task 7 complete severity-reduction example and guard are incorporated.
+Clean builds/cleanup, no timeout/duplicate IDs; independent review has zero findings.
+No daemon path change: existing mandatory context-pack entries load the updated
+effect/wound guides and examples. No matrix edit: it already delegates the common
+payload. FullValidation is active for the changed documentation/example boundary.
 
 ---
 

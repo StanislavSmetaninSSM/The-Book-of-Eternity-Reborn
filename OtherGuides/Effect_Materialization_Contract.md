@@ -60,6 +60,91 @@ Triggers name exact registered events and exact component IDs. `resolutionMode=d
 
 Bounded receipt waves use one sequential rule: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. A receipt supplies only an allowed result and reason; it never reconstructs, retargets, merges, or changes the protected causal origin.
 
+### Exact roll scope: one common profile
+
+Every `roll_modifier.payload` is a closed object with exactly `operations`,
+`contribution`, and `scope`. `contribution` is `advantage` or `disadvantage`.
+There are exactly two closed scope variants. Broad `scope.kind=all` has no `skillId`:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "all" }
+}
+```
+
+Focused `scope.kind=skill` requires exactly one non-empty permanent canonical
+`skillId`, and its operations must equal exactly `operations=["skill_check"]`:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+Broad scope still applies only to the declared registered operations and exact effect
+target/realm; it does not mean every actor or every operation. The common roll operation
+registry is exactly `attack_roll`, `defense_roll`, `skill_check`, `saving_throw`,
+`damage_roll`, and `initiative_roll`; spiritual operations do not extend that registry.
+Missing scope never
+means broad scope. Extra fields, a `skillId` under `all`, arrays or multiple IDs under
+`skill`, aliases, names, and focused operations other than the single `skill_check`
+are invalid. `scope` is semantic source policy, not a scalar `parameterBounds` target.
+
+Before selecting a focused scope, read the client-authored
+`turn_request.json.effectSkillScopeCatalog`. Its closed schema-v1 projection has
+`schemaVersion` and `targets`; every target row has exact `realm`, `kind`, `targetId`,
+and `skills`, and each selectable skill has `skillId` and a readable `displayName`.
+The skillId must come from the exact target row. This is a bounded, deterministic,
+detached advisory catalog, not a writable authority grant. The client independently
+rebuilds authority from canonical offered pre-turn roots and the composed final
+accepted state. A new focused binding needs the same exact usable active/passive
+skill owned by that target in both states. Thus same-response new skills are not selectable;
+a skill removed or disabled in that same response is not selectable either. An empty
+or missing matching row does not authorize an invented selector. Unknown, wrong-owner,
+idless, inactive, terminal, duplicate, ambiguous, or Unicode-confusable identities
+fail closed. There is no fuzzy or display-name matching.
+
+For an already accepted focused component, legitimate later absence or unavailability
+derives dormancy: later missing skill makes the component inactive without healing/removing the wound.
+This does not itself change effect/wound identity, severity, treatment, lifetime, or
+history. A similarly named skill or a newly learned different ID does not inherit the
+component. Only restoration of the same permanent canonical ID in usable, unambiguous
+current authority reactivates it, provided the effect itself is still active. Normal
+effect expiry and wound treatment continue under their own policies. The trusted roll
+context must match exact actor, realm, operation, and focused skill before the existing
+advantage/disadvantage reduction; repeated same-direction contributions do not escalate,
+and opposite directions cancel.
+
+For wound-owned definitions, one whole broad or focused component consumes one slot:
+one focused component consumes one consequence slot. Multiple declared broad operations
+do not expand that component into extra slots. Affecting two exact skills requires two
+components and two slots within the wound's severity envelope; scope never increases
+power or grants a duplicate consequence coordinate. Physical wounds remain free,
+setting-specific GM-authored entities: there is no catalog of ready-made wounds.
+
+A rejected selector publishes no partial mechanics and is never silently broadened,
+renamed, or rebound. For a safely repairable wound selector failure, the current
+`wound_materialization_repair` packet preserves the original response-local coordinate,
+for example `woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.scope.skillId`.
+Use its `preservedProposal` and correct only its listed paths, then resubmit the complete
+semantic turn through the owning repair protocol. Do not repair canonical state or
+change protected source/target/opportunity authority. If no exact lawful selector is
+available under that packet, obtain fresh authority rather than guess. Ordinary effects
+remain subject to their own bounded repair eligibility in section 9; a selector error
+does not create a new permission to edit an accepted source. Exact replay preserves the
+scope; changing `kind` or `skillId` changes the request.
+
+Use safe in-world Russian names in player text, such as «Помеха к проверкам навыков»
+or «Помеха к проверкам навыка „Взлом“». Technical IDs, catalog rows, repair coordinates,
+and hidden-effect existence remain operator-only. Worked broad/focused wound examples
+are `wound_mortal_roll_scope_all_v1` and `wound_mortal_roll_scope_skill_v1` in
+`Examples/E_CLI_Wound_Materialization.txt`; the ordinary-source counterpart is
+`effect_mortal_roll_scope_skill_v1` in `Examples/E_CLI_Effect_Materialization.txt`.
+
 ### 3.1 Closed event reactions
 
 `event_reaction.payload` has one exact `eventType`, `resultKind`, `dependency`,
@@ -290,6 +375,25 @@ Afterlife actors store the same canonical `activeEffects[]` contract in their va
 The GM requests their lifecycle through `effectChanges[]` and must never author combatConditions[]. Current accepted contributions are read only from `afterlifeSpiritualConflictPreview.conditionMechanics` with `source=accepted_effect_mechanics_snapshot_v1`, and each contribution is cited only on its exact audited axis. Hidden/`gm_only` conditions remain private.
 
 Shining blessing entitlement is not a generic active effect. Blessing allocation, rerolls, memory selection, and resource capacity remain on their dedicated client-owned Shining contracts and must not be recreated as an effect definition or carrier.
+
+## afterlife_roll_scope_v1
+
+The common closed roll payload also applies in Chaos Sea and Shining Abode. In the
+existing `afterlife_effect_profile_v1` worked example, `operations=["defense_roll"]`
+uses broad `scope.kind=all`; it is not a focused `skill_check`. This component contributes
+only when the client actually resolves a typed `defense_roll` for the exact actor and
+realm. In particular, spiritual guard is not a roll_modifier operation and is not an
+alias for `defense_roll`. It receives no contribution merely because the fiction says
+the actor guards. Spiritual `guard` uses its dedicated afterlife condition/wound-profile
+contracts; this common-source example does not change the spiritual combat model.
+A spiritual art may own this source definition, but spiritual arts are not Mortal skill IDs.
+Do not reinterpret an
+`artId`, an art name, a tier, or an afterlife actor ID as a focused skill selector.
+`effectSkillScopeCatalog` exposes canonical Mortal player/NPC skills, not a spiritual-art
+catalog; an afterlife-only target without the exact selectable Mortal skill row cannot
+receive a new focused binding. The dedicated spiritual-wound profiles retain their own
+closed operation/axis/magnitude rules and do not gain skill scope through this change.
+See `Examples/E_CLI_Afterlife_Turns.txt` under `afterlife_roll_scope_v1`.
 
 ## 9. Failure, repair, and privacy
 

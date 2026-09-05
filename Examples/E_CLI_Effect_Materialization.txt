@@ -514,6 +514,130 @@ The five source-owned stack policies and their required fields are:
 }
 ```
 
+## effect_mortal_roll_scope_skill_v1
+
+The player already knows both «Взлом» and «Точное сосредоточение» in canonical
+pre-turn skill state. This client request fragment offers both exact target skills.
+The focused selector is copied from the target's catalog row; the source skill is an
+already learned owner, not a same-response new skill or a wound. Both remain usable
+in the composed accepted state. Editing this advisory catalog cannot grant authority.
+
+```json
+{
+  "effectSkillScopeCatalog": {
+    "schemaVersion": 1,
+    "targets": [
+      {
+        "realm": "mortal_world",
+        "kind": "player",
+        "targetId": "player_current",
+        "skills": [
+          { "skillId": "skill_lockpicking", "displayName": "Взлом" },
+          { "skillId": "skill_precision_focus", "displayName": "Точное сосредоточение" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Existing canonical skill source fragment with its complete effect definition:
+
+```json
+{
+  "skillId": "skill_precision_focus",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "precision-focus-lockpicking",
+      "display": {
+        "name": "Точное сосредоточение",
+        "description": "Преимущество к проверкам навыка «Взлом».",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["mortal_world"],
+      "allowedTargetKinds": ["player"],
+      "components": [
+        {
+          "componentId": "precision_focus_lockpicking_roll",
+          "profile": "roll_modifier",
+          "priority": 100,
+          "payload": {
+            "operations": ["skill_check"],
+            "contribution": "advantage",
+            "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "precision-focus-lockpicking",
+        "policy": "independent",
+        "maxStacks": 1,
+        "atMaximum": "no_change",
+        "refreshMode": null,
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "owner_turn_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "precision_focus_owner_turn_end",
+          "eventType": "owner_turn_end",
+          "priority": 100,
+          "componentIds": ["precision_focus_lockpicking_roll"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["mental_disruption"],
+        "cureKinds": ["rest"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+Complete GM response for the first application on accepted turn 42:
+
+```json
+{
+  "response": "Вы выравниваете дыхание и сосредотачиваетесь на едва слышных щелчках замка. Движения отмычки становятся точнее.",
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "skill",
+        "sourceId": "skill_precision_focus",
+        "definitionKey": "precision-focus-lockpicking"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+      "reason": "Игрок применил изученное точное сосредоточение для работы с замком."
+    }
+  ]
+}
+```
+
+This ordinary buff and a wound's focused disadvantage use the same closed common
+profile and exact-skill reducer. `scope.kind=skill` requires only `skill_check`;
+it never grants advantage to all skills or to an unidentified check. The source ID
+selects the learned source, while `scope.skillId` selects the target skill. A later
+missing skill derives dormancy, with no name substitution or lifetime reset; only the
+same usable permanent ID can reactivate an effect that has not expired. All canonical
+effect identity, publication, and replay remain client-owned. Player narration contains
+no technical ID.
+
 ## effect_mortal_dispel_v1
 
 An accepted turn may request a dispel only for the exact opaque effect identity

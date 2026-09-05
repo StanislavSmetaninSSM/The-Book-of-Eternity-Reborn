@@ -7,11 +7,35 @@
       "statePath": "current Mortal location customStates[]",
       "responseSurface": "worldMapUpdates.locationUpdates[] | currentLocationData | worldMapUpdates.newLocations[]",
       "realms": ["Mortal World"],
-      "description": "The three exact closed treatment scene kinds are shown through existing-location replacement and new selected/remote creation, with unrelated sibling preservation and link rejection.",
+      "description": "The three exact closed treatment scene kinds are shown through existing-location replacement and new selected/remote creation, with unrelated sibling preservation and link rejection; the same example also publishes one production-parsed rank-III Mortal procedure route whose ordered success stabilizes and reduces severity by one without weakening its retained graph.",
       "validationKind": "production-validator",
-      "validationRoute": "PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes -> MortalLocationCustomStateContract.ValidateLocation | ValidateLink",
-      "coverageLimit": "Closed treatment rows and route ownership; complete generic Mortal location envelope validation remains Mortal Location Materialization v1-owned.",
-      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog"]
+      "validationRoute": "PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes -> MortalLocationCustomStateContract.ValidateLocation | ValidateLink; PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentSeverityReductionPlanner.Project",
+      "coverageLimit": "Closed treatment rows and route ownership plus one exact graph-preserving Mortal rank-III-to-II procedure route; complete generic Mortal location envelope validation remains Mortal Location Materialization v1-owned, while file-backed publication/replay remains Integration-owned.",
+      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_reduce_severity_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog", "Only a newly successful category completes the route", "never prunes or weakens mechanics"]
+    },
+    {
+      "contractId": "wound_mortal_roll_scope_all_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
+      "responseSurface": "effectSkillScopeCatalog request fragment plus complete woundDecisions[] response",
+      "realms": ["Mortal World"],
+      "description": "A setting-authored rank-II physical wound declares one complete broad skill-check hindrance component and one consequence slot, with exact acquisition narration, a complete stabilization procedure, and no permanent wound/effect IDs.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill",
+      "coverageLimit": "Parses the client catalog and complete GM response, composes the wound through the production response contract, and checks broad scope and one-component/one-slot accounting against independently supplied canonical skill roots; file-backed publication, replay, and recovery remain lifecycle-test-owned.",
+      "requiredText": ["wound_mortal_roll_scope_all_v1", "effectSkillScopeCatalog", "scope.kind=all", "bell-contusion-hindrance", "acquisitionNarration", "one whole", "consequence slot"]
+    },
+    {
+      "contractId": "wound_mortal_roll_scope_skill_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
+      "responseSurface": "effectSkillScopeCatalog request fragment plus complete woundDecisions[] response",
+      "realms": ["Mortal World"],
+      "description": "A setting-authored rank-II ashglass injury selects the exact offered/current player skill for one common roll_modifier component and one slot, includes a complete stabilization procedure, and keeps all permanent wound/effect identity client-owned.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill",
+      "coverageLimit": "Parses the complete wound response and exact target catalog, composes the proposal with the production wound contract, and validates exact skill binding against independently supplied canonical roots; full accepted publication, later dormancy/reactivation, and rollback remain lifecycle-test-owned.",
+      "requiredText": ["wound_mortal_roll_scope_skill_v1", "effectSkillScopeCatalog", "scope.kind=skill", "skill_lockpicking", "ashglass-lockpicking-hindrance", "consequence slot", "dormant without healing/removing the wound"]
     },
     {
       "contractId": "effect_mortal_profiles_v1",
@@ -36,6 +60,18 @@
       "focusedFragmentReason": "The example combines an owner definition fragment and a later GameResponse fragment rather than fabricating a full accepted session snapshot.",
       "coverageLimit": "Complete source-policy shape, exact apply selector/event shape, and production-contract composition of all five stack-policy records; accepted identity/index publication remains lifecycle-test-owned.",
       "requiredText": ["effect_mortal_apply_stack_v1", "\"policy\": \"refresh\"", "turn_42"]
+    },
+    {
+      "contractId": "effect_mortal_roll_scope_skill_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "input/turn_request.json + canonical learned-skill source + game_state/effects/effect_commands.json",
+      "responseSurface": "effectSkillScopeCatalog plus complete activeEffectDefinitions[] source and effectChanges[] apply response",
+      "realms": ["Mortal World"],
+      "description": "An already learned ordinary skill owns a complete focused buff whose selector comes from the exact target catalog, proving that wound and non-wound effects share one exact-skill profile.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.EffectRollScopeWorkedExample_UsesCommonExactSelector",
+      "coverageLimit": "Validates the parsed complete source definition, exact source/command correspondence, advisory catalog projection, and focused binding against independent canonical skill roots; accepted-turn identity publication and lifecycle remain integration-lifecycle-test-owned.",
+      "requiredText": ["effect_mortal_roll_scope_skill_v1", "effectSkillScopeCatalog", "skill_precision_focus", "skill_lockpicking", "precision-focus-lockpicking", "scope.kind=skill", "Player narration contains"]
     },
     {
       "contractId": "effect_mortal_event_report_v1",
@@ -168,6 +204,18 @@
       "focusedFragmentReason": "The route shows the source art and command without duplicating the very large complete afterlife profile envelope.",
       "coverageLimit": "Definition and command syntax, profile ownership, privacy, and Shining entitlement exclusion; full profile acceptance remains afterlife-validator-owned.",
       "requiredText": ["afterlife_effect_profile_v1", "activeEffects[]", "remaining lifetime is client-owned", "Shining blessing entitlement is not a generic active effect"]
+    },
+    {
+      "contractId": "afterlife_roll_scope_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "specialArts[].activeEffectDefinitions[] + game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "existing afterlife_effect_profile_v1 spiritual-art source and shared explicit roll-scope guidance",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "The afterlife source uses an explicitly broad typed defense_roll selector; spiritual guard is not a generic roll operation, spiritual arts are not Mortal skill IDs, and the advisory Mortal skill catalog is not reinterpreted as art authority.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.AfterlifeEffectRollScopeWorkedExample_RemainsBroad; AfterlifeDocumentationCoverageTests.RollScopeAfterlifeDocumentation_KeepsSpiritualArtsSeparateFromMortalSkills",
+      "coverageLimit": "Executes the complete source definition through the production source-definition validator in both afterlife realms, checks defense_roll with all scope and no skillId, and guards the spiritual-guard exclusion and art/skill authority distinction; it does not prove a spiritual guard exchange consumes a generic modifier. Full actor-profile acceptance, publication, and conflict lifecycle remain their owning integration tests' responsibility.",
+      "requiredText": ["afterlife_roll_scope_v1", "afterlife_effect_profile_v1", "operations=[\"defense_roll\"]", "scope.kind=all", "effectSkillScopeCatalog", "spiritual arts are not Mortal skill IDs", "Spiritual guard is not a roll_modifier operation"]
     },
     {
       "contractId": "afterlife_resource_bounded_receipt_waves_v1",

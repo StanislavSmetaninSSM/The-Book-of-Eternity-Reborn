@@ -1,9 +1,467 @@
-<title>Mortal wound treatment scene authority — compact worked routes</title>
+<title>Mortal wound materialization and treatment — worked routes</title>
 <description>
-  Compact GM examples for the three closed current-location treatment states,
-  existing-location replacement, new selected/remote creation, and link rejection.
+  Complete broad and exact-skill physical wound responses, followed by compact GM
+  examples for treatment scene authority, location authoring, and severity reduction.
 </description>
 <content><![CDATA[
+
+## wound_mortal_roll_scope_all_v1
+
+The accepted impact from a shard of the Ash Tower's bell has already produced a
+client-owned Mortal physical-wound opportunity for the player, permitting severity II.
+The GM chooses this setting-specific injury; it is not selected from a wound catalog.
+This request fragment shows the player's offered skill row even though broad scope does
+not select a skill. The opportunity and accepted-event authority are supplied separately
+by the client; these examples never manufacture their seals or permanent wound IDs.
+
+```json
+{
+  "effectSkillScopeCatalog": {
+    "schemaVersion": 1,
+    "targets": [
+      {
+        "realm": "mortal_world",
+        "kind": "player",
+        "targetId": "player_current",
+        "skills": [
+          { "skillId": "skill_lockpicking", "displayName": "Взлом" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Complete GM response to that opportunity: one rank-II wound, one root definition,
+one whole `roll_modifier` component, and one `roll_modifier` consequence slot.
+`scope.kind=all` applies the disadvantage to every `skill_check` of this target, not
+to every operation. Every Mortal wound needs at least one complete treatment route.
+This setting offers examination and cooling care using one linen cooling pad and a
+provider's field-medicine capability. The route does not grant the item or capability:
+the client must resolve the exact provider requirements when treatment is attempted.
+Only a successful procedure stabilizes the wound; partial and failed attempts make no
+improvement. Until accepted stabilization, recovery is blocked and grants no free cure.
+
+```json
+{
+  "response": "Осколок колокола ударяет вас в висок, и каменные ступени плывут перед глазами. Звон в голове мешает сосредоточиться на любом привычном деле.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_bell_42",
+      "decision": "materialize",
+      "woundRef": "bell_contusion_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Ушиб от осколка колокола Пепельной башни",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "левый висок"
+          }
+        },
+        "display": {
+          "name": "Ушиб виска",
+          "description": "После удара осколком голова кружится, внимание рассеивается.",
+          "visibleSymptoms": ["припухлость у виска", "неуверенные движения"],
+          "prognosis": "Нужны покой, осмотр и подходящая помощь; без стабилизации восстановление не начнётся.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Осколок колокола ударяет вас в висок, и каменные ступени плывут перед глазами."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [
+          {
+            "definitionRef": "bell_contusion_hindrance_local",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "bell-contusion-hindrance",
+              "display": {
+                "name": "Звон и головокружение",
+                "description": "Помеха к проверкам навыков.",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": ["mortal_world"],
+              "allowedTargetKinds": ["player"],
+              "components": [
+                {
+                  "componentId": "bell_contusion_roll",
+                  "profile": "roll_modifier",
+                  "priority": 100,
+                  "payload": {
+                    "operations": ["skill_check"],
+                    "contribution": "disadvantage",
+                    "scope": { "kind": "all" }
+                  }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "wound_bell_contusion_hindrance",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "source_bound",
+                "activePredicate": "active",
+                "onSourceLoss": "expire"
+              },
+              "triggers": [
+                {
+                  "triggerId": "bell_contusion_owner_turn_end",
+                  "eventType": "owner_turn_end",
+                  "priority": 100,
+                  "componentIds": ["bell_contusion_roll"],
+                  "consumeUses": false,
+                  "resolutionMode": "deterministic"
+                }
+              ],
+              "removal": {
+                "dispelCategories": ["physical_restoration"],
+                "cureKinds": ["wound_treatment"],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": { "kind": "base_wound", "complicationRef": null },
+              "slots": [
+                {
+                  "profileKey": "roll_modifier",
+                  "readableSummary": "Помеха к проверкам навыков из-за головокружения."
+                }
+              ]
+            }
+          }
+        ],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "bell_contusion_stabilize",
+              "displayName": "Осмотреть ушиб и наложить охлаждающую примочку",
+              "visibility": "known_to_player",
+              "mode": "procedure",
+              "requirements": [
+                {
+                  "kind": "item_quantity",
+                  "itemRef": "cooling_linen",
+                  "quantity": 1,
+                  "ownerRole": "provider"
+                },
+                {
+                  "kind": "skill_tier",
+                  "capabilityRef": "field_medicine",
+                  "minimumTier": 1,
+                  "actorRole": "provider"
+                }
+              ],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": ["success", "partial_success", "failed_attempt"],
+                "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+                "mutations": [
+                  {
+                    "kind": "consume_requirement",
+                    "scope": "common",
+                    "milestoneOrdinal": null,
+                    "requirementIndex": 0
+                  }
+                ]
+              },
+              "resolution": {
+                "formulaKey": "mortal_wound_procedure_v1",
+                "difficulty": 12,
+                "rollSource": "accepted_d20",
+                "criticalPolicy": "natural_20_first_natural_1_last",
+                "modifierSource": {
+                  "kind": "resolved_skill_tier",
+                  "requirementIndex": 1
+                }
+              },
+              "outcomes": [
+                {
+                  "bandId": "bell_care_success",
+                  "minimumMargin": 5,
+                  "maximumMargin": null,
+                  "category": "success",
+                  "result": [{ "kind": "stabilize" }]
+                },
+                {
+                  "bandId": "bell_care_partial",
+                  "minimumMargin": 0,
+                  "maximumMargin": 4,
+                  "category": "partial_success",
+                  "result": [{ "kind": "no_improvement" }]
+                },
+                {
+                  "bandId": "bell_care_failed",
+                  "minimumMargin": null,
+                  "maximumMargin": -1,
+                  "category": "failed_attempt",
+                  "result": [{ "kind": "no_improvement" }]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": ["bell_contusion_stabilize"],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      }
+    }
+  ]
+}
+```
+
+The exact acquisition sentence appears in the final scene. The client binds the empty
+`links`, derives the wound-root application, and allocates all permanent identities.
+The GM does not add `effectChanges[]`; effect removal alone does not heal this wound.
+
+## wound_mortal_roll_scope_skill_v1
+
+In a separate accepted event, ashglass has cut the player's fingertips. The client
+offers a Mortal physical-wound opportunity permitting severity II and this exact
+pre-turn skill row. The injury's name and nature remain free GM-authored world detail.
+
+```json
+{
+  "effectSkillScopeCatalog": {
+    "schemaVersion": 1,
+    "targets": [
+      {
+        "realm": "mortal_world",
+        "kind": "player",
+        "targetId": "player_current",
+        "skills": [
+          { "skillId": "skill_lockpicking", "displayName": "Взлом" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Complete GM response: `scope.kind=skill` selects `skill_lockpicking` copied from this
+exact target row, not inferred from a name or introduced by this response. The client
+must independently find the same usable permanent skill in the composed final state. One focused
+component consumes one consequence slot, with no extra charge for its selector.
+The required complete treatment route lets a provider with field-medicine capability
+clean and bind the ashglass cuts using one sterile dressing. Its success stabilizes
+the wound; partial and failed attempts make no improvement. Those provider requirements
+must be satisfied from canonical authority during the later treatment attempt, and are
+not new skills granted to the player by this wound response. Recovery waits for accepted
+stabilization.
+
+```json
+{
+  "response": "Золостекло режет подушечки правых пальцев, и вы роняете отмычку. Боль мешает чувствовать тонкие пружины замка.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_ashglass_42",
+      "decision": "materialize",
+      "woundRef": "ashglass_fingertips_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Порез пальцев золостеклом",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "подушечки пальцев правой руки"
+          }
+        },
+        "display": {
+          "name": "Порезы золостеклом",
+          "description": "Повреждённые пальцы плохо различают сопротивление тонких пружин.",
+          "visibleSymptoms": ["узкие кровоточащие порезы", "дрожь пальцев при точном движении"],
+          "prognosis": "Нужны очистка и защита повреждённых тканей; без стабилизации восстановление не начнётся.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Золостекло режет подушечки правых пальцев, и вы роняете отмычку."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [
+          {
+            "definitionRef": "ashglass_lockpicking_hindrance_local",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "ashglass-lockpicking-hindrance",
+              "display": {
+                "name": "Болезненная работа отмычкой",
+                "description": "Помеха к проверкам навыка «Взлом».",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": ["mortal_world"],
+              "allowedTargetKinds": ["player"],
+              "components": [
+                {
+                  "componentId": "ashglass_lockpicking_roll",
+                  "profile": "roll_modifier",
+                  "priority": 100,
+                  "payload": {
+                    "operations": ["skill_check"],
+                    "contribution": "disadvantage",
+                    "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+                  }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "wound_ashglass_lockpicking_hindrance",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "source_bound",
+                "activePredicate": "active",
+                "onSourceLoss": "expire"
+              },
+              "triggers": [
+                {
+                  "triggerId": "ashglass_owner_turn_end",
+                  "eventType": "owner_turn_end",
+                  "priority": 100,
+                  "componentIds": ["ashglass_lockpicking_roll"],
+                  "consumeUses": false,
+                  "resolutionMode": "deterministic"
+                }
+              ],
+              "removal": {
+                "dispelCategories": ["physical_restoration"],
+                "cureKinds": ["wound_treatment"],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": { "kind": "base_wound", "complicationRef": null },
+              "slots": [
+                {
+                  "profileKey": "roll_modifier",
+                  "readableSummary": "Помеха к проверкам навыка «Взлом» из-за порезов пальцев."
+                }
+              ]
+            }
+          }
+        ],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [
+            {
+              "routeId": "ashglass_clean_and_bind",
+              "displayName": "Очистить порезы золостеклом и перевязать пальцы",
+              "visibility": "known_to_player",
+              "mode": "procedure",
+              "requirements": [
+                {
+                  "kind": "item_quantity",
+                  "itemRef": "sterile_dressing",
+                  "quantity": 1,
+                  "ownerRole": "provider"
+                },
+                {
+                  "kind": "skill_tier",
+                  "capabilityRef": "field_medicine",
+                  "minimumTier": 1,
+                  "actorRole": "provider"
+                }
+              ],
+              "resourcePolicy": {
+                "reserveBeforeResolution": true,
+                "consumeOn": ["success", "partial_success", "failed_attempt"],
+                "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+                "mutations": [
+                  {
+                    "kind": "consume_requirement",
+                    "scope": "common",
+                    "milestoneOrdinal": null,
+                    "requirementIndex": 0
+                  }
+                ]
+              },
+              "resolution": {
+                "formulaKey": "mortal_wound_procedure_v1",
+                "difficulty": 12,
+                "rollSource": "accepted_d20",
+                "criticalPolicy": "natural_20_first_natural_1_last",
+                "modifierSource": {
+                  "kind": "resolved_skill_tier",
+                  "requirementIndex": 1
+                }
+              },
+              "outcomes": [
+                {
+                  "bandId": "ashglass_care_success",
+                  "minimumMargin": 5,
+                  "maximumMargin": null,
+                  "category": "success",
+                  "result": [{ "kind": "stabilize" }]
+                },
+                {
+                  "bandId": "ashglass_care_partial",
+                  "minimumMargin": 0,
+                  "maximumMargin": 4,
+                  "category": "partial_success",
+                  "result": [{ "kind": "no_improvement" }]
+                },
+                {
+                  "bandId": "ashglass_care_failed",
+                  "minimumMargin": null,
+                  "maximumMargin": -1,
+                  "category": "failed_attempt",
+                  "result": [{ "kind": "no_improvement" }]
+                }
+              ],
+              "interruption": null
+            }
+          ],
+          "knownRouteIds": ["ashglass_clean_and_bind"],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      }
+    }
+  ]
+}
+```
+
+Only that exact skill's checks receive this component; other skills and identity-less
+checks do not. A same-response new skill cannot be selected, and removing or disabling
+the offered skill in the same response rejects this new binding. A later accepted loss
+makes the already bound component dormant without healing/removing the wound or changing
+its severity, history, or lifetime. A different ID with a similar name stays unaffected;
+restoring the same permanent usable ID reactivates a still-active component. The scene
+and visible descriptions use only readable Russian text, never a technical skill ID.
 
 ## wound_treatment_scene_authority_v1
 
@@ -214,5 +672,104 @@ rejected even though the inner row would be valid at a location:
 ```
 
 Keep link `customStates[]` free of every reserved treatment kind.
+
+## mortal_wound_treatment_reduce_severity_v1
+
+This is one complete procedure route authored for an untreated rank-III Mortal
+physical wound. Its retained consequence graph has exactly two slots and is already
+legal at rank II. The GM authors the wound graph and route result; the GM does not
+author permanent wound/effect identity or publication authority.
+
+```json
+{
+  "diagnosisPaths": [],
+  "routes": [
+    {
+      "routeId": "clean_and_close_rank_iii",
+      "displayName": "Очистить, стабилизировать и закрыть глубокую рану",
+      "visibility": "known_to_player",
+      "mode": "procedure",
+      "requirements": [
+        {
+          "kind": "item_quantity",
+          "itemRef": "sterile_dressing",
+          "quantity": 1,
+          "ownerRole": "provider"
+        },
+        {
+          "kind": "skill_tier",
+          "capabilityRef": "field_medicine",
+          "minimumTier": 2,
+          "actorRole": "provider"
+        }
+      ],
+      "resourcePolicy": {
+        "reserveBeforeResolution": true,
+        "consumeOn": ["success", "partial_success", "failed_attempt"],
+        "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+        "mutations": [
+          {
+            "kind": "consume_requirement",
+            "scope": "common",
+            "milestoneOrdinal": null,
+            "requirementIndex": 0
+          }
+        ]
+      },
+      "resolution": {
+        "formulaKey": "mortal_wound_procedure_v1",
+        "difficulty": 15,
+        "rollSource": "accepted_d20",
+        "criticalPolicy": "natural_20_first_natural_1_last",
+        "modifierSource": {
+          "kind": "resolved_skill_tier",
+          "requirementIndex": 1
+        }
+      },
+      "outcomes": [
+        {
+          "bandId": "clean_close_success",
+          "minimumMargin": 5,
+          "maximumMargin": null,
+          "category": "success",
+          "result": [
+            { "kind": "stabilize" },
+            { "kind": "reduce_severity", "steps": 1 }
+          ]
+        },
+        {
+          "bandId": "clean_close_partial",
+          "minimumMargin": 0,
+          "maximumMargin": 4,
+          "category": "partial_success",
+          "result": [{ "kind": "stabilize" }]
+        },
+        {
+          "bandId": "clean_close_failed",
+          "minimumMargin": null,
+          "maximumMargin": -1,
+          "category": "failed_attempt",
+          "result": [{ "kind": "no_improvement" }]
+        }
+      ],
+      "interruption": null
+    }
+  ],
+  "knownRouteIds": ["clean_and_close_rank_iii"],
+  "completedRouteIds": []
+}
+```
+
+The client validates the unchanged retained graph against the destination-rank slot
+and power envelope before consuming the accepted roll. If the same graph exceeds the
+rank-II destination-rank slot and power envelope, the client rejects the route; it
+never prunes or weakens mechanics to make the result fit.
+
+After the ordered successful result applies `stabilize` and then
+`reduce_severity { steps: 1 }`, the client retires the current wound-owned effect
+group and rematerializes client-owned fresh effect IDs for every retained root.
+Only a newly successful category completes the route. `partial_success` and
+`failed_attempt` may publish their own declared scalar result, but they do not
+complete the route.
 
 ]]></content>

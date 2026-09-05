@@ -82,7 +82,11 @@ The proposal is closed. It contains exactly:
 
 Physical treatment remains setting-specific: medicine, herbs, crystals, procedures,
 facilities, or another evidence-backed route may be appropriate. Do not infer one
-universal medicine list. Spiritual wounds use the afterlife healing and natural-time
+universal medicine list. Every Mortal wound must include at least one complete treatment
+route with exact requirements, resource policy, resolution, and outcomes; an empty
+`treatment.routes` array is invalid. A declared route does not itself supply its provider,
+items, or skills: the client validates their current authority when treatment is attempted.
+Spiritual wounds use the afterlife healing and natural-time
 contracts described by their owning feature stages.
 
 ## wound_optional_creation_v1
@@ -148,6 +152,97 @@ dispelled or expired effects do not alter wound bytes, severity, care, or histor
 Conversely, healing retires the wound-owned active root/descendant group without
 touching unrelated effects. Saref memory suppression and other independently sourced
 effects are not wound consequences merely because the fiction mentions injury.
+
+## wound_roll_scope_v1
+
+A physical wound uses the shared `roll_modifier` from
+`OtherGuides/Effect_Materialization_Contract.md`, not a wound-only roll mechanic.
+Its payload contains exactly `operations`, `contribution`, and one closed `scope`.
+The contribution is `advantage` or `disadvantage`; a harmful wound consequence uses
+the latter within the severity envelope. The two legal forms are:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "all" }
+}
+```
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+`scope.kind=all` is exactly `{ "kind": "all" }`: it forbids `skillId` and remains
+limited to the exact target/realm and declared registered operations. `scope.kind=skill`
+is exactly `{ "kind": "skill", "skillId": "<canonical-id>" }`: it requires one
+non-empty permanent ID and exactly `operations=["skill_check"]`. Missing scope is
+invalid, never an implicit broad default. Extra fields, name/alias selectors, arrays,
+multiple IDs, or focused `attack_roll`, `guard`, or mixed operations are invalid.
+The common roll operation registry is exactly `attack_roll`, `defense_roll`,
+`skill_check`, `saving_throw`, `damage_roll`, and `initiative_roll`; `guard` is not a
+legal common roll operation even under broad scope.
+The selector is semantic policy, not a scalar `parameterBounds` value.
+
+Read `turn_request.json.effectSkillScopeCatalog` before writing the selector. It has
+`schemaVersion: 1` and `targets[]`; each target row carries exact `realm`, `kind`,
+`targetId`, and `skills[]` containing `skillId` and `displayName`.
+The skillId must come from the exact target row. The detached bounded catalog is
+advisory: editing it cannot grant a skill, owner, or binding. The client independently
+checks the offered pre-turn canonical catalog and the final composed accepted roots;
+the same exact usable active/passive skill must belong to the wound owner in both.
+Consequently same-response new skills are not selectable, and same-response removal
+or disablement rejects the new binding. Missing target catalogs, stale/wrong-owner
+IDs, idless or inactive skills, terminal rows, duplicates, ambiguity, and Unicode-
+confusable identities fail closed. There is no fuzzy or display-name matching.
+
+The severity budget counts a whole component, not its operation count or scope fields:
+one focused component consumes one consequence slot. A whole broad component likewise
+consumes one slot even when it lists several allowed operations. To affect two exact
+skills, author two components and two slots within the severity envelope. The complete
+component belongs to one root's `slots[]` entry with `profileKey: "roll_modifier"`;
+the selector never adds power or permits duplicate consequences at the same exact
+`(operation, scope.kind, focused skillId)` coordinate. Keep the complete definition's
+`links` empty, and never add an ordinary `effectChanges[]` application for a wound root.
+This is only a mechanical selector: there is no catalog of ready-made wounds. The GM
+still chooses the injury's setting-specific physical nature, name, symptoms, location,
+prognosis, treatment model, and acquisition scene.
+
+After successful materialization, legitimate skill loss only derives dormancy:
+later missing skill makes the component inactive without healing/removing the wound.
+Skill unavailability alone does not change wound/effect identity, severity, treatment,
+duration, or history. A same-name or similar-name replacement with a different ID stays
+unaffected; only restoration of the same permanent ID as a usable, unambiguous current
+skill can reactivate a still-active component. Normal expiry, healing, and treatment
+remain separate. Authorized treatment rematerialization preserves the unchanged accepted
+selector even while it is dormant; it does not pick a replacement skill. A focused
+component applies only when the trusted roll's exact actor, realm, `skill_check`, and
+skill ID match, with the common non-escalating advantage/disadvantage reduction.
+
+An invalid new selector publishes no wound, effect, history, or output. For a safely
+repairable selector failure, use the current `wound_materialization_repair` packet and
+its exact original path, such as
+`woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.scope.skillId`.
+Start from `preservedProposal`, correct only the listed paths, and resubmit the complete
+semantic turn with the acquisition narration preserved verbatim. Never broaden the
+scope implicitly, guess an ID, rewrite canonical state, or change the bound opportunity,
+owner, source, or event. If the packet has no lawful exact correction, obtain fresh
+authority. Changing the selector is not an exact replay; see the repair rules below.
+
+Player-facing text uses Russian skill names or a readable unavailable-skill explanation,
+never `skillId`, catalog rows, repair paths, or hidden-effect details. The two complete
+Mortal examples are `wound_mortal_roll_scope_all_v1` and
+`wound_mortal_roll_scope_skill_v1` in `Examples/E_CLI_Wound_Materialization.txt`.
+For afterlife, spiritual arts are not Mortal skill IDs: the common example's
+`operations=["defense_roll"]` uses `scope.kind=all` and contributes only to a real typed
+defense roll. Spiritual guard is not a roll_modifier operation or a `defense_roll` alias;
+it uses the dedicated spiritual condition/wound-profile contracts. The eight dedicated
+spiritual-wound profiles keep their own payload contract rather than borrowing the
+Mortal `effectSkillScopeCatalog`.
 
 ## wound_mortal_deterioration_policy_v1
 
@@ -285,6 +380,105 @@ The creation envelope still needs every field and materialization section requir
 Mortal Location Materialization v1. See
 `Examples/E_CLI_Wound_Materialization.txt` for all three routes and the link rejection.
 
+## mortal_wound_treatment_reduce_severity_v1
+
+This is one complete procedure route authored for an untreated rank-III Mortal
+physical wound. Its retained consequence graph has exactly two slots and is already
+legal at rank II. The GM authors the wound graph and route result; the GM does not
+author permanent wound/effect identity or publication authority.
+
+```json
+{
+  "diagnosisPaths": [],
+  "routes": [
+    {
+      "routeId": "clean_and_close_rank_iii",
+      "displayName": "Очистить, стабилизировать и закрыть глубокую рану",
+      "visibility": "known_to_player",
+      "mode": "procedure",
+      "requirements": [
+        {
+          "kind": "item_quantity",
+          "itemRef": "sterile_dressing",
+          "quantity": 1,
+          "ownerRole": "provider"
+        },
+        {
+          "kind": "skill_tier",
+          "capabilityRef": "field_medicine",
+          "minimumTier": 2,
+          "actorRole": "provider"
+        }
+      ],
+      "resourcePolicy": {
+        "reserveBeforeResolution": true,
+        "consumeOn": ["success", "partial_success", "failed_attempt"],
+        "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+        "mutations": [
+          {
+            "kind": "consume_requirement",
+            "scope": "common",
+            "milestoneOrdinal": null,
+            "requirementIndex": 0
+          }
+        ]
+      },
+      "resolution": {
+        "formulaKey": "mortal_wound_procedure_v1",
+        "difficulty": 15,
+        "rollSource": "accepted_d20",
+        "criticalPolicy": "natural_20_first_natural_1_last",
+        "modifierSource": {
+          "kind": "resolved_skill_tier",
+          "requirementIndex": 1
+        }
+      },
+      "outcomes": [
+        {
+          "bandId": "clean_close_success",
+          "minimumMargin": 5,
+          "maximumMargin": null,
+          "category": "success",
+          "result": [
+            { "kind": "stabilize" },
+            { "kind": "reduce_severity", "steps": 1 }
+          ]
+        },
+        {
+          "bandId": "clean_close_partial",
+          "minimumMargin": 0,
+          "maximumMargin": 4,
+          "category": "partial_success",
+          "result": [{ "kind": "stabilize" }]
+        },
+        {
+          "bandId": "clean_close_failed",
+          "minimumMargin": null,
+          "maximumMargin": -1,
+          "category": "failed_attempt",
+          "result": [{ "kind": "no_improvement" }]
+        }
+      ],
+      "interruption": null
+    }
+  ],
+  "knownRouteIds": ["clean_and_close_rank_iii"],
+  "completedRouteIds": []
+}
+```
+
+The client validates the unchanged retained graph against the destination-rank slot
+and power envelope before consuming the accepted roll. If the same graph exceeds the
+rank-II destination-rank slot and power envelope, the client rejects the route; it
+never prunes or weakens mechanics to make the result fit.
+
+After the ordered successful result applies `stabilize` and then
+`reduce_severity { steps: 1 }`, the client retires the current wound-owned effect
+group and rematerializes client-owned fresh effect IDs for every retained root.
+Only a newly successful category completes the route. `partial_success` and
+`failed_attempt` may publish their own declared scalar result, but they do not
+complete the route.
+
 ## Validation, replay, and repair
 
 Unknown fields, wrong types, duplicate or stale decisions, over-maximum severity,
@@ -351,6 +545,10 @@ operation key.
 
 ## Worked examples
 
+- Complete rank-II broad and exact-skill physical wounds, including the advisory catalog,
+  scene, source definition, and one-component/one-slot accounting, are in
+  `Examples/E_CLI_Wound_Materialization.txt` under `wound_mortal_roll_scope_all_v1`
+  and `wound_mortal_roll_scope_skill_v1`.
 - The exact eight spiritual component fragments and one complete GM-authored spiritual
   wound source graph are in `Examples/E_CLI_Effect_Materialization.txt` under
   `wound_spiritual_profiles_v1` and `wound_spiritual_source_worked_v1`.

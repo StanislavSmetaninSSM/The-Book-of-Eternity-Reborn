@@ -166,6 +166,10 @@ public sealed partial class ExampleDocumentationValidationTests
         {
             ["wound_treatment_scene_authority_v1"] =
                 "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_roll_scope_all_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_roll_scope_skill_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["effect_mortal_roll_scope_skill_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["afterlife_roll_scope_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["effect_mortal_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_apply_stack_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_event_report_v1"] = "E_CLI_Ink_Feather_Actions.txt",

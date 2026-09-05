@@ -10,6 +10,40 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void WoundRollScopeDocumentation_ExplainsExactChoiceAndIndependentWoundLifecycle()
+    {
+        foreach (var file in new[]
+                 {
+                     "Effect_Materialization_Contract.md",
+                     "Wound_Materialization_Contract.md"
+                 })
+        {
+            var contract = ReadRepoFile("OtherGuides", file);
+            foreach (var required in new[]
+                     {
+                         "effectSkillScopeCatalog",
+                         "scope.kind=all",
+                         "scope.kind=skill",
+                         "skillId must come from the exact target row",
+                         "one focused component consumes one consequence slot",
+                         "same-response new skills are not selectable",
+                         "later missing skill makes the component inactive without healing/removing the wound",
+                         "no fuzzy or display-name matching",
+                         "no catalog of ready-made wounds"
+                     })
+            {
+                Assert.Contains(required, contract, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        var woundExamples = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        Assert.Contains("## wound_mortal_roll_scope_all_v1", woundExamples, StringComparison.Ordinal);
+        Assert.Contains("## wound_mortal_roll_scope_skill_v1", woundExamples, StringComparison.Ordinal);
+        Assert.Contains("## effect_mortal_roll_scope_skill_v1",
+            ReadRepoFile("Examples", "E_CLI_Effect_Materialization.txt"), StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WoundMaterializationContract_DocumentsStrictConstructorAndAuthority()
     {
         var contract = ReadRepoFile(
@@ -278,6 +312,131 @@ public sealed partial class PromptDocumentationCoverageTests
         {
             Assert.Contains(required, daemon, StringComparison.OrdinalIgnoreCase);
         }
+    }
+
+    [Fact]
+    public void WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute()
+    {
+        const string marker = "mortal_wound_treatment_reduce_severity_v1";
+        var contract = ReadRepoFile(
+            "OtherGuides",
+            "Wound_Materialization_Contract.md");
+        var example = ReadRepoFile(
+            "Examples",
+            "E_CLI_Wound_Materialization.txt");
+        var manifest = ReadRepoFile(
+            "Examples",
+            "example_validation_manifest.json");
+
+        static JsonObject ReadWorkedTreatment(string document, string marker)
+        {
+            var match = Regex.Match(
+                document,
+                Regex.Escape(marker) + @".*?```json\s*(?<json>.*?)```",
+                RegexOptions.Singleline | RegexOptions.CultureInvariant);
+            Assert.True(match.Success, $"Missing worked treatment JSON for {marker}.");
+            return Assert.IsType<JsonObject>(
+                JsonNode.Parse(match.Groups["json"].Value));
+        }
+
+        var contractTreatment = ReadWorkedTreatment(contract, marker);
+        var exampleTreatment = ReadWorkedTreatment(example, marker);
+        Assert.True(
+            JsonNode.DeepEquals(contractTreatment, exampleTreatment),
+            "The GM guide and CLI example must publish the exact same treatment JSON.");
+
+        var wound = WoundContractTestData.CreateActiveWound();
+        wound["severity"]!["value"] = "III";
+        wound["severity"]!["rank"] = 3;
+        wound["severity"]!["maximumAtCreation"] = "III";
+        wound["consequences"]!["slotBudget"] = 3;
+        wound["treatment"] = contractTreatment.DeepClone();
+
+        var parsed = WoundMaterializationContract.Parse(
+            wound.ToJsonString(),
+            marker + ".wound");
+        Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        var parsedWound = Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+
+        var projectedTreatment = MortalWoundTreatmentContract.ParseProjection(
+            parsedWound.Treatment,
+            marker + ".wound.treatment",
+            parsedWound.Owner.Realm,
+            "player",
+            parsedWound.Severity.Rank,
+            parsedWound.Complications,
+            parsedWound.Recovery.DeteriorationPolicy);
+        Assert.True(projectedTreatment.IsValid, string.Join(" | ",
+            projectedTreatment.Issues.Select(issue =>
+                $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        var treatment = Assert.IsType<MortalWoundTreatmentDefinition>(
+            projectedTreatment.Treatment);
+        var route = Assert.IsType<MortalWoundProcedureRouteDefinition>(
+            Assert.Single(treatment.Routes));
+        var success = Assert.Single(
+            route.Bands,
+            static band => string.Equals(
+                band.Category,
+                "success",
+                StringComparison.Ordinal));
+        Assert.Collection(
+            success.DeclaredResult,
+            operation => Assert.IsType<MortalWoundStabilizeOperation>(operation),
+            operation => Assert.Equal(
+                1,
+                Assert.IsType<MortalWoundReduceSeverityOperation>(operation).Steps));
+        Assert.Contains(route.Bands, static band =>
+            string.Equals(band.Category, "partial_success", StringComparison.Ordinal));
+        Assert.Contains(route.Bands, static band =>
+            string.Equals(band.Category, "failed_attempt", StringComparison.Ordinal));
+
+        var destination = MortalWoundTreatmentSeverityReductionPlanner.Project(
+            parsedWound,
+            1,
+            "turn_43:treatment_reduced_severity");
+        Assert.True(destination.IsValid, string.Join(" | ", destination.Issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        Assert.Equal(2, destination.Projection!.ProvisionalAfter.Severity.Rank);
+        Assert.Equal("II", destination.Projection.ProvisionalAfter.Severity.Value);
+        Assert.Equal(2, destination.Projection.ProvisionalAfter.Consequences.SlotBudget);
+
+        foreach (var document in new[] { contract, example })
+        {
+            foreach (var required in new[]
+                     {
+                         "GM authors the wound graph and route result",
+                         "destination-rank slot and power envelope",
+                         "rejects the route",
+                         "never prunes or weakens mechanics",
+                         "client-owned fresh effect IDs",
+                         "Only a newly successful category completes the route",
+                         "partial_success",
+                         "failed_attempt"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.OrdinalIgnoreCase);
+            }
+        }
+
+        var documentedJson = contractTreatment.ToJsonString();
+        foreach (var privateField in new[]
+                 {
+                     "effectId", "woundId", "terminalOperations", "sourceEffectIds",
+                     "fingerprint", "authorityFingerprint", "operationKey"
+                 })
+        {
+            Assert.DoesNotContain(
+                $"\"{privateField}\"",
+                documentedJson,
+                StringComparison.Ordinal);
+        }
+
+        Assert.Contains(marker, manifest, StringComparison.Ordinal);
+        Assert.Contains(
+            nameof(WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute),
+            manifest,
+            StringComparison.Ordinal);
     }
 
     [Fact]

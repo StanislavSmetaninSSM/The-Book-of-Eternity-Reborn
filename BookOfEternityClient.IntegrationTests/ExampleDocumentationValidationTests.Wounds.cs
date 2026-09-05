@@ -12,6 +12,182 @@ public sealed partial class ExampleDocumentationValidationTests
             .OrderBy(static profile => profile, StringComparer.Ordinal)
             .ToArray();
 
+    [Theory]
+    [InlineData("wound_mortal_roll_scope_all_v1", "all")]
+    [InlineData("wound_mortal_roll_scope_skill_v1", "skill")]
+    public void MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill(
+        string marker,
+        string scopeKind)
+    {
+        var fences = ParseNamedJsonFences("E_CLI_Wound_Materialization.txt", marker);
+        Assert.Equal(2, fences.Count);
+        var skillAuthority = CreateRollScopeExampleAuthority();
+        Assert.True(JsonNode.DeepEquals(
+            skillAuthority.CreateGmCatalog(),
+            fences[0]["effectSkillScopeCatalog"]));
+
+        var response = fences[1];
+        var decision = Assert.IsType<JsonObject>(Assert.Single(
+            response["woundDecisions"]!.AsArray()));
+        var proposal = Assert.IsType<JsonObject>(decision["proposal"]);
+        var wrapper = Assert.IsType<JsonObject>(Assert.Single(
+            proposal["consequenceDefinitions"]!.AsArray()));
+        var definition = Assert.IsType<JsonObject>(wrapper["definition"]);
+        var components = Assert.IsType<JsonArray>(definition["components"]);
+        var component = Assert.IsType<JsonObject>(Assert.Single(components));
+        Assert.Equal("roll_modifier", component["profile"]!.GetValue<string>());
+        Assert.Equal(scopeKind, component["payload"]!["scope"]!["kind"]!.GetValue<string>());
+        Assert.Equal("skill_check", Assert.Single(
+            component["payload"]!["operations"]!.AsArray())!.GetValue<string>());
+        if (scopeKind == "skill")
+            Assert.Equal("skill_lockpicking", component["payload"]!["scope"]!["skillId"]!.GetValue<string>());
+        else
+            Assert.False(component["payload"]!["scope"]!.AsObject().ContainsKey("skillId"));
+        Assert.Empty(definition["links"]!.AsArray());
+        var slot = Assert.IsType<JsonObject>(Assert.Single(wrapper["root"]!["slots"]!.AsArray()));
+        Assert.Equal("roll_modifier", slot["profileKey"]!.GetValue<string>());
+
+        var (binding, opportunity) = CreateRollScopeExampleOpportunity(
+            decision["opportunityRef"]!.GetValue<string>());
+        var scene = response["response"]!.GetValue<string>();
+        var rawDecision = JsonSerializer.SerializeToElement(decision);
+        var composed = WoundResponseInputComposer.Compose(
+            binding, new[] { opportunity }, new[] { rawDecision }, scene,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+        Assert.True(composed.Success, DescribeRollScopeExampleIssues(composed.Issues));
+        Assert.Equal(2, Assert.Single(composed.Transitions).ProposedAfter.Severity.Rank);
+        var scopeIssues = WoundResponseInputComposer.ValidateSkillScopes(
+            binding, new[] { new WoundResponseCommandDraft(opportunity, rawDecision, scene) },
+            composed.Transitions, skillAuthority, out var locations);
+        Assert.Empty(scopeIssues);
+        Assert.NotNull(locations);
+
+        Assert.Contains(proposal["display"]!["acquisitionNarration"]!.GetValue<string>(),
+            scene, StringComparison.Ordinal);
+        foreach (var playerText in new[]
+                 {
+                     scene, proposal["display"]!.ToJsonString(),
+                     definition["display"]!.ToJsonString(), slot["readableSummary"]!.GetValue<string>()
+                 })
+            AssertRollScopeExamplePlayerText(playerText);
+        foreach (var forbidden in new[] { "woundId", "effectId", "transitionId", "applicationRef", "effectChanges" })
+            Assert.DoesNotContain("\"" + forbidden + "\"", response.ToJsonString(), StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void EffectRollScopeWorkedExample_UsesCommonExactSelector()
+    {
+        var fences = ParseNamedJsonFences(
+            "E_CLI_Effect_Materialization.txt", "effect_mortal_roll_scope_skill_v1");
+        Assert.Equal(3, fences.Count);
+        var skillAuthority = CreateRollScopeExampleAuthority(includeSourceSkill: true);
+        Assert.True(JsonNode.DeepEquals(
+            skillAuthority.CreateGmCatalog(), fences[0]["effectSkillScopeCatalog"]));
+        var source = fences[1];
+        var definition = Assert.IsType<JsonObject>(Assert.Single(
+            source["activeEffectDefinitions"]!.AsArray()));
+        using var document = JsonDocument.Parse(source["activeEffectDefinitions"]!.ToJsonString());
+        Assert.Empty(EffectSourceDefinitionContract.ValidateArray(
+            document.RootElement, "effect_mortal_roll_scope_skill_v1", "mortal_world"));
+        var components = Assert.IsType<JsonArray>(definition["components"]);
+        var component = Assert.IsType<JsonObject>(Assert.Single(components));
+        Assert.Equal("roll_modifier", component["profile"]!.GetValue<string>());
+        Assert.Equal("skill", component["payload"]!["scope"]!["kind"]!.GetValue<string>());
+        Assert.Equal("skill_lockpicking", component["payload"]!["scope"]!["skillId"]!.GetValue<string>());
+        var response = fences[2];
+        var command = Assert.IsType<JsonObject>(Assert.Single(response["effectChanges"]!.AsArray()));
+        Assert.Equal("apply", command["operation"]!.GetValue<string>());
+        Assert.Equal("skill", command["source"]!["kind"]!.GetValue<string>());
+        Assert.Equal(source["skillId"]!.GetValue<string>(), command["source"]!["sourceId"]!.GetValue<string>());
+        Assert.Equal("skill_precision_focus", command["source"]!["sourceId"]!.GetValue<string>());
+        Assert.Equal(definition["definitionKey"]!.GetValue<string>(),
+            command["source"]!["definitionKey"]!.GetValue<string>());
+        Assert.Equal("player", command["target"]!["kind"]!.GetValue<string>());
+        Assert.Equal("player_current", command["target"]!["targetId"]!.GetValue<string>());
+        Assert.Equal("accepted_turn", command["eventRef"]!["kind"]!.GetValue<string>());
+        Assert.Equal("turn_42", command["eventRef"]!["authorityId"]!.GetValue<string>());
+        Assert.Empty(command["parameters"]!.AsObject());
+        Assert.Empty(skillAuthority.ValidateNewComponents(
+            new EffectTargetKey("mortal_world", "player", "player_current"), components, "example.components"));
+        AssertRollScopeExamplePlayerText(response["response"]!.GetValue<string>());
+        AssertRollScopeExamplePlayerText(command["reason"]!.GetValue<string>());
+        AssertRollScopeExamplePlayerText(definition["display"]!.ToJsonString());
+    }
+
+    [Fact]
+    public void AfterlifeEffectRollScopeWorkedExample_RemainsBroad()
+    {
+        var source = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "afterlife_effect_profile_v1")[0];
+        var definitions = Assert.IsType<JsonArray>(source["activeEffectDefinitions"]);
+        using var document = JsonDocument.Parse(definitions.ToJsonString());
+        foreach (var realm in new[] { "chaos_sea", "shining_abode" })
+            Assert.Empty(EffectSourceDefinitionContract.ValidateArray(document.RootElement, "afterlifeRollScope", realm));
+        var component = Assert.IsType<JsonObject>(Assert.Single(
+            Assert.Single(definitions)!["components"]!.AsArray()));
+        Assert.Equal("roll_modifier", component["profile"]!.GetValue<string>());
+        var payload = component["payload"]!;
+        Assert.Equal("defense_roll", Assert.Single(payload["operations"]!.AsArray())!.GetValue<string>());
+        Assert.Equal("all", payload["scope"]!["kind"]!.GetValue<string>());
+        Assert.Single(payload["scope"]!.AsObject());
+    }
+
+    private static EffectRollSkillScopeAuthority CreateRollScopeExampleAuthority(
+        bool includeSourceSkill = false)
+    {
+        var skills = new JsonArray(new JsonObject
+        {
+            ["skillId"] = "skill_lockpicking", ["skillName"] = "Взлом",
+            ["active"] = true, ["lifecycle"] = "active"
+        });
+        if (includeSourceSkill)
+            skills.Add(new JsonObject
+            {
+                ["skillId"] = "skill_precision_focus", ["skillName"] = "Точное сосредоточение",
+                ["active"] = true, ["lifecycle"] = "active"
+            });
+        // Independent canonical fixture; never derive authority from the advisory request.
+        var roots = new Dictionary<string, JsonNode?>
+        {
+            ["game_state/player/skills_active.json"] = new JsonObject { ["activeSkillChanges"] = skills }
+        };
+        return EffectRollSkillScopeAuthority.Build(new(roots, roots));
+    }
+
+    private static (WoundAcceptedTurnBinding Binding, WoundOpportunityAuthority Opportunity)
+        CreateRollScopeExampleOpportunity(string publicRef)
+    {
+        var evidence = new WoundOpportunityEventEvidence(
+            "narrative", "narrative_injury", "event_scope_example", "harmful", 2,
+            "Принятый удар может оставить самостоятельную рану.");
+        var acceptedEvent = new WoundAcceptedEventAuthority(
+            "event_scope_example", "narrative_injury", "event_scope_example",
+            WoundOpportunityEventEvidenceFingerprint.Compute(evidence));
+        var events = new[] { acceptedEvent };
+        var binding = new WoundAcceptedTurnBinding(
+            "session_scope_example", "request_scope_example", "snapshot_scope_example",
+            "mortal_world", 42, events, WoundAcceptedEventSetFingerprint.Compute(events));
+        var result = WoundOpportunityAuthority.Compose(new WoundOpportunityBuildRequest(
+            binding, "opportunity_scope_example", publicRef, acceptedEvent.EventRef,
+            new WoundOwnerCoordinate("mortal_world", "player", "player_current", WoundCarrierCatalog.PlayerPath),
+            "physical", "mortal_narrative_injury_v1", "combat_action", "action_scope_example", "active",
+            evidence, 2, null, new WoundOpportunitySafeContext(
+                "игрок", "последствия принятого удара", new[] { "anatomical", "systemic", "other" })));
+        Assert.True(result.Success, DescribeRollScopeExampleIssues(result.Issues));
+        return (binding, Assert.IsType<WoundOpportunityAuthority>(result.Opportunity));
+    }
+
+    private static string DescribeRollScopeExampleIssues(IEnumerable<ValidationIssue> issues) =>
+        string.Join(Environment.NewLine, issues.Select(static issue => issue.ToString()));
+
+    private static void AssertRollScopeExamplePlayerText(string text)
+    {
+        foreach (var forbidden in new[]
+                 {
+                     "skill_lockpicking", "skill_precision_focus", "effectId", "woundId", "game_state/"
+                 })
+            Assert.DoesNotContain(forbidden, text, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void WoundMaterializationManifest_CoversProfileMatrixAndWorkedSourceGraph()
     {
