@@ -1029,17 +1029,18 @@ or duplicate IDs. Independent final review found 0 Critical, 0 Important, and
 - Modify: `BookOfEternityClient/Models/TurnRequest.cs`
 - Modify: `BookOfEternityClient/Services/LiveTurnPreparationService.cs`
 - Modify: `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs`
+- Modify: `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs`
 
 **Interfaces:**
 - Consumes: pre-turn `EffectRollSkillScopeAuthority.CreateGmCatalog()`.
 - Produces: `turn_request.json.effectSkillScopeCatalog`, advisory to the GM and never accepted as authorization.
 
-- [ ] **Step 1: Add RED request-staging tests in Integration**
+- [x] **Step 1: Add RED request-staging tests in Integration**
 
 Create player and nearby-NPC skills, stage one live-helper request and one ordinary GameEngine request, and assert the exact bounded catalog. Also assert idless/inactive/duplicate/confusable rows are omitted, afterlife-only direct requests contain `{schemaVersion:1,targets:[]}`, and editing the request catalog cannot authorize an invalid effect during accepted-state validation.
 
-- [ ] **Step 2: Run RED Integration selection**
+- [x] **Step 2: Run RED Integration selection**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~EffectSkillScopeLifecycleTests&FullyQualifiedName~TurnRequestCatalog"
@@ -1047,7 +1048,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 
 Expected: FAIL because `TurnRequest` has no catalog property.
 
-- [ ] **Step 3: Add the request property with an explicit empty default**
+- [x] **Step 3: Add the request property with an explicit empty default**
 
 ```csharp
 [JsonPropertyName("effectSkillScopeCatalog")]
@@ -1060,11 +1061,11 @@ public JsonObject EffectSkillScopeCatalog { get; set; } = new()
 
 The default guarantees a closed explicit empty catalog on afterlife-only or non-effect request routes.
 
-- [ ] **Step 4: Attach canonical catalogs at the two ordinary staging boundaries**
+- [x] **Step 4: Attach canonical catalogs at the two ordinary staging boundaries**
 
 In `LiveTurnPreparationService.PrepareBoundAsync`, build from the same `writeLease` before the pending snapshot is hashed. In `GameEngine.ProcessPlayerTurn`, load the current catalog immediately before `CreateCanonicalBaselineSnapshotAsync` and assign a detached `JsonObject`. Acceptance must continue recomputing authority from signed canonical roots; it must never trust `TurnRequest.EffectSkillScopeCatalog`.
 
-- [ ] **Step 5: Run GREEN and commit**
+- [x] **Step 5: Run GREEN and commit**
 
 Run the Step 2 command.
 
@@ -1074,6 +1075,21 @@ Expected: PASS for live-helper, ordinary, empty-afterlife, filtering, and tamper
 git add BookOfEternityClient/Models/TurnRequest.cs BookOfEternityClient/Services/LiveTurnPreparationService.cs BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs
 git commit -m "feat(gm): expose selectable effect skill scopes (#1536)"
 ```
+
+Closure (2026-09-05): implemented in `6b511724` and review correction
+`ba1d8f31`; the latter isolates catalog loading to the three canonical skill
+roots so unrelated malformed effect carriers cannot erase valid choices, while
+a malformed skill root fails closed to an explicit empty catalog. Initial
+request-staging RED was 1/4 (`20260905-141703-069-18520-1180617fd3e74fce9471b2b90a2e549e-focused`);
+the isolation regression then produced the intended 4/5 RED
+(`20260905-144710-065-19280-4d6440f17ad041ec886522d94ab273fd-focused`).
+Final Integration evidence is 6/6
+(`20260905-145410-716-40120-da6b7f88ee13406082f2498a272e8e2e-focused`),
+with adjacent snapshot/resolver 93/93 and live-preparation 5/5 controls, all
+warning/error/timeout/duplicate-free. The tamper row crosses the real validated
+pending-snapshot and accepted-state boundary and proves byte-exact zero
+publication plus no retained handoff. Independent final review found 0
+Critical, 0 Important, and 0 Minor findings.
 
 ---
 
