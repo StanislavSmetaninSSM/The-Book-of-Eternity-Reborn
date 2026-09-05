@@ -38,13 +38,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_normal_uses_lowest_free_die",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = ResolveCurrentTreatment(
+        var flow = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_replay",
-            scenario.RouteId);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_replay",
+                scenario.RouteId),
+            "exact replay publication");
         Assert.NotEmpty(AsObjects(ReadRequiredProperty(flow.Resolution, "OutcomeIntents")));
-        ComposeAndPublishTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();
 
@@ -102,12 +105,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_normal_uses_lowest_free_die",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = ResolveCurrentTreatment(
+        var flow = PersistAndRehydrateProcedurePublication(
             fixture,
-            "procedure",
-            scenario.OperationKey + "_precedence",
-            scenario.RouteId);
-        ComposeAndPublishTreatment(fixture, flow);
+            ResolveCurrentTreatment(
+                fixture,
+                "procedure",
+                scenario.OperationKey + "_precedence",
+                scenario.RouteId),
+            "conflicting fingerprint replay publication");
+        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
         fixture.RestartForReplay();
 
         var coordinates = ReadRequiredProperty(flow.Request, "Coordinates");
