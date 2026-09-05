@@ -80,7 +80,7 @@ internal static class EffectPlayerProjection
             var entries = input.Snapshot.Effects
                 .Where(effect => MatchesScope(effect, input))
                 .OrderBy(static effect => effect.EffectId, StringComparer.Ordinal)
-                .Select(BuildEntry)
+                .Select(effect => BuildEntry(effect, input.Snapshot.SkillScopeAuthority))
                 .Where(static entry => entry != null)
                 .Cast<EffectPlayerEntry>()
                 .ToArray();
@@ -115,7 +115,7 @@ internal static class EffectPlayerProjection
 
         foreach (var accepted in input.Snapshot.Effects.Where(effect => MatchesScope(effect, input)))
         {
-            var entry = BuildEntry(accepted);
+            var entry = BuildEntry(accepted, input.Snapshot.SkillScopeAuthority);
             if (entry == null)
                 continue;
 
@@ -154,7 +154,9 @@ internal static class EffectPlayerProjection
         (input.TargetKind == null || string.Equals(effect.TargetKind, input.TargetKind, StringComparison.Ordinal)) &&
         (input.TargetId == null || string.Equals(effect.TargetId, input.TargetId, StringComparison.Ordinal));
 
-    private static EffectPlayerEntry? BuildEntry(EffectAcceptedInstance accepted)
+    private static EffectPlayerEntry? BuildEntry(
+        EffectAcceptedInstance accepted,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
     {
         var effect = accepted.CanonicalEffect;
         if (!effect.TryGetProperty("display", out var display) ||
@@ -179,10 +181,14 @@ internal static class EffectPlayerProjection
         if (effect.TryGetProperty("components", out var components) &&
             components.ValueKind == JsonValueKind.Array)
         {
+            var target = new EffectTargetKey(
+                accepted.Realm,
+                accepted.TargetKind,
+                accepted.TargetId);
             foreach (var component in components.EnumerateArray()
                          .OrderBy(static component => ReadInt(component, "priority")))
             {
-                facts.Add(ProjectComponent(component));
+                facts.Add(ProjectComponent(component, target, skillScopeAuthority));
             }
         }
 
@@ -243,7 +249,10 @@ internal static class EffectPlayerProjection
         };
     }
 
-    private static EffectPlayerFact ProjectComponent(JsonElement component)
+    private static EffectPlayerFact ProjectComponent(
+        JsonElement component,
+        EffectTargetKey target,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
     {
         var profile = ReadString(component, "profile") ?? "effect";
         if (!component.TryGetProperty("payload", out var payload) ||
@@ -268,7 +277,7 @@ internal static class EffectPlayerProjection
             "roll_modifier" => new(
                 profile,
                 "Проверки",
-                $"{DescribeStringArray(payload, "operations")}: {DescribeToken(ReadString(payload, "contribution"))}"),
+                DescribeRollModifier(payload, target, skillScopeAuthority)),
             "resistance_modifier" => new(
                 profile,
                 "Сопротивление",
@@ -300,6 +309,69 @@ internal static class EffectPlayerProjection
             _ => throw new InvalidOperationException("Accepted effect contains an unregistered component profile.")
         };
     }
+
+    private static string DescribeRollModifier(
+        JsonElement payload,
+        EffectTargetKey target,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
+    {
+        var contribution = ReadString(payload, "contribution") switch
+        {
+            "advantage" => "Преимущество",
+            "disadvantage" => "Помеха",
+            _ => "Изменение броска"
+        };
+
+        if (!payload.TryGetProperty("scope", out var scope) ||
+            scope.ValueKind != JsonValueKind.Object)
+        {
+            return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+        }
+
+        var scopeKind = ReadString(scope, "kind");
+        if (string.Equals(scopeKind, "all", StringComparison.Ordinal) &&
+            HasExactlySkillCheckOperation(payload))
+            return $"{contribution} на все проверки навыков";
+
+        if (string.Equals(scopeKind, "all", StringComparison.Ordinal))
+        {
+            return $"{DescribeStringArray(payload, "operations")}: " +
+                   DescribeToken(ReadString(payload, "contribution"));
+        }
+
+        if (!string.Equals(scopeKind, "skill", StringComparison.Ordinal) ||
+            ReadString(scope, "skillId") is not { } skillId)
+        {
+            return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+        }
+
+        var resolution = skillScopeAuthority.ResolveCurrent(
+            target,
+            skillId,
+            "effect_player_projection.scope.skillId");
+        if (resolution.IsUsable && IsReadableSkillName(resolution.DisplayName, skillId))
+            return $"{contribution} на проверки навыка «{resolution.DisplayName}»";
+
+        if (resolution.State == EffectRollSkillScopeState.Unavailable &&
+            IsReadableSkillName(resolution.DisplayName, skillId))
+        {
+            return $"{contribution} на проверки навыка «{resolution.DisplayName}» — сейчас не действует";
+        }
+
+        return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+    }
+
+    private static bool IsReadableSkillName(string? displayName, string skillId) =>
+        !string.IsNullOrWhiteSpace(displayName) &&
+        !string.Equals(displayName, skillId, StringComparison.Ordinal) &&
+        !displayName.Contains("skill_", StringComparison.OrdinalIgnoreCase);
+
+    private static bool HasExactlySkillCheckOperation(JsonElement payload) =>
+        payload.TryGetProperty("operations", out var operations) &&
+        operations.ValueKind == JsonValueKind.Array &&
+        operations.GetArrayLength() == 1 &&
+        operations[0].ValueKind == JsonValueKind.String &&
+        string.Equals(operations[0].GetString(), "skill_check", StringComparison.Ordinal);
 
     private static EffectPlayerFact ProjectSpiritualWoundComponent(
         JsonElement payload,
