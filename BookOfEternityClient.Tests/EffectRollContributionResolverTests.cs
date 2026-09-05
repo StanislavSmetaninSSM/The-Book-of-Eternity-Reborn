@@ -742,14 +742,15 @@ public sealed class EffectRollContributionResolverTests
         string? privatePayloadSentinel = null,
         IReadOnlyList<string>? operations = null)
     {
-        var payload = new JsonObject
-        {
-            ["operations"] = new JsonArray((operations ?? new[] { "skill_check" })
-                .Select(static operation => (JsonNode?)operation)
-                .ToArray()),
-            ["contribution"] = contribution,
-            ["scope"] = scope
-        };
+        var operationArray = (operations ?? new[] { "skill_check" }).ToArray();
+        var scopeKind = scope["kind"]!.GetValue<string>();
+        var payload = string.Equals(scopeKind, "all", StringComparison.Ordinal)
+            ? EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                contribution,
+                operationArray)
+            : EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                scope["skillId"]!.GetValue<string>(),
+                contribution);
         if (privatePayloadSentinel is not null)
         {
             payload["privatePayload"] = privatePayloadSentinel;

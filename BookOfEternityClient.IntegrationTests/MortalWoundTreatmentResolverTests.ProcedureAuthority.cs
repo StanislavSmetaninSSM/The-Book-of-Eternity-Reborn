@@ -1775,18 +1775,16 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ["sourceId"] = "skill_field_medicine_01",
                 ["definitionKey"] = "t067a-treatment-roll-" + suffix
             };
-            var scope = new JsonObject
-            {
-                ["kind"] = contribution.ScopeKind
-            };
-            if (contribution.ScopeSkillId is not null)
-                scope["skillId"] = contribution.ScopeSkillId;
-            effect["components"]![0]!["payload"] = new JsonObject
-            {
-                ["operations"] = new JsonArray("skill_check"),
-                ["contribution"] = contribution.Contribution,
-                ["scope"] = scope
-            };
+            effect["components"]![0]!["payload"] = string.Equals(
+                contribution.ScopeKind,
+                "all",
+                StringComparison.Ordinal)
+                ? EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                    contribution.Contribution,
+                    "skill_check")
+                : EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                    contribution.ScopeSkillId!,
+                    contribution.Contribution);
             var createdAtTurn = 30 + ordinal;
             var eventRef = $"turn_{createdAtTurn}:t067a_effect_seed:{ordinal + 1}";
             var transitionId = $"effect_transition_t067a_seed_{ordinal + 1}";

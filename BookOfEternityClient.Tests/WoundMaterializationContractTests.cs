@@ -1,3 +1,4 @@
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -28,6 +29,79 @@ public sealed class WoundMaterializationContractTests
         Assert.Single(wound.Treatment.Routes);
         Assert.Empty(wound.Treatment.DiagnosisPaths);
         Assert.Empty(result.Issues);
+    }
+
+    [Fact]
+    public void Parse_BroadMultiOperationRollComponentRequiresOneReciprocalEntry()
+    {
+        var wound = WoundContractTestData.CreateActiveWound();
+        var sources = WoundContractTestData.CreateOwnedEffectSourcesForTarget(
+            wound["woundId"]!.GetValue<string>(),
+            "mortal_world",
+            "player",
+            ("effect_roll", "definition_roll", "roll_modifier"));
+        sources["definitions"]![0]!["components"]![0]!["payload"]!["operations"] =
+            new JsonArray("attack_roll", "defense_roll", "saving_throw");
+        wound["consequences"]!["ownedEffectSources"] = sources;
+        wound["consequences"]!["slotsUsed"] = 1;
+        wound["consequences"]!["entries"] = new JsonArray(new JsonObject
+        {
+            ["slot"] = 1,
+            ["profileKey"] = "roll_modifier",
+            ["effectId"] = "effect_roll",
+            ["readableSummary"] = "Несколько проверок затруднены одной раной."
+        });
+
+        var result = Parse(wound);
+
+        Assert.True(result.IsValid, DescribeIssues(result));
+        Assert.Single(Assert.IsType<WoundMaterializationEnvelope>(result.Wound)
+            .Consequences.Entries);
+    }
+
+    [Fact]
+    public void PersistedAdapter_BroadMultiOperationRollComponentRequiresOneRootSlot()
+    {
+        var definition = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_roll",
+            "mortal_world",
+            "definition_roll",
+            "roll_modifier");
+        definition["components"]![0]!["payload"]!["operations"] =
+            new JsonArray("attack_roll", "defense_roll", "saving_throw");
+        var result = WoundPersistedConsequenceEnvelopeAdapter.ValidateDetached(
+            severityRank: 2,
+            "persisted.consequences",
+            new[]
+            {
+                new WoundPersistedConsequenceDefinition(
+                    "definition_roll",
+                    "persisted.definitions[0]",
+                    JsonSerializer.SerializeToElement(definition))
+            },
+            new[]
+            {
+                new WoundPersistedConsequenceRoot(
+                    "effect_roll",
+                    "definition_roll",
+                    "persisted.roots[0]",
+                    new[]
+                    {
+                        new WoundEffectSlotAgreement(
+                            1,
+                            "roll_modifier",
+                            "Несколько проверок затруднены одной раной.")
+                    })
+            },
+            requireExactGlobalSlotAgreement: false,
+            persistedSlotsUsed: 1);
+
+        Assert.True(
+            result.IsValid,
+            string.Join(
+                Environment.NewLine,
+                result.Issues.Select(issue => $"{issue.FilePath}: {issue.Code}")));
+        Assert.Single(result.DerivedSlots);
     }
 
     [Fact]

@@ -384,16 +384,6 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
             var profile = ReadString(component, "profile");
             if (string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
                 continue;
-            if (string.Equals(profile, "roll_modifier", StringComparison.Ordinal) &&
-                component.TryGetProperty("payload", out var payload) &&
-                payload.ValueKind == JsonValueKind.Object &&
-                payload.TryGetProperty("operations", out var operations) &&
-                operations.ValueKind == JsonValueKind.Array)
-            {
-                for (var index = 0; index < operations.GetArrayLength(); index++)
-                    profiles.Add(profile);
-                continue;
-            }
             profiles.Add(profile);
         }
         return profiles;

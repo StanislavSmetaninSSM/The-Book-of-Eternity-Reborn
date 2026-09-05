@@ -1,9 +1,66 @@
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class EffectMaterializationSourceGuardTests
 {
+    [Fact]
+    public void ActiveRollModifierFixtureAndExecutableExamplesUseExplicitClosedScope()
+    {
+        var rows = new List<(string Source, JsonObject Component)>
+        {
+            (
+                "EffectMaterializationTestFixture",
+                EffectMaterializationTestFixture.CreateDefinition("roll_modifier")
+                    ["components"]![0]!.DeepClone().AsObject())
+        };
+        var focusedFixture = EffectMaterializationTestFixture
+            .CreateDefinition("roll_modifier")["components"]![0]!
+            .DeepClone().AsObject();
+        focusedFixture["payload"] =
+            EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                "skill_source_guard");
+        rows.Add(("EffectMaterializationTestFixture.focused", focusedFixture));
+
+        var mortalExample = ParseNamedJsonFence(
+            "Examples/E_CLI_Effect_Materialization.txt",
+            "## effect_mortal_profiles_v1");
+        rows.AddRange(mortalExample["registeredProfileFragments"]!.AsArray()
+            .OfType<JsonObject>()
+            .Where(component => string.Equals(
+                component["profile"]?.GetValue<string>(),
+                "roll_modifier",
+                StringComparison.Ordinal))
+            .Select(component => (
+                "Examples/E_CLI_Effect_Materialization.txt",
+                component)));
+
+        var afterlifeExample = ParseNamedJsonFence(
+            "Examples/E_CLI_Afterlife_Turns.txt",
+            "## afterlife_effect_profile_v1");
+        rows.AddRange(afterlifeExample["activeEffectDefinitions"]!.AsArray()
+            .OfType<JsonObject>()
+            .SelectMany(static definition => definition["components"]!.AsArray()
+                .OfType<JsonObject>())
+            .Where(component => string.Equals(
+                component["profile"]?.GetValue<string>(),
+                "roll_modifier",
+                StringComparison.Ordinal))
+            .Select(component => (
+                "Examples/E_CLI_Afterlife_Turns.txt",
+                component)));
+
+        Assert.Equal(4, rows.Count);
+        foreach (var (source, component) in rows)
+            AssertExplicitClosedRollScope(source, component);
+
+        foreach (var (source, component) in rows.Take(2))
+            AssertStructurallyValidRollComponent(source, component);
+    }
+
     [Fact]
     public void EffectPublication_MustOnlyRunThroughTheCommonAcceptedMechanicsPlan()
     {
@@ -327,6 +384,87 @@ public sealed class EffectMaterializationSourceGuardTests
         var endIndex = source.IndexOf(endMarker, startIndex, StringComparison.Ordinal);
         Assert.True(endIndex > startIndex, $"Missing source-guard end marker '{endMarker}'.");
         return source[startIndex..endIndex];
+    }
+
+    private static JsonObject ParseNamedJsonFence(
+        string relativePath,
+        string heading)
+    {
+        var source = ReadRepoFile(relativePath);
+        var headingIndex = source.IndexOf(heading, StringComparison.Ordinal);
+        Assert.True(headingIndex >= 0, $"Missing example heading '{heading}'.");
+        var fenceIndex = source.IndexOf("```json", headingIndex, StringComparison.Ordinal);
+        Assert.True(fenceIndex > headingIndex, $"Missing JSON fence after '{heading}'.");
+        var jsonStart = source.IndexOf('\n', fenceIndex);
+        Assert.True(jsonStart > fenceIndex, $"Missing JSON body after '{heading}'.");
+        var fenceEnd = source.IndexOf("```", jsonStart, StringComparison.Ordinal);
+        Assert.True(fenceEnd > jsonStart, $"Missing JSON fence end after '{heading}'.");
+        return JsonNode.Parse(source[(jsonStart + 1)..fenceEnd])!.AsObject();
+    }
+
+    private static void AssertExplicitClosedRollScope(
+        string source,
+        JsonObject component)
+    {
+        Assert.True(
+            string.Equals(
+                component["profile"]?.GetValue<string>(),
+                "roll_modifier",
+                StringComparison.Ordinal),
+            $"{source} must remain a roll_modifier component.");
+        var payload = Assert.IsType<JsonObject>(component["payload"]);
+        Assert.True(
+            payload.Select(static pair => pair.Key)
+                .Order(StringComparer.Ordinal)
+                .SequenceEqual(
+                    new[] { "contribution", "operations", "scope" },
+                    StringComparer.Ordinal),
+            $"{source} must expose exactly operations, contribution, and scope.");
+        var scope = Assert.IsType<JsonObject>(payload["scope"]);
+        var kind = scope["kind"]?.GetValue<string>();
+        if (string.Equals(kind, "all", StringComparison.Ordinal))
+        {
+            Assert.True(
+                scope.Select(static pair => pair.Key)
+                    .SequenceEqual(new[] { "kind" }, StringComparer.Ordinal),
+                $"{source} broad scope must contain only kind.");
+            return;
+        }
+
+        Assert.True(
+            string.Equals(kind, "skill", StringComparison.Ordinal),
+            $"{source} scope kind must be all or skill.");
+        Assert.True(
+            scope.Select(static pair => pair.Key)
+                .Order(StringComparer.Ordinal)
+                .SequenceEqual(new[] { "kind", "skillId" }, StringComparer.Ordinal),
+            $"{source} focused scope must contain exactly kind and skillId.");
+        Assert.False(
+            string.IsNullOrWhiteSpace(scope["skillId"]?.GetValue<string>()),
+            $"{source} focused scope must carry a permanent skillId.");
+        Assert.True(
+            payload["operations"]!.AsArray()
+                .Select(static operation => operation!.GetValue<string>())
+                .SequenceEqual(new[] { "skill_check" }, StringComparer.Ordinal),
+            $"{source} focused scope must target only skill_check.");
+    }
+
+    private static void AssertStructurallyValidRollComponent(
+        string source,
+        JsonObject component)
+    {
+        using var document = JsonDocument.Parse(component.ToJsonString());
+        var issues = new List<ValidationIssue>();
+        EffectComponentProfiles.ValidateComponent(
+            document.RootElement,
+            source + ".component",
+            issues);
+        Assert.True(
+            issues.Count == 0,
+            source + " must produce a structurally valid roll component:" +
+            Environment.NewLine + string.Join(
+                Environment.NewLine,
+                issues.Select(issue => $"{issue.Code}@{issue.FilePath}")));
     }
 
     private static string ReadRepoFile(string relativePath) =>

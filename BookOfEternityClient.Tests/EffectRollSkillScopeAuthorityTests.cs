@@ -320,15 +320,15 @@ public sealed class EffectRollSkillScopeAuthorityTests
 
     private static JsonObject Component(string kind, string? skillId = null)
     {
-        var scope = new JsonObject { ["kind"] = kind };
-        if (skillId != null) scope["skillId"] = skillId;
         return new JsonObject
         {
             ["componentId"] = "roll_test", ["priority"] = 0, ["profile"] = "roll_modifier",
-            ["payload"] = new JsonObject
-            {
-                ["operations"] = new JsonArray("skill_check"), ["contribution"] = "disadvantage", ["scope"] = scope
-            }
+            ["payload"] = string.Equals(kind, "all", StringComparison.Ordinal)
+                ? EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                    "disadvantage",
+                    "skill_check")
+                : EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                    skillId!)
         };
     }
 

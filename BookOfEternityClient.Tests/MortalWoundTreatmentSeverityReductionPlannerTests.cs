@@ -226,6 +226,77 @@ public sealed class MortalWoundTreatmentSeverityReductionPlannerTests
     }
 
     [Fact]
+    public void FinalizeReduction_SkillScopedRollPreservesSelectorAndReplacesRuntimeIdentity()
+    {
+        var source = CreateRankThreeWound("roll_modifier");
+        var sourceDefinition = source["consequences"]!["ownedEffectSources"]!
+            ["definitions"]![0]!.AsObject();
+        var sourceComponent = sourceDefinition["components"]![0]!.AsObject();
+        sourceComponent["payload"]!["operations"] = new JsonArray("skill_check");
+        sourceComponent["payload"]!["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_medicine"
+        };
+        var changedSelector = source.DeepClone().AsObject();
+        changedSelector["consequences"]!["ownedEffectSources"]!["definitions"]![0]!
+            ["components"]![0]!["payload"]!["scope"]!["skillId"] =
+            "skill_lockpicking";
+        var before = Parse(source);
+        var changed = Parse(changedSelector);
+        Assert.NotEqual(
+            WoundIdentityState.ComputeSemanticFingerprint(before),
+            WoundIdentityState.ComputeSemanticFingerprint(changed));
+
+        var priorBinding = Assert.Single(
+            before.Consequences.OwnedEffectSources.RootBindings);
+        var beforeDefinition = Assert.Single(
+            before.Consequences.OwnedEffectSources.Definitions);
+        var beforeScope = beforeDefinition.GetProperty("components")[0]
+            .GetProperty("payload").GetProperty("scope").GetRawText();
+        var beforeComponentId = beforeDefinition.GetProperty("components")[0]
+            .GetProperty("componentId").GetString();
+        var resolution = CreateSyntheticResolution("r1");
+        var preparation = CreateSyntheticPreparation(
+            resolution,
+            AssertValidProjection(before, 1));
+        var input = CreateRematerializationInput(preparation);
+        var (batch, _) = InvokeRematerializationPrepare(
+            input,
+            preparation,
+            resolution);
+        var accepted = Assert.Single(CreateAcceptedApplications(
+            batch,
+            "effect_final_skill_scope"));
+
+        var result = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(
+            preparation,
+            resolution,
+            batch,
+            CreateApplicationMap(new[] { accepted }));
+
+        Assert.True(result.IsValid, Describe(result.Issues));
+        var after = Assert.IsType<WoundMaterializationEnvelope>(result.After);
+        var afterBinding = Assert.Single(
+            after.Consequences.OwnedEffectSources.RootBindings);
+        Assert.Equal("effect_final_skill_scope", afterBinding.EffectId);
+        Assert.NotEqual(priorBinding.EffectId, afterBinding.EffectId);
+        Assert.Equal(accepted.EffectId, afterBinding.EffectId);
+        Assert.False(string.IsNullOrWhiteSpace(accepted.CreateTransitionId));
+        var afterDefinition = Assert.Single(
+            after.Consequences.OwnedEffectSources.Definitions);
+        var afterComponent = afterDefinition.GetProperty("components")[0];
+        Assert.Equal(
+            beforeScope,
+            afterComponent.GetProperty("payload").GetProperty("scope").GetRawText());
+        Assert.Equal(
+            "skill_medicine",
+            afterComponent.GetProperty("payload").GetProperty("scope")
+                .GetProperty("skillId").GetString());
+        Assert.Equal(beforeComponentId, afterComponent.GetProperty("componentId").GetString());
+    }
+
+    [Fact]
     public void FinalizeReduction_AuthenticatedEmptyBatchPublishesZeroRootSeverityChange()
     {
         var before = Parse(CreateRankThreeWound());

@@ -7477,7 +7477,11 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
           "componentId": "resonant_guard_roll",
           "profile": "roll_modifier",
           "priority": 100,
-          "payload": { "operations": ["guard"], "contribution": "advantage" }
+          "payload": {
+            "operations": ["guard"],
+            "contribution": "advantage",
+            "scope": { "kind": "all" }
+          }
         }
       ],
       "parameterBounds": {},

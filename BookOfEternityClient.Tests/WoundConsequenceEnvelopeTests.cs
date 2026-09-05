@@ -265,7 +265,7 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
-    public void DetachedMortalEnvelope_DerivesRollSlotsAndRejectsTheSecondAuthoredCoordinate()
+    public void DetachedMortalEnvelope_DerivesOneRollSlotAndRejectsTheSecondAuthoredCoordinate()
     {
         const string firstPath = "draft.definitions[0].definition";
         const string secondPath = "draft.definitions[1].definition";
@@ -303,14 +303,106 @@ public sealed class WoundConsequenceEnvelopeTests
                 issue.Code,
                 "wound_consequence_duplicate_coordinate",
                 StringComparison.Ordinal));
+        var slot = Assert.Single(result.Slots);
+        Assert.Equal("roll_modifier", slot.ProfileKey);
+        Assert.Equal("attack_roll+defense_roll", slot.OperationKey);
+        Assert.Equal("roll_modifier:attack_roll+defense_roll:all", slot.Coordinate);
+        Assert.Equal(firstPath + ".components[0].payload.operations", slot.AuthorPath);
+    }
+
+    [Fact]
+    public void SkillScope_BroadMultiOperationComponentConsumesOneSlot()
+    {
+        const string definitionPath = "draft.definitions[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 4,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_roll",
+                        definitionPath,
+                        new[]
+                        {
+                            RollComponent(
+                                "component_roll",
+                                "attack_roll",
+                                "defense_roll",
+                                "saving_throw")
+                        })
+                }));
+
+        Assert.Empty(result.Issues);
+        var slot = Assert.Single(result.Slots);
+        Assert.Equal("component_roll", slot.ComponentId);
+        Assert.Equal("roll_modifier", slot.ProfileKey);
+        Assert.Equal("attack_roll+defense_roll+saving_throw", slot.OperationKey);
+        Assert.Equal(
+            "roll_modifier:attack_roll+defense_roll+saving_throw:all",
+            slot.Coordinate);
+    }
+
+    [Fact]
+    public void SkillScope_DifferentFocusedSelectorsUseDistinctMechanicalCoordinates()
+    {
+        const string definitionPath = "draft.definitions[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 2,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_roll",
+                        definitionPath,
+                        new[]
+                        {
+                            FocusedRollComponent("component_lockpicking", "skill_lockpicking"),
+                            FocusedRollComponent("component_medicine", "skill_medicine")
+                        })
+                }));
+
+        Assert.Empty(result.Issues);
         Assert.Equal(2, result.Slots.Length);
-        Assert.All(
-            result.Slots,
-            slot => Assert.Equal("roll_modifier", slot.ProfileKey));
-        Assert.Contains(result.Slots, slot => string.Equals(
-            slot.AuthorPath,
-            firstPath + ".components[0].payload.operations[1]",
+        Assert.Equal(
+            new[]
+            {
+                "roll_modifier:skill_check:skill:skill_lockpicking",
+                "roll_modifier:skill_check:skill:skill_medicine"
+            },
+            result.Slots.Select(static slot => slot.Coordinate));
+    }
+
+    [Fact]
+    public void SkillScope_RepeatedFocusedSelectorIsDuplicateCoordinate()
+    {
+        const string definitionPath = "draft.definitions[0].definition";
+        var result = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+            new WoundDetachedMortalEnvelopeRequest(
+                severityRank: 2,
+                "draft.definitions",
+                new[]
+                {
+                    new WoundDetachedMortalEffectRef(
+                        "definition_roll",
+                        definitionPath,
+                        new[]
+                        {
+                            FocusedRollComponent("component_first", "skill_lockpicking"),
+                            FocusedRollComponent("component_second", "skill_lockpicking")
+                        })
+                }));
+
+        var issue = Assert.Single(result.Issues, issue => string.Equals(
+            issue.Code,
+            "wound_consequence_duplicate_coordinate",
             StringComparison.Ordinal));
+        Assert.Equal(
+            definitionPath + ".components[1].payload.operations[0]",
+            issue.FilePath);
+        Assert.Equal("roll_modifier:skill_check:skill:skill_lockpicking", issue.Actual);
+        Assert.Single(result.Slots);
     }
 
     [Fact]
@@ -748,7 +840,9 @@ public sealed class WoundConsequenceEnvelopeTests
         }.Take(rank).ToArray();
         var effect = Effect(
             "effect_roll",
-            RollComponent("component_roll", operations));
+            operations.Select((operation, index) => RollComponent(
+                "component_roll_" + index,
+                operation)).ToArray());
         var request = MortalRequest(
             severity,
             new[] { effect },
@@ -767,7 +861,8 @@ public sealed class WoundConsequenceEnvelopeTests
     {
         var effect = Effect(
             "effect_roll",
-            RollComponent("component_roll", "attack_roll", "defense_roll"));
+            RollComponent("component_attack", "attack_roll"),
+            RollComponent("component_defense", "defense_roll"));
         var request = MortalRequest(
             "I",
             new[] { effect },
@@ -894,7 +989,7 @@ public sealed class WoundConsequenceEnvelopeTests
     }
 
     [Fact]
-    public void MortalSlotDerivation_CountsEveryIndependentAxisAndEveryListedRollOperation()
+    public void MortalSlotDerivation_CountsEveryIndependentComponentAndOneMultiOperationRollComponent()
     {
         var effect = Effect(
             "effect_mixed",
@@ -907,22 +1002,18 @@ public sealed class WoundConsequenceEnvelopeTests
             Entries(
                 (1, "effect_mixed", "characteristic_modifier"),
                 (2, "effect_mixed", "resistance_modifier"),
-                (3, "effect_mixed", "roll_modifier"),
-                (4, "effect_mixed", "roll_modifier")));
+                (3, "effect_mixed", "roll_modifier")));
 
         var result = Validate(request);
 
         AssertValid(result);
         Assert.Equal(
-            new[] { "strength", "fire", "attack_roll", "saving_throw" },
+            new[] { "strength", "fire", "attack_roll+saving_throw" },
             result.Envelope!.Slots.Select(static slot => slot.OperationKey));
         Assert.Equal(
-            new[]
-            {
-                "characteristic", "resistance", "rollMode", "rollMode"
-            },
+            new[] { "characteristic", "resistance", "rollMode" },
             result.Envelope.Slots.Select(static slot => slot.Axis));
-        Assert.Equal(4, result.Envelope.Slots.Select(static slot => slot.Coordinate).Distinct().Count());
+        Assert.Equal(3, result.Envelope.Slots.Select(static slot => slot.Coordinate).Distinct().Count());
     }
 
     [Fact]
@@ -947,7 +1038,8 @@ public sealed class WoundConsequenceEnvelopeTests
     {
         var packed = Effect(
             "effect_roll",
-            RollComponent("component_roll", "attack_roll", "defense_roll"));
+            RollComponent("component_attack", "attack_roll"),
+            RollComponent("component_defense", "defense_roll"));
 
         var hidden = MortalRequest(
             "II",
@@ -1565,15 +1657,14 @@ public sealed class WoundConsequenceEnvelopeTests
             new[] { effect },
             Entries(
                 (1, "effect_reaction", "event_reaction"),
-                (2, "effect_reaction", "roll_modifier"),
-                (3, "effect_reaction", "roll_modifier")));
+                (2, "effect_reaction", "roll_modifier")));
 
         var result = Validate(request);
 
         AssertValid(result);
-        Assert.Equal(3, result.Envelope!.SlotsUsed);
+        Assert.Equal(2, result.Envelope!.SlotsUsed);
         Assert.Equal(
-            new[] { "owner_damaged:apply_definition", "attack_roll", "defense_roll" },
+            new[] { "owner_damaged:apply_definition", "attack_roll+defense_roll" },
             result.Envelope.Slots.Select(static slot => slot.OperationKey));
     }
 
@@ -2806,17 +2897,18 @@ public sealed class WoundConsequenceEnvelopeTests
     [Fact]
     public void BoundedValidation_RejectsMoreThanFourDirectSlotsAndOversizedReactionExpansion()
     {
-        var fiveOperations = RollComponent(
-            "component_roll",
-            "attack_roll",
-            "defense_roll",
-            "skill_check",
-            "saving_throw",
-            "damage_roll");
+        var fiveComponents = new[]
+        {
+            RollComponent("component_attack", "attack_roll"),
+            RollComponent("component_defense", "defense_roll"),
+            RollComponent("component_skill", "skill_check"),
+            RollComponent("component_save", "saving_throw"),
+            RollComponent("component_damage", "damage_roll")
+        };
         AssertIssue(
             Validate(MortalRequest(
                 "IV",
-                new[] { Effect("effect_roll", fiveOperations) },
+                new[] { Effect("effect_roll", fiveComponents) },
                 Entries(4, "effect_roll", "roll_modifier"))),
             Path + ".derivedSlots",
             "wound_consequence_slot_budget_exceeded");
@@ -3353,12 +3445,18 @@ public sealed class WoundConsequenceEnvelopeTests
         Component(
             componentId,
             "roll_modifier",
-            new JsonObject
-            {
-                ["operations"] = new JsonArray(
-                    operations.Select(static operation => (JsonNode?)operation).ToArray()),
-                ["contribution"] = "disadvantage"
-            });
+            EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                "disadvantage",
+                operations));
+
+    private static JsonElement FocusedRollComponent(
+        string componentId,
+        string skillId) =>
+        Component(
+            componentId,
+            "roll_modifier",
+            EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                skillId));
 
     private static JsonElement PeriodicComponent(
         string componentId,

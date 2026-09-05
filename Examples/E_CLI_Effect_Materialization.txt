@@ -22,7 +22,11 @@ fragments; the eight dedicated spiritual-wound profiles appear separately under
       "componentId": "component_roll",
       "profile": "roll_modifier",
       "priority": 100,
-      "payload": { "operations": ["attack_roll"], "contribution": "disadvantage" }
+      "payload": {
+        "operations": ["attack_roll"],
+        "contribution": "disadvantage",
+        "scope": { "kind": "all" }
+      }
     },
     {
       "componentId": "component_resistance",

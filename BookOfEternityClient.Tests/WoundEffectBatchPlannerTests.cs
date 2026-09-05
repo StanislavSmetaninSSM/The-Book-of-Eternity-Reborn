@@ -247,10 +247,16 @@ public sealed partial class WoundEffectBatchPlannerTests
         Assert.Equal("skill_grip", definition.Definition["components"]![0]!["payload"]!["scope"]!["skillId"]!.GetValue<string>());
     }
 
-    private static EffectApplicationDiagnosticLocations CreateSkillScopeLocations(WoundPreparedAcceptedTurnPlan prepared) => new(
-        prepared.EffectOperationBatches.SelectMany(batch => batch.RootApplications).Select(root =>
-            new KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>(root.ExpectedSourceKey,
-                new("woundDecisions[3].proposal.consequenceDefinitions[1].definition.components", "wound_materialization"))));
+    private static EffectApplicationDiagnosticLocations CreateSkillScopeLocations(
+        WoundPreparedAcceptedTurnPlan prepared) =>
+        new(prepared.EffectOperationBatches
+            .SelectMany(static batch => batch.RootApplications)
+            .Select((root, index) =>
+                new KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>(
+                    root.ExpectedSourceKey,
+                    new(
+                        $"woundDecisions[3].proposal.consequenceDefinitions[{index + 1}].definition.components",
+                        "wound_materialization"))));
 
     [Fact]
     public void MaterializationFingerprint_BindsExactSourceSchemaParametersAndOrderedComponents()
@@ -424,6 +430,43 @@ public sealed partial class WoundEffectBatchPlannerTests
             nestedArrayReordered);
         Assert.Equal(nestedOrderExpected, nestedOrderActual);
         Assert.NotEqual(nestedArrayActual, nestedOrderActual);
+
+        var focusedSkillA = EffectMaterializationTestFixture
+            .CreateDefinition("roll_modifier")["components"]![0]!
+            .DeepClone().AsObject();
+        focusedSkillA["payload"]!["operations"] = new JsonArray("skill_check");
+        focusedSkillA["payload"]!["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_lockpicking"
+        };
+        var focusedSkillB = focusedSkillA.DeepClone().AsObject();
+        focusedSkillB["payload"]!["scope"]!["skillId"] = "skill_medicine";
+        var broadSkill = focusedSkillA.DeepClone().AsObject();
+        broadSkill["payload"]!["scope"] = new JsonObject { ["kind"] = "all" };
+        var focusedSkillAFingerprint = WoundEffectMaterializationFingerprint.Compute(
+            sourceKey,
+            1,
+            parameters,
+            new JsonArray(focusedSkillA));
+        var selectorFingerprints = new[]
+        {
+            WoundEffectMaterializationFingerprint.Compute(
+                sourceKey,
+                1,
+                parameters,
+                new JsonArray(focusedSkillB)),
+            WoundEffectMaterializationFingerprint.Compute(
+                sourceKey,
+                1,
+                parameters,
+                new JsonArray(broadSkill))
+        };
+        Assert.All(selectorFingerprints, fingerprint =>
+            Assert.NotEqual(focusedSkillAFingerprint, fingerprint));
+        Assert.Equal(
+            selectorFingerprints.Length,
+            selectorFingerprints.Distinct(StringComparer.Ordinal).Count());
     }
 
     [Fact]
@@ -1524,6 +1567,87 @@ public sealed partial class WoundEffectBatchPlannerTests
             Assert.Single(retainedCreate["sourceEffectIds"]!.AsArray())!
                 .GetValue<string>());
         Assert.Empty(addedCreate["sourceEffectIds"]!.AsArray());
+    }
+
+    [Fact]
+    public void SkillScope_RetainedWorsenMaterializesFreshRuntimeIdentityAndPreservesSelector()
+    {
+        var woundInput = CreateWorsenInputWithRetainedAndNewRoot(
+            skillScopedRetained: true);
+        var priorEffect = Assert.IsType<JsonObject>(Assert.Single(
+            woundInput.PreTurnEffectCarriers!.PlayerEffects!["activeEffects"]!
+                .AsArray()));
+        var priorEffectId = priorEffect["effectId"]!.GetValue<string>();
+        var priorTransitionId = priorEffect["chronology"]!["lastTransitionId"]!
+            .GetValue<string>();
+        var priorComponent = Assert.IsType<JsonObject>(Assert.Single(
+            priorEffect["components"]!.AsArray()));
+        var priorScope = priorComponent["payload"]!["scope"]!.ToJsonString();
+
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(woundInput));
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var retained = Assert.Single(
+            batch.RootApplications,
+            static application => application.PriorRootEffectId is not null);
+        Assert.Equal(priorEffectId, retained.PriorRootEffectId);
+        var retainedDefinition = Assert.Single(
+            batch.SourceExport.Definitions,
+            definition => string.Equals(
+                definition.DefinitionKey,
+                retained.DefinitionKey,
+                StringComparison.Ordinal));
+        var sourceComponent = Assert.IsType<JsonObject>(Assert.Single(
+            retainedDefinition.Definition["components"]!.AsArray()));
+        var sourceComponentId = sourceComponent["componentId"]!.GetValue<string>();
+        var sourceScope = sourceComponent["payload"]!["scope"]!.ToJsonString();
+        Assert.Equal(priorScope, sourceScope);
+        var effectInput = CreateEffectInput(
+            prepared,
+            preTurnCarriersOverride: woundInput.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: woundInput.PreTurnEffectIdentityIndex) with
+        {
+            WoundApplicationLocations = CreateSkillScopeLocations(prepared),
+            SkillScopeAuthority = EffectRollSkillScopeAuthority.Build(new(
+                EffectAcceptedTurnPlanCacheTests.SkillRoots("exact"),
+                EffectAcceptedTurnPlanCacheTests.SkillRoots("exact")))
+        };
+
+        var accepted = AssertEffectPlan(WoundEffectBatchPlanner.Build(
+            prepared,
+            effectInput,
+            new ScriptedEffectIdentityFactory("skill_scope_rematerialized")));
+        var rematerialized = Assert.Single(
+            accepted.ApplicationResults,
+            result => string.Equals(
+                result.ApplicationRef,
+                retained.ApplicationRef,
+                StringComparison.Ordinal));
+        var activeEffect = FindActiveEffect(
+            accepted.EffectPlan,
+            rematerialized.EffectId);
+        var activeComponent = Assert.IsType<JsonObject>(Assert.Single(
+            activeEffect["components"]!.AsArray()));
+        var createTransition = Assert.IsType<JsonObject>(Assert.Single(
+            FindIdentityIndexEffect(accepted.EffectPlan, rematerialized.EffectId)
+                ["transitions"]!.AsArray()));
+
+        Assert.NotEqual(priorEffectId, rematerialized.EffectId);
+        Assert.NotEqual(priorTransitionId, rematerialized.CreateTransitionId);
+        Assert.Equal(
+            rematerialized.CreateTransitionId,
+            activeEffect["chronology"]!["lastTransitionId"]!.GetValue<string>());
+        Assert.Equal(
+            rematerialized.CreateTransitionId,
+            createTransition["transitionId"]!.GetValue<string>());
+        Assert.Equal(
+            priorEffectId,
+            Assert.Single(createTransition["sourceEffectIds"]!.AsArray())!
+                .GetValue<string>());
+        Assert.Equal(sourceComponentId, activeComponent["componentId"]!.GetValue<string>());
+        Assert.Equal(sourceScope, activeComponent["payload"]!["scope"]!.ToJsonString());
+        Assert.Equal(
+            "skill_grip",
+            activeComponent["payload"]!["scope"]!["skillId"]!.GetValue<string>());
     }
 
     [Theory]
@@ -3631,6 +3755,7 @@ public sealed partial class WoundEffectBatchPlannerTests
     private enum CandidateShape
     {
         SkillScopedRoot,
+        SkillScopedTwoRoots,
         Standard,
         TwoRoots,
         OneRootTwoSlots,
@@ -3816,12 +3941,15 @@ public sealed partial class WoundEffectBatchPlannerTests
     }
 
     internal static WoundAcceptedTurnInput CreateWorsenInputWithRetainedAndNewRoot(
-        OwnerFlavor flavor = OwnerFlavor.Player)
+        OwnerFlavor flavor = OwnerFlavor.Player,
+        bool skillScopedRetained = false)
     {
         const string woundId = "wound_worsen_generation";
         const string priorEffectId = "effect_worsen_generation_prior";
         var input = CreateInput(
-            shape: CandidateShape.TwoRoots,
+            shape: skillScopedRetained
+                ? CandidateShape.SkillScopedTwoRoots
+                : CandidateShape.TwoRoots,
             flavor: flavor);
         var draft = input.Transitions[0];
         var opportunity = input.Opportunities[0];
@@ -3831,9 +3959,19 @@ public sealed partial class WoundEffectBatchPlannerTests
             woundId,
             draft.ProposedAfter.Owner.Realm,
             ResolveEffectTargetKind(draft.ProposedAfter.Owner.OwnerKind),
-            (priorEffectId, retainedDefinitionKey, "periodic_damage"));
+            (
+                priorEffectId,
+                retainedDefinitionKey,
+                skillScopedRetained ? "roll_modifier" : "periodic_damage"));
         var retainedDefinition = Assert.IsType<JsonObject>(Assert.Single(
             retainedSources["definitions"]!.AsArray())).DeepClone().AsObject();
+        if (skillScopedRetained)
+        {
+            retainedDefinition["components"]![0]!["payload"] =
+                EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                    "skill_grip");
+            retainedSources["definitions"]![0] = retainedDefinition.DeepClone();
+        }
         var beforeJson = WoundContractTestData.CreateActiveWound(
             woundId,
             draft.ProposedAfter.Owner.Realm,
@@ -3859,9 +3997,13 @@ public sealed partial class WoundEffectBatchPlannerTests
             ["entries"] = new JsonArray(new JsonObject
             {
                 ["slot"] = 1,
-                ["profileKey"] = "periodic_damage",
+                ["profileKey"] = skillScopedRetained
+                    ? "roll_modifier"
+                    : "periodic_damage",
                 ["effectId"] = priorEffectId,
-                ["readableSummary"] = "The prior wound deals periodic damage."
+                ["readableSummary"] = skillScopedRetained
+                    ? "The prior wound hinders one exact skill."
+                    : "The prior wound deals periodic damage."
             })
         };
         var before = ParseWound(beforeJson, "worsenGeneration.before");
@@ -4156,6 +4298,11 @@ public sealed partial class WoundEffectBatchPlannerTests
         var roots = shape switch
         {
             CandidateShape.SkillScopedRoot => new[] { "roll_modifier" },
+            CandidateShape.SkillScopedTwoRoots => new[]
+            {
+                "roll_modifier",
+                "action_control"
+            },
             CandidateShape.Standard => new[] { "periodic_damage" },
             CandidateShape.TwoRoots => new[] { "periodic_damage", "action_control" },
             CandidateShape.OneRootTwoSlots => new[] { "periodic_damage" },
@@ -4219,7 +4366,9 @@ public sealed partial class WoundEffectBatchPlannerTests
             }
             var applicationSlots = new List<WoundAcceptedConsequenceSlotBinding>();
 
-            if (shape == CandidateShape.SkillScopedRoot)
+            if (string.Equals(profile, "roll_modifier", StringComparison.Ordinal) &&
+                (shape is CandidateShape.SkillScopedRoot or
+                    CandidateShape.SkillScopedTwoRoots))
             {
                 definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
                 definition["components"]![0]!["payload"]!["scope"] =

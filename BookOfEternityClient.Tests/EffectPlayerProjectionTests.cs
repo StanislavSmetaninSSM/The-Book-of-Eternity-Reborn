@@ -586,12 +586,15 @@ public sealed class EffectPlayerProjectionTests
     private static JsonObject CreateScopedRollModifier(string scopeKind, string? skillId = null)
     {
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "roll_modifier");
-        var payload = effect["components"]![0]!["payload"]!.AsObject();
-        payload["operations"] = new JsonArray("skill_check");
-        payload["contribution"] = "disadvantage";
-        payload["scope"] = new JsonObject { ["kind"] = scopeKind };
-        if (skillId != null)
-            payload["scope"]!["skillId"] = skillId;
+        effect["components"]![0]!["payload"] = string.Equals(
+            scopeKind,
+            "all",
+            StringComparison.Ordinal)
+            ? EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                "disadvantage",
+                "skill_check")
+            : EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                skillId!);
         return effect;
     }
 

@@ -1704,16 +1704,6 @@ internal static class WoundMaterializationContract
         {
             if (string.Equals(component.Profile, "wound_consequence", StringComparison.Ordinal))
                 continue;
-            if (string.Equals(component.Profile, "roll_modifier", StringComparison.Ordinal) &&
-                component.Element.TryGetProperty("payload", out var payload) &&
-                payload.ValueKind == JsonValueKind.Object &&
-                payload.TryGetProperty("operations", out var operations) &&
-                operations.ValueKind == JsonValueKind.Array)
-            {
-                for (var index = 0; index < operations.GetArrayLength(); index++)
-                    profiles.Add(component.Profile);
-                continue;
-            }
             profiles.Add(component.Profile);
         }
         return profiles;

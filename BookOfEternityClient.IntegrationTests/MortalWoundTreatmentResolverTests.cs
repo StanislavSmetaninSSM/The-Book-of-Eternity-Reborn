@@ -2577,12 +2577,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ["sourceId"] = "skill_field_medicine_01",
                 ["definitionKey"] = "t061-treatment-roll-" + scenario.RollMode
             };
-            roll["components"]![0]!["payload"] = new JsonObject
-            {
-                ["operations"] = new JsonArray("skill_check"),
-                ["contribution"] = scenario.RollMode,
-                ["scope"] = new JsonObject { ["kind"] = "all" }
-            };
+            roll["components"]![0]!["payload"] =
+                EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                    scenario.RollMode,
+                    "skill_check");
             effects.Add(roll);
         }
 
@@ -4513,12 +4511,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
                         "t061-treatment-roll-" + scenario.RollMode;
                     rollDefinition["display"]!["name"] =
                         "T061 " + scenario.RollMode;
-                    rollDefinition["components"]![0]!["payload"] = new JsonObject
-                    {
-                        ["operations"] = new JsonArray("skill_check"),
-                        ["contribution"] = scenario.RollMode,
-                        ["scope"] = new JsonObject { ["kind"] = "all" }
-                    };
+                    rollDefinition["components"]![0]!["payload"] =
+                        EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                            scenario.RollMode,
+                            "skill_check");
                     playerTreatmentSkill["activeEffectDefinitions"] =
                         new JsonArray(rollDefinition);
                 }

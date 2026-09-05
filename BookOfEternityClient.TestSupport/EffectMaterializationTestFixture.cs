@@ -10,6 +10,32 @@ internal static class EffectMaterializationTestFixture
     internal const string CombatantRef = "combatant_ref_test_raider";
     internal const string CombatantId = "combatant_test_raider";
 
+    internal static JsonObject CreateBroadRollModifierPayload(
+        string contribution,
+        params string[] operations)
+    {
+        ArgumentNullException.ThrowIfNull(operations);
+        return CreateRollModifierPayload(
+            contribution,
+            operations,
+            new JsonObject { ["kind"] = "all" });
+    }
+
+    internal static JsonObject CreateFocusedRollModifierPayload(
+        string skillId,
+        string contribution = "disadvantage")
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(skillId);
+        return CreateRollModifierPayload(
+            contribution,
+            new[] { "skill_check" },
+            new JsonObject
+            {
+                ["kind"] = "skill",
+                ["skillId"] = skillId
+            });
+    }
+
     internal static JsonObject CreateDefinition(string profile = "periodic_damage")
     {
         var isAfterlifeCondition = string.Equals(
@@ -614,12 +640,9 @@ internal static class EffectMaterializationTestFixture
                 ["operation"] = "flat",
                 ["value"] = -2
             }),
-            "roll_modifier" => CreateProfileComponent(profile, new JsonObject
-            {
-                ["operations"] = new JsonArray("attack_roll"),
-                ["contribution"] = "disadvantage",
-                ["scope"] = new JsonObject { ["kind"] = "all" }
-            }),
+            "roll_modifier" => CreateProfileComponent(
+                profile,
+                CreateBroadRollModifierPayload("disadvantage", "attack_roll")),
             "resistance_modifier" => CreateProfileComponent(profile, new JsonObject
             {
                 ["resistance"] = "bleeding",
@@ -675,6 +698,19 @@ internal static class EffectMaterializationTestFixture
             "spiritual_counter_burden" or
             "spiritual_art_restriction" => CreateSpiritualWoundComponent(profile),
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
+        };
+
+    private static JsonObject CreateRollModifierPayload(
+        string contribution,
+        IReadOnlyList<string> operations,
+        JsonObject scope) =>
+        new()
+        {
+            ["operations"] = new JsonArray(operations
+                .Select(static operation => (JsonNode?)operation)
+                .ToArray()),
+            ["contribution"] = contribution,
+            ["scope"] = scope
         };
 
     private static JsonObject CreateProfileComponent(string profile, JsonObject payload) =>

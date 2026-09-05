@@ -1,9 +1,38 @@
+using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using BookOfEternityClient.Services;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
 public sealed class WoundMaterializationSourceGuardTests
 {
+    [Fact]
+    public void ActiveWoundRollModifierFixturesUseExplicitClosedScope()
+    {
+        var helper = typeof(WoundConsequenceEnvelopeTests).GetMethod(
+            "RollComponent",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.NotNull(helper);
+        var envelopeComponent = Assert.IsType<JsonElement>(helper!.Invoke(
+            null,
+            new object[] { "component_guard", new[] { "attack_roll", "defense_roll" } }));
+        var ownedDefinition = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_guard",
+            "mortal_world",
+            "definition_guard",
+            "roll_modifier");
+        var ownedComponent = ownedDefinition["components"]![0]!.AsObject();
+
+        AssertExplicitClosedRollScope(
+            "WoundConsequenceEnvelopeTests.RollComponent",
+            JsonNode.Parse(envelopeComponent.GetRawText())!.AsObject());
+        AssertExplicitClosedRollScope(
+            "WoundContractTestData.CreateOwnedEffectDefinition",
+            ownedComponent);
+    }
+
     private enum InventoryCategory
     {
         LegacyLooseWoundSurface,
@@ -511,6 +540,32 @@ public sealed class WoundMaterializationSourceGuardTests
             unusedAllowances.Length == 0,
             "Declared wound discovery scopes contain no matching production occurrence:" +
             Environment.NewLine + string.Join(Environment.NewLine, unusedAllowances));
+    }
+
+    private static void AssertExplicitClosedRollScope(
+        string source,
+        JsonObject component)
+    {
+        Assert.Equal("roll_modifier", component["profile"]!.GetValue<string>());
+        var payload = Assert.IsType<JsonObject>(component["payload"]);
+        Assert.Equal(
+            new[] { "contribution", "operations", "scope" },
+            payload.Select(static pair => pair.Key).Order(StringComparer.Ordinal));
+        var scope = Assert.IsType<JsonObject>(payload["scope"]);
+        Assert.Equal(new[] { "kind" }, scope.Select(static pair => pair.Key));
+        Assert.Equal("all", scope["kind"]!.GetValue<string>());
+
+        using var document = JsonDocument.Parse(component.ToJsonString());
+        var issues = new List<ValidationIssue>();
+        EffectComponentProfiles.ValidateComponent(
+            document.RootElement,
+            source + ".roll_modifier",
+            issues);
+        Assert.True(
+            issues.Count == 0,
+            string.Join(
+                Environment.NewLine,
+                issues.Select(issue => $"{issue.Code}@{issue.FilePath}")));
     }
 
     private static DiscoveryAllowance Scope(

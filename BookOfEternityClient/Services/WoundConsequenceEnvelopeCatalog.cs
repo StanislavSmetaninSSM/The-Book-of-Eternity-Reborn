@@ -1917,30 +1917,85 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
+        if (!payload.TryGetProperty("scope", out var scope) ||
+            scope.ValueKind != JsonValueKind.Object ||
+            !TryReadString(scope, "kind", out var scopeKind))
+        {
+            return;
+        }
+
+        string scopeCoordinate;
+        if (string.Equals(scopeKind, "all", StringComparison.Ordinal))
+        {
+            scopeCoordinate = "all";
+        }
+        else if (string.Equals(scopeKind, "skill", StringComparison.Ordinal) &&
+                 TryReadString(scope, "skillId", out var skillId))
+        {
+            scopeCoordinate = "skill:" + skillId;
+        }
+        else
+        {
+            return;
+        }
+
+        var operationRows = new List<(string Operation, int Index)>();
         var index = 0;
         foreach (var operationElement in operations.EnumerateArray())
         {
             if (operationElement.ValueKind == JsonValueKind.String &&
                 operationElement.GetString() is string operation)
             {
-                AddSlot(
-                    candidates,
-                    coordinates,
-                    new SlotCandidate(
-                        effectId,
-                        componentId,
-                        "roll_modifier",
-                        "rollMode",
-                        operation,
-                        "roll_modifier:" + operation,
-                        originKey + ":" + index.ToString("D4", CultureInfo.InvariantCulture),
-                        $"{componentPath}.payload.operations[{index}]"),
-                    $"{componentPath}.payload.operations[{index}]",
-                    issues);
+                operationRows.Add((operation, index));
             }
 
             index++;
         }
+
+        if (operationRows.Count == 0)
+            return;
+
+        var operationCoordinates = operationRows
+            .Select(row => new
+            {
+                row.Operation,
+                row.Index,
+                Coordinate = $"roll_modifier:{row.Operation}:{scopeCoordinate}"
+            })
+            .ToArray();
+        var hasDuplicateCoordinate = false;
+        foreach (var row in operationCoordinates)
+        {
+            if (!coordinates.Contains(row.Coordinate))
+                continue;
+
+            Add(
+                issues,
+                $"{componentPath}.payload.operations[{row.Index}]",
+                "wound_consequence_duplicate_coordinate",
+                "one independently understandable slot per exact mechanical coordinate",
+                row.Coordinate);
+            hasDuplicateCoordinate = true;
+        }
+
+        if (hasDuplicateCoordinate)
+            return;
+
+        foreach (var row in operationCoordinates)
+            coordinates.Add(row.Coordinate);
+
+        var operationKey = string.Join(
+            "+",
+            operationRows.Select(static row => row.Operation));
+        candidates.Add(new SlotCandidate(
+            effectId,
+            componentId,
+            "roll_modifier",
+            "rollMode",
+            operationKey,
+            $"roll_modifier:{operationKey}:{scopeCoordinate}",
+            originKey,
+            componentPath + ".payload.operations"));
     }
 
     private static void ValidatePeriodic(
