@@ -40,6 +40,12 @@ public sealed class EffectRollModifierFixtureInventoryTests
                 "ValidateArray_RollModifier_RequiresClosedStructuralScopeUnion")] = 1
         };
 
+    private static readonly string[] FileBackedRollSnapshotFactNames =
+    [
+        "Resolve_LoadAsyncMalformedSkillRoot_FailsClosedWithSnapshotDiagnostics",
+        "Resolve_LoadAsyncWithExistingPublicationLease_UsesExactCurrentSkillAuthority"
+    ];
+
     [Fact]
     public void ExecutableCSharpRollPayloadsUseCentralClosedFactoryAndOnlyNamedNegativeScopeMutations()
     {
@@ -129,6 +135,81 @@ public sealed class EffectRollModifierFixtureInventoryTests
             }
             """,
             "direct JSON-string roll payload bypasses the semantic fixture factory");
+    }
+
+    [Fact]
+    public void FileBackedRollSnapshotFactsAreIntegrationOwnedAndFastResolverStaysPure()
+    {
+        var executableSources = EnumerateExecutableCSharpSources().ToArray();
+        var ownedSources = executableSources
+            .Where(static entry => entry.RelativePath is
+                "BookOfEternityClient.IntegrationTests/EffectRollContributionSnapshotTests.cs" or
+                "BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs")
+            .ToDictionary(
+                static entry => entry.RelativePath,
+                static entry => CSharpSyntaxTree.ParseText(
+                        entry.Source,
+                        path: entry.RelativePath)
+                    .GetCompilationUnitRoot(),
+                StringComparer.Ordinal);
+
+        var integrationRoot = ownedSources[
+            "BookOfEternityClient.IntegrationTests/EffectRollContributionSnapshotTests.cs"];
+        var integrationClass = Assert.Single(
+            integrationRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            static declaration =>
+                declaration.Identifier.ValueText == "EffectRollContributionSnapshotTests");
+        var fastRoot = ownedSources[
+            "BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs"];
+        var fastClass = Assert.Single(
+            fastRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            static declaration =>
+                declaration.Identifier.ValueText == "EffectRollContributionResolverTests");
+
+        foreach (var factName in FileBackedRollSnapshotFactNames)
+        {
+            var ownedIntegrationFact = Assert.Single(
+                integrationClass.Members.OfType<MethodDeclarationSyntax>(),
+                method => method.Identifier.ValueText == factName);
+            var integrationMethods = executableSources
+                .Where(static entry => entry.RelativePath.StartsWith(
+                    "BookOfEternityClient.IntegrationTests/",
+                    StringComparison.Ordinal))
+                .Where(entry => entry.Source.Contains(factName, StringComparison.Ordinal))
+                .SelectMany(static entry => CSharpSyntaxTree.ParseText(
+                        entry.Source,
+                        path: entry.RelativePath)
+                    .GetCompilationUnitRoot()
+                    .DescendantNodes()
+                    .OfType<MethodDeclarationSyntax>());
+            var integrationFact = Assert.Single(
+                integrationMethods,
+                method => method.Identifier.ValueText == factName);
+            Assert.Equal(
+                ownedIntegrationFact.SyntaxTree.FilePath,
+                integrationFact.SyntaxTree.FilePath);
+            Assert.Single(
+                integrationFact.AttributeLists.SelectMany(static list => list.Attributes),
+                static attribute => attribute.Name.ToString() is "Fact" or "FactAttribute");
+            Assert.DoesNotContain(
+                fastClass.Members.OfType<MethodDeclarationSyntax>(),
+                method => method.Identifier.ValueText == factName);
+        }
+
+        Assert.DoesNotContain(
+            fastClass.DescendantNodes().OfType<ObjectCreationExpressionSyntax>(),
+            static creation => creation.Type.ToString() == "FileSystemManager");
+        Assert.DoesNotContain(
+            fastClass.DescendantNodes().OfType<NameSyntax>(),
+            static name => name.ToString() == "PhysicalLoadTransactionOperations");
+        Assert.DoesNotContain(
+            fastClass.DescendantNodes().OfType<InvocationExpressionSyntax>(),
+            static invocation => ReadInvocationName(invocation) is
+                "LoadAsync" or
+                "WriteFileAtomicAsync" or
+                "AcquireCanonicalWriteLeaseAsync" or
+                "EnsureDirectoryStructure" or
+                "GetTempPath");
     }
 
     private static void InspectSource(
@@ -361,6 +442,14 @@ public sealed class EffectRollModifierFixtureInventoryTests
         key = string.Empty;
         return false;
     }
+
+    private static string ReadInvocationName(InvocationExpressionSyntax invocation) =>
+        invocation.Expression switch
+        {
+            MemberAccessExpressionSyntax member => member.Name.Identifier.ValueText,
+            IdentifierNameSyntax identifier => identifier.Identifier.ValueText,
+            _ => string.Empty
+        };
 
     private static bool IsLiteralRemove(
         InvocationExpressionSyntax invocation,

@@ -496,7 +496,7 @@ groups retain their complete class categories; method-level
 
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
-these 35 ordinal entries after class-level ownership hardening:
+these 38 ordinal entries after class-level ownership hardening:
 
 ```text
 AfterlifeSpiritualConflictValidationTests.cs
@@ -506,6 +506,9 @@ ExplorerWebCommandServiceTests.cs
 ExplorerWebCommandServiceTests.Effects.cs
 ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs
 ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs
+EffectRollContributionSnapshotTests.cs
+EffectRollModifierFixtureInventoryTests.cs
+EffectSkillScopeLifecycleTests.cs
 GuardianSystemRegressionTests.cs
 LocalWebUiHostTests.cs
 ResourceConsoleBrowserParityTests.cs

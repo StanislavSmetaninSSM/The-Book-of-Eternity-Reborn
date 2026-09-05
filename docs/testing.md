@@ -96,7 +96,7 @@ method-level decoys do not count. Moved WebUi tests share
 tests and was moved there unchanged so Integration does not reference Fast.
 The exact reviewed-heavy source/category manifest contains 58
 `FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
-class-level Integration manifest contains 35
+class-level Integration manifest contains 38
 `IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are
 recorded in `specs/1505-test-suite-performance/research.md` and enforced by
 their respective boundary guards.

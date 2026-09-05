@@ -214,6 +214,7 @@ public sealed class IntegrationTestBoundaryTests
         "ExplorerWebCommandServiceTests.Effects.cs",
         "ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs",
         "ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs",
+        "EffectRollContributionSnapshotTests.cs",
         "EffectRollModifierFixtureInventoryTests.cs",
         "EffectSkillScopeLifecycleTests.cs",
         "GuardianSystemRegressionTests.cs",
