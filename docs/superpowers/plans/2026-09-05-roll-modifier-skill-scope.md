@@ -976,7 +976,7 @@ Independent final review found 0 Critical, 0 Important, and 0 Minor findings.
 - Consumes: `EffectMechanicsSnapshot.SkillScopeAuthority` and each component's accepted target coordinate.
 - Produces: Russian readable scope text with no technical `skillId` leakage.
 
-- [ ] **Step 1: Add RED projection rows**
+- [x] **Step 1: Add RED projection rows**
 
 Assert exact output semantics for:
 
@@ -989,7 +989,7 @@ hidden effect -> absent exactly as before
 all outputs -> do not contain "skill_" or the actual skillId
 ```
 
-- [ ] **Step 2: Run RED**
+- [x] **Step 2: Run RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectPlayerProjectionTests&FullyQualifiedName~RollScope"
@@ -997,13 +997,13 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 Expected: FAIL because projection currently renders only the operations array and contribution token.
 
-- [ ] **Step 3: Thread target and authority into component projection**
+- [x] **Step 3: Thread target and authority into component projection**
 
 Pass the accepted `EffectTargetKey` and snapshot skill authority from `BuildEntry` into `ProjectComponent`. Replace the `roll_modifier` arm with `DescribeRollModifier(payload, target, skillAuthority)`.
 
 `DescribeRollModifier` must translate contribution first, use `ResolveCurrent` only for `kind=skill`, never include the ID, and return neutral text when the row is missing. If resolution reports `InvalidAuthority`, return the same neutral inactive wording and add no gameplay authority from display code.
 
-- [ ] **Step 4: Run GREEN and commit**
+- [x] **Step 4: Run GREEN and commit**
 
 Run the Step 2 command.
 
@@ -1013,6 +1013,13 @@ Expected: PASS; existing hidden-effect rows remain unchanged.
 git add BookOfEternityClient/UI/EffectPlayerProjection.cs BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs
 git commit -m "feat(ui): describe scoped roll effects safely (#1536)"
 ```
+
+Closure (2026-09-05): implemented in `2bed5c4c` and privacy correction
+`e33d8a32`. The original RED failed 0/5 on the absent scope-aware copy; the
+expanded final RollScope contour passes 10/10 and the complete projection class
+passes 46/46, with clean owned-process cleanup and no warnings, errors, timeouts,
+or duplicate IDs. Independent final review found 0 Critical, 0 Important, and
+0 Minor findings.
 
 ---
 
