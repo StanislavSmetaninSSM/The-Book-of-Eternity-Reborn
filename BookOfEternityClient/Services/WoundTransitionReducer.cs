@@ -48,13 +48,6 @@ internal sealed record WoundComplicationEvidence(
     bool HasPendingTreatmentOrRecovery)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
-internal sealed record WoundDiagnosisEvidence(
-    string AuthorityRef,
-    string ExpectedBeforeFingerprint,
-    string ExpectedAfterFingerprint,
-    IReadOnlyList<string> RevealedFacts)
-    : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
-
 internal sealed record WoundStabilizationEvidence(
     string AuthorityRef,
     string ExpectedBeforeFingerprint,
@@ -194,7 +187,7 @@ internal sealed record WoundTransitionReductionResult(
     internal bool IsValid => ProposedAfter is not null && Issues.Count == 0;
 }
 
-internal static class WoundTransitionReducer
+internal static partial class WoundTransitionReducer
 {
     private sealed record OwnedSourceTransitionView(
         ImmutableArray<string> RootEffectIds,
@@ -271,6 +264,12 @@ internal static class WoundTransitionReducer
         ValidateRequestAuthority(request, issues);
         if (issues.Count != 0)
             return Failure(issues);
+        if (request.Kind == "diagnose")
+        {
+            ValidateDiagnosisEvidenceIntegrity(request, issues);
+            if (issues.Count != 0)
+                return Failure(issues);
+        }
         ValidateRawCoordinateAndProvenancePreflight(request, issues);
         if (issues.Count != 0)
             return Failure(issues);
@@ -1268,28 +1267,35 @@ internal static class WoundTransitionReducer
             EvidenceKindMismatch(issues, "WoundDiagnosisEvidence", request.Evidence);
             return;
         }
-        if (!ActivePair(before, after))
+        if (!ActivePair(before, after) ||
+            before.Classification.Domain != "physical" || after.Classification.Domain != "physical" ||
+            before.Owner.Realm != "mortal_world" || after.Owner.Realm != "mortal_world")
         {
             ActiveSourceInvalid(issues, before, after);
             return;
         }
-        if (!Exact(evidence.AuthorityRef) || !ExactUnique(evidence.RevealedFacts))
-        {
-            Add(
-                issues,
-                "wound_transition_evidence_invalid",
-                "one exact diagnosis path and unique typed declared reveal facts",
-                evidence.AuthorityRef ?? "null");
-            return;
-        }
-
         var diagnosisPath = before.Treatment.DiagnosisPaths.SingleOrDefault(path =>
             string.Equals(
                 path.DiagnosisPathId,
-                evidence.AuthorityRef,
+                evidence.DiagnosisPathId,
                 StringComparison.Ordinal));
+        var knownFacts = before.Treatment.KnownRouteIds.Select(static id => "route:" + id)
+            .Concat(before.Complications.Where(static complication =>
+                    complication.Visibility is "public" or "known_to_player")
+                .Select(static complication => "complication:" + complication.ComplicationId))
+            .ToHashSet(StringComparer.Ordinal);
         if (diagnosisPath is null ||
-            !SequenceEqual(diagnosisPath.Reveals, evidence.RevealedFacts) ||
+            diagnosisPath.Visibility == "gm_only" ||
+            diagnosisPath.Visibility == "hidden" && diagnosisPath.RequiresKnownFacts.Count == 0 ||
+            !diagnosisPath.RequiresKnownFacts.All(knownFacts.Contains))
+        {
+            Add(issues, "wound_transition_diagnosis_path_unavailable",
+                "one exact player-selectable path whose prerequisites are already known",
+                evidence.DiagnosisPathId);
+            return;
+        }
+        if (!SequenceEqual(evidence.ResultKind == "success" ? diagnosisPath.Reveals :
+                ImmutableArray<string>.Empty, evidence.RevealedFacts) ||
             evidence.RevealedFacts.Any(static fact => !TryParseDiagnosisReveal(
                 fact,
                 out _,
@@ -1336,7 +1342,8 @@ internal static class WoundTransitionReducer
                 StringComparer.Ordinal)))
             .ToImmutableArray();
         var expectedComplications = before.Complications.Select(complication =>
-                revealedComplications.Contains(complication.ComplicationId)
+                revealedComplications.Contains(complication.ComplicationId) &&
+                complication.Visibility is not ("public" or "known_to_player")
                     ? complication with { Visibility = "known_to_player" }
                     : complication)
             .ToImmutableArray();
@@ -2005,8 +2012,15 @@ internal static class WoundTransitionReducer
 
         string? attemptId = null;
         string? tickKey = null;
+        WoundTransitionResult? transitionResult = null;
         switch (request.Evidence)
         {
+            case WoundDiagnosisEvidence diagnosis:
+                attemptId = diagnosis.AttemptId;
+                transitionResult = diagnosis.TransitionResult;
+                intents.Add(new WoundAttemptTerminalIntent(
+                    diagnosis.AttemptId, diagnosis.DiagnosisPathId, after.WoundId));
+                break;
             case WoundTreatmentEvidence treatment:
                 attemptId = treatment.AttemptId;
                 intents.Add(new WoundAttemptTerminalIntent(
@@ -2057,7 +2071,8 @@ internal static class WoundTransitionReducer
             afterFingerprint,
             attemptId,
             tickKey,
-            request.Kind == "heal"));
+            request.Kind == "heal",
+            transitionResult));
         return new WoundTransitionReductionResult(
             after,
             intents.ToImmutable(),

@@ -883,17 +883,12 @@ public sealed class WoundTransitionReducerTests
                 KnownRouteIds = ImmutableArray.Create("clean_and_suture")
             }
         }, "diagnose");
-        var evidence = DiagnoseEvidence(
+        var request = DiagnoseRequest(
             before,
             after,
-            diagnosisPath.DiagnosisPathId,
-            diagnosisPath.Reveals.ToArray());
+            diagnosisPath.DiagnosisPathId);
 
-        var result = WoundTransitionReducer.Reduce(Request(
-            "diagnose",
-            before,
-            after,
-            evidence));
+        var result = WoundTransitionReducer.Reduce(request);
 
         AssertValid(result);
         Assert.Equal(before.Severity, result.ProposedAfter!.Severity);
@@ -943,15 +938,10 @@ public sealed class WoundTransitionReducerTests
             }
         }, "diagnose");
         AssertInvalid(
-            WoundTransitionReducer.Reduce(Request(
-                "diagnose",
+            WoundTransitionReducer.Reduce(DiagnoseRequest(
                 before,
                 undeclaredAfter,
-                DiagnoseEvidence(
-                    before,
-                    undeclaredAfter,
-                    diagnosisPath.DiagnosisPathId,
-                    diagnosisPath.Reveals.ToArray()))),
+                diagnosisPath.DiagnosisPathId)),
             "wound_transition_diagnosis_fact_unauthorized");
 
         var displayLeak = NewTransition(before with
@@ -969,28 +959,18 @@ public sealed class WoundTransitionReducerTests
             }
         }, "diagnose");
         AssertInvalid(
-            WoundTransitionReducer.Reduce(Request(
-                "diagnose",
+            WoundTransitionReducer.Reduce(DiagnoseRequest(
                 before,
                 displayLeak,
-                DiagnoseEvidence(
-                    before,
-                    displayLeak,
-                    diagnosisPath.DiagnosisPathId,
-                    diagnosisPath.Reveals.ToArray()))),
+                diagnosisPath.DiagnosisPathId)),
             "wound_transition_diagnosis_display_changed");
 
         var healedMechanics = NewTransition(WithSeverity(before, "I", 1), "diagnose");
         AssertInvalid(
-            WoundTransitionReducer.Reduce(Request(
-                "diagnose",
+            WoundTransitionReducer.Reduce(DiagnoseRequest(
                 before,
                 healedMechanics,
-                DiagnoseEvidence(
-                    before,
-                    healedMechanics,
-                    diagnosisPath.DiagnosisPathId,
-                    diagnosisPath.Reveals.ToArray()))),
+                diagnosisPath.DiagnosisPathId)),
             "wound_transition_diagnosis_mechanics_changed");
     }
 
@@ -3150,7 +3130,18 @@ public sealed class WoundTransitionReducerTests
         {
             Recovery = before.Recovery with { LastTickKey = "tick_fresh" }
         }, "recover");
-        var diagnoseAfter = NewTransition(before, "diagnose");
+        var diagnoseBefore = before with
+        {
+            Treatment = before.Treatment with
+            {
+                DiagnosisPaths = ImmutableArray.Create(DiagnosisPath(
+                    "diagnosis_path_null", "route:clean_and_suture"))
+            }
+        };
+        var diagnoseRequest = DiagnoseRequest(diagnoseBefore,
+            NewTransition(diagnoseBefore, "diagnose"), "diagnosis_path_null");
+        AssertValid(WoundTransitionReducer.Reduce(diagnoseRequest));
+        var diagnoseEvidence = Assert.IsType<WoundDiagnosisEvidence>(diagnoseRequest.Evidence);
         var stabilizeAfter = NewTransition(before with
         {
             Care = before.Care with
@@ -3198,15 +3189,10 @@ public sealed class WoundTransitionReducerTests
             (
                 "null diagnosis reveal list",
                 "wound_transition_evidence_invalid",
-                () => WoundTransitionReducer.Reduce(Request(
-                    "diagnose",
-                    before,
-                    diagnoseAfter,
-                    new WoundDiagnosisEvidence(
-                        "diagnosis_path_null",
-                        Fingerprint(before),
-                        Fingerprint(diagnoseAfter),
-                        null!)))),
+                () => WoundTransitionReducer.Reduce(diagnoseRequest with
+                {
+                    Evidence = diagnoseEvidence with { RevealedFacts = null! }
+                })),
             (
                 "null stabilization removal lists",
                 "wound_transition_evidence_invalid",
@@ -3537,15 +3523,15 @@ public sealed class WoundTransitionReducerTests
             MaximumSeverityRank: 4,
             HasPendingTreatmentOrRecovery: false);
 
-    private static WoundDiagnosisEvidence DiagnoseEvidence(
+    private static WoundTransitionRequest DiagnoseRequest(
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
-        string diagnosisPathId,
-        params string[] revealedFacts) => new(
-            diagnosisPathId,
-            Fingerprint(before),
-            Fingerprint(after),
-            revealedFacts.ToImmutableArray());
+        string diagnosisPathId) => MortalWoundTreatmentPlanner.CreateDiagnosisTransition(
+            after.LastTransition.TransitionId, "diagnosis_command_test",
+            "operation_wound_transition_002", "attempt_diagnosis_test",
+            "turn_43:wound_transition", after.LastTransition.Turn,
+            before, after, diagnosisPathId, "success",
+            "sha256:" + new string('6', 64), "sha256:" + new string('7', 64));
 
     private static WoundStabilizationEvidence StabilizeEvidence(
         WoundMaterializationEnvelope before,
