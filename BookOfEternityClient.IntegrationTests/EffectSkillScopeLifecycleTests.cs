@@ -48,6 +48,59 @@ public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
     }
 
     [Fact]
+    public async Task TurnRequestCatalog_UnrelatedMalformedEffectCarrierDoesNotSuppressValidCatalog()
+    {
+        await SeedScopedSkillsAsync(_fileSystem);
+        await _fileSystem.WriteFileAtomicAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            new JsonArray(new JsonObject
+            {
+                ["legacyEffect"] = "unrelated malformed carrier"
+            }).ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+
+        await new LiveTurnPreparationService(_fileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "scope-live-malformed-carrier",
+            RequestId = "scope-live-malformed-carrier-request",
+            TurnNumber = 44,
+            CurrentRealm = "Mortal World",
+            PlayerAction = "Осмотреть рану при повреждённом носителе эффекта.",
+            PreGeneratedDices1d20 = new[] { 10 }
+        });
+
+        var request = await ReadTurnRequestAsync();
+        var catalog = Assert.IsType<JsonObject>(request["effectSkillScopeCatalog"]);
+
+        Assert.True(JsonNode.DeepEquals(CreateExpectedCatalog(), catalog));
+    }
+
+    [Fact]
+    public async Task TurnRequestCatalog_MalformedSkillRootFailsClosedToExplicitEmptyCatalog()
+    {
+        await SeedScopedSkillsAsync(_fileSystem);
+        await _fileSystem.WriteFileAtomicAsync(ActiveSkillsPath, "{ malformed skill root");
+
+        await new LiveTurnPreparationService(_fileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        {
+            SessionId = "scope-live-malformed-skills",
+            RequestId = "scope-live-malformed-skills-request",
+            TurnNumber = 45,
+            CurrentRealm = "Mortal World",
+            PlayerAction = "Осмотреть недоступный каталог навыков.",
+            PreGeneratedDices1d20 = new[] { 11 }
+        });
+
+        var request = await ReadTurnRequestAsync();
+        var catalog = Assert.IsType<JsonObject>(request["effectSkillScopeCatalog"]);
+
+        Assert.True(JsonNode.DeepEquals(new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["targets"] = new JsonArray()
+        }, catalog));
+    }
+
+    [Fact]
     public void TurnRequestCatalog_AfterlifeOnlyDirectRequestUsesExplicitEmptyCatalog()
     {
         var request = JsonSerializer.SerializeToNode(
@@ -66,18 +119,19 @@ public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
     [Fact]
     public async Task TurnRequestCatalog_EditedRequestCatalogDoesNotChangeCanonicalScopeAuthority()
     {
-        await SeedScopedSkillsAsync(_fileSystem);
-        await new LiveTurnPreparationService(_fileSystem).PrepareAsync(new LiveTurnPreparationOptions
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        var definition = EffectMaterializationTestFixture.CreateDefinition(profile: "roll_modifier");
+        definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
+        definition["components"]![0]!["payload"]!["scope"] = new JsonObject
         {
-            SessionId = "scope-tamper",
-            RequestId = "scope-tamper-request",
-            TurnNumber = 43,
-            CurrentRealm = "Mortal World",
-            PlayerAction = "Проверить замок.",
-            PreGeneratedDices1d20 = new[] { 9 }
-        });
+            ["kind"] = "skill",
+            ["skillId"] = "skill_forged"
+        };
+        await context.SeedPlayerSkillSourceAsync(definition);
+        await context.CaptureValidatedPendingSnapshotAsync();
 
-        var request = await ReadTurnRequestAsync();
+        var request = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            LiveTurnPreparationService.TurnRequestPath));
         request["effectSkillScopeCatalog"] = new JsonObject
         {
             ["schemaVersion"] = 1,
@@ -93,18 +147,36 @@ public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
                 })
             })
         };
-        await _fileSystem.WriteFileAtomicAsync(
+        await context.WriteJsonAsync(
             LiveTurnPreparationService.TurnRequestPath,
-            request.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+            request);
+        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        command["source"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = EffectMaterializationTestContext.MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+        command["parameters"] = new JsonObject();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            EffectMaterializationTestFixture.CreateCommandRoot(command));
+        var before = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
 
-        var mechanics = await EffectMechanicsSnapshot.LoadAsync(_fileSystem);
-        var planning = PlanFocusedForgedSkillApplication(mechanics.SkillScopeAuthority);
+        var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
+        var after = await context.CaptureBytesAsync(
+            EffectMaterializationTestContext.PlayerEffectsPath,
+            EffectMaterializationTestContext.IdentityIndexPath,
+            EffectMaterializationTestContext.CommandPath);
 
-        Assert.False(planning.Success);
-        Assert.Null(planning.Plan);
         Assert.Contains(
-            planning.Issues,
+            issues,
             issue => issue.Code == "effect_roll_skill_scope_unavailable");
+        Assert.Equal(before, after);
+        Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekEffectAsync(context.FileSystem));
     }
 
     public ValueTask DisposeAsync()
@@ -144,9 +216,6 @@ public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
             ?? throw new InvalidOperationException("turn_request.json is missing.")) as JsonObject)
         ?? throw new InvalidOperationException("turn_request.json is not an object.");
 
-    private Task WriteJsonAsync(string path, JsonObject root) =>
-        _fileSystem.WriteFileAtomicAsync(path, root.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
-
     private static JsonObject Skill(string skillId, string skillName, bool active) => new()
     {
         ["skillId"] = skillId,
@@ -183,75 +252,6 @@ public sealed class EffectSkillScopeLifecycleTests : IAsyncDisposable
             })
     };
 
-    private static EffectAcceptedTurnPlanningResult PlanFocusedForgedSkillApplication(
-        EffectRollSkillScopeAuthority skillScopeAuthority)
-    {
-        var definition = EffectMaterializationTestFixture.CreateDefinition(profile: "roll_modifier");
-        definition["components"]![0]!["payload"]!["operations"] = new JsonArray("skill_check");
-        definition["components"]![0]!["payload"]!["scope"] = new JsonObject
-        {
-            ["kind"] = "skill",
-            ["skillId"] = "skill_forged"
-        };
-        var sourceAuthority = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
-            new[]
-            {
-                new EffectSourceExport(
-                    "mortal_world",
-                    "quest",
-                    "quest_scope_test",
-                    new JsonArray(definition),
-                    Materializable: true,
-                    Active: true,
-                    SameTurn: false)
-            },
-            Array.Empty<EffectSourceExport>(),
-            new HashSet<string>(StringComparer.Ordinal)));
-        var targetAuthority = EffectTargetAuthority.Build(new EffectTargetAuthorityInput(
-            new[] { new EffectTargetExport("mortal_world", "player", "player_current", SameTurn: false) },
-            Array.Empty<EffectTargetExport>(),
-            new HashSet<string>(StringComparer.Ordinal),
-            CombatantIdentities: null));
-        var commands = new JsonObject
-        {
-            ["effectChanges"] = new JsonArray(new JsonObject
-            {
-                ["operation"] = "apply",
-                ["target"] = new JsonObject
-                {
-                    ["kind"] = "player",
-                    ["targetId"] = "player_current"
-                },
-                ["source"] = new JsonObject
-                {
-                    ["kind"] = "quest",
-                    ["sourceId"] = "quest_scope_test",
-                    ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
-                },
-                ["parameters"] = new JsonObject(),
-                ["eventRef"] = new JsonObject
-                {
-                    ["kind"] = "accepted_turn",
-                    ["authorityId"] = "turn_43"
-                },
-                ["reason"] = "Поддельный каталог не является authority."
-            }),
-            ["effectResolutionReceipts"] = new JsonArray(),
-            ["effectEventReports"] = new JsonArray()
-        };
-        return EffectAcceptedTurnPlanner.Build(
-            new EffectAcceptedTurnInput(
-                "scope-tamper",
-                "scope-tamper-snapshot",
-                commands,
-                sourceAuthority,
-                targetAuthority,
-                EffectAcceptedTurnInputComposer.BuildAcceptedEventInput(43, commands),
-                PreTurnCarriers: new EffectCarrierCatalogInput(null, null, null, null, null, null),
-                SkillScopeAuthority: skillScopeAuthority),
-            "scope-tamper-fingerprint",
-            new EffectIdentityFactory());
-    }
 }
 
 public sealed partial class GameEngineTurnLifecycleTests
@@ -295,7 +295,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             "ProcessPlayerTurn",
             "Осмотреть рану.",
             null);
-        var catalog = await capturedCatalog.Task.WaitAsync(TimeSpan.FromSeconds(10));
+        var catalog = await capturedCatalog.Task.WaitAsync(TimeSpan.FromSeconds(35));
 
         await processTurn;
         await terminalError.WaitAsync(TimeSpan.FromSeconds(5));

@@ -113,8 +113,9 @@ internal sealed class LiveTurnPreparationService
                 request.TurnNumber,
                 request.PreGeneratedDices1d20,
                 currentRealm);
-        var effectMechanics = await EffectMechanicsSnapshot.LoadAsync(_fs, writeLease);
-        request.EffectSkillScopeCatalog = effectMechanics.SkillScopeAuthority
+        var skillScopeAuthority = await EffectMechanicsSnapshot
+            .LoadCurrentSkillScopeAuthorityAsync(_fs, writeLease);
+        request.EffectSkillScopeCatalog = skillScopeAuthority
             .CreateGmCatalog()
             .DeepClone()
             .AsObject();

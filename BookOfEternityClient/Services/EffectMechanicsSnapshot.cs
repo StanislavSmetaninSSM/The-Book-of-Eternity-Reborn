@@ -197,6 +197,27 @@ internal sealed record EffectMechanicsSnapshot(
         return await LoadAsync(fs, readLease);
     }
 
+    internal static async Task<EffectRollSkillScopeAuthority> LoadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync(
+            CanonicalWritePurpose.PublicationReadQuiescence);
+        return await LoadCurrentSkillScopeAuthorityAsync(fs, readLease);
+    }
+
+    internal static async Task<EffectRollSkillScopeAuthority> LoadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease readLease)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(readLease);
+        fs.EnsureCanonicalWriteLeaseActive(readLease);
+        var readIssues = new List<ValidationIssue>();
+        var authority = await ReadCurrentSkillScopeAuthorityAsync(fs, readLease, readIssues);
+        return readIssues.Count == 0 ? authority : EmptySkillScopeAuthority;
+    }
+
     internal static async Task<EffectMechanicsSnapshot> LoadAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease readLease)
@@ -206,26 +227,10 @@ internal sealed record EffectMechanicsSnapshot(
         fs.EnsureCanonicalWriteLeaseActive(readLease);
         var readIssues = new List<ValidationIssue>();
 
-        var activeSkills = await ReadObjectAsync(
-            fs, readLease, "game_state/player/skills_active.json", readIssues);
-        var passiveSkills = await ReadObjectAsync(
-            fs, readLease, "game_state/player/skills_passive.json", readIssues);
-        var npcSkills = await ReadObjectAsync(
-            fs, readLease, "game_state/npcs/npc_core.json", readIssues);
-        var skillScopeAuthority = EffectRollSkillScopeAuthority.Build(
-            new EffectRollSkillScopeAuthorityInput(
-                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
-                {
-                    ["game_state/player/skills_active.json"] = activeSkills,
-                    ["game_state/player/skills_passive.json"] = passiveSkills,
-                    ["game_state/npcs/npc_core.json"] = npcSkills
-                },
-                new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
-                {
-                    ["game_state/player/skills_active.json"] = activeSkills,
-                    ["game_state/player/skills_passive.json"] = passiveSkills,
-                    ["game_state/npcs/npc_core.json"] = npcSkills
-                }));
+        var skillScopeAuthority = await ReadCurrentSkillScopeAuthorityAsync(
+            fs,
+            readLease,
+            readIssues);
 
         var input = new EffectMechanicsInput(
             new EffectCarrierCatalogInput(
@@ -243,6 +248,27 @@ internal sealed record EffectMechanicsSnapshot(
             return built;
 
         return Rejected(readIssues.Concat(built.Issues));
+    }
+
+    private static async Task<EffectRollSkillScopeAuthority> ReadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease readLease,
+        List<ValidationIssue> readIssues)
+    {
+        var activeSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_active.json", readIssues);
+        var passiveSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_passive.json", readIssues);
+        var npcSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/npcs/npc_core.json", readIssues);
+        var roots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+        {
+            ["game_state/player/skills_active.json"] = activeSkills,
+            ["game_state/player/skills_passive.json"] = passiveSkills,
+            ["game_state/npcs/npc_core.json"] = npcSkills
+        };
+        return EffectRollSkillScopeAuthority.Build(
+            new EffectRollSkillScopeAuthorityInput(roots, roots));
     }
 
     private static async Task<JsonObject?> ReadObjectAsync(
