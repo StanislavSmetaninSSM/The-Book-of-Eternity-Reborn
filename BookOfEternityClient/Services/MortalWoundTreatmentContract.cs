@@ -237,11 +237,21 @@ internal static partial class MortalWoundTreatmentContract
         }
 
         var validPaths = new List<WoundDiagnosisPath>();
+        var confusablePathIds = new HashSet<string>(StringComparer.Ordinal);
         foreach (var diagnosis in treatment.DiagnosisPaths)
         {
             var path = string.IsNullOrWhiteSpace(diagnosis.SourcePath)
                 ? treatmentPath + ".diagnosisPaths"
                 : diagnosis.SourcePath;
+            if (diagnosis.DiagnosisPathId.Length > 0 &&
+                !confusablePathIds.Add(ConfusableKey(diagnosis.DiagnosisPathId)))
+            {
+                AddInvalid(
+                    issues,
+                    path + ".diagnosisPathId",
+                    "exact and Unicode-confusable unique diagnosis path identifier",
+                    diagnosis.DiagnosisPathId);
+            }
             ValidateRequirements(diagnosis.Requirements, path + ".requirements", issues);
             if (diagnosis.Check.ValueKind != JsonValueKind.Object)
             {

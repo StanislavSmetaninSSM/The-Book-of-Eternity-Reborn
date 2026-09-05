@@ -202,7 +202,7 @@ internal static partial class WoundTransitionReducer
         new[]
         {
             "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
-            "recover", "heal", "legacy", "archive"
+            "recover", "heal", "legacy", "archive", "author_alternative_treatment"
         },
         StringComparer.Ordinal);
 
@@ -270,6 +270,13 @@ internal static partial class WoundTransitionReducer
             if (issues.Count != 0)
                 return Failure(issues);
         }
+        if (request.Kind == "author_alternative_treatment")
+        {
+            // Alternative evidence diagnostics precede generic public-seal checks.
+            ValidateAlternativeEvidenceIntegrity(request, issues);
+            if (issues.Count != 0)
+                return Failure(issues);
+        }
         ValidateRawCoordinateAndProvenancePreflight(request, issues);
         if (issues.Count != 0)
             return Failure(issues);
@@ -308,6 +315,9 @@ internal static partial class WoundTransitionReducer
                 break;
             case "diagnose":
                 ValidateDiagnose(request, before!, after, issues);
+                break;
+            case "author_alternative_treatment":
+                ValidateAlternativeAppend(request, before!, after, issues);
                 break;
             case "stabilize":
                 ValidateStabilize(request, before!, after, issues);
@@ -1993,7 +2003,7 @@ internal static partial class WoundTransitionReducer
                 ImmutableArray<string>.Empty));
         }
         else if (before is not null &&
-                 request.Kind is not ("legacy" or "archive" or "diagnose") &&
+                 request.Kind is not ("legacy" or "archive" or "diagnose" or "author_alternative_treatment") &&
                  (beforeEffects.Length != 0 || afterEffects.Length != 0) &&
                  (request.Kind == "worsen" ||
                   before.Severity.Rank != after.Severity.Rank ||
@@ -2015,6 +2025,9 @@ internal static partial class WoundTransitionReducer
         WoundTransitionResult? transitionResult = null;
         switch (request.Evidence)
         {
+            case WoundAlternativeTreatmentEvidence alternative:
+                transitionResult = alternative.TransitionResult;
+                break;
             case WoundDiagnosisEvidence diagnosis:
                 attemptId = diagnosis.AttemptId;
                 transitionResult = diagnosis.TransitionResult;

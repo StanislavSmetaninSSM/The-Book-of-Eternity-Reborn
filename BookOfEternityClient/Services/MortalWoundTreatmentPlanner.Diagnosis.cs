@@ -113,7 +113,7 @@ internal sealed record WoundDiagnosisEvidence : WoundTransitionEvidence
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(TransitionResult.ToCanonicalJson())
         });
 
-    private static string ComputePathFingerprint(WoundMaterializationEnvelope before, string pathId)
+    internal static string ComputePathFingerprint(WoundMaterializationEnvelope before, string pathId)
     {
         // Reuse the complete production path projection (including empty check,
         // requirements, readable text, and ordered facts), never a mechanics hash.

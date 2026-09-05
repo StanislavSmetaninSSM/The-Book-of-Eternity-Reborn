@@ -288,7 +288,7 @@ internal static class WoundMaterializationContract
         "progressive", "requires_stabilization", "no_natural_recovery");
     private static readonly IReadOnlySet<string> TransitionKinds = Set(
         "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
-        "recover", "heal", "legacy", "archive");
+        "recover", "heal", "legacy", "archive", "author_alternative_treatment");
     private static readonly IReadOnlyDictionary<string, int> SeverityRanks =
         new Dictionary<string, int>(StringComparer.Ordinal)
         {
