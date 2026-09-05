@@ -1416,6 +1416,15 @@ entrypoints require no update for T065.
   `20260906-083805-938-19972-18a8564ed4ed4950b3449bdd5dcea689-focused`). These remain
   T070 publication work. Next bounded task:
   `docs/superpowers/plans/2026-09-06-t070-diagnosis-reducer.md`.
+  Diagnosis factory/reducer checkpoint: `9859a0ab`, independently Approved with
+  0 Critical/Important/Minor. Final owning selection is 299/299
+  (`20260906-090901-961-29352-10b542de73d44338ace839e715d5b747-focused`), clean build,
+  no timeout/duplicates/skips, complete cleanup. Both outcomes now have sealed exact
+  path/result/attempt authority and durable nonterminal wound history without healing
+  or undeclared changes. This is not a command/publication capability. Next pure slice:
+  `docs/superpowers/plans/2026-09-06-t070-alternative-treatment-reducer.md`; first repair
+  the two existing real replay tests' missing canonical wound-effect fixture seed,
+  preserving all exact/conflicting/invalid-history assertions.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

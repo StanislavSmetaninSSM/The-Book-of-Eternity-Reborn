@@ -93,7 +93,7 @@ ordered prerequisites/reveals, visibility and failure policy, but no parser Sour
 Use production canonical serialization and a versioned domain-separated seal; never
 the mechanics-only route hash or a caller-provided path/result seal.
 
-- [ ] **Step 1: Observe existing diagnosis factory RED**
+- [x] **Step 1: Observe existing diagnosis factory RED**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.Reduce_Diagnosis_SealsOneTerminalAttemptAndExactRevealBoundary|FullyQualifiedName~MortalWoundDiagnosisTests.History_DiagnosisReducerIntentAppendsOnceAndReplaysExactResult"
@@ -102,7 +102,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 Expected: exactly four rows fail at the absent production factory, with a clean build.
 Do not run the whole still-RED diagnosis class or Fast to repeat known failures.
 
-- [ ] **Step 2: Add focused authority and semantic RED cases**
+- [x] **Step 2: Add focused authority and semantic RED cases**
 
 Use the existing `WoundContractTestData.CreateActiveWound` and production parser, plus
 small local fixture helpers. Do not copy the large original diagnosis test class.
@@ -134,7 +134,7 @@ Cover factory-owned evidence using success/failure and exact path identities:
 Run the new class RED before implementation. Existing method names/signatures/assertions
 in `MortalWoundDiagnosisTests.cs` are unchanged.
 
-- [ ] **Step 3: Implement sealed factory and reducer validation**
+- [x] **Step 3: Implement sealed factory and reducer validation**
 
 Derive the path by exact ordinal identity in the parsed before wound. Success facts are
 the complete immutable declared array; failure facts are empty. The factory seals the
@@ -168,7 +168,7 @@ must preserve every field except last-transition metadata. Do not change `Care.L
 for diagnosis: the terminal attempt belongs to intents/history. Preserve authored array
 order and all display text. Reuse existing canonical comparison and fact vocabularies.
 
-- [ ] **Step 4: Emit durable result and cut over old fixtures**
+- [x] **Step 4: Emit durable result and cut over old fixtures**
 
 The reducer's success builder carries the factory's immutable result to
 `WoundTransitionHistoryIntent.TransitionResult`, sets its exact attempt ID, and adds one
@@ -182,7 +182,7 @@ existing undeclared private fact/display/mechanics assertions. The forged-null c
 start from a genuinely valid selectable path/factory request before tampering its facts.
 Do not retain an unsealed constructor/fallback to satisfy an obsolete fixture.
 
-- [ ] **Step 5: Run coherent GREEN controls and review**
+- [x] **Step 5: Run coherent GREEN controls and review**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTransitionTests|FullyQualifiedName~WoundTransitionReducerTests|FullyQualifiedName~MortalWoundDiagnosisTests.Reduce_Diagnosis_SealsOneTerminalAttemptAndExactRevealBoundary|FullyQualifiedName~MortalWoundDiagnosisTests.History_DiagnosisReducerIntentAppendsOnceAndReplaysExactResult|FullyQualifiedName~WoundTransitionResultTests|FullyQualifiedName~WoundHistoryStateTests"
@@ -204,3 +204,36 @@ closed accepted commands, kind-specific response/repair, fresh source authority 
 real common publication/cache/replay/rollback, executable GM examples, and full controls.
 The three proven baseline treatment-publication failures remain recorded in the history
 foundation plan; this task does not remove or weaken them.
+
+### Verified checkpoint (2026-09-06)
+
+Completed by `9859a0ab`; independent spec/quality review: Approved,
+0 Critical/Important/Minor, no unresolved blocking controller checks. Parent inspected
+the production factory/evidence/reducer diff and actual final summary/log. The exact
+frozen factory, detached full path/request/result authority, current-only prerequisite
+availability, complete-or-empty facts, preserved public complication visibility,
+one terminal attempt and one nonterminal history result are implemented. The old
+diagnosis fixtures now use the production factory without weakening their assertions.
+
+Required four-row RED:
+`20260906-085630-944-28512-cd27fc72612144fc86bf84bc111fb03d-focused` (missing factory).
+New 60-row RED: `20260906-090216-705-3448-1f20db36ea4d42bbb2a79f336f6c9cad-focused`.
+An earlier new-fixture run used an invalid gm_only route and is not counted as feature
+RED. First coherent implementation control was 288/289; its one newly authored
+severity-negative fixture omitted required last-change event metadata. Correcting
+only that fixture retained the intended diagnosis-mechanics diagnostic.
+
+Final complete selection: **299/299**,
+`20260906-090901-961-29352-10b542de73d44338ace839e715d5b747-focused` (0:14.988):
+70 diagnosis-authority rows, 127 existing reducer rows, 49 history rows, 49 typed-result
+rows, and the four frozen diagnosis rows. Zero build warnings/errors, no timeout,
+duplicates or skipped tests, complete cleanup. Ten additional boundary cases were
+added during self-review; the original 60-row new matrix was observed RED first.
+
+This remains internal write-free plumbing: no new command, GM response, UI, or
+publication path. No Mortal World/afterlife prompt, example, manifest, matrix, source
+guard, or daemon update is required for this slice; later exposure retains them.
+T070/T177/#1536 remain open. Before the next pure feature slice, directly repair the
+two now-applicable replay fixtures whose missing canonical effect seed was confirmed
+by read-only diagnosis, retaining every publication/replay assertion. Then execute
+`docs/superpowers/plans/2026-09-06-t070-alternative-treatment-reducer.md`.
