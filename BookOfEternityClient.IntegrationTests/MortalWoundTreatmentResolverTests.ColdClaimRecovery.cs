@@ -778,8 +778,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var authority = ReadJsonObject(request, "ModeAuthority");
         var source = ReadJsonObject(authority, "RollSourceAuthority");
-        var sourceRow = Assert.Single(Assert.IsType<JsonArray>(source[
-            FindJsonPropertyName(source, "Rows")])).AsObject();
+        var sourceRow = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(source[
+            FindJsonPropertyName(source, "Rows")])));
         sourceRow[FindJsonPropertyName(sourceRow, "Contribution")] = "disadvantage";
         var resealedSource = JsonSerializer.Deserialize<EffectDetachedRollSourceAuthority>(
             source.ToJsonString(),
@@ -789,8 +789,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             JsonNode.Parse(JsonSerializer.Serialize(
                 EffectDetachedRollSourceAuthority.Create(resealedSource.Rows),
                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
-        var contribution = Assert.Single(Assert.IsType<JsonArray>(authority[
-            FindJsonPropertyName(authority, "RollContributions")])).AsObject();
+        var contribution = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "RollContributions")])));
         contribution[FindJsonPropertyName(contribution, "Contribution")] =
             "disadvantage";
         authority[FindJsonPropertyName(authority, "RollMode")] = "disadvantage";

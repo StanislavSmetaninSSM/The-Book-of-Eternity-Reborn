@@ -60,7 +60,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var authority = ReadJsonObject(request, "ModeAuthority");
         Assert.NotNull(authority[FindJsonPropertyName(authority, "RollSourceAuthority")]);
         var contributions = Assert.IsType<JsonArray>(authority[FindJsonPropertyName(authority, "RollContributions")]);
-        var contribution = Assert.Single(contributions).AsObject();
+        var contribution = Assert.IsType<JsonObject>(Assert.Single(contributions));
         switch (axis)
         {
             case "delete":
@@ -166,8 +166,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var missingOperationsSource = ReadJsonObject(
             ReadJsonObject(missingOperations, "ModeAuthority"),
             "RollSourceAuthority");
-        var row = Assert.Single(Assert.IsType<JsonArray>(missingOperationsSource[
-            FindJsonPropertyName(missingOperationsSource, "Rows")])).AsObject();
+        var row = Assert.IsType<JsonObject>(Assert.Single(Assert.IsType<JsonArray>(missingOperationsSource[
+            FindJsonPropertyName(missingOperationsSource, "Rows")])));
         row.Remove(FindJsonPropertyName(row, "Operations"));
         AssertDetachedRequestCannotDeserialize(missingOperations);
     }
