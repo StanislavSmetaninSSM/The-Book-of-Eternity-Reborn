@@ -35,7 +35,10 @@ internal sealed record WoundHistoryTransition(
     string OutputFingerprint,
     string ReadableSummary,
     bool Terminal,
-    MortalWoundTreatmentPersistedResult? TreatmentResult = null);
+    WoundTransitionResult? TransitionResult = null)
+{
+    public MortalWoundTreatmentPersistedResult? TreatmentResult => TransitionResult as MortalWoundTreatmentPersistedResult;
+}
 
 internal sealed record WoundHistoryReplayProbe(
     string OperationKey,
@@ -53,7 +56,8 @@ internal sealed record WoundHistoryReplayProbe(
     string? PaymentFingerprint,
     string OutputFingerprint,
     string ReadableSummary,
-    bool Terminal);
+    bool Terminal,
+    WoundTransitionResult? TransitionResult = null);
 
 internal sealed record WoundAlreadyAcceptedReceipt(
     string OperationKey,
@@ -64,7 +68,8 @@ internal sealed record WoundAlreadyAcceptedReceipt(
     string? CycleKey,
     string? PaymentFingerprint,
     string OutputFingerprint,
-    string ReadableSummary);
+    string ReadableSummary,
+    WoundTransitionResult? TransitionResult = null);
 
 internal sealed record WoundHistoryReplayResult(
     WoundHistoryReplayDisposition Disposition,
@@ -79,7 +84,7 @@ internal sealed partial record WoundHistoryParseResult(
     internal bool IsValid => State is not null && Issues.Count == 0;
 }
 
-internal sealed class WoundHistoryState
+internal sealed partial class WoundHistoryState
 {
     internal const int SchemaVersion = 1;
     internal const int MaxTransitions = 20_000;
@@ -101,7 +106,7 @@ internal sealed class WoundHistoryState
         "terminal", "transitionResult");
     private static readonly IReadOnlySet<string> Kinds = Set(
         "create", "worsen", "complicate", "diagnose", "stabilize", "treat",
-        "recover", "heal", "legacy", "archive");
+        "recover", "heal", "legacy", "archive", "author_alternative_treatment");
     private static readonly IReadOnlySet<string> PostTerminalKinds = Set("legacy", "archive");
     private static readonly IReadOnlySet<string> TerminalKinds = Set("heal");
 
@@ -331,7 +336,8 @@ internal sealed class WoundHistoryState
             transition.PaymentFingerprint,
             transition.OutputFingerprint,
             transition.ReadableSummary,
-            transition.Terminal);
+            transition.Terminal,
+            transition.TransitionResult);
     }
 
     internal static bool ReplaySemanticsMatch(
@@ -372,7 +378,8 @@ internal sealed class WoundHistoryState
                    transition.ReadableSummary,
                    probe.ReadableSummary,
                    StringComparison.Ordinal) &&
-               transition.Terminal == probe.Terminal;
+               transition.Terminal == probe.Terminal &&
+               TransitionResultsEqual(transition.TransitionResult, probe.TransitionResult);
     }
 
     internal WoundHistoryReplayResult ResolveReplay(WoundHistoryReplayProbe probe)
@@ -393,7 +400,10 @@ internal sealed class WoundHistoryState
                 WoundHistoryReplayDisposition.Exact,
                 transition,
                 ImmutableArray<ValidationIssue>.Empty,
-                null);
+                new WoundAlreadyAcceptedReceipt(transition.OperationKey, transition.EventRef,
+                    transition.AttemptId, transition.CourseId, transition.CourseMilestoneOrdinal,
+                    transition.CycleKey, transition.PaymentFingerprint, transition.OutputFingerprint,
+                    transition.ReadableSummary, transition.TransitionResult));
         }
 
         var issues = ImmutableArray.CreateBuilder<ValidationIssue>();
@@ -621,14 +631,9 @@ internal sealed class WoundHistoryState
             issues);
         var summary = ReadSummary(element, path, issues);
         var terminal = ReadBoolean(element, "terminal", path, issues);
-        MortalWoundTreatmentPersistedResult? treatmentResult = null;
-        if (element.TryGetProperty("transitionResult", out var treatmentResultElement))
-        {
-            treatmentResult = MortalWoundTreatmentPersistedResult.Parse(
-                treatmentResultElement,
-                path + ".transitionResult",
-                issues);
-        }
+        element.TryGetProperty("transitionResult", out var resultElement);
+        var transitionResult = ParseTransitionResult(resultElement, kind,
+            path + ".transitionResult", issues);
 
         return issues.Count == issueCount
             ? new WoundHistoryTransition(
@@ -651,7 +656,7 @@ internal sealed class WoundHistoryState
                 outputFingerprint,
                 summary,
                 terminal,
-                treatmentResult)
+                transitionResult)
             : null;
     }
 
@@ -965,7 +970,7 @@ internal sealed class WoundHistoryState
                 $"trimmed non-empty readable text up to {WoundMaterializationContract.MaxReadableTextLength} characters",
                 transition.ReadableSummary ?? "null");
         }
-        ValidateTreatmentResult(transition, path, issues);
+        ValidateTransitionResult(transition, path, issues);
     }
 
     private static void ValidateTreatmentResult(
@@ -1705,10 +1710,10 @@ internal sealed class WoundHistoryState
         writer.WriteString("outputFingerprint", transition.OutputFingerprint);
         writer.WriteString("readableSummary", transition.ReadableSummary);
         writer.WriteBoolean("terminal", transition.Terminal);
-        if (transition.TreatmentResult is not null)
+        if (transition.TransitionResult is not null)
         {
             writer.WritePropertyName("transitionResult");
-            transition.TreatmentResult.WriteCanonical(writer);
+            transition.TransitionResult.WriteCanonical(writer);
         }
         writer.WriteEndObject();
     }

@@ -213,7 +213,8 @@ internal static partial class WoundAcceptedTurnPlanner
                 accepted.CycleKey,
                 accepted.PaymentFingerprint,
                 accepted.OutputFingerprint,
-                accepted.ReadableSummary)
+                accepted.ReadableSummary,
+                accepted.TransitionResult)
         };
     }
 
@@ -1244,7 +1245,7 @@ internal static class WoundAcceptedTurnPlannerCore
                     WoundAcceptedTurnPlanner.TreatmentPublicationSummary),
                 WoundAcceptedTurnPlanner.TreatmentPublicationSummary,
                 Terminal: false,
-                TreatmentResult: continuation.PersistedResult);
+                TransitionResult: continuation.PersistedResult);
             stage = "carrier_contributions";
             var contributions = BuildCarrierContributions(
                 baseline.PreTurnCarriers,

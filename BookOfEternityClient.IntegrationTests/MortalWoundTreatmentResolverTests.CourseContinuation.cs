@@ -422,6 +422,23 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var beforeFingerprint = WoundIdentityState.ComputeSemanticFingerprint(before);
         var afterFingerprint = WoundIdentityState.ComputeSemanticFingerprint(after);
         var summary = "A parseable but untrusted course coordinate was retained.";
+        WoundTransitionResult? transitionResult = null;
+        if (kind == "diagnose")
+        {
+            var diagnosisPathId = "diagnosis_t067_course_" + suffix;
+            var unsealedResult = new JsonObject
+            {
+                ["kind"] = "diagnose",
+                ["diagnosisPathId"] = diagnosisPathId,
+                ["result"] = "failure",
+                ["revealedFacts"] = new JsonArray()
+            };
+            transitionResult = new WoundDiagnosisTransitionResult(
+                diagnosisPathId,
+                "failure",
+                Array.Empty<string>(),
+                WoundHistoryState.ComputeTransitionResultFingerprint(unsealedResult));
+        }
         var transition = new WoundHistoryTransition(
             transitionId,
             before.WoundId,
@@ -444,7 +461,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 before.Origin.EventRef,
                 summary),
             summary,
-            false);
+            false,
+            transitionResult);
         var updatedHistory = WoundHistoryState.CreateValidated(
             history.State.NextOrdinal + 1,
             history.State.Transitions.Append(transition));

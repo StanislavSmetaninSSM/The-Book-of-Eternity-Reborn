@@ -154,7 +154,8 @@ internal sealed record WoundTransitionHistoryIntent(
     string AfterFingerprint,
     string? AttemptId,
     string? TickKey,
-    bool Terminal) : WoundTransitionIntent;
+    bool Terminal,
+    WoundTransitionResult? TransitionResult = null) : WoundTransitionIntent;
 
 internal sealed record WoundAttemptTerminalIntent(
     string AttemptId,

@@ -1,10 +1,12 @@
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed class MortalWoundTreatmentPersistedResult
+[JsonConverter(typeof(WoundTransitionResultJsonConverter))]
+internal sealed class MortalWoundTreatmentPersistedResult : WoundTransitionResult
 {
     private readonly JsonObject _canonicalResult;
 
@@ -20,6 +22,8 @@ internal sealed class MortalWoundTreatmentPersistedResult
 
     public MortalWoundTreatmentAttemptRequest Request { get; }
     public MortalWoundTreatmentReceipt Receipt { get; }
+    public override string Kind => "treat";
+    internal override JsonObject ToCanonicalJson() => _canonicalResult.DeepClone().AsObject();
 
     internal static MortalWoundTreatmentPersistedResult Create(
         MortalWoundTreatmentResolution resolution)
@@ -71,7 +75,7 @@ internal sealed class MortalWoundTreatmentPersistedResult
     internal JsonObject SerializeRequest() =>
         _canonicalResult["requestAuthority"]!.DeepClone().AsObject();
 
-    internal void WriteCanonical(Utf8JsonWriter writer)
+    internal override void WriteCanonical(Utf8JsonWriter writer)
     {
         ArgumentNullException.ThrowIfNull(writer);
         _canonicalResult.WriteTo(writer);

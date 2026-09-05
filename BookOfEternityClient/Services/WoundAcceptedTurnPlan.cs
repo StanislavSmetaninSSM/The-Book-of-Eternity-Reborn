@@ -1856,7 +1856,8 @@ internal static class WoundAcceptedTurnData
                 intent.WoundId,
                 CopySimpleList(intent.BeforeEffectIds),
                 CopySimpleList(intent.AfterEffectIds)),
-            WoundTransitionHistoryIntent intent => intent with { },
+            // This closed result family contains only immutable typed values.
+            WoundTransitionHistoryIntent intent => intent with { TransitionResult = intent.TransitionResult },
             WoundAttemptTerminalIntent intent => intent with { },
             WoundRecoverySealIntent intent => intent with { },
             WoundFollowUpHealIntent intent => intent with { },
@@ -3118,6 +3119,8 @@ internal static class WoundAcceptedTurnFingerprints
                 fields.Add(intent.AttemptId);
                 fields.Add(intent.TickKey);
                 fields.Add(Boolean(intent.Terminal));
+                fields.Add(intent.TransitionResult is null ? null :
+                    WoundAcceptedTurnFingerprintWriter.CanonicalJson(intent.TransitionResult.ToCanonicalJson()));
                 return;
             case WoundAttemptTerminalIntent intent:
                 fields.Add(nameof(WoundAttemptTerminalIntent));

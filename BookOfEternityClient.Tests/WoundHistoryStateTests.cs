@@ -15,6 +15,7 @@ public sealed class WoundHistoryStateTests
         "worsen",
         "complicate",
         "diagnose",
+        "author_alternative_treatment",
         "stabilize",
         "treat",
         "recover",
@@ -1027,28 +1028,34 @@ public sealed class WoundHistoryStateTests
         string? paymentFingerprint = null,
         string? outputFingerprint = null,
         string readableSummary = "Рана зафиксирована после подтверждённого события.",
-        bool terminal = false) => new()
+        bool terminal = false)
     {
-        ["transitionId"] = transitionId,
-        ["woundId"] = woundId,
-        ["ordinal"] = ordinal,
-        ["woundTransitionOrdinal"] = woundTransitionOrdinal,
-        ["kind"] = kind,
-        ["turn"] = turn,
-        ["eventRef"] = eventRef,
-        ["operationKey"] = operationKey,
-        ["beforeFingerprint"] = beforeFingerprint ?? WoundHistoryState.ComputeNonexistentBeforeFingerprint(woundId),
-        ["afterFingerprint"] = afterFingerprint ?? Fingerprint('a'),
-        ["sourceFingerprint"] = sourceFingerprint ?? Fingerprint('e'),
-        ["attemptId"] = attemptId,
-        ["courseId"] = courseId,
-        ["courseMilestoneOrdinal"] = courseMilestoneOrdinal,
-        ["cycleKey"] = cycleKey,
-        ["paymentFingerprint"] = paymentFingerprint,
-        ["outputFingerprint"] = outputFingerprint ?? Fingerprint('f'),
-        ["readableSummary"] = readableSummary,
-        ["terminal"] = terminal
-    };
+        var row = new JsonObject
+        {
+            ["transitionId"] = transitionId,
+            ["woundId"] = woundId,
+            ["ordinal"] = ordinal,
+            ["woundTransitionOrdinal"] = woundTransitionOrdinal,
+            ["kind"] = kind,
+            ["turn"] = turn,
+            ["eventRef"] = eventRef,
+            ["operationKey"] = operationKey,
+            ["beforeFingerprint"] = beforeFingerprint ?? WoundHistoryState.ComputeNonexistentBeforeFingerprint(woundId),
+            ["afterFingerprint"] = afterFingerprint ?? Fingerprint('a'),
+            ["sourceFingerprint"] = sourceFingerprint ?? Fingerprint('e'),
+            ["attemptId"] = attemptId,
+            ["courseId"] = courseId,
+            ["courseMilestoneOrdinal"] = courseMilestoneOrdinal,
+            ["cycleKey"] = cycleKey,
+            ["paymentFingerprint"] = paymentFingerprint,
+            ["outputFingerprint"] = outputFingerprint ?? Fingerprint('f'),
+            ["readableSummary"] = readableSummary,
+            ["terminal"] = terminal
+        };
+        if (HistoryResult(kind) is { } result)
+            row["transitionResult"] = result.ToCanonicalJson();
+        return row;
+    }
 
     private static WoundHistoryTransition TypedTransition(
         string transitionId = "transition_1",
@@ -1088,7 +1095,25 @@ public sealed class WoundHistoryStateTests
         paymentFingerprint,
         outputFingerprint ?? Fingerprint('f'),
         readableSummary,
-        terminal);
+        terminal,
+        HistoryResult(kind));
+
+    private static WoundTransitionResult? HistoryResult(string kind)
+    {
+        if (kind == "diagnose")
+        {
+            var canonical = WoundTransitionResultTests.Diagnosis();
+            return new WoundDiagnosisTransitionResult("path_exact", "failure", Array.Empty<string>(),
+                canonical["resultFingerprint"]!.GetValue<string>());
+        }
+        if (kind == "author_alternative_treatment")
+        {
+            var canonical = WoundTransitionResultTests.Alternative();
+            return new WoundAlternativeTreatmentTransitionResult("authoring_public", "route_exact",
+                null, Fingerprint('a'), null, canonical["resultFingerprint"]!.GetValue<string>());
+        }
+        return null;
+    }
 
     private static WoundHistoryParseResult Parse(JsonObject root) =>
         WoundHistoryState.Parse(root.ToJsonString(), Path);
