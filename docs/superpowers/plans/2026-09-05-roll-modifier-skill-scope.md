@@ -1394,7 +1394,7 @@ guidance, all three example families, manifest routes and source guards are sync
 - Consumes: Tasks 1–11.
 - Produces: review-ready #1536 branch evidence without pushing, opening a PR, merging, or closing the issue.
 
-- [ ] **Step 1: Run semantic legacy scans**
+- [x] **Step 1: Run semantic legacy scans**
 
 ```powershell
 rg -n -C 4 'roll_modifier' BookOfEternityClient BookOfEternityClient.Tests BookOfEternityClient.IntegrationTests BookOfEternityClient.TestSupport Examples OtherGuides specs/1535-complete-effect-materialization specs/1536-complete-wound-materialization
@@ -1402,6 +1402,15 @@ rg -n 'implicit.*scope|missing.*scope.*all|skillName.*scope|multiple.*skillId' O
 ```
 
 Expected: all active payloads have explicit scope; no text authorizes implicit broad scope, name selection, or multiple IDs.
+
+Verified 2026-09-06: scoped searches across production, both test projects, shared
+fixtures, Examples, OtherGuides and both feature specs found only explicit closed
+payloads or named structural-negative cases. A recursive JSON-fence scan of 18
+roll-related guide/example/spec files found five complete roll components, zero
+missing/invalid scopes and zero unparsed roll-related fences. Standalone payload
+fragments also declare explicit scope. C# fixtures use the central broad/focused
+payload factories; the reviewed Roslyn inventory pins contribution writers and
+permits missing-scope mutation only in the two named structural-negative methods.
 
 - [ ] **Step 2: Run one meaningful Fast checkpoint**
 
@@ -1425,7 +1434,7 @@ documentation control recorded in Task 11. FullValidation passed 1,852/1,852 in
 8:23.236 (`20260906-075652-842-8748-572c5ddf92a648c2844956c6ccf453bd-fullvalidation`),
 with zero build warnings/errors, no timeout/duplicate IDs, and complete cleanup.
 
-- [ ] **Step 4: Run the related regression integration lane if focused lifecycle evidence exposed broader coupling**
+- [x] **Step 4: Evaluate the conditional regression integration lane**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane RegressionIntegration
@@ -1433,11 +1442,40 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane RegressionIntegration
 
 Expected: PASS. Skip this broad diagnostic only when the exact Task 10 selections plus FullValidation already cover every changed file-backed boundary; record that evidence explicitly.
 
-- [ ] **Step 5: Inspect diff and request code review**
+No broader scope coupling was exposed: Task 10's real publication/dormancy/replay/
+rollback and treatment selections cover the changed lifecycle paths; FullValidation
+covers the changed canonical GM examples, and I1's final Integration 6/6 covers the
+relocated physical snapshot/lease tests and exact source ownership. A duplicate broad
+RegressionIntegration run is therefore not needed for this scope checkpoint. The
+separately tracked T070 diagnosis/course publication failures are not waived by this
+conditional decision and retain their own implementation and verification gates.
+
+- [x] **Step 5: Inspect diff and request code review**
 
 Invoke `requesting-code-review`. Review the complete diff from `6bf45c38` through `HEAD`, with special attention to authority trust boundaries, offered/current separation, `RollSkillId` replay sealing, repair coordinates, hidden-effect projection, mutable JSON detachment, and Integration/Fast placement. Fix every confirmed finding and rerun its smallest owning Focused selection.
 
-- [ ] **Step 6: Run formatting/status safety checks**
+Independent cumulative review of `6bf45c38..bfe46fac` completed 2026-09-06:
+zero Critical, one Important, zero Minor. I1 confirms that two physical canonical
+snapshot/lease tests in `EffectRollContributionResolverTests.cs` still live in Fast.
+Move only those methods and their exclusive fixture helpers to Integration, retain
+all deterministic tests in Fast, and prove ownership with the source inventory.
+No functional scope regression was substantiated. The review remains not-Ready until
+I1's focused controls and independent correction review pass. T177 also retains the
+known T070 diagnosis/alternative Fast gate; neither finding is waived.
+
+I1 is closed by `71a4f016`: exactly the two physical Facts and their required fixture
+now live in `EffectRollContributionSnapshotTests` under RegressionIntegration; pure
+resolver tests remain in Fast. The syntax-aware inventory enforces that ownership,
+and current documentation matches the exact 38-source Integration manifest. RED
+ownership guard was 0/1 (`20260906-084013-872-28512-10e072648f0048ec84f936deaa2dab82-focused`).
+Final Integration 6/6 (`20260906-084634-463-13104-5b288293013a49e9b9e286fba2846663-focused`)
+and pure resolver 44/44 (`20260906-084733-313-8724-b53c9cb7d9ac4d358adf02652b427210-focused`)
+have pristine builds, no timeout/duplicates, and complete cleanup; parent read both
+actual summaries. Independent correction review: spec compliant, quality Approved,
+0 Critical/Important/Minor, no unresolved controller checks. No GM contract changed.
+The remaining T177 Fast gate is still open; this is not whole-feature/merge approval.
+
+- [x] **Step 6: Run formatting/status safety checks**
 
 ```powershell
 git diff --check
@@ -1457,7 +1495,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane PreMerge
 
 Expected: exit `0`, no timeout, zero failures, zero duplicate IDs, complete owned-tree cleanup. Do not run an adjacent duplicate Fast control because PreMerge already includes the full Fast project.
 
-- [ ] **Step 8: Commit any review-only corrections**
+- [x] **Step 8: Commit any review-only corrections**
 
 Stage only the exact corrected files, verify `git diff --cached --name-only`, and use:
 

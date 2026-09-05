@@ -76,6 +76,8 @@ recovery, legacy and spiritual task ownership is not erased or renumbered.
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` (typed constructor argument only)
 - Modify: `BookOfEternityClient.Tests/WoundHistoryStateTests.cs`
 - Create: `BookOfEternityClient.Tests/WoundTransitionResultTests.cs`
+- Modify only the diagnosis-result fixture helper:
+  `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.CourseContinuation.cs`
 - Read existing RED contract: `BookOfEternityClient.Tests/MortalWoundDiagnosisTests.cs`
 
 **Interfaces:**
@@ -102,7 +104,7 @@ internal WoundHistoryParseResult AppendTransition(
   A converter or equivalent canonical projection must make serialization through the
   base type or `object` emit the same closed wire object, without runtime type metadata.
 
-- [ ] **Step 1: Observe the existing narrow RED contract**
+- [x] **Step 1: Observe the existing narrow RED contract**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.History_DiagnosisResultRemainsDurable|FullyQualifiedName~MortalWoundDiagnosisTests.History_RejectsAmbiguousOrUnsealedDiagnosisResult|FullyQualifiedName~MortalWoundDiagnosisTests.History_ReplayComparesEveryTypedDiagnosisResultCoordinate"
@@ -111,7 +113,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 Expected: 11 RED rows at the missing production result-fingerprint seam, clean build.
 Do not run the entire Fast lane merely to rediscover the known 65 RED rows.
 
-- [ ] **Step 2: Add result-boundary RED coverage**
+- [x] **Step 2: Add result-boundary RED coverage**
 
 In the new deterministic test class, construct canonical history JSON with the same
 existing production seal helper used by T059. Add explicit cases for closed/duplicate
@@ -134,7 +136,7 @@ under a recomputed result seal must conflict with the accepted operation.
 Add plan-fingerprint coverage showing changed history-intent results change the sealed
 plan input. Do not invent test-created evidence to exercise later factories.
 
-- [ ] **Step 3: Implement the closed result codec and production sealing**
+- [x] **Step 3: Implement the closed result codec and production sealing**
 
 Exact diagnosis wire object:
 
@@ -173,7 +175,7 @@ cannot be null; non-result kinds may have omitted/null result but never another 
 result. Register `author_alternative_treatment` in the history kind registry only here;
 its reducer/materialization registration belongs to the following factory slice.
 
-- [ ] **Step 4: Wire immutable append, replay receipt, and plan sealing**
+- [x] **Step 4: Wire immutable append, replay receipt, and plan sealing**
 
 History parsing dispatches by exact outer kind, preserves the strict treatment parser,
 and returns an immutable result. Canonical serialization emits the result through its
@@ -195,7 +197,7 @@ sharing is safe only for this closed immutable type), and include full canonical
 content/null in `WoundAcceptedTurnFingerprintWriter.AppendTransitionIntent`.
 Do not implement diagnosis factory/reducer authority or command publication in this task.
 
-- [ ] **Step 5: Direct-cutover old history fixtures and run GREEN controls**
+- [x] **Step 5: Direct-cutover old history fixtures and run controls**
 
 The old generic history helper emits diagnosis rows without a result. Update that helper
 to use the production codec/sealing helper while preserving each test's original
@@ -203,6 +205,10 @@ chronology/terminal/duplicate assertions. Add alternative kind to the registered
 matrix with a valid production-sealed alternative result. Do not accept old unsealed
 diagnosis rows for compatibility. Keep treatment constructor calls type-compatible and
 preserve all current treatment codec assertions.
+The same direct cutover applies to `AppendUnsealedCourseCoordinate` in the Integration
+course-continuation fixture: its deliberate duplicate-course coordinate may use a
+diagnosis row, which now requires a typed sealed diagnosis result. Preserve the course
+conflict itself and its assertions; only supply the newly mandatory unrelated result.
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundTransitionResultTests|FullyQualifiedName~WoundHistoryStateTests|FullyQualifiedName~MortalWoundDiagnosisTests.History_DiagnosisResultRemainsDurable|FullyQualifiedName~MortalWoundDiagnosisTests.History_RejectsAmbiguousOrUnsealedDiagnosisResult|FullyQualifiedName~MortalWoundDiagnosisTests.History_ReplayComparesEveryTypedDiagnosisResultCoordinate"
@@ -214,7 +220,7 @@ complete cleanup. Use measured Focused headroom only if the history selection ex
 the default limit. Run additional adjacent cache/reducer controls if a changed boundary
 requires them, not all diagnostic lanes by default.
 
-- [ ] **Step 6: Review and checkpoint**
+- [x] **Step 6: Review and checkpoint**
 
 Inspect diffs and request independent spec/quality review. Fix verified findings using
 their owning RED/GREEN filter. This foundation changes only client-owned canonical
@@ -233,3 +239,43 @@ git commit -m "feat(wounds): persist typed diagnosis history (#1536)"
 
 Keep T070 and T177 unchecked. Continue the next bounded diagnosis factory/reducer task
 without asking the sleeping user for routine confirmation.
+
+### Verified checkpoint (2026-09-06)
+
+Implementation `16e08fca` is independently reviewed: spec compliant, quality Approved,
+0 Critical/Important/Minor. Parent inspected the immutable diff and actual final result
+summaries. Initial production-seam RED was 0/11
+(`20260906-080954-184-26848-f49a609bf7f843d292121253832f23e3-focused`), and the added result
+boundary RED was 0/34 (`20260906-081330-339-24948-33e448433093444797069fe959e6a1b6-focused`).
+Self-review also captured and fixed explicit-null treatment parsing and accepted-replay
+wrapper result loss before checkpoint approval.
+
+Final pure history/results/adjacent immutable-plan control: 125/125,
+`20260906-082612-854-26752-2a8526c1bd2d4d82a2e0c5a787bcd808-focused` (0:58.35).
+Final Integration persistence and both deliberate duplicate-course cases: 19/19,
+`20260906-082806-775-29640-9145f26551364a1f8f572a21e3a039af-focused` (1:14.58).
+Both builds have zero warnings/errors, no timeout/duplicates, and complete cleanup.
+
+The prescribed broader history Integration control is **not GREEN**: artifact
+`20260906-082137-381-17540-f8d6a5e6b7b44d858c43286a54b75b8c-focused` was 44/48.
+The one newly obsolete diagnosis-result fixture was directly cut over without weakening
+its duplicate-course assertion. The other three failures were independently reproduced
+on immutable pre-change BASE `1ca6e396` exported outside the worktree:
+`20260906-083805-938-19972-18a8564ed4ed4950b3449bdd5dcea689-focused`, 0/3 in 1:23.73,
+clean build and complete cleanup. The initial fresh-export run lacked NuGet assets and
+executed zero tests; it is not verification evidence.
+
+Still-required T070 failures, not waived or counted as passing:
+
+- `CourseRequirementClassifier_StaleParsedHistoryIsInvalidAuthorityNotUnsatisfied`
+  and `CourseHighLevelPreparation_StaleHistoryRejectsBeforeResourceReservation`:
+  `mortal_wound_treatment_publication_slice_unsupported` for course publication.
+- `Replay_ChangedFingerprintConflictsButMalformedHistoryDominatesEveryCoordinate`:
+  `accepted_mechanics_wound_lineage_root_missing` for `definition_wound_test_bleeding`.
+
+The bounded history foundation is accepted with these proven pre-existing publication
+failures retained under T070. No claim is made that all treatment Integration tests,
+Fast, T070, T177, or #1536 are complete. This client-owned foundation exposes no new GM
+authoring, so no Mortal World/afterlife prompt, example, manifest, source guard, matrix,
+or daemon entrypoint update is required here. The later publication slice owns them.
+Continue `docs/superpowers/plans/2026-09-06-t070-diagnosis-reducer.md` next.

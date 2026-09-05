@@ -1404,6 +1404,18 @@ entrypoints require no update for T065.
   result/history foundation, followed by sealed factories/reducers, accepted commands,
   kind-specific GM authoring/repair, and real common publication/replay/rollback.
   T070 remains open; fixing only the unit baseline does not complete its capability.
+  History foundation checkpoint: `16e08fca`, independent spec/quality review clean
+  (0 Critical/Important/Minor). Final pure history/result/immutable-plan control is
+  125/125 (`20260906-082612-854-26752-2a8526c1bd2d4d82a2e0c5a787bcd808-focused`);
+  Integration persistence/duplicate-course control is 19/19
+  (`20260906-082806-775-29640-9145f26551364a1f8f572a21e3a039af-focused`). The broader
+  44/48 history run is not waived: its one newly obsolete diagnosis-result fixture
+  was repaired, while the two unsupported course-publication cases and the missing
+  treatment lineage-root replay case were independently reproduced on immutable
+  BASE `1ca6e396` (0/3,
+  `20260906-083805-938-19972-18a8564ed4ed4950b3449bdd5dcea689-focused`). These remain
+  T070 publication work. Next bounded task:
+  `docs/superpowers/plans/2026-09-06-t070-diagnosis-reducer.md`.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
@@ -1892,6 +1904,16 @@ payload. FullValidation passed 1,852/1,852 in 8:23.236
 (`20260906-075652-842-8748-572c5ddf92a648c2844956c6ccf453bd-fullvalidation`),
 with clean builds/cleanup, no timeout and no duplicate IDs. T177's meaningful
 Fast checkpoint still requires the unfinished T070 diagnosis/alternative contour.
+
+T177 review correction (2026-09-06): cumulative scope review found only I1, two physical
+snapshot/lease Facts still in Fast. `71a4f016` moves exactly those Facts to Integration,
+adds syntax-aware ownership coverage, and synchronizes the exact 38-source manifest.
+Final owning Integration control is 6/6
+(`20260906-084634-463-13104-5b288293013a49e9b9e286fba2846663-focused`); pure resolver is
+44/44 (`20260906-084733-313-8724-b53c9cb7d9ac4d358adf02652b427210-focused`), clean builds
+and cleanup. Independent correction review has 0 Critical/Important/Minor and no
+unresolved checks. Fast's limit/category selection is unchanged. I1 is closed, but
+T177 remains open for its meaningful Fast checkpoint after the required T070 behavior.
 
 ---
 
