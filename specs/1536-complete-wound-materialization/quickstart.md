@@ -466,7 +466,13 @@ scope, extra payload/scope fields, `skillId` under `all`, missing `skillId` unde
 5. Exercise Mortal procedures: `resolved_skill_tier` supplies the selected requirement
    row's exact sealed `RollSkillId`; `fixed_zero` supplies null. Broad and matching
    focused effects contribute as specified, other focused effects do not, and tampered
-   `RollSkillId` rejects detached replay before Fate Shield or publication.
+   `RollSkillId` rejects detached replay before Fate Shield or publication. Inspect the
+   typed procedure authority: it must also contain one version-1 normalized roll source
+   with only ordered mechanical fields and no display/description/owner/carrier/full
+   payload. Prove snapshot and detached resolution parity; malformed/duplicate/confusable
+   source rows and changed compact result/mode/dice reject. Jointly reseal source and result,
+   then prove fresh canonical recovery rejects and restores the exact prior die, Fate, and
+   treatment-resource registries.
 6. Prove one focused component consumes one consequence slot, two skill selectors need
    two components and slots, semantic fingerprints change with `kind` or `skillId`, and
    retained consequence rematerialization preserves the selector exactly.

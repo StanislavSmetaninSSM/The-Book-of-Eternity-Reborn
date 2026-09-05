@@ -548,7 +548,7 @@ owned entirely by #1536 through new sequential task IDs appended after T166:
 | T168 | Canonical offered/current target-skill authority and GM catalog projection |
 | T169 | Accepted ordinary/reaction/wound binding, cache seals, and repair coordinates |
 | T170 | One scope-aware shared roll contribution resolver |
-| T171 | Mortal treatment `RollSkillId` sealing and shared resolution |
+| T171 | Mortal treatment `RollSkillId`, normalized detached roll-source sealing, and shared live/fresh/detached resolution |
 | T172 | Safe broad/focused/dormant player projection |
 | T173 | Bounded advisory `effectSkillScopeCatalog` at GM request staging |
 | T174 | Direct-cutover executable fixtures and one-component/one-slot accounting |

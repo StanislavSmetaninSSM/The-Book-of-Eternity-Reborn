@@ -3745,7 +3745,42 @@ skill row, while `fixed_zero` stores null. The value participates in accepted-st
 authority, detached replay, and result fingerprints. Final treatment skill after-images
 are the resolver's current authority, but the pre-turn roots remain the offered catalog.
 
-### 21.4 Projection, slots, and direct cutover
+### 21.4 Detached treatment roll-source authority
+
+`EffectDetachedRollSourceAuthority` is a required immutable procedure-check field with
+`SchemaVersion=1`, an ordered maximum of 10,000 rows, and one deterministic fingerprint.
+Each row is exactly:
+
+```text
+Ordinal, EffectId, ComponentId, Realm, TargetKind, TargetId,
+Operations[], Contribution, ScopeKind, ScopeSkillId?
+```
+
+Rows are captured from every active common `roll_modifier` before realm, actor, operation,
+or selected-skill filtering. Exact/confusable duplicate coordinates, non-contiguous
+ordinals, malformed identifiers, an operation outside the six registered roll operations,
+duplicate operations, invalid contribution, or an invalid `all|null` / `skill|SkillId`
+pair reject the whole authority. Ordered operations and explicit null positions participate
+in the fingerprint. Display name/description, owner, priority/stacks, carrier roots,
+arbitrary payload fields, non-roll components, and the full mechanics snapshot are absent.
+
+The common resolver has one normalized-source core. Live resolution captures the source
+and adapts current canonical skill authority to an exact usability proof. Detached
+procedure replay constructs that proof only when the recursively validated selected
+requirement row/witness agrees on realm, actor, permanent `SkillId`, tier, lifecycle,
+active/present/reachable state, and skill availability; `fixed_zero` constructs no proof.
+Fresh validation recaptures the source from current accepted mechanics, requires semantic
+source equality, and recomputes compact contributions, mode, and dice shape. A jointly
+resealed source/result can pass self-contained hash checks but cannot cross the fresh
+canonical boundary; cold-recovery failure restores the preceding die, Fate, and treatment
+resource registries.
+
+`MortalWoundProcedureCheckAuthority` carries the source beside JSON-required nullable
+`RollSkillId`; typed serialization, detached clone/restore, compact evidence, and procedure
+fingerprint domain version 2 preserve it. A missing source, absent `RollSkillId` property,
+or old fingerprint domain is unsupported under direct cutover.
+
+### 21.5 Projection, slots, and direct cutover
 
 Projection describes broad scope as all affected checks and a usable focused scope by
 its current canonical display name without exposing `skillId`. Unavailable retained rows

@@ -1464,13 +1464,24 @@ closed three-field payload; no migration or compatibility reader is added:
    treatment rematerialization continues the unchanged accepted selector without
    rebinding it after later skill loss.
 4. `EffectMechanicsSnapshot` carries current scope authority. The sole
-   `EffectRollContributionResolver` filters exact actor, realm, operation, and scope from
-   a trusted context before the unchanged contribution reducer. Legitimate later absence
-   or unavailability derives dormancy; corrupt or ambiguous authority fails closed.
-5. Mortal procedure authority seals nullable `RollSkillId`, derived from the exact
-   selected `resolved_skill_tier` row or null for `fixed_zero`, through live, detached,
-   fingerprint, replay, and final-treatment after-image paths.
-6. Player projection resolves readable current names without exposing IDs or changing
+   `EffectRollContributionResolver` captures every active common `roll_modifier` into a
+   bounded, versioned `EffectDetachedRollSourceAuthority` before filtering, then validates,
+   filters exact actor, realm, operation, and scope, and performs the unchanged reducer in
+   one shared core. The detached authority contains only ordered mechanical fields and no
+   display, owner, carrier, arbitrary payload, or full-snapshot data. Legitimate later
+   absence or unavailability derives dormancy; corrupt or ambiguous authority fails closed.
+5. Mortal procedure authority seals both nullable `RollSkillId` and the normalized source.
+   `resolved_skill_tier` derives an exact usability proof from its recursively validated
+   requirement row/witness; `fixed_zero` supplies null and no proof. Detached validation
+   recomputes the compact rows, roll mode, and dice shape with the common core. Fresh
+   validation recaptures the normalized source from current accepted mechanics and requires
+   exact source/result agreement; a fresh mismatch after cold recovery restores the prior
+   die, Fate, and treatment-resource registries.
+6. The procedure fingerprint domain moves directly to its new source-bearing version;
+   missing source authority and the compatibility constructor that inferred `SkillId` from
+   `CapabilityRef` are unsupported. Typed serialization, restore clones, and both live and
+   detached fingerprints preserve every normalized row and explicit null position.
+7. Player projection resolves readable current names without exposing IDs or changing
    hidden-effect visibility. One scoped component remains one wound slot regardless of
    scope, and every serialization/cache/snapshot/rematerialization/rollback path preserves
    the selector exactly.
@@ -1479,8 +1490,9 @@ closed three-field payload; no migration or compatibility reader is added:
 
 Tasks T167–T177 own the scope sub-slice and execute before the still-pending Phase 10
 documentation/control tasks T148–T166 resume. T167–T175 follow RED/GREEN ownership from
-pure structural tests through accepted planning, the shared resolver, treatment,
-projection, GM catalog, direct-cutover fixtures, and file-backed lifecycle evidence.
+pure structural tests through accepted planning, the shared resolver and its detached
+roll-source authority, treatment replay/fresh-recovery trust boundary, projection, GM
+catalog, direct-cutover fixtures, and file-backed lifecycle evidence.
 T176 synchronizes the effect/wound Mortal and afterlife GM contracts, examples,
 manifests, projections, and source guards, preserving the existing Task 7 documentation
 work. T177 runs semantic scans, one meaningful Fast checkpoint, required documentation

@@ -4,7 +4,7 @@
 
 **Goal:** Extend the common `roll_modifier` effect profile with an explicit broad-or-exact-skill scope, bind exact skills to canonical target authority, and use one scope-aware reducer for wound treatment and every future roll consumer.
 
-**Architecture:** `EffectComponentProfiles` owns the closed JSON union, while a new immutable `EffectRollSkillScopeAuthority` composes the GM-offered and final accepted skill catalogs from canonical player/NPC roots. The accepted effect planner validates every new materialization against both catalogs and seals their fingerprint; runtime snapshots retain the current catalog so one shared `EffectRollContributionResolver` can derive applicability, dormancy, and unchanged advantage/disadvantage cancellation. Wound materialization reuses the same authority and maps binding failures back into its existing atomic repair loop.
+**Architecture:** `EffectComponentProfiles` owns the closed JSON union, while an immutable `EffectRollSkillScopeAuthority` composes the GM-offered and final accepted skill catalogs from canonical player/NPC roots. The accepted effect planner validates every new materialization against both catalogs and seals their fingerprint; runtime snapshots retain the current catalog. One shared `EffectRollContributionResolver` captures a minimal versioned `EffectDetachedRollSourceAuthority` before filtering and uses the same validation/filter/reduction core for live, fresh, and detached treatment paths. Wound materialization reuses these authorities and maps binding failures back into its existing atomic repair loop.
 
 **Tech Stack:** .NET/C#; `System.Text.Json` and `JsonNode`; xUnit; PowerShell 7; repository test-lane runner `scripts/test-csharp.ps1`; GitHub Spec Kit artifacts.
 
@@ -21,6 +21,7 @@
 - One skill-scoped `roll_modifier` is one component and one wound-consequence slot. Multiple skills require multiple components and slots.
 - Filter by realm, actor, operation, and scope before applying the unchanged reducer: advantage alone wins, disadvantage alone wins, both cancel, repeated equal contributions do not escalate.
 - `resolved_skill_tier` supplies the exact selected canonical `skillId`; `fixed_zero` supplies no skill identity and therefore receives only broad modifiers.
+- Detached procedure replay persists only normalized ordered roll mechanics, never a full effect snapshot or narrative/carrier payload. Detached validation proves source/result semantic agreement; fresh accepted-state validation is the origin trust anchor and must restore all tentative claim registries on mismatch.
 - Player-facing projection never exposes `skillId`; it shows a readable broad/specific scope and labels a currently unavailable exact skill as inactive.
 - Synchronize Mortal and afterlife prompts, contracts, examples, manifests, and source/documentation guards in the same change. Include worked GM examples for both broad and exact-skill wound consequences and a non-wound source.
 - Use TDD. Run only `pwsh -NoProfile -File .\scripts\test-csharp.ps1`; never run raw or unbounded `dotnet test`.
@@ -34,7 +35,8 @@
 ### New production units
 
 - `BookOfEternityClient/Services/EffectRollSkillScopeAuthority.cs` — immutable offered/current skill catalogs, exact/confusable resolution, new-binding validation, runtime availability, fingerprint, and safe GM catalog projection.
-- `BookOfEternityClient/Services/EffectRollContributionResolver.cs` — trusted roll context, scope filtering, evidence projection, and the single advantage/disadvantage reducer.
+- `BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs` — immutable typed normalized roll rows, direct-cutover schema, bounds, structural/identity validation, semantic equality, detached cloning, and deterministic fingerprinting.
+- `BookOfEternityClient/Services/EffectRollContributionResolver.cs` — trusted roll context, normalized source capture, live/detached skill proof adapters, scope filtering, evidence projection, and the single advantage/disadvantage reducer.
 
 ### Existing production units
 
@@ -50,7 +52,7 @@
 - `BookOfEternityClient/Services/EffectMechanicsSnapshot.cs` — loads and retains the current skill catalog under the same quiescent read lease as active effects.
 - `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs` and `BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs` — preserve both selected `skillId` and capability reference in skill-tier requirement evidence.
 - `BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs` — seals the selected permanent skill identity in the success witness.
-- `BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs`, `BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs`, and `BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs` — carry nullable `RollSkillId`, call the common resolver, and protect live/replay seals.
+- `BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs`, `BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs`, and `BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs` — carry nullable `RollSkillId` plus normalized roll-source authority, derive the exact detached skill proof, call the common resolver, and protect live/replay/fresh seals.
 - `BookOfEternityClient/UI/EffectPlayerProjection.cs` — renders broad, focused, and dormant scope text without technical identifiers.
 - `BookOfEternityClient/Models/TurnRequest.cs` — exposes the bounded advisory `effectSkillScopeCatalog` to the GM.
 - `BookOfEternityClient/Services/LiveTurnPreparationService.cs` and `BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs` — attach the pre-turn catalog to live-helper and ordinary player requests; afterlife-only special requests retain an explicit empty catalog.
@@ -59,14 +61,14 @@
 ### Test and fixture units
 
 - `BookOfEternityClient.Tests/EffectRollSkillScopeAuthorityTests.cs` — pure offered/final catalog and identity resolution matrix.
-- `BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs` — pure scope filtering and reducer matrix.
+- `BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs` — pure normalized-source capture, validation, clone/fingerprint, scope filtering, and reducer matrix.
 - `BookOfEternityClient.Tests/EffectMaterializationContractTests.cs` and `BookOfEternityClient.Tests/EffectSourceDefinitionContractTests.cs` — closed structural union.
 - `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.cs` and `BookOfEternityClient.Tests/EffectAcceptedTurnPlanCacheTests.cs` — application binding and cache invalidation.
 - `BookOfEternityClient.Tests/EffectPlayerProjectionTests.cs` — readable scope and visibility behavior.
 - `BookOfEternityClient.Tests/WoundConsequenceEnvelopeTests.cs`, `BookOfEternityClient.Tests/WoundEffectBatchPlannerTests.cs`, and `BookOfEternityClient.Tests/WoundRepairPacketBuilderTests.cs` — slot accounting, shared binding, and repair coordinates.
 - `BookOfEternityClient.TestSupport/EffectMaterializationTestFixture.cs` and `BookOfEternityClient.Tests/WoundContractTestData.cs` — explicit broad-scope defaults for existing test data.
 - `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs` — ordinary/wound materialization, same-turn final validation, dormancy/reactivation, cache/replay/rollback, and turn-request staging.
-- `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests*.cs` — focused versus broad treatment contribution and sealed replay.
+- `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests*.cs` — focused versus broad treatment contribution, typed detached replay, joint-tamper fresh rejection, and claim-registry rollback.
 - `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs` — explicit ownership of the new Integration source.
 
 ### Durable contracts and GM surfaces
@@ -666,6 +668,8 @@ git commit -m "feat(effects): centralize scoped roll reduction (#1536)"
 ### Task 6: Bind Mortal treatment rolls to the exact selected skill ID
 
 **Files:**
+- Create: `BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs`
+- Modify: `BookOfEternityClient/Services/EffectRollContributionResolver.cs`
 - Modify: `BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs`
 - Modify: `BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs`
 - Modify: `BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs`
@@ -674,87 +678,278 @@ git commit -m "feat(effects): centralize scoped roll reduction (#1536)"
 - Modify: `BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs`
 - Modify: `BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs`
 - Modify: `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs`
+- Modify: `BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs`
 - Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs`
+- Modify: `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs`
 
 **Interfaces:**
-- Consumes: common resolver from Task 5 and the exact canonical skill row selected by an existing `skill_tier` requirement.
-- Produces: nullable sealed `RollSkillId` on procedure authority; `fixed_zero` remains null.
+- Consumes: accepted `EffectMechanicsSnapshot`, the exact canonical skill row selected by an existing `skill_tier` requirement, and the T170 contribution semantics.
+- Produces: required sealed `EffectDetachedRollSourceAuthority`, nullable sealed `RollSkillId`, and one common live/fresh/detached reduction core; `fixed_zero` remains null and has no skill proof.
+- Produces these exact common types:
 
-- [ ] **Step 1: Add RED treatment cases**
+```csharp
+internal sealed class EffectDetachedRollSourceAuthority
+{
+    public int SchemaVersion { get; }
+    public IReadOnlyList<EffectDetachedRollSourceRow> Rows { get; }
+    public string AuthorityFingerprint { get; }
 
-Add exact integration rows proving:
+    internal static EffectDetachedRollSourceAuthority Create(
+        IReadOnlyList<EffectDetachedRollSourceRow> rows);
+    internal bool HasValidSeal(out IReadOnlyList<ValidationIssue> issues);
+    internal bool SemanticallyEquals(EffectDetachedRollSourceAuthority other);
+    internal EffectDetachedRollSourceAuthority CloneDetached();
+}
 
-```text
-resolved_skill_tier + scope=all -> contributes
-resolved_skill_tier + matching scope=skill -> contributes
-resolved_skill_tier + other scope=skill -> ignored
-fixed_zero + scope=all -> contributes
-fixed_zero + any scope=skill -> ignored
-matching advantage and broad disadvantage -> cancel before Fate Shield logic
-changed/tampered RollSkillId -> detached replay rejects
+internal sealed class EffectDetachedRollSourceRow
+{
+    public int Ordinal { get; }
+    public string EffectId { get; }
+    public string ComponentId { get; }
+    public string Realm { get; }
+    public string TargetKind { get; }
+    public string TargetId { get; }
+    public IReadOnlyList<string> Operations { get; }
+    public string Contribution { get; }
+    public string ScopeKind { get; }
+    public string? ScopeSkillId { get; }
+
+    internal static EffectDetachedRollSourceRow Create(
+        int ordinal,
+        string effectId,
+        string componentId,
+        string realm,
+        string targetKind,
+        string targetId,
+        IReadOnlyList<string> operations,
+        string contribution,
+        string scopeKind,
+        string? scopeSkillId);
+    internal EffectDetachedRollSourceRow CloneDetached();
+}
+
+internal sealed record EffectRollSkillUsabilityProof(
+    string Realm,
+    string ActorKind,
+    string ActorId,
+    string SkillId);
+
+internal sealed record EffectRollSourceCaptureResult(
+    bool IsValid,
+    EffectDetachedRollSourceAuthority? Authority,
+    IReadOnlyList<ValidationIssue> Issues);
 ```
 
-- [ ] **Step 2: Run the smallest treatment RED selection**
+- `EffectRollContributionResolver` exposes `Capture(EffectMechanicsSnapshot)`, retains `Resolve(EffectMechanicsSnapshot, EffectRollContext)`, and adds source overloads for either trusted current `EffectRollSkillScopeAuthority` or detached `EffectRollSkillUsabilityProof?`; every resolve overload delegates to one private core.
+- The exact resolver signatures are:
+
+```csharp
+internal static EffectRollSourceCaptureResult Capture(EffectMechanicsSnapshot snapshot);
+internal static EffectRollContributionResolution Resolve(
+    EffectMechanicsSnapshot snapshot,
+    EffectRollContext context);
+internal static EffectRollContributionResolution Resolve(
+    EffectDetachedRollSourceAuthority source,
+    EffectRollContext context,
+    EffectRollSkillScopeAuthority currentSkills);
+internal static EffectRollContributionResolution Resolve(
+    EffectDetachedRollSourceAuthority source,
+    EffectRollContext context,
+    EffectRollSkillUsabilityProof? selectedSkill);
+```
+
+- `MortalWoundProcedureCheckAuthority` exposes required `public EffectDetachedRollSourceAuthority RollSourceAuthority { get; }` and carries it through both constructors, clone/restore, live fingerprint, detached fingerprint, and typed JSON.
+
+The initial T171 pass at `887de325` already added `RollSkillId`, exact `SkillId`/`CapabilityRef` separation in canonical rows, live/fresh resolver calls, final skill roots, and the first Integration matrix. The following review correction is authoritative and completes the task.
+
+- [ ] **Step 1: Add RED pure normalized-source tests**
+
+Add tests whose names and assertions cover this matrix:
+
+```text
+Capture_AllRollRowsBeforeContextFiltering_PreservesOrderAndMechanicalFieldsOnly
+Capture_RejectedSnapshot_ReturnsItsDiagnosticsAndNoAuthority
+Resolve_SnapshotAndDetachedAuthority_ProduceExactParity
+Resolve_DetachedAuthority_FiltersForeignRealmActorOperationAndSkillInsideSharedCore
+Resolve_DetachedAuthority_MalformedDuplicateOrConfusableRowsFailClosed
+Authority_FingerprintChangesForEveryFieldOperationOrderAndNullSkillPosition
+Authority_CloneIsDetachedAndSemanticallyEqual
+```
+
+Construct at least one accepted snapshot containing broad/focused rows for multiple actors,
+realms, operations, and skill IDs. Assert that `Rows` retains every active
+`roll_modifier`, its ordinal is contiguous, its operation order is exact, and serialized
+authority text contains none of the fixture's display name, description, owner ID,
+carrier field, or arbitrary non-roll payload sentinel.
+
+- [ ] **Step 2: Run the pure RED selection**
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -Filter "FullyQualifiedName~EffectRollContributionResolverTests"
+```
+
+Expected: FAIL because the detached source authority and replay overload do not exist.
+
+- [ ] **Step 3: Implement the immutable normalized source authority**
+
+Create the exact public-getter shape above with private JSON construction and production-only
+creation. `SchemaVersion` is exactly `1`; cap `Rows` at `10_000`; require ordinals to equal
+`0..Count-1`; require exact identifiers and exact/confusable uniqueness for each
+`(EffectId, ComponentId)`; require one to six unique registered operations from exactly
+`attack_roll|defense_roll|skill_check|saving_throw|damage_roll|initiative_roll`; accept only
+`advantage|disadvantage`; enforce the exact closed `all|null` versus `skill|SkillId`
+cross-field union. `AuthorityFingerprint` uses this exact canonical object, including
+explicit JSON null for broad scope:
+
+```csharp
+new JsonObject
+{
+    ["schemaVersion"] = 1,
+    ["rows"] = new JsonArray(rows.Select(row => (JsonNode?)new JsonObject
+    {
+        ["ordinal"] = row.Ordinal,
+        ["effectId"] = row.EffectId,
+        ["componentId"] = row.ComponentId,
+        ["realm"] = row.Realm,
+        ["targetKind"] = row.TargetKind,
+        ["targetId"] = row.TargetId,
+        ["operations"] = new JsonArray(row.Operations.Select(JsonValue.Create).ToArray()),
+        ["contribution"] = row.Contribution,
+        ["scopeKind"] = row.ScopeKind,
+        ["scopeSkillId"] = row.ScopeSkillId
+    }).ToArray())
+};
+```
+
+Hash UTF-8 canonical JSON with SHA-256 using the existing effect-authority uppercase-hex
+format. `HasValidSeal` independently validates every row before comparing the fingerprint;
+`SemanticallyEquals` compares schema, row count/order, every scalar, every ordered operation,
+nullable skill position, and both independently valid fingerprints. Constructors and clone
+must freeze every input collection and allocate fresh row/operation instances.
+
+- [ ] **Step 4: Refactor the resolver to capture once and reduce through one core**
+
+`Capture` rejects a non-accepted snapshot with the snapshot's issues. For an accepted
+snapshot it visits every active `Profile == "roll_modifier"` component before any context
+filter, parses the complete ordered operations/contribution/scope, and either returns one
+valid authority or fails closed; it never silently skips a malformed roll row. It omits all
+non-roll profiles and every narrative/owner/carrier/arbitrary payload field.
+
+The snapshot overload captures and calls the source/current-skill-authority overload. That
+overload converts the current scope-authority result into either one exact
+`EffectRollSkillUsabilityProof`, no proof for missing/unavailable/null skill, or an invalid
+resolution for ambiguous authority, then calls the same core as detached replay.
+The core validates the complete normalized authority before filtering exact realm, target,
+operation, and scope. A focused row contributes only when context and proof agree exactly on
+realm/actor/skill. Reduction remains:
+
+```csharp
+var mode = hasAdvantage == hasDisadvantage
+    ? "normal"
+    : hasAdvantage ? "advantage" : "disadvantage";
+```
+
+Run the Step 2 command. Expected: PASS.
+
+- [ ] **Step 5: Add RED procedure persistence, detached replay, and trust-boundary tests**
+
+Extend the existing `SkillScopedRoll` Integration matrix and typed-authority guards to prove:
+
+```text
+resolved_skill_tier broad/matching/other and fixed_zero broad/focused behavior remains exact
+extension CapabilityRef != SkillId binds focused scope only by SkillId
+case-only and Unicode-confusable RollSkillId tamper rejects after reseal
+missing RollSourceAuthority or RollSkillId rejects under direct cutover
+fixed_zero and opposing-contribution cancellation survive typed round trip
+delete/add/change compact contribution, mode, or dice plus outer reseal rejects when source is unchanged
+jointly changed source/result plus complete reseal reaches fresh mismatch, restores prior registries, and exposes no restored request/claim
+procedure authority/clone/fingerprint changes for every source row field and operation order
+serialized procedure authority contains no display/description/owner/carrier/full-payload sentinel
+```
+
+Add the extension identity fixture with both identities explicitly:
+
+```csharp
+new MortalWoundTreatmentAuthority.Skill(
+    "skill_field_medicine_01",
+    "field_medicine",
+    "Field medicine",
+    3,
+    "active",
+    true)
+```
+
+Run these RED controls separately:
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~SkillScopedRoll"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~DetachedModeAuthority"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests&FullyQualifiedName~ColdClaimRecovery"
 ```
 
-Expected: FAIL because treatment currently applies every `skill_check` modifier and has no exact roll skill identity.
+Expected: new rows FAIL because the authority is not persisted and detached validation still
+reduces only the submitted compact result.
 
-- [ ] **Step 3: Preserve skill identity separately from capability identity**
+- [ ] **Step 6: Carry source authority through procedure creation, restore, and fresh validation**
 
-Change the internal skill row to:
+At creation, call `Capture(acceptedState.EffectMechanics)`, fail when capture is invalid, and
+resolve that captured authority with `acceptedState.EffectMechanics.SkillScopeAuthority`
+before reserving dice. Persist the same required authority next to `RollSkillId`, clone it in
+`AttachRestoredReservations`,
+mark nullable `RollSkillId` with `[JsonRequired]` so an absent property differs from explicit
+`null`, reject a null/missing source authority in the JSON constructor, and bind its
+`AuthorityFingerprint` immediately after `RollSkillId` in both procedure
+fingerprint implementations. Change the procedure fingerprint version from `"1"` to `"2"`;
+there is no compatibility path for missing authority or the old domain.
 
-```csharp
-internal sealed record Skill(
-    string SkillId,
-    string CapabilityRef,
-    string DisplayName,
-    int Tier,
-    string Lifecycle,
-    bool Active);
-```
+Fresh validation must independently capture current accepted mechanics, require
+`RollSourceAuthority.SemanticallyEquals(fresh.Authority)`, rerun the common source overload
+using the fresh snapshot's current skill authority, and compare exact compact evidence, mode,
+`RollSkillId`, and required dice shape. This check
+must execute before a recovered authority can be returned. Keep the existing registry
+transaction: any mismatch restores `previousDice`, `previousReactions`, and
+`previousResources` before failure.
 
-`ComposeSkillRows` must emit the native row as `(skillId, skillId, ...)` and every extension capability row as `(skillId, capability.CapabilityRef, ...)`. Add required `skillId` to the closed requirement snapshot skill shape, JSON projection, mechanical fingerprint, `MortalWoundResolvedRequirement`, `MortalWoundSkillTierRequirementEvidence`, and witness agreement.
+- [ ] **Step 7: Replace the detached local reducer with the common replay overload**
 
-- [ ] **Step 4: Carry nullable `RollSkillId` through the sealed authority**
-
-Add `string? rollSkillId` after `rollActorId` in both constructors, expose `public string? RollSkillId { get; }`, clone it in `AttachRestoredReservations`, and add it after `RollActorId` in live and detached authority fingerprints. Direct cutover means old serialized procedure authorities without this property are unsupported.
-
-Extend `TryResolveModifier` with `out string? rollSkillId`: `fixed_zero` sets null; `resolved_skill_tier` returns `row.SkillId` after exact witness agreement.
-
-- [ ] **Step 5: Replace the local contribution loop**
-
-Delete `TryComposeRollContributions`. Call:
+Delete `HasValidDetachedProcedureContributions`. Extend
+`TryResolveDetachedProcedureModifier` to return nullable
+`EffectRollSkillUsabilityProof`: fixed-zero returns null; resolved-skill requires the already
+recursive requirement validation plus exact realm/actor/SkillId, current tier at least the
+authored minimum, actor present/active/reachable/nonterminal, and skill active/nonterminal.
+Call:
 
 ```csharp
 var resolution = EffectRollContributionResolver.Resolve(
-    acceptedState.EffectMechanics,
+    value.RollSourceAuthority,
     new EffectRollContext(
-        coordinates.Realm,
-        rollActorKind!,
-        rollActorId!,
+        request.Coordinates.Realm,
+        expectedActorKind!,
+        expectedActorId!,
         "skill_check",
-        rollSkillId));
+        expectedRollSkillId),
+    skillProof);
 ```
 
-Reject if `!resolution.IsValid`; otherwise map its evidence to existing `MortalWoundProcedureRollContribution` so persisted contribution rows remain compact. Recompute the same context in fresh validation and detached replay.
+Require valid resolution and exact ordered equality with compact contributions and mode,
+then validate dice from the recomputed mode. Remove the five-argument `Skill` constructor;
+keep native `(skillId, skillId, ...)` and extension `(skillId, CapabilityRef, ...)` calls
+explicit. Preserve the already implemented final treatment skill after-images.
 
-- [ ] **Step 6: Supply final treatment skill roots to rematerialization**
+- [ ] **Step 8: Run GREEN controls and commit the correction**
 
-Pass `acceptedSourceRoots: skillProjection.Authority.OwnerAfterImages` to `EffectAcceptedTurnInputComposer.Compose` in `WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs`. Baseline source roots remain the offered catalog; final after-images become current authority.
+Run the Step 2 pure command and all three Step 5 Integration commands. If the coherent
+`ColdClaimRecovery` selection exceeds five minutes, record measured wall time and rerun that
+selection with `-TimeoutMinutes 15`; do not move it into Fast or reduce coverage.
 
-- [ ] **Step 7: Run GREEN and commit**
-
-Run the Step 2 command. If the coherent partial class selection exceeds five minutes, record its measured wall time and rerun with `-TimeoutMinutes 15`.
-
-Expected: PASS with exact skill filtering, null fixed-zero identity, and tamper-safe replay.
+Expected: all selected tests PASS; detached compact tamper fails semantically, joint reseal
+fails at fresh canonical comparison, and all prior registries remain exactly observable.
 
 ```powershell
-git add BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs
-git commit -m "feat(wounds): scope treatment rolls to selected skill (#1536)"
+git add BookOfEternityClient/Services/EffectDetachedRollSourceAuthority.cs BookOfEternityClient/Services/EffectRollContributionResolver.cs BookOfEternityClient/Services/MortalWoundTreatmentAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedCanonicalProjection.cs BookOfEternityClient/Services/MortalWoundTreatmentAcceptedStateAuthority.cs BookOfEternityClient/Services/MortalWoundTreatmentRequirementAuthorityBundle.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.cs BookOfEternityClient/Services/MortalWoundProcedureCheckAuthority.FreshValidation.cs BookOfEternityClient/Services/MortalWoundTreatmentDetachedSealValidator.cs BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs BookOfEternityClient.Tests/EffectRollContributionResolverTests.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedureAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PrerequisiteAuthorities.cs BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs
+git commit -m "fix(wounds): verify detached roll source authority (#1536)"
 ```
 
 ---

@@ -698,6 +698,33 @@ item writer instead of creating a wound-only item implementation.
 - Keep a treatment-only item writer: duplicates item identity/resource lifecycle logic and
   can diverge from crafting, transfer, and ordinary consumption.
 
+## R-021: Persist minimal normalized roll source, not a full effect snapshot
+
+**Decision**: `EffectRollContributionResolver` owns one bounded, versioned,
+detached authority containing every active common `roll_modifier` row before context
+filtering. Each ordered row contains only effect/component identity, realm, exact target,
+complete registered operations, contribution, and closed scope. Live, fresh, and detached
+treatment resolution use one validation/filter/reduction core. Detached skill usability is
+derived only from the recursively valid selected requirement witness; fresh validation
+recaptures the source from accepted mechanics and is the canonical origin check.
+
+**Rationale**: Persisted compact contribution rows are already reduced and cannot prove
+that scope filtering was performed. A normalized source lets detached replay reproduce the
+same semantics without storing display text, hidden descriptions, owners, carrier roots,
+arbitrary payloads, or internal snapshot layout. Ordinary hashes establish integrity only
+relative to the submitted source, not its canonical origin, so cold recovery must retain
+fresh comparison and transactional restoration of die, Fate, and resource registries.
+
+**Alternatives rejected**:
+
+- Persist the full `EffectMechanicsSnapshot`: retains unrelated and potentially hidden
+  data, couples durable replay to an internal projection, and still provides no origin
+  authenticity after a joint reseal.
+- Keep a detached reducer over compact contribution rows: duplicates gameplay reduction
+  and cannot verify actor, realm, operation, or exact-skill filtering.
+- Add a secret MAC or external authenticated snapshot: unnecessary new key/snapshot
+  infrastructure for the current local pre-release trust boundary.
+
 ## Resolved research conclusion
 
 All design-critical unknowns are resolved. Implementation can proceed without a

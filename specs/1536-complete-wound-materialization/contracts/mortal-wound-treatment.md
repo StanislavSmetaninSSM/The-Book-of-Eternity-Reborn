@@ -1737,3 +1737,23 @@ changing or omitting it is tampering, not exact replay. Final treatment skill af
 are supplied as current scope authority while the pre-turn catalog remains the offered
 authority. Scope filtering occurs before the unchanged same-direction collapse,
 opposite-direction cancellation, die selection, and Fate Shield logic.
+
+The procedure check also persists one required `EffectDetachedRollSourceAuthority` with
+schema version 1. Its bounded ordered rows contain only effect/component IDs, realm,
+target kind/ID, complete registered operations, contribution, scope kind, and nullable
+scope skill ID. Capture happens before context filtering. It excludes display text,
+descriptions, owners, priority/stacks, carriers, arbitrary payload members, non-roll
+profiles, and the full mechanics snapshot. The authority rejects malformed,
+exact/confusable-duplicate, non-contiguous, over-bound, or invalid closed-union rows and
+fingerprints every scalar, operation position, and explicit null.
+
+Live, fresh, and detached procedure checks invoke one common normalized-source reducer.
+Detached replay may construct an exact skill-usability proof only from the recursively
+valid selected requirement row and success witness; `fixed_zero` has no skill proof.
+The detached check independently recomputes compact evidence, roll mode, and dice shape.
+Fresh validation then recaptures the normalized authority from current accepted mechanics
+and requires exact semantic source/result agreement. A jointly resealed source/result
+forgery therefore fails the canonical check, and cold recovery restores the complete prior
+die, Fate, and treatment-resource registries before returning failure. Missing authority,
+an absent nullable `RollSkillId` property, and the old procedure fingerprint domain are
+unsupported; no compatibility reader exists.
