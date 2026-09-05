@@ -1397,6 +1397,13 @@ entrypoints require no update for T065.
   for a typed recovery resolution. The common
   `CanonicalStateNormalizer` accepted-plan path is the sole publisher of the composed
   wound carrier, identity, history, receipt, and recovery anchors.
+  Diagnosis/alternative continuation checkpoint (2026-09-06): the remaining 65
+  `MortalWoundDiagnosisTests` failures are required unfinished T059/T070 behavior,
+  not obsolete `accepted_transition` fixtures. The next bounded implementation is
+  `docs/superpowers/plans/2026-09-06-t070-diagnosis-history.md`: closed immutable
+  result/history foundation, followed by sealed factories/reducers, accepted commands,
+  kind-specific GM authoring/repair, and real common publication/replay/rollback.
+  T070 remains open; fixing only the unit baseline does not complete its capability.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
@@ -1881,7 +1888,10 @@ The prior Task 7 complete severity-reduction example and guard are incorporated.
 Clean builds/cleanup, no timeout/duplicate IDs; independent review has zero findings.
 No daemon path change: existing mandatory context-pack entries load the updated
 effect/wound guides and examples. No matrix edit: it already delegates the common
-payload. FullValidation is active for the changed documentation/example boundary.
+payload. FullValidation passed 1,852/1,852 in 8:23.236
+(`20260906-075652-842-8748-572c5ddf92a648c2844956c6ccf453bd-fullvalidation`),
+with clean builds/cleanup, no timeout and no duplicate IDs. T177's meaningful
+Fast checkpoint still requires the unfinished T070 diagnosis/alternative contour.
 
 ---
 

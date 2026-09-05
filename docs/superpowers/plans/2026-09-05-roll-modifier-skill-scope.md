@@ -1411,7 +1411,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 
 Expected: exit `0`, no timeout, no duplicate IDs, complete owned-tree cleanup, and all discovered Fast tests pass inside five minutes.
 
-- [ ] **Step 3: Run required documentation validation**
+- [x] **Step 3: Run required documentation validation**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
@@ -1419,6 +1419,11 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
 ```
 
 Expected: both controls pass; FullValidation is required here because shared GM examples and the afterlife documentation boundary changed.
+
+Verified 2026-09-06: the exact afterlife class is included in the 127/127 owning
+documentation control recorded in Task 11. FullValidation passed 1,852/1,852 in
+8:23.236 (`20260906-075652-842-8748-572c5ddf92a648c2844956c6ccf453bd-fullvalidation`),
+with zero build warnings/errors, no timeout/duplicate IDs, and complete cleanup.
 
 - [ ] **Step 4: Run the related regression integration lane if focused lifecycle evidence exposed broader coupling**
 
