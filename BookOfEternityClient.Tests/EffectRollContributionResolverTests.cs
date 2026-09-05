@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -320,12 +321,15 @@ public sealed class EffectRollContributionResolverTests
         const string privateName = "t171 private effect name";
         const string privateDescription = "t171 private effect description";
         const string privatePayload = "t171-private-payload-sentinel";
+        const string privateOwner = "t171-private-owner-sentinel";
+        const string privateCarrier = "t171-private-carrier-sentinel";
         var foreign = Component(
             "effect_foreign",
             "component_foreign",
             "disadvantage",
-            Scope("skill", "skill_other"),
-            privatePayload) with
+            Scope("all"),
+            privatePayload,
+            new[] { "attack_roll", "skill_check" }) with
         {
             Realm = "chaos_sea",
             TargetKind = "npc",
@@ -333,7 +337,32 @@ public sealed class EffectRollContributionResolverTests
             EffectName = privateName,
             EffectDescription = privateDescription
         };
-        var snapshot = Snapshot(Component("effect_local", "component_local", "advantage", Scope("all")), foreign);
+        using var carrierDocument = JsonDocument.Parse(new JsonObject
+        {
+            ["carrier"] = privateCarrier
+        }.ToJsonString());
+        var snapshot = Snapshot(
+            Component(
+                "effect_local",
+                "component_local",
+                "advantage",
+                Scope("all"),
+                operations: new[] { "skill_check", "attack_roll" }),
+            foreign) with
+        {
+            Effects = new[]
+            {
+                new EffectAcceptedInstance(
+                    "effect_carrier",
+                    "mortal_world",
+                    "player",
+                    "player_current",
+                    "npc",
+                    privateOwner,
+                    null,
+                    carrierDocument.RootElement.Clone())
+            }
+        };
 
         var capture = EffectRollContributionResolver.Capture(snapshot);
 
@@ -341,11 +370,18 @@ public sealed class EffectRollContributionResolverTests
         var authority = Assert.IsType<EffectDetachedRollSourceAuthority>(capture.Authority);
         Assert.Equal(new[] { 0, 1 }, authority.Rows.Select(static row => row.Ordinal));
         Assert.Equal(new[] { "effect_local", "effect_foreign" }, authority.Rows.Select(static row => row.EffectId));
-        Assert.Equal(new[] { "skill_check" }, authority.Rows[1].Operations);
+        Assert.Equal(
+            new[] { "skill_check", "attack_roll" },
+            authority.Rows[0].Operations);
+        Assert.Equal(
+            new[] { "attack_roll", "skill_check" },
+            authority.Rows[1].Operations);
         var serialized = JsonSerializer.Serialize(authority);
         Assert.DoesNotContain(privateName, serialized, StringComparison.Ordinal);
         Assert.DoesNotContain(privateDescription, serialized, StringComparison.Ordinal);
         Assert.DoesNotContain(privatePayload, serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain(privateOwner, serialized, StringComparison.Ordinal);
+        Assert.DoesNotContain(privateCarrier, serialized, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -376,6 +412,30 @@ public sealed class EffectRollContributionResolverTests
         { IsAccepted = false, Issues = new ReadOnlyCollection<ValidationIssue>(new[] { new ValidationIssue("x", IssueSeverity.Error, "x", code: "rejected") }) };
         var capture = EffectRollContributionResolver.Capture(snapshot);
         Assert.False(capture.IsValid); Assert.Null(capture.Authority); Assert.Equal("rejected", Assert.Single(capture.Issues).Code);
+    }
+
+    [Fact]
+    public void Capture_MalformedIrrelevantRollRowFailsClosed()
+    {
+        var foreignMalformed = Component(
+            "effect_irrelevant_malformed",
+            "component_irrelevant_malformed",
+            "advantage",
+            Scope("all"),
+            operations: new[] { "not_an_operation" }) with
+        {
+            Realm = "chaos_sea",
+            TargetKind = "npc",
+            TargetId = "npc_one"
+        };
+
+        var capture = EffectRollContributionResolver.Capture(
+            Snapshot(
+                Component("effect_valid", "component_valid", "advantage", Scope("all")),
+                foreignMalformed));
+
+        Assert.False(capture.IsValid);
+        Assert.Null(capture.Authority);
     }
 
     [Fact]
@@ -422,6 +482,145 @@ public sealed class EffectRollContributionResolverTests
             EffectDetachedRollSourceRow.Create(0, "effect_bad", "component_bad", "chaos_sea", "npc", "npc_one", new[] { "not_an_operation" }, "advantage", "all", null)
         });
         Assert.False(EffectRollContributionResolver.Resolve(malformedIrrelevant, PlayerSkillCheck, (EffectRollSkillUsabilityProof?)null).IsValid);
+    }
+
+    [Theory]
+    [InlineData("attack_roll")]
+    [InlineData("skill_check,attack_roll")]
+    public void Authority_FocusedScopeRequiresOnlySkillCheckOperation(
+        string serializedOperations)
+    {
+        var operations = serializedOperations.Split(',', StringSplitOptions.None);
+        var source = EffectDetachedRollSourceAuthority.Create(new[]
+        {
+            SourceRow(
+                0,
+                "effect_invalid_focused",
+                "component_invalid_focused",
+                "mortal_world",
+                "player",
+                "player_current",
+                operations,
+                "advantage",
+                "skill",
+                "skill_lockpicking")
+        });
+
+        var resolution = EffectRollContributionResolver.Resolve(
+            source,
+            PlayerSkillCheck,
+            new EffectRollSkillUsabilityProof(
+                "mortal_world",
+                "player",
+                "player_current",
+                "skill_lockpicking"));
+
+        Assert.False(source.HasValidSeal(out _));
+        Assert.False(resolution.IsValid);
+        Assert.Empty(resolution.Contributions);
+    }
+
+    [Fact]
+    public void Authority_EnforcesMaximumRowBoundBeforeDetachedCopies()
+    {
+        var maximumRows = Enumerable.Range(0, 10_000)
+            .Select(CreateBoundedSourceRow)
+            .ToArray();
+        var maximum = EffectDetachedRollSourceAuthority.Create(maximumRows);
+
+        Assert.True(maximum.HasValidSeal(out _));
+
+        var oversizedRows = Enumerable.Range(0, 10_001)
+            .Select(CreateBoundedSourceRow)
+            .ToArray();
+        Assert.Throws<ArgumentOutOfRangeException>(
+            () => EffectDetachedRollSourceAuthority.Create(oversizedRows));
+    }
+
+    [Fact]
+    public void Capture_TooManyRowsFailsClosedBeforeAuthorityCreation()
+    {
+        var template = Component(
+            "effect_capture_template",
+            "component_capture_template",
+            "advantage",
+            Scope("all"));
+        var components = Enumerable.Range(0, 10_001)
+            .Select(index => template with
+            {
+                EffectId = "effect_capture_" + index.ToString(
+                    "D5",
+                    CultureInfo.InvariantCulture),
+                ComponentId = "component_capture_" + index.ToString(
+                    "D5",
+                    CultureInfo.InvariantCulture)
+            })
+            .ToArray();
+        var snapshot = new EffectMechanicsSnapshot(
+            true,
+            new ReadOnlyCollection<EffectMechanicalComponent>(components),
+            Array.Empty<EffectMechanicsAuditEntry>(),
+            Array.Empty<ValidationIssue>());
+
+        var capture = EffectRollContributionResolver.Capture(snapshot);
+
+        Assert.False(capture.IsValid);
+        Assert.Null(capture.Authority);
+        Assert.Equal(
+            "effect_roll_source_capture_too_many_rows",
+            Assert.Single(capture.Issues).Code);
+    }
+
+    [Fact]
+    public void Authority_OperationAndJsonRowBoundsFailBeforeDetachedCopies()
+    {
+        var sixOperations = new[]
+        {
+            "attack_roll", "defense_roll", "skill_check", "saving_throw",
+            "damage_roll", "initiative_roll"
+        };
+        var valid = EffectDetachedRollSourceAuthority.Create(new[]
+        {
+            SourceRow(0, "effect_six", "component_six", "mortal_world", "player", "player_current", sixOperations, "advantage", "all", null)
+        });
+        Assert.True(valid.HasValidSeal(out _));
+
+        Assert.Throws<JsonException>(() => EffectDetachedRollSourceRow.Create(
+            0,
+            "effect_seven",
+            "component_seven",
+            "mortal_world",
+            "player",
+            "player_current",
+            sixOperations.Append("attack_roll").ToArray(),
+            "advantage",
+            "all",
+            null));
+
+        var oversizedRows = Enumerable.Range(0, 10_001).Select(index => new JsonObject
+        {
+            ["ordinal"] = index,
+            ["effectId"] = "effect_json_" + index.ToString("D5", CultureInfo.InvariantCulture),
+            ["componentId"] = "component_json_" + index.ToString("D5", CultureInfo.InvariantCulture),
+            ["realm"] = "mortal_world",
+            ["targetKind"] = "player",
+            ["targetId"] = "player_current",
+            ["operations"] = new JsonArray("skill_check"),
+            ["contribution"] = "advantage",
+            ["scopeKind"] = "all",
+            ["scopeSkillId"] = null
+        }).ToArray();
+        var oversizedJson = new JsonObject
+        {
+            ["schemaVersion"] = 1,
+            ["rows"] = new JsonArray(oversizedRows),
+            ["authorityFingerprint"] = "untrusted"
+        };
+
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<
+            EffectDetachedRollSourceAuthority>(
+            oversizedJson.ToJsonString(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true }));
     }
 
     [Fact]
@@ -474,26 +673,27 @@ public sealed class EffectRollContributionResolverTests
             "player_current",
             new[] { "skill_check", "attack_roll" },
             "advantage",
-            "skill",
-            "skill_lockpicking");
+            "all",
+            null);
         var changed = axis switch
         {
-            "ordinal" => SourceRow(1, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "effect" => SourceRow(0, "effect_two", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "component" => SourceRow(0, "effect_one", "component_two", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "realm" => SourceRow(0, "effect_one", "component_one", "chaos_sea", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "kind" => SourceRow(0, "effect_one", "component_one", "mortal_world", "npc", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "id" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_other", new[] { "skill_check", "attack_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "operation_content" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "defense_roll" }, "advantage", "skill", "skill_lockpicking"),
-            "operation_order" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "attack_roll", "skill_check" }, "advantage", "skill", "skill_lockpicking"),
-            "contribution" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "disadvantage", "skill", "skill_lockpicking"),
-            "scope_kind" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", "skill_lockpicking"),
-            "null_skill" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", null),
+            "ordinal" => SourceRow(1, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "effect" => SourceRow(0, "effect_two", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "component" => SourceRow(0, "effect_one", "component_two", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "realm" => SourceRow(0, "effect_one", "component_one", "chaos_sea", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "kind" => SourceRow(0, "effect_one", "component_one", "mortal_world", "npc", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "id" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_other", new[] { "skill_check", "attack_roll" }, "advantage", "all", null),
+            "operation_content" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "defense_roll" }, "advantage", "all", null),
+            "operation_order" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "attack_roll", "skill_check" }, "advantage", "all", null),
+            "contribution" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "disadvantage", "all", null),
+            "scope_kind" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "skill", null),
+            "null_skill" => SourceRow(0, "effect_one", "component_one", "mortal_world", "player", "player_current", new[] { "skill_check", "attack_roll" }, "advantage", "all", "skill_lockpicking"),
             _ => throw new ArgumentOutOfRangeException(nameof(axis))
         };
         var baselineAuthority = EffectDetachedRollSourceAuthority.Create(new[] { baseline });
         var changedAuthority = EffectDetachedRollSourceAuthority.Create(new[] { changed });
 
+        Assert.True(baselineAuthority.HasValidSeal(out _));
         Assert.NotEqual(
             baselineAuthority.AuthorityFingerprint,
             changedAuthority.AuthorityFingerprint);
@@ -501,6 +701,22 @@ public sealed class EffectRollContributionResolverTests
 
     private static EffectDetachedRollSourceRow SourceRow(int ordinal, string effect, string component, string realm, string kind, string id, IReadOnlyList<string> operations, string contribution, string scope, string? skill) =>
         EffectDetachedRollSourceRow.Create(ordinal, effect, component, realm, kind, id, operations, contribution, scope, skill);
+
+    private static EffectDetachedRollSourceRow CreateBoundedSourceRow(int ordinal)
+    {
+        var suffix = ordinal.ToString("D5", CultureInfo.InvariantCulture);
+        return SourceRow(
+            ordinal,
+            "effect_bound_" + suffix,
+            "component_bound_" + suffix,
+            "mortal_world",
+            "player",
+            "player_current",
+            new[] { "skill_check" },
+            "advantage",
+            "all",
+            null);
+    }
 
     private static EffectMechanicsSnapshot Snapshot(
         EffectMechanicalComponent first,
@@ -523,17 +739,22 @@ public sealed class EffectRollContributionResolverTests
         string componentId,
         string contribution,
         JsonObject scope,
-        string? privatePayloadSentinel = null)
+        string? privatePayloadSentinel = null,
+        IReadOnlyList<string>? operations = null)
     {
         var payload = new JsonObject
         {
-            ["operations"] = new JsonArray("skill_check"),
+            ["operations"] = new JsonArray((operations ?? new[] { "skill_check" })
+                .Select(static operation => (JsonNode?)operation)
+                .ToArray()),
             ["contribution"] = contribution,
             ["scope"] = scope
         };
         if (privatePayloadSentinel is not null)
         {
             payload["privatePayload"] = privatePayloadSentinel;
+            payload["ownerSentinel"] = "owner-" + privatePayloadSentinel;
+            payload["carrierSentinel"] = "carrier-" + privatePayloadSentinel;
         }
         using var document = JsonDocument.Parse(payload.ToJsonString());
         return new EffectMechanicalComponent(

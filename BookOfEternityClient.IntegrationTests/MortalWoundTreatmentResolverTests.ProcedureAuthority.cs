@@ -963,6 +963,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         { false, "all", null, true, "skill_field_medicine_01" },
         { false, "skill", "skill_field_medicine_01", true, "skill_field_medicine_01" },
+        { false, "skill", "field_medicine", false, "skill_field_medicine_01" },
         { false, "skill", "skill_patient_observation_01", false, "skill_field_medicine_01" },
         { true, "all", null, true, null },
         { true, "skill", "skill_field_medicine_01", false, null }
@@ -1050,6 +1051,41 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("normal", Convert.ToString(ReadRequiredProperty(authority, "RollMode")));
         Assert.Equal(new[] { 0 }, ReadIntSequence(ReadRequiredProperty(authority, "SourceIndices")));
         Assert.NotNull(ReadPropertyAllowingNull(authority, "PreparedCriticalReaction"));
+    }
+
+    [Fact]
+    public void ProcedureCheckAuthority_RestoredReservationsDetachRollSourceAuthority()
+    {
+        var scenario = CreateScenario(
+            "procedure_advantage_uses_two_contiguous_dice",
+            "procedure");
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffects(
+            "t171_restore_source_clone",
+            new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var original = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            AssertValidProcedureCheckAuthority(InvokeProcedureCheckAuthority(
+                fixture,
+                scenario.OperationKey + "_restore_source_clone",
+                scenario.RouteId)));
+        var diceReservation = Assert.IsType<MortalWoundProcedureDiceReservation>(
+            typeof(MortalWoundProcedureCheckAuthority).GetField(
+                "_diceReservation",
+                BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(original));
+        var restored = original.AttachRestoredReservations(
+            diceReservation,
+            null,
+            null);
+
+        Assert.True(original.RollSourceAuthority.SemanticallyEquals(
+            restored.RollSourceAuthority));
+        Assert.NotSame(original.RollSourceAuthority, restored.RollSourceAuthority);
+        Assert.NotSame(
+            original.RollSourceAuthority.Rows[0],
+            restored.RollSourceAuthority.Rows[0]);
+        Assert.NotSame(
+            original.RollSourceAuthority.Rows[0].Operations,
+            restored.RollSourceAuthority.Rows[0].Operations);
     }
 
     public static TheoryData<string, int, string?> ProcedureFateParityRows => new()

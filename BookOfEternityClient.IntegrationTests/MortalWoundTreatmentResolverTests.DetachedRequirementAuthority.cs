@@ -13,8 +13,12 @@ namespace BookOfEternityClient.Tests;
 /// </summary>
 public sealed partial class MortalWoundTreatmentResolverTests
 {
-    [Fact]
-    public void DetachedModeAuthority_SkillScopedRollTamperedRollSkillIdRejectsAfterReseal()
+    [Theory]
+    [InlineData("skill_patient_observation_01")]
+    [InlineData("Skill_field_medicine_01")]
+    [InlineData("skill_field_medicinе_01")]
+    public void DetachedModeAuthority_SkillScopedRollTamperedRollSkillIdRejectsAfterReseal(
+        string tamperedSkillId)
     {
         var scenario = CreateScenario(
             "procedure_normal_uses_lowest_free_die",
@@ -33,14 +37,18 @@ public sealed partial class MortalWoundTreatmentResolverTests
         AssertDetachedRequirementAccepted(request);
         var authority = ReadJsonObject(request, "ModeAuthority");
         authority[FindJsonPropertyName(authority, "RollSkillId")] =
-            "skill_patient_observation_01";
+            tamperedSkillId;
 
         ResealDetachedProcedureAuthorityAndRequestWithRollSkillId(request);
         AssertDetachedModeAuthorityRejected(request);
     }
 
-    [Fact]
-    public void DetachedModeAuthority_SkillScopedRollCompactContributionTamperRejectsWhenSourceIsUnchanged()
+    [Theory]
+    [InlineData("delete")]
+    [InlineData("add")]
+    [InlineData("change")]
+    public void DetachedModeAuthority_SkillScopedRollCompactContributionTamperRejectsWhenSourceIsUnchanged(
+        string axis)
     {
         var scenario = CreateScenario("procedure_normal_uses_lowest_free_die", "procedure");
         using var fixture = AcceptedStateFixture.Create(scenario);
@@ -48,10 +56,47 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "t171_compact_tamper", new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
         var flow = ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey + "_compact_tamper", scenario.RouteId);
         var request = SerializeDetachedRequirementRequest(flow);
+        AssertDetachedRequirementAccepted(request);
         var authority = ReadJsonObject(request, "ModeAuthority");
         Assert.NotNull(authority[FindJsonPropertyName(authority, "RollSourceAuthority")]);
         var contributions = Assert.IsType<JsonArray>(authority[FindJsonPropertyName(authority, "RollContributions")]);
-        Assert.Single(contributions).AsObject()["contribution"] = "disadvantage";
+        var contribution = Assert.Single(contributions).AsObject();
+        switch (axis)
+        {
+            case "delete":
+                contributions.Clear();
+                authority[FindJsonPropertyName(authority, "RollMode")] = "normal";
+                var deleteIndices = Assert.IsType<JsonArray>(authority[
+                    FindJsonPropertyName(authority, "SourceIndices")]);
+                var deleteRolls = Assert.IsType<JsonArray>(authority[
+                    FindJsonPropertyName(authority, "SourceRolls")]);
+                deleteIndices.RemoveAt(1);
+                deleteRolls.RemoveAt(1);
+                authority[FindJsonPropertyName(authority, "SelectedSourceIndex")] =
+                    deleteIndices[0]!.GetValue<int>();
+                authority[FindJsonPropertyName(authority, "NaturalRoll")] =
+                    deleteRolls[0]!.GetValue<int>();
+                Assert.Null(authority[FindJsonPropertyName(
+                    authority,
+                    "PreparedCriticalReaction")]);
+                break;
+            case "add":
+                var added = contribution.DeepClone().AsObject();
+                added[FindJsonPropertyName(added, "EffectId")] =
+                    "effect_compact_added";
+                added[FindJsonPropertyName(added, "ComponentId")] =
+                    "component_compact_added";
+                contributions.Add(added);
+                break;
+            case "change":
+                contribution[FindJsonPropertyName(contribution, "EffectId")] =
+                    "effect_compact_changed";
+                contribution[FindJsonPropertyName(contribution, "ComponentId")] =
+                    "component_compact_changed";
+                break;
+            default:
+                throw new ArgumentOutOfRangeException(nameof(axis), axis, null);
+        }
         ResealDetachedProcedureAuthorityAndRequestWithRollSkillId(request);
 
         AssertDetachedModeAuthorityRejected(request);
@@ -125,6 +170,72 @@ public sealed partial class MortalWoundTreatmentResolverTests
             FindJsonPropertyName(missingOperationsSource, "Rows")])).AsObject();
         row.Remove(FindJsonPropertyName(row, "Operations"));
         AssertDetachedRequestCannotDeserialize(missingOperations);
+    }
+
+    [Fact]
+    public void DetachedModeAuthority_FixedZeroBroadSourceSurvivesTypedRoundTrip()
+    {
+        var scenario = CreateScenario(
+            "procedure_normal_uses_lowest_free_die",
+            "procedure");
+        const string routeId = "procedure_t171_fixed_zero_typed_round_trip";
+        var route = scenario.Before["treatment"]!["routes"]![0]!.DeepClone().AsObject();
+        route["routeId"] = routeId;
+        route["resolution"]!["modifierSource"] = new JsonObject { ["kind"] = "fixed_zero" };
+        scenario.Before["treatment"]!["routes"]!.AsArray().Add(route);
+        scenario.Before["treatment"]!["knownRouteIds"]!.AsArray().Add(routeId);
+
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplaceNpcProcedureSkillScopedRollEffects(
+            "t171_fixed_zero_broad",
+            new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_fixed_zero_typed_round_trip",
+            routeId);
+        var request = ParseDetachedProcedureRequest(
+            SerializeDetachedRequirementRequest(flow));
+        var authority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+
+        Assert.Null(authority.RollSkillId);
+        Assert.Single(authority.RollSourceAuthority.Rows);
+        Assert.Equal("all", authority.RollSourceAuthority.Rows[0].ScopeKind);
+        Assert.Equal("advantage", authority.RollMode);
+        Assert.Equal(2, authority.SourceIndices.Count);
+        Assert.Null(authority.PreparedCriticalReaction);
+    }
+
+    [Fact]
+    public void DetachedModeAuthority_OpposingDirectionsSurviveTypedRoundTripBeforeFate()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 19);
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffectsAndFate(
+            "t171_opposing_typed_round_trip",
+            new ProcedureSkillScopedRollEffectSeed(
+                "advantage", "skill", "skill_field_medicine_01"),
+            new ProcedureSkillScopedRollEffectSeed("disadvantage", "all", null));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_opposing_typed_round_trip",
+            scenario.RouteId);
+        var request = ParseDetachedProcedureRequest(
+            SerializeDetachedRequirementRequest(flow));
+        var authority = Assert.IsType<MortalWoundProcedureCheckAuthority>(
+            request.ModeAuthority);
+
+        Assert.Equal("normal", authority.RollMode);
+        Assert.Single(authority.SourceIndices);
+        Assert.Equal(
+            new[] { "advantage", "disadvantage" },
+            authority.RollContributions.Select(static value => value.Contribution));
+        Assert.NotNull(authority.PreparedCriticalReaction);
     }
 
     [Fact]
@@ -873,6 +984,20 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
         Assert.False(accepted, DescribeIssues(issues));
         Assert.NotEmpty(issues);
+    }
+
+    private static MortalWoundTreatmentAttemptRequest ParseDetachedProcedureRequest(
+        JsonObject request)
+    {
+        var issues = new List<ValidationIssue>();
+        Assert.True(
+            MortalWoundTreatmentCommandCodec.TryParseRequest(
+                request,
+                "request",
+                issues,
+                out var parsed),
+            DescribeIssues(issues));
+        return Assert.IsType<MortalWoundTreatmentAttemptRequest>(parsed);
     }
 
     private static void PromoteDetachedCourseRequestToSecondMilestone(

@@ -23,6 +23,8 @@ internal sealed record EffectRollContributionResolution(
 
 internal static class EffectRollContributionResolver
 {
+    private const int MaximumCapturedRows = 10_000;
+
     internal static EffectRollSourceCaptureResult Capture(
         EffectMechanicsSnapshot snapshot)
     {
@@ -40,6 +42,14 @@ internal static class EffectRollContributionResolver
         foreach (var component in snapshot.Components.Where(
                      static value => value.Profile == "roll_modifier"))
         {
+            if (rows.Count == MaximumCapturedRows)
+            {
+                return new EffectRollSourceCaptureResult(
+                    false,
+                    null,
+                    InvalidIssues("effect_roll_source_capture_too_many_rows"));
+            }
+
             if (!TryCapture(component, rows.Count, out var row))
             {
                 return new EffectRollSourceCaptureResult(
@@ -252,6 +262,11 @@ internal static class EffectRollContributionResolver
         {
             if (value.ValueKind != JsonValueKind.String ||
                 value.GetString() is not { } operation)
+            {
+                return false;
+            }
+
+            if (result.Count == 6)
             {
                 return false;
             }

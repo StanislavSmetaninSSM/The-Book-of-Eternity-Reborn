@@ -17,7 +17,9 @@ internal sealed class EffectDetachedRollSourceAuthority
         IReadOnlyList<EffectDetachedRollSourceRow> rows,
         string authorityFingerprint)
     {
-        if (rows is null || rows.Any(static row => row is null))
+        if (rows is null ||
+            rows.Count > MaximumRows ||
+            rows.Any(static row => row is null))
         {
             throw new System.Text.Json.JsonException(
                 "rollSourceAuthority.rows must be a non-null row collection.");
@@ -45,6 +47,12 @@ internal sealed class EffectDetachedRollSourceAuthority
         IReadOnlyList<EffectDetachedRollSourceRow> rows)
     {
         ArgumentNullException.ThrowIfNull(rows);
+        if (rows.Count > MaximumRows)
+        {
+            throw new ArgumentOutOfRangeException(
+                nameof(rows),
+                "Detached roll source authority exceeds the maximum row count.");
+        }
 
         var detached = rows.Select(static row => row.CloneDetached()).ToArray();
         return new EffectDetachedRollSourceAuthority(
@@ -192,6 +200,7 @@ internal sealed class EffectDetachedRollSourceRow
             targetKind is null ||
             targetId is null ||
             operations is null ||
+            operations.Count > 6 ||
             contribution is null ||
             scopeKind is null)
         {
@@ -300,7 +309,12 @@ internal sealed class EffectDetachedRollSourceRow
             Contribution is "advantage" or "disadvantage" &&
             ((ScopeKind == "all" && ScopeSkillId is null) ||
              (ScopeKind == "skill" &&
-              ResourceMaterializationContract.IsExactIdentifier(ScopeSkillId)));
+              ResourceMaterializationContract.IsExactIdentifier(ScopeSkillId) &&
+              _operations.Count == 1 &&
+              string.Equals(
+                  _operations[0],
+                  "skill_check",
+                  StringComparison.Ordinal)));
     }
 
     internal JsonObject ToJson()

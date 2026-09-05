@@ -1,4 +1,5 @@
 using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Services;
 using Xunit;
@@ -7,6 +8,84 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class MortalWoundTreatmentResolverTests
 {
+    [Fact]
+    public void ColdClaimRecovery_JointlyResealedRollSourceAndResultRollsBackRegistries()
+    {
+        var scenario = CreateScenario(
+            "procedure_player_natural_one_reserves_oldest_fate_shield",
+            "procedure");
+        scenario.AcceptedState["acceptedDice"] = new JsonArray(1, 1, 17);
+        scenario.AcceptedState["sterileThreadCount"] = 1;
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        fixture.ReplacePlayerProcedureSkillScopedRollEffectsAndFate(
+            "t171_cold_joint_source_result",
+            new ProcedureSkillScopedRollEffectSeed("advantage", "all", null));
+        var flow = ResolveCurrentTreatment(
+            fixture,
+            "procedure",
+            scenario.OperationKey + "_cold_joint_source_result",
+            scenario.RouteId);
+        var command = ComposeTreatmentCommand(
+            flow,
+            "A fully resealed detached source must still fail fresh recovery.");
+        var pending = ComposeTreatmentRepairPendingRoot(
+            command,
+            CreateTreatmentRepairPackets(command.Binding, scenario.Before));
+        var request = FindSerializedTreatmentRequest(pending);
+        MutateJointRollSourceAndResult(request);
+        UpdateSubmittedRequestFingerprint(pending, request);
+
+        var detachedCatalog = Assert.IsType<
+            MortalWoundTreatmentPersistedRequestCatalogResult>(
+            ParsePersistedRequestCatalog(null, pending, flow.History));
+        Assert.True(detachedCatalog.IsValid, DescribeIssues(detachedCatalog.Issues));
+        Assert.Single(detachedCatalog.Requests);
+        Assert.Single(detachedCatalog.HeldRequests);
+        Assert.Empty(detachedCatalog.FinalizedRequests);
+
+        using var coldFixture = CreateColdRootCopy(fixture);
+        var coldAcceptedState = Assert.IsType<
+            MortalWoundTreatmentAcceptedStateAuthority>(coldFixture.GetAcceptedState());
+        ResetProcedureClaimRecoveryOnly(coldFixture);
+        File.WriteAllText(
+            coldFixture.FileSystem.ResolvePath(
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath),
+            pending.ToJsonString());
+
+        var recovery = coldAcceptedState.RestorePersistedTreatmentRequests(
+            coldFixture.ReadCurrentHistory());
+
+        Assert.False(recovery.IsValid);
+        var mismatch = Assert.Single(recovery.Issues, static issue => string.Equals(
+            issue.Code,
+            "mortal_wound_treatment_procedure_claim_recovery_fresh_mismatch",
+            StringComparison.Ordinal));
+        Assert.Equal("procedure_authority", mismatch.Actual);
+        Assert.Empty(recovery.Requests);
+        Assert.Empty(recovery.HeldRequests);
+        Assert.Empty(recovery.FinalizedRequests);
+
+        File.Delete(coldFixture.FileSystem.ResolvePath(
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath));
+        var fresh = ResolveCurrentTreatment(
+            coldFixture,
+            "procedure",
+            scenario.OperationKey + "_cold_joint_source_result_fresh",
+            scenario.RouteId);
+        var freshAuthority = ReadRequiredProperty(fresh.Request, "ModeAuthority");
+        Assert.Equal("advantage", Convert.ToString(
+            ReadRequiredProperty(freshAuthority, "RollMode")));
+        Assert.Equal(
+            new[] { 0, 1 },
+            ReadIntSequence(ReadRequiredProperty(freshAuthority, "SourceIndices")));
+        Assert.Equal("effect_fate_shield_older", ReadPreparedFateEffectId(fresh.Request));
+        var freshRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(fresh.Request);
+        var claim = Assert.Single(freshRequest.ResourceAuthority.Claims);
+        Assert.Equal("sterile_thread", claim.AuthorityRef);
+        Assert.Equal(1, claim.Quantity);
+        Assert.Equal("held", freshRequest.ResourceAuthority.ReservationDisposition);
+    }
+
     [Fact]
     public void ColdClaimRecovery_FinalizedTombstoneCannotReenterHeldCapacity()
     {
@@ -676,6 +755,69 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "InvalidateWoundAndDependentCore",
             BindingFlags.Instance | BindingFlags.NonPublic));
         _ = invalidate.Invoke(state, null);
+    }
+
+    private static void ResetProcedureClaimRecoveryOnly(AcceptedStateFixture fixture)
+    {
+        var registry = typeof(AcceptedTurnAuthorityRegistry);
+        var getState = Assert.Single(registry.GetMethods(
+            BindingFlags.Static | BindingFlags.NonPublic),
+            static method =>
+                string.Equals(method.Name, "GetState", StringComparison.Ordinal) &&
+                method.GetParameters().Length == 2);
+        var state = Invoke(
+            getState,
+            new object?[] { fixture.FileSystem, fixture.Lease });
+        var reset = Assert.IsAssignableFrom<MethodInfo>(state.GetType().GetMethod(
+            "ResetProcedureClaimRecovery",
+            BindingFlags.Instance | BindingFlags.NonPublic));
+        _ = reset.Invoke(state, null);
+    }
+
+    private static void MutateJointRollSourceAndResult(JsonObject request)
+    {
+        var authority = ReadJsonObject(request, "ModeAuthority");
+        var source = ReadJsonObject(authority, "RollSourceAuthority");
+        var sourceRow = Assert.Single(Assert.IsType<JsonArray>(source[
+            FindJsonPropertyName(source, "Rows")])).AsObject();
+        sourceRow[FindJsonPropertyName(sourceRow, "Contribution")] = "disadvantage";
+        var resealedSource = JsonSerializer.Deserialize<EffectDetachedRollSourceAuthority>(
+            source.ToJsonString(),
+            new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+        Assert.NotNull(resealedSource);
+        authority[FindJsonPropertyName(authority, "RollSourceAuthority")] =
+            JsonNode.Parse(JsonSerializer.Serialize(
+                EffectDetachedRollSourceAuthority.Create(resealedSource.Rows),
+                new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+        var contribution = Assert.Single(Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "RollContributions")])).AsObject();
+        contribution[FindJsonPropertyName(contribution, "Contribution")] =
+            "disadvantage";
+        authority[FindJsonPropertyName(authority, "RollMode")] = "disadvantage";
+        var sourceIndices = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceIndices")]);
+        var sourceRolls = Assert.IsType<JsonArray>(authority[
+            FindJsonPropertyName(authority, "SourceRolls")]);
+        var selected = Enumerable.Range(0, sourceRolls.Count)
+            .OrderBy(index => sourceRolls[index]!.GetValue<int>())
+            .ThenBy(index => sourceIndices[index]!.GetValue<int>())
+            .First();
+        authority[FindJsonPropertyName(authority, "SelectedSourceIndex")] =
+            sourceIndices[selected]!.GetValue<int>();
+        authority[FindJsonPropertyName(authority, "NaturalRoll")] =
+            sourceRolls[selected]!.GetValue<int>();
+        ResealDetachedProcedureAuthorityAndRequest(request);
+    }
+
+    private static void UpdateSubmittedRequestFingerprint(
+        JsonObject pending,
+        JsonObject request)
+    {
+        var submitted = Assert.IsType<JsonArray>(pending[
+            FindJsonPropertyName(pending, "SubmittedTreatmentRequests")]);
+        var row = Assert.IsType<JsonObject>(Assert.Single(submitted));
+        row[FindJsonPropertyName(row, "RequestFingerprint")] =
+            ReadJsonString(request, "RequestFingerprint");
     }
 
     [Fact]
