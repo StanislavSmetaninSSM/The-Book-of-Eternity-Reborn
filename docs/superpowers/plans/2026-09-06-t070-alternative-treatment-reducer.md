@@ -40,7 +40,7 @@ Dependency: independent approval of `2026-09-06-t070-diagnosis-reducer.md` befor
   attempt. It creates no terminal-attempt, effect, healing, recovery, or legacy intent.
 - `CanonicalStateNormalizer` remains the sole publisher. This pure factory/reducer
   exposes no incomplete player command or GM-authored response capability.
-- Fast stays physically isolated, deterministic, and bounded to five minutes. No file,
+- Fast stays physically isolated, deterministic, and bounded to five minutes. No game-state file,
   lease, restart, publication, or rollback tests in this slice.
 - Use the bounded PowerShell 7 test runner; never overlap C# lanes. No broad Fast,
   Integration, FullValidation, or PreMerge is needed for this pure checkpoint.
@@ -55,6 +55,9 @@ Dependency: independent approval of `2026-09-06-t070-diagnosis-reducer.md` befor
   registration, dispatch/seal integration, and result intent only)
 - Modify: `BookOfEternityClient/Services/WoundMaterializationContract.cs` (register
   `author_alternative_treatment` in the closed last-transition kind set only)
+- Modify: `BookOfEternityClient/Services/MortalWoundTreatmentContract.cs` (narrow
+  diagnosis-path exact/confusable uniqueness check in `ValidateDiagnosis` only;
+  dependency confirmed by the new `old_path` / `OLD_PATH` RED fixture).
 - Optional narrow shared-helper reuse/extraction in
   `BookOfEternityClient/Services/MortalWoundTreatmentPlanner.Diagnosis.cs`: reuse the
   complete local path serializer/hash from the approved diagnosis task; no diagnosis
@@ -100,7 +103,7 @@ their complete canonical wire content, preserving ordered arrays and explicit nu
 excluding parser source-location metadata. Local result/evidence values must be
 immutable/detached. No mode-specific convenience aliases or guessed old schema.
 
-- [ ] **Step 1: Observe the existing 27-row RED contract**
+- [x] **Step 1: Observe the existing 27-row RED contract**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.Reduce_AuthorAlternative_|FullyQualifiedName~MortalWoundDiagnosisTests.History_AlternativeAuthoringAppendsOnceAndReplaysExactResult|FullyQualifiedName~MortalWoundDiagnosisTests.History_AlternativeReplayComparesEveryTypedResultCoordinate"
@@ -110,7 +113,7 @@ Expected: 27 rows reach the unimplemented alternative kind/factory boundary and 
 with a clean build. Record the actual owning missing boundary, not an assumed error.
 Do not rerun the entire still-incomplete diagnosis command/response class.
 
-- [ ] **Step 2: Add focused constructor, binding, and append RED cases**
+- [x] **Step 2: Add focused constructor, binding, and append RED cases**
 
 Use central `WoundContractTestData.CreateActiveWound` plus small local helpers and the
 production parser/factories, without copying the large existing diagnosis test class.
@@ -144,7 +147,7 @@ Keep its current 27 assertions unchanged. Cover:
 Run the new class RED before production implementation. No test-only evidence/hash
 constructor, reflection into private evidence, or forged successful history is allowed.
 
-- [ ] **Step 3: Derive complete factory authority**
+- [x] **Step 3: Derive complete factory authority**
 
 Clone parsed before/after inputs. Resolve the exact selected new route and optional
 path from the proposed-after. Derive wound ID, complete before/after fingerprints,
@@ -163,7 +166,7 @@ as rejected reducer requests. In particular, a changed old route or known-route 
 must not throw during factory creation or be silently repaired. Factory errors must not
 open a path to partially accepted state.
 
-- [ ] **Step 4: Validate exact append delta and emit result**
+- [x] **Step 4: Validate exact append delta and emit result**
 
 Register the closed kind in reducer and canonical wound last-transition registries;
 history already registers it. Reuse existing request/identity/turn/ordinal preconditions.
@@ -190,7 +193,7 @@ it does not execute that option or terminalize a treatment attempt. Do not manuf
 effect IDs or a source batch. A decline remains a later response concern with no
 transition, not a fake successful alternative event.
 
-- [ ] **Step 5: Run coherent GREEN controls and independent review**
+- [x] **Step 5: Run coherent GREEN controls and independent review**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundAlternativeTransitionTests|FullyQualifiedName~MortalWoundDiagnosisTests.Reduce_AuthorAlternative_|FullyQualifiedName~MortalWoundDiagnosisTests.History_AlternativeAuthoringAppendsOnceAndReplaysExactResult|FullyQualifiedName~MortalWoundDiagnosisTests.History_AlternativeReplayComparesEveryTypedResultCoordinate|FullyQualifiedName~MortalWoundDiagnosisTransitionTests|FullyQualifiedName~WoundTransitionReducerTests|FullyQualifiedName~WoundHistoryStateTests|FullyQualifiedName~WoundTransitionResultTests|FullyQualifiedName~WoundMaterializationContractTests"
@@ -207,8 +210,154 @@ review. Commit only owned code/tests with
 artifacts, all diagnostics, and remaining boundaries; parent updates plans/tasks/ledger.
 
 This internal constructor/reducer publishes no new canonical state or GM capability.
-No Mortal World/afterlife prompt/example/manifest/matrix/daemon update is required in
-this pure slice. Closed accepted commands, kind-specific `woundTreatmentAuthorings`
+The narrow parser dependency does reject ambiguous diagnosis path IDs in already
+authored Mortal wounds, so Task 2 below synchronizes that existing constructor rule
+in the GM guide and worked example before this plan is considered complete.
+Closed accepted commands, kind-specific `woundTreatmentAuthorings`
 response/repair, fresh source authority, common publication/cache/replay/rollback and
 worked GM examples remain mandatory next. Keep T070/T177/#1536 open and retain the
 known unrelated course/replay publication failures until their owning fix is verified.
+
+### Task 2: Explain and demonstrate unambiguous diagnosis path identity
+
+**Task 1 checkpoint:** `2f5ceda1..b45c5d2e`, independent spec/quality Approved,
+0 Critical/Important/Minor. Parent inspected the complete production diff, report,
+and actual final 484/484 summary/log
+(`20260906-095307-279-16128-3dc013d240e742d39138a7d77dde5048-focused`, 0:31.738),
+clean build/cleanup, no timeout/duplicates/skips. All 27 frozen cases and 74 new rows
+pass; existing history/result/reducer/materialization controls remain green. The
+history-evidence review caveat is resolved by those artifacts and the reviewed history
+foundation. This does not close the following GM synchronization or future authority/
+command/publication responsibilities. T070/T177/#1536 remain open.
+
+**Files:**
+- Modify: `OtherGuides/Wound_Materialization_Contract.md`.
+- Modify: `Examples/E_CLI_Wound_Materialization.txt` (only the existing complete
+  `wound_mortal_roll_scope_skill_v1` worked example and its immediate explanatory text).
+- Modify: `BookOfEternityClient.Tests/PromptDocumentationCoverageTests.Wounds.cs`.
+- Parent synchronizes `specs/1536-complete-wound-materialization/data-model.md` and
+  evidence/tasks; do not edit parent records or the manifest in this task.
+
+**Interface:** The existing Mortal constructor accepts complete `diagnosisPaths[]`.
+Within one wound, their `diagnosisPathId` values must be exact and case/Unicode-
+confusable unique; selection stays exact, never fuzzy or by display name. This is
+not a new diagnosis command or a successful diagnosis result. The matching route
+in the worked example is already `ashglass_clean_and_bind`.
+
+- [ ] **Step 1: Add the documentation/example RED guard**
+
+Add one deterministic source/documentation test in the existing Wounds partial that
+checks the guide marker `wound_mortal_diagnosis_identity_v1`, its explicit exact and
+case/Unicode-confusable uniqueness rule, and that the named complete existing example
+contains both `inspect_ashglass_cuts` and `assess_ashglass_tendon` as distinct paths.
+Use existing example extraction helpers, not a whole-file presence-only substitute
+for checking the two paths belong to the exact example. Assert the complete path
+objects, their unchanged route reference and failure policy. Execute:
+
+```csharp
+[Fact]
+public void WoundDiagnosisIdentityDocumentation_UsesDistinctCompleteWorkedPaths()
+{
+    var guide = ExtractWoundDocumentationSection(
+        ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+        "wound_mortal_diagnosis_identity_v1");
+    Assert.Contains("case/Unicode-confusable unique", guide, StringComparison.Ordinal);
+    Assert.Contains("never fuzzy or display-name matching", guide, StringComparison.Ordinal);
+    var section = ExtractWoundDocumentationSection(
+        ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt"),
+        "wound_mortal_roll_scope_skill_v1");
+    var roots = Regex.Matches(section, @"```json\s*(?<json>.*?)```",
+            RegexOptions.Singleline | RegexOptions.CultureInvariant)
+        .Select(match => Assert.IsType<JsonObject>(JsonNode.Parse(match.Groups["json"].Value)))
+        .ToArray();
+    var response = Assert.Single(roots, root => root.ContainsKey("woundDecisions"));
+    var decision = Assert.Single(response["woundDecisions"]!.AsArray());
+    var paths = decision!["proposal"]!["treatment"]!["diagnosisPaths"]!.AsArray();
+    Assert.Equal(2, paths.Count);
+    var expected = new[]
+    {
+        (Id: "inspect_ashglass_cuts", Name: "Осмотреть края порезов"),
+        (Id: "assess_ashglass_tendon", Name: "Проверить подвижность пальцев")
+    };
+    for (var index = 0; index < expected.Length; index++)
+    {
+        var value = new JsonObject
+        {
+            ["diagnosisPathId"] = expected[index].Id,
+            ["displayName"] = expected[index].Name,
+            ["visibility"] = "known_to_player",
+            ["requiresKnownFacts"] = new JsonArray(),
+            ["requirements"] = new JsonArray(),
+            ["check"] = new JsonObject(),
+            ["reveals"] = new JsonArray("route:ashglass_clean_and_bind"),
+            ["failurePolicy"] = "no_reveal"
+        };
+        Assert.True(JsonNode.DeepEquals(value, paths[index]), value.ToJsonString());
+    }
+}
+```
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests.WoundDiagnosisIdentityDocumentation"
+```
+
+Expected: new guard fails because marker and paths are absent; clean build.
+
+- [ ] **Step 2: Synchronize the guide and existing worked example**
+
+Add the guide section `## wound_mortal_diagnosis_identity_v1` with this rule:
+
+> Within one Mortal wound, `diagnosisPathId` values must be exact and case/Unicode-
+> confusable unique. Choose a genuinely distinct ID for each diagnosis path; changing
+> only capitalization or using visually confusable characters is invalid. Selection
+> uses the exact ID, never fuzzy or display-name matching. This identifies possible
+> examinations; it does not assert that an examination succeeded or grant treatment.
+
+In `wound_mortal_roll_scope_skill_v1` only, replace its empty diagnosis array with:
+
+```json
+"diagnosisPaths": [
+  {
+    "diagnosisPathId": "inspect_ashglass_cuts",
+    "displayName": "Осмотреть края порезов",
+    "visibility": "known_to_player",
+    "requiresKnownFacts": [],
+    "requirements": [],
+    "check": {},
+    "reveals": ["route:ashglass_clean_and_bind"],
+    "failurePolicy": "no_reveal"
+  },
+  {
+    "diagnosisPathId": "assess_ashglass_tendon",
+    "displayName": "Проверить подвижность пальцев",
+    "visibility": "known_to_player",
+    "requiresKnownFacts": [],
+    "requirements": [],
+    "check": {},
+    "reveals": ["route:ashglass_clean_and_bind"],
+    "failurePolicy": "no_reveal"
+  }
+]
+```
+
+Explain beside the example that `INSPECT_ASHGLASS_CUTS` cannot be a second path ID
+next to `inspect_ashglass_cuts`; use the genuinely distinct second ID shown. Keep
+the existing complete example ID, selected skill, consequence, route mechanics and
+manifest registration unchanged. Both examination descriptions are setting-specific
+examples, not a universal wound or diagnosis catalog.
+
+- [ ] **Step 3: Verify guide and complete worked constructor**
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests.WoundDiagnosisIdentityDocumentation|FullyQualifiedName~PromptDocumentationCoverageTests.WoundRollScopeDocumentation|FullyQualifiedName~PromptDocumentationCoverageTests.WoundMaterializationContract"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill|FullyQualifiedName~ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+```
+
+The complete example must still validate, not only its source strings. The exact
+selection above covers the existing full worked constructors and manifest registration;
+record the actual filter and row count.
+No afterlife parser/schema, guide, matrix, manifest shape, prompt entrypoint or daemon
+changes: their existing shared guide routing remains valid. No extra FullValidation
+is required solely for this Mortal-only documentation clarification. Report clean
+RED/GREEN evidence and commit only owned files:
+`docs(wounds): clarify exact diagnosis path identities (#1536)`.

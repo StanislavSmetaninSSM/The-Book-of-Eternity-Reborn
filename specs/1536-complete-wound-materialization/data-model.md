@@ -2199,6 +2199,10 @@ cannot reopen the original source result as a fresh opportunity.
 }
 ```
 
+Within one Mortal wound, `diagnosisPathId` values are exact and case/Unicode-confusable
+unique. A casing or confusable-character variant cannot identify a second path;
+selection still uses the exact ID and never fuzzy or display-name matching.
+
 `requiresKnownFacts[]` and `reveals[]` are unique ordered arrays of at most 16 exact
 `route:<routeId>` or `complication:<complicationId>` facts that resolve inside the
 same wound. The initial

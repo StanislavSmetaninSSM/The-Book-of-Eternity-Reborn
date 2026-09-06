@@ -546,6 +546,30 @@ parsing/seal validation or by recomposition, never accepted by trusting caller-s
 fingerprints. Tests may hand-author malformed shapes for field/path diagnostics, but
 only these production composers establish valid sealed command authority.
 
+T070's diagnosis/alternative command codec first needs complete standalone member
+validation as specified in
+`docs/superpowers/plans/2026-09-06-t070-treatment-member-shapes.md`. Shared local
+component/graph traversal and reciprocal slot validation are separate from the real
+wound severity/owner/policy predicates. Standalone route/path parsing reuses the same
+closed readers, nested validators and canonical writers as full wound parsing, without
+inventing a wound or substituting a maximum severity. All registered nested complication
+and heal-legacy constructors remain supported. A shape-valid draft has no fresh world
+authority; full wound legality and current/signed-source authority are still mandatory.
+
+The accepted-command wire projection has its own production-owned deterministic
+integrity seal, distinct from the factory's private full-request seal. It binds every
+represented authority coordinate, recomputed typed result and available accepted-turn
+binding plus final scene. Parsing may accept a structurally well-formed draft before
+recomposition verifies these seals unconditionally. Alternative full route/path content
+is rehashed, including display names. Diagnosis's omitted wound/event/transition fields
+are not guessed, hidden in a memory registry, or added to the closed schema. Fresh
+publication later reconstructs those coordinates from the real attempt/request and
+canonical/signed sources; a recalculable public checksum is not proof of world authority.
+Every parsed family must be retained, counted and checked. Until that fresh adapter
+exists, both distribution and validation explicitly reject new accepted variants;
+nonempty commands may not succeed as empty wound work. Existing opportunity and treat
+codecs remain distinct and preserve the existing mixed-family rejection.
+
 T060/T066 use one production-owned, side-effect-free requirement boundary:
 `MortalWoundTreatmentAuthority.ResolveRequirements(route, context, currentSnapshot)`.
 `context` is a typed exact binding for the Mortal realm, target, provider, and current

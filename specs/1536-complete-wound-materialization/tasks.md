@@ -1435,6 +1435,19 @@ entrypoints require no update for T065.
   required T070 work; they are not covered or waived by this replay correction.
   Next: the sealed alternative-treatment reducer plan above, then closed standalone
   member validation and commands; fresh publication and GM authoring remain mandatory.
+  Alternative factory/reducer checkpoint: `b45c5d2e`, independent spec/quality Approved
+  with 0 Critical/Important/Minor. Final owning control is 484/484
+  (`20260906-095307-279-16128-3dc013d240e742d39138a7d77dde5048-focused`), clean build,
+  cleanup and no timeout/duplicates/skips. The full selected route/path/result and local
+  images are sealed; only one append plus history is legal, never a treatment attempt.
+  A new RED fixture exposed ambiguous diagnosis-path IDs; the approved narrow parser
+  fix rejects case/Unicode-confusable duplicates. The same alternative plan's Task 2
+  now owns its required GM guide/example/source-guard synchronization and is still open.
+  Then execute `docs/superpowers/plans/2026-09-06-t070-treatment-member-shapes.md`:
+  shared detached local envelope/slot checks followed by complete standalone route/path
+  parsing. These must not invent missing severity/owner/policy or weaken full-wound
+  checks. Accepted commands, GM authoring/repair and fresh publication remain later
+  required contours; neither T070 nor T177 nor #1536 is complete.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
