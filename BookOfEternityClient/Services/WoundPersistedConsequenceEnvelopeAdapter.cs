@@ -347,7 +347,9 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         foreach (var resolved in roots)
         {
             var root = resolved.Root;
-            if (root.ExpectedSlots is null)
+            // Preserve full-context optional-summary semantics, but shape-only
+            // validation must budget every resolved root even without a summary.
+            if (root.ExpectedSlots is null && severityRank.HasValue)
                 continue;
             var remaining = DirectMechanicalProfiles(resolved.Definition);
             foreach (var edge in resolved.Definition.Edges)
@@ -359,6 +361,8 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                 }
             }
             derivedSlotCount += remaining.Count;
+            if (root.ExpectedSlots is null)
+                continue;
             for (var index = 0; index < root.ExpectedSlots.Count; index++)
             {
                 var expected = root.ExpectedSlots[index];

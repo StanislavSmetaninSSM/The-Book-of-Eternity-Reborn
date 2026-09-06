@@ -228,6 +228,36 @@ public sealed class WoundDetachedConsequenceShapeTests
         Issue(Adapter(definitions, roots, global).Issues, "wound_materialization_consequence_slot_invalid", "draft");
     }
 
+    [Theory]
+    [InlineData(4, false)]
+    [InlineData(4, true)]
+    [InlineData(5, false)]
+    [InlineData(5, true)]
+    public void AdapterShape_NullSummaryOmitsComparisonButNotStructuralBudget(int slotCount, bool persistCount)
+    {
+        var components = new[]
+        {
+            Scalar("-1"), Action("attack", "restrict"), Action("cast", "restrict"),
+            Action("movement", "restrict"), Component("resistance", "resistance_modifier",
+                "{\"resistance\":\"fire\",\"operation\":\"flat\",\"value\":-1,\"cap\":null}")
+        };
+        var (definitions, roots) = Graph(components.Take(slotCount).ToArray());
+        roots[0] = roots[0] with { ExpectedSlots = null };
+        int? persistedSlotsUsed = persistCount ? slotCount : null;
+
+        var full = WoundPersistedConsequenceEnvelopeAdapter.ValidatePrevalidatedDetached(
+            1, "draft", definitions, roots, false, persistedSlotsUsed);
+        Assert.True(full.IsValid, Describe(full.Issues));
+        Assert.Equal(slotCount, full.DerivedSlots.Length);
+
+        var shape = Adapter(definitions, roots, false, persistedSlotsUsed);
+        Assert.Equal(slotCount, shape.DerivedSlots.Length);
+        if (slotCount == 4)
+            Assert.True(shape.IsValid, Describe(shape.Issues));
+        else
+            Issue(shape.Issues, "wound_materialization_consequence_slot_invalid", "draft");
+    }
+
     [Fact]
     public void AdapterShape_DirectRootTargetIsNotAlsoAnUnboundChild()
     {
