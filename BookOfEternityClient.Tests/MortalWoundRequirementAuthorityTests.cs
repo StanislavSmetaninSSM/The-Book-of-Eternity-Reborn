@@ -2146,6 +2146,7 @@ public sealed class MortalWoundRequirementAuthorityTests
                 ["reachable"] = true,
                 ["skills"] = new JsonArray(new JsonObject
                 {
+                    ["skillId"] = SkillRef,
                     ["capabilityRef"] = SkillRef,
                     ["displayName"] = DisplayName("skill_tier"),
                     ["tier"] = 3,

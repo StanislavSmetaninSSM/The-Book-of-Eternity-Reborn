@@ -3956,12 +3956,12 @@ public sealed partial class ExampleDocumentationValidationTests
         Assert.True(
             headingIndex >= 0,
             $"Named example heading '{heading}' was not found in Examples/{file}.");
-        var sectionEnd = source.IndexOf(
-            heading.StartsWith("## ", StringComparison.Ordinal) ? "\n## " : "\n### ",
-            headingIndex + heading.Length,
-            StringComparison.Ordinal);
-        if (sectionEnd < 0)
-            sectionEnd = source.Length;
+        var headingLevel = heading.StartsWith("## ", StringComparison.Ordinal) ? 2 : 3;
+        var nextHeading = new Regex(
+            $@"^#{{1,{headingLevel}}}[ \t]+\S",
+            RegexOptions.Multiline | RegexOptions.CultureInvariant)
+            .Match(source, headingIndex + heading.Length);
+        var sectionEnd = nextHeading.Success ? nextHeading.Index : source.Length;
 
         var fences = new List<JsonObject>();
         var searchIndex = headingIndex + heading.Length;
