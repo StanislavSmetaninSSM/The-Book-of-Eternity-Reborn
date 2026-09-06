@@ -445,6 +445,147 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal(beforeComponentId, afterComponent.GetProperty("componentId").GetString());
     }
 
+    [Theory]
+    [InlineData("none", false)]
+    [InlineData("disabled", false)]
+    [InlineData("exact", false)]
+    [InlineData("none", true)]
+    public void SkillScope_AcceptedTreatmentRematerializationDoesNotRebindOrRequireProposalCoordinates(
+        string currentCatalog,
+        bool changeSelector)
+    {
+        var beforeJson = CreateRankThreeWound("roll_modifier");
+        var originalDefinition = beforeJson["consequences"]!["ownedEffectSources"]!
+            ["definitions"]![0]!;
+        var payload = originalDefinition["components"]![0]!["payload"]!;
+        payload["operations"] = new JsonArray("skill_check");
+        payload["scope"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["skillId"] = "skill_grip"
+        };
+        var before = Parse(beforeJson);
+        using var resolutionFixture = CreateReductionPlannerFixture(before, "r1");
+        var flow = PersistAndRehydrateTreatmentPublication(
+            resolutionFixture.Fixture,
+            resolutionFixture.Flow,
+            "accepted treatment skill-scope continuation");
+        var plan = ComposeCoordinatedTreatmentPlan(
+            resolutionFixture.Fixture,
+            flow);
+        var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
+            plan.WoundStageBundle);
+        var prepared = bundle.PreparedPlan;
+        Assert.NotNull(prepared.TreatmentContinuationAuthority);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        Assert.Equal("treat", batch.TransitionAuthority.TransitionKind);
+        var root = Assert.Single(batch.RootApplications);
+        Assert.NotNull(root.PriorRootEffectId);
+        var definition = Assert.Single(batch.SourceExport.Definitions);
+        Assert.True(JsonNode.DeepEquals(originalDefinition, definition.Definition));
+        var acceptedEffectInput = bundle.EffectBatchPlan.EffectInput;
+        Assert.NotNull(acceptedEffectInput.SourceAuthority);
+
+        var input = acceptedEffectInput with
+        {
+            SkillScopeAuthority = CreateAcceptedTreatmentSkillScopeAuthority(
+                currentCatalog)
+        };
+        Assert.Null(input.WoundApplicationLocations);
+        if (changeSelector)
+        {
+            var changed = definition.Definition;
+            changed["components"]![0]!["payload"]!["scope"]!["skillId"] =
+                "skill_other";
+            definition = new WoundEffectSourceDefinition(
+                definition.DefinitionKey,
+                changed);
+        }
+
+        var issues = new List<ValidationIssue>();
+        const BindingFlags privateStatic = BindingFlags.Static |
+            BindingFlags.NonPublic;
+        var request = typeof(EffectAcceptedTurnPlanner)
+            .GetMethod("PrepareWoundApplication", privateStatic)!
+            .Invoke(null, new object[]
+            {
+                input,
+                batch,
+                batch.SourceExport,
+                definition,
+                root,
+                prepared.Binding.AcceptedEvents.ToDictionary(
+                    value => value.EventRef,
+                    StringComparer.Ordinal),
+                "woundEffectBatches[0].rootApplications[0]",
+                issues
+            });
+        if (changeSelector)
+        {
+            Assert.Null(request);
+            var issue = Assert.Single(issues);
+            Assert.Equal("wound_plan_effect_handoff_invalid", issue.Code);
+            Assert.Equal(
+                "woundEffectBatches[0].rootApplications[0].source",
+                issue.FilePath);
+            return;
+        }
+
+        Assert.Empty(issues);
+        Assert.NotNull(request);
+        var application = request!.GetType().GetProperty("Application")!
+            .GetValue(request)!;
+        Assert.Equal(
+            "woundEffectBatches[0].rootApplications[0].components",
+            application.GetType().GetProperty("Path")!.GetValue(application));
+        var scopeIssues = (IReadOnlyList<ValidationIssue>)typeof(
+                EffectAcceptedTurnPlanner)
+            .GetMethod("ValidateBoundApplicationComponents", privateStatic)!
+            .Invoke(null, new object?[]
+            {
+                application,
+                definition.Definition["components"]!.AsArray(),
+                input.SkillScopeAuthority
+            })!;
+        Assert.Empty(scopeIssues);
+        Assert.Equal(
+            "skill_grip",
+            definition.Definition["components"]![0]!["payload"]!["scope"]!
+                ["skillId"]!.GetValue<string>());
+    }
+
+    private static EffectRollSkillScopeAuthority
+        CreateAcceptedTreatmentSkillScopeAuthority(string currentCatalog)
+    {
+        static IReadOnlyDictionary<string, JsonNode?> CreateRoots(string catalog)
+        {
+            var skills = catalog switch
+            {
+                "none" => new JsonArray(),
+                "disabled" => new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_grip",
+                    ["name"] = "Grip",
+                    ["active"] = false
+                }),
+                "exact" => new JsonArray(new JsonObject
+                {
+                    ["skillId"] = "skill_grip",
+                    ["name"] = "Grip"
+                }),
+                _ => throw new ArgumentOutOfRangeException(nameof(catalog))
+            };
+            return new Dictionary<string, JsonNode?>
+            {
+                ["game_state/player/skills_active.json"] = skills
+            };
+        }
+
+        return EffectRollSkillScopeAuthority.Build(new(
+            CreateRoots("exact"),
+            CreateRoots(currentCatalog)));
+    }
+
     [Fact]
     public void FinalizeReduction_AuthenticatedEmptyBatchPublishesZeroRootSeverityChange()
     {
@@ -1068,50 +1209,6 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.True(result.IsValid, Describe(result.Issues));
         return Assert.IsType<MortalWoundTreatmentSeverityReductionProjection>(
             result.Projection);
-    }
-
-    private static JsonObject CreateRankFourReactionWound()
-    {
-        var wound = CreateRankThreeWound("event_reaction", "characteristic_modifier");
-        wound["severity"]!["value"] = "IV";
-        wound["severity"]!["rank"] = 4;
-        wound["severity"]!["maximumAtCreation"] = "IV";
-        wound["consequences"]!["slotBudget"] = 4;
-        var sources = wound["consequences"]!["ownedEffectSources"]!.AsObject();
-        var root = WoundContractTestData.CreateApplyDefinitionRoot(
-            wound["woundId"]!.GetValue<string>(),
-            "mortal_world",
-            "definition_destination_reaction",
-            "definition_destination_leaf");
-        var leaf = WoundContractTestData.CreateOwnedEffectDefinition(
-            wound["woundId"]!.GetValue<string>(),
-            "mortal_world",
-            "definition_destination_leaf",
-            "characteristic_modifier");
-        leaf["components"]![0]!["payload"]!["operation"] = "flat";
-        leaf["components"]![0]!["payload"]!["value"] = 4;
-        sources["definitions"] = new JsonArray(root, leaf);
-        sources["rootBindings"] = new JsonArray(
-            WoundContractTestData.CreateRootBinding(
-                "effect_destination_reaction",
-                "definition_destination_reaction"));
-        wound["consequences"]!["slotsUsed"] = 2;
-        wound["consequences"]!["entries"] = new JsonArray(
-            new JsonObject
-            {
-                ["slot"] = 1,
-                ["profileKey"] = "event_reaction",
-                ["effectId"] = "effect_destination_reaction",
-                ["readableSummary"] = "The wound reacts to renewed harm."
-            },
-            new JsonObject
-            {
-                ["slot"] = 2,
-                ["profileKey"] = "characteristic_modifier",
-                ["effectId"] = "effect_destination_reaction",
-                ["readableSummary"] = "The reaction imposes a severe penalty."
-            });
-        return wound;
     }
 
     private static WoundMaterializationEnvelope Parse(JsonObject wound)

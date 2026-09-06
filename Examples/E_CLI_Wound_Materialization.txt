@@ -1419,9 +1419,6 @@ Wound repair transport: every wound_materialization_repair packet requires candi
 }
 ```
 
-
-]]></content>
-
 ## mortal_wound_treatment_scalar_course_v1
 
 GM authors this complete `treatment` member inside an ordinary complete Mortal wound
@@ -1476,3 +1473,5 @@ by the complete route model, but scalar publication does not pretend to execute 
   "completedRouteIds": []
 }
 ```
+
+]]></content>

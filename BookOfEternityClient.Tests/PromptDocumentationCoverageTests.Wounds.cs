@@ -566,6 +566,23 @@ public sealed partial class PromptDocumentationCoverageTests
         const string marker = "mortal_wound_treatment_scalar_course_v1";
         var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
         var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        const string contentOpening = "<content><![CDATA[";
+        const string contentClosing = "]]></content>";
+        var contentStart = example.IndexOf(contentOpening, StringComparison.Ordinal);
+        var contentEnd = example.IndexOf(contentClosing, StringComparison.Ordinal);
+        Assert.True(contentStart >= 0, "Missing example content opening wrapper.");
+        Assert.True(contentEnd > contentStart, "Missing example content closing wrapper.");
+        Assert.Equal(contentEnd, example.LastIndexOf(contentClosing, StringComparison.Ordinal));
+        var scalarSection = Regex.Match(
+            example,
+            @"^##\s+" + Regex.Escape(marker) + @"\s*$.*?(?<fence>```json\s*.*?```)",
+            RegexOptions.Multiline | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+        Assert.True(scalarSection.Success, "Missing scalar course heading and complete JSON fence.");
+        Assert.InRange(scalarSection.Index, contentStart + contentOpening.Length, contentEnd - 1);
+        Assert.InRange(
+            scalarSection.Groups["fence"].Index + scalarSection.Groups["fence"].Length,
+            contentStart + contentOpening.Length,
+            contentEnd);
         static JsonObject ReadTreatment(string document)
         {
             var match = Regex.Match(document, Regex.Escape(marker) + @".*?```json\s*(?<json>.*?)```",

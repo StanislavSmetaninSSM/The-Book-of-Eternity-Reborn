@@ -411,7 +411,29 @@ public sealed class EffectAcceptedTurnInputComposerWoundTests
     public void Compose_FeedsPreparedWoundDirectlyIntoTypedEffectStage()
     {
         var prepared = PrepareStandardPlan();
-        var composed = Compose(prepared);
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        var definition = Assert.Single(batch.SourceExport.Definitions);
+        var localKey = new EffectSourceKey(
+            batch.SourceExport.Realm,
+            batch.SourceExport.Kind,
+            batch.LocalWoundRef,
+            definition.DefinitionKey);
+        var locations = new EffectApplicationDiagnosticLocations(new[]
+        {
+            new KeyValuePair<EffectSourceKey, EffectApplicationDiagnosticLocation>(
+                localKey,
+                new(
+                    "woundDecisions[0].proposal.consequenceDefinitions[0].definition.components",
+                    "wound_materialization"))
+        }).BindPreparedSources(prepared);
+        var composed = Compose(prepared) with { WoundApplicationLocations = locations };
+        var root = Assert.Single(batch.RootApplications);
+        Assert.NotNull(composed.SkillScopeAuthority);
+        Assert.True(locations.TryResolve(root.ExpectedSourceKey, out var location));
+        Assert.Equal(
+            "woundDecisions[0].proposal.consequenceDefinitions[0].definition.components",
+            location.Path);
+        Assert.Equal("wound_materialization", location.Section);
 
         var result = WoundEffectBatchPlanner.Build(
             prepared,
