@@ -499,6 +499,27 @@ public sealed class MortalWoundRequirementAuthorityTests
         AssertSuccess(result, requirement);
     }
 
+    [Fact]
+    public void Resolve_SkillIdentityIsDistinctFromCapabilityAndFingerprintBound()
+    {
+        var route = CreateRoute(CreateRequirement("skill_tier"));
+        var snapshot = CreateSnapshot();
+        var original = Resolve(route, CreateContext(), snapshot);
+        Assert.True(original.Success, DescribeIssues(original.Issues));
+        var originalRow = Assert.Single(original.ResolvedRequirements);
+        Assert.Equal(SkillRef, originalRow.SkillId);
+
+        const string changedSkillId = "skill_field_medicine_canonical_002";
+        First(Provider(snapshot), "skills")["skillId"] = changedSkillId;
+        var changed = Resolve(route, CreateContext(), snapshot);
+        Assert.True(changed.Success, DescribeIssues(changed.Issues));
+        var changedRow = Assert.Single(changed.ResolvedRequirements);
+        Assert.Equal(SkillRef, changedRow.AuthorityRef);
+        Assert.Equal(changedSkillId, changedRow.SkillId);
+        Assert.NotEqual(originalRow.AuthorityFingerprint, changedRow.AuthorityFingerprint);
+        Assert.NotEqual(original.AuthorityFingerprint, changed.AuthorityFingerprint);
+    }
+
     [Theory]
     [MemberData(nameof(RoleBoundRequirementCases))]
     public void Resolve_OwnerAndActorRolesCanBindTheExactTarget(string kind)
@@ -1711,6 +1732,7 @@ public sealed class MortalWoundRequirementAuthorityTests
                 "Realm",
                 "RequestedQuantity",
                 "RequirementIndex",
+                "SkillId",
                 "TargetId",
                 "TargetKind"
             },
@@ -1723,6 +1745,7 @@ public sealed class MortalWoundRequirementAuthorityTests
             Assert.IsType<int>(ReadRequiredProperty(value, "RequirementIndex")),
             Assert.IsType<string>(ReadRequiredProperty(value, "Kind")),
             Assert.IsType<string>(ReadRequiredProperty(value, "AuthorityRef")),
+            ReadNullableStringProperty(value, "SkillId"),
             Assert.IsType<string>(ReadRequiredProperty(value, "Realm")),
             ReadNullableStringProperty(value, "OwnerKind"),
             ReadNullableStringProperty(value, "OwnerId"),
@@ -1822,6 +1845,7 @@ public sealed class MortalWoundRequirementAuthorityTests
         Assert.Equal(
             requirement[ReferenceField(kind)]!.GetValue<string>(),
             actual.AuthorityRef);
+        Assert.Equal(kind == "skill_tier" ? SkillRef : null, actual.SkillId);
         Assert.Equal("mortal_world", actual.Realm);
         Assert.True(
             ResourceMaterializationContract.IsAuthorityFingerprint(
@@ -2551,6 +2575,7 @@ public sealed class MortalWoundRequirementAuthorityTests
         int RequirementIndex,
         string Kind,
         string AuthorityRef,
+        string? SkillId,
         string Realm,
         string? OwnerKind,
         string? OwnerId,
