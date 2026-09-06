@@ -30,6 +30,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentAcceptedStateRegistryTests.cs",
         "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
         "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
+        "MortalWoundTreatmentResolverTests.CoursePublication.cs",
         "MortalWoundTreatmentResolverTests.cs",
         "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
         "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
@@ -52,6 +53,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentResolverTests.ResourceAuthority.cs",
         "MortalWoundTreatmentResolverTests.ResourceFinalization.cs",
         "MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs",
         "MortalWoundTreatmentResolverTests.VehicleTopology.cs",
         "QteSceneServiceTests.cs",
         "GmWorkerLiveSmokeTests.cs",
@@ -83,6 +85,7 @@ public sealed class FastTestBoundaryTests
     [
         "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
         "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
+        "MortalWoundTreatmentResolverTests.CoursePublication.cs",
         "MortalWoundTreatmentResolverTests.cs",
         "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
         "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
@@ -105,6 +108,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentResolverTests.ResourceAuthority.cs",
         "MortalWoundTreatmentResolverTests.ResourceFinalization.cs",
         "MortalWoundTreatmentResolverTests.ResourcePublication.cs",
+        "MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs",
         "MortalWoundTreatmentResolverTests.VehicleTopology.cs"
     ];
 

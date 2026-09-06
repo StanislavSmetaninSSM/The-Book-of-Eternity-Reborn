@@ -48,6 +48,24 @@ internal static class MortalWoundCriticalReactionPublicationPlanner
         ArgumentNullException.ThrowIfNull(request);
         ArgumentNullException.ThrowIfNull(resolution);
 
+        if (request.Mode == "course")
+        {
+            if (resolution.CriticalReactionIntent is not null)
+                return Invalid("mortal_wound_treatment_critical_reaction_unexpected",
+                    "no critical reaction for course treatment", resolution.CriticalReactionIntent.IntentFingerprint);
+            if (!acceptedState.HasCurrentAdmissionAuthority() ||
+                !request.Coordinates.MatchesAcceptedState(acceptedState) ||
+                !acceptedState.MatchesCurrentWound(request.RouteSourceWound) ||
+                !MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+                request.RequestFingerprint != resolution.RequestFingerprint ||
+                !MortalWoundTreatmentOutcomePublicationPlanner.DetachedSelectionAgrees(
+                    resolution, acceptedState.CurrentGameMinute))
+                return Invalid("mortal_wound_treatment_critical_reaction_publication_authority_invalid",
+                    "one current sealed course request and independently selected result without a reaction",
+                    "missing, stale, foreign, or changed course authority");
+            return Valid(request, resolution, intent: null, lifecycleEvent: null);
+        }
+
         if (request.Mode is "guaranteed")
         {
             return resolution.CriticalReactionIntent is null

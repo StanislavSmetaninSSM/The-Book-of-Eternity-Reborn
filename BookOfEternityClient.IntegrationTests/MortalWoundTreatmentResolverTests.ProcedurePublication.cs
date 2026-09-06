@@ -15,7 +15,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreateWarmCacheStabilizationScenario("exact_replay");
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -37,7 +37,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreateWarmCacheStabilizationScenario("intent_mismatch");
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -195,7 +195,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 fixture,
                 scenario,
                 "severity_reduction_publication")
-            : PersistAndRehydrateProcedurePublication(
+            : PersistAndRehydrateTreatmentPublication(
                 fixture,
                 ResolveCurrentTreatment(
                     fixture,
@@ -242,7 +242,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         else
         {
-            plan = ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+            plan = ComposeAndPublishCoordinatedTreatment(fixture, flow);
         }
 
         var wound = fixture.ReadCurrentWound();
@@ -328,7 +328,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             SeedCanonicalWoundEffects = true
         };
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -337,7 +337,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 scenario.RouteId),
             "zero-root severity reduction publication");
 
-        var plan = ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        var plan = ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             plan.WoundStageBundle);
@@ -382,7 +382,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "r1",
             expectedIntentCount: 1);
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -396,7 +396,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             flow.Request);
         var resolution = Assert.IsType<MortalWoundTreatmentResolution>(
             flow.Resolution);
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
         var authentic = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             plan.WoundStageBundle);
         var authority = authentic.PreparedPlan.TreatmentContinuationAuthority;
@@ -470,7 +470,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "resistance_modifier");
         scenario = scenario with { SeedCanonicalWoundEffects = true };
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -826,7 +826,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
 
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -838,7 +838,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("success", resolution.ResultCategory);
         Assert.Equal("None", resolution.RouteCompletion);
 
-        var plan = ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        var plan = ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var outputBinding = WoundPlayerNotification.ComposeAcceptedTurn(
             Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle),
@@ -1000,7 +1000,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
 
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1016,7 +1016,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             resolution.OutcomeIntents,
             intent => Assert.Equal(operationKind, intent.Kind));
 
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var wound = fixture.ReadCurrentWound();
         Assert.Empty(wound.Treatment.CompletedRouteIds);
@@ -1043,7 +1043,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1055,7 +1055,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             flow.AcceptedState);
         var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
         var resolution = Assert.IsType<MortalWoundTreatmentResolution>(flow.Resolution);
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
         var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             plan.WoundStageBundle);
         var prepared = original.PreparedPlan;
@@ -1173,7 +1173,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1181,7 +1181,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 scenario.OperationKey + "_injected_valid_dispel",
                 scenario.RouteId),
             "injected valid dispel");
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
         var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             plan.WoundStageBundle);
         var commands = original.EffectBatchPlan.EffectInput.RawCommands
@@ -1234,7 +1234,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
         SeedPassiveNpcEffectForLifecycle(fixture);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1242,7 +1242,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 scenario.OperationKey + "_co_tampered_carrier_lifecycle",
                 scenario.RouteId),
             "co-tampered carrier baseline and lifecycle");
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
         var original = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             plan.WoundStageBundle);
         var originalInput = original.EffectBatchPlan.EffectInput;
@@ -1560,7 +1560,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         };
 
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1576,7 +1576,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             resolution.OutcomeIntents,
             static intent => Assert.Equal("stabilize", intent.Kind));
 
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var wound = fixture.ReadCurrentWound();
         Assert.Equal("stabilized", wound.Care.State);
@@ -1616,7 +1616,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             SeedCanonicalWoundEffects = true
         };
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1633,7 +1633,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             static intent => Assert.Equal("no_improvement", intent.Kind));
         var before = CanonicalWoundRoot(flow.Before);
 
-        var plan = ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        var plan = ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var outputBinding = WoundPlayerNotification.ComposeAcceptedTurn(
             Assert.IsType<AcceptedMechanicsWoundStageBundle>(plan.WoundStageBundle),
@@ -1688,7 +1688,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         var playerBefore = ReadCanonicalBytes(
             fixture,
             WoundCarrierCatalog.PlayerPath);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1703,7 +1703,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             resolution.OutcomeIntents,
             static intent => Assert.Equal("no_improvement", intent.Kind));
 
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         Assert.False(targetBefore.SequenceEqual(
             ReadCanonicalBytes(fixture, fixture.TargetCarrierPath)));
@@ -1729,7 +1729,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreateNoResourceNoImprovementProcedureScenario();
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1742,7 +1742,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Null(request.ResourceAuthority.ReservationId);
         Assert.Empty(request.ResourceAuthority.Claims);
 
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
         using var publication = PublishCachedResourcePlanOpen(
             fixture,
             flow,
@@ -2285,7 +2285,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         SeedCanonicalWoundEffects = true
     };
 
-    private static TreatmentFlow PersistAndRehydrateProcedurePublication(
+    private static TreatmentFlow PersistAndRehydrateTreatmentPublication(
         AcceptedStateFixture fixture,
         TreatmentFlow initial,
         string boundary)
@@ -2294,13 +2294,13 @@ public sealed partial class MortalWoundTreatmentResolverTests
             fixture,
             ComposeTreatmentCommand(
                 initial,
-                "The accepted procedure is persisted before canonical publication."));
+                "The accepted treatment is persisted before canonical publication."));
         var initialRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
             initial.Request);
         var restored = Assert.Single(
             AssertValidPersistedCatalog(
                 RestoreCurrentPersistedTreatmentCatalog(fixture),
-                boundary + " persisted procedure"),
+                boundary + " persisted treatment"),
             candidate => string.Equals(
                 Assert.IsType<MortalWoundTreatmentAttemptRequest>(candidate)
                     .RequestFingerprint,
@@ -2308,7 +2308,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 StringComparison.Ordinal));
         var rehydrated = RehydratePersistedTreatment(
             fixture,
-            "procedure",
+            initialRequest.Mode,
             restored);
         Assert.Equal(
             CanonicalValue(initial.Request),
@@ -2319,12 +2319,12 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return rehydrated;
     }
 
-    private static AcceptedMechanicsPlan ComposeAndPublishCoordinatedProcedureTreatment(
+    private static AcceptedMechanicsPlan ComposeAndPublishCoordinatedTreatment(
         AcceptedStateFixture fixture,
         TreatmentFlow flow,
         GameResponse? proposal = null)
     {
-        var plan = ComposeCoordinatedProcedurePlan(fixture, flow, proposal);
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow, proposal);
         var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
         using var publication = PublishCachedResourcePlanOpen(
             fixture,
@@ -2338,7 +2338,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         return plan;
     }
 
-    private static AcceptedMechanicsPlan ComposeCoordinatedProcedurePlan(
+    private static AcceptedMechanicsPlan ComposeCoordinatedTreatmentPlan(
         AcceptedStateFixture fixture,
         TreatmentFlow flow,
         GameResponse? proposal = null)

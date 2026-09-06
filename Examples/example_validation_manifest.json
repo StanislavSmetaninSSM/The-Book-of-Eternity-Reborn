@@ -2,6 +2,18 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "wound_mortal_scalar_course_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "ordinary complete Mortal wound proposal treatment member",
+      "responseSurface": "complete wound treatment.routes[]",
+      "realms": ["Mortal World"],
+      "description": "Complete three-milestone scalar course: empty active start, one severity reduction, final stabilization, exact current dose and client-owned pointer.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute -> MortalWoundTreatmentContract.ParseRouteShape; PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentWorkingWoundSimulator.Simulate",
+      "coverageLimit": "Complete authored route and whole-wound applicability only; actual atomic publication, dose settlement, pointer history, restart and replay are proved by Integration CourseScalarPublication_ lifecycle tests, not by this shape guard.",
+      "requiredText": ["mortal_wound_treatment_scalar_course_v1", "field_clinic_recovery_course", "only the current milestone's dose", "other treatment does not cancel a course", "client-owned"]
+    },
+    {
       "contractId": "wound_mortal_alternative_repair_v1",
       "file": "E_CLI_Wound_Materialization.txt",
       "statePath": "local rejected alternative author and public repair transport only",

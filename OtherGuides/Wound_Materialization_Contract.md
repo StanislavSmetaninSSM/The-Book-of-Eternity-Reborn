@@ -70,6 +70,62 @@ they are not suggestions. Return exactly one matching entry in `woundDecisions`:
 }
 ```
 
+## mortal_wound_treatment_scalar_course_v1
+
+GM authors this complete `treatment` member inside an ordinary complete Mortal wound
+proposal. It is not a canonical-state patch and does not enable a fresh alternative-treatment adapter.
+The field medic and medicines here belong to this worked setting, not a global medical catalog.
+
+An empty result is legal only for an active milestone. The client consumes only the current milestone's dose,
+never future doses. Course start sets and continuations preserve the client's exact active course ID;
+completion or trusted interruption clears it. Route completion is not necessarily full wound healing:
+this course reduces severity II to I and stabilizes the wound, which remains active.
+Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
+A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
+Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
+The remaining producers `heal`, `add_recovery`, `remove_complication`, `add_complication` and
+`apply_deterioration` are pending implementation; their approved authored contracts remain supported
+by the complete route model, but scalar publication does not pretend to execute them.
+
+Врач проводит три этапа: первую перевязку без немедленного улучшения, ослабление раны через
+480 минут и стабилизацию через 960 минут. На каждом этапе расходуется одна текущая доза.
+Завершение курса не означает исчезновение раны; пропущенный срок или подтверждённое отсутствие
+нужного условия прерывает курс без расхода следующей дозы. Повтор уже принятого этапа не тратит
+лекарство снова. Другое лечение само по себе не отменяет курс.
+
+```json
+{
+  "diagnosisPaths": [],
+  "routes": [{
+    "routeId": "field_clinic_recovery_course",
+    "displayName": "Последовательный курс лечения в полевой клинике",
+    "visibility": "known_to_player",
+    "mode": "course",
+    "requirements": [{ "kind": "provider", "providerRef": "field_medic_01" }],
+    "resourcePolicy": {
+      "reserveBeforeResolution": true,
+      "consumeOn": ["success"],
+      "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+      "mutations": [
+        { "kind": "consume_requirement", "scope": "course_milestone", "milestoneOrdinal": 1, "requirementIndex": 0 },
+        { "kind": "consume_requirement", "scope": "course_milestone", "milestoneOrdinal": 2, "requirementIndex": 0 },
+        { "kind": "consume_requirement", "scope": "course_milestone", "milestoneOrdinal": 3, "requirementIndex": 0 }
+      ]
+    },
+    "resolution": { "clockKind": "world_time.currentTimeInMinutes", "maximumGapMinutes": 600 },
+    "outcomes": [
+      { "ordinal": 1, "afterMinutes": 0, "requirements": [{ "kind": "item_quantity", "itemRef": "antibiotic_dose", "quantity": 1, "ownerRole": "target" }], "category": "success", "completion": "active", "result": [] },
+      { "ordinal": 2, "afterMinutes": 480, "requirements": [{ "kind": "item_quantity", "itemRef": "antibiotic_dose", "quantity": 1, "ownerRole": "target" }], "category": "success", "completion": "active", "result": [{ "kind": "reduce_severity", "steps": 1 }] },
+      { "ordinal": 3, "afterMinutes": 960, "requirements": [{ "kind": "item_quantity", "itemRef": "antibiotic_dose", "quantity": 1, "ownerRole": "target" }], "category": "success", "completion": "completed", "result": [{ "kind": "stabilize" }] }
+    ],
+    "interruption": { "category": "failed_attempt", "result": [{ "kind": "no_improvement" }] }
+  }],
+  "knownRouteIds": ["field_clinic_recovery_course"],
+  "completedRouteIds": []
+}
+```
+
+
 `woundRef` is response-local only. Never author `woundId`, `effectId`,
 `complicationId`, transition identity, history, owner IDs, fingerprints, receipts,
 accepted transition progress, or canonical carrier post-state. The client allocates and binds all

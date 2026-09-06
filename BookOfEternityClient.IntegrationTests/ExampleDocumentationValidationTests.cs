@@ -159,6 +159,20 @@ public sealed partial class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute()
+    {
+        var treatment = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Wound_Materialization.txt", "mortal_wound_treatment_scalar_course_v1"));
+        var rawRoute = Assert.Single(treatment["routes"]!.AsArray());
+        var parsed = MortalWoundTreatmentContract.ParseRouteShape(
+            JsonSerializer.SerializeToElement(rawRoute), "example.treatment.routes[0]");
+        Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        var course = Assert.IsType<MortalWoundCourseRouteDefinition>(parsed.Route);
+        Assert.Equal("field_clinic_recovery_course", course.RouteId);
+    }
+
+    [Fact]
     public void CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily()
     {
         var manifest = ExampleValidationManifest.Load();
@@ -167,6 +181,7 @@ public sealed partial class ExampleDocumentationValidationTests
             ["wound_treatment_scene_authority_v1"] =
                 "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_roll_scope_all_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_scalar_course_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_roll_scope_skill_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_alternative_response_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_alternative_repair_v1"] = "E_CLI_Wound_Materialization.txt",

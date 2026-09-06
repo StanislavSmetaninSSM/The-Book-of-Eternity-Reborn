@@ -1499,7 +1499,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_disadvantage_uses_two_contiguous_dice",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1510,7 +1510,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("failed_attempt", Convert.ToString(ReadRequiredProperty(
             flow.Resolution,
             "ResultCategory")));
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();
         Assert.Equal("active", fixture.ReadCurrentWound().Lifecycle);
@@ -1585,7 +1585,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             consumesSupply ? 2 : 1,
             fixture.ReadNpcItemCount("sterile_thread"));
         Assert.Equal(1, fixture.ReadNpcItemCount("reusable_field_kit"));
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1604,7 +1604,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "reusable_field_kit",
             "sterile_thread");
 
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         var publishedWound = fixture.ReadCurrentWound();
         var publishedRootIds = publishedWound.Consequences.OwnedEffectSources
@@ -1675,7 +1675,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "procedure_player_natural_one_reserves_oldest_fate_shield",
             "procedure"));
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var first = PersistAndRehydrateProcedurePublication(
+        var first = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1683,7 +1683,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 scenario.OperationKey + "_publish_first_fate",
                 scenario.RouteId),
             "first Fate reaction");
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, first);
+        ComposeAndPublishCoordinatedTreatment(fixture, first);
         Assert.Equal(
             new[] { "effect_fate_shield_newer" },
             fixture.ReadActivePlayerEffectIds().Where(static effectId =>
@@ -1695,7 +1695,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             1_261,
             "publish_second_fate",
             new[] { 1, 17 });
-        var second = PersistAndRehydrateProcedurePublication(
+        var second = PersistAndRehydrateTreatmentPublication(
             fixture,
             ResolveCurrentTreatment(
                 fixture,
@@ -1708,7 +1708,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 ReadRequiredProperty(second.Request, "ModeAuthority"),
                 "PreparedCriticalReaction"),
             "EffectId")));
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, second);
+        ComposeAndPublishCoordinatedTreatment(fixture, second);
         Assert.DoesNotContain(
             fixture.ReadActivePlayerEffectIds(),
             static effectId => effectId.StartsWith(
@@ -1860,7 +1860,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "ProviderId")));
         fixture.AssertCurrentWoundCoordinate(targetKind, targetId, targetCarrierPath);
 
-        ComposeAndPublishTreatment(fixture, flow);
+        if (mode == "procedure")
+        {
+            flow = PersistAndRehydrateTreatmentPublication(fixture, flow, "combat procedure publication");
+            ComposeAndPublishCoordinatedTreatment(fixture, flow);
+        }
+        else
+        {
+            ComposeAndPublishTreatment(fixture, flow);
+        }
 
         Assert.False(targetCarrierBefore.SequenceEqual(File.ReadAllBytes(
             fixture.FileSystem.ResolvePath(targetCarrierPath))));
@@ -1912,6 +1920,9 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ownerKind: targetKind,
             ownerId: targetId,
             carrierPath: carrierPath);
+        before["consequences"] = scenario.Before["consequences"]!.DeepClone();
+        foreach (var definition in before["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray())
+            definition!["allowedTargetKinds"] = new JsonArray("combatant");
         var route = scenario.Before["treatment"]!["routes"]![0]!
             .DeepClone()
             .AsObject();
@@ -1948,6 +1959,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             AcceptedState = acceptedState,
             Before = before,
+            History = CreateCurrentWoundHistory(before),
+            SeedCanonicalWoundEffects = true,
             OperationKey = scenario.OperationKey + "_combat_target"
         };
     }
@@ -2854,6 +2867,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         // opaque accepted state under one lease.  It does not create an authority,
         // request, proof, witness, reservation, receipt, or fingerprint itself.
         using var fixture = AcceptedStateFixture.Create(scenario);
+        history = fixture.ReadCurrentHistory();
         if (scenario.Mode == "procedure")
         {
             fixture.AssertUnchangedT060RequirementResolution(
@@ -2960,6 +2974,14 @@ public sealed partial class MortalWoundTreatmentResolverTests
         TreatmentFlow flow,
         GameResponse? proposal = null)
     {
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(flow.Request);
+        if (request.Mode == "course" &&
+            request.ResourceAuthority.ReservationDisposition == "held")
+        {
+            var rehydrated = PersistAndRehydrateTreatmentPublication(
+                fixture, flow, "accepted course milestone publication");
+            return ComposeAndPublishCoordinatedTreatment(fixture, rehydrated, proposal);
+        }
         var planner = typeof(WoundMaterializationContract).Assembly.GetType(
             "BookOfEternityClient.Services.WoundAcceptedTurnPlanner",
             throwOnError: false,
@@ -3796,7 +3818,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         {
             "AuthorityFingerprint", "AuthorityRef", "CurrentState", "CurrentTier", "Kind", "LocationId",
             "MinimumTier", "OwnerId", "OwnerKind", "ProviderId", "ProviderKind", "Realm",
-            "RequestedQuantity", "RequirementIndex", "TargetId", "TargetKind"
+            "RequestedQuantity", "RequirementIndex", "SkillId", "TargetId", "TargetKind"
         });
         Assert.Equal(requirementIndex, Convert.ToInt32(
             ReadRequiredProperty(row, "RequirementIndex")));
@@ -4442,6 +4464,17 @@ public sealed partial class MortalWoundTreatmentResolverTests
             ResolverScenario scenario,
             FileSystemManagerHooks? hooks = null)
         {
+            if (scenario.Mode == "course" && JsonNode.DeepEquals(
+                    scenario.History, WoundContractTestData.CreateHistory()))
+            {
+                // Seal the initial creation only after caller-authored wound changes.
+                // Explicit history (including stale negative inputs) is never replaced.
+                scenario = scenario with
+                {
+                    History = CreateCurrentWoundHistory(scenario.Before),
+                    SeedCanonicalWoundEffects = true
+                };
+            }
             var root = Path.Combine(Path.GetTempPath(), "boe-t061-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             var fileSystem = new FileSystemManager(

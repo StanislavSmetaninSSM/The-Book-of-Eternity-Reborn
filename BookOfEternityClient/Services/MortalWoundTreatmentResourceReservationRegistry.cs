@@ -408,6 +408,17 @@ internal sealed class MortalWoundTreatmentResourceReservationRegistry
                 coordinates.OperationKey);
         }
 
+        if (candidate.CourseId is not null && candidate.CourseMilestoneOrdinal is not null &&
+            _byOperationKey.Values.Any(agreement =>
+                string.Equals(agreement.CourseId, candidate.CourseId, StringComparison.Ordinal) &&
+                agreement.CourseMilestoneOrdinal == candidate.CourseMilestoneOrdinal))
+        {
+            return Invalid(
+                "mortal_wound_treatment_resource_reservation_conflict",
+                "one pending attempt per exact course milestone, including attempts without claims",
+                coordinates.OperationKey);
+        }
+
         var agreement = new MortalWoundTreatmentResourceReservationAgreement(
             registryCapability,
             coordinates,

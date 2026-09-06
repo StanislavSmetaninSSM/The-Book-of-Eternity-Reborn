@@ -983,9 +983,12 @@ internal static class MortalWoundTreatmentCapabilityAuthority
                 return route is MortalWoundGuaranteedRouteDefinition &&
                        request.ModeAuthority is MortalWoundTreatmentCapabilityProof;
             }
-            if (request.Mode is not "procedure" ||
-                route is not MortalWoundProcedureRouteDefinition ||
-                request.ModeAuthority is not MortalWoundProcedureCheckAuthority)
+            if (!((request.Mode == "procedure" &&
+                    route is MortalWoundProcedureRouteDefinition &&
+                    request.ModeAuthority is MortalWoundProcedureCheckAuthority) ||
+                  (request.Mode == "course" &&
+                    route is MortalWoundCourseRouteDefinition &&
+                    request.ModeAuthority is MortalWoundCourseModeAuthority)))
             {
                 return false;
             }

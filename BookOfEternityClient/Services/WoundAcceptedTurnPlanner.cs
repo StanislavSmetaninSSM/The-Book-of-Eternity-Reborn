@@ -1235,8 +1235,8 @@ internal static class WoundAcceptedTurnPlannerCore
                 historyIntent.AfterFingerprint,
                 continuation.Resolution.RequestFingerprint,
                 historyIntent.AttemptId,
-                CourseId: null,
-                CourseMilestoneOrdinal: null,
+                CourseId: continuation.Resolution.CourseId,
+                CourseMilestoneOrdinal: continuation.Resolution.CourseMilestoneOrdinal,
                 CycleKey: null,
                 PaymentFingerprint: null,
                 WoundHistoryState.ComputeOutputFingerprint(

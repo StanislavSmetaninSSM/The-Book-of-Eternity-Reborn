@@ -158,7 +158,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 CanonicalValue(first.Resolution),
                 CanonicalValue(publicationFlow.Resolution));
 
-            ComposeAndPublishCoordinatedProcedureTreatment(
+            ComposeAndPublishCoordinatedTreatment(
                 publicationFixture,
                 publicationFlow);
 

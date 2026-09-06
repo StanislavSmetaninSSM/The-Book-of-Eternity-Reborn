@@ -10,6 +10,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
     private readonly WoundMaterializationEnvelope _provisionalAfter;
     private readonly MortalWoundTreatmentSeverityReductionProjection? _severityReduction;
     private readonly ImmutableArray<IntentSeal> _intentSeals;
+    private readonly SelectionSeal _selection;
 
     internal MortalWoundTreatmentOutcomePreparation(
         WoundMaterializationEnvelope before,
@@ -24,7 +25,8 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         string resultCategory,
         int? selectedOutcomeIndex,
         long currentGameMinute,
-        string fingerprint)
+        string fingerprint,
+        MortalWoundTreatmentResolution resolution)
     {
         _before = WoundAcceptedTurnData.CloneWound(before)!;
         _provisionalAfter = WoundAcceptedTurnData.CloneWound(provisionalAfter)!;
@@ -39,6 +41,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         SelectedOutcomeIndex = selectedOutcomeIndex;
         CurrentGameMinute = currentGameMinute;
         Fingerprint = fingerprint;
+        _selection = SelectionSeal.From(resolution);
     }
 
     internal WoundMaterializationEnvelope Before =>
@@ -58,24 +61,33 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
     private int? SelectedOutcomeIndex { get; }
     private long CurrentGameMinute { get; }
 
-    internal MortalWoundTreatmentOutcomePreparation DetachedCopy() => new(
-        _before,
-        _provisionalAfter,
-        TransitionId,
-        _severityReduction,
-        RequestFingerprint,
-        ResultFingerprint,
-        ResolutionAuthorityFingerprint,
-        _intentSeals.Select(static seal => seal.ToIntent()).ToArray(),
-        RouteCompletion,
-        ResultCategory,
-        SelectedOutcomeIndex,
-        CurrentGameMinute,
-        Fingerprint);
+    private MortalWoundTreatmentOutcomePreparation(MortalWoundTreatmentOutcomePreparation source)
+    {
+        _before = WoundAcceptedTurnData.CloneWound(source._before)!;
+        _provisionalAfter = WoundAcceptedTurnData.CloneWound(source._provisionalAfter)!;
+        _severityReduction = CloneProjection(source._severityReduction);
+        _intentSeals = source._intentSeals;
+        _selection = source._selection;
+        TransitionId = source.TransitionId;
+        RequestFingerprint = source.RequestFingerprint;
+        ResultFingerprint = source.ResultFingerprint;
+        ResolutionAuthorityFingerprint = source.ResolutionAuthorityFingerprint;
+        RouteCompletion = source.RouteCompletion;
+        ResultCategory = source.ResultCategory;
+        SelectedOutcomeIndex = source.SelectedOutcomeIndex;
+        CurrentGameMinute = source.CurrentGameMinute;
+        Fingerprint = source.Fingerprint;
+    }
+
+    internal MortalWoundTreatmentOutcomePreparation DetachedCopy() => new(this);
 
     internal bool AgreesWith(MortalWoundTreatmentResolution resolution)
     {
-        if (!string.Equals(RequestFingerprint, resolution.RequestFingerprint,
+        if (!MortalWoundTreatmentOutcomePublicationPlanner.DetachedSelectionAgrees(
+                resolution, CurrentGameMinute) ||
+            _selection != SelectionSeal.From(resolution) ||
+            !CanonicalWoundsEqual(_before, resolution.RequestAuthority.RouteSourceWound) ||
+            !string.Equals(RequestFingerprint, resolution.RequestFingerprint,
                 StringComparison.Ordinal) ||
             !string.Equals(ResultFingerprint, resolution.ResultFingerprint,
                 StringComparison.Ordinal) ||
@@ -117,7 +129,6 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
                 return false;
             }
 
-            if (resolution.RequestAuthority is not null)
             {
                 var expectedScalar =
                     MortalWoundTreatmentOutcomePublicationPlanner.CreateScalarShell(
@@ -130,13 +141,6 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
                 var expectedBeforeProjection = _severityReduction?.Before ??
                     _provisionalAfter;
                 if (!CanonicalWoundsEqual(expectedScalar, expectedBeforeProjection))
-                    return false;
-            }
-            else
-            {
-                var expectedBeforeProjection = _severityReduction?.Before ??
-                    _provisionalAfter;
-                if (!CanonicalWoundsEqual(_before, expectedBeforeProjection))
                     return false;
             }
 
@@ -264,21 +268,20 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
             ReductionSteps ==
                 (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps;
 
-        internal MortalWoundTreatmentOutcomeIntent ToIntent() => Kind switch
+    }
+
+    private sealed record SelectionSeal(
+        string Mode, string AttemptDisposition, bool Interruption,
+        string ConsumptionTrigger, string? CourseId, int? CourseMilestoneOrdinal,
+        string? CourseDisposition, string RouteFingerprint, string? ModeEvidenceFingerprint)
+    {
+        internal static SelectionSeal From(MortalWoundTreatmentResolution resolution)
         {
-            "no_improvement" => MortalWoundNoImprovementOutcomeIntent.Create(
-                OperationOrdinal, DeclaredOperationFingerprint, IntentFingerprint),
-            "stabilize" => MortalWoundStabilizeOutcomeIntent.Create(
-                OperationOrdinal, DeclaredOperationFingerprint, IntentFingerprint),
-            "reduce_severity" => MortalWoundReduceSeverityOutcomeIntent.Create(
-                OperationOrdinal,
-                DeclaredOperationFingerprint,
-                IntentFingerprint,
-                ReductionSteps ?? throw new InvalidOperationException(
-                    "A sealed reduction intent must retain its steps.")),
-            _ => throw new InvalidOperationException(
-                "An outcome preparation cannot detach an unsupported intent.")
-        };
+            MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(resolution, out var evidence);
+            return new(resolution.Mode, resolution.AttemptDisposition, resolution.Interruption,
+                resolution.ConsumptionTrigger, resolution.CourseId, resolution.CourseMilestoneOrdinal,
+                resolution.CourseDisposition, resolution.RouteFingerprint, evidence);
+        }
     }
 }
 
@@ -304,7 +307,7 @@ internal sealed record MortalWoundTreatmentOutcomePublicationResult(
         Issues.Count == 0;
 }
 
-internal static class MortalWoundTreatmentOutcomePublicationPlanner
+internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
 {
     private const string IssuePath = "treatmentPublication.outcome";
     private const string PreparationDomain =
@@ -422,7 +425,8 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
                     resolution.ResultCategory,
                     resolution.SelectedOutcomeIndex,
                     currentGameMinute,
-                    fingerprint),
+                    fingerprint,
+                    resolution),
                 Array.Empty<ValidationIssue>());
         }
         catch (Exception exception) when (exception is ArgumentException or
@@ -739,15 +743,25 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         long currentGameMinute,
         string? severityReductionFingerprint)
     {
+        MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(resolution, out var modeEvidenceFingerprint);
         var fields = new List<string?>
         {
             PreparationDomain,
-            "1",
+            "2",
             WoundMaterializationContract.SerializeCanonical(before),
             WoundMaterializationContract.SerializeCanonical(provisionalAfter),
             resolution.RequestFingerprint,
             resolution.ResultFingerprint,
             resolution.ResolutionAuthorityFingerprint,
+            resolution.Mode,
+            resolution.AttemptDisposition,
+            resolution.Interruption.ToString(CultureInfo.InvariantCulture),
+            resolution.ConsumptionTrigger,
+            resolution.CourseId,
+            resolution.CourseMilestoneOrdinal?.ToString(CultureInfo.InvariantCulture),
+            resolution.CourseDisposition,
+            resolution.RouteFingerprint,
+            modeEvidenceFingerprint,
             transitionId,
             resolution.RouteCompletion,
             resolution.ResultCategory,
@@ -811,7 +825,9 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         var failedAxes = new List<string>();
         if (!acceptedState.HasCurrentAdmissionAuthority())
             failedAxes.Add("accepted_state");
-        if (!request.HasMatchingFingerprint() ||
+        if (!MortalWoundTreatmentDetachedSealValidator.IsValid(request) ||
+            resolution.RequestAuthority is null ||
+            !MortalWoundTreatmentDetachedSealValidator.IsValid(resolution.RequestAuthority) ||
             !string.Equals(resolution.RequestFingerprint, request.RequestFingerprint,
                 StringComparison.Ordinal) ||
             !string.Equals(
@@ -836,48 +852,24 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
             failedAxes.Add("before_wound");
         }
         if (!string.Equals(request.Mode, resolution.Mode, StringComparison.Ordinal) ||
-            request.Mode is not ("guaranteed" or "procedure"))
+            request.Mode is not ("guaranteed" or "procedure" or "course"))
         {
             failedAxes.Add("mode");
         }
         if (!string.Equals(resolution.AttemptDisposition, "AcceptedTerminal",
-                StringComparison.Ordinal) || resolution.Interruption)
+                StringComparison.Ordinal))
         {
             failedAxes.Add("attempt_disposition");
         }
-        if (resolution.CourseId is not null ||
+        if (request.Mode != "course" && (resolution.Interruption || resolution.CourseId is not null ||
             resolution.CourseMilestoneOrdinal is not null ||
-            resolution.CourseDisposition is not null)
+            resolution.CourseDisposition is not null))
         {
             failedAxes.Add("course");
         }
 
-        if (!MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(
-                resolution, out var modeEvidenceFingerprint) ||
-            !string.Equals(
-                resolution.ResolutionAuthorityFingerprint,
-                MortalWoundTreatmentResolution.ComputeResolutionAuthorityFingerprint(
-                    resolution.RequestFingerprint,
-                    resolution.Mode,
-                    resolution.AttemptDisposition,
-                    resolution.ResultCategory,
-                    resolution.SelectedOutcomeIndex,
-                    resolution.Interruption,
-                    resolution.ConsumptionTrigger,
-                    resolution.CourseId,
-                    resolution.CourseMilestoneOrdinal,
-                    resolution.CourseDisposition,
-                    resolution.RouteFingerprint,
-                    resolution.RouteCompletion,
-                    resolution.CriticalReactionIntent?.IntentFingerprint,
-                    modeEvidenceFingerprint ?? string.Empty),
-                StringComparison.Ordinal) ||
-            !string.Equals(
-                resolution.ResultFingerprint,
-                MortalWoundTreatmentResolution.ComputeResultFingerprint(
-                    resolution.ResolutionAuthorityFingerprint,
-                    resolution.DeclaredResult),
-                StringComparison.Ordinal))
+        if (!DetachedSelectionAgrees(resolution, currentGameMinute) ||
+            !TryProjectActiveCourseId(request.RouteSourceWound, request, resolution, out _))
         {
             failedAxes.Add("resolution_seal");
         }
@@ -890,30 +882,17 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
             out _);
         if (!recomposed ||
             !OrderedIntentsAgree(resolution.OutcomeIntents, expectedIntents) ||
-            !HasSupportedGrammar(expectedIntents))
+            !HasSupportedGrammar(resolution.Mode, resolution.Interruption,
+                resolution.CourseDisposition, expectedIntents))
         {
             failedAxes.Add("outcome");
         }
         else
         {
             recomposedIntents = expectedIntents.ToArray();
-            var routeAlreadyCompleted = request.RouteSourceWound.Treatment
-                .CompletedRouteIds.Contains(
-                    request.Coordinates.RouteId, StringComparer.Ordinal);
-            var selectedSuccess = string.Equals(
-                resolution.ResultCategory, "success", StringComparison.Ordinal);
-            var expectedRouteCompletion = selectedSuccess && !routeAlreadyCompleted
-                ? "AppendOnce"
-                : "None";
-            if (resolution.SelectedOutcomeIndex is null ||
-                !string.Equals(resolution.RouteCompletion, expectedRouteCompletion,
-                    StringComparison.Ordinal))
-            {
-                failedAxes.Add("result_selection");
-            }
         }
 
-        if (request.Mode == "guaranteed" &&
+        if (request.Mode is "guaranteed" or "course" &&
             resolution.CriticalReactionIntent is not null)
         {
             failedAxes.Add("critical_reaction");
@@ -926,7 +905,7 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         {
             Issue(
                 "mortal_wound_treatment_publication_slice_unsupported",
-                "one accepted-terminal guaranteed/procedure ordered scalar treatment result",
+                "one accepted-terminal guaranteed/procedure/course ordered scalar treatment result",
                 string.Join(',', failedAxes))
         };
     }
@@ -959,14 +938,29 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
     }
 
     private static bool HasSupportedGrammar(
+        string mode, bool interruption, string? courseDisposition,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
     {
-        if (intents.Count == 1 &&
-            intents[0] is MortalWoundNoImprovementOutcomeIntent or
-                MortalWoundStabilizeOutcomeIntent)
+        if (mode == "course")
         {
-            return true;
+            if (interruption)
+                return courseDisposition == "interrupted" && intents.Count == 1 &&
+                    intents[0] is MortalWoundNoImprovementOutcomeIntent;
+            return courseDisposition switch
+            {
+                "active" => intents.Count == 0 || HasPositiveScalarGrammar(intents),
+                "completed" => HasPositiveScalarGrammar(intents),
+                _ => false
+            };
         }
+        return (intents.Count == 1 && intents[0] is MortalWoundNoImprovementOutcomeIntent) ||
+            HasPositiveScalarGrammar(intents);
+    }
+
+    private static bool HasPositiveScalarGrammar(IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
+    {
+        if (intents.Count == 1 && intents[0] is MortalWoundStabilizeOutcomeIntent)
+            return true;
         if (intents.Count is < 1 or > 3 ||
             intents.Any(static intent => intent is not (
                 MortalWoundStabilizeOutcomeIntent or
@@ -1034,6 +1028,8 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         long currentGameMinute,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> orderedIntents)
     {
+        if (!TryProjectActiveCourseId(before, request, resolution, out var activeCourseId))
+            throw new InvalidOperationException("The selected course does not own the active pointer.");
         var completedRoutes = resolution.RouteCompletion switch
         {
             "AppendOnce" => before.Treatment.CompletedRouteIds
@@ -1048,7 +1044,8 @@ internal static class MortalWoundTreatmentOutcomePublicationPlanner
         {
             Care = before.Care with
             {
-                LastAttemptId = request.Coordinates.AttemptId
+                LastAttemptId = request.Coordinates.AttemptId,
+                ActiveCourseId = activeCourseId
             },
             Treatment = before.Treatment with
             {

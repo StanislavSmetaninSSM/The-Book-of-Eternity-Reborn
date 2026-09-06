@@ -561,6 +561,60 @@ public sealed partial class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute()
+    {
+        const string marker = "mortal_wound_treatment_scalar_course_v1";
+        var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        static JsonObject ReadTreatment(string document)
+        {
+            var match = Regex.Match(document, Regex.Escape(marker) + @".*?```json\s*(?<json>.*?)```",
+                RegexOptions.Singleline | RegexOptions.CultureInvariant);
+            Assert.True(match.Success, "Missing complete scalar course JSON.");
+            return Assert.IsType<JsonObject>(JsonNode.Parse(match.Groups["json"].Value));
+        }
+        var treatment = ReadTreatment(guide);
+        Assert.True(JsonNode.DeepEquals(treatment, ReadTreatment(example)));
+        var wound = WoundContractTestData.CreateActiveWound();
+        // The authored fixture graph fits both II and I; never prune at runtime.
+        wound["consequences"]!["ownedEffectSources"]!["definitions"]!.AsArray().RemoveAt(1);
+        wound["consequences"]!["ownedEffectSources"]!["rootBindings"]!.AsArray().RemoveAt(1);
+        wound["consequences"]!["entries"]!.AsArray().RemoveAt(1);
+        wound["consequences"]!["slotsUsed"] = 1;
+        wound["treatment"] = treatment.DeepClone();
+        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), marker + ".wound");
+        Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue => $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        var before = Assert.IsType<WoundMaterializationEnvelope>(parsed.Wound);
+        var projection = MortalWoundTreatmentContract.ParseProjection(before.Treatment, marker,
+            before.Owner.Realm, "player", before.Severity.Rank, before.Complications, before.Recovery.DeteriorationPolicy);
+        Assert.True(projection.IsValid);
+        var route = Assert.IsType<MortalWoundCourseRouteDefinition>(Assert.Single(projection.Treatment!.Routes));
+        Assert.Equal("field_clinic_recovery_course", route.RouteId);
+        Assert.Equal(3, route.Milestones.Length);
+        Assert.Empty(route.Milestones[0].DeclaredResult);
+        Assert.IsType<MortalWoundReduceSeverityOperation>(Assert.Single(route.Milestones[1].DeclaredResult));
+        Assert.IsType<MortalWoundStabilizeOperation>(Assert.Single(route.Milestones[2].DeclaredResult));
+        Assert.True(MortalWoundTreatmentWorkingWoundSimulator.Simulate(before,
+            route.Milestones.Select(row => row.DeclaredResult)).IsApplicable);
+        foreach (var document in new[] { guide, example })
+            foreach (var invariant in new[]
+            {
+                "empty result is legal only for an active milestone", "only the current milestone's dose",
+                "start sets and continuations preserve", "completion or trusted interruption clears",
+                "route completion is not necessarily full wound healing", "stale history",
+                "other treatment does not cancel a course", "not a global medical catalog",
+                "different pending attempt for the same course milestone", "even without resource claims", "exact retry is inert",
+                "client-owned", "heal", "add_recovery", "remove_complication", "add_complication", "apply_deterioration"
+            }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
+        foreach (var field in new[] { "courseId", "activeCourseId", "sourceId", "woundId", "effectId",
+            "fingerprint", "authorityFingerprint", "attemptId", "operationKey", "resolvedAtGameTimeMinutes" })
+            Assert.DoesNotContain("\"" + field + "\"", treatment.ToJsonString(), StringComparison.Ordinal);
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        Assert.Contains(marker, manifest, StringComparison.Ordinal);
+        Assert.Contains(nameof(WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute), manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SpiritualWoundProfileDocumentation_MatchesExactRuntimeRegistry()
     {
         var expected = SpiritualWoundEffectProfileCatalog.RegisteredProfiles

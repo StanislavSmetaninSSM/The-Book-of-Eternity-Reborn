@@ -1063,7 +1063,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             initial.Request);
         AssertFocusedSkillScopedProcedureAuthority(initialRequest, skillId);
 
-        var flow = PersistAndRehydrateProcedurePublication(
+        var flow = PersistAndRehydrateTreatmentPublication(
             fixture,
             initial,
             "focused skill-scoped roll publication");
@@ -1074,7 +1074,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             CanonicalValue(publishedRequest));
         AssertFocusedSkillScopedProcedureAuthority(publishedRequest, skillId);
 
-        ComposeAndPublishCoordinatedProcedureTreatment(fixture, flow);
+        ComposeAndPublishCoordinatedTreatment(fixture, flow);
 
         Assert.Equal(1, fixture.ReadNpcItemCount("sterile_thread"));
         fixture.AssertItemIdentityIndexValid();

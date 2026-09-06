@@ -360,7 +360,13 @@ internal sealed partial class MortalWoundTreatmentResolution
         MortalWoundCourseRouteDefinition route)
     {
         if (!string.Equals(resolution.Mode, "course", StringComparison.Ordinal) ||
-            request.MilestoneOrdinal != authority.MilestoneOrdinal)
+            request.MilestoneOrdinal != authority.MilestoneOrdinal ||
+            resolution.CourseMilestoneOrdinal != authority.MilestoneOrdinal ||
+            !string.Equals(resolution.CourseId, authority.CourseId, StringComparison.Ordinal) ||
+            !string.Equals(resolution.RouteFingerprint, authority.CourseStartAuthority.RouteFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(resolution.RouteFingerprint, request.RequirementAuthority.RouteFingerprint,
+                StringComparison.Ordinal))
         {
             throw new InvalidOperationException("Course evidence requires one current milestone.");
         }
@@ -1355,20 +1361,9 @@ internal static partial class MortalWoundTreatmentPlanner
             selectedBand,
             selectedIndex,
             reactionResult.Intent);
-        var consumptionTrigger = procedureRoute.ResourcePolicy.ConsumeOn.Contains(
-            selectedBand.Category,
-            StringComparer.Ordinal)
-            ? selectedBand.Category
-            : "none";
-        var routeCompletion = string.Equals(
-                                  selectedBand.Category,
-                                  "success",
-                                  StringComparison.Ordinal) &&
-                              !before!.Treatment.CompletedRouteIds.Contains(
-                                  procedureRoute.RouteId,
-                                  StringComparer.Ordinal)
-            ? "AppendOnce"
-            : "None";
+        var consumptionTrigger = DeriveConsumptionTrigger(procedureRoute, selectedBand.Category, false);
+        var routeCompletion = DeriveRouteCompletion(before!, procedureRoute, selectedBand.Category,
+            false, null);
         return MortalWoundTreatmentResolutionResult.Resolved(
             MortalWoundTreatmentResolution.Create(
                 "procedure",
@@ -1427,20 +1422,9 @@ internal static partial class MortalWoundTreatmentPlanner
         }
 
         var evidence = MortalWoundGuaranteedModeEvidence.Create(proof, guaranteedRoute);
-        var consumptionTrigger = guaranteedRoute.ResourcePolicy.ConsumeOn.Contains(
-            guaranteedRoute.Outcome.Category,
-            StringComparer.Ordinal)
-            ? guaranteedRoute.Outcome.Category
-            : "none";
-        var routeCompletion = string.Equals(
-                                  guaranteedRoute.Outcome.Category,
-                                  "success",
-                                  StringComparison.Ordinal) &&
-                              !before!.Treatment.CompletedRouteIds.Contains(
-                                  guaranteedRoute.RouteId,
-                                  StringComparer.Ordinal)
-            ? "AppendOnce"
-            : "None";
+        var consumptionTrigger = DeriveConsumptionTrigger(guaranteedRoute, guaranteedRoute.Outcome.Category, false);
+        var routeCompletion = DeriveRouteCompletion(before!, guaranteedRoute, guaranteedRoute.Outcome.Category,
+            false, null);
         return MortalWoundTreatmentResolutionResult.Resolved(
             MortalWoundTreatmentResolution.Create(
                 "guaranteed",
@@ -1516,22 +1500,9 @@ internal static partial class MortalWoundTreatmentPlanner
         }
 
         var evidence = MortalWoundCourseModeEvidence.Create(course, courseDisposition);
-        var consumptionTrigger = !interrupted &&
-                                 courseRoute.ResourcePolicy.ConsumeOn.Contains(
-                                     resultCategory,
-                                     StringComparer.Ordinal)
-            ? resultCategory
-            : "none";
-        var routeCompletion = !interrupted &&
-                              string.Equals(
-                                  courseDisposition,
-                                  "completed",
-                                  StringComparison.Ordinal) &&
-                              !before!.Treatment.CompletedRouteIds.Contains(
-                                  courseRoute.RouteId,
-                                  StringComparer.Ordinal)
-            ? "AppendOnce"
-            : "None";
+        var consumptionTrigger = DeriveConsumptionTrigger(courseRoute, resultCategory, interrupted);
+        var routeCompletion = DeriveRouteCompletion(before!, courseRoute, resultCategory,
+            interrupted, courseDisposition);
         return MortalWoundTreatmentResolutionResult.Resolved(
             MortalWoundTreatmentResolution.Create(
                 "course",
@@ -1552,6 +1523,20 @@ internal static partial class MortalWoundTreatmentPlanner
                 request.RequirementAuthority.RouteFingerprint,
                 routeCompletion));
     }
+
+    internal static string DeriveConsumptionTrigger(
+        MortalWoundTreatmentRouteDefinition route, string category, bool interruption) =>
+        !interruption && route.ResourcePolicy.ConsumeOn.Contains(category, StringComparer.Ordinal)
+            ? category : "none";
+
+    internal static string DeriveRouteCompletion(
+        WoundMaterializationEnvelope before, MortalWoundTreatmentRouteDefinition route,
+        string category, bool interruption, string? courseDisposition) =>
+        (route.Mode == "course"
+            ? !interruption && courseDisposition == "completed"
+            : category == "success") &&
+        !before.Treatment.CompletedRouteIds.Contains(route.RouteId, StringComparer.Ordinal)
+            ? "AppendOnce" : "None";
 
     internal static int SelectProcedureBand(
         MortalWoundProcedureRouteDefinition route,
