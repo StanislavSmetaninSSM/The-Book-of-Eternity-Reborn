@@ -622,10 +622,19 @@ audited all28 actual artifact sets and the complete diff; final corrective owner
 pure42/42 and Integration46/46. The recorded Fast2655/2656 fail-fast control is incomplete,
 although its create diagnostic fixture is now covered by focused GREEN. The mandatory
 legacy RED is not hidden or reclassified as success.
-Next execute `docs/superpowers/plans/2026-09-06-t070-treatment-recovery-publication.md`:
-checked ordered recovery-point accumulation, with no implicit threshold tick, severity
-change or healing. Full non-scalar outcomes, heal-legacies and fresh diagnosis/alternative
-authority remain mandatory subsequent work; T070/T177/#1536 remain open.
+The recovery-publication checkpoint `48911240..189ba934` (2026-09-06) is independently
+Spec compliant / Quality approved and parent-accepted. Checked ordered recovery points
+now publish through the existing single pipeline, with no implicit threshold tick,
+severity change or healing. Parent audited the complete nine-file change and all19
+actual artifact sets. Final Focused pure24/24 and split Integration12/12 +62/62 prove
+the exact required74-row Integration union; final builds/cleanup are clean. The earlier
+ten-minute combined control is explicitly incomplete, not a passing run. One redundant
+test assertion is retained as Minor M1 for final whole-branch review.
+Next execute `docs/superpowers/plans/2026-09-06-t070-complication-removal-publication.md`:
+selective causal-lineage termination, exact retained-root authority even for a required
+zero-operation batch, and mixed reduction through the same publisher. Full remaining
+non-scalar outcomes, heal-legacies and fresh diagnosis/alternative authority remain
+mandatory subsequent work; T070/T177/#1536 remain open.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

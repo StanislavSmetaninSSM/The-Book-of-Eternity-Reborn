@@ -94,7 +94,7 @@ therefore the existing scalar-shell-then-aggregate-reduction architecture remain
 Preparation independently reconstructs the scalar shell in `AgreesWith`; extend that
 same path, not a caller-authored after-image or an extra publisher.
 
-- [ ] **Step 1: Add the owning real fixture and initial publication RED**
+- [x] **Step 1: Add the owning real fixture and initial publication RED**
 
 The existing `CreateOrderedReductionScenario`, `PrepareProcedurePublicationScenario`,
 `PersistAndRehydrateTreatmentPublication` and `ComposeAndPublishCoordinatedTreatment`
@@ -178,7 +178,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject In
 Expected RED is `mortal_wound_treatment_publication_slice_unsupported`, not an invalid
 fixture, history or authority setup. Fix only a demonstrated fixture prerequisite.
 
-- [ ] **Step 2: Retain and recompute the exact recovery payload**
+- [x] **Step 2: Retain and recompute the exact recovery payload**
 
 Add nullable `int? RecoveryPoints` to the existing private immutable `IntentSeal` after
 `ReductionSteps`; append this value in `From`, compare it in `AgreesWith`, and preserve
@@ -208,7 +208,7 @@ fields.Add((intent as MortalWoundAddRecoveryOutcomeIntent)?.Points
 The publication/cache/continuation seals already include preparation fingerprint.
 No stored-version migration, public field or alternate accepted effect batch is added.
 
-- [ ] **Step 3: Extend the complete positive grammar and scalar projection**
+- [x] **Step 3: Extend the complete positive grammar and scalar projection**
 
 Replace only the private positive scalar grammar, leaving the surrounding mode-specific
 empty/sole-no-improvement handling intact:
@@ -265,7 +265,7 @@ Do not reset anchors, threshold, carry policy, blockers or last tick for recover
 results. The existing preparation catch and detached agreement must reject overflow.
 Sealed upstream applicability still rejects before creating/consuming a live roll claim.
 
-- [ ] **Step 4: Complete the production-backed matrix and tamper/rollback controls**
+- [x] **Step 4: Complete the production-backed matrix and tamper/rollback controls**
 
 All new methods use `RecoveryPublication_`; derive every positive request through the
 real existing fixture. Preserve original tests. Cover the following exact cases:
@@ -282,6 +282,13 @@ real existing fixture. Preserve original tests. Cover the following exact cases:
 
 For recovery-only effect preservation, compare the current canonical effect carrier and
 identity projections, not the whole player file that intentionally gains wound progress.
+Use a coherent non-reactive consequence for strict unchanged-effect threshold fixtures.
+The shared characteristic-modifier helper defaults to magnitude2; the recovery fixture
+must explicitly use magnitude1 so its same retained graph remains legal at severityI.
+Its passive definition has an empty triggers array, not an unrelated trigger substitution.
+Do not strip last-transition chronology or whole identity-history arrays to hide a
+periodic fixture's ordinary turn-trigger evidence. If using such a periodic fixture,
+assert its unchanged prior history plus the exact protocol-justified trigger suffix.
 For member preservation, compare `CanonicalWoundRoot(before)["recovery"]` and after with
 only `currentStepProgress` changed. In mixed stabilization cases assert the existing
 stabilization anchor semantics separately rather than demanding an unchanged anchor.
@@ -303,7 +310,7 @@ using var publication = PublishCachedResourcePlanOpen(fixture, flow, plan);
 publication.CompleteAtFullPipelineEnd();
 ```
 
-- [ ] **Step 5: Update the existing complete GM example and exact guards**
+- [x] **Step 5: Update the existing complete GM example and exact guards**
 
 In BOTH the guide and CLI example, under `mortal_wound_treatment_reduce_severity_v1`,
 change only `clean_close_partial.result` from sole stabilization to:
@@ -331,7 +338,7 @@ Update scalar-course status prose/guard so pending list excludes only `add_recov
 still includes all four unresolved producers. Do not modify the repair example's deliberate
 invalid mode or any hidden authoring dialect to demonstrate publication.
 
-- [ ] **Step 6: Run final bounded owners, inspect evidence and commit**
+- [x] **Step 6: Run final bounded owners, inspect evidence and commit**
 
 Add the new Integration source filename to both exact Fast inventories; the reviewed-heavy
 source count becomes61 after the accepted course stage's60. Keep the Integration class
@@ -352,6 +359,14 @@ cold-root/resource lifecycle work. A known-expanded group need not first hit fiv
 just to rediscover that evidence; focused single-method implementation controls retain
 the default budget. No persistent lane setting changes.
 
+Measured execution correction: the combined Integration control182549 reached
+10:00.2227223 with exit124 and no completed TRX, after exposing the fixture's invalid
+rank-I modifier. Preserve that run as incomplete timed-out evidence. After the narrow
+ordered-owner correction, split the exact required union into two sequential selections:
+`RecoveryPublication_`, then the original filter with only that term removed. Each may
+use the existing explicit ten-minute budget. Do not rerun the passed24-row pure control
+unless its inputs change, and do not omit any required owner from the union.
+
 Report each RED/GREEN artifact, exact commands/counts/wall/exit/build/cleanup/skip/duplicate/
 timeout evidence, changed files and GM/afterlife rationale. Commit only the scoped changes.
 Parent inspects actual diffs/artifacts and obtains independent Spec and Quality approval
@@ -366,3 +381,25 @@ semantics or effect-side operation is needed for recovery-only. The new matrix c
 all admitted modes, authored ordering, real resources, detached mutation, restart/replay
 and post-write rollback. Legacy preparation's pending user choice does not affect this
 accumulator-only producer; complication removal remains its separate lineage-aware stage.
+
+## Parent acceptance — 2026-09-06
+
+Accepted `48911240..189ba934`: independent Spec compliant / Quality approved, no
+Critical or Important findings. Parent inspected the nine-file production/test/GM diff
+and all19 actual summary/TRX/build artifact sets, including fixture corrections and
+the incomplete ten-minute combined run. Final Focused pure24/24
+(`20260906-182431-529-13304-4991a3a8db944f98a523f697a0bb2e85-focused`) and the exact
+split Integration union12/12 +62/62
+(`20260906-183958-416-468-5a5dac3995d0462c9cda0c0f7783ccea-focused`,
+`20260906-184547-366-31900-04f419227f444160ab1b57e3648ab257-focused`) pass with clean
+builds and cleanup, no skipped/duplicate rows or timeout. This is not a full Fast result.
+The review's artifact caveat is resolved by that parent audit. Its unchanged Fate/
+critical caveat is resolved by source inspection of the independent detached selection,
+critical publication and continuation-fingerprint gates, plus the actual retained
+course/selection controls; no dedicated new full Fate suite is claimed.
+
+Minor M1 (redundant guaranteed-capability equality in the new Integration partial)
+is retained for final whole-branch triage in the progress ledger. Mortal guide, complete
+worked example, manifest and parser/simulator guards are synchronized; there is no new
+afterlife contract. T070/T069/T177/#1536 remain open. Next execute the separately
+specified selective-complication-removal publication stage in this same branch.

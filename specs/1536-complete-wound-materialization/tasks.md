@@ -1596,6 +1596,26 @@ entrypoints require no update for T065.
   and source/application guards are synchronized; no afterlife contract changed.
   Next bounded plan: `docs/superpowers/plans/2026-09-06-t070-treatment-recovery-publication.md`.
   T070/T177/#1536 remain open; no remote publication authorized.
+  Recovery-publication checkpoint (2026-09-06): `48911240..189ba934`, independently
+  Spec compliant / Quality approved and parent-accepted. Ordered checked recovery
+  accumulation now preserves threshold/severity/anchors/effect history unless another
+  explicitly selected operation changes them. Eight new owning methods/twelve rows
+  cover actual publication, categories/capability, course/restart, overflow, detached
+  payload mutations and post-write rollback. Parent inspected the complete nine-file
+  diff and all19 actual summary/TRX/build sets. Final Focused pure24/24
+  (`20260906-182431-529-13304-4991a3a8db944f98a523f697a0bb2e85-focused`),
+  recovery Integration12/12 in5:40.061
+  (`20260906-183958-416-468-5a5dac3995d0462c9cda0c0f7783ccea-focused`),
+  and retained Integration62/62 in5:43.252
+  (`20260906-184547-366-31900-04f419227f444160ab1b57e3648ab257-focused`) pass with
+  clean builds/cleanup and no skipped/duplicate rows or timeout. The split preserves
+  the original74-row union; the preceding ten-minute combined run remains incomplete.
+  No full Fast success is implied. Review Minor M1, a redundant capability assertion,
+  is retained for final whole-branch triage; no Critical/Important finding remains.
+  Mortal guide/example/manifest/guards are synchronized; no afterlife contract changed.
+  Next bounded plan: `docs/superpowers/plans/2026-09-06-t070-complication-removal-publication.md`.
+  Natural recovery, terminal heal/legacies, other outcomes, fresh diagnosis/alternative
+  adapters and T070/T177/#1536 closure remain required and open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
