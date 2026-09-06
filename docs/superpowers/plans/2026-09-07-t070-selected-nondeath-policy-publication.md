@@ -261,7 +261,7 @@ public void ComplicationGraphApplicability_PolicyFinalBudget(
     Assert.True(request.IsValid == expected, DescribeIssues(request.Issues));
     if (expected)
     {
-        Assert.Equal(new[] { 0 },
+        Assert.Equal(new[] { 0, 1 },
             Assert.IsType<MortalWoundProcedureCheckAuthority>(request.Request!.ModeAuthority).SourceIndices);
         AssertSingleHeldClaim(request.Request, "sterile_thread");
     }
@@ -274,7 +274,7 @@ public void ComplicationGraphApplicability_PolicyFinalBudget(
             fixture.ReadCurrentHistory(), fixture.ReadCurrentWound(), scenario.OperationKey + "_legal",
             legalId, fixture.AcceptedEventRef(state));
         Assert.True(fresh.IsValid, DescribeIssues(fresh.Issues));
-        Assert.Equal(new[] { 0 },
+        Assert.Equal(new[] { 0, 1 },
             Assert.IsType<MortalWoundProcedureCheckAuthority>(fresh.Request!.ModeAuthority).SourceIndices);
         AssertSingleHeldClaim(fresh.Request, "sterile_thread");
     }
@@ -892,6 +892,16 @@ final task acceptance/checkpoints. No remote push, PR, merge, issue closure or
 whole-feature completion is part of this bounded task.
 
 ## Parent self-review
+
+### Source-backed fixture correction during implementation
+
+The real inherited procedure fixture owns the accepted advantage packet [0,1],
+not the singleton [0] originally shown in Step2. Artifact `20260907-041522`
+exposed three fixture-only equality failures on legal rows alongside the three
+intended semantic invalid-budget admission failures. Parent inspected all seven
+actual TRX rows and the failing assertions. Step2 now preserves the exact [0,1]
+packet before/after invalid admission; no game roll or resource mechanic changes.
+The private bare-public-DTO negative already passes baseline and is preservation.
 
 The approved selected-treatment policy types remain intact. This plan implements
 the non-death producer without pretending scheduled recovery/death/healing exist.
