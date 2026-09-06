@@ -83,7 +83,7 @@ this course reduces severity II to I and stabilizes the wound, which remains act
 Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
-The remaining producers `heal`, `add_recovery`, `remove_complication`, `add_complication` and
+The remaining producers `heal`, `remove_complication`, `add_complication` and
 `apply_deterioration` are pending implementation; their approved authored contracts remain supported
 by the complete route model, but scalar publication does not pretend to execute them.
 
@@ -517,7 +517,10 @@ author permanent wound/effect identity or publication authority.
           "minimumMargin": 0,
           "maximumMargin": 4,
           "category": "partial_success",
-          "result": [{ "kind": "stabilize" }]
+          "result": [
+            { "kind": "stabilize" },
+            { "kind": "add_recovery", "points": 2 }
+          ]
         },
         {
           "bandId": "clean_close_failed",
@@ -546,6 +549,8 @@ group and rematerializes client-owned fresh effect IDs for every retained root.
 Only a newly successful category completes the route. `partial_success` and
 `failed_attempt` may publish their own declared scalar result, but they do not
 complete the route.
+
+The partial result stabilizes and adds two recovery points with checked signed-64-bit arithmetic. With progress 1 and threshold 2, the accepted result has progress 3 and the wound stays active at its unchanged severity. Reaching the threshold does not itself trigger a recovery tick, severity reduction or healing. The GM authors points, never canonical progress or recovery anchors; the client applies the selected ordered operations and exact resource policy atomically. Partial success does not complete the route.
 
 ## Validation, replay, and repair
 

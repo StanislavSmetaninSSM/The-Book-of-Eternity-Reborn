@@ -249,14 +249,16 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         string Kind,
         string DeclaredOperationFingerprint,
         string IntentFingerprint,
-        int? ReductionSteps)
+        int? ReductionSteps,
+        int? RecoveryPoints)
     {
         internal static IntentSeal From(MortalWoundTreatmentOutcomeIntent intent) => new(
             intent.OperationOrdinal,
             intent.Kind,
             intent.DeclaredOperationFingerprint,
             intent.IntentFingerprint,
-            (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps);
+            (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps,
+            (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points);
 
         internal bool AgreesWith(MortalWoundTreatmentOutcomeIntent intent) =>
             OperationOrdinal == intent.OperationOrdinal &&
@@ -266,7 +268,8 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
             string.Equals(IntentFingerprint, intent.IntentFingerprint,
                 StringComparison.Ordinal) &&
             ReductionSteps ==
-                (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps;
+                (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps &&
+            RecoveryPoints == (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points;
 
     }
 
@@ -370,6 +373,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                     case MortalWoundNoImprovementOutcomeIntent:
                         break;
                     case MortalWoundStabilizeOutcomeIntent:
+                        break;
+                    case MortalWoundAddRecoveryOutcomeIntent:
                         break;
                     case MortalWoundReduceSeverityOutcomeIntent reduction:
                         aggregateReductionSteps = checked(
@@ -747,7 +752,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         var fields = new List<string?>
         {
             PreparationDomain,
-            "2",
+            "3",
             WoundMaterializationContract.SerializeCanonical(before),
             WoundMaterializationContract.SerializeCanonical(provisionalAfter),
             resolution.RequestFingerprint,
@@ -779,6 +784,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             fields.Add(intent.DeclaredOperationFingerprint);
             fields.Add(intent.IntentFingerprint);
             fields.Add((intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps
+                .ToString(CultureInfo.InvariantCulture));
+            fields.Add((intent as MortalWoundAddRecoveryOutcomeIntent)?.Points
                 .ToString(CultureInfo.InvariantCulture));
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
@@ -929,7 +936,9 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 !string.Equals(left.IntentFingerprint, right.IntentFingerprint,
                     StringComparison.Ordinal) ||
                 (left as MortalWoundReduceSeverityOutcomeIntent)?.Steps !=
-                (right as MortalWoundReduceSeverityOutcomeIntent)?.Steps)
+                (right as MortalWoundReduceSeverityOutcomeIntent)?.Steps ||
+                (left as MortalWoundAddRecoveryOutcomeIntent)?.Points !=
+                (right as MortalWoundAddRecoveryOutcomeIntent)?.Points)
             {
                 return false;
             }
@@ -957,37 +966,32 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             HasPositiveScalarGrammar(intents);
     }
 
-    private static bool HasPositiveScalarGrammar(IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
+    private static bool HasPositiveScalarGrammar(
+        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
     {
-        if (intents.Count == 1 && intents[0] is MortalWoundStabilizeOutcomeIntent)
-            return true;
-        if (intents.Count is < 1 or > 3 ||
-            intents.Any(static intent => intent is not (
-                MortalWoundStabilizeOutcomeIntent or
-                MortalWoundReduceSeverityOutcomeIntent)))
-        {
+        if (intents.Count is < 1 or > MortalWoundTreatmentContract.MaxOutcomeOperations)
             return false;
-        }
-
-        var stabilizations = intents.Count(
-            static intent => intent is MortalWoundStabilizeOutcomeIntent);
-        var reductions = intents.OfType<MortalWoundReduceSeverityOutcomeIntent>()
-            .ToArray();
-        if (stabilizations > 1 || reductions.Length is < 1 or > 2 ||
-            reductions.Any(static reduction => reduction.Steps is < 1 or > 2))
+        var stabilizations = 0;
+        var reductionSteps = 0;
+        foreach (var intent in intents)
         {
-            return false;
+            switch (intent)
+            {
+                case MortalWoundStabilizeOutcomeIntent:
+                    if (++stabilizations > 1) return false;
+                    break;
+                case MortalWoundAddRecoveryOutcomeIntent recovery when recovery.Points > 0:
+                    break;
+                case MortalWoundReduceSeverityOutcomeIntent reduction
+                    when reduction.Steps is >= 1 and <= 2:
+                    reductionSteps = checked(reductionSteps + reduction.Steps);
+                    if (reductionSteps > 2) return false;
+                    break;
+                default:
+                    return false;
+            }
         }
-        try
-        {
-            var aggregate = reductions.Aggregate(
-                0, static (sum, reduction) => checked(sum + reduction.Steps));
-            return aggregate is >= 1 and <= 2;
-        }
-        catch (OverflowException)
-        {
-            return false;
-        }
+        return true;
     }
 
     private static WoundMaterializationEnvelope ApplyStabilization(
@@ -1063,6 +1067,17 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             {
                 scalarAfter = ApplyStabilization(
                     scalarAfter, transitionId, currentGameMinute);
+            }
+            else if (intent is MortalWoundAddRecoveryOutcomeIntent recovery)
+            {
+                scalarAfter = scalarAfter with
+                {
+                    Recovery = scalarAfter.Recovery with
+                    {
+                        CurrentStepProgress = checked(
+                            scalarAfter.Recovery.CurrentStepProgress + recovery.Points)
+                    }
+                };
             }
         }
         return scalarAfter;

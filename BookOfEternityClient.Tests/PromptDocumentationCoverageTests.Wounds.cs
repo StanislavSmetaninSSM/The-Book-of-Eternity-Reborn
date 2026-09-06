@@ -471,6 +471,8 @@ public sealed partial class PromptDocumentationCoverageTests
         wound["severity"]!["rank"] = 3;
         wound["severity"]!["maximumAtCreation"] = "III";
         wound["consequences"]!["slotBudget"] = 3;
+        wound["recovery"]!["currentStepProgress"] = 1;
+        wound["recovery"]!["currentStepThreshold"] = 2;
         wound["treatment"] = contractTreatment.DeepClone();
 
         var parsed = WoundMaterializationContract.Parse(
@@ -507,10 +509,26 @@ public sealed partial class PromptDocumentationCoverageTests
             operation => Assert.Equal(
                 1,
                 Assert.IsType<MortalWoundReduceSeverityOperation>(operation).Steps));
-        Assert.Contains(route.Bands, static band =>
+        var partial = Assert.Single(route.Bands, static band =>
             string.Equals(band.Category, "partial_success", StringComparison.Ordinal));
+        Assert.Collection(
+            partial.DeclaredResult,
+            operation => Assert.IsType<MortalWoundStabilizeOperation>(operation),
+            operation => Assert.Equal(
+                2,
+                Assert.IsType<MortalWoundAddRecoveryOperation>(operation).Points));
         Assert.Contains(route.Bands, static band =>
             string.Equals(band.Category, "failed_attempt", StringComparison.Ordinal));
+
+        var partialSimulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
+            parsedWound,
+            new[] { partial.DeclaredResult });
+        Assert.True(partialSimulation.IsApplicable);
+        var partialAfter = Assert.IsType<WoundMaterializationEnvelope>(
+            partialSimulation.WorkingWound);
+        Assert.Equal(3L, partialAfter.Recovery.CurrentStepProgress);
+        Assert.Equal(parsedWound.Severity, partialAfter.Severity);
+        Assert.Equal("active", partialAfter.Lifecycle);
 
         var destination = MortalWoundTreatmentSeverityReductionPlanner.Project(
             parsedWound,
@@ -532,6 +550,10 @@ public sealed partial class PromptDocumentationCoverageTests
                          "never prunes or weakens mechanics",
                          "client-owned fresh effect IDs",
                          "Only a newly successful category completes the route",
+                         "checked signed-64-bit arithmetic",
+                         "Reaching the threshold does not itself trigger a recovery tick",
+                         "The GM authors points, never canonical progress or recovery anchors",
+                         "Partial success does not complete the route",
                          "partial_success",
                          "failed_attempt"
                      })
@@ -614,6 +636,7 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.True(MortalWoundTreatmentWorkingWoundSimulator.Simulate(before,
             route.Milestones.Select(row => row.DeclaredResult)).IsApplicable);
         foreach (var document in new[] { guide, example })
+        {
             foreach (var invariant in new[]
             {
                 "empty result is legal only for an active milestone", "only the current milestone's dose",
@@ -621,8 +644,15 @@ public sealed partial class PromptDocumentationCoverageTests
                 "route completion is not necessarily full wound healing", "stale history",
                 "other treatment does not cancel a course", "not a global medical catalog",
                 "different pending attempt for the same course milestone", "even without resource claims", "exact retry is inert",
-                "client-owned", "heal", "add_recovery", "remove_complication", "add_complication", "apply_deterioration"
+                "client-owned", "heal", "remove_complication", "add_complication", "apply_deterioration"
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
+            var pending = Regex.Match(
+                document,
+                @"The remaining producers\s+`heal`,\s+`remove_complication`,\s+`add_complication`\s+and\s+`apply_deterioration`\s+are pending implementation",
+                RegexOptions.CultureInvariant);
+            Assert.True(pending.Success, "The exact four-producer pending list must remain synchronized.");
+            Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
+        }
         foreach (var field in new[] { "courseId", "activeCourseId", "sourceId", "woundId", "effectId",
             "fingerprint", "authorityFingerprint", "attemptId", "operationKey", "resolvedAtGameTimeMinutes" })
             Assert.DoesNotContain("\"" + field + "\"", treatment.ToJsonString(), StringComparison.Ordinal);
