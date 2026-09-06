@@ -818,6 +818,14 @@ public partial class ValidationService
             issues.AddRange(parsed.Issues);
             if (!parsed.Success)
                 return null;
+            if (parsed.AcceptedTransitionCommands.Count != 0)
+            {
+                issues.Add(WoundIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                    "wound_command_transition_adapter_unavailable",
+                    "one independently validated fresh diagnosis/alternative transition adapter",
+                    "the command is structurally valid but its fresh-world adapter is unavailable"));
+                return null;
+            }
             ValidateWoundCommandBinding(
                 root,
                 "sessionId",

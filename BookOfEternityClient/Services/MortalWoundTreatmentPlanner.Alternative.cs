@@ -116,10 +116,6 @@ internal sealed record WoundAlternativeTreatmentEvidence : WoundTransitionEviden
         var canonical = System.Text.Json.Nodes.JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound))!;
         var route = canonical["treatment"]!["routes"]!.AsArray().SingleOrDefault(value =>
             string.Equals(value!["routeId"]!.GetValue<string>(), routeId, StringComparison.Ordinal));
-        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.mortal_wound.alternative_treatment_route", "1",
-            route is null ? null : WoundAcceptedTurnFingerprintWriter.CanonicalJson(route)
-        });
+        return MortalWoundTreatmentMemberFingerprint.ComputeRoute(route);
     }
 }

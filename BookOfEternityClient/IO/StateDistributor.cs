@@ -251,6 +251,9 @@ public class StateDistributor
             throw new InvalidDataException(
                 "wound_accepted_command_invalid: the typed wound command failed independent strict parsing.");
         }
+        if (parsed.AcceptedTransitionCommands.Count != 0)
+            throw new InvalidDataException(
+                "wound_command_transition_adapter_unavailable: diagnosis/alternative commands require their fresh accepted-world adapter.");
 
         if (root["commands"] is not JsonArray commands)
         {

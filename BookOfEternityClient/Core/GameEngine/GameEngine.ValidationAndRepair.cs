@@ -989,6 +989,7 @@ public partial class GameEngine
         }
         if (!parsedCommand.Success ||
             parsedCommand.Commands.Count != 0 ||
+            parsedCommand.AcceptedTransitionCommands.Count != 0 ||
             parsedCommand.TreatmentCommands.Count == 0)
         {
             return null;
@@ -1773,7 +1774,8 @@ public partial class GameEngine
                 return (null, null);
             var parsed = WoundResponseInputComposer.ParseCommandRoot(
                 JsonSerializer.SerializeToElement(root, JsonOpts));
-            return parsed.Success ? (root, parsed) : (null, null);
+            return parsed.Success && parsed.AcceptedTransitionCommands.Count == 0
+                ? (root, parsed) : (null, null);
         }
         catch (Exception exception) when (
             exception is JsonException or InvalidDataException or

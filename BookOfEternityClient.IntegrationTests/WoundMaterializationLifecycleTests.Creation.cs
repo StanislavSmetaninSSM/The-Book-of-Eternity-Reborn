@@ -854,7 +854,8 @@ public sealed partial class WoundMaterializationLifecycleTests
 
     private static async Task<CreationAuthority> CreateSignedAuthorityAsync(
         ResourceMaterializationTestContext context,
-        int maximumSeverityRank)
+        int maximumSeverityRank,
+        WoundOwnerCoordinate? acceptedOwner = null)
     {
         var sourceSnapshotToken = await WoundMaterializationValidationTests
             .ReadSnapshotTokenAsync(context);
@@ -881,7 +882,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             new[] { new WoundSelectedEventEvidence(0, evidence) });
         Assert.True(sourceEvents.Success, Describe(sourceEvents.Issues));
 
-        var owner = new WoundOwnerCoordinate(
+        var owner = acceptedOwner ?? new WoundOwnerCoordinate(
             "mortal_world",
             "player",
             "player_current",

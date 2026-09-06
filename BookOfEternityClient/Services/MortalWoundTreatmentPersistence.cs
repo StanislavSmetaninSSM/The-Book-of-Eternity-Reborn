@@ -138,6 +138,12 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
             {
                 issues.AddRange(parsed.Issues);
             }
+            else if (parsed.AcceptedTransitionCommands.Count != 0)
+            {
+                issues.Add(PersistenceIssue("wound_command_transition_adapter_unavailable",
+                    "one supported homogeneous persisted wound-command family",
+                    "diagnosis/alternative capture requires its own accepted-world adapter"));
+            }
             else if (parsed.TreatmentCommands.Count != 0 &&
                      parsed.Commands.Count != 0)
             {
@@ -2705,6 +2711,9 @@ internal static partial class WoundRepairPacketBuilder
             throw new InvalidOperationException(
                 "A pending repair root requires one strictly parsed command root.");
         }
+        if (parsedCommand.AcceptedTransitionCommands.Count != 0)
+            throw new InvalidOperationException(
+                "wound_command_transition_adapter_unavailable: diagnosis/alternative commands require their fresh accepted-world adapter.");
         var recomposed = WoundResponseInputComposer.RecomposeCommandRoot(
             binding,
             parsedCommand,

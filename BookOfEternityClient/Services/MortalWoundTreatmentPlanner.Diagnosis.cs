@@ -120,10 +120,6 @@ internal sealed record WoundDiagnosisEvidence : WoundTransitionEvidence
         var canonical = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(before))!;
         var path = canonical["treatment"]!["diagnosisPaths"]!.AsArray().SingleOrDefault(value =>
             string.Equals(value!["diagnosisPathId"]!.GetValue<string>(), pathId, StringComparison.Ordinal));
-        return WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
-        {
-            "book_of_eternity.mortal_wound.diagnosis_path", "1",
-            path is null ? null : WoundAcceptedTurnFingerprintWriter.CanonicalJson(path)
-        });
+        return MortalWoundTreatmentMemberFingerprint.ComputeDiagnosisPath(path);
     }
 }

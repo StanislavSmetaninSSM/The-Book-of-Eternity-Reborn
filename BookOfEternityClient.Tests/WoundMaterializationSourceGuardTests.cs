@@ -9,6 +9,15 @@ namespace BookOfEternityClient.Tests;
 public sealed class WoundMaterializationSourceGuardTests
 {
     [Fact]
+    public void AcceptedTransitionCommands_ColdReplayAndRepairReaderFailClosed()
+    {
+        var source = File.ReadAllText(ToAbsolutePath(
+            "BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs"));
+        Assert.Contains("parsedCommand.AcceptedTransitionCommands.Count != 0", source, StringComparison.Ordinal);
+        Assert.Contains("parsed.Success && parsed.AcceptedTransitionCommands.Count == 0", source, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void ActiveWoundRollModifierFixturesUseExplicitClosedScope()
     {
         var helper = typeof(WoundConsequenceEnvelopeTests).GetMethod(
