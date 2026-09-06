@@ -1456,6 +1456,17 @@ entrypoints require no update for T065.
   pass with clean build/cleanup and no timeout/duplicates/skips. The alternative
   reducer plan's Tasks 1/2 are complete. Proceed to standalone member-shapes Task 1;
   afterlife schema/matrix/prompt routing are unchanged and do not need updates here.
+  Detached envelope/slot prerequisite checkpoint: `ea7a9429..6b8603f2`, independent
+  spec/quality Approved after fixing I1; zero open Critical/Important/Minor findings.
+  Shared shape/full traversal now propagates existing oversized-expansion input faults;
+  shape per-root budget also counts null-summary roots. Final exact owning control is
+  289/289 (`20260906-103509-932-29420-e2db7b533fda46fda368d34abb99c3d4-focused`),
+  clean build/cleanup, no timeout/duplicates/skips; parent inspected all run summaries,
+  final build/output, complete diff and reviews. Full complication callers require
+  non-null slot summaries and legacy graphs remain separate. Next is the narrow
+  `docs/superpowers/plans/2026-09-06-t070-diagnosis-result-cardinality.md` regression
+  alignment, then standalone member-shapes Task 2. No new GM/afterlife surface here;
+  command/response/repair/fresh-publication work and T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

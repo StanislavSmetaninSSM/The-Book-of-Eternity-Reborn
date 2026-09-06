@@ -556,6 +556,17 @@ inventing a wound or substituting a maximum severity. All registered nested comp
 and heal-legacy constructors remain supported. A shape-valid draft has no fresh world
 authority; full wound legality and current/signed-source authority are still mandatory.
 
+The shared detached traversal must retain bounded-constructor input faults rather than
+silently accepting the empty projection of an oversized expansion. Shape-only per-root
+budget accounting includes mechanically derived slots even when an optional reciprocal
+summary is absent. Existing full complication parsing already requires non-null slot
+summaries; mechanical legacies use their separate derived-source graph, not a newly
+imposed wound-consequence slot budget. The narrow diagnosis result-cardinality alignment
+in `docs/superpowers/plans/2026-09-06-t070-diagnosis-result-cardinality.md` also ensures
+that accepted diagnosis intents obey the existing closed history result contract before
+command work proceeds: empty success is rejected, empty failure and already-known-fact
+success remain representable and durable.
+
 The accepted-command wire projection has its own production-owned deterministic
 integrity seal, distinct from the factory's private full-request seal. It binds every
 represented authority coordinate, recomputed typed result and available accepted-turn

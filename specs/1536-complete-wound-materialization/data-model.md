@@ -2247,8 +2247,10 @@ Its result evidence is:
 }
 ```
 
-`result` is exactly `success` or `failure`. Success carries the complete ordered
-`reveals[]` of one reachable path. Failure carries an empty `revealedFacts[]`, changes
+`result` is exactly `success` or `failure`. Success carries the nonempty complete ordered
+`reveals[]` of one reachable path, including declared facts already known to the player;
+it need not add a new known fact. An empty path is not globally invalid, but cannot
+produce a success result with no facts. Failure carries an empty `revealedFacts[]`, changes
 no known fact, and is still a terminal retry-safe attempt. Version 1 supports only
 `failurePolicy=no_reveal`; readable failure output may state the need for better
 expertise but must not name an unrevealed route or complication.

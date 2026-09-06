@@ -33,6 +33,9 @@ Execute after the sealed alternative reducer checkpoint, before accepted-command
   and later canonical/signed-source publication checks remain mandatory.
 - Share one implementation of each closed schema and local graph rule. Do not leave
   complication/legacy payloads opaque or reject an existing registered operation wholesale.
+- Preserve existing full-context verdicts except the explicitly reproduced bounded-input
+  defect: detached expansion construction must propagate its existing `InputFaults` at
+  original author paths. An oversized expansion must not become a valid empty expansion.
 - `CanonicalStateNormalizer` remains the sole publisher. This internal extraction
   exposes no incomplete player command or GM-authored response capability.
 - Fast stays physically isolated, deterministic, and bounded to five minutes. No file,
@@ -77,7 +80,7 @@ The adapter remains **prevalidated**: its caller diagnoses missing/duplicate loc
 definitions and unresolved roots first. It must not claim complete source-definition
 validation. Shared detached component traversal still validates registered components.
 
-- [ ] **Step 1: Add and observe pure RED boundary/behavior tests**
+- [x] **Step 1: Add and observe pure RED boundary/behavior tests**
 
 Use raw complete component JSON, real detached constructors, and production APIs. A
 missing new API is an initial interface RED, not a passed behavior test. Record it, then
@@ -119,7 +122,7 @@ asserts a relevant diagnostic/path, not merely an exception or nonempty arbitrar
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundDetachedConsequenceShapeTests"
 ```
 
-- [ ] **Step 2: Factor one local traversal with explicit optional real context**
+- [x] **Step 2: Factor one local traversal with explicit optional real context**
 
 Keep the existing request-null/rank-invalid diagnostics on full-context entry points.
 The new API takes no rank and cannot fabricate one. A private common core may take
@@ -156,7 +159,7 @@ Keep actual reaction parameters through `WoundDetachedMortalReactionExpansionRef
 `EffectComponentParameterBinder.Bind`; do not replace them with defaults or count raw
 unbound children. Preserve the parent definition validator's separate parameter authority.
 
-- [ ] **Step 3: Share adapter graph preparation and reciprocal slot checks**
+- [x] **Step 3: Share adapter graph preparation and reciprocal slot checks**
 
 Extract existing `ValidateResolvedGraph` projection once. Choose the appropriate catalog
 entry point from presence of the real rank, then share all root/slot comparison logic:
@@ -175,7 +178,7 @@ the applicable absolute `MaxConsequences` structural ceiling and accurate direct
 versus unbound-child accounting. Unresolved roots remain diagnosed by the owning
 complete graph validator; do not silently promote this helper to full graph authority.
 
-- [ ] **Step 4: Verify, self-review and commit the bounded extraction**
+- [x] **Step 4: Verify, self-review and commit the bounded extraction**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundDetachedConsequenceShapeTests|FullyQualifiedName~WoundConsequenceEnvelopeTests|FullyQualifiedName~MortalWoundTreatmentCapabilityContractTests|FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests"
@@ -185,6 +188,34 @@ Record the selected filter and test count. All rows must pass with a clean build
 no timeout/duplicate ID and complete cleanup. Self-review the shared call paths and
 commit only owned code/tests: `refactor(wounds): separate detached shape from severity (#1536)`.
 Parent inspects evidence and performs independent spec/quality review before Task 2.
+
+#### Task 1 discovered boundary correction
+
+The controller approved propagation of existing projected reaction-expansion `InputFaults`
+inside the owned shared traversal. The constructor rejects more than 64 child components
+by retaining a fault and an empty projected array; silently discarding that fault had made
+both detached shape and full-detached validation accept invalid input. Targeted RED
+`20260906-102348-367-28988-808868b6c5aa409181948f3721233170-focused` reproduced exactly
+two failures (oversized shape/full cases) while both 64-component boundary controls passed
+(49 total, 47 passed). This is enforcement of the existing structural bound, not a new
+effect restriction or a blanket unsupported reaction family. Record final GREEN and review
+before marking this task complete.
+
+#### Task 1 verification and independent review
+
+Complete at `ea7a9429..6b8603f2` after independent spec/quality review and I1 correction;
+no open Critical/Important/Minor findings. The new shape API counts null-summary roots
+in its absolute budget, while optional comparison and existing full-context verdicts
+remain intact. Targeted I1 RED was 51/53; final exact four-class Focused control is
+289/289 (`20260906-103509-932-29420-e2db7b533fda46fda368d34abb99c3d4-focused`,
+00:00:57.9305116), clean build/cleanup, no timeout/duplicates/skips. Parent read the full
+production/test diff, all eleven runner summaries, final build/output, and both review
+verdicts. Current full complication callers require non-null slots; legacy null roots
+use their separate graph path. Source/periodic/fresh authority remains outside this API.
+
+Next execute the three-row alignment in
+`2026-09-06-t070-diagnosis-result-cardinality.md`, then Task 2 below. No new GM or
+afterlife capability was introduced by this internal extraction and bound enforcement.
 
 ### Task 2: Complete standalone route/path parsing and canonical members
 
@@ -300,7 +331,10 @@ actual policy; its exact identifier syntax does not.
 
 For nested complication/legacy drafts, always run current complete wrapper/definition/
 root/application parsing, common effect validation for `mortal_world`, local reference
-and parameter checks, graph reachability, source policies and Task 1 local slot adapter.
+and parameter checks, graph reachability and source policies. Use Task 1's local slot
+adapter at the existing wound-owned complication-envelope call site. Mechanical legacy
+graphs retain their current derived-source rules; do not introduce a wound consequence
+slot budget for them where the full validator has none.
 Only actual target membership, rank III/IV applicability and the real severity envelope
 need full context. Preserve the existing client-owned proposal marker normalization;
 do not invent another wound or reject existing add_complication/heal capabilities.
