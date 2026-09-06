@@ -1689,6 +1689,15 @@ entrypoints require no update for T065.
   binding/single-batch publication, including existing legal mixed partial_success,
   exact new-versus-retained skill authority, one-pass scalar state and atomic retry.
   No spiritual healing art or full legacy/policy publication completion is implied.
+  Addition Task2 source-confirmed addendum (2026-09-07):
+  `docs/superpowers/plans/2026-09-07-t070-selected-add-reducer-continuity.md`
+  defines the narrow Mortal/physical treatment mixed-root delta and the shared
+  existing original/final same-rank source continuity for pre-roll admission.
+  No per-operation semantic-key retirement ban: a later legal severity reduction
+  retains its existing authority. Tagged ownership must distinguish a complication
+  named `base_wound` from actual base roots. Real add/reduce and reduce/add rows
+  pass, but same-rank publication, final regression and independent acceptance
+  remain in progress. No additional top-level task is marked complete.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

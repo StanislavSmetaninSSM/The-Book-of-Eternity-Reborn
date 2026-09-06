@@ -724,6 +724,11 @@ fresh independent Spec+Quality review and actual evidence acceptance.
 
 ### Task 2: Selected direct-add binding and single-batch publication
 
+**Required source-confirmed supplement (2026-09-07):**
+`2026-09-07-t070-selected-add-reducer-continuity.md` adds the exact reducer,
+shared final same-rank continuity and named test allowlist. Read it completely
+before those edits; it is part of this Task 2, not a separate workstream.
+
 **Files and ownership:**
 
 - Extend the accepted graph/converter from Task1. Factor T067's current
