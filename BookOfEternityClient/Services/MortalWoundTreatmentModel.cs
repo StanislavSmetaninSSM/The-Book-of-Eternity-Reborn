@@ -655,36 +655,45 @@ internal static partial class MortalWoundTreatmentContract
         writer.WritePropertyName("diagnosisPaths");
         writer.WriteStartArray();
         foreach (var diagnosis in treatment.DiagnosisPaths)
-        {
-            writer.WriteStartObject();
-            writer.WriteString("diagnosisPathId", diagnosis.DiagnosisPathId);
-            writer.WriteString("displayName", diagnosis.DisplayName);
-            writer.WriteString("visibility", diagnosis.Visibility);
-            WriteFacts(writer, "requiresKnownFacts", diagnosis.RequiresKnownFacts);
-            WriteRequirements(writer, diagnosis.Requirements);
-            writer.WritePropertyName("check");
-            writer.WriteStartObject();
-            writer.WriteEndObject();
-            WriteFacts(writer, "reveals", diagnosis.Reveals);
-            writer.WriteString("failurePolicy", diagnosis.FailurePolicy);
-            writer.WriteEndObject();
-        }
+            WriteDiagnosisPathCanonical(writer, diagnosis);
         writer.WriteEndArray();
 
         writer.WritePropertyName("routes");
         writer.WriteStartArray();
         foreach (var route in treatment.Routes)
-            WriteRoute(writer, route);
+            WriteRouteCanonical(writer, route);
         writer.WriteEndArray();
         WriteStrings(writer, "knownRouteIds", treatment.KnownRouteIds);
         WriteStrings(writer, "completedRouteIds", treatment.CompletedRouteIds);
         writer.WriteEndObject();
     }
 
-    private static void WriteRoute(
+    internal static void WriteDiagnosisPathCanonical(
+        Utf8JsonWriter writer,
+        MortalWoundDiagnosisPathDefinition diagnosisPath)
+    {
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(diagnosisPath);
+        writer.WriteStartObject();
+        writer.WriteString("diagnosisPathId", diagnosisPath.DiagnosisPathId);
+        writer.WriteString("displayName", diagnosisPath.DisplayName);
+        writer.WriteString("visibility", diagnosisPath.Visibility);
+        WriteFacts(writer, "requiresKnownFacts", diagnosisPath.RequiresKnownFacts);
+        WriteRequirements(writer, diagnosisPath.Requirements);
+        writer.WritePropertyName("check");
+        writer.WriteStartObject();
+        writer.WriteEndObject();
+        WriteFacts(writer, "reveals", diagnosisPath.Reveals);
+        writer.WriteString("failurePolicy", diagnosisPath.FailurePolicy);
+        writer.WriteEndObject();
+    }
+
+    internal static void WriteRouteCanonical(
         Utf8JsonWriter writer,
         MortalWoundTreatmentRouteDefinition route)
     {
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(route);
         writer.WriteStartObject();
         writer.WriteString("routeId", route.RouteId);
         writer.WriteString("displayName", route.DisplayName);

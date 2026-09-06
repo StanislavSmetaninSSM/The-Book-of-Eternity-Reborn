@@ -73,10 +73,11 @@ internal static partial class MortalWoundTreatmentContract
 
         var context = new ValidationContext(
             realm,
-            ownerTargetKind,
-            severityRank,
-            currentComplications,
-            ReadDeteriorationPolicyRef(deteriorationPolicy));
+            new WoundValidationContext(
+                ownerTargetKind,
+                severityRank,
+                currentComplications,
+                ReadDeteriorationPolicyRef(deteriorationPolicy)));
 
         if (routes.Count == 0)
         {
@@ -107,46 +108,43 @@ internal static partial class MortalWoundTreatmentContract
                     route.RouteId);
             }
 
-            if (!MortalRouteVisibilities.Contains(route.Visibility))
-            {
-                AddIssue(
-                    issues,
-                    routePath + ".visibility",
-                    "wound_treatment_route_visibility_invalid",
-                    "public | known_to_player | hidden",
-                    route.Visibility);
-            }
+            ValidateRoute(route, routePath, context, issues);
+        }
+    }
 
-            ValidateRequirements(route.Requirements, routePath + ".requirements", issues);
-            ValidateResourcePolicy(route, routePath, issues);
+    private static void ValidateRoute(
+        WoundTreatmentRoute route,
+        string routePath,
+        ValidationContext context,
+        List<ValidationIssue> issues)
+    {
+        if (!MortalRouteVisibilities.Contains(route.Visibility))
+        {
+            AddIssue(
+                issues,
+                routePath + ".visibility",
+                "wound_treatment_route_visibility_invalid",
+                "public | known_to_player | hidden",
+                route.Visibility);
+        }
 
-            switch (route.Mode)
-            {
-                case "procedure":
-                    ValidateProcedure(
-                        route,
-                        routePath,
-                        context,
-                        issues);
-                    break;
-                case "course":
-                    ValidateCourse(
-                        route,
-                        routePath,
-                        context,
-                        issues);
-                    break;
-                case "guaranteed":
-                    ValidateGuaranteed(
-                        route,
-                        routePath,
-                        context,
-                        issues);
-                    break;
-                default:
-                    // The outer wound parser owns the closed mode diagnostic.
-                    break;
-            }
+        ValidateRequirements(route.Requirements, routePath + ".requirements", issues);
+        ValidateResourcePolicy(route, routePath, issues);
+
+        switch (route.Mode)
+        {
+            case "procedure":
+                ValidateProcedure(route, routePath, context, issues);
+                break;
+            case "course":
+                ValidateCourse(route, routePath, context, issues);
+                break;
+            case "guaranteed":
+                ValidateGuaranteed(route, routePath, context, issues);
+                break;
+            default:
+                // The shared outer reader owns the closed mode diagnostic.
+                break;
         }
     }
 
@@ -167,10 +165,11 @@ internal static partial class MortalWoundTreatmentContract
             path,
             new ValidationContext(
                 realm,
-                ownerTargetKind,
-                severityRank,
-                Array.Empty<WoundComplication>(),
-                CurrentPolicyRef: null),
+                new WoundValidationContext(
+                    ownerTargetKind,
+                    severityRank,
+                    Array.Empty<WoundComplication>(),
+                    CurrentPolicyRef: null)),
             new HashSet<string>(StringComparer.Ordinal),
             ComplicationValidationUse.DeteriorationPolicy,
             issues);
@@ -252,50 +251,8 @@ internal static partial class MortalWoundTreatmentContract
                     "exact and Unicode-confusable unique diagnosis path identifier",
                     diagnosis.DiagnosisPathId);
             }
-            ValidateRequirements(diagnosis.Requirements, path + ".requirements", issues);
-            if (diagnosis.Check.ValueKind != JsonValueKind.Object)
-            {
-                AddInvalid(
-                    issues,
-                    path + ".check",
-                    "exact empty version-1 check object",
-                    diagnosis.Check.ValueKind.ToString());
-            }
-            else
-            {
-                foreach (var property in diagnosis.Check.EnumerateObject())
-                {
-                    AddIssue(
-                        issues,
-                        path + ".check." + property.Name,
-                        "wound_materialization_unknown_field",
-                        "exact empty version-1 check object",
-                        property.Name);
-                }
-            }
-            if (diagnosis.Visibility == "hidden" && diagnosis.RequiresKnownFacts.Count == 0)
-            {
-                AddIssue(
-                    issues,
-                    path + ".requiresKnownFacts",
-                    "wound_treatment_diagnosis_path_unreachable",
-                    "at least one known-fact prerequisite for a hidden diagnosis path",
-                    "empty array");
-            }
-
-            var factsValid = true;
-            factsValid &= ValidateDiagnosisFacts(
-                diagnosis.RequiresKnownFacts,
-                path + ".requiresKnownFacts",
-                routeIds,
-                complicationIds,
-                issues);
-            factsValid &= ValidateDiagnosisFacts(
-                diagnosis.Reveals,
-                path + ".reveals",
-                routeIds,
-                complicationIds,
-                issues);
+            var factsValid = ValidateDiagnosisPath(
+                diagnosis, path, routeIds, complicationIds, issues);
             if (factsValid)
                 validPaths.Add(diagnosis);
         }
@@ -404,11 +361,46 @@ internal static partial class MortalWoundTreatmentContract
         return graph.Keys.Any(Visit);
     }
 
+    private static bool ValidateDiagnosisPath(
+        WoundDiagnosisPath diagnosis,
+        string path,
+        IReadOnlySet<string>? routeIds,
+        IReadOnlySet<string>? complicationIds,
+        List<ValidationIssue> issues)
+    {
+        ValidateRequirements(diagnosis.Requirements, path + ".requirements", issues);
+        if (diagnosis.Check.ValueKind != JsonValueKind.Object)
+        {
+            AddInvalid(issues, path + ".check", "exact empty version-1 check object",
+                diagnosis.Check.ValueKind.ToString());
+        }
+        else
+        {
+            foreach (var property in diagnosis.Check.EnumerateObject())
+            {
+                AddIssue(issues, path + ".check." + property.Name,
+                    "wound_materialization_unknown_field", "exact empty version-1 check object", property.Name);
+            }
+        }
+        if (diagnosis.Visibility == "hidden" && diagnosis.RequiresKnownFacts.Count == 0)
+        {
+            AddIssue(issues, path + ".requiresKnownFacts",
+                "wound_treatment_diagnosis_path_unreachable",
+                "at least one known-fact prerequisite for a hidden diagnosis path", "empty array");
+        }
+
+        var prerequisitesValid = ValidateDiagnosisFacts(
+            diagnosis.RequiresKnownFacts, path + ".requiresKnownFacts", routeIds, complicationIds, issues);
+        var revealsValid = ValidateDiagnosisFacts(
+            diagnosis.Reveals, path + ".reveals", routeIds, complicationIds, issues);
+        return prerequisitesValid && revealsValid;
+    }
+
     private static bool ValidateDiagnosisFacts(
         IReadOnlyList<string> facts,
         string path,
-        IReadOnlySet<string> routeIds,
-        IReadOnlySet<string> complicationIds,
+        IReadOnlySet<string>? routeIds,
+        IReadOnlySet<string>? complicationIds,
         List<ValidationIssue> issues)
     {
         var valid = true;
@@ -416,10 +408,11 @@ internal static partial class MortalWoundTreatmentContract
         {
             var fact = facts[index];
             var resolves = fact.StartsWith("route:", StringComparison.Ordinal)
-                ? routeIds.Contains(fact["route:".Length..]) && fact.Length > "route:".Length
+                ? ResourceMaterializationContract.IsExactIdentifier(fact["route:".Length..]) &&
+                  (routeIds is null || routeIds.Contains(fact["route:".Length..]))
                 : fact.StartsWith("complication:", StringComparison.Ordinal) &&
-                  complicationIds.Contains(fact["complication:".Length..]) &&
-                  fact.Length > "complication:".Length;
+                  ResourceMaterializationContract.IsExactIdentifier(fact["complication:".Length..]) &&
+                  (complicationIds is null || complicationIds.Contains(fact["complication:".Length..]));
             if (resolves)
                 continue;
             valid = false;
@@ -1286,8 +1279,9 @@ internal static partial class MortalWoundTreatmentContract
             case "apply_deterioration":
                 ValidateObject(operation, path, Set("kind", "policyRef"), issues);
                 var policyRef = ValidateIdentifier(operation, "policyRef", path, issues);
-                if (context.CurrentPolicyRef is null ||
-                    !string.Equals(policyRef, context.CurrentPolicyRef, StringComparison.Ordinal))
+                if (context.Wound is { } wound &&
+                    (wound.CurrentPolicyRef is null ||
+                     !string.Equals(policyRef, wound.CurrentPolicyRef, StringComparison.Ordinal)))
                 {
                     AddInvalid(
                         issues,
@@ -1302,7 +1296,7 @@ internal static partial class MortalWoundTreatmentContract
                     operation,
                     path,
                     context.Realm,
-                    context.OwnerTargetKind,
+                    context.Wound?.OwnerTargetKind,
                     issues);
                 break;
             default:
@@ -1394,8 +1388,8 @@ internal static partial class MortalWoundTreatmentContract
                 definitions,
                 draftPath + ".consequenceDefinitions",
                 context.Realm,
-                context.OwnerTargetKind,
-                context.SeverityRank,
+                context.Wound?.OwnerTargetKind,
+                context.Wound?.SeverityRank,
                 complicationRef,
                 issues);
         }
@@ -1405,7 +1399,7 @@ internal static partial class MortalWoundTreatmentContract
         JsonElement operation,
         string path,
         string realm,
-        string ownerTargetKind,
+        string? ownerTargetKind,
         List<ValidationIssue> issues)
     {
         if (!TryGetArray(operation, "legacies", out var legacies))
@@ -1478,8 +1472,8 @@ internal static partial class MortalWoundTreatmentContract
         JsonElement definitions,
         string path,
         string realm,
-        string ownerTargetKind,
-        int severityRank,
+        string? ownerTargetKind,
+        int? severityRank,
         string complicationRef,
         List<ValidationIssue> issues)
     {
@@ -1626,7 +1620,7 @@ internal static partial class MortalWoundTreatmentContract
         JsonElement legacy,
         string legacyPath,
         string realm,
-        string ownerTargetKind,
+        string? ownerTargetKind,
         List<ValidationIssue> issues)
     {
         if (!legacy.TryGetProperty("effectDraft", out var draft))
@@ -2291,6 +2285,9 @@ internal static partial class MortalWoundTreatmentContract
 
     private sealed record ValidationContext(
         string Realm,
+        WoundValidationContext? Wound);
+
+    private sealed record WoundValidationContext(
         string OwnerTargetKind,
         int SeverityRank,
         IReadOnlyList<WoundComplication> CurrentComplications,

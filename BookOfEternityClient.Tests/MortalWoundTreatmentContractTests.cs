@@ -1946,14 +1946,18 @@ public sealed class MortalWoundTreatmentContractTests
             issue.Code == "wound_response_unknown_field");
     }
 
-    [Fact]
-    public void ProposalComposition_RejectsClientOwnedRecoveryAnchorsBeforeCanonicalParsing()
+    [Theory]
+    [InlineData("recoveryAnchor")]
+    [InlineData("deteriorationAnchor")]
+    public void ProposalComposition_RejectsClientOwnedRecoveryAnchorsBeforeCanonicalParsing(
+        string anchorField)
     {
         var (binding, opportunity) = CreateTreatmentProposalOpportunity();
         var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
-        proposal["recovery"]!["recoveryAnchor"] = new JsonObject
+        proposal["recovery"]![anchorField] = new JsonObject
         {
-            ["anchorKind"] = "creation",
+            [anchorField == "recoveryAnchor" ? "anchorKind" : "conditionKey"] =
+                anchorField == "recoveryAnchor" ? "creation" : "not_stabilized",
             ["anchorMinute"] = 100,
             ["anchorTransitionId"] = "forged_anchor"
         };
@@ -1974,7 +1978,7 @@ public sealed class MortalWoundTreatmentContractTests
 
         Assert.False(composition.Success);
         Assert.Contains(composition.Issues, issue =>
-            issue.FilePath == "woundDecisions[0].proposal.recovery.recoveryAnchor" &&
+            issue.FilePath == "woundDecisions[0].proposal.recovery." + anchorField &&
             issue.Code == "wound_materialization_client_owned_field");
     }
 
@@ -1984,6 +1988,7 @@ public sealed class MortalWoundTreatmentContractTests
     public void ProposalComposition_StripsNullClientOwnedRecoveryAnchorPlaceholders(
         string anchorField)
     {
+        const string scene = "Острый край распорол бок в короткой схватке. Пустой служебный якорь очищен клиентом.";
         var (binding, opportunity) = CreateTreatmentProposalOpportunity();
         var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
         proposal["recovery"]![anchorField] = null;
@@ -1999,14 +2004,37 @@ public sealed class MortalWoundTreatmentContractTests
             binding,
             new[] { opportunity },
             new[] { JsonSerializer.SerializeToElement(decision) },
-            "Острый край распорол бок в короткой схватке. Пустой служебный якорь очищен клиентом.",
+            scene,
             Array.Empty<WoundOpportunityDecisionReceipt>());
 
         Assert.True(composition.Success, DescribeIssues(composition.Issues));
         var proposed = Assert.Single(composition.Transitions).ProposedAfter;
-        var canonical = JsonNode.Parse(
-            WoundMaterializationContract.SerializeCanonical(proposed))!.AsObject();
-        Assert.False(canonical["recovery"]!.AsObject().ContainsKey(anchorField));
+        Assert.Null(proposed.Recovery.RecoveryAnchor);
+        Assert.Null(proposed.Recovery.DeteriorationAnchor);
+        var canonicalJson = WoundMaterializationContract.SerializeCanonical(proposed);
+        var canonical = JsonNode.Parse(canonicalJson)!.AsObject();
+        var recovery = canonical["recovery"]!.AsObject();
+        Assert.True(recovery.TryGetPropertyValue("recoveryAnchor", out var recoveryAnchor));
+        Assert.Null(recoveryAnchor);
+        Assert.True(recovery.TryGetPropertyValue("deteriorationAnchor", out var deteriorationAnchor));
+        Assert.Null(deteriorationAnchor);
+
+        var absentDecision = decision.DeepClone().AsObject();
+        var absentRecovery = absentDecision["proposal"]!["recovery"]!.AsObject();
+        absentRecovery.Remove("recoveryAnchor");
+        absentRecovery.Remove("deteriorationAnchor");
+        var absentComposition = WoundResponseInputComposer.Compose(
+            binding,
+            new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(absentDecision) },
+            scene,
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.True(absentComposition.Success, DescribeIssues(absentComposition.Issues));
+        var absentProposed = Assert.Single(absentComposition.Transitions).ProposedAfter;
+        Assert.Null(absentProposed.Recovery.RecoveryAnchor);
+        Assert.Null(absentProposed.Recovery.DeteriorationAnchor);
+        Assert.Equal(canonicalJson, WoundMaterializationContract.SerializeCanonical(absentProposed));
     }
 
     [Fact]

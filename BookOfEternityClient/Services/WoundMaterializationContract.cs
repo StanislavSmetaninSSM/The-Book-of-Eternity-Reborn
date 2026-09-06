@@ -1913,37 +1913,43 @@ internal static class WoundMaterializationContract
             if (index >= MaxDiagnosisPaths)
                 break;
             var itemPath = $"{arrayPath}[{index}]";
-            if (item.ValueKind != JsonValueKind.Object)
+            var diagnosis = ReadDiagnosisPath(item, itemPath, issues);
+            if (diagnosis is not null)
             {
-                AddIssue(
-                    issues,
-                    itemPath,
-                    "wound_materialization_invalid_field",
-                    "diagnosis path object",
-                    item.ValueKind.ToString());
-                index++;
-                continue;
+                AddUniqueIdentifier(identifiers, diagnosis.DiagnosisPathId, itemPath + ".diagnosisPathId", issues);
+                parsed.Add(diagnosis);
             }
-
-            ValidateObjectShape(item, itemPath, DiagnosisPathFields, DiagnosisPathFields, issues);
-            var diagnosisPathId = ReadExactIdentifier(item, "diagnosisPathId", itemPath, issues);
-            AddUniqueIdentifier(identifiers, diagnosisPathId, itemPath + ".diagnosisPathId", issues);
-            parsed.Add(new WoundDiagnosisPath(
-                diagnosisPathId,
-                ReadText(item, "displayName", itemPath, issues),
-                ReadClosedString(item, "visibility", itemPath, Visibilities, issues),
-                ReadDiagnosisFactArray(item, "requiresKnownFacts", itemPath, issues),
-                ReadRequirementArray(item, itemPath, issues),
-                ReadOpaqueObject(item, "check", itemPath, issues),
-                ReadDiagnosisFactArray(item, "reveals", itemPath, issues),
-                ReadClosedString(item, "failurePolicy", itemPath, Set("no_reveal"), issues))
-            {
-                SourcePath = itemPath
-            });
             index++;
         }
 
         return parsed.ToImmutable();
+    }
+
+    internal static WoundDiagnosisPath? ReadDiagnosisPath(
+        JsonElement item,
+        string itemPath,
+        List<ValidationIssue> issues)
+    {
+        if (item.ValueKind != JsonValueKind.Object)
+        {
+            AddIssue(issues, itemPath, "wound_materialization_invalid_field",
+                "diagnosis path object", item.ValueKind.ToString());
+            return null;
+        }
+
+        ValidateObjectShape(item, itemPath, DiagnosisPathFields, DiagnosisPathFields, issues);
+        return new WoundDiagnosisPath(
+            ReadExactIdentifier(item, "diagnosisPathId", itemPath, issues),
+            ReadText(item, "displayName", itemPath, issues),
+            ReadClosedString(item, "visibility", itemPath, Visibilities, issues),
+            ReadDiagnosisFactArray(item, "requiresKnownFacts", itemPath, issues),
+            ReadRequirementArray(item, itemPath, issues),
+            ReadOpaqueObject(item, "check", itemPath, issues),
+            ReadDiagnosisFactArray(item, "reveals", itemPath, issues),
+            ReadClosedString(item, "failurePolicy", itemPath, Set("no_reveal"), issues))
+        {
+            SourcePath = itemPath
+        };
     }
 
     private static IReadOnlyList<WoundTreatmentRoute> ParseTreatmentRoutes(
@@ -1964,38 +1970,44 @@ internal static class WoundMaterializationContract
             if (index >= MaxTreatmentRoutes)
                 break;
             var itemPath = $"{arrayPath}[{index}]";
-            if (item.ValueKind != JsonValueKind.Object)
+            var route = ReadTreatmentRoute(item, itemPath, issues);
+            if (route is not null)
             {
-                AddIssue(
-                    issues,
-                    itemPath,
-                    "wound_materialization_invalid_field",
-                    "treatment route object",
-                    item.ValueKind.ToString());
-                index++;
-                continue;
+                AddUniqueIdentifier(identifiers, route.RouteId, itemPath + ".routeId", issues);
+                parsed.Add(route);
             }
-
-            ValidateObjectShape(item, itemPath, TreatmentRouteFields, TreatmentRouteFields, issues);
-            var routeId = ReadExactIdentifier(item, "routeId", itemPath, issues);
-            AddUniqueIdentifier(identifiers, routeId, itemPath + ".routeId", issues);
-            parsed.Add(new WoundTreatmentRoute(
-                routeId,
-                ReadText(item, "displayName", itemPath, issues),
-                ReadClosedString(item, "visibility", itemPath, Visibilities, issues),
-                ReadClosedString(item, "mode", itemPath, RouteModes, issues),
-                ReadRequirementArray(item, itemPath, issues),
-                ReadOpaqueObject(item, "resourcePolicy", itemPath, issues),
-                ReadOpaqueObject(item, "resolution", itemPath, issues),
-                ReadOpaqueObjectArray(item, "outcomes", itemPath, issues),
-                ReadNullableOpaqueObject(item, "interruption", itemPath, issues))
-            {
-                SourcePath = itemPath
-            });
             index++;
         }
 
         return parsed.ToImmutable();
+    }
+
+    internal static WoundTreatmentRoute? ReadTreatmentRoute(
+        JsonElement item,
+        string itemPath,
+        List<ValidationIssue> issues)
+    {
+        if (item.ValueKind != JsonValueKind.Object)
+        {
+            AddIssue(issues, itemPath, "wound_materialization_invalid_field",
+                "treatment route object", item.ValueKind.ToString());
+            return null;
+        }
+
+        ValidateObjectShape(item, itemPath, TreatmentRouteFields, TreatmentRouteFields, issues);
+        return new WoundTreatmentRoute(
+            ReadExactIdentifier(item, "routeId", itemPath, issues),
+            ReadText(item, "displayName", itemPath, issues),
+            ReadClosedString(item, "visibility", itemPath, Visibilities, issues),
+            ReadClosedString(item, "mode", itemPath, RouteModes, issues),
+            ReadRequirementArray(item, itemPath, issues),
+            ReadOpaqueObject(item, "resourcePolicy", itemPath, issues),
+            ReadOpaqueObject(item, "resolution", itemPath, issues),
+            ReadOpaqueObjectArray(item, "outcomes", itemPath, issues),
+            ReadNullableOpaqueObject(item, "interruption", itemPath, issues))
+        {
+            SourcePath = itemPath
+        };
     }
 
     private static WoundRecovery ParseRecovery(
@@ -2783,7 +2795,7 @@ internal static class WoundMaterializationContract
         }
     }
 
-    private static void FindDuplicateProperties(
+    internal static void FindDuplicateProperties(
         JsonElement value,
         string path,
         List<ValidationIssue> issues)

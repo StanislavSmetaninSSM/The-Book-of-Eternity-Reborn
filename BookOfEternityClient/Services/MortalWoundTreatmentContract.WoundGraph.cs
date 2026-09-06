@@ -51,8 +51,8 @@ internal static partial class MortalWoundTreatmentContract
         IReadOnlyList<DetachedEffectDefinitionCandidate> definitions,
         IReadOnlyList<DetachedEffectRootCandidate> roots,
         string collectionPath,
-        string ownerTargetKind,
-        int severityRank,
+        string? ownerTargetKind,
+        int? severityRank,
         List<ValidationIssue> issues)
     {
         if (definitions.Count == 0)
@@ -94,7 +94,7 @@ internal static partial class MortalWoundTreatmentContract
         IReadOnlyList<DetachedEffectDefinitionCandidate> definitions,
         IReadOnlyList<DetachedEffectRootCandidate> roots,
         string collectionPath,
-        string ownerTargetKind,
+        string? ownerTargetKind,
         List<ValidationIssue> issues)
     {
         if (definitions.Count == 0)
@@ -122,14 +122,15 @@ internal static partial class MortalWoundTreatmentContract
 
     private static void ValidateDerivedLegacyBindings(
         IReadOnlyList<DetachedGraphDefinition> definitions,
-        string ownerTargetKind,
+        string? ownerTargetKind,
         List<ValidationIssue> issues)
     {
         foreach (var definition in definitions)
         {
             var value = definition.Candidate.Definition;
             var path = definition.Candidate.DefinitionPath;
-            if (!GraphArrayContains(value, "allowedTargetKinds", ownerTargetKind))
+            if (ownerTargetKind is not null &&
+                !GraphArrayContains(value, "allowedTargetKinds", ownerTargetKind))
             {
                 AddInvalid(
                     issues,
@@ -262,8 +263,8 @@ internal static partial class MortalWoundTreatmentContract
         IReadOnlyList<DetachedGraphDefinition> definitions,
         IReadOnlyDictionary<string, DetachedGraphDefinition> definitionsByKey,
         IReadOnlySet<string> rootKeys,
-        string ownerTargetKind,
-        int severityRank,
+        string? ownerTargetKind,
+        int? severityRank,
         List<ValidationIssue> issues)
     {
         var markerCount = 0;
@@ -347,13 +348,13 @@ internal static partial class MortalWoundTreatmentContract
                         "exact integer 2 for a wound-owned reaction and leaf",
                         edge.MaximumExpansion?.ToString(CultureInfo.InvariantCulture) ?? "missing");
                 }
-                if (severityRank < 3)
+                if (severityRank is < 3)
                 {
                     AddInvalid(
                         issues,
                         edge.Path + ".definitionKey",
                         "wound-owned apply_definition only at severity III or IV",
-                        severityRank.ToString(CultureInfo.InvariantCulture));
+                        severityRank.Value.ToString(CultureInfo.InvariantCulture));
                 }
                 if (rootKeys.Contains(edge.TargetDefinitionKey) &&
                     definitionsByKey.TryGetValue(edge.TargetDefinitionKey, out var target))
@@ -389,7 +390,7 @@ internal static partial class MortalWoundTreatmentContract
         DetachedGraph graph,
         IReadOnlyList<DetachedEffectRootCandidate> roots,
         string collectionPath,
-        int severityRank,
+        int? severityRank,
         List<ValidationIssue> issues)
     {
         var definitions = graph.Definitions
@@ -409,12 +410,18 @@ internal static partial class MortalWoundTreatmentContract
                     string.Empty)).ToArray(),
                 root.Slots?.Select(static slot => slot.Path).ToArray()))
             .ToArray();
-        var validation = WoundPersistedConsequenceEnvelopeAdapter.ValidatePrevalidatedDetached(
-            severityRank,
-            collectionPath,
-            definitions,
-            persistedRoots,
-            requireExactGlobalSlotAgreement: false);
+        var validation = severityRank is { } actualSeverity
+            ? WoundPersistedConsequenceEnvelopeAdapter.ValidatePrevalidatedDetached(
+                actualSeverity,
+                collectionPath,
+                definitions,
+                persistedRoots,
+                requireExactGlobalSlotAgreement: false)
+            : WoundPersistedConsequenceEnvelopeAdapter.ValidatePrevalidatedDetachedShape(
+                collectionPath,
+                definitions,
+                persistedRoots,
+                requireExactGlobalSlotAgreement: false);
         foreach (var issue in validation.Issues)
         {
             AddInvalid(
@@ -427,7 +434,7 @@ internal static partial class MortalWoundTreatmentContract
 
     private static void ValidateWoundOwnedDefinitionPolicy(
         DetachedGraphDefinition definition,
-        string ownerTargetKind,
+        string? ownerTargetKind,
         HashSet<string> exactStackKeys,
         HashSet<string> confusableStackKeys,
         List<ValidationIssue> issues)
@@ -490,7 +497,8 @@ internal static partial class MortalWoundTreatmentContract
                 issues);
         }
 
-        if (!GraphArrayContains(element, "allowedTargetKinds", ownerTargetKind))
+        if (ownerTargetKind is not null &&
+            !GraphArrayContains(element, "allowedTargetKinds", ownerTargetKind))
         {
             AddInvalid(
                 issues,
