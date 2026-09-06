@@ -1262,8 +1262,11 @@ internal static partial class MortalWoundTreatmentContract
                 ReadInt32(operation, "steps", path, 1, 2, issues);
                 break;
             case "remove_complication":
-                ValidateObject(operation, path, Set("kind", "complicationId"), issues);
-                ValidateIdentifier(operation, "complicationId", path, issues);
+                var selectorField = context.RemovalDialect == RemovalSelectorDialect.GmComplicationRef
+                    ? "complicationRef"
+                    : "complicationId";
+                ValidateObject(operation, path, Set("kind", selectorField), issues);
+                ValidateIdentifier(operation, selectorField, path, issues);
                 break;
             case "add_complication":
                 ValidateAddComplication(
@@ -2285,7 +2288,14 @@ internal static partial class MortalWoundTreatmentContract
 
     private sealed record ValidationContext(
         string Realm,
-        WoundValidationContext? Wound);
+        WoundValidationContext? Wound,
+        RemovalSelectorDialect RemovalDialect = RemovalSelectorDialect.CanonicalId);
+
+    private enum RemovalSelectorDialect
+    {
+        CanonicalId,
+        GmComplicationRef
+    }
 
     private sealed record WoundValidationContext(
         string OwnerTargetKind,

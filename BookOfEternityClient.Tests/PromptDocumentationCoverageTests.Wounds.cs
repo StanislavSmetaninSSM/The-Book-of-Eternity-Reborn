@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
+using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -9,6 +10,60 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class PromptDocumentationCoverageTests
 {
+    [Fact]
+    public void WoundAlternativeTreatmentResponseDocumentation_ClosesTheGmWireAndRawIngress()
+    {
+        var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
+        var rules = ReadRepoFile("Rules", "Block_2.txt");
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+
+        foreach (var document in new[] { guide, example })
+        {
+            foreach (var required in new[]
+                     {
+                         "wound_mortal_alternative_response_v1",
+                         "wound_mortal_alternative_response_visible_author_v1",
+                         "wound_mortal_alternative_response_hidden_author_v1",
+                         "wound_mortal_alternative_response_decline_v1",
+                         "authoringRequestRef", "decision", "route", "diagnosisPath",
+                         "complicationRef", "complicationId", "explicit null",
+                         "local parsing", "live distribution"
+                     })
+            {
+                Assert.Contains(required, document, StringComparison.OrdinalIgnoreCase);
+            }
+
+            Assert.DoesNotContain("authorityFingerprint", ExtractWoundDocumentationSection(
+                document, "wound_mortal_alternative_response_visible_author_v1"),
+                StringComparison.Ordinal);
+            Assert.DoesNotContain("transitionId", ExtractWoundDocumentationSection(
+                document, "wound_mortal_alternative_response_visible_author_v1"),
+                StringComparison.Ordinal);
+        }
+
+        foreach (var required in new[]
+                 {
+                     "woundTreatmentAuthorings", "authoringRequestRef",
+                     "explicit null", "live distribution"
+                 })
+        {
+            Assert.Contains(required, rules, StringComparison.OrdinalIgnoreCase);
+        }
+        Assert.Contains("wound_mortal_alternative_response_v1", manifest, StringComparison.Ordinal);
+
+        var responseSource = ReadRepoFile("BookOfEternityClient", "Models", "GameResponse.cs");
+        Assert.Contains("[JsonPropertyName(\"woundTreatmentAuthorings\")]", responseSource,
+            StringComparison.Ordinal);
+        var mappingSource = ReadRepoFile("BookOfEternityClient", "Configuration", "FileMapping.cs");
+        Assert.Contains("\"woundTreatmentAuthorings\"", mappingSource, StringComparison.Ordinal);
+        Assert.Contains("woundTreatmentAuthorings", FileMapping.ClientConsumedResponseFields);
+        Assert.False(FileMapping.FieldToFile.ContainsKey("woundTreatmentAuthorings"));
+        var distributorSource = ReadRepoFile("BookOfEternityClient", "IO", "StateDistributor.cs");
+        Assert.Contains("wound_authorings_require_accepted_adapter", distributorSource,
+            StringComparison.Ordinal);
+    }
+
     [Fact]
     public void WoundRollScopeDocumentation_ExplainsExactChoiceAndIndependentWoundLifecycle()
     {

@@ -694,13 +694,14 @@ internal static partial class MortalWoundTreatmentContract
     {
         ArgumentNullException.ThrowIfNull(writer);
         ArgumentNullException.ThrowIfNull(route);
-        writer.WriteStartObject();
-        writer.WriteString("routeId", route.RouteId);
-        writer.WriteString("displayName", route.DisplayName);
-        writer.WriteString("visibility", route.Visibility);
-        writer.WriteString("mode", route.Mode);
-        WriteRequirements(writer, route.Requirements);
-        WriteResourcePolicy(writer, route.ResourcePolicy);
+        WriteRouteHeader(
+            writer,
+            route.RouteId,
+            route.DisplayName,
+            route.Visibility,
+            route.Mode,
+            route.Requirements,
+            route.ResourcePolicy);
         switch (route)
         {
             case MortalWoundProcedureRouteDefinition procedure:
@@ -816,31 +817,19 @@ internal static partial class MortalWoundTreatmentContract
         Utf8JsonWriter writer,
         MortalWoundProcedureRouteDefinition route)
     {
-        writer.WritePropertyName("resolution");
-        writer.WriteStartObject();
-        writer.WriteString("formulaKey", route.Resolution.FormulaKey);
-        writer.WriteNumber("difficulty", route.Resolution.Difficulty);
-        writer.WriteString("rollSource", route.Resolution.RollSource);
-        writer.WriteString("criticalPolicy", route.Resolution.CriticalPolicy);
-        writer.WritePropertyName("modifierSource");
-        writer.WriteStartObject();
-        writer.WriteString("kind", route.Resolution.ModifierSource.Kind);
-        if (route.Resolution.ModifierSource is MortalWoundResolvedSkillTierModifierSource skill)
-            writer.WriteNumber("requirementIndex", skill.RequirementIndex);
-        writer.WriteEndObject();
-        writer.WriteEndObject();
+        WriteProcedureResolutionPayload(writer, route.Resolution);
 
         writer.WritePropertyName("outcomes");
         writer.WriteStartArray();
         foreach (var band in route.Bands)
         {
-            writer.WriteStartObject();
-            writer.WriteString("bandId", band.BandId);
-            WriteNullableInt64(writer, "minimumMargin", band.MinimumMargin);
-            WriteNullableInt64(writer, "maximumMargin", band.MaximumMargin);
-            writer.WriteString("category", band.Category);
-            WriteOperations(writer, band.DeclaredResult);
-            writer.WriteEndObject();
+            WriteProcedureBandPayload(
+                writer,
+                band.BandId,
+                band.MinimumMargin,
+                band.MaximumMargin,
+                band.Category,
+                output => WriteOperations(output, band.DeclaredResult));
         }
         writer.WriteEndArray();
         writer.WriteNull("interruption");
@@ -850,48 +839,40 @@ internal static partial class MortalWoundTreatmentContract
         Utf8JsonWriter writer,
         MortalWoundCourseRouteDefinition route)
     {
-        writer.WritePropertyName("resolution");
-        writer.WriteStartObject();
-        writer.WriteString("clockKind", route.Resolution.ClockKind);
-        writer.WriteNumber("maximumGapMinutes", route.Resolution.MaximumGapMinutes);
-        writer.WriteEndObject();
+        WriteCourseResolutionPayload(writer, route.Resolution);
 
         writer.WritePropertyName("outcomes");
         writer.WriteStartArray();
         foreach (var milestone in route.Milestones)
         {
-            writer.WriteStartObject();
-            writer.WriteNumber("ordinal", milestone.Ordinal);
-            writer.WriteNumber("afterMinutes", milestone.AfterMinutes);
-            WriteRequirements(writer, milestone.Requirements);
-            writer.WriteString("category", milestone.Category);
-            writer.WriteString("completion", milestone.Completion);
-            WriteOperations(writer, milestone.DeclaredResult);
-            writer.WriteEndObject();
+            WriteCourseMilestonePayload(
+                writer,
+                milestone.Ordinal,
+                milestone.AfterMinutes,
+                milestone.Requirements,
+                milestone.Category,
+                milestone.Completion,
+                output => WriteOperations(output, milestone.DeclaredResult));
         }
         writer.WriteEndArray();
         writer.WritePropertyName("interruption");
-        writer.WriteStartObject();
-        writer.WriteString("category", route.Interruption.Category);
-        WriteOperations(writer, route.Interruption.DeclaredResult);
-        writer.WriteEndObject();
+        WriteCategoryResultPayload(
+            writer,
+            route.Interruption.Category,
+            output => WriteOperations(output, route.Interruption.DeclaredResult));
     }
 
     private static void WriteGuaranteed(
         Utf8JsonWriter writer,
         MortalWoundGuaranteedRouteDefinition route)
     {
-        writer.WritePropertyName("resolution");
-        writer.WriteStartObject();
-        writer.WriteString("capabilityRef", route.Resolution.CapabilityRef);
-        writer.WriteString("actorRole", route.Resolution.ActorRole);
-        writer.WriteEndObject();
+        WriteGuaranteedResolutionPayload(writer, route.Resolution);
         writer.WritePropertyName("outcomes");
         writer.WriteStartArray();
-        writer.WriteStartObject();
-        writer.WriteString("category", route.Outcome.Category);
-        WriteOperations(writer, route.Outcome.DeclaredResult);
-        writer.WriteEndObject();
+        WriteCategoryResultPayload(
+            writer,
+            route.Outcome.Category,
+            output => WriteOperations(output, route.Outcome.DeclaredResult));
         writer.WriteEndArray();
         writer.WriteNull("interruption");
     }
@@ -900,41 +881,42 @@ internal static partial class MortalWoundTreatmentContract
         Utf8JsonWriter writer,
         ImmutableArray<MortalWoundTreatmentOperation> operations)
     {
-        writer.WritePropertyName("result");
-        writer.WriteStartArray();
-        foreach (var operation in operations)
+        WriteResultArray(writer, operations, WriteCanonicalOperation);
+    }
+
+    private static void WriteCanonicalOperation(
+        Utf8JsonWriter writer,
+        MortalWoundTreatmentOperation operation)
+    {
+        writer.WriteStartObject();
+        writer.WriteString("kind", operation.Kind);
+        switch (operation)
         {
-            writer.WriteStartObject();
-            writer.WriteString("kind", operation.Kind);
-            switch (operation)
-            {
-                case MortalWoundNoImprovementOperation:
-                case MortalWoundStabilizeOperation:
-                    break;
-                case MortalWoundAddRecoveryOperation recovery:
-                    writer.WriteNumber("points", recovery.Points);
-                    break;
-                case MortalWoundReduceSeverityOperation severity:
-                    writer.WriteNumber("steps", severity.Steps);
-                    break;
-                case MortalWoundRemoveComplicationOperation remove:
-                    writer.WriteString("complicationId", remove.ComplicationId);
-                    break;
-                case MortalWoundAddComplicationOperation add:
-                    WriteComplicationDraft(writer, add.ComplicationDraft);
-                    break;
-                case MortalWoundApplyDeteriorationOperation deterioration:
-                    writer.WriteString("policyRef", deterioration.PolicyRef);
-                    break;
-                case MortalWoundHealOperation heal:
-                    WriteLegacies(writer, heal.Legacies);
-                    break;
-                default:
-                    throw new InvalidOperationException("Unknown typed treatment operation.");
-            }
-            writer.WriteEndObject();
+            case MortalWoundNoImprovementOperation:
+            case MortalWoundStabilizeOperation:
+                break;
+            case MortalWoundAddRecoveryOperation recovery:
+                writer.WriteNumber("points", recovery.Points);
+                break;
+            case MortalWoundReduceSeverityOperation severity:
+                writer.WriteNumber("steps", severity.Steps);
+                break;
+            case MortalWoundRemoveComplicationOperation remove:
+                writer.WriteString("complicationId", remove.ComplicationId);
+                break;
+            case MortalWoundAddComplicationOperation add:
+                WriteComplicationDraft(writer, add.ComplicationDraft);
+                break;
+            case MortalWoundApplyDeteriorationOperation deterioration:
+                writer.WriteString("policyRef", deterioration.PolicyRef);
+                break;
+            case MortalWoundHealOperation heal:
+                WriteLegacies(writer, heal.Legacies);
+                break;
+            default:
+                throw new InvalidOperationException("Unknown typed treatment operation.");
         }
-        writer.WriteEndArray();
+        writer.WriteEndObject();
     }
 
     private static void WriteComplicationDraft(

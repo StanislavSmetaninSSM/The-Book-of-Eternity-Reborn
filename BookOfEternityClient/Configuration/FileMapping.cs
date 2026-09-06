@@ -236,6 +236,7 @@ public static class FileMapping
     public static readonly HashSet<string> ClientConsumedResponseFields = new(
         StringComparer.OrdinalIgnoreCase)
     {
-        "woundDecisions"
+        "woundDecisions",
+        "woundTreatmentAuthorings"
     };
 }

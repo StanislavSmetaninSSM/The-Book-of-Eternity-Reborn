@@ -112,8 +112,10 @@ internal static partial class WoundResponseInputComposer
             if (route is not null)
             {
                 MatchAcceptedField(route.RouteId, routeId, authorityPath + ".addedRouteId", issues);
-                if (route.Visibility == "hidden" ? diagnosisPath is null || diagnosisPath.Visibility == "gm_only" ||
-                    !diagnosisPath.Reveals.Any(fact => fact.CanonicalValue == "route:" + route.RouteId) : diagnosisPath is not null)
+                if (!HasAlternativeTreatmentMemberPair(
+                        route.RouteId,
+                        route.Visibility,
+                        diagnosisPath))
                     InvalidAcceptedField(issues, resultPath + ".diagnosisPath", "one non-GM-only revealing path only for a hidden route", Raw(result, "diagnosisPath"));
             }
             MatchAcceptedField(diagnosisPath?.DiagnosisPathId, pathId, authorityPath + ".addedDiagnosisPathId", issues);

@@ -25,28 +25,13 @@ internal static partial class MortalWoundTreatmentContract
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(path);
         var issues = new List<ValidationIssue>();
-        try
-        {
-            WoundMaterializationContract.FindDuplicateProperties(value, path, issues);
-            if (issues.Count == 0)
-            {
-                var route = WoundMaterializationContract.ReadTreatmentRoute(value, path, issues);
-                if (route is not null)
-                {
-                    ValidateRoute(route, path, new ValidationContext("mortal_world", Wound: null), issues);
-                    if (issues.Count == 0)
-                        return new(true, ImmutableArray<ValidationIssue>.Empty, BuildRoute(route));
-                }
-            }
-        }
-        catch (Exception exception) when (exception is JsonException or
-                                          InvalidOperationException or
-                                          FormatException or
-                                          OverflowException)
-        {
-            AddInvalid(issues, path, "one complete typed Mortal wound treatment route", exception.GetType().Name);
-        }
-        return new(false, issues.ToImmutableArray(), null);
+        var route = ReadValidatedRouteShape(
+            value,
+            path,
+            issues,
+            RemovalSelectorDialect.CanonicalId,
+            BuildRoute);
+        return new(route is not null && issues.Count == 0, issues.ToImmutableArray(), route);
     }
 
     /// <summary>

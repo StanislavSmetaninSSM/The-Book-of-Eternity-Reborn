@@ -567,3 +567,158 @@ operation key.
   `wound_repair_retry_v1`.
 - The common effect source, lifetime, reaction, and repair rules remain normative in
   `OtherGuides/Effect_Materialization_Contract.md`.
+
+
+## wound_mortal_alternative_response_v1
+
+This checkpoint defines the strict local parser for a setting-authored alternative to an
+existing Mortal wound's treatment graph. It does not enable live distribution yet.
+Populate `woundTreatmentAuthorings[]` only when a future owning workflow has exposed
+an offered client-bound request; do not invent a request or send this field during
+ordinary play while live distribution is unavailable.
+
+Every entry is one closed four-field object: `authoringRequestRef`, `decision`,
+`route`, and `diagnosisPath`. All four fields are required. An `author` response
+contains one complete setting-specific route. A `public` or `known_to_player` route
+has an explicit-null `diagnosisPath`; a `hidden` route has one complete non-GM-only
+path that reveals that route's exact `routeId`. A `decline` response uses explicit
+null for both `route` and `diagnosisPath`.
+
+The opaque `authoringRequestRef` must be copied exactly from the offered request.
+Never add GM authority fingerprints, result fingerprints, client transition IDs,
+permanent wound/effect IDs, owner coordinates, or publication claims. Inside a GM
+draft, `remove_complication` selects an offered opaque `complicationRef`.
+`complicationId` is reserved for the later client-bound canonical route and is
+rejected here. Diagnosis facts retain the existing `route:<routeId>` and
+`complication:<complicationId>` grammar; this local parsing checkpoint neither
+invents a new fact selector nor discloses hidden canonical complication identities.
+Each route below is a setting-specific example, never a universal treatment catalog.
+
+### wound_mortal_alternative_response_visible_author_v1
+
+A visible alternative may directly remove the complication represented by the opaque
+selector offered with the client-bound request. Its path is explicitly null.
+
+```json
+{
+  "response": "Знахарка предлагает извлечь осколок пепельного стекла.",
+  "woundTreatmentAuthorings": [
+    {
+      "authoringRequestRef": "alternative_offer_ashglass_17",
+      "decision": "author",
+      "route": {
+        "routeId": "extract_ashglass_shard",
+        "displayName": "Извлечь осколок пепельного стекла",
+        "visibility": "known_to_player",
+        "mode": "guaranteed",
+        "requirements": [
+          {
+            "kind": "source_capability",
+            "capabilityRef": "ashglass_extraction",
+            "actorRole": "provider"
+          }
+        ],
+        "resourcePolicy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": ["success"],
+          "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+          "mutations": []
+        },
+        "resolution": {
+          "capabilityRef": "ashglass_extraction",
+          "actorRole": "provider"
+        },
+        "outcomes": [
+          {
+            "category": "success",
+            "result": [
+              {
+                "kind": "remove_complication",
+                "complicationRef": "offered_ashglass_fragment"
+              }
+            ]
+          }
+        ],
+        "interruption": null
+      },
+      "diagnosisPath": null
+    }
+  ]
+}
+```
+
+### wound_mortal_alternative_response_hidden_author_v1
+
+A hidden alternative includes one complete path. The existing diagnosis-fact grammar is
+unchanged, and the path reveals the exact new route.
+
+```json
+{
+  "response": "Колокольный лекарь замечает скрытый способ унять внутренний звон.",
+  "woundTreatmentAuthorings": [
+    {
+      "authoringRequestRef": "alternative_offer_bell_echo_18",
+      "decision": "author",
+      "route": {
+        "routeId": "ritual_draw_bell_echo",
+        "displayName": "Вывести колокольное эхо",
+        "visibility": "hidden",
+        "mode": "guaranteed",
+        "requirements": [
+          {
+            "kind": "source_capability",
+            "capabilityRef": "bell_echo_rite",
+            "actorRole": "provider"
+          }
+        ],
+        "resourcePolicy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": ["success"],
+          "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+          "mutations": []
+        },
+        "resolution": {
+          "capabilityRef": "bell_echo_rite",
+          "actorRole": "provider"
+        },
+        "outcomes": [
+          {
+            "category": "success",
+            "result": [{ "kind": "stabilize" }]
+          }
+        ],
+        "interruption": null
+      },
+      "diagnosisPath": {
+        "diagnosisPathId": "trace_bell_echo",
+        "displayName": "Проследить внутренний звон",
+        "visibility": "hidden",
+        "requiresKnownFacts": ["route:steady_breathing"],
+        "requirements": [],
+        "check": {},
+        "reveals": ["route:ritual_draw_bell_echo"],
+        "failurePolicy": "no_reveal"
+      }
+    }
+  ]
+}
+```
+
+### wound_mortal_alternative_response_decline_v1
+
+Declining still resolves an offered request eventually, so both payload members are
+present as explicit nulls.
+
+```json
+{
+  "response": "Иного лечения в этих условиях нет.",
+  "woundTreatmentAuthorings": [
+    {
+      "authoringRequestRef": "alternative_offer_decline_19",
+      "decision": "decline",
+      "route": null,
+      "diagnosisPath": null
+    }
+  ]
+}
+```

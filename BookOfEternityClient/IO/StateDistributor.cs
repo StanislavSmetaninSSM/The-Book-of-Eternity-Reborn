@@ -226,6 +226,12 @@ public class StateDistributor
         GameResponse response,
         WoundResponseInputCompositionResult? acceptedWoundInput)
     {
+        if (response.WoundTreatmentAuthorings is { Length: > 0 })
+        {
+            throw new InvalidDataException(
+                "wound_authorings_require_accepted_adapter: raw alternative treatment responses require their fresh accepted-world adapter.");
+        }
+
         var hasRawDecisions = response.WoundDecisions is { Length: > 0 };
         if (acceptedWoundInput is null)
         {

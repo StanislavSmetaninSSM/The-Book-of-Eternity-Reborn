@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -11,6 +12,80 @@ public sealed partial class ExampleDocumentationValidationTests
         SpiritualWoundEffectProfileCatalog.RegisteredProfiles
             .OrderBy(static profile => profile, StringComparer.Ordinal)
             .ToArray();
+
+    [Fact]
+    public void AlternativeTreatmentResponseWorkedExamples_ParseRoundTripAndRejectCopiedAuthority()
+    {
+        var markers = new[]
+        {
+            "wound_mortal_alternative_response_visible_author_v1",
+            "wound_mortal_alternative_response_hidden_author_v1",
+            "wound_mortal_alternative_response_decline_v1"
+        };
+
+        foreach (var marker in markers)
+        {
+            var root = Assert.Single(ParseNamedJsonFences(
+                "E_CLI_Wound_Materialization.txt", marker));
+            var response = JsonSerializer.Deserialize<GameResponse>(root.ToJsonString());
+            var rawEntries = Assert.IsType<JsonElement[]>(response!.WoundTreatmentAuthorings);
+            var rawEntry = Assert.Single(rawEntries);
+
+            var parsedBatch = WoundResponseInputComposer.ParseAlternativeTreatmentAuthorings(
+                JsonSerializer.SerializeToElement(rawEntries), "woundTreatmentAuthorings");
+            Assert.True(parsedBatch.IsValid, string.Join(" | ", parsedBatch.Issues.Select(issue =>
+                $"{issue.Code}@{issue.FilePath}:{issue.Expected}:{issue.Actual}")));
+            Assert.Single(parsedBatch.Drafts);
+
+            var parsed = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
+                rawEntry, "woundTreatmentAuthorings[0]");
+            Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue =>
+                $"{issue.Code}@{issue.FilePath}:{issue.Expected}:{issue.Actual}")));
+            var draft = Assert.Single(parsed.Drafts);
+
+            using var stream = new MemoryStream();
+            using (var writer = new Utf8JsonWriter(stream))
+                WoundResponseInputComposer.WriteAlternativeTreatmentAuthoringCanonical(writer, draft);
+            var written = Assert.IsAssignableFrom<JsonNode>(JsonNode.Parse(stream.ToArray()));
+            Assert.True(JsonNode.DeepEquals(JsonNode.Parse(rawEntry.GetRawText()), written), marker);
+
+            var copiedAuthority = written.DeepClone().AsObject();
+            copiedAuthority["authorityFingerprint"] = "sha256:copied";
+            var rejected = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
+                JsonSerializer.SerializeToElement(copiedAuthority),
+                "woundTreatmentAuthorings[0]");
+            Assert.False(rejected.IsValid);
+            Assert.Contains(rejected.Issues, issue =>
+                issue.Code == "wound_response_unknown_field" &&
+                issue.FilePath == "woundTreatmentAuthorings[0].authorityFingerprint");
+        }
+    }
+
+    [Fact]
+    public void AlternativeTreatmentResponseWorkedExamples_RejectCanonicalRemovalSelector()
+    {
+        var root = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Wound_Materialization.txt",
+            "wound_mortal_alternative_response_visible_author_v1"));
+        var entry = Assert.Single(root["woundTreatmentAuthorings"]!.AsArray())!.AsObject();
+        var operation = Assert.Single(
+            entry["route"]!["outcomes"]![0]!["result"]!.AsArray())!.AsObject();
+        Assert.Equal("remove_complication", operation["kind"]!.GetValue<string>());
+        var offeredRef = operation["complicationRef"]!.GetValue<string>();
+        operation.Remove("complicationRef");
+        operation["complicationId"] = offeredRef;
+
+        var rejected = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
+            JsonSerializer.SerializeToElement(entry),
+            "woundTreatmentAuthorings[0]");
+
+        Assert.False(rejected.IsValid);
+        Assert.Empty(rejected.Drafts);
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Code == "wound_materialization_unknown_field" &&
+            issue.FilePath ==
+                "woundTreatmentAuthorings[0].route.outcomes[0].result[0].complicationId");
+    }
 
     [Theory]
     [InlineData("wound_mortal_roll_scope_all_v1", "all")]

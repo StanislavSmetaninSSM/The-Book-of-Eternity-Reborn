@@ -26,6 +26,18 @@
       "requiredText": ["wound_mortal_roll_scope_all_v1", "effectSkillScopeCatalog", "scope.kind=all", "bell-contusion-hindrance", "acquisitionNarration", "one whole", "consequence slot"]
     },
     {
+      "contractId": "wound_mortal_alternative_response_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "future client-bound Mortal alternative-treatment authoring request",
+      "responseSurface": "woundTreatmentAuthorings[]",
+      "realms": ["Mortal World"],
+      "description": "Complete visible-author, hidden-author, and decline responses demonstrate the closed four-field local GM draft wire, including an offered opaque complicationRef and the existing diagnosis-fact grammar.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.AlternativeTreatmentResponseWorkedExamples_ParseRoundTripAndRejectCopiedAuthority; ExampleDocumentationValidationTests.AlternativeTreatmentResponseWorkedExamples_RejectCanonicalRemovalSelector -> WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring | WriteAlternativeTreatmentAuthoringCanonical",
+      "coverageLimit": "Deserializes the documented GameResponse fragments, validates and canonically roundtrips each local immutable draft, rejects copied authority and the canonical complicationId dialect; it does not prove a fresh request, accepted adapter, publication, execution, or live distribution.",
+      "requiredText": ["wound_mortal_alternative_response_v1", "wound_mortal_alternative_response_visible_author_v1", "wound_mortal_alternative_response_hidden_author_v1", "wound_mortal_alternative_response_decline_v1", "woundTreatmentAuthorings", "complicationRef", "live distribution"]
+    },
+    {
       "contractId": "wound_mortal_roll_scope_skill_v1",
       "file": "E_CLI_Wound_Materialization.txt",
       "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
