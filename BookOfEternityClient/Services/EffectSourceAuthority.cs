@@ -259,7 +259,7 @@ internal sealed class EffectSourceAuthority
     private static readonly HashSet<string> SourceKinds = new(StringComparer.Ordinal)
     {
         "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction",
-        "world_event", "fate_card", "combat_action"
+        "world_event", "fate_card", "combat_action", "wound_legacy"
     };
 
     private readonly Dictionary<EffectSourceKey, EffectSourceAuthorityEntry> _entries;
@@ -1600,6 +1600,16 @@ internal sealed class EffectSourceAuthority
                 !TryExact(export.SourceId))
             {
                 Issues.Add(NewIssue(sourcePath, "effect_source_authority_invalid_export", "exact supported source export", export.ToString()));
+                return;
+            }
+            if (string.Equals(export.Kind, "wound_legacy", StringComparison.Ordinal) &&
+                export.Materializable)
+            {
+                Issues.Add(NewIssue(
+                    sourcePath,
+                    "effect_source_wound_legacy_public_materialization_forbidden",
+                    "non-public wound legacy source export",
+                    export.ToString()));
                 return;
             }
             if (export.RequiredApplicationAuthority is { } requiredAuthority &&

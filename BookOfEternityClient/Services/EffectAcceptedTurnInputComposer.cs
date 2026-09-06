@@ -166,6 +166,10 @@ internal static class EffectAcceptedTurnInputComposer
                 export.Kind,
                 "wound",
                 StringComparison.Ordinal))
+            .Where(static export => !string.Equals(
+                export.Kind,
+                "wound_legacy",
+                StringComparison.Ordinal))
             .Concat(preparedWounds.Exports)
             .ToArray();
         var woundGroups = persistedWounds.Groups
@@ -1827,6 +1831,21 @@ internal static class EffectAcceptedTurnInputComposer
                 "Wound source exports must descend from the sealed prepared wound plan.",
                 "no caller-supplied generic wound exports",
                 injectedWounds.Length.ToString(
+                    System.Globalization.CultureInfo.InvariantCulture)));
+        }
+        var injectedLegacies = (externallySuppliedExports ??
+                Array.Empty<EffectSourceExport>())
+            .Count(static export => export is not null && string.Equals(
+                export.Kind,
+                "wound_legacy",
+                StringComparison.Ordinal));
+        if (injectedLegacies != 0)
+        {
+            issues.Add(WoundCompositionIssue(
+                "effect_source_wound_legacy_external_export_forbidden",
+                "Wound legacy source exports require private approved legacy preparation.",
+                "no caller-supplied generic wound legacy exports",
+                injectedLegacies.ToString(
                     System.Globalization.CultureInfo.InvariantCulture)));
         }
 
