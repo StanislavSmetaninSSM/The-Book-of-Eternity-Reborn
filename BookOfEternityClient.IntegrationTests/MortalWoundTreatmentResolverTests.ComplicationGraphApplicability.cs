@@ -9,6 +9,64 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Theory]
+    [InlineData(3, 3, "i,r1", true)]
+    [InlineData(3, 3, "r1,i", false)]
+    [InlineData(2, 1, "r1,i", true)]
+    [InlineData(2, 2, "r1,i", false)]
+    [InlineData(2, 2, "i,r1", true)]
+    [InlineData(2, 1, "i,r1", false)]
+    public void ComplicationGraphApplicability_PolicyFinalBudget(
+        int rank, int budget, string sequence, bool expected)
+    {
+        var scenario = CreatePolicyPreparationScenario("increase_severity");
+        scenario.Before["severity"]!["rank"] = rank;
+        scenario.Before["severity"]!["value"] = rank == 2 ? "II" : "III";
+        scenario.Before["consequences"]!["slotBudget"] = budget;
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        foreach (var band in route["outcomes"]!.AsArray().OfType<JsonObject>())
+            band["result"] = band["category"]!.GetValue<string>() == "failed_attempt"
+                ? new JsonArray(sequence.Split(',').Select(token => (JsonNode)(token == "i"
+                    ? new JsonObject { ["kind"] = "apply_deterioration", ["policyRef"] = "policy_preparation" }
+                    : new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 })).ToArray())
+                : new JsonArray(new JsonObject { ["kind"] = "stabilize" });
+        var legal = route.DeepClone();
+        var legalId = scenario.RouteId + "_legal";
+        legal["routeId"] = legalId;
+        legal["outcomes"]!.AsArray().OfType<JsonObject>()
+            .Single(row => row["category"]!.GetValue<string>() == "failed_attempt")
+            ["result"] = new JsonArray(new JsonObject { ["kind"] = "no_improvement" });
+        scenario.Before["treatment"]!["routes"] = new JsonArray(route.DeepClone(), legal);
+        scenario.Before["treatment"]!["knownRouteIds"] = new JsonArray(scenario.RouteId, legalId);
+        scenario = PrepareProcedurePublicationScenario(scenario with { ExpectedIntentCount = 2 });
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var state = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(fixture.GetAcceptedState());
+        var beforeCount = fixture.ReadNpcItemCount("sterile_thread");
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var request = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state,
+            fixture.ReadCurrentHistory(), fixture.ReadCurrentWound(), scenario.OperationKey,
+            scenario.RouteId, fixture.AcceptedEventRef(state));
+        Assert.True(request.IsValid == expected, DescribeIssues(request.Issues));
+        if (expected)
+        {
+            Assert.Equal(new[] { 0, 1 },
+                Assert.IsType<MortalWoundProcedureCheckAuthority>(request.Request!.ModeAuthority).SourceIndices);
+            AssertSingleHeldClaim(request.Request, "sterile_thread");
+        }
+        else
+        {
+            Assert.Contains(request.Issues, row => row.Code == "mortal_wound_treatment_procedure_band_inapplicable");
+            AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+            Assert.Equal(beforeCount, fixture.ReadNpcItemCount("sterile_thread"));
+            var fresh = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state,
+                fixture.ReadCurrentHistory(), fixture.ReadCurrentWound(), scenario.OperationKey + "_legal",
+                legalId, fixture.AcceptedEventRef(state));
+            Assert.True(fresh.IsValid, DescribeIssues(fresh.Issues));
+            Assert.Equal(new[] { 0, 1 },
+                Assert.IsType<MortalWoundProcedureCheckAuthority>(fresh.Request!.ModeAuthority).SourceIndices);
+            AssertSingleHeldClaim(fresh.Request, "sterile_thread");
+        }
+    }
+    [Theory]
     [InlineData(false, false, false)]
     [InlineData(true, false, false)]
     [InlineData(false, true, true)]

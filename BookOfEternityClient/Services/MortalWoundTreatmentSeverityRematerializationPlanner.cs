@@ -308,7 +308,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
         var applications = new List<WoundRootEffectApplication>();
         var lineage = new List<WoundRootLineageAuthorityRow>();
         var applicationRoots = selectedGraph is not null
-            ? selectedGraph.FinalRoots.Where(row => selectedGraph.HasReduction || row.AdditionBinding is not null).ToArray()
+            ? selectedGraph.FinalRoots.Where(row => selectedGraph.FinalSeverityChanged || row.AdditionBinding is not null).ToArray()
             : projection?.Roots.Select(row => new MortalWoundTreatmentSelectedRoot(
                 WoundWorkingReference.Existing(row.PriorEffectId), row.DefinitionKey, row.OwnershipDomain,
                 row.Slots.ToImmutableArray(), row.PriorEffectId, null)).ToArray() ?? Array.Empty<MortalWoundTreatmentSelectedRoot>();
@@ -410,7 +410,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 terminal.Issues.ToArray());
         }
 
-        if (selectedGraph is not null ? !selectedGraph.HasReduction : projection is null)
+        if (selectedGraph is not null ? !selectedGraph.FinalSeverityChanged : projection is null)
         {
             // Terminal planning above has validated the complete original ownership graph.
             var domains = before.Complications.SelectMany(complication =>

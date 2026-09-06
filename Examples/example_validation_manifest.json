@@ -2,6 +2,30 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "wound_mortal_selected_policy_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "Mortal wound recovery.deteriorationPolicy and treatment.routes[]",
+      "responseSurface": "canonical policyRef selected by the accepted treatment command",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Complete canonical worsening policy and procedure route authored for an untreated rank-III Mortal physical wound.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundSelectedPolicyWorkedExample_ParsesExactPolicyAndProcedure -> MortalWoundDeteriorationPolicyContract.Parse -> MortalWoundTreatmentContract.ParseRouteShape",
+      "coverageLimit": "Policy/route parsing and exact policyRef linkage only; real selected atomic publication, rollback, resources and replay are proved by Integration MortalWoundTreatmentResolverTests.DeteriorationPublication_ tests. Shape parsing does not publish state.",
+      "requiredText": [
+        "mortal_wound_treatment_selected_policy_v1",
+        "untreated_deep_wound",
+        "clean_deep_wound_with_policy_risk",
+        "Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.",
+        "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
+        "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
+        "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
+        "Death, heal and legacy publication remain unfinished.",
+        "client-owned"
+      ]
+    },
+    {
       "contractId": "wound_mortal_scalar_course_v1",
       "file": "E_CLI_Wound_Materialization.txt",
       "statePath": "ordinary complete Mortal wound proposal treatment member",
@@ -34,8 +58,8 @@
       "description": "The three exact closed treatment scene kinds are shown through existing-location replacement and new selected/remote creation, with unrelated sibling preservation and link rejection; the same example also publishes one production-parsed rank-III Mortal procedure route whose ordered success stabilizes and reduces severity by one without weakening its retained graph, while partial success stabilizes, adds two recovery points and remains nonterminal.",
       "validationKind": "production-validator",
       "validationRoute": "PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes -> MortalLocationCustomStateContract.ValidateLocation | ValidateLink; PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentSeverityReductionPlanner.Project | MortalWoundTreatmentWorkingWoundSimulator.Simulate | MortalWoundTreatmentWorkingGraphProjection.TryAppendComplication -> ConvertTreatmentComplicationGraph -> ValidateGraph",
-      "coverageLimit": "Closed treatment rows, exact parsed success/partial projections and cumulative graph admission are pure controls; MortalWoundTreatmentResolverTests.ComplicationAdditionPublication_ exercises selected direct-add batch publication, resource/history atomicity and cold replay in Integration. Policy, heal and legacy publication remain unfinished.",
-      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_reduce_severity_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog", "Only a newly successful category completes the route", "never prunes or weakens mechanics", "checked signed-64-bit arithmetic", "Reaching the threshold does not itself trigger a recovery tick", "The GM authors points, never canonical progress or recovery anchors", "Partial success does not complete the route", "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.", "Local complication and definition references are not permanent runtime identities.", "Applicability preview does not authorize publication of an unfinished outcome.", "Selected direct add_complication outcomes publish through one authenticated treatment graph batch.", "Same-rank retained wound roots keep their exact identities, carrier payloads and index history.", "An effectless addition still requires a sealed 0/0 batch and an empty application result map.", "Policy, heal and legacy publication remain unfinished."]
+      "coverageLimit": "Closed treatment rows, exact parsed success/partial projections and cumulative graph admission are pure controls; MortalWoundTreatmentResolverTests.ComplicationAdditionPublication_ exercises selected direct-add batch publication, resource/history atomicity and cold replay in Integration. Selected non-death policy publication is supported by MortalWoundTreatmentResolverTests.DeteriorationPublication_ Integration controls; death, heal and legacy publication remain unfinished.",
+      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_reduce_severity_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog", "Only a newly successful category completes the route", "never prunes or weakens mechanics", "checked signed-64-bit arithmetic", "Reaching the threshold does not itself trigger a recovery tick", "The GM authors points, never canonical progress or recovery anchors", "Partial success does not complete the route", "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.", "Local complication and definition references are not permanent runtime identities.", "Applicability preview does not authorize publication of an unfinished outcome.", "Selected direct add_complication outcomes publish through one authenticated treatment graph batch.", "Same-rank retained wound roots keep their exact identities, carrier payloads and index history.", "An effectless addition still requires a sealed 0/0 batch and an empty application result map.", "Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.", "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.", "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.", "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.", "Death, heal and legacy publication remain unfinished."]
     },
     {
       "contractId": "wound_mortal_roll_scope_all_v1",

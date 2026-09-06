@@ -9,6 +9,70 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalWoundTreatmentWorkingGraphProjectionTests
 {
     [Theory]
+    [InlineData(3, 3, "i,r", true)]
+    [InlineData(3, 3, "r,i", false)]
+    [InlineData(2, 1, "r,i", true)]
+    [InlineData(2, 2, "r,i", false)]
+    [InlineData(2, 2, "i,r", true)]
+    [InlineData(2, 1, "i,r", false)]
+    public void PolicyProjection_FinalUnchangedRankPreservesOriginalBudget(int rank, int budget, string sequence, bool expected)
+    {
+        var source = WoundContractTestData.CreateActiveWound();
+        source["severity"]!["rank"] = rank;
+        source["severity"]!["value"] = rank == 2 ? "II" : "III";
+        source["consequences"]!["slotBudget"] = budget;
+        source["consequences"]!["slotsUsed"] = 1;
+        source["consequences"]!["entries"] = new JsonArray(source["consequences"]!["entries"]![0]!.DeepClone());
+        var owned = source["consequences"]!["ownedEffectSources"]!;
+        owned["definitions"] = new JsonArray(owned["definitions"]![0]!.DeepClone());
+        owned["rootBindings"] = new JsonArray(owned["rootBindings"]![0]!.DeepClone());
+        var before = Parse(source);
+        var operations = sequence.Split(',').Select(token => token == "i"
+            ? (MortalWoundTreatmentOperation)new MortalWoundApplyDeteriorationOperation("policy")
+            : new MortalWoundReduceSeverityOperation(1)).ToImmutableArray();
+        var result = MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before, new[] { operations },
+            (working, address, _) => MortalWoundTreatmentPolicyGraphProjection.Project(working, address,
+                MortalWoundDeteriorationResultKind.IncreaseSeverity, null));
+        Assert.Equal(expected, result.IsApplicable);
+        if (expected)
+        {
+            Assert.Equal(rank, result.WorkingGraph!.Scalars.Severity.Rank);
+            Assert.Equal(budget, result.WorkingGraph.Scalars.SlotBudget);
+            Assert.Equal(before.Consequences.OwnedEffectSources.RootBindings.Select(row => row.EffectId),
+                result.WorkingGraph.Graph.Roots.Select(row => row.Reference.Value));
+        }
+    }
+
+    [Fact]
+    public void PolicyProjection_IncreasePreservesBudgetCareAndRecovery()
+    {
+        var before = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(ReadCanonicalWound())!;
+        var result = MortalWoundTreatmentPolicyGraphProjection.Project(before, new(0, 0),
+            MortalWoundDeteriorationResultKind.IncreaseSeverity, null);
+        Assert.True(result.IsApplicable);
+        Assert.False(result.Improved);
+        Assert.Equal(before.Scalars.Severity.Rank + 1, result.After!.Scalars.Severity.Rank);
+        Assert.Equal(before.Scalars.SlotBudget, result.After.Scalars.SlotBudget);
+        Assert.Equal(before.Scalars.Care, result.After.Scalars.Care);
+        Assert.Equal(before.Scalars.Recovery, result.After.Scalars.Recovery);
+    }
+
+    [Theory]
+    [InlineData(4, "IncreaseSeverity", false)]
+    [InlineData(2, "IncreaseSeverity", true)]
+    [InlineData(2, "AddComplication", false)]
+    [InlineData(2, "DeathContour", false)]
+    public void PolicyProjection_InvalidTypedPacketRejects(int rank, string kind, bool draft)
+    {
+        var source = WoundContractTestData.CreateActiveWound();
+        source["severity"]!["rank"] = rank;
+        source["severity"]!["value"] = rank == 4 ? "IV" : "II";
+        var before = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(Parse(source))!;
+        Assert.False(MortalWoundTreatmentPolicyGraphProjection.Project(before, new(0, 0), Enum.Parse<MortalWoundDeteriorationResultKind>(kind),
+            draft ? Draft("policy") : null).IsApplicable);
+    }
+
+    [Theory]
     [InlineData(false, false, false, false)]
     [InlineData(true, false, false, false)]
     [InlineData(false, true, false, true)]

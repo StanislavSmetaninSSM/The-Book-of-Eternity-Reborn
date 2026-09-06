@@ -10,8 +10,10 @@ internal sealed record WoundFinalAssemblyScalars(WoundSeverity Severity, WoundCa
 internal sealed record MortalWoundTreatmentSelectedRoot(WoundWorkingReference Reference, string DefinitionKey,
     WoundRootOwnershipDomain OwnershipDomain, ImmutableArray<WoundEffectSlotAgreement> Slots,
     string? OriginalEffectId, MortalWoundTreatmentComplicationRootBinding? AdditionBinding);
+internal sealed record MortalWoundTreatmentSelectedAddition(WoundWorkingReference Reference,
+    MortalWoundTreatmentComplicationBindingPreparation Binding);
 internal sealed record MortalWoundTreatmentSelectedDefinitionOrigin(int OperationOrdinal, int DefinitionOrdinal,
-    string DefinitionKey, string MappedDefinitionRef);
+    string DefinitionKey, string MappedDefinitionRef, string ComponentsPath);
 
 internal sealed class MortalWoundTreatmentSelectedGraphCompilation
 {
@@ -21,9 +23,9 @@ internal sealed class MortalWoundTreatmentSelectedGraphCompilation
     private MortalWoundTreatmentSelectedGraphCompilation(WoundMaterializationEnvelope before,
         MortalWoundTreatmentWorkingGraphProjection working, WoundFinalAssemblyScalars scalars,
         ImmutableArray<MortalWoundTreatmentSelectedRoot> roots,
-        ImmutableArray<MortalWoundTreatmentComplicationBindingPreparation> additions,
+        ImmutableArray<MortalWoundTreatmentSelectedAddition> additions,
         ImmutableArray<MortalWoundTreatmentSelectedDefinitionOrigin> origins,
-        ImmutableArray<string> removals, ImmutableArray<string> terminals, bool reduction, string fingerprint)
+        ImmutableArray<string> removals, ImmutableArray<string> terminals, bool finalSeverityChanged, bool allowsWorsening, string fingerprint)
     {
         _before = WoundAcceptedTurnData.CloneWound(before)!;
         _working = working.WithGraph(working.Graph);
@@ -33,7 +35,8 @@ internal sealed class MortalWoundTreatmentSelectedGraphCompilation
         NewDefinitionOrigins = origins;
         OrderedRemovalIds = removals;
         SelectedTerminalRootIds = terminals;
-        HasReduction = reduction;
+        FinalSeverityChanged = finalSeverityChanged;
+        AllowsWorsening = allowsWorsening;
         Fingerprint = fingerprint;
     }
     internal WoundMaterializationEnvelope Before => WoundAcceptedTurnData.CloneWound(_before)!;
@@ -45,20 +48,20 @@ internal sealed class MortalWoundTreatmentSelectedGraphCompilation
     };
     internal WoundWorkingOwnedGraph FinalGraph => _working.WithGraph(_working.Graph).Graph;
     internal ImmutableArray<MortalWoundTreatmentSelectedRoot> FinalRoots { get; }
-    internal ImmutableArray<MortalWoundTreatmentComplicationBindingPreparation> Additions { get; }
+    internal ImmutableArray<MortalWoundTreatmentSelectedAddition> Additions { get; }
     internal ImmutableArray<MortalWoundTreatmentSelectedDefinitionOrigin> NewDefinitionOrigins { get; }
     internal ImmutableArray<string> OrderedRemovalIds { get; }
     internal ImmutableArray<string> SelectedTerminalRootIds { get; }
-    internal bool HasReduction { get; }
-    internal bool RequiresEffectBatch => Additions.Length != 0;
+    internal bool FinalSeverityChanged { get; }
+    internal bool AllowsWorsening { get; }
     internal string Fingerprint { get; }
     internal static MortalWoundTreatmentSelectedGraphCompilation Create(WoundMaterializationEnvelope before,
         MortalWoundTreatmentWorkingGraphProjection working, WoundFinalAssemblyScalars scalars,
         ImmutableArray<MortalWoundTreatmentSelectedRoot> roots,
-        ImmutableArray<MortalWoundTreatmentComplicationBindingPreparation> additions,
+        ImmutableArray<MortalWoundTreatmentSelectedAddition> additions,
         ImmutableArray<MortalWoundTreatmentSelectedDefinitionOrigin> origins,
-        ImmutableArray<string> removals, ImmutableArray<string> terminals, bool reduction, string fingerprint) =>
-        new(before, working, scalars, roots, additions, origins, removals, terminals, reduction, fingerprint);
+        ImmutableArray<string> removals, ImmutableArray<string> terminals, bool finalSeverityChanged, bool allowsWorsening, string fingerprint) =>
+        new(before, working, scalars, roots, additions, origins, removals, terminals, finalSeverityChanged, allowsWorsening, fingerprint);
 }
 internal sealed record MortalWoundTreatmentSelectedGraphCompilationResult(
     MortalWoundTreatmentSelectedGraphCompilation? Compilation, IReadOnlyList<ValidationIssue> Issues);
@@ -98,7 +101,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         ResultFingerprint = resultFingerprint;
         ResolutionAuthorityFingerprint = resolutionAuthorityFingerprint;
         _intentSeals = orderedIntents.Select((intent, index) => IntentSeal.From(intent,
-            resolution.DeclaredResult[index], resolution.RequestFingerprint)).ToImmutableArray();
+            resolution.DeclaredResult[index], resolution.RequestAuthority)).ToImmutableArray();
         RouteCompletion = routeCompletion;
         ResultCategory = resultCategory;
         SelectedOutcomeIndex = selectedOutcomeIndex;
@@ -106,7 +109,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         Fingerprint = fingerprint;
         _selection = SelectionSeal.From(resolution);
         _treatmentEventRef = resolution.Coordinates.EventRef;
-        if (orderedIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent))
+        if (orderedIntents.Any(MortalWoundTreatmentOutcomePublicationPlanner.UsesSelectedGraph))
         {
             _selectedResolution = MortalWoundTreatmentOutcomePublicationPlanner.DetachSelectedResolution(resolution);
             var compiled = MortalWoundTreatmentOutcomePublicationPlanner.CompileSelectedGraph(_before,
@@ -206,7 +209,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
 
         for (var index = 0; index < _intentSeals.Length; index++)
         {
-            if (!_intentSeals[index].AgreesWith(resolution.OutcomeIntents[index], resolution.DeclaredResult[index], resolution.RequestFingerprint))
+            if (!_intentSeals[index].AgreesWith(resolution.OutcomeIntents[index], resolution.DeclaredResult[index], resolution.RequestAuthority))
                 return false;
         }
 
@@ -216,7 +219,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
             {
                 if (!TryRecomposeSelectedGraph(out var selected) ||
                     !MortalWoundTreatmentOutcomePublicationPlanner.OrderedIntentsAgree(
-                        _selectedResolution.OutcomeIntents, resolution.OutcomeIntents)) return false;
+                        resolution.RequestAuthority, resolution.DeclaredResult, _selectedResolution.OutcomeIntents, resolution.OutcomeIntents)) return false;
                 var expected = MortalWoundTreatmentOutcomePublicationPlanner.CompileSelectedGraph(_before,
                     resolution.RequestAuthority, resolution, TransitionId, CurrentGameMinute);
                 return expected.Compilation is not null && expected.Issues.Count == 0 &&
@@ -365,10 +368,11 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         int? ReductionSteps,
         int? RecoveryPoints,
         string? ComplicationId,
-        AdditionSeal? Addition)
+        AdditionSeal? Addition,
+        PolicySeal? Policy)
     {
         internal static IntentSeal From(MortalWoundTreatmentOutcomeIntent intent,
-            MortalWoundTreatmentOperation operation, string requestFingerprint) => new(
+            MortalWoundTreatmentOperation operation, MortalWoundTreatmentAttemptRequest request) => new(
             intent.OperationOrdinal,
             intent.Kind,
             intent.DeclaredOperationFingerprint,
@@ -376,9 +380,13 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
             (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps,
             (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points,
             (intent as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId,
-            operation is MortalWoundAddComplicationOperation add ? AdditionSeal.From(requestFingerprint, intent.OperationOrdinal, add) : null);
+            operation is MortalWoundAddComplicationOperation add ? AdditionSeal.From(request.RequestFingerprint, intent.OperationOrdinal, add) : null,
+            operation is MortalWoundApplyDeteriorationOperation policy &&
+                intent is MortalWoundApplyDeteriorationOutcomeIntent selected &&
+                selected.TryGetPreparedDeterioration(request, policy, out var prepared) && prepared is not null
+                    ? new PolicySeal(prepared) : null);
 
-        internal bool AgreesWith(MortalWoundTreatmentOutcomeIntent intent, MortalWoundTreatmentOperation operation, string requestFingerprint) =>
+        internal bool AgreesWith(MortalWoundTreatmentOutcomeIntent intent, MortalWoundTreatmentOperation operation, MortalWoundTreatmentAttemptRequest request) =>
             OperationOrdinal == intent.OperationOrdinal &&
             string.Equals(Kind, intent.Kind, StringComparison.Ordinal) &&
             string.Equals(DeclaredOperationFingerprint,
@@ -392,8 +400,23 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
                 (intent as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId,
                 StringComparison.Ordinal) &&
             (Addition is null ? intent is not MortalWoundAddComplicationOutcomeIntent && operation is not MortalWoundAddComplicationOperation
-                : Addition.AgreesWith(requestFingerprint, OperationOrdinal, operation, intent));
+                : Addition.AgreesWith(request.RequestFingerprint, OperationOrdinal, operation, intent)) &&
+            (Policy is null ? intent is not MortalWoundApplyDeteriorationOutcomeIntent &&
+                operation is not MortalWoundApplyDeteriorationOperation : Policy.AgreesWith(request, operation, intent));
 
+    }
+
+    private sealed record PolicySeal(MortalWoundTreatmentDeteriorationPreparation Prepared)
+    {
+        internal bool AgreesWith(MortalWoundTreatmentAttemptRequest request,
+            MortalWoundTreatmentOperation operation, MortalWoundTreatmentOutcomeIntent intent)
+        {
+            if (operation is not MortalWoundApplyDeteriorationOperation policy ||
+                intent is not MortalWoundApplyDeteriorationOutcomeIntent selected ||
+                !selected.TryGetPreparedDeterioration(request, policy, out var incoming) ||
+                incoming is null || !Prepared.AgreesWith(request, policy, selected)) return false;
+            return incoming.Fingerprint == Prepared.Fingerprint;
+        }
     }
 
     private sealed record AdditionSeal(MortalWoundComplicationProposalDraft Draft,
@@ -462,6 +485,9 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     private const string PublicationDomain =
         "book_of_eternity.mortal_wound_treatment.outcome_publication";
 
+    internal static bool UsesSelectedGraph(MortalWoundTreatmentOutcomeIntent intent) =>
+        intent is MortalWoundAddComplicationOutcomeIntent or MortalWoundApplyDeteriorationOutcomeIntent;
+
     internal static bool RequiresEffectBatch(MortalWoundTreatmentOutcomePreparation preparation) =>
         preparation.SeverityReduction is not null || preparation.GetOrderedRemovalIds().Length != 0 ||
         preparation.TryRecomposeSelectedGraph(out _);
@@ -470,12 +496,16 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     {
         var declared = source.DeclaredResult.Select(operation => operation is MortalWoundAddComplicationOperation add
             ? new MortalWoundAddComplicationOperation(DetachComplicationDraft(add.ComplicationDraft)) : operation).ToImmutableArray();
-        var intents = source.OutcomeIntents.Select(intent => intent is MortalWoundAddComplicationOutcomeIntent add
+        var intents = source.OutcomeIntents.Select((intent, ordinal) => intent is MortalWoundAddComplicationOutcomeIntent add
             ? MortalWoundAddComplicationOutcomeIntent.Create(add.OperationOrdinal, add.DeclaredOperationFingerprint,
                 add.IntentFingerprint, add.ComplicationRef, add.ComplicationId,
                 add.DefinitionReferenceBindings.Select(row => MortalWoundTreatmentReferenceBinding.Create(row.LocalRef, row.NamespacedRef)),
                 add.ApplicationReferenceBindings.Select(row => MortalWoundTreatmentReferenceBinding.Create(row.LocalRef, row.NamespacedRef)),
-                add.PreparationFingerprint) : intent).ToImmutableArray();
+                add.PreparationFingerprint) : intent is MortalWoundApplyDeteriorationOutcomeIntent policy
+                    ? source.DeclaredResult[ordinal] is MortalWoundApplyDeteriorationOperation operation &&
+                        policy.TryGetPreparedDeterioration(source.RequestAuthority, operation, out _)
+                        ? policy.DetachedCopy() : throw new InvalidOperationException("Invalid selected policy packet.")
+                    : intent).ToImmutableArray();
         return MortalWoundTreatmentResolution.Create(source.Mode, source.Coordinates, source.AttemptDisposition,
             source.ResultCategory, source.SelectedOutcomeIndex, source.Interruption, declared, intents,
             source.CriticalReactionIntent, source.ConsumptionTrigger, source.CourseId, source.CourseMilestoneOrdinal,
@@ -505,8 +535,9 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 WoundMaterializationContract.SerializeCanonical(request.RouteSourceWound) ||
                 resolution.DeclaredResult.Count != resolution.OutcomeIntents.Count)
                 throw new InvalidOperationException("Selected graph authority mismatch.");
-            var additions = ImmutableArray.CreateBuilder<MortalWoundTreatmentComplicationBindingPreparation>();
-            var byOrdinal = new Dictionary<int, MortalWoundTreatmentComplicationBindingPreparation>();
+            var additions = ImmutableArray.CreateBuilder<MortalWoundTreatmentSelectedAddition>();
+            var byReference = new Dictionary<WoundWorkingReference, MortalWoundTreatmentComplicationBindingPreparation>();
+            var policies = new Dictionary<int, MortalWoundTreatmentDeteriorationPreparation>();
             var origins = ImmutableArray.CreateBuilder<MortalWoundTreatmentSelectedDefinitionOrigin>();
             for (var i = 0; i < resolution.DeclaredResult.Count; i++)
             {
@@ -515,26 +546,63 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 var declared = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(i, operation);
                 if (intent.OperationOrdinal != i || intent.Kind != operation.Kind || intent.DeclaredOperationFingerprint != declared)
                     throw new InvalidOperationException("Selected declared operation changed.");
-                if (operation is not MortalWoundAddComplicationOperation add) continue;
-                var binding = MortalWoundTreatmentOutcomeIntentComposer.PrepareComplicationBindings(
-                    request.RequestFingerprint, i, add.ComplicationDraft, declared);
-                if (intent is not MortalWoundAddComplicationOutcomeIntent addition || !AdditionBindingAgrees(binding, addition))
-                    throw new InvalidOperationException("Selected T067 binding changed.");
-                additions.Add(binding);
-                byOrdinal.Add(i, binding);
-                for (var j = 0; j < add.ComplicationDraft.ConsequenceDefinitions.Length; j++)
-                    origins.Add(new(i, j, add.ComplicationDraft.ConsequenceDefinitions[j].Definition.GetProperty("definitionKey").GetString()!,
-                        binding.DefinitionReferenceBindings[j].NamespacedRef));
+                MortalWoundComplicationProposalDraft? draft;
+                MortalWoundTreatmentComplicationBindingPreparation? binding;
+                WoundWorkingReferenceOrigin origin;
+                string componentsPrefix;
+                if (operation is MortalWoundAddComplicationOperation add)
+                {
+                    draft = add.ComplicationDraft;
+                    binding = MortalWoundTreatmentOutcomeIntentComposer.PrepareComplicationBindings(
+                        request.RequestFingerprint, i, draft, declared);
+                    if (intent is not MortalWoundAddComplicationOutcomeIntent addition || !AdditionBindingAgrees(binding, addition))
+                        throw new InvalidOperationException("Selected T067 binding changed.");
+                    origin = WoundWorkingReferenceOrigin.DirectAddition;
+                    componentsPrefix = $"treatmentPublication.outcome.declaredResult[{i}].complicationDraft";
+                }
+                else if (operation is MortalWoundApplyDeteriorationOperation policy)
+                {
+                    if (intent is not MortalWoundApplyDeteriorationOutcomeIntent selected ||
+                        !selected.TryGetPreparedDeterioration(request, policy, out var prepared) || prepared is null ||
+                        prepared.Policy.ResultKind is not (MortalWoundDeteriorationResultKind.IncreaseSeverity or
+                            MortalWoundDeteriorationResultKind.AddComplication))
+                        throw new InvalidOperationException("Selected private policy preparation changed.");
+                    policies.Add(i, prepared);
+                    draft = prepared.Draft;
+                    binding = prepared.ComplicationBinding;
+                    if (prepared.Policy.ResultKind == MortalWoundDeteriorationResultKind.IncreaseSeverity) continue;
+                    origin = WoundWorkingReferenceOrigin.PolicyAddition;
+                    componentsPrefix = prepared.WoundSourcePath + ".recovery.deteriorationPolicy.result.complicationDraft";
+                }
+                else continue;
+                if (draft is null || binding is null)
+                    throw new InvalidOperationException("Missing selected complication packet.");
+                var reference = new WoundWorkingReference(origin, new(0, i), draft.Complication.ComplicationRef);
+                additions.Add(new(reference, binding));
+                byReference.Add(reference, binding);
+                for (var j = 0; j < draft.ConsequenceDefinitions.Length; j++)
+                    origins.Add(new(i, j, draft.ConsequenceDefinitions[j].Definition.GetProperty("definitionKey").GetString()!,
+                        binding.DefinitionReferenceBindings[j].NamespacedRef,
+                        componentsPrefix + $".consequenceDefinitions[{j}].definition.components"));
             }
-            if (additions.Count == 0 || !ExactAndConfusableUnique(additions.Select(row => row.ComplicationId)) ||
-                !ExactAndConfusableUnique(additions.SelectMany(row => row.Roots).Select(row => row.OperationKey)))
+            if ((additions.Count == 0 && policies.Count == 0) ||
+                !ExactAndConfusableUnique(additions.Select(row => row.Binding.ComplicationId)) ||
+                !ExactAndConfusableUnique(additions.SelectMany(row => row.Binding.Roots).Select(row => row.OperationKey)))
                 throw new InvalidOperationException("Missing or colliding selected additions.");
             var metadata = CreatePublicationMetadata(before, request, resolution, transitionId);
             var simulation = MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before,
                 new[] { resolution.DeclaredResult.ToImmutableArray() },
-                static (working, address, operation) => operation is MortalWoundAddComplicationOperation add &&
-                    working.TryAppendComplication(add.ComplicationDraft, WoundWorkingReferenceOrigin.DirectAddition, address, out var after)
-                        ? new(true, false, after) : new(false, false, null));
+                (working, address, operation) =>
+                {
+                    if (operation is MortalWoundAddComplicationOperation add)
+                        return working.TryAppendComplication(add.ComplicationDraft,
+                            WoundWorkingReferenceOrigin.DirectAddition, address, out var after)
+                            ? new(true, false, after) : new(false, false, null);
+                    return address.ResultIndex == 0 && operation is MortalWoundApplyDeteriorationOperation &&
+                        policies.TryGetValue(address.OperationIndex, out var prepared)
+                            ? MortalWoundTreatmentPolicyGraphProjection.Project(working, address, prepared.Policy.ResultKind, prepared.Draft)
+                            : new(false, false, null);
+                });
             if (!simulation.IsApplicable || simulation.WorkingGraph is not { } working)
                 throw new InvalidOperationException("Selected graph is not applicable.");
             var scalars = DecorateSelectedGraphScalars(working, metadata, resolution, currentGameMinute);
@@ -542,9 +610,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             var validation = working.ValidateGraph(IssuePath + ".selectedGraph");
             if (!validation.IsEmpty) return new(null, validation);
             string ComplicationId(WoundWorkingReference reference) => reference.Origin == WoundWorkingReferenceOrigin.Existing
-                ? reference.Value : reference.Origin == WoundWorkingReferenceOrigin.DirectAddition && reference.Address.ResultIndex == 0 &&
-                    byOrdinal.TryGetValue(reference.Address.OperationIndex, out var binding) && binding.ComplicationRef == reference.Value
-                        ? binding.ComplicationId : throw new InvalidOperationException("Foreign complication coordinate.");
+                ? reference.Value : byReference.TryGetValue(reference, out var binding)
+                    ? binding.ComplicationId : throw new InvalidOperationException("Foreign complication coordinate.");
             var roots = working.Graph.Roots.Select(root =>
             {
                 var owners = working.Graph.Complications.Where(row => row.OwnedRoots.Contains(root.Reference)).ToArray();
@@ -554,34 +621,42 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 MortalWoundTreatmentComplicationRootBinding? binding = null;
                 if (root.Reference.Origin != WoundWorkingReferenceOrigin.Existing)
                 {
-                    if (root.Reference.Origin != WoundWorkingReferenceOrigin.DirectAddition || root.Reference.Address.ResultIndex != 0 ||
-                        !byOrdinal.TryGetValue(root.Reference.Address.OperationIndex, out var addition))
-                        throw new InvalidOperationException("Foreign root coordinate.");
-                    binding = addition.Roots.Single(row => row.LocalDefinitionRef == root.Reference.Value);
+                    var addition = additions.Single(row => row.Reference.Origin == root.Reference.Origin &&
+                        row.Reference.Address == root.Reference.Address);
+                    binding = addition.Binding.Roots.Single(row => row.LocalDefinitionRef == root.Reference.Value);
                 }
                 return new MortalWoundTreatmentSelectedRoot(root.Reference, root.DefinitionKey, domain,
                     working.Graph.Entries.Where(entry => entry.Root == root.Reference).Select(entry =>
                         new WoundEffectSlotAgreement(entry.Slot, entry.ProfileKey, entry.ReadableSummary)).ToImmutableArray(),
                     binding is null ? root.Reference.Value : null, binding);
             }).ToImmutableArray();
-            var reduction = resolution.DeclaredResult.Any(static operation => operation is MortalWoundReduceSeverityOperation);
+            var finalSeverityChanged = working.Scalars.Severity.Rank != before.Severity.Rank;
+            var allowsWorsening = working.Scalars.Severity.Rank > before.Severity.Rank &&
+                policies.Values.Any(prepared => prepared.Policy.ResultKind == MortalWoundDeteriorationResultKind.IncreaseSeverity);
             var removals = resolution.DeclaredResult.OfType<MortalWoundRemoveComplicationOperation>()
                 .Select(row => row.ComplicationId).ToImmutableArray();
-            var terminals = (reduction ? before.Consequences.OwnedEffectSources.RootBindings.Select(row => row.EffectId)
+            var terminals = (finalSeverityChanged ? before.Consequences.OwnedEffectSources.RootBindings.Select(row => row.EffectId)
                 : removals.SelectMany(id => before.Complications.Single(row => row.ComplicationId == id).OwnedEffectIds)).ToImmutableArray();
             var fields = new List<string?> { "book_of_eternity.mortal_wound_treatment.selected_graph", "1",
                 WoundMaterializationContract.SerializeCanonical(before), request.RequestFingerprint, resolution.ResultFingerprint,
                 transitionId, JsonSerializer.Serialize(scalars), JsonSerializer.Serialize(working.Graph), JsonSerializer.Serialize(roots),
-                JsonSerializer.Serialize(origins), JsonSerializer.Serialize(removals), JsonSerializer.Serialize(terminals), reduction.ToString() };
-            foreach (var binding in additions)
+                JsonSerializer.Serialize(origins), JsonSerializer.Serialize(removals), JsonSerializer.Serialize(terminals), finalSeverityChanged.ToString(), allowsWorsening.ToString() };
+            foreach (var policy in policies.OrderBy(row => row.Key))
             {
+                fields.Add(policy.Key.ToString(CultureInfo.InvariantCulture));
+                fields.Add(policy.Value.Fingerprint);
+            }
+            foreach (var addition in additions)
+            {
+                fields.Add(JsonSerializer.Serialize(addition.Reference));
+                var binding = addition.Binding;
                 fields.Add(binding.ComplicationRef); fields.Add(binding.ComplicationId); fields.Add(binding.PreparationFingerprint);
                 fields.AddRange(binding.DefinitionReferenceBindings.SelectMany(row => new[] { row.LocalRef, row.NamespacedRef }));
                 fields.AddRange(binding.ApplicationReferenceBindings.SelectMany(row => new[] { row.LocalRef, row.NamespacedRef }));
                 fields.Add(JsonSerializer.Serialize(binding.Roots));
             }
             return new(MortalWoundTreatmentSelectedGraphCompilation.Create(before, working, scalars, roots,
-                additions.ToImmutable(), origins.ToImmutable(), removals, terminals, reduction,
+                additions.ToImmutable(), origins.ToImmutable(), removals, terminals, finalSeverityChanged, allowsWorsening,
                 WoundAcceptedTurnFingerprintWriter.Compute(fields)), Array.Empty<ValidationIssue>());
         }
         catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or JsonException or OverflowException)
@@ -641,7 +716,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         {
             var transitionId = CreateTransitionId(resolution);
             var before = request.RouteSourceWound;
-            if (orderedIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent))
+            if (orderedIntents.Any(MortalWoundTreatmentOutcomePublicationPlanner.UsesSelectedGraph))
             {
                 var selected = CompileSelectedGraph(before, request, resolution, transitionId, currentGameMinute);
                 if (selected.Compilation is null) return InvalidPreparation(selected.Issues);
@@ -854,7 +929,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             after = parsed.Wound;
         }
 
-        var declaredOutcome = CreateDeclaredOutcome(after);
+        var declaredOutcome = CreateDeclaredOutcome(after, selectedGraph);
         var fingerprint = ComputePublicationFingerprint(
             preparation,
             after,
@@ -898,12 +973,12 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         // Full terminal/descendant closure needs the original effect carriers and index.
         // The existing rematerializer agreement authenticates it at the outer final
         // continuation boundary; this detached check owns selected graph/result shape.
-        var roots = compilation.FinalRoots.Where(row => compilation.HasReduction || row.AdditionBinding is not null).ToArray();
+        var roots = compilation.FinalRoots.Where(row => compilation.FinalSeverityChanged || row.AdditionBinding is not null).ToArray();
         var definitions = compilation.FinalGraph.Definitions;
         var expectedLineage = roots.Select((root, index) => new WoundRootLineageAuthorityRow(
             index < batch.RootApplications.Count ? batch.RootApplications[index].ApplicationRef : null,
             null, root.DefinitionKey, root.OwnershipDomain)).ToList();
-        if (!compilation.HasReduction)
+        if (!compilation.FinalSeverityChanged)
             expectedLineage.AddRange(compilation.FinalRoots.Where(row => row.OriginalEffectId is not null)
                 .OrderBy(row => row.OriginalEffectId, StringComparer.Ordinal).ThenBy(row => row.DefinitionKey, StringComparer.Ordinal)
                 .Select(row => new WoundRootLineageAuthorityRow(null, row.OriginalEffectId, row.DefinitionKey, row.OwnershipDomain)));
@@ -1271,9 +1346,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             out var expectedIntents,
             out _);
         if (!recomposed ||
-            !OrderedIntentsAgree(resolution.OutcomeIntents, expectedIntents) ||
-            !HasSupportedGrammar(resolution.Mode, resolution.Interruption,
-                resolution.CourseDisposition, expectedIntents, resolution.ResultCategory))
+            !OrderedIntentsAgree(request, resolution.DeclaredResult, resolution.OutcomeIntents, expectedIntents) ||
+            !HasSupportedGrammar(resolution, expectedIntents))
         {
             failedAxes.Add("outcome");
         }
@@ -1301,15 +1375,24 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     }
 
     internal static bool OrderedIntentsAgree(
+        MortalWoundTreatmentAttemptRequest request,
+        IReadOnlyList<MortalWoundTreatmentOperation> declared,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> actual,
         IReadOnlyList<MortalWoundTreatmentOutcomeIntent> expected)
     {
-        if (actual.Count != expected.Count)
+        if (actual.Count != expected.Count || declared.Count != actual.Count)
             return false;
         for (var index = 0; index < actual.Count; index++)
         {
             var left = actual[index];
             var right = expected[index];
+            if (left is MortalWoundApplyDeteriorationOutcomeIntent leftPolicy &&
+                (right is not MortalWoundApplyDeteriorationOutcomeIntent rightPolicy ||
+                 declared[index] is not MortalWoundApplyDeteriorationOperation operation ||
+                 !leftPolicy.TryGetPreparedDeterioration(request, operation, out var leftPrepared) ||
+                 !rightPolicy.TryGetPreparedDeterioration(request, operation, out var rightPrepared) ||
+                 leftPrepared is null || rightPrepared is null ||
+                 leftPrepared.Fingerprint != rightPrepared.Fingerprint)) return false;
             if (left.GetType() != right.GetType() ||
                 left.OperationOrdinal != right.OperationOrdinal ||
                 left.OperationOrdinal != index ||
@@ -1339,18 +1422,25 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
     }
 
     private static bool HasSupportedGrammar(
-        string mode, bool interruption, string? courseDisposition,
-        IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents, string? resultCategory = null)
+        MortalWoundTreatmentResolution resolution, IReadOnlyList<MortalWoundTreatmentOutcomeIntent> intents)
     {
-        if (intents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent))
+        var mode = resolution.Mode;
+        var interruption = resolution.Interruption;
+        var courseDisposition = resolution.CourseDisposition;
+        if (intents.Any(UsesSelectedGraph))
         {
-            if (!(mode == "procedure" && resultCategory is "partial_success" or "failed_attempt") &&
+            if (!(mode == "procedure" && resolution.ResultCategory is "partial_success" or "failed_attempt") &&
                 !(mode == "course" && interruption && courseDisposition == "interrupted")) return false;
+            if (intents.Count != resolution.DeclaredResult.Count) return false;
+            for (var i = 0; i < intents.Count; i++)
+                if (intents[i] is MortalWoundApplyDeteriorationOutcomeIntent policy &&
+                    (resolution.DeclaredResult[i] is not MortalWoundApplyDeteriorationOperation operation ||
+                     !policy.TryGetPreparedDeterioration(resolution.RequestAuthority, operation, out var prepared) ||
+                     prepared is null || prepared.Policy.ResultKind is not
+                         (MortalWoundDeteriorationResultKind.IncreaseSeverity or MortalWoundDeteriorationResultKind.AddComplication)))
+                    return false;
             return intents.Count <= MortalWoundTreatmentContract.MaxOutcomeOperations &&
-                intents.All(static intent => intent is MortalWoundAddComplicationOutcomeIntent or
-                    MortalWoundStabilizeOutcomeIntent or MortalWoundAddRecoveryOutcomeIntent or
-                    MortalWoundRemoveComplicationOutcomeIntent or MortalWoundReduceSeverityOutcomeIntent) &&
-                HasPositiveScalarGrammar(intents.Where(static intent => intent is not MortalWoundAddComplicationOutcomeIntent).ToArray(), allowEmpty: true);
+                HasPositiveScalarGrammar(intents.Where(static intent => !UsesSelectedGraph(intent)).ToArray(), allowEmpty: true);
         }
         if (mode == "course")
         {
@@ -1490,20 +1580,23 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         var recovery = working.Scalars.Recovery;
         if (resolution.OutcomeIntents.Any(static intent => intent is MortalWoundStabilizeOutcomeIntent))
             (care, recovery) = ApplyStabilizationAnchors(care, recovery, metadata.LastTransition, currentGameMinute);
-        var severity = working.Scalars.Severity;
-        if (resolution.OutcomeIntents.Any(static intent => intent is MortalWoundReduceSeverityOutcomeIntent))
-            severity = severity with { LastChangeEventRef = resolution.Coordinates.EventRef };
+        var originalSeverity = resolution.RequestAuthority.RouteSourceWound.Severity;
+        var severity = working.Scalars.Severity with
+        {
+            LastChangeEventRef = working.Scalars.Severity.Rank == originalSeverity.Rank
+                ? originalSeverity.LastChangeEventRef : resolution.Coordinates.EventRef
+        };
         return new(severity, care, recovery, metadata.Treatment, metadata.LastTransition, working.Scalars.SlotBudget);
     }
 
     private static WoundDeclaredTransitionOutcome CreateDeclaredOutcome(
-        WoundMaterializationEnvelope after) => new(
+        WoundMaterializationEnvelope after, MortalWoundTreatmentSelectedGraphCompilation? selectedGraph) => new(
         after.Severity.Rank,
         after.Care.State,
         after.Recovery.CurrentStepProgress,
         Heals: false,
         TerminalAttempt: true,
-        AllowsWorsening: false,
+        AllowsWorsening: selectedGraph?.AllowsWorsening == true,
         after.Complications.Select(static value => value.ComplicationId).ToArray(),
         after.Consequences.OwnedEffectSources.RootBindings
             .Select(static value => value.EffectId)

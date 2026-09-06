@@ -159,6 +159,26 @@ public sealed partial class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void MortalWoundSelectedPolicyWorkedExample_ParsesExactPolicyAndProcedure()
+    {
+        var example = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Wound_Materialization.txt", "mortal_wound_treatment_selected_policy_v1"));
+        var policy = MortalWoundDeteriorationPolicyContract.Parse(
+            JsonSerializer.SerializeToElement(example["recovery"]!["deteriorationPolicy"]),
+            "example.recovery.deteriorationPolicy", "mortal_world", "player", 3);
+        Assert.True(policy.IsValid, string.Join(" | ", policy.Issues.Select(issue => issue.Code)));
+        Assert.Equal(MortalWoundDeteriorationResultKind.IncreaseSeverity, policy.Policy!.ResultKind);
+        var rawRoute = Assert.Single(example["treatment"]!["routes"]!.AsArray());
+        var route = MortalWoundTreatmentContract.ParseRouteShape(
+            JsonSerializer.SerializeToElement(rawRoute), "example.treatment.routes[0]");
+        Assert.True(route.IsValid, string.Join(" | ", route.Issues.Select(issue => issue.Code)));
+        var procedure = Assert.IsType<MortalWoundProcedureRouteDefinition>(route.Route);
+        var failed = Assert.Single(procedure.Bands, row => row.Category == "failed_attempt");
+        var operation = Assert.IsType<MortalWoundApplyDeteriorationOperation>(Assert.Single(failed.DeclaredResult));
+        Assert.Equal(policy.Policy.PolicyRef, operation.PolicyRef);
+    }
+
+    [Fact]
     public void MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute()
     {
         var treatment = Assert.Single(ParseNamedJsonFences(
@@ -182,6 +202,7 @@ public sealed partial class ExampleDocumentationValidationTests
                 "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_roll_scope_all_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_scalar_course_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_selected_policy_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_roll_scope_skill_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_alternative_response_v1"] = "E_CLI_Wound_Materialization.txt",
             ["wound_mortal_alternative_repair_v1"] = "E_CLI_Wound_Materialization.txt",

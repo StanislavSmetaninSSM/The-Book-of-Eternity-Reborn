@@ -3028,7 +3028,7 @@ internal static class EffectAcceptedTurnPlanner
         var retainedDefinitionKeys = sourceExport.Definitions
             .Select(static value => value.DefinitionKey)
             .ToHashSet(StringComparer.Ordinal);
-        var fullRematerialization = hasSelectedGraph ? selectedGraph!.HasReduction : roots.Count != 0 &&
+        var fullRematerialization = hasSelectedGraph ? selectedGraph!.FinalSeverityChanged : roots.Count != 0 &&
             transitionAuthority.TransitionKind is "worsen" or "treat";
         IReadOnlyList<string> selectedTerminalRoots = terminalWound.Consequences.OwnedEffectSources
             .RootBindings.Select(static binding => binding.EffectId).ToArray();
@@ -3056,7 +3056,7 @@ internal static class EffectAcceptedTurnPlanner
         }
         if (hasSelectedGraph) selectedTerminalRoots = selectedGraph!.SelectedTerminalRootIds;
         var expectedExistingLineageCount = hasSelectedGraph
-            ? selectedGraph!.HasReduction ? 0 : selectedGraph.FinalRoots.Count(row => row.OriginalEffectId is not null)
+            ? selectedGraph!.FinalSeverityChanged ? 0 : selectedGraph.FinalRoots.Count(row => row.OriginalEffectId is not null)
             : (terminals.Count == 0 && !removalOnly) ||
                                            fullRematerialization
             ? 0
@@ -3586,7 +3586,7 @@ internal static class EffectAcceptedTurnPlanner
     }
 
     private static string SelectedDefinitionPath(MortalWoundTreatmentSelectedDefinitionOrigin origin) =>
-        $"treatmentPublication.outcome.declaredResult[{origin.OperationOrdinal}].complicationDraft.consequenceDefinitions[{origin.DefinitionOrdinal}].definition.components";
+        origin.ComponentsPath;
 
     private static bool ValidateSelectedDefinitionScopes(EffectAcceptedTurnInput input,
         MortalWoundTreatmentSelectedGraphCompilation selected,
@@ -3656,7 +3656,7 @@ internal static class EffectAcceptedTurnPlanner
                 static binding => binding.EffectId);
         if (selectedGraph is not null)
         {
-            var originalApplications = selectedGraph.FinalRoots.Where(row => selectedGraph.HasReduction && row.OriginalEffectId is not null)
+            var originalApplications = selectedGraph.FinalRoots.Where(row => selectedGraph.FinalSeverityChanged && row.OriginalEffectId is not null)
                 .Select(row => (row.DefinitionKey, row.OwnershipDomain.Kind, row.OwnershipDomain.ComplicationId)).ToHashSet();
             beforeByCoordinate = beforeByCoordinate.Where(pair => originalApplications.Contains(pair.Key))
                 .ToDictionary(pair => pair.Key, pair => pair.Value);
@@ -3746,7 +3746,7 @@ internal static class EffectAcceptedTurnPlanner
         if (string.Equals(transitionKind, "treat", StringComparison.Ordinal) &&
             (selectedGraph is null ? roots.Count != beforeByCoordinate.Count || suppliedPredecessors.Count != beforeByCoordinate.Count
                 : !suppliedPredecessors.SetEquals(beforeByCoordinate.Values) ||
-                  roots.Count != selectedGraph.FinalRoots.Count(row => selectedGraph.HasReduction || row.AdditionBinding is not null)))
+                  roots.Count != selectedGraph.FinalRoots.Count(row => selectedGraph.FinalSeverityChanged || row.AdditionBinding is not null)))
         {
             valid = false;
         }

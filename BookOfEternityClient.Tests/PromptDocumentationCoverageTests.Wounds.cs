@@ -22,7 +22,12 @@ public sealed partial class PromptDocumentationCoverageTests
                 "Same-rank retained wound roots keep their exact identities, carrier payloads and index history.",
                 "An effectless addition still requires a sealed 0/0 batch and an empty application result map.",
                 "New root and child-only exact-skill selectors require fresh Offered/Current authority; retained selectors remain accepted continuations.",
-                "Policy, heal and legacy publication remain unfinished."
+                "Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.",
+                "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
+                "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
+                "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
+                "Death, heal and legacy publication remain unfinished.",
+                "mortal_wound_treatment_selected_policy_v1"
             }) Assert.Contains(required, text, StringComparison.Ordinal);
             Assert.DoesNotContain("the failed complication band is preview-only here", text, StringComparison.Ordinal);
         }
@@ -683,9 +688,11 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The remaining producers\s+`heal`\s+and\s+`apply_deterioration`, including heal legacy publication,\s+are pending implementation",
+                @"The `heal`, explicit death and legacy producers remain pending implementation",
                 RegexOptions.CultureInvariant);
-            Assert.True(pending.Success, "The exact two-producer pending list must remain synchronized.");
+            Assert.True(pending.Success, "The exact heal/death/legacy pending boundary must remain synchronized.");
+            Assert.Contains("Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.", document, StringComparison.Ordinal);
+            Assert.DoesNotContain("apply_deterioration", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_complication", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("remove_complication", pending.Value, StringComparison.Ordinal);

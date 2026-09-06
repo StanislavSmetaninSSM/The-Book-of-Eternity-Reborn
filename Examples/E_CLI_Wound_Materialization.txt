@@ -977,7 +977,19 @@ Same-rank retained wound roots keep their exact identities, carrier payloads and
 Mixed remove/add results must preserve original root-definition bindings and unchanged definition bodies when the final severity is unchanged; this is checked before the roll. A fresh-key replacement or a legal later severity reduction remains possible.
 An effectless addition still requires a sealed 0/0 batch and an empty application result map.
 New root and child-only exact-skill selectors require fresh Offered/Current authority; retained selectors remain accepted continuations.
-Policy, heal and legacy publication remain unfinished.
+Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.
+The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.
+Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.
+Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.
+Death, heal and legacy publication remain unfinished.
+
+Selected policy outcomes are legal only in procedure partial/failed results and actual interrupted courses.
+An interrupted course clears only its course pointer and does not consume the current or future dose.
+Policy increase/add itself leaves care, recovery progress and anchors untouched unless another declared
+operation explicitly changes them. It does not imply death or schedule a natural recovery tick.
+An original rank-IV increase is inapplicable even after an earlier reduction in the selected list.
+A net-zero rank sequence with a different slot budget is rejected before die/resource claims; the client
+never repairs that budget automatically, prunes effects or weakens retained requirements to make it fit.
 
 In this failed-band example the client derives the complication identity and exact namespaced
 definition/application bindings from the selected request. It creates only the new parentless root;
@@ -1624,9 +1636,10 @@ this course reduces severity II to I and stabilizes the wound, which remains act
 Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
-The remaining producers `heal` and `apply_deterioration`, including heal legacy publication,
-are pending implementation; their approved authored contracts remain supported by the complete
-route model. Selected direct additions use the graph publication contract above.
+Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
+The `heal`, explicit death and legacy producers remain pending implementation; their approved authored
+contracts remain in the complete route model. Scheduled natural recovery remains separate and unfinished.
+Selected direct and policy additions use the graph publication contract above.
 
 Врач проводит три этапа: первую перевязку без немедленного улучшения, ослабление раны через
 480 минут и стабилизацию через 960 минут. На каждом этапе расходуется одна текущая доза.
@@ -1667,3 +1680,74 @@ route model. Selected direct additions use the graph publication contract above.
 ```
 
 ]]></content>
+
+## mortal_wound_treatment_selected_policy_v1
+
+Install this complete authored recovery policy and complete procedure route into an untreated rank-III
+Mortal physical wound whose retained consequence graph fits rank II. This is not a complete canonical
+wound or public receipt. The failed attempt selects its existing canonical policy and produces rank IV;
+maximumAtCreation remains unchanged. All permanent identities and publication authority are client-owned.
+
+```json
+{
+  "recovery": {
+    "deteriorationPolicy": {
+      "policyRef": "untreated_deep_wound",
+      "unmetConditions": ["not_stabilized"],
+      "graceMinutes": 30,
+      "cadenceMinutes": 10,
+      "result": { "kind": "increase_severity" }
+    }
+  },
+  "treatment": {
+    "diagnosisPaths": [],
+    "routes": [
+      {
+        "routeId": "clean_deep_wound_with_policy_risk",
+        "displayName": "Очистить глубокую рану с риском ухудшения",
+        "visibility": "known_to_player",
+        "mode": "procedure",
+        "requirements": [
+          { "kind": "item_quantity", "itemRef": "sterile_dressing", "quantity": 1, "ownerRole": "provider" },
+          { "kind": "skill_tier", "capabilityRef": "field_medicine", "minimumTier": 2, "actorRole": "provider" }
+        ],
+        "resourcePolicy": {
+          "reserveBeforeResolution": true,
+          "consumeOn": ["success", "partial_success", "failed_attempt"],
+          "refundOn": ["cancelled", "validation_failed", "rolled_back"],
+          "mutations": [
+            { "kind": "consume_requirement", "scope": "common", "milestoneOrdinal": null, "requirementIndex": 0 }
+          ]
+        },
+        "resolution": {
+          "formulaKey": "mortal_wound_procedure_v1",
+          "difficulty": 15,
+          "rollSource": "accepted_d20",
+          "criticalPolicy": "natural_20_first_natural_1_last",
+          "modifierSource": { "kind": "resolved_skill_tier", "requirementIndex": 1 }
+        },
+        "outcomes": [
+          {
+            "bandId": "deep_wound_success", "minimumMargin": 5, "maximumMargin": null,
+            "category": "success",
+            "result": [{ "kind": "stabilize" }, { "kind": "reduce_severity", "steps": 1 }]
+          },
+          {
+            "bandId": "deep_wound_partial", "minimumMargin": 0, "maximumMargin": 4,
+            "category": "partial_success",
+            "result": [{ "kind": "stabilize" }, { "kind": "add_recovery", "points": 2 }]
+          },
+          {
+            "bandId": "deep_wound_failed", "minimumMargin": null, "maximumMargin": -1,
+            "category": "failed_attempt",
+            "result": [{ "kind": "apply_deterioration", "policyRef": "untreated_deep_wound" }]
+          }
+        ],
+        "interruption": null
+      }
+    ],
+    "knownRouteIds": ["clean_deep_wound_with_policy_risk"],
+    "completedRouteIds": []
+  }
+}
+```

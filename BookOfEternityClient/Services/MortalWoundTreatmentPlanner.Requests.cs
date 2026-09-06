@@ -878,30 +878,12 @@ internal static partial class MortalWoundTreatmentPlanner
         if (!authorityResult.IsValid || authorityResult.Authority is null)
             return new(false, false, null);
         var policy = authorityResult.Authority.Policy;
-        if (policy.ResultKind == MortalWoundDeteriorationResultKind.AddComplication)
-        {
-            var draft = MortalWoundTreatmentContract.BuildValidatedComplicationDraft(
-                authorityResult.Authority.Policy.Result.GetProperty("complicationDraft"));
-            var applicable = before.TryAppendComplication(draft,
-                WoundWorkingReferenceOrigin.PolicyAddition, address, out var appended);
-            return new MortalWoundTreatmentPreparedGraphOperationResult(applicable, false, appended);
-        }
-        if (policy.ResultKind != MortalWoundDeteriorationResultKind.IncreaseSeverity)
-        {
-            // Exact policy/death authority proves applicability only. It does not
-            // terminalize this preview or make any selected publication decision.
-            return new(true, false, before);
-        }
-        var rank = checked(before.Scalars.Severity.Rank + 1);
-        var value = rank switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => string.Empty };
-        if (value.Length == 0) return new(false, false, null);
-        var after = before.WithScalars(before.Scalars with
-        {
-            Severity = before.Scalars.Severity with { Rank = rank, Value = value }
-        });
-        if (!after.ValidateGraph("mortalWoundTreatment.workingGraph").IsEmpty)
-            return new(false, false, null);
-        return new(true, false, after);
+        if (policy.ResultKind == MortalWoundDeteriorationResultKind.DeathContour)
+            return new(true, false, before); // Applicability only; no terminal/publication authority.
+        var draft = policy.ResultKind == MortalWoundDeteriorationResultKind.AddComplication
+            ? MortalWoundTreatmentContract.BuildValidatedComplicationDraft(
+                policy.Result.GetProperty("complicationDraft")) : null;
+        return MortalWoundTreatmentPolicyGraphProjection.Project(before, address, policy.ResultKind, draft);
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateGuaranteedApplicability(

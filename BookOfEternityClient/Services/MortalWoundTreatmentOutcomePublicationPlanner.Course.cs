@@ -41,8 +41,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             resolution.ConsumptionTrigger != MortalWoundTreatmentPlanner.DeriveConsumptionTrigger(
                 route, resolution.ResultCategory, resolution.Interruption) ||
             !TryProjectActiveCourseId(request.RouteSourceWound, request, resolution, out _) ||
-            !HasSupportedGrammar(resolution.Mode, resolution.Interruption,
-                resolution.CourseDisposition, resolution.OutcomeIntents, resolution.ResultCategory) ||
+            !HasSupportedGrammar(resolution, resolution.OutcomeIntents) ||
             !MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(resolution, out var evidenceFingerprint))
             return false;
         return resolution.ResolutionAuthorityFingerprint ==

@@ -664,7 +664,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Fact]
     public void PolicyPreparation_PublicShapeAndPublicationBoundaryRemainClosed()
     {
-        var scenario = CreatePolicyPreparationScenario("add_complication");
+        var scenario = CreatePolicyPreparationScenario("death_contour");
         using var fixture = AcceptedStateFixture.Create(scenario);
         var flow = ResolveCurrentTreatment(
             fixture,

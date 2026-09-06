@@ -1392,7 +1392,7 @@ internal static class WoundAcceptedTurnPlannerCore
         foreach (var root in compilation.FinalRoots)
         {
             var effectId = root.OriginalEffectId;
-            if (compilation.HasReduction || root.AdditionBinding is not null)
+            if (compilation.FinalSeverityChanged || root.AdditionBinding is not null)
             {
                 var applications = batch.RootApplications.Where(application => application.DefinitionKey == root.DefinitionKey &&
                     application.OwnershipDomain == root.OwnershipDomain).ToArray();
@@ -1405,7 +1405,7 @@ internal static class WoundAcceptedTurnPlannerCore
         }
         var complications = compilation.FinalGraph.Complications.Select(row => new WoundComplication(
             row.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? row.Reference.Value :
-                compilation.Additions.Single(add => add.ComplicationRef == row.Reference.Value).ComplicationId,
+                compilation.Additions.Single(add => add.Reference == row.Reference).Binding.ComplicationId,
             row.Kind, row.State, row.DisplayName, row.TreatmentDifficultyModifier, ImmutableArray<string>.Empty, row.Visibility)).ToArray();
         return BuildFinalWoundCore(compilation.Before, compilation.FinalScalars, complications, batch.SourceExport.Definitions, rows);
     }

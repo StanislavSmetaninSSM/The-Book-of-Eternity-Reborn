@@ -65,6 +65,8 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
         if (result.IsApplicable && result.WorkingGraph is { } final && startingWound.Owner.Realm == "mortal_world" &&
             startingWound.Classification.Domain == "physical" && final.Scalars.Severity.Rank == starting.Scalars.Severity.Rank)
         {
+            if (final.Scalars.SlotBudget != starting.Scalars.SlotBudget)
+                return NotApplicable();
             var continuity = WoundSameRankOwnedSourceContinuity.Compare(
                 starting.Graph.Roots.ToDictionary(row => row.DefinitionKey, row => row.Reference, StringComparer.Ordinal),
                 final.Graph.Roots.ToDictionary(row => row.DefinitionKey, row => row.Reference, StringComparer.Ordinal),
