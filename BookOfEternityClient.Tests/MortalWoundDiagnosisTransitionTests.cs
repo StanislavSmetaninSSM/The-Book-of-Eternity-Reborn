@@ -250,6 +250,60 @@ public sealed class MortalWoundDiagnosisTransitionTests
         AssertRejected(WoundTransitionReducer.Reduce(request), "wound_transition_evidence_invalid");
     }
 
+    [Theory]
+    [InlineData("success", false, false)]
+    [InlineData("failure", false, true)]
+    [InlineData("success", true, true)]
+    public void Reduce_DiagnosisResultCardinalityMatchesDurableHistory(
+        string outcome, bool declaresKnownFact, bool accepted)
+    {
+        var (beforeRoot, _) = Roots("failure");
+        beforeRoot["treatment"]!["diagnosisPaths"]![0]!["reveals"] = declaresKnownFact
+            ? new JsonArray("route:clean_and_suture")
+            : new JsonArray();
+        var before = Parse(beforeRoot);
+        var request = Create(before, Parse(Advance(beforeRoot)), outcome);
+        var reduced = WoundTransitionReducer.Reduce(request);
+        if (!accepted)
+        {
+            AssertRejected(reduced, "wound_transition_diagnosis_fact_unauthorized");
+            return;
+        }
+
+        Assert.True(reduced.IsValid, Issues(reduced));
+        Assert.Equal(3, reduced.Intents.Count);
+        Assert.Single(reduced.Intents.OfType<WoundCarrierTransitionIntent>());
+        Assert.Single(reduced.Intents.OfType<WoundAttemptTerminalIntent>());
+        var intent = Assert.Single(reduced.Intents.OfType<WoundTransitionHistoryIntent>());
+        var result = Assert.IsType<WoundDiagnosisTransitionResult>(intent.TransitionResult);
+        Assert.Equal(outcome, result.Result);
+        Assert.Equal(declaresKnownFact ? new[] { "route:clean_and_suture" } : Array.Empty<string>(),
+            result.RevealedFacts);
+        Assert.Equal(before.Treatment.KnownRouteIds, reduced.ProposedAfter!.Treatment.KnownRouteIds);
+        Assert.Equal(before.Care, reduced.ProposedAfter.Care);
+
+        var empty = WoundHistoryState.CreateValidated(1, Array.Empty<WoundHistoryTransition>());
+        Assert.True(empty.IsValid);
+        var creation = new WoundTransitionHistoryIntent(before.LastTransition.TransitionId,
+            before.WoundId, "create", "operation_create_cardinality", before.Origin.EventRef,
+            before.LastTransition.Turn, WoundHistoryState.ComputeNonexistentBeforeFingerprint(before.WoundId),
+            WoundIdentityState.ComputeSemanticFingerprint(before), null, null, false);
+        var created = empty.State!.AppendTransition(creation, Seal('8'),
+            WoundHistoryState.ComputeOutputFingerprint(creation.OperationKey, creation.EventRef, "Created"),
+            "Created");
+        Assert.True(created.IsValid, string.Join("; ", created.Issues.Select(issue => issue.Code)));
+        var appended = created.State!.AppendTransition(intent, Seal('8'),
+            WoundHistoryState.ComputeOutputFingerprint(intent.OperationKey, intent.EventRef, "Diagnosed"),
+            "Diagnosed");
+        Assert.True(appended.IsValid, string.Join("; ", appended.Issues.Select(issue => issue.Code)));
+        Assert.Equal(2, appended.State!.Transitions.Count);
+        var replay = appended.State.ResolveReplay(
+            WoundHistoryState.CreateReplayProbe(appended.State.Transitions[^1]));
+        Assert.Equal(WoundHistoryReplayDisposition.Exact, replay.Disposition);
+        var durable = Assert.IsType<WoundDiagnosisTransitionResult>(replay.AlreadyAcceptedReceipt!.TransitionResult);
+        Assert.True(JsonNode.DeepEquals(result.ToCanonicalJson(), durable.ToCanonicalJson()));
+    }
+
     [Fact]
     public void Factory_DetachesMutableInputsFactsAndCanonicalProjections()
     {

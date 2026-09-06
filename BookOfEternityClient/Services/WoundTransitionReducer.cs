@@ -1304,7 +1304,8 @@ internal static partial class WoundTransitionReducer
                 evidence.DiagnosisPathId);
             return;
         }
-        if (!SequenceEqual(evidence.ResultKind == "success" ? diagnosisPath.Reveals :
+        if (evidence.ResultKind == "success" && evidence.RevealedFacts.Count == 0 ||
+            !SequenceEqual(evidence.ResultKind == "success" ? diagnosisPath.Reveals :
                 ImmutableArray<string>.Empty, evidence.RevealedFacts) ||
             evidence.RevealedFacts.Any(static fact => !TryParseDiagnosisReveal(
                 fact,
@@ -1314,7 +1315,7 @@ internal static partial class WoundTransitionReducer
             Add(
                 issues,
                 "wound_transition_diagnosis_fact_unauthorized",
-                "exact declared reveals of one accepted diagnosis path",
+                "nonempty complete declared reveals for success; no facts for failure",
                 evidence.AuthorityRef);
             return;
         }
