@@ -44,6 +44,47 @@ public sealed partial class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void WoundDiagnosisIdentityDocumentation_UsesDistinctCompleteWorkedPaths()
+    {
+        var guide = ExtractWoundDocumentationSection(
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            "wound_mortal_diagnosis_identity_v1");
+        Assert.Contains("case/Unicode-confusable unique", guide, StringComparison.Ordinal);
+        Assert.Contains("never fuzzy or display-name matching", guide, StringComparison.Ordinal);
+        var section = ExtractWoundDocumentationSection(
+            ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt"),
+            "wound_mortal_roll_scope_skill_v1");
+        var roots = Regex.Matches(section, @"```json\s*(?<json>.*?)```",
+                RegexOptions.Singleline | RegexOptions.CultureInvariant)
+            .Select(match => Assert.IsType<JsonObject>(JsonNode.Parse(match.Groups["json"].Value)))
+            .ToArray();
+        var response = Assert.Single(roots, root => root.ContainsKey("woundDecisions"));
+        var decision = Assert.Single(response["woundDecisions"]!.AsArray());
+        var paths = decision!["proposal"]!["treatment"]!["diagnosisPaths"]!.AsArray();
+        Assert.Equal(2, paths.Count);
+        var expected = new[]
+        {
+            (Id: "inspect_ashglass_cuts", Name: "Осмотреть края порезов"),
+            (Id: "assess_ashglass_tendon", Name: "Проверить подвижность пальцев")
+        };
+        for (var index = 0; index < expected.Length; index++)
+        {
+            var value = new JsonObject
+            {
+                ["diagnosisPathId"] = expected[index].Id,
+                ["displayName"] = expected[index].Name,
+                ["visibility"] = "known_to_player",
+                ["requiresKnownFacts"] = new JsonArray(),
+                ["requirements"] = new JsonArray(),
+                ["check"] = new JsonObject(),
+                ["reveals"] = new JsonArray("route:ashglass_clean_and_bind"),
+                ["failurePolicy"] = "no_reveal"
+            };
+            Assert.True(JsonNode.DeepEquals(value, paths[index]), value.ToJsonString());
+        }
+    }
+
+    [Fact]
     public void WoundMaterializationContract_DocumentsStrictConstructorAndAuthority()
     {
         var contract = ReadRepoFile(

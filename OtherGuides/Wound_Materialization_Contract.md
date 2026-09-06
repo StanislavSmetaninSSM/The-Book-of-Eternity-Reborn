@@ -89,6 +89,14 @@ items, or skills: the client validates their current authority when treatment is
 Spiritual wounds use the afterlife healing and natural-time
 contracts described by their owning feature stages.
 
+## wound_mortal_diagnosis_identity_v1
+
+Within one Mortal wound, `diagnosisPathId` values must be exact and case/Unicode-confusable unique.
+Choose a genuinely distinct ID for each diagnosis path; changing
+only capitalization or using visually confusable characters is invalid. Selection
+uses the exact ID, never fuzzy or display-name matching. This identifies possible
+examinations; it does not assert that an examination succeeded or grant treatment.
+
 ## wound_optional_creation_v1
 
 An ordinary wound is optional. For an ordinary eligible event the GM may decline:

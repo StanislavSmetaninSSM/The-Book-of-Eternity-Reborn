@@ -365,7 +365,28 @@ stabilization.
           }
         ],
         "treatment": {
-          "diagnosisPaths": [],
+          "diagnosisPaths": [
+            {
+              "diagnosisPathId": "inspect_ashglass_cuts",
+              "displayName": "Осмотреть края порезов",
+              "visibility": "known_to_player",
+              "requiresKnownFacts": [],
+              "requirements": [],
+              "check": {},
+              "reveals": ["route:ashglass_clean_and_bind"],
+              "failurePolicy": "no_reveal"
+            },
+            {
+              "diagnosisPathId": "assess_ashglass_tendon",
+              "displayName": "Проверить подвижность пальцев",
+              "visibility": "known_to_player",
+              "requiresKnownFacts": [],
+              "requirements": [],
+              "check": {},
+              "reveals": ["route:ashglass_clean_and_bind"],
+              "failurePolicy": "no_reveal"
+            }
+          ],
           "routes": [
             {
               "routeId": "ashglass_clean_and_bind",
@@ -454,6 +475,13 @@ stabilization.
   ]
 }
 ```
+
+The diagnosis paths are setting-specific examinations for the ashglass cuts, not a
+universal wound or diagnosis catalog. Their IDs are exact and distinct: for example,
+`INSPECT_ASHGLASS_CUTS` cannot be a second path ID next to `inspect_ashglass_cuts`;
+the genuinely distinct second ID above is `assess_ashglass_tendon`. Selecting a path
+uses its exact ID, never fuzzy or display-name matching, and merely identifies a
+possible examination; it does not assert success or grant treatment.
 
 Only that exact skill's checks receive this component; other skills and identity-less
 checks do not. A same-response new skill cannot be selected, and removing or disabling
