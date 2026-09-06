@@ -1510,7 +1510,14 @@ FR-064's Mortal physical III/IV-to-active-I treatment staging allowance only.
 It preserves the spiritual/recovery limits and the independent terminal heal
 validator. This two-file reducer/test task does not expose healing publication,
 register legacy sources, or settle the unanswered legacy preparation decision.
-Implementation, test evidence and independent acceptance remain pending.
+Accepted at `ca29359c` after parent source/artifact inspection and independent
+Spec Compliant / Quality Approved, zero open findings. Actual eight-row RED
+(four intended bound failures/four preservation PASS), eight GREEN, and full
+reducer 148/148 PASS prove this narrow exception. One Fast completed 6,093 of
+7,388 discovery rows with one required unchanged legacy failure; arithmetic
+1,295 uncompleted, not full GREEN. All runs used five-minute bounds and clean
+build/cleanup evidence. The linked sub-plan records exact artifacts; T070 remains
+open for actual heal/legacy publication and the separate preparation decision.
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
@@ -1550,6 +1557,17 @@ unchanged legacy-source failure; arithmetic 1,172 uncompleted, not full GREEN.
 No runtime caller or GM contract was added, so no GM prompt/example or conditional
 FullValidation update was needed. Full T076/T084 and the above schema decision
 remain open; the linked sub-plan contains the exact evidence and boundaries.
+
+Next numerical prerequisite (2026-09-07):
+`docs/superpowers/plans/2026-09-07-spiritual-healing-outcome-math.md` defines the
+unused internal spiritual-healing tier/formula/band/terminal-bound calculator.
+Its 44 valid-value and 14 invalid-domain/overflow rows cover arithmetic only;
+the return value supplies no accepted healer/target/modifier/die authority,
+resource/time spend, art progression or mutation. Parent complete-code self-review
+and literal arithmetic cross-check are complete; implementation and independent
+acceptance remain pending. Full T094/T101 stay open for the actual shared resolver
+and accepted publication, while the existing GM synchronization tasks cover the
+future exposed workflow. This task does not settle the separate art-schema choice.
 
 Checkpoint: players and persistent entities have complete bounded spiritual wound and
 healing lifecycles; every non-training defeat is durable without mandatory injury or

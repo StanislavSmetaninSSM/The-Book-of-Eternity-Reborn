@@ -49,7 +49,7 @@ the transition under test, and its definition graph must remain identical.
 
 ### Task 1: Realm- and operation-specific follow-up staging
 
-- [ ] **Step 1: Add exact positive and preservation tests before changing the reducer.**
+- [x] **Step 1: Add exact positive and preservation tests before changing the reducer.**
 
 Insert the following methods beside the existing follow-up heal tests. Reuse all
 existing helpers without changing their behavior or existing assertions.
@@ -148,7 +148,7 @@ existing helpers without changing their behavior or existing assertions.
     }
 ```
 
-- [ ] **Step 2: Confirm actual semantic RED.**
+- [x] **Step 2: Confirm actual semantic RED.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~WoundTransitionReducerTests.Reduce_MortalFollowUpHeal_"
@@ -159,7 +159,7 @@ bound rejects III/IV -> I, and 4 preservation negatives pass. A compile or fixtu
 failure is not the intended RED. Correct a concrete fixture issue without changing
 the required invariant, then observe semantic RED before production changes.
 
-- [ ] **Step 3: Add the narrow private treatment exception.**
+- [x] **Step 3: Add the narrow private treatment exception.**
 
 Change only `ValidateTreat`'s call to pass the explicit private option:
 
@@ -185,7 +185,7 @@ Update only the treatment branch's diagnostic expected text to
 The issue code is unchanged. No other reducer, validation or publisher behavior
 changes. Run the exact Step 2 command: expected 8/8 GREEN.
 
-- [ ] **Step 4: Verify the full owning reducer and one bounded checkpoint.**
+- [x] **Step 4: Verify the full owning reducer and one bounded checkpoint.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~WoundTransitionReducerTests"
@@ -200,7 +200,7 @@ summary, build warnings/errors, cleanup, timeout and duplicates. If Fast stops a
 the existing mandatory unfinished legacy-source RED, report exact counts/name and
 uncompleted discovery; do not claim a full green Fast or fix that separate task.
 
-- [ ] **Step 5: Report and independently review the bounded change.**
+- [x] **Step 5: Report and independently review the bounded change.**
 
 Commit only the two named code/test files; parent owns this plan and Spec Kit
 evidence updates. Record task BASE/candidate, exact commands/artifacts, 8-row
@@ -218,3 +218,38 @@ emit no invented effect operation. Terminal heal and legacy semantics are untouc
 The test helper used for spiritual III preservation is not broadened to unsupported
 IV fixture shapes. This plan does not resolve either legacy-preparation authority
 or the separate spiritual-art storage/specification inconsistency.
+
+## Parent acceptance — 2026-09-07
+
+Bounded Task 1 is complete at `ca29359c9b22a677d8846534e3b3d3622fe8239d`
+against recorded BASE `42794108ad980d948f905b7b59481610ab9acf79`: exactly two
+code/test files, 100 insertions / four deletions. Parent inspected the complete
+source diff, amended report and actual artifacts. Independent task review returned
+Spec Compliant / Quality Approved, zero Critical/Important/Minor findings. Its
+outside-diff verification item is resolved by the parent artifact audit below.
+
+All artifacts are under `TestResults/test-lanes/`:
+
+- `20260907-075222-789-45728-e52982ce2f3c41d79fea62b52bcff78a-focused`:
+  eight executed, four intended III/IV-to-I bound failures and four preservation
+  PASS before production changes, 1:10.877 at five minutes.
+- `20260907-075400-143-34632-0ac01b41591047b284bf1a4e963b6f85-focused`:
+  eight/eight PASS after the private treatment-only change, 1:02.572.
+- `20260907-075507-921-36368-e55908f5ac2e4aa98e4a3746fd17e4fc-focused`:
+  the whole owning reducer, 148/148 PASS, 16.829 seconds.
+- `20260907-075528-228-40264-ad6da947db95451493f62e5cd0a6b3bb-fast`:
+  one Fast, 2:33.580 at five minutes; 6,092 PASS and the required unchanged
+  `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
+  failure. Ten completed TRX contain 6,093 executed rows versus 7,388 discovery
+  rows: arithmetic 1,295 uncompleted, not an exact identity-set assertion. The
+  observed started-no-TRX descriptor 08 is only a subset of the remainder.
+  Fast remains incomplete and not GREEN.
+
+All runs have zero build warnings/errors, no timeout, successful cleanup and no
+duplicate artifacts or execution IDs. Actual RED messages identify only the
+intended follow-up rank-bound rejection; no compile/fixture failure is counted.
+`git diff --check` passed. The report-only clarification of Fast coverage did not
+change code or require another run. The no-GM-update rationale remains valid:
+this internal staging exception does not expose a healing/legacy workflow. No
+FullValidation, PreMerge, remote operation or top-level T070/#1536 closure occurred;
+the final heal publisher and unanswered legacy-preparation decision remain open.
