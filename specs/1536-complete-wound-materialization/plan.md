@@ -653,6 +653,20 @@ test projection omitting production SkillId, with all60/43 failures parent-confi
 Task2 in the same fixture-alignment plan now owns exact test-view/member/value
 alignment, with no production or GM contract change and no repeated FullValidation.
 The required unfinished legacy source remains explicit; T070/T177/#1536 stay open.
+The follow-up T177 test-view checkpoint `580f682e..9f111e7b` is independently
+Spec compliant / Task quality Approved and parent-accepted, with no findings.
+Exact SkillId shape/value and separate capability/skill fingerprint assertions now
+pass all236 requirement rows, also green across both Fast shards. Parent audited
+both artifact sets and the one-file diff. Fast5627/5628 remains partial on an
+unchanged console-input1second registration timeout; one source-targeted diagnostic
+passes1/1 in41ms without changes. Load-sensitive timing is suspected, not claimed
+fixed; preserve this for final T177 triage. No production or GM contract changed.
+Next execute Task1 of `docs/superpowers/plans/2026-09-06-t070-complication-addition-publication.md`:
+one symbolic graph/common canonical rules, exact ordered cumulative pre-roll checks,
+preserved typed policy applicability and no preselection runtime identity allocation.
+Task2 subsequently binds only selected direct additions through T067 and the one
+atomic effect publisher. Full policy publication/heal-legacies and the remaining
+Mortal/spiritual/healing/UI scope remain open; the legacy choice is not inferred.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

@@ -168,7 +168,7 @@ No production, guide/example/manifest, Integration or lane inventory/default edi
 No FullValidation rerun: Task1's shared example-reader evidence remains applicable.
 Use the parent acceptance commit as exact BASE; one implementer/C# lane.
 
-- [ ] **Step 1: Confirm the existing RED and exact production ownership.**
+- [x] **Step 1: Confirm the existing RED and exact production ownership.**
 
   Reuse actual Focused235/175/60 from
   `20260906-212239-382-30672-72db5e6c90374644b36906001d38ed8b-focused` and
@@ -180,7 +180,7 @@ Use the parent acceptance commit as exact BASE; one implementer/C# lane.
   passes the exact snapshot skill identity and fingerprints it (`:854,:868`).
   No duplicate broad RED run is needed.
 
-- [ ] **Step 2: Update the strict test adapter and assert the coordinate.**
+- [x] **Step 2: Update the strict test adapter and assert the coordinate.**
 
   Make these exact edits, retaining every existing member and assertion:
 
@@ -221,7 +221,7 @@ Use the parent acceptance commit as exact BASE; one implementer/C# lane.
   }
   ```
 
-- [ ] **Step 3: Verify the owner, then one meaningful Fast checkpoint.**
+- [x] **Step 3: Verify the owner, then one meaningful Fast checkpoint.**
 
   ```powershell
   pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundRequirementAuthorityTests"
@@ -235,7 +235,7 @@ Use the parent acceptance commit as exact BASE; one implementer/C# lane.
   If any other failure emerges, inspect the actual cause and send parent the
   evidence before expanding implementation; do not weaken assertions or guess.
 
-- [ ] **Step 4: Commit this one file and obtain independent review.**
+- [x] **Step 4: Commit this one file and obtain independent review.**
 
   ```powershell
   git add -- BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs
@@ -246,3 +246,20 @@ Use the parent acceptance commit as exact BASE; one implementer/C# lane.
   and test-only no-update rationale. Do not stage parent plans or Spec Kit progress.
   Parent reviews diff/artifacts and obtains fresh independent Spec+Quality review
   before accepting or dispatching addition Task1. No remote actions.
+
+**Task2 acceptance (2026-09-06):** `580f682e..9f111e7b`, independently Spec
+compliant / Task quality Approved, no findings. Parent inspected the complete
+one-file diff, unchanged production owner, review and both actual artifact sets.
+Focused236/236 (1:14.6932982) and both Fast requirement shards118+118 pass including
+the new exact identity row; builds0/0, cleanup complete, no timeout/duplicate IDs.
+Fast5627/5628 (2:20.2634328,7 TRX) is still incomplete, failing only unchanged
+`AgentConsoleLiveInputSourceTests.EnqueueLine_WhenReadKeyIsPending_RejectsWithoutPoisoningQueue`
+at596: its Task.Run registration wait exceeds1second. Parent ran the single named
+diagnostic, artifact `20260906-220022-060-39060-042e692049064345a78fd0a31c50ed7f-focused`:
+1/1 green, test41ms, lane1:07.9744426, clean build/cleanup, no timeout/duplicates.
+This suggests load-sensitive scheduling, not a proven fix or a full Fast pass.
+Keep that residual for T177/final lane triage; do not derail the wound graph task
+with a speculative console refactor. No console code/test change or FV rerun made.
+The required legacy source remains unfinished/unreached and T070/T177/#1536 open.
+Both bounded fixture tasks are accepted; proceed to addition Task1 after committing
+the parent plan/Spec Kit bookkeeping and recording its exact BASE.

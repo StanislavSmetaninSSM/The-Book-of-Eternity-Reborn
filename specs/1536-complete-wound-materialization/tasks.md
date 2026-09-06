@@ -1647,6 +1647,18 @@ entrypoints require no update for T065.
   the strict test view and exact skill identity before addition. Test-only scope
   changes no Mortal/afterlife authoring contract; no GM update or FV repeat needed.
   T070/T177/#1536 remain open.
+  T177 test-view checkpoint (2026-09-06): `580f682e..9f111e7b`, independently Spec
+  compliant / Task quality Approved, no findings, parent-accepted after actual diff,
+  review and two artifact-set audit. All236 requirement rows now pass with exact
+  nullable SkillId and capability/skill fingerprint assertions; both118-row Fast
+  shards are also green. Fast5627/5628 remains incomplete on an unchanged console
+  input registration timeout at1second. Parent single-owner diagnostic passes1/1
+  in41ms with clean build/cleanup; no fix/full-Fast claim. Preserve load-sensitive
+  console timing suspicion for final T177 triage. No production/GM contract changed.
+  Both fixture tasks are accepted; next Task1 of
+  `docs/superpowers/plans/2026-09-06-t070-complication-addition-publication.md` owns
+  cumulative symbolic-graph/pre-roll admission before selected direct-add publication.
+  Full policy publication, heal/legacy and T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
