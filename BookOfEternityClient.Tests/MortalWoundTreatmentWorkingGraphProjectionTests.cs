@@ -8,6 +8,138 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class MortalWoundTreatmentWorkingGraphProjectionTests
 {
+    [Theory]
+    [InlineData(false, true)]
+    [InlineData(true, true)]
+    [InlineData(false, false)]
+    [InlineData(true, false)]
+    public void GraphProjection_RetainedReactionDraftMatchesCanonicalReduction(bool retainedPolicy, bool reaction)
+    {
+        var before = RetainedDraftWound(retainedPolicy, reaction);
+        var canonical = MortalWoundTreatmentSeverityReductionPlanner.Project(before, 1, before.Severity.LastChangeEventRef);
+        Assert.Equal(!reaction, canonical.IsValid);
+        if (retainedPolicy && reaction)
+            Assert.Contains(canonical.Issues, issue => IsRetainedRankIssue(issue,
+                "mortalWoundTreatment.severityReductionProjection.provisionalAfter.recovery.deteriorationPolicy.result.complicationDraft.consequenceDefinitions[0].definition.components[0].payload.definitionKey",
+                "mortal_wound_deterioration_policy_invalid"));
+        var operations = new[] { ImmutableArray.Create<MortalWoundTreatmentOperation>(new MortalWoundReduceSeverityOperation(1)) };
+        Assert.Equal(!reaction, MortalWoundTreatmentWorkingWoundSimulator.Simulate(before, operations).IsApplicable);
+        var graph = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(before)!;
+        var destination = graph.WithScalars(graph.Scalars with
+        {
+            Severity = graph.Scalars.Severity with { Rank = 2, Value = "II" }, SlotBudget = 2
+        });
+        var issues = destination.ValidateGraph("retainedGraph");
+        if (reaction)
+        {
+            var path = retainedPolicy
+                ? "retainedGraph.recovery.deteriorationPolicy.result.complicationDraft.consequenceDefinitions[0].definition.components[0].payload.definitionKey"
+                : "treatmentAttempt.workingWound.treatment.routes[0].outcomes[2].result[0].complicationDraft.consequenceDefinitions[0].definition.components[0].payload.definitionKey";
+            Assert.Contains(issues, issue => IsRetainedRankIssue(issue, path,
+                retainedPolicy ? "mortal_wound_deterioration_policy_invalid" : "wound_materialization_invalid_field"));
+        }
+        else Assert.Empty(issues);
+        Assert.Equal(!reaction, MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before, operations, Append).IsApplicable);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GraphProjection_SymbolicAdditionDoesNotSkipRetainedRankValidation(bool retainedPolicy)
+    {
+        var before = RetainedDraftWound(retainedPolicy, true);
+        var graph = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(before)!;
+        Assert.True(graph.TryAppendComplication(Draft("unresolved"), WoundWorkingReferenceOrigin.DirectAddition, new(0, 0), out var added));
+        Assert.False(added!.TryExportExisting(out _));
+        var lowered = added.WithScalars(added.Scalars with
+        {
+            Severity = added.Scalars.Severity with { Rank = 2, Value = "II" }, SlotBudget = 2
+        });
+        Assert.Contains(lowered.ValidateGraph("symbolicGraph"), issue =>
+            issue.Expected == "wound-owned apply_definition only at severity III or IV" && issue.Actual == "2");
+        var operations = ImmutableArray.Create<MortalWoundTreatmentOperation>(
+            new MortalWoundAddComplicationOperation(Draft("unresolved")), new MortalWoundReduceSeverityOperation(1));
+        Assert.False(MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before, new[] { operations }, Append).IsApplicable);
+    }
+
+    [Fact]
+    public void GraphProjection_RemovalPreservesCanonicalDiagnosisValidation()
+    {
+        var source = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(ReadRankThreeWound()))!.AsObject();
+        source["complications"]![0]!["ownedEffectIds"] = new JsonArray();
+        source["treatment"]!["diagnosisPaths"] = new JsonArray(new JsonObject
+        {
+            ["diagnosisPathId"] = "retained_complication_fact", ["displayName"] = "Проверить известное осложнение",
+            ["visibility"] = "known_to_player", ["requiresKnownFacts"] = new JsonArray("complication:old_complication"),
+            ["requirements"] = new JsonArray(), ["check"] = new JsonObject(),
+            ["reveals"] = new JsonArray("complication:old_complication"), ["failurePolicy"] = "no_reveal"
+        });
+        var before = Parse(source);
+        var rejectedExport = Assert.Throws<InvalidOperationException>(() =>
+            MortalWoundTreatmentWorkingWoundSimulator.TryRemoveComplication(before, "old_complication", out _));
+        Assert.Equal("Cannot serialize an invalid Mortal wound treatment projection.", rejectedExport.Message);
+        var operations = new[] { ImmutableArray.Create<MortalWoundTreatmentOperation>(new MortalWoundRemoveComplicationOperation("old_complication")) };
+        Assert.False(MortalWoundTreatmentWorkingWoundSimulator.Simulate(before, operations).IsApplicable);
+        var canonicalRemoved = source.DeepClone().AsObject();
+        canonicalRemoved["complications"] = new JsonArray();
+        Assert.Contains(WoundMaterializationContract.Parse(canonicalRemoved.ToJsonString(), "removed").Issues,
+            issue => issue.Code == "wound_treatment_diagnosis_fact_unknown" &&
+                issue.FilePath == "removed.treatment.diagnosisPaths[0].requiresKnownFacts[0]");
+        var graph = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(before)!;
+        Assert.True(graph.TryAppendComplication(Draft("seed_retained"), WoundWorkingReferenceOrigin.DirectAddition, new(0, 0), out _));
+        Assert.True(graph.TryRemoveExistingComplication("old_complication", out var removed));
+        Assert.Contains(removed!.ValidateGraph("removed"), issue => issue.Code == "wound_treatment_diagnosis_fact_unknown");
+        Assert.False(MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before, operations, Append).IsApplicable);
+        var replacement = WoundResponseInputComposer.ConvertTreatmentComplicationGraph(Draft("old_complication"),
+            before.WoundId, WoundWorkingReferenceOrigin.DirectAddition, new(0, 1));
+        var symbolicReplacement = removed.WithGraph(removed.Graph with
+        {
+            Complications = removed.Graph.Complications.AddRange(replacement.Complications)
+        });
+        Assert.Contains(symbolicReplacement.ValidateGraph("symbolicReplacement"),
+            issue => issue.Code == "wound_treatment_diagnosis_fact_unknown");
+        source["treatment"]!["diagnosisPaths"] = new JsonArray();
+        var unreferenced = Parse(source);
+        Assert.True(MortalWoundTreatmentWorkingWoundSimulator.Simulate(unreferenced, operations).IsApplicable);
+        Assert.True(MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(unreferenced, operations, Append).IsApplicable);
+    }
+
+    private static bool IsRetainedRankIssue(ValidationIssue issue, string path, string code) =>
+        issue.FilePath == path && issue.Code == code &&
+        issue.Expected == "wound-owned apply_definition only at severity III or IV" && issue.Actual == "2";
+
+    private static WoundMaterializationEnvelope RetainedDraftWound(bool retainedPolicy, bool reaction)
+    {
+        var source = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(ReadRankThreeWound()))!.AsObject();
+        var definitions = WoundContractTestData.CreateRootBoundReactionComplicationDefinitions("replace");
+        if (!reaction)
+        {
+            var single = definitions[1]!.DeepClone().AsObject();
+            single["definition"]!["stacking"]!["policy"] = "independent";
+            definitions = new JsonArray(single);
+        }
+        var addition = new JsonObject
+        {
+            ["kind"] = "add_complication", ["complicationDraft"] = new JsonObject
+            {
+                ["complications"] = new JsonArray(new JsonObject
+                {
+                    ["complicationRef"] = "irritation", ["kind"] = "pain", ["state"] = "active",
+                    ["displayName"] = "Раздражение раны", ["treatmentDifficultyModifier"] = 1, ["visibility"] = "known_to_player"
+                }),
+                ["consequenceDefinitions"] = definitions
+            }
+        };
+        if (retainedPolicy)
+            source["recovery"]!["deteriorationPolicy"] = new JsonObject
+            {
+                ["policyRef"] = "untreated_infection", ["unmetConditions"] = new JsonArray("not_stabilized"),
+                ["graceMinutes"] = 30L, ["cadenceMinutes"] = 10L, ["result"] = addition
+            };
+        else source["treatment"]!["routes"]![0]!["outcomes"]![2]!["result"] = new JsonArray(addition);
+        return Parse(source);
+    }
+
     [Fact]
     public void GraphProjection_CanonicalImportExportIsExactAndDetached()
     {

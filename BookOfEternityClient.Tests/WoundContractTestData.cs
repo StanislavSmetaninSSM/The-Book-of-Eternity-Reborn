@@ -5,6 +5,62 @@ namespace BookOfEternityClient.Tests;
 /// <summary>Strict, deterministic version-1 JSON data for future wound contract tests.</summary>
 internal static class WoundContractTestData
 {
+    internal static JsonArray CreateRootBoundReactionComplicationDefinitions(
+        string targetPolicy)
+    {
+        var producer = WoundContractTestData.CreateApplyDefinitionRoot(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_reaction",
+            "irritation_reaction_target");
+        producer["links"] = new JsonArray();
+        var target = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side",
+            "mortal_world",
+            "irritation_reaction_target",
+            "action_control");
+        target["links"] = new JsonArray();
+        target["stacking"]!["policy"] = targetPolicy;
+
+        return new JsonArray(
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_reaction",
+                ["definition"] = producer,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "irritation"
+                    },
+                    ["slots"] = new JsonArray(new JsonObject
+                    {
+                        ["profileKey"] = "event_reaction",
+                        ["readableSummary"] = "Боль усиливает следующий связанный эффект."
+                    })
+                }
+            },
+            new JsonObject
+            {
+                ["definitionRef"] = "irritation_reaction_target",
+                ["definition"] = target,
+                ["root"] = new JsonObject
+                {
+                    ["ownership"] = new JsonObject
+                    {
+                        ["kind"] = "complication",
+                        ["complicationRef"] = "irritation"
+                    },
+                    ["slots"] = new JsonArray(new JsonObject
+                    {
+                        ["profileKey"] = "action_control",
+                        ["readableSummary"] = "Боль ограничивает движение."
+                    })
+                }
+            });
+    }
+
     private static readonly string[] DistinctMortalProfiles =
     {
         "action_control",

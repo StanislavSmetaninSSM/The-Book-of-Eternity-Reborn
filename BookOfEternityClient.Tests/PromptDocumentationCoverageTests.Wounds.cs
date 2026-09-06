@@ -568,6 +568,7 @@ public sealed partial class PromptDocumentationCoverageTests
                          "The GM authors points, never canonical progress or recovery anchors",
                          "Partial success does not complete the route",
                          "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.",
+                         "The same canonical rules revalidate retained treatment routes and deterioration policy at the resulting severity, and diagnosis facts against remaining accepted complications. A symbolic local reference never restores a removed accepted diagnosis fact.",
                          "Local complication and definition references are not permanent runtime identities.",
                          "Applicability preview does not authorize publication of an unfinished outcome.",
                          "partial_success",

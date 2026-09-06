@@ -410,19 +410,9 @@ internal static class WoundMaterializationContract
                 complications,
                 recovery,
                 issues);
-            if (string.Equals(owner.Realm, "mortal_world", StringComparison.Ordinal) &&
-                string.Equals(classification.Domain, "physical", StringComparison.Ordinal) &&
-                ownerTargetKind.Length > 0 &&
-                recovery.DeteriorationPolicy is { } deteriorationPolicy)
-            {
-                var parsedPolicy = MortalWoundDeteriorationPolicyContract.Parse(
-                    deteriorationPolicy,
-                    path + ".recovery.deteriorationPolicy",
-                    owner.Realm,
-                    ownerTargetKind,
-                    severity.Rank);
-                issues.AddRange(parsedPolicy.Issues);
-            }
+            ValidateRetainedDeteriorationPolicy(recovery.DeteriorationPolicy,
+                path + ".recovery.deteriorationPolicy", classification.Domain, owner.Realm,
+                ownerTargetKind, severity.Rank, issues);
             var relations = ParseRelations(
                 ReadRequiredObject(root, "relations", path, issues),
                 path + ".relations",
@@ -2030,21 +2020,47 @@ internal static class WoundMaterializationContract
             routes,
             ReadIdentifierArray(value, "knownRouteIds", path, unique: true, issues),
             ReadIdentifierArray(value, "completedRouteIds", path, unique: true, issues));
+        ValidateRetainedTreatmentProjection(treatment, path, domain, realm, ownerTargetKind,
+            severityRank, complications, recovery.DeteriorationPolicy, issues);
+        return treatment;
+    }
+
+    internal static void ValidateRetainedTreatmentProjection(
+        WoundTreatment treatment, string treatmentPath,
+        string domain, string realm, string ownerTargetKind, int severityRank,
+        IReadOnlyList<WoundComplication> complications,
+        JsonElement? deteriorationPolicy, List<ValidationIssue> issues)
+    {
         if (string.Equals(domain, "physical", StringComparison.Ordinal) &&
             string.Equals(realm, "mortal_world", StringComparison.Ordinal) &&
             ownerTargetKind.Length > 0)
         {
             var typed = MortalWoundTreatmentContract.ParseProjection(
                 treatment,
-                path,
+                treatmentPath,
                 realm,
                 ownerTargetKind,
                 severityRank,
                 complications,
-                recovery.DeteriorationPolicy);
+                deteriorationPolicy);
             issues.AddRange(typed.Issues);
         }
-        return treatment;
+    }
+
+    internal static void ValidateRetainedDeteriorationPolicy(
+        JsonElement? deteriorationPolicy, string policyPath,
+        string domain, string realm, string ownerTargetKind, int severityRank,
+        List<ValidationIssue> issues)
+    {
+        if (string.Equals(realm, "mortal_world", StringComparison.Ordinal) &&
+            string.Equals(domain, "physical", StringComparison.Ordinal) &&
+            ownerTargetKind.Length > 0 &&
+            deteriorationPolicy is { } policy)
+        {
+            var parsedPolicy = MortalWoundDeteriorationPolicyContract.Parse(
+                policy, policyPath, realm, ownerTargetKind, severityRank);
+            issues.AddRange(parsedPolicy.Issues);
+        }
     }
 
     private static IReadOnlyList<WoundDiagnosisPath> ParseDiagnosisPaths(

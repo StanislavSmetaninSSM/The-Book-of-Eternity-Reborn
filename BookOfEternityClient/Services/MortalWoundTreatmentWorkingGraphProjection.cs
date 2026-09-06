@@ -166,6 +166,19 @@ internal sealed class MortalWoundTreatmentWorkingGraphProjection
         var context = new WoundWorkingGraphContext(_baseline.WoundId, _baseline.Lifecycle, _baseline.Owner,
             _baseline.Classification, Scalars.Severity, Scalars.Care, Scalars.Recovery, Scalars.SlotBudget, Graph.Entries.Length);
         if (!WoundMaterializationContract.ValidateWorkingGraphBoundary(context, Graph, path, issues)) return issues.ToImmutableArray();
+        var retainedReferences = Graph.Complications
+            .Where(row => IsExistingCoordinate(row.Reference))
+            .Select(row => row.Reference).ToHashSet();
+        var remainingCanonicalComplications = _baseline.Complications
+            .Where(row => retainedReferences.Contains(WoundWorkingReference.Existing(row.ComplicationId)))
+            .ToImmutableArray();
+        var targetKind = WoundMaterializationContract.ResolveEffectTargetKind(_baseline.Owner.OwnerKind);
+        WoundMaterializationContract.ValidateRetainedTreatmentProjection(_baseline.Treatment,
+            path + ".treatment", _baseline.Classification.Domain, _baseline.Owner.Realm, targetKind,
+            Scalars.Severity.Rank, remainingCanonicalComplications, Scalars.Recovery.DeteriorationPolicy, issues);
+        WoundMaterializationContract.ValidateRetainedDeteriorationPolicy(Scalars.Recovery.DeteriorationPolicy,
+            path + ".recovery.deteriorationPolicy", _baseline.Classification.Domain, _baseline.Owner.Realm,
+            targetKind, Scalars.Severity.Rank, issues);
         WoundMaterializationContract.ValidateCommonOwnedDefinitions(JsonSerializer.SerializeToElement(
             Graph.Definitions.Select(static definition => definition.Definition).ToArray()),
             path + ".consequences.ownedEffectSources.definitions", _baseline.Owner.Realm, issues);

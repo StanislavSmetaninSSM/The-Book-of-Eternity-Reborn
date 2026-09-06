@@ -11,6 +11,55 @@ public sealed partial class MortalWoundTreatmentResolverTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
+    public void ComplicationGraphApplicability_RetainedRankValidationRejectsBeforeDieClaim(bool retainedPolicy)
+    {
+        var scenario = CreateDestinationReductionScenario("retained_rank", "resistance_modifier");
+        var addition = GraphEffectlessAddition("irritation");
+        addition["complicationDraft"]!["complications"]![0]!["treatmentDifficultyModifier"] = 1;
+        addition["complicationDraft"]!["consequenceDefinitions"] =
+            WoundContractTestData.CreateRootBoundReactionComplicationDefinitions("replace");
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        if (retainedPolicy)
+            scenario.Before["recovery"]!["deteriorationPolicy"] = new JsonObject
+            {
+                ["policyRef"] = "untreated_infection", ["unmetConditions"] = new JsonArray("not_stabilized"),
+                ["graceMinutes"] = 30L, ["cadenceMinutes"] = 10L, ["result"] = addition
+            };
+        else route["outcomes"]![2]!["result"] = new JsonArray(addition);
+        var legalRoute = route.DeepClone().AsObject();
+        var legalRouteId = scenario.RouteId + "_legal";
+        legalRoute["routeId"] = legalRouteId;
+        legalRoute["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "add_recovery", ["points"] = 1
+        });
+        scenario.Before["treatment"]!["routes"] = new JsonArray(route.DeepClone(), legalRoute);
+        scenario.Before["treatment"]!["knownRouteIds"] = new JsonArray(scenario.RouteId, legalRouteId);
+        var baseline = WoundMaterializationContract.Parse(scenario.Before.ToJsonString(), "retainedBaseline");
+        Assert.True(baseline.IsValid, DescribeIssues(baseline.Issues));
+        scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before) };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var state = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(fixture.GetAcceptedState());
+        var before = fixture.ReadCurrentWound();
+        var history = fixture.ReadCurrentHistory();
+        var unchanged = CaptureResolverFixtureTree(fixture.Root);
+        var rejected = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state, history, before,
+            scenario.OperationKey + "_rejected", scenario.RouteId, fixture.AcceptedEventRef(state));
+        Assert.False(rejected.IsValid);
+        Assert.Null(rejected.Request);
+        Assert.Contains(rejected.Issues, issue => issue.Code == "mortal_wound_treatment_procedure_band_inapplicable");
+        AssertResolverFixtureTreeUnchanged(fixture.Root, unchanged);
+        var legal = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state, history, before,
+            scenario.OperationKey + "_legal", legalRouteId, fixture.AcceptedEventRef(state));
+        Assert.True(legal.IsValid, DescribeIssues(legal.Issues));
+        var request = Assert.IsType<MortalWoundTreatmentAttemptRequest>(legal.Request);
+        Assert.Equal(new[] { 0 }, Assert.IsType<MortalWoundProcedureCheckAuthority>(request.ModeAuthority).SourceIndices);
+        AssertSingleHeldClaim(request, "sterile_thread");
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
     public void ComplicationGraphApplicability_CumulativeOverflowRejectsBeforeDieClaim(bool fateShield)
     {
         var scenario = CreateScenario(fateShield ? "procedure_player_natural_one_reserves_oldest_fate_shield"
