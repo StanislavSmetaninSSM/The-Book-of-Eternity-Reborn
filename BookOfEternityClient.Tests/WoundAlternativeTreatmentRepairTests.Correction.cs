@@ -42,7 +42,7 @@ public sealed partial class WoundAlternativeTreatmentRepairTests
     }
 
     [Fact]
-    public void Correction_WholeArrayFaultPermitsOnlyThatArrayAndRejectsCanonicalComplicationSelector()
+    public void Correction_WholeArrayFaultPermitsOnlyThatArrayAndRejectsChangedRouteSibling()
     {
         var original = CreateAuthor();
         original["diagnosisPath"]!["requiresKnownFacts"] = "not an array";
@@ -54,6 +54,52 @@ public sealed partial class WoundAlternativeTreatmentRepairTests
         corrected["route"]!["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
             { ["kind"] = "remove_complication", ["complicationId"] = "canonical_not_gm_ref" });
         Assert.False(packet.MatchesCorrectedAlternativeTreatmentAuthoring(corrected));
+    }
+
+    [Fact]
+    public void Correction_PermittedResultArrayRequiresGmComplicationRefInsteadOfCanonicalSelector()
+    {
+        const string resultPath = "route.outcomes[0].result";
+        const string complicationReference = "offered_complication_opaque_001";
+        var original = CreateAuthor();
+        original["route"]!["outcomes"]![0]!["result"] = "not an array";
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(Request(original)));
+        Assert.Equal(resultPath, Assert.Single(packet.Issues.Select(issue => issue.Path).Distinct()));
+        Assert.Equal(new[] { "wound_materialization_missing_field", "wound_materialization_invalid_field" },
+            packet.Issues.Select(issue => issue.Code));
+
+        var corrected = original.DeepClone().AsObject();
+        corrected["route"]!["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+            { ["kind"] = "remove_complication", ["complicationRef"] = complicationReference });
+        var complete = packet.AnalyzeAlternativeTreatmentCorrection(corrected);
+        Assert.Equal(WoundAlternativeTreatmentCorrectionStatus.Complete, complete.Status);
+        Assert.NotNull(complete.CompleteDraft);
+        Assert.Empty(complete.Issues);
+        Assert.True(packet.MatchesCorrectedAlternativeTreatmentAuthoring(corrected));
+
+        var canonicalSelector = corrected.DeepClone().AsObject();
+        var operation = canonicalSelector["route"]!["outcomes"]![0]!["result"]![0]!.AsObject();
+        operation.Remove("complicationRef");
+        operation["complicationId"] = complicationReference;
+        var invalid = packet.AnalyzeAlternativeTreatmentCorrection(canonicalSelector);
+        Assert.NotEqual(WoundAlternativeTreatmentCorrectionStatus.Complete, invalid.Status);
+        Assert.Null(invalid.CompleteDraft);
+        Assert.False(packet.MatchesCorrectedAlternativeTreatmentAuthoring(canonicalSelector));
+        var parsed = WoundRepairPacketBuilder.ParseAlternative(canonicalSelector, Prefix);
+        Assert.False(parsed.IsValid);
+        Assert.Contains(parsed.Issues, diagnostic =>
+            diagnostic.Code == "wound_materialization_unknown_field" &&
+            diagnostic.FilePath == Prefix + "." + resultPath + "[0].complicationId");
+
+        var legalMasked = WoundRepairPacketBuilder.AlternativePayload(corrected);
+        var canonicalMasked = WoundRepairPacketBuilder.AlternativePayload(canonicalSelector);
+        WoundRepairPacketBuilder.MaskAlternativePath(legalMasked, resultPath);
+        WoundRepairPacketBuilder.MaskAlternativePath(canonicalMasked, resultPath);
+        Assert.True(JsonNode.DeepEquals(legalMasked, canonicalMasked));
+        Assert.True(JsonNode.DeepEquals(packet.PreservedProposal, legalMasked));
+        Assert.Equal(corrected["authoringRequestRef"]!.GetValue<string>(),
+            canonicalSelector["authoringRequestRef"]!.GetValue<string>());
+        Assert.Equal(corrected["decision"]!.GetValue<string>(), canonicalSelector["decision"]!.GetValue<string>());
     }
 
     [Theory]
