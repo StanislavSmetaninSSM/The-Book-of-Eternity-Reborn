@@ -316,14 +316,39 @@ public sealed partial class MortalWoundTreatmentResolverTests
         scenario.Before["recovery"]!["deteriorationPolicy"]!["result"] = operation;
         scenario = PrepareProcedurePublicationScenario(scenario);
         using var fixture = AcceptedStateFixture.Create(scenario);
+        var resourceBefore = fixture.ReadNpcItemCount("sterile_thread");
+        var activeEffectIdsBefore = fixture.ReadActivePlayerEffectIds().ToArray();
         var flow = PersistAndRehydrateTreatmentPublication(fixture,
             ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey, scenario.RouteId), "fresh skill addition");
-        var bundle = ComposeCoordinatedTreatmentPlan(fixture, flow).WoundStageBundle!;
+        var prepared = PreparedPolicyAt(flow, 0);
+        var binding = prepared.ComplicationBinding!;
+        var expectedDefinitionRefs = binding.DefinitionReferenceBindings.ToDictionary(
+            row => row.LocalRef,
+            row => row.NamespacedRef,
+            StringComparer.Ordinal);
+        var selectedLocalDefinitionRef = definitions[childOnly ? 1 : 0]!["definitionRef"]!.GetValue<string>();
+        var selectedDefinitionRef = expectedDefinitionRefs[selectedLocalDefinitionRef];
+        var selectedDefinitionKey = definitions[childOnly ? 1 : 0]!["definition"]!["definitionKey"]!.GetValue<string>();
+        var expectedRoot = Assert.Single(binding.Roots);
+        var expectedRootDefinitionKey = Assert.Single(definitions,
+            row => row!["definitionRef"]!.GetValue<string>() == expectedRoot.LocalDefinitionRef)!["definition"]!["definitionKey"]!.GetValue<string>();
+        var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
+        var bundle = plan.WoundStageBundle!;
+        var effectBatch = Assert.Single(bundle.PreparedPlan.EffectOperationBatches);
+        var rootApplication = Assert.Single(effectBatch.RootApplications);
+        Assert.Empty(effectBatch.TerminalOperations);
+        Assert.Equal(expectedRoot.ApplicationRef, rootApplication.ApplicationRef);
+        Assert.Equal(expectedRootDefinitionKey, rootApplication.DefinitionKey);
+        Assert.Null(rootApplication.PriorRootEffectId);
+        Assert.Equal("complication", rootApplication.OwnershipDomain.Kind);
+        Assert.Equal(binding.ComplicationId, rootApplication.OwnershipDomain.ComplicationId);
         Assert.Null(bundle.EffectBatchPlan.EffectInput.WoundApplicationLocations);
         var tree = CaptureResolverFixtureTree(fixture.Root);
         Assert.True(WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(bundle.PreparedPlan, out var originalGraph));
         var expectedOrigins = originalGraph!.NewDefinitionOrigins;
-        Assert.Contains(expectedOrigins, origin => origin.DefinitionOrdinal == (childOnly ? 1 : 0));
+        var selectedOrigin = Assert.Single(expectedOrigins,
+            origin => origin.DefinitionOrdinal == (childOnly ? 1 : 0));
+        Assert.Equal(selectedDefinitionRef, selectedOrigin.MappedDefinitionRef);
         foreach (var axis in new[] { "origin", "address", "mapped_id", "components_path", "rank_change", "worsening", "topology", "definition_order" })
         {
             Assert.True(WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(bundle.PreparedPlan, out var copy));
@@ -394,6 +419,47 @@ public sealed partial class MortalWoundTreatmentResolverTests
             }
             AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
         }
+        using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+            publication.CompleteAtFullPipelineEnd();
+        var after = fixture.ReadCurrentWound();
+        var draft = prepared.Draft!.Complication;
+        var complication = Assert.Single(after.Complications);
+        Assert.Equal(binding.ComplicationId, complication.ComplicationId);
+        Assert.Equal(draft.Kind, complication.Kind);
+        Assert.Equal(draft.State, complication.State);
+        Assert.Equal(draft.DisplayName, complication.DisplayName);
+        Assert.Equal(draft.TreatmentDifficultyModifier, complication.TreatmentDifficultyModifier);
+        Assert.Equal(draft.Visibility, complication.Visibility);
+        var rootEffectId = Assert.Single(complication.OwnedEffectIds);
+        var rootBinding = Assert.Single(after.Consequences.OwnedEffectSources.RootBindings,
+            row => row.EffectId == rootEffectId);
+        Assert.Equal(expectedRootDefinitionKey, rootBinding.DefinitionKey);
+        Assert.Contains(rootEffectId, fixture.ReadActivePlayerEffectIds());
+        Assert.Equal(new[] { rootEffectId }, fixture.ReadActivePlayerEffectIds()
+            .Except(activeEffectIdsBefore, StringComparer.Ordinal));
+        var created = fixture.ReadEffectIdentityIndex()["entries"]!.AsArray()
+            .Single(row => row!["effectId"]!.GetValue<string>() == rootEffectId)!;
+        Assert.Equal("active", created["state"]!.GetValue<string>());
+        Assert.Equal("create", created["transitions"]![0]!["kind"]!.GetValue<string>());
+        Assert.Empty(created["transitions"]![0]!["sourceEffectIds"]!.AsArray());
+        var persistedSelectedDefinition = Assert.Single(after.Consequences.OwnedEffectSources.Definitions,
+            row => row.GetProperty("definitionKey").GetString() == selectedDefinitionKey);
+        var selectedScope = persistedSelectedDefinition.GetProperty("components")[0]
+            .GetProperty("payload").GetProperty("scope");
+        Assert.Equal("skill", selectedScope.GetProperty("kind").GetString());
+        Assert.Equal("skill_field_medicine_01", selectedScope.GetProperty("skillId").GetString());
+        if (childOnly)
+        {
+            Assert.DoesNotContain(after.Consequences.OwnedEffectSources.RootBindings,
+                row => row.DefinitionKey == selectedDefinitionKey);
+            var rootFact = Assert.Single(after.Consequences.OwnedEffectSources.DefinitionFacts,
+                row => row.DefinitionKey == expectedRootDefinitionKey);
+            Assert.Equal(new[] { selectedDefinitionKey }, rootFact.ApplyDefinitionTargets);
+        }
+        Assert.Equal(resourceBefore - 1, fixture.ReadNpcItemCount("sterile_thread"));
+        var transition = Assert.Single(fixture.ReadCurrentHistory().State!.Transitions,
+            row => row.Kind == "treat");
+        AssertClosedTreatmentReceipt(transition.TreatmentResult!.Receipt, flow.Request, flow.Resolution);
     }
     // Selected publication exercises the real accepted treatment transaction.
     [Theory]
@@ -403,22 +469,110 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreatePolicyPreparationScenario("increase_severity");
         using var fixture = AcceptedStateFixture.Create(scenario);
-        var flow = ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey, scenario.RouteId);
-        var other = CreatePolicyPreparationScenario("increase_severity") with { OperationKey = "operation_foreign_policy" };
+        var other = CreatePolicyPreparationScenario("increase_severity");
+        if (!changeBody) other = other with { OperationKey = "operation_foreign_policy" };
         if (changeBody) other.Before["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = 31L;
-        other = PrepareProcedurePublicationScenario(other);
-        using var foreignFixture = AcceptedStateFixture.Create(other);
+        using var foreignFixture = CreateColdRootCopy(fixture);
+        if (changeBody) foreignFixture.ChangeCanonicalPolicyGraceMinutesAndPrepareSnapshot(31L);
+        var flow = ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey, scenario.RouteId);
         var foreign = ResolveCurrentTreatment(foreignFixture, "procedure", other.OperationKey, other.RouteId);
+        var request = (MortalWoundTreatmentAttemptRequest)flow.Request;
+        var foreignRequest = (MortalWoundTreatmentAttemptRequest)foreign.Request;
         var resolution = (MortalWoundTreatmentResolution)flow.Resolution;
         var original = (MortalWoundApplyDeteriorationOutcomeIntent)Assert.Single(resolution.OutcomeIntents);
-        var forged = ClonePolicyField(original, "_preparedDeterioration", PreparedPolicyAt(foreign, 0));
+        var prepared = PreparedPolicyAt(flow, 0);
+        var foreignPrepared = PreparedPolicyAt(foreign, 0);
+        Assert.Equal(prepared.OperationOrdinal, foreignPrepared.OperationOrdinal);
+        Assert.Equal(prepared.PolicyRef, foreignPrepared.PolicyRef);
+        Assert.Equal(request.Coordinates.SessionId, foreignRequest.Coordinates.SessionId);
+        Assert.Equal(request.Coordinates.SessionGeneration, foreignRequest.Coordinates.SessionGeneration);
+        Assert.Equal(request.Coordinates.RequestId, foreignRequest.Coordinates.RequestId);
+        Assert.Equal(changeBody, request.Coordinates.SnapshotToken != foreignRequest.Coordinates.SnapshotToken);
+        Assert.Equal(request.Coordinates.WoundId, foreignRequest.Coordinates.WoundId);
+        Assert.Equal(request.Coordinates.RouteId, foreignRequest.Coordinates.RouteId);
+        Assert.Equal(request.Coordinates.EventRef, foreignRequest.Coordinates.EventRef);
+        Assert.Equal(request.Coordinates.Turn, foreignRequest.Coordinates.Turn);
+        Assert.Equal(request.Coordinates.ProviderKind, foreignRequest.Coordinates.ProviderKind);
+        Assert.Equal(request.Coordinates.ProviderId, foreignRequest.Coordinates.ProviderId);
+        Assert.Equal(request.Coordinates.TargetKind, foreignRequest.Coordinates.TargetKind);
+        Assert.Equal(request.Coordinates.TargetId, foreignRequest.Coordinates.TargetId);
+        Assert.Equal(request.Coordinates.LocationId, foreignRequest.Coordinates.LocationId);
+        Assert.Equal(changeBody, request.Coordinates.ContextFingerprint != foreignRequest.Coordinates.ContextFingerprint);
+        Assert.Equal(changeBody, request.Coordinates.OperationKey == foreignRequest.Coordinates.OperationKey);
+        Assert.Equal(changeBody, request.Coordinates.ExpectedBeforeFingerprint != foreignRequest.Coordinates.ExpectedBeforeFingerprint);
+        Assert.Equal(changeBody, request.Coordinates.AcceptedStateFingerprint != foreignRequest.Coordinates.AcceptedStateFingerprint);
+        Assert.NotEqual(request.Coordinates.AttemptId, foreignRequest.Coordinates.AttemptId);
+        Assert.NotEqual(request.Coordinates.CoordinatesFingerprint, foreignRequest.Coordinates.CoordinatesFingerprint);
+        Assert.NotEqual(request.RequestFingerprint, foreignRequest.RequestFingerprint);
+        if (changeBody)
+        {
+            var restoredBody = other.Before.DeepClone();
+            restoredBody["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = 30L;
+            Assert.True(JsonNode.DeepEquals(scenario.Before, restoredBody));
+            Assert.Equal(30L, prepared.Policy.GraceMinutes);
+            Assert.Equal(31L, foreignPrepared.Policy.GraceMinutes);
+            Assert.NotEqual(prepared.Policy.CanonicalProjection, foreignPrepared.Policy.CanonicalProjection);
+        }
+        else
+        {
+            Assert.True(JsonNode.DeepEquals(scenario.Before, other.Before));
+            Assert.Equal(prepared.Policy.CanonicalProjection, foreignPrepared.Policy.CanonicalProjection);
+        }
+        var forged = ClonePolicyField(original, "_preparedDeterioration", foreignPrepared);
         var state = (MortalWoundTreatmentAcceptedStateAuthority)flow.AcceptedState;
         var tree = CaptureResolverFixtureTree(fixture.Root);
+        var pristine = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(state,
+            request, resolution, state.CurrentGameMinute);
+        Assert.True(pristine.IsValid, DescribeIssues(pristine.Issues));
+        AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
         var rejected = MortalWoundTreatmentOutcomePublicationPlanner.Prepare(state,
-            (MortalWoundTreatmentAttemptRequest)flow.Request, CloneResolutionWithIntentsUnchecked(resolution, new[] { forged }), state.CurrentGameMinute);
+            request, CloneResolutionWithIntentsUnchecked(resolution, new[] { forged }), state.CurrentGameMinute);
         Assert.False(rejected.IsValid);
         Assert.Contains(rejected.Issues, issue => issue.Code == "mortal_wound_treatment_publication_slice_unsupported");
         AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+    }
+
+    private sealed partial class AcceptedStateFixture
+    {
+        internal void ChangeCanonicalPolicyGraceMinutesAndPrepareSnapshot(long graceMinutes)
+        {
+            var carrier = ReadObject(TargetCarrierPath);
+            var wound = FindPersistedWound(carrier);
+            wound["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = graceMinutes;
+            WriteObject(TargetCarrierPath, carrier);
+
+            var parsed = WoundMaterializationContract.Parse(
+                wound.ToJsonString(),
+                TargetCarrierPath + ".activeWounds[0]");
+            Assert.True(parsed.IsValid, DescribeIssues(parsed.Issues));
+            var woundFingerprint = WoundIdentityState.ComputeSemanticFingerprint(parsed.Wound!);
+            var identity = ReadObject(WoundIdentityState.StatePath);
+            var identityEntry = Assert.Single(identity["entries"]!.AsArray(),
+                row => row!["woundId"]!.GetValue<string>() == WoundId)!;
+            identityEntry["semanticFingerprint"] = woundFingerprint;
+            WriteObject(WoundIdentityState.StatePath, identity);
+            WriteObject(WoundHistoryState.HistoryPath, CreateCurrentWoundHistory(wound));
+
+            var request = ReadObject(LiveTurnPreparationService.TurnRequestPath);
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            var prepared = new LiveTurnPreparationService(FileSystem).PrepareAsync(
+                new LiveTurnPreparationOptions
+                {
+                    SessionId = request["sessionId"]!.GetValue<string>(),
+                    RequestId = request["requestId"]!.GetValue<string>(),
+                    TurnNumber = request["turnNumber"]!.GetValue<int>(),
+                    PlayerAction = request["playerAction"]!.GetValue<string>(),
+                    Timestamp = request["timestamp"]!.GetValue<string>(),
+                    CurrentRealm = "Mortal World",
+                    PreGeneratedDices1d20 = request["preGeneratedDices1d20"]!.AsArray()
+                        .Select(static value => value!.GetValue<int>())
+                        .ToArray()
+                }).GetAwaiter().GetResult();
+            Assert.Equal(request["sessionId"]!.GetValue<string>(), prepared.SessionId);
+            Assert.Equal(request["requestId"]!.GetValue<string>(), prepared.RequestId);
+            Assert.Equal(request["turnNumber"]!.GetValue<int>(), prepared.TurnNumber);
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+        }
     }
 
     [Fact]
