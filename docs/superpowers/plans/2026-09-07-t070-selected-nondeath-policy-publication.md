@@ -613,13 +613,20 @@ Then prove both authorities present permit publication and retained accepted
 selectors survive current skill loss with original generation. Ordinary foreign
 new definitions cannot borrow retained-source continuation authority.
 
-Extend `DeteriorationPublication_PrivateAuthority` to cover post-preparation graph
-tampering: full tagged origin/address, mapped ID, components path, derived rank
-booleans, final root topology, root/child definition order and private packet.
-Change one field on an independent cloned object per axis, keep copied seal stale,
-and assert rejection before finalization and whole-tree equality. Use the real
-existing final proof entry point; do not add a weak second proof service or broadly
-catch programmer exceptions to turn them into successful validation.
+Extend `DeteriorationPublication_PrivateAuthority` at actual ownership boundaries.
+Returned selected compilations are reconstructed detached views, not accepted
+caller inputs: mutate full tagged origin/address, mapped ID, components path,
+derived rank booleans and root topology on independent returned copies, then prove
+fresh recomposition restores every exact field. Report this as copy isolation,
+not as rejection of an input the planner never consumes.
+
+For actual rejection, mutate the stored selected resolution/private packet or
+selected-graph seal, and the real batch/application/terminal handoff as in existing
+direct-add proof tests. Keep each copied seal stale, include a pristine positive
+control and assert rejection before finalization plus whole-tree equality. Do not
+add a cached-authority slot or injection API only for the test. Use the real
+existing final proof entry point; no weak second proof service or broad exception
+catch may turn invalid authority into successful validation.
 
 Run the narrow selector tests before/after source path wiring; the initial RED
 must show the incorrect direct-draft path or unsupported authority boundary, not
