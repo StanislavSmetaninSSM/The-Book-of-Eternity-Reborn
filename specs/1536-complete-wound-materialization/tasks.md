@@ -1740,6 +1740,17 @@ entrypoints require no update for T065.
   publication with original/final rank continuity, full tagged identities and
   synchronized Mortal GM examples. Death/heal/legacy remain separate open work;
   whole-feature top-level completion remains 77/177, T070/T177/#1536 open.
+  Selected non-death policy publisher plan (2026-09-07):
+  `docs/superpowers/plans/2026-09-07-t070-selected-nondeath-policy-publication.md`
+  now defines one coherent T070 task for actual increase/add policy publication.
+  It shares pure ordered preview/publication projection, rejects same-final-rank
+  budget changes before die/resource claims, preserves original-wound T069 and
+  private T067 authority, carries full policy/direct tagged identities and exact
+  canonical selector paths, and rematerializes only for original/final rank change.
+  Real mixed partial/course/critical, 0/0 batch, rollback/retry/cold replay and GM
+  worked-example coverage belong to that task. Parent source/self-review is
+  complete; implementation and independent review are still pending. Death,
+  selected heal/legacy, scheduled recovery and spiritual healing remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
