@@ -1636,6 +1636,17 @@ entrypoints require no update for T065.
   is retained for that future finalizer change/final branch triage. Mortal guide,
   complete example/manifest/guards and shared afterlife lifecycle guidance are synced.
   T070/T177/#1536 remain open; no remote mutation or issue closure occurred.
+  T177 fixture checkpoint (2026-09-06): `b4f177c9..c7301340`, independently Spec
+  compliant / Task quality Approved and parent-accepted after actual two-file diff,
+  review and four artifact-set audit. Focused example1/1 and FullValidation1856/1856
+  pass; clean builds/cleanup, no timeout/duplicate IDs. Focused requirement175/235
+  and incomplete Fast4168/4211 retain60/43 exact-member failures: unchanged tests
+  omit production SkillId. All failed rows and unchanged production source are
+  parent-confirmed; no full Fast or legacy completion is implied. Task2 in
+  `docs/superpowers/plans/2026-09-06-t177-verification-fixture-alignment.md` aligns
+  the strict test view and exact skill identity before addition. Test-only scope
+  changes no Mortal/afterlife authoring contract; no GM update or FV repeat needed.
+  T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

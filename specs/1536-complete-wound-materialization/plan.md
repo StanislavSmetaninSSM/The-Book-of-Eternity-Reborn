@@ -644,6 +644,15 @@ stale snapshot/section-reader fixtures, not claimed green. Next execute
 Review Minor M1 (misleading no-batch rejection wording) is retained for the later
 direct-addition finalizer change/final triage. Full remaining outcomes, heal-legacies,
 fresh diagnosis/alternative authority and T070/T177/#1536 closure remain required/open.
+The T177 fixture checkpoint `b4f177c9..c7301340` is independently Spec compliant /
+Task quality Approved and parent-accepted. Parent inspected the two-file diff, review
+and all four actual artifact sets. The named worked-example owner passes1/1 and
+FullValidation passes all1856 rows in11 TRX with clean builds/cleanup. Focused
+requirement175/235 and incomplete Fast4168/4211 expose the same unchanged strict
+test projection omitting production SkillId, with all60/43 failures parent-confirmed.
+Task2 in the same fixture-alignment plan now owns exact test-view/member/value
+alignment, with no production or GM contract change and no repeated FullValidation.
+The required unfinished legacy source remains explicit; T070/T177/#1536 stay open.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

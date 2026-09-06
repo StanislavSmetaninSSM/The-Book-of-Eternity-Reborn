@@ -51,7 +51,7 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   section, levels1–3 end it; for level2, levels1–2 end it. Deeper headings remain
   inside their owning section. Both LF and CRLF line starts remain supported.
 
-- [ ] **Step 1: Confirm the already-recorded RED against the exact task BASE.**
+- [x] **Step 1: Confirm the already-recorded RED against the exact task BASE.**
 
   Parent and removal implementer already observed and source-audited these failures:
 
@@ -71,7 +71,7 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   broad lanes merely to reproduce these known REDs. If task BASE changes either
   relevant input, rerun the corresponding smallest owner before editing instead.
 
-- [ ] **Step 2: Supply the required identity in the valid snapshot fixture.**
+- [x] **Step 2: Supply the required identity in the valid snapshot fixture.**
 
   Add only the new line shown below; leave capability matching and other fields intact:
 
@@ -97,7 +97,7 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   resolution and existing malformed/unknown-member negative tests. If another failure
   emerges, inspect its actual cause before proposing any additional edit.
 
-- [ ] **Step 3: Correct section-end discovery in the existing example reader.**
+- [x] **Step 3: Correct section-end discovery in the existing example reader.**
 
   Replace only the current exact-same-heading `IndexOf`/fallback block with:
 
@@ -121,7 +121,7 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   Expected: one real worked-example owner passes, with exactly the intended JSON
   fence and all existing projection/strict transport assertions still executed.
 
-- [ ] **Step 4: Run one meaningful Fast and the required FullValidation control.**
+- [x] **Step 4: Run one meaningful Fast and the required FullValidation control.**
 
   ```powershell
   pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
@@ -134,7 +134,7 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   partial lane complete. Preserve the known legacy-source failure if reached. No
   PreMerge, extra Fast rerun or unrelated diagnostic lane is warranted here.
 
-- [ ] **Step 5: Inspect the scoped diff, commit and request independent review.**
+- [x] **Step 5: Inspect the scoped diff, commit and request independent review.**
 
   ```powershell
   git diff -- BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
@@ -145,3 +145,104 @@ test-alignment checkpoint. This is not completion of T070/T177 or the full featu
   Leave parent-owned plans/Spec Kit bookkeeping unstaged. Return exact BASE/HEAD and
   a detailed report with all actual artifacts. A fresh reviewer checks both correctness
   and scope; parent inspects evidence and accepts before addition Task1 starts.
+
+**Task1 acceptance (2026-09-06):** `b4f177c9..c7301340`, independently Spec
+compliant / Task quality Approved, no findings. Parent inspected both changed files,
+the complete review and all four actual artifact sets. Focused example1/1 and full
+FullValidation1856/1856 (11 TRX,9:18.5424317) pass. Focused requirement owner175/235
+and incomplete Fast4168/4211 remain RED: every60/43 failure is the same unchanged
+`ReadResolvedRequirement` exact-member expectation omitting production `SkillId`.
+Parent confirmed the full production owner is unchanged since51c97c24 and audited
+all failed rows, clean builds, cleanup, timeouts and summaries. No broader success
+is claimed. Parent-approved Task2 below completes this narrowly related test adapter;
+T070/T177/#1536 remain open and the legacy choice remains unanswered.
+
+### Task 2: Align the exact resolved-skill test projection
+
+**Files:** Modify only `BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs`.
+
+**Interfaces:** Preserve exact reflection member equality and existing resolver
+assertions. The test-only `ResolvedRequirementView` receives the existing nullable
+`SkillId` after `AuthorityRef`, matching production. This is not a schema change.
+No production, guide/example/manifest, Integration or lane inventory/default edit.
+No FullValidation rerun: Task1's shared example-reader evidence remains applicable.
+Use the parent acceptance commit as exact BASE; one implementer/C# lane.
+
+- [ ] **Step 1: Confirm the existing RED and exact production ownership.**
+
+  Reuse actual Focused235/175/60 from
+  `20260906-212239-382-30672-72db5e6c90374644b36906001d38ed8b-focused` and
+  Fast4211/4168/43 from
+  `20260906-212534-653-34180-17468f66dc0540ae81fea581afaeab34-fast` after confirming
+  no change to this cause at the task BASE. All failures are collection-shape
+  equality at `ReadResolvedRequirement:1697`, not gameplay failures. Production
+  `MortalWoundResolvedRequirement:3040` includes nullable SkillId; `ResolveSkill`
+  passes the exact snapshot skill identity and fingerprints it (`:854,:868`).
+  No duplicate broad RED run is needed.
+
+- [ ] **Step 2: Update the strict test adapter and assert the coordinate.**
+
+  Make these exact edits, retaining every existing member and assertion:
+
+  1. In `ReadResolvedRequirement`'s sorted expected array, insert `"SkillId"`
+     between `"RequirementIndex"` and `"TargetId"`.
+  2. In the constructor call immediately after reading `AuthorityRef`, insert
+     `ReadNullableStringProperty(value, "SkillId"),`.
+  3. In `ResolvedRequirementView` immediately after `string AuthorityRef,`, insert
+     `string? SkillId,`.
+  4. In `AssertResolvedCoordinates` after the existing kind/authority checks, add
+     `Assert.Equal(kind == "skill_tier" ? SkillRef : null, actual.SkillId);`.
+     Existing all-kind success theories now assert exact skill identity and null
+     for every other kind, rather than merely permitting another reflected member.
+
+  Add this focused regression beside the existing independent-requirement test;
+  it also proves capability matching never substitutes for the canonical skill ID:
+
+  ```csharp
+  [Fact]
+  public void Resolve_SkillIdentityIsDistinctFromCapabilityAndFingerprintBound()
+  {
+      var route = CreateRoute(CreateRequirement("skill_tier"));
+      var snapshot = CreateSnapshot();
+      var original = Resolve(route, CreateContext(), snapshot);
+      Assert.True(original.Success, DescribeIssues(original.Issues));
+      var originalRow = Assert.Single(original.ResolvedRequirements);
+      Assert.Equal(SkillRef, originalRow.SkillId);
+
+      const string changedSkillId = "skill_field_medicine_canonical_002";
+      First(Provider(snapshot), "skills")["skillId"] = changedSkillId;
+      var changed = Resolve(route, CreateContext(), snapshot);
+      Assert.True(changed.Success, DescribeIssues(changed.Issues));
+      var changedRow = Assert.Single(changed.ResolvedRequirements);
+      Assert.Equal(SkillRef, changedRow.AuthorityRef);
+      Assert.Equal(changedSkillId, changedRow.SkillId);
+      Assert.NotEqual(originalRow.AuthorityFingerprint, changedRow.AuthorityFingerprint);
+      Assert.NotEqual(original.AuthorityFingerprint, changed.AuthorityFingerprint);
+  }
+  ```
+
+- [ ] **Step 3: Verify the owner, then one meaningful Fast checkpoint.**
+
+  ```powershell
+  pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundRequirementAuthorityTests"
+  pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+  git diff --check
+  ```
+
+  Expected: the complete selected requirement owner is green, including the new
+  exact identity regression and preserved negatives. Fast may reach the separately
+  unfinished legacy-source RED; retain it and report actual fail-fast membership.
+  If any other failure emerges, inspect the actual cause and send parent the
+  evidence before expanding implementation; do not weaken assertions or guess.
+
+- [ ] **Step 4: Commit this one file and obtain independent review.**
+
+  ```powershell
+  git add -- BookOfEternityClient.Tests/MortalWoundRequirementAuthorityTests.cs
+  git commit -m "test(wounds): assert exact resolved skill identity (#1536)"
+  ```
+
+  Return exact BASE/HEAD, complete actual summary/TRX/build/timeout/cleanup evidence,
+  and test-only no-update rationale. Do not stage parent plans or Spec Kit progress.
+  Parent reviews diff/artifacts and obtains fresh independent Spec+Quality review
+  before accepting or dispatching addition Task1. No remote actions.
