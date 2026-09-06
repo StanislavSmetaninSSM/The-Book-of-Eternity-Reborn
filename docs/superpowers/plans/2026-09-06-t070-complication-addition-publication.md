@@ -34,6 +34,19 @@ mark T070, T177 or #1536 complete and does not authorize remote mutation.
 
 ## Global Constraints
 
+**Task1 parent acceptance (2026-09-07):** implementation `f3c3c0c..8057a262` plus
+review correction `8057a262..ff5ddcb8` are accepted for this bounded task. Independent
+review I1 is closed by the existing canonical retained treatment/policy/diagnosis
+owners, with Spec compliant / quality Approved and no remaining correction findings.
+Parent inspected complete diffs/reports and all25 original plus all10 correction
+artifact sets. Fresh correction controls: new pure7/7, real admission2/2, full owner
+463passed plus required legacy1/464, Integration20/20, afterlife121/121, FullValidation
+1856/1856 in9:04.8574487. ONE Fast6006passed plus required legacy1/6007 is an
+incomplete fail-fast subset, not full success. Builds/cleanup clean, no timeout or
+duplicates. See `2026-09-06-t070-retained-state-parity.md` for source-confirmed
+exception/SourcePath alignment and evidence. All ten Task1 steps are complete;
+Task2, T070, T177 and #1536 remain open. No canonical rule or gameplay was relaxed.
+
 - Remain in `E:/Games/worktrees/boe-1536-wound-materialization` on
   `1536-complete-wound-materialization`; do not access or stage unrelated `.serena`.
 - Preserve existing positive treatment, course interruption, failed-procedure T067
@@ -98,6 +111,40 @@ mark T070, T177 or #1536 complete and does not authorize remote mutation.
   Inspect `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`
   and `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs` for shared
   validation impact. No new spiritual mechanic or GM input is introduced.
+- T177 source-confirmed verification correction, approved during Task1: in
+  `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.DeteriorationPolicyAuthority.cs`,
+  only `DeteriorationPolicyAuthority_RejectsSlotOverflowWithRootsAndDefinitionsAvailable`
+  restores the original two-slot consequence fixture before accepted-state creation:
+  `scenario.Before["consequences"] = WoundContractTestData.CreateActiveWound()["consequences"]!.DeepClone();`.
+  The shared CreateScenario at accepted f3c3c0c1993–2002 already removes slot/root/
+  definition1 and sets slotsUsed1, while this unchanged row still requires2.
+  Preserve all four existing2-count assertions and the same T069 rejection oracle.
+  No shared fixture, gameplay validator, policy definition or outcome grammar edit.
+  Existing failing artifact225229-237-41592-a3a3894a34fe4185a81a35ab1ca1a5aa is
+  the RED; rerun the coherent26-row prerequisite/policy selection after this correction.
+- Parent source-audit correction: the old string ownership helper used `base_wound`
+  as its base-root sentinel, colliding with an otherwise legal complicationId of
+  that exact spelling. The shared tagged owner uses null for base and a reference
+  for complication ownership, preserving the intended disjoint-domain rule. Add
+  exact regression rows in `BookOfEternityClient.Tests/WoundMaterializationContractTests.cs`
+  using its existing CreateSingleLeafWound(bindLeaf:true, leafPolicy:"replace") and
+  CreateComplication helpers: base-vs-complication `base_wound` rejects at the existing
+  edge definitionKey path/code; both roots in the same such complication remain legal.
+  Do not reserve/ban the name or add a parser exception. This is a source-proven
+  ambiguity correction, not a claim that this edge was observed RED before extraction.
+  Include these rows in the final canonical/graph union; no additional production
+  change or duplicate broad lane is needed solely for the new test coverage.
+- Parent pre-acceptance preservation finding: BASE ParseDefinitions records valid
+  definitionKey before rejecting forbidden links. Its extracted converter must not
+  move that bookkeeping after a possible null result and silently drop the aggregate
+  duplicate-definition diagnostic. Add a real `ProposalComposition_` regression in
+  `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs` with distinct
+  local refs, duplicate exact/confusable definition keys and a forbidden link in
+  one definition. Require the original forbidden-link and duplicate-definition
+  code/path ordering together; keep one shared conversion/validation owner. Observe
+  the smallest real RED before any correction. FullValidation already running may
+  finish; report its exact code boundary and reverify the changed diagnostic owner
+  after any narrow correction, with no misleading final-evidence claim.
 
 **Interfaces (Task1 produces these for Task2):**
 
@@ -291,7 +338,7 @@ WoundWorkingReferenceOrigin origin, WoundWorkingOperationAddress address)` and r
 
 **Implementation steps:**
 
-- [ ] **Step 1: Write the failing graph and admission owners.**
+- [x] **Step 1: Write the failing graph and admission owners.**
 
    Write failing pure cumulative/order/collision tests and a real request rejection
    showing an invalid nonselected band leaves the lowest-free die unclaimed.
@@ -344,27 +391,27 @@ WoundWorkingReferenceOrigin origin, WoundWorkingOperationAddress address)` and r
    bounded exact filters are specified below; these two do not replace cumulative
    admission or real before-die evidence.
 
-- [ ] **Step 2: Import and freeze the one working graph.**
+- [x] **Step 2: Import and freeze the one working graph.**
 
    Import the original canonical wound once into detached immutable scalar, definition,
    root, complication, ownership and slot data. Tag existing complication IDs/root
    effect IDs separately from `AddedComplicationRef(ordinal, localRef)` and new root
    references. Add a distinct policy origin tag where needed. No symbolic coordinate
    may be serialized into canonical `effectId`, history, T067 map or result entry.
-- [ ] **Step 3: Extract the existing converter and graph validators.**
+- [x] **Step 3: Extract the existing converter and graph validators.**
 
    Reuse the existing typed draft conversion, marker binding, real wound source link,
    parsed definition facts, graph readers and persisted severity adapter. The graph
    wrapper adds provenance/ownership, not a parallel effect model. A reversible
    internal tuple encoding is allowed only as a detached validator reference.
-- [ ] **Step 4: Share one ordered scalar/graph loop.**
+- [x] **Step 4: Share one ordered scalar/graph loop.**
 
    Apply operations in authored order and validate the entire graph after every
    operation: all existing complication/definition/root/slot/power/marker/edge caps,
    source/target/realm/ownership, reachability, replacement domain, stack and lifecycle
    rules. Preserve checked arithmetic and result grammar. Do not validate final
    counts only or regroup removals/reductions ahead of additions.
-- [ ] **Step 5: Share pruning and exact append operations.**
+- [x] **Step 5: Share pruning and exact append operations.**
 
    Move reachability pruning and slot compaction into this one graph operation;
    the accepted `TryRemoveComplication` canonical adapter delegates to it. Preserve
@@ -423,7 +470,7 @@ WoundWorkingReferenceOrigin origin, WoundWorkingOperationAddress address)` and r
    and rejects malformed typed proposals with the same caught argument/JSON failure
    family. `WithGraph` clones all borrowed arrays/JSON before the candidate escapes.
 
-- [ ] **Step 6: Enforce exact reference and semantic-key namespaces.**
+- [x] **Step 6: Enforce exact reference and semantic-key namespaces.**
 
    Enforce exact/confusable direct-add complication refs across each result and nested local
    refs within their namespaces. Technical local spellings may repeat across distinct
@@ -433,14 +480,14 @@ WoundWorkingReferenceOrigin origin, WoundWorkingOperationAddress address)` and r
    Preserve the direct-result namespace from `ValidateAddComplication` rather than
    making identical local spelling across distinct direct/policy origins collide;
    their global definition/stack keys still share the same collision checks.
-- [ ] **Step 7: Preserve the canonical facade and wire procedure graph admission.**
+- [x] **Step 7: Preserve the canonical facade and wire procedure graph admission.**
 
    Preserve `Simulate` and the envelope callback: canonical-only graph exports call
    the old callback and canonical-round-trip its result. Without a callback, its
    complex operations remain unsupported. Existing successful consumers still obtain
    the same nonnull canonical `WorkingWound`. Procedure admission uses `SimulateGraph`
    and a typed graph callback, never a fake envelope or a nullable substitute.
-- [ ] **Step 8: Bridge existing typed policy applicability without publication decisions.**
+- [x] **Step 8: Bridge existing typed policy applicability without publication decisions.**
 
    Obtain policy authority from the unchanged T069 factory against the original
    accepted state and coordinates. Preserve fingerprints and the established
@@ -471,14 +518,14 @@ WoundWorkingReferenceOrigin origin, WoundWorkingOperationAddress address)` and r
    For direct and policy append, return exactly
    `new MortalWoundTreatmentPreparedGraphOperationResult(applicable, false, after)`
    from the shared TryAppend result; failure must return null After.
-- [ ] **Step 9: Verify existing callers and mixed adverse sequence preservation.**
+- [x] **Step 9: Verify existing callers and mixed adverse sequence preservation.**
 
    Keep guaranteed/course positive callers and direct T067 course interruption path
    unchanged. Policy/direct additions accumulate in both orders; a legal policy
    sibling band must not prevent a supported selected direct-add band from resolving.
    The selected policy publication identity/death/secondary-state decisions remain
    outside this task. Document preview preservation separately from future publication.
-- [ ] **Step 10: Synchronize, verify, commit and obtain independent review.**
+- [x] **Step 10: Synchronize, verify, commit and obtain independent review.**
 
     Synchronize documentation/examples/guards, inspect the exact diff, run bounded
     controls, and commit only this task's implementation. Obtain fresh independent
@@ -698,6 +745,278 @@ fresh independent Spec+Quality review and actual evidence acceptance.
 - Synchronize Mortal guide, complete worked example, manifest and executable guards.
   Check shared afterlife matrix/example/source-guard coverage explicitly.
 
+**Concrete private interfaces and owner sequence:**
+
+Source preflight below is against accepted `f3c3c0c` before Task1. Rebase line
+anchors/type names to the independently accepted Task1 commit before generating
+the brief; do not use a concurrent unaccepted implementation as authority. No
+new gameplay choice, public schema, publisher or effect identity writer is needed.
+
+Parent source rebase on Task1 commit `8057a262`, accepted through correction `ff5ddcb8`:
+SimulateGraph is the designed3-argument entry at54, WithScalars111, TryAppend141,
+ValidateGraph163 and OriginalTransitionTurn27 match the interfaces below; ff5ddcb8
+adds the shared retained treatment/policy and surviving accepted-diagnosis checks
+inside ValidateGraph. Selected graph validation must retain those canonical gates.
+The existing response coordinate helper is now Parsing1315, still private and
+byte-equivalent. The final converter's validated-key out parameter is private;
+Task2 uses ConvertTreatmentComplicationGraph unchanged. All publication/assembler/
+T067 owners and named preservation tests below are unchanged from f3c3c0c, and
+the parent rechecked their names/signatures. Generate the actual execution BASE
+after the parent acceptance documentation commit, and record it in the execution brief.
+
+T067 remains the binding owner in `MortalWoundTreatmentResolver.Semantics.cs`:
+
+```csharp
+internal sealed record MortalWoundTreatmentComplicationRootBinding(
+    string LocalDefinitionRef, string DefinitionRef,
+    string ApplicationRef, string OperationKey);
+
+internal sealed class MortalWoundTreatmentComplicationBindingPreparation
+{
+    // Private constructor; immutable/detached values, no retained mutable input.
+    internal string ComplicationRef { get; }
+    internal string ComplicationId { get; }
+    internal ImmutableArray<MortalWoundTreatmentReferenceBinding> DefinitionReferenceBindings { get; }
+    internal ImmutableArray<MortalWoundTreatmentReferenceBinding> ApplicationReferenceBindings { get; }
+    internal string PreparationFingerprint { get; }
+    internal ImmutableArray<MortalWoundTreatmentComplicationRootBinding> Roots { get; }
+}
+
+// On existing MortalWoundTreatmentOutcomeIntentComposer:
+internal static MortalWoundTreatmentComplicationBindingPreparation PrepareComplicationBindings(
+    string requestFingerprint, int operationOrdinal,
+    MortalWoundComplicationProposalDraft draft, string declaredOperationFingerprint);
+```
+
+Move the current `ComposeAddComplicationIntent` lines795–834 into that helper:
+exact zero-based invariant ordinal, complication digest, authored definition order,
+root-bearing application subset, and version1 preparation fields remain byte-for-byte
+equivalent. The outer `complication_intent` fingerprint/factory stays unchanged.
+Share the actual response helper `WoundResponseInputComposer.CreateLocalIdentifier`
+(Parsing1377) by changing its accessibility, not by copying its formula. Private
+root keys use `("wound_root_operation", requestFingerprint, mappedDefinitionRef)`.
+Do not add these private keys to the existing public preparation fingerprint.
+
+Existing `MortalWoundTreatmentOutcomePreparation.IntentSeal` gains a private
+addition seal: detached typed draft, exact ordered T067 bindings and private root
+rows. Use the existing `DeclaredFingerprint(index, operation)` and T067 helper to
+recompute it in independent agreement. Extend `IntentsEqual` for every addition
+field; comparing fingerprints alone is insufficient. Explicitly clone typed draft
+JsonElements/arrays and the selected operation array. There is no generic existing
+`CloneResolution` owner to call and no permission to add a process-local ID registry.
+
+Pin a graph path ONLY for an authenticated selected direct addition; preserve the
+old canonical no-addition preparation/projection/fingerprints, including mixed
+removal/reduction. New private packet types belong to outcome preparation:
+
+```csharp
+internal sealed record WoundFinalAssemblyScalars(
+    WoundSeverity Severity, WoundCare Care, WoundRecovery Recovery,
+    WoundTreatment Treatment, WoundLastTransition LastTransition, int SlotBudget);
+internal sealed record MortalWoundTreatmentSelectedRoot(
+    WoundWorkingReference Reference, string DefinitionKey,
+    WoundRootOwnershipDomain OwnershipDomain,
+    ImmutableArray<WoundEffectSlotAgreement> Slots, string? OriginalEffectId,
+    MortalWoundTreatmentComplicationRootBinding? AdditionBinding);
+internal sealed record MortalWoundTreatmentSelectedDefinitionOrigin(
+    int OperationOrdinal, int DefinitionOrdinal, string DefinitionKey,
+    string MappedDefinitionRef);
+internal sealed class MortalWoundTreatmentSelectedGraphCompilation
+{
+    // Private constructor; all getters return immutable/deep-detached state.
+    internal WoundMaterializationEnvelope Before { get; }
+    internal WoundFinalAssemblyScalars FinalScalars { get; }
+    internal WoundWorkingOwnedGraph FinalGraph { get; }
+    internal ImmutableArray<MortalWoundTreatmentSelectedRoot> FinalRoots { get; }
+    internal ImmutableArray<MortalWoundTreatmentComplicationBindingPreparation> Additions { get; }
+    internal ImmutableArray<MortalWoundTreatmentSelectedDefinitionOrigin> NewDefinitionOrigins { get; }
+    internal ImmutableArray<string> OrderedRemovalIds { get; }
+    internal ImmutableArray<string> SelectedTerminalRootIds { get; }
+    internal bool HasReduction { get; }
+    internal bool RequiresEffectBatch { get; }
+    internal string Fingerprint { get; }
+}
+internal sealed record MortalWoundTreatmentSelectedGraphCompilationResult(
+    MortalWoundTreatmentSelectedGraphCompilation? Compilation,
+    IReadOnlyList<ValidationIssue> Issues);
+
+// Existing OutcomePublicationPlanner owns the selected compiler:
+internal static MortalWoundTreatmentSelectedGraphCompilationResult CompileSelectedGraph(
+    WoundMaterializationEnvelope before, MortalWoundTreatmentAttemptRequest request,
+    MortalWoundTreatmentResolution resolution, string transitionId, long currentGameMinute);
+// Existing OutcomePreparation owns its private replay/state:
+internal bool TryRecomposeSelectedGraph(out MortalWoundTreatmentSelectedGraphCompilation? compilation);
+internal WoundMaterializationEnvelope GetPreparedCarrierImage();
+```
+
+`HasReduction`, `RequiresEffectBatch`, partitions and origins are derived from frozen
+authenticated operations, never supplied flags. Bind final graph/scalars, operation
+order, full maps/private keys and origins in the private compilation fingerprint;
+reuse existing rematerialization authority's `ProjectionFingerprint` for this path.
+Do not change any of the frozen13 authority fields,8 batch fields, six-argument
+Compose, or the existing uniquely named8-argument Prepare/10-argument Agrees entries.
+
+**Scalar sequencing is exactly one operation pass.** Extract these PRIVATE helpers
+in `MortalWoundTreatmentOutcomePublicationPlanner`:
+
+```csharp
+private sealed record TreatmentPublicationMetadata(
+    string LastAttemptId, string? ActiveCourseId,
+    WoundTreatment Treatment, WoundLastTransition LastTransition);
+private static TreatmentPublicationMetadata CreatePublicationMetadata(
+    WoundMaterializationEnvelope before, MortalWoundTreatmentAttemptRequest request,
+    MortalWoundTreatmentResolution resolution, string transitionId);
+private static (WoundCare Care, WoundRecovery Recovery) ApplyStabilizationAnchors(
+    WoundCare care, WoundRecovery recovery,
+    WoundLastTransition selectedTransition, long currentGameMinute);
+private static WoundFinalAssemblyScalars DecorateSelectedGraphScalars(
+    MortalWoundTreatmentWorkingGraphProjection working,
+    TreatmentPublicationMetadata metadata, MortalWoundTreatmentResolution resolution,
+    long currentGameMinute);
+```
+
+`CreatePublicationMetadata` moves only existing1092–1119: same course ownership,
+AppendOnce/None route order, attempt pointer, checked ordinal and request turn.
+Old `CreateScalarShell` keeps its signature and original single intent loop after
+applying that metadata. Its old `ApplyStabilization` sets state/removes blocker and
+calls the extracted anchor helper. Old reduction Project/fingerprint behavior stays.
+
+Addition path authenticates first, computes metadata from ORIGINAL Before but does
+not install it before graph import, then calls Task1 `SimulateGraph` ONCE with the
+single selected result array. That pass alone applies stabilization state/blockers,
+recovery arithmetic, reduction, removal and direct append in authored order. The
+direct callback uses Task1's converter/projection with `DirectAddition` provenance;
+policy or heal publication is still unsupported here, without invalidating legal
+unselected sibling bands. Never call `CreateScalarShell` on the addition path.
+
+After the pass, overlay only LastAttemptId/ActiveCourseId, Treatment and LastTransition
+from metadata. If authenticated selected stabilization exists, stamp its selected
+turn, create `WoundRecoveryAnchor("stabilization", currentGameMinute, transitionId)`,
+and clear only a `not_stabilized` deterioration anchor. Do not call stabilization's
+state/blocker operation again; without stabilization, preserve all existing anchors.
+If reduction exists, stamp Severity.LastChangeEventRef from selected coordinates'
+EventRef without re-subtracting rank or resetting budget. Recovery comes verbatim
+from the working graph. Validate with these decorated scalars; no second simulation,
+no repeated removal, no implicit progress threshold or carry-over. Final course/
+lifecycle evidence is rechecked after decoration.
+
+**Canonical staging and exact transition stamp:** addition preparation's
+`GetPreparedCarrierImage` returns actual original canonical Before; final state lives
+only in the authenticated private packet until effect IDs exist. Do not manufacture
+a canonical reduction projection or fake provisional IDs to satisfy existing
+`AgreesWith`/Finalize reduction assumptions. Update their PRIVATE graph-path checks,
+prepared-template comparison/storage/fingerprinting at MortalTreatmentPublication
+784/1129/1143/1172, and preserve old no-addition behavior.
+
+Original carrier is not owner-only: `EffectAcceptedTurnPlanner.ValidateWoundSourceExport`
+currently compares transition kind to `wound.LastTransition.Kind` unconditionally.
+For the authenticated addition packet only, compare to FinalScalars.LastTransition
+instead. Independently recompute `CreateTransitionId(resolution)` using the existing
+owner, then verify exact `(id, checked(before.ordinal+1), request.turn, "treat")`.
+Require preparation/continuation/sole allocated transition IDs all equal that ID,
+and stamp turn == request turn == binding turn. Caller-supplied `transitionId` is not
+self-authenticating. Keep source owner/origin/realm/active/nonmaterializable/input
+fingerprint/opportunity/event checks. First-treatment Before.kind=create and an
+actual earlier-treat before-image must both be tested; a stale treat kind must not
+mask a wrong ID, ordinal or turn.
+
+PreparedWounds consumer audit at BASE: WoundAcceptedTurnPlan837–906 cloning/storage
+and2167 fingerprint bind full original template plus batches; MortalTreatmentPublication
+770–785 equality,1129/1143 storage,1172 hash must use the selected carrier accessor.
+EffectPlanner2738/2812 read IDs,2946 `PrepareWoundBatchApplications` uses batch lookup,
+2992 reads original terminal baseline. Source validator3466 is the unconditional
+final-kind read; severity-event checks are create/worsen only. Generic prepared
+validation2934–2983 returns early after treatment agreement, and ComposeFinalPlan
+850–857 dispatches treatment before the ordinary finalizer. IsEmptyWoundStage3335
+reads only count: required0/0 still has one wound and one batch. Do not change
+ordinary/no-addition handling to accommodate the private packet.
+
+**One existing batch compiler and two independent checks:** factor helpers inside
+existing SeverityRematerializationPlanner.PrepareReduction rather than create another
+publisher. Reuse original-before/event/source/index proof199–251, complete final
+definition export270–292, application builder300–381, terminal owner384–400 and
+retained-lineage403–418. Existing-coordinate rematerialization retains existing
+Coordinate formula and exact original prior root; added roots always use T067's
+mapped application/private operation key and null predecessor, even before reduction.
+Effect mechanics/operation ordinals remain positive/consecutive, unlike T067's zero
+based declared ordinal. Existing Agrees independently reruns Prepare; preserve both
+its prepare-stage and final-stage invocations.
+
+Expose only a private authenticated packet lookup under the existing
+`WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out compilation)`;
+recompose/check private continuation and preparation without recursive agreement.
+An addition lacking its packet must fail closed, not fall back to ordinary behavior.
+`PrepareWoundBatchApplications` must use that packet instead of inferring full
+rematerialization from roots.Count!=0. Exact terminal selection stays under the
+existing owner; retain the0/0 lineage proof. Private ValidateGenerationPredecessors
+gets the authenticated view: bijection is over surviving ORIGINAL applications,
+all NEW applications are parentless, and original carrierless terminal ancestors
+still require the same WoundRootGenerationAuthority proof. Never weaken to a count
+check or accept an arbitrary flag supplied in the public batch.
+
+**Fresh definition scope, including child-only definitions:** current blanket
+`acceptedContinuation = transitionKind == "treat"` cannot cover an added root.
+Use the sealed selected definition origins above to locate each NEW definition in
+its exact typed operation/draft, e.g.
+`treatmentPublication.outcome.declaredResult[i].complicationDraft.consequenceDefinitions[j].definition.components`.
+Do not fabricate `woundDecisions` or widen public creation diagnostic grammar.
+Validate the exact new definition subset (including every reachable child-only
+definition) with existing EffectRollSkillScopeAuthority.ValidateNewComponents and
+the exact wound target. Each new root application also has AcceptedContinuation=false
+and follows existing ValidateBoundApplicationComponents fresh checks. Retained
+definitions keep accepted continuation despite later skill loss. Missing/foreign
+resealed private origins reject before allocation. Keep ordinary creation paths and
+diagnostic codes intact; bind origins in private agreement, not a new public field.
+If a NEW root or child definition declares an exact skill selector, absent scope
+authority must also reject at that typed selector path; do not let the existing
+nullable `authority?.ValidateNewComponents` convention become permission to skip
+fresh selection on this new private packet path. Production Compose always builds
+Offered/Current authority (EffectAcceptedTurnInputComposer285/837), so this is a
+missing-authority rejection, not an empty fabricated catalog or a new GM field.
+Retained continuation and all-scope-only definitions keep their existing semantics.
+
+**Two slot rewrites must use one final graph:** DeriveEffectResults currently
+sorts new application IDs and starts slots at1; BuildFinalWound then independently
+does so again and replaces all roots with applications. For the selected packet,
+both must use its final graph order and actual retained/new/rematerialized mapping.
+Never supply a retained root as a fake new application result.
+
+```csharp
+internal sealed record WoundFinalRootAssemblyRow(
+    string EffectId, string DefinitionKey, WoundRootOwnershipDomain OwnershipDomain,
+    ImmutableArray<WoundEffectSlotAgreement> Slots);
+internal static FinalWoundResult BuildFinalTreatmentWound(
+    MortalWoundTreatmentSelectedGraphCompilation compilation,
+    WoundEffectOperationBatch batch,
+    IReadOnlyDictionary<string, EffectAcceptedApplicationResult> applicationByRef);
+private static FinalWoundResult BuildFinalWoundCore(
+    WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
+    IReadOnlyList<WoundComplication> complications,
+    IReadOnlyList<WoundEffectSourceDefinition> definitions,
+    IReadOnlyList<WoundFinalRootAssemblyRow> roots);
+```
+
+Extract existing JSON construction/final Parse once into the common core. Existing
+three-argument BuildFinalWound wrapper keeps ordinary ID-sort semantics; new selected
+wrapper resolves actual retained IDs and complete real application results in graph
+slot order, including new complication ownership. Retained source/index/carrier
+payloads stay unchanged. Parse the full canonical after-image only after all actual
+IDs exist, then use existing treat reducer/contributions. Required effectless0/0
+still runs this assembly. AllowsWorsening remains false: it gates severity increase,
+not direct complication addition. Extend only the private supported selected grammar
+for approved adverse procedure/course-interruption results, not positive-mode grammar.
+
+**Procedure category preservation:** the existing authoring owner forbids adverse
+operations only in `success` rows (Contract837–864); ordinary `partial_success`
+and `failed_attempt` rows may retain their approved mixed ordered results. Do not
+accidentally implement a failed-only direct-add publisher because the primary
+worked example uses a failed band. Extend private `HasSupportedGrammar` from the
+authenticated selected category as needed, preserving positive `success`, course
+milestone and guaranteed restrictions. An addition path must still reject any
+selected unsupported heal/policy intent as a whole; `Any(addition)` is not permission
+to skip the complete supported-operation/selection gate. No authoring grammar or
+existing T067/T069 fingerprint changes are needed for this preservation.
+
 **Implementation steps:**
 
 - [ ] **Step 1: Write selected-addition and exact binding regressions.**
@@ -796,6 +1115,234 @@ fresh independent Spec+Quality review and actual evidence acceptance.
 - Missing required batch/proof or changed retained lineage rejects effectless0/0;
   resource/receipt atomicity, byte-exact rollback, retry and cold replay remain real
   accepted-pipeline evidence, not a helper-installed history assertion.
+
+**Executable RED fixtures and exact owner controls:**
+
+New pure file `BookOfEternityClient.Tests/MortalWoundTreatmentComplicationBindingTests.cs`
+uses real typed constructors and T067's existing fingerprint writer:
+
+```csharp
+[Fact]
+public void BindingPreparation_PreservesExactT067CoordinatesAndFingerprint()
+{
+    var draft = new MortalWoundComplicationProposalDraft(
+        new WoundComplicationProposalDraft("edge", "pain", "active", "Edge pain", 1,
+            "known_to_player"),
+        ImmutableArray<WoundConsequenceDefinitionProposalDraft>.Empty);
+    var operation = new MortalWoundAddComplicationOperation(draft);
+    var requestFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new[] { "binding-test" });
+    var declared = MortalWoundTreatmentOutcomeIntentComposer.DeclaredFingerprint(0, operation);
+    var binding = MortalWoundTreatmentOutcomeIntentComposer.PrepareComplicationBindings(
+        requestFingerprint, 0, draft, declared);
+    Assert.Empty(binding.Roots);
+    Assert.Empty(binding.DefinitionReferenceBindings);
+    Assert.Empty(binding.ApplicationReferenceBindings);
+    var complicationId = "mortal_wound_complication_" +
+        MortalWoundTreatmentIdentityWriter.Digest("complication", requestFingerprint, "0", "edge");
+    Assert.Equal(complicationId, binding.ComplicationId);
+    Assert.Equal(WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+    {
+        "book_of_eternity.mortal_wound_treatment.complication_preparation", "1",
+        requestFingerprint, "0", "edge", complicationId, declared
+    }), binding.PreparationFingerprint);
+}
+```
+
+Add effectful rows using Task1's accepted typed constructor/definition fixtures.
+`BindingPreparation_RootKeysUseExistingResponseCoordinateWriter` asserts authored
+map order `0/edge/localDefinition`, application subset and byte-exact shared writer
+keys, plus original version1 preparation oracle including map fields in the same
+order. `BindingPreparation_DetachesAndNamespacesWithoutHidingCollisions` tests
+input/output mutation, ordinal0 versus1, independent local namespaces and retained
+global definition/stack-key collisions. Formula copies are test oracles only.
+
+New Integration file is exactly
+`BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ComplicationAdditionPublication.cs`.
+Use the real shared failed-procedure fixture for the primary example, not a
+`success` band with adverse operations. Also cover legal partial success below:
+
+```csharp
+private static ResolverScenario CreateAdditionPublicationScenario(bool effectless)
+{
+    var scenario = CreateRecoveryPublicationScenario("procedure", "failed_attempt", "a1");
+    var draft = CreateEffectfulComplicationDraft("t070_edge");
+    if (effectless) draft["consequenceDefinitions"] = new JsonArray();
+    var failed = scenario.Before["treatment"]!["routes"]![0]!["outcomes"]!
+        .AsArray().OfType<JsonObject>().Single(row =>
+            row["category"]!.GetValue<string>() == "failed_attempt");
+    failed["result"] = new JsonArray(new JsonObject
+    {
+        ["kind"] = "add_complication", ["complicationDraft"] = draft
+    });
+    return PrepareProcedurePublicationScenario(scenario with
+    {
+        OperationKey = "operation_t070_direct_add_" + (effectless ? "empty" : "effectful"),
+        ExpectedIntentCount = 1
+    });
+}
+
+[Theory]
+[InlineData(false)]
+[InlineData(true)]
+public void ComplicationAdditionPublication_SameRankPreservesOldGraphAndRequiresBatch(bool effectless)
+{
+    var scenario = CreateAdditionPublicationScenario(effectless);
+    using var fixture = AcceptedStateFixture.Create(scenario);
+    var before = fixture.ReadCurrentWound();
+    var oldCarrier = fixture.ReadPlayerEffectCarrier();
+    var oldIndex = fixture.ReadEffectIdentityIndex();
+    var flow = PersistAndRehydrateTreatmentPublication(fixture,
+        ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey, scenario.RouteId),
+        "direct addition");
+    var plan = ComposeCoordinatedTreatmentPlan(fixture, flow);
+    var prepared = plan.WoundStageBundle!.PreparedPlan;
+    var batch = Assert.Single(prepared.EffectOperationBatches);
+    Assert.Empty(batch.TerminalOperations);
+    Assert.Equal(effectless ? 0 : 1, batch.RootApplications.Count);
+    Assert.All(batch.RootApplications, root => Assert.Null(root.PriorRootEffectId));
+    Assert.Equal("effect_t070_recovery_characteristic",
+        Assert.Single(batch.RootLineageAuthority, row => row.EffectId is not null).EffectId);
+    Assert.True(WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+        prepared.TreatmentContinuationAuthority!, out var continuation));
+    Assert.NotNull(continuation.RematerializationAuthority);
+    using (var publication = PublishCachedResourcePlanOpen(fixture, flow, plan))
+        publication.CompleteAtFullPipelineEnd();
+    var after = fixture.ReadCurrentWound();
+    Assert.Equal(before.Severity, after.Severity);
+    var added = Assert.IsType<MortalWoundAddComplicationOutcomeIntent>(
+        Assert.Single(((MortalWoundTreatmentResolution)flow.Resolution).OutcomeIntents));
+    Assert.Contains(after.Complications, row => row.ComplicationId == added.ComplicationId);
+    var carrierAfter = fixture.ReadPlayerEffectCarrier();
+    var indexAfter = fixture.ReadEffectIdentityIndex();
+    const string retainedId = "effect_t070_recovery_characteristic";
+    Assert.True(JsonNode.DeepEquals(
+        oldCarrier["activeEffects"]!.AsArray().Single(row => row!["effectId"]!.GetValue<string>() == retainedId),
+        carrierAfter["activeEffects"]!.AsArray().Single(row => row!["effectId"]!.GetValue<string>() == retainedId)));
+    Assert.True(JsonNode.DeepEquals(
+        oldIndex["entries"]!.AsArray().Single(row => row!["effectId"]!.GetValue<string>() == retainedId),
+        indexAfter["entries"]!.AsArray().Single(row => row!["effectId"]!.GetValue<string>() == retainedId)));
+    Assert.Equal(oldIndex["entries"]!.AsArray().Count + (effectless ? 0 : 1),
+        indexAfter["entries"]!.AsArray().Count);
+    if (effectless)
+    {
+        Assert.True(JsonNode.DeepEquals(oldCarrier, carrierAfter));
+        Assert.True(JsonNode.DeepEquals(oldIndex, indexAfter));
+    }
+    var treatment = Assert.Single(fixture.ReadCurrentHistory().State!.Transitions, row => row.Kind == "treat");
+    AssertClosedTreatmentReceipt(treatment.TreatmentResult!.Receipt, flow.Request, flow.Resolution);
+}
+```
+
+Extend this positive with exact retained slot mapping, new complication ownership,
+new root create history with no original sourceEffectIds, exact complete application
+map and the effectless zero-operation result. The fixture has one weak old rankIII
+root; authoring two legal additions must vary the hardcoded `t061-irritation`
+definition/stack keys in `CreateEffectfulComplicationDraft` (OutcomeIntents400/414).
+Two unchanged helper copies are a collision negative, not a legal positive fixture.
+ResolveCurrentTreatment is in ResolverTests2992, persisted rehydration and Compose
+helpers in ProcedurePublication2288/2341, ordinary resource publication helper in
+ResourcePublication5604. Preserve their real reservation/confirmation flow.
+
+Add these methods/theory axes to the same new partial:
+
+- `ComplicationAdditionPublication_RequiredEmptyBatchRejectsMissingOrBorrowedAuthority`:
+  reuse removal's real cached-plan resealing at220–291 and final independent agreement.
+  Null/wrong batch, borrowed proof and changed lineage reject at0/0. Direct Finalize
+  missing-batch check asserts issue code AND Expected text. Required path text is
+  `one authenticated treatment graph batch and exact application map (including empty)`;
+  scalar optional path keeps null/empty expectation. Add that assertion to the existing
+  removal negative too (Minor M1); do not weaken any rejection.
+- `ComplicationAdditionPublication_OrderedMixedGraphMaterializesOnce`: legal add/remove/
+  reduce permutations, same-rank selective removal, multiple additions, root-slot order,
+  exact old live and carrierless-terminal parents, null new parents, one generation
+  and no transient ID. Use actual removal lineage fixture for selective closure.
+- `ComplicationAdditionPublication_SelectedBindingAndGraphTamperRejects`: changed full
+  draft, ordinal, ComplicationId, ordered maps, mapped refs/private keys, graph/order,
+  retained ownership/source, application result-slot/ID/extra/missing entries and
+  independently resealed packet. Reuse CloneResolutionWithIntentsUnchecked and
+  ResealRecoveryResolution from removal643–673; frozen public shapes unchanged.
+- `ComplicationAdditionPublication_FinalStampIsIndependentOfOriginalKind`: original
+  create and genuinely published earlier-treat positives; independently resealed
+  final ID/kind/ordinal/turn/allocated-ID negatives at preparation AND effect boundary.
+  A previous treatment must be published normally, not manually installed history.
+- `ComplicationAdditionPublication_NewSkillRequiresFreshAuthorityWithoutCreationPacket`:
+  root AND reachable child-only exact-skill definition axes, Offered/Current present/
+  missing/unavailable, missing authority itself, borrowed/missing typed origins,
+  no fabricated creation map.
+  Keep retained-lost-skill accepted continuation; assert unavailable selector's existing
+  wound binding code and exact typed path. Preserve ordinary creation diagnostics.
+- `ComplicationAdditionPublication_DecoratorsDoNotReapplyRecoveryOrRemoval`: start from
+  real effectless-add fixture, original progress1 and one original effectless
+  complication, refresh baseline before authority. Legal failed-band permutations of
+  add, recovery2, remove-original, stabilize and reduce1 finish at progress3/rankII,
+  one removal, one added complication, one treatment. No-stabilize row retains anchors.
+- `ComplicationAdditionPublication_StabilizationUsesSelectedStampAndMinute`: add+
+  stabilize+recovery in legal orders; original transition turn differs from selected
+  request turn. Assert actual selected turn/accepted minute/new transition ID and
+  checked ordinal. Valid original not_stabilized deterioration anchor clears; a
+  different valid condition remains. No invented invalid condition fixture.
+- `ComplicationAdditionPublication_PostWriteRollbackRetryAndColdReplay`: reuse removal
+  364–392 ResourcePublicationFailureInjection and FileSystemManagerHooks, arm history
+  with target carrier's actual original bytes. Assert Fired and ObservedEarlierResourceWrite,
+  full-tree byte/existence restoration, same-plan retry with exactly one result, then
+  RestartForReplay/ProbePublishedTreatment ExactReplay and unchanged complete tree.
+- `ComplicationAdditionPublication_InterruptedCourseAndCriticalFailureKeepApprovedRules`:
+  actual course interruption plus natural1/Fate direct-add failure, legal unselected
+  policy/death siblings, preserved natural20 success. Do not make adverse outcomes
+  legal in positive course milestones/guaranteed routes.
+- `ComplicationAdditionPublication_PartialSuccessKeepsMixedApprovedOutcome`:
+  use the existing `CreateRecoveryPublicationScenario("procedure", "partial_success", "a1")`
+  (RecoveryPublication12–64) so its real die/margin selection targets partial success.
+  Append the effectful typed complication only to that partial row after the existing
+  one-point recovery, then call PrepareProcedurePublicationScenario to refresh history.
+  Resolve, persist/rehydrate and publish through the same coordinated path. Assert
+  ResultCategory/receipt `partial_success`, RouteCompletion `None`, one recovery point
+  (not two), unchanged severity/old root identity, the exact T067 new complication
+  and new parentless root, and normal selected resource consumption. The unchanged
+  success row remains positive-only. This proves category is not inferred from the
+  mixture of operations and does not narrow the existing approved partial grammar.
+
+Task2 changes shared final assembly/effect validation and the existing worked example's
+selected-publication capability. Update the existing `mortal_wound_treatment_reduce_severity_v1`
+guide/CLI example and its guards to distinguish validated pre-roll graphs from actual
+selected direct-add publication; do not claim policy/heal/legacy publication. Keep
+its complete authored JSON and exact guide/CLI equality, and exercise its actual
+failed-band addition through the new real publication fixture. Add a guard under
+the existing `PromptDocumentationCoverageTests.WoundTreatment` prefix for the
+truthful selected-batch/retained-history/effectless wording. Maintain its manifest
+registration/requiredText and all older negative examples. No authored afterlife
+contract changes, but shared core preservation requires full afterlife guards and
+conditional FullValidation. Record this no-afterlife-contract-change rationale.
+
+Register this additional heavy partial in both FastTestBoundaryTests inventories,
+docs/testing.md and specs/1505-test-suite-performance/research.md: count63→64 after
+Task1 acceptance. No branch split or broadened test lane.
+
+After smallest RED/GREEN, the exact final coherent controls are:
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentComplicationBindingTests|FullyQualifiedName~MortalWoundTreatmentWorkingGraphProjectionTests|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatment|FullyQualifiedName~FastTestBoundaryTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundEffectBatchPlannerTests.SkillScope_|FullyQualifiedName~WoundEffectBatchPlannerTests.NonMechanicalWound_SealsZeroOperationBatchAndEmptyEffectResult|FullyQualifiedName~WoundEffectBatchPlannerTests.EffectStage_WorsenWritesExactRetainedGenerationAndLeavesNewRootParentless|FullyQualifiedName~WoundEffectBatchPlannerTests.TerminalGeneration_|FullyQualifiedName~WoundEffectBatchPlannerTests.Finalize_CanonicallyRenumbersSlotsAfterReverseOrderedOpaqueIds|FullyQualifiedName~WoundEffectBatchPlannerTests.Finalize_ExactResultBuildsCanonicalGraphBindingsEntriesHistoryAndIntents"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.ComplicationAdditionPublication_"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.ComplicationRemovalPublication_"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.PrepareReductionBatch_|FullyQualifiedName~MortalWoundTreatmentResolverTests.FinalizeReduction_|FullyQualifiedName~MortalWoundTreatmentResolverTests.ReductionEffectHandoff_|FullyQualifiedName~MortalWoundTreatmentResolverTests.SkillScope_AcceptedTreatmentRematerializationDoesNotRebindOrRequireProposalCoordinates|FullyQualifiedName~MortalWoundTreatmentResolverTests.OutcomeIntents_AreProductionDerivedOneForEachDeclaredOperation|FullyQualifiedName~MortalWoundTreatmentResolverTests.OutcomeIntent_DerivedComplicationIdsAreStableForExactInputAndChangeWithSealedRequestOrLocalRef|FullyQualifiedName~MortalWoundTreatmentResolverTests.Parser_OutcomeIntentDuplicateAddComplicationRefRejectsAtTheSecondLocalRef"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 10 -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.RecoveryPublication_OrderedRecoverySupportsEveryImplementedCombination|FullyQualifiedName~MortalWoundTreatmentResolverTests.RecoveryPublication_AccumulatesWithoutImplicitThresholdTransition|FullyQualifiedName~MortalWoundTreatmentResolverTests.RecoveryPublication_ThresholdAndMaximumProgressRemainNonterminal|FullyQualifiedName~MortalWoundTreatmentResolverTests.RecoveryPublication_OverflowRejectsBeforeReservationAndPublication|FullyQualifiedName~MortalWoundTreatmentResolverTests.Prepare_StabilizeThenReducePreservesDeclaredOrdinalOrder|FullyQualifiedName~MortalWoundTreatmentResolverTests.Prepare_StabilizationPlacementIsBoundInOrderedPreparation"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
+git diff --check
+```
+
+Selected tests must execute and pass; list final actual membership, build0warnings/
+0errors, cleanup, timeout and duplicate facts. Fast may stop on unfinished legacy or
+the documented console scheduling residual: report actual rows and omitted remainder,
+not full-green evidence. FullValidation is one conditional shared-docs boundary run.
+Rebase source-pinned selectors on accepted Task1 before dispatch; split a measured
+oversized Integration selection into disjoint subsets or expand to15m with evidence.
+Commit only Task2-owned source/tests/GM/docs/inventory after scoped diff review:
+`git commit -m "feat(wounds): publish selected complication additions atomically (#1536)"`.
+Parent owns this plan and Spec Kit acceptance; do not stage them. Fresh independent
+Spec+Quality review and actual artifact audit are required before acceptance.
 
 ## Verification and acceptance
 

@@ -1659,6 +1659,36 @@ entrypoints require no update for T065.
   `docs/superpowers/plans/2026-09-06-t070-complication-addition-publication.md` owns
   cumulative symbolic-graph/pre-roll admission before selected direct-add publication.
   Full policy publication, heal/legacy and T070/T177/#1536 remain open.
+  Addition Task1 review checkpoint (2026-09-06): implementation `f3c3c0c..8057a262`
+  is NOT accepted. Parent inspected its actual diff and all25 reported artifact
+  sets: final pure127/127 and converter/GM60/60; earlier Integration18/18,26/26,
+  destination3/3, afterlife121/121 and FullValidation1856/1856. The single Fast
+  is incomplete5878/5879, stopped by the required unfinished legacy RED. Broad
+  controls precede only the separately approved final malformed-creation diagnostic
+  correction and are not full-feature completion evidence. Independent Spec+Quality
+  review found I1: graph admission omits canonical retained treatment/policy checks
+  at the resulting rank and diagnosis checks against remaining accepted complications.
+  Execute `docs/superpowers/plans/2026-09-06-t070-retained-state-parity.md` using
+  shared existing canonical owners, real pure/pre-roll RED-to-GREEN evidence and
+  fresh semantic-change controls. Do not begin selected-addition Task2 or check
+  Task1 complete before parent artifact audit and independent correction approval.
+  This is validation parity restoration, not permission to rewrite retained catalogs,
+  invent canonical IDs, weaken the authoring language or narrow unfinished outcomes.
+  Addition Task1 parent acceptance (2026-09-07): `f3c3c0c..8057a262` plus correction
+  `8057a262..ff5ddcb8` accepted after complete source/report review, all25 original
+  and all10 correction artifact audits, and independent correction Spec compliant /
+  quality Approved with I1 closed/no findings. Fresh owner463/464 retains only the
+  required legacy RED; graph admission Integration20/20 and afterlife121/121 pass.
+  Fresh FullValidation1856/1856 passes in9:04.8574487 with clean build/cleanup,
+  no timeout, duplicates or skips. ONE Fast6006/6007 is incomplete due to that same
+  legacy RED, not full-project success. New pure7/7 and real pre-roll2/2 prove the
+  shared canonical retained-rank and remaining-diagnosis gates before die/resources.
+  Original canonical writer exception and retained route SourcePath are preserved.
+  Only bounded Task1/correction checklists are checked; top-level T070/T177/#1536
+  remain open. Next is concrete Task2 in the addition plan: selected direct-add
+  binding/single-batch publication, including existing legal mixed partial_success,
+  exact new-versus-retained skill authority, one-pass scalar state and atomic retry.
+  No spiritual healing art or full legacy/policy publication completion is implied.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
@@ -2157,6 +2187,17 @@ Final owning Integration control is 6/6
 and cleanup. Independent correction review has 0 Critical/Important/Minor and no
 unresolved checks. Fast's limit/category selection is unchanged. I1 is closed, but
 T177 remains open for its meaningful Fast checkpoint after the required T070 behavior.
+
+T177 narrow fixture correction within T070 addition Task1 (2026-09-06): the retained
+`DeteriorationPolicyAuthority_RejectsSlotOverflowWithRootsAndDefinitionsAvailable`
+fails its initial SlotsUsed2 assertion, before invoking policy authority, because
+shared CreateScenario was already narrowed to one consequence at accepted f3c3c0c.
+Parent checked the unchanged source/base diff. Restore the complete two-slot
+CreateActiveWound consequences locally in that test only, before accepted-state
+creation; keep every count assertion and the actual slot-overflow rejection unchanged.
+RED225229-237-41592-a3a3894a34fe4185a81a35ab1ca1a5aa (25/26) is retained; final
+coherent verification/review remains pending. No gameplay/GM contract change and
+no completion of T070/T177/#1536 is implied.
 
 ---
 
