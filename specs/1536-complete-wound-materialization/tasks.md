@@ -1555,6 +1555,27 @@ entrypoints require no update for T065.
   tag cutover together with strict consumers and afterlife documentation controls.
   Closed heal-legacy source and course-publication REDs remain required; no T070,
   T177 or feature closure, merge or remote action is authorized by this checkpoint.
+  Kind-specific repair checkpoint (2026-09-06): `af5e94a3..0baceaf5`, independently
+  Spec compliant / Quality approved, including resolved M1 selector-test isolation.
+  Parent inspected the complete change and all20 actual summary/TRX/build artifacts;
+  all final filter terms select real tests. Production-tree pure456/456
+  (`20260906-150744-445-19932-4454f01864cd4945a5407b4decf49fca-focused`),
+  Integration60/60 (`20260906-145000-501-13720-1b253bb9f8c64ce99951abec15f7c240-focused`),
+  afterlife120/120 (`20260906-145752-614-15748-8b6422b7ca164f35b30d1b1f09dba1cf-focused`),
+  and FullValidation1855/1855 in 7:54.916
+  (`20260906-145831-835-28680-28ac9cf503cb4714ad7e709c82d0baae-fullvalidation`).
+  FullValidation predates the final route-root guard, separately covered by its
+  actual RED/final pure control. Final test-only M1 correction class74/74
+  (`20260906-152931-810-8704-f967723acf19470387a390673d7a391f-focused`). No final
+  build warning/error, skipped row, duplicate, timeout or cleanup failure. The two
+  original repair rows are unchanged and implemented; all four candidate kinds have
+  strict current-format tags, and GM/runtime/afterlife guidance plus one complete
+  production-validated three-part correction example are synchronized. Public/local
+  correction remains separate from private and fresh accepted-world authority;
+  alternative-only/mixed live waves remain explicitly closed. Next scalar-course
+  plan is `docs/superpowers/plans/2026-09-06-t070-scalar-course-publication.md`, including
+  real persisted-resource/coordinator fixture correction and one meaningful Fast
+  checkpoint. T070/T177/#1536 remain open; no remote publication authorized.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

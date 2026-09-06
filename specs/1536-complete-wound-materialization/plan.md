@@ -605,6 +605,18 @@ Private aliases are scrubbed without erasing unrelated authored IDs or valid sib
 The public packet can be inspected while its unsupported live capture/retry remains
 explicitly closed. Shared packet-tag changes require the afterlife documentation
 controls even though alternative treatments themselves remain Mortal-only.
+The reviewed repair checkpoint is `af5e94a3..0baceaf5` (2026-09-06): all four packet
+kinds now carry the mandatory discriminator; strict local correction/public transport
+and unsupported live-wave gates are implemented and independently approved. Actual
+controls: pure456/456, Integration60/60, afterlife120/120, FullValidation1855/1855;
+the final selector-test refinement additionally passes its entire class74/74. The
+FullValidation result precedes the final root-guard refinement, independently covered
+by focused RED/GREEN; it is not misrepresented as a final-tree broad run.
+Next execute `docs/superpowers/plans/2026-09-06-t070-scalar-course-publication.md` for
+the coherent scalar course lifecycle. It uses the existing accepted-command persistence,
+fresh rehydration and resource transaction, preserving the two stale-history test bodies
+while correcting their shared publication fixture. Full non-scalar outcomes, heal-legacies
+and fresh diagnosis/alternative authority remain mandatory subsequent work.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

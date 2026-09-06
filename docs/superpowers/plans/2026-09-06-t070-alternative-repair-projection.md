@@ -41,6 +41,9 @@ Modify:
   MortalWoundTreatmentContract.MemberShapes.cs: phase raw shape diagnostics before
   semantic validation so skipped invalid raw array entries cannot renumber later
   semantic diagnostics. Valid complete-member behavior remains unchanged.
+- BookOfEternityClient/Services/WoundResponseInputComposer.AlternativeTreatmentResponses.cs:
+  a visible route's forbidden non-null diagnosisPath is diagnosed as a whole before
+  its children; do not require repairing a subtree which must be removed.
 
 Create:
 
@@ -68,6 +71,8 @@ Existing tests owned by this cutover:
 - BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs
 - BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.PersistedRepairWave.cs
 - BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.Persistence.cs
+- BookOfEternityClient.IntegrationTests/WoundMaterializationRollbackTests.cs:
+  existing owning controls and the narrowly authorized complete-route fixture correction.
 - BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.Wounds.cs
 - BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
 
@@ -215,6 +220,42 @@ For reveals=[null,"bogus","route:valid"], phase one repairs index 0; phase two t
 reports index 1, never compacted index 0. Preserve index 2 across both corrections.
 Exercise equivalent requirement/outcome cases and sanitizer-created null holes.
 
+One response-level phase also needs explicit raw-presence handling. After original
+duplicate/closed top-level guards, read the route object's exact visibility token.
+If it is public or known_to_player, a non-null diagnosisPath receives the existing
+wound_response_invalid_field pairing diagnostic at diagnosisPath and its children are
+not parsed. Continue the full route parser independently: this closed visibility rule
+does not depend on guessing an invalid mode or treating the route as valid. The same
+whole-path rule therefore applies with an independently invalid mode. For a hidden or
+unknown/malformed visibility retain strict diagnosis member parsing and the existing
+hidden pairing checks. Null remains legal for a visible route. This changes diagnostic
+phase/scope, not which complete visible author inputs are valid.
+
+The core branch (inside the already guarded four-field response parse) is:
+
+~~~csharp
+var rawRoute = fields["route"];
+var visibleRoute = rawRoute.ValueKind == JsonValueKind.Object &&
+    rawRoute.TryGetProperty("visibility", out var visibilityElement) &&
+    visibilityElement.ValueKind == JsonValueKind.String &&
+    visibilityElement.GetString() is "public" or "known_to_player";
+if (visibleRoute && pathElement.ValueKind != JsonValueKind.Null)
+{
+    Add(issues, path + ".diagnosisPath", "wound_response_invalid_field",
+        "one non-GM-only revealing path only for a hidden route",
+        pathElement.GetRawText());
+}
+else if (pathElement.ValueKind == JsonValueKind.Object)
+{
+    var pathResult = MortalWoundTreatmentContract.ParseDiagnosisPathShape(
+        pathElement, path + ".diagnosisPath");
+    issues.AddRange(pathResult.Issues);
+    diagnosisPath = pathResult.DiagnosisPath;
+}
+// Retain the existing non-object/non-null rejection for non-visible routes, and
+// the existing typed hidden-pairing check. Do not add a second visible-root issue.
+~~~
+
 ### Narrow edit scopes before masking
 
 An error appearing in the real parser does not automatically authorize replacing all
@@ -239,7 +280,9 @@ actual route/path local parse results before turning its root into a permission:
   The root pairing error caused by the null typed parse result grants no root mask.
 - A hidden missing/non-object path has a genuinely absent/invalid whole member and
   can receive a whole diagnosisPath correction.
-- A visible non-null path is forbidden as a whole and must become null.
+- A visible non-null path is forbidden as a whole and must become null. The exact raw
+  visible-token phase above proves this even if another route field is invalid; no
+  typed complete route is needed to grant deletion of that forbidden whole member.
 - An otherwise valid hidden diagnosis path with visibility=gm_only needs only
   diagnosisPath.visibility changed, preserving ID, requirements and all facts.
 - An otherwise valid path lacking the required new route fact needs that fact
@@ -721,9 +764,28 @@ Required separate tests:
   owning Integration selection; a test suite that rejects every candidate is not green.
 
 Use the existing PersistedRepairWaveValidator fixtures for transport controls.
-WoundMaterializationRollbackTests.cs is a partial of WoundMaterializationLifecycleTests;
-reflection helpers and file/lease checks belong in Integration, not Fast. Reuse its
+WoundMaterializationRollbackTests.cs contains both WoundMaterializationLifecycleTests
+and GameEngineTurnLifecycleTests partials; the two exact-retry/fail-closed controls
+belong to the latter. Reflection helpers and file/lease checks belong in Integration,
+not Fast. Reuse its
 actual snapshot/capture setup rather than introducing a looser test-only path.
+
+Parent source audit found CreateRepairRoundtripProposal installs a complete treatment
+route only for category=treatment, although the immutable Task2 BASE already rejects
+empty Mortal routes. If this prevents an owning control reaching its intended repair
+assertion, populate its existing complete route/knownRouteIds for every category before
+the targeted mutation. Preserve the test methods and assertions; record actual RED,
+source-backed BASE equivalence and covering GREEN. Do not invent a BASE test result
+or weaken complete-route validation. This narrow test-fixture update is in task scope.
+
+The same existing CorrectedRepairRoundtrip theory also used unsigned CreateAuthorityAsync
+before actual PublishAsync. Its treatment row reaches the already-required signed
+occurrence validator and fails with mortal_wound_validation_occurrence_unresolved.
+Use the existing CreateSignedAuthorityAsync helper and actual PublicRef in both
+rejected/corrected decision fields for this theory. Preserve its actual publication,
+history/effect/notification assertions. The parent confirmed the old helper and exact
+signed-occurrence check at immutable Task2 BASE; document source equivalence honestly,
+without claiming a BASE lane run. No production authority bypass or new fixture seal.
 
 ## GM-facing synchronization and documentation verification
 
