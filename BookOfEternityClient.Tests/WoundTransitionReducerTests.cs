@@ -2554,6 +2554,98 @@ public sealed class WoundTransitionReducerTests
         Assert.Equal("active", recovery.ProposedAfter.Lifecycle);
     }
 
+    [Theory]
+    [InlineData("III", 3, false)]
+    [InlineData("IV", 4, false)]
+    [InlineData("III", 3, true)]
+    [InlineData("IV", 4, true)]
+    public void Reduce_MortalFollowUpHeal_TreatStagesSevereWoundWithoutTerminalPublication(
+        string severity, int rank, bool effectful)
+    {
+        var before = effectful
+            ? WithSeverity(WithSeverity(PhysicalWound(), "I", 1), severity, rank,
+                updateMaximumAtCreation: true)
+            : EmptyPhysicalWound(severity, rank, severity);
+        var beforeFingerprint = Fingerprint(before);
+        var after = NewTransition(WithSeverity(before, "I", 1) with
+        {
+            Care = before.Care with { LastAttemptId = "attempt_treat" }
+        }, "treat");
+        var evidence = TreatEvidence(before, after,
+            Outcome(after, heals: true, terminalAttempt: true));
+
+        var result = WoundTransitionReducer.Reduce(Request("treat", before, after, evidence));
+
+        AssertValid(result);
+        Assert.Equal(beforeFingerprint, Fingerprint(before));
+        Assert.Equal(Fingerprint(after), Fingerprint(result.ProposedAfter!));
+        Assert.Equal("active", result.ProposedAfter!.Lifecycle);
+        Assert.Equal(1, result.ProposedAfter.Severity.Rank);
+        Assert.Equal("treat", result.ProposedAfter.LastTransition.Kind);
+        Assert.Equal(before.Care.State, result.ProposedAfter.Care.State);
+        Assert.Equal("replace", Assert.Single(result.Intents.OfType<WoundCarrierTransitionIntent>()).Operation);
+        Assert.Single(result.Intents.OfType<WoundAttemptTerminalIntent>());
+        var followUp = Assert.Single(result.Intents.OfType<WoundFollowUpHealIntent>());
+        Assert.Equal(before.WoundId, followUp.WoundId);
+        Assert.Equal(evidence.AuthorityRef, followUp.AuthorityRef);
+        var history = Assert.Single(result.Intents.OfType<WoundTransitionHistoryIntent>());
+        Assert.False(history.Terminal);
+        Assert.Equal(Fingerprint(after), history.AfterFingerprint);
+        Assert.DoesNotContain(result.Intents, intent => intent is WoundArchiveProjectionIntent
+            or WoundCosmeticLegacyIntent or WoundIndependentMechanicalLegacyIntent);
+        var beforeSources = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(before))!
+            ["consequences"]!["ownedEffectSources"]!["definitions"];
+        var afterSources = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(after))!
+            ["consequences"]!["ownedEffectSources"]!["definitions"];
+        Assert.True(JsonNode.DeepEquals(beforeSources, afterSources));
+        Assert.Equal(effectful ? 1 : 0, after.Consequences.Entries.Count);
+        if (effectful)
+        {
+            AssertFreshRootIds(before, after);
+            var effect = Assert.Single(result.Intents.OfType<WoundEffectTransitionIntent>());
+            Assert.Equal("replace", effect.Operation);
+            Assert.Equal(EffectIds(before), effect.BeforeEffectIds);
+            Assert.Equal(EffectIds(after), effect.AfterEffectIds);
+        }
+        else
+        {
+            Assert.DoesNotContain(result.Intents, intent => intent is WoundEffectTransitionIntent);
+        }
+    }
+
+    [Theory]
+    [InlineData("III", 3)]
+    [InlineData("IV", 4)]
+    public void Reduce_MortalFollowUpHeal_RecoveryRetainsExistingBound(string severity, int rank)
+    {
+        var before = EmptyPhysicalWound(severity, rank, severity);
+        const string tick = "tick_follow_up_mortal";
+        var after = NewTransition(WithSeverity(before, "I", 1) with
+        {
+            Recovery = before.Recovery with { LastTickKey = tick }
+        }, "recover");
+        var result = WoundTransitionReducer.Reduce(Request("recover", before, after,
+            RecoverEvidence(before, after, Outcome(after, heals: true), tickKey: tick)));
+
+        AssertInvalid(result, "wound_transition_follow_up_heal_invalid");
+    }
+
+    [Theory]
+    [InlineData("II", 2)]
+    [InlineData("III", 3)]
+    public void Reduce_MortalFollowUpHeal_TreatStillRequiresStagingOne(string severity, int rank)
+    {
+        var before = EmptyPhysicalWound("IV", 4, "IV");
+        var after = NewTransition(WithSeverity(before, severity, rank) with
+        {
+            Care = before.Care with { LastAttemptId = "attempt_treat" }
+        }, "treat");
+        var result = WoundTransitionReducer.Reduce(Request("treat", before, after,
+            TreatEvidence(before, after, Outcome(after, heals: true, terminalAttempt: true))));
+
+        AssertInvalid(result, "wound_transition_follow_up_heal_invalid");
+    }
+
     [Fact]
     public void Reduce_FollowUpHeal_RejectsMoreThanTwoSeveritySteps()
     {

@@ -1567,12 +1567,12 @@ internal static partial class WoundTransitionReducer
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
         if (evidence.Outcome.Heals &&
-            !FollowUpHealStageIsLegal(before, after))
+            !FollowUpHealStageIsLegal(before, after, allowMortalTreatment: true))
         {
             Add(
                 issues,
                 "wound_transition_follow_up_heal_invalid",
-                "severity-I source and staging state for explicit heal",
+                "severity-I staging within the realm-specific treatment follow-up heal bound",
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
         if (issues.Count == 0)
@@ -2699,8 +2699,12 @@ internal static partial class WoundTransitionReducer
 
     private static bool FollowUpHealStageIsLegal(
         WoundMaterializationEnvelope before,
-        WoundMaterializationEnvelope after) =>
-        before.Severity.Rank is 1 or 2 && after.Severity.Rank == 1;
+        WoundMaterializationEnvelope after,
+        bool allowMortalTreatment = false) =>
+        after.Severity.Rank == 1 &&
+        (before.Severity.Rank is 1 or 2 ||
+         allowMortalTreatment && before.Owner.Realm == "mortal_world" &&
+         before.Classification.Domain == "physical" && before.Severity.Rank is 3 or 4);
 
     private static void ValidateNonHealingSeverityReduction(
         WoundMaterializationEnvelope before,
