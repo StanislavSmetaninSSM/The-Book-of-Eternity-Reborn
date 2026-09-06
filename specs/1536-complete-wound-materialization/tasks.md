@@ -2105,17 +2105,29 @@ hand-written history/after-images, or a raw mutation fallback.
 
 - [ ] T093 [P] [US4] Add RED `spiritual_healing` tier 0-V bootstrap/profile/progression/training, visible name, diagnosis-at-zero, and insufficient-tier tests in `BookOfEternityClient.Tests/SpiritualHealingArtTests.cs`
 - [ ] T094 [P] [US4] Add RED `d20 + 2H` vs `10 + 2W + complications`, all margin bands, bounded two-step result, tier-before-natural-20, and natural-1 override tests in `BookOfEternityClient.Tests/SpiritualHealingResolverTests.cs`
-  Prepared numerical prerequisite (2026-09-07), shared with T101:
+  Accepted numerical prerequisite (2026-09-07), shared with T101, commit `4711d6a8`:
   `docs/superpowers/plans/2026-09-07-spiritual-healing-outcome-math.md` defines
   44 valid-value and 14 invalid-domain/overflow rows for an unused pure calculator.
-  Parent self-review and independent arithmetic cross-check of all literal rows
-  are complete; implementation and independent acceptance remain pending. Tests
+  Parent source/artifact inspection and independent Spec Compliant / Quality
+  Approved found zero open defects. Actual 44 semantic RED -> 44 GREEN ->
+  14 invalid RED -> 58 GREEN; one Fast completed 6,266 of 7,446 discovery rows,
+  with 6,265 PASS / one required unchanged legacy failure and arithmetic 1,180
+  uncompleted, not full GREEN. All runs have clean build/cleanup, no timeout or
+  duplicate artifacts within five minutes; exact evidence is in the linked plan. Tests
   must distinguish active I from healed I without creating severity 0, and valid
   insufficient tier from malformed data. No actual sealed-die/modifier/actor or
   accepted treatment authority is claimed; T094 remains open for integration.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
 - [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, active-treatment-then-natural-recovery ordering, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
 - [ ] T097 [P] [US4] Add RED `1+tier`, I=2/II=4/III=6/IV=8 thresholds, overflow, worsening reset, unsafe suppression, tier-0 20-cycle, and tier-V 4-cycle tests in `BookOfEternityClient.Tests/SpiritualWoundNaturalRecoveryTests.cs`
+  Prepared numerical prerequisite (2026-09-07), shared with T105:
+  `docs/superpowers/plans/2026-09-07-spiritual-natural-recovery-math.md` defines
+  43 valid-value and nine invalid/overflow cases for one unused bounded calculator.
+  Parent self-review/literal arithmetic cross-check are complete; implementation
+  and independent acceptance remain pending. Preserve existing nonnegative-long
+  progress, carry through every following step, and distinguish healed I from
+  active I. Actual safe/unsafe cycle authority, worsening reset, entity eligibility
+  and the generic recovery follow-up heal boundary remain required integration.
 - [ ] T098 [P] [US4] Add RED player/Guardian/resident/leader/radiant recovery, normal art progression, consent/reachability, and player-heals-entity tests in `BookOfEternityClient.IntegrationTests/AfterlifeWoundEntityRecoveryTests.cs`
 - [ ] T099 [US4] Add RED combat heal and safe self/helper/entity heal accepted-plan/resource/scheduler/effect/history/output lifecycle tests in `BookOfEternityClient.IntegrationTests/AfterlifeWoundHealingLifecycleTests.cs`
 
@@ -2123,7 +2135,7 @@ hand-written history/after-images, or a raw mutation fallback.
 
 - [ ] T100 [US4] Add `spiritual_healing` tier 0-V to player-soul and persistent actor standard art bootstrap, validation, progression, training offers, and Russian display in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`, `BookOfEternityClient/Services/AfterlifeTrainingCostPolicy.cs`, and `BookOfEternityClient/Services/TrainingService.cs`
 - [ ] T101 [US4] Implement the single tier gate, roll authority, result bands, natural 1/20 precedence, complication modifier, and bounded transitions in `BookOfEternityClient/Services/SpiritualHealingResolver.cs`
-  The T094-linked prerequisite first adds unused
+  The accepted T094-linked prerequisite (`4711d6a8`) adds unused
   `BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs`. It returns
   recomputable arithmetic, not accepted healing authority. T101 remains open for
   the single actual resolver, exact target/art/modifier/die proofs, transitions
@@ -2132,6 +2144,12 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
 - [ ] T105 [US4] Implement universal natural recovery reducer, overflow/reset, per-wound cycle seals, and player/entity eligibility in `BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs`
+  The T097-linked prerequisite adds unused
+  `BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs`, not an accepted
+  cycle or transition producer. T105/T107 must preserve all carried progress and
+  represent multi-step/follow-up healing with exact tick authority; the existing
+  generic recovery predicate allows original I/II only. Do not cap/discard a valid
+  III/IV result or reuse the unrelated Mortal-only treatment staging exception.
 - [ ] T106 [US4] Integrate accepted recovery and art progression with `ProgressionScheduleService` for player soul and persistent actors without wall-clock or effect-scheduler fallback in `BookOfEternityClient/Services/ProgressionScheduleService.cs` and `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`
 - [ ] T107 [US4] Compose healing/recovery wound/effect/resource/profile/scheduler/history/output after-images and exact replay results in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T108 [US4] Add player-to-entity and entity-to-player treatment authority using exact profile, visibility, reachability, consent/conflict, and current wound bindings in `BookOfEternityClient/Services/AfterlifeWoundTreatmentAuthority.cs`

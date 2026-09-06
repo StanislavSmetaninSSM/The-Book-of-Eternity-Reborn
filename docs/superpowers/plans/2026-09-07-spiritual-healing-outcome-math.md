@@ -67,7 +67,7 @@ the active partial result, not a safe-cycle tick; no time passes in this functio
 Every field is caller-recomputable, with no authorization/seal semantics. Null is
 invalid data; a non-null `InsufficientTier` result is valid blocked arithmetic.
 
-- [ ] **Step 1: Add the API shell and all 44 valid-value tests.**
+- [x] **Step 1: Add the API shell and all 44 valid-value tests.**
 
 Create the service with this compilable shell; do not add arithmetic yet:
 
@@ -279,7 +279,7 @@ public sealed class SpiritualHealingResolverTests
 }
 ```
 
-- [ ] **Step 2: Observe the 44-row semantic RED before arithmetic.**
+- [x] **Step 2: Observe the 44-row semantic RED before arithmetic.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~SpiritualHealingResolverTests"
@@ -289,7 +289,7 @@ Expected 44 executed, all fail the null-shell `Assert.IsType`; zero compile erro
 Keep exact artifact and actual messages. A compile/discovery/fixture failure is not
 this RED. Complete the run before editing production.
 
-- [ ] **Step 3: Implement the tier gate and calculation, then observe 44 GREEN.**
+- [x] **Step 3: Implement the tier gate and calculation, then observe 44 GREEN.**
 
 Replace the shell method with the complete method below. The numeric-domain and
 checked-overflow gates deliberately follow their separate RED in Steps 4/5.
@@ -326,7 +326,7 @@ checked-overflow gates deliberately follow their separate RED in Steps 4/5.
 
 Run the exact Step 2 command. Expected 44/44 PASS; no compilation warnings/errors.
 
-- [ ] **Step 4: Add 14 invalid-domain/overflow tests and observe their RED.**
+- [x] **Step 4: Add 14 invalid-domain/overflow tests and observe their RED.**
 
 Insert these methods in the same test class, without modifying the earlier tests:
 
@@ -370,7 +370,7 @@ Expected 14/14 fail Assert.Null because the interim implementation returns a
 non-null diagnostic or wrapped arithmetic, not because of compilation or a thrown
 exception. Do not add the gates until this command has completed.
 
-- [ ] **Step 5: Add complete domain/checked-arithmetic gates and observe 58 GREEN.**
+- [x] **Step 5: Add complete domain/checked-arithmetic gates and observe 58 GREEN.**
 
 Insert before the existing tier-insufficiency branch:
 
@@ -406,7 +406,7 @@ Run the exact Step 2 command: expected 58/58 PASS, no skipped tests or build
 warnings/errors. Every audit number must be representable, even if a critical
 result would otherwise choose a positive band. No broad exception catch or clamp.
 
-- [ ] **Step 6: Run one bounded Fast, record evidence and independently review.**
+- [x] **Step 6: Run one bounded Fast, record evidence and independently review.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Fast
@@ -449,3 +449,37 @@ healing attempt, source proof, scheduler, effect mutation or player command.
 - All paths/interfaces are explicit; no integration fixture or new dependency is
   needed. This plan is prepared for one later exclusive implementer; it does not
   authorize overlapping the currently active Mortal staging build/source owner.
+
+## Parent acceptance — 2026-09-07
+
+Bounded Task 1 is complete at `4711d6a82c904b0b8fb9cd1fcb1a88f856a5bcc8`
+against recorded BASE `d0cb54abdcfef7b809de3a598fe7737a66cc50a2`, exactly two
+new files / 231 lines. Parent read the full source/test diff, report and actual
+artifacts. Independent task review returned Spec Compliant / Quality Approved,
+zero Critical/Important/Minor findings. Its two outside-diff items are resolved by
+the actual artifact audit and retaining full T094/T101 unchecked for integration.
+Production search confirms no runtime caller.
+
+Actual artifacts under `TestResults/test-lanes/`, all five-minute bounds:
+
+- `20260907-081054-271-31860-6c5ba0c49b4c409099e6cba664e451b7-focused`:
+  44/44 intended null-shell assertion failures, 1:06.803.
+- `20260907-081223-205-45368-c84aaf90f9dc407bb64ee7c1c963672e-focused`:
+  44/44 arithmetic PASS, 59.345 seconds.
+- `20260907-081340-292-45976-abec9afe1b4548c7829e86685e8b3aa3-focused`:
+  14/14 intended non-null invalid-domain/overflow assertion failures, 30.979 seconds.
+- `20260907-081426-008-49748-987daa5064ee4227ae7198d9d8788140-focused`:
+  58/58 final PASS, 59.488 seconds.
+- `20260907-081546-926-43360-d7370e78560c4144bdfb9c66eff541f8-fast`:
+  one Fast, 2:26.547; 6,265 PASS / one unchanged required
+  `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
+  failure. Eleven completed TRX contain 6,266 executed rows; discovery has 7,446,
+  arithmetic 1,180 uncompleted, not an exact identity-set assertion or full GREEN.
+  All 58 new healing-math rows passed in Fast as well.
+
+All runs have zero build warnings/errors, no timeout, successful cleanup and no
+duplicate artifacts/execution IDs. Parent inspected actual counters, outcomes,
+failure groups, discovery and logs; `git diff --check` passed. The documented
+no-GM-update rationale remains valid for this unused value calculator. No extra
+FullValidation/PreMerge, remote operation, art-schema/legacy choice or top-level
+task closure occurred; the actual accepted healing resolver remains required.

@@ -1563,11 +1563,26 @@ Next numerical prerequisite (2026-09-07):
 unused internal spiritual-healing tier/formula/band/terminal-bound calculator.
 Its 44 valid-value and 14 invalid-domain/overflow rows cover arithmetic only;
 the return value supplies no accepted healer/target/modifier/die authority,
-resource/time spend, art progression or mutation. Parent complete-code self-review
-and literal arithmetic cross-check are complete; implementation and independent
-acceptance remain pending. Full T094/T101 stay open for the actual shared resolver
+resource/time spend, art progression or mutation. Accepted at `4711d6a8` after
+parent source/artifact inspection and independent Spec Compliant / Quality
+Approved, zero open findings. Actual 44 RED -> 44 GREEN -> 14 RED -> 58 GREEN,
+all clean five-minute runs; one Fast completed 6,266 of 7,446 discovery rows with
+6,265 PASS / one required unchanged legacy failure, arithmetic 1,180 uncompleted,
+not full GREEN. Full T094/T101 stay open for the actual shared resolver
 and accepted publication, while the existing GM synchronization tasks cover the
 future exposed workflow. This task does not settle the separate art-schema choice.
+
+Next recovery prerequisite (2026-09-07):
+`docs/superpowers/plans/2026-09-07-spiritual-natural-recovery-math.md` supplies an
+unused numeric step with 43 valid-value and nine invalid/overflow cases. Parent
+complete-code self-review/literal arithmetic cross-check are complete, but code
+and independent acceptance are pending. It preserves nonnegative-long carried
+progress and the approved thresholds, not accepted safe-cycle or actor authority.
+Full T097/T105 remain open, including worsening, safe/unsafe gating and all entity
+paths. Actual T105/T107 must handle the generic recovery follow-up heal bound and
+active partial-point then natural-recovery ordering without losing progress or
+reusing the Mortal-only exception. Scheduler/profile/wound publication still needs
+one coordinated accepted transaction; no extra authority is inferred from the math.
 
 Checkpoint: players and persistent entities have complete bounded spiritual wound and
 healing lifecycles; every non-training defeat is durable without mandatory injury or
