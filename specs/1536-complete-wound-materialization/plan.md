@@ -630,11 +630,20 @@ actual artifact sets. Final Focused pure24/24 and split Integration12/12 +62/62 
 the exact required74-row Integration union; final builds/cleanup are clean. The earlier
 ten-minute combined control is explicitly incomplete, not a passing run. One redundant
 test assertion is retained as Minor M1 for final whole-branch review.
-Next execute `docs/superpowers/plans/2026-09-06-t070-complication-removal-publication.md`:
-selective causal-lineage termination, exact retained-root authority even for a required
-zero-operation batch, and mixed reduction through the same publisher. Full remaining
-non-scalar outcomes, heal-legacies and fresh diagnosis/alternative authority remain
-mandatory subsequent work; T070/T177/#1536 remain open.
+The selective-removal checkpoint `51c97c24..58f29a5c` is independently Spec compliant /
+Task quality Approved and parent-accepted. One batch now performs ordered selective
+causal-lineage termination, authenticated0/0 removal and mixed severity reduction.
+Shared generation validation preserves the exact canonical parent even when its
+effect is already terminal and carrierless, without reviving or rewriting history.
+Parent audited the complete22-file change and all24 actual C# artifact sets; exact
+Integration24+52=76 and relevant pure controls pass. Mortal and afterlife worked
+guidance/guards are synchronized; no new spiritual gameplay was introduced.
+Fast4110/4211 and FullValidation299/300 are incomplete due to independently confirmed
+stale snapshot/section-reader fixtures, not claimed green. Next execute
+`docs/superpowers/plans/2026-09-06-t177-verification-fixture-alignment.md` on this branch.
+Review Minor M1 (misleading no-batch rejection wording) is retained for the later
+direct-addition finalizer change/final triage. Full remaining outcomes, heal-legacies,
+fresh diagnosis/alternative authority and T070/T177/#1536 closure remain required/open.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

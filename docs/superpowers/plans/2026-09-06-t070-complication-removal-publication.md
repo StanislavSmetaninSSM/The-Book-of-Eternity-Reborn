@@ -80,11 +80,24 @@ needed for this nonterminal operation.
   do not create a separate publisher or duplicate the existing construction pipeline.
 - Modify `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.MortalTreatmentPublication.cs`
   and `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` only at required-batch
-  presence/selection seams and exact treatment-event authority where needed.
+  presence/selection seams, exact treatment-event authority, and the source-confirmed
+  independent final rematerialization-proof check below.
 - Modify `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs` only to separate
   accepted treatment causality from the unchanged create/worsen severity-event rule
   and validate retained-root lineage for authenticated removal-only even with no
-  terminal operations. Do not relax the reaction-lineage analyzer.
+  terminal operations, plus the source-confirmed private terminal-request selection
+  seam and mixed removal/reduction predecessor-coordinate seam below. Do not relax
+  the reaction-lineage analyzer.
+- Additional source-confirmed shared prerequisite below may narrowly modify
+  `AcceptedMechanicsPlanner.cs` at the existing lineage/identity authority owner and
+  the existing generation helper in `WoundAcceptedTurnPlanner.cs`. Reuse that owner;
+  do not copy an identity validator or introduce a second publisher.
+- Additional pure owners may extend `WoundEffectBatchPlannerTests.cs` and
+  `WoundEffectLineagePlannerTests.cs`. Existing reaction/identity tests remain controls.
+- The shared terminal-generation correction also updates the existing wound note in
+  `OtherGuides/Afterlife_Contract_Matrix.md`, `Examples/E_CLI_Afterlife_Turns.txt`, and
+  a source guard in `AfterlifeDocumentationCoverageTests.cs`; it grants no new
+  spiritual-healing mechanic, pending/control field or GM-authored runtime identity.
 - Create `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ComplicationRemovalPublication.cs`
   with `ComplicationRemovalPublication_` real-pipeline owners, reusing the existing
   partial family's accepted fixture and persistence/coordinator/rollback helpers.
@@ -121,7 +134,7 @@ WoundEffectTerminalOperationPlanner.Plan(
 the exact resolution and event coordinates. The shared effect source gate can use
 that existing reader; there is no need for a second authority representation.
 
-- [ ] **Step 1: Establish real selective-removal RED**
+- [x] **Step 1: Establish real selective-removal RED**
 
 Build routes before `AcceptedStateFixture.Create` exports any accepted authority.
 Use the existing `ConfigureCourseConsequenceEnvelope(scenario, true)` fixture for
@@ -153,7 +166,7 @@ Keep all terminal provenance. Add cold replay and byte-identical replay no-op ch
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.ComplicationRemovalPublication_RemovesOnlyOwnedRootsAndPreservesBaseConsequence"
 ```
 
-- [ ] **Step 2: Share the pure removal and retain every exact intent payload**
+- [x] **Step 2: Share the pure removal and retain every exact intent payload**
 
 Make `MortalWoundTreatmentWorkingWoundSimulator.TryRemoveComplication` internal,
 preserving its implementation. It removes the selected complication, its declared
@@ -184,7 +197,7 @@ Define one deterministic `RequiresEffectBatch(preparation)` helper shared by all
 consumers: severity projection exists OR an ordered removal ID exists. No resource
 disposition, count of live effects or count of applications may replace this rule.
 
-- [ ] **Step 3: Generalize the existing effect projection and batch builder**
+- [x] **Step 3: Generalize the existing effect projection and batch builder**
 
 Factor the common `PrepareReduction` path rather than cloning it. Derive a private
 projection from the authenticated preparation containing:
@@ -255,7 +268,7 @@ Build the same single eight-member batch and recompute source/topology/authority
 `Agrees` must still reproduce the exact batch/authority from original input, so omitted,
 extra, reordered, foreign or changed terminal/lineage/source rows cannot borrow a seal.
 
-- [ ] **Step 4: Separate required effect work from fresh-root finalization**
+- [x] **Step 4: Separate required effect work from fresh-root finalization**
 
 Use `RequiresEffectBatch` at all three existing severity-only batch-presence seams:
 `TreatmentContinuationPreparedAgrees`, `TreatmentContinuationFinalPlanAgrees`, and
@@ -298,7 +311,111 @@ from `TryReadTreatmentContinuation`, together with the existing prepared-continu
 and expected-before checks. Keep accepted-event membership and semantic fingerprint
 validation common. Never mutate severity merely to satisfy the old shared gate.
 
-- [ ] **Step 5: Complete the actual-pipeline behavior and tamper matrix**
+Source-backed implementation dependency discovered by actual focused RED191525:
+`ValidateWoundTerminalRequests` independently selects ALL before-image root bindings,
+so its exact live-closure equality rejects valid selective terminals while a base root
+survives. Parent confirmed the validator, sole call and private request record. Extend
+only that internal handoff: append a private immutable selected-root list to
+`WoundTerminalRequest`, minted in `PrepareWoundBatchApplications` from the already
+validated private removal continuation's ordered complication IDs and exact pre-turn
+ownership. Reject missing/repeated/inconsistent selected complications; never derive
+authority from the submitted terminal operations or fall back to full roots on failure.
+All non-removal-only paths still select all original roots. The consumer reruns the
+unchanged `WoundEffectLineagePlanner` for these selected roots, preserves exact ordered
+active/suspended closure equality, and retains every carrier/identity/fingerprint/domain
+check. This private packet is not a new public batch field or authority schema.
+The initial real selected-removal owner proves this gate's RED/GREEN; retain the
+planned omitted/extra/foreign terminal rejection and unrelated-base preservation.
+
+Source-backed implementation dependency discovered by actual focused RED192609:
+`ValidateGenerationPredecessors` builds its expected-coordinate map from ALL original
+roots, so its exact treat bijection rejects a valid removal+reduction batch containing
+only surviving coordinates. Parent confirmed the actual failure, validator and sole
+call. For an already validated private treatment continuation with both sealed removal
+IDs and a severity projection, pass its `SeverityReduction.Before` post-removal graph
+as the expected coordinate authority. Keep the original pre-turn wound separately as
+the owner/source authority and retain exact pre-turn carrier/identity predecessor
+proof for every surviving coordinate. Never select expected coordinates from supplied
+applications or terminals. Preserve the complete roots/predecessors bijection and
+missing/extra/removed-or-foreign predecessor rejections; all create, worsen and
+reduction-only paths retain their original coordinate map. This is a private validator
+handoff, not a public batch/proof/schema/signature change. The real mixed-reduction
+owner proves RED/GREEN; add corresponding targeted negatives to the tamper family.
+
+Actual buffered RED193311 exposes the missing final proof check: the complete
+`ValidatePreparedResult` rejects a cloned proof with changed `AttemptId` and unchanged
+private `AuthoritySeal`, but `TreatmentContinuationFinalPlanAgrees` currently accepts
+the forged bundle because its prepared agreement checks topology but does not rerun
+the producer. Parent confirmed both validators and the real buffered failure. Whenever
+`RequiresEffectBatch`, the existing final agreement seam must independently call the
+existing rematerializer `Agrees` with `bundle.Input`, the exact private continuation
+coordinates/preparation, selected batch and supplied proof before outcome finalization.
+Preserve the cheap prepared check, null/missing requirements, all frozen shapes and
+the existing negative assertions. This is an end-of-transaction proof check in the same
+single-publisher architecture, not a second publication route or a generic refactor.
+The effectless authenticated-batch tamper owner must prove its RED/GREEN.
+
+### Required shared prerequisite: already-terminal retained generation
+
+Actual195034 proves that removal+reduction with an already-terminal retained base root
+is accepted by request/applicability but rejected by the common predecessor bijection.
+This is an implementation gap, NOT an invalid gameplay combination: FR-027 and
+`contracts/wound-effects-and-atomicity.md:264–271,534–550,557–568` require the exact
+canonical old root as a historical parent and explicitly retain root bindings/slots
+after independent effect removal. Parent fully read the separate source audit
+`t070-terminal-generation-authority-audit.md` and independently confirmed the contract
+and existing full-lineage/identity owner. No new gameplay decision is needed.
+
+Implement one shared internal proof at the existing owner/helper:
+
+1. Resolve and fingerprint-check the ORIGINAL pre-turn wound for every `treat|worsen`
+   batch, independent of terminal-operation count. Removal's coordinate subset still
+   comes only from the validated private continuation, never submitted batch roots.
+2. Build/reuse `WoundEffectLineagePlanner.Plan(originalBefore, parsedIdentities)` once
+   per wound per independent generation-validation stage (not once per root). Retain
+   the existing separate authoritative teardown revalidation; do not remove or unify
+   it merely to save a bounded traversal. The exact current canonical root/domain
+   lookup plus this full validated
+   lineage is historical authority; an arbitrary matching terminal source member is not.
+3. Keep active/suspended `OccurrenceAndIdentityAgree` behavior. For closed terminal
+   states `expired|dispelled|removed|replaced`, require successful complete lineage,
+   exact bound root/domain, valid catalog and ZERO catalog occurrences. Reuse/narrowly
+   expose the existing `IdentityAuthorityAgrees` for definition-derived coordinate
+   agreement rather than duplicating owner/source/target/stack predicates. A compact
+   immutable per-wound context may live in the existing owner; no public proof field.
+4. Generic preparation and independent effect-stage validation consume the same proof.
+   Invalid purported retained terminal authority is a failure, never a parentless-new
+   fallback. Preserve established changed-live-stack/carrier tests as controls; do not
+   redefine that separate behavior. Fresh effect identity creation records the exact
+   old root only as first-create parent; the old terminal row remains immutable.
+5. Retain all fork/cycle/disconnected-sibling/foreign/retired-active/reaction-lineage
+   checks, exact predecessor bijection, and final rematerializer recomputation.
+
+Keep the real four-case mixed-removal owner: live/terminal old roots crossed with
+survivor/no-survivor. Terminal survivor is expected GREEN with the exact old parent,
+never null; terminal no-survivor is an authenticated0/0 batch. Add a plain all-terminal
+reduction owner to this Integration partial, plus terminal-survivor post-write rollback,
+same-plan retry and cold replay through the real normalizer. Existing static fixture
+seeding is initial history only, not evidence of a live reaction spawn.
+
+Pure shared controls cover all closed terminal states and existing Player/Npc/
+Combatant/AfterlifeGuardian owner adapters, terminal current root with live reaction
+child, retired generations, mixed live/terminal roots and zero teardown. Negatives
+exercise foreign source/definition/target/owner/stack/domain, disconnected terminal
+sibling, fork/cycle/multiple first-create parents, later successor while stale root
+is bound, active retired member, terminal carrier presence, missing/duplicate identity,
+and missing/extra/borrowed predecessor. Reuse exhaustive existing analyzer owners;
+add representative new generation-seam rejection tests before effect-ID allocation.
+
+Synchronize the Mortal guide/worked example and the existing afterlife wound note:
+independently suppressing an effect does not heal the wound; only a currently authorized
+wound transition rematerializes a legal effect through a new identity with exact old
+provenance and unchanged terminal history. Include a short worked client-lifecycle
+example, not a new GM output schema. GM never authors those runtime IDs or uses a
+missing-carrier fallback; this does not enable Mortal treatments or the still-pending
+new healing art in afterlife.
+
+- [x] **Step 5: Complete the actual-pipeline behavior and tamper matrix**
 
 All new owners use `ComplicationRemovalPublication_`. Reuse the real accepted snapshot
 of the canonical initial wound/effects, resource persistence, fresh rehydration, common
@@ -373,7 +490,7 @@ Mixed no-survivor setup may keep actual untreated care or an independently meani
 active complication; do not weaken the canonical zero-mechanics lifecycle rule. Tests
 must demonstrate valid prerequisites and reach the intended gate, not merely fail early.
 
-- [ ] **Step 6: Extend a complete live-compatible GM example and its actual guard**
+- [x] **Step 6: Extend a complete live-compatible GM example and its actual guard**
 
 Update only the `wound_mortal_roll_scope_skill_v1` response fence in
 `Examples/E_CLI_Wound_Materialization.txt`. Preserve its existing exact-skill base root
@@ -410,8 +527,14 @@ For the skill case, additionally prove:
 
 - the production composer rewrites both removal and ownership to the same derived
   complication ID, while raw GM JSON contains no `complicationId` or effect IDs;
-- exactly one base root and one complication root exist with correct ownership;
-- typed `ParseProjection` plus `WorkingWoundSimulator.Simulate` of the actual success
+- exactly one base root and one complication root are requested with correct ownership;
+- the production composer intentionally clears temporary consequence bindings from
+  `ProposedAfter` after parsing; obtain canonical roots through the ordinary detached
+  `Prepare -> WoundEffectBatchPlanner.Build -> Finalize` path, using existing baseline/
+  input helpers and independent skill authority. Do not invent accepted effect IDs or
+  treat these in-memory planner results as filesystem publication;
+- typed `ParseProjection` plus `WorkingWoundSimulator.Simulate` on that actual canonical
+  planner after-image and the actual success
   result is applicable, removes only the complication/root, preserves the exact base
   root, compacts to one slot, stabilizes and clears `not_stabilized`;
 - no test-only changes are made to the documented payload before parsing it.
@@ -425,7 +548,7 @@ remove only `remove_complication` from the post-recovery list; retain the three 
 unsupported producers. The alternative-treatment draft example stays explicitly local
 until its separate fresh live adapter exists.
 
-- [ ] **Step 7: Verify bounded owners, inspect evidence, commit and independent review**
+- [x] **Step 7: Verify bounded owners, inspect evidence, commit and independent review**
 
 Add the new Integration partial to both exact source arrays; after recovery the
 reviewed-heavy source count changes61→62. Preserve class categories and historical
@@ -446,10 +569,12 @@ recovery HEAD before dispatch. Record the selected TRX rows, including each new 
 The override is for this combined real-publication group, based on the prior course
 control's7:15.323 measurement; it is not a persistent lane change or a new Fast budget.
 
-Run the narrow pure control for the changed documentation guard and exact Fast inventories:
+Run the pure shared-generation controls together with the changed documentation
+guards and exact Fast inventories. This includes the complete required afterlife
+documentation class because the additional correction affects shared validation:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_|FullyQualifiedName~FastTestBoundaryTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundEffectLineagePlannerTests|FullyQualifiedName~WoundEffectBatchPlannerTests|FullyQualifiedName~WoundReactionLineageAuthorityTests|FullyQualifiedName~EffectIdentityStateTests|FullyQualifiedName~AfterlifeDocumentationCoverageTests|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_|FullyQualifiedName~FastTestBoundaryTests"
 ```
 
 Then one meaningful unchanged-budget `Fast` checkpoint because the shared effect-event
@@ -457,8 +582,17 @@ gate and outcome finalizer have changed. No duplicate Fast after tiny fixes; cor
 demonstrated regression with its narrow owner. Keep the required legacy-source RED
 visible if reached; a fail-fast partial Fast run is never a full success. Do not add a
 fake legacy producer, skip the test or rewrite its contract to turn this stage green.
-No PreMerge or unrelated FullValidation/DeepValidation here. Existing afterlife
-create/worsen behavior is preserved; document the Mortal-only no-new-contract rationale.
+Run one `FullValidation` after the shared terminal-generation and afterlife
+documentation correction, as required by AGENTS (default bounded15minutes):
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
+```
+
+This supersedes the original Mortal-only/no-FullValidation rationale. There are no
+new afterlife fields/commands or spiritual healing rules, but the common generation
+validator now implements the already approved terminal-parent rule in all realms.
+No PreMerge, unrelated DeepValidation or exhaustive lifecycle lane is required here.
 
 Report every actual RED/intermediate/GREEN artifact, exact command/filter membership,
 counts/wall/exit/build/cleanup/skip/duplicate/timeout evidence, changed files, self-review
@@ -490,3 +624,34 @@ artifacts and obtains independent Spec and Quality approval. No feature or issue
   strict equality fixtures now explicitly separate passive retained consequences from
   owner_damaged reaction roots and passive marker children. No test-history filtering
   or production trigger suppression is authorized.
+
+## Parent acceptance — 2026-09-06
+
+Bounded task accepted at `58f29a5cd4da25a7ee3641babf7fe96b578d42c0` from
+BASE `51c97c24b5cef764a47c24c9fc9d97491d2820c0`. Parent inspected the complete
+22-file implementation and all24 actual C# artifact sets; fresh independent review
+is Spec compliant / Task quality Approved, with no Critical or Important finding.
+The report, review and exact diff package are retained in Git metadata `sdd/`.
+
+Required Integration evidence is the exact76-row union through disjoint24/24
+(`20260906-204104-611-37200-03627fd7d31b49a4bdad56f499ed8380-focused`,6:48.0597581)
+and52/52 (`20260906-204805-284-36716-2599cef44a014f32940d34fd60bb03e6-focused`,4:20.0070667).
+Parent independently compared both TRX sets against original discovery with ordinal
+equality: missing0,extra0,overlap0. The preceding ten-minute combined timeout remains
+incomplete. Relevant pure owners passed in the463-row control after its sole prose-
+wrapping failure was corrected and the exact full121-row afterlife class passed.
+Builds/cleanup are clean; no passing result is inferred from an unfinished lane.
+
+Single Fast `20260906-205232-674-38928-bc049757df254d988b738319956748e1-fast` stopped
+at4110/4211 due to101 failures from one unchanged snapshot fixture missing required
+`skillId`. FullValidation `20260906-205503-004-40236-b759f856cd2d4d7bb0ae319354773d70-fullvalidation`
+stopped at299/300 because the unchanged named-example reader included the next
+level2 section in a level3 example. Parent source/BASE reproduction confirms both;
+neither broad lane is certified green. Their explicit next same-branch task is
+`2026-09-06-t177-verification-fixture-alignment.md`, before complication addition.
+
+Review Minor M1 is retained: outcome finalizer line543 still describes a null batch
+for unchanged severity even when removal requires a nonnull batch. Correct this
+diagnostic when direct addition extends the same required-batch branch; retain it
+for final whole-branch triage until verified. It does not alter acceptance behavior.
+T070, T177 and #1536 remain open; no remote publication/merge/closure is authorized.

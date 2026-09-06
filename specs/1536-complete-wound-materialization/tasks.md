@@ -1616,6 +1616,26 @@ entrypoints require no update for T065.
   Next bounded plan: `docs/superpowers/plans/2026-09-06-t070-complication-removal-publication.md`.
   Natural recovery, terminal heal/legacies, other outcomes, fresh diagnosis/alternative
   adapters and T070/T177/#1536 closure remain required and open.
+  Selective-removal checkpoint (2026-09-06): `51c97c24..58f29a5c`, independently
+  Spec compliant / Task quality Approved and parent-accepted. Ordered selective
+  teardown, exact retained0/0 lineage and mixed reduction now publish atomically;
+  shared terminal generation retains the exact old canonical parent without old
+  identity revival or terminal-history changes. Parent inspected all22 changed files
+  and all24 C# artifact sets. Required Integration24/24
+  (`20260906-204104-611-37200-03627fd7d31b49a4bdad56f499ed8380-focused`) plus52/52
+  (`20260906-204805-284-36716-2599cef44a014f32940d34fd60bb03e6-focused`) is exactly
+  the original76-row discovery union, with no missing/extra/overlapping descriptors.
+  Relevant pure342 unchanged/shared rows plus full121 afterlife documentation rows
+  pass; builds/cleanup are clean. Earlier bounded timeouts remain explicitly incomplete.
+  Single Fast4110/4211 and FullValidation299/300 stop at two parent-confirmed baseline
+  harness defects: valid snapshot lacks required skillId; named level3 JSON example
+  incorrectly includes the next level2 scalar-course section. No full lane success
+  or healed-legacy implementation is implied. Next task is the same-branch test-only
+  `docs/superpowers/plans/2026-09-06-t177-verification-fixture-alignment.md` before
+  direct-addition implementation. Minor M1 (unchanged-severity no-batch diagnostic)
+  is retained for that future finalizer change/final branch triage. Mortal guide,
+  complete example/manifest/guards and shared afterlife lifecycle guidance are synced.
+  T070/T177/#1536 remain open; no remote mutation or issue closure occurred.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
