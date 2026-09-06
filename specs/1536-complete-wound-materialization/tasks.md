@@ -2046,11 +2046,16 @@ hand-written history/after-images, or a raw mutation fallback.
 ### RED tests
 
 - [ ] T076 [P] [US3] Add RED trauma-pressure term/threshold, harmful-margin source, resilience-tier delta with zero OD spend, strain rank/jump, natural 1/20, and exact `clear/strained/fractured/overwhelmed/broken` destination-cap boundary tests in `BookOfEternityClient.Tests/SpiritualWoundOpportunityTests.cs`
-  Prepared arithmetic prerequisite (2026-09-07), shared with T084:
-  `docs/superpowers/plans/2026-09-07-spiritual-wound-opportunity-math.md` defines
-  42 valid-value and 24 invalid-domain/overflow rows for an unused internal pure
-  calculator. Parent source/self-review is complete; implementation and independent
-  acceptance remain pending. These rows do not prove accepted exchange provenance,
+  Accepted arithmetic prerequisite (2026-09-07), shared with T084:
+  `docs/superpowers/plans/2026-09-07-spiritual-wound-opportunity-math.md` records
+  commit `1969a695`, parent source/artifact inspection and independent Spec
+  Compliant / Quality Approved, zero open findings. Actual 42 semantic RED ->
+  42 GREEN -> 24 invalid-domain RED -> 66 GREEN proves the unused internal pure
+  calculator. One bounded Fast completed 6,208 of 7,380 discovery rows with
+  6,207 PASS / one required unchanged legacy-source failure; arithmetic 1,172
+  uncompleted is not an exact identity-set claim or full GREEN. All runs have
+  zero build warnings/errors, successful cleanup and no timeout/duplicate artifacts.
+  These rows do not prove accepted exchange provenance,
   zero-OD passive registration, natural-die independence in the live adapter or
   opportunity publication. T076 remains open for those integrated requirements.
 - [ ] T077 [P] [US3] Add RED training escalation, controlled II cap, hostile/annihilation cap, mode visibility, and post-roll mode-change rejection tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.Wounds.cs`
@@ -2064,7 +2069,7 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - [ ] T083 [US3] Extend spiritual conflict start/state with declared danger mode, escalation evidence, per-side wound seals, and bounded defeat outcome in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
 - [ ] T084 [US3] Implement trauma-pressure calculation, destination/mode/source caps, harmful-margin audit, one-per-side/re-trauma rules, and opportunity export in `BookOfEternityClient/Services/SpiritualWoundOpportunityAdapter.cs`
-  The T076-linked pure arithmetic plan first adds
+  The accepted T076-linked pure arithmetic prerequisite (`1969a695`) adds
   `BookOfEternityClient/Services/SpiritualWoundOpportunityMath.cs` without a runtime
   caller. A value calculation is not accepted source evidence. T084 remains open
   for the actual adapter, harmful-side provenance and all per-side/export rules.

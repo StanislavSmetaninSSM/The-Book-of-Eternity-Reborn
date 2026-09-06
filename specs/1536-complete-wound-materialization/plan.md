@@ -1541,7 +1541,15 @@ or opportunity publication. T076/T084 remain open after this prerequisite.
 Source preflight also found that the approved new-art `{tier,experience}` example
 and the current scalar-tier/currency progression differ; reconcile that separately
 before T082/T100 instead of silently introducing mixed schemas. It does not block
-this value-only calculator. The plan is prepared, not yet implemented or accepted.
+this value-only calculator. Bounded arithmetic is accepted at `1969a695` after
+parent source/artifact inspection and independent Spec Compliant / Quality
+Approved with zero open findings. Actual staged 42 RED -> 42 GREEN -> 24 RED ->
+66 GREEN, all at five minutes with clean builds/cleanup, proves only this math.
+One Fast completed 6,208 of 7,380 discovery rows: 6,207 PASS and the required
+unchanged legacy-source failure; arithmetic 1,172 uncompleted, not full GREEN.
+No runtime caller or GM contract was added, so no GM prompt/example or conditional
+FullValidation update was needed. Full T076/T084 and the above schema decision
+remain open; the linked sub-plan contains the exact evidence and boundaries.
 
 Checkpoint: players and persistent entities have complete bounded spiritual wound and
 healing lifecycles; every non-training defeat is durable without mandatory injury or

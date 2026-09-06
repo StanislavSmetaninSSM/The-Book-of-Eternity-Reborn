@@ -83,7 +83,7 @@ claim an actual healing art or finished spiritual wounds.
 - Produces: `internal static SpiritualWoundCalculation? SpiritualWoundOpportunityMath.Calculate(SpiritualWoundCalculationInput input)` and the exact immutable records below. Null means invalid input domain, not an ordinary valid no-wound result.
 - A valid result with `MaximumSeverityRank == 0` is ordinary no-wound arithmetic, never an error or consumed opportunity. Valid maximum >=1 permits nothing by itself; the real adapter still authenticates eligibility and the GM still chooses.
 
-- [ ] **Step 1: Add the compilable API shell and behavioral formula tests.**
+- [x] **Step 1: Add the compilable API shell and behavioral formula tests.**
 
 Create the production file with these definitions. The initial shell is deliberately
 not a calculator; it provides a semantic RED rather than an unrelated compile error.
@@ -277,7 +277,7 @@ public sealed class SpiritualWoundOpportunityTests
 }
 ```
 
-- [ ] **Step 2: Run the owning formula tests and confirm semantic RED.**
+- [x] **Step 2: Run the owning formula tests and confirm semantic RED.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~SpiritualWoundOpportunityTests"
@@ -287,7 +287,7 @@ Expected: compilation succeeds; all 42 formula rows fail `Assert.IsType` because
 shell returns null. Record the actual result artifacts and counts. A compile or
 discovery failure is not the intended RED and must be repaired before proceeding.
 
-- [ ] **Step 3: Implement exact arithmetic without the not-yet-tested domain gates.**
+- [x] **Step 3: Implement exact arithmetic without the not-yet-tested domain gates.**
 
 Replace the shell class body with the following. Keep the records unchanged.
 This intermediate implementation is not a candidate for integration: Step 4
@@ -340,7 +340,7 @@ must first expose permissive invalid domains and Step 5 must close them.
 
 Run the exact Step 2 command again; expected all existing formula rows PASS.
 
-- [ ] **Step 4: Add complete invalid-domain tests and confirm their separate semantic RED.**
+- [x] **Step 4: Add complete invalid-domain tests and confirm their separate semantic RED.**
 
 Insert these methods inside the existing test class, with no changes to earlier
 assertions or the production method. Every invalid input currently produces a
@@ -408,7 +408,7 @@ Expected: exactly the 24 newly added invalid-domain/overflow rows fail because r
 null, not because of an exception. Origin and destination are independent theory
 rows, so a failing origin assertion cannot mask an untested destination gate.
 
-- [ ] **Step 5: Add the bounded domain and arithmetic gates, then run the whole owning selection.**
+- [x] **Step 5: Add the bounded domain and arithmetic gates, then run the whole owning selection.**
 
 Insert this code immediately after the three `previous`, `next`, `modeCap` local
 initializations and before `extra` or any pressure calculation:
@@ -442,7 +442,7 @@ Run Step 2's owning filter. Expected: all 66 formula and domain rows PASS, build
 zero warnings/errors, cleanup complete and no skips or duplicate test artifacts.
 Read each actual TRX row/counter and the final summary, not only the exit status.
 
-- [ ] **Step 6: Record bounded verification, source boundary, and independent review.**
+- [x] **Step 6: Record bounded verification, source boundary, and independent review.**
 
 Run one meaningful Fast checkpoint, no extra FullValidation/PreMerge/Deep lane:
 
@@ -483,3 +483,39 @@ review against the exact task BASE/candidate diff. No remote push/merge/issue cl
   baseline is fixed; extract this task with these global constraints into a fresh
   brief. The plan is not permission for parallel C# execution or concurrent source
   changes in another active implementation task.
+
+## Parent acceptance — 2026-09-07
+
+Bounded Task 1 is complete at `1969a695d0ae15faaef4240e3259503f1a000a05`
+against recorded BASE `8186cf6ad6aebd1b128049b8663490ffaaf95b30`: exactly two new
+files, 287 lines. Parent inspected the full source/test diff and actual result
+artifacts; independent task review returned Spec Compliant / Quality Approved,
+zero Critical/Important/Minor findings. Its outside-diff item is resolved by
+retaining the actual accepted-adapter/profile/OD/provenance/export requirements
+under unchecked T076/T084. Production search confirms no runtime caller.
+
+All artifacts are under `TestResults/test-lanes/`:
+
+- `20260907-073159-177-30160-7fe9e0083e604aaa82bb43913499d65c-focused`:
+  42/42 intended null-shell assertion failures, 1:10.699 at five minutes.
+- `20260907-073330-616-49900-a205247754a24e129fc3da3162f50edc-focused`:
+  42/42 arithmetic PASS, 1:05.886.
+- `20260907-073456-894-49240-aac8c4bc0e174900a58fae87fedb7b67-focused`:
+  24/24 intended invalid-domain/non-null assertion failures, 32.886 seconds.
+- `20260907-073545-781-47512-b0b32850da5844b1a070d049fcb27c58-focused`:
+  66/66 final PASS, 1:01.650.
+- `20260907-073653-328-37776-3452b89033674cbb9a4116bb8f714fc5-fast`:
+  one Fast, 2:17.472 at five minutes; 6,207 PASS / one required unchanged
+  `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
+  failure. Eleven completed TRX files contain 6,208 rows; discovery has 7,380,
+  leaving arithmetic difference 1,172 uncompleted, not an exact identity-set
+  assertion. All 66 new math rows passed here too. Fast is incomplete, not GREEN.
+
+Every run has zero build warnings/errors, no timeout, successful owned-process
+cleanup and no duplicate artifacts. Parent verified counters, row outcomes,
+semantic failure messages and logs. `git diff --check` passed. The report's initial
+confusion between completed-TRX Total and all discovery was corrected before
+acceptance; no source or verification rerun was needed for that report correction.
+The documented no-GM-update rationale still holds: this unused value calculator
+does not expose spiritual wounds or healing. No FullValidation, PreMerge, remote
+operation, legacy-choice change or top-level task closure occurred.
