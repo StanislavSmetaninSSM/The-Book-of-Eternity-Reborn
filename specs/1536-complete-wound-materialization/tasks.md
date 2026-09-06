@@ -1714,6 +1714,18 @@ entrypoints require no update for T065.
   actual selected non-death deterioration-policy publication through the same
   complete graph. Death handoff and heal/legacy remain explicit independent
   implementation work, not deleted mechanics. T070/T177/#1536 remain open.
+  Selected-policy preparation plan (2026-09-07):
+  `docs/superpowers/plans/2026-09-07-t070-selected-policy-preparation.md` defines
+  the next independently tested T067-owned private policy/body/binding handoff
+  before non-death policy publication. It preserves both T069 factories, the six
+  public policy-intent fields and existing fingerprints. Explicit death is captured
+  as typed evidence only, not published or conflated with healing. Current selected
+  publisher rejection and the legacy RED remain. This client-owned private change
+  adds no GM authoring/response field; current Mortal examples/prompt guards retain
+  their unfinished-policy wording, with no new afterlife contract. Final-rank event,
+  same-rank slot-budget, complete tagged reference, skill diagnostic-path and death
+  lifecycle obligations for the following publisher are source-pinned in the plan.
+  No additional top-level task is marked complete.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
