@@ -1,4 +1,5 @@
 using System.Collections.Immutable;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Reflection;
 using BookOfEternityClient.Core;
@@ -469,11 +470,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = CreatePolicyPreparationScenario("increase_severity");
         using var fixture = AcceptedStateFixture.Create(scenario);
+        var turnRequestBefore = File.ReadAllBytes(fixture.FileSystem.ResolvePath(
+            LiveTurnPreparationService.TurnRequestPath));
         var other = CreatePolicyPreparationScenario("increase_severity");
         if (!changeBody) other = other with { OperationKey = "operation_foreign_policy" };
         if (changeBody) other.Before["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = 31L;
         using var foreignFixture = CreateColdRootCopy(fixture);
-        if (changeBody) foreignFixture.ChangeCanonicalPolicyGraceMinutesAndPrepareSnapshot(31L);
+        if (changeBody) foreignFixture.SeedChangedPolicyGraceMinutesAndSnapshot(31L);
+        Assert.Equal(turnRequestBefore, File.ReadAllBytes(foreignFixture.FileSystem.ResolvePath(
+            LiveTurnPreparationService.TurnRequestPath)));
         var flow = ResolveCurrentTreatment(fixture, "procedure", scenario.OperationKey, scenario.RouteId);
         var foreign = ResolveCurrentTreatment(foreignFixture, "procedure", other.OperationKey, other.RouteId);
         var request = (MortalWoundTreatmentAttemptRequest)flow.Request;
@@ -534,11 +539,25 @@ public sealed partial class MortalWoundTreatmentResolverTests
 
     private sealed partial class AcceptedStateFixture
     {
-        internal void ChangeCanonicalPolicyGraceMinutesAndPrepareSnapshot(long graceMinutes)
+        internal void SeedChangedPolicyGraceMinutesAndSnapshot(long graceMinutes)
         {
+            var manifestPath = LiveTurnPreparationService.PendingTurnSnapshotManifestPath;
+            var manifestJson = File.ReadAllText(FileSystem.ResolvePath(manifestPath));
+            var originalManifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                manifestJson, LiveTurnPreparationService.ManifestJsonOptions)!;
+            var manifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                manifestJson, LiveTurnPreparationService.ManifestJsonOptions)!;
+            var requestBytes = File.ReadAllBytes(FileSystem.ResolvePath(
+                LiveTurnPreparationService.TurnRequestPath));
+
             var carrier = ReadObject(TargetCarrierPath);
             var wound = FindPersistedWound(carrier);
+            var originalWound = wound.DeepClone();
+            var originalGrace = wound["recovery"]!["deteriorationPolicy"]!["graceMinutes"]!.DeepClone();
             wound["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = graceMinutes;
+            var restoredWound = wound.DeepClone();
+            restoredWound["recovery"]!["deteriorationPolicy"]!["graceMinutes"] = originalGrace;
+            Assert.True(JsonNode.DeepEquals(originalWound, restoredWound));
             WriteObject(TargetCarrierPath, carrier);
 
             var parsed = WoundMaterializationContract.Parse(
@@ -553,25 +572,61 @@ public sealed partial class MortalWoundTreatmentResolverTests
             WriteObject(WoundIdentityState.StatePath, identity);
             WriteObject(WoundHistoryState.HistoryPath, CreateCurrentWoundHistory(wound));
 
-            var request = ReadObject(LiveTurnPreparationService.TurnRequestPath);
-            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
-            var prepared = new LiveTurnPreparationService(FileSystem).PrepareAsync(
-                new LiveTurnPreparationOptions
-                {
-                    SessionId = request["sessionId"]!.GetValue<string>(),
-                    RequestId = request["requestId"]!.GetValue<string>(),
-                    TurnNumber = request["turnNumber"]!.GetValue<int>(),
-                    PlayerAction = request["playerAction"]!.GetValue<string>(),
-                    Timestamp = request["timestamp"]!.GetValue<string>(),
-                    CurrentRealm = "Mortal World",
-                    PreGeneratedDices1d20 = request["preGeneratedDices1d20"]!.AsArray()
-                        .Select(static value => value!.GetValue<int>())
-                        .ToArray()
-                }).GetAwaiter().GetResult();
-            Assert.Equal(request["sessionId"]!.GetValue<string>(), prepared.SessionId);
-            Assert.Equal(request["requestId"]!.GetValue<string>(), prepared.RequestId);
-            Assert.Equal(request["turnNumber"]!.GetValue<int>(), prepared.TurnNumber);
-            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            var changedPaths = new[]
+            {
+                TargetCarrierPath,
+                WoundIdentityState.StatePath,
+                WoundHistoryState.HistoryPath
+            };
+            foreach (var relativePath in changedPaths)
+            {
+                Assert.True(manifest.Files.TryGetValue(relativePath, out var snapshotPath));
+                var content = FileSystem.ReadFileBytesSync(relativePath);
+                Assert.NotNull(content);
+                File.WriteAllBytes(FileSystem.ResolvePath(snapshotPath!), content!);
+                manifest.SnapshotFileHashes[relativePath] = PendingTurnSnapshotAuthority.ComputeSha256(content!);
+            }
+            Assert.Equal(changedPaths.OrderBy(path => path, StringComparer.Ordinal),
+                manifest.SnapshotFileHashes.Where(row =>
+                    !string.Equals(originalManifest.SnapshotFileHashes[row.Key], row.Value, StringComparison.Ordinal))
+                    .Select(row => row.Key).OrderBy(path => path, StringComparer.Ordinal));
+            manifest.ManifestPayloadHash = PendingTurnSnapshotAuthority.ComputeManifestPayloadHash(
+                manifest,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                static value => value.ManifestPayloadHash,
+                static (value, hash) => value.ManifestPayloadHash = hash);
+            var authority = PendingTurnSnapshotAuthority.CreateDetachedAuthorityJson(
+                manifest,
+                LiveTurnPreparationService.ManifestHashJsonOptions,
+                static value => value.ManifestPayloadHash,
+                static (value, hash) => value.ManifestPayloadHash = hash,
+                static value => value.SessionId,
+                static value => value.RequestId,
+                static value => value.TurnNumber,
+                static value => value.Files,
+                static value => value.SnapshotFileHashes,
+                static value => value.ClientOwnedValidationHashes,
+                static value => value.RollbackBaselineFiles,
+                static value => value.SourceLabel,
+                static value => value.RollbackBackups,
+                FileSystem.ReadFileBytesSync,
+                hashSnapshotBytesExactly: true);
+
+            var restoredManifest = JsonSerializer.Deserialize<LiveTurnPendingSnapshotManifest>(
+                JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions),
+                LiveTurnPreparationService.ManifestJsonOptions)!;
+            restoredManifest.ManifestPayloadHash = originalManifest.ManifestPayloadHash;
+            restoredManifest.SnapshotFileHashes = new Dictionary<string, string>(
+                originalManifest.SnapshotFileHashes, StringComparer.OrdinalIgnoreCase);
+            Assert.True(JsonNode.DeepEquals(
+                JsonSerializer.SerializeToNode(originalManifest, LiveTurnPreparationService.ManifestJsonOptions),
+                JsonSerializer.SerializeToNode(restoredManifest, LiveTurnPreparationService.ManifestJsonOptions)));
+            Assert.True(JsonNode.DeepEquals(originalManifest.GachaBaseResult, manifest.GachaBaseResult));
+            File.WriteAllText(FileSystem.ResolvePath(manifestPath),
+                JsonSerializer.Serialize(manifest, LiveTurnPreparationService.ManifestJsonOptions));
+            File.WriteAllText(FileSystem.ResolvePath(PendingTurnSnapshotAuthority.AuthorityPath), authority);
+            Assert.Equal(requestBytes, File.ReadAllBytes(FileSystem.ResolvePath(
+                LiveTurnPreparationService.TurnRequestPath)));
         }
     }
 
