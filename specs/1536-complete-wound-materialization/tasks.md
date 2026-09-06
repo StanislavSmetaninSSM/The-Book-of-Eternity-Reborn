@@ -1375,6 +1375,13 @@ entrypoints require no update for T065.
   pending/control surface, or afterlife runtime contract. T069 Phase C remains open until
   T070-B publishes durable receipt/history evidence for invalid-history-first exact replay.
 - [ ] T070 [US2] Compose Mortal accepted-occurrence creation, opportunity-decision receipt/pending-occurrence consumption, plus diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. On a source-result transaction, accept only T064's complete harmful typed candidate batch, read both occurrence and receipt roots as signed before-images, combine pending and consumed replay by producer operation key plus batch ordinal/count, reject changed or incomplete batches, derive canonical occurrence/public identities inside the common plan, append only genuinely new candidates atomically in ordinal order, and expose opportunities only after the next active pending-turn snapshot has sealed exact bytes. On the later wound-decision transaction, extend the common signed-snapshot/before-image inventory with both occurrence and receipt roots. Every accepted `none` or `materialize` decision appends exactly one sealed receipt carrying the consumed occurrence's source replay authority and consumes exactly one occurrence; a decline publishes null wound/transition coordinates without inventing a wound-history row, while a materialized receipt carries exact wound/transition IDs and matches exactly one ordinary `create|worsen` history row on transition/wound/turn/event/operation/source authority. Exact cold replay emits no command/transition, changed decision conflicts, and failed publication/rollback leaves neither receipt nor consumed occurrence. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
+  Prepared source-catalog prerequisite (2026-09-07):
+  `docs/superpowers/plans/2026-09-07-wound-legacy-source-catalog.md` registers the
+  exact non-public lower-level source while closing ordinary composer injection.
+  It preserves the existing mandatory source test and adds 28 focused catalog /
+  composer cases. Implementation and independent acceptance are pending. The
+  legacy preparation choice remains unanswered; canonical source/link contracts,
+  real typed batches/finalization/history/reload/publication remain open T070.
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
   gates for the sealed <=2 / staged-to-I contour; call
@@ -2120,12 +2127,17 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T095 [P] [US4] Add RED combat base-5/reduction/floor-2 spend, explicit operation-to-art mapping, counter/matchup legality, and rollback tests in `BookOfEternityClient.Tests/SpiritualHealingCombatActionTests.cs`
 - [ ] T096 [P] [US4] Add RED one safe-cycle session, no OD, self no currency/item, one attempt per wound/cycle, active-treatment-then-natural-recovery ordering, failed-attempt world advance, and duplicate suppression tests in `BookOfEternityClient.Tests/SpiritualHealingSafeCycleTests.cs`
 - [ ] T097 [P] [US4] Add RED `1+tier`, I=2/II=4/III=6/IV=8 thresholds, overflow, worsening reset, unsafe suppression, tier-0 20-cycle, and tier-V 4-cycle tests in `BookOfEternityClient.Tests/SpiritualWoundNaturalRecoveryTests.cs`
-  Prepared numerical prerequisite (2026-09-07), shared with T105:
+  Accepted numerical prerequisite (2026-09-07), shared with T105, commits
+  `45beccd1` plus comment-only review fix `8aff3325`:
   `docs/superpowers/plans/2026-09-07-spiritual-natural-recovery-math.md` defines
   43 valid-value and nine invalid/overflow cases for one unused bounded calculator.
-  Parent self-review/literal arithmetic cross-check are complete; implementation
-  and independent acceptance remain pending. Preserve existing nonnegative-long
-  progress, carry through every following step, and distinguish healed I from
+  Parent source/artifact inspection and independent Spec Compliant / Quality
+  Approved found no remaining defects. Actual 43 semantic RED -> 43 GREEN ->
+  nine invalid RED -> 52 GREEN. One five-minute Fast completed 6203 of 7498
+  discovery rows: 6202 PASS / one unchanged mandatory legacy-source FAIL;
+  arithmetic uncompleted difference 1295, not full GREEN. All new rows pass;
+  build/cleanup clean, no timeout/duplicates. The helper preserves nonnegative-long
+  progress, carries through every following step, and distinguishes healed I from
   active I. Actual safe/unsafe cycle authority, worsening reset, entity eligibility
   and the generic recovery follow-up heal boundary remain required integration.
 - [ ] T098 [P] [US4] Add RED player/Guardian/resident/leader/radiant recovery, normal art progression, consent/reachability, and player-heals-entity tests in `BookOfEternityClient.IntegrationTests/AfterlifeWoundEntityRecoveryTests.cs`
@@ -2144,7 +2156,7 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`
 - [ ] T105 [US4] Implement universal natural recovery reducer, overflow/reset, per-wound cycle seals, and player/entity eligibility in `BookOfEternityClient/Services/SpiritualWoundRecoveryPlanner.cs`
-  The T097-linked prerequisite adds unused
+  The accepted T097-linked prerequisite (`45beccd1`, `8aff3325`) adds unused
   `BookOfEternityClient/Services/SpiritualWoundRecoveryMath.cs`, not an accepted
   cycle or transition producer. T105/T107 must preserve all carried progress and
   represent multi-step/follow-up healing with exact tick authority; the existing

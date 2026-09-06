@@ -1519,6 +1519,15 @@ reducer 148/148 PASS prove this narrow exception. One Fast completed 6,093 of
 build/cleanup evidence. The linked sub-plan records exact artifacts; T070 remains
 open for actual heal/legacy publication and the separate preparation decision.
 
+Next bounded T070 prerequisite (2026-09-07):
+`docs/superpowers/plans/2026-09-07-wound-legacy-source-catalog.md` supplies a
+complete-code source catalog/composer-guard plan with 28 new rows plus the
+unchanged mandatory legacy source test. Registering the exact non-public kind
+must be paired with rejection/filtering of generic caller exports. This neither
+chooses the unresolved legacy preparation architecture nor enables canonical
+legacy effects, history reconstruction or actual heal publication. Full T070 and
+its GM/example synchronization stay open; implementation/review are pending.
+
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
@@ -1572,11 +1581,15 @@ not full GREEN. Full T094/T101 stay open for the actual shared resolver
 and accepted publication, while the existing GM synchronization tasks cover the
 future exposed workflow. This task does not settle the separate art-schema choice.
 
-Next recovery prerequisite (2026-09-07):
+Accepted recovery arithmetic prerequisite (2026-09-07):
 `docs/superpowers/plans/2026-09-07-spiritual-natural-recovery-math.md` supplies an
-unused numeric step with 43 valid-value and nine invalid/overflow cases. Parent
-complete-code self-review/literal arithmetic cross-check are complete, but code
-and independent acceptance are pending. It preserves nonnegative-long carried
+unused numeric step with 43 valid-value and nine invalid/overflow cases. Commits
+`45beccd1` plus comment-only review fix `8aff3325` are independently Spec Compliant /
+Quality Approved and parent source/artifact-audited. Actual 43 semantic RED ->
+43 GREEN -> nine invalid RED -> 52 GREEN; one five-minute Fast completed 6203 of
+7498 discovery rows, 6202 PASS / one mandatory legacy-source FAIL, arithmetic 1295
+uncompleted. All new rows pass; clean build/cleanup, no timeout/duplicates. Exact
+artifacts are in the linked plan, with no full Fast GREEN claim. It preserves nonnegative-long carried
 progress and the approved thresholds, not accepted safe-cycle or actor authority.
 Full T097/T105 remain open, including worsening, safe/unsafe gating and all entity
 paths. Actual T105/T107 must handle the generic recovery follow-up heal bound and

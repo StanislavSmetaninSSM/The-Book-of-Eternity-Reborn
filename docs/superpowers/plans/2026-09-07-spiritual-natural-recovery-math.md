@@ -60,7 +60,7 @@ accepted phase ordering or public contract.
 Null means invalid input/overflow. All result fields are recomputable values, not
 accepted source authority. An unchanged severity still gains progress.
 
-- [ ] **Step 1: Add the compilable API shell and 43 valid-value tests.**
+- [x] **Step 1: Add the compilable API shell and 43 valid-value tests.**
 
 Create the service:
 ```csharp
@@ -228,7 +228,7 @@ public sealed class SpiritualWoundNaturalRecoveryTests
 }
 ```
 
-- [ ] **Step 2: Observe 43 semantic RED rows before arithmetic.**
+- [x] **Step 2: Observe 43 semantic RED rows before arithmetic.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~SpiritualWoundNaturalRecoveryTests"
@@ -238,7 +238,7 @@ Expected 43 executed, all fail Assert.IsType because the shell returns null.
 Compilation/discovery/fixture errors are not this RED. Record actual rows/messages
 and finish the command before source edits.
 
-- [ ] **Step 3: Implement arithmetic and confirm 43 GREEN.**
+- [x] **Step 3: Implement arithmetic and confirm 43 GREEN.**
 
 Replace the shell method:
 ```csharp
@@ -265,7 +265,7 @@ Run Step 2's exact command: expected 43/43 PASS. Input/overflow gates deliberate
 follow their separate RED. The rank-positive loop condition also prevents the
 interim rank0 invalid case from looping forever.
 
-- [ ] **Step 4: Add nine invalid-domain/overflow tests and observe RED.**
+- [x] **Step 4: Add nine invalid-domain/overflow tests and observe RED.**
 
 Insert without changing earlier assertions:
 ```csharp
@@ -299,7 +299,7 @@ Expected nine/nine fail Assert.Null against non-null interim results, including
 wrapped negative available progress; not compilation, exception or timeout.
 Complete this command before editing production.
 
-- [ ] **Step 5: Add exact domain/checked-sum gates and confirm 52 GREEN.**
+- [x] **Step 5: Add exact domain/checked-sum gates and confirm 52 GREEN.**
 
 Insert at the start of Calculate:
 ```csharp
@@ -328,7 +328,7 @@ Run Step 2's exact command: expected 52/52 PASS. Valid rank bounds the loop to f
 iterations independently of progress magnitude. Other arithmetic uses bounded
 rank/points or subtracts from sufficient nonnegative remaining progress.
 
-- [ ] **Step 6: Run one bounded Fast, record evidence and independently review.**
+- [x] **Step 6: Run one bounded Fast, record evidence and independently review.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Fast
@@ -363,3 +363,38 @@ remain open for the actual cycle/entity/replay/worsening/transition integration.
 - Types/helpers are explicit; internal result types only occur in private test
   signatures. Common checks assert input/point conservation and bounds against
   independently derived expectations; no assertion compares a value to itself.
+
+## Acceptance evidence — 2026-09-07
+
+Recorded BASE `2715a561894f49ec42e539c785dce8e4bd7ee409`; arithmetic/tests
+`45beccd17c09a5ad49407b1f398da81732864088`; comment-only review fix
+`8aff332519d6f546a185cb5415da9470d1db08d4`. Exact two-file range inspected by
+parent and independent reviewer: Spec Compliant / Quality Approved, no findings.
+The sole initial minor finding (missing planned diagnostic-authority comment)
+is fixed. Parent confirmed the fix changes one comment only; no redundant C# run.
+
+Artifacts under `TestResults/test-lanes/`:
+
+| Run | Executed / passed / failed | Wall time |
+| --- | --- | --- |
+| 20260907-083544-365-47700-76247df92fb0472483ca0aea4ab80c6d-focused | 43 / 0 / 43 | 00:01:09.2028089 |
+| 20260907-083705-165-43248-bd8ce4e9d8cc4d698fe3ffcc7fc67beb-focused | 43 / 43 / 0 | 00:01:01.6465787 |
+| 20260907-083821-860-39312-dd25fae123cd41298a1d376f9cd57695-focused | 9 / 0 / 9 | 00:00:30.9932258 |
+| 20260907-083905-067-13772-5284ce87b6f04661a77204aa82bb01b6-focused | 52 / 52 / 0 | 00:00:59.5478365 |
+| 20260907-084010-706-35824-4adc3cf2d365493cb6f20d90be3f146e-fast | 6203 / 6202 / 1 | 00:02:37.2194635 |
+
+All five-minute bounds; zero build warnings/errors, timeout false, cleanup true,
+no duplicate execution or cross-TRX test identities. Parent read actual summaries,
+TRX rows/counters/messages and logs. First RED: all 43 Assert.IsType null-shell
+failures. Invalid RED: all nine Assert.Null non-null invalid/wrapped results.
+All 52 new rows pass both final Focused and Fast.
+
+Fast discovered 7498 log rows; 6203 completed across ten TRX, arithmetic
+uncompleted difference 1295, not an identity-set claim. One mandatory test still
+fails: `MortalWoundTreatmentContractTests.WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`,
+because `sources[wound_legacy:wound_legacy_healed_001]` violates current source
+authority. No skip/waiver or full Fast GREEN claim. Parent corrected the initial
+report's mistaken use of completed Total as discovery without rerunning tests.
+
+The helper has no production callers. T097/T105 and complete #1536 remain open;
+the existing GM/no-update rationale above applies only to this numeric prerequisite.
