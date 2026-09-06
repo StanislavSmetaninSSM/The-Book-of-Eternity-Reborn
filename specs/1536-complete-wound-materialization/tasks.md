@@ -1467,6 +1467,17 @@ entrypoints require no update for T065.
   `docs/superpowers/plans/2026-09-06-t070-diagnosis-result-cardinality.md` regression
   alignment, then standalone member-shapes Task 2. No new GM/afterlife surface here;
   command/response/repair/fresh-publication work and T070/T177/#1536 remain open.
+  Diagnosis cardinality alignment checkpoint: `7c4dc6c8`, independent spec/quality
+  Approved, zero Critical/Important/Minor findings. Actual 2/3 RED proved that an
+  empty success could emit an unpersistable history intent. It now rejects at the
+  existing path/fact gate; empty failure and already-known-fact success both append
+  and replay exactly. GREEN 198/198 (`20260906-104345-067-7584-e1ea35ecdea042a58e2a497c5ef4ec47-focused`)
+  plus supplementary full owning class 73/73
+  (`20260906-104759-343-30468-4d5a079a0bd34e8d9a40181b01f6791d-focused`) cover the
+  requested controls; the initial narrower-filter deviation is recorded, not hidden.
+  Parent inspected all three actual summaries, build/test evidence, diff and review;
+  clean builds/cleanup, no timeout/duplicates/skips. No schema or GM/afterlife surface
+  changed. Continue member-shapes Task 2, with T070/T177/#1536 still open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

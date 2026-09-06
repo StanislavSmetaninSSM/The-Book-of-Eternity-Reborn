@@ -51,7 +51,7 @@ Execute after treatment-member-shapes Task 1 review, before Task 2 implementatio
 Do not edit parent-owned plans/spec/tasks/ledger. Report any concrete discrepancy in
 the provided code before changing the task's scope.
 
-- [ ] **Step 1: Add and observe the complete three-row regression**
+- [x] **Step 1: Add and observe the complete three-row regression**
 
 Add this method before the private fixture helpers in the existing test class:
 
@@ -123,7 +123,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 Expected behavioral RED: empty success is incorrectly accepted; both valid controls
 pass including history append and exact replay. Record actual output, not an inferred run.
 
-- [ ] **Step 2: Apply the narrow semantic gate**
+- [x] **Step 2: Apply the narrow semantic gate**
 
 In `ValidateDiagnose`, after the unchanged path-availability check, prepend this predicate
 to the existing disjunction that reports `wound_transition_diagnosis_fact_unauthorized`:
@@ -137,7 +137,7 @@ Keep the existing complete sequence/grammar checks and update the expected text 
 No helper extraction, factory exception, automatic downgrade to failure, or global parser
 restriction is needed. The invalid request remains representable and returns no intents.
 
-- [ ] **Step 3: Verify, self-review and commit only the two owned files**
+- [x] **Step 3: Verify, self-review and commit only the two owned files**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTransitionTests|FullyQualifiedName~MortalWoundDiagnosisTests.History_|FullyQualifiedName~MortalWoundDiagnosisTests.Reduce_Diagnose_|FullyQualifiedName~WoundTransitionResultTests|FullyQualifiedName~WoundTransitionReducerTests"
@@ -148,6 +148,21 @@ Report every RED/GREEN artifact, command, total/executed/passed/failed/skipped c
 wall time, exit code, timeout, duplicate IDs, cleanup and build warnings/errors.
 Commit: `fix(wounds): reject diagnosis success without declared facts (#1536)`.
 Parent verifies the diff/artifacts and gets independent spec/quality review before completion.
+
+## Verified checkpoint
+
+Complete at `dc89683d..7c4dc6c8`; independent spec/quality Approved, zero
+Critical/Important/Minor findings. Actual RED was 2/3
+(`20260906-104230-549-19824-a80663785bfd4185af4afcbc5a08e22f-focused`). The first
+GREEN was narrower than requested: 198/198, including only the new method from its
+owning class (`20260906-104345-067-7584-e1ea35ecdea042a58e2a497c5ef4ec47-focused`).
+The controller required the missing full class separately at unchanged code: 73/73
+(`20260906-104759-343-30468-4d5a079a0bd34e8d9a40181b01f6791d-focused`). The three
+new rows overlap; the complete requested behavior is covered by the two GREEN runs,
+not by a falsely claimed execution of the original exact combined filter. All builds
+and cleanup are clean, no timeout/duplicates/skips. Parent read actual summaries/log
+evidence and the complete diff/review; the reviewer's runtime-evidence caveat is resolved.
+Next: standalone treatment-member-shapes Task 2. No feature or issue closure.
 
 ## Documentation and completion boundary
 
