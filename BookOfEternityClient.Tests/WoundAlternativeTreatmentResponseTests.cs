@@ -34,13 +34,10 @@ public sealed class WoundAlternativeTreatmentResponseTests
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
-    public void Author_VisibleAndHiddenMembersDetachAndRoundTrip(bool hidden)
+    public void Author_FactoryBackedVisibleAndHiddenMembersDetachAndRoundTrip(bool hidden)
     {
-        var route = Route();
-        route["routeId"] = hidden ? "setting/specific:hidden" : "setting/specific:visible";
-        route["visibility"] = hidden ? "hidden" : "known_to_player";
-        var path = hidden ? Diagnosis(route["routeId"]!.GetValue<string>()) : null;
-        var entry = Authoring("request_жар-птица", route, path);
+        var (route, path) = FactoryAlternativeMembers(hidden);
+        var entry = Authoring("local_request_жар-птица", route, path);
         var original = entry.ToJsonString();
 
         var parsed = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
@@ -50,6 +47,10 @@ public sealed class WoundAlternativeTreatmentResponseTests
         var draft = Assert.Single(parsed.Drafts);
         Assert.Equal(hidden ? "hidden" : "known_to_player", draft.Route!.Visibility);
         Assert.Equal(hidden, draft.DiagnosisPath is not null);
+        Assert.IsType<GmRemoveComplicationDraft>(Assert.Single(
+            Assert.IsType<GmProcedureRouteDraft>(draft.Route).Bands[0].DeclaredResult));
+        Assert.DoesNotContain("sha256:", original, StringComparison.Ordinal);
+        Assert.DoesNotContain("transition_command", original, StringComparison.Ordinal);
         route["displayName"] = "mutated";
         if (path is not null) path["displayName"] = "mutated";
         var written = Write(draft);
@@ -80,6 +81,37 @@ public sealed class WoundAlternativeTreatmentResponseTests
         Assert.Empty(above.Drafts);
         Assert.Contains(above.Issues, issue => issue.Code == "wound_response_invalid_field" &&
             issue.FilePath == "woundTreatmentAuthorings");
+    }
+
+    [Theory]
+    [InlineData("{}")]
+    [InlineData("null")]
+    [InlineData("\"not an array\"")]
+    public void Plural_RejectsEveryNonArrayRoot(string json)
+    {
+        var parsed = WoundResponseInputComposer.ParseAlternativeTreatmentAuthorings(
+            Element(json), "woundTreatmentAuthorings");
+
+        AssertIssue(
+            parsed,
+            "woundTreatmentAuthorings",
+            "wound_response_invalid_field");
+    }
+
+    [Theory]
+    [InlineData("authoringRequestRef")]
+    [InlineData("decision")]
+    [InlineData("route")]
+    [InlineData("diagnosisPath")]
+    public void Singular_RejectsEachMissingRequiredField(string field)
+    {
+        var entry = Decline("request");
+        entry.Remove(field);
+
+        AssertIssue(
+            Parse(entry),
+            "woundTreatmentAuthorings[0]." + field,
+            "wound_response_missing_field");
     }
 
     [Theory]
@@ -140,6 +172,8 @@ public sealed class WoundAlternativeTreatmentResponseTests
     [Theory]
     [InlineData("public", false, false)]
     [InlineData("known_to_player", false, false)]
+    [InlineData("public", true, true)]
+    [InlineData("known_to_player", true, true)]
     [InlineData("hidden", true, false)]
     [InlineData("hidden", false, true)]
     [InlineData("gm_only", false, true)]
@@ -149,7 +183,7 @@ public sealed class WoundAlternativeTreatmentResponseTests
         var route = Route();
         route["visibility"] = visibility;
         var path = includeValidPath ? Diagnosis(route["routeId"]!.GetValue<string>()) : null;
-        if (visibility is "public" or "known_to_player" && invalid)
+        if (invalid && visibility is ("public" or "known_to_player"))
             path = Diagnosis(route["routeId"]!.GetValue<string>());
 
         var parsed = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
@@ -157,9 +191,37 @@ public sealed class WoundAlternativeTreatmentResponseTests
 
         Assert.Equal(!invalid, parsed.IsValid);
         if (invalid)
-            Assert.Contains(parsed.Issues, issue => issue.FilePath ==
-                (visibility == "gm_only" ? "woundTreatmentAuthorings[0].route.visibility" :
-                    "woundTreatmentAuthorings[0].diagnosisPath"));
+        {
+            AssertIssue(
+                parsed,
+                visibility == "gm_only"
+                    ? "woundTreatmentAuthorings[0].route.visibility"
+                    : "woundTreatmentAuthorings[0].diagnosisPath",
+                visibility == "gm_only"
+                    ? "wound_treatment_route_visibility_invalid"
+                    : "wound_response_invalid_field");
+        }
+    }
+
+    [Theory]
+    [InlineData("route_null", "woundTreatmentAuthorings[0].route", "wound_materialization_invalid_field")]
+    [InlineData("route_array", "woundTreatmentAuthorings[0].route", "wound_materialization_invalid_field")]
+    [InlineData("route_string", "woundTreatmentAuthorings[0].route", "wound_materialization_invalid_field")]
+    [InlineData("path_number", "woundTreatmentAuthorings[0].diagnosisPath", "wound_response_invalid_field")]
+    [InlineData("path_array", "woundTreatmentAuthorings[0].diagnosisPath", "wound_response_invalid_field")]
+    public void Author_RejectsWrongPayloadTypes(string mutation, string path, string code)
+    {
+        var entry = Authoring("request", Route(), null);
+        switch (mutation)
+        {
+            case "route_null": entry["route"] = null; break;
+            case "route_array": entry["route"] = new JsonArray(); break;
+            case "route_string": entry["route"] = "route"; break;
+            case "path_number": entry["diagnosisPath"] = 7; break;
+            case "path_array": entry["diagnosisPath"] = new JsonArray(); break;
+        }
+
+        AssertIssue(Parse(entry), path, code);
     }
 
     [Fact]
@@ -187,6 +249,13 @@ public sealed class WoundAlternativeTreatmentResponseTests
             ["route"] = route, ["diagnosisPath"] = null
         });
         AssertIssue(withRoute, "woundTreatmentAuthorings[0].route", "wound_response_invalid_field");
+
+        var withPath = Decline("request");
+        withPath["diagnosisPath"] = Diagnosis("route_from_decline");
+        AssertIssue(
+            Parse(withPath),
+            "woundTreatmentAuthorings[0].diagnosisPath",
+            "wound_response_invalid_field");
 
         var missing = Decline("request");
         missing.Remove("route");
@@ -295,6 +364,29 @@ public sealed class WoundAlternativeTreatmentResponseTests
 
     private static JsonObject Route() =>
         WoundContractTestData.CreateActiveWound()["treatment"]!["routes"]![0]!.DeepClone().AsObject();
+
+    private static (JsonObject Route, JsonObject? DiagnosisPath) FactoryAlternativeMembers(
+        bool hidden)
+    {
+        var (_, request) = WoundAcceptedTransitionCommandTestData.Create(
+            hidden
+                ? "author_alternative_treatment_hidden"
+                : "author_alternative_treatment",
+            hidden ? "hidden_response" : "visible_response");
+        var proposedAfter = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(request.ProposedAfter!))!.AsObject();
+        var treatment = proposedAfter["treatment"]!;
+        var route = treatment["routes"]![1]!.DeepClone().AsObject();
+        route["outcomes"]![0]!["result"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "remove_complication",
+            ["complicationRef"] = "offered_factory_selector"
+        });
+        var path = hidden
+            ? treatment["diagnosisPaths"]![0]!.DeepClone().AsObject()
+            : null;
+        return (route, path);
+    }
 
     private static JsonObject Diagnosis(string routeId) => new()
     {

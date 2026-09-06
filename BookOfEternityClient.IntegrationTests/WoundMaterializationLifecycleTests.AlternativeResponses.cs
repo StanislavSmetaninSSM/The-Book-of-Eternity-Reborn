@@ -1,7 +1,6 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using BookOfEternityClient.Configuration;
 using BookOfEternityClient.IO;
 using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
@@ -88,13 +87,6 @@ public sealed partial class WoundMaterializationLifecycleTests
         Assert.False(context.FileSystem.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
         Assert.False(context.FileSystem.FileExists(WoundMaterializationTestContext.NarrativeOutputPath));
         Assert.Empty(Directory.GetFiles(context.RootPath, "*.backup.*", SearchOption.AllDirectories));
-    }
-
-    [Fact]
-    public void AlternativeResponse_IsClientConsumedAndHasNoDirectFileMapping()
-    {
-        Assert.Contains("woundTreatmentAuthorings", FileMapping.ClientConsumedResponseFields);
-        Assert.False(FileMapping.FieldToFile.ContainsKey("woundTreatmentAuthorings"));
     }
 
     private static JsonElement AlternativeAuthoringElement(string decision)

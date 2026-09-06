@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class GmTreatmentRouteDraftTests
+public sealed partial class GmTreatmentRouteDraftTests
 {
     [Fact]
     public void Removal_UsesOnlyUnresolvedGmRefAndRejectsCanonicalDialect()
@@ -247,7 +247,12 @@ public sealed class GmTreatmentRouteDraftTests
 
     private static JsonObject Route(string mode = "procedure")
     {
-        var route = WoundContractTestData.CreateActiveWound()["treatment"]!["routes"]![0]!.DeepClone().AsObject();
+        var (_, request) = WoundAcceptedTransitionCommandTestData.Create(
+            "author_alternative_treatment",
+            "gm_route_shape");
+        var proposedAfter = JsonNode.Parse(
+            WoundMaterializationContract.SerializeCanonical(request.ProposedAfter!))!.AsObject();
+        var route = proposedAfter["treatment"]!["routes"]![1]!.DeepClone().AsObject();
         if (mode == "procedure") return route;
         route["mode"] = mode;
         route["resourcePolicy"]!["consumeOn"] = new JsonArray("success");
