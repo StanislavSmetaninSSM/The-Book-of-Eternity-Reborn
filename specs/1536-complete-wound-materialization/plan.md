@@ -1519,14 +1519,26 @@ reducer 148/148 PASS prove this narrow exception. One Fast completed 6,093 of
 build/cleanup evidence. The linked sub-plan records exact artifacts; T070 remains
 open for actual heal/legacy publication and the separate preparation decision.
 
-Next bounded T070 prerequisite (2026-09-07):
+Accepted bounded T070 catalog prerequisite (2026-09-07), commit `690288f4`:
 `docs/superpowers/plans/2026-09-07-wound-legacy-source-catalog.md` supplies a
 complete-code source catalog/composer-guard plan with 28 new rows plus the
 unchanged mandatory legacy source test. Registering the exact non-public kind
 must be paired with rejection/filtering of generic caller exports. This neither
 chooses the unresolved legacy preparation architecture nor enables canonical
 legacy effects, history reconstruction or actual heal publication. Full T070 and
-its GM/example synchronization stay open; implementation/review are pending.
+its GM/example synchronization stay open. Parent source/artifact audit and
+independent Spec Compliant / Quality Approved found no defects. Semantic RED29
+(23FAIL/six controls PASS) -> GREEN29, owners50/50; all28 new rows plus the
+unchanged mandatory legacy test pass in Fast. One five-minute Fast completed6450
+of7526 discovery rows, 6447PASS/three reflection-harness FAIL, arithmetic1076
+uncompleted. No full GREEN claim; exact artifacts are in the linked plan.
+
+The next T177 verification prerequisite is
+`docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md`: two ordinary
+test wrappers must explicitly send the current null/null optional authority
+defaults to reflection. No production signature/validator or assertion changes;
+seven existing affected facts, owner Focused and one Fast provide evidence.
+This test-only plan is prepared, not yet implemented/accepted.
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 

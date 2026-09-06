@@ -55,7 +55,7 @@ conditional FullValidation for this internal-only slice.
 
 ### Task 1: Register non-public legacy sources without opening generic authority
 
-- [ ] **Step 1: Add the complete 28-row regression fixture.**
+- [x] **Step 1: Add the complete 28-row regression fixture.**
 
 Create the following file. It uses the existing definition fixture with its
 active-wound link removed, as the already-frozen contract test does. No actual
@@ -251,7 +251,7 @@ public sealed class WoundLegacySourceAuthorityTests
 }
 ```
 
-- [ ] **Step 2: Observe semantic RED before production changes.**
+- [x] **Step 2: Observe semantic RED before production changes.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~WoundLegacySourceAuthorityTests|FullyQualifiedName~WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable"
@@ -263,7 +263,7 @@ empty controls. Inspect actual messages: missing supported source / specific
 guard, not compile or fixture errors. If expected semantic counts differ, explain
 the actual cause before editing production; do not fabricate RED evidence.
 
-- [ ] **Step 3: Register the kind with an early forged-public guard.**
+- [x] **Step 3: Register the kind with an early forged-public guard.**
 
 Add only `"wound_legacy"` beside `"wound"` in EffectSourceAuthority.SourceKinds.
 In Builder.AddExport, insert this block immediately after supported-kind/exact
@@ -285,7 +285,7 @@ normalized export, owner or entry creation:
 Do not broaden SnapshotSameTurnWoundEntries/Groups or typed active-wound binding.
 Do not add canonical effect/link vocabulary yet or relax definition validation.
 
-- [ ] **Step 4: Close the ordinary composer injection seam.**
+- [x] **Step 4: Close the ordinary composer injection seam.**
 
 In Compose's planSourceExports pipeline, keep the existing exact wound filter
 and add this filter immediately afterward, before Concat(preparedWounds.Exports):
@@ -319,7 +319,7 @@ block and before `if (prepared is null)`, insert:
 This is an explicit rejection, not a private preparation implementation. Preserve
 all existing prepared wound binding validation and existing wound rejection text.
 
-- [ ] **Step 5: Confirm GREEN, affected owners and one bounded Fast.**
+- [x] **Step 5: Confirm GREEN, affected owners and one bounded Fast.**
 
 Run Step 2's exact command: expected29/29 PASS, including the unchanged mandatory
 legacy source test. Then:
@@ -336,7 +336,7 @@ rows from completed TRX Total; report arithmetic uncompleted difference only.
 Audit actual semantic outcomes, build warnings/errors, cleanup, timeouts and
 duplicates. Finish every test command before editing source.
 
-- [ ] **Step 6: Self-review, exact commit and independent acceptance.**
+- [x] **Step 6: Self-review, exact commit and independent acceptance.**
 
 Commit only the three named code/test files. Parent inspects exact recorded task
 BASE..candidate, actual artifacts, and fresh independent Spec Compliance plus
@@ -364,3 +364,38 @@ manufacture a typed accepted legacy authority to get a test green.
 - Generic catalog resolution is not an accepted legacy roundtrip; no active
   wound/history fixture, synthetic private preparation, GM surface or parallel
   publisher is introduced. All unresolved full T070 obligations stay tracked.
+
+## Acceptance evidence — 2026-09-07
+
+Recorded BASE `564de32a59edb3d4954a1f73ab63156909ddbe44`; accepted candidate
+`690288f48197087720fbb868727d76d4b9f905f5`, exactly the three named files.
+Parent inspected complete new tests, runtime diff, actual four-run artifacts and
+independent review: Spec Compliant / Quality Approved, zero open findings.
+
+| Artifact under TestResults/test-lanes/ | Executed / passed / failed | Wall |
+| --- | --- | --- |
+| 20260907-090853-477-49880-5238cd50ee5748bf9532ab6e3accdf43-focused | 29 / 6 / 23 | 00:01:09.7220193 |
+| 20260907-091020-736-46432-34515de6397748f39038fa34a79185e3-focused | 29 / 29 / 0 | 00:01:10.1924671 |
+| 20260907-091135-457-40204-bd5c733d75f44d059429713e344c57e1-focused | 50 / 50 / 0 | 00:00:15.6162938 |
+| 20260907-091154-571-41752-6830455b3aaa49f3a0a354d43b337d9b-fast | 6450 / 6447 / 3 | 00:02:36.2424116 |
+
+All five-minute bounds, zero build warnings/errors, no timeout/duplicate IDs,
+owned-tree cleanup complete. RED has the expected 12 missing composer guard,
+six unsupported catalog, four forged sibling and one unchanged existing legacy
+source failures, with six passing controls. Every new row and the unchanged
+mandatory source test pass in final Focused and Fast. Existing source/composer/
+source-guard owners pass 50/50. No active-wound cleanup or typed binding changed.
+
+Fast discovered 7526 log rows, completed6450 across12TRX; arithmetic uncompleted
+difference1076, not an exact identity-set claim. Three failures all throw
+`Sequence contains no matching element` in the unchanged AcceptedTurnStateHarness
+reflection selector: CommonPlannerExceptionClearsEveryAuthority,
+FinalizationRechecksCurrentEffectCache and
+CommonValidationRejectsOmittedCurrentWoundBundle in AcceptedMechanicsPlanCacheTests.
+Parent confirmed their helper sends two arguments while both current wound effect
+and final registry methods have four parameters (two optional authority defaults).
+The relevant registry/harness files are unchanged across this catalog task. A
+separate tracked T177 fixture correction follows; no suppression/full Fast GREEN
+claim. Initial agent discovery accounting was corrected from actual logs without
+rerunning tests. No GM update is needed for the bounded reasons above. Full T070
+and T177 remain open, including canonical vocabulary and actual legacy lifecycle.

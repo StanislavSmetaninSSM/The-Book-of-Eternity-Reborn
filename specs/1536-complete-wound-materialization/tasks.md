@@ -1375,11 +1375,17 @@ entrypoints require no update for T065.
   pending/control surface, or afterlife runtime contract. T069 Phase C remains open until
   T070-B publishes durable receipt/history evidence for invalid-history-first exact replay.
 - [ ] T070 [US2] Compose Mortal accepted-occurrence creation, opportunity-decision receipt/pending-occurrence consumption, plus diagnosis/alternative-route/treatment/recovery wound/effect/item/resource/history/output after-images; re-export guaranteed authority from the final composed player/NPC skill after-image whenever its root is touched; revalidate and atomically consume/expire the already T067-resolved exact per-attempt Fate Shield intent or roll back; and prepare deterministic cosmetic IDs plus non-GM `wound_legacy` source exports/history through `MortalWoundHealLegacyPlanner` before publication. On a source-result transaction, accept only T064's complete harmful typed candidate batch, read both occurrence and receipt roots as signed before-images, combine pending and consumed replay by producer operation key plus batch ordinal/count, reject changed or incomplete batches, derive canonical occurrence/public identities inside the common plan, append only genuinely new candidates atomically in ordinal order, and expose opportunities only after the next active pending-turn snapshot has sealed exact bytes. On the later wound-decision transaction, extend the common signed-snapshot/before-image inventory with both occurrence and receipt roots. Every accepted `none` or `materialize` decision appends exactly one sealed receipt carrying the consumed occurrence's source replay authority and consumes exactly one occurrence; a decline publishes null wound/transition coordinates without inventing a wound-history row, while a materialized receipt carries exact wound/transition IDs and matches exactly one ordinary `create|worsen` history row on transition/wound/turn/event/operation/source authority. Exact cold replay emits no command/transition, changed decision conflicts, and failed publication/rollback leaves neither receipt nor consumed occurrence. Register the closed legacy source, feed its ordered per-mechanical-legacy typed batches through #1535 while leaving effect IDs solely to that planner, exclude it from active-wound cleanup, and preserve source/history after later effect removal in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/MortalWoundHealLegacyPlanner.cs`, `BookOfEternityClient/Services/EffectSourceDefinitionContract.cs`, `BookOfEternityClient/Services/EffectSourceAuthority.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnInputComposer.cs`, `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.Wounds.cs`
-  Prepared source-catalog prerequisite (2026-09-07):
+  Accepted source-catalog prerequisite (2026-09-07), commit `690288f4`:
   `docs/superpowers/plans/2026-09-07-wound-legacy-source-catalog.md` registers the
   exact non-public lower-level source while closing ordinary composer injection.
   It preserves the existing mandatory source test and adds 28 focused catalog /
-  composer cases. Implementation and independent acceptance are pending. The
+  composer cases. Parent actual source/artifact inspection and independent Spec
+  Compliant / Quality Approved found zero open defects. Semantic RED29 (23FAIL /
+  six controls PASS) -> GREEN29, owners50/50; unchanged mandatory legacy source
+  test now passes in Focused and Fast. One five-minute Fast completed6450 of7526
+  discovery rows, 6447PASS / three separately diagnosed reflection-harness FAIL,
+  arithmetic1076 uncompleted, not full GREEN. Clean build/cleanup, no timeout or
+  duplicates; exact evidence is in the linked plan. The
   legacy preparation choice remains unanswered; canonical source/link contracts,
   real typed batches/finalization/history/reload/publication remain open T070.
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
@@ -2290,6 +2296,15 @@ scope, then resume paused wound documentation and final controls against one fin
 - [X] T175 [US2] [US7] [US8] **Prove lifecycle, dormancy, replay, and rollback in Integration**: add file-backed `RegressionIntegration` lifecycle evidence for ordinary/wound materialization, final binding rejection, derived dormancy/exact restoration/non-inheritance, restart, exact and changed-selector replay, cache invalidation, rollback, and focused treatment behavior in `BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs`, `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, and `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests*.cs`; repair the raw-to-canonical definition-ref mapping in `WoundResponseInputComposer.cs` with deterministic `WoundRepairPacketBuilderTests` coverage
 - [X] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
 - [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
+
+T177 bounded fixture correction prepared (2026-09-07):
+`docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` repairs only
+the two ordinary-stage reflection calls that still pass two arguments to current
+four-parameter registry methods. The catalog Fast's three failing rows stop at
+method selection, not at their behavioral assertions. Preserve all assertions,
+strict Invoke and production authority checks; reproduce the existing seven-fact
+cohort, then run its owner class and one bounded Fast. Implementation/review are
+pending; full T177 remains open.
 
 **Checkpoint**: Every active payload has explicit closed scope; exact target-skill
 binding, runtime dormancy, treatment, projection, slot accounting, replay/rollback, and
