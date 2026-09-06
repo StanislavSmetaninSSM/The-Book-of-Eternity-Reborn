@@ -147,4 +147,3 @@ feature verification, integration completion or merge authority.
   verification then exercises other shared harness consumers.
 - Prior Fast is failure-discovery evidence, not behavioral RED for assertions
   that never ran. Only post-fix GREEN proves those behaviors are reached.
-
