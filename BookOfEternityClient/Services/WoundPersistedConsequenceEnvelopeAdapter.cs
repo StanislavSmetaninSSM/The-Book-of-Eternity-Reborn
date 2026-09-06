@@ -31,6 +31,30 @@ internal sealed record WoundPersistedConsequenceEnvelopeValidationResult(
 /// </summary>
 internal static class WoundPersistedConsequenceEnvelopeAdapter
 {
+    /// <summary>
+    /// Checks local component/slot agreement after the owning contract has diagnosed
+    /// definition identity and root resolution. It grants no real-severity authority.
+    /// </summary>
+    internal static WoundPersistedConsequenceEnvelopeValidationResult ValidatePrevalidatedDetachedShape(
+        string authorPath,
+        IReadOnlyList<WoundPersistedConsequenceDefinition> definitions,
+        IReadOnlyList<WoundPersistedConsequenceRoot> roots,
+        bool requireExactGlobalSlotAgreement,
+        int? persistedSlotsUsed = null)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(authorPath);
+        ArgumentNullException.ThrowIfNull(definitions);
+        ArgumentNullException.ThrowIfNull(roots);
+
+        return ValidateResolvedGraph(
+            null,
+            authorPath,
+            BuildGraph(definitions),
+            roots,
+            requireExactGlobalSlotAgreement,
+            persistedSlotsUsed);
+    }
+
     internal static WoundPersistedConsequenceEnvelopeValidationResult ValidateDetached(
         int severityRank,
         string authorPath,
@@ -148,7 +172,7 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
     }
 
     private static WoundPersistedConsequenceEnvelopeValidationResult ValidateResolvedGraph(
-        int severityRank,
+        int? severityRank,
         string authorPath,
         DefinitionGraph graph,
         IReadOnlyList<WoundPersistedConsequenceRoot> roots,
@@ -196,11 +220,10 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
                 expansions));
         }
 
-        var validation = WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
-            new WoundDetachedMortalEnvelopeRequest(
-                severityRank,
-                authorPath,
-                effects));
+        var validation = severityRank is int actualRank
+            ? WoundConsequenceEnvelopeCatalog.ValidateDetachedMortal(
+                new WoundDetachedMortalEnvelopeRequest(actualRank, authorPath, effects))
+            : WoundConsequenceEnvelopeCatalog.ValidateDetachedMortalShape(authorPath, effects);
         issues.AddRange(validation.Issues);
 
         var resolvedRootValues = resolvedRoots
@@ -210,12 +233,15 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         {
             var expectedSlotCount = resolvedRootValues.Sum(
                 static root => root.ExpectedSlots?.Count ?? 0);
-            if (Math.Max(validation.Slots.Length, expectedSlotCount) > severityRank)
+            var maximum = severityRank ?? WoundMaterializationContract.MaxConsequences;
+            if (Math.Max(validation.Slots.Length, expectedSlotCount) > maximum)
             {
                 AddSlotIssue(
                     issues,
                     authorPath,
-                    $"at most {severityRank} aggregate consequence slots at severity {severityRank}",
+                    severityRank.HasValue
+                        ? $"at most {severityRank} aggregate consequence slots at severity {severityRank}"
+                        : $"at most {maximum} aggregate consequence slots",
                     Math.Max(validation.Slots.Length, expectedSlotCount)
                         .ToString(CultureInfo.InvariantCulture));
             }
@@ -314,7 +340,7 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
         IReadOnlySet<string> directKeys,
         DefinitionGraph graph,
         string authorPath,
-        int severityRank,
+        int? severityRank,
         List<ValidationIssue> issues)
     {
         var derivedSlotCount = 0;
@@ -365,13 +391,17 @@ internal static class WoundPersistedConsequenceEnvelopeAdapter
             }
         }
 
-        var maximum = Math.Min(WoundMaterializationContract.MaxConsequences, severityRank);
+        var maximum = severityRank is int actualRank
+            ? Math.Min(WoundMaterializationContract.MaxConsequences, actualRank)
+            : WoundMaterializationContract.MaxConsequences;
         if (derivedSlotCount > maximum)
         {
             AddSlotIssue(
                 issues,
                 authorPath,
-                $"at most {maximum} aggregate consequence slots at severity {severityRank}",
+                severityRank.HasValue
+                    ? $"at most {maximum} aggregate consequence slots at severity {severityRank}"
+                    : $"at most {maximum} aggregate consequence slots",
                 derivedSlotCount.ToString(CultureInfo.InvariantCulture));
         }
     }

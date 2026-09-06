@@ -670,6 +670,18 @@ internal static class WoundConsequenceEnvelopeCatalog
     internal static IReadOnlySet<string> SpiritualArtRestrictionKeys =>
         SpiritualWoundEffectProfileCatalog.ArtOperations;
 
+    /// <summary>
+    /// Validates local component shape and coordinates without a real wound rank.
+    /// This does not establish severity, periodic, or canonical source authority.
+    /// </summary>
+    internal static WoundDetachedMortalEnvelopeValidationResult ValidateDetachedMortalShape(
+        string authorPath,
+        IReadOnlyList<WoundDetachedMortalEffectRef> effects)
+    {
+        ArgumentNullException.ThrowIfNull(effects);
+        return ValidateDetachedMortalCore(null, authorPath, effects, new List<ValidationIssue>());
+    }
+
     internal static WoundDetachedMortalEnvelopeValidationResult ValidateDetachedMortal(
         WoundDetachedMortalEnvelopeRequest request)
     {
@@ -700,22 +712,32 @@ internal static class WoundConsequenceEnvelopeCatalog
                 request.SeverityRank.ToString(CultureInfo.InvariantCulture));
         }
 
+        return ValidateDetachedMortalCore(request.SeverityRank, path, request.Effects, issues);
+    }
+
+    private static WoundDetachedMortalEnvelopeValidationResult ValidateDetachedMortalCore(
+        int? severityRank,
+        string authorPath,
+        IReadOnlyList<WoundDetachedMortalEffectRef> effects,
+        List<ValidationIssue> issues)
+    {
+        var path = string.IsNullOrWhiteSpace(authorPath) ? "wound.detachedConsequences" : authorPath;
         var candidates = new List<SlotCandidate>();
         var coordinates = new HashSet<string>(StringComparer.Ordinal);
-        for (var effectIndex = 0; effectIndex < request.Effects.Count; effectIndex++)
+        for (var effectIndex = 0; effectIndex < effects.Count; effectIndex++)
         {
-            var effect = request.Effects[effectIndex];
+            var effect = effects[effectIndex];
             var effectPath = string.IsNullOrWhiteSpace(effect.AuthorPath)
                 ? $"{path}[{effectIndex}]"
                 : effect.AuthorPath;
-            var evidence = BuildDetachedMortalEvidenceIndex(effect);
+            var evidence = BuildDetachedMortalEvidenceIndex(effect, issues);
             var usedExpansions = new HashSet<int>();
             for (var componentIndex = 0;
                  componentIndex < effect.Components.Count;
                  componentIndex++)
             {
                 ValidateDetachedMortalComponent(
-                    request.SeverityRank,
+                    severityRank,
                     effect.EffectRef,
                     evidence,
                     componentIndex,
@@ -751,7 +773,8 @@ internal static class WoundConsequenceEnvelopeCatalog
     }
 
     private static MortalEvidenceIndex BuildDetachedMortalEvidenceIndex(
-        WoundDetachedMortalEffectRef effect)
+        WoundDetachedMortalEffectRef effect,
+        List<ValidationIssue> issues)
     {
         var expansions = new Dictionary<
             string,
@@ -759,14 +782,17 @@ internal static class WoundConsequenceEnvelopeCatalog
         for (var index = 0; index < effect.ReactionExpansions.Count; index++)
         {
             var expansion = effect.ReactionExpansions[index];
+            var proposal = new WoundReactionExpansionProposal(
+                expansion.ReactionComponentId,
+                expansion.Components);
+            foreach (var fault in proposal.InputFaults)
+                AddInputFault(issues, expansion.AuthorPath + "." + fault.PathSuffix, fault);
             AddEvidence(
                 expansions,
                 expansion.ReactionComponentId,
                 new IndexedExpansion(
                     index,
-                    new WoundReactionExpansionProposal(
-                        expansion.ReactionComponentId,
-                        expansion.Components),
+                    proposal,
                     expansion.AuthorPath));
         }
 
@@ -779,7 +805,7 @@ internal static class WoundConsequenceEnvelopeCatalog
     }
 
     private static void ValidateDetachedMortalComponent(
-        int rank,
+        int? rank,
         string effectRef,
         MortalEvidenceIndex evidence,
         int componentIndex,
@@ -792,10 +818,9 @@ internal static class WoundConsequenceEnvelopeCatalog
         HashSet<int> usedExpansions,
         List<ValidationIssue> issues)
     {
-        // The detached definition contract has already enforced the closed #1535
-        // component shape. This seam owns only wound-severity semantics. Periodic
-        // amount percentage, resource quantum, and cadence remain deferred until
-        // accepted runtime authority is available.
+        // Revalidate the registered component shape, including bound reaction children.
+        // A null rank omits only real-severity predicates. Periodic amount percentage,
+        // resource quantum, and cadence still require accepted runtime authority.
         var componentPath = $"{componentContainerPath}.components[{componentIndex}]";
         if (!ValidateNoDuplicateRawProperties(component, componentPath, issues))
             return;
@@ -1801,7 +1826,7 @@ internal static class WoundConsequenceEnvelopeCatalog
     }
 
     private static void ValidateScalarModifier(
-        int rank,
+        int? rank,
         string effectId,
         string componentId,
         string profile,
@@ -1831,9 +1856,11 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        var limit = string.Equals(operation, "percent", StringComparison.Ordinal)
-            ? PercentageLimit(rank)
-            : rank;
+        decimal? limit = rank is int actualRank
+            ? (string.Equals(operation, "percent", StringComparison.Ordinal)
+                ? PercentageLimit(actualRank)
+                : actualRank)
+            : null;
         var effective = value;
         var effectivePath = componentPath + ".payload.value";
         if (payload.TryGetProperty("cap", out var cap) &&
@@ -1874,13 +1901,15 @@ internal static class WoundConsequenceEnvelopeCatalog
             effectivePath = componentPath + ".payload.cap";
         }
 
-        if (effective == 0m || !WithinAbsoluteLimit(effective, limit))
+        if (effective == 0m || (limit.HasValue && !WithinAbsoluteLimit(effective, limit.Value)))
         {
             Add(
                 issues,
                 effectivePath,
                 "wound_consequence_magnitude_exceeded",
-                $"nonzero effective absolute {operation} modifier <= {limit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}",
+                limit is decimal actualLimit
+                    ? $"nonzero effective absolute {operation} modifier <= {actualLimit.ToString(CultureInfo.InvariantCulture)} at severity rank {rank}"
+                    : "one exact nonzero effective decimal wound modifier",
                 effective.ToString(CultureInfo.InvariantCulture));
             return;
         }
@@ -2161,7 +2190,7 @@ internal static class WoundConsequenceEnvelopeCatalog
             issues);
 
     private static void ValidateAction(
-        int rank,
+        int? rank,
         string effectId,
         string componentId,
         JsonElement payload,
@@ -2183,13 +2212,15 @@ internal static class WoundConsequenceEnvelopeCatalog
                 !ResourceMaterializationContract.TryReadExactDecimal(
                     rawModifier,
                     out var modifier) ||
-                !WithinAbsoluteLimit(modifier, rank))
+                (rank is int actualRank && !WithinAbsoluteLimit(modifier, actualRank)))
             {
                 Add(
                     issues,
                     componentPath + ".payload.modifier",
                     "wound_consequence_magnitude_exceeded",
-                    $"absolute action cost modifier <= {rank}",
+                    rank.HasValue
+                        ? $"absolute action cost modifier <= {rank}"
+                        : "one exact decimal action cost modifier",
                     DescribeProperty(payload, "modifier"));
                 return;
             }
@@ -2208,14 +2239,14 @@ internal static class WoundConsequenceEnvelopeCatalog
 
         if (string.Equals(operation, "forbid", StringComparison.Ordinal))
         {
-            if (rank < 3)
+            if (rank is int forbidRank && forbidRank < 3)
             {
                 Add(
                     issues,
                     componentPath + ".payload.operation",
                     "wound_consequence_action_forbid_invalid",
                     "forbid available only at severity III-IV",
-                    rank.ToString(CultureInfo.InvariantCulture));
+                    forbidRank.ToString(CultureInfo.InvariantCulture));
                 return;
             }
 
@@ -2297,7 +2328,7 @@ internal static class WoundConsequenceEnvelopeCatalog
     }
 
     private static void ValidateReactionComponentCore(
-        int rank,
+        int? rank,
         string effectRef,
         MortalEvidenceIndex evidence,
         JsonElement component,
@@ -2392,14 +2423,14 @@ internal static class WoundConsequenceEnvelopeCatalog
             return;
         }
 
-        if (rank < 3)
+        if (rank is int expansionRank && expansionRank < 3)
         {
             Add(
                 issues,
                 componentPath + ".payload.definitionKey",
                 "wound_consequence_reaction_expansion_invalid",
                 "definition expansion available only at severity III-IV",
-                rank.ToString(CultureInfo.InvariantCulture));
+                expansionRank.ToString(CultureInfo.InvariantCulture));
             return;
         }
 
