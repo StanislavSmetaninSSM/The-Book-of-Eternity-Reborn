@@ -580,6 +580,13 @@ Every parsed family must be retained, counted and checked. Until that fresh adap
 exists, both distribution and validation explicitly reject new accepted variants;
 nonempty commands may not succeed as empty wound work. Existing opportunity and treat
 codecs remain distinct and preserve the existing mixed-family rejection.
+The bounded implementation is specified in
+`docs/superpowers/plans/2026-09-06-t070-accepted-diagnosis-alternative-commands.md`.
+The same recognition change must also gate persisted treatment-catalog ingestion,
+pending repair capture, cold treatment replay and opportunity-only repair retry;
+none may silently drop the retained new family. Shared full-member fingerprints keep
+the existing route/path domain/version semantics, while the independent wire seal
+uses `book_of_eternity.wound.accepted_transition_wire`, version `1`.
 
 T060/T066 use one production-owned, side-effect-free requirement boundary:
 `MortalWoundTreatmentAuthority.ResolveRequirements(route, context, currentSnapshot)`.

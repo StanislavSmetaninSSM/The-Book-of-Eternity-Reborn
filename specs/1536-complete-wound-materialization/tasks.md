@@ -1478,6 +1478,36 @@ entrypoints require no update for T065.
   Parent inspected all three actual summaries, build/test evidence, diff and review;
   clean builds/cleanup, no timeout/duplicates/skips. No schema or GM/afterlife surface
   changed. Continue member-shapes Task 2, with T070/T177/#1536 still open.
+  After member-shapes Task 2 review, execute
+  `docs/superpowers/plans/2026-09-06-t070-accepted-diagnosis-alternative-commands.md`:
+  one closed typed codec with shared complete-member/wire seals, unchanged legacy
+  command families, and explicit unsupported fresh-adapter gates at distribution,
+  validation, persisted catalog, pending capture, cold replay and repair retry ingress.
+  The 20 frozen command rows plus new pure and exact Integration controls are required;
+  this does not cover the three remaining GM response/repair rows or fresh publication.
+  Standalone-member baseline audit (2026-09-06): exact BASE `17dc4bb3` reproduces
+  all three expanded-control failures (0/3,
+  `20260906-111802-156-29536-fd698b82801d45c5b118fa3ae4b7a4b6-focused`). The two
+  recovery-anchor fixtures must assert canonical null fields and absent/null proposal
+  equivalence, retaining non-null GM-anchor rejection. The unchanged
+  `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
+  is genuinely unfinished T070 heal-legacy source registration/publication, currently
+  `effect_source_authority_invalid_export`; it is not a shape-extraction regression.
+  Keep it in the full selection as explicit RED until the actual closed derived-source
+  planner is implemented. No skip, negative filter, permissive export or feature waiver.
+  This prevents the required post-healing consequences from being lost at the codec
+  checkpoint; neither its remaining failure nor the two course-publication REDs may
+  survive final T070/feature/Fast acceptance.
+  Standalone-member checkpoint: `17dc4bb3..63ece06f`, independent spec/quality
+  Compliant/Approved, 0 Critical/Important. The exact combined selection remains
+  744/745, exit 1 (`20260906-112755-916-9968-d8a71149663e433f8288f75b6fe6b2f9-focused`),
+  solely the above unimplemented legacy-source row; standalone tests156/156 and
+  corrected anchor rows4/4 pass. Parent inspected all ten actual summaries, baseline/
+  final output, complete code/test diff and review; clean builds/cleanup, no timeout/
+  duplicates/skips. Retain review Minor M1 for final-review triage: exact diagnostic
+  code/path assertions in negative member tests (policy, owner, check, prerequisites).
+  Shared full-context rules and canonical member writers are now the codec dependency;
+  no fake wound/rank or gameplay authority is introduced. T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

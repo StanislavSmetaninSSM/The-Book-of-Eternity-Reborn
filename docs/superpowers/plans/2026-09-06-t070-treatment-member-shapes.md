@@ -230,6 +230,8 @@ afterlife capability was introduced by this internal extraction and bound enforc
 - Modify: `BookOfEternityClient/Services/MortalWoundTreatmentModel.cs` (reuse private
   builders and canonical route/path writers, no alternate JSON dialect).
 - Create: `BookOfEternityClient.Tests/MortalWoundTreatmentMemberShapeTests.cs`.
+- Modify: `BookOfEternityClient.Tests/MortalWoundTreatmentContractTests.cs` (only the
+  two recovery-anchor proposal methods, as authorized by the baseline audit below).
 
 Do not edit factory/reducer seals, commands, GM response, publication or parent records.
 Task 1's reviewed local envelope API is the dependency; do not alter its implementation
@@ -261,7 +263,7 @@ delegates to them; nulls/order/empty V1 `check` and omission of `SourcePath` sta
 Shape success requires zero issues and a complete detached typed value; invalid input
 returns issues and null value. It must never leak parser exceptions or partial success.
 
-- [ ] **Step 1: Add and observe standalone parser RED cases**
+- [x] **Step 1: Add and observe standalone parser RED cases**
 
 Use the actual shared wound builder for valid route extraction:
 
@@ -302,7 +304,7 @@ versus missing wound members/unseeded whole graph. Full parsing must retain reje
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentMemberShapeTests"
 ```
 
-- [ ] **Step 2: Extract closed per-member readers and typed entry points**
+- [x] **Step 2: Extract closed per-member readers and typed entry points**
 
 Extract from `ParseTreatmentRoutes`/`ParseDiagnosisPaths` their existing one-object
 readers, preserving exact diagnostics and source paths. Both full array loops and
@@ -315,7 +317,7 @@ complete local validation, typed builder on zero issues. Reuse `BuildRoute` and
 `BuildDiagnosisPath` inside the same partial class after validation. Keep guarded
 exception-to-issue handling analogous to `ParseProjection`, not catch-and-success.
 
-- [ ] **Step 3: Separate only missing wound-context predicates**
+- [x] **Step 3: Separate only missing wound-context predicates**
 
 Retain one mode-validation implementation. Internally represent absent wound context
 explicitly; preserve real `Realm` separately. Do not introduce a public skipValidation
@@ -345,7 +347,7 @@ grammar; full diagnosis additionally checks real wound membership, known/complet
 consistency and the existing least-fixed-point graph. Share empty V1 check validation,
 requirements and hidden nonempty prerequisites rather than duplicating them.
 
-- [ ] **Step 4: Reuse canonical member writers and verify the complete boundary**
+- [x] **Step 4: Reuse canonical member writers and verify the complete boundary**
 
 Rename/expose existing private route writer to `WriteRouteCanonical`; extract the inline
 diagnosis writer into `WriteDiagnosisPathCanonical`. Delegate full treatment serialization
@@ -356,13 +358,61 @@ Round-trip through actual Utf8JsonWriter and each new parser in the focused test
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentMemberShapeTests|FullyQualifiedName~MortalWoundTreatmentContractTests|FullyQualifiedName~MortalWoundTreatmentCapabilityContractTests|FullyQualifiedName~MortalWoundDeteriorationPolicyContractTests|FullyQualifiedName~WoundMaterializationContractTests|FullyQualifiedName~MortalWoundDiagnosisTests.Parse_|FullyQualifiedName~MortalWoundDiagnosisTransitionTests|FullyQualifiedName~MortalWoundAlternativeTransitionTests|FullyQualifiedName~WoundDetachedConsequenceShapeTests"
 ```
 
-All rows must pass; report exact RED/GREEN evidence, paths/counts, clean build and
-cleanup. Do not include still-unimplemented command/response tests to manufacture a
-green claim or waive them. Self-review and commit only owned files with
+All implemented-boundary rows must pass; the exact full selection must retain the
+baseline-proven, still-unimplemented legacy-source row described below. Report its
+remaining RED explicitly, not as a green suite or a waiver. Report exact RED/GREEN
+evidence, paths/counts, clean build and cleanup. Self-review and commit only owned files with
 `refactor(wounds): share complete standalone treatment member validation (#1536)`.
 Parent inspects and independently reviews; no agent report alone closes tasks.
 
+#### Task 2 baseline audit and narrowly authorized fixture correction
+
+The complete selection exposed two stale canonical-anchor assertions and one genuinely
+unfinished T070 heal-legacy export. All three reproduce on an immutable archive of exact
+BASE `17dc4bb32ad01f1704f960d293d6e7f867b0d0fd`: 0/3 in
+`20260906-111802-156-29536-fd698b82801d45c5b118fa3ae4b7a4b6-focused`, clean build and
+cleanup, no timeout/duplicates. The controller inspected the baseline summary and actual
+failure output before expanding ownership.
+
+- Correct only `ProposalComposition_StripsNullClientOwnedRecoveryAnchorPlaceholders`
+  and the adjacent `ProposalComposition_RejectsClientOwnedRecoveryAnchorsBeforeCanonicalParsing`.
+  The established contract permits absent/null GM placeholders, strips them before
+  projection, and canonically serializes both nullable client-owned anchor fields.
+  Assert both typed anchors are null, both canonical keys exist with null values, and
+  null-placeholder versus absent-field proposals produce identical canonical wounds.
+  Keep all other proposal data and scene identical in that equivalence control.
+  Parameterize the existing non-null rejection over both anchor fields, retaining the
+  exact diagnostic code and original proposal path. Do not change production authority
+  or `WriteRecovery`, and do not reduce these tests to composition-success assertions.
+- Leave `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
+  unchanged and failing until the actual T070 heal-legacy source/planner contour.
+  `EffectSourceAuthority.SourceKinds` currently excludes `wound_legacy`; the actual
+  diagnostic is `effect_source_authority_invalid_export`, before definition/seal checks.
+  Registering a permissive raw export here would not implement the required closed
+  derived-source lifecycle. No Skip, negative filter, manifest move, expected-failure
+  rewrite, or production shortcut is authorized.
+- Run the same complete selection above after the fixture correction. Exactly this
+  one established legacy-source failure may remain for this internal extraction's
+  acceptance; any other failure must be diagnosed and resolved. The runner must still
+  report exit 1 honestly. The full feature and Fast checkpoint remain incomplete.
+
 ## Completion and GM synchronization boundary
+
+Task 2 is complete at `17dc4bb3..63ece06f` for this internal extraction. Independent
+spec/quality review is Compliant/Approved, zero Critical/Important findings. One Minor
+M1 remains for final-review triage: strengthen negative-test helpers with exact diagnostic
+code/path pairs, especially policy membership, owner applicability, diagnosis check and
+hidden prerequisites. Existing duplicate-property and anchor tests already pin exact paths.
+This is test-hardening advice, not an identified wrong runtime diagnostic.
+
+Parent inspected all ten actual runner summaries, the baseline and final failure output,
+clean final build, complete seven-file production/test diff, report and independent review.
+Final unchanged combined selection is **744/745, exit 1**
+(`20260906-112755-916-9968-d8a71149663e433f8288f75b6fe6b2f9-focused`, 00:00:14.4279886),
+only the retained baseline legacy-source row fails; all 156 standalone tests and all four
+corrected anchor rows pass. No timeouts, duplicate IDs or skips; cleanup complete. This
+is not a passing full feature or suite. The legacy-source/planner and course-publication
+REDs remain mandatory T070 work. Next execute the prepared closed-command codec plan.
 
 These two internal tasks preserve existing full-wound gameplay validation and publish
 no new command or response. No Mortal/afterlife prompt, example, manifest, matrix or
