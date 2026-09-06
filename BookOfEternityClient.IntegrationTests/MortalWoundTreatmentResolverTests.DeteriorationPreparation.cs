@@ -600,6 +600,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             "_policy",
             original.Policy with { GraceMinutes = original.Policy.GraceMinutes + 1 });
         var forgedPacketCopy = original.DetachedCopy();
+        Assert.Equal(originalFingerprint, forgedPacketCopy.Fingerprint);
         Assert.False(original.AgreesWith(request, operation, intent));
         Assert.False(forgedPacketCopy.AgreesWith(request, operation, intent));
         var returnedDraft = original.Draft!;
