@@ -1485,6 +1485,13 @@ entrypoints require no update for T065.
   validation, persisted catalog, pending capture, cold replay and repair retry ingress.
   The 20 frozen command rows plus new pure and exact Integration controls are required;
   this does not cover the three remaining GM response/repair rows or fresh publication.
+  Next follow `docs/superpowers/plans/2026-09-06-t070-alternative-treatment-response-repair.md`:
+  first strict immutable GM response drafts, pre-write raw-input gate and worked examples;
+  then kind-specific safe correction/public persisted transport. Its Task 2 checklist
+  must be turned into an executable brief after Task 1. Existing opportunity capture
+  cannot stand in for transient rejected-authoring authority, and its hardcoded public
+  resubmission route must not contradict the new packet. Full live retry/publication
+  remains a subsequent mandatory T070 contour, not a public-checksum shortcut.
   Standalone-member baseline audit (2026-09-06): exact BASE `17dc4bb3` reproduces
   all three expanded-control failures (0/3,
   `20260906-111802-156-29536-fd698b82801d45c5b118fa3ae4b7a4b6-focused`). The two
@@ -1508,6 +1515,27 @@ entrypoints require no update for T065.
   code/path assertions in negative member tests (policy, owner, check, prerequisites).
   Shared full-context rules and canonical member writers are now the codec dependency;
   no fake wound/rank or gameplay authority is introduced. T070/T177/#1536 remain open.
+  Accepted-command checkpoint (2026-09-06): `44a1c761..ddd38243`, independent
+  Compliant/Approved, zero Critical/Important/Minor findings. Final pure253/253
+  (`20260906-122041-379-27568-ae9d52294ecf44a0acc2da69759d835a-focused`, 1:03.639)
+  and original combined Integration plus signed positive29/29
+  (`20260906-122218-860-28956-09987906525d48e695c89762b9255f7a-focused`,57.323sec).
+  Parent inspected the complete17-file change, all16 actual summaries/TRX counters,
+  baseline/behavioral RED evidence, final build output and independent review. No
+  timeout/duplicates/skips, complete cleanup and clean builds. Three required old
+  fixtures were corrected narrowly after identical immutable BASE reproduction;
+  signed event/owner negatives now reach their intended gates and preserve bytes,
+  and a separate genuine signed positive prepares both plans. No original row was
+  excluded. All20 frozen command rows now pass; three response/repair rows remain.
+  Cold-replay/repair gates have inspected source coverage only at this checkpoint;
+  owning executable lifecycle evidence is mandatory with the live adapters. The
+  current codec is internal-only, so no GM/afterlife surface changed. Next local
+  response work uses the distinct typed GM route model and explicit selector dialect
+  specified in `docs/superpowers/plans/2026-09-06-t070-gm-treatment-draft-model.md`;
+  all-kind public packet tags follow the stronger repair contract, not a compatibility
+  exception for old construction packets. Fresh diagnosis check/cost and alternative
+  private evidence/request/decline/discovery authority remain explicitly unfinished.
+  No remote publication or issue closure; T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

@@ -582,6 +582,25 @@ nonempty commands may not succeed as empty wound work. Existing opportunity and 
 codecs remain distinct and preserve the existing mixed-family rejection.
 The bounded implementation is specified in
 `docs/superpowers/plans/2026-09-06-t070-accepted-diagnosis-alternative-commands.md`.
+The subsequent local GM response and kind-specific safe-repair boundary follows
+`docs/superpowers/plans/2026-09-06-t070-alternative-treatment-response-repair.md`.
+It preserves complete author/decline drafts, rejects raw nonempty authorings at the
+pre-write distributor until fresh authority exists, and distinguishes an alternative
+public packet from construction semantics. The approved repair contract requires
+`candidateKind` on every packet kind, so the following shared packet change must update
+all producers, strict consumers, documentation/examples and guards in one current-format
+cutover, without a tagless compatibility path. Public persisted format
+validation cannot rehydrate the private rejected-response authority required by live
+retry. A rejected draft must never be staged as an accepted command just to reuse
+opportunity-only capture; the fresh transient-request adapter remains mandatory.
+The local GM parser must also preserve the approved dialect boundary: GM operations use
+offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
+authority through a standalone canonical member parser. The response task's shared
+selector-shape design and complete distinct typed draft model are specified in
+`docs/superpowers/plans/2026-09-06-t070-gm-treatment-draft-model.md`; no placeholder
+canonical identity or narrowed treatment operation is permitted. Private diagnosis check/cost authority,
+alternative evidence/request/decline lifecycle and attainable hidden-path proof require
+explicit executable contracts before the subsequent live vertical slices.
 The same recognition change must also gate persisted treatment-catalog ingestion,
 pending repair capture, cold treatment replay and opportunity-only repair retry;
 none may silently drop the retained new family. Shared full-member fingerprints keep

@@ -85,6 +85,46 @@ Report concrete dependencies or an unanticipated cohesive file split before expa
 ownership; do not leave unused parallel helpers or grow the existing persistence class
 with the new codec. Its changes here are explicit routing gates only.
 
+**Parent-approved correction of three required baseline fixtures (2026-09-06):**
+
+Exact immutable BASE `44a1c7618a782a8898201b85755df43e39e51ec2` reproduces
+the same three failures (4/7 passed, no timeout, clean build/cleanup) in artifact
+`C:/Temp/boe1536-accepted-command-baseline-7534ed9b779d41b3bc78603bdb38727d/TestResults/test-lanes/20260906-120505-097-8892-99ede96d2e34417bbb0fcc4a14bb9dbd-focused`.
+The two old authority tests lack any signed occurrence, so they fail before their
+intended event/target checks. The guaranteed row has no complete treatment route
+and fails before its intended sealed-coordinate mutation.
+
+Narrow ownership expansion: only the three affected methods and their cohesive local
+helpers in `WoundMaterializationLifecycleTests.CommandAuthority.cs`, plus an optional
+owner parameter (default behavior unchanged) on the existing `CreateSignedAuthorityAsync`
+helper in `WoundMaterializationLifecycleTests.Creation.cs` if needed. Do not change
+production authority, the global unsigned helper, or the global proposal builder.
+
+- Foreign-event test: seed a real signed occurrence and compose a locally valid,
+  self-consistent foreign-event command using that SAME occurrence ID/ref and unchanged
+  unrelated coordinates. Do not reseed the snapshot to endorse the altered event.
+  Require `mortal_wound_validation_opportunity_authority_mismatch` after exact occurrence
+  lookup, not the earlier `mortal_wound_validation_occurrence_unresolved`.
+- Missing-owner test: seed the real signed occurrence for the absent NPC using the
+  narrowed optional-owner helper. Local composition must succeed; retain the intended
+  `wound_target_selector_unresolved` rejection after signed-authority reconstruction.
+- Guaranteed-seal row: supply a complete existing treatment construction locally in
+  that proposal, without changing the global empty-treatment fixture. Preserve its
+  `wound_command_opportunity_invalid` tamper assertion.
+- Prove genuine valid signed authority is accepted, not just that all inputs fail:
+  add a separate `AcceptedCommand_SignedOccurrenceValidControl` (or the same prefix
+  with a descriptive suffix) and include it in the final combined Integration filter.
+  Existing `AcceptedInitialCreate_ProductionValidationPublishesCanonicalAnchors`
+  provides a production-owned signed helper example. If a new real blocker appears,
+  report it before widening scope; do not replace validation with a mocked check.
+- Rejected event/owner commands must remain available for correction; assert relevant
+  canonical roots unchanged and no newly prepared accepted plan. Use separate test
+  contexts for positive and negative controls to avoid cached-plan interference.
+- Observe the original failures as RED (already recorded), preserve all other rows,
+  and rerun the full original combined selection plus the positive-control prefix.
+  No skip, exclusion, merely earlier-error expectation, or unsupported-path waiver.
+  Record this fixture correction separately from the new codec's production changes.
+
 **Exact frozen composer:** one internal production method with this name and arity:
 
 ```csharp
@@ -126,7 +166,7 @@ full-wound reachability is intentionally not guessed here. Preserve the existing
 rather than trimming/normalizing it. The frozen composer signature remains one three-arg
 method; do not add a reflection-breaking overload for null handling.
 
-- [ ] **Step 1: Observe frozen RED and add focused boundary tests**
+- [x] **Step 1: Observe frozen RED and add focused boundary tests**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.CommandParsing_|FullyQualifiedName~MortalWoundDiagnosisTests.CommandRecomposition_"
@@ -277,7 +317,7 @@ by the attempted ingestion. Reuse existing lease-aware lifecycle helpers and com
 the relevant before/after bytes. Do not populate arbitrary placeholder roots and call
 that production accepted-command evidence.
 
-- [ ] **Step 2: Share complete member hashes and compose from legal factory requests**
+- [x] **Step 2: Share complete member hashes and compose from legal factory requests**
 
 Extract only the existing domain/version/canonical-member recipe. Factory methods still
 select one member from complete canonical wound JSON, retaining their null-on-missing
@@ -355,7 +395,7 @@ private static string ComputeAcceptedTransitionWireFingerprint(
 }
 ```
 
-- [ ] **Step 3: Parse immutable complete drafts and recompute every available seal**
+- [x] **Step 3: Parse immutable complete drafts and recompute every available seal**
 
 Use a closed immutable draft family for the two variants, distinct from opportunities
 and treatments. Retain root coordinates, complete typed authority/result and exact scene.
@@ -459,7 +499,7 @@ parsed root. No clone-only success, trusted carried hash, secret cache or guesse
 diagnosis event/transition/after-image. Mismatch uses `wound_command_recomposition_mismatch`
 unless strict parsing already produced a more precise existing command diagnostic.
 
-- [ ] **Step 4: Fail closed at every currently unsupported production consumer**
+- [x] **Step 4: Fail closed at every currently unsupported production consumer**
 
 Implement recognition and these gates in the same code commit:
 
@@ -533,7 +573,7 @@ return parsed.Success && parsed.AcceptedTransitionCommands.Count == 0
     ? (root, parsed) : (null, null);
 ```
 
-- [ ] **Step 5: Run owning controls, self-review and commit**
+- [x] **Step 5: Run owning controls, self-review and commit**
 
 Pure control (all new rows plus local reducers and source guards; existing opportunity
 and treatment command execution is covered by the Integration selection below):
@@ -571,3 +611,24 @@ docs/examples/guards in their own changes. A checksum-valid draft still requires
 canonical/signed wound/path/request/check/requirement/evidence authority, exact history
 replay/conflict checks, and sole atomic publication by `CanonicalStateNormalizer`.
 T070/T177/#1536 remain open; neither 20 green command rows nor this plan completes them.
+
+## Bounded checkpoint accepted — 2026-09-06
+
+Implementation `44a1c761..ddd38243` is independently spec-compliant and quality-approved,
+with zero Critical/Important/Minor findings. Parent inspected the complete 17-file code/
+test change, all 16 actual runner summaries and TRX counters, representative behavioral
+REDs, the immutable baseline fixture reproduction, final build output and review report.
+Final pure control passed 253/253 in 1:03.639
+(`20260906-122041-379-27568-ae9d52294ecf44a0acc2da69759d835a-focused`); original combined
+Integration plus the approved valid signed control passed 29/29 in 57.323 seconds
+(`20260906-122218-860-28956-09987906525d48e695c89762b9255f7a-focused`). Both builds were
+clean, with no timeouts, duplicate IDs or skipped tests and complete runner cleanup.
+The three pre-existing fixture errors were corrected only within the approved scope,
+after reproducing them identically on immutable BASE; no required row was excluded.
+
+Cold-replay/strict-repair gates have inspected control flow and source guards at this
+checkpoint, not new executable lifecycle coverage. Their eventual kind-specific live
+adapters must add that Integration evidence. Full current-world proof, private request
+capture, retry/replay and atomic publication remain unfinished T070; this local wire
+checkpoint does not certify them. The internal-only GM/afterlife no-update rationale
+above remains applicable. No remote publication or issue closure was performed.
