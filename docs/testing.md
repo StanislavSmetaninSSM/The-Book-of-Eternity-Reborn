@@ -81,6 +81,16 @@ projectors, fingerprints, reducers, and pure policy tests remain in Fast. This
 placement does not raise Fast's five-minute hard limit or weaken assertions to
 save time.
 
+The #1536 scalar-course stage also moves the severity-reduction preparation,
+finalization and rematerialization-authority seam into that Integration family:
+19 methods / 41 existing rows now use genuine accepted-state requests instead of
+authority-free synthetic resolutions. Their positive and rejection assertions
+remain; one additional dependent skill-scope theory / four existing rows uses that
+same Integration fixture (45 migrated rows total), and one explicit missing-authority
+rejection is added. The four fixture-free
+`Project_` methods / five rows stay in Fast `MortalWoundTreatmentSeverityReductionPlannerTests`.
+This placement follows the real filesystem/lease dependency, not measured slowness.
+
 The #1551 QTE split follows this rule: fixture-free input and grading coverage
 is in Fast `QteDeterministicLogicTests`, while canonical persistence, rollback,
 console, save/archive, and service lifecycle coverage remains in Integration
@@ -94,7 +104,7 @@ read only from attributes on the expected class; comment, string, and
 method-level decoys do not count. Moved WebUi tests share
 `UiTestTextCollector` from `BookOfEternityClient.TestSupport`; the helper has no
 tests and was moved there unchanged so Integration does not reference Fast.
-The exact reviewed-heavy source/category manifest contains 58
+The exact reviewed-heavy source/category manifest contains 60
 `FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
 class-level Integration manifest contains 38
 `IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are

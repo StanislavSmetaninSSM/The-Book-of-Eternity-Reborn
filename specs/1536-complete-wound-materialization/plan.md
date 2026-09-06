@@ -612,11 +612,20 @@ controls: pure456/456, Integration60/60, afterlife120/120, FullValidation1855/18
 the final selector-test refinement additionally passes its entire class74/74. The
 FullValidation result precedes the final root-guard refinement, independently covered
 by focused RED/GREEN; it is not misrepresented as a final-tree broad run.
-Next execute `docs/superpowers/plans/2026-09-06-t070-scalar-course-publication.md` for
-the coherent scalar course lifecycle. It uses the existing accepted-command persistence,
-fresh rehydration and resource transaction, preserving the two stale-history test bodies
-while correcting their shared publication fixture. Full non-scalar outcomes, heal-legacies
-and fresh diagnosis/alternative authority remain mandatory subsequent work.
+The scalar-course checkpoint `a393a4a0..3c0c77d1` (2026-09-06) is independently Spec
+compliant / Quality approved and parent-accepted. It implements exact scalar selection,
+pointer/history/resource lifecycle and course-milestone exclusivity through existing
+accepted-command persistence, fresh rehydration and the sole atomic publisher. Both
+original stale-history test bodies remain unchanged. Authority-dependent fixtures move
+to Integration with their assertions preserved; pure projection remains Fast. Parent
+audited all28 actual artifact sets and the complete diff; final corrective owners pass
+pure42/42 and Integration46/46. The recorded Fast2655/2656 fail-fast control is incomplete,
+although its create diagnostic fixture is now covered by focused GREEN. The mandatory
+legacy RED is not hidden or reclassified as success.
+Next execute `docs/superpowers/plans/2026-09-06-t070-treatment-recovery-publication.md`:
+checked ordered recovery-point accumulation, with no implicit threshold tick, severity
+change or healing. Full non-scalar outcomes, heal-legacies and fresh diagnosis/alternative
+authority remain mandatory subsequent work; T070/T177/#1536 remain open.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

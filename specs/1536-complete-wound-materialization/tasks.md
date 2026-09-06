@@ -1572,10 +1572,30 @@ entrypoints require no update for T065.
   strict current-format tags, and GM/runtime/afterlife guidance plus one complete
   production-validated three-part correction example are synchronized. Public/local
   correction remains separate from private and fresh accepted-world authority;
-  alternative-only/mixed live waves remain explicitly closed. Next scalar-course
-  plan is `docs/superpowers/plans/2026-09-06-t070-scalar-course-publication.md`, including
-  real persisted-resource/coordinator fixture correction and one meaningful Fast
-  checkpoint. T070/T177/#1536 remain open; no remote publication authorized.
+  alternative-only/mixed live waves remain explicitly closed. The subsequent scalar
+  course plan is `docs/superpowers/plans/2026-09-06-t070-scalar-course-publication.md`.
+  Scalar-course checkpoint (2026-09-06): `a393a4a0..3c0c77d1`, independently Spec
+  compliant / Quality approved after I1/I2/M1 and the scoped T177 create-fixture repair.
+  Parent inspected the complete production/test/GM change and all28 actual summary,
+  TRX and build artifacts. Exact scalar milestones/interruption, retained non-course
+  pointer, real current-dose settlement, history/receipt coordinates, cold replay,
+  rollback and live/cold milestone exclusivity are implemented. Both frozen
+  stale-history bodies and all four pure projection method bodies remain unchanged.
+  Forty-five existing authority-dependent rows now use the genuine Integration seam,
+  plus one new missing-authority rejection; five pure projection rows remain Fast.
+  Final corrective pure42/42
+  (`20260906-172056-979-18952-5de35c5de53349249864eae236ff3092-focused`) and
+  Integration46/46 (`20260906-172436-375-24860-e6baee72f87846ddac48ffa174024b5d-focused`)
+  pass with clean builds, no skip, duplicate descriptor, timeout or cleanup failure.
+  Earlier complete owner evidence and its final narrow corrections are retained in
+  the task report, not presented as an unperformed broad rerun. The meaningful Fast
+  control (`20260906-165017-397-13632-74b2afc6f55a4ca5b032531116032dd0-fast`)
+  stopped at2655/2656; its create-fixture failure is focused-GREEN now, but full Fast
+  is not yet certified. The mandatory heal-legacy RED remains genuine unfinished work.
+  Mortal guide, complete scalar course example inside the content wrapper, manifest
+  and source/application guards are synchronized; no afterlife contract changed.
+  Next bounded plan: `docs/superpowers/plans/2026-09-06-t070-treatment-recovery-publication.md`.
+  T070/T177/#1536 remain open; no remote publication authorized.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

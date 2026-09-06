@@ -425,9 +425,9 @@ complete HTTP host/browser flow -> E2E
 fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 ```
 
-### Exact executable manifests after #1536 Task 1
+### Exact executable manifests after #1536 scalar-course publication
 
-The 58 entries below are the complete, ordinal contents of
+The 60 entries below are the complete, ordinal contents of
 `FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
 Integration ownership enforced at the same HEAD. The three historical special
 groups retain their complete class categories; method-level
@@ -446,6 +446,7 @@ groups retain their complete class categories; method-level
 | `MortalWoundTreatmentAcceptedStateRegistryTests.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.CourseContinuation.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.CoursePublication.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs` | `RegressionIntegration` |
@@ -468,6 +469,7 @@ groups retain their complete class categories; method-level
 | `MortalWoundTreatmentResolverTests.ResourceAuthority.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.ResourceFinalization.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.ResourcePublication.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.VehicleTopology.cs` | `RegressionIntegration` |
 | `QteSceneServiceTests.cs` | `RegressionIntegration` |
 | `GmWorkerLiveSmokeTests.cs` | `ProcessIntegration` |
@@ -493,6 +495,13 @@ groups retain their complete class categories; method-level
 | `WebUi/BrowserInkFeatherFateParityTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserNpcSocialParityTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserTradeParityTests.cs` | `RegressionIntegration` |
+
+The two added sources belong to #1536/T070's real course-publication and detached
+preparation/finalization seam. The latter retains 41 existing assertion rows in
+Integration plus the four dependent accepted-treatment skill-scope rows (45 migrated
+rows total), and adds one missing-authority rejection; five pure projection rows
+remain in Fast. No lane limit, runner, class category or historical result below
+is changed by this inventory synchronization.
 
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly

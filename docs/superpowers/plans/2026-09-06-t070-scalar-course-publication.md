@@ -17,8 +17,14 @@ course history format or second publisher is needed.
 `specs/1536-complete-wound-materialization/tasks.md` T070. Source audit retained in Git
 metadata `sdd/t070-course-publication-source-audit.md`; it is evidence, not requirements.
 
-**Status:** Parent source/spec self-review complete. Execute after acceptance of the
-preceding alternative-repair checkpoint; the dispatch brief records the exact BASE.
+**Status:** Accepted on 2026-09-06, exact task range `a393a4a0..3c0c77d1`.
+Independent Spec review is compliant and task quality approved, with I1/I2/M1 resolved.
+Parent inspected the complete change and all 28 actual summary/TRX/build artifact sets.
+Final corrective owners pass pure42/42 and Integration46/46, with clean builds,
+no skipped tests, duplicate descriptors, timeout or incomplete process cleanup.
+The earlier Fast control remains fail-fast2655/2656, not a full Fast success; its
+create-fixture failure is corrected and covered by the final focused control.
+The unchanged mandatory legacy RED and the remaining T070/T177/#1536 work stay open.
 
 ## Global Constraints
 
@@ -37,7 +43,9 @@ preceding alternative-repair checkpoint; the dispatch brief records the exact BA
 - `CanonicalStateNormalizer` is the sole publisher; current milestone settlement,
   wound/effects/history/identity/output must remain one rollback-safe transaction.
 - Pure model/grammar/seal tests stay Fast; filesystem/lease/publication/restart tests
-  stay Integration. No runner, lane, category, time-limit or project-file changes.
+  stay Integration. The source-backed migration below moves only preparation tests
+  that now require real accepted authority. No runner, lane-definition, time-limit
+  or project-file changes.
 - One implementer and one bounded C# lane. Do not rerun a broad lane after each edit.
 - Synchronize the Mortal GM guide and one real worked scalar course example with its
   production/source guards. This changes no afterlife command or spiritual mechanic.
@@ -73,11 +81,34 @@ ordered operations; do not replace them with a new generic mutation payload.
 - Modify `BookOfEternityClient/Services/MortalWoundTreatmentResolver.Semantics.cs` only
   to strengthen its existing course mode-evidence recomputation and extract the exact
   shared route-completion/consumption derivations when reused by admission/finalization.
+- Modify `BookOfEternityClient/Services/MortalWoundCriticalReactionPublicationPlanner.cs`
+  for the course-specific no-reaction admission described in the source-backed
+  implementation corrections below; preserve the existing procedure reaction path.
+- Modify `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs` only to populate
+  the treatment history row's course ID and milestone ordinal from its validated
+  continuation resolution instead of the old hardcoded nulls.
+- Modify `BookOfEternityClient/Services/MortalWoundTreatmentCapabilityAuthority.cs`
+  only at the candidate's `HasCurrentModeAuthority` typed-mode gate: course uses the
+  same parsed pre-turn history and full existing fresh-authority revalidation.
+- Modify `BookOfEternityClient/Services/MortalWoundTreatmentResourceReservationRegistry.cs`
+  only for exact pending course/milestone exclusivity in its shared `Restore` seam,
+  after exact-operation replay and before any new reservation mutation.
+- Modify `BookOfEternityClient.Tests/MortalWoundTreatmentSeverityReductionPlannerTests.cs`
+  to retain its pure `Project_` coverage while moving only authority-dependent tests
+  and their dependent helpers into
+  `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs`.
+  Reuse the existing genuine scenario/accepted-request fixture; preserve semantic
+  and diagnostic coverage and record an exact old-to-new test/row inventory.
+- Modify `BookOfEternityClient.Tests/FastTestBoundaryTests.cs` only to add the two new
+  Integration partial filenames to its exact resolver-family and reviewed-heavy source
+  arrays. Preserve exact inventory equality. Parent synchronizes the corresponding
+  `docs/testing.md` count and `specs/1505-test-suite-performance/research.md` inventory.
 - Create `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.CoursePublication.cs`:
   actual course scalar publication, tamper, settlement, restart and rollback regressions.
 - Modify `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.cs`
-  only in the shared successful publication fixture helper; keep the two original
-  stale-history methods and their assertions unchanged.
+  in the shared successful publication helper and the source-backed fresh-fixture
+  initialization/current-history handoff below; keep the two original stale-history
+  methods and their assertions unchanged.
 - Generalize the existing private persistence/coordinated-publication helpers in
   `BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResolverTests.ProcedurePublication.cs`;
   mechanically rename their callers in that file, `MortalWoundTreatmentResolverTests.cs`,
@@ -112,7 +143,7 @@ the course route. It currently omits some outer course coordinates: add exact co
 ID, milestone ordinal and route fingerprint agreement there, with direct negative tests.
 No full-wound raw JSON or live filesystem lookup belongs in detached outcome matching.
 
-- [ ] **Step 1: Observe actual setup RED before adding the new producer**
+- [x] **Step 1: Observe actual setup RED before adding the new producer**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~MortalWoundTreatmentResolverTests.CourseRequirementClassifier_StaleParsedHistoryIsInvalidAuthorityNotUnsatisfied|FullyQualifiedName~MortalWoundTreatmentResolverTests.CourseHighLevelPreparation_StaleHistoryRejectsBeforeResourceReservation"
@@ -133,7 +164,7 @@ After observing the outcome RED, repair that fixture through the real production
 pipeline below. Keep both frozen test bodies unchanged. This is not permission to
 relax either production hold gate.
 
-- [ ] **Step 1a: Use authentic persisted holds and coordinated publication in the fixture**
+- [x] **Step 1a: Use authentic persisted holds and coordinated publication in the fixture**
 
 Rename the existing private `PersistAndRehydrateProcedurePublication` helper to
 `PersistAndRehydrateTreatmentPublication`, replace the hardcoded rehydration mode
@@ -188,7 +219,7 @@ Do not call the reservation confirmation API manually, pass the old live accepte
 state after distribution, or substitute a test-installed history for real publication.
 The production resource/request/history APIs remain unchanged.
 
-- [ ] **Step 2: Add independent course selection and the closed grammar**
+- [x] **Step 2: Add independent course selection and the closed grammar**
 
 In ValidateCommon, preserve current accepted-state/coordinate/before-wound checks.
 Also require the complete detached validator for both the request argument and the
@@ -267,7 +298,7 @@ Retain the stable publication error code `mortal_wound_treatment_publication_sli
 but name the actual admitted scalar modes in its Expected text. Every rejected axis
 returns no recomposed intents/preparation and acquires no publication reservation.
 
-- [ ] **Step 3: Derive and seal course pointer changes**
+- [x] **Step 3: Derive and seal course pointer changes**
 
 Use one helper from admission and scalar-shell reconstruction:
 
@@ -335,7 +366,7 @@ All finalization calls, including direct callers and detached-copy controls, mus
 reject changed selection/pointer/resolution graphs even if a caller recomputes only
 the old outer hashes. Do not trust a Success flag or treat hash syntax as provenance.
 
-- [ ] **Step 4: Verify actual lifecycle and synchronize GM example**
+- [x] **Step 4: Verify actual lifecycle and synchronize GM example**
 
 Add the following actual three-milestone lifecycle regression to the new Integration
 partial. The fixture has a legal one-root severity-II graph, real inventory and current
@@ -410,15 +441,18 @@ publication is write-free.
 | --- | --- |
 | `SingletonCompletedAppendsOnceWithoutLeavingActivePointer` | Replace outcomes with `CourseMilestone(1, 0, "completed", [{kind:stabilize}])`, resource mutations with `CourseMutation(1)`; real first publication leaves an active wound, null pointer and exactly one completed route; exact replay is inert. |
 | `FinalAlreadyCompletedRouteDoesNotAppendAgain` | Initialize the new singleton route as already completed in a valid before-image; resolve final stabilization; require `RouteCompletion=None`, one retained route entry and null pointer, one actual treat history row. |
-| `ActivePositiveMilestonePreservesCourseAndRetainedEffectGraph` | First milestone stabilize then reduce severity 1; final milestone stabilize, both with actual dose claims. First result retains the exact new active course ID and rematerializes all original retained roots under fresh IDs at severity I. Final clears pointer and appends route once. |
-| `NonCourseTreatmentPreservesTheExactActivePointer` | Add a known guaranteed stabilization route before fixture creation; publish the real empty course start, move to next turn and resolve the guaranteed route against that current wound. Require unchanged course ID before/after, then next course ordinal remains 2. |
+| `ActivePositiveMilestonePreservesCourseAndRetainedEffectGraph` | Start at severity III with one retained legal root. First milestone stabilize then reduce severity 1; final milestone reduce severity 1, both with actual dose claims. First result retains the exact new active course ID and rematerializes retained roots under fresh IDs at severity II. Final reaches severity I, stays stabilized, rematerializes the retained graph, clears pointer and appends route once. |
+| `NonCourseTreatmentPreservesTheExactActivePointer` | Use severity III with an empty course start, reduction1 intermediate and reduction1 final, plus a known guaranteed stabilization route before fixture creation. Publish the real empty course start, move to next turn and resolve the guaranteed route against that current wound. Require unchanged course ID before/after, then next course ordinal remains 2 and the remaining course is applicable. |
 | `ChangedSelectionRejectsEvenWithFreshOuterResolutionSeal` | Use the resealed-construction code below with one changed axis per row: course ID, milestone ordinal, disposition, interruption, selected index, category, mode, consumption trigger, route fingerprint and route completion. Both initial Prepare and final preparation agreement must reject, no after-image/publication. |
 | `PreparationOwnsDetachedSelectionAndRejectsChangedPointer` | Prepare one valid empty active milestone twice: identical fingerprints, no writes. Detached copy finalizes identically. Change before/after pointer or selected primitive in the supplied resolution graph and recompute public outer seals; original preparation must refuse it. |
 | `PostWriteFailureRestoresPointerItemsEffectsAndHistoryThenRetriesOnce` | Use existing `ResourcePublicationFailureInjection` via fixture hooks. Arm failure at wound history after the target carrier has actually changed. Run real accepted-mechanics publication, require the injected write was reached and complete before-image restored (pointer/items/effect identity/wound identity/history/output). Retry the same retained accepted request through the production coordinator and require one spend and one treat row. |
 
 The public `MortalWoundTreatmentResolution.Create` helper deliberately recomputes the
-outer hashes. A negative test must use it so the rejection proves independent selected
-course semantics, not merely a stale outer fingerprint:
+outer hashes. A negative test must use it for constructible changed axes so the
+rejection proves independent selected course semantics, not merely a stale outer
+fingerprint. It already rejects a mode different from the request mode: retain that
+construction rejection and independently mutate a detached resolution to cover
+Prepare/Finalize rejection instead of weakening the constructor:
 
 ```csharp
 var altered = MortalWoundTreatmentResolution.Create(
@@ -449,7 +483,7 @@ interruption controls: no extra dose, pointer cleared, no completed-route append
 Retain both original stale-history methods unchanged, including the successful request
 after rejected stale history, which proves no prior reservation was leaked.
 
-- [ ] **Step 4a: Add one complete GM-authored worked course and executable guards**
+- [x] **Step 4a: Add one complete GM-authored worked course and executable guards**
 
 Add marker `mortal_wound_treatment_scalar_course_v1` and this same complete treatment
 JSON to `OtherGuides/Wound_Materialization_Contract.md` and
@@ -459,6 +493,7 @@ an enabled fresh alternative-treatment adapter.
 
 ```json
 {
+  "diagnosisPaths": [],
   "routes": [{
     "routeId": "field_clinic_recovery_course",
     "displayName": "Последовательный курс лечения в полевой клинике",
@@ -524,7 +559,7 @@ pattern. Use a severity-II one-root consequence graph valid at the severity-I de
 never prune a player's graph at runtime. Reject copied client authority fields in the
 worked JSON. Preserve old reduce-severity guard assertions and manifest entries.
 
-- [ ] **Step 4b: Run the exact final owning controls once**
+- [x] **Step 4b: Run the exact final owning controls once**
 
 During implementation select the new failure/method with Focused. Once the complete
 matrix is green, run these bounded owning selections; every filter term must select
@@ -532,7 +567,7 @@ at least one real test in discovery/TRX. Record exceptions if a genuine prerequi
 fails; do not erase it from the report or claim full course completion.
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentContractTests|FullyQualifiedName~MortalWoundTreatmentMemberShapeTests|FullyQualifiedName~GmTreatmentRouteDraftTests|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundTreatmentContractTests|FullyQualifiedName~MortalWoundTreatmentMemberShapeTests|FullyQualifiedName~GmTreatmentRouteDraftTests|FullyQualifiedName~MortalWoundTreatmentSeverityReductionPlannerTests|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_|FullyQualifiedName~PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_"
 ```
 
 The existing explicit `WoundLegacySource_SurvivesWithoutActiveWoundButIsNeverPubliclyMaterializable`
@@ -559,14 +594,166 @@ unrelated unfinished features under this scalar task.
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
-- [ ] **Step 5: Commit and independent task review**
+- [x] **Step 5: Commit and independent task review**
 
 Report every RED/intermediate/GREEN artifact with command/count/wall/exit/build/cleanup/
 skip/duplicate/timeout details, changed files and actual GM/afterlife rationale. Parent
 inspects actual artifacts/diff and obtains independent spec/quality review. This scalar
 contour does not close T070/T177/#1536 or authorize remote push/merge.
 
+## Source-backed implementation corrections
+
+The parent inspected the actual lower-level fixtures and producer gates after the
+new Integration RED `20260906-155219-134-27256-97a1791cbdf6441fbcce42f951695dec-focused`.
+These corrections preserve the approved gameplay and broaden only the implementation
+scope required to exercise it:
+
+- `MortalWoundTreatmentWorkingWoundSimulator.TryApply` forbids stabilizing an already
+  stabilized wound. The new active-positive fixture therefore uses the corrected
+  III → II → I route in the table above, not repeated stabilization. Keep complete
+  course-start applicability validation and the original terminal-healing tests.
+- `MortalWoundCriticalReactionPublicationPlanner.Compose` previously admitted only
+  guaranteed treatment without a reaction and rejected every non-procedure mode.
+  Admit course with no critical reaction only after exact request/resolution mode,
+  current accepted-state binding, complete detached authority and independently
+  recomputed course selection checks. Cover unexpected reaction intent and changed,
+  foreign or stale authority directly. Reuse cohesive shared checks; do not weaken
+  the procedure reaction/reservation path or invent a course reaction event.
+- The owning pure severity-reduction fixtures directly constructed preparations
+  and resolutions with null request authority and placeholder hashes. Independent
+  finalization validation makes these invalid. Source inspection confirms there is
+  no existing pure accepted-authority producer: the private accepted-state authority
+  owns a filesystem, write lease, canonical root revision and current history, and
+  actual request factories require that live authority. Under the user's explicit
+  Fast/runtime taxonomy instruction, move only the dependent preparation/finalization
+  and rematerialization-DAG tests to the Integration partial above. Keep every pure
+  `Project_` test and its helpers Fast. Use genuine detached requests produced by the
+  existing Integration fixture; lower-level checks do not each need full publication.
+  Preserve ordered reductions/stabilization, selectors, zero-root rematerialization,
+  authority-DAG and exact diagnostic assertions; add a separate authority-free rejection.
+  Do not turn positive tests into rejection tests, bypass production validation,
+  fabricate live authority or introduce stored authority-snapshot fixtures. Record exact
+  moved/retained test and theory-row counts, cover both owning projects, and include
+  the new method prefix in the final Integration selection.
+- The exact migration inventory is 19 methods / 41 existing rows (12 Facts and seven
+  Theories with 29 rows) into the Integration partial, retaining method suffixes;
+  four `Project_` methods / five rows (three Facts and a two-row Theory) stay Fast.
+  The separate missing-authority regression adds one Integration row.
+- The next actual publication RED
+  `20260906-155848-940-28828-5cfb242a92e74a57bec9e491ad2f1981-focused` is
+  `wound_history_treatment_result_coordinate_mismatch`: the shared accepted wound
+  planner hardcodes null course coordinates while its sealed receipt contains them.
+  Populate only those two row fields from `continuation.Resolution.CourseId` and
+  `.CourseMilestoneOrdinal`. Keep the existing history schema, codec and exact receipt
+  validator unchanged; assert row/receipt equality after publication and restart.
+- Candidate validation next failed at `publication_provenance_mismatch` in
+  `20260906-160606-417-8112-968a22a4521649d6b963ccd2892b5280-focused` (two migrated
+  positive fixture tests pass, actual course lifecycle fails). Source inspection of
+  `HasCurrentModeAuthority` and the complete existing fresh-authority validator confirms
+  an obsolete procedure-only precondition. Admit exactly the typed course route/mode
+  authority pair alongside procedure, then retain the same history parse and
+  `MortalWoundTreatmentFreshAuthorityValidator.FindMismatch` call, including real course
+  time/start/history/requirements recomposition. No early-true course or new authority.
+- New Integration partials require exact source-inventory synchronization: add
+  `MortalWoundTreatmentResolverTests.CoursePublication.cs` and
+  `MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs` to both owning Fast
+  source arrays; reviewed-heavy entries increase from 58 to 60. The owning class's
+  Integration category remains unchanged. Include `FastTestBoundaryTests` in the pure
+  control; preserve historical test-result evidence when updating the current docs.
+- Original publishing scenarios used an empty default history despite already-existing
+  wound identity. At the top of `AcceptedStateFixture.Create`, before writes and after
+  caller-authored wound changes, initialize only `Mode=="course"` with the exact empty
+  default `CreateHistory()` value to `CreateCurrentWoundHistory(scenario.Before)` and
+  `SeedCanonicalWoundEffects=true`. This is initial creation history and authentic source
+  effects, never an installed course/treat row. Preserve explicitly supplied nonempty or
+  stale histories. `ExecutePreparedFlow` retains its scenario parse assertions but passes
+  `fixture.ReadCurrentHistory()` to real preparation/resolution after fixture creation;
+  do not pass the now-stale parsed default. Include its original course theory in controls.
+- The NEW non-course-interference fixture also needs a complete applicable remaining
+  course: start severityIII with empty first stage, reduction1 second and reduction1
+  final; the independent guaranteed treatment stabilizes between stages. Retain the
+  original pointer-preservation and next-ordinal assertions; no repeated stabilization.
+- The worked scalar-course JSON is a complete `treatment`, not a fragment: add its
+  previously omitted required `diagnosisPaths: []` in BOTH documents and this plan.
+  The guard must embed exactly that unmodified documented object. Do not synthesize a
+  missing member only inside the guard or downgrade the documented contract to a fragment.
+- The measured final Integration control
+  `20260906-162730-219-19636-22b9e2fc2c7042f8a54b01cfc5a08bf4-focused` ran112 rows in
+  7:15.323 with an explicit10-minute Focused limit:103 pass, nine fail, no timeout or
+  cleanup failure. All28 new scalar rows,42 migrated rows and the two frozen stale-history
+  tests passed. Source-backed remaining fixture corrections are limited to adding the
+  already-existing `SkillId` to `AssertRequirementBinding`'s exact closed property list,
+  and preserving the original one-root consequence graph in `CreateCombatTreatmentScenario`
+  with the correct `combatant` effect target kind (including combatant-member owners),
+  followed by genuine initial history/effect seeding for actual procedure publication.
+  Do not weaken the property-list equality, original carrier assertions or production
+  severity envelope. These eight fixture rows receive a narrow correcting control.
+- The two procedure rows of
+  `CombatTarget_ProcedureAndCourseResolveAndPublishAgainstTheExactAcceptedCarrier`
+  then exposed the older direct publication helper's unconfirmed reservation: even
+  `not_required` owns an agreement. In that owning test only, route procedure success
+  through genuine persistence/rehydration and the existing coordinated publisher;
+  preserve its course branch and all original actor/carrier/history assertions.
+  Do not widen the global helper or production reservation gate. Cover both exact rows.
+- The ninth failure exposed actual pending-course uniqueness: the reservation registry
+  keyed only by operation, allowing another operation for the same course and milestone.
+  `ResourceComposer` always calls `ReserveTreatmentResources` for both held and
+  `not_required` authorities, including trusted interruptions; cold `RestoreConfirmed`
+  uses the same `Restore`, and normal release/rollback removes the same live agreement.
+  In `Restore`, after exact-operation retry handling and before new agreement/aggregate/
+  map mutation, reject an existing non-null exact `CourseId` plus milestone ordinal.
+  Do not filter by resource disposition or add a second registry/schema. Preserve
+  finalized-history replay. Add six real `CourseScalarPublication_` matrix rows:
+  held/no-resource/trusted-interruption crossed with live/cold restoration. Each proves
+  exact retry, different-operation conflict with unchanged tree, and idempotent release
+  followed by legal reacquisition; use real first publication/distribution/restoration.
+  Keep the original collision test unchanged. Synchronize the corresponding guide/example
+  rule without adding GM-authored identities or manual canonical-edit instructions.
+
+After these corrections, cover the changed behavior and its concrete dependency owners
+with narrow final controls. Retain the unaffected verified rows from the112-row control
+with an exact final-code coverage explanation; do not repeat all112 merely as a ritual.
+The single meaningful final Fast checkpoint is still required.
+
+The implementer records each correcting RED and final covering selection in the
+same task report; these additions are included in its exact BASE-to-final-HEAD review.
+
 ## Explicit continuation after this scalar stage
+
+### Post-review correction scope (2026-09-06)
+
+Independent review of `a393a4a0..7be8e356` requires removing the unused copied
+`CreateRankFourReactionWound` from the Integration partial (I1). Keep the pure owner.
+Move the scalar worked example inside the existing content/CDATA wrapper and make
+its owning source guard reject placement outside that wrapper (M1).
+
+Parent call-site inspection and focused reviewer confirmation found one additional
+authority-dependent caller: four rows of
+`WoundEffectBatchPlannerTests.SkillScope_AcceptedTreatmentRematerializationDoesNotRebindOrRequireProposalCoordinates`
+reflect into the now-removed synthetic resolution/preparation/input helpers (I2).
+Observe that exact RED; migrate only this theory into the existing Integration
+`ResolverTests.SeverityReductionPlanner.cs` partial. Use the genuine accepted request,
+persistence/rehydration and coordinated treatment plan to obtain its prepared batch
+and effect input. Preserve all four scenarios and their unchanged-selector/internal
+diagnostic/no-proposal-coordinate assertions; no synthetic authority or copied whole
+effect-input factory. The five invalid-mapping Fast rows remain pure and unchanged.
+This adds four existing rows to the previous 41-row migration; no extra heavy file.
+
+The actual final Fast also exposed a T169/T174 fixture omission under T177/#1536:
+`EffectAcceptedTurnInputComposerWoundTests.Compose_FeedsPreparedWoundDirectlyIntoTypedEffectStage`
+does not supply its real original-proposal diagnostic mapping. In that positive
+fixture only, construct the exact response-local decision0/definition0 component
+coordinate, call `EffectApplicationDiagnosticLocations.BindPreparedSources`, attach
+it to the composed input, and assert non-null scope authority plus exact permanent
+key/path/section resolution. Preserve all existing success/application/termination/
+raw-command assertions. The actual production service already supplies this mapping;
+do not change the composer/planner or weaken the missing/duplicate/wrong-path guards.
+
+One correction pass covers I1/I2/M1 and this observed pure fixture failure, through
+bounded Focused pure and Integration controls. The prior fail-fast Fast is not a
+full-suite success; no automatic broad rerun is required for these small edits.
+Parent records exact additional row ownership and carries the remaining legacy RED
+and incomplete overall Fast control forward. T070/T177/#1536 stay open.
 
 All existing non-scalar course routes remain authored/validated in the complete model.
 Full course completion tests ending in heal and harmful interruption tests remain
