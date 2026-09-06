@@ -1726,6 +1726,20 @@ entrypoints require no update for T065.
   same-rank slot-budget, complete tagged reference, skill diagnostic-path and death
   lifecycle obligations for the following publisher are source-pinned in the plan.
   No additional top-level task is marked complete.
+  Selected-policy private handoff functional acceptance (2026-09-07): source
+  `177a734e` plus test-only copy-seal assertion `caa2ef17` are parent-accepted
+  after independent functional Spec and Code Quality approval. Actual final
+  Integration 34/34, preservation 23/23 and strengthened-copy/tamper 2/2 are
+  GREEN with clean builds and cleanup. The detailed guards preceded their
+  detailed tests, contrary to the plan's per-guard test-first requirement;
+  that historical deviation remains explicit. Four later isolated counterfactual
+  failures establish current regression sensitivity, not retroactive TDD.
+  The single Fast completed 6,016 rows with 6,015 PASS and the mandatory legacy
+  authority/registration RED; 1,287 discovered rows did not complete. No all-Fast
+  success is claimed. The next bounded T070 work is actual non-death policy
+  publication with original/final rank continuity, full tagged identities and
+  synchronized Mortal GM examples. Death/heal/legacy remain separate open work;
+  whole-feature top-level completion remains 77/177, T070/T177/#1536 open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

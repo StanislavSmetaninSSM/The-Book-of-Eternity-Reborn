@@ -123,7 +123,7 @@ internal MortalWoundApplyDeteriorationOutcomeIntent
     MortalWoundApplyDeteriorationOutcomeIntent.DetachedCopy();
 ```
 
-- [ ] **Step 1: Observe a production-intent missing-preparation RED.**
+- [x] **Step 1: Observe a production-intent missing-preparation RED.**
 
 Use the existing private helpers from the same partial test class. The fixture is
 not a fake accepted request: it seeds policy and selected row before history and
@@ -431,7 +431,7 @@ Fail-closed handling must also cover deliberately corrupted private null/default
 members at the access boundary without crashing; use explicit guards rather than
 blanket swallowing unrelated exceptions. Add their exact regression before the guard.
 
-- [ ] **Step 3: Attach the packet without adding a public property.**
+- [x] **Step 3: Attach the packet without adding a public property.**
 
 Place this partial-class extension in the same new Services file. The existing
 original constructor/factory remains untouched in its current files. The private
@@ -657,7 +657,7 @@ unsupported profiles/stack keys. Full tree equality applies to rejection and
 nonpublishing packet operations; successful persisted-command tests intentionally
 change command/claim roots but not canonical wound/effect/history roots.
 
-- [ ] **Step 5: Verify focused preservation and truthful documentation boundary.**
+- [x] **Step 5: Verify focused preservation and truthful documentation boundary.**
 
 Run smallest changed rows first, then this coherent set (split a measured oversized
 selection into disjoint owners;10m is the implementation default,15m needs evidence):
@@ -680,7 +680,7 @@ The existing worked example and source guards must still truthfully say selected
 policy/heal publication is unfinished. Record this rationale in the report. The
 next actual policy publisher must update its worked example/guide/guards together.
 
-- [ ] **Step 6: Scoped commit and independent task gate.**
+- [x] **Step 6: Scoped commit and independent task gate.**
 
 Inspect only the allowlist, then stage the two implementation files, new Integration
 partial and three test-inventory files. The new inventory entry is
@@ -700,6 +700,36 @@ Compliance and Code Quality verdicts before accepting this task. Parent verifies
 the actual artifacts and owns checkboxes; T070/T177/#1536 remain open.
 
 ## Parent self-review
+
+### Bounded functional acceptance — 2026-09-07
+
+Parent accepts the functional deliverable at `caa2ef1708af04c666746310d8e7e3a7a25a8d90`
+from BASE `81c903700494d647c2462120c37b9a2933afbceb`, after exact source review,
+actual artifact inspection and independent corrective Spec/Code Quality review.
+Code Quality is Approved with no current code/test blocker. Steps 2 and 4 retain
+their unchecked process status deliberately: their implementation and current
+regression coverage are verified, but the required detailed RED-before-guard
+chronology was not followed. Do not repeat completed implementation to turn these
+historical process boxes green; this is a recorded deviation, not pending code.
+
+Actual final Integration control: 34/34 GREEN (`031913`); preservation: 23/23
+GREEN (`031026`). Four later isolated counterfactual guard checks each failed
+semantically as expected, and the restored-runtime test-only final delta passed
+2/2 (`033956`, 00:01:08.9341715). The delta adds one direct copy-seal assertion;
+runtime remains byte-identical to `177a734e`. Counterfactual checks establish
+current sensitivity only and do not constitute historical TDD compliance.
+
+One Fast (`031300`) completed 6,016 rows: 6,015 passed and the required legacy
+authority/registration RED failed; 1,287 discovered rows did not complete under
+fail-fast. No complete Fast success, publication support, top-level T070/T177
+closure or whole-#1536 completion is claimed. This private-only handoff changes
+no GM-authored contract; current examples/guards correctly retain unfinished
+publisher wording. Next work is the selected non-death policy publisher.
+
+Detailed parent audit, implementer chronology and both independent verdicts are
+in worktree-local `sdd/t070-selected-policy-preparation-*` metadata reports.
+
+### Original pre-dispatch self-review
 
 This bounded plan covers the missing T067-owned policy body/binding handoff, not
 the remaining feature. Public T067/T069 shapes/formulas and current authority stay
