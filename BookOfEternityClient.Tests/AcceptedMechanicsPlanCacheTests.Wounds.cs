@@ -2323,6 +2323,7 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 "GetOrBuildWoundPrepared",
                 input);
 
+        // Reflection needs explicit defaults; ordinary stages carry neither authority.
         internal WoundEffectBatchPlanningResult GetOrBuildWoundEffectValidated(
             WoundPreparedAcceptedTurnPlan prepared,
             EffectAcceptedTurnInput input) =>
@@ -2345,7 +2346,13 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
 
         internal void RegisterEmptyMortalItems(
             string sessionId,
-            string snapshotToken) =>
+            string snapshotToken)
+        {
+            var emptyProjectionRoots =
+                MortalItemCanonicalProjectionPlanner.ProjectionRootPaths.ToDictionary(
+                    static path => path,
+                    static _ => (JsonNode?)null,
+                    StringComparer.Ordinal);
             Invoke<object?>(
                 "RegisterMortalItemsValidated",
                 sessionId,
@@ -2353,7 +2360,12 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 "sha256:wound-cache-test-mortal-items",
                 Array.Empty<MortalItemAcceptedTurnAuthority.NewCandidate>(),
                 Array.Empty<MortalItemAcceptedTurnAuthority.StableCandidate>(),
-                Array.Empty<string>());
+                Array.Empty<string>(),
+                new Dictionary<string, MortalItemRouteAuthority>(StringComparer.Ordinal),
+                Array.Empty<MortalItemAcceptedTransfer>(),
+                emptyProjectionRoots,
+                emptyProjectionRoots);
+        }
 
         internal bool HasMortalItemsValidated() =>
             Invoke<bool>("HasMortalItemsValidated");
