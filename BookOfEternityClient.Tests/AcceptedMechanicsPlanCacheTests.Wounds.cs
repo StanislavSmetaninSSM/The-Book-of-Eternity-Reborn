@@ -2329,7 +2329,9 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             Invoke<WoundEffectBatchPlanningResult>(
                 "GetOrBuildWoundEffectValidated",
                 prepared,
-                input);
+                input,
+                null,
+                null);
 
         internal WoundAcceptedTurnPlanningResult GetOrBuildWoundFinal(
             WoundPreparedAcceptedTurnPlan prepared,
@@ -2337,7 +2339,9 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
             Invoke<WoundAcceptedTurnPlanningResult>(
                 "GetOrBuildWoundFinal",
                 prepared,
-                effect);
+                effect,
+                null,
+                null);
 
         internal void RegisterEmptyMortalItems(
             string sessionId,
