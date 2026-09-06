@@ -59,6 +59,48 @@ public sealed class WoundAlternativeTreatmentResponseTests
             .ParseAlternativeTreatmentAuthoring(Element(written), "woundTreatmentAuthorings[0]").Drafts)));
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Author_FactoryBackedPunctuatedRouteAndPathIdsRoundTrip(bool hidden)
+    {
+        var (route, path) = FactoryAlternativeMembers(hidden);
+        var routeId = hidden ? "setting/specific:hidden" : "setting/specific:visible";
+        route["routeId"] = routeId;
+        if (hidden)
+        {
+            path!["diagnosisPathId"] = "setting/specific:diagnosis";
+            path["reveals"] = new JsonArray("route:" + routeId);
+        }
+
+        var parsed = Parse(Authoring("punctuation_request", route, path));
+
+        Assert.True(parsed.IsValid, Describe(parsed.Issues));
+        var draft = Assert.Single(parsed.Drafts);
+        Assert.Equal(routeId, draft.Route!.RouteId);
+        if (hidden)
+        {
+            Assert.Equal("setting/specific:diagnosis", draft.DiagnosisPath!.DiagnosisPathId);
+            Assert.Equal("route:" + routeId, Assert.Single(draft.DiagnosisPath.Reveals).CanonicalValue);
+        }
+        else
+        {
+            Assert.Null(draft.DiagnosisPath);
+        }
+
+        var written = Write(draft);
+        var roundTrip = Parse(JsonNode.Parse(written)!.AsObject());
+        Assert.True(roundTrip.IsValid, Describe(roundTrip.Issues));
+        var roundTripDraft = Assert.Single(roundTrip.Drafts);
+        Assert.Equal(routeId, roundTripDraft.Route!.RouteId);
+        Assert.Equal(hidden ? "setting/specific:diagnosis" : null,
+            roundTripDraft.DiagnosisPath?.DiagnosisPathId);
+        if (hidden)
+            Assert.Equal("route:" + routeId,
+                Assert.Single(roundTripDraft.DiagnosisPath!.Reveals).CanonicalValue);
+        Assert.Equal(written, Write(roundTripDraft));
+    }
+
     [Fact]
     public void Plural_AcceptsZeroAndThirtyTwoAndRejectsThirtyThree()
     {
