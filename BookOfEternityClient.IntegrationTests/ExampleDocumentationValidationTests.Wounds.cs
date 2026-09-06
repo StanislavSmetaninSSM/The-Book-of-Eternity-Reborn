@@ -8,6 +8,43 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class ExampleDocumentationValidationTests
 {
+    [Fact]
+    public void AlternativeTreatmentRepairWorkedExamples_ExecuteRealProjectionAndStrictTransport()
+    {
+        var rejected = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_alternative_repair_rejected_author_v1"));
+        var original = Assert.Single(rejected["woundTreatmentAuthorings"]!.AsArray())!.AsObject();
+        var parsed = WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring(
+            JsonSerializer.SerializeToElement(original), "woundTreatmentAuthorings[0]");
+        Assert.False(parsed.IsValid);
+        var packet = Assert.Single(WoundRepairPacketBuilder.Build(new WoundRepairBuildRequest(
+            "session_wound_diagnosis", "request_wound_diagnosis", "snapshot_wound_diagnosis", new[]
+            {
+                new WoundRepairCandidateInput("author_alternative_treatment", "candidate_alternative_treatment_001",
+                    "sha256:" + new string('b', 64), "authoring_request_public_001",
+                    new JsonObject { ["event"] = "В найденных записях описан другой способ лечения",
+                        ["target"] = "игрок", ["realm"] = "Смертный мир" },
+                    new[] { "decline", "author" }, "I", "IV", original, parsed.Issues)
+            })));
+        var workedPacket = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_alternative_repair_safe_packet_v1"));
+        Assert.Equal(packet.ToJsonObject().ToJsonString(), workedPacket.ToJsonString());
+        var receipts = JsonSerializer.SerializeToElement(new[] { packet.CreateReceipt() }, new JsonSerializerOptions
+            { PropertyNamingPolicy = JsonNamingPolicy.CamelCase });
+        Assert.True(WoundRepairPacketBuilder.IsValidPersistedRepairWave(
+            JsonSerializer.SerializeToElement(new JsonArray(workedPacket)), receipts,
+            packet.SessionId, packet.RequestId, packet.SnapshotToken));
+        var response = Assert.Single(ParseNamedJsonFences("E_CLI_Wound_Materialization.txt",
+            "wound_mortal_alternative_repair_corrected_author_v1"));
+        var corrected = Assert.Single(response["woundTreatmentAuthorings"]!.AsArray())!.AsObject();
+        Assert.True(packet.MatchesCorrectedAlternativeTreatmentAuthoring(corrected));
+        var unrelated = corrected.DeepClone().AsObject();
+        unrelated["route"]!["displayName"] = "unrelated rewrite";
+        Assert.False(packet.MatchesCorrectedAlternativeTreatmentAuthoring(unrelated));
+        corrected["route"]!["operationKey"] = "private copied authority";
+        Assert.False(packet.MatchesCorrectedAlternativeTreatmentAuthoring(corrected));
+    }
+
     private static readonly string[] RegisteredSpiritualWoundProfiles =
         SpiritualWoundEffectProfileCatalog.RegisteredProfiles
             .OrderBy(static profile => profile, StringComparer.Ordinal)

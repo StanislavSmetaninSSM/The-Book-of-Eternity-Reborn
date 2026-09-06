@@ -316,22 +316,26 @@ public sealed class WoundRepairPacketBuilderTests
         Assert.Equal("II-III", Assert.Single(packet.Issues).Expected);
     }
 
-    [Fact]
-    public void ToJsonObject_SerializesOnlyTheClosedWoundRepairContract()
+    [Theory]
+    [InlineData("construct_wound")]
+    [InlineData("repair_wound")]
+    [InlineData("narrate_acquisition")]
+    public void ToJsonObject_SerializesOnlyTheClosedWoundRepairContract(string kind)
     {
         var packet = Assert.Single(WoundRepairPacketBuilder.Build(CreateRequest(
             CreateCandidate(
                 "candidate_safe_001",
                 "woundDecisions[0].proposal.severity",
                 "wound_severity_above_opportunity",
-                "III"))));
+                "III", candidateKind: kind))));
 
         var json = packet.ToJsonObject();
+        Assert.Equal(kind, packet.CandidateKind);
 
         Assert.Equal(
             new[]
             {
-                "kind", "sessionId", "requestId", "snapshotToken", "candidateRef",
+                "kind", "candidateKind", "sessionId", "requestId", "snapshotToken", "candidateRef",
                 "semanticFingerprint", "issues", "safeContext", "preservedProposal",
                 "requiredResponseShape"
             },
@@ -605,7 +609,8 @@ public sealed class WoundRepairPacketBuilderTests
         string? semanticFingerprint = null,
         string minimumSeverity = "I",
         string maximumSeverity = "II",
-        string? opportunityAuthorityFingerprint = null)
+        string? opportunityAuthorityFingerprint = null,
+        string candidateKind = "repair_wound")
     {
         var issue = new ValidationIssue(
             rawPath,
@@ -617,7 +622,7 @@ public sealed class WoundRepairPacketBuilderTests
             actual: actual,
             repairHint: "validator-internal implementation hint");
         return new WoundRepairCandidateInput(
-            "repair_wound",
+            candidateKind,
             candidateRef,
             semanticFingerprint ?? Fingerprint('a'),
             "opportunity_safe_001",

@@ -79,6 +79,7 @@
     <![CDATA[
     {
       "kind": "wound_materialization_repair",
+      "candidateKind": "construct_wound",
       "sessionId": "session_wound_repair_example",
       "requestId": "request_wound_repair_example",
       "snapshotToken": "snapshot_wound_repair_example",

@@ -77,7 +77,7 @@ public sealed class ValidationRepairRequestTests
         Assert.Equal(
             new[]
             {
-                "kind", "sessionId", "requestId", "snapshotToken", "candidateRef",
+                "kind", "candidateKind", "sessionId", "requestId", "snapshotToken", "candidateRef",
                 "semanticFingerprint", "issues", "safeContext", "preservedProposal",
                 "requiredResponseShape"
             },

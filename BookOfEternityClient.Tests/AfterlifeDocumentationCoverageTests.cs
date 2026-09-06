@@ -13,6 +13,19 @@ namespace BookOfEternityClient.Tests;
 public sealed class AfterlifeDocumentationCoverageTests
 {
     [Fact]
+    public void WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives()
+    {
+        foreach (var text in new[] { ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+                     ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt") })
+        {
+            Assert.Contains("candidateKind=construct_wound", text, StringComparison.Ordinal);
+            Assert.Contains("Chaos Sea", text, StringComparison.Ordinal);
+            Assert.Contains("Shining Abode", text, StringComparison.Ordinal);
+            Assert.Contains("does not enable Mortal alternative treatment", text, StringComparison.Ordinal);
+        }
+    }
+
+    [Fact]
     public void AfterlifeRepairDocs_PinRealmAuthorityAndRetainOutputFreshnessChain()
     {
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");

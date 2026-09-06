@@ -34,7 +34,7 @@ internal static partial class MortalWoundTreatmentContract
             if (issues.Count == 0)
             {
                 var route = WoundMaterializationContract.ReadTreatmentRoute(value, path, issues);
-                if (route is not null)
+                if (route is not null && issues.Count == 0)
                 {
                     ValidateRoute(
                         route,

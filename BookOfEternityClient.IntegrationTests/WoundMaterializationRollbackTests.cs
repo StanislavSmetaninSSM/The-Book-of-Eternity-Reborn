@@ -167,11 +167,13 @@ public sealed partial class WoundMaterializationLifecycleTests
         string issueCode)
     {
         await using var context = await CreatePlayerContextAsync();
-        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var authority = await CreateSignedAuthorityAsync(context, maximumSeverityRank: 2);
         var validProposal = CreateRepairRoundtripProposal(category);
         var rejectedProposal = validProposal.DeepClone().AsObject();
         ApplyRejectedRepairMutation(category, rejectedProposal);
-        var rejectedResponse = Response(Decision("materialize", rejectedProposal));
+        var rejectedDecision = Decision("materialize", rejectedProposal);
+        rejectedDecision["opportunityRef"] = authority.Opportunity.PublicRef;
+        var rejectedResponse = Response(rejectedDecision);
         if (string.Equals(category, "narration", StringComparison.Ordinal))
         {
             rejectedResponse.Response =
@@ -232,6 +234,7 @@ public sealed partial class WoundMaterializationLifecycleTests
             $"The '{category}' repair changed content outside the rejected semantic leaf.");
 
         var correctedDecision = Decision("materialize", correctedProposal);
+        correctedDecision["opportunityRef"] = authority.Opportunity.PublicRef;
         var correctedResponse = Response(correctedDecision);
         Assert.True(takenPacket.MatchesCorrectedDecision(
             correctedDecision,
@@ -273,9 +276,6 @@ public sealed partial class WoundMaterializationLifecycleTests
         var proposal = CreatePhysicalProposal(
             severity: "II",
             includeMechanicalRoot: true);
-        if (!string.Equals(category, "treatment", StringComparison.Ordinal))
-            return proposal;
-
         proposal["treatment"]!["routes"] = new JsonArray(
             CreateRepairRoundtripTreatmentRoute());
         proposal["treatment"]!["knownRouteIds"] =

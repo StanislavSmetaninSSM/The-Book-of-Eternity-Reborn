@@ -1,5 +1,7 @@
 CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
 
+Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+
 This file supplements:
 - CLI_Agent_Daemon_Specification.md
 - TaskGuides/CLI_Step_Main.txt

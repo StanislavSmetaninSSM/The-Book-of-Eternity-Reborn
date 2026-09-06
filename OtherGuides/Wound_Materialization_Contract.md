@@ -1,5 +1,9 @@
 # Wound Materialization v1
 
+## Kind-specific safe wound repair transport
+
+Wound repair transport: every wound_materialization_repair packet requires candidateKind, exactly construct_wound, repair_wound, author_alternative_treatment, or narrate_acquisition. Missing or mismatched tags fail; there is no tagless reader. Construction/narration uses requiredResponseShape.woundDecisions[0].proposal.correctOnly and repeats display.acquisitionNarration verbatim. Alternative authoring uses requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly and requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly, with immutable authoringRequestRef and decision=author. Preserve every non-offending sibling and ordered array position; replace invalid required values, omit unknown fields, and append a missing route reveal only when explicitly requested, preserving its entire old prefix. A non-offending null diagnosisPath remains explicit null. Recipe base/correctOnly objects are instructions, not submitted route members. NeedsAnotherRepair is local staged progress only: refresh the privately bound rejected draft and its fingerprint before another bounded repair; never reuse the old packet for a changed draft. Public transport cannot reconstruct private alternative repair authority: there is no live alternative repair adapter. Do not fabricate an accepted command, receipt, operation key, wound identity, or canonical/evidence seal from this example. Alternative treatment adds no acquisitionNarration obligation; it does not describe receiving a new wound. A valid decline has two explicit null payloads and no repair work; correction cannot switch author to decline.
+
 This is the GM-facing contract for constructing a physical or spiritual wound after
 the client has exposed one exact wound opportunity. It applies in the Mortal World,
 Chaos Sea, and Shining Abode. A wound is an independently treatable entity; it is not
@@ -517,7 +521,7 @@ Use every packet only for its bound session, request, snapshot, candidate, and r
 proposal. Correct every packet and every listed path in the current repair wave, then
 resubmit them together in one complete corrected semantic turn through the owning
 repair protocol. Reproduce the complete original response and preserve every unrelated
-semantic decision. For each packet, use `preservedProposal` as the base, add or replace
+semantic decision. For each construction/narration packet, use `preservedProposal` as the base, add or replace
 only the paths listed by
 `requiredResponseShape.woundDecisions[0].proposal.correctOnly`, and include
 `display.acquisitionNarration` verbatim in the complete final scene. A patch fragment,

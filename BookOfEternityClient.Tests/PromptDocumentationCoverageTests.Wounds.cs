@@ -11,6 +11,31 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void WoundAlternativeTreatmentRepairDocumentation_PinsKindSpecificLocalOnlyRecipes()
+    {
+        foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Rules/Block_12.txt",
+                     "TaskGuides/CLI_Step_Main.txt", "Examples/E_CLI_Step_Main.txt", "CLI_API_Specification.md",
+                     "CLI_Agent_Daemon_Specification.md", "BookOfEternityClient/game_master_daemon.ps1" })
+        {
+            var text = ReadRepoFile(file.Split('/'));
+            foreach (var required in new[] { "candidateKind", "author_alternative_treatment",
+                         "requiredResponseShape.woundDecisions[0].proposal.correctOnly",
+                         "requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly",
+                         "requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly",
+                         "NeedsAnotherRepair", "private alternative repair authority", "no live alternative repair adapter" })
+                Assert.Contains(required, text, StringComparison.Ordinal);
+        }
+        var runtime = ReadRepoFile("BookOfEternityClient", "Core", "GameEngine", "GameEngine.ValidationAndRepair.cs");
+        Assert.Contains("Route = packet.ResubmissionRoute", runtime, StringComparison.Ordinal);
+        Assert.Contains("requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly", runtime, StringComparison.Ordinal);
+        Assert.Contains("requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly", runtime, StringComparison.Ordinal);
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        foreach (var marker in new[] { "wound_mortal_alternative_repair_v1", "wound_mortal_alternative_repair_rejected_author_v1",
+                     "wound_mortal_alternative_repair_safe_packet_v1", "wound_mortal_alternative_repair_corrected_author_v1" })
+            Assert.Contains(marker, example, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WoundAlternativeTreatmentResponseDocumentation_ClosesTheGmWireAndRawIngress()
     {
         var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
@@ -655,7 +680,7 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Equal(
             new[]
             {
-                "kind", "sessionId", "requestId", "snapshotToken", "candidateRef",
+                "kind", "candidateKind", "sessionId", "requestId", "snapshotToken", "candidateRef",
                 "semanticFingerprint", "issues", "safeContext", "preservedProposal",
                 "requiredResponseShape"
             },

@@ -53,7 +53,16 @@ internal static partial class WoundResponseInputComposer
                 route = routeResult.Route;
 
                 var pathElement = fields["diagnosisPath"];
-                if (pathElement.ValueKind == JsonValueKind.Object)
+                var visibleRoute = fields["route"].ValueKind == JsonValueKind.Object &&
+                    fields["route"].TryGetProperty("visibility", out var visibility) &&
+                    visibility.ValueKind == JsonValueKind.String &&
+                    visibility.GetString() is "public" or "known_to_player";
+                if (visibleRoute && pathElement.ValueKind != JsonValueKind.Null)
+                {
+                    Add(issues, path + ".diagnosisPath", "wound_response_invalid_field",
+                        "explicit null for a visible route", pathElement.GetRawText());
+                }
+                else if (pathElement.ValueKind == JsonValueKind.Object)
                 {
                     var pathResult = MortalWoundTreatmentContract.ParseDiagnosisPathShape(
                         pathElement,
@@ -71,7 +80,7 @@ internal static partial class WoundResponseInputComposer
                         pathElement.GetRawText());
                 }
 
-                if (route is not null &&
+                if (!visibleRoute && route is not null &&
                     !HasAlternativeTreatmentMemberPair(
                         route.RouteId,
                         route.Visibility,

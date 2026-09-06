@@ -1663,6 +1663,8 @@ public partial class GameEngine
         CaptureWoundRepairRetryObligationsAsync(
             IReadOnlyList<WoundRepairPacket> packets)
     {
+        if (packets.Any(packet => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(packet.CandidateKind)))
+            return Array.Empty<WoundRepairRetryObligation>();
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success)
             return Array.Empty<WoundRepairRetryObligation>();
@@ -1699,6 +1701,8 @@ public partial class GameEngine
     {
         if (obligations.Count == 0)
             return true;
+        if (obligations.Any(obligation => !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(obligation.Packet.CandidateKind)))
+            return false;
         var (root, parsed) = await ReadStrictWoundRepairCommandAsync();
         if (root is null || parsed is null || !parsed.Success ||
             obligations.Any(obligation => !JsonNode.DeepEquals(
@@ -3650,7 +3654,7 @@ public partial class GameEngine
                     new ValidationRepairResubmissionObligation
                     {
                         Actor = packet.CandidateRef,
-                        Route = "woundDecisions",
+                        Route = packet.ResubmissionRoute,
                         RawCarrier = "accepted turn response"
                     }))
                 .ToList(),
@@ -7496,7 +7500,9 @@ public partial class GameEngine
             : fullTurnResubmissionRequired
             ? "Отклонённая попытка полностью удалена и восстановлено состояние до хода. Не исправляй baseline-файлы in place. " +
               "Для effect_materialization_repair, resource_semantic_omission_repair и wound_materialization_repair значение fullTurnResubmissionRequired=true означает полный повтор того же связного ответа, а не точечный patch. " +
-              "Для wound_materialization_repair сохрани preservedProposal без изменений, исправь только paths из issues/requiredResponseShape.correctOnly и включи display.acquisitionNarration дословно в полный response; sealed event/target/opportunity и unrelated response content менять нельзя. " +
+              "Для wound_materialization_repair выбирай рецепт по обязательному candidateKind. Для construct_wound, repair_wound и narrate_acquisition используй requiredResponseShape.woundDecisions[0].proposal.correctOnly и включи display.acquisitionNarration дословно в полный response. " +
+              "Для author_alternative_treatment используй requiredResponseShape.woundTreatmentAuthorings[0].route.correctOnly и requiredResponseShape.woundTreatmentAuthorings[0].diagnosisPath.correctOnly; сохрани authoringRequestRef, decision=author, все неизменяемые поля и позиции массивов. Новое лечение не требует acquisitionNarration нового ранения. NeedsAnotherRepair означает только локальный промежуточный результат, не принятие хода; private alternative repair authority остаётся обязательной, no live alternative repair adapter. " +
+              "Сохрани preservedProposal без изменений вне разрешённых исправлений; sealed event/target/opportunity и unrelated response content менять нельзя. " +
               "Заново обработай исходный input/turn_request.json как один полный ответ на тот же ход: пересоздай все изменённые в отклонённой попытке command/output surfaces, обязательно повтори каждую exact actor+route из resubmissionObligations и исправь перечисленные поля. " +
               "requiredResubmissionPaths перечисляет только фактически изменённые GM-authored command/output surfaces, которые должны быть заново записаны до сигнала готовности. " +
               "Client-owned preparation/publication roots клиент восстанавливает или пересоздаёт сам: не пиши и не ожидай в requiredResubmissionPaths system_mods.json, progression_schedule.json, resource_definitions.json, resource_state.json, resource_history.json, resource_owner_authority.json, pending_effect_resolutions.json или effect_identity_index.json. " +

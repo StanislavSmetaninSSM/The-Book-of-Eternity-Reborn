@@ -1,5 +1,7 @@
 # Afterlife Contract Matrix — Chaos Sea and Shining Abode
 
+Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+
 **Effect Materialization v1:** every afterlife active effect and spiritual condition uses the shared identity/lifecycle adapter in `OtherGuides/Effect_Materialization_Contract.md`.
 
 Across both Chaos Sea and Shining Abode, the runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM authors complete source policy and transient `effectChanges[]` commands only; it never performs carrier arithmetic or resends raw remaining duration.

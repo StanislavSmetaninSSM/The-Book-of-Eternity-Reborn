@@ -7,6 +7,7 @@ internal static partial class WoundRepairPacketBuilder
     private static readonly IReadOnlySet<string> PersistedPacketFields =
         PersistedFieldSet(
             "kind",
+            "candidateKind",
             "sessionId",
             "requestId",
             "snapshotToken",
@@ -108,6 +109,8 @@ internal static partial class WoundRepairPacketBuilder
                 kind,
                 "wound_materialization_repair",
                 StringComparison.Ordinal) ||
+            !TryReadPersistedString(fields, "candidateKind", out var candidateKind) ||
+            !CandidateKinds.Contains(candidateKind) ||
             !TryReadPersistedString(fields, "sessionId", out var packetSessionId) ||
             !TryReadPersistedString(fields, "requestId", out var packetRequestId) ||
             !TryReadPersistedString(
@@ -125,15 +128,20 @@ internal static partial class WoundRepairPacketBuilder
             !Exact(candidateRef) ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(
                 semanticFingerprint) ||
-            !TryValidatePersistedIssues(fields["issues"], out var issuePaths) ||
-            !IsValidPersistedSafeContext(fields["safeContext"]) ||
-            !IsValidPersistedProposal(fields["preservedProposal"]) ||
-            !IsValidPersistedResponseShape(
-                fields["requiredResponseShape"],
-                issuePaths))
+            !IsValidPersistedSafeContext(fields["safeContext"]))
         {
             return false;
         }
+
+        if (candidateKind == "author_alternative_treatment")
+        {
+            if (!IsValidPersistedAlternativePacket(fields))
+                return false;
+        }
+        else if (!TryValidatePersistedIssues(fields["issues"], out var issuePaths) ||
+                 !IsValidPersistedProposal(fields["preservedProposal"]) ||
+                 !IsValidPersistedResponseShape(fields["requiredResponseShape"], issuePaths))
+            return false;
 
         identity = new PersistedRepairIdentity(
             packetSessionId,

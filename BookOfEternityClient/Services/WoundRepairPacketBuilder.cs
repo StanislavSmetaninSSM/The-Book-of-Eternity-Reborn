@@ -185,7 +185,7 @@ internal sealed class WoundRepairCandidateInput
     internal string? OpportunityAuthorityFingerprint { get; }
 }
 
-internal sealed class WoundRepairPacket
+internal sealed partial class WoundRepairPacket
 {
     private readonly WoundRepairPacketIssue[] _issues;
     private readonly JsonObject _safeContext;
@@ -205,7 +205,8 @@ internal sealed class WoundRepairPacket
         JsonObject preservedProposal,
         JsonObject requiredResponseShape,
         JsonObject rejectedDecision,
-        string? opportunityAuthorityFingerprint)
+        string? opportunityAuthorityFingerprint,
+        string candidateKind)
     {
         SessionId = sessionId;
         RequestId = requestId;
@@ -218,9 +219,13 @@ internal sealed class WoundRepairPacket
         _requiredResponseShape = requiredResponseShape.DeepClone().AsObject();
         _rejectedDecision = rejectedDecision.DeepClone().AsObject();
         _opportunityAuthorityFingerprint = opportunityAuthorityFingerprint;
+        CandidateKind = candidateKind;
     }
 
     internal string Kind => "wound_materialization_repair";
+    internal string CandidateKind { get; }
+    internal string ResubmissionRoute => CandidateKind == "author_alternative_treatment"
+        ? "woundTreatmentAuthorings" : "woundDecisions";
     internal string SessionId { get; }
     internal string RequestId { get; }
     internal string SnapshotToken { get; }
@@ -246,7 +251,7 @@ internal sealed class WoundRepairPacket
 
     internal bool MatchesOpportunity(WoundOpportunityAuthority? opportunity)
     {
-        if (opportunity is null ||
+        if (CandidateKind == "author_alternative_treatment" || opportunity is null ||
             !ResourceMaterializationContract.IsAuthorityFingerprint(
                 _opportunityAuthorityFingerprint) ||
             !string.Equals(
@@ -284,6 +289,7 @@ internal sealed class WoundRepairPacket
     internal JsonObject ToJsonObject() => new()
     {
         ["kind"] = Kind,
+        ["candidateKind"] = CandidateKind,
         ["sessionId"] = SessionId,
         ["requestId"] = RequestId,
         ["snapshotToken"] = SnapshotToken,
@@ -306,7 +312,7 @@ internal sealed class WoundRepairPacket
         JsonObject? correctedDecision,
         string? finalSceneText)
     {
-        if (correctedDecision is null ||
+        if (CandidateKind == "author_alternative_treatment" || correctedDecision is null ||
             correctedDecision.Count != 4 ||
             correctedDecision.Any(static pair => pair.Key is not
                 ("opportunityRef" or "decision" or "woundRef" or "proposal")) ||
@@ -473,7 +479,11 @@ internal static partial class WoundRepairPacketBuilder
             "sourceSeal",
             "carrierPath",
             "authorityFingerprint",
-            "gmPrivateNotes"
+            "gmPrivateNotes",
+            "operationKey", "expectedBeforeFingerprint", "expectedAfterFingerprint",
+            "requestAuthorityFingerprint", "routeFingerprint", "diagnosisPathFingerprint",
+            "evidenceAuthorityFingerprint", "requirementAuthorityFingerprint",
+            "checkResultFingerprint", "resultFingerprint"
         },
         StringComparer.OrdinalIgnoreCase);
 
@@ -502,7 +512,7 @@ internal static partial class WoundRepairPacketBuilder
         IEnumerable<ValidationIssue> issues)
     {
         var snapshot = issues?.ToArray() ?? Array.Empty<ValidationIssue>();
-        return snapshot.Any(IsRepairableIssue) && !TryBuild(snapshot, out _);
+        return snapshot.Any(IsWoundRepairCandidateIssue) && !TryBuild(snapshot, out _);
     }
 
     private static bool TryBuild(
@@ -510,12 +520,12 @@ internal static partial class WoundRepairPacketBuilder
         out IReadOnlyList<WoundRepairPacket> packets)
     {
         packets = Array.Empty<WoundRepairPacket>();
-        var repairable = issues.Where(IsRepairableIssue).ToArray();
+        var repairable = issues.Where(IsWoundRepairCandidateIssue).ToArray();
         if (repairable.Length == 0)
             return true;
         if (repairable.Any(static issue => issue.WoundRepairContext is null) ||
             issues.Any(static issue =>
-                issue.WoundRepairContext is not null && !IsRepairableIssue(issue)))
+                issue.WoundRepairContext is not null && !IsWoundRepairCandidateIssue(issue)))
         {
             return false;
         }
@@ -559,7 +569,8 @@ internal static partial class WoundRepairPacketBuilder
                     issue.Message,
                     issue.Code,
                     issue.Actor,
-                    "wound_materialization",
+                    issue.WoundRepairContext!.Kind == "author_alternative_treatment"
+                        ? issue.Section : "wound_materialization",
                     issue.Expected,
                     issue.Actual,
                     issue.RepairHint,
@@ -601,6 +612,14 @@ internal static partial class WoundRepairPacketBuilder
              "wound_response",
              StringComparison.OrdinalIgnoreCase));
 
+    private static bool IsWoundRepairCandidateIssue(ValidationIssue issue) =>
+        IsRepairableIssue(issue) || (issue.Severity == IssueSeverity.Error &&
+            (issue.Section == "wound_treatment_authorings" ||
+             issue.WoundRepairContext?.Kind == "author_alternative_treatment"));
+
+    internal static bool IsSupportedLiveRepairPacketKind(string? candidateKind) =>
+        candidateKind is "construct_wound" or "repair_wound" or "narrate_acquisition";
+
     private static bool TryBuild(
         WoundRepairBuildRequest? request,
         out IReadOnlyList<WoundRepairPacket> packets)
@@ -625,7 +644,8 @@ internal static partial class WoundRepairPacketBuilder
             {
                 return false;
             }
-            result.Add(packet);
+            if (packet is not null)
+                result.Add(packet);
         }
 
         packets = result.ToArray();
@@ -645,8 +665,13 @@ internal static partial class WoundRepairPacketBuilder
             (candidate.OpportunityAuthorityFingerprint is not null &&
              !ResourceMaterializationContract.IsAuthorityFingerprint(
                  candidate.OpportunityAuthorityFingerprint)) ||
-            !Exact(candidate.OpportunityRef) ||
-            !ValidAllowedDecisions(candidate.AllowedDecisions) ||
+            !Exact(candidate.OpportunityRef))
+        {
+            return false;
+        }
+        if (candidate.Kind == "author_alternative_treatment")
+            return TryBuildAlternativePacket(request, candidate, out packet);
+        if (!ValidAllowedDecisions(candidate.AllowedDecisions) ||
             !TrySeverityRank(candidate.MinimumSeverity, out var minimumSeverity) ||
             !TrySeverityRank(candidate.MaximumSeverity, out var maximumSeverity) ||
             minimumSeverity > maximumSeverity ||
@@ -731,7 +756,8 @@ internal static partial class WoundRepairPacketBuilder
             preservedProposal,
             requiredResponseShape,
             rejectedDecision,
-            candidate.OpportunityAuthorityFingerprint);
+            candidate.OpportunityAuthorityFingerprint,
+            candidate.Kind);
         return true;
     }
 

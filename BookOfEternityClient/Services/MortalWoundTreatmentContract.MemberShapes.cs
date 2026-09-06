@@ -50,7 +50,7 @@ internal static partial class MortalWoundTreatmentContract
             if (issues.Count == 0)
             {
                 var diagnosis = WoundMaterializationContract.ReadDiagnosisPath(value, path, issues);
-                if (diagnosis is not null)
+                if (diagnosis is not null && issues.Count == 0)
                 {
                     ValidateDiagnosisPath(diagnosis, path, routeIds: null, complicationIds: null, issues);
                     if (issues.Count == 0)

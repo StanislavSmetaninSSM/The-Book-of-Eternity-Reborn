@@ -300,6 +300,13 @@ internal static class MortalWoundTreatmentPersistedRequestCatalog
                 path));
             return binding;
         }
+        if (hasRepairWave && packets.EnumerateArray().Any(packet =>
+                !WoundRepairPacketBuilder.IsSupportedLiveRepairPacketKind(packet.GetProperty("candidateKind").GetString())))
+        {
+            issues.Add(PersistenceIssue("mortal_wound_treatment_persisted_pending_invalid",
+                "private alternative repair authority", path));
+            return binding;
+        }
         if (!hasSubmitted)
             return binding;
         if (submitted.ValueKind != JsonValueKind.Array ||
@@ -2711,6 +2718,9 @@ internal static partial class WoundRepairPacketBuilder
             throw new InvalidOperationException(
                 "A pending repair root requires one strictly parsed command root.");
         }
+        if (packetArray.Any(packet => !IsSupportedLiveRepairPacketKind(packet.CandidateKind)))
+            throw new InvalidOperationException(
+                "wound_repair_alternative_adapter_unavailable: private alternative repair authority is required.");
         if (parsedCommand.AcceptedTransitionCommands.Count != 0)
             throw new InvalidOperationException(
                 "wound_command_transition_adapter_unavailable: diagnosis/alternative commands require their fresh accepted-world adapter.");
