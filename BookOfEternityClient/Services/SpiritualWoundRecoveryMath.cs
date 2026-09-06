@@ -3,6 +3,7 @@ namespace BookOfEternityClient.Services;
 internal readonly record struct SpiritualRecoveryCalculationInput(
     int HealingTier, int SeverityRank, long CurrentStepProgress);
 
+// Numeric diagnostics only: not an accepted cycle, tick seal or wound authority.
 internal sealed record SpiritualRecoveryCalculation(
     SpiritualRecoveryCalculationInput Input,
     int PointsAdded,
