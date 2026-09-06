@@ -244,7 +244,7 @@ confusable unique; selection stays exact, never fuzzy or by display name. This i
 not a new diagnosis command or a successful diagnosis result. The matching route
 in the worked example is already `ashglass_clean_and_bind`.
 
-- [ ] **Step 1: Add the documentation/example RED guard**
+- [x] **Step 1: Add the documentation/example RED guard**
 
 Add one deterministic source/documentation test in the existing Wounds partial that
 checks the guide marker `wound_mortal_diagnosis_identity_v1`, its explicit exact and
@@ -303,7 +303,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 Expected: new guard fails because marker and paths are absent; clean build.
 
-- [ ] **Step 2: Synchronize the guide and existing worked example**
+- [x] **Step 2: Synchronize the guide and existing worked example**
 
 Add the guide section `## wound_mortal_diagnosis_identity_v1` with this rule:
 
@@ -346,7 +346,7 @@ the existing complete example ID, selected skill, consequence, route mechanics a
 manifest registration unchanged. Both examination descriptions are setting-specific
 examples, not a universal wound or diagnosis catalog.
 
-- [ ] **Step 3: Verify guide and complete worked constructor**
+- [x] **Step 3: Verify guide and complete worked constructor**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~PromptDocumentationCoverageTests.WoundDiagnosisIdentityDocumentation|FullyQualifiedName~PromptDocumentationCoverageTests.WoundRollScopeDocumentation|FullyQualifiedName~PromptDocumentationCoverageTests.WoundMaterializationContract"
@@ -361,3 +361,13 @@ changes: their existing shared guide routing remains valid. No extra FullValidat
 is required solely for this Mortal-only documentation clarification. Report clean
 RED/GREEN evidence and commit only owned files:
 `docs(wounds): clarify exact diagnosis path identities (#1536)`.
+
+**Task 2 checkpoint:** `59e9d74a..a6ff984c`, independently Approved,
+0 Critical/Important/Minor. Parent inspected the full three-file diff and actual
+3/3 documentation (`20260906-100529-701-16084-ebab65abdfae43298564bbf91d577f8f-focused`)
+and 3/3 complete example/manifest (`20260906-100547-999-28716-5ac981642eab490fbad70aa85e65aad6-focused`)
+summaries/logs: clean build/cleanup, no timeout/duplicates/skips. The initial missing
+marker RED and intermediate line-wrap RED are retained in the report; assertions were
+not weakened. The guide, worked complete Mortal constructor and existing manifest
+route are synchronized. No afterlife contract or daemon routing changed. This bounded
+plan is complete; T070/T177/#1536 and fresh command/publication work remain open.

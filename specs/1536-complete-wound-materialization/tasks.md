@@ -1448,6 +1448,14 @@ entrypoints require no update for T065.
   parsing. These must not invent missing severity/owner/policy or weaken full-wound
   checks. Accepted commands, GM authoring/repair and fresh publication remain later
   required contours; neither T070 nor T177 nor #1536 is complete.
+  Diagnosis identity GM synchronization checkpoint: `a6ff984c`, independent
+  spec/quality Approved, 0 Critical/Important/Minor. Guide, exact worked Mortal
+  constructor and source guard are synchronized; owning documentation 3/3
+  (`20260906-100529-701-16084-ebab65abdfae43298564bbf91d577f8f-focused`) and complete
+  constructor/manifest 3/3 (`20260906-100547-999-28716-5ac981642eab490fbad70aa85e65aad6-focused`)
+  pass with clean build/cleanup and no timeout/duplicates/skips. The alternative
+  reducer plan's Tasks 1/2 are complete. Proceed to standalone member-shapes Task 1;
+  afterlife schema/matrix/prompt routing are unchanged and do not need updates here.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
