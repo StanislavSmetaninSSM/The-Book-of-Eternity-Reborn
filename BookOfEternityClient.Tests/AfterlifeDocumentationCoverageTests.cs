@@ -13,6 +13,19 @@ namespace BookOfEternityClient.Tests;
 public sealed class AfterlifeDocumentationCoverageTests
 {
     [Fact]
+    public void WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment()
+    {
+        foreach (var text in new[] { ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+                     ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt") })
+        {
+            foreach (var invariant in new[] { "suppression is not wound healing", "new runtime effect identity",
+                         "exact old canonical root", "terminal history remains unchanged", "no missing-carrier fallback",
+                         "does not enable spiritual treatment" })
+                Assert.Contains(invariant, text, StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    [Fact]
     public void WoundRepairTransport_RequiresKindWithoutEnablingMortalAlternatives()
     {
         foreach (var text in new[] { ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),

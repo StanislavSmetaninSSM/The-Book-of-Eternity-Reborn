@@ -11,6 +11,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
     private readonly MortalWoundTreatmentSeverityReductionProjection? _severityReduction;
     private readonly ImmutableArray<IntentSeal> _intentSeals;
     private readonly SelectionSeal _selection;
+    private readonly string _treatmentEventRef;
 
     internal MortalWoundTreatmentOutcomePreparation(
         WoundMaterializationEnvelope before,
@@ -42,6 +43,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         CurrentGameMinute = currentGameMinute;
         Fingerprint = fingerprint;
         _selection = SelectionSeal.From(resolution);
+        _treatmentEventRef = resolution.Coordinates.EventRef;
     }
 
     internal WoundMaterializationEnvelope Before =>
@@ -68,6 +70,7 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         _severityReduction = CloneProjection(source._severityReduction);
         _intentSeals = source._intentSeals;
         _selection = source._selection;
+        _treatmentEventRef = source._treatmentEventRef;
         TransitionId = source.TransitionId;
         RequestFingerprint = source.RequestFingerprint;
         ResultFingerprint = source.ResultFingerprint;
@@ -81,11 +84,20 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
 
     internal MortalWoundTreatmentOutcomePreparation DetachedCopy() => new(this);
 
+    internal string GetTreatmentEventRef() => _treatmentEventRef;
+
+    internal string[] GetOrderedRemovalIds() => _intentSeals
+        .Where(static seal => seal.Kind == "remove_complication")
+        .Select(static seal => seal.ComplicationId!)
+        .ToArray();
+
     internal bool AgreesWith(MortalWoundTreatmentResolution resolution)
     {
         if (!MortalWoundTreatmentOutcomePublicationPlanner.DetachedSelectionAgrees(
                 resolution, CurrentGameMinute) ||
             _selection != SelectionSeal.From(resolution) ||
+            !string.Equals(_treatmentEventRef, resolution.Coordinates.EventRef,
+                StringComparison.Ordinal) ||
             !CanonicalWoundsEqual(_before, resolution.RequestAuthority.RouteSourceWound) ||
             !string.Equals(RequestFingerprint, resolution.RequestFingerprint,
                 StringComparison.Ordinal) ||
@@ -250,7 +262,8 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
         string DeclaredOperationFingerprint,
         string IntentFingerprint,
         int? ReductionSteps,
-        int? RecoveryPoints)
+        int? RecoveryPoints,
+        string? ComplicationId)
     {
         internal static IntentSeal From(MortalWoundTreatmentOutcomeIntent intent) => new(
             intent.OperationOrdinal,
@@ -258,7 +271,8 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
             intent.DeclaredOperationFingerprint,
             intent.IntentFingerprint,
             (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps,
-            (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points);
+            (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points,
+            (intent as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId);
 
         internal bool AgreesWith(MortalWoundTreatmentOutcomeIntent intent) =>
             OperationOrdinal == intent.OperationOrdinal &&
@@ -269,7 +283,10 @@ internal sealed class MortalWoundTreatmentOutcomePreparation
                 StringComparison.Ordinal) &&
             ReductionSteps ==
                 (intent as MortalWoundReduceSeverityOutcomeIntent)?.Steps &&
-            RecoveryPoints == (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points;
+            RecoveryPoints == (intent as MortalWoundAddRecoveryOutcomeIntent)?.Points &&
+            string.Equals(ComplicationId,
+                (intent as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId,
+                StringComparison.Ordinal);
 
     }
 
@@ -317,6 +334,9 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         "book_of_eternity.mortal_wound_treatment.outcome_preparation";
     private const string PublicationDomain =
         "book_of_eternity.mortal_wound_treatment.outcome_publication";
+
+    internal static bool RequiresEffectBatch(MortalWoundTreatmentOutcomePreparation preparation) =>
+        preparation.SeverityReduction is not null || preparation.GetOrderedRemovalIds().Length != 0;
 
     internal static MortalWoundTreatmentOutcomePublicationResult Compose(
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
@@ -375,6 +395,8 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                     case MortalWoundStabilizeOutcomeIntent:
                         break;
                     case MortalWoundAddRecoveryOutcomeIntent:
+                        break;
+                    case MortalWoundRemoveComplicationOutcomeIntent:
                         break;
                     case MortalWoundReduceSeverityOutcomeIntent reduction:
                         aggregateReductionSteps = checked(
@@ -508,7 +530,11 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         }
         else
         {
-            if (rematerializationBatch is not null || applicationByRef.Count != 0)
+            var requiresRemovalBatch = RequiresEffectBatch(preparation);
+            if (applicationByRef.Count != 0 ||
+                (requiresRemovalBatch
+                    ? rematerializationBatch is null || !RemovalEffectHandoffAgrees(preparation, rematerializationBatch)
+                    : rematerializationBatch is not null))
             {
                 return Invalid(new[]
                 {
@@ -556,6 +582,29 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
             Array.Empty<ValidationIssue>());
     }
 
+    private static bool RemovalEffectHandoffAgrees(
+        MortalWoundTreatmentOutcomePreparation preparation,
+        WoundEffectOperationBatch batch)
+    {
+        var after = preparation.ProvisionalAfter;
+        var source = batch.SourceExport;
+        var definitions = after.Consequences.OwnedEffectSources.Definitions;
+        return batch.RootApplications.Count == 0 &&
+            string.Equals(batch.PreparedWoundId, after.WoundId, StringComparison.Ordinal) &&
+            source.Kind == "wound" && source.State == "active" && !source.Materializable &&
+            source.Owner == after.Owner && source.Realm == after.Owner.Realm &&
+            string.Equals(source.SourceId, after.WoundId, StringComparison.Ordinal) &&
+            string.Equals(source.SourceRef, batch.LocalWoundRef, StringComparison.Ordinal) &&
+            string.Equals(source.CausalEventRef, preparation.GetTreatmentEventRef(), StringComparison.Ordinal) &&
+            string.Equals(batch.SourceExportFingerprint,
+                WoundAcceptedTurnFingerprints.ComputeSourceExport(batch), StringComparison.Ordinal) &&
+            source.Definitions.Count == definitions.Count &&
+            source.Definitions.Zip(definitions).All(static pair => string.Equals(
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(pair.First.Definition),
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(JsonNode.Parse(pair.Second.GetRawText())),
+                StringComparison.Ordinal));
+    }
+
     private static bool ReductionEffectHandoffAgrees(
         MortalWoundTreatmentOutcomePreparation preparation,
         WoundEffectOperationBatch batch,
@@ -586,7 +635,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         }
 
         var exportedDefinitions = batch.SourceExport.Definitions;
-        var sealedDefinitions = preparation.Before.Consequences
+        var sealedDefinitions = projection.Before.Consequences
             .OwnedEffectSources.Definitions;
         if (exportedDefinitions.Count != sealedDefinitions.Count)
             return false;
@@ -752,12 +801,13 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
         var fields = new List<string?>
         {
             PreparationDomain,
-            "3",
+            "4",
             WoundMaterializationContract.SerializeCanonical(before),
             WoundMaterializationContract.SerializeCanonical(provisionalAfter),
             resolution.RequestFingerprint,
             resolution.ResultFingerprint,
             resolution.ResolutionAuthorityFingerprint,
+            resolution.Coordinates.EventRef,
             resolution.Mode,
             resolution.AttemptDisposition,
             resolution.Interruption.ToString(CultureInfo.InvariantCulture),
@@ -787,6 +837,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 .ToString(CultureInfo.InvariantCulture));
             fields.Add((intent as MortalWoundAddRecoveryOutcomeIntent)?.Points
                 .ToString(CultureInfo.InvariantCulture));
+            fields.Add((intent as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId);
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
@@ -938,7 +989,10 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 (left as MortalWoundReduceSeverityOutcomeIntent)?.Steps !=
                 (right as MortalWoundReduceSeverityOutcomeIntent)?.Steps ||
                 (left as MortalWoundAddRecoveryOutcomeIntent)?.Points !=
-                (right as MortalWoundAddRecoveryOutcomeIntent)?.Points)
+                (right as MortalWoundAddRecoveryOutcomeIntent)?.Points ||
+                !string.Equals((left as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId,
+                    (right as MortalWoundRemoveComplicationOutcomeIntent)?.ComplicationId,
+                    StringComparison.Ordinal))
             {
                 return false;
             }
@@ -981,6 +1035,9 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                     if (++stabilizations > 1) return false;
                     break;
                 case MortalWoundAddRecoveryOutcomeIntent recovery when recovery.Points > 0:
+                    break;
+                case MortalWoundRemoveComplicationOutcomeIntent removal
+                    when ResourceMaterializationContract.IsExactIdentifier(removal.ComplicationId):
                     break;
                 case MortalWoundReduceSeverityOutcomeIntent reduction
                     when reduction.Steps is >= 1 and <= 2:
@@ -1078,6 +1135,12 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                             scalarAfter.Recovery.CurrentStepProgress + recovery.Points)
                     }
                 };
+            }
+            else if (intent is MortalWoundRemoveComplicationOutcomeIntent removal)
+            {
+                if (!MortalWoundTreatmentWorkingWoundSimulator.TryRemoveComplication(
+                        scalarAfter, removal.ComplicationId, out scalarAfter))
+                    throw new InvalidOperationException("The exact selected complication is not applicable.");
             }
         }
         return scalarAfter;

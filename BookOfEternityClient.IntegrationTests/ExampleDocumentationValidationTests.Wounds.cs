@@ -142,11 +142,15 @@ public sealed partial class ExampleDocumentationValidationTests
         var decision = Assert.IsType<JsonObject>(Assert.Single(
             response["woundDecisions"]!.AsArray()));
         var proposal = Assert.IsType<JsonObject>(decision["proposal"]);
+        Assert.Equal(scopeKind == "skill" ? 2 : 1, proposal["consequenceDefinitions"]!.AsArray().Count);
+        var originalRef = scopeKind == "skill" ? "ashglass_lockpicking_hindrance_local" : "bell_contusion_hindrance_local";
+        var originalComponent = scopeKind == "skill" ? "ashglass_lockpicking_roll" : "bell_contusion_roll";
         var wrapper = Assert.IsType<JsonObject>(Assert.Single(
-            proposal["consequenceDefinitions"]!.AsArray()));
+            proposal["consequenceDefinitions"]!.AsArray(), row => row!["definitionRef"]!.GetValue<string>() == originalRef));
         var definition = Assert.IsType<JsonObject>(wrapper["definition"]);
         var components = Assert.IsType<JsonArray>(definition["components"]);
         var component = Assert.IsType<JsonObject>(Assert.Single(components));
+        Assert.Equal(originalComponent, component["componentId"]!.GetValue<string>());
         Assert.Equal("roll_modifier", component["profile"]!.GetValue<string>());
         Assert.Equal(scopeKind, component["payload"]!["scope"]!["kind"]!.GetValue<string>());
         Assert.Equal("skill_check", Assert.Single(
@@ -173,6 +177,63 @@ public sealed partial class ExampleDocumentationValidationTests
             composed.Transitions, skillAuthority, out var locations);
         Assert.Empty(scopeIssues);
         Assert.NotNull(locations);
+
+        if (scopeKind == "skill")
+        {
+            Assert.DoesNotContain("\"complicationId\"", response.ToJsonString(), StringComparison.Ordinal);
+            var transition = Assert.Single(composed.Transitions);
+            var proposedComplication = Assert.Single(transition.ProposedAfter.Complications);
+            Assert.Single(transition.RootApplications, root => root.OwnershipDomain == WoundRootOwnershipDomain.BaseWound);
+            Assert.Equal(proposedComplication.ComplicationId, Assert.Single(transition.RootApplications,
+                root => root.OwnershipDomain.Kind == "complication").OwnershipDomain.ComplicationId);
+            var input = WoundAcceptedTurnTestFixture.CreateDefaultInput() with
+            {
+                Binding = binding, Opportunities = new[] { opportunity }, Transitions = composed.Transitions
+            };
+            var preparation = WoundAcceptedTurnPlanner.Prepare(input);
+            Assert.True(preparation.Success, DescribeRollScopeExampleIssues(preparation.Issues));
+            var prepared = Assert.IsType<WoundPreparedAcceptedTurnPlan>(preparation.Plan);
+            var effects = WoundEffectBatchPlanner.Build(prepared,
+                WoundAcceptedTurnTestFixture.CreateEffectInput(prepared) with
+                {
+                    SkillScopeAuthority = skillAuthority,
+                    WoundApplicationLocations = locations!.BindPreparedSources(prepared)
+                },
+                new EffectIdentityFactory());
+            Assert.True(effects.Success, string.Join(Environment.NewLine,
+                effects.Issues.Select(issue => $"{issue.Code}: {issue.FilePath}: {issue.Expected}: {issue.Actual}")));
+            var finalized = WoundAcceptedTurnPlanner.Finalize(prepared, effects);
+            Assert.True(finalized.Success, DescribeRollScopeExampleIssues(finalized.Issues));
+            var wound = Assert.IsType<WoundMaterializationEnvelope>(Assert.Single(
+                Assert.Single(finalized.Plan!.CarrierContributions).Mutations).AfterWound);
+            var complication = Assert.Single(wound.Complications);
+            var treatment = MortalWoundTreatmentContract.ParseProjection(wound.Treatment,
+                "example.treatment", wound.Owner.Realm, "player", wound.Severity.Rank,
+                wound.Complications, wound.Recovery.DeteriorationPolicy);
+            Assert.True(treatment.IsValid, DescribeRollScopeExampleIssues(treatment.Issues));
+            var route = Assert.IsType<MortalWoundProcedureRouteDefinition>(Assert.Single(treatment.Treatment!.Routes));
+            var success = Assert.Single(route.Bands, band => band.Category == "success");
+            Assert.Equal(complication.ComplicationId,
+                Assert.IsType<MortalWoundRemoveComplicationOperation>(success.DeclaredResult[0]).ComplicationId);
+            Assert.IsType<MortalWoundStabilizeOperation>(success.DeclaredResult[1]);
+            Assert.Equal(2, wound.Consequences.OwnedEffectSources.RootBindings.Count);
+            var complicationRoot = Assert.Single(complication.OwnedEffectIds);
+            var baseRoot = Assert.Single(wound.Consequences.OwnedEffectSources.RootBindings,
+                root => root.EffectId != complicationRoot);
+            Assert.Equal("ashglass-lockpicking-hindrance", baseRoot.DefinitionKey);
+            Assert.Equal("ashglass-fragment-grip-limit", Assert.Single(
+                wound.Consequences.OwnedEffectSources.RootBindings, root => root.EffectId == complicationRoot).DefinitionKey);
+            var simulated = MortalWoundTreatmentWorkingWoundSimulator.Simulate(wound,
+                new[] { success.DeclaredResult });
+            Assert.True(simulated.IsApplicable);
+            Assert.True(simulated.Improved);
+            var after = Assert.IsType<WoundMaterializationEnvelope>(simulated.WorkingWound);
+            Assert.Empty(after.Complications);
+            Assert.Equal(baseRoot, Assert.Single(after.Consequences.OwnedEffectSources.RootBindings));
+            Assert.Equal(1, Assert.Single(after.Consequences.Entries).Slot);
+            Assert.Equal("stabilized", after.Care.State);
+            Assert.DoesNotContain("not_stabilized", after.Recovery.Blockers);
+        }
 
         Assert.Contains(proposal["display"]!["acquisitionNarration"]!.GetValue<string>(),
             scene, StringComparison.Ordinal);

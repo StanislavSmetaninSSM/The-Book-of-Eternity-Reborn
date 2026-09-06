@@ -2,6 +2,19 @@ CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
 
 Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
 
+WOUND-OWNED GENERATION — CLIENT LIFECYCLE EXAMPLE
+Suppression is not wound healing. Suppose a Guardian's wound-owned hindrance is
+dispelled: its carrier disappears, but its wound root binding and slot remain.
+Only a separately authorized wound transition may rematerialize the retained legal
+coordinate as a new runtime effect identity. Its sole first-create parent is the
+exact old canonical root; terminal history remains unchanged, and the old dispelled
+identity is never revived. The client checks complete lineage, exact definition-derived
+owner/source/target/stack authority, and zero carriers for the terminal root: there is
+no missing-carrier fallback. If no such transition is authorized, the wound remains
+untreated and the effect stays terminal. This does not enable spiritual treatment or
+any still-pending healing art. These are client-owned lifecycle steps, not a GM output
+schema: author no runtime IDs, historical parents, new pending fields, or history rows.
+
 This file supplements:
 - CLI_Agent_Daemon_Specification.md
 - TaskGuides/CLI_Step_Main.txt

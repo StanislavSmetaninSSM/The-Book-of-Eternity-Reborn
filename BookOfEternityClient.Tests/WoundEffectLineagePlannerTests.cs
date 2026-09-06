@@ -268,6 +268,90 @@ public sealed partial class WoundEffectLineagePlannerTests
             "accepted_mechanics_wound_lineage_identity_authority_mismatch");
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void TerminalGeneration_ContextRetainsCurrentRootAcrossHistoricalSpine(int retiredGenerations)
+    {
+        var wound = CreateLineageWound();
+        var identities = CreateGenerationIdentities(retiredGenerations,
+            configure: (entries, _) => SetState(entries[0], "removed", 0));
+        var context = new WoundRootGenerationAuthority(wound,
+            EffectCarrierCatalog.Build(CreatePlayerCarriers(CreateEffect(ChildEffectId, ChildDefinitionKey))), identities);
+        var definition = JsonNode.Parse(wound.Consequences.OwnedEffectSources.Definitions
+            .Single(row => row.GetProperty("definitionKey").GetString() == RootDefinitionKey).GetRawText())!.AsObject();
+        Assert.True(WoundEffectCarrierAdapter.TryCreateTargetKey(wound.Owner, out var target));
+        Assert.True(WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(wound.Owner, target, definition, out var coordinate));
+        Assert.Empty(context.Issues);
+        Assert.True(context.Agrees(RootEffectId, new EffectSourceKey("mortal_world", "wound", WoundId, RootDefinitionKey),
+            target, coordinate, definition, WoundRootOwnershipDomain.ForComplication(ComplicationId)));
+        Assert.True(context.IsTerminalRoot(RootEffectId));
+        Assert.False(context.IsTerminalRoot(ChildEffectId));
+    }
+
+    [Theory]
+    [InlineData("child")]
+    [InlineData("retired_root")]
+    [InlineData("domain")]
+    [InlineData("source_realm")]
+    [InlineData("source_kind")]
+    [InlineData("source_id")]
+    [InlineData("definition_key")]
+    [InlineData("target_realm")]
+    [InlineData("target_kind")]
+    [InlineData("target_id")]
+    [InlineData("carrier_kind")]
+    [InlineData("carrier_owner")]
+    [InlineData("carrier_path")]
+    [InlineData("carrier_category")]
+    [InlineData("definition_stack")]
+    [InlineData("terminal_carrier")]
+    [InlineData("cycle")]
+    [InlineData("multi_parent")]
+    [InlineData("retired_active")]
+    public void TerminalGeneration_ContextRejectsBorrowedOrChangedAuthority(string mutation)
+    {
+        var wound = CreateLineageWound();
+        var identities = CreateGenerationIdentities(2, configure: (entries, _) =>
+        {
+            SetState(entries[0], "removed", 0);
+            if (mutation == "cycle") ConfigureCreate(entries[2], 20, new[] { "effect_wound_lineage_generation_2" });
+            if (mutation == "multi_parent") ConfigureCreate(entries[0], 0,
+                new[] { "effect_wound_lineage_generation_1", "effect_wound_lineage_generation_2" });
+            if (mutation == "retired_active")
+            {
+                entries[2]["state"] = "active";
+                entries[2]["transitions"]!.AsArray().RemoveAt(1);
+            }
+        });
+        var carriers = mutation == "terminal_carrier"
+            ? CreatePlayerCarriers(CreateEffect(RootEffectId, RootDefinitionKey), CreateEffect(ChildEffectId, ChildDefinitionKey))
+            : CreatePlayerCarriers(CreateEffect(ChildEffectId, ChildDefinitionKey));
+        var context = new WoundRootGenerationAuthority(wound, EffectCarrierCatalog.Build(carriers), identities);
+        var definition = JsonNode.Parse(wound.Consequences.OwnedEffectSources.Definitions
+            .Single(row => row.GetProperty("definitionKey").GetString() == RootDefinitionKey).GetRawText())!.AsObject();
+        Assert.True(WoundEffectCarrierAdapter.TryCreateTargetKey(wound.Owner, out var target));
+        Assert.True(WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(wound.Owner, target, definition, out var coordinate));
+        var source = new EffectSourceKey("mortal_world", "wound", WoundId, RootDefinitionKey);
+        if (mutation == "source_realm") source = source with { Realm = "chaos_sea" };
+        if (mutation == "source_kind") source = source with { Kind = "skill" };
+        if (mutation == "source_id") source = source with { SourceId = "wound_foreign" };
+        if (mutation == "definition_key") source = source with { DefinitionKey = ChildDefinitionKey };
+        if (mutation == "target_realm") target = target with { Realm = "chaos_sea" };
+        if (mutation == "target_kind") target = target with { Kind = "npc" };
+        if (mutation == "target_id") target = target with { TargetId = "player_foreign" };
+        if (mutation == "carrier_kind") coordinate = coordinate with { Kind = "npc" };
+        if (mutation == "carrier_owner") coordinate = coordinate with { OwnerId = "player_foreign" };
+        if (mutation == "carrier_path") coordinate = coordinate with { Path = EffectCarrierCatalog.NpcPath };
+        if (mutation == "carrier_category") coordinate = coordinate with { Category = "buff" };
+        if (mutation == "definition_stack") definition["stacking"]!["stackKey"] = "stack_foreign";
+        Assert.False(context.Agrees(mutation == "child" ? ChildEffectId : mutation == "retired_root"
+                ? "effect_wound_lineage_generation_1" : RootEffectId,
+            source, target, coordinate, definition, mutation == "domain"
+                ? WoundRootOwnershipDomain.BaseWound : WoundRootOwnershipDomain.ForComplication(ComplicationId)), mutation);
+    }
+
     [Fact]
     public void Plan_CurrentRootWithAuthenticatedRetiredGeneration_IsAccepted()
     {

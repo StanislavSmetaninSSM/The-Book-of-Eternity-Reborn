@@ -1167,8 +1167,8 @@ internal static class WoundAcceptedTurnPlannerCore
             stage = "transition_reduction";
             var before = matches[0].Wound;
             var coordinates = continuation.Resolution.Coordinates;
-            var reductionBatch = continuation.OutcomePreparation
-                .SeverityReduction is null
+            var reductionBatch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
+                continuation.OutcomePreparation)
                 ? null
                 : prepared.EffectOperationBatches.Single();
             var applicationByRef = new Dictionary<
@@ -2653,6 +2653,12 @@ internal static class WoundAcceptedTurnPlannerCore
                 input.PreTurnEffectCarriers is null
                     ? null
                     : EffectCarrierCatalog.Build(input.PreTurnEffectCarriers);
+            var generationAuthority = candidate.BeforeWound is not null &&
+                priorEffectCatalog is not null && effectIdentities is not null
+                    ? new WoundRootGenerationAuthority(candidate.BeforeWound, priorEffectCatalog, effectIdentities)
+                    : null;
+            if (generationAuthority is { Issues.Count: > 0 })
+                return new PreparedCandidateResult(null, null, generationAuthority.Issues);
             for (var rootIndex = 0; rootIndex < candidate.Graph.Roots.Count; rootIndex++)
             {
                 var root = candidate.Graph.Roots[rootIndex];
@@ -2678,17 +2684,18 @@ internal static class WoundAcceptedTurnPlannerCore
                     root.Draft.OwnershipDomain.Kind,
                     root.Draft.OwnershipDomain.ComplicationId), out var priorRootEffectId);
                 if (priorRootEffectId is not null &&
-                    (priorEffectCatalog is null ||
-                     effectIdentities is null ||
-                     !PriorRootHasExactGenerationAuthority(
+                    (generationAuthority is null ||
+                     !generationAuthority.Agrees(
                          priorRootEffectId,
                          sourceKey,
                          targetKey,
                          carrierCoordinate,
                          definitionJson,
-                         priorEffectCatalog,
-                         effectIdentities)))
+                         root.Draft.OwnershipDomain)))
                 {
+                    if (generationAuthority?.IsTerminalRoot(priorRootEffectId) == true)
+                        return FailedPreparedCandidate(
+                            "A retained terminal root has no exact canonical generation authority.", priorRootEffectId);
                     priorRootEffectId = null;
                 }
                 applications.Add(new WoundRootEffectApplication(

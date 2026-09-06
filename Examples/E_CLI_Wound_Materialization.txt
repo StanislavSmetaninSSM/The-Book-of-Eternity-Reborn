@@ -5,6 +5,15 @@
 </description>
 <content><![CDATA[
 
+Client lifecycle example: independently dispelling the cut's roll hindrance removes
+its carrier, not its wound root binding or consequence slot; suppression is not wound
+healing. If an already authorized severity-reduction treatment retains that coordinate,
+the client creates a NEW runtime effect identity with the exact old canonical root as
+its sole first-create parent. The old dispelled identity and its complete terminal
+history remain unchanged. Full lineage and definition-derived coordinates must agree;
+there is no missing-carrier fallback. The GM never authors these IDs or parent rows.
+This lifecycle explanation does not enable spiritual treatment or a new healing art.
+
 ## wound_mortal_roll_scope_all_v1
 
 The accepted impact from a shard of the Ash Tower's bell has already produced a
@@ -262,8 +271,9 @@ exact target row, not inferred from a name or introduced by this response. The c
 must independently find the same usable permanent skill in the composed final state. One focused
 component consumes one consequence slot, with no extra charge for its selector.
 The required complete treatment route lets a provider with field-medicine capability
-clean and bind the ashglass cuts using one sterile dressing. Its success stabilizes
-the wound; partial and failed attempts make no improvement. Those provider requirements
+extract the ashglass shard and bind the cuts using one sterile dressing. Extraction retires
+the shard's grip restriction; stabilization permits recovery while the base cut's exact-skill
+hindrance remains. This is not full healing. Partial and failed attempts make no improvement. Those provider requirements
 must be satisfied from canonical authority during the later treatment attempt, and are
 not new skills granted to the player by this wound response. Recovery waits for accepted
 stabilization.
@@ -293,7 +303,16 @@ stabilization.
           "acquisitionNarration": "Золостекло режет подушечки правых пальцев, и вы роняете отмычку."
         },
         "severity": "II",
-        "complications": [],
+        "complications": [
+          {
+            "complicationRef": "ashglass_fragment_local",
+            "kind": "impairment",
+            "state": "active",
+            "displayName": "Осколок золостекла в порезе",
+            "treatmentDifficultyModifier": 1,
+            "visibility": "known_to_player"
+          }
+        ],
         "consequenceDefinitions": [
           {
             "definitionRef": "ashglass_lockpicking_hindrance_local",
@@ -359,6 +378,61 @@ stabilization.
                 {
                   "profileKey": "roll_modifier",
                   "readableSummary": "Помеха к проверкам навыка «Взлом» из-за порезов пальцев."
+                }
+              ]
+            }
+          },
+          {
+            "definitionRef": "ashglass_fragment_grip_limit_local",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "ashglass-fragment-grip-limit",
+              "display": {
+                "name": "Осколок мешает хвату",
+                "description": "Осколок в порезе ограничивает использование предметов повреждённой рукой.",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": ["mortal_world"],
+              "allowedTargetKinds": ["player"],
+              "components": [
+                {
+                  "componentId": "ashglass_fragment_grip_control",
+                  "profile": "action_control",
+                  "priority": 100,
+                  "payload": { "action": "use_item", "operation": "restrict" }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "wound_ashglass_fragment_grip_limit",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "source_bound",
+                "activePredicate": "active",
+                "onSourceLoss": "expire"
+              },
+              "triggers": [],
+              "removal": {
+                "dispelCategories": ["physical_restoration"],
+                "cureKinds": ["wound_treatment"],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": { "kind": "complication", "complicationRef": "ashglass_fragment_local" },
+              "slots": [
+                {
+                  "profileKey": "action_control",
+                  "readableSummary": "Осколок золостекла в порезе ограничивает хват при использовании предметов."
                 }
               ]
             }
@@ -436,7 +510,10 @@ stabilization.
                   "minimumMargin": 5,
                   "maximumMargin": null,
                   "category": "success",
-                  "result": [{ "kind": "stabilize" }]
+                  "result": [
+                    { "kind": "remove_complication", "complicationRef": "ashglass_fragment_local" },
+                    { "kind": "stabilize" }
+                  ]
                 },
                 {
                   "bandId": "ashglass_care_partial",
@@ -1437,7 +1514,7 @@ this course reduces severity II to I and stabilizes the wound, which remains act
 Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
-The remaining producers `heal`, `remove_complication`, `add_complication` and
+The remaining producers `heal`, `add_complication` and
 `apply_deterioration` are pending implementation; their approved authored contracts remain supported
 by the complete route model, but scalar publication does not pretend to execute them.
 

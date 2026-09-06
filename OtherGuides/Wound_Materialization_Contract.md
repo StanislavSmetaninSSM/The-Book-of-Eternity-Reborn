@@ -15,6 +15,16 @@ closed schema, the event-owned severity limit, registered mechanical primitives,
 all permanent identity and publication work. This is a direct schema-v1 technical
 cutover with no migration of non-empty legacy saves.
 
+Independently suppressing a wound-owned effect is not wound healing: its canonical
+root binding and slot remain even when its carrier is gone. On an already authorized
+wound transition, a retained legal coordinate rematerializes as a NEW runtime effect
+identity with the exact old canonical root as its sole first-create parent, including
+when that root is expired, dispelled, removed, or replaced. The complete terminal
+history remains unchanged. The client proves the full lineage and exact definition-
+derived owner/source/target/stack coordinates; missing carriers are not fallback
+authority. The GM authors neither runtime IDs nor historical parents. This shared
+rule grants no new spiritual treatment or still-pending healing art.
+
 ## wound_constructor_v1
 
 Read the client-authored opportunity before answering. Its `opportunityRef`, realm,
@@ -83,9 +93,22 @@ this course reduces severity II to I and stabilizes the wound, which remains act
 Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
-The remaining producers `heal`, `remove_complication`, `add_complication` and
+The remaining producers `heal`, `add_complication` and
 `apply_deterioration` are pending implementation; their approved authored contracts remain supported
 by the complete route model, but scalar publication does not pretend to execute them.
+
+Ordered `remove_complication` is published through the same atomic treatment/effect batch.
+The client selects the exact canonical complication ID and retires only its declared roots
+and their validated first-create generation/reaction descendants. Closure starts even at an
+already terminal root; terminal identities and their history remain. Unrelated roots and
+descendants retain their identities and payloads. An effectless complication still requires
+an authenticated zero-operation batch with exact retained-root lineage. Removal alone does
+not change severity, its last-change event, or natural-recovery anchors; an explicitly ordered
+severity reduction rematerializes only surviving root coordinates. The client alone rewrites
+same-proposal `complicationRef` into canonical ownership/removal identity.
+See `wound_mortal_roll_scope_skill_v1` in `Examples/E_CLI_Wound_Materialization.txt`:
+extracting the ashglass shard removes its grip restriction and stabilization enables recovery,
+while the base cut's exact-skill hindrance remains. This is not full healing.
 
 Врач проводит три этапа: первую перевязку без немедленного улучшения, ослабление раны через
 480 минут и стабилизацию через 960 минут. На каждом этапе расходуется одна текущая доза.

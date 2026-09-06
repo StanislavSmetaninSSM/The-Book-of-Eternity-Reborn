@@ -1859,6 +1859,53 @@ internal sealed class WoundEffectLineagePlanningResult
         Array.AsReadOnly(_issues.ToArray());
 }
 
+// One original-wound lineage pass per independent generation-planning stage.
+// Canonical root membership is stricter than membership in the historical source group.
+internal sealed class WoundRootGenerationAuthority
+{
+    private readonly WoundMaterializationEnvelope _before;
+    private readonly EffectCarrierCatalog _catalog;
+    private readonly EffectIdentityState _identities;
+    private readonly IReadOnlyDictionary<string, (string DefinitionKey, WoundRootOwnershipDomain Domain)> _roots;
+    internal WoundRootGenerationAuthority(WoundMaterializationEnvelope before,
+        EffectCarrierCatalog catalog, EffectIdentityState identities)
+    {
+        _before = before;
+        _catalog = catalog;
+        _identities = identities;
+        var lineage = WoundEffectLineagePlanner.Plan(before, identities);
+        Issues = catalog.Issues.Concat(lineage.Issues).ToArray();
+        var ownership = lineage.OwnershipByEffectId;
+        _roots = before.Consequences.OwnedEffectSources.RootBindings
+            .Where(root => ownership.ContainsKey(root.EffectId))
+            .ToDictionary(root => root.EffectId,
+                root => (root.DefinitionKey, ownership[root.EffectId]), StringComparer.Ordinal);
+    }
+
+    internal IReadOnlyList<ValidationIssue> Issues { get; }
+    internal bool IsTerminalRoot(string effectId) => _roots.ContainsKey(effectId) &&
+        _identities.TryGetEntry(effectId, out var identity) &&
+        identity.State is "expired" or "dispelled" or "removed" or "replaced";
+
+    internal bool Agrees(string effectId, EffectSourceKey expectedSource,
+        EffectTargetKey expectedTarget, EffectCarrierCoordinate expectedCarrier,
+        JsonObject definition, WoundRootOwnershipDomain domain)
+    {
+        if (Issues.Count != 0 || !_roots.TryGetValue(effectId, out var root) ||
+            root.Domain != domain || root.DefinitionKey != expectedSource.DefinitionKey ||
+            expectedSource != new EffectSourceKey(_before.Owner.Realm, "wound", _before.WoundId, root.DefinitionKey) ||
+            !_identities.TryGetEntry(effectId, out var identity))
+            return false;
+        if (identity.State is "active" or "suspended")
+            return WoundAcceptedTurnPlannerCore.PriorRootHasExactGenerationAuthority(
+                effectId, expectedSource, expectedTarget, expectedCarrier, definition, _catalog, _identities);
+        return IsTerminalRoot(effectId) &&
+            !_catalog.Occurrences.Any(row => string.Equals(row.EffectId, effectId, StringComparison.Ordinal)) &&
+            WoundEffectLineagePlanner.IdentityAuthorityAgrees(
+                _before, identity, definition, expectedTarget, expectedCarrier);
+    }
+}
+
 internal static class WoundEffectLineagePlanner
 {
     private const int MaxIssues = 20;
@@ -2305,18 +2352,27 @@ internal static class WoundEffectLineagePlanner
     private static bool IdentityAuthorityAgrees(
         WoundMaterializationEnvelope wound,
         EffectIdentityEntry identity,
-        WoundOwnedEffectDefinitionFact definitionFact)
+        WoundOwnedEffectDefinitionFact definitionFact) =>
+        JsonNode.Parse(definitionFact.CanonicalJson) is JsonObject definition &&
+        IdentityAuthorityAgrees(wound, identity, definition);
+
+    internal static bool IdentityAuthorityAgrees(
+        WoundMaterializationEnvelope wound,
+        EffectIdentityEntry identity,
+        JsonObject definition,
+        EffectTargetKey? suppliedTarget = null,
+        EffectCarrierCoordinate? suppliedCoordinate = null)
     {
         if (!WoundEffectCarrierAdapter.TryCreateTargetKey(
                 wound.Owner,
                 out var expectedTarget) ||
-            JsonNode.Parse(definitionFact.CanonicalJson) is not
-                JsonObject definition ||
             !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
                 wound.Owner,
                 expectedTarget,
                 definition,
                 out var expectedCoordinate) ||
+            suppliedTarget is not null && suppliedTarget != expectedTarget ||
+            suppliedCoordinate is not null && suppliedCoordinate != expectedCoordinate ||
             !WoundEffectTerminalOperationPlanner.TryCreateExpectedIdentityOwner(
                 expectedTarget,
                 expectedCoordinate,

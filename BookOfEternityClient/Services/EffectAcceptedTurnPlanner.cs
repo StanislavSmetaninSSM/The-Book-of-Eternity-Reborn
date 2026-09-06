@@ -1,4 +1,5 @@
 using System.Collections.Frozen;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -2983,8 +2984,12 @@ internal static class EffectAcceptedTurnPlanner
             return;
         }
         var terminalWound = wound;
-        if (terminals.Count != 0 &&
-            transitionAuthority.TransitionKind is "worsen" or "treat")
+        var authenticatedRemoval = WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                prepared.TreatmentContinuationAuthority!, out var treatmentContinuation) &&
+            WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
+            treatmentContinuation.OutcomePreparation.GetOrderedRemovalIds().Length != 0;
+        var removalOnly = authenticatedRemoval && treatmentContinuation.OutcomePreparation.SeverityReduction is null;
+        if (transitionAuthority.TransitionKind is "worsen" or "treat")
         {
             var baselineCatalog = WoundCarrierCatalog.Build(
                 prepared.BaselineAuthority.PreTurnCarriers);
@@ -3017,7 +3022,31 @@ internal static class EffectAcceptedTurnPlanner
             .ToHashSet(StringComparer.Ordinal);
         var fullRematerialization = roots.Count != 0 &&
             transitionAuthority.TransitionKind is "worsen" or "treat";
-        var expectedExistingLineageCount = terminals.Count == 0 ||
+        IReadOnlyList<string> selectedTerminalRoots = terminalWound.Consequences.OwnedEffectSources
+            .RootBindings.Select(static binding => binding.EffectId).ToArray();
+        if (removalOnly)
+        {
+            var selected = new List<string>();
+            var ids = new HashSet<string>(StringComparer.Ordinal);
+            var rootsSeen = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var id in treatmentContinuation.OutcomePreparation.GetOrderedRemovalIds())
+            {
+                var matches = terminalWound.Complications.Where(complication =>
+                    string.Equals(complication.ComplicationId, id, StringComparison.Ordinal)).ToArray();
+                if (!ids.Add(id) || matches.Length != 1 ||
+                    matches[0].OwnedEffectIds.Any(rootId => !rootsSeen.Add(rootId) ||
+                        !selectedTerminalRoots.Contains(rootId, StringComparer.Ordinal)))
+                {
+                    AddWoundBatchIssue(issues, path + ".terminalOperations",
+                        "wound_plan_effect_handoff_invalid",
+                        "exact unique complications and declared roots from the sealed pre-turn wound", id);
+                    return;
+                }
+                selected.AddRange(matches[0].OwnedEffectIds);
+            }
+            selectedTerminalRoots = selected.ToArray();
+        }
+        var expectedExistingLineageCount = (terminals.Count == 0 && !removalOnly) ||
                                            fullRematerialization
             ? 0
             : terminalWound.Consequences.OwnedEffectSources.RootBindings.Count(
@@ -3111,7 +3140,8 @@ internal static class EffectAcceptedTurnPlanner
                 definitions,
                 roots,
                 path,
-                issues))
+                issues,
+                authenticatedRemoval ? treatmentContinuation.OutcomePreparation.SeverityReduction?.Before : null))
         {
             return;
         }
@@ -3218,7 +3248,8 @@ internal static class EffectAcceptedTurnPlanner
             terminations.Add(new WoundTerminalRequest(
                 batch,
                 terminalWound,
-                operation));
+                operation,
+                selectedTerminalRoots.ToImmutableArray()));
         }
     }
 
@@ -3382,6 +3413,8 @@ internal static class EffectAcceptedTurnPlanner
             "create",
             StringComparison.Ordinal) &&
             origin is not null &&
+            string.Equals(source.CausalEventRef, wound.Severity.LastChangeEventRef,
+                StringComparison.Ordinal) &&
             transition.CauseKind is null &&
             transition.ExpectedBeforeFingerprint is null &&
             string.Equals(
@@ -3392,6 +3425,8 @@ internal static class EffectAcceptedTurnPlanner
             transition.TransitionKind,
             "worsen",
             StringComparison.Ordinal) &&
+            string.Equals(source.CausalEventRef, wound.Severity.LastChangeEventRef,
+                StringComparison.Ordinal) &&
             transition.CauseKind is { } causeKind &&
             TryExact(causeKind) &&
             ResourceMaterializationContract.IsAuthorityFingerprint(
@@ -3401,6 +3436,10 @@ internal static class EffectAcceptedTurnPlanner
             "treat",
             StringComparison.Ordinal) &&
             prepared.TreatmentContinuationAuthority is not null &&
+            WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
+                prepared.TreatmentContinuationAuthority, out var continuation) &&
+            string.Equals(source.CausalEventRef, continuation.Resolution.Coordinates.EventRef,
+                StringComparison.Ordinal) &&
             WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
             ResourceMaterializationContract.IsAuthorityFingerprint(
                 transition.ExpectedBeforeFingerprint);
@@ -3425,10 +3464,6 @@ internal static class EffectAcceptedTurnPlanner
             expectedOwner is not null &&
             owner == expectedOwner &&
             origin is not null &&
-            string.Equals(
-                source.CausalEventRef,
-                wound.Severity.LastChangeEventRef,
-                StringComparison.Ordinal) &&
             string.Equals(
                 transition.TransitionKind,
                 wound.LastTransition.Kind,
@@ -3541,14 +3576,16 @@ internal static class EffectAcceptedTurnPlanner
         IReadOnlyDictionary<string, WoundEffectSourceDefinition> definitions,
         IReadOnlyList<WoundRootEffectApplication> roots,
         string path,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        WoundMaterializationEnvelope? retainedCoordinateWound)
     {
-        var beforeDomains = beforeWound.Consequences.OwnedEffectSources
+        var coordinateWound = retainedCoordinateWound ?? beforeWound;
+        var beforeDomains = coordinateWound.Consequences.OwnedEffectSources
             .RootBindings.ToDictionary(
                 static binding => binding.EffectId,
                 static _ => WoundRootOwnershipDomain.BaseWound,
                 StringComparer.Ordinal);
-        foreach (var complication in beforeWound.Complications)
+        foreach (var complication in coordinateWound.Complications)
         {
             foreach (var effectId in complication.OwnedEffectIds)
             {
@@ -3560,7 +3597,7 @@ internal static class EffectAcceptedTurnPlanner
                 }
             }
         }
-        var beforeByCoordinate = beforeWound.Consequences.OwnedEffectSources
+        var beforeByCoordinate = coordinateWound.Consequences.OwnedEffectSources
             .RootBindings.ToDictionary(
                 binding => (
                     binding.DefinitionKey,
@@ -3587,6 +3624,15 @@ internal static class EffectAcceptedTurnPlanner
             effectIdentities = parsed.State;
         }
         var suppliedPredecessors = new HashSet<string>(StringComparer.Ordinal);
+        var generationAuthority = transitionKind is "worsen" or "treat" &&
+            effectCatalog is not null && effectIdentities is not null
+                ? new WoundRootGenerationAuthority(beforeWound, effectCatalog, effectIdentities)
+                : null;
+        if (generationAuthority is { Issues.Count: > 0 })
+        {
+            issues.AddRange(generationAuthority.Issues);
+            return false;
+        }
         var valid = true;
         foreach (var root in roots)
         {
@@ -3605,9 +3651,8 @@ internal static class EffectAcceptedTurnPlanner
                      expectedTarget,
                      definition.Definition,
                      out var expectedCarrier) ||
-                 effectCatalog is null ||
-                 effectIdentities is null ||
-                 !WoundAcceptedTurnPlannerCore.PriorRootHasExactGenerationAuthority(
+                 generationAuthority is null ||
+                 !generationAuthority.Agrees(
                      expectedPrior,
                      new EffectSourceKey(
                          beforeWound.Owner.Realm,
@@ -3617,9 +3662,10 @@ internal static class EffectAcceptedTurnPlanner
                      expectedTarget,
                      expectedCarrier,
                      definition.Definition,
-                     effectCatalog,
-                     effectIdentities)))
+                     root.OwnershipDomain)))
             {
+                if (generationAuthority?.IsTerminalRoot(expectedPrior) == true)
+                    valid = false;
                 expectedPrior = null;
             }
             var expected = transitionKind switch
@@ -4052,10 +4098,7 @@ internal static class EffectAcceptedTurnPlanner
                       request.Batch.PreparedWoundId)))
         {
             var first = group.First();
-            var selectedRoots = first.Wound.Consequences.OwnedEffectSources
-                .RootBindings
-                .Select(static row => row.EffectId)
-                .ToArray();
+            var selectedRoots = first.SelectedRootEffectIds;
             var lineage = WoundEffectLineagePlanner.Plan(
                 first.Wound,
                 identities,
@@ -8766,7 +8809,8 @@ internal static class EffectAcceptedTurnPlanner
     private sealed record WoundTerminalRequest(
         WoundEffectOperationBatch Batch,
         WoundMaterializationEnvelope Wound,
-        WoundTerminalEffectOperation Operation);
+        WoundTerminalEffectOperation Operation,
+        ImmutableArray<string> SelectedRootEffectIds);
 
     private sealed record PreparedWoundOperations(
         IReadOnlyList<WoundApplicationRequest> Applications,

@@ -648,10 +648,11 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The remaining producers\s+`heal`,\s+`remove_complication`,\s+`add_complication`\s+and\s+`apply_deterioration`\s+are pending implementation",
+                @"The remaining producers\s+`heal`,\s+`add_complication`\s+and\s+`apply_deterioration`\s+are pending implementation",
                 RegexOptions.CultureInvariant);
-            Assert.True(pending.Success, "The exact four-producer pending list must remain synchronized.");
+            Assert.True(pending.Success, "The exact three-producer pending list must remain synchronized.");
             Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
+            Assert.DoesNotContain("remove_complication", pending.Value, StringComparison.Ordinal);
         }
         foreach (var field in new[] { "courseId", "activeCourseId", "sourceId", "woundId", "effectId",
             "fingerprint", "authorityFingerprint", "attemptId", "operationKey", "resolvedAtGameTimeMinutes" })

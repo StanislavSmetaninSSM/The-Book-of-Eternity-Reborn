@@ -67,7 +67,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(preparation);
-        if (preparation.SeverityReduction is null)
+        if (!MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(preparation))
         {
             return new MortalWoundTreatmentSeverityRematerializationResult(
                 null,
@@ -150,21 +150,62 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             string operationKey,
             string expectedBeforeFingerprint)
     {
-        var projection = preparation.SeverityReduction!;
+        var projection = preparation.SeverityReduction;
         var before = preparation.Before;
-        var projectionBefore = projection.Before;
-        var after = projection.ProvisionalAfter;
+        var projectionBefore = projection?.Before ?? preparation.ProvisionalAfter;
+        var after = projection?.ProvisionalAfter ?? preparation.ProvisionalAfter;
+        var removalIds = preparation.GetOrderedRemovalIds();
+        var removalRoots = new List<string>();
+        var remaining = before;
+        var seenIds = new HashSet<string>(StringComparer.Ordinal);
+        var seenRoots = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var id in removalIds)
+        {
+            var matches = before.Complications.Where(value =>
+                string.Equals(value.ComplicationId, id, StringComparison.Ordinal)).ToArray();
+            if (!seenIds.Add(id) || matches.Length != 1)
+                return Invalid("the exact ordered removal identity is missing or repeated");
+            foreach (var rootId in matches[0].OwnedEffectIds)
+            {
+                if (!seenRoots.Add(rootId))
+                    return Invalid("selected removal roots are repeated");
+                removalRoots.Add(rootId);
+            }
+            if (!MortalWoundTreatmentWorkingWoundSimulator.TryRemoveComplication(
+                    remaining, id, out remaining))
+                return Invalid("the ordered removal projection is not applicable");
+        }
+        var expectedGraph = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(remaining))!;
+        var sealedGraph = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(projectionBefore))!;
+        if (!JsonNode.DeepEquals(expectedGraph["consequences"], sealedGraph["consequences"]) ||
+            !JsonNode.DeepEquals(expectedGraph["complications"], sealedGraph["complications"]))
+            return Invalid("changed post-removal effect graph");
+        var projectionFingerprint = projection?.Fingerprint;
+        if (removalIds.Length != 0)
+        {
+            var fields = new List<string?>
+            {
+                "book_of_eternity.mortal_wound_treatment.removal_effect_projection",
+                "1", preparation.Fingerprint, projection?.Fingerprint,
+                removalIds.Length.ToString(CultureInfo.InvariantCulture)
+            };
+            fields.AddRange(removalIds);
+            fields.Add(removalRoots.Count.ToString(CultureInfo.InvariantCulture));
+            fields.AddRange(removalRoots);
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(sealedGraph["consequences"]));
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(sealedGraph["complications"]));
+            projectionFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(fields);
+        }
         var inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
         var actualBeforeFingerprint =
             WoundIdentityState.ComputeSemanticFingerprint(before);
-        var recomputedProjection = MortalWoundTreatmentSeverityReductionPlanner.Project(
-            projectionBefore,
-            projection.Steps,
-            after.Severity.LastChangeEventRef);
+        var recomputedProjection = projection is null ? null :
+            MortalWoundTreatmentSeverityReductionPlanner.Project(
+                projectionBefore, projection.Steps, preparation.GetTreatmentEventRef());
         var acceptedEvents = input.Binding.AcceptedEvents.Where(value =>
                 string.Equals(
                     value.EventRef,
-                    after.Severity.LastChangeEventRef,
+                    preparation.GetTreatmentEventRef(),
                     StringComparison.Ordinal))
             .ToArray();
         if (!ResourceMaterializationContract.IsExactIdentifier(attemptId) ||
@@ -179,9 +220,9 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 actualBeforeFingerprint,
                 StringComparison.Ordinal) ||
             !CanonicalEquals(preparation.ProvisionalAfter, after) ||
-            !recomputedProjection.IsValid ||
-            recomputedProjection.Projection is null ||
-            !ProjectionEquals(recomputedProjection.Projection, projection) ||
+            (projection is not null && (recomputedProjection is null ||
+                !recomputedProjection.IsValid || recomputedProjection.Projection is null ||
+                !ProjectionEquals(recomputedProjection.Projection, projection))) ||
             acceptedEvents.Length != 1 ||
             input.PreTurnEffectCarriers is null ||
             input.PreTurnEffectIdentityIndex is null)
@@ -221,12 +262,12 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             operationKey,
             preparation.TransitionId,
             expectedBeforeFingerprint,
-            projection.Fingerprint
+            projectionFingerprint
         });
         var localWoundRef = Coordinate("wound_ref", requestFingerprint,
             resultFingerprint, preparation.TransitionId);
         var acceptedEvent = acceptedEvents[0];
-        var definitions = before.Consequences.OwnedEffectSources.Definitions
+        var definitions = projectionBefore.Consequences.OwnedEffectSources.Definitions
             .Select(value =>
             {
                 var json = JsonNode.Parse(value.GetRawText())!.AsObject();
@@ -261,9 +302,9 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             StringComparer.Ordinal);
         var applications = new List<WoundRootEffectApplication>();
         var lineage = new List<WoundRootLineageAuthorityRow>();
-        for (var index = 0; index < projection.Roots.Count; index++)
+        for (var index = 0; index < (projection?.Roots.Count ?? 0); index++)
         {
-            var root = projection.Roots[index];
+            var root = projection!.Roots[index];
             if (!definitionsByKey.TryGetValue(
                     root.DefinitionKey,
                     out var exportedDefinition))
@@ -344,7 +385,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             before,
             input.PreTurnEffectCarriers,
             identityParse.State,
-            before.Consequences.OwnedEffectSources.RootBindings
+            projection is null ? removalRoots : before.Consequences.OwnedEffectSources.RootBindings
                 .Select(static value => value.EffectId)
                 .ToArray(),
             acceptedEvent.EventRef,
@@ -357,6 +398,23 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 null,
                 null,
                 terminal.Issues.ToArray());
+        }
+
+        if (projection is null)
+        {
+            // Terminal planning above has validated the complete original ownership graph.
+            var domains = before.Complications.SelectMany(complication =>
+                    complication.OwnedEffectIds.Select(effectId => (effectId, complication.ComplicationId)))
+                .ToDictionary(static value => value.effectId,
+                    static value => WoundRootOwnershipDomain.ForComplication(value.ComplicationId),
+                    StringComparer.Ordinal);
+            foreach (var binding in before.Consequences.OwnedEffectSources.RootBindings
+                         .Where(binding => definitionsByKey.ContainsKey(binding.DefinitionKey))
+                         .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
+                         .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal))
+                lineage.Add(new WoundRootLineageAuthorityRow(null, binding.EffectId,
+                    binding.DefinitionKey, domains.GetValueOrDefault(
+                        binding.EffectId, WoundRootOwnershipDomain.BaseWound)));
         }
 
         var structuralSeal = WoundAcceptedTurnFingerprints.ComputeTransitionAuthority(
@@ -414,7 +472,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             operationKey,
             preparation.TransitionId,
             expectedBeforeFingerprint,
-            projection.Fingerprint,
+            projectionFingerprint!,
             seed,
             sourceFingerprint,
             topology,

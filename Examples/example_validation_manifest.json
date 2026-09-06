@@ -67,10 +67,10 @@
       "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
       "responseSurface": "effectSkillScopeCatalog request fragment plus complete woundDecisions[] response",
       "realms": ["Mortal World"],
-      "description": "A setting-authored rank-II ashglass injury selects the exact offered/current player skill for one common roll_modifier component and one slot, includes a complete stabilization procedure, and keeps all permanent wound/effect identity client-owned.",
+      "description": "A rank-II ashglass injury preserves its exact-skill base roll_modifier and adds one complication-owned grip restriction. The complete procedure removes the same-proposal shard complication then stabilizes; both roots exactly fit two slots and all permanent identity stays client-owned.",
       "validationKind": "production-validator",
       "validationRoute": "ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill",
-      "coverageLimit": "Parses the complete wound response and exact target catalog, composes the proposal with the production wound contract, and validates exact skill binding against independently supplied canonical roots; full accepted publication, later dormancy/reactivation, and rollback remain lifecycle-test-owned.",
+      "coverageLimit": "Production composition rewrites removal and root ownership to the same canonical complication ID and validates exact skill binding. Detached Prepare/Build/Finalize produces the canonical wound; typed ParseProjection and WorkingWoundSimulator prove the actual documented success removes only the shard root, compacts to one slot and stabilizes while retaining the exact base root. This is not live publication coverage; full accepted publication, dormancy/reactivation and rollback remain lifecycle-test-owned.",
       "requiredText": ["wound_mortal_roll_scope_skill_v1", "effectSkillScopeCatalog", "scope.kind=skill", "skill_lockpicking", "ashglass-lockpicking-hindrance", "consequence slot", "dormant without healing/removing the wound"]
     },
     {

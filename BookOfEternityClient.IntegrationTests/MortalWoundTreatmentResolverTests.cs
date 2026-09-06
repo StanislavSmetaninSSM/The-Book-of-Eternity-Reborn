@@ -2617,7 +2617,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
 
         if (scenario.SeedCanonicalWoundEffects)
-            effects.AddRange(CreateCanonicalWoundEffects(scenario.Before));
+            effects.AddRange(CreateCanonicalWoundEffects(scenario.Before, scenario.LineageSeed));
 
         var index = EffectMaterializationTestFixture.CreateIdentityIndex(effects.ToArray());
         var entries = index["entries"]!.AsArray().OfType<JsonObject>().ToArray();
@@ -2633,6 +2633,53 @@ public sealed partial class MortalWoundTreatmentResolverTests
             transition["eventRef"] = eventRef;
         }
 
+        if (scenario.LineageSeed is { } lineageSeed)
+        {
+            foreach (var seed in lineageSeed.Entries)
+            {
+                var effect = effects.Single(row => row["effectId"]!.GetValue<string>() == seed.EffectId);
+                var entry = entries.Single(row => row["effectId"]!.GetValue<string>() == seed.EffectId);
+                entry["transitions"]![0]!["sourceEffectIds"] = seed.ParentEffectId is null
+                    ? new JsonArray() : new JsonArray(seed.ParentEffectId);
+                if (seed.State != "active")
+                {
+                    Assert.Contains(seed.State, new[] { "suspended", "removed" });
+                    var kind = seed.State == "suspended" ? "suspend" : "remove";
+                    var turn = effect["chronology"]!["createdAtTurn"]!.GetValue<int>();
+                    var transitionId = "effect_transition_t070_seed_" + kind + "_" + seed.EffectId;
+                    entry["state"] = seed.State;
+                    entry["transitions"]!.AsArray().Add(new JsonObject
+                    {
+                        ["transitionId"] = transitionId,
+                        ["kind"] = kind,
+                        ["turn"] = turn,
+                        ["eventRef"] = $"turn_{turn}:t070_seed:{kind}:{seed.EffectId}",
+                        ["sourceEffectIds"] = new JsonArray(seed.EffectId),
+                        ["resultEffectIds"] = seed.State == "suspended"
+                            ? new JsonArray(seed.EffectId) : new JsonArray(),
+                        ["receiptId"] = null
+                    });
+                    effect["state"] = seed.State;
+                    effect["chronology"]!["lastTransitionId"] = transitionId;
+                    effect["chronology"]!["lastTransitionTurn"] = turn;
+                    if (seed.State == "removed") effects.Remove(effect);
+                }
+            }
+            if (lineageSeed.Defect != WoundLineageSeedDefect.None)
+            {
+                var childSeed = Assert.Single(lineageSeed.Entries, seed => seed.ParentEffectId is not null);
+                var child = entries.Single(row => row["effectId"]!.GetValue<string>() == childSeed.EffectId);
+                if (lineageSeed.Defect == WoundLineageSeedDefect.MultipleFirstCreateParents)
+                    child["transitions"]![0]!["sourceEffectIds"]!.AsArray().Add("effect_foreign_parent");
+                else
+                {
+                    Assert.Equal("removed", childSeed.State);
+                    child["source"]!["sourceId"] = "wound_foreign_lineage";
+                    child["stackCoordinate"]!["sourceId"] = "wound_foreign_lineage";
+                }
+            }
+        }
+
         return (
             new JsonObject
             {
@@ -2644,7 +2691,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
     }
 
     private static IReadOnlyList<JsonObject> CreateCanonicalWoundEffects(
-        JsonObject woundRoot)
+        JsonObject woundRoot, WoundLineageSeed? seed = null)
     {
         var parsed = WoundMaterializationContract.Parse(
             woundRoot.ToJsonString(),
@@ -2673,67 +2720,89 @@ public sealed partial class MortalWoundTreatmentResolverTests
                 "Unsupported wound owner kind for canonical effect seeding.")
         };
         var effects = new List<JsonObject>();
-        foreach (var (binding, index) in wound.Consequences.OwnedEffectSources
-                     .RootBindings.Select((value, index) => (value, index)))
+        var bindings = wound.Consequences.OwnedEffectSources.RootBindings.ToArray();
+        if (seed is not null)
         {
-            var definition = definitions[binding.DefinitionKey];
-            var profile = definition["components"]![0]!["profile"]!
-                .GetValue<string>();
-            var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
-                targetKind,
-                profile);
-            effect["effectId"] = binding.EffectId;
-            effect["realm"] = wound.Owner.Realm;
-            effect["target"] = new JsonObject
+            Assert.Equal(seed.Entries.Count, seed.Entries.Select(row => row.EffectId).Distinct(StringComparer.Ordinal).Count());
+            foreach (var binding in bindings)
             {
-                ["kind"] = targetKind,
-                ["targetId"] = wound.Owner.OwnerId
-            };
-            effect["display"] = definition["display"]!.DeepClone();
-            effect["source"] = new JsonObject
+                var root = Assert.Single(seed.Entries, row => row.EffectId == binding.EffectId);
+                Assert.Equal(binding.DefinitionKey, root.DefinitionKey);
+                Assert.Null(root.ParentEffectId);
+            }
+            foreach (var row in seed.Entries)
             {
-                ["kind"] = "wound",
-                ["sourceId"] = wound.WoundId,
-                ["definitionKey"] = binding.DefinitionKey
-            };
-            effect["components"] = definition["components"]!.DeepClone();
-            effect["lifetime"] = new JsonObject
-            {
-                ["mode"] = "source_bound",
-                ["linkKind"] = "wound",
-                ["targetId"] = wound.WoundId,
-                ["activePredicate"] =
-                    definition["lifetime"]!["activePredicate"]!.DeepClone(),
-                ["onSourceLoss"] =
-                    definition["lifetime"]!["onSourceLoss"]!.DeepClone()
-            };
-            effect["stacking"] = new JsonObject
-            {
-                ["stackKey"] =
-                    definition["stacking"]!["stackKey"]!.DeepClone(),
-                ["policy"] = definition["stacking"]!["policy"]!.DeepClone(),
-                ["maxStacks"] =
-                    definition["stacking"]!["maxStacks"]!.DeepClone(),
-                ["currentStacks"] = 1,
-                ["refreshMode"] =
-                    definition["stacking"]!["refreshMode"]?.DeepClone(),
-                ["mergeRule"] =
-                    definition["stacking"]!["mergeRule"]?.DeepClone()
-            };
-            effect["triggers"] = definition["triggers"]!.DeepClone();
-            effect["removal"] = definition["removal"]!.DeepClone();
-            effect["links"] = definition["links"]!.DeepClone();
-            effect["chronology"] = new JsonObject
-            {
-                ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
-                ["createdEventRef"] =
-                    $"{wound.Origin.EventRef}:effect:{index + 1:D3}",
-                ["lastTransitionId"] = "effect_transition_" + binding.EffectId,
-                ["lastTransitionTurn"] = wound.Origin.CreatedAtTurn
-            };
-            effects.Add(effect);
+                Assert.Contains(row.State, new[] { "active", "suspended", "removed" });
+                Assert.True(definitions.ContainsKey(row.DefinitionKey));
+                if (!bindings.Any(binding => binding.EffectId == row.EffectId))
+                    Assert.Contains(seed.Entries, parent => parent.EffectId == row.ParentEffectId);
+            }
+            bindings = seed.Entries.Select(row => new WoundRootEffectBinding(row.EffectId, row.DefinitionKey)).ToArray();
         }
+        foreach (var (binding, index) in bindings.Select((value, index) => (value, index)))
+            effects.Add(CreateCanonicalWoundEffect(wound, targetKind, binding, definitions[binding.DefinitionKey], index));
         return effects;
+    }
+
+    private static JsonObject CreateCanonicalWoundEffect(
+        WoundMaterializationEnvelope wound, string targetKind,
+        WoundRootEffectBinding binding, JsonObject definition, int index)
+    {
+        var profile = definition["components"]![0]!["profile"]!
+            .GetValue<string>();
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+            targetKind,
+            profile);
+        effect["effectId"] = binding.EffectId;
+        effect["realm"] = wound.Owner.Realm;
+        effect["target"] = new JsonObject
+        {
+            ["kind"] = targetKind,
+            ["targetId"] = wound.Owner.OwnerId
+        };
+        effect["display"] = definition["display"]!.DeepClone();
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "wound",
+            ["sourceId"] = wound.WoundId,
+            ["definitionKey"] = binding.DefinitionKey
+        };
+        effect["components"] = definition["components"]!.DeepClone();
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["linkKind"] = "wound",
+            ["targetId"] = wound.WoundId,
+            ["activePredicate"] =
+                definition["lifetime"]!["activePredicate"]!.DeepClone(),
+            ["onSourceLoss"] =
+                definition["lifetime"]!["onSourceLoss"]!.DeepClone()
+        };
+        effect["stacking"] = new JsonObject
+        {
+            ["stackKey"] =
+                definition["stacking"]!["stackKey"]!.DeepClone(),
+            ["policy"] = definition["stacking"]!["policy"]!.DeepClone(),
+            ["maxStacks"] =
+                definition["stacking"]!["maxStacks"]!.DeepClone(),
+            ["currentStacks"] = 1,
+            ["refreshMode"] =
+                definition["stacking"]!["refreshMode"]?.DeepClone(),
+            ["mergeRule"] =
+                definition["stacking"]!["mergeRule"]?.DeepClone()
+        };
+        effect["triggers"] = definition["triggers"]!.DeepClone();
+        effect["removal"] = definition["removal"]!.DeepClone();
+        effect["links"] = definition["links"]!.DeepClone();
+        effect["chronology"] = new JsonObject
+        {
+            ["createdAtTurn"] = wound.Origin.CreatedAtTurn,
+            ["createdEventRef"] =
+                $"{wound.Origin.EventRef}:effect:{index + 1:D3}",
+            ["lastTransitionId"] = "effect_transition_" + binding.EffectId,
+            ["lastTransitionTurn"] = wound.Origin.CreatedAtTurn
+        };
+        return effect;
     }
 
     private static JsonObject CreateCanonicalFateShield(string effectId)
@@ -4369,7 +4438,15 @@ public sealed partial class MortalWoundTreatmentResolverTests
         int ExpectedIntentCount,
         string? ExpectedFateEffectId,
         string? SeedFateEffectId,
-        bool SeedCanonicalWoundEffects = false);
+        bool SeedCanonicalWoundEffects = false,
+        WoundLineageSeed? LineageSeed = null);
+
+    private enum WoundLineageSeedDefect { None, MultipleFirstCreateParents, TerminalForeignChild }
+    private sealed record WoundLineageSeedEntry(
+        string EffectId, string DefinitionKey, string? ParentEffectId, string State);
+    private sealed record WoundLineageSeed(
+        IReadOnlyList<WoundLineageSeedEntry> Entries,
+        WoundLineageSeedDefect Defect = WoundLineageSeedDefect.None);
 
     private sealed record ScenarioSemantics(
         string RollMode,
@@ -4729,7 +4806,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
                     .GetResult();
                 Assert.True(effectSnapshot.IsAccepted, DescribeIssues(effectSnapshot.Issues));
                 Assert.Equal(
-                    effectState.IdentityIndex["entries"]!.AsArray().Count,
+                    effectState.IdentityIndex["entries"]!.AsArray().Count(row =>
+                        row!["state"]!.GetValue<string>() is "active" or "suspended"),
                     effectSnapshot.Effects.Count);
                 var treatmentAuthority = typeof(WoundMaterializationContract).Assembly.GetType(
                     "BookOfEternityClient.Services.MortalWoundTreatmentAuthority",

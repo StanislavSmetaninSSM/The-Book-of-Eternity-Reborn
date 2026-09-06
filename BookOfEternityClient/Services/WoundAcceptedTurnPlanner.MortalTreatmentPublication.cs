@@ -740,10 +740,11 @@ internal static partial class WoundAcceptedTurnPlanner
         }
         var coordinates = continuation.Resolution.Coordinates;
         var binding = prepared.Binding;
-        var hasReduction = continuation.OutcomePreparation.SeverityReduction is not null;
+        var requiresEffectBatch = MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
+            continuation.OutcomePreparation);
         var rematerialization = continuation.RematerializationAuthority;
         var batches = prepared.EffectOperationBatches;
-        var batchAgrees = !hasReduction
+        var batchAgrees = !requiresEffectBatch
             ? rematerialization is null && batches.Count == 0
             : rematerialization is not null &&
               batches.Count == 1 &&
@@ -873,9 +874,21 @@ internal static partial class WoundAcceptedTurnPlanner
                 return false;
             }
 
-            var batch = continuation.OutcomePreparation.SeverityReduction is null
+            var batch = !MortalWoundTreatmentOutcomePublicationPlanner.RequiresEffectBatch(
+                continuation.OutcomePreparation)
                 ? null
                 : bundle.PreparedPlan.EffectOperationBatches.Single();
+            if (batch is not null &&
+                !MortalWoundTreatmentSeverityRematerializationPlanner.Agrees(
+                    bundle.Input, continuation.OutcomePreparation,
+                    continuation.Resolution.RequestFingerprint,
+                    continuation.Resolution.ResolutionAuthorityFingerprint,
+                    continuation.Resolution.ResultFingerprint,
+                    continuation.Resolution.Coordinates.AttemptId,
+                    continuation.Resolution.Coordinates.OperationKey,
+                    continuation.Resolution.Coordinates.ExpectedBeforeFingerprint,
+                    batch, continuation.RematerializationAuthority!))
+                return false;
             var applicationByRef = new Dictionary<
                 string,
                 EffectAcceptedApplicationResult>(StringComparer.Ordinal);

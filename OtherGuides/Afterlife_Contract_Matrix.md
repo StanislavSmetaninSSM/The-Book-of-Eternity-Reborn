@@ -2,6 +2,24 @@
 
 Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
 
+Wound-owned generation rule: suppression is not wound healing. Independently expiring,
+dispelling, removing, or replacing an effect leaves the wound's canonical root binding
+and slot intact. Only an already authorized wound transition can create a
+new runtime effect identity for a retained legal coordinate, with the exact old canonical root as
+its sole first-create parent; terminal history remains unchanged. The client validates
+the complete lineage and definition-derived owner/source/target/stack coordinates,
+including zero carriers for a terminal root: there is no missing-carrier fallback.
+This does not enable spiritual treatment or any still-pending healing art. The GM
+never authors these runtime identities, parents, or history rows.
+
+Worked client lifecycle: a Guardian's wound-owned hindrance is dispelled, so its
+carrier disappears but the wound and old root binding remain. If a separately
+authorized wound transition later rematerializes that retained hindrance, the client
+allocates a fresh identity whose historical parent is exactly that old bound root.
+The dispelled row is not revived or rewritten. Without that authorized transition,
+the suppressed effect stays terminal and the wound remains untreated. No new pending
+packet, GM output field, or spiritual-healing action is introduced.
+
 **Effect Materialization v1:** every afterlife active effect and spiritual condition uses the shared identity/lifecycle adapter in `OtherGuides/Effect_Materialization_Contract.md`.
 
 Across both Chaos Sea and Shining Abode, the runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM authors complete source policy and transient `effectChanges[]` commands only; it never performs carrier arithmetic or resends raw remaining duration.

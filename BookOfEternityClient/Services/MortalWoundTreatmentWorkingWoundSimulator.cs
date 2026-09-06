@@ -199,7 +199,7 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
     private static MortalWoundTreatmentWorkingWoundSimulation NotApplicable() =>
         new(false, false, null);
 
-    private static bool TryRemoveComplication(
+    internal static bool TryRemoveComplication(
         WoundMaterializationEnvelope before,
         string complicationId,
         out WoundMaterializationEnvelope after)

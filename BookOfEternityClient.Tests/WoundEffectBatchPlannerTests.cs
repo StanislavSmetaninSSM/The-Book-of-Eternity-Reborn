@@ -1487,6 +1487,116 @@ public sealed partial class WoundEffectBatchPlannerTests
         Assert.Empty(addedCreate["sourceEffectIds"]!.AsArray());
     }
 
+    public static IEnumerable<object[]> TerminalGenerationRows() =>
+        Enum.GetValues<OwnerFlavor>().SelectMany(flavor =>
+            new[] { "expired", "dispelled", "removed", "replaced" }
+                .Select(state => new object[] { flavor, state }));
+
+    [Theory]
+    [MemberData(nameof(TerminalGenerationRows))]
+    public void TerminalGeneration_CarrierlessCanonicalRootRetainsExactParentAcrossOwners(
+        OwnerFlavor flavor, string state)
+    {
+        const string priorId = "effect_worsen_generation_prior";
+        var input = CreateTerminalWorsenInput(flavor, state);
+        var priorIndex = input.PreTurnEffectIdentityIndex!;
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        var batch = Assert.Single(prepared.EffectOperationBatches);
+        Assert.Empty(batch.TerminalOperations);
+        var retained = Assert.Single(batch.RootApplications, root => root.PriorRootEffectId == priorId);
+        Assert.Single(batch.RootApplications, root => root.PriorRootEffectId is null);
+        var stage = WoundEffectBatchPlanner.Build(prepared, CreateEffectInput(prepared,
+            preTurnCarriersOverride: input.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: input.PreTurnEffectIdentityIndex),
+            new ScriptedEffectIdentityFactory("terminal_generation_" + flavor + "_" + state));
+        var accepted = AssertEffectPlan(stage);
+        Assert.Empty(accepted.TerminationResults);
+        var created = Assert.Single(accepted.ApplicationResults, row => row.ApplicationRef == retained.ApplicationRef);
+        Assert.NotEqual(priorId, created.EffectId);
+        Assert.Equal(priorId, Assert.Single(FindIdentityIndexEffect(accepted.EffectPlan, created.EffectId)
+            ["transitions"]![0]!["sourceEffectIds"]!.AsArray())!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(Assert.Single(priorIndex["entries"]!.AsArray()),
+            FindIdentityIndexEffect(accepted.EffectPlan, priorId)));
+        AssertFinalized(WoundAcceptedTurnPlanner.Finalize(prepared, stage));
+    }
+
+    private static WoundAcceptedTurnInput CreateTerminalWorsenInput(OwnerFlavor flavor, string state)
+    {
+        var input = CreateWorsenInputWithRetainedAndNewRoot(flavor);
+        var index = input.PreTurnEffectIdentityIndex!;
+        var entry = Assert.IsType<JsonObject>(Assert.Single(index["entries"]!.AsArray()));
+        entry["state"] = state;
+        var kind = state switch { "expired" => "expire", "dispelled" => "dispel", "removed" => "remove", "replaced" => "replace", _ => throw new ArgumentOutOfRangeException(nameof(state)) };
+        entry["transitions"]!.AsArray().Add(new JsonObject
+        {
+            ["transitionId"] = "effect_transition_terminal_generation_" + kind,
+            ["kind"] = kind, ["turn"] = Turn - 1,
+            ["eventRef"] = "event_terminal_generation_" + kind,
+            ["sourceEffectIds"] = new JsonArray("effect_worsen_generation_prior"),
+            ["resultEffectIds"] = new JsonArray(), ["receiptId"] = null
+        });
+        var carriers = input.PreTurnEffectCarriers!;
+        var effects = flavor switch
+        {
+            OwnerFlavor.Player => carriers.PlayerEffects!["activeEffects"]!,
+            OwnerFlavor.Npc => carriers.NpcEffects!["entries"]![0]!["activeEffects"]!,
+            OwnerFlavor.Combatant => carriers.EnemyCombatants!["enemiesData"]![0]!["activeDebuffs"]!,
+            OwnerFlavor.AfterlifeGuardian => carriers.AfterlifeProfiles!["profiles"]![0]!["activeEffects"]!,
+            _ => throw new ArgumentOutOfRangeException(nameof(flavor))
+        };
+        effects.AsArray().Clear();
+        Assert.Empty(EffectCarrierCatalog.Build(carriers).Issues);
+        ParseEffectIdentityState(index);
+        return input with { PreTurnEffectCarriers = carriers, PreTurnEffectIdentityIndex = index };
+    }
+
+    [Theory]
+    [InlineData("missing_parent")]
+    [InlineData("foreign_parent")]
+    [InlineData("new_root_borrows_parent")]
+    [InlineData("terminal_carrier")]
+    [InlineData("owner")]
+    [InlineData("target")]
+    [InlineData("stack")]
+    [InlineData("source")]
+    [InlineData("disconnected_sibling")]
+    public void TerminalGeneration_IndependentStageRejectsChangedAuthorityBeforeAllocation(string mutation)
+    {
+        var input = CreateTerminalWorsenInput(OwnerFlavor.Player, "removed");
+        var prepared = AssertPrepared(WoundAcceptedTurnPlanner.Prepare(input));
+        if (mutation is "missing_parent" or "foreign_parent" or "new_root_borrows_parent")
+            prepared = RewrapPreparedWithForgedFirstPredecessor(prepared,
+                mutation == "missing_parent" ? null! : mutation == "foreign_parent" ? "effect_foreign_terminal" : "effect_worsen_generation_prior",
+                mutation == "new_root_borrows_parent" ? 1 : 0);
+        var index = input.PreTurnEffectIdentityIndex!;
+        var entry = index["entries"]![0]!;
+        if (mutation == "owner") entry["owner"]!["ownerId"] = "player_foreign";
+        if (mutation == "target") entry["target"]!["targetId"] = "player_foreign";
+        if (mutation == "stack") entry["stackCoordinate"]!["stackKey"] = "stack_foreign";
+        if (mutation == "source") entry["source"]!["sourceId"] = "wound_foreign";
+        if (mutation == "disconnected_sibling")
+        {
+            var sibling = entry.DeepClone();
+            sibling["effectId"] = "effect_disconnected_terminal";
+            foreach (var transition in sibling["transitions"]!.AsArray())
+            {
+                transition!["transitionId"] = transition["transitionId"]!.GetValue<string>() + "_sibling";
+                foreach (var field in new[] { "sourceEffectIds", "resultEffectIds" })
+                    if (transition[field]!.AsArray().Count != 0) transition[field] = new JsonArray("effect_disconnected_terminal");
+            }
+            index["entries"]!.AsArray().Add(sibling);
+        }
+        var factory = new ScriptedEffectIdentityFactory("rejected_terminal");
+        var result = WoundEffectBatchPlanner.Build(prepared, CreateEffectInput(prepared,
+            preTurnCarriersOverride: mutation == "terminal_carrier"
+                ? CreateWorsenInputWithRetainedAndNewRoot().PreTurnEffectCarriers : input.PreTurnEffectCarriers,
+            preTurnIdentityIndexOverride: index), factory);
+        Assert.False(result.Success, mutation);
+        Assert.NotEmpty(result.Issues);
+        Assert.Equal(0, factory.EffectCalls);
+        Assert.Equal(0, factory.TransitionCalls);
+    }
+
     [Fact]
     public void SkillScope_RetainedWorsenMaterializesFreshRuntimeIdentityAndPreservesSelector()
     {
@@ -3865,7 +3975,7 @@ public sealed partial class WoundEffectBatchPlannerTests
         const string woundId = "wound_worsen_generation";
         const string priorEffectId = "effect_worsen_generation_prior";
         var input = CreateInput(
-            shape: skillScopedRetained
+            shape: flavor == OwnerFlavor.AfterlifeGuardian ? CandidateShape.SpiritualTwoRoots : skillScopedRetained
                 ? CandidateShape.SkillScopedTwoRoots
                 : CandidateShape.TwoRoots,
             flavor: flavor);
@@ -3880,7 +3990,7 @@ public sealed partial class WoundEffectBatchPlannerTests
             (
                 priorEffectId,
                 retainedDefinitionKey,
-                skillScopedRetained ? "roll_modifier" : "periodic_damage"));
+                flavor == OwnerFlavor.AfterlifeGuardian ? "spiritual_roll_hindrance" : skillScopedRetained ? "roll_modifier" : "periodic_damage"));
         var retainedDefinition = Assert.IsType<JsonObject>(Assert.Single(
             retainedSources["definitions"]!.AsArray())).DeepClone().AsObject();
         if (skillScopedRetained)
@@ -3895,7 +4005,8 @@ public sealed partial class WoundEffectBatchPlannerTests
             draft.ProposedAfter.Owner.Realm,
             draft.ProposedAfter.Owner.OwnerKind,
             draft.ProposedAfter.Owner.OwnerId,
-            draft.ProposedAfter.Owner.CarrierPath);
+            draft.ProposedAfter.Owner.CarrierPath,
+            domain: draft.ProposedAfter.Classification.Domain);
         var priorEventRef = $"turn_{Turn - 1}:worsen_generation:prior";
         beforeJson["origin"]!["eventRef"] = priorEventRef;
         beforeJson["origin"]!["createdAtTurn"] = Turn - 1;
@@ -3915,7 +4026,7 @@ public sealed partial class WoundEffectBatchPlannerTests
             ["entries"] = new JsonArray(new JsonObject
             {
                 ["slot"] = 1,
-                ["profileKey"] = skillScopedRetained
+                ["profileKey"] = flavor == OwnerFlavor.AfterlifeGuardian ? "spiritual_roll_hindrance" : skillScopedRetained
                     ? "roll_modifier"
                     : "periodic_damage",
                 ["effectId"] = priorEffectId,
@@ -3958,7 +4069,17 @@ public sealed partial class WoundEffectBatchPlannerTests
                 ["rootBindings"] = new JsonArray()
             }
         };
-        var proposed = ParseWound(proposedJson, "worsenGeneration.after");
+        // Spiritual drafts use the same unmaterialized typed shell as CreateProposedWound;
+        // canonical parsing requires the filled graph, which preparation supplies later.
+        var proposed = flavor == OwnerFlavor.AfterlifeGuardian ? before with
+        {
+            Severity = draft.ProposedAfter.Severity,
+            LastTransition = before.LastTransition with
+            {
+                TransitionId = draft.LocalTransitionRef, Ordinal = 2, Turn = Turn, Kind = "worsen"
+            },
+            Consequences = draft.ProposedAfter.Consequences
+        } : ParseWound(proposedJson, "worsenGeneration.after");
         var transition = new WoundAcceptedTransitionDraft(
             "worsen",
             draft.OperationKey,
@@ -4031,6 +4152,10 @@ public sealed partial class WoundEffectBatchPlannerTests
             OwnerFlavor.Player => new WoundCarrierCatalogInput(
                 WoundContractTestData.CreatePlayerCarrier(wound),
                 null, null, null, null),
+            OwnerFlavor.Npc => new WoundCarrierCatalogInput(null,
+                WoundContractTestData.CreateNamedNpcCarrier("npc_wound_batch", wound), null, null, null),
+            OwnerFlavor.AfterlifeGuardian => new WoundCarrierCatalogInput(null, null, null, null,
+                WoundContractTestData.CreateAfterlifeCarrier(CreateAfterlifeWoundRoot(), "/profiles/0", wound)),
             OwnerFlavor.Combatant => new WoundCarrierCatalogInput(
                 null,
                 null,
@@ -4057,6 +4182,13 @@ public sealed partial class WoundEffectBatchPlannerTests
                     ["activeEffects"] = new JsonArray(effect.DeepClone())
                 },
                 null, null, null, null, null),
+            OwnerFlavor.Npc => new EffectCarrierCatalogInput(null,
+                new JsonObject { ["schemaVersion"] = 1, ["entries"] = new JsonArray(new JsonObject
+                    { ["NPCId"] = "npc_wound_batch", ["activeEffects"] = new JsonArray(effect.DeepClone()) }) },
+                null, null, null, null),
+            OwnerFlavor.AfterlifeGuardian => new EffectCarrierCatalogInput(null, null, null, null,
+                new JsonObject { ["schemaVersion"] = 1, ["profiles"] = new JsonArray(new JsonObject
+                    { ["actorType"] = "guardian", ["actorId"] = "guardian_wound_batch", ["realm"] = "Chaos Sea", ["activeEffects"] = new JsonArray(effect.DeepClone()) }) }, null),
             OwnerFlavor.Combatant => new EffectCarrierCatalogInput(
                 null,
                 null,
@@ -5083,12 +5215,13 @@ public sealed partial class WoundEffectBatchPlannerTests
     private static WoundPreparedAcceptedTurnPlan
         RewrapPreparedWithForgedFirstPredecessor(
             WoundPreparedAcceptedTurnPlan prepared,
-            string priorEffectId)
+            string priorEffectId,
+            int rootIndex = 0)
     {
         var originalBatch = Assert.Single(prepared.EffectOperationBatches);
         var roots = originalBatch.RootApplications.ToArray();
-        var root = roots[0];
-        roots[0] = new WoundRootEffectApplication(
+        var root = roots[rootIndex];
+        roots[rootIndex] = new WoundRootEffectApplication(
             root.ApplicationRef,
             root.MechanicsOrdinal,
             root.OperationOrdinal,
