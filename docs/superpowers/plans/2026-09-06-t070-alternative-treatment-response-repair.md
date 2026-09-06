@@ -150,7 +150,7 @@ legality. `gm_only` routes are invalid. For `decline`, both payloads are exactly
 Reject an unknown decision, missing null, additional authority/result fields, recursive
 duplicates, wrong types and any member error. No successful partial array or fake hashes.
 
-- [ ] **Step 1: Observe the frozen response RED and add direct pure parser tests**
+- [x] **Step 1: Observe the frozen response RED and add direct pure parser tests**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.GameResponse_RoundTripsAlternativeTreatmentAuthoringWithoutInternalAuthority|FullyQualifiedName~WoundAlternativeTreatmentResponseTests|FullyQualifiedName~GmTreatmentRouteDraftTests"
@@ -201,7 +201,7 @@ start from canonical route data must explicitly author the removal leaf in the G
 dialect, not treat canonical IDs as offered selectors. The immutable shared test
 builder proves local factory inputs only, not fresh request authority.
 
-- [ ] **Step 2: Share strict readers and expose complete immutable local drafts**
+- [x] **Step 2: Share strict readers and expose complete immutable local drafts**
 
 Use same-partial `TryReadObject`, strict string/field readers and recursive
 `ValidateNoDuplicateProperties`; do not copy those implementations. Preserve original
@@ -400,7 +400,7 @@ the typed decision/payload pairing before writing; a manually constructed invali
 must throw rather than serialize a new permissive wire. No accepted command, transition,
 event binding, resource reservation, result fingerprint or world-state mutation here.
 
-- [ ] **Step 3: Declare client consumption and prove fail-closed raw distribution**
+- [x] **Step 3: Declare client consumption and prove fail-closed raw distribution**
 
 Add `woundTreatmentAuthorings` beside `woundDecisions` in
 `FileMapping.ClientConsumedResponseFields`, never `FieldToFile`. At the very start of
@@ -425,7 +425,7 @@ input; seed unrelated canonical and output files and prove byte-identical reject
 no command/backup remnants and no silently written scene. Include null/empty controls.
 Observe real pre-gate behavior RED after the DTO/parser seam is available.
 
-- [ ] **Step 4: Synchronize the GM response contract and worked examples**
+- [x] **Step 4: Synchronize the GM response contract and worked examples**
 
 Use marker `wound_mortal_alternative_response_v1` in the guide and wound example file.
 Explain the exact four fields, setting-authored complete members, hidden/visible path
@@ -456,7 +456,7 @@ This task is strictly Mortal and preserves every construction/afterlife packet s
 record that afterlife matrix/examples/daemon entrypoint need no change. The daemon
 already requires the wound guide; do not create a new prompt-only workaround.
 
-- [ ] **Step 5: Verify the owning boundary and commit**
+- [x] **Step 5: Verify the owning boundary and commit**
 
 ```powershell
 pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundAlternativeTreatmentResponseTests|FullyQualifiedName~GmTreatmentRouteDraftTests|FullyQualifiedName~MortalWoundDiagnosisTests.GameResponse_RoundTripsAlternativeTreatmentAuthoringWithoutInternalAuthority|FullyQualifiedName~WoundAcceptedTransitionCommandTests|FullyQualifiedName~MortalWoundTreatmentMemberShapeTests|FullyQualifiedName~PromptDocumentationCoverageTests.WoundAlternativeTreatmentResponseDocumentation_|FullyQualifiedName~MortalWoundTreatmentContractTests.Parse_CanonicalRemoveComplicationAcceptsOnlyPermanentComplicationId|FullyQualifiedName~MortalWoundTreatmentContractTests.ProposalComposition_RewritesSameProposalComplicationRefToCanonicalId|FullyQualifiedName~MortalWoundTreatmentContractTests.ProposalComposition_WorseningPreservesSignedCanonicalComplicationSelector|FullyQualifiedName~MortalWoundTreatmentContractTests.ProposalComposition_RejectsUnicodeDashConfusableComplicationRefs|FullyQualifiedName~MortalWoundTreatmentContractTests.ProposalComposition_RejectsCallerAuthoredCanonicalComplicationId"
@@ -470,11 +470,32 @@ Commit only owned files after exact controls pass:
 Parent inspects actual evidence/diff and obtains independent spec/quality review before
 Task 2. Do not mark any parent task complete from the implementer report alone.
 
+**Parent acceptance (2026-09-06):** `da6f5c64..6b94bdac`, independent Spec compliant /
+Quality approved, all I1/M1/M2 and restored-punctuation coverage resolved. Parent read
+the complete code/test/docs diff, report and review, all 16 actual lane summaries,
+TRX counters and build evidence. Final owning pure334/334 and Integration16/16 pass;
+the final tests-only punctuation addition passes its covering class43/43. No timeout,
+skip, duplicate or cleanup failure. The shared raw-array diagnostic-coordinate risk
+is explicitly owned by Task 2 before any diagnostic becomes a correction permission.
+Only local GM parsing/guidance and fail-closed raw ingress are complete; no live authoring
+or fresh authority is claimed. Mortal worked examples/source guards are synchronized;
+Task 1 changes no afterlife contract. T070/T177/#1536 stay open.
+
 ### Task 2: Kind-specific safe repair packets and strict persisted public transport
 
-**Status:** Bounded design recorded; controller must finish this task's executable
-brief after Task 1, incorporating its actual parser API and diagnostic evidence. Do
-not dispatch this task from the provisional checklist below.
+**Dependency:** Task 1's complete local GM parser and raw-ingress gate, including
+factory-backed positive fixtures and valid punctuation in unrelated game IDs.
+The controller records its independently reviewed HEAD in the dispatch brief.
+
+**Required implementation detail:** Read
+`docs/superpowers/plans/2026-09-06-t070-alternative-repair-projection.md` completely.
+It resolves the source-backed cutover inventory, independent diagnostic projection,
+safe value-alias redaction, original-coordinate validation phases, narrow correction
+scopes and staged complete corrected-author matching,
+public transport/live admission distinction, and the actual runtime GM instruction
+that previously applied acquisition narration to every wound packet. It includes
+the concrete Task 1 API, public interfaces, code for core masking/wrappers/gates,
+closed diagnostic catalog, production-derived test fixture and exact mutation cases.
 
 **Governing packet discriminator:** The approved
 `contracts/wound-repair-retry-and-rollback.md` requires `candidateKind` on the public
@@ -493,6 +514,26 @@ pure packet/privacy/harness tests; owning persisted-wave and rollback Integratio
 partials; wound/repair GM guidance, worked correction example, manifest and guards.
 Do not widen the opportunity command-ordinal obligation into a loose unsealed authoring
 JSON bag. Current public pending packets cannot reconstruct transient authoring authority.
+
+- [ ] **Step 1: Observe frozen RED and write the owning failing regressions**
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~MortalWoundDiagnosisTests.Repair_AlternativeCandidate"
+```
+
+Expected: the two unchanged original repair rows fail because the current builder
+has only construction payload projection. Record both actual failures before editing.
+Add the required detail's complete basic repair fixture/test and its explicit negative
+matrix to `WoundAlternativeTreatmentRepairTests` (cohesive pure partials permitted).
+Add new runtime tests under `WoundMaterializationLifecycleTests.AlternativeRepair_`.
+First observe the smallest new failing selection for each production boundary; compile
+RED for a missing API is valid evidence, not a substitute for runtime gate RED when
+the API already exists. Do not change the two frozen test methods or exclude them.
+
+- [ ] **Step 2: Implement phased projection and kind-specific corrected matching**
+
+Follow the required detail's exact API and core code. This checklist is the same
+deliverable, not separate implementation dispatches:
 
 - [ ] Add the required `candidateKind` field to every closed public packet variant:
   `construct_wound`, `repair_wound`, `author_alternative_treatment`, or
@@ -539,14 +580,71 @@ JSON bag. Current public pending packets cannot reconstruct transient authoring 
 - [ ] Keep the two frozen repair tests unchanged; add kind/path/code mismatches, privacy,
   corrected required field versus omitted forbidden field, null/path pairing, unrelated
   sibling preservation, contextual-build parity, exact persisted transport and mixed-wave
-  rejection. Update GM repair guidance and one executable hidden-route correction example.
+  rejection. Keep the code/path diagnostics at original indices and cover staged repair
+  of errors hidden by invalid modes or raw array entries. A valid local intermediate
+  correction never creates fresh authority, receipts or accepted commands.
+
+- [ ] **Step 3: Synchronize all changed GM transport surfaces and worked examples**
+
+Use the required detail's complete file inventory, including the actual runtime
+`BuildValidationRepairRequestInstructions` text and the public obligation's route.
+Register exactly one new manifest family `wound_mortal_alternative_repair_v1`, with
+three complete JSON submarkers `wound_mortal_alternative_repair_rejected_author_v1`,
+`wound_mortal_alternative_repair_safe_packet_v1`, and
+`wound_mortal_alternative_repair_corrected_author_v1` in the wound example file.
+Use the detail's real-parser invalid-mode candidate: a hidden complete procedure
+route and its complete diagnosis path, with only mode invalid, followed by the
+actual builder-produced eleven-field packet and the legally corrected author.
+No ellipses, hand-authored fake live authority, shape exemption or placeholder member.
+The artifact may use the fixture's public correlation fingerprint only as a clearly
+documented local transport example; it is not a canonical/evidence seal.
+
+New production guards use prefix
+`ExampleDocumentationValidationTests.AlternativeTreatmentRepairWorkedExamples_`:
+parse the rejected response, build with its actual diagnostics, compare the complete
+serialized safe packet against the worked packet, strictly validate its public
+packet/receipt wave, accept the corrected local author, and reject an unrelated
+sibling edit plus copied private authority. No guard substitutes a hand-built packet
+for builder execution. Add source guard
+`PromptDocumentationCoverageTests.WoundAlternativeTreatmentRepairDocumentation_`
+for required exact fields, kind-specific recipe routes, staged correction, private
+authority limitation and the documented no-live-adapter boundary. Keep all existing
+manifest families and exact expected-family dictionary assertions.
 - [ ] The shared construction discriminator also affects afterlife repair transport.
   Audit/update the afterlife matrix, CLI examples, manifest, source/production guards
   and daemon guidance where applicable. Preserve all spiritual mechanics and semantic
   construction shapes; synchronize only the changed required packet field. Include the
   repository-required Focused AfterlifeDocumentationCoverageTests and one FullValidation
   control for this documentation-sensitive boundary, without duplicate broad controls.
-- [ ] Obtain owning Focused evidence and independent review. Then the three original
+
+- [ ] **Step 4: Run the exact owning controls sequentially**
+
+```powershell
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~WoundAlternativeTreatmentRepairTests|FullyQualifiedName~WoundRepairPacketBuilderTests|FullyQualifiedName~WoundRepairPacketPrivacyTests|FullyQualifiedName~MortalWoundDiagnosisTests.Repair_AlternativeCandidate|FullyQualifiedName~ValidationRepairRequestTests.WoundRepairIssue_UsesTheClosedSafePacketWithoutHarnessExpansion|FullyQualifiedName~PromptDocumentationCoverageTests.WoundRepairReplayGuidance_DocumentsBoundedRetryRollbackAndReceipt|FullyQualifiedName~PromptDocumentationCoverageTests.WoundAlternativeTreatmentRepairDocumentation_|FullyQualifiedName~WoundAlternativeTreatmentResponseTests|FullyQualifiedName~GmTreatmentRouteDraftTests|FullyQualifiedName~MortalWoundTreatmentMemberShapeTests|FullyQualifiedName~WoundAcceptedTransitionCommandTests|FullyQualifiedName~EffectMaterializationSourceGuardTests.FullTurnEffectResourceRepairGuidance_UsesOnlyGmAuthoredReplayPaths|FullyQualifiedName~EffectMaterializationSourceGuardTests.PendingEffectResourceWaveGuidance_IsCompleteInEveryActiveGmEntrypoint|FullyQualifiedName~GameEngineSourceGuardTests.ValidationRepairFlow_MustUseValidatedPendingSnapshotContext_ForRepairCorrelationAndMetadata"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~WoundMaterializationLifecycleTests.AlternativeRepair_|FullyQualifiedName~WoundMaterializationLifecycleTests.WoundMaterializationRollbackTests_ExactRetryPreservesUnrelatedWoundCommands|FullyQualifiedName~WoundMaterializationLifecycleTests.WoundMaterializationRollbackTests_MissingRetryAuthorityForActionablePacketRequiresFailClosed|FullyQualifiedName~WoundMaterializationLifecycleTests.WoundMaterializationRollbackTests_CorrectedRepairRoundtripPublishesOneAtomicResult|FullyQualifiedName~MortalWoundTreatmentResolverTests.PersistedRepairWaveValidator_|FullyQualifiedName~MortalWoundTreatmentResolverTests.CommandAndRepairPending_ByteDifferentSemanticCopiesCoalesceToOneCompleteRequest|FullyQualifiedName~MortalWoundTreatmentResolverTests.RepairPending_DoesNotCopySubmittedTreatmentWithoutANonEmptyRepairWave|FullyQualifiedName~MortalWoundTreatmentResolverTests.PersistedPending_RejectsSubmittedTreatmentWithoutARepairWave|FullyQualifiedName~MortalWoundTreatmentResolverTests.PersistedCatalog_RejectsEveryCommandPendingDivergence|FullyQualifiedName~ExampleDocumentationValidationTests.AlternativeTreatmentRepairWorkedExamples_|FullyQualifiedName~ExampleDocumentationValidationTests.CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane FullValidation
+```
+
+Expected: every selected row passes; zero failures/skips/duplicates, successful
+cleanup, no timeout, zero build errors/warnings. New pure persisted-format tests belong
+in the new Fast class, not Integration; existing Integration persisted tests remain
+owning controls. If a named existing filter unexpectedly selects no rows, investigate
+the actual method names rather than silently omitting it. No full-solution test,
+duplicate Fast, lane-limit edit or negative test filter. FullValidation is authorized
+once here because the shared afterlife documentation/examples contract changed.
+
+- [ ] **Step 5: Self-review, scoped commit and independent task review**
+
+Write the exact commands and every RED/intermediate/GREEN artifact path, counts,
+wall/exit/timeout/duplicates/cleanup/build/skips to the assigned report. Explain the
+private/public boundary, staged diagnostic behavior, preserved array coordinates and
+GM/Mortal/afterlife docs/example coverage. Run `git diff --check`; commit only owned
+code/tests/docs with `feat(wounds): project kind-specific alternative repair packets (#1536)`.
+Do not edit parent task records or mark the feature complete. The parent must inspect
+the complete diff and actual verification evidence and obtain independent spec/quality
+review, including staged corrections and public transport versus live admission.
+Then the three original
   response/repair REDs are implemented, but transient capture/fresh publication,
   closed heal-legacy sources and course publication remain required T070 work.
 

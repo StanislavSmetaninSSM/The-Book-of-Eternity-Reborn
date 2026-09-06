@@ -593,6 +593,18 @@ cutover, without a tagless compatibility path. Public persisted format
 validation cannot rehydrate the private rejected-response authority required by live
 retry. A rejected draft must never be staged as an accepted command just to reuse
 opportunity-only capture; the fresh transient-request adapter remains mandatory.
+The reviewed local response checkpoint is `da6f5c64..6b94bdac` (2026-09-06).
+The executable repair detail is
+`docs/superpowers/plans/2026-09-06-t070-alternative-repair-projection.md`.
+It phases raw/semantic validation to preserve original array coordinates, narrows
+dependent pairing diagnostics before granting edits, and permits a checked local
+intermediate correction to expose the next diagnostic phase. Intermediate progress
+is not a completed repair or fresh authority; a later private adapter must refresh
+the rejected draft's semantic fingerprint before minting its next repair packet.
+Private aliases are scrubbed without erasing unrelated authored IDs or valid siblings.
+The public packet can be inspected while its unsupported live capture/retry remains
+explicitly closed. Shared packet-tag changes require the afterlife documentation
+controls even though alternative treatments themselves remain Mortal-only.
 The local GM parser must also preserve the approved dialect boundary: GM operations use
 offered `complicationRef`, reject canonical `complicationId`, and do not acquire world
 authority through a standalone canonical member parser. The response task's shared

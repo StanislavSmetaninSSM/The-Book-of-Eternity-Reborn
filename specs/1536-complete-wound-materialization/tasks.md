@@ -1487,8 +1487,9 @@ entrypoints require no update for T065.
   this does not cover the three remaining GM response/repair rows or fresh publication.
   Next follow `docs/superpowers/plans/2026-09-06-t070-alternative-treatment-response-repair.md`:
   first strict immutable GM response drafts, pre-write raw-input gate and worked examples;
-  then kind-specific safe correction/public persisted transport. Its Task 2 checklist
-  must be turned into an executable brief after Task 1. Existing opportunity capture
+  then kind-specific safe correction/public persisted transport. Task 2 now has its
+  executable detail in `docs/superpowers/plans/2026-09-06-t070-alternative-repair-projection.md`.
+  Existing opportunity capture
   cannot stand in for transient rejected-authoring authority, and its hardcoded public
   resubmission route must not contradict the new packet. Full live retry/publication
   remains a subsequent mandatory T070 contour, not a public-checksum shortcut.
@@ -1536,6 +1537,24 @@ entrypoints require no update for T065.
   exception for old construction packets. Fresh diagnosis check/cost and alternative
   private evidence/request/decline/discovery authority remain explicitly unfinished.
   No remote publication or issue closure; T070/T177/#1536 remain open.
+  GM response checkpoint (2026-09-06): `da6f5c64..6b94bdac`, independent Spec
+  compliant / Quality approved, all review findings resolved. Parent inspected the
+  complete 24-file change, all16 actual summary/TRX/build artifacts and the complete
+  reports/reviews. Final exact pure334/334
+  (`20260906-134356-608-368-02cc27341f5f46768a7adc50ad2b606f-focused`) and
+  Integration16/16 (`20260906-134420-991-10968-fcb0b50cfaba4dbbb4dfc901c5a61db2-focused`)
+  pass; the final test-only punctuation correction passes its covering class43/43
+  (`20260906-141113-452-13180-aa62da694a69410b9670d975f0c67f94-focused`). No warning,
+  skip, duplicate, timeout or cleanup failure in these final controls. One original
+  response RED is implemented; both frozen repair rows remain Task 2. Mortal GM
+  guide/field documentation, three worked examples, manifest and production/source
+  guards are synchronized; no afterlife surface changed in this local response task.
+  Explicit raw-ingress rejection remains until actual fresh authority is wired.
+  Task 2 must fix shared diagnostic coordinate compaction before deriving edit masks,
+  preserve valid siblings through staged local corrections, and perform the all-kind
+  tag cutover together with strict consumers and afterlife documentation controls.
+  Closed heal-legacy source and course-publication REDs remain required; no T070,
+  T177 or feature closure, merge or remote action is authorized by this checkpoint.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
