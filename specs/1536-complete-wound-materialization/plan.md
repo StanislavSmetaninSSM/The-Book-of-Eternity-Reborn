@@ -1533,12 +1533,20 @@ unchanged mandatory legacy test pass in Fast. One five-minute Fast completed6450
 of7526 discovery rows, 6447PASS/three reflection-harness FAIL, arithmetic1076
 uncompleted. No full GREEN claim; exact artifacts are in the linked plan.
 
-The next T177 verification prerequisite is
-`docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md`: two ordinary
-test wrappers must explicitly send the current null/null optional authority
-defaults to reflection. No production signature/validator or assertion changes;
-seven existing affected facts, owner Focused and one Fast provide evidence.
-This test-only plan is prepared, not yet implemented/accepted.
+The bounded T177 verification prerequisite
+`docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` is accepted
+through `7460800d` (exact BASE `9f3e1455`). Two ordinary test wrappers now send
+the current null/null authority defaults; the empty-item registration wrapper
+supplies the existing typed empty routes/transfers and independently cloned
+projection-root inputs. No production signature/validator or assertion changed.
+Parent inspected the source, exact diff and all actual artifacts; fresh review
+is Spec Compliant / Quality Approved, zero findings. Fixture RED1/7 then5/7 is
+followed by affected GREEN7/7, owner208/208 and one Fast7,580/7,580 in3:13.691
+within five minutes. Fast's7,526 discovery entries expand by54 cases in seven
+theories; parent method-level reconciliation matches every method. All runs have
+zero build diagnostics/timeouts/duplicates and clean cleanup. No GM surface was
+changed; no prompt/example/manifest/source-guard update or FullValidation is
+needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain open.
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 

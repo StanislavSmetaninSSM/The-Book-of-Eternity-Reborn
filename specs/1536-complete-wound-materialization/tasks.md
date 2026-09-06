@@ -2297,14 +2297,29 @@ scope, then resume paused wound documentation and final controls against one fin
 - [X] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
 - [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
 
-T177 bounded fixture correction prepared (2026-09-07):
+T177 bounded fixture correction complete (2026-09-07):
 `docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` repairs only
 the two ordinary-stage reflection calls that still pass two arguments to current
 four-parameter registry methods. The catalog Fast's three failing rows stop at
 method selection, not at their behavioral assertions. Preserve all assertions,
 strict Invoke and production authority checks; reproduce the existing seven-fact
-cohort, then run its owner class and one bounded Fast. Implementation/review are
-pending; full T177 remains open.
+cohort, then run its owner class and one bounded Fast. Full T177 remains open.
+Intermediate fixture commit `4170e01d` restores
+five of seven affected behaviors; the other two now expose the same exact-arity
+drift in RegisterEmptyMortalItems (six supplied versus ten current parameters).
+The parent source-verified extension supplies empty routes/transfers and complete
+null-valued projection-root maps in that same test file; production cache clones
+both maps independently. No assertion or production authority change is allowed.
+Accepted exact range `9f3e1455..7460800d`, fresh Spec Compliant / Quality Approved,
+zero findings, with parent source/diff/actual artifact inspection. Fixture RED
+1/7 then 5/7 is followed by behavioral GREEN 7/7 and owner GREEN 208/208. One Fast
+`20260907-093816-867-32324-46e815b089614fbe80b9fb7d063d4cc0-fast` passes 7,580/7,580
+in 3:13.691 within five minutes, zero build diagnostics/timeouts/duplicates, clean
+cleanup. Its 7,526 discovery entries expand by 54 cases in seven runtime-enumerated
+theories; parent method-level reconciliation leaves no unmatched cases. No gameplay
+or GM surface changed; no prompt/example/manifest/source-guard update or
+FullValidation is needed. Detailed five-run evidence is in the linked bounded plan.
+This does not close T177, T070 or #1536; top-level completion stays 77/177.
 
 **Checkpoint**: Every active payload has explicit closed scope; exact target-skill
 binding, runtime dormancy, treatment, projection, slot accounting, replay/rollback, and
