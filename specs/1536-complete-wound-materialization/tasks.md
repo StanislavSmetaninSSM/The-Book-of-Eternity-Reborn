@@ -1748,9 +1748,26 @@ entrypoints require no update for T065.
   private T067 authority, carries full policy/direct tagged identities and exact
   canonical selector paths, and rematerializes only for original/final rank change.
   Real mixed partial/course/critical, 0/0 batch, rollback/retry/cold replay and GM
-  worked-example coverage belong to that task. Parent source/self-review is
-  complete; implementation and independent review are still pending. Death,
-  selected heal/legacy, scheduled recovery and spiritual healing remain open.
+  worked-example coverage belong to that task. Parent functional acceptance
+  (2026-09-07): range `919fffba..e8864fba`, runtime896758b6 and test-only review
+  fixes caa3c5d9/e8864fba, independent Spec Compliant / Quality Approved with zero
+  open findings. Current selected34, private/applicability40, direct26, removal24,
+  severity39, recovery8, scalar-course34 and afterlife documentation121 pass.
+  Actual root/child canonical publication5/5 and final isolated body/private3/3
+  controls pass. One FullValidation1857/1857 is GREEN; one Fast5908/5909 retains
+  the required legacy RED and1405 uncompleted discovery rows, not full-Fast success.
+  Exact artifacts and the historical per-guard test-order limitation are recorded
+  in that plan's acceptance. Mortal GM guide/example/manifest/guards are synchronized;
+  no new afterlife-authored surface. Do not reimplement this bounded publisher.
+  Death, selected heal/legacy, scheduled recovery and spiritual healing remain open.
+  No additional top-level task is closed; T070/T177/#1536 remain open.
+  Prepared follow-up prerequisite (2026-09-07):
+  `docs/superpowers/plans/2026-09-07-mortal-follow-up-heal-staging.md` pins the
+  missing FR-064 Mortal physical III/IV-to-active-I treatment staging allowance.
+  It changes only the private treatment predicate and pure reducer tests; recovery,
+  spiritual limits and the final terminal heal validator remain unchanged. This
+  is not healing/legacy publication and does not decide the unanswered legacy
+  preparation API. Implementation and independent acceptance remain pending.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent
@@ -2029,6 +2046,13 @@ hand-written history/after-images, or a raw mutation fallback.
 ### RED tests
 
 - [ ] T076 [P] [US3] Add RED trauma-pressure term/threshold, harmful-margin source, resilience-tier delta with zero OD spend, strain rank/jump, natural 1/20, and exact `clear/strained/fractured/overwhelmed/broken` destination-cap boundary tests in `BookOfEternityClient.Tests/SpiritualWoundOpportunityTests.cs`
+  Prepared arithmetic prerequisite (2026-09-07), shared with T084:
+  `docs/superpowers/plans/2026-09-07-spiritual-wound-opportunity-math.md` defines
+  42 valid-value and 24 invalid-domain/overflow rows for an unused internal pure
+  calculator. Parent source/self-review is complete; implementation and independent
+  acceptance remain pending. These rows do not prove accepted exchange provenance,
+  zero-OD passive registration, natural-die independence in the live adapter or
+  opportunity publication. T076 remains open for those integrated requirements.
 - [ ] T077 [P] [US3] Add RED training escalation, controlled II cap, hostile/annihilation cap, mode visibility, and post-roll mode-change rejection tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.Wounds.cs`
 - [ ] T078 [P] [US3] Add RED one-new-wound-per-side, later worsening, declined-earlier opportunity, and explicit older-wound re-trauma tests in `BookOfEternityClient.Tests/SpiritualConflictWoundSealTests.cs`
 - [ ] T079 [P] [US3] Add RED non-training bounded anti-repeat defeat outcome and annihilation winner softer/optional dissipation tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.DefeatWounds.cs`
@@ -2040,6 +2064,10 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - [ ] T083 [US3] Extend spiritual conflict start/state with declared danger mode, escalation evidence, per-side wound seals, and bounded defeat outcome in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
 - [ ] T084 [US3] Implement trauma-pressure calculation, destination/mode/source caps, harmful-margin audit, one-per-side/re-trauma rules, and opportunity export in `BookOfEternityClient/Services/SpiritualWoundOpportunityAdapter.cs`
+  The T076-linked pure arithmetic plan first adds
+  `BookOfEternityClient/Services/SpiritualWoundOpportunityMath.cs` without a runtime
+  caller. A value calculation is not accepted source evidence. T084 remains open
+  for the actual adapter, harmful-side provenance and all per-side/export rules.
 - [ ] T085 [US3] Validate danger/opportunity/strain/art audit and reject GM-authored computed fields in `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs` and `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`
 - [ ] T086 [US3] Add danger, wound maximum, accepted wound/decline, and defeat consequence to player-safe conflict preview/audit in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
 - [ ] T087 [US3] Compose persistent profile wound transitions and typed owner-to-current-side `SpiritualWoundConflictContribution` evidence without duplicating wounds/effects or mutating `combatConditions[]`; fail closed on absent/duplicate/wrong-realm/ambiguous participant membership and clear only derived evidence on conflict close in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/SpiritualWoundConflictContributionProjector.cs`, `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs`

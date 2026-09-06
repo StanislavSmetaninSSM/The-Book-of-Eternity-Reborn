@@ -1504,6 +1504,14 @@ derives `WoundAttemptTerminalIntent` solely from a validated planner result and 
 trusts caller-authored `WoundDeclaredTransitionOutcome.TerminalAttempt`. T068 alone maps
 the immutable consumption trigger and resolved requirement rows into atomic mutations.
 
+Bounded T070 follow-up prerequisite (2026-09-07):
+`docs/superpowers/plans/2026-09-07-mortal-follow-up-heal-staging.md` implements
+FR-064's Mortal physical III/IV-to-active-I treatment staging allowance only.
+It preserves the spiritual/recovery limits and the independent terminal heal
+validator. This two-file reducer/test task does not expose healing publication,
+register legacy sources, or settle the unanswered legacy preparation decision.
+Implementation, test evidence and independent acceptance remain pending.
+
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
@@ -1520,6 +1528,20 @@ the immutable consumption trigger and resolved requirement rows into atomic muta
 6. Run the relevant focused spiritual-conflict matrix while iterating; use the full
    RegressionIntegration lane only when the exhaustive boundary changes or diagnosis
    requires it.
+
+First bounded implementation plan (2026-09-07):
+`docs/superpowers/plans/2026-09-07-spiritual-wound-opportunity-math.md` isolates
+the approved pressure/threshold/destination/mode/source-cap arithmetic from the
+still-unimplemented accepted-conflict adapter. Its immutable result is explicitly
+not authority; it never creates a wound or decides for the GM. Long arithmetic
+preserves negative margins and fails closed on invalid domains or overflow.
+The pure 66-row test inventory covers arithmetic only, not accepted harmful-margin
+provenance, art registration, mode/escalation seals, per-side/re-trauma decisions
+or opportunity publication. T076/T084 remain open after this prerequisite.
+Source preflight also found that the approved new-art `{tier,experience}` example
+and the current scalar-tier/currency progression differ; reconcile that separately
+before T082/T100 instead of silently introducing mixed schemas. It does not block
+this value-only calculator. The plan is prepared, not yet implemented or accepted.
 
 Checkpoint: players and persistent entities have complete bounded spiritual wound and
 healing lifecycles; every non-training defeat is durable without mandatory injury or

@@ -151,7 +151,7 @@ internal sealed record MortalWoundTreatmentSelectedDefinitionOrigin(
 // These are private implementation interfaces, not serialized game contracts.
 ```
 
-- [ ] **Step 1: Establish real selected-publication RED and narrow test placement.**
+- [x] **Step 1: Establish real selected-publication RED and narrow test placement.**
 
 Create the Integration partial in the existing partial test class. Reuse the real
 fixture, persisted-command rehydration, effect batch and publication helpers. Start
@@ -210,7 +210,7 @@ from real common composition, not a missing fixture, compile error or timeout.
 Record actual artifact and selected test names. Add the source inventory entry in
 both arrays/table/count before the first final boundary control.
 
-- [ ] **Step 2: Pin final budget admission before implementing the shared projection.**
+- [x] **Step 2: Pin final budget admission before implementing the shared projection.**
 
 Add a theory to `ComplicationGraphApplicability.cs` using its real offered/claimed
 die and resource-count helpers. Give the accepted wound one retained passive slot
@@ -356,6 +356,11 @@ extracted old behavior already passes, report preservation, not a new RED.
 
 - [ ] **Step 3: Admit and seal the complete private policy packet, not public hashes.**
 
+Historical sequencing note: the runtime admission/seal and all required current
+oracles are implemented and accepted below. The per-guard pre-implementation RED
+sequence was not established for every detailed negative; this historical checkbox
+remains unchecked rather than manufacturing that evidence. It is not pending code.
+
 Before editing admission, add real-resolution forgery tests in the new publication
 partial under `DeteriorationPublication_PrivateAuthority`: replace a selected
 prepared policy intent with the old five-argument `Create` carrying identical six
@@ -423,7 +428,7 @@ rules, aggregate reduction <=2, max operations8, explicit death or terminal heal
 `ValidateCommon` still obtains the current accepted state and freshly recomposes
 T067 through unchanged registry-current T069 before granting publication.
 
-- [ ] **Step 4: Compile direct and policy operations into one tagged final graph.**
+- [x] **Step 4: Compile direct and policy operations into one tagged final graph.**
 
 Add selected-graph tests under `DeteriorationPublication_TaggedGraph` before
 changing compilation. Cover effectful/effectless policy additions, an effectless
@@ -521,7 +526,7 @@ Use the same operation predicate in both locations; closed grammar has already
 checked exact private policy authority. Detached recomposition must derive the
 same selected graph fingerprint from the same original resolution.
 
-- [ ] **Step 5: Publish one final rank, graph and effect generation.**
+- [x] **Step 5: Publish one final rank, graph and effect generation.**
 
 Add actual publication tests under `DeteriorationPublication_FinalRank` before
 changing consumers. Use a single passive retained root so legal rank-I results
@@ -593,7 +598,7 @@ GREEN. Once support is actually present, update the P1 boundary test fixture to
 six-member public shape and independent original-fingerprint oracle. Do not skip
 it or retain an obsolete expectation that non-death is unsupported.
 
-- [ ] **Step 6: Prove selectors and sealing through real composition and rollback.**
+- [x] **Step 6: Prove selectors and sealing through real composition and rollback.**
 
 `SelectedDefinitionPath` returns the compilation's sealed exact `ComponentsPath`:
 
@@ -635,7 +640,7 @@ as preservation. Then run the new private-authority group plus original P1
 `PolicyPreparation_` coverage on restored runtime. Every new guard gets tests
 written before its implementation; never claim compile/fixture failures as RED.
 
-- [ ] **Step 7: Verify real modes, atomic recovery and replay.**
+- [x] **Step 7: Verify real modes, atomic recovery and replay.**
 
 Add tests under `DeteriorationPublication_Lifecycle` with the existing real fixture
 and coordinated helpers, not a new stand-in transaction implementation:
@@ -689,7 +694,7 @@ change. Split large measured groups by test ownership instead of repeatedly timi
 out; an evidence-backed Focused15 override is permitted by existing policy. Do not
 run the entire growing resolver class or full solution as a development loop.
 
-- [ ] **Step 8: Synchronize the real GM capability and executable example.**
+- [x] **Step 8: Synchronize the real GM capability and executable example.**
 
 Update both the early unfinished-producer paragraph and selected-graph paragraph
 in the Mortal guide/example. Keep the direct-add guarantees and add these exact
@@ -826,7 +831,7 @@ They need no edit if they delegate to this guide and do not assert the obsolete
 boundary. Record that result rather than claiming they were updated. No new
 afterlife response field, pending file or behavior is introduced by this task.
 
-- [ ] **Step 9: Perform bounded coherent preservation and one broad checkpoint.**
+- [x] **Step 9: Perform bounded coherent preservation and one broad checkpoint.**
 
 Run all new publication groups through the smallest named Integration selections;
 capture counts, artifacts, duration, no timeout, no duplicates and cleanup. A
@@ -872,7 +877,7 @@ unsupported pipeline can mask later negative assertions, so prove them again aft
 the corresponding positive path becomes valid. Do not claim guards were observed
 to fail individually if the earlier stage rejected first.
 
-- [ ] **Step 10: Self-review, scoped commits and independent task gate.**
+- [x] **Step 10: Self-review, scoped commits and independent task gate.**
 
 Use small coherent commits after verified implementation increments. Before every
 commit inspect only the task allowlist, actual diff and staged diffcheck; no
@@ -931,3 +936,46 @@ ordered applicability/budget (Step2), exact identity/mapping and policy graph
 (Step4), final rank/atomic effects (Step5), selectors/tamper (Step6), course/critical/
 rollback/replay (Step7), GM contract/example (Step8), bounded evidence and review
 (Steps9-10). Whole-feature omissions remain explicitly tracked, not waived.
+
+## Parent functional acceptance — 2026-09-07
+
+Accepted bounded runtime range: `919fffbae739a54cd93ea77c30d9db06c35e52c1`
+through `e8864fbab6238f7148c3962b216e321f9c3638f4`. Implementation is `896758b6`;
+test-only review corrections are `caa3c5d9` and `e8864fba`. Parent read the complete
+source/report and actual artifacts; independent final Spec Compliance is Compliant
+and Code Quality Approved, with zero open findings. Do not reimplement this task.
+
+All 34 selected-policy rows have current named-owner passing evidence. Preservation
+includes private/applicability40, direct-add26, removal24, severity/binding39,
+recovery8, scalar-course34 and afterlife documentation121. The reviewed root AND
+child-only selector positives now reach actual common publication, persisted exact
+skill definitions/parent binding, parentless root creation and resource/receipt
+history. Final five-row evidence:
+`20260907-065940-403-43972-fd8a3178a3a044c6ba207603809a1550-focused`,
+5/5 in3:46.0062727,10-minute bound,0 warnings/errors,complete cleanup.
+
+The canonical-body oracle additionally preserves all original request bytes,
+including gacha, and all non-body manifest data; only wound/identity/history
+snapshot hashes change. Production re-preparation was unsuitable because it
+regenerated gacha. The final fixture uses existing exact-byte snapshot authority
+functions, never private treatment-seal forgery. Assertion-only control071540
+observed1PASS/1request-byteFAIL before that correction; final
+`20260907-071826-716-41408-1a43ce1a20294710bbb1aadc4fe0d202-focused`
+passes3/3 in56.0392144 at5minutes,0 warnings/errors,clean cleanup/no duplicates.
+Compile-only and fixture diagnostic failures remain historical, not runtime RED.
+
+ONE Fast `20260907-060157-803-33244-3c56edf6fb10416088fc5ed7634c117f-fast`
+completed5909 rows:5908PASS and the required legacy-source RED,2:18.6137186 at5m.
+There are1405 uncompleted discovery rows by arithmetic, not exact identity-set
+subtraction. This is not a fully green or complete Fast control. ONE conditional
+FullValidation `20260907-060435-778-27020-f764a9329ad04899a67b6381d2900fd4-fullvalidation`
+passes1857/1857 in9:33.4032114 at15m across11TRXs, including the exact new production
+parser example. All final controls have clean build/cleanup and no timeout or
+cross-TRX duplicates. Neither broad lane was repeated for test-only review fixes.
+
+Mortal guide/example/manifest/source guards are synchronized. No new afterlife
+contract or command is exposed; the checked rule/daemon/matrix entrypoints delegate
+to the guide and required no edit. The per-guard historical test-order limitation
+in Step3 is explicitly retained; current negative coverage is not retroactive TDD.
+Death, heal/legacy, scheduled recovery, spiritual arts/healing and full T070/T177/
+#1536 acceptance remain open. No remote push, PR, merge or issue closure occurred.
