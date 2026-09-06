@@ -770,29 +770,19 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             };
             if (operation is MortalWoundApplyDeteriorationOperation deterioration)
             {
-                var authority = MortalWoundDeteriorationPolicyAuthority.Create(
-                    acceptedState,
-                    request.Coordinates,
-                    deterioration.PolicyRef);
-                if (!authority.IsValid || authority.Authority is null)
+                if (!MortalWoundTreatmentDeteriorationPreparation.TryCreate(
+                        request,
+                        ordinal,
+                        deterioration,
+                        acceptedState,
+                        out var preparedPolicy,
+                        out var policyIssues))
                 {
-                    failures.AddRange(authority.Issues);
+                    failures.AddRange(policyIssues);
                     continue;
                 }
-                intent = MortalWoundApplyDeteriorationOutcomeIntent.Create(
-                    ordinal,
-                    declaredFingerprint,
-                    WoundAcceptedTurnFingerprintWriter.Compute(
-                        new string?[]
-                        {
-                            "book_of_eternity.mortal_wound_treatment.deterioration_intent",
-                            "1",
-                            intentFingerprint,
-                            deterioration.PolicyRef,
-                            authority.Authority.AuthorityFingerprint
-                        }),
-                    deterioration.PolicyRef,
-                    authority.Authority.AuthorityFingerprint);
+                intent = MortalWoundApplyDeteriorationOutcomeIntent.CreatePrepared(
+                    preparedPolicy!);
             }
             if (intent is null)
             {
@@ -949,6 +939,25 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             "book_of_eternity.mortal_wound_treatment.declared_operation",
             ordinal,
             operation));
+
+    internal static string DeteriorationIntentFingerprint(
+        string requestFingerprint,
+        int ordinal,
+        MortalWoundApplyDeteriorationOperation operation,
+        string declaredFingerprint,
+        string authorityFingerprint) => WoundAcceptedTurnFingerprintWriter.Compute(
+        new string?[]
+        {
+            "book_of_eternity.mortal_wound_treatment.deterioration_intent",
+            "1",
+            IntentFingerprint(
+                requestFingerprint,
+                ordinal,
+                operation,
+                declaredFingerprint),
+            operation.PolicyRef,
+            authorityFingerprint
+        });
 
     private static string IntentFingerprint(
         string requestFingerprint,

@@ -427,7 +427,7 @@ fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 
 ### Exact executable manifests after #1536 scalar-course publication
 
-The 64 entries below are the complete, ordinal contents of
+The 65 entries below are the complete, ordinal contents of
 `FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
 Integration ownership enforced at the same HEAD. The three historical special
 groups retain their complete class categories; method-level
@@ -451,6 +451,7 @@ groups retain their complete class categories; method-level
 | `MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.DetachedSourceValidation.cs` | `RegressionIntegration` |
+| `MortalWoundTreatmentResolverTests.DeteriorationPreparation.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.DeteriorationPolicyAuthority.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.FreshAuthority.cs` | `RegressionIntegration` |
 | `MortalWoundTreatmentResolverTests.HistoryPersistence.cs` | `RegressionIntegration` |
