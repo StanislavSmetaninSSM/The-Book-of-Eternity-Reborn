@@ -15,6 +15,18 @@ Parent inspected the source and the complete six-section, read-only
 source-proven seams in the already approved complete selected-result graph. It
 does not add a gameplay choice or widen spiritual treatment.
 
+**Parent accepted (2026-09-07):** implemented within `109d4f92..9f9f6c86` and
+independently reviewed with Task2 (Spec Compliance and Code Quality Approved,
+no findings). Parent inspected the exact diff and actual evidence: reducer140,
+working graph31 and related coherent pure239 all GREEN; real applicability23
+plus final-stamp2 GREEN; all26 selected addition rows have current passing
+results, with original removal24, severity/binding39 and recovery8 preserved.
+Afterlife documentation121/121 and FullValidation1856/1856 pass. The one real
+Fast6015/6016 retains only the known unfinished legacy RED and is incomplete,
+not a successful full Fast run. Exact artifact IDs and timing are recorded in
+the original plan's Task2 acceptance and the parent artifact audit. Only this
+bounded addendum is complete; T070/T177/#1536 remain open.
+
 ## Why this is required
 
 At BASE, `ValidateTreat` calls the removal-only same-rank owner at
@@ -152,39 +164,39 @@ as a final baseline-to-result check, never inside append or per-operation valida
 
 ## RED matrix and bounded verification
 
-- [ ] First reproduce pure same-rank effectful treatment-addition RED at the
+- [x] First reproduce pure same-rank effectful treatment-addition RED at the
   removal-only reducer gate, plus multiple additions and effectless zero-root case.
   Zero-root treatment still requires the upstream authenticated 0/0 batch.
-- [ ] Cover mixed removal/additions with retained projection, full root/definition
+- [x] Cover mixed removal/additions with retained projection, full root/definition
   closure, exact declared lists, wrong/new base or retained-complication ownership,
   stolen/disappearing old roots, retained binding/body/profile/summary/order drift,
   reachable children and orphan rejection. Include a legal `base_wound` complication
   and an illegal transfer from that complication to base, also on the no-add path.
-- [ ] Keep ordinary recover/stabilize/complicate rejection controls and an actually
+- [x] Keep ordinary recover/stabilize/complicate rejection controls and an actually
   canonical-valid non-Mortal treatment-addition negative; do not use parser failure
   as proof of the new routing gate.
-- [ ] Pure graph RED: remove old complication then add same root key at same rank,
+- [x] Pure graph RED: remove old complication then add same root key at same rank,
   with identical and changed bodies. Direct current-graph removal/append can succeed,
   but final admission rejects. Fresh-key replacement passes. Same-key replacement
   followed by legal one-step reduction passes destination checks. Shared-helper
   controls allow a reappearing non-root key with identical body and reject changed
   body; preserve root-rebinding-before-body diagnostic precedence.
-- [ ] Real `ComplicationGraphApplicability_*`: use the existing destination-rank
+- [x] Real `ComplicationGraphApplicability_*`: use the existing destination-rank
   fixture with an old complication root; same-rank invalid failed band is rejected
   before claims, full fixture tree is unchanged, and a fresh-key sibling still
   gets die index zero. A valid remove/add/reduce band is admitted. Strip only old
   canonical links when constructing a draft; let the existing converter restore them.
-- [ ] Re-run real selected publication rows and the original Task 2 matrix,
+- [x] Re-run real selected publication rows and the original Task 2 matrix,
   including partial success, cold replay and post-write rollback. Successful
   effectless turns preserve wound-owned carrier/index/history, not the entire
   unrelated effect store: the fixture's seeded roll disadvantage legitimately
   ticks 3→2 at owner-turn end. Assert that tick separately. Rejected/rolled-back
   transactions retain their full-tree equality oracle.
-- [ ] Include full `WoundTransitionReducerTests`, working-graph tests and real
+- [x] Include full `WoundTransitionReducerTests`, working-graph tests and real
   applicability class in coherent Focused owner selections. Sole child C# owner
   uses the normal bounded runner; no extra broad lane solely for this addendum.
   Original Task 2 afterlife controls, one Fast and conditional FullValidation remain.
-- [ ] Update the original Task 2 Mortal guide/worked example/source guard to show
+- [x] Update the original Task 2 Mortal guide/worked example/source guard to show
   mixed additions and exact retained-source continuity before the roll; document
   that rank reduction remains legal. No new afterlife-authored surface. Parent
   inspects actual diff/artifacts and independent exact-range Spec+Quality review

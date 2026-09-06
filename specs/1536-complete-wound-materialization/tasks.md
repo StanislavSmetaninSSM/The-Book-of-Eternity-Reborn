@@ -1698,6 +1698,22 @@ entrypoints require no update for T065.
   named `base_wound` from actual base roots. Real add/reduce and reduce/add rows
   pass, but same-rank publication, final regression and independent acceptance
   remain in progress. No additional top-level task is marked complete.
+  Addition Task2 parent acceptance (2026-09-07): `109d4f92..9f9f6c86` including
+  the reducer/continuity addendum is accepted after complete source/artifact audit
+  and fresh independent Spec Compliance / Code Quality Approved, no findings.
+  All26 new selected-addition rows have latest GREEN evidence. Pure239/239,
+  applicability23 plus final-stamp2, removal24, severity/binding39, recovery8 and
+  afterlife documentation121 pass; ordered binding2 and fresh-skill2 were separately
+  reverified after final changes. ONE Fast6015/6016 retains the mandatory legacy
+  RED and1287 discovered rows without completed results, not full-Fast success.
+  ONE FullValidation1856/1856 passes in9:40.0472005,11 completed TRXs, clean build/
+  cleanup and no timeout/skips/cross-TRX duplicates. Exact artifacts are recorded
+  in the addition plan's acceptance. Its ten Task2 steps and eight addendum checks
+  are complete; no top-level task is newly closed. Mortal worked example/guide/
+  manifest/guards are synchronized; no new afterlife-authored surface. Next is
+  actual selected non-death deterioration-policy publication through the same
+  complete graph. Death handoff and heal/legacy remain explicit independent
+  implementation work, not deleted mechanics. T070/T177/#1536 remain open.
   For an accepted `worsen` re-entry, T070 derives `care.state=untreated`, clears
   `stabilizedAtTurn`, restores `not_stabilized`, clears/allocates the condition anchor
   against the exact published worsening transition, and preserves the independent

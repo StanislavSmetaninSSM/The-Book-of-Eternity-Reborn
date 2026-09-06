@@ -45,7 +45,30 @@ artifact sets. Fresh correction controls: new pure7/7, real admission2/2, full o
 incomplete fail-fast subset, not full success. Builds/cleanup clean, no timeout or
 duplicates. See `2026-09-06-t070-retained-state-parity.md` for source-confirmed
 exception/SourcePath alignment and evidence. All ten Task1 steps are complete;
-Task2, T070, T177 and #1536 remain open. No canonical rule or gameplay was relaxed.
+At that checkpoint Task2, T070, T177 and #1536 remained open. No canonical rule
+or gameplay was relaxed.
+
+**Task2 parent acceptance (2026-09-07):** exact `109d4f92..9f9f6c86`, including
+the parent-owned reducer/continuity addendum `8c6486c5`, is accepted for selected
+direct-add publication. Parent inspected the full 27-file range, final source,
+actual artifacts and fresh independent Spec Compliance / Code Quality review
+(both Approved, no findings). All26 addition rows have actual latest GREEN
+membership; coherent pure239/239, graph applicability23 plus final-stamp2/2,
+full removal24/24, exact severity/binding39/39, recovery/stabilization8/8 and
+afterlife documentation121/121 pass. Ordered T067 bindings2/2 and fresh-skill2/2
+were separately reverified after their last test changes. The one real Fast
+`20260907-020318-553-14260-759e96f8904a4fe996f80af387a445f0-fast` passed6015 of
+6016 executed rows with only the required unfinished legacy RED;1287 discovered
+rows have no completed result because scheduling stopped. This is not all-Fast
+success. The one FullValidation
+`20260907-020640-070-24304-55b72a870385473ebfa0edf094541ae8-fullvalidation`
+passed1856/1856 in9:40.0472005 (15m), with11 completed TRXs, clean build/cleanup,
+no timeout, skips or cross-TRX duplicate tests. No further C# run is needed solely
+for these acceptance checkboxes. Mortal guide/complete CLI example/manifest/
+source guards describe the supported selected addition and same-rank continuity;
+there is no new afterlife-authored contract. Both bounded tasks and the addendum
+are complete. Actual selected policy publication, heal/legacy, T070, T177 and
+#1536 remain open; no spiritual healing art or full-feature completion is implied.
 
 - Remain in `E:/Games/worktrees/boe-1536-wound-materialization` on
   `1536-complete-wound-materialization`; do not access or stage unrelated `.serena`.
@@ -1024,12 +1047,12 @@ existing T067/T069 fingerprint changes are needed for this preservation.
 
 **Implementation steps:**
 
-- [ ] **Step 1: Write selected-addition and exact binding regressions.**
+- [x] **Step 1: Write selected-addition and exact binding regressions.**
 
    Write real selected same-rank addition and authenticated effectless-batch REDs,
    then exact T067 formula/detachment/map-tamper pure REDs. Do not install accepted
    treatment history manually or create a fake result to satisfy publication.
-- [ ] **Step 2: Extract the owning T067 binding preparation.**
+- [x] **Step 2: Extract the owning T067 binding preparation.**
 
    T067-owned binding preparation receives exact RequestFingerprint, zero-based
    operation ordinal, typed draft and recomputed declared-operation fingerprint.
@@ -1040,26 +1063,26 @@ existing T067/T069 fingerprint changes are needed for this preservation.
    the complete domain is `book_of_eternity.wound.response_local_coordinate`, version1.
    Creation and T067 call one actual helper. T070 consumes/recomputes the owning
    preparation; it does not invent an alternative key derivation or accepted identity.
-- [ ] **Step 3: Seal and independently reconstruct the exact typed addition.**
+- [x] **Step 3: Seal and independently reconstruct the exact typed addition.**
 
    Freeze and compare each full typed draft, ordered ComplicationRef/ID, both maps,
    preparation fingerprint and private root rows. Reconstruct from exact typed
    request/ordinal after restart; no public/persisted field, process-local identity
    cache, raw route parsing or acceptance shortcut is added.
-- [ ] **Step 4: Bind only authenticated selected direct symbols.**
+- [x] **Step 4: Bind only authenticated selected direct symbols.**
 
    Replay the shared ordered graph, then bind only direct added symbols to their
    exact T067 complication IDs and mapped definition/application refs. Validate
    missing/extra/reordered/confusable/borrowed maps and key collisions. Policy symbols
    cannot masquerade as direct additions. The common effect stage alone supplies
    final canonical effect IDs through complete application results.
-- [ ] **Step 5: Derive and revalidate private final topology.**
+- [x] **Step 5: Derive and revalidate private final topology.**
 
    Derive a sealed private selected compilation: original before, ordered operation
    evidence, final graph/rank, surviving old coordinates, new coordinates/maps,
    removed original roots and whether a selected reduction requires rematerialization.
    Seal and independently recompute full content, not only public fingerprints.
-- [ ] **Step 6: Compile exactly one final batch.**
+- [x] **Step 6: Compile exactly one final batch.**
 
    | Selected operations | Applications | Existing lineage | Terminal selection |
    | --- | --- | --- | --- |
@@ -1074,19 +1097,19 @@ existing T067/T069 fingerprint changes are needed for this preservation.
    addition roots are parentless even if added before a reduction; surviving old
    coordinates have exactly their original canonical prior root, including a valid
    carrierless terminal predecessor. No transient generation is ever published.
-- [ ] **Step 7: Authenticate the exact predecessor partition.**
+- [x] **Step 7: Authenticate the exact predecessor partition.**
 
    Replace shared inferences such as 'any application means full rematerialization'
    only with authenticated private topology. Exact predecessor bijection applies
    to surviving original coordinates; new coordinates require no predecessor.
    Preserve selective terminal ownership and retained-lineage checks even at0/0.
-- [ ] **Step 8: Separate new skill admission from accepted continuation.**
+- [x] **Step 8: Separate new skill admission from accepted continuation.**
 
    Newly added roots must use normal fresh Offered/Current skill validation; they
    cannot inherit the existing blanket accepted-treatment skill continuation exception.
    Surviving accepted definitions keep the existing exact continuation behavior even
    if the old skill is no longer offered. Test both through independent effect checks.
-- [ ] **Step 9: Assemble one final wound and correct the required-batch diagnostic.**
+- [x] **Step 9: Assemble one final wound and correct the required-batch diagnostic.**
 
    Extend the one final wound assembler to combine unchanged retained bindings with
    new application results. Do not feed old roots as fake application results or
@@ -1096,7 +1119,7 @@ existing T067/T069 fingerprint changes are needed for this preservation.
    required-batch diagnostic from private topology instead of claiming every
    unchanged-severity result requires a null batch. Add an exact diagnostic assertion
    to a missing/invalid required-batch negative; do not alter its rejection behavior.
-- [ ] **Step 10: Verify atomic publication and obtain independent review.**
+- [x] **Step 10: Verify atomic publication and obtain independent review.**
 
     Publish effects, identities, wound, resources, history and output through the
     existing transaction; prove post-write rollback, same-plan retry and cold replay.
