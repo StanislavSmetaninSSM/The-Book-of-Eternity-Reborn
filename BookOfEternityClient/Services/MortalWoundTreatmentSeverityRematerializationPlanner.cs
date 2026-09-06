@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Collections.Immutable;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 
@@ -151,6 +152,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             string expectedBeforeFingerprint)
     {
         var projection = preparation.SeverityReduction;
+        preparation.TryRecomposeSelectedGraph(out var selectedGraph);
         var before = preparation.Before;
         var projectionBefore = projection?.Before ?? preparation.ProvisionalAfter;
         var after = projection?.ProvisionalAfter ?? preparation.ProvisionalAfter;
@@ -159,7 +161,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
         var remaining = before;
         var seenIds = new HashSet<string>(StringComparer.Ordinal);
         var seenRoots = new HashSet<string>(StringComparer.Ordinal);
-        foreach (var id in removalIds)
+        foreach (var id in selectedGraph is null ? removalIds : Array.Empty<string>())
         {
             var matches = before.Complications.Where(value =>
                 string.Equals(value.ComplicationId, id, StringComparison.Ordinal)).ToArray();
@@ -177,11 +179,11 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
         }
         var expectedGraph = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(remaining))!;
         var sealedGraph = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(projectionBefore))!;
-        if (!JsonNode.DeepEquals(expectedGraph["consequences"], sealedGraph["consequences"]) ||
-            !JsonNode.DeepEquals(expectedGraph["complications"], sealedGraph["complications"]))
+        if (selectedGraph is null && (!JsonNode.DeepEquals(expectedGraph["consequences"], sealedGraph["consequences"]) ||
+            !JsonNode.DeepEquals(expectedGraph["complications"], sealedGraph["complications"])))
             return Invalid("changed post-removal effect graph");
         var projectionFingerprint = projection?.Fingerprint;
-        if (removalIds.Length != 0)
+        if (selectedGraph is null && removalIds.Length != 0)
         {
             var fields = new List<string?>
             {
@@ -196,6 +198,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(sealedGraph["complications"]));
             projectionFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(fields);
         }
+        if (selectedGraph is not null) projectionFingerprint = selectedGraph.Fingerprint;
         var inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
         var actualBeforeFingerprint =
             WoundIdentityState.ComputeSemanticFingerprint(before);
@@ -267,7 +270,9 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
         var localWoundRef = Coordinate("wound_ref", requestFingerprint,
             resultFingerprint, preparation.TransitionId);
         var acceptedEvent = acceptedEvents[0];
-        var definitions = projectionBefore.Consequences.OwnedEffectSources.Definitions
+        var definitionBodies = selectedGraph is null ? projectionBefore.Consequences.OwnedEffectSources.Definitions
+            : selectedGraph.FinalGraph.Definitions.Select(row => row.Definition).ToArray();
+        var definitions = definitionBodies
             .Select(value =>
             {
                 var json = JsonNode.Parse(value.GetRawText())!.AsObject();
@@ -302,9 +307,14 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             StringComparer.Ordinal);
         var applications = new List<WoundRootEffectApplication>();
         var lineage = new List<WoundRootLineageAuthorityRow>();
-        for (var index = 0; index < (projection?.Roots.Count ?? 0); index++)
+        var applicationRoots = selectedGraph is not null
+            ? selectedGraph.FinalRoots.Where(row => selectedGraph.HasReduction || row.AdditionBinding is not null).ToArray()
+            : projection?.Roots.Select(row => new MortalWoundTreatmentSelectedRoot(
+                WoundWorkingReference.Existing(row.PriorEffectId), row.DefinitionKey, row.OwnershipDomain,
+                row.Slots.ToImmutableArray(), row.PriorEffectId, null)).ToArray() ?? Array.Empty<MortalWoundTreatmentSelectedRoot>();
+        for (var index = 0; index < applicationRoots.Length; index++)
         {
-            var root = projection!.Roots[index];
+            var root = applicationRoots[index];
             if (!definitionsByKey.TryGetValue(
                     root.DefinitionKey,
                     out var exportedDefinition))
@@ -321,21 +331,21 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             {
                 return Invalid("projection root carrier is invalid");
             }
-            var applicationRef = Coordinate(
+            var applicationRef = root.AdditionBinding?.ApplicationRef ?? Coordinate(
                 "wound_application",
                 requestFingerprint,
                 resultFingerprint,
                 preparation.TransitionId,
                 (index + 1).ToString(CultureInfo.InvariantCulture),
-                root.PriorEffectId,
+                root.OriginalEffectId!,
                 root.DefinitionKey);
-            var rootOperationKey = Coordinate(
+            var rootOperationKey = root.AdditionBinding?.OperationKey ?? Coordinate(
                 "wound_operation",
                 requestFingerprint,
                 resultFingerprint,
                 preparation.TransitionId,
                 (index + 1).ToString(CultureInfo.InvariantCulture),
-                root.PriorEffectId,
+                root.OriginalEffectId!,
                 root.DefinitionKey);
             var sourceKey = new EffectSourceKey(
                 before.Owner.Realm,
@@ -373,7 +383,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 root.OwnershipDomain,
                 acceptedEvent.EventRef,
                 carrierCoordinate,
-                root.PriorEffectId));
+                root.OriginalEffectId));
             lineage.Add(new WoundRootLineageAuthorityRow(
                 applicationRef,
                 null,
@@ -385,7 +395,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
             before,
             input.PreTurnEffectCarriers,
             identityParse.State,
-            projection is null ? removalRoots : before.Consequences.OwnedEffectSources.RootBindings
+            selectedGraph is not null ? selectedGraph.SelectedTerminalRootIds : projection is null ? removalRoots : before.Consequences.OwnedEffectSources.RootBindings
                 .Select(static value => value.EffectId)
                 .ToArray(),
             acceptedEvent.EventRef,
@@ -400,7 +410,7 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                 terminal.Issues.ToArray());
         }
 
-        if (projection is null)
+        if (selectedGraph is not null ? !selectedGraph.HasReduction : projection is null)
         {
             // Terminal planning above has validated the complete original ownership graph.
             var domains = before.Complications.SelectMany(complication =>
@@ -409,7 +419,9 @@ internal static class MortalWoundTreatmentSeverityRematerializationPlanner
                     static value => WoundRootOwnershipDomain.ForComplication(value.ComplicationId),
                     StringComparer.Ordinal);
             foreach (var binding in before.Consequences.OwnedEffectSources.RootBindings
-                         .Where(binding => definitionsByKey.ContainsKey(binding.DefinitionKey))
+                         .Where(binding => selectedGraph is not null
+                             ? selectedGraph.FinalRoots.Any(root => root.OriginalEffectId == binding.EffectId)
+                             : definitionsByKey.ContainsKey(binding.DefinitionKey))
                          .OrderBy(static binding => binding.EffectId, StringComparer.Ordinal)
                          .ThenBy(static binding => binding.DefinitionKey, StringComparer.Ordinal))
                 lineage.Add(new WoundRootLineageAuthorityRow(null, binding.EffectId,

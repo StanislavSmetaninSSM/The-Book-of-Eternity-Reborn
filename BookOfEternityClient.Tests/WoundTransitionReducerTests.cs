@@ -496,6 +496,85 @@ public sealed class WoundTransitionReducerTests
             value.ComplicationId == "complication_infection");
     }
 
+    [Theory]
+    [InlineData(0)]
+    [InlineData(1)]
+    [InlineData(2)]
+    public void Reduce_Treat_SelectedSameRankComplicationAdditionsPreserveRetainedGraph(int count)
+    {
+        var before = WithSeverity(PhysicalWound(), "IV", 4);
+        var after = before;
+        var complications = before.Complications.ToList();
+        for (var i = 0; i < Math.Max(1, count); i++)
+        {
+            var id = "effect_selected_complication_" + i;
+            if (count != 0) after = AddOwnedRoot(after, id, "definition_selected_complication_" + i,
+                i == 0 ? "characteristic_modifier" : "resistance_modifier", addConsequenceSlot: true);
+            complications.Add(Complication("selected_complication_" + i, "pain", count == 0 ? Array.Empty<string>() : new[] { id }));
+        }
+        after = NewTransition(after with { Complications = complications.ToImmutableArray(),
+            Care = after.Care with { LastAttemptId = "attempt_treat" } }, "treat");
+        AssertValid(WoundTransitionReducer.Reduce(Request("treat", before, after,
+            TreatEvidence(before, after, Outcome(after, terminalAttempt: true)))));
+    }
+
+    [Theory]
+    [InlineData("valid")]
+    [InlineData("new_base")]
+    [InlineData("stolen_old")]
+    [InlineData("missing_old")]
+    [InlineData("wrong_declared")]
+    public void Reduce_Treat_SelectedMixedDeltaRequiresExactOwnershipAndClosure(string axis)
+    {
+        var before = AddOwnedRoot(WithSeverity(PhysicalWound(), "IV", 4), "effect_old_complication", "definition_old_complication", "resistance_modifier", true);
+        before = before with { Complications = ImmutableArray.Create(Complication("removed", "pain", "effect_old_complication")) };
+        var after = RemoveOwnedRoot(before with { Complications = ImmutableArray<WoundComplication>.Empty }, "effect_old_complication");
+        after = AddOwnedRoot(after, "effect_added", "definition_added", "characteristic_modifier", true);
+        var ids = axis == "new_base" ? Array.Empty<string>() : axis == "stolen_old"
+            ? new[] { "effect_added", EffectIds(before).First(row => row != "effect_old_complication") } : new[] { "effect_added" };
+        after = after with { Complications = ImmutableArray.Create(Complication("added", "pain", ids)) };
+        if (axis == "missing_old") after = RemoveOwnedRoot(after, EffectIds(before).First(row => row != "effect_old_complication"));
+        after = NewTransition(after with { Care = after.Care with { LastAttemptId = "attempt_treat" } }, "treat");
+        var evidence = TreatEvidence(before, after, Outcome(axis == "wrong_declared" ? before : after, terminalAttempt: true));
+        var result = WoundTransitionReducer.Reduce(Request("treat", before, after, evidence));
+        if (axis == "valid") AssertValid(result);
+        else Assert.False(result.IsValid, DescribeIssues(result));
+    }
+
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Reduce_Treat_BaseNamedComplicationDoesNotAliasBaseDomain(bool addition, bool transfer)
+    {
+        var before = WithSeverity(PhysicalWound(), "IV", 4);
+        var originalId = EffectIds(before)[0];
+        before = before with { Complications = ImmutableArray.Create(Complication("base_wound", "pain", originalId)) };
+        var after = before;
+        if (transfer) after = after with { Complications = ImmutableArray.Create(Complication("base_wound", "pain")) };
+        if (addition)
+        {
+            after = AddOwnedRoot(after, "effect_added", "definition_added", "characteristic_modifier", true);
+            after = after with { Complications = after.Complications.Append(Complication("added", "pain", "effect_added")).ToImmutableArray() };
+        }
+        after = NewTransition(after with { Care = after.Care with { LastAttemptId = "attempt_treat" } }, "treat");
+        var result = WoundTransitionReducer.Reduce(Request("treat", before, after, TreatEvidence(before, after, Outcome(after, terminalAttempt: true))));
+        if (!transfer) AssertValid(result); else Assert.False(result.IsValid, DescribeIssues(result));
+    }
+
+    [Fact]
+    public void Reduce_Treat_SelectedAdditionDoesNotAuthorizeNonMortalGraphChanges()
+    {
+        var before = SpiritualWound();
+        var after = AddOwnedRoot(before, "effect_spiritual_added", "definition_spiritual_added", "wound_consequence", false);
+        after = NewTransition(after with { Complications = after.Complications.Append(Complication("spiritual_added", "pain", "effect_spiritual_added")).ToImmutableArray(),
+            Care = after.Care with { LastAttemptId = "attempt_treat" } }, "treat");
+        Assert.True(WoundMaterializationContract.Parse(WoundMaterializationContract.SerializeCanonical(after), "canonicalNonMortal").IsValid);
+        Assert.False(WoundTransitionReducer.Reduce(Request("treat", before, after,
+            TreatEvidence(before, after, Outcome(after, terminalAttempt: true)))).IsValid);
+    }
+
     [Fact]
     public void Reduce_Complicate_AllowsOnlyExplicitBoundedWorseningAndResetsProgress()
     {

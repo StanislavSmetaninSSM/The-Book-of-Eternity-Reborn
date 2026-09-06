@@ -42,7 +42,7 @@ internal static partial class MortalWoundTreatmentOutcomePublicationPlanner
                 route, resolution.ResultCategory, resolution.Interruption) ||
             !TryProjectActiveCourseId(request.RouteSourceWound, request, resolution, out _) ||
             !HasSupportedGrammar(resolution.Mode, resolution.Interruption,
-                resolution.CourseDisposition, resolution.OutcomeIntents) ||
+                resolution.CourseDisposition, resolution.OutcomeIntents, resolution.ResultCategory) ||
             !MortalWoundTreatmentResolution.TryRecomputeModeEvidenceFingerprint(resolution, out var evidenceFingerprint))
             return false;
         return resolution.ResolutionAuthorityFingerprint ==

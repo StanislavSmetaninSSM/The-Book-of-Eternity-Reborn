@@ -965,16 +965,30 @@ After the ordered successful result applies `stabilize` and then
 group and rematerializes client-owned fresh effect IDs for every retained root.
 Only a newly successful category completes the route. `partial_success` and
 `failed_attempt` do not complete the route. The partial band retains its declared
-scalar publication contract; the failed complication band is preview-only here.
+scalar publication contract; the failed complication band now publishes its selected direct addition.
 
 The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.
 The same canonical rules revalidate retained treatment routes and deterioration policy at the resulting severity, and diagnosis facts against remaining accepted complications. A symbolic local reference never restores a removed accepted diagnosis fact.
 Local complication and definition references are not permanent runtime identities.
 Applicability preview does not authorize publication of an unfinished outcome.
 
-The failed band declares a complete effectful complication; its selected-add publication
-remains unfinished. This pre-roll preview admits the fully validated graph but does not
-allocate wound/effect identities or authorize that unfinished selected publisher.
+Selected direct add_complication outcomes publish through one authenticated treatment graph batch.
+Same-rank retained wound roots keep their exact identities, carrier payloads and index history.
+Mixed remove/add results must preserve original root-definition bindings and unchanged definition bodies when the final severity is unchanged; this is checked before the roll. A fresh-key replacement or a legal later severity reduction remains possible.
+An effectless addition still requires a sealed 0/0 batch and an empty application result map.
+New root and child-only exact-skill selectors require fresh Offered/Current authority; retained selectors remain accepted continuations.
+Policy, heal and legacy publication remain unfinished.
+
+In this failed-band example the client derives the complication identity and exact namespaced
+definition/application bindings from the selected request. It creates only the new parentless root;
+the old wound root is retained. A legal partial-success mixed result or trusted course interruption
+can also publish direct additions without becoming a successful route completion. Selected
+removal retires only its causal ownership closure; if the ordered result reduces severity, the
+client materializes the final graph once and gives each surviving original root exactly its
+original predecessor. New roots stay parentless even when added before reduction. No temporary
+generation is published. Effects, wound, resources, history and output share the existing atomic
+transaction; rejected publication and post-write rollback restore the complete original tree.
+Ordinary unrelated effect lifecycle ticks continue normally during a successful turn.
 
 The partial result stabilizes and adds two recovery points with checked signed-64-bit arithmetic. With progress 1 and threshold 2, the accepted result has progress 3 and the wound stays active at its unchanged severity. Reaching the threshold does not itself trigger a recovery tick, severity reduction or healing. The GM authors points, never canonical progress or recovery anchors; the client applies the selected ordered operations and exact resource policy atomically. Partial success does not complete the route.
 
@@ -1610,9 +1624,9 @@ this course reduces severity II to I and stabilizes the wound, which remains act
 Stale history is invalid authority, not a missed-dose outcome; other treatment does not cancel a course.
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
-The remaining producers `heal`, `add_complication` and
-`apply_deterioration` are pending implementation; their approved authored contracts remain supported
-by the complete route model, but scalar publication does not pretend to execute them.
+The remaining producers `heal` and `apply_deterioration`, including heal legacy publication,
+are pending implementation; their approved authored contracts remain supported by the complete
+route model. Selected direct additions use the graph publication contract above.
 
 Врач проводит три этапа: первую перевязку без немедленного улучшения, ослабление раны через
 480 минут и стабилизацию через 960 минут. На каждом этапе расходуется одна текущая доза.

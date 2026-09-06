@@ -9,6 +9,57 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class MortalWoundTreatmentResolverTests
 {
     [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, false)]
+    [InlineData(false, true, true)]
+    public void ComplicationGraphApplicability_FinalSameRankContinuityRejectsBeforeClaims(bool changedBody, bool reduce, bool expected)
+    {
+        var scenario = CreateDestinationReductionScenario("final_continuity", "action_control", "resistance_modifier");
+        scenario.Before["complications"] = new JsonArray(new JsonObject
+        {
+            ["complicationId"] = "old_graph_complication", ["kind"] = "impairment", ["state"] = "active",
+            ["displayName"] = "Old complication", ["treatmentDifficultyModifier"] = 0,
+            ["ownedEffectIds"] = new JsonArray("effect_destination_2"), ["visibility"] = "known_to_player"
+        });
+        var sources = scenario.Before["consequences"]!["ownedEffectSources"]!;
+        var key = sources["rootBindings"]!.AsArray().Single(row => row!["effectId"]!.GetValue<string>() == "effect_destination_2")!["definitionKey"]!.GetValue<string>();
+        var body = sources["definitions"]!.AsArray().Single(row => row!["definitionKey"]!.GetValue<string>() == key)!.DeepClone();
+        body["links"] = new JsonArray();
+        if (changedBody) body["display"]!["name"] = "Changed reused body";
+        var addition = GraphEffectfulAddition("replacement", key);
+        addition["complicationDraft"]!["consequenceDefinitions"]![0]!["definition"] = body;
+        addition["complicationDraft"]!["consequenceDefinitions"]![0]!["root"]!["slots"] = new JsonArray(new JsonObject
+        { ["profileKey"] = "resistance_modifier", ["readableSummary"] = "Replacement resistance" });
+        var operations = new JsonArray(new JsonObject { ["kind"] = "remove_complication", ["complicationId"] = "old_graph_complication" }, addition);
+        if (reduce) operations.Add(new JsonObject { ["kind"] = "reduce_severity", ["steps"] = 1 });
+        var route = scenario.Before["treatment"]!["routes"]![0]!.AsObject();
+        route["outcomes"]![2]!["result"] = operations;
+        var legal = route.DeepClone();
+        var legalId = scenario.RouteId + "_fresh";
+        legal["routeId"] = legalId;
+        legal["outcomes"]![2]!["result"]![1]!["complicationDraft"]!["consequenceDefinitions"]![0]!["definition"]!["definitionKey"] = key + "_fresh";
+        scenario.Before["treatment"]!["routes"] = new JsonArray(route.DeepClone(), legal);
+        scenario.Before["treatment"]!["knownRouteIds"] = new JsonArray(scenario.RouteId, legalId);
+        scenario = scenario with { History = CreateCurrentWoundHistory(scenario.Before) };
+        using var fixture = AcceptedStateFixture.Create(scenario);
+        var state = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(fixture.GetAcceptedState());
+        var tree = CaptureResolverFixtureTree(fixture.Root);
+        var prepared = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state, fixture.ReadCurrentHistory(), fixture.ReadCurrentWound(),
+            scenario.OperationKey, scenario.RouteId, fixture.AcceptedEventRef(state));
+        Assert.True(expected == prepared.IsValid, DescribeIssues(prepared.Issues));
+        if (expected) Assert.Equal(new[] { 0 }, Assert.IsType<MortalWoundProcedureCheckAuthority>(prepared.Request!.ModeAuthority).SourceIndices);
+        else
+        {
+            Assert.Contains(prepared.Issues, row => row.Code == "mortal_wound_treatment_procedure_band_inapplicable");
+            AssertResolverFixtureTreeUnchanged(fixture.Root, tree);
+            var fresh = MortalWoundTreatmentPlanner.PrepareProcedureRequest(state, fixture.ReadCurrentHistory(), fixture.ReadCurrentWound(),
+                scenario.OperationKey + "_fresh", legalId, fixture.AcceptedEventRef(state));
+            Assert.True(fresh.IsValid, DescribeIssues(fresh.Issues));
+            Assert.Equal(new[] { 0 }, Assert.IsType<MortalWoundProcedureCheckAuthority>(fresh.Request!.ModeAuthority).SourceIndices);
+        }
+    }
+
+    [Theory]
     [InlineData(false)]
     [InlineData(true)]
     public void ComplicationGraphApplicability_RetainedRankValidationRejectsBeforeDieClaim(bool retainedPolicy)

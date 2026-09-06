@@ -781,13 +781,30 @@ internal static partial class WoundAcceptedTurnPlanner
                    WoundMaterializationContract.SerializeCanonical(
                        prepared.PreparedWounds[0]),
                    WoundMaterializationContract.SerializeCanonical(
-                       continuation.OutcomePreparation.ProvisionalAfter),
+                       continuation.OutcomePreparation.GetPreparedCarrierImage()),
                    StringComparison.Ordinal) &&
                string.Equals(binding.SessionId, coordinates.SessionId, StringComparison.Ordinal) &&
                string.Equals(binding.RequestId, coordinates.RequestId, StringComparison.Ordinal) &&
                string.Equals(binding.SnapshotToken, coordinates.SnapshotToken, StringComparison.Ordinal) &&
                string.Equals(binding.Realm, coordinates.Realm, StringComparison.Ordinal) &&
                binding.Turn == coordinates.Turn;
+    }
+
+    internal static bool TryGetTreatmentSelectedGraph(WoundPreparedAcceptedTurnPlan prepared,
+        out MortalWoundTreatmentSelectedGraphCompilation? compilation)
+    {
+        compilation = null;
+        if (!TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority, out var continuation) ||
+            !continuation.OutcomePreparation.TryRecomposeSelectedGraph(out var selected) || selected is null ||
+            !continuation.OutcomePreparation.AgreesWith(continuation.Resolution) ||
+            !TreatmentContinuationPreparedAgrees(prepared) ||
+            continuation.TransitionId != MortalWoundTreatmentOutcomePublicationPlanner.CreateTransitionId(continuation.Resolution) ||
+            selected.FinalScalars.LastTransition.TransitionId != continuation.TransitionId ||
+            selected.FinalScalars.LastTransition.Kind != "treat" ||
+            selected.FinalScalars.LastTransition.Ordinal != checked(continuation.Before.LastTransition.Ordinal + 1) ||
+            selected.FinalScalars.LastTransition.Turn != prepared.Binding.Turn) return false;
+        compilation = selected;
+        return true;
     }
 
     internal static bool TreatmentContinuationReservationAgrees(
@@ -1126,7 +1143,7 @@ internal static partial class WoundAcceptedTurnPlanner
             string.Empty,
             new[] { continuation.Before.WoundId },
             new[] { continuation.TransitionId },
-            new[] { continuation.OutcomePreparation.ProvisionalAfter },
+            new[] { continuation.OutcomePreparation.GetPreparedCarrierImage() },
             operationBatches,
             baseline,
             authority);
@@ -1140,7 +1157,7 @@ internal static partial class WoundAcceptedTurnPlanner
                 preparationFingerprint,
                 new[] { continuation.Before.WoundId },
                 new[] { continuation.TransitionId },
-                new[] { continuation.OutcomePreparation.ProvisionalAfter },
+                new[] { continuation.OutcomePreparation.GetPreparedCarrierImage() },
                 operationBatches,
                 baseline,
                 authority),
@@ -1169,7 +1186,7 @@ internal static partial class WoundAcceptedTurnPlanner
             "6",
             WoundMaterializationContract.SerializeCanonical(before),
             WoundMaterializationContract.SerializeCanonical(
-                outcomePreparation.ProvisionalAfter),
+                outcomePreparation.GetPreparedCarrierImage()),
             resolution.RequestFingerprint,
             resolution.ResultFingerprint,
             resolution.ResolutionAuthorityFingerprint,

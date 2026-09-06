@@ -196,7 +196,7 @@ internal static partial class WoundTransitionReducer
         ImmutableDictionary<string, WoundOwnedEffectDefinitionFact> DefinitionByKey,
         ImmutableDictionary<string, ImmutableArray<string>> ReachableDefinitionKeysByEffectId,
         ImmutableDictionary<string, ImmutableArray<WoundConsequenceEntry>> SlotsByEffectId,
-        ImmutableDictionary<string, string> OwnershipDomainByEffectId);
+        ImmutableDictionary<string, WoundRootOwnershipDomain> OwnershipDomainByEffectId);
 
     private static readonly IReadOnlySet<string> Kinds = new HashSet<string>(
         new[]
@@ -1580,7 +1580,7 @@ internal static partial class WoundTransitionReducer
             if (before.Severity.Rank != after.Severity.Rank)
                 ValidateFreshSeverityRootSet(before, after, issues);
             else
-                ValidateSameRankOwnedSourceDelta(before, after, null, issues);
+                ValidateSameRankTreatmentOwnedSourceDelta(before, after, evidence.Outcome, issues);
         }
         if (issues.Count == 0 && !AllowedTreatmentScope(before, after))
         {
@@ -2246,7 +2246,20 @@ internal static partial class WoundTransitionReducer
         WoundMaterializationEnvelope before,
         WoundMaterializationEnvelope after,
         WoundComplication? addedComplication,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues) => ValidateSameRankOwnedSourceDeltaCore(before, after, addedComplication, null, issues);
+
+    private static void ValidateSameRankTreatmentOwnedSourceDelta(WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after, WoundDeclaredTransitionOutcome outcome, List<ValidationIssue> issues)
+    {
+        if (before.Owner.Realm == "mortal_world" && before.Classification.Domain == "physical" &&
+            AddedComplicationIds(before, after).Count > 0)
+            ValidateSameRankOwnedSourceDeltaCore(before, after, null, outcome, issues);
+        else ValidateSameRankOwnedSourceDelta(before, after, null, issues);
+    }
+
+    private static void ValidateSameRankOwnedSourceDeltaCore(WoundMaterializationEnvelope before,
+        WoundMaterializationEnvelope after, WoundComplication? addedComplication,
+        WoundDeclaredTransitionOutcome? treatmentOutcome, List<ValidationIssue> issues)
     {
         var prior = BuildOwnedSourceTransitionView(before);
         var current = BuildOwnedSourceTransitionView(after);
@@ -2263,10 +2276,7 @@ internal static partial class WoundTransitionReducer
                     prior.DefinitionKeyByEffectId[effectId],
                     current.DefinitionKeyByEffectId[effectId],
                     StringComparison.Ordinal) ||
-                !string.Equals(
-                    prior.OwnershipDomainByEffectId[effectId],
-                    current.OwnershipDomainByEffectId[effectId],
-                    StringComparison.Ordinal))
+                prior.OwnershipDomainByEffectId[effectId] != current.OwnershipDomainByEffectId[effectId])
             {
                 AddOwnedSourceIssue(
                     issues,
@@ -2277,20 +2287,18 @@ internal static partial class WoundTransitionReducer
             }
         }
 
-        foreach (var pair in prior.EffectIdByRootDefinitionKey.OrderBy(
-                     static pair => pair.Key,
-                     StringComparer.Ordinal))
+        var continuity = WoundSameRankOwnedSourceContinuity.Compare(
+            prior.EffectIdByRootDefinitionKey.ToDictionary(pair => pair.Key, pair => WoundWorkingReference.Existing(pair.Value), StringComparer.Ordinal),
+            current.EffectIdByRootDefinitionKey.ToDictionary(pair => pair.Key, pair => WoundWorkingReference.Existing(pair.Value), StringComparer.Ordinal),
+            prior.DefinitionByKey, current.DefinitionByKey);
+        if (continuity.RootRebinding is { } rebound)
         {
-            if (current.EffectIdByRootDefinitionKey.TryGetValue(pair.Key, out var currentEffectId) &&
-                !string.Equals(pair.Value, currentEffectId, StringComparison.Ordinal))
-            {
-                AddOwnedSourceIssue(
-                    issues,
-                    "wound_transition_effect_binding_changed",
-                    "one retained root definition remains bound to its exact effectId",
-                    $"{pair.Value}->{currentEffectId}");
-                return;
-            }
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_effect_binding_changed",
+                "one retained root definition remains bound to its exact effectId",
+                $"{rebound.Before.Value}->{rebound.After.Value}");
+            return;
         }
 
         if (addedComplication is not null)
@@ -2327,22 +2335,14 @@ internal static partial class WoundTransitionReducer
             return;
         }
 
-        foreach (var definitionKey in prior.DefinitionByKey.Keys
-                     .Intersect(current.DefinitionByKey.Keys, StringComparer.Ordinal)
-                     .OrderBy(static value => value, StringComparer.Ordinal))
+        if (continuity.ChangedDefinitionKey is { } definitionKey)
         {
-            if (!string.Equals(
-                    prior.DefinitionByKey[definitionKey].CanonicalJson,
-                    current.DefinitionByKey[definitionKey].CanonicalJson,
-                    StringComparison.Ordinal))
-            {
-                AddOwnedSourceIssue(
-                    issues,
-                    "wound_transition_owned_source_graph_changed",
-                    "retained definition preserves its exact canonical source graph body",
-                    definitionKey);
-                return;
-            }
+            AddOwnedSourceIssue(
+                issues,
+                "wound_transition_owned_source_graph_changed",
+                "retained definition preserves its exact canonical source graph body",
+                definitionKey);
+            return;
         }
 
         if (addedComplication is not null)
@@ -2356,7 +2356,9 @@ internal static partial class WoundTransitionReducer
                 return;
             }
         }
-        else if (!ValidateRemovalOwnedSourceDelta(prior, current, before, after, issues))
+        else if (treatmentOutcome is not null
+            ? !ValidateTreatmentComplicationOwnedSourceDelta(prior, current, before, after, treatmentOutcome, issues)
+            : !ValidateRemovalOwnedSourceDelta(prior, current, before, after, issues))
         {
             return;
         }
@@ -2403,10 +2405,7 @@ internal static partial class WoundTransitionReducer
             .ToImmutableArray();
         if (!SameSet(addedRoots, addedComplication.OwnedEffectIds) ||
             addedRoots.Any(effectId =>
-                !string.Equals(
-                    current.OwnershipDomainByEffectId[effectId],
-                    addedComplication.ComplicationId,
-                    StringComparison.Ordinal)))
+                current.OwnershipDomainByEffectId[effectId] != WoundRootOwnershipDomain.ForComplication(addedComplication.ComplicationId)))
         {
             AddOwnedSourceIssue(
                 issues,
@@ -2429,6 +2428,43 @@ internal static partial class WoundTransitionReducer
                 "wound_transition_complication_effect_binding_invalid",
                 "new complication contributes only its complete reachable branches and every non-marker root has reciprocal slots",
                 addedComplication.ComplicationId);
+            return false;
+        }
+        return true;
+    }
+
+    private static bool ValidateTreatmentComplicationOwnedSourceDelta(OwnedSourceTransitionView prior,
+        OwnedSourceTransitionView current, WoundMaterializationEnvelope before, WoundMaterializationEnvelope after,
+        WoundDeclaredTransitionOutcome outcome, List<ValidationIssue> issues)
+    {
+        var priorRoots = prior.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var currentRoots = current.RootEffectIds.ToHashSet(StringComparer.Ordinal);
+        var added = after.Complications.Where(row => !before.Complications.Any(old => old.ComplicationId == row.ComplicationId)).ToArray();
+        var removed = before.Complications.Where(row => !after.Complications.Any(next => next.ComplicationId == row.ComplicationId)).ToArray();
+        var newRoots = currentRoots.Except(priorRoots).ToHashSet(StringComparer.Ordinal);
+        var removedRoots = priorRoots.Except(currentRoots).ToHashSet(StringComparer.Ordinal);
+        var declaredNewRoots = added.SelectMany(row => row.OwnedEffectIds).ToArray();
+        var declaredRemovedRoots = removed.SelectMany(row => row.OwnedEffectIds).ToArray();
+        if (declaredNewRoots.Length != declaredNewRoots.Distinct(StringComparer.Ordinal).Count() ||
+            !newRoots.SetEquals(declaredNewRoots) || !removedRoots.SetEquals(declaredRemovedRoots) ||
+            added.Any(complication => complication.OwnedEffectIds.Any(id =>
+                !current.OwnershipDomainByEffectId.TryGetValue(id, out var domain) ||
+                domain != WoundRootOwnershipDomain.ForComplication(complication.ComplicationId))))
+        {
+            AddOwnedSourceIssue(issues, "wound_transition_complication_effect_binding_invalid",
+                "new and removed root sets exactly match disjoint added and removed complication ownership", string.Join(',', newRoots));
+            return false;
+        }
+        var expectedDefinitions = new HashSet<string>(StringComparer.Ordinal);
+        foreach (var effectId in currentRoots.Intersect(priorRoots))
+            expectedDefinitions.UnionWith(prior.ReachableDefinitionKeysByEffectId[effectId]);
+        foreach (var effectId in newRoots)
+            expectedDefinitions.UnionWith(current.ReachableDefinitionKeysByEffectId[effectId]);
+        if (!expectedDefinitions.SetEquals(current.DefinitionByKey.Keys) ||
+            newRoots.Any(id => current.SlotsByEffectId[id].Length == 0 && !RootReachabilityContainsWoundMarker(current, id)))
+        {
+            AddOwnedSourceIssue(issues, "wound_transition_complication_effect_binding_invalid",
+                "complete retained/new reachable definition graph and reciprocal non-marker root slots", string.Join(',', newRoots));
             return false;
         }
         return true;
@@ -2548,7 +2584,7 @@ internal static partial class WoundTransitionReducer
         var slots = ImmutableDictionary.CreateBuilder<
             string,
             ImmutableArray<WoundConsequenceEntry>>(StringComparer.Ordinal);
-        var ownershipDomains = ImmutableDictionary.CreateBuilder<string, string>(
+        var ownershipDomains = ImmutableDictionary.CreateBuilder<string, WoundRootOwnershipDomain>(
             StringComparer.Ordinal);
         foreach (var effectId in rootEffectIds)
         {
@@ -2559,12 +2595,12 @@ internal static partial class WoundTransitionReducer
                         effectId,
                         StringComparison.Ordinal))
                     .ToImmutableArray());
-            ownershipDomains.Add(effectId, "base_wound");
+            ownershipDomains.Add(effectId, WoundRootOwnershipDomain.BaseWound);
         }
         foreach (var complication in wound.Complications)
         {
             foreach (var effectId in complication.OwnedEffectIds)
-                ownershipDomains[effectId] = complication.ComplicationId;
+                ownershipDomains[effectId] = WoundRootOwnershipDomain.ForComplication(complication.ComplicationId);
         }
 
         var immutableDefinitions = definitions.ToImmutable();

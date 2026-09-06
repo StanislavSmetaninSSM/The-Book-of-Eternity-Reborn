@@ -11,6 +11,23 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
+    public void WoundTreatmentAdditionPublicationDocumentation_PinsSelectedBatchAndRetainedHistory()
+    {
+        foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Examples/E_CLI_Wound_Materialization.txt" })
+        {
+            var text = ReadRepoFile(path.Split('/'));
+            foreach (var required in new[]
+            {
+                "Selected direct add_complication outcomes publish through one authenticated treatment graph batch.",
+                "Same-rank retained wound roots keep their exact identities, carrier payloads and index history.",
+                "An effectless addition still requires a sealed 0/0 batch and an empty application result map.",
+                "New root and child-only exact-skill selectors require fresh Offered/Current authority; retained selectors remain accepted continuations.",
+                "Policy, heal and legacy publication remain unfinished."
+            }) Assert.Contains(required, text, StringComparison.Ordinal);
+            Assert.DoesNotContain("the failed complication band is preview-only here", text, StringComparison.Ordinal);
+        }
+    }
+    [Fact]
     public void WoundAlternativeTreatmentRepairDocumentation_PinsKindSpecificLocalOnlyRecipes()
     {
         foreach (var file in new[] { "OtherGuides/Wound_Materialization_Contract.md", "Rules/Block_12.txt",
@@ -570,6 +587,7 @@ public sealed partial class PromptDocumentationCoverageTests
                          "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.",
                          "The same canonical rules revalidate retained treatment routes and deterioration policy at the resulting severity, and diagnosis facts against remaining accepted complications. A symbolic local reference never restores a removed accepted diagnosis fact.",
                          "Local complication and definition references are not permanent runtime identities.",
+                         "Mixed remove/add results must preserve original root-definition bindings and unchanged definition bodies when the final severity is unchanged; this is checked before the roll. A fresh-key replacement or a legal later severity reduction remains possible.",
                          "Applicability preview does not authorize publication of an unfinished outcome.",
                          "partial_success",
                          "failed_attempt"
@@ -665,9 +683,10 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The remaining producers\s+`heal`,\s+`add_complication`\s+and\s+`apply_deterioration`\s+are pending implementation",
+                @"The remaining producers\s+`heal`\s+and\s+`apply_deterioration`, including heal legacy publication,\s+are pending implementation",
                 RegexOptions.CultureInvariant);
-            Assert.True(pending.Success, "The exact three-producer pending list must remain synchronized.");
+            Assert.True(pending.Success, "The exact two-producer pending list must remain synchronized.");
+            Assert.DoesNotContain("add_complication", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("add_recovery", pending.Value, StringComparison.Ordinal);
             Assert.DoesNotContain("remove_complication", pending.Value, StringComparison.Ordinal);
         }

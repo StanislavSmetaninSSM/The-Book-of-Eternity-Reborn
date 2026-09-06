@@ -1,6 +1,36 @@
 using System.Globalization;
+using System.Collections.Immutable;
 
 namespace BookOfEternityClient.Services;
+
+internal sealed record MortalWoundTreatmentComplicationRootBinding(
+    string LocalDefinitionRef, string DefinitionRef, string ApplicationRef, string OperationKey);
+
+internal sealed class MortalWoundTreatmentComplicationBindingPreparation
+{
+    private MortalWoundTreatmentComplicationBindingPreparation(string complicationRef, string complicationId,
+        IEnumerable<MortalWoundTreatmentReferenceBinding> definitions,
+        IEnumerable<MortalWoundTreatmentReferenceBinding> applications, string fingerprint,
+        IEnumerable<MortalWoundTreatmentComplicationRootBinding> roots)
+    {
+        ComplicationRef = complicationRef;
+        ComplicationId = complicationId;
+        DefinitionReferenceBindings = definitions.Select(row => MortalWoundTreatmentReferenceBinding.Create(row.LocalRef, row.NamespacedRef)).ToImmutableArray();
+        ApplicationReferenceBindings = applications.Select(row => MortalWoundTreatmentReferenceBinding.Create(row.LocalRef, row.NamespacedRef)).ToImmutableArray();
+        PreparationFingerprint = fingerprint;
+        Roots = roots.Select(row => row with { }).ToImmutableArray();
+    }
+    internal string ComplicationRef { get; }
+    internal string ComplicationId { get; }
+    internal ImmutableArray<MortalWoundTreatmentReferenceBinding> DefinitionReferenceBindings { get; }
+    internal ImmutableArray<MortalWoundTreatmentReferenceBinding> ApplicationReferenceBindings { get; }
+    internal string PreparationFingerprint { get; }
+    internal ImmutableArray<MortalWoundTreatmentComplicationRootBinding> Roots { get; }
+    internal static MortalWoundTreatmentComplicationBindingPreparation Create(string complicationRef, string complicationId,
+        IEnumerable<MortalWoundTreatmentReferenceBinding> definitions, IEnumerable<MortalWoundTreatmentReferenceBinding> applications,
+        string fingerprint, IEnumerable<MortalWoundTreatmentComplicationRootBinding> roots) =>
+        new(complicationRef, complicationId, definitions, applications, fingerprint, roots);
+}
 
 internal sealed partial class MortalWoundCriticalReactionResolutionResult
 {
@@ -792,20 +822,39 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
         string baseIntentFingerprint,
         MortalWoundAddComplicationOperation operation)
     {
-        var complicationRef = operation.ComplicationDraft.Complication.ComplicationRef;
+        var binding = PrepareComplicationBindings(request.RequestFingerprint, ordinal,
+            operation.ComplicationDraft, declaredFingerprint);
+        var intentFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+            new string?[]
+            {
+                "book_of_eternity.mortal_wound_treatment.complication_intent",
+                "1", baseIntentFingerprint, binding.ComplicationId, binding.PreparationFingerprint
+            });
+        return MortalWoundAddComplicationOutcomeIntent.Create(ordinal, declaredFingerprint,
+            intentFingerprint, binding.ComplicationRef, binding.ComplicationId,
+            binding.DefinitionReferenceBindings, binding.ApplicationReferenceBindings, binding.PreparationFingerprint);
+    }
+
+    internal static MortalWoundTreatmentComplicationBindingPreparation PrepareComplicationBindings(
+        string requestFingerprint, int operationOrdinal,
+        MortalWoundComplicationProposalDraft draft, string declaredOperationFingerprint)
+    {
+        var ordinal = operationOrdinal;
+        var declaredFingerprint = declaredOperationFingerprint;
+        var complicationRef = draft.Complication.ComplicationRef;
         var complicationId = "mortal_wound_complication_" +
                             MortalWoundTreatmentIdentityWriter.Digest(
                                 "complication",
-                                request.RequestFingerprint,
+                                requestFingerprint,
                                 ordinal.ToString(CultureInfo.InvariantCulture),
                                 complicationRef);
-        var definitionBindings = operation.ComplicationDraft.ConsequenceDefinitions
+        var definitionBindings = draft.ConsequenceDefinitions
             .Select(definition => MortalWoundTreatmentReferenceBinding.Create(
                 definition.DefinitionRef,
                 ordinal.ToString(CultureInfo.InvariantCulture) + "/" +
                 complicationRef + "/" + definition.DefinitionRef))
             .ToArray();
-        var applicationBindings = operation.ComplicationDraft.ConsequenceDefinitions
+        var applicationBindings = draft.ConsequenceDefinitions
             .Where(static definition => definition.Root is not null)
             .Select(definition =>
             {
@@ -820,7 +869,7 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
         {
             "book_of_eternity.mortal_wound_treatment.complication_preparation",
             "1",
-            request.RequestFingerprint,
+            requestFingerprint,
             ordinal.ToString(CultureInfo.InvariantCulture),
             complicationRef,
             complicationId,
@@ -832,24 +881,17 @@ internal static class MortalWoundTreatmentOutcomeIntentComposer
             new[] { binding.LocalRef, binding.NamespacedRef }));
         var preparationFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
             preparationFields);
-        var intentFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
-            new string?[]
+        var roots = draft.ConsequenceDefinitions.Where(static row => row.Root is not null)
+            .Select(row =>
             {
-                "book_of_eternity.mortal_wound_treatment.complication_intent",
-                "1",
-                baseIntentFingerprint,
-                complicationId,
-                preparationFingerprint
-            });
-        return MortalWoundAddComplicationOutcomeIntent.Create(
-            ordinal,
-            declaredFingerprint,
-            intentFingerprint,
-            complicationRef,
-            complicationId,
-            definitionBindings,
-            applicationBindings,
-            preparationFingerprint);
+                var definition = definitionBindings.Single(binding => binding.LocalRef == row.DefinitionRef);
+                var application = applicationBindings.Single(binding => binding.LocalRef == row.DefinitionRef + "_application");
+                return new MortalWoundTreatmentComplicationRootBinding(row.DefinitionRef, definition.NamespacedRef,
+                    application.NamespacedRef, WoundResponseInputComposer.CreateLocalIdentifier(
+                        "wound_root_operation", requestFingerprint, definition.NamespacedRef));
+            }).ToImmutableArray();
+        return MortalWoundTreatmentComplicationBindingPreparation.Create(complicationRef, complicationId,
+            definitionBindings, applicationBindings, preparationFingerprint, roots);
     }
 
     private static MortalWoundHealOutcomeIntent ComposeHealIntent(

@@ -2984,11 +2984,19 @@ internal static class EffectAcceptedTurnPlanner
             return;
         }
         var terminalWound = wound;
+        var hasSelectedGraph = WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var selectedGraph);
+        if (WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority!, out var selectedContinuation) &&
+            selectedContinuation.Resolution.OutcomeIntents.Any(static intent => intent is MortalWoundAddComplicationOutcomeIntent) && !hasSelectedGraph)
+        {
+            AddWoundBatchIssue(issues, path, "wound_plan_effect_handoff_invalid",
+                "one authenticated private selected complication graph", "missing or changed");
+            return;
+        }
         var authenticatedRemoval = WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(
                 prepared.TreatmentContinuationAuthority!, out var treatmentContinuation) &&
             WoundAcceptedTurnPlanner.TreatmentContinuationPreparedAgrees(prepared) &&
             treatmentContinuation.OutcomePreparation.GetOrderedRemovalIds().Length != 0;
-        var removalOnly = authenticatedRemoval && treatmentContinuation.OutcomePreparation.SeverityReduction is null;
+        var removalOnly = !hasSelectedGraph && authenticatedRemoval && treatmentContinuation.OutcomePreparation.SeverityReduction is null;
         if (transitionAuthority.TransitionKind is "worsen" or "treat")
         {
             var baselineCatalog = WoundCarrierCatalog.Build(
@@ -3020,7 +3028,7 @@ internal static class EffectAcceptedTurnPlanner
         var retainedDefinitionKeys = sourceExport.Definitions
             .Select(static value => value.DefinitionKey)
             .ToHashSet(StringComparer.Ordinal);
-        var fullRematerialization = roots.Count != 0 &&
+        var fullRematerialization = hasSelectedGraph ? selectedGraph!.HasReduction : roots.Count != 0 &&
             transitionAuthority.TransitionKind is "worsen" or "treat";
         IReadOnlyList<string> selectedTerminalRoots = terminalWound.Consequences.OwnedEffectSources
             .RootBindings.Select(static binding => binding.EffectId).ToArray();
@@ -3046,7 +3054,10 @@ internal static class EffectAcceptedTurnPlanner
             }
             selectedTerminalRoots = selected.ToArray();
         }
-        var expectedExistingLineageCount = (terminals.Count == 0 && !removalOnly) ||
+        if (hasSelectedGraph) selectedTerminalRoots = selectedGraph!.SelectedTerminalRootIds;
+        var expectedExistingLineageCount = hasSelectedGraph
+            ? selectedGraph!.HasReduction ? 0 : selectedGraph.FinalRoots.Count(row => row.OriginalEffectId is not null)
+            : (terminals.Count == 0 && !removalOnly) ||
                                            fullRematerialization
             ? 0
             : terminalWound.Consequences.OwnedEffectSources.RootBindings.Count(
@@ -3133,6 +3144,8 @@ internal static class EffectAcceptedTurnPlanner
         {
             return;
         }
+        if (selectedGraph is not null && !ValidateSelectedDefinitionScopes(input, selectedGraph, definitions, issues))
+            return;
         if (roots.Count != 0 && !ValidateGenerationPredecessors(
                 input,
                 transitionAuthority.TransitionKind,
@@ -3141,7 +3154,8 @@ internal static class EffectAcceptedTurnPlanner
                 roots,
                 path,
                 issues,
-                authenticatedRemoval ? treatmentContinuation.OutcomePreparation.SeverityReduction?.Before : null))
+                authenticatedRemoval ? treatmentContinuation.OutcomePreparation.SeverityReduction?.Before : null,
+                selectedGraph))
         {
             return;
         }
@@ -3187,7 +3201,7 @@ internal static class EffectAcceptedTurnPlanner
                 continue;
             }
 
-            var request = PrepareWoundApplication(
+            var request = PrepareSelectedWoundApplication(
                 input,
                 batch,
                 sourceExport,
@@ -3195,7 +3209,8 @@ internal static class EffectAcceptedTurnPlanner
                 root,
                 acceptedEvents,
                 rootPath,
-                issues);
+                issues,
+                selectedGraph);
             if (request is null)
                 continue;
             if (!createdEvents.Add(request.CreatedEventRef) ||
@@ -3466,7 +3481,8 @@ internal static class EffectAcceptedTurnPlanner
             origin is not null &&
             string.Equals(
                 transition.TransitionKind,
-                wound.LastTransition.Kind,
+                WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var selectedGraph)
+                    ? selectedGraph!.FinalScalars.LastTransition.Kind : wound.LastTransition.Kind,
                 StringComparison.Ordinal) &&
             (createAuthority || worseningAuthority || treatmentAuthority) &&
             string.Equals(
@@ -3569,6 +3585,39 @@ internal static class EffectAcceptedTurnPlanner
         return true;
     }
 
+    private static string SelectedDefinitionPath(MortalWoundTreatmentSelectedDefinitionOrigin origin) =>
+        $"treatmentPublication.outcome.declaredResult[{origin.OperationOrdinal}].complicationDraft.consequenceDefinitions[{origin.DefinitionOrdinal}].definition.components";
+
+    private static bool ValidateSelectedDefinitionScopes(EffectAcceptedTurnInput input,
+        MortalWoundTreatmentSelectedGraphCompilation selected,
+        IReadOnlyDictionary<string, WoundEffectSourceDefinition> definitions, List<ValidationIssue> issues)
+    {
+        var count = issues.Count;
+        if (!WoundEffectCarrierAdapter.TryCreateTargetKey(selected.Before.Owner, out var target)) return false;
+        foreach (var origin in selected.NewDefinitionOrigins)
+        {
+            if (!definitions.TryGetValue(origin.DefinitionKey, out var definition) ||
+                definition.Definition["components"] is not JsonArray components)
+            {
+                AddWoundBatchIssue(issues, SelectedDefinitionPath(origin), "wound_materialization_effect_binding_invalid",
+                    "one exact sealed new typed definition", "missing");
+                continue;
+            }
+            if (input.SkillScopeAuthority is { } authority)
+                issues.AddRange(authority.ValidateNewComponents(target, components, SelectedDefinitionPath(origin), "wound_materialization")
+                    .Select(issue => new ValidationIssue(issue.FilePath, issue.Severity, issue.Message,
+                        code: "wound_materialization_effect_binding_invalid", section: "wound_materialization",
+                        expected: issue.Expected, actual: issue.Actual, repairHint: issue.RepairHint)));
+            else
+                for (var i = 0; i < components.Count; i++)
+                    if (components[i]?["profile"]?.GetValue<string>() == "roll_modifier" &&
+                        components[i]?["payload"]?["scope"]?["kind"]?.GetValue<string>() == "skill")
+                        AddWoundBatchIssue(issues, $"{SelectedDefinitionPath(origin)}[{i}].payload.scope.skillId",
+                            "wound_materialization_effect_binding_invalid", "fresh Offered/Current exact-skill authority", "missing authority");
+        }
+        return issues.Count == count;
+    }
+
     private static bool ValidateGenerationPredecessors(
         EffectAcceptedTurnInput input,
         string transitionKind,
@@ -3577,7 +3626,8 @@ internal static class EffectAcceptedTurnPlanner
         IReadOnlyList<WoundRootEffectApplication> roots,
         string path,
         List<ValidationIssue> issues,
-        WoundMaterializationEnvelope? retainedCoordinateWound)
+        WoundMaterializationEnvelope? retainedCoordinateWound,
+        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph)
     {
         var coordinateWound = retainedCoordinateWound ?? beforeWound;
         var beforeDomains = coordinateWound.Consequences.OwnedEffectSources
@@ -3604,6 +3654,13 @@ internal static class EffectAcceptedTurnPlanner
                     beforeDomains[binding.EffectId].Kind,
                     beforeDomains[binding.EffectId].ComplicationId),
                 static binding => binding.EffectId);
+        if (selectedGraph is not null)
+        {
+            var originalApplications = selectedGraph.FinalRoots.Where(row => selectedGraph.HasReduction && row.OriginalEffectId is not null)
+                .Select(row => (row.DefinitionKey, row.OwnershipDomain.Kind, row.OwnershipDomain.ComplicationId)).ToHashSet();
+            beforeByCoordinate = beforeByCoordinate.Where(pair => originalApplications.Contains(pair.Key))
+                .ToDictionary(pair => pair.Key, pair => pair.Value);
+        }
         EffectCarrierCatalog? effectCatalog = null;
         EffectIdentityState? effectIdentities = null;
         if (transitionKind is "worsen" or "treat" &&
@@ -3687,8 +3744,9 @@ internal static class EffectAcceptedTurnPlanner
             }
         }
         if (string.Equals(transitionKind, "treat", StringComparison.Ordinal) &&
-            (roots.Count != beforeByCoordinate.Count ||
-             suppliedPredecessors.Count != beforeByCoordinate.Count))
+            (selectedGraph is null ? roots.Count != beforeByCoordinate.Count || suppliedPredecessors.Count != beforeByCoordinate.Count
+                : !suppliedPredecessors.SetEquals(beforeByCoordinate.Values) ||
+                  roots.Count != selectedGraph.FinalRoots.Count(row => selectedGraph.HasReduction || row.AdditionBinding is not null)))
         {
             valid = false;
         }
@@ -3712,7 +3770,19 @@ internal static class EffectAcceptedTurnPlanner
         WoundRootEffectApplication root,
         IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
         string path,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues) => PrepareSelectedWoundApplication(input, batch, sourceExport,
+            sourceDefinition, root, acceptedEvents, path, issues, null);
+
+    private static WoundApplicationRequest? PrepareSelectedWoundApplication(
+        EffectAcceptedTurnInput input,
+        WoundEffectOperationBatch batch,
+        WoundEffectSourceExport sourceExport,
+        WoundEffectSourceDefinition sourceDefinition,
+        WoundRootEffectApplication root,
+        IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
+        string path,
+        List<ValidationIssue> issues,
+        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph)
     {
         var issueCount = issues.Count;
         var sourceSelector = root.SourceSelector;
@@ -3903,9 +3973,12 @@ internal static class EffectAcceptedTurnPlanner
 
         // A typed, authenticated treatment batch re-materializes its sealed definition graph;
         // it does not offer a new selector choice. Its structural diagnostics remain internal.
-        var acceptedContinuation = batch.TransitionAuthority.TransitionKind == "treat";
+        var origin = selectedGraph?.NewDefinitionOrigins.SingleOrDefault(row => row.DefinitionKey == root.DefinitionKey);
+        var acceptedContinuation = batch.TransitionAuthority.TransitionKind == "treat" && origin is null;
         var diagnosticPath = path + ".components";
-        if (!acceptedContinuation &&
+        if (origin is not null)
+            diagnosticPath = SelectedDefinitionPath(origin);
+        else if (!acceptedContinuation &&
             (input.SkillScopeAuthority is not null || input.WoundApplicationLocations is not null))
         {
             if (input.WoundApplicationLocations is null ||

@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Collections.Immutable;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -1345,13 +1346,6 @@ internal static class WoundAcceptedTurnPlannerCore
         WoundEffectOperationBatch batch,
         IReadOnlyDictionary<string, EffectAcceptedApplicationResult> applicationByRef)
     {
-        var root = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(preparedWound))!
-            .AsObject();
-        var consequences = root["consequences"]!.AsObject();
-        var definitions = new JsonArray(batch.SourceExport.Definitions.Select(static value =>
-            (JsonNode)value.Definition).ToArray());
-        var rootBindings = new JsonArray();
-        var entries = new List<JsonObject>();
         var orderedApplications = batch.RootApplications.Select(application =>
             new
             {
@@ -1380,22 +1374,78 @@ internal static class WoundAcceptedTurnPlannerCore
                 StringComparer.Ordinal)
             .ToArray();
         var nextSlot = 1;
-        foreach (var pair in sortedApplications)
+        var rows = sortedApplications.Select(pair => new WoundFinalRootAssemblyRow(pair.Result!.EffectId,
+            pair.Application.DefinitionKey, pair.Application.OwnershipDomain,
+            pair.Application.SlotBindings.Select(slot => slot with { Slot = nextSlot++ }).ToImmutableArray())).ToArray();
+        return BuildFinalWoundCore(preparedWound, new(preparedWound.Severity, preparedWound.Care,
+            preparedWound.Recovery, preparedWound.Treatment, preparedWound.LastTransition, preparedWound.Consequences.SlotBudget),
+            preparedWound.Complications, batch.SourceExport.Definitions, rows);
+    }
+
+    internal sealed record WoundFinalRootAssemblyRow(string EffectId, string DefinitionKey,
+        WoundRootOwnershipDomain OwnershipDomain, ImmutableArray<WoundEffectSlotAgreement> Slots);
+
+    internal static FinalWoundResult BuildFinalTreatmentWound(MortalWoundTreatmentSelectedGraphCompilation compilation,
+        WoundEffectOperationBatch batch, IReadOnlyDictionary<string, EffectAcceptedApplicationResult> applicationByRef)
+    {
+        var rows = new List<WoundFinalRootAssemblyRow>();
+        foreach (var root in compilation.FinalRoots)
         {
-            var application = pair.Application;
-            var result = pair.Result!;
+            var effectId = root.OriginalEffectId;
+            if (compilation.HasReduction || root.AdditionBinding is not null)
+            {
+                var applications = batch.RootApplications.Where(application => application.DefinitionKey == root.DefinitionKey &&
+                    application.OwnershipDomain == root.OwnershipDomain).ToArray();
+                if (applications.Length != 1 || !applicationByRef.TryGetValue(applications[0].ApplicationRef, out var result))
+                    return new(null, new[] { NewIssue("wound_plan_effect_result_set_mismatch",
+                        "A selected wound root has no accepted effect result.", "one exact final root result", "missing or ambiguous") });
+                effectId = result.EffectId;
+            }
+            rows.Add(new(effectId!, root.DefinitionKey, root.OwnershipDomain, root.Slots));
+        }
+        var complications = compilation.FinalGraph.Complications.Select(row => new WoundComplication(
+            row.Reference.Origin == WoundWorkingReferenceOrigin.Existing ? row.Reference.Value :
+                compilation.Additions.Single(add => add.ComplicationRef == row.Reference.Value).ComplicationId,
+            row.Kind, row.State, row.DisplayName, row.TreatmentDifficultyModifier, ImmutableArray<string>.Empty, row.Visibility)).ToArray();
+        return BuildFinalWoundCore(compilation.Before, compilation.FinalScalars, complications, batch.SourceExport.Definitions, rows);
+    }
+
+    private static FinalWoundResult BuildFinalWoundCore(WoundMaterializationEnvelope before, WoundFinalAssemblyScalars scalars,
+        IReadOnlyList<WoundComplication> complicationRows, IReadOnlyList<WoundEffectSourceDefinition> sourceDefinitions,
+        IReadOnlyList<WoundFinalRootAssemblyRow> roots)
+    {
+        // Start from the actual canonical carrier; install scalars and identities only once every result exists.
+        var root = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(before))!.AsObject();
+        var scalarImage = before with { Severity = scalars.Severity, Care = scalars.Care, Recovery = scalars.Recovery,
+            Treatment = scalars.Treatment, LastTransition = scalars.LastTransition };
+        var scalarJson = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(scalarImage))!.AsObject();
+        foreach (var name in new[] { "severity", "care", "recovery", "treatment", "lastTransition" })
+            root[name] = scalarJson[name]!.DeepClone();
+        root["complications"] = new JsonArray(complicationRows.Select(row => (JsonNode)new JsonObject
+        {
+            ["complicationId"] = row.ComplicationId, ["kind"] = row.Kind, ["state"] = row.State,
+            ["displayName"] = row.DisplayName, ["treatmentDifficultyModifier"] = row.TreatmentDifficultyModifier,
+            ["visibility"] = row.Visibility, ["ownedEffectIds"] = new JsonArray()
+        }).ToArray());
+        var consequences = root["consequences"]!.AsObject();
+        consequences["slotBudget"] = scalars.SlotBudget;
+        var definitions = new JsonArray(sourceDefinitions.Select(static value => (JsonNode)value.Definition).ToArray());
+        var rootBindings = new JsonArray();
+        var entries = new List<JsonObject>();
+        foreach (var row in roots)
+        {
             rootBindings.Add(new JsonObject
             {
-                ["effectId"] = result.EffectId,
-                ["definitionKey"] = application.DefinitionKey
+                ["effectId"] = row.EffectId,
+                ["definitionKey"] = row.DefinitionKey
             });
-            foreach (var slot in application.SlotBindings)
+            foreach (var slot in row.Slots)
             {
                 entries.Add(new JsonObject
                 {
-                    ["slot"] = nextSlot++,
+                    ["slot"] = slot.Slot,
                     ["profileKey"] = slot.ProfileKey,
-                    ["effectId"] = result.EffectId,
+                    ["effectId"] = row.EffectId,
                     ["readableSummary"] = slot.ReadableSummary
                 });
             }
@@ -1418,17 +1468,17 @@ internal static class WoundAcceptedTurnPlannerCore
                 var complicationId = complication["complicationId"]!
                     .GetValue<string>();
                 complication["ownedEffectIds"] = new JsonArray(
-                    sortedApplications.Where(pair =>
+                    roots.Where(row =>
                             string.Equals(
-                                pair.Application.OwnershipDomain.Kind,
+                                row.OwnershipDomain.Kind,
                                 "complication",
                                 StringComparison.Ordinal) &&
                             string.Equals(
-                                pair.Application.OwnershipDomain.ComplicationId,
+                                row.OwnershipDomain.ComplicationId,
                                 complicationId,
                                 StringComparison.Ordinal))
-                        .Select(static pair =>
-                            (JsonNode)JsonValue.Create(pair.Result!.EffectId)!)
+                        .Select(static row =>
+                            (JsonNode)JsonValue.Create(row.EffectId)!)
                         .ToArray());
             }
         }
@@ -3577,13 +3627,14 @@ internal static class WoundAcceptedTurnPlannerCore
                 var canonicalSlotsByApplication = new Dictionary<
                     string,
                     IReadOnlyList<WoundEffectSlotAgreement>>(StringComparer.Ordinal);
+                var selectedGraph = WoundAcceptedTurnPlanner.TryGetTreatmentSelectedGraph(prepared, out var compilation);
                 foreach (var derived in batchApplications.OrderBy(
                              static value => value.Result.EffectId,
                              StringComparer.Ordinal))
                 {
                     canonicalSlotsByApplication.Add(
                         derived.Expected.ApplicationRef,
-                        derived.Expected.SlotBindings.Select(slot =>
+                        selectedGraph ? derived.Expected.SlotBindings : derived.Expected.SlotBindings.Select(slot =>
                             new WoundEffectSlotAgreement(
                                 nextSlot++,
                                 slot.ProfileKey,

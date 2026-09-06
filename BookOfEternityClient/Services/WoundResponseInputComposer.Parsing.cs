@@ -1312,7 +1312,7 @@ internal static partial class WoundResponseInputComposer
         }
     }
 
-    private static string CreateLocalIdentifier(
+    internal static string CreateLocalIdentifier(
         string prefix,
         params string?[] fields) => prefix + "_" +
         WoundAcceptedTurnFingerprintWriter.Compute(

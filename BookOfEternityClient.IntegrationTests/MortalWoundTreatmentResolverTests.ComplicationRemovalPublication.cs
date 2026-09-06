@@ -234,6 +234,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
         Assert.Equal("effect_t066_course_base", Assert.Single(batch.RootLineageAuthority).EffectId);
         Assert.True(WoundAcceptedTurnPlanner.TryReadTreatmentContinuation(prepared.TreatmentContinuationAuthority!, out var continuation));
         Assert.NotNull(continuation.RematerializationAuthority);
+        var missingBatch = MortalWoundTreatmentOutcomePublicationPlanner.Finalize(continuation.OutcomePreparation,
+            continuation.Resolution, null, new Dictionary<string, EffectAcceptedApplicationResult>());
+        Assert.Contains(missingBatch.Issues, issue => issue.Code == "mortal_wound_treatment_outcome_effect_handoff_mismatch" &&
+            issue.Expected == "one authenticated treatment graph batch and exact application map (including empty)");
         var tree = CaptureResolverFixtureTree(fixture.Root);
         foreach (var mutation in new[] { "missing_batch", "missing_lineage", "changed_lineage", "foreign_proof", "missing_proof_and_batch" })
         {

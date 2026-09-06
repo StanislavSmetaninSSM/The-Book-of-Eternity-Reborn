@@ -9,6 +9,43 @@ namespace BookOfEternityClient.Tests;
 public sealed class MortalWoundTreatmentWorkingGraphProjectionTests
 {
     [Theory]
+    [InlineData(false, false, false, false)]
+    [InlineData(true, false, false, false)]
+    [InlineData(false, true, false, true)]
+    [InlineData(false, false, true, true)]
+    public void GraphProjection_FinalSameRankRootContinuityRejectsReusedRemovedKey(bool changedBody, bool reduce, bool freshKey, bool expected)
+    {
+        var before = ReadRankThreeWound();
+        var rootId = Assert.Single(before.Complications, row => row.ComplicationId == "old_complication").OwnedEffectIds[0];
+        var key = before.Consequences.OwnedEffectSources.RootBindings.Single(row => row.EffectId == rootId).DefinitionKey;
+        var body = JsonNode.Parse(before.Consequences.OwnedEffectSources.Definitions.Single(row => row.GetProperty("definitionKey").GetString() == key).GetRawText())!.AsObject();
+        body["links"] = new JsonArray();
+        if (freshKey) body["definitionKey"] = key + "_fresh";
+        if (changedBody) body["display"]!["name"] = "Changed reused source";
+        var entries = before.Consequences.Entries.Where(row => row.EffectId == rootId).ToArray();
+        var draft = new MortalWoundComplicationProposalDraft(new("replacement", "pain", "active", "Replacement", 1, "known_to_player"),
+            ImmutableArray.Create(new WoundConsequenceDefinitionProposalDraft("replacement_root", JsonSerializer.SerializeToElement(body),
+                new("complication", "replacement", entries.Select(row => new WoundConsequenceSlotProposalDraft(row.ProfileKey, row.ReadableSummary)).ToImmutableArray()))));
+        var operations = ImmutableArray.Create<MortalWoundTreatmentOperation>(new MortalWoundRemoveComplicationOperation("old_complication"),
+            new MortalWoundAddComplicationOperation(draft));
+        if (reduce) operations = operations.Add(new MortalWoundReduceSeverityOperation(1));
+        Assert.Equal(expected, MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(before, new[] { operations }, Append).IsApplicable);
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void GraphProjection_SharedContinuityChecksReappearingNonRootBody(bool changed)
+    {
+        var fact = new WoundOwnedEffectDefinitionFact("child", "canonical child", ImmutableArray<string>.Empty, false);
+        var emptyRoots = new Dictionary<string, WoundWorkingReference>();
+        var comparison = WoundSameRankOwnedSourceContinuity.Compare(emptyRoots, emptyRoots,
+            new Dictionary<string, WoundOwnedEffectDefinitionFact> { ["child"] = fact },
+            new Dictionary<string, WoundOwnedEffectDefinitionFact> { ["child"] = fact with { CanonicalJson = changed ? "changed child" : fact.CanonicalJson } });
+        Assert.Null(comparison.RootRebinding);
+        Assert.Equal(changed ? "child" : null, comparison.ChangedDefinitionKey);
+    }
+    [Theory]
     [InlineData(false, true)]
     [InlineData(true, true)]
     [InlineData(false, false)]

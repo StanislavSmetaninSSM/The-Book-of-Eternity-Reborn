@@ -60,8 +60,21 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
         if (startingWound is null || startingWound.Lifecycle != "active" ||
             MortalWoundTreatmentWorkingGraphProjection.FromCanonical(startingWound) is not { } starting)
             return NotApplicable();
-        return SimulateCore(starting, declaredResults, preparedOperationReducer, ProjectGraphReduction,
+        var result = SimulateCore(starting, declaredResults, preparedOperationReducer, ProjectGraphReduction,
             static candidate => candidate.ValidateGraph("mortalWoundTreatment.workingGraph").IsEmpty ? candidate : null);
+        if (result.IsApplicable && result.WorkingGraph is { } final && startingWound.Owner.Realm == "mortal_world" &&
+            startingWound.Classification.Domain == "physical" && final.Scalars.Severity.Rank == starting.Scalars.Severity.Rank)
+        {
+            var continuity = WoundSameRankOwnedSourceContinuity.Compare(
+                starting.Graph.Roots.ToDictionary(row => row.DefinitionKey, row => row.Reference, StringComparer.Ordinal),
+                final.Graph.Roots.ToDictionary(row => row.DefinitionKey, row => row.Reference, StringComparer.Ordinal),
+                WoundMaterializationContract.BuildOwnedEffectDefinitionFacts(starting.Graph.Definitions.Select(row => row.Definition).ToArray())
+                    .ToDictionary(row => row.DefinitionKey, StringComparer.Ordinal),
+                WoundMaterializationContract.BuildOwnedEffectDefinitionFacts(final.Graph.Definitions.Select(row => row.Definition).ToArray())
+                    .ToDictionary(row => row.DefinitionKey, StringComparer.Ordinal));
+            if (continuity.RootRebinding is not null || continuity.ChangedDefinitionKey is not null) return NotApplicable();
+        }
+        return result;
     }
 
     private static MortalWoundTreatmentWorkingGraphSimulation SimulateCore(
