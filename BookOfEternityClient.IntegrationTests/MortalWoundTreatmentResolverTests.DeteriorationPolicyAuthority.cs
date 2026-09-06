@@ -371,6 +371,10 @@ public sealed partial class MortalWoundTreatmentResolverTests
     {
         var scenario = DeteriorationScenario(
             DeteriorationEffectfulComplicationResult());
+        // This capacity oracle needs the original full two-slot graph; the shared
+        // procedure fixture intentionally keeps one slot for its reduction bands.
+        scenario.Before["consequences"] =
+            WoundContractTestData.CreateActiveWound()["consequences"]!.DeepClone();
         using var fixture = AcceptedStateFixture.Create(scenario);
         var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
             fixture.GetAcceptedState());

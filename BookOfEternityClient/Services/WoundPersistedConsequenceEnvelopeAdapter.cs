@@ -31,6 +31,30 @@ internal sealed record WoundPersistedConsequenceEnvelopeValidationResult(
 /// </summary>
 internal static class WoundPersistedConsequenceEnvelopeAdapter
 {
+    // Only already validated references reach this detached adapter table. These
+    // injective coordinates are never canonical identities or outcome-intent maps.
+    internal static (IReadOnlyList<WoundPersistedConsequenceDefinition> Definitions,
+        IReadOnlyList<WoundPersistedConsequenceRoot> Roots) AdaptWorkingGraph(
+        WoundWorkingOwnedGraph graph, string path)
+    {
+        var definitions = graph.Definitions.Select((definition, index) =>
+            new WoundPersistedConsequenceDefinition($"definition_{index}",
+                path + $".ownedEffectSources.definitions[{index}]", definition.Definition.Clone())).ToArray();
+        var refsByKey = definitions.ToDictionary(
+            static definition => ReadString(definition.Definition, "definitionKey"),
+            static definition => definition.DefinitionRef, StringComparer.Ordinal);
+        var ordered = graph.Roots.Select((root, index) => (Root: root, Index: index,
+                Slots: graph.Entries.Where(entry => entry.Root == root.Reference).ToArray()))
+            .OrderBy(static row => row.Slots.Length == 0 ? int.MaxValue : row.Slots.Min(static slot => slot.Slot))
+            .ThenBy(static row => row.Index).ToArray();
+        var roots = ordered.Select((row, index) => new WoundPersistedConsequenceRoot(
+            $"root_{index}", refsByKey[row.Root.DefinitionKey],
+            path + $".ownedEffectSources.rootBindings[{row.Index}]",
+            row.Slots.Select(static slot => new WoundEffectSlotAgreement(slot.Slot, slot.ProfileKey,
+                slot.ReadableSummary)).ToImmutableArray())).ToArray();
+        return (definitions, roots);
+    }
+
     /// <summary>
     /// Checks local component/slot agreement after the owning contract has diagnosed
     /// definition identity and root resolution. It grants no real-severity authority.

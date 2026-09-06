@@ -75,6 +75,8 @@ internal sealed record MortalWoundTreatmentSeverityReductionProjectionResult(
     internal bool IsValid => Projection is not null && Issues.Count == 0;
 }
 
+internal sealed record MortalWoundTreatmentReductionScalars(WoundSeverity Severity, int SlotBudget);
+
 internal static class MortalWoundTreatmentSeverityReductionPlanner
 {
     private const string FingerprintDomain =
@@ -94,19 +96,8 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
                 "one complete canonical Mortal wound before-image", "null");
             return Invalid(issues);
         }
-        if (steps is < 1 or > 2)
-        {
-            AddIssue(issues, ProjectionPath + ".steps",
-                "severity reduction steps 1 or 2",
-                steps.ToString(CultureInfo.InvariantCulture));
+        if (!ValidateReductionArguments(steps, resultingLastChangeEventRef, issues))
             return Invalid(issues);
-        }
-        if (!ResourceMaterializationContract.IsExactIdentifier(resultingLastChangeEventRef))
-        {
-            AddIssue(issues, ProjectionPath + ".resultingLastChangeEventRef",
-                "one exact accepted event reference", resultingLastChangeEventRef ?? "null");
-            return Invalid(issues);
-        }
 
         try
         {
@@ -114,14 +105,8 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
             if (canonicalBefore is null)
                 return Invalid(issues);
 
-            var resultingRank = checked(canonicalBefore.Severity.Rank - steps);
-            if (resultingRank < 1)
-            {
-                AddIssue(issues, ProjectionPath + ".steps",
-                    "a reduction that leaves severity rank at least I",
-                    resultingRank.ToString(CultureInfo.InvariantCulture));
+            if (!TryGetReductionRank(canonicalBefore.Severity.Rank, steps, out var resultingRank, issues))
                 return Invalid(issues);
-            }
 
             var roots = ReconstructRoots(canonicalBefore, issues);
             if (issues.Count != 0)
@@ -131,15 +116,11 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
             if (!adapter.IsValid || issues.Count != 0)
                 return Invalid(issues);
 
+            var scalars = ApplyReductionScalars(canonicalBefore.Severity, resultingRank, resultingLastChangeEventRef);
             var candidate = canonicalBefore with
             {
-                Severity = canonicalBefore.Severity with
-                {
-                    Value = SeverityValue(resultingRank),
-                    Rank = resultingRank,
-                    LastChangeEventRef = resultingLastChangeEventRef
-                },
-                Consequences = canonicalBefore.Consequences with { SlotBudget = resultingRank }
+                Severity = scalars.Severity,
+                Consequences = canonicalBefore.Consequences with { SlotBudget = scalars.SlotBudget }
             };
             var canonicalAfter = ParseCanonical(
                 candidate, ProjectionPath + ".provisionalAfter", issues);
@@ -163,6 +144,46 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
             return Invalid(issues);
         }
     }
+
+    internal static bool ValidateReductionArguments(int steps, string resultingLastChangeEventRef, List<ValidationIssue> issues)
+    {
+        if (steps is < 1 or > 2)
+        {
+            AddIssue(issues, ProjectionPath + ".steps",
+                "severity reduction steps 1 or 2",
+                steps.ToString(CultureInfo.InvariantCulture));
+            return false;
+        }
+        if (!ResourceMaterializationContract.IsExactIdentifier(resultingLastChangeEventRef))
+        {
+            AddIssue(issues, ProjectionPath + ".resultingLastChangeEventRef",
+                "one exact accepted event reference", resultingLastChangeEventRef ?? "null");
+            return false;
+        }
+        return true;
+    }
+
+    internal static bool TryGetReductionRank(int rank, int steps, out int result, List<ValidationIssue> issues)
+    {
+        result = checked(rank - steps);
+        if (result < 1)
+        {
+            AddIssue(issues, ProjectionPath + ".steps",
+                "a reduction that leaves severity rank at least I",
+                result.ToString(CultureInfo.InvariantCulture));
+            return false;
+        }
+        return true;
+    }
+
+    internal static MortalWoundTreatmentReductionScalars ApplyReductionScalars(
+        WoundSeverity before, int resultingRank, string resultingLastChangeEventRef) =>
+        new(before with
+        {
+            Value = SeverityValue(resultingRank),
+            Rank = resultingRank,
+            LastChangeEventRef = resultingLastChangeEventRef
+        }, resultingRank);
 
     private static WoundMaterializationEnvelope? ParseCanonical(
         WoundMaterializationEnvelope wound,
@@ -303,13 +324,20 @@ internal static class MortalWoundTreatmentSeverityReductionPlanner
                 ProjectionPath +
                 $".before.consequences.ownedEffectSources.rootBindings[{index}]",
                 root.Slots)).ToArray();
+        return ValidateDestinationGraph(resultingRank, definitions, persistedRoots, wound.Consequences.SlotsUsed, issues);
+    }
+
+    internal static WoundPersistedConsequenceEnvelopeValidationResult ValidateDestinationGraph(
+        int resultingRank, IReadOnlyList<WoundPersistedConsequenceDefinition> definitions,
+        IReadOnlyList<WoundPersistedConsequenceRoot> roots, int slotsUsed, List<ValidationIssue> issues)
+    {
         var validation = WoundPersistedConsequenceEnvelopeAdapter.ValidateDetached(
             resultingRank,
             ProjectionPath + ".before.consequences",
             definitions,
-            persistedRoots,
+            roots,
             requireExactGlobalSlotAgreement: true,
-            persistedSlotsUsed: wound.Consequences.SlotsUsed);
+            persistedSlotsUsed: slotsUsed);
         issues.AddRange(validation.Issues);
         return validation;
     }

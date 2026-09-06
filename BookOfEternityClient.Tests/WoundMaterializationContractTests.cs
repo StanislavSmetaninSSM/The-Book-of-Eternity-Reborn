@@ -771,6 +771,27 @@ public sealed class WoundMaterializationContractTests
     }
 
     [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void Parse_RootBoundReactionOwnership_DoesNotConfuseLiteralBaseWoundComplication(bool sameComplication)
+    {
+        var wound = CreateSingleLeafWound(bindLeaf: true, leafPolicy: "replace");
+        var complication = CreateComplication(1, "effect_wound_reaction_root");
+        complication["complicationId"] = "base_wound";
+        if (sameComplication)
+            complication["ownedEffectIds"]!.AsArray().Add("effect_wound_reaction_leaf");
+        wound["complications"]!.AsArray().Add(complication);
+
+        var result = Parse(wound);
+        if (sameComplication)
+            Assert.True(result.IsValid, DescribeIssues(result));
+        else
+            AssertInvalid(result,
+                Path + ".consequences.ownedEffectSources.definitions[0].components[0].payload.definitionKey",
+                "wound_materialization_owned_source_graph_invalid");
+    }
+
+    [Theory]
     [InlineData("I", 1)]
     [InlineData("II", 2)]
     public void Parse_OwnedEffectSources_RejectsLeafExpansionBelowSeverityThree(

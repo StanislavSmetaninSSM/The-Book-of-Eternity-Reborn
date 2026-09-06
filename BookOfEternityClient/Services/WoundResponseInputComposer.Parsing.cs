@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Globalization;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -758,31 +759,14 @@ internal static partial class WoundResponseInputComposer
                 continue;
             }
             definitionRefs.Add(definitionRef!);
-            var definition = JsonNode.Parse(fields["definition"].GetRawText())!.AsObject();
-            if (definition["definitionKey"] is not JsonValue definitionKeyNode ||
-                !definitionKeyNode.TryGetValue<string>(out var definitionKey) ||
-                !ResourceMaterializationContract.IsExactIdentifier(definitionKey))
-            {
-                Add(
-                    issues,
-                    itemPath + ".definition.definitionKey",
-                    "wound_response_invalid_definition",
-                    "one exact definitionKey",
-                    "missing or malformed definitionKey");
+            var definition = ConvertProposalDefinition(fields["definition"], localWoundRef, itemPath, issues,
+                out var definitionKey);
+            // A valid key participates in aggregate duplicate diagnostics even
+            // when the definition is rejected for forbidden source links.
+            if (definitionKey is not null)
+                definitionKeys.Add(definitionKey);
+            if (definition is null)
                 continue;
-            }
-            definitionKeys.Add(definitionKey);
-            if (definition["links"] is not JsonArray links || links.Count != 0)
-            {
-                Add(
-                    issues,
-                    itemPath + ".definition.links",
-                    "wound_response_client_authority_forbidden",
-                    "exact empty links array; the client binds the wound source",
-                    definition["links"]?.ToJsonString() ?? "missing");
-                continue;
-            }
-            BindLocalWoundMarkers(definition, localWoundRef, itemPath, issues);
 
             var localEffectRef = CreateLocalIdentifier(
                 "wound_definition_ref",
@@ -846,11 +830,10 @@ internal static partial class WoundResponseInputComposer
                     var summary = ReadString(slotFields, "readableSummary", slotPath, issues);
                     if (profile is not null && summary is not null)
                     {
-                        slots.Add(new WoundAcceptedConsequenceSlotBinding(
-                            nextSlot++,
-                            profile,
-                            localApplicationRef,
-                            summary));
+                        foreach (var slot in ConvertProposalRootSlots(
+                                     ImmutableArray.Create(new WoundConsequenceSlotProposalDraft(profile, summary)), ref nextSlot))
+                            slots.Add(new WoundAcceptedConsequenceSlotBinding(
+                                slot.Slot, slot.ProfileKey, localApplicationRef, slot.ReadableSummary));
                     }
                 }
             }
@@ -1011,51 +994,6 @@ internal static partial class WoundResponseInputComposer
         return null;
     }
 
-    private static void BindLocalWoundMarkers(
-        JsonObject definition,
-        string localWoundRef,
-        string path,
-        ICollection<ValidationIssue> issues)
-    {
-        if (definition["components"] is not JsonArray components)
-            return;
-        foreach (var component in components.OfType<JsonObject>())
-        {
-            if (component["profile"] is not JsonValue profileNode ||
-                !profileNode.TryGetValue<string>(out var profile) ||
-                !string.Equals(profile, "wound_consequence", StringComparison.Ordinal))
-            {
-                continue;
-            }
-            if (component["payload"] is not JsonObject payload)
-                continue;
-            if (payload.ContainsKey("woundId"))
-            {
-                Add(
-                    issues,
-                    path + ".definition.components[].payload.woundId",
-                    "wound_response_client_authority_forbidden",
-                    "no GM-authored woundId",
-                    payload["woundId"]?.ToJsonString() ?? "null");
-                continue;
-            }
-            payload["woundId"] = localWoundRef;
-        }
-    }
-
-    private static JsonObject BindDefinitionToLocalWound(
-        JsonObject definition,
-        string localWoundRef)
-    {
-        var result = definition.DeepClone().AsObject();
-        result["links"]!.AsArray().Add(new JsonObject
-        {
-            ["kind"] = "wound",
-            ["targetId"] = localWoundRef,
-            ["role"] = "source"
-        });
-        return result;
-    }
 
     private static void RemoveNullRecoveryAnchorPlaceholders(JsonObject recovery)
     {

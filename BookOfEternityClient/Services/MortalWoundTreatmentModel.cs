@@ -557,6 +557,9 @@ internal static partial class MortalWoundTreatmentContract
             _ => throw new InvalidOperationException("Validated operation has an unknown kind.")
         };
 
+    internal static MortalWoundComplicationProposalDraft BuildValidatedComplicationDraft(
+        JsonElement draft) => BuildComplicationDraft(draft);
+
     private static MortalWoundComplicationProposalDraft BuildComplicationDraft(JsonElement draft)
     {
         var complication = draft.GetProperty("complications")[0];

@@ -830,11 +830,12 @@ internal static partial class MortalWoundTreatmentPlanner
         var issues = new List<ValidationIssue>();
         foreach (var band in route.Bands)
         {
-            var simulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
+            var simulation = MortalWoundTreatmentWorkingWoundSimulator.SimulateGraph(
                 before,
                 new[] { band.DeclaredResult },
-                (working, operation) => PrepareComplexApplicability(
+                (working, address, operation) => PrepareComplexGraphApplicability(
                     working,
+                    address,
                     operation,
                     acceptedState,
                     coordinates));
@@ -854,79 +855,53 @@ internal static partial class MortalWoundTreatmentPlanner
         return new ReadOnlyCollection<ValidationIssue>(issues);
     }
 
-    private static MortalWoundTreatmentPreparedOperationResult PrepareComplexApplicability(
-        WoundMaterializationEnvelope before,
+    private static MortalWoundTreatmentPreparedGraphOperationResult PrepareComplexGraphApplicability(
+        MortalWoundTreatmentWorkingGraphProjection before,
+        WoundWorkingOperationAddress address,
         MortalWoundTreatmentOperation operation,
         MortalWoundTreatmentAcceptedStateAuthority acceptedState,
         MortalWoundTreatmentAttemptCoordinates coordinates)
     {
         if (operation is MortalWoundAddComplicationOperation complication)
         {
-            try
-            {
-                var additionalDefinitions = complication.ComplicationDraft
-                    .ConsequenceDefinitions.Length;
-                var additionalRoots = complication.ComplicationDraft.ConsequenceDefinitions
-                    .Count(static definition => definition.Root is not null);
-                var additionalSlots = complication.ComplicationDraft.ConsequenceDefinitions
-                    .Where(static definition => definition.Root is not null)
-                    .Sum(static definition => definition.Root!.Slots.Length);
-                var applicable = checked(before.Complications.Count + 1) <=
-                                     WoundMaterializationContract.MaxComplications &&
-                                 checked(before.Consequences.SlotsUsed + additionalSlots) <=
-                                     before.Consequences.SlotBudget &&
-                                 checked(before.Consequences.OwnedEffectSources.Definitions.Count +
-                                         additionalDefinitions) <=
-                                     WoundMaterializationContract.MaxOwnedEffectDefinitions &&
-                                 checked(before.Consequences.OwnedEffectSources.RootBindings.Count +
-                                         additionalRoots) <=
-                                     WoundMaterializationContract.MaxOwnedEffectRootBindings;
-                return new MortalWoundTreatmentPreparedOperationResult(
-                    applicable,
-                    false,
-                    applicable ? before : null);
-            }
-            catch (OverflowException)
-            {
-                return new MortalWoundTreatmentPreparedOperationResult(false, false, null);
-            }
+            var applicable = before.TryAppendComplication(complication.ComplicationDraft,
+                WoundWorkingReferenceOrigin.DirectAddition, address, out var appended);
+            return new MortalWoundTreatmentPreparedGraphOperationResult(applicable, false, appended);
         }
-
         if (operation is not MortalWoundApplyDeteriorationOperation deterioration)
-            return new MortalWoundTreatmentPreparedOperationResult(false, false, null);
+            return new(false, false, null);
 
+        // T069 remains authoritative against the original accepted wound, even when
+        // prior symbolic work would otherwise make a baseline-invalid policy fit.
         var authorityResult = MortalWoundDeteriorationPolicyAuthority.Create(
-            acceptedState,
-            coordinates,
-            deterioration.PolicyRef);
+            acceptedState, coordinates, deterioration.PolicyRef);
         if (!authorityResult.IsValid || authorityResult.Authority is null)
-            return new MortalWoundTreatmentPreparedOperationResult(false, false, null);
-
+            return new(false, false, null);
         var policy = authorityResult.Authority.Policy;
+        if (policy.ResultKind == MortalWoundDeteriorationResultKind.AddComplication)
+        {
+            var draft = MortalWoundTreatmentContract.BuildValidatedComplicationDraft(
+                authorityResult.Authority.Policy.Result.GetProperty("complicationDraft"));
+            var applicable = before.TryAppendComplication(draft,
+                WoundWorkingReferenceOrigin.PolicyAddition, address, out var appended);
+            return new MortalWoundTreatmentPreparedGraphOperationResult(applicable, false, appended);
+        }
         if (policy.ResultKind != MortalWoundDeteriorationResultKind.IncreaseSeverity)
         {
-            // The typed T069 authority has already proved the complete complication
-            // capacity or death-contour applicability. Permanent identity and the
-            // terminal handoff are deliberately allocated only for the selected row.
-            return new MortalWoundTreatmentPreparedOperationResult(true, false, before);
+            // Exact policy/death authority proves applicability only. It does not
+            // terminalize this preview or make any selected publication decision.
+            return new(true, false, before);
         }
-
-        var rank = checked(before.Severity.Rank + 1);
-        var value = rank switch
+        var rank = checked(before.Scalars.Severity.Rank + 1);
+        var value = rank switch { 1 => "I", 2 => "II", 3 => "III", 4 => "IV", _ => string.Empty };
+        if (value.Length == 0) return new(false, false, null);
+        var after = before.WithScalars(before.Scalars with
         {
-            1 => "I",
-            2 => "II",
-            3 => "III",
-            4 => "IV",
-            _ => string.Empty
-        };
-        if (value.Length == 0)
-            return new MortalWoundTreatmentPreparedOperationResult(false, false, null);
-        var after = before with
-        {
-            Severity = before.Severity with { Rank = rank, Value = value }
-        };
-        return new MortalWoundTreatmentPreparedOperationResult(true, false, after);
+            Severity = before.Scalars.Severity with { Rank = rank, Value = value }
+        });
+        if (!after.ValidateGraph("mortalWoundTreatment.workingGraph").IsEmpty)
+            return new(false, false, null);
+        return new(true, false, after);
     }
 
     internal static IReadOnlyList<ValidationIssue> ValidateGuaranteedApplicability(

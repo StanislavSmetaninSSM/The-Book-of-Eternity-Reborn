@@ -119,6 +119,35 @@ internal sealed record WoundOwnedEffectDefinitionFact(
     ImmutableArray<string> ApplyDefinitionTargets,
     bool ContainsWoundConsequenceMarker);
 
+internal enum WoundWorkingReferenceOrigin { Existing, DirectAddition, PolicyAddition }
+internal readonly record struct WoundWorkingOperationAddress(int ResultIndex, int OperationIndex);
+internal readonly record struct WoundWorkingReference(
+    WoundWorkingReferenceOrigin Origin, WoundWorkingOperationAddress Address, string Value)
+{
+    internal static WoundWorkingReference Existing(string value) =>
+        new(WoundWorkingReferenceOrigin.Existing, new(-1, -1), value);
+    internal WoundWorkingReference Confusable() => this with
+    {
+        Value = MortalLocationIdentityState.BuildConfusableKey(Value)
+    };
+}
+internal sealed record WoundWorkingComplication(
+    WoundWorkingReference Reference, string Kind, string State, string DisplayName,
+    int TreatmentDifficultyModifier, ImmutableArray<WoundWorkingReference> OwnedRoots, string Visibility);
+internal sealed record WoundWorkingDefinition(WoundWorkingReference Reference, JsonElement Definition);
+internal sealed record WoundWorkingRoot(WoundWorkingReference Reference, string DefinitionKey);
+internal sealed record WoundWorkingEntry(
+    int Slot, string ProfileKey, WoundWorkingReference Root, string ReadableSummary);
+internal sealed record WoundWorkingOwnedGraph(
+    ImmutableArray<WoundWorkingComplication> Complications,
+    ImmutableArray<WoundWorkingDefinition> Definitions,
+    ImmutableArray<WoundWorkingRoot> Roots,
+    ImmutableArray<WoundWorkingEntry> Entries);
+internal sealed record WoundWorkingGraphContext(
+    string WoundId, string Lifecycle, WoundOwnerCoordinate Owner,
+    WoundClassification Classification, WoundSeverity Severity,
+    WoundCare Care, WoundRecovery Recovery, int SlotBudget, int SlotsUsed);
+
 internal sealed record WoundRootEffectBinding(
     string EffectId,
     string DefinitionKey);
@@ -805,18 +834,7 @@ internal static class WoundMaterializationContract
                 parsedDefinitions.Add(definition.Clone());
             }
 
-            foreach (var commonIssue in EffectSourceDefinitionContract.ValidateArray(
-                         definitions,
-                         sourcesPath + ".definitions",
-                         realm))
-            {
-                AddIssue(
-                    issues,
-                    commonIssue.FilePath,
-                    "wound_materialization_owned_source_graph_invalid",
-                    commonIssue.Expected ?? "valid common effect source definition graph",
-                    commonIssue.Actual ?? commonIssue.Code ?? "invalid");
-            }
+            ValidateCommonOwnedDefinitions(definitions, sourcesPath + ".definitions", realm, issues);
         }
 
         var parsedRoots = ImmutableArray.CreateBuilder<WoundRootEffectBinding>();
@@ -857,7 +875,7 @@ internal static class WoundMaterializationContract
         };
     }
 
-    private static ImmutableArray<WoundOwnedEffectDefinitionFact> BuildOwnedEffectDefinitionFacts(
+    internal static ImmutableArray<WoundOwnedEffectDefinitionFact> BuildOwnedEffectDefinitionFacts(
         IReadOnlyList<JsonElement> definitions)
     {
         var result = ImmutableArray.CreateBuilder<WoundOwnedEffectDefinitionFact>(definitions.Count);
@@ -929,7 +947,43 @@ internal static class WoundMaterializationContract
         if (OwnedEffectSourceLimitExceeded(rawConsequences))
             return;
 
-        var definitions = ReadOwnedDefinitionNodes(sources.Definitions, path);
+        var diagnosticSlotsUsed = slotsUsed;
+        if (rawConsequences.ValueKind == JsonValueKind.Object &&
+            rawConsequences.TryGetProperty("slotsUsed", out var rawSlots) &&
+            TryReadExactInt32(rawSlots, out var exactSlotsUsed))
+            diagnosticSlotsUsed = exactSlotsUsed;
+        ValidateOwnedGraph(new WoundWorkingGraphContext(woundId, lifecycle, owner, classification,
+                severity, care, recovery, slotBudget, slotsUsed),
+            ImportOwnedGraph(complications, new WoundConsequences(slotBudget, slotsUsed, entries)
+            {
+                OwnedEffectSources = sources
+            }), path, diagnosticSlotsUsed, issues);
+    }
+
+    internal static WoundWorkingOwnedGraph ImportOwnedGraph(
+        IReadOnlyList<WoundComplication> complications, WoundConsequences consequences) => new(
+        complications.Select(static complication => new WoundWorkingComplication(
+            WoundWorkingReference.Existing(complication.ComplicationId), complication.Kind,
+            complication.State, complication.DisplayName, complication.TreatmentDifficultyModifier,
+            complication.OwnedEffectIds.Select(WoundWorkingReference.Existing).ToImmutableArray(),
+            complication.Visibility)).ToImmutableArray(),
+        consequences.OwnedEffectSources.Definitions.Select(static definition => new WoundWorkingDefinition(
+            WoundWorkingReference.Existing(definition.TryGetProperty("definitionKey", out var key) &&
+                key.ValueKind == JsonValueKind.String ? key.GetString()! : string.Empty),
+            definition.Clone())).ToImmutableArray(),
+        consequences.OwnedEffectSources.RootBindings.Select(static root => new WoundWorkingRoot(
+            WoundWorkingReference.Existing(root.EffectId), root.DefinitionKey)).ToImmutableArray(),
+        consequences.Entries.Select(static entry => new WoundWorkingEntry(entry.Slot, entry.ProfileKey,
+            WoundWorkingReference.Existing(entry.EffectId), entry.ReadableSummary)).ToImmutableArray());
+
+    internal static void ValidateOwnedGraph(
+        WoundWorkingGraphContext context, WoundWorkingOwnedGraph graph, string path,
+        int diagnosticSlotsUsed, List<ValidationIssue> issues)
+    {
+        var (woundId, lifecycle, owner, classification, severity, care, recovery, slotBudget, slotsUsed) = context;
+        var complications = graph.Complications;
+        var entries = graph.Entries;
+        var definitions = ReadOwnedDefinitionNodes(graph.Definitions.Select(static definition => definition.Definition).ToArray(), path);
         var definitionsByKey = new Dictionary<string, OwnedDefinitionNode>(StringComparer.Ordinal);
         var exactDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
         var confusableDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
@@ -968,22 +1022,22 @@ internal static class WoundMaterializationContract
             ValidateOwnedDefinitionAuthority(definition, woundId, owner, classification, issues);
         }
 
-        var rootsByEffect = new Dictionary<string, OwnedRootNode>(StringComparer.Ordinal);
+        var rootsByEffect = new Dictionary<WoundWorkingReference, OwnedRootNode>();
         var rootsByDefinition = new Dictionary<string, OwnedRootNode>(StringComparer.Ordinal);
-        var exactEffectIds = new HashSet<string>(StringComparer.Ordinal);
-        var confusableEffectIds = new HashSet<string>(StringComparer.Ordinal);
+        var exactEffectIds = new HashSet<WoundWorkingReference>();
+        var confusableEffectIds = new HashSet<WoundWorkingReference>();
         var exactRootDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
         var confusableRootDefinitionKeys = new HashSet<string>(StringComparer.Ordinal);
-        for (var index = 0; index < sources.RootBindings.Count; index++)
+        for (var index = 0; index < graph.Roots.Length; index++)
         {
-            var binding = sources.RootBindings[index];
+            var binding = graph.Roots[index];
             var root = new OwnedRootNode(
                 binding,
                 $"{path}.rootBindings[{index}]");
-            AddUniqueOwnedIdentifier(
+            AddUniqueOwnedReference(
                 exactEffectIds,
                 confusableEffectIds,
-                binding.EffectId,
+                binding.Reference,
                 root.Path + ".effectId",
                 "root effectId",
                 issues);
@@ -994,8 +1048,8 @@ internal static class WoundMaterializationContract
                 root.Path + ".definitionKey",
                 "root definitionKey",
                 issues);
-            if (binding.EffectId.Length > 0 && !rootsByEffect.ContainsKey(binding.EffectId))
-                rootsByEffect.Add(binding.EffectId, root);
+            if (binding.Reference.Value.Length > 0 && !rootsByEffect.ContainsKey(binding.Reference))
+                rootsByEffect.Add(binding.Reference, root);
             if (binding.DefinitionKey.Length > 0 &&
                 !rootsByDefinition.ContainsKey(binding.DefinitionKey))
             {
@@ -1037,7 +1091,7 @@ internal static class WoundMaterializationContract
             recovery,
             slotBudget,
             slotsUsed,
-            rawConsequences,
+            diagnosticSlotsUsed,
             path,
             issues);
     }
@@ -1340,35 +1394,35 @@ internal static class WoundMaterializationContract
     }
 
     private static void ValidateComplicationRootOwnership(
-        IReadOnlyList<WoundComplication> complications,
-        IReadOnlyDictionary<string, OwnedRootNode> rootsByEffect,
+        IReadOnlyList<WoundWorkingComplication> complications,
+        IReadOnlyDictionary<WoundWorkingReference, OwnedRootNode> rootsByEffect,
         string path,
         List<ValidationIssue> issues)
     {
-        var exactOwnedIds = new HashSet<string>(StringComparer.Ordinal);
-        var confusableOwnedIds = new HashSet<string>(StringComparer.Ordinal);
+        var exactOwnedIds = new HashSet<WoundWorkingReference>();
+        var confusableOwnedIds = new HashSet<WoundWorkingReference>();
         for (var complicationIndex = 0;
              complicationIndex < complications.Count;
              complicationIndex++)
         {
             var complication = complications[complicationIndex];
             for (var ownedIndex = 0;
-                 ownedIndex < complication.OwnedEffectIds.Count;
+                 ownedIndex < complication.OwnedRoots.Length;
                  ownedIndex++)
             {
-                var effectId = complication.OwnedEffectIds[ownedIndex];
+                var effectId = complication.OwnedRoots[ownedIndex];
                 var ownedPath = WoundRootPath(path) +
                                 $".complications[{complicationIndex}].ownedEffectIds[{ownedIndex}]";
-                if (effectId.Length == 0)
+                if (effectId.Value.Length == 0)
                     continue;
                 if (!exactOwnedIds.Add(effectId) ||
-                    !confusableOwnedIds.Add(MortalLocationIdentityState.BuildConfusableKey(effectId)))
+                    !confusableOwnedIds.Add(effectId.Confusable()))
                 {
                     AddEffectBindingIssue(
                         issues,
                         ownedPath,
                         "pairwise-disjoint exact/confusable complication root ownership",
-                        effectId);
+                        effectId.Value);
                 }
                 if (!rootsByEffect.ContainsKey(effectId))
                 {
@@ -1376,7 +1430,7 @@ internal static class WoundMaterializationContract
                         issues,
                         ownedPath,
                         "effectId resolving to one persisted wound root binding",
-                        effectId);
+                        effectId.Value);
                 }
             }
         }
@@ -1386,7 +1440,7 @@ internal static class WoundMaterializationContract
         IReadOnlyList<OwnedDefinitionNode> definitions,
         IReadOnlyDictionary<string, OwnedDefinitionNode> definitionsByKey,
         IReadOnlyDictionary<string, OwnedRootNode> rootsByDefinition,
-        IReadOnlyList<WoundComplication> complications,
+        IReadOnlyList<WoundWorkingComplication> complications,
         WoundSeverity severity,
         List<ValidationIssue> issues)
     {
@@ -1495,10 +1549,8 @@ internal static class WoundMaterializationContract
                     DescribeElement(edge.Parameters));
             }
             if (rootsByDefinition.TryGetValue(source.DefinitionKey, out var sourceRoot) &&
-                !string.Equals(
-                    ResolveOwnershipDomain(sourceRoot.Binding.EffectId, complications),
-                    ResolveOwnershipDomain(targetRoot.Binding.EffectId, complications),
-                    StringComparison.Ordinal))
+                ResolveOwnershipDomain(sourceRoot.Binding.Reference, complications) !=
+                ResolveOwnershipDomain(targetRoot.Binding.Reference, complications))
             {
                 AddOwnedGraphIssue(
                     issues,
@@ -1526,18 +1578,18 @@ internal static class WoundMaterializationContract
 
     private static void ValidateOwnedSlotReciprocity(
         IReadOnlyDictionary<string, OwnedDefinitionNode> definitionsByKey,
-        IReadOnlyDictionary<string, OwnedRootNode> rootsByEffect,
+        IReadOnlyDictionary<WoundWorkingReference, OwnedRootNode> rootsByEffect,
         IReadOnlyDictionary<string, OwnedRootNode> rootsByDefinition,
-        IReadOnlyList<WoundConsequenceEntry> entries,
+        IReadOnlyList<WoundWorkingEntry> entries,
         WoundClassification classification,
         WoundSeverity severity,
         string lifecycle,
         WoundCare care,
-        IReadOnlyList<WoundComplication> complications,
+        IReadOnlyList<WoundWorkingComplication> complications,
         WoundRecovery recovery,
         int slotBudget,
         int slotsUsed,
-        JsonElement rawConsequences,
+        int diagnosticSlotsUsed,
         string path,
         List<ValidationIssue> issues)
     {
@@ -1545,11 +1597,10 @@ internal static class WoundMaterializationContract
             .Select((entry, index) => new OwnedEntryNode(
                 entry,
                 $"{WoundConsequencesPath(path)}.entries[{index}]"))
-            .GroupBy(static item => item.Entry.EffectId, StringComparer.Ordinal)
+            .GroupBy(static item => item.Entry.Root)
             .ToDictionary(
                 static group => group.Key,
-                static group => group.ToArray(),
-                StringComparer.Ordinal);
+                static group => group.ToArray());
 
         foreach (var pair in entriesByEffect)
         {
@@ -1561,7 +1612,7 @@ internal static class WoundMaterializationContract
                     issues,
                     entry.Path + ".effectId",
                     "effectId resolving to one direct wound root binding",
-                    entry.Entry.EffectId);
+                    entry.Entry.Root.Value);
             }
         }
 
@@ -1582,7 +1633,7 @@ internal static class WoundMaterializationContract
             }
             derivedSlots += expectedProfiles.Count;
 
-            entriesByEffect.TryGetValue(root.Binding.EffectId, out var ownedEntries);
+            entriesByEffect.TryGetValue(root.Binding.Reference, out var ownedEntries);
             ownedEntries ??= Array.Empty<OwnedEntryNode>();
             var remaining = new List<string>(expectedProfiles);
             foreach (var entry in ownedEntries)
@@ -1613,13 +1664,7 @@ internal static class WoundMaterializationContract
         }
 
         var consequencesPath = WoundConsequencesPath(path);
-        var rawSlotsUsed = slotsUsed;
-        if (rawConsequences.ValueKind == JsonValueKind.Object &&
-            rawConsequences.TryGetProperty("slotsUsed", out var rawSlots) &&
-            TryReadExactInt32(rawSlots, out var exactSlotsUsed))
-        {
-            rawSlotsUsed = exactSlotsUsed;
-        }
+        var rawSlotsUsed = diagnosticSlotsUsed;
         if (rawSlotsUsed != derivedSlots)
         {
             AddConsequenceSlotIssue(
@@ -1709,16 +1754,16 @@ internal static class WoundMaterializationContract
         return profiles;
     }
 
-    private static string ResolveOwnershipDomain(
-        string effectId,
-        IReadOnlyList<WoundComplication> complications)
+    private static WoundWorkingReference? ResolveOwnershipDomain(
+        WoundWorkingReference effectId,
+        IReadOnlyList<WoundWorkingComplication> complications)
     {
         foreach (var complication in complications)
         {
-            if (complication.OwnedEffectIds.Contains(effectId, StringComparer.Ordinal))
-                return complication.ComplicationId;
+            if (complication.OwnedRoots.Contains(effectId))
+                return complication.Reference;
         }
-        return "base_wound";
+        return null;
     }
 
     internal static string ResolveEffectTargetKind(string ownerKind) => ownerKind switch
@@ -1800,6 +1845,113 @@ internal static class WoundMaterializationContract
         return consequencesPath.EndsWith(".consequences", StringComparison.Ordinal)
             ? consequencesPath[..^".consequences".Length]
             : consequencesPath;
+    }
+
+    private static void AddUniqueOwnedReference(
+        HashSet<WoundWorkingReference> exact,
+        HashSet<WoundWorkingReference> confusable,
+        WoundWorkingReference value,
+        string path, string label, List<ValidationIssue> issues)
+    {
+        if (string.IsNullOrEmpty(value.Value))
+            return;
+        if (!exact.Add(value) || !confusable.Add(value.Confusable()))
+            AddOwnedGraphIssue(issues, path, $"one exact/confusable-unique {label}", value.Value);
+    }
+
+    private static readonly JsonSerializerOptions WorkingScalarJsonOptions = new()
+    {
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+    };
+
+    // The symbolic boundary reuses the canonical scalar and bounded-count readers;
+    // it never serializes a symbolic reference as a canonical identifier.
+    internal static bool ValidateWorkingGraphBoundary(
+        WoundWorkingGraphContext context, WoundWorkingOwnedGraph graph,
+        string path, List<ValidationIssue> issues)
+    {
+        AddLimitIssue(graph.Complications.Length, path + ".complications", MaxComplications, "complications", issues);
+        AddLimitIssue(graph.Definitions.Length, path + ".consequences.ownedEffectSources.definitions", MaxOwnedEffectDefinitions, "wound-owned effect definitions", issues);
+        AddLimitIssue(graph.Roots.Length, path + ".consequences.ownedEffectSources.rootBindings", MaxOwnedEffectRootBindings, "wound-owned root bindings", issues);
+        AddLimitIssue(graph.Entries.Length, path + ".consequences.entries", MaxConsequences, "consequences", issues);
+        ParseSeverity(JsonSerializer.SerializeToElement(context.Severity, WorkingScalarJsonOptions), path + ".severity", issues);
+        ParseCare(JsonSerializer.SerializeToElement(context.Care, WorkingScalarJsonOptions), path + ".care", issues);
+        ParseRecovery(JsonSerializer.SerializeToElement(context.Recovery, WorkingScalarJsonOptions), path + ".recovery", issues);
+        ReadInt32(JsonSerializer.SerializeToElement(new { slotBudget = context.SlotBudget }),
+            "slotBudget", path + ".consequences", 0, MaxConsequences, issues);
+        if (issues.Count != 0)
+            return false;
+
+        var complicationRefs = new HashSet<WoundWorkingReference>();
+        var confusableComplications = new HashSet<WoundWorkingReference>();
+        for (var index = 0; index < graph.Complications.Length; index++)
+        {
+            var complication = graph.Complications[index];
+            var itemPath = path + $".complications[{index}]";
+            ValidateWorkingReference(complication.Reference, itemPath + ".complicationId", issues);
+            // Direct author refs belong to the whole result; nested definition/root
+            // refs keep the finer operation namespace. Policy refs are separate.
+            var coordinate = complication.Reference.Origin == WoundWorkingReferenceOrigin.DirectAddition
+                ? complication.Reference with { Address = complication.Reference.Address with { OperationIndex = 0 } }
+                : complication.Reference;
+            AddUniqueOwnedReference(complicationRefs, confusableComplications, coordinate,
+                itemPath + ".complicationId", "complication reference", issues);
+            var value = JsonSerializer.SerializeToElement(new
+            {
+                kind = complication.Kind, state = complication.State, displayName = complication.DisplayName,
+                treatmentDifficultyModifier = complication.TreatmentDifficultyModifier, visibility = complication.Visibility
+            });
+            ReadClosedString(value, "kind", itemPath, ComplicationKinds, issues);
+            ReadExactIdentifier(value, "state", itemPath, issues);
+            ReadText(value, "displayName", itemPath, issues);
+            ReadInt32(value, "treatmentDifficultyModifier", itemPath, 0, 4, issues);
+            ReadClosedString(value, "visibility", itemPath, Visibilities, issues);
+            foreach (var owned in complication.OwnedRoots)
+                ValidateWorkingReference(owned, itemPath + ".ownedEffectIds", issues);
+        }
+        var definitions = new HashSet<WoundWorkingReference>();
+        var confusableDefinitions = new HashSet<WoundWorkingReference>();
+        foreach (var definition in graph.Definitions)
+        {
+            ValidateWorkingReference(definition.Reference, path + ".consequences.ownedEffectSources.definitions", issues);
+            AddUniqueOwnedReference(definitions, confusableDefinitions, definition.Reference,
+                path + ".consequences.ownedEffectSources.definitions", "definition reference", issues);
+        }
+        foreach (var root in graph.Roots)
+            ValidateWorkingReference(root.Reference, path + ".consequences.ownedEffectSources.rootBindings", issues);
+        for (var index = 0; index < graph.Entries.Length; index++)
+        {
+            var entry = graph.Entries[index];
+            var entryPath = path + $".consequences.entries[{index}]";
+            ValidateWorkingReference(entry.Root, entryPath + ".effectId", issues);
+            var value = JsonSerializer.SerializeToElement(new
+            {
+                slot = entry.Slot, profileKey = entry.ProfileKey, readableSummary = entry.ReadableSummary
+            });
+            ReadInt32(value, "slot", entryPath, 1, MaxConsequences, issues);
+            ReadExactIdentifier(value, "profileKey", entryPath, issues);
+            ReadText(value, "readableSummary", entryPath, issues);
+        }
+        return issues.Count == 0;
+    }
+
+    private static void ValidateWorkingReference(WoundWorkingReference reference, string path, List<ValidationIssue> issues)
+    {
+        var validOrigin = reference.Origin == WoundWorkingReferenceOrigin.Existing
+            ? reference.Address == new WoundWorkingOperationAddress(-1, -1)
+            : reference.Origin is WoundWorkingReferenceOrigin.DirectAddition or WoundWorkingReferenceOrigin.PolicyAddition &&
+              reference.Address.ResultIndex >= 0 && reference.Address.OperationIndex >= 0;
+        if (!validOrigin || !ResourceMaterializationContract.IsExactIdentifier(reference.Value))
+            AddOwnedGraphIssue(issues, path, "exact reference with a valid origin and namespace", reference.Value ?? "null");
+    }
+
+    internal static void ValidateCommonOwnedDefinitions(
+        JsonElement definitions, string path, string realm, List<ValidationIssue> issues)
+    {
+        foreach (var commonIssue in EffectSourceDefinitionContract.ValidateArray(definitions, path, realm))
+            AddIssue(issues, commonIssue.FilePath, "wound_materialization_owned_source_graph_invalid",
+                commonIssue.Expected ?? "valid common effect source definition graph",
+                commonIssue.Actual ?? commonIssue.Code ?? "invalid");
     }
 
     private static void AddUniqueOwnedIdentifier(
@@ -2711,15 +2863,18 @@ internal static class WoundMaterializationContract
         int maximum,
         string label,
         List<ValidationIssue> issues)
+        => AddLimitIssue(array.GetArrayLength(), path, maximum, label, issues);
+
+    private static void AddLimitIssue(int count, string path, int maximum, string label, List<ValidationIssue> issues)
     {
-        if (array.GetArrayLength() <= maximum)
+        if (count <= maximum)
             return;
         AddIssue(
             issues,
             path,
             "wound_materialization_limit_exceeded",
             $"at most {maximum} {label}",
-            array.GetArrayLength().ToString(CultureInfo.InvariantCulture));
+            count.ToString(CultureInfo.InvariantCulture));
     }
 
     private static void AddUniqueIdentifier(
@@ -3301,7 +3456,7 @@ internal static class WoundMaterializationContract
         ImmutableArray<OwnedApplyEdge> ApplyEdges);
 
     private sealed record OwnedRootNode(
-        WoundRootEffectBinding Binding,
+        WoundWorkingRoot Binding,
         string Path);
 
     private sealed record OwnedGraphEdge(
@@ -3309,6 +3464,6 @@ internal static class WoundMaterializationContract
         OwnedApplyEdge Edge);
 
     private sealed record OwnedEntryNode(
-        WoundConsequenceEntry Entry,
+        WoundWorkingEntry Entry,
         string Path);
 }

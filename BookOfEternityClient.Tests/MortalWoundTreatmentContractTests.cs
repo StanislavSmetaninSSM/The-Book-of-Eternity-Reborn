@@ -1882,6 +1882,45 @@ public sealed class MortalWoundTreatmentContractTests
         Assert.Equal(complicationId, remove.GetProperty("complicationId").GetString());
     }
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ProposalComposition_InvalidLinksPreserveDuplicateDefinitionDiagnostic(bool missingLinks)
+    {
+        var (binding, opportunity) = CreateTreatmentProposalOpportunity();
+        var proposal = CreateTreatmentProposalWithLocalComplicationRemoval();
+        var first = WoundContractTestData.CreateOwnedEffectDefinition(
+            "wound_test_torn_side", "mortal_world", "duplicate_definition_key", "action_control");
+        if (missingLinks) first.Remove("links");
+        var second = first.DeepClone().AsObject();
+        second["links"] = new JsonArray();
+        proposal["consequenceDefinitions"] = new JsonArray(
+            new JsonObject { ["definitionRef"] = "first_local", ["definition"] = first, ["root"] = null },
+            new JsonObject { ["definitionRef"] = "second_local", ["definition"] = second, ["root"] = null });
+        var decision = new JsonObject
+        {
+            ["opportunityRef"] = opportunity.PublicRef, ["decision"] = "materialize",
+            ["woundRef"] = "wound_local_definition_diagnostics", ["proposal"] = proposal
+        };
+
+        var composition = WoundResponseInputComposer.Compose(binding, new[] { opportunity },
+            new[] { JsonSerializer.SerializeToElement(decision) },
+            "Острый край распорол бок в короткой схватке. Рана подтверждена.",
+            Array.Empty<WoundOpportunityDecisionReceipt>());
+
+        Assert.False(composition.Success);
+        Assert.Empty(composition.Transitions);
+        Assert.Contains(composition.Issues, issue =>
+            issue.FilePath == "woundDecisions[0].proposal.consequenceDefinitions[0].definition.links" &&
+            issue.Code == "wound_response_client_authority_forbidden");
+        Assert.Contains(composition.Issues, issue =>
+            issue.FilePath == "woundDecisions[0].proposal.consequenceDefinitions" &&
+            issue.Code == "wound_response_duplicate_definition");
+        var diagnostics = composition.Issues.ToList();
+        Assert.True(diagnostics.FindIndex(issue => issue.Code == "wound_response_client_authority_forbidden") <
+            diagnostics.FindIndex(issue => issue.Code == "wound_response_duplicate_definition"));
+    }
+
     [Fact]
     public void ProposalComposition_RejectsUnicodeDashConfusableComplicationRefs()
     {

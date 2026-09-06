@@ -857,7 +857,94 @@ author permanent wound/effect identity or publication authority.
           "minimumMargin": null,
           "maximumMargin": -1,
           "category": "failed_attempt",
-          "result": [{ "kind": "no_improvement" }]
+          "result": [
+            {
+              "kind": "add_complication",
+              "complicationDraft": {
+                "complications": [
+                  {
+                    "complicationRef": "strained_wound_edge_local",
+                    "kind": "impairment",
+                    "state": "active",
+                    "displayName": "Натяжение края раны",
+                    "treatmentDifficultyModifier": 1,
+                    "visibility": "known_to_player"
+                  }
+                ],
+                "consequenceDefinitions": [
+                  {
+                    "definitionRef": "strained_edge_item_control_local",
+                    "definition": {
+                      "schemaVersion": 1,
+                      "definitionKey": "strained-wound-edge-item-control",
+                      "display": {
+                        "name": "Движения натягивают край раны",
+                        "description": "После неудачного закрытия раны использование предметов вызывает болезненное натяжение.",
+                        "category": "debuff",
+                        "visibility": "visible"
+                      },
+                      "allowedRealms": [
+                        "mortal_world"
+                      ],
+                      "allowedTargetKinds": [
+                        "player"
+                      ],
+                      "components": [
+                        {
+                          "componentId": "strained_edge_item_control",
+                          "profile": "action_control",
+                          "priority": 100,
+                          "payload": {
+                            "action": "use_item",
+                            "operation": "restrict"
+                          }
+                        }
+                      ],
+                      "parameterBounds": {},
+                      "stacking": {
+                        "stackKey": "wound_strained_edge_item_control",
+                        "policy": "independent",
+                        "maxStacks": 1,
+                        "atMaximum": "no_change",
+                        "refreshMode": null,
+                        "mergeRule": null
+                      },
+                      "lifetime": {
+                        "mode": "source_bound",
+                        "activePredicate": "active",
+                        "onSourceLoss": "expire"
+                      },
+                      "triggers": [],
+                      "removal": {
+                        "dispelCategories": [
+                          "physical_restoration"
+                        ],
+                        "cureKinds": [
+                          "wound_treatment"
+                        ],
+                        "onSourceLoss": "expire",
+                        "onConditionLoss": null,
+                        "manualAuthorities": []
+                      },
+                      "links": []
+                    },
+                    "root": {
+                      "ownership": {
+                        "kind": "complication",
+                        "complicationRef": "strained_wound_edge_local"
+                      },
+                      "slots": [
+                        {
+                          "profileKey": "action_control",
+                          "readableSummary": "Натяжение края раны ограничивает использование предметов."
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
         }
       ],
       "interruption": null
@@ -877,8 +964,16 @@ After the ordered successful result applies `stabilize` and then
 `reduce_severity { steps: 1 }`, the client retires the current wound-owned effect
 group and rematerializes client-owned fresh effect IDs for every retained root.
 Only a newly successful category completes the route. `partial_success` and
-`failed_attempt` may publish their own declared scalar result, but they do not
-complete the route.
+`failed_attempt` do not complete the route. The partial band retains its declared
+scalar publication contract; the failed complication band is preview-only here.
+
+The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.
+Local complication and definition references are not permanent runtime identities.
+Applicability preview does not authorize publication of an unfinished outcome.
+
+The failed band declares a complete effectful complication; its selected-add publication
+remains unfinished. This pre-roll preview admits the fully validated graph but does not
+allocate wound/effect identities or authorize that unfinished selected publisher.
 
 The partial result stabilizes and adds two recovery points with checked signed-64-bit arithmetic. With progress 1 and threshold 2, the accepted result has progress 3 and the wound stays active at its unchanged severity. Reaching the threshold does not itself trigger a recovery tick, severity reduction or healing. The GM authors points, never canonical progress or recovery anchors; the client applies the selected ordered operations and exact resource policy atomically. Partial success does not complete the route.
 

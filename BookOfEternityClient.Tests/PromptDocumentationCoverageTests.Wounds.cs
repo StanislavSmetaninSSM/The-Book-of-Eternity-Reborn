@@ -520,6 +520,19 @@ public sealed partial class PromptDocumentationCoverageTests
         Assert.Contains(route.Bands, static band =>
             string.Equals(band.Category, "failed_attempt", StringComparison.Ordinal));
 
+        var failed = Assert.Single(route.Bands, static band =>
+            string.Equals(band.Category, "failed_attempt", StringComparison.Ordinal));
+        var addition = Assert.IsType<MortalWoundAddComplicationOperation>(Assert.Single(failed.DeclaredResult));
+        var failedBefore = Assert.IsType<MortalWoundTreatmentWorkingGraphProjection>(
+            MortalWoundTreatmentWorkingGraphProjection.FromCanonical(parsedWound));
+        Assert.True(failedBefore.TryAppendComplication(addition.ComplicationDraft,
+            WoundWorkingReferenceOrigin.DirectAddition, new WoundWorkingOperationAddress(0, 0), out var failedAfter));
+        Assert.Empty(failedAfter!.ValidateGraph(marker + ".failed_graph"));
+        Assert.Equal(3, failedAfter.Graph.Entries.Length);
+        Assert.Equal(parsedWound.Severity, failedAfter.Scalars.Severity);
+        Assert.Equal(parsedWound.Complications.Count + 1, failedAfter.Graph.Complications.Length);
+        Assert.False(failedAfter.TryExportExisting(out _));
+
         var partialSimulation = MortalWoundTreatmentWorkingWoundSimulator.Simulate(
             parsedWound,
             new[] { partial.DeclaredResult });
@@ -554,6 +567,9 @@ public sealed partial class PromptDocumentationCoverageTests
                          "Reaching the threshold does not itself trigger a recovery tick",
                          "The GM authors points, never canonical progress or recovery anchors",
                          "Partial success does not complete the route",
+                         "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.",
+                         "Local complication and definition references are not permanent runtime identities.",
+                         "Applicability preview does not authorize publication of an unfinished outcome.",
                          "partial_success",
                          "failed_attempt"
                      })

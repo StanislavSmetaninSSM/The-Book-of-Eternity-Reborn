@@ -4,27 +4,16 @@ using System.Text.Json;
 namespace BookOfEternityClient.Services;
 
 internal sealed record MortalWoundTreatmentWorkingWoundSimulation(
-    bool IsApplicable,
-    bool Improved,
-    WoundMaterializationEnvelope? WorkingWound);
-
+    bool IsApplicable, bool Improved, WoundMaterializationEnvelope? WorkingWound);
 internal sealed record MortalWoundTreatmentPreparedOperationResult(
-    bool IsApplicable,
-    bool Improved,
-    WoundMaterializationEnvelope? After);
-
-internal delegate MortalWoundTreatmentPreparedOperationResult
-    MortalWoundTreatmentPreparedOperationReducer(
-        WoundMaterializationEnvelope before,
-        MortalWoundTreatmentOperation operation);
+    bool IsApplicable, bool Improved, WoundMaterializationEnvelope? After);
+internal delegate MortalWoundTreatmentPreparedOperationResult MortalWoundTreatmentPreparedOperationReducer(
+    WoundMaterializationEnvelope before, MortalWoundTreatmentOperation operation);
 
 /// <summary>
-/// Pure applicability reducer for authored treatment results.  It deliberately keeps
-/// the complete typed wound envelope while operations are evaluated, so a scalar
-/// severity change cannot become authority for an impossible consequence/source graph.
-/// Permanent transition/effect identities remain the responsibility of the accepted
-/// treatment planner; this reducer only proves that a complete canonical after-image
-/// can exist for every intermediate operation.
+/// One ordered applicability loop over the complete current graph. The canonical
+/// facade retains its callback and canonical after-images; symbolic procedure
+/// admission uses the same operations without inventing runtime identities.
 /// </summary>
 internal static class MortalWoundTreatmentWorkingWoundSimulator
 {
@@ -34,267 +23,176 @@ internal static class MortalWoundTreatmentWorkingWoundSimulator
         MortalWoundTreatmentPreparedOperationReducer? preparedOperationReducer = null)
     {
         ArgumentNullException.ThrowIfNull(declaredResults);
-        if (startingWound is null ||
-            !string.Equals(startingWound.Lifecycle, "active", StringComparison.Ordinal))
-        {
-            return NotApplicable();
-        }
+        if (startingWound is null || startingWound.Lifecycle != "active" ||
+            MortalWoundTreatmentWorkingGraphProjection.FromCanonical(startingWound) is not { } starting)
+            return new(false, false, null);
+        MortalWoundTreatmentPreparedGraphOperationReducer? adapter = preparedOperationReducer is null ? null :
+            (before, _, operation) =>
+            {
+                if (!before.TryExportExisting(out var exported)) return new(false, false, null);
+                var prepared = preparedOperationReducer(exported!, operation);
+                var after = prepared.IsApplicable
+                    ? MortalWoundTreatmentWorkingGraphProjection.FromCanonical(prepared.After) : null;
+                return new(after is not null, prepared.Improved, after);
+            };
+        var simulation = SimulateCore(starting, declaredResults, adapter,
+            static (before, reduction) =>
+            {
+                if (!before.TryExportExisting(out var exported)) return null;
+                var projection = MortalWoundTreatmentSeverityReductionPlanner.Project(exported!,
+                    reduction.Steps, before.Scalars.Severity.LastChangeEventRef);
+                return projection.IsValid
+                    ? MortalWoundTreatmentWorkingGraphProjection.FromCanonical(projection.Projection!.ProvisionalAfter) : null;
+            },
+            static candidate => candidate.TryExportExisting(out var exported)
+                ? MortalWoundTreatmentWorkingGraphProjection.FromCanonical(exported) : null);
+        if (!simulation.IsApplicable || simulation.WorkingGraph is null ||
+            !simulation.WorkingGraph.TryExportExisting(out var wound)) return new(false, false, null);
+        return new(true, simulation.Improved, wound);
+    }
 
-        if (!TryRoundTrip(startingWound, out var working))
+    internal static MortalWoundTreatmentWorkingGraphSimulation SimulateGraph(
+        WoundMaterializationEnvelope? startingWound,
+        IEnumerable<ImmutableArray<MortalWoundTreatmentOperation>> declaredResults,
+        MortalWoundTreatmentPreparedGraphOperationReducer preparedOperationReducer)
+    {
+        ArgumentNullException.ThrowIfNull(declaredResults);
+        if (startingWound is null || startingWound.Lifecycle != "active" ||
+            MortalWoundTreatmentWorkingGraphProjection.FromCanonical(startingWound) is not { } starting)
             return NotApplicable();
+        return SimulateCore(starting, declaredResults, preparedOperationReducer, ProjectGraphReduction,
+            static candidate => candidate.ValidateGraph("mortalWoundTreatment.workingGraph").IsEmpty ? candidate : null);
+    }
 
+    private static MortalWoundTreatmentWorkingGraphSimulation SimulateCore(
+        MortalWoundTreatmentWorkingGraphProjection starting,
+        IEnumerable<ImmutableArray<MortalWoundTreatmentOperation>> declaredResults,
+        MortalWoundTreatmentPreparedGraphOperationReducer? prepareComplex,
+        Func<MortalWoundTreatmentWorkingGraphProjection, MortalWoundReduceSeverityOperation,
+            MortalWoundTreatmentWorkingGraphProjection?> projectReduction,
+        Func<MortalWoundTreatmentWorkingGraphProjection, MortalWoundTreatmentWorkingGraphProjection?> normalizeAfter)
+    {
+        var working = starting;
         var improved = false;
         var terminal = false;
+        var resultIndex = 0;
         try
         {
             foreach (var result in declaredResults)
             {
-                if (result.IsDefault)
-                    return NotApplicable();
-                if (terminal && result.Length != 0)
-                    return NotApplicable();
-
+                if (result.IsDefault || (terminal && result.Length != 0)) return NotApplicable();
                 for (var index = 0; index < result.Length; index++)
                 {
-                    if (!TryApply(
-                            working,
-                            result[index],
-                            result.Length,
-                            preparedOperationReducer,
-                            ref terminal,
-                            out var after,
-                            out var operationImproved))
-                    {
+                    if (!TryApply(working, new(resultIndex, index), result[index], result.Length,
+                            prepareComplex, projectReduction, ref terminal, out var candidate, out var operationImproved))
                         return NotApplicable();
-                    }
-
+                    var after = normalizeAfter(candidate);
+                    if (after is null) return NotApplicable();
                     working = after;
                     improved |= operationImproved;
                 }
+                resultIndex = checked(resultIndex + 1);
             }
         }
-        catch (Exception exception) when (exception is ArgumentException or
-                                           InvalidOperationException or
-                                           JsonException or
-                                           OverflowException)
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException or JsonException or OverflowException)
         {
             return NotApplicable();
         }
-
-        return new MortalWoundTreatmentWorkingWoundSimulation(
-            true,
-            improved,
-            working);
+        return new(true, improved, working);
     }
 
-    private static bool TryApply(
-        WoundMaterializationEnvelope before,
-        MortalWoundTreatmentOperation? operation,
-        int resultLength,
-        MortalWoundTreatmentPreparedOperationReducer? preparedOperationReducer,
-        ref bool terminal,
-        out WoundMaterializationEnvelope after,
-        out bool improved)
+    private static bool TryApply(MortalWoundTreatmentWorkingGraphProjection before,
+        WoundWorkingOperationAddress address, MortalWoundTreatmentOperation? operation, int resultLength,
+        MortalWoundTreatmentPreparedGraphOperationReducer? prepareComplex,
+        Func<MortalWoundTreatmentWorkingGraphProjection, MortalWoundReduceSeverityOperation,
+            MortalWoundTreatmentWorkingGraphProjection?> projectReduction,
+        ref bool terminal, out MortalWoundTreatmentWorkingGraphProjection after, out bool improved)
     {
         after = before;
         improved = false;
-        if (operation is null || terminal)
-            return false;
-
-        WoundMaterializationEnvelope candidate;
+        if (operation is null || terminal) return false;
+        var scalars = before.Scalars;
         switch (operation)
         {
             case MortalWoundNoImprovementOperation:
                 return resultLength == 1;
-
             case MortalWoundStabilizeOperation:
-                if (before.Care.State is "stabilized" or "healed")
-                    return false;
-                candidate = before with
+                if (scalars.Care.State is "stabilized" or "healed") return false;
+                after = before.WithScalars(scalars with
                 {
-                    Care = before.Care with
-                    {
-                        State = "stabilized",
-                        StabilizedAtTurn = before.Care.StabilizedAtTurn ??
-                                           before.LastTransition.Turn
-                    },
-                    Recovery = before.Recovery with
-                    {
-                        Blockers = before.Recovery.Blockers
-                            .Where(static blocker => !string.Equals(
-                                blocker,
-                                "not_stabilized",
-                                StringComparison.Ordinal))
-                            .ToImmutableArray()
-                    }
-                };
-                improved = true;
-                break;
-
-            case MortalWoundAddRecoveryOperation addRecovery:
-                candidate = before with
-                {
-                    Recovery = before.Recovery with
-                    {
-                        CurrentStepProgress = checked(
-                            before.Recovery.CurrentStepProgress + addRecovery.Points)
-                    }
-                };
-                improved = addRecovery.Points > 0;
-                break;
-
-            case MortalWoundReduceSeverityOperation reduceSeverity:
-            {
-                var projection = MortalWoundTreatmentSeverityReductionPlanner.Project(
-                    before,
-                    reduceSeverity.Steps,
-                    before.Severity.LastChangeEventRef);
-                if (!projection.IsValid || projection.Projection is null)
-                    return false;
-                candidate = projection.Projection.ProvisionalAfter;
-                improved = candidate.Severity.Rank < before.Severity.Rank;
-                break;
-            }
-
-            case MortalWoundRemoveComplicationOperation removeComplication:
-                if (!TryRemoveComplication(before, removeComplication.ComplicationId, out candidate))
-                    return false;
-                improved = true;
-                break;
-
-            case MortalWoundHealOperation:
-                if (before.Severity.Rank != 1)
-                    return false;
-                terminal = true;
-                after = before;
+                    Care = scalars.Care with { State = "stabilized",
+                        StabilizedAtTurn = scalars.Care.StabilizedAtTurn ?? before.OriginalTransitionTurn },
+                    Recovery = scalars.Recovery with { Blockers = scalars.Recovery.Blockers
+                        .Where(static blocker => !string.Equals(blocker, "not_stabilized", StringComparison.Ordinal)).ToImmutableArray() }
+                });
                 improved = true;
                 return true;
-
+            case MortalWoundAddRecoveryOperation addRecovery:
+                after = before.WithScalars(scalars with { Recovery = scalars.Recovery with
+                {
+                    CurrentStepProgress = checked(scalars.Recovery.CurrentStepProgress + addRecovery.Points)
+                }});
+                improved = addRecovery.Points > 0;
+                return true;
+            case MortalWoundReduceSeverityOperation reduction:
+                var projected = projectReduction(before, reduction);
+                if (projected is null) return false;
+                after = projected;
+                improved = after.Scalars.Severity.Rank < scalars.Severity.Rank;
+                return true;
+            case MortalWoundRemoveComplicationOperation removal:
+                if (!before.TryRemoveExistingComplication(removal.ComplicationId, out var removed)) return false;
+                after = removed!;
+                improved = true;
+                return true;
+            case MortalWoundHealOperation:
+                if (scalars.Severity.Rank != 1) return false;
+                terminal = true;
+                improved = true;
+                return true;
             case MortalWoundAddComplicationOperation:
             case MortalWoundApplyDeteriorationOperation:
-                if (preparedOperationReducer is null)
-                    return false;
-                var prepared = preparedOperationReducer(before, operation);
-                if (!prepared.IsApplicable || prepared.After is null ||
-                    !TryRoundTrip(prepared.After, out after))
-                {
-                    return false;
-                }
+                if (prepareComplex is null) return false;
+                var prepared = prepareComplex(before, address, operation);
+                if (!prepared.IsApplicable || prepared.After is null) return false;
+                after = prepared.After;
                 improved = prepared.Improved;
                 return true;
-
             default:
                 return false;
         }
-
-        if (!TryRoundTrip(candidate, out after))
-        {
-            improved = false;
-            return false;
-        }
-
-        return true;
     }
 
-    private static MortalWoundTreatmentWorkingWoundSimulation NotApplicable() =>
-        new(false, false, null);
+    private static MortalWoundTreatmentWorkingGraphProjection? ProjectGraphReduction(
+        MortalWoundTreatmentWorkingGraphProjection before, MortalWoundReduceSeverityOperation reduction)
+    {
+        var issues = new List<ValidationIssue>();
+        if (!MortalWoundTreatmentSeverityReductionPlanner.ValidateReductionArguments(reduction.Steps,
+                before.Scalars.Severity.LastChangeEventRef, issues) ||
+            !MortalWoundTreatmentSeverityReductionPlanner.TryGetReductionRank(before.Scalars.Severity.Rank,
+                reduction.Steps, out var rank, issues)) return null;
+        // Validate tagged provenance before producing the injective detached adapter table.
+        if (!before.ValidateGraph("mortalWoundTreatment.workingGraph").IsEmpty) return null;
+        var detached = WoundPersistedConsequenceEnvelopeAdapter.AdaptWorkingGraph(before.Graph,
+            "mortalWoundTreatment.severityReductionProjection.before.consequences");
+        var validation = MortalWoundTreatmentSeverityReductionPlanner.ValidateDestinationGraph(rank,
+            detached.Definitions, detached.Roots, before.Graph.Entries.Length, issues);
+        if (!validation.IsValid) return null;
+        var scalars = MortalWoundTreatmentSeverityReductionPlanner.ApplyReductionScalars(before.Scalars.Severity,
+            rank, before.Scalars.Severity.LastChangeEventRef);
+        return before.WithScalars(before.Scalars with { Severity = scalars.Severity, SlotBudget = scalars.SlotBudget });
+    }
 
-    internal static bool TryRemoveComplication(
-        WoundMaterializationEnvelope before,
-        string complicationId,
+    internal static bool TryRemoveComplication(WoundMaterializationEnvelope before, string complicationId,
         out WoundMaterializationEnvelope after)
     {
         after = before;
-        var matches = before.Complications.Where(complication => string.Equals(
-                complication.ComplicationId,
-                complicationId,
-                StringComparison.Ordinal))
-            .ToArray();
-        if (matches.Length != 1)
-            return false;
-
-        var removedRoots = matches[0].OwnedEffectIds.ToHashSet(StringComparer.Ordinal);
-        var retainedBindings = before.Consequences.OwnedEffectSources.RootBindings
-            .Where(binding => !removedRoots.Contains(binding.EffectId))
-            .ToImmutableArray();
-        var retainedDefinitionKeys = ReachableDefinitionKeys(
-            retainedBindings,
-            before.Consequences.OwnedEffectSources.DefinitionFacts);
-        var retainedDefinitions = before.Consequences.OwnedEffectSources.Definitions
-            .Where(definition =>
-                definition.ValueKind == JsonValueKind.Object &&
-                definition.TryGetProperty("definitionKey", out var key) &&
-                key.ValueKind == JsonValueKind.String &&
-                retainedDefinitionKeys.Contains(key.GetString()!))
-            .Select(static definition => definition.Clone())
-            .ToImmutableArray();
-        var retainedFacts = before.Consequences.OwnedEffectSources.DefinitionFacts
-            .Where(fact => retainedDefinitionKeys.Contains(fact.DefinitionKey))
-            .ToImmutableArray();
-        var retainedEntries = before.Consequences.Entries
-            .Where(entry => !removedRoots.Contains(entry.EffectId))
-            .Select((entry, index) => entry with { Slot = index + 1 })
-            .ToImmutableArray();
-
-        after = before with
-        {
-            Complications = before.Complications
-                .Where(complication => !string.Equals(
-                    complication.ComplicationId,
-                    complicationId,
-                    StringComparison.Ordinal))
-                .ToImmutableArray(),
-            Consequences = before.Consequences with
-            {
-                SlotsUsed = retainedEntries.Length,
-                Entries = retainedEntries,
-                OwnedEffectSources = new WoundOwnedEffectSources(
-                    retainedDefinitions,
-                    retainedBindings)
-                {
-                    DefinitionFacts = retainedFacts
-                }
-            }
-        };
+        var graph = MortalWoundTreatmentWorkingGraphProjection.FromCanonical(before);
+        if (graph is null || !graph.TryRemoveExistingComplication(complicationId, out var removed) ||
+            !removed!.TryExportExisting(out var exported)) return false;
+        after = exported!;
         return true;
     }
 
-    private static HashSet<string> ReachableDefinitionKeys(
-        IEnumerable<WoundRootEffectBinding> roots,
-        IEnumerable<WoundOwnedEffectDefinitionFact> facts)
-    {
-        var byKey = facts.ToDictionary(
-            static fact => fact.DefinitionKey,
-            StringComparer.Ordinal);
-        var reachable = new HashSet<string>(StringComparer.Ordinal);
-        var pending = new Stack<string>(roots.Select(static root => root.DefinitionKey));
-        while (pending.Count != 0)
-        {
-            var definitionKey = pending.Pop();
-            if (!reachable.Add(definitionKey) ||
-                !byKey.TryGetValue(definitionKey, out var fact))
-            {
-                continue;
-            }
-
-            foreach (var target in fact.ApplyDefinitionTargets)
-                pending.Push(target);
-        }
-
-        return reachable;
-    }
-
-    private static bool TryRoundTrip(
-        WoundMaterializationEnvelope candidate,
-        out WoundMaterializationEnvelope parsedWound)
-    {
-        parsedWound = candidate;
-        var parsed = WoundMaterializationContract.Parse(
-            WoundMaterializationContract.SerializeCanonical(candidate),
-            "treatmentAttempt.workingWound");
-        if (!parsed.IsValid || parsed.Wound is null)
-            return false;
-        parsedWound = parsed.Wound;
-        return true;
-    }
+    private static MortalWoundTreatmentWorkingGraphSimulation NotApplicable() => new(false, false, null);
 }
