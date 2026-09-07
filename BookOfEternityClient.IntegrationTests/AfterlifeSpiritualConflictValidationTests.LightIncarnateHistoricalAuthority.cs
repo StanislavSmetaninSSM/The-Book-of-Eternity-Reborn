@@ -101,7 +101,8 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
     [InlineData(true, 6)]
     [InlineData(false, null)]
     [InlineData(true, null)]
-    public async Task T085_LightIncarnateHistory_ValidatedBaselineWithoutDiceStillRequiresCurrentAuthority(bool recent, int? turn)
+    public async Task T085_LightIncarnateHistory_ValidatedBaselineWithoutDiceStillRequiresCurrentAuthority(
+        bool recent, int? turn)
     {
         var root = await CreateLightIncarnateHistoryRootAsync(recent, turn);
         await SnapshotEmptyLightIncarnateHistoryAsync(root, recent);
@@ -128,6 +129,15 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
         await WriteValidatedConflictSnapshotFromCurrentAsync("Preserve all accepted mechanics.");
         GetLightIncarnateHistoryLog(root, recent: false)[0]!["summary"] = "Only the readable wording differs.";
         await WriteAndAssertLightIncarnateHistoryAsync(root, recent: false, 0, expectMismatch: false);
+    }
+
+    [Fact]
+    public async Task T085_LightIncarnateHistory_ChangedRecentSummaryIsNotPreGrantEvidence()
+    {
+        var root = await CreateLightIncarnateHistoryRootAsync(recent: true, turn: 6);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Preserve the exact accepted resolution.");
+        GetLightIncarnateHistoryLog(root, recent: true)[0]!["summary"] = "Changed recent resolution wording.";
+        await WriteAndAssertLightIncarnateHistoryAsync(root, recent: true, 0, expectMismatch: true);
     }
 
     private async Task<JsonObject> CreateLightIncarnateHistoryRootAsync(bool recent, int? turn)
@@ -164,6 +174,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
             }
             """);
         }
+
         var root = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath))!)!.AsObject();
         if (turn.HasValue)
             GetLightIncarnateHistoryLog(root, recent)[0]![recent ? "resolvedAtTurn" : "exchangeAtTurn"] = turn.Value;
@@ -181,13 +192,15 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
 
     private async Task RemoveLightIncarnateHistoryFixtureDiceAsync()
     {
-        var request = JsonNode.Parse((await _fs.ReadFileAsync("input/turn_request.json"))!)!.AsObject();
-        var manifest = JsonNode.Parse((await _fs.ReadFileAsync("game_state/control/pending_turn_snapshot.json"))!)!.AsObject();
+        const string requestPath = "input/turn_request.json";
+        const string manifestPath = "game_state/control/pending_turn_snapshot.json";
+        var request = JsonNode.Parse((await _fs.ReadFileAsync(requestPath))!)!.AsObject();
+        var manifest = JsonNode.Parse((await _fs.ReadFileAsync(manifestPath))!)!.AsObject();
         request["preGeneratedDices1d20"] = new JsonArray();
         manifest["preGeneratedDices1d20"] = new JsonArray();
         manifest["manifestPayloadHash"] = PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
-        await _fs.WriteFileAtomicAsync("input/turn_request.json", request.ToJsonString());
-        await _fs.WriteFileAtomicAsync("game_state/control/pending_turn_snapshot.json", manifest.ToJsonString());
+        await _fs.WriteFileAtomicAsync(requestPath, request.ToJsonString());
+        await _fs.WriteFileAtomicAsync(manifestPath, manifest.ToJsonString());
         await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(_fs);
     }
 
@@ -209,11 +222,13 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
     {
         var path = recent ? $".recentConflicts[{index}].diceAudit" : $".activeConflict.exchangeLog[{index}].diceAudit";
         var selected = issues.Where(issue => issue.FilePath.Contains(path, StringComparison.Ordinal)).ToArray();
-        var mismatches = selected.Where(issue => string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.Ordinal)).ToArray();
+        var mismatches = selected.Where(issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_mismatch", StringComparison.Ordinal)).ToArray();
         if (expectMismatch)
             Assert.Single(mismatches);
         else
             Assert.Empty(mismatches);
-        Assert.DoesNotContain(selected, issue => string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.Ordinal));
+        Assert.DoesNotContain(selected, issue =>
+            string.Equals(issue.Code, "afterlife_conflict_light_incarnate_modifier_unauthorized", StringComparison.Ordinal));
     }
 }
