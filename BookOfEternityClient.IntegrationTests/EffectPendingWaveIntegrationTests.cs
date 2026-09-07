@@ -43,7 +43,7 @@ public sealed class EffectPendingWaveIntegrationTests
             static entry => entry.Coordinate.ResourceKey == "energy");
         var (definition, effect) = CreateTwoWaveEffect(initialPoise.Maximum);
 
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -300,7 +300,7 @@ public sealed class EffectPendingWaveIntegrationTests
             remainingUses: 1);
         var effectId = effect["effectId"]!.GetValue<string>();
 
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -900,6 +900,8 @@ public sealed class EffectPendingWaveIntegrationTests
 
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "periodic_damage");
+        effect["source"] = CreatePendingEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["components"] = components.DeepClone();
         effect["lifetime"] = new JsonObject
         {
@@ -920,6 +922,8 @@ public sealed class EffectPendingWaveIntegrationTests
         definition["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "periodic_damage");
+        effect["source"] = CreatePendingEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["components"] = definition["components"]!.DeepClone();
         effect["triggers"] = definition["triggers"]!.DeepClone();
         effect["lifetime"]!["remainingTurns"] = 3;
@@ -979,6 +983,8 @@ public sealed class EffectPendingWaveIntegrationTests
 
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "event_reaction");
+        effect["source"] = CreatePendingEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["components"] = components.DeepClone();
         effect["triggers"] = triggers.DeepClone();
         effect["lifetime"]!["remainingTurns"] = 3;
@@ -999,7 +1005,7 @@ public sealed class EffectPendingWaveIntegrationTests
         var history = ParseHistory(
             await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath),
             definitions);
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -1066,6 +1072,14 @@ public sealed class EffectPendingWaveIntegrationTests
             ["reason"] = "The accepted action spends one energy."
         })
     };
+
+    private static JsonObject CreatePendingEffectSource() =>
+        new()
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = EffectMaterializationTestContext.MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
 
     private static JsonObject CreateReceipt(
         string requestId,

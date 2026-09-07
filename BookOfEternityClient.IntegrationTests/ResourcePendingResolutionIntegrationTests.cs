@@ -368,7 +368,7 @@ public sealed class ResourcePendingResolutionIntegrationTests
             ["consumingEventTypes"] = new JsonArray("resource_damaged")
         };
         definition["triggers"] = new JsonArray(BoundedResourceDamagedTrigger());
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -447,6 +447,7 @@ public sealed class ResourcePendingResolutionIntegrationTests
             ResourceMaterializationContract.CommandPath,
             resourceCommandRoot);
         var apply = EffectMaterializationTestFixture.CreateApplyCommand();
+        apply["source"] = CreatePendingEffectSource();
         apply["eventRef"]!["authorityId"] = "turn_43";
         var commandRoot = EffectMaterializationTestFixture.CreateCommandRoot(apply);
         await context.WriteJsonAsync(
@@ -554,9 +555,11 @@ public sealed class ResourcePendingResolutionIntegrationTests
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             ownerKind: "player",
             profile: "periodic_damage");
+        effect["source"] = CreatePendingEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -613,10 +616,12 @@ public sealed class ResourcePendingResolutionIntegrationTests
         });
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             profile: "event_reaction");
+        effect["source"] = CreatePendingEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["components"] = definition["components"]!.DeepClone();
         effect["triggers"] = definition["triggers"]!.DeepClone();
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -666,6 +671,14 @@ public sealed class ResourcePendingResolutionIntegrationTests
         ["consumeUses"] = true,
         ["resolutionMode"] = "bounded_receipt"
     };
+
+    private static JsonObject CreatePendingEffectSource() =>
+        new()
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = EffectMaterializationTestContext.MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
 
     private static ResourceDefinitionCatalog ParseDefinitions(JsonNode? root)
     {
