@@ -8935,6 +8935,8 @@ Validation derives actor newness only from the client-owned validated pre-turn b
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
+STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works without independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Духовная стойкость is passive and is not an `operationType`; registering Духовное исцеление does not authorize a healing operation before the separate handler exists. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
+
 If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
 
 CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST (not GM response): the reserved first exact `player_soul` may be seeded without a generic Actor Materialization envelope. It may still carry one closed `resourceMaterialization.resources[]`; for example `{ "resourceKey": "soul_integrity", "maximum": 9 }`. The client derives the deterministic ownerRef for that same turn from exact `player_soul` + canonical realm, consumes `resourceMaterialization`, and writes the `resourceOwnerBindings` after-image with the quartet. The canonical after-image has no generic `materialization` envelope and no residual `resourceMaterialization`. This exception never applies to a resident, Guardian, radiant actor, or other non-player profile: a first non-player without Actor Materialization is invalid.
@@ -8964,7 +8966,10 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
   "realm": "Chaos Sea",
   "locationId": "abode_quiet_lantern",
   "locationName": "Обитель Тихого Фонаря",
-  "standardArts": {},
+  "standardArts": {
+    "spiritual_resilience": 0,
+    "spiritual_healing": 0
+  },
   "specialArts": [],
   "customStates": [],
   "fateCards": [],
@@ -9001,7 +9006,7 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
       "canTrade": false
     },
     "sections": {
-      "standardArts": { "state": "empty_by_design", "reason": "Резидент не владеет оформленными духовными приёмами." },
+      "standardArts": { "state": "populated" },
       "specialArts": { "state": "empty_by_design", "reason": "Личное духовное искусство ещё не возникло." },
       "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
       "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
@@ -9085,7 +9090,9 @@ Valid response fragment:
         "break_binding": 0,
         "incarnation_resistance": 0,
         "champion_coordination": 0,
-        "recover_spiritual_power": 1
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {
@@ -9238,8 +9245,9 @@ Valid response fragment:
       "soulDissipationTier": 1,
       "progressionStrategy": {
         "strategyId": "strategy_guardian_mirror",
-        "summary": "Сначала усиливает особую защиту, затем развеивание души.",
+        "summary": "Сначала развивает духовную стойкость, затем особую защиту и развеивание души.",
         "priorityOrder": [
+          "spiritual_resilience",
           "mirror_guard",
           "soul_dissipation",
           "guard"
@@ -9321,7 +9329,9 @@ Valid response fragment:
         "break_binding": 0,
         "incarnation_resistance": 1,
         "champion_coordination": 0,
-        "recover_spiritual_power": 1
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {
@@ -9594,7 +9604,7 @@ Valid response fragment:
         "lightSparks": 0
       },
       "standardArtTierDeltas": {
-        "pressure": 1
+        "spiritual_healing": 1
       },
       "specialArtTierDeltas": {
         "mirror_guard": 1
@@ -9678,7 +9688,9 @@ Valid Shining faction-head response fragment:
       },
       "standardArts": {
         "guard": 2,
-        "maneuver": 1
+        "maneuver": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [],
       "customStates": [],

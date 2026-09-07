@@ -164,6 +164,18 @@ internal static class WoundMaterializationTestFixtures
         var sealedD20Ref = $"sealed_d20_turn_42_spiritual_strain_{suffix}";
         var playerProfile = CreateCurrentSpiritualProfile("player_soul", playerId, "Chaos Sea");
         var opponentProfile = CreateCurrentSpiritualProfile("guardian", opponentId, "Chaos Sea");
+        playerProfile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = resilienceTier;
+        playerProfile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = healingTier;
+        opponentProfile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 1;
+        opponentProfile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 2;
+        var soulState = new JsonObject
+        {
+            ["soulName"] = "Душа раненого путника",
+            ["currentRealm"] = "Chaos Sea",
+            [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
+        };
+        soulState[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = resilienceTier;
+        soulState[AfterlifeSpiritualConflictState.SoulStateProfileProperty]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = healingTier;
         var conflict = AfterlifeSpiritualConflictState.CreateDefaultRoot();
         conflict["activeConflict"] = new JsonObject
         {
@@ -184,11 +196,6 @@ internal static class WoundMaterializationTestFixtures
         profiles[AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(playerProfile.DeepClone(), opponentProfile.DeepClone());
         var future = new JsonObject
         {
-            ["standardArts"] = new JsonObject
-            {
-                ["player"] = CreateFutureArts(resilienceTier, healingTier),
-                ["opposition"] = CreateFutureArts(1, 2)
-            },
             ["dangerEnvelope"] = new JsonObject
             {
                 ["dangerMode"] = dangerMode, ["escalatedFromTraining"] = hasPriorTrainingEscalation,
@@ -201,6 +208,7 @@ internal static class WoundMaterializationTestFixtures
         return new SpiritualConflictScenarioFixture(
             profiles,
             conflict,
+            soulState,
             future,
             new SpiritualConflictScenarioRefs(playerId, opponentId, conflictId, eventRef,
                 sealedD20Ref, "player", "opposition"),
@@ -217,6 +225,7 @@ internal static class WoundMaterializationTestFixtures
             ?? throw new InvalidOperationException("Built-in Elyara manifest is missing or invalid.");
         var dossier = File.ReadAllText(dossierPath);
         var profile = CreateCurrentSpiritualProfile("guardian", "elyara", "Chaos Sea");
+        profile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 5;
         profile["displayName"] = manifest["displayName"]!.DeepClone();
         profile["locationId"] = "location_elyara_lazaret";
         profile["locationName"] = "Лазарет Незаживающего Света";
@@ -224,7 +233,6 @@ internal static class WoundMaterializationTestFixtures
         profiles[AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile.DeepClone());
         var future = new JsonObject
         {
-            ["spiritualHealing"] = new JsonObject { ["tier"] = 5, ["experience"] = 0 },
             ["healingServiceProfile"] = CreateHealingService("elyara", "chaos_sea", "location_elyara_lazaret", "public", 100)
         };
         return new ElyaraScenarioFixture(
@@ -232,7 +240,7 @@ internal static class WoundMaterializationTestFixtures
             new ElyaraScenarioRefs("elyara", "location_elyara_lazaret", "service_elyara_healing", "/alwaysAvailable"),
             new ElyaraExpectedProtectedFields(DiscoverableFromFirstChaosSeaEntry: true, new[]
             {
-                "/standardArts/spiritual_healing/tier", "/locationId", "/locationName",
+                "/standardArts/spiritual_healing", "/locationId", "/locationName",
                 "/healingServiceProfile/visibility", "/healingServiceProfile/availability",
                 "/healingServiceProfile/priceMultiplierPercent"
             }),
@@ -270,12 +278,12 @@ internal static class WoundMaterializationTestFixtures
         var resident = CreateCurrentResident(residentId, guardianId, abodeId, factionId);
         ShiningAbodeState.NormalizeResidentShiningFields(resident, shining);
         var profile = CreateCurrentSpiritualProfile("resident", residentId, "Shining Abode");
+        profile["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = healingTier;
         var profiles = AfterlifeEntityProfileState.CreateDefaultRoot();
         profiles[AfterlifeEntityProfileState.ProfilesProperty] = new JsonArray(profile.DeepClone());
         var future = new JsonObject
         {
             ["primaryRole"] = new JsonObject { ["key"] = "healing_support", ["visibility"] = "known_to_player" },
-            ["spiritualHealing"] = new JsonObject { ["tier"] = healingTier, ["experience"] = 0 },
             ["healingServiceProfile"] = serviceVisibility == null ? null : CreateHealingService(residentId, "shining_abode", locationId, serviceVisibility, 100)
         };
 
@@ -484,12 +492,6 @@ internal static class WoundMaterializationTestFixtures
         return profile;
     }
 
-    private static JsonObject CreateFutureArts(int resilienceTier, int healingTier) => new()
-    {
-        ["spiritual_resilience"] = new JsonObject { ["tier"] = resilienceTier, ["experience"] = 0 },
-        ["spiritual_healing"] = new JsonObject { ["tier"] = healingTier, ["experience"] = 0 }
-    };
-
     private static JsonObject CreateConflictSide(string actorType, string actorId, bool includeGuardianArtAuthority = false)
     {
         var lead = new JsonObject { ["actorType"] = actorType, ["actorId"] = actorId, ["displayName"] = "Сторона точного конфликта" };
@@ -570,7 +572,8 @@ internal static class WoundMaterializationTestFixtures
 
     private static IReadOnlyList<string> CreateSpiritualWritePaths() => CreateWritePaths(
         WoundMaterializationTestContext.AfterlifeEntityProfilesPath,
-        WoundMaterializationTestContext.AfterlifeSpiritualConflictPath);
+        WoundMaterializationTestContext.AfterlifeSpiritualConflictPath,
+        "game_state/meta/soul_state.json");
 
     private static IReadOnlyList<string> CreateElyaraWritePaths() => CreateWritePaths(
         WoundMaterializationTestContext.AfterlifeEntityProfilesPath);
@@ -619,7 +622,7 @@ internal sealed record MortalPersonalityTraitPresentation(string Name, string De
 internal sealed record MortalAuthorityRoots(JsonObject ResourceDefinitions, JsonObject ResourceState, JsonObject ResourceHistory, JsonObject PlayerInventory, JsonObject ItemIdentityIndex, JsonObject WorldMap, JsonObject CurrentLocation, JsonObject LocationIdentityIndex, JsonObject ProviderAuthority);
 internal sealed record MortalWoundScenarioRefs(string WoundRef, string OwnerId, string EventRef, string RouteId, string HiddenRouteId, string DiagnosisPathId, string BandageItemId, string AntisepticItemId, string SterileThreadItemId, string AntibioticItemId, string CapabilityRef, string ProviderRef, string FacilityRef, string LocationRef, string ComplicationRef, string LocationAuthorityRef);
 internal sealed record WoundExpectedFacts(string Realm, string Domain, string Severity, string OwnerId, string EventRef, string RecoveryMode, IReadOnlyList<string> ConsumptionCoordinates);
-internal sealed record SpiritualConflictScenarioFixture(JsonObject AfterlifeProfiles, JsonObject ConflictState, JsonObject FutureProposal, SpiritualConflictScenarioRefs Refs, SpiritualConflictExpectedFacts Expected, IReadOnlyList<string> CanonicalWritePaths);
+internal sealed record SpiritualConflictScenarioFixture(JsonObject AfterlifeProfiles, JsonObject ConflictState, JsonObject SoulState, JsonObject FutureProposal, SpiritualConflictScenarioRefs Refs, SpiritualConflictExpectedFacts Expected, IReadOnlyList<string> CanonicalWritePaths);
 internal sealed record SpiritualConflictScenarioRefs(string PlayerProfileId, string OpponentProfileId, string ConflictId, string EventRef, string SealedD20Ref, string PlayerSideId, string OppositionSideId);
 internal sealed record SpiritualConflictExpectedFacts(string DangerMode, string BeforeStrain, string DestinationStrain, string ExpectedComputedCeiling, int HarmfulMargin, int TargetResilienceTier, int AppliedArtTier, int ExtraJumpSteps, bool HasPriorTrainingEscalation);
 internal sealed record ElyaraScenarioFixture(ElyaraBuiltInAssets BuiltInAssets, JsonObject AfterlifeProfiles, JsonObject AfterlifeProfile, JsonObject FutureProposal, ElyaraScenarioRefs Refs, ElyaraExpectedProtectedFields Expected, IReadOnlyList<string> CanonicalWritePaths);

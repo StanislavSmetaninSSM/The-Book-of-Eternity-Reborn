@@ -168,6 +168,11 @@ Player soul authority note
 When the GM prepares an afterlife mentor showcase, it may reference the player
 profile only for identity, visible story state, Fate Cards, relationships, and
 learned `specialArts[]`. It should not patch a purchase into the player profile.
+Complete mentor `standardArts` also contains scalar `spiritual_resilience` (Духовная
+стойкость) and `spiritual_healing` (Духовное исцеление) entries at integer 0..5.
+A zero entry is visible current authority but cannot teach that art. These entries
+are never `{tier, experience}` objects and have no independent art experience;
+ordinary mentor prices, teacher caps, rank gates, and client-owned receipts apply.
 The accepted response below is correct because Liora's profile advertises the
 lesson price, while the client later handles the player's purchase and actual
 currency spending:
@@ -179,7 +184,7 @@ currency spending:
       "actorType": "guardian",
       "actorId": "guardian_liora",
       "displayName": "Лиора, Хранительница Тихого Света",
-      "standardArts": { "guard": 4 },
+      "standardArts": { "guard": 4, "spiritual_resilience": 0, "spiritual_healing": 0 },
       "mentorTrainingShowcase": {
         "schemaVersion": 1,
         "requestId": "training_req_liora_001",
@@ -529,7 +534,7 @@ available from this screen and must not receive a local showcase request.
         "displayName": "Сестра Элиана",
         "realm": "Shining Abode",
         "mentorProfile": { "canTeach": true, "relationshipLevel": 55 },
-        "standardArts": { "guard": 3 }
+        "standardArts": { "guard": 3, "spiritual_resilience": 0, "spiritual_healing": 0 }
       }
     ]
   }
@@ -582,7 +587,9 @@ Manual fallback:
       "displayName": "Лиора, Хранительница Тихого Света",
       "standardArts": {
         "guard": 4,
-        "pressure": 2
+        "pressure": 2,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "relationships": [
         {

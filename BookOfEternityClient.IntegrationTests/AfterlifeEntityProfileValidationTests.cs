@@ -702,7 +702,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "fateCards": [
@@ -758,7 +758,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "fateCards": [
@@ -807,7 +807,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "fateCards": [
@@ -877,7 +877,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "soulDissipationTier": 1,
@@ -933,7 +933,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "soulDissipationTier": 1,
@@ -1469,7 +1469,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
               "realm": "Chaos Sea",
               "currencies": { "inkFeathers": 5, "lightSparks": 0 },
               "progression": { "enlightenment": { "experience": 0, "tier": 0 }, "radiance": { "experience": 0, "tier": 0 } },
-              "standardArts": { "pressure": 1 },
+              "standardArts": { "pressure": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "soulDissipationTier": 0,
@@ -1803,7 +1803,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [
                 {
                   "artId": "mirror_guard",
@@ -1898,7 +1898,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [
                 {
                   "artId": "mirror_guard",
@@ -1951,7 +1951,7 @@ public sealed class AfterlifeEntityProfileValidationTests : IDisposable
                 "enlightenment": { "experience": 48, "tier": 4 },
                 "radiance": { "experience": 0, "tier": 0 }
               },
-              "standardArts": { "pressure": 2, "guard": 1 },
+              "standardArts": { "pressure": 2, "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "soulDissipationTier": 1,

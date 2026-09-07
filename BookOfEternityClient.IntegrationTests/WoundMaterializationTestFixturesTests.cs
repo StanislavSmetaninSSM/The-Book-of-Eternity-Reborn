@@ -62,7 +62,7 @@ public sealed class WoundMaterializationTestFixturesTests
     }
 
     [Fact]
-    public void SpiritualConflictSeed_SeparatesCurrentProfilesFromFutureArtAndDangerProposals()
+    public void StandardWoundArt_SpiritualConflictSeedUsesCurrentScalarSoulAndProfileAuthority()
     {
         var fixture = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario("hostile", 2, 3, true);
         var profiles = fixture.AfterlifeProfiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray();
@@ -71,7 +71,11 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal(1, fixture.AfterlifeProfiles["schemaVersion"]!.GetValue<int>());
         Assert.Equal("Chaos Sea", player["realm"]!.GetValue<string>());
         Assert.IsAssignableFrom<JsonValue>(player["standardArts"]!["guard"]);
-        Assert.Null(player["standardArts"]!["spiritual_resilience"]);
+        Assert.Equal(2, player["standardArts"]!["spiritual_resilience"]!.GetValue<int>());
+        Assert.Equal(3, player["standardArts"]!["spiritual_healing"]!.GetValue<int>());
+        Assert.Equal(2, fixture.SoulState["afterlifeCombatProfile"]!["artTiers"]!["spiritual_resilience"]!.GetValue<int>());
+        Assert.Equal(3, fixture.SoulState["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"]!.GetValue<int>());
+        Assert.Null(fixture.FutureProposal["standardArts"]);
         Assert.NotNull(fixture.FutureProposal);
         Assert.Equal("hostile", fixture.FutureProposal["dangerEnvelope"]!["dangerMode"]!.GetValue<string>());
         Assert.NotNull(fixture.FutureProposal["priorTrainingEscalation"]);
@@ -88,11 +92,13 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal(1, fixture.AfterlifeProfiles["schemaVersion"]!.GetValue<int>());
         Assert.Equal("Chaos Sea", elyara["realm"]!.GetValue<string>());
         Assert.IsAssignableFrom<JsonValue>(elyara["standardArts"]!["guard"]);
+        Assert.Equal(5, elyara["standardArts"]!["spiritual_healing"]!.GetValue<int>());
         Assert.Null(elyara["healingServiceProfile"]);
         Assert.True(fixture.BuiltInAssets.Manifest["alwaysAvailable"]!.GetValue<bool>());
         Assert.Equal("/alwaysAvailable", fixture.BuiltInAssets.DiscoverabilityPointer);
         Assert.Equal(fixture.BuiltInAssets.DiscoverabilityPointer, fixture.Refs.DiscoverabilityPointer);
-        Assert.Equal(5, fixture.FutureProposal["spiritualHealing"]!["tier"]!.GetValue<int>());
+        Assert.Null(fixture.FutureProposal["spiritualHealing"]);
+        Assert.NotNull(fixture.FutureProposal["healingServiceProfile"]);
     }
 
     [Fact]
@@ -131,9 +137,11 @@ public sealed class WoundMaterializationTestFixturesTests
         Assert.Equal("populated", faction["materialization"]!["sections"]!["residentAffiliations"]!["state"]!.GetValue<string>());
         Assert.IsType<JsonObject>(resident["abodeDisposition"]);
         Assert.Equal("Shining Abode", profile["realm"]!.GetValue<string>());
+        Assert.Equal(3, profile["standardArts"]!["spiritual_healing"]!.GetValue<int>());
         Assert.Null(resident["primaryRole"]);
         Assert.Null(profile["healingServiceProfile"]);
         Assert.Equal("healing_support", fixture.FutureProposal["primaryRole"]!["key"]!.GetValue<string>());
+        Assert.Null(fixture.FutureProposal["spiritualHealing"]);
         Assert.Equal("absent", fixture.Expected.ServiceVisibility);
     }
 
@@ -223,9 +231,9 @@ public sealed class WoundMaterializationTestFixturesTests
     {
         var fixture = WoundMaterializationTestFixtures.CreateSpiritualConflictScenario();
         await using var context = await WoundMaterializationTestContext.CreateAsync();
-        await context.FileSystem.WriteFileAtomicAsync("game_state/meta/soul_state.json", """
-        { "soulName": "Душа раненого путника", "currentRealm": "Chaos Sea" }
-        """);
+        await context.FileSystem.WriteFileAtomicAsync(
+            "game_state/meta/soul_state.json",
+            fixture.SoulState.ToJsonString());
         await context.FileSystem.WriteFileAtomicAsync(
             AfterlifeSpiritualConflictState.StatePath,
             fixture.ConflictState.ToJsonString());

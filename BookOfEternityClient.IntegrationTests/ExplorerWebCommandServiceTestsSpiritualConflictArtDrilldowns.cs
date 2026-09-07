@@ -115,6 +115,54 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
     }
 
     [Theory]
+    [InlineData(
+        "spiritual_resilience",
+        "Духовная стойкость",
+        "Пассивное духовное искусство",
+        "Пассивное действие, без затрат ОД",
+        "Не является отдельным боевым приёмом",
+        "Пассивное действие, без затрат ОД")]
+    [InlineData(
+        "spiritual_healing",
+        "Духовное исцеление",
+        "Целительное духовное искусство",
+        "на нулевой ступени доступна только диагностика",
+        "не тяжелее освоенной ступени",
+        "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются")]
+    public async Task StandardWoundArt_BrowserDetailUsesRussianPassiveAndHealingCopy(
+        string id,
+        string name,
+        string subtitle,
+        string expectedUse,
+        string expectedCounter,
+        string expectedCost)
+    {
+        await SeedRichSpiritualConflictArtDrilldownFilesAsync();
+
+        var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_arts"));
+        var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest($"/spiritual_arts искусство {id}"));
+
+        Assert.Contains(name, CollectBlockText(overview.Blocks), StringComparison.Ordinal);
+        Assert.Equal(CommandExecutionState.Completed, detail.State);
+        var text = CollectBlockText(detail.Blocks);
+        Assert.Contains($"Духовное искусство: {name}", text, StringComparison.Ordinal);
+        Assert.Contains(subtitle, text, StringComparison.Ordinal);
+        Assert.Contains(expectedUse, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedCounter, text, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(expectedCost, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(id, text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("восстанавливает ОД", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("лечение не влияет на запас ОД", text, StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain(detail.Actions, action =>
+            action.Command.Contains("/spiritual_conflict", StringComparison.OrdinalIgnoreCase) &&
+            action.Command.Contains(id, StringComparison.OrdinalIgnoreCase));
+
+        var existingDetail = await _service.ExecuteAsync(
+            new ExplorerWebCommandRequest("/spiritual_arts искусство pressure"));
+        Assert.Contains("стандартное духовное искусство", CollectBlockText(existingDetail.Blocks), StringComparison.Ordinal);
+    }
+
+    [Theory]
     [InlineData("/spiritual_conflict обмен exchange_sun_001", "Обмен духовного конфликта: Рассветный нажим", "Тестовая Душа", "Хранитель Тени")]
     [InlineData("/spiritual_combat_log обмен exchange_sun_001", "Запись духовного боя: Рассветный нажим", "Давление игрока", "Чернильные Перья")]
     public async Task ExecuteAsync_SpiritualExchangeDetails_RenderFocusedPlayerFacingContextWithoutRawJson(
@@ -305,7 +353,9 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
             "artTiers": {
               "pressure": 2,
               "guard": 1,
-              "counter": 1
+              "counter": 1,
+              "spiritual_resilience": 0,
+              "spiritual_healing": 0
             }
           }
         }
@@ -336,7 +386,9 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
               "standardArts": {
                 "pressure": 2,
                 "guard": 1,
-                "counter": 1
+                "counter": 1,
+                "spiritual_resilience": 0,
+                "spiritual_healing": 0
               },
               "specialArts": [
                 {

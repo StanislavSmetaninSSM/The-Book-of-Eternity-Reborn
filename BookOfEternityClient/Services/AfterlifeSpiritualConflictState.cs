@@ -10,6 +10,8 @@ public static class AfterlifeSpiritualConflictState
     public const string ResponseField = "afterlifeSpiritualConflictUpdate";
     public const string SoulStateProfileProperty = "afterlifeCombatProfile";
     public const string SpiritFocusTierProperty = "spiritFocusTier";
+    public const string SpiritualResilienceArtId = "spiritual_resilience";
+    public const string SpiritualHealingArtId = "spiritual_healing";
     public const string RewardAuditProperty = "rewardAudit";
     public const string SoulDissipationProofProperty = "soulDissipationProof";
     public const string TerminalGameOverProperty = "terminalGameOver";
@@ -18,6 +20,9 @@ public static class AfterlifeSpiritualConflictState
     public const string RewardCurrencyInkFeathers = "ink_feathers";
     public const string RewardCurrencyLightSparks = "light_sparks";
     public const int SpiritFocusMaxTier = 5;
+
+    public static readonly IReadOnlyList<string> RequiredWoundArtIds = Array.AsReadOnly(
+        new[] { SpiritualResilienceArtId, SpiritualHealingArtId });
 
     public const int ChaosSeaConflictRewardBaseAmount = 10;
     public const int ShiningConflictRewardBaseAmount = 1;
@@ -257,7 +262,9 @@ public static class AfterlifeSpiritualConflictState
         new("break_binding", "Разрыв оков", "Improve resisting or breaking spiritual bindings and forced handoffs.", 2),
         new("binding", "Оковы", "Improve imposing a bounded spiritual bind after winning leverage.", 2),
         new("incarnation_resistance", "Сопротивление воплощению", "Improve resistance to guardian_forced incarnation attempts.", 2),
-        new("champion_coordination", "Связь с чемпионом", "Improve side-vs-side support when an ally is the lead contestant.", 3)
+        new("champion_coordination", "Связь с чемпионом", "Improve side-vs-side support when an ally is the lead contestant.", 3),
+        new(SpiritualResilienceArtId, "Духовная стойкость", "Пассивная стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД.", 1),
+        new(SpiritualHealingArtId, "Духовное исцеление", "Искусство диагностики и лечения духовных ран; на нулевой ступени доступна только диагностика.", 1)
     ];
 
     public static readonly IReadOnlyList<SpiritFocusTierDefinition> SpiritFocusTiers =
@@ -298,9 +305,16 @@ public static class AfterlifeSpiritualConflictState
             ["radianceRank"] = 0,
             ["retainedRadianceRank"] = 0,
             [SpiritFocusTierProperty] = 0,
-            ["artTiers"] = new JsonObject(),
+            ["artTiers"] = CreateDefaultArtTiers(),
             ["capstones"] = new JsonObject(),
             ["lastRecoveryTurn"] = 0
+        };
+
+    public static JsonObject CreateDefaultArtTiers() =>
+        new()
+        {
+            [SpiritualResilienceArtId] = 0,
+            [SpiritualHealingArtId] = 0
         };
 
     public static JsonObject NormalizeRoot(JsonObject? root)

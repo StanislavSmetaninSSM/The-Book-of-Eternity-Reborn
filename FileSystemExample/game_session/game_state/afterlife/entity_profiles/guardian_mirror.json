@@ -24,7 +24,9 @@
       "standardArts": {
         "pressure": 2,
         "guard": 1,
-        "counter": 1
+        "counter": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {

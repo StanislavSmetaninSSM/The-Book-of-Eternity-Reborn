@@ -2054,6 +2054,8 @@ public partial class ExplorerMode
             "force_incarnation" => "Принудительное воплощение",
             "incarnation_resistance" => "Сопротивление воплощению",
             "champion_coordination" => "Координация чемпиона",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Духовная стойкость",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Духовное исцеление",
             "recover_spiritual_power" => "Собрать Средоточие",
             "withdraw" => "Отступление",
             "surrender" => "Сдача",
@@ -2150,6 +2152,8 @@ public partial class ExplorerMode
             "binding" => "помогает наложить ограничивающие духовные оковы после получения преимущества",
             "incarnation_resistance" => "усиливает сопротивление принудительному воплощению от Хранителя",
             "champion_coordination" => "усиливает поддержку, когда ведущим бойцом выступает союзник/чемпион",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "пассивно повышает стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД. Не является отдельным боевым приёмом",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "диагностирует духовные раны; на нулевой ступени доступна только диагностика, ступени I–IV лечат раны не тяжелее освоенной ступени, ступень V лечит любые духовные раны",
             _ => art.MechanicalUse
         };
 
@@ -2164,6 +2168,8 @@ public partial class ExplorerMode
             "binding" => "Требует преимущества, доминирования, подготовки или решительного успеха игрока; при успехе создаёт или усиливает контроль, а не наносит обычное напряжение.",
             "incarnation_resistance" => "Только против принудительного воплощения; против обычного давления используй защиту, контрприём или манёвр.",
             "champion_coordination" => "Только в поединке чемпиона, когда союзник или чемпион ведёт сторону; игрок усиливает сторону, а не становится ведущим бойцом.",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Пассивное действие, без затрат ОД. Не является отдельным боевым приёмом.",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются. Лечить можно рану не тяжелее освоенной ступени.",
             _ => art.MechanicalUse
         };
 
@@ -2178,6 +2184,8 @@ public partial class ExplorerMode
             "binding" => "противника, уже поставленного в худшую позицию или раскрытого подготовкой",
             "incarnation_resistance" => "только принудительное воплощение и связанные с ним силовые попытки затащить душу в жизнь",
             "champion_coordination" => "поединок чемпиона, где союзник ведёт бой, а игрок усиливает сторону",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "духовные раны и их последствия",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "диагностику и лечение духовных ран",
             _ => art.MechanicalUse
         };
 
@@ -2192,6 +2200,8 @@ public partial class ExplorerMode
             "binding" => "разрыв оков, контрприём против контроля или отсутствие нужного преимущества перед попыткой оков",
             "incarnation_resistance" => "успешное принудительное воплощение после проигранного спора; против обычных атак это искусство не подходит",
             "champion_coordination" => "давление по стороне чемпиона, срыв поддержки или перевод сцены из поединка чемпиона в прямой конфликт",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Не является отдельным боевым приёмом",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "рана тяжелее освоенной ступени; на нулевой ступени лечение недоступно",
             _ => art.MechanicalUse
         };
 
@@ -2206,6 +2216,8 @@ public partial class ExplorerMode
             "binding" => "«Удерживаю противника печатью рассвета» - оковы уместны после преимущества, подготовки или явного рычага в сцене.",
             "incarnation_resistance" => "«Я сопротивляюсь навязанной жизни» - искусство применяется против попытки силой втянуть душу в воплощение.",
             "champion_coordination" => "«Я направляю союзного Хранителя через слабое место врага» - приём помогает, когда бой ведёт чемпион или союзная сторона.",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "«Я сохраняю целостность под духовным ударом» - стойкость действует пассивно и не требует отдельного приёма.",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "«Я распознаю глубину трещины в душе» - диагностика доступна на нулевой ступени, лечение требует подходящей освоенной ступени.",
             _ => art.MechanicalUse
         };
 

@@ -527,6 +527,21 @@ public partial class ValidationService
         if (!TryRequireProfileObject(profile, context, "standardArts", "afterlife_entity_profile_missing_standard_arts", issues, out var standardArts))
             return;
 
+        foreach (var requiredArtId in AfterlifeSpiritualConflictState.RequiredWoundArtIds)
+        {
+            if (standardArts.TryGetProperty(requiredArtId, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.standardArts.{requiredArtId}",
+                IssueSeverity.Error,
+                "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+                code: "afterlife_entity_profile_missing_standard_art_tier",
+                section: "AfterlifeEntityProfiles",
+                expected: "integer 0..5",
+                actual: "missing"));
+        }
+
         foreach (var property in standardArts.EnumerateObject())
         {
             if (!AfterlifeEntityProfileState.StandardArtIds.Contains(property.Name))

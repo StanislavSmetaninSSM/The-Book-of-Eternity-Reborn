@@ -32,6 +32,34 @@ public sealed partial class ExampleDocumentationValidationTests
     };
 
     [Fact]
+    public void StandardWoundArt_ManifestPinsScalarProfileAndOrdinaryProgressionExample()
+    {
+        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "example_validation_manifest.json")));
+        var contract = Assert.Single(
+            manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
+            item => item.GetProperty("contractId").GetString() == "standard_wound_arts_v1");
+        var requiredText = contract.GetProperty("requiredText").EnumerateArray()
+            .Select(item => item.GetString())
+            .ToArray();
+
+        Assert.Contains("spiritual_resilience", requiredText);
+        Assert.Contains("spiritual_healing", requiredText);
+        Assert.Contains("standardArtTierDeltas", requiredText);
+        Assert.Contains("without independent art experience", requiredText);
+
+        var examples = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "E_CLI_Afterlife_Turns.txt"));
+        Assert.Contains("\"spiritual_resilience\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 1", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void JsonExamples_AreParseableOrExplicitlyExempted()
     {
         var manifest = ExampleValidationManifest.Load();
@@ -3805,7 +3833,9 @@ public sealed partial class ExampleDocumentationValidationTests
             },
             ["standardArts"] = new JsonObject
             {
-                ["guard"] = 1
+                ["guard"] = 1,
+                [AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0,
+                [AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0
             },
             ["specialArts"] = new JsonArray(),
             ["customStates"] = new JsonArray(),

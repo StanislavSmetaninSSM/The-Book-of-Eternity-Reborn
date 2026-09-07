@@ -1044,10 +1044,35 @@ public partial class ValidationService
         ValidateLightIncarnateCombatProfileCapstone(profile, context, issues);
 
         if (!profile.TryGetProperty("artTiers", out var artTiers))
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.artTiers",
+                IssueSeverity.Error,
+                "afterlifeCombatProfile.artTiers должен быть object с явными обязательными искусствами духовных ран.",
+                code: "afterlife_combat_profile_missing_art_tiers",
+                section: "AfterlifeSpiritualConflict",
+                expected: "object with explicit spiritual_resilience and spiritual_healing tiers",
+                actual: "missing"));
             return;
+        }
 
         if (!RequireObject(artTiers, $"{context}.artTiers", issues))
             return;
+
+        foreach (var requiredArtId in AfterlifeSpiritualConflictState.RequiredWoundArtIds)
+        {
+            if (artTiers.TryGetProperty(requiredArtId, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.artTiers.{requiredArtId}",
+                IssueSeverity.Error,
+                "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+                code: "afterlife_combat_profile_missing_art_tier",
+                section: "AfterlifeSpiritualConflict",
+                expected: "integer 0..5",
+                actual: "missing"));
+        }
 
         var allowedArtIds = AfterlifeSpiritualConflictState.SpiritualArts
             .Select(art => art.ArtId)

@@ -1295,9 +1295,15 @@ public sealed class TrainingService
         var targetValue = Math.Max(0, GetNodeInt(offer["targetValue"]));
         var offeredSourceCap = Math.Max(0, GetNodeInt(offer["sourceCap"]));
         var mentorSourceCap = ResolveAfterlifeMentorSourceCap(mentor, targetKind, targetId);
-        var sourceCap = mentorSourceCap > 0 && offeredSourceCap > 0
-            ? Math.Min(mentorSourceCap, offeredSourceCap)
-            : Math.Max(mentorSourceCap, offeredSourceCap);
+        var sourceCap = IsAfterlifeStandardArtTarget(targetKind)
+            ? mentorSourceCap <= 0
+                ? 0
+                : offeredSourceCap > 0
+                    ? Math.Min(mentorSourceCap, offeredSourceCap)
+                    : mentorSourceCap
+            : mentorSourceCap > 0 && offeredSourceCap > 0
+                ? Math.Min(mentorSourceCap, offeredSourceCap)
+                : Math.Max(mentorSourceCap, offeredSourceCap);
         var relationshipLevel = ResolveAfterlifeMentorRelationshipLevel(mentor);
         var mentorMultiplierPercent = AfterlifeTrainingCostPolicy.ResolveMentorMultiplierPercent(relationshipLevel);
         var baseInkFeatherCost = ResolveAfterlifeMentorBaseInkFeatherCost(playerProfile, targetKind, targetId, targetValue);
@@ -2458,6 +2464,8 @@ public sealed class TrainingService
             "incarnation_resistance" => "Сопротивление воплощению",
             "champion_coordination" => "Согласование чемпиона",
             "recover_spiritual_power" => "Собрать Средоточие",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Духовная стойкость",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Духовное исцеление",
             _ => targetId
         };
 

@@ -3561,8 +3561,11 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
-    [Fact]
-    public async Task SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile()
+    [Theory]
+    [InlineData("pressure")]
+    [InlineData("spiritual_resilience")]
+    [InlineData("spiritual_healing")]
+    public async Task StandardWoundArt_SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile(string artId)
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await _fs.WriteFileAtomicAsync(
@@ -3575,7 +3578,7 @@ public sealed class ExplorerWebCommandServiceTests :
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 600, ["total"] = 600 };
-        soul["afterlifeCombatProfile"]!["artTiers"]!["pressure"] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![artId] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
             "/spiritual_arts",
@@ -3587,14 +3590,14 @@ public sealed class ExplorerWebCommandServiceTests :
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["upgrade_target"] = JsonValue.Create("pressure"),
+                ["upgrade_target"] = JsonValue.Create(artId),
                 ["upgrade_currency"] = JsonValue.Create("ink_feathers")
             },
             OwnerId: "browser-test"));
 
         Assert.Equal(CommandExecutionState.Completed, completed.State);
         var updated = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]!["pressure"]!.GetValue<int>());
+        Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]![artId]!.GetValue<int>());
         Assert.Equal(100, updated["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }

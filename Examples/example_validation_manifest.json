@@ -742,6 +742,18 @@
       "requiredText": ["afterlife_spiritual_exchange_history_authority_v1", "exchange_accepted_history_006", "exchangeAtTurn alone is not authority", "validation compatibility only", "exact pre-turn prefix", "afterlife_conflict_resource_log_prefix_mutated"]
     },
     {
+      "contractId": "standard_wound_arts_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json.profiles[].standardArts and game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers",
+      "responseSurface": "afterlifeEntityProfileUpdates[].standardArts / afterlifeEntityProgressionOverrides[].standardArtTierDeltas",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Spiritual resilience and healing are required scalar ordinary arts at tier zero through five, mirrored from player soul authority and progressed without independent art experience.",
+      "validationKind": "production-validator",
+      "validationRoute": "SpiritualHealingArtValidationTests.StandardWoundArt_ -> ValidationService current profile validators; SpiritualHealingArtTests.StandardWoundArt_ -> ordinary registry/progression; ExampleDocumentationValidationTests.StandardWoundArt_ManifestPinsScalarProfileAndOrdinaryProgressionExample",
+      "coverageLimit": "Registration, current scalar authority, ordinary progression and documentation only; no spiritual wound producer, healing resolver, healing operation, safe-cycle scheduler, or wound command is claimed.",
+      "requiredText": ["spiritual_resilience", "spiritual_healing", "standardArtTierDeltas", "without independent art experience"]
+    },
+    {
       "contractId": "afterlife_actor_materialization_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

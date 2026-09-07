@@ -10012,8 +10012,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.DoesNotContain("specialArtAudit", renderedText, StringComparison.OrdinalIgnoreCase);
     }
 
-    [Fact]
-    public async Task TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers()
+    [Theory]
+    [InlineData("pressure", "Давление", null)]
+    [InlineData("spiritual_resilience", "Духовная стойкость", "Пассивное действие, без затрат ОД")]
+    [InlineData("spiritual_healing", "Духовное исцеление", "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются")]
+    public async Task StandardWoundArt_TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers(
+        string artId,
+        string displayName,
+        string? expectedRule)
     {
         await WriteJsonAsync("game_state/meta/soul_state.json", new
         {
@@ -10026,6 +10032,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         });
         await _stateManager.RefreshGameStateAsync();
         _console.QueueAnySelection("⬆ Прокачать духовное искусство");
+        _console.QueueSelection("Выберите духовное искусство", $"{displayName} — уровень 0->1, 500 🪶");
+        _console.QueueSelection("Выберите валюту", "Чернильные Перья — 500 🪶");
         _console.QueueAnyConfirmResponse(true);
 
         var ex = await Record.ExceptionAsync(() => _explorer.TryProcessCommand("/spiritual_arts"));
@@ -10035,11 +10043,14 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         var soulRoot = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json") ?? "{}")!)!.AsObject();
         var profile = Assert.IsType<JsonObject>(soulRoot[AfterlifeSpiritualConflictState.SoulStateProfileProperty]);
         var artTiers = Assert.IsType<JsonObject>(profile["artTiers"]);
-        Assert.Equal(1, artTiers["pressure"]?.GetValue<int>());
+        Assert.Equal(1, artTiers[artId]?.GetValue<int>());
         Assert.Equal(5, profile["enlightenmentRank"]?.GetValue<int>());
         var inkFeathers = Assert.IsType<JsonObject>(soulRoot["inkFeathers"]);
         Assert.Equal(0, inkFeathers["current"]?.GetValue<int>());
         Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
+        if (expectedRule != null)
+            Assert.Contains(expectedRule, ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        Assert.DoesNotContain("лечение не влияет на запас ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }
 
     [Fact]

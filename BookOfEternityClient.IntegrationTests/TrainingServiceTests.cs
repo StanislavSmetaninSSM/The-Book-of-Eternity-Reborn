@@ -1788,6 +1788,186 @@ public sealed class TrainingServiceTests : IDisposable
         Assert.Equal("self_fallback", receipt.GetProperty("sourceActorKind").GetString());
     }
 
+    [Theory]
+    [InlineData("spiritual_resilience", "Духовная стойкость")]
+    [InlineData("spiritual_healing", "Духовное исцеление")]
+    public async Task StandardWoundArt_SelfTrainingUsesOrdinaryScalarPurchase(string id, string name)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var service = CreateService();
+        var view = await service.EnsureTrainingAsync(currentTurn: 21);
+        var offerId = $"self_art_{id}_tier_1";
+        var offer = Assert.Single(view.SelfTrainingOffers, item => item.OfferId == offerId);
+        Assert.Equal(name, offer.TargetName);
+        Assert.Equal(500, offer.Cost.InkFeathers);
+        Assert.True(offer.Available);
+
+        var result = await service.BuyTrainingAsync("self", offerId, currentTurn: 22);
+
+        Assert.True(result.Success, result.Message);
+        using var document = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var soul = document.RootElement;
+        Assert.Equal(2000, soul.GetProperty("inkFeathers").GetProperty("current").GetInt32());
+        Assert.Equal(1, soul.GetProperty("afterlifeCombatProfile").GetProperty("artTiers").GetProperty(id).GetInt32());
+        var receipt = soul.GetProperty("afterlifeTrainingPurchaseReceipts")[0];
+        Assert.Equal(offerId, receipt.GetProperty("offerId").GetString());
+        Assert.Equal(500, receipt.GetProperty("inkFeathersSpent").GetInt32());
+        Assert.Equal("self_fallback", receipt.GetProperty("sourceActorKind").GetString());
+    }
+
+    [Theory]
+    [InlineData("spiritual_resilience")]
+    [InlineData("spiritual_healing")]
+    public async Task StandardWoundArt_SelfTrainingUsesExistingRankGatesAndCapsAtFive(string id)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 10000);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var profile = soul["afterlifeCombatProfile"]!.AsObject();
+        var cases = new[]
+        {
+            (NextTier: 1, Enlightenment: 1, Radiance: 0, BelowEnlightenment: 0, BelowRadiance: 0),
+            (NextTier: 2, Enlightenment: 3, Radiance: 0, BelowEnlightenment: 2, BelowRadiance: 0),
+            (NextTier: 3, Enlightenment: 5, Radiance: 0, BelowEnlightenment: 4, BelowRadiance: 0),
+            (NextTier: 4, Enlightenment: 0, Radiance: 7, BelowEnlightenment: 0, BelowRadiance: 6),
+            (NextTier: 5, Enlightenment: 0, Radiance: 9, BelowEnlightenment: 0, BelowRadiance: 8)
+        };
+
+        foreach (var gate in cases)
+        {
+            profile["artTiers"]![id] = gate.NextTier - 1;
+            profile["enlightenmentRank"] = gate.BelowEnlightenment;
+            profile["radianceRank"] = gate.BelowRadiance;
+            await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+            var blocked = Assert.Single(
+                (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
+                offer => offer.OfferId == $"self_art_{id}_tier_{gate.NextTier}");
+            Assert.False(blocked.Available);
+
+            profile["enlightenmentRank"] = gate.Enlightenment;
+            profile["radianceRank"] = gate.Radiance;
+            await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+            var available = Assert.Single(
+                (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
+                offer => offer.OfferId == $"self_art_{id}_tier_{gate.NextTier}");
+            Assert.True(available.Available, available.BlockReason);
+        }
+
+        profile["artTiers"]![id] = 5;
+        profile["enlightenmentRank"] = 5;
+        profile["radianceRank"] = 9;
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+        var capped = Assert.Single(
+            (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
+            offer => offer.TargetId == id);
+        Assert.False(capped.Available);
+        Assert.Equal(5, capped.CurrentValue);
+        Assert.Contains("максимальный", capped.BlockReason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData("spiritual_resilience", "radianceRank")]
+    [InlineData("spiritual_resilience", "retainedRadianceRank")]
+    [InlineData("spiritual_healing", "radianceRank")]
+    [InlineData("spiritual_healing", "retainedRadianceRank")]
+    public async Task StandardWoundArt_TierOneUsesExistingRadianceRankOneGate(
+        string id,
+        string rankField)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
+        var profile = soul["afterlifeCombatProfile"]!.AsObject();
+        profile["enlightenmentRank"] = 0;
+        profile["radianceRank"] = 0;
+        profile["retainedRadianceRank"] = 0;
+        profile[rankField] = 1;
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+
+        var offer = Assert.Single(
+            (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
+            item => item.OfferId == $"self_art_{id}_tier_1");
+
+        Assert.True(offer.Available, offer.BlockReason);
+    }
+
+    [Theory]
+    [InlineData("spiritual_resilience", "Духовная стойкость", 0, 125)]
+    [InlineData("spiritual_resilience", "Духовная стойкость", 30, 100)]
+    [InlineData("spiritual_resilience", "Духовная стойкость", 60, 75)]
+    [InlineData("spiritual_healing", "Духовное исцеление", 0, 125)]
+    [InlineData("spiritual_healing", "Духовное исцеление", 30, 100)]
+    [InlineData("spiritual_healing", "Духовное исцеление", 60, 75)]
+    public async Task StandardWoundArt_MentorOfferUsesFallbackNameOrdinaryPriceAndReceipt(
+        string id,
+        string name,
+        int relationshipLevel,
+        int expectedCost)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var offerId = $"mentor_wound_{id}_tier_1";
+        await SeedStandardWoundArtMentorAsync(id, relationshipLevel, mentorTier: 4, offerId);
+        var service = CreateService();
+
+        var view = await service.EnsureTrainingAsync(currentTurn: 31);
+        var offer = Assert.Single(Assert.Single(view.Teachers).Offers, item => item.OfferId == offerId);
+        Assert.Equal(name, offer.TargetName);
+        Assert.Equal(4, offer.SourceCap);
+        Assert.Equal(expectedCost, offer.Cost.InkFeathers);
+        Assert.True(offer.Available, offer.BlockReason);
+
+        var result = await service.BuyTrainingAsync("guardian_wound_mentor", offerId, currentTurn: 32);
+
+        Assert.True(result.Success, result.Message);
+        using var document = JsonDocument.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!);
+        var soul = document.RootElement;
+        Assert.Equal(2500 - expectedCost, soul.GetProperty("inkFeathers").GetProperty("current").GetInt32());
+        Assert.Equal(1, soul.GetProperty("afterlifeCombatProfile").GetProperty("artTiers").GetProperty(id).GetInt32());
+        var receipt = soul.GetProperty("afterlifeTrainingPurchaseReceipts")[0];
+        Assert.Equal(offerId, receipt.GetProperty("offerId").GetString());
+        Assert.Equal(expectedCost, receipt.GetProperty("inkFeathersSpent").GetInt32());
+        Assert.Equal("afterlife_mentor", receipt.GetProperty("sourceActorKind").GetString());
+    }
+
+    [Theory]
+    [InlineData("spiritual_resilience")]
+    [InlineData("spiritual_healing")]
+    public async Task StandardWoundArt_ZeroTierMentorCannotTeachAuthoredOffer(string id)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        var offerId = $"mentor_wound_{id}_tier_1";
+        await SeedStandardWoundArtMentorAsync(id, relationshipLevel: 60, mentorTier: 0, offerId);
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var offer = Assert.Single(Assert.Single(view.Teachers).Offers, item => item.OfferId == offerId);
+        Assert.False(offer.Available);
+        Assert.Contains("наставник", offer.BlockReason, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Theory]
+    [InlineData(4, 2)]
+    [InlineData(2, 4)]
+    public async Task StandardWoundArt_MentorSourceCapUsesLowerPositiveAuthority(
+        int mentorTier,
+        int authoredSourceCap)
+    {
+        await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
+        const string offerId = "mentor_wound_spiritual_healing_tier_3";
+        await SeedStandardWoundArtMentorAsync(
+            "spiritual_healing",
+            relationshipLevel: 60,
+            mentorTier,
+            offerId,
+            authoredSourceCap,
+            targetValue: 3);
+
+        var view = await CreateService().EnsureTrainingAsync(currentTurn: 31);
+
+        var offer = Assert.Single(Assert.Single(view.Teachers).Offers, item => item.OfferId == offerId);
+        Assert.Equal(2, offer.SourceCap);
+        Assert.False(offer.Available);
+        Assert.Contains("наставник", offer.BlockReason, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public async Task BuyTrainingAsync_AfterlifeSelfSpiritFocus_ReconfiguresUnifiedActionPointsAtomically()
     {
@@ -2802,7 +2982,7 @@ public sealed class TrainingServiceTests : IDisposable
             "radianceRank": 0,
             "retainedRadianceRank": 0,
             "spiritFocusTier": 1,
-            "artTiers": {},
+            "artTiers": { "spiritual_resilience": 0, "spiritual_healing": 0 },
             "specialArts": [
               {
                 "artId": "special_art_unlearned_shadow_chain",
@@ -3215,6 +3395,71 @@ public sealed class TrainingServiceTests : IDisposable
             ["profiles"] = new JsonArray(mentor)
         };
         await _fs.WriteFileAtomicAsync("game_state/meta/afterlife_entity_profiles.json", root.ToJsonString());
+    }
+
+    private async Task SeedStandardWoundArtMentorAsync(
+        string artId,
+        int relationshipLevel,
+        int mentorTier,
+        string offerId,
+        int authoredSourceCap = 4,
+        int targetValue = 1)
+    {
+        await SeedChaosSeaScopeAsync(
+            "guardian_wound_mentor",
+            "Наставница целостности",
+            "abode_wound_mentor",
+            "Обитель целостности");
+        var mentor = new JsonObject
+        {
+            ["actorType"] = "guardian",
+            ["actorId"] = "guardian_wound_mentor",
+            ["displayName"] = "Наставница целостности",
+            ["realm"] = "Chaos Sea",
+            ["locationId"] = "abode_wound_mentor",
+            ["locationName"] = "Обитель целостности",
+            ["mentorProfile"] = new JsonObject
+            {
+                ["canTeach"] = true,
+                ["relationshipLevel"] = relationshipLevel
+            },
+            ["standardArts"] = new JsonObject
+            {
+                ["spiritual_resilience"] = artId == "spiritual_resilience" ? mentorTier : 0,
+                ["spiritual_healing"] = artId == "spiritual_healing" ? mentorTier : 0
+            }
+        };
+        var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
+        mentor["mentorTrainingShowcase"] = new JsonObject
+        {
+            ["showcaseId"] = $"showcase_{offerId}",
+            ["requestKind"] = "afterlife_teacher_showcase",
+            ["sourceActorId"] = "guardian_wound_mentor",
+            ["sourceActorName"] = "Наставница целостности",
+            ["sourceActorSnapshotHash"] = snapshotHash,
+            ["offers"] = new JsonArray
+            {
+                new JsonObject
+                {
+                    ["offerId"] = offerId,
+                    ["targetKind"] = "standard_spiritual_art",
+                    ["targetId"] = artId,
+                    ["currentValue"] = 0,
+                    ["targetValue"] = targetValue,
+                    ["sourceCap"] = authoredSourceCap,
+                    ["cost"] = new JsonObject { ["inkFeathers"] = 999, ["lightSparks"] = 0 },
+                    ["requirements"] = new JsonObject
+                    {
+                        ["minimumRelationship"] = 0,
+                        ["maxPlayerUnlockedTier"] = 5
+                    },
+                    ["summary"] = "Наставница показывает обычный следующий шаг искусства."
+                }
+            }
+        };
+        await _fs.WriteFileAtomicAsync(
+            AfterlifeEntityProfileState.StatePath,
+            new JsonObject { ["profiles"] = new JsonArray(mentor) }.ToJsonString());
     }
 
     private async Task SeedAfterlifeMentorWithNaturalShowcaseShapeAsync()

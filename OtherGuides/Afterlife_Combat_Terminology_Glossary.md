@@ -49,6 +49,7 @@ Unified resource boundary: `spiritual_action_points`, `gacha_attempts`, and `ble
 | enlightenmentRank | ранг Просветления | Chaos Sea progression rank used for afterlife conflict authority and art gates. |
 | radianceRank | ранг Сияния | Shining Abode progression rank used for afterlife conflict authority and art gates. |
 | art tier | уровень искусства | Upgrade tier of a spiritual art; ranks cap the maximum tier that can be purchased. |
+| spiritual_resilience / spiritual_healing | Духовная стойкость / Духовное исцеление | Required ordinary `standardArts` scalar integer 0..5 entries in every complete current afterlife profile. They are visible at zero, are not `{tier, experience}` objects, and have no independent art experience. Player authority lives in `soul_state.afterlifeCombatProfile.artTiers`; `player_soul.standardArts` is only its mirror. Духовная стойкость is passive and is not an `operationType`; Духовное исцеление becomes an operation only with its separate healing handler. |
 | Source of Light | Источник Света | Full-Radiance Shining capstone scene closed through `pending_source_of_light_capstone.json`. |
 | light_incarnate | Воплощение Света | Soul-owned capstone passive that adds explicit player-side dice modifiers in afterlife spiritual conflicts. |
 | Incarnated Light | Воплощенный Свет | One-per-soul Soul Relic `source_of_light_incarnated_light`; in Mortal lives it gives characteristic bonuses through Soul Relic effects. |

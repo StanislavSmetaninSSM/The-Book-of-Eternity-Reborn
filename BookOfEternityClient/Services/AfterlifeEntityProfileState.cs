@@ -188,7 +188,9 @@ internal static class AfterlifeEntityProfileState
         "force_binding",
         "incarnation_resistance",
         "champion_coordination",
-        "recover_spiritual_power"
+        "recover_spiritual_power",
+        AfterlifeSpiritualConflictState.SpiritualResilienceArtId,
+        AfterlifeSpiritualConflictState.SpiritualHealingArtId
     };
 
     public static readonly HashSet<string> SpecialArtBaseOperations = new(StringComparer.OrdinalIgnoreCase)

@@ -13,6 +13,38 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class AfterlifeDocumentationCoverageTests
 {
     [Fact]
+    public void StandardWoundArt_CurrentScalarContractIsDocumentedForGmAuthors()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
+        var afterlifeExamples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        var trainingExamples = ReadRepoFile("Examples", "E_CLI_Training_Showcases.txt");
+        var corpus = string.Join("\n", matrix, glossary, taskGuide, afterlifeExamples, trainingExamples);
+
+        foreach (var token in new[]
+                 {
+                     "spiritual_resilience",
+                     "Духовная стойкость",
+                     "spiritual_healing",
+                     "Духовное исцеление",
+                     "integer 0..5",
+                     "не объекты `{tier, experience}`",
+                     "player_soul.standardArts",
+                     "afterlifeCombatProfile.artTiers",
+                     "standardArtTierDeltas",
+                     "без отдельного опыта искусства",
+                     "не является operationType"
+                 })
+        {
+            Assert.Contains(token, corpus, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains("\"spiritual_resilience\": 0", afterlifeExamples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 0", afterlifeExamples, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment()
     {
         foreach (var text in new[] { ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
@@ -4160,7 +4192,9 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         Assert.Contains("AFTERLIFE ACTOR MATERIALIZATION V1", examples, StringComparison.Ordinal);
         Assert.Contains("\"relationships\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
         Assert.Contains("\"state\": \"empty_by_design\"", examples, StringComparison.Ordinal);
-        Assert.Contains("\"standardArts\": {}", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_resilience\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"standardArts\": { \"state\": \"populated\" }", examples, StringComparison.Ordinal);
         foreach (var text in new[] { matrix, examples })
         {
             Assert.Contains("\"specialArts\": []", text, StringComparison.Ordinal);
