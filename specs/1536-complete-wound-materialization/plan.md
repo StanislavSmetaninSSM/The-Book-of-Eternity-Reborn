@@ -1593,6 +1593,24 @@ needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain o
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
+The next bounded T077/T083/T085 declaration prerequisite is fully specified in
+`docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md`. It requires
+one exact danger token on new starts and canonical active/recent objects,
+preserves it through ordinary exchange and terminal publication, and reuses the
+already-parsed signed pre-turn root to check every retained same-ID occurrence.
+One internal policy supplies the unchanged 0/2/4 mode caps and exact token
+reader. Invalid/ambiguous baseline authority fails closed without a migration;
+legal history truncation and the separate terminal predicate are unchanged.
+The complete-code plan includes 66 deterministic reducer rows, 50 actual
+response/file/snapshot rows, one GM guard, explicit current-fixture cutover,
+six synchronized GM surfaces and the existing worked start's runtime persisted-
+value assertion. Its bounded Spec Kit consistency pass found no new scoped
+ambiguity or constitution conflict. Implementation and verification are still
+pending: this is not acceptance and does not close any top-level task.
+Accepted escalation, full side seals, defeat/dissipation, first-exchange UI,
+arts/progression and real wound/healing production remain their open tasks;
+the separate art-schema and legacy-preparation choices are not made here.
+
 The bounded T085 authority prerequisite
 `docs/superpowers/plans/2026-09-07-spiritual-exchange-history-authority.md`
 closes marker-alone historical exemption before an exchange can underpin spiritual

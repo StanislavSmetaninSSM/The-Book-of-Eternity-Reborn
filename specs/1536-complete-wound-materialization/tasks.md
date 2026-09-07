@@ -2126,6 +2126,16 @@ hand-written history/after-images, or a raw mutation fallback.
 
 - [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - [ ] T083 [US3] Extend spiritual conflict start/state with declared danger mode, escalation evidence, per-side wound seals, and bounded defeat outcome in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
+  Planned declaration/persistence prerequisite, shared with T077/T085/T089-T092:
+  `docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md` supplies
+  complete code for strict start/canonical danger tokens, immutable ordinary
+  exchange/replacement carry, terminal-proof retention and signed same-ID
+  active/recent continuity across every occurrence. It includes 66 Fast reducer
+  rows, 50 Integration response/file/snapshot rows, one GM guard, exact current
+  fixture cutover and a manifest-backed persisted start example. No code/test
+  acceptance is claimed yet; full T083 remains open for accepted escalation,
+  per-side wound seals and bounded defeat. No implicit mode, migration, art
+  schema or healing authority is introduced by this prerequisite.
 - [ ] T084 [US3] Implement trauma-pressure calculation, destination/mode/source caps, harmful-margin audit, one-per-side/re-trauma rules, and opportunity export in `BookOfEternityClient/Services/SpiritualWoundOpportunityAdapter.cs`
   The accepted T076-linked pure arithmetic prerequisite (`1969a695`) adds
   `BookOfEternityClient/Services/SpiritualWoundOpportunityMath.cs` without a runtime

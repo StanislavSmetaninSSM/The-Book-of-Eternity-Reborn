@@ -409,6 +409,19 @@ are consequence primitives, not a catalog of complete spiritual wounds.
 #### Spiritual conflict and injury
 
 - **FR-029**: Every spiritual conflict MUST fix one danger mode at start, and any escalation MUST be explicit and accepted before its higher cap applies.
+  The declaration/persistence prerequisite requires exact lowercase JSON strings
+  `training`, `controlled`, `hostile`, or `annihilation` on the selected start
+  seed, canonical active conflict and each recent proof, with no implicit default
+  or old-save fallback. Ordinary exchange/replacement omission preserves the
+  accepted declaration; explicit null or a different echo does not authorize a
+  change. Resolve/repair-cancel retain the declaration in the terminal proof.
+  During a validated turn, every retained same-ID active/recent occurrence MUST
+  agree with the signed pre-turn declarations; missing, invalid or conflicting
+  retained baseline declarations fail closed. Existing legal recent-history
+  truncation and independent terminal-proof qualification remain unchanged.
+  This prerequisite does not define accepted escalation evidence, global
+  conflict-ID uniqueness, wound seals, actual injury, healing or the full
+  player-visible pre-first-exchange workflow.
 - **FR-030**: Training MUST forbid spiritual wounds; controlled conflict MUST cap them at II; hostile and annihilation conflict MAY permit I-IV.
 - **FR-031**: Ordinary spiritual wound eligibility MUST occur only on an accepted harmful strain transition and MUST reuse the accepted exchange evidence without a second injury roll.
   As a prerequisite, historical exchange dice/matchup/action-cost exemption MUST
