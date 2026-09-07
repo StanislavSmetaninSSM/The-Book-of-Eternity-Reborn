@@ -1,4 +1,5 @@
 using System.Text.Json.Nodes;
+using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 using Xunit;
 
@@ -63,9 +64,10 @@ public sealed partial class AfterlifeResourceCutoverTests
             errors.Select(issue => $"{issue.Code}: {issue}")));
     }
 
-    private static async Task<ResourceMaterializationTestContext> CreateCompleteConflictFrameContextAsync()
+    private static async Task<ResourceMaterializationTestContext> CreateCompleteConflictFrameContextAsync(
+        FileSystemManagerHooks? hooks = null)
     {
-        var context = await ResourceMaterializationTestContext.CreateAsync();
+        var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
         var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);

@@ -7,134 +7,30 @@ public partial class ValidationService
 {
     private async Task ValidateAfterlifeSpiritualConflictStateAsync(List<ValidationIssue> issues)
     {
-        var json = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath);
-        if (string.IsNullOrWhiteSpace(json))
+        var conflict = await ReadSpiritualConflictFileImageAsync(
+            AfterlifeSpiritualConflictState.StatePath);
+        if (!TryParseSpiritualConflictCurrentImage(conflict, issues, out _))
         {
-            if (_fs.FileExists(AfterlifeSpiritualConflictState.StatePath))
-            {
-                issues.Add(new ValidationIssue(
-                    AfterlifeSpiritualConflictState.StatePath,
-                    IssueSeverity.Error,
-                    "afterlife_spiritual_conflict_state.json существует, но пуст.",
-                    code: "afterlife_conflict_state_empty",
-                    section: "AfterlifeSpiritualConflict",
-                    expected: "JSON object with schemaVersion, activeConflict, recentConflicts",
-                    actual: "empty/whitespace",
-                    repairHint: "Восстанови canonical conflict root: { schemaVersion: 1, activeConflict: null, recentConflicts: [] }."));
-            }
-
-            await ValidateAfterlifeConflictPreTurnIntegrityAsync(null, issues);
+            // Match the original early-return branch: only its existing
+            // authenticated pre-turn conflict lookup/integrity work is needed.
+            var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+            var preTurnJson = lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&
+                              lookup.Manifest is not null
+                ? await ReadValidatedPendingTurnSnapshotFileAsync(
+                    lookup.Manifest, AfterlifeSpiritualConflictState.StatePath)
+                : null;
+            ValidateSpiritualConflictCapturedPreTurnIntegrity(preTurnJson, null, issues);
             return;
         }
 
-        JsonObject root;
-        try
-        {
-            root = JsonNode.Parse(json) as JsonObject
-                   ?? throw new JsonException("Root is not object.");
-        }
-        catch
-        {
-            issues.Add(new ValidationIssue(
-                AfterlifeSpiritualConflictState.StatePath,
-                IssueSeverity.Error,
-                "afterlife_spiritual_conflict_state.json должен быть валидным JSON object.",
-                code: "afterlife_conflict_state_invalid_json",
-                section: "AfterlifeSpiritualConflict",
-                expected: "JSON object",
-                actual: "unreadable/non-object"));
-            await ValidateAfterlifeConflictPreTurnIntegrityAsync(null, issues);
-            return;
-        }
-
-        var gateContext = await ResolveAfterlifeSpiritualConflictGateContextAsync();
-        var diceContext = await ResolveAfterlifeConflictDiceContextAsync(gateContext.Manifest);
-        var actionCostAuthority = await ResolveAfterlifeActionCostAuthorityContextAsync(gateContext.Manifest);
-        var rewardContext = await ResolveAfterlifeConflictRewardContextAsync(gateContext);
-        var soulDissipationContext = await ResolveAfterlifeSoulDissipationContextAsync(gateContext.Manifest);
-        await ValidateAfterlifeConflictPreTurnIntegrityAsync(root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, actionCostAuthority, rewardContext, soulDissipationContext);
-        ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
-
-        if (root["activeConflict"] is JsonObject activeConflict)
-        {
-            var gateRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(gateContext.Realm);
-            if (gateRealmKey == null)
-            {
-                issues.Add(new ValidationIssue(
-                    $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict",
-                    IssueSeverity.Error,
-                    "Активный afterlife spiritual conflict допустим только в Chaos Sea или Shining Abode.",
-                    code: "afterlife_conflict_active_wrong_realm",
-                    section: "AfterlifeSpiritualConflict",
-                    expected: gateContext.UsesValidatedSnapshot
-                        ? "validated pre-turn soul_state.currentRealm = Chaos Sea or Shining Abode"
-                        : "soul_state.currentRealm = Chaos Sea or Shining Abode",
-                    actual: string.IsNullOrWhiteSpace(gateContext.Realm) ? "missing/empty" : gateContext.Realm,
-                    repairHint: "Не переносите activeConflict в Mortal World. Сначала resolve/repair_cancel конфликт в afterlife или восстанови currentRealm."));
-            }
-            else
-            {
-                var activeRealm = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["realm"]);
-                var activeRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(activeRealm);
-                if (activeRealmKey != null &&
-                    !string.Equals(activeRealmKey, gateRealmKey, StringComparison.Ordinal))
-                {
-                    issues.Add(new ValidationIssue(
-                        $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict",
-                        IssueSeverity.Error,
-                        "activeConflict.realm должен совпадать с authority realm души.",
-                        code: "afterlife_conflict_active_realm_mismatch",
-                        section: "AfterlifeSpiritualConflict",
-                        expected: gateContext.UsesValidatedSnapshot
-                            ? $"activeConflict.realm normalized to validated pre-turn realm {gateRealmKey}"
-                            : $"activeConflict.realm normalized to current realm {gateRealmKey}",
-                        actual: string.IsNullOrWhiteSpace(activeRealm) ? "missing/empty" : activeRealm,
-                        repairHint: "Не продвигайте конфликт из другого afterlife realm. Resolve/repair_cancel старый конфликт или восстанови authority realm/activeConflict.realm до одного realm."));
-                }
-
-                if (string.Equals(gateRealmKey, "shining_abode", StringComparison.Ordinal))
-                {
-                    var availability = await TryReadShiningAvailabilityForConflictGateAsync(gateContext);
-                    if (!string.Equals(availability, ShiningAbodeState.AvailabilityActive, StringComparison.OrdinalIgnoreCase))
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict",
-                            IssueSeverity.Error,
-                            "Активный afterlife spiritual conflict допустим только в ordinary active Shining Abode.",
-                            code: "afterlife_conflict_active_during_sealed_shining_abode",
-                            section: "AfterlifeSpiritualConflict",
-                            expected: gateContext.UsesValidatedSnapshot
-                                ? "validated pre-turn shining_abode_state.availability = active"
-                                : "shining_abode_state.availability = active",
-                            actual: string.IsNullOrWhiteSpace(availability) ? "missing/empty" : availability,
-                            repairHint: "Не запускай и не продвигай afterlife spiritual conflict, пока Сияющая Обитель sealed_until_next_ascension или иначе не active."));
-                    }
-
-                    var packageMode = await TryReadShiningPreparedPackageModeForConflictGateAsync(gateContext);
-                    if (packageMode != ShiningAbodeState.PreparedIncarnationPackageMode.Absent)
-                    {
-                        issues.Add(new ValidationIssue(
-                            $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict",
-                            IssueSeverity.Error,
-                            "Активный afterlife spiritual conflict недопустим в Shining pending-bootstrap handoff или package-fault mode.",
-                            code: "afterlife_conflict_active_during_shining_bootstrap",
-                            section: "AfterlifeSpiritualConflict",
-                            expected: gateContext.UsesValidatedSnapshot
-                                ? "validated pre-turn ordinary active Shining Abode with preparedIncarnationPackage absent/null"
-                                : "ordinary active Shining Abode with preparedIncarnationPackage absent/null",
-                            actual: packageMode.ToString(),
-                            repairHint: "В Shining pending-bootstrap handoff GM пишет только TriggerIncarnation и сохраняет preparedIncarnationPackage; не запускай и не продвигай afterlife spiritual conflict до завершения handoff/repair."));
-                    }
-                }
-            }
-        }
+        var frame = await CaptureSpiritualConflictValidationFrameAsync(conflict);
+        issues.AddRange(EvaluateSpiritualConflictValidationFrame(frame));
     }
 
     private sealed record AfterlifeSpiritualConflictGateContext(
         string? Realm,
         bool UsesValidatedSnapshot,
-        ValidationPendingTurnSnapshotManifest? Manifest);
+        int? TurnNumber);
 
     private sealed record AfterlifeConflictDiceContext(
         int[]? AuthoritativeDice,
@@ -262,144 +158,6 @@ public partial class ValidationService
     private sealed record AfterlifeSoulDissipationContext(
         JsonObject? CurrentSoulRoot,
         IReadOnlyDictionary<string, JsonObject> AuthorityProfiles);
-
-    private async Task<AfterlifeSpiritualConflictGateContext> ResolveAfterlifeSpiritualConflictGateContextAsync()
-    {
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        if (lookup.Status == ValidatedPendingTurnSnapshotStatus.Usable && lookup.Manifest != null)
-        {
-            return new AfterlifeSpiritualConflictGateContext(
-                await TryReadValidatedPendingTurnSnapshotRealmAsync(lookup.Manifest),
-                true,
-                lookup.Manifest);
-        }
-
-        return new AfterlifeSpiritualConflictGateContext(
-            await TryReadCurrentSoulRealmAsync(),
-            false,
-            null);
-    }
-
-    private async Task<AfterlifeConflictDiceContext> ResolveAfterlifeConflictDiceContextAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        var lightIncarnateGrantTurn = await ResolveLightIncarnateGrantTurnAsync();
-        var preTurnConflictPayloads = await ResolvePreTurnConflictPayloadsAsync(manifest);
-        var preTurnActiveControl = await ResolvePreTurnActiveConflictControlContextAsync(manifest);
-        var preTurnRecentConflictPayloads = await ResolvePreTurnRecentConflictPayloadsAsync(manifest);
-        var difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync();
-
-        if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
-        {
-            return new AfterlifeConflictDiceContext(
-                manifestDice,
-                lightIncarnateGrantTurn,
-                preTurnRecentConflictPayloads,
-                preTurnConflictPayloads,
-                preTurnActiveControl.ConflictId,
-                preTurnActiveControl.ControlState,
-                preTurnActiveControl.PlayerResourceCurrent,
-                preTurnActiveControl.PlayerResourceMaximum,
-                preTurnActiveControl.OppositionResourceCurrent,
-                preTurnActiveControl.OppositionResourceMaximum,
-                HasValidatedTurnBaseline: true,
-                Difficulty: difficulty,
-                CurrentTurn: manifest.TurnNumber);
-        }
-
-        var liveRequestJson = await _fs.ReadFileAsync("input/turn_request.json");
-        if (string.IsNullOrWhiteSpace(liveRequestJson))
-        {
-            return new AfterlifeConflictDiceContext(
-                null,
-                lightIncarnateGrantTurn,
-                preTurnRecentConflictPayloads,
-                preTurnConflictPayloads,
-                preTurnActiveControl.ConflictId,
-                preTurnActiveControl.ControlState,
-                preTurnActiveControl.PlayerResourceCurrent,
-                preTurnActiveControl.PlayerResourceMaximum,
-                preTurnActiveControl.OppositionResourceCurrent,
-                preTurnActiveControl.OppositionResourceMaximum,
-                HasValidatedTurnBaseline: manifest != null,
-                Difficulty: difficulty,
-                CurrentTurn: manifest?.TurnNumber);
-        }
-
-        try
-        {
-            if (JsonNode.Parse(liveRequestJson) is JsonObject root &&
-                root["preGeneratedDices1d20"] is JsonArray diceArray)
-            {
-                var dice = new List<int>();
-                foreach (var item in diceArray)
-                {
-                    if (TryGetJsonNodeInt(item, out var value))
-                        dice.Add(value);
-                }
-
-                if (dice.Count > 0)
-                {
-                    return new AfterlifeConflictDiceContext(
-                        dice.ToArray(),
-                        lightIncarnateGrantTurn,
-                        preTurnRecentConflictPayloads,
-                        preTurnConflictPayloads,
-                        preTurnActiveControl.ConflictId,
-                        preTurnActiveControl.ControlState,
-                        preTurnActiveControl.PlayerResourceCurrent,
-                        preTurnActiveControl.PlayerResourceMaximum,
-                        preTurnActiveControl.OppositionResourceCurrent,
-                        preTurnActiveControl.OppositionResourceMaximum,
-                        HasValidatedTurnBaseline: manifest != null,
-                        Difficulty: difficulty,
-                        CurrentTurn: manifest?.TurnNumber ?? AfterlifeSpiritualConflictState.GetNodeInt(root["turnNumber"]));
-                }
-            }
-        }
-        catch
-        {
-            // Other validators report malformed live turn requests; dice audit falls back to shape-only checks.
-        }
-
-        return new AfterlifeConflictDiceContext(
-            null,
-            lightIncarnateGrantTurn,
-            preTurnRecentConflictPayloads,
-            preTurnConflictPayloads,
-            preTurnActiveControl.ConflictId,
-            preTurnActiveControl.ControlState,
-            preTurnActiveControl.PlayerResourceCurrent,
-            preTurnActiveControl.PlayerResourceMaximum,
-            preTurnActiveControl.OppositionResourceCurrent,
-            preTurnActiveControl.OppositionResourceMaximum,
-            HasValidatedTurnBaseline: manifest != null,
-            Difficulty: difficulty,
-            CurrentTurn: manifest?.TurnNumber);
-    }
-
-    private async Task<AfterlifeActionCostAuthorityContext> ResolveAfterlifeActionCostAuthorityContextAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        const string soulStatePath = "game_state/meta/soul_state.json";
-        var soulJson = manifest == null
-            ? await _fs.ReadFileAsync(soulStatePath)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, soulStatePath);
-        var profileJson = manifest == null
-            ? await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeEntityProfileState.StatePath);
-        var conflictJson = manifest == null
-            ? await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.StatePath)
-            : await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeSpiritualConflictState.StatePath);
-
-        var profilesRoot = TryParseJsonObject(profileJson);
-        return new AfterlifeActionCostAuthorityContext(
-            ReadAfterlifeCombatProfileArtTiers(TryParseJsonObject(soulJson)),
-            ReadPlayerSpecialArts(profilesRoot),
-            ReadSpecialArtsByOwner(profilesRoot),
-            ReadEntityStandardArtTiers(profilesRoot),
-            ReadConflictActorArtTierSnapshots(TryParseJsonObject(conflictJson)));
-    }
 
     private static IReadOnlyDictionary<string, int> ReadAfterlifeCombatProfileArtTiers(JsonObject? soulRoot)
     {
@@ -549,33 +307,6 @@ public partial class ValidationService
         return tiers;
     }
 
-    private async Task<AfterlifeConflictRewardContext> ResolveAfterlifeConflictRewardContextAsync(
-        AfterlifeSpiritualConflictGateContext gateContext)
-    {
-        var currentSoulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
-        var preTurnSoulRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync("game_state/meta/soul_state.json"));
-        var currentShiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
-        var preTurnShiningRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync(ShiningAbodeState.StatePath));
-        var preTurnConflictRoot = TryParseJsonObject(await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath));
-        var preTurnActiveConflict = preTurnConflictRoot?["activeConflict"] as JsonObject;
-
-        return new AfterlifeConflictRewardContext
-        {
-            AuthorityRealmKey = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(gateContext.Realm),
-            UsesValidatedSnapshot = gateContext.UsesValidatedSnapshot,
-            CurrentTurn = gateContext.Manifest?.TurnNumber > 0 ? gateContext.Manifest.TurnNumber : null,
-            PreTurnInkFeathers = preTurnSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(preTurnSoulRoot),
-            CurrentInkFeathers = currentSoulRoot == null ? null : ShiningAbodeState.GetSoulSpendableInkFeathers(currentSoulRoot),
-            PreTurnLightSparks = preTurnShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(preTurnShiningRoot["lightSparks"]),
-            CurrentLightSparks = currentShiningRoot == null ? null : AfterlifeSpiritualConflictState.GetNodeInt(currentShiningRoot["lightSparks"]),
-            PreTurnActiveConflictId = preTurnActiveConflict == null ? null : TryReadConflictId(preTurnActiveConflict),
-            PreTurnSideModel = AfterlifeSpiritualConflictState.GetNodeString(preTurnActiveConflict?["sideModel"]),
-            PreTurnConflictPosition = AfterlifeSpiritualConflictState.GetNodeString(preTurnActiveConflict?["conflictPosition"]),
-            PreTurnOpposingLeadStrength = ResolveRewardOpposingLeadStrength(preTurnActiveConflict),
-            Difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync()
-        };
-    }
-
     private static int? ResolveRewardOpposingLeadStrength(JsonObject? activeConflict)
     {
         if (activeConflict?["oppositionSide"] is not JsonObject oppositionSide ||
@@ -602,36 +333,6 @@ public partial class ValidationService
         return hasTier ? maxTier + 1 : null;
     }
 
-    private async Task<AfterlifeDifficultyDefinition?> ResolveAfterlifeConflictDifficultyDefinitionAsync()
-    {
-        var settingsJson = await _fs.ReadFileAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath);
-        if (string.IsNullOrWhiteSpace(settingsJson))
-            return null;
-
-        try
-        {
-            if (JsonNode.Parse(settingsJson) is not JsonObject settingsRoot)
-                return null;
-
-            var difficulty = AfterlifeSpiritualConflictState.GetNodeString(settingsRoot["difficulty"]);
-            if (string.IsNullOrWhiteSpace(difficulty))
-            {
-                if (TryGetJsonNodeBool(settingsRoot["impossibleMode"], out var impossibleMode) && impossibleMode)
-                    difficulty = "impossible";
-                else if (TryGetJsonNodeBool(settingsRoot["hardMode"], out var hardMode) && hardMode)
-                    difficulty = "hard";
-                else
-                    difficulty = "normal";
-            }
-
-            return ResolveAfterlifeDifficultyDefinition(difficulty);
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
     private static AfterlifeDifficultyDefinition ResolveAfterlifeDifficultyDefinition(string? difficulty)
     {
         var normalized = difficulty?.Trim().ToLowerInvariant();
@@ -648,138 +349,10 @@ public partial class ValidationService
             definition.RewardMultiplierPercent);
     }
 
-    private async Task<AfterlifeSoulDissipationContext> ResolveAfterlifeSoulDissipationContextAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
-        var profileRoot = manifest == null
-            ? await ReadJsonObjectAsync(AfterlifeEntityProfileState.StatePath)
-            : TryParseJsonObject(await ReadValidatedPendingTurnSnapshotFileAsync(manifest, AfterlifeEntityProfileState.StatePath));
-        var profiles = new Dictionary<string, JsonObject>(StringComparer.OrdinalIgnoreCase);
-
-        if (profileRoot?[AfterlifeEntityProfileState.ProfilesProperty] is JsonArray profileArray)
-        {
-            foreach (var profile in profileArray.OfType<JsonObject>())
-            {
-                var key = AfterlifeEntityProfileState.BuildIdentityKey(profile);
-                if (!string.IsNullOrWhiteSpace(key))
-                    profiles[key] = profile;
-            }
-        }
-
-        return new AfterlifeSoulDissipationContext(soulRoot, profiles);
-    }
-
-    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnRecentConflictPayloadsAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        if (manifest == null)
-            return Array.Empty<JsonObject>();
-
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
-            return Array.Empty<JsonObject>();
-
-        try
-        {
-            if (JsonNode.Parse(preTurnJson) is not JsonObject root)
-                return Array.Empty<JsonObject>();
-
-            var payloads = new List<JsonObject>();
-            if (root["recentConflicts"] is JsonArray recentConflicts)
-            {
-                foreach (var entry in recentConflicts.OfType<JsonObject>())
-                    TryAddPreTurnConflictPayload(payloads, entry);
-            }
-
-            return payloads;
-        }
-        catch
-        {
-            // Malformed conflict state is reported by the normal state validator.
-            return Array.Empty<JsonObject>();
-        }
-    }
-
-    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnConflictPayloadsAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        if (manifest == null)
-            return Array.Empty<JsonObject>();
-
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
-            return Array.Empty<JsonObject>();
-
-        try
-        {
-            if (JsonNode.Parse(preTurnJson) is not JsonObject root)
-                return Array.Empty<JsonObject>();
-
-            var payloads = new List<JsonObject>();
-            if (root["activeConflict"] is JsonObject activeConflict &&
-                activeConflict["exchangeLog"] is JsonArray exchangeLog)
-            {
-                foreach (var entry in exchangeLog.OfType<JsonObject>())
-                    TryAddPreTurnConflictPayload(payloads, entry);
-            }
-
-            return payloads;
-        }
-        catch
-        {
-            return Array.Empty<JsonObject>();
-        }
-    }
-
     private static void TryAddPreTurnConflictPayload(List<JsonObject> payloads, JsonObject payload)
     {
         if (payload.DeepClone() is JsonObject clone)
             payloads.Add(clone);
-    }
-
-    private async Task<PreTurnActiveConflictControlContext> ResolvePreTurnActiveConflictControlContextAsync(
-        ValidationPendingTurnSnapshotManifest? manifest)
-    {
-        if (manifest == null)
-            return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
-
-        var preTurnJson = await ReadValidatedCurrentPreTurnTrackedFileAsync(AfterlifeSpiritualConflictState.StatePath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
-            return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
-
-        try
-        {
-            if (JsonNode.Parse(preTurnJson) is JsonObject root &&
-                root["activeConflict"] is JsonObject activeConflict)
-            {
-                var conflictId = TryReadConflictId(activeConflict);
-                var controlState = activeConflict.ContainsKey("controlState")
-                    ? activeConflict["controlState"]?.DeepClone()
-                    : null;
-                var projection = AfterlifeConflictActionPointProjectionService.Resolve(
-                    await ReadValidatedPendingTurnSnapshotFileAsync(
-                        manifest,
-                        ResourceMaterializationContract.DefinitionsPath),
-                    await ReadValidatedPendingTurnSnapshotFileAsync(
-                        manifest,
-                        ResourceMaterializationContract.StatePath),
-                    activeConflict);
-                return new PreTurnActiveConflictControlContext(
-                    conflictId,
-                    controlState,
-                    TryReadIntegralResourceValue(projection.Projection?.Player.Current),
-                    TryReadIntegralResourceValue(projection.Projection?.Player.Maximum),
-                    TryReadIntegralResourceValue(projection.Projection?.Opposition.Current),
-                    TryReadIntegralResourceValue(projection.Projection?.Opposition.Maximum));
-            }
-        }
-        catch
-        {
-            // Malformed conflict state is reported by the normal state validator.
-        }
-
-        return new PreTurnActiveConflictControlContext(null, null, null, null, null, null);
     }
 
     private static int? TryReadIntegralResourceValue(decimal? value)
@@ -790,111 +363,6 @@ public partial class ValidationService
             exact > int.MaxValue)
             return null;
         return decimal.ToInt32(exact);
-    }
-
-    private async Task<int?> ResolveLightIncarnateGrantTurnAsync()
-    {
-        var soulRoot = await ReadJsonObjectAsync("game_state/meta/soul_state.json");
-        if (!SourceOfLightCapstoneState.HasLightIncarnate(soulRoot))
-            return null;
-
-        var shiningRoot = await ReadJsonObjectAsync(ShiningAbodeState.StatePath);
-        return SourceOfLightCapstoneState.GetLightIncarnateGrantTurn(soulRoot, shiningRoot);
-    }
-
-    private async Task<string?> TryReadShiningAvailabilityForConflictGateAsync(AfterlifeSpiritualConflictGateContext gateContext)
-    {
-        if (gateContext.UsesValidatedSnapshot && gateContext.Manifest != null)
-        {
-            var root = await TryReadValidatedShiningRootAsync(gateContext.Manifest);
-            return root == null ? null : AfterlifeSpiritualConflictState.GetNodeString(root["availability"]);
-        }
-
-        return await TryReadCurrentShiningAvailabilityAsync();
-    }
-
-    private async Task<ShiningAbodeState.PreparedIncarnationPackageMode> TryReadShiningPreparedPackageModeForConflictGateAsync(
-        AfterlifeSpiritualConflictGateContext gateContext)
-    {
-        if (gateContext.UsesValidatedSnapshot && gateContext.Manifest != null)
-        {
-            var root = await TryReadValidatedShiningRootAsync(gateContext.Manifest);
-            return root == null
-                ? ShiningAbodeState.PreparedIncarnationPackageMode.Absent
-                : ShiningAbodeState.GetPreparedIncarnationPackageMode(root);
-        }
-
-        return await TryReadCurrentShiningPreparedPackageModeAsync();
-    }
-
-    private async Task<JsonObject?> TryReadValidatedShiningRootAsync(ValidationPendingTurnSnapshotManifest manifest)
-    {
-        var snapshotJson = await ReadValidatedPendingTurnSnapshotFileAsync(manifest, ShiningAbodeState.StatePath);
-        if (string.IsNullOrWhiteSpace(snapshotJson))
-            return null;
-
-        try
-        {
-            return JsonNode.Parse(snapshotJson) as JsonObject;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private async Task ValidateAfterlifeConflictPreTurnIntegrityAsync(JsonObject? currentRoot, List<ValidationIssue> issues)
-    {
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
-            return;
-
-        var preTurnJson = await ReadValidatedPendingTurnSnapshotFileAsync(lookup.Manifest, AfterlifeSpiritualConflictState.StatePath);
-        if (string.IsNullOrWhiteSpace(preTurnJson))
-            return;
-
-        JsonObject? preTurnRoot;
-        try
-        {
-            preTurnRoot = JsonNode.Parse(preTurnJson) as JsonObject;
-        }
-        catch
-        {
-            return;
-        }
-
-        ValidateDangerModePreTurnIntegrity(preTurnRoot, currentRoot, issues);
-
-        if (preTurnRoot?["activeConflict"] is not JsonObject)
-            return;
-
-        var preTurnConflictId = TryReadActiveConflictId(preTurnRoot);
-        if (string.IsNullOrWhiteSpace(preTurnConflictId))
-            return;
-
-        var currentConflictId = currentRoot == null ? null : TryReadActiveConflictId(currentRoot);
-        if (!string.IsNullOrWhiteSpace(currentConflictId) &&
-            string.Equals(currentConflictId, preTurnConflictId, StringComparison.OrdinalIgnoreCase))
-        {
-            return;
-        }
-
-        if (HasTerminalProofForConflict(currentRoot, preTurnConflictId))
-            return;
-
-        issues.Add(new ValidationIssue(
-            $"{AfterlifeSpiritualConflictState.StatePath}.activeConflict",
-            IssueSeverity.Error,
-            "Pre-turn active afterlife spiritual conflict был удалён или заменён без terminal proof.",
-            code: "afterlife_conflict_active_removed_without_terminal_proof",
-            section: "AfterlifeSpiritualConflict",
-            expected: $"activeConflict.conflictId = {preTurnConflictId} или matching recentConflicts[] resolve/repair_cancel proof",
-            actual: currentRoot == null
-                ? "current conflict state missing/unreadable"
-                : string.IsNullOrWhiteSpace(currentConflictId)
-                    ? "activeConflict missing/null and no matching terminal proof"
-                    : $"activeConflict.conflictId = {currentConflictId} without terminal proof for {preTurnConflictId}",
-            repairHint: "Восстанови pre-turn activeConflict или закрой его через afterlifeSpiritualConflictUpdate.mode=resolve либо mode=repair_cancel, чтобы recentConflicts[] содержал matching terminal proof."));
     }
 
     private static string? TryReadActiveConflictId(JsonObject root)
@@ -951,64 +419,6 @@ public partial class ValidationService
         return string.Equals(resolutionKind, "player_loss", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(resolutionKind, "player_surrender", StringComparison.OrdinalIgnoreCase) ||
                string.Equals(resolutionKind, "player_concession", StringComparison.OrdinalIgnoreCase);
-    }
-
-    private async Task<string?> TryReadCurrentShiningAvailabilityAsync()
-    {
-        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
-        if (string.IsNullOrWhiteSpace(shiningJson))
-            return null;
-
-        try
-        {
-            return JsonNode.Parse(shiningJson) is JsonObject root
-                ? AfterlifeSpiritualConflictState.GetNodeString(root["availability"])
-                : null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private async Task<string?> TryReadCurrentSoulRealmAsync()
-    {
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
-        if (string.IsNullOrWhiteSpace(soulJson))
-            return null;
-
-        try
-        {
-            using var doc = JsonDocument.Parse(soulJson);
-            return doc.RootElement.ValueKind == JsonValueKind.Object &&
-                   doc.RootElement.TryGetProperty("currentRealm", out var realm) &&
-                   realm.ValueKind == JsonValueKind.String
-                ? realm.GetString()
-                : null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private async Task<ShiningAbodeState.PreparedIncarnationPackageMode> TryReadCurrentShiningPreparedPackageModeAsync()
-    {
-        var shiningJson = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
-        if (string.IsNullOrWhiteSpace(shiningJson))
-            return ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
-
-        try
-        {
-            var root = JsonNode.Parse(shiningJson) as JsonObject;
-            return root == null
-                ? ShiningAbodeState.PreparedIncarnationPackageMode.Absent
-                : ShiningAbodeState.GetPreparedIncarnationPackageMode(root);
-        }
-        catch
-        {
-            return ShiningAbodeState.PreparedIncarnationPackageMode.Absent;
-        }
     }
 
     private void ValidateAfterlifeCombatProfile(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
