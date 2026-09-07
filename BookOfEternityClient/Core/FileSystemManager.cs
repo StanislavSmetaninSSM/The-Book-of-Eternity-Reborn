@@ -1269,6 +1269,21 @@ public class FileSystemManager
                     .GetResult();
             }
         }
+        return DecodeFileSnapshot(snapshot);
+    }
+
+    internal string? ReadFileSync(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        // The explicit lease already supplies publication quiescence, even when
+        // its ambient execution context did not flow to this synchronous caller.
+        return DecodeFileSnapshot(ReadFileSnapshotCore(relativePath));
+    }
+
+    private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
+    {
         if (snapshot == null)
             return null;
 

@@ -36,7 +36,7 @@ namespace BookOfEternityClient.Tests;
 /// WoundAcceptedTurnBinding, string woundId, string policyRef).
 /// </summary>
 [Trait("Category", "RegressionIntegration")]
-public sealed class MortalWoundRecoveryTests
+public sealed partial class MortalWoundRecoveryTests
 {
     private const string PlannerName = "BookOfEternityClient.Services.MortalWoundRecoveryPlanner";
 

@@ -33,9 +33,9 @@
       "realms": ["Mortal World"],
       "description": "Complete three-milestone scalar course: empty active start, one severity reduction, final stabilization, exact current dose and client-owned pointer.",
       "validationKind": "production-validator",
-      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute -> MortalWoundTreatmentContract.ParseRouteShape; PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentWorkingWoundSimulator.Simulate",
-      "coverageLimit": "Complete authored route and whole-wound applicability only; actual atomic publication, dose settlement, pointer history, restart and replay are proved by Integration CourseScalarPublication_ lifecycle tests, not by this shape guard.",
-      "requiredText": ["mortal_wound_treatment_scalar_course_v1", "field_clinic_recovery_course", "only the current milestone's dose", "other treatment does not cancel a course", "client-owned"]
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute -> MortalWoundTreatmentContract.ParseRouteShape; PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentWorkingWoundSimulator.Simulate; PromptDocumentationCoverageTests.MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmission",
+      "coverageLimit": "Complete authored route and whole-wound applicability only; actual atomic publication, dose settlement, pointer history, restart and replay are proved by Integration CourseScalarPublication_ lifecycle tests, not by this shape guard. The Mortal recovery admission continuation is text-guarded here and behaviorally proved by T069C_CurrentHistory integration tests; no recovery publisher or durable receipt is claimed.",
+      "requiredText": ["mortal_wound_treatment_scalar_course_v1", "field_clinic_recovery_course", "only the current milestone's dose", "other treatment does not cancel a course", "client-owned", "mortal_wound_recovery_history_guard_v1"]
     },
     {
       "contractId": "wound_mortal_alternative_repair_v1",

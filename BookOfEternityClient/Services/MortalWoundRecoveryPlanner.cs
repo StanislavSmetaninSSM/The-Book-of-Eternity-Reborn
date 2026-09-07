@@ -374,6 +374,10 @@ internal static class MortalWoundRecoveryPlanner
                 "detached planner capability or mismatched accepted-state authority");
         }
 
+        var historyFailure = ValidateCurrentHistory(fileSystem, writeLease, acceptedState);
+        if (historyFailure is not null)
+            return historyFailure;
+
         var wound = acceptedState.CurrentWound;
         var sourcePath = acceptedState.WoundSourcePath;
         if (!string.Equals(wound.WoundId, woundId, StringComparison.Ordinal) ||
@@ -423,6 +427,63 @@ internal static class MortalWoundRecoveryPlanner
             "mortal_wound_recovery_authority_invalid",
             "one registry-current accepted-state authority for the exact binding and wound",
             actual);
+
+    private static MortalWoundRecoveryPlanningResult? ValidateCurrentHistory(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+    {
+        WoundHistoryParseResult history;
+        try
+        {
+            history = WoundHistoryState.Parse(
+                fileSystem.ReadFileSync(writeLease, WoundHistoryState.HistoryPath),
+                WoundHistoryState.HistoryPath);
+        }
+        catch (Exception exception) when (exception is IOException or
+                                             UnauthorizedAccessException or
+                                             InvalidDataException)
+        {
+            return HistoryFailure(
+                "mortal_wound_recovery_history_read_failed",
+                "one readable safe canonical wound-history file under the active lease",
+                exception.GetType().Name);
+        }
+
+        if (!history.IsValid)
+            return InvalidHistory(history.Issues);
+        if (!acceptedState.MatchesCompleteHistory(history))
+        {
+            return HistoryFailure(
+                "mortal_wound_recovery_history_mismatch",
+                "complete current history matching the accepted snapshot's semantic history seal",
+                "current history differs from the accepted snapshot");
+        }
+        return null;
+    }
+
+    private static MortalWoundRecoveryPlanningResult HistoryFailure(
+        string code,
+        string expected,
+        string actual) => InvalidHistory(new[]
+    {
+        new ValidationIssue(
+            WoundHistoryState.HistoryPath,
+            IssueSeverity.Error,
+            "The current Mortal wound history cannot authorize recovery.",
+            code: code,
+            actor: "Client",
+            section: "wound_materialization",
+            expected: expected,
+            actual: actual,
+            repairHint:
+                "Restore client-accepted history and re-export the signed accepted state; never hand-write history, a tick, an anchor or a receipt.")
+    });
+
+    private static MortalWoundRecoveryPlanningResult InvalidHistory(
+        IReadOnlyList<ValidationIssue> issues) => new(
+        MortalWoundRecoveryPlanningDisposition.InvalidHistory,
+        new ReadOnlyCollection<ValidationIssue>(issues.ToArray()), null, null);
 
     private static MortalWoundRecoveryPlanningResult ComposeResolution(
         FileSystemManager fileSystem,

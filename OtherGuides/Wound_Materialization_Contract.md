@@ -96,6 +96,19 @@ Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerp
 Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
 The `heal`, explicit death and legacy producers remain pending implementation; their approved authored
 contracts remain in the complete route model. Scheduled natural recovery remains separate and unfinished.
+Mortal recovery admission example (`mortal_wound_recovery_history_guard_v1`): the
+client has accepted a wound and sealed the current pending snapshot. If its current
+history is missing or malformed, the planner returns `InvalidHistory` with the
+original `wound_history_*` parser issue before recovery arithmetic. A valid but
+changed history returns `mortal_wound_recovery_history_mismatch`; an unreadable or
+unsafe history file returns `mortal_wound_recovery_history_read_failed`. The same
+check applies after reopening the session. This is invalid authority, not a
+missed dose, an elapsed recovery tick or permission to improvise healing. Equivalent
+JSON formatting remains valid; arithmetic uses the accepted snapshot's sealed world minute,
+not a newly edited live clock. The client must restore accepted history or prepare
+and export a fresh accepted snapshot after a legitimate publication. Never hand-write history, a tick, an anchor or a receipt.
+This admission check does not publish recovery, healing or a receipt; scheduled
+natural recovery publication and durable replay remain unfinished.
 Selected direct and policy additions use the graph publication contract below.
 
 Ordered `remove_complication` is published through the same atomic treatment/effect batch.

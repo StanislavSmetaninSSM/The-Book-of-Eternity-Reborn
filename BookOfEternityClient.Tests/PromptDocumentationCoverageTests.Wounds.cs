@@ -706,6 +706,25 @@ public sealed partial class PromptDocumentationCoverageTests
     }
 
     [Fact]
+    public void MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmission()
+    {
+        var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
+        var example = ReadRepoFile("Examples", "E_CLI_Wound_Materialization.txt");
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        foreach (var document in new[] { guide, example })
+        {
+            foreach (var required in new[]
+            {
+                "mortal_wound_recovery_history_guard_v1", "InvalidHistory", "mortal_wound_recovery_history_mismatch",
+                "mortal_wound_recovery_history_read_failed", "before recovery arithmetic", "accepted snapshot's sealed world minute",
+                "does not publish recovery, healing or a receipt", "Never hand-write history, a tick, an anchor or a receipt"
+            }) Assert.Contains(required, document, StringComparison.Ordinal);
+        }
+        Assert.Contains("mortal_wound_recovery_history_guard_v1", manifest, StringComparison.Ordinal);
+        Assert.Contains(nameof(MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmission), manifest, StringComparison.Ordinal);
+    }
+
+    [Fact]
     public void SpiritualWoundProfileDocumentation_MatchesExactRuntimeRegistry()
     {
         var expected = SpiritualWoundEffectProfileCatalog.RegisteredProfiles
