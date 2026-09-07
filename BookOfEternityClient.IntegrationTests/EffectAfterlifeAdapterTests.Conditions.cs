@@ -853,6 +853,7 @@ public sealed partial class EffectAfterlifeAdapterTests
             ["schemaVersion"] = 1,
             ["activeConflict"] = new JsonObject
             {
+                ["dangerMode"] = "hostile",
                 ["conflictId"] = conflictId,
                 ["realm"] = "Shining Abode",
                 ["sideModel"] = "direct_duel",

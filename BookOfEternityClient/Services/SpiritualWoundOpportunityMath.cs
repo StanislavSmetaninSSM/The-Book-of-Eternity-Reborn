@@ -28,7 +28,7 @@ internal static class SpiritualWoundOpportunityMath
     {
         var previous = StrainRank(input.PreviousStrain);
         var next = StrainRank(input.NewStrain);
-        var modeCap = ModeCap(input.DangerMode);
+        var modeCap = SpiritualConflictDangerPolicy.SeverityCap(input.DangerMode);
         if (previous < 0 || next < 0 || modeCap < 0
             || input.AppliedArtTier is < 0 or > 5
             || input.TargetResilienceTier is < 0 or > 5
@@ -74,11 +74,4 @@ internal static class SpiritualWoundOpportunityMath
         _ => -1
     };
 
-    private static int ModeCap(string? mode) => mode switch
-    {
-        "training" => 0,
-        "controlled" => 2,
-        "hostile" or "annihilation" => 4,
-        _ => -1
-    };
 }

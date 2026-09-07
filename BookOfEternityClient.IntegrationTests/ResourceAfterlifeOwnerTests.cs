@@ -1228,6 +1228,7 @@ public sealed class ResourceAfterlifeOwnerTests
     private static JsonObject ActiveConflict(string conflictId, string realm) =>
         new()
         {
+            ["dangerMode"] = "hostile",
             ["conflictId"] = conflictId,
             ["realm"] = realm,
             ["status"] = "active",

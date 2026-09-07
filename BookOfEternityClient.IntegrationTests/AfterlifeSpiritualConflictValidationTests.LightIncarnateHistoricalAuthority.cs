@@ -150,6 +150,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
               "schemaVersion": 1,
               "activeConflict": null,
               "recentConflicts": [{
+                "dangerMode": "hostile",
                 "conflictId": "afterlife_conflict_light_history_006",
                 "resolutionState": "resolved",
                 "operationType": "guard",

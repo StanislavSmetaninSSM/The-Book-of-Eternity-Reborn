@@ -1238,10 +1238,19 @@
         "\"afterlifeSpiritualConflictUpdate\"",
         "\"mode\": \"start\"",
         "\"resourceKey\": \"spiritual_action_points\"",
-        "\"resourceMaterialization\""
+        "\"resourceMaterialization\"",
+        "\"dangerMode\": \"hostile\""
       ],
       "expectedModifiedFiles": [
         "game_state/meta/afterlife_spiritual_conflict_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+          "requiredText": [
+            "\"dangerMode\": \"hostile\""
+          ]
+        }
       ]
     },
     {

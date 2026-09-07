@@ -167,6 +167,7 @@ internal static class WoundMaterializationTestFixtures
         var conflict = AfterlifeSpiritualConflictState.CreateDefaultRoot();
         conflict["activeConflict"] = new JsonObject
         {
+                ["dangerMode"] = dangerMode,
                 ["conflictId"] = conflictId,
                 ["realm"] = "Chaos Sea",
                 ["sideModel"] = "direct_duel",

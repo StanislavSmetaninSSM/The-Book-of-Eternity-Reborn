@@ -700,6 +700,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_balance_001",
               "realm": {{JsonSerializer.Serialize(scenario.Realm)}},
               "sideModel": {{JsonSerializer.Serialize(scenario.SideModel)}},
@@ -886,6 +887,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_balance_001",
             "realm": "Chaos Sea",
             "sideModel": {{JsonSerializer.Serialize(scenario.Name == "weak_player_aided_by_strong_champion" ? "champion_duel" : "direct_duel")}},
@@ -950,6 +952,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_balance_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -1029,6 +1032,7 @@ public sealed class AfterlifeSpiritualConflictBalanceTests : IDisposable
     {
       "schemaVersion": 1,
       "activeConflict": {
+        "dangerMode": "hostile",
         "conflictId": "afterlife_conflict_balance_001",
         "realm": {{JsonSerializer.Serialize(scenario.Realm)}},
         "sideModel": {{JsonSerializer.Serialize(scenario.SideModel)}},

@@ -23,7 +23,7 @@ public partial class ValidationService
                     repairHint: "Восстанови canonical conflict root: { schemaVersion: 1, activeConflict: null, recentConflicts: [] }."));
             }
 
-            await ValidateActiveConflictRemovalHasTerminalProofAsync(null, issues);
+            await ValidateAfterlifeConflictPreTurnIntegrityAsync(null, issues);
             return;
         }
 
@@ -43,7 +43,7 @@ public partial class ValidationService
                 section: "AfterlifeSpiritualConflict",
                 expected: "JSON object",
                 actual: "unreadable/non-object"));
-            await ValidateActiveConflictRemovalHasTerminalProofAsync(null, issues);
+            await ValidateAfterlifeConflictPreTurnIntegrityAsync(null, issues);
             return;
         }
 
@@ -52,7 +52,7 @@ public partial class ValidationService
         var actionCostAuthority = await ResolveAfterlifeActionCostAuthorityContextAsync(gateContext.Manifest);
         var rewardContext = await ResolveAfterlifeConflictRewardContextAsync(gateContext);
         var soulDissipationContext = await ResolveAfterlifeSoulDissipationContextAsync(gateContext.Manifest);
-        await ValidateActiveConflictRemovalHasTerminalProofAsync(root, issues);
+        await ValidateAfterlifeConflictPreTurnIntegrityAsync(root, issues);
         ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, actionCostAuthority, rewardContext, soulDissipationContext);
         ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
 
@@ -843,7 +843,7 @@ public partial class ValidationService
         }
     }
 
-    private async Task ValidateActiveConflictRemovalHasTerminalProofAsync(JsonObject? currentRoot, List<ValidationIssue> issues)
+    private async Task ValidateAfterlifeConflictPreTurnIntegrityAsync(JsonObject? currentRoot, List<ValidationIssue> issues)
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable || lookup.Manifest == null)
@@ -862,6 +862,8 @@ public partial class ValidationService
         {
             return;
         }
+
+        ValidateDangerModePreTurnIntegrity(preTurnRoot, currentRoot, issues);
 
         if (preTurnRoot?["activeConflict"] is not JsonObject)
             return;
@@ -1135,6 +1137,9 @@ public partial class ValidationService
                 actual: "missing"));
         }
 
+        if (string.Equals(mode, AfterlifeSpiritualConflictState.ModeStart, StringComparison.OrdinalIgnoreCase))
+            ValidateStartDangerDeclaration(update, context, issues);
+
         if (string.Equals(mode, AfterlifeSpiritualConflictState.ModeExchange, StringComparison.OrdinalIgnoreCase) &&
             !TryGetObject(update, "exchange", out _))
         {
@@ -1312,6 +1317,7 @@ public partial class ValidationService
         AfterlifeConflictDiceContext diceContext,
         AfterlifeActionCostAuthorityContext actionCostAuthority)
     {
+        ValidateConflictDangerDeclaration(conflict, context, issues);
         RequireNodeString(conflict, context, issues, "conflictId");
         var realm = RequireNodeString(conflict, context, issues, "realm");
         if (!string.IsNullOrWhiteSpace(realm) && !AfterlifeSpiritualConflictState.IsAfterlifeRealm(realm))
@@ -1607,6 +1613,7 @@ public partial class ValidationService
         AfterlifeSoulDissipationContext soulDissipationContext,
         bool isPreTurnProof)
     {
+        ValidateConflictDangerDeclaration(proof, context, issues);
         var combatConditionIds = ValidateCombatConditions(proof["combatConditions"], $"{context}.combatConditions", issues);
         var diceRequired = ResolveDiceAuditRequired(proof);
         if (diceRequired && proof["diceAudit"] is not JsonObject)

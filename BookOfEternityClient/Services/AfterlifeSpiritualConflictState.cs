@@ -663,6 +663,11 @@ public static class AfterlifeSpiritualConflictState
             return MarkInvalidUpdate(root, update, "start_missing_realm");
         if (!IsAfterlifeRealm(realm))
             return MarkInvalidUpdate(root, update, "start_invalid_realm");
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(conflict);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "start_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode))
+            return MarkInvalidUpdate(root, update, "start_danger_mode_mismatch");
         conflict["realm"] = realm;
         if (conflict["exchangeLog"] is not JsonArray)
             conflict["exchangeLog"] = new JsonArray();
@@ -709,6 +714,19 @@ public static class AfterlifeSpiritualConflictState
             return MarkInvalidUpdate(root, update, "exchange_conflict_id_mismatch");
         }
 
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(active);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "active_conflict_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange["before"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange["after"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["activeConflictAfter"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["conflictStateAfter"] as JsonObject, dangerMode))
+        {
+            return MarkInvalidUpdate(root, update, "exchange_danger_mode_change_without_authority");
+        }
+
         var log = active["exchangeLog"]?.DeepClone() as JsonArray ?? new JsonArray();
         var isNoEffectExchange = string.Equals(GetNodeString(exchange["outcome"]), "no_effect", StringComparison.OrdinalIgnoreCase);
 
@@ -729,6 +747,8 @@ public static class AfterlifeSpiritualConflictState
 
             if (string.IsNullOrWhiteSpace(replacementConflictId))
                 replacement["conflictId"] = active["conflictId"]?.DeepClone();
+
+            replacement["dangerMode"] = dangerMode;
 
             ApplyExchangeControlStateToReplacement(replacement, exchange, active);
             log.Add(exchange.DeepClone());
@@ -785,6 +805,15 @@ public static class AfterlifeSpiritualConflictState
             return MarkInvalidUpdate(root, update, "resolve_without_active_conflict");
         }
 
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(active);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "active_conflict_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["resolution"] as JsonObject, dangerMode))
+        {
+            return MarkInvalidUpdate(root, update, "resolve_danger_mode_change_without_authority");
+        }
+
         var resolution = CloneObject(update["resolution"] as JsonObject);
         if (!repairCancel)
         {
@@ -816,6 +845,7 @@ public static class AfterlifeSpiritualConflictState
 
         if (string.IsNullOrWhiteSpace(resolutionConflictId))
             resolution["conflictId"] = active["conflictId"]?.DeepClone();
+        resolution["dangerMode"] = dangerMode;
         resolution["realm"] ??= active["realm"]?.DeepClone();
         resolution["sideModel"] ??= active["sideModel"]?.DeepClone();
 

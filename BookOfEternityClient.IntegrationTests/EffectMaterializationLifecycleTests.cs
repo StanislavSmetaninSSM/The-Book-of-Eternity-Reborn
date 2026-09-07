@@ -594,6 +594,7 @@ public sealed partial class GameEngineTurnLifecycleTests
             ["schemaVersion"] = 1,
             ["activeConflict"] = new JsonObject
             {
+                ["dangerMode"] = "hostile",
                 ["conflictId"] = conflictId,
                 ["realm"] = "Shining Abode",
                 ["sideModel"] = "direct_duel",

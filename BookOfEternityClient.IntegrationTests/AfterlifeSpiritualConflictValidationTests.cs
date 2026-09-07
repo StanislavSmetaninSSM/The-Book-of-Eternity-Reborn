@@ -7586,6 +7586,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         [
           {
             "mode": "resolve",
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_old_control_001",
             "resolutionState": "resolved",
             "resolvedAtTurn": 7,
@@ -8494,6 +8495,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_historical_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 6,
@@ -8523,6 +8525,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_historical_no_turn_001",
               "resolutionState": "resolved",
               "operationType": "guard",
@@ -8574,6 +8577,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_pre_turn_no_turn_001",
               "resolutionState": "resolved",
               "operationType": "guard",
@@ -8625,6 +8629,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -8668,6 +8673,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -8742,6 +8748,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_changed_no_turn_001",
               "resolutionState": "resolved",
               "operationType": "guard",
@@ -8758,6 +8765,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_changed_no_turn_001",
               "resolutionState": "resolved",
               "operationType": "pressure",
@@ -9034,6 +9042,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_voluntary_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -9341,6 +9350,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "afterlifeSpiritualConflictUpdate": {
             "mode": "start",
             "conflictState": {
+              "dangerMode": "training",
               "conflictId": "afterlife_conflict_support_role_projection",
               "realm": "Chaos Sea",
               "sideModel": "direct_duel",
@@ -9580,6 +9590,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "mode": "start",
           "conflictSeed": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_focus_start_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -9657,6 +9668,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -9686,6 +9698,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_existing_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -9706,6 +9719,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "mode": "start",
           "conflictState": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_new_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -9737,6 +9751,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "mode": "start",
           "conflictState": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_missing_realm_001",
             "sideModel": "direct_duel",
             "exchangeLog": []
@@ -9765,6 +9780,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "mode": "start",
           "realm": "Shining Abode",
           "conflictState": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_shining_001",
             "sideModel": "direct_duel",
             "exchangeLog": []
@@ -9793,6 +9809,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "mode": "start",
           "realm": "MortalWorldProfile",
           "conflictState": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_wrong_realm_001",
             "sideModel": "direct_duel",
             "exchangeLog": []
@@ -10694,6 +10711,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -10754,6 +10772,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -11212,6 +11231,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -11268,6 +11288,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -11316,6 +11337,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -11399,6 +11421,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "activeConflict": null,
           "recentConflicts": [
             {
+              "dangerMode": "hostile",
               "conflictId": "mortal_world_illegal_repair_cancel",
               "resolutionState": "repair_cancelled"
             }
@@ -11736,6 +11759,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -11884,6 +11908,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_test_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -11912,6 +11937,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "repair_cancel",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_test_001",
               "resolutionState": "repair_cancelled"
             }
@@ -11937,6 +11963,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_test_001"
             }
           ]
@@ -11961,6 +11988,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "repair_cancel",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_test_001"
             }
           ]
@@ -11985,6 +12013,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_other_001",
               "resolutionState": "resolved"
             }
@@ -12096,6 +12125,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -12129,6 +12159,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12188,6 +12219,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12222,6 +12254,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12255,6 +12288,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12283,6 +12317,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12310,6 +12345,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12342,6 +12378,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12377,6 +12414,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12415,6 +12453,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_liora_pressure_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -12438,6 +12477,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_pressure_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12493,6 +12533,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -12516,6 +12557,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_fabricated_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12568,6 +12610,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -12591,6 +12634,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 7,
@@ -12646,6 +12690,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_stale_001",
               "resolutionState": "resolved",
               "resolvedAtTurn": 6,
@@ -12748,6 +12793,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -13773,6 +13819,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "{{mode}}",
+              "dangerMode": "hostile",
               "conflictId": "afterlife_conflict_test_001",
               "realm": {{JsonSerializer.Serialize(realm)}},
               "sideModel": "direct_duel",
@@ -14539,6 +14586,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "annihilation",
               "conflictId": "afterlife_conflict_test_001",
               "realm": "Chaos Sea",
               "sideModel": "direct_duel",
@@ -14567,6 +14615,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "recentConflicts": [
             {
               "mode": "resolve",
+              "dangerMode": "annihilation",
               "conflictId": "afterlife_conflict_test_001",
               "realm": "Chaos Sea",
               "sideModel": "direct_duel",
@@ -14604,7 +14653,9 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
           "entries": []
         }
         """;
-        var preTurnConflict = BuildActiveConflictRootJson();
+        var preTurnConflictRoot = JsonNode.Parse(BuildActiveConflictRootJson())!.AsObject();
+        preTurnConflictRoot["activeConflict"]!["dangerMode"] = "annihilation";
+        var preTurnConflict = preTurnConflictRoot.ToJsonString();
 
         await _fs.WriteFileAtomicAsync("game_state/meta/guardians.json", guardians);
         await _fs.WriteFileAtomicAsync(GuardianPowerEventState.JournalPath, journal);
@@ -14720,6 +14771,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": {{JsonSerializer.Serialize(realm)}},
             "sideModel": "direct_duel",
@@ -14790,6 +14842,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -14833,6 +14886,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",
@@ -15094,6 +15148,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
         {
           "schemaVersion": 1,
           "activeConflict": {
+            "dangerMode": "hostile",
             "conflictId": "afterlife_conflict_test_001",
             "realm": "Chaos Sea",
             "sideModel": "direct_duel",

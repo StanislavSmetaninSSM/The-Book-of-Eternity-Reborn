@@ -3373,6 +3373,7 @@ public sealed class AfterlifeResourceCutoverTests
     private static JsonObject ActiveConflict(string conflictId) =>
         new()
         {
+            ["dangerMode"] = "hostile",
             ["conflictId"] = conflictId,
             ["realm"] = "Chaos Sea",
             ["status"] = "active",
