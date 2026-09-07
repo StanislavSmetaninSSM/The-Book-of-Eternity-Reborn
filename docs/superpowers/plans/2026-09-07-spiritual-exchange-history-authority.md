@@ -46,7 +46,7 @@
 - Existing real integration fixture methods `WriteSoulStateWithAfterlifeCombatProfileAsync`, `WriteConflictStateWithRawExchangeAsync`, `WritePreTurnActiveConflictSnapshotWithAuthorityAsync`, `WriteValidatedConflictSnapshotFromCurrentAsync`, `BuildPriorTurnDiceAuditJson` and `ValidateAfterlifeSpiritualConflictAsync` remain unchanged. Snapshot helper seals turn 7 and current d20 values 5/18 at indices 0/1; prior dice helper has 9/7.
 - New private tracker overload `TryConsume(JsonObject payload, bool allowHistoricalSummaryDrift)` replaces the sole one-argument caller. No new canonical state, command, receipt or authority factory.
 
-- [ ] **Step 1: Add complete behavior and documentation RED tests.**
+- [x] **Step 1: Add complete behavior and documentation RED tests.**
 
 Change the two existing class declarations only:
 
@@ -337,7 +337,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 }
 ```
 
-- [ ] **Step 2: Observe semantic RED, sequentially, before production or GM edits.**
+- [x] **Step 2: Observe semantic RED, sequentially, before production or GM edits.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 5 -Filter "FullyQualifiedName~T085_HistoricalExchange_"
@@ -350,7 +350,7 @@ PASS. Second run should fail on missing documentation. Wait for each returned
 session to actually finish; these are not parallel commands. If there is a compile
 or fixture error instead, report it and fix only the test setup before claiming RED.
 
-- [ ] **Step 3: Implement the narrow classifier without changing validators.**
+- [x] **Step 3: Implement the narrow classifier without changing validators.**
 
 Replace `PreTurnConflictPayloadTracker` with:
 
@@ -455,7 +455,7 @@ its arithmetic is unchanged:
 No change to `WithoutCurrentTurnDiceAuthority`, Light Incarnate, action-cost or
 matchup validation, resource outcome/publisher, snapshot readers or public models.
 
-- [ ] **Step 4: Synchronize the actual GM boundary and worked contrast.**
+- [x] **Step 4: Synchronize the actual GM boundary and worked contrast.**
 
 In `TaskGuides/CLI_Step_Main.txt`, replace the single historical-dice bullet with
 this exact text at its existing indentation:
@@ -512,7 +512,7 @@ the existing spiritual conflict entries; keep other manifest objects unchanged:
 }
 ```
 
-- [ ] **Step 5: Verify the changed behavior and its exact neighboring boundaries.**
+- [x] **Step 5: Verify the changed behavior and its exact neighboring boundaries.**
 
 Run the new Integration filter from Step 2 first, then these commands sequentially:
 
@@ -545,7 +545,7 @@ Record discovered versus executed counts separately, all warnings and timeouts.
 When the tool yields a running session ID, poll that SAME session until completion.
 There must never be another test/build/source-edit owner in parallel.
 
-- [ ] **Step 6: Commit exact paths and obtain independent acceptance.**
+- [x] **Step 6: Commit exact paths and obtain independent acceptance.**
 
 Self-review the nine-file change, run `git diff --check`, recursively check the
 final manifest for duplicate keys and preserve the existing old-marker test byte
@@ -575,3 +575,59 @@ review. No top-level #1536 task closes from this bounded prerequisite alone.
   natural recovery or capstone design is inferred. Those full-spec sections remain
   assigned to their existing open tasks. This plan owns T085's classifier prerequisite
   and bounded T089-T092 documentation/verification only.
+
+## Bounded acceptance — 2026-09-07
+
+Accepted implementation range is `a8e551c7869dc51b6765c0d44f96f21ee9fd9d9c`
+through `27f6804c9ac6cb43603766f66f141c1d5350c706` (runtime `921feff0`,
+four-file review correction `27f6804c`). Parent inspected the actual runtime,
+test and GM diffs, all reported summaries/TRXs/build logs/cleanup and the final
+source hashes. Independent original-base re-review is Spec Compliant / Quality
+Approved, zero remaining Critical/Important/Minor findings. Its original GM-rule
+duplication and test-readability findings are preserved in the review record and
+resolved by the correction. Only this prerequisite is complete; full
+T084/T085/T089-T092/T177 and #1536 remain open, with top-level progress 77/177.
+
+Actual artifact directories below are under `TestResults/test-lanes/`:
+
+| Run | Actual result | Bounded wall time |
+| --- | --- | --- |
+| `20260907-121257-736-41636-b60ae9b882944154ac584356804d5807-focused` | Integration RED: 4 PASS, 12 intended current-audit failures | 2:10.586 / 5m |
+| `20260907-121512-865-2204-f259eba57cfd428683ce4f991dba820f-focused` | Documentation RED: 1 intended missing-invariant failure | 0:44.859 / 5m |
+| `20260907-121824-002-43400-6194d89e82f04dc6b7512d53925e9c4f-focused` | New Integration 16/16 PASS | 1:56.772 / 5m |
+| `20260907-122024-863-48048-f81312b7bd3b47edb77ebe2cc1000975-focused` | New documentation 1/1 PASS | 0:42.800 / 5m |
+| `20260907-122115-914-35872-39b1964ac8c74d028f03b0b172a149ea-focused` | Existing neighboring boundaries 37/37 PASS | 1:03.268 / 5m |
+| `20260907-122223-134-41332-77c177e4b554435981231e7e845cde6e-fast` | One Fast 7,630/7,630 PASS, exit 0 | 4:35.585 / 5m |
+| `20260907-122708-141-36448-42afc8ba06874314b800acf42f2e5c4d-focused` | Example-preservation RED: 1 intended missing-sentence failure | 0:31.708 / 5m |
+| `20260907-122755-839-46920-ba175f7254ac401a8d25781a5d18a0fc-focused` | Restored example, documentation owners 122/122 PASS | 0:19.523 / 5m |
+| `20260907-122820-559-37212-74acb40a6fe4481094926a1818f01fbf-fullvalidation` | One conditional FullValidation 1,857/1,857 PASS | 10:09.537 / 15m |
+| `20260907-124846-440-48692-5da5cf745205432aaec8ae9fb337794b-focused` | Initial corrective selection 1/1 PASS; not RED evidence | 1:11.745 / 5m |
+| `20260907-125219-661-46948-feef01d5767049649f1816c22aa4dfd0-focused` | Documentation owners 122/122 PASS before final reflow | 0:35.082 / 5m |
+| `20260907-125258-413-43076-9e0e765540d7467f8d425a32761953f6-focused` | Final behavior partial 16/16 PASS | 1:07.148 / 5m |
+| `20260907-125443-995-28668-caff79ea1c0b45c5a1b2b84e259a7517-focused` | Corrective semantic RED: 1 obsolete-guide assertion failure | 0:14.776 / 5m |
+| `20260907-125532-514-46588-ccd3ce4dcc644bca9a72d9b184dc75ec-focused` | Final documentation owners 122/122 PASS | 0:35.570 / 5m |
+
+The initial corrective GREEN ran before the new negative source assertions,
+according to the correction report's command/edit chronology. It is not credited
+as regression proof. The actual corrective RED kept the new assertions and
+temporarily restored only the two obsolete guide/matrix statements; the final
+GREEN restored the consolidated wording. No lane overlapped another; all builds
+reported zero warnings/errors, cleanup succeeded, and no test was skipped,
+aborted, errored or executed twice within a run. No timeout occurred.
+
+Parent reconciled Fast discovery 7,576 with 7,630 actual rows through seven
+existing runtime theories (+54), with all 3,930 method identities accounted for.
+FullValidation discovery 1,747 expands to 1,857 through five existing runtime
+theories (+110), with all 1,074 method identities accounted for. Neither run has
+missing/unexpected methods, cross-TRX test identities or duplicate execution IDs.
+Extra zero-test directories belong to runner self-tests, not duplicate Fast runs.
+
+The final production validator, worked example and manifest are byte-identical
+to the artifacts used by the passing Fast/FullValidation controls. The correction
+changes only new test layout/negative guards and consolidates the prescribed GM
+wording; the final covering checks prove those edits without another broad run.
+Mortal contracts do not change. The afterlife turn guide, matrix, worked example,
+manifest and source guard are synchronized; the existing daemon entrypoint already
+loads the changed guide. Resource exact-prefix publication and the separate
+Source of Light authority path remain unchanged. No PreMerge, push, PR, merge,
+migration or issue closure was performed.

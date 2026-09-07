@@ -2143,6 +2143,15 @@ hand-written history/after-images, or a raw mutation fallback.
   and Focused/oneFast/conditionalFullValidation evidence. Source of Light's separate
   marker path, cross-exchange die ownership, full strain/actor/resilience authority,
   wound producer/seals and all broader T085 requirements remain open.
+  Accepted classifier prerequisite (2026-09-07): commits `921feff0` plus
+  `27f6804c`, original BASE `a8e551c7`, parent actual source/artifact checks and
+  independent Spec Compliant / Quality Approved with zero remaining findings.
+  Behavior16/16, neighboring37/37, final documentation122/122 PASS; one
+  Fast7,630/7,630 in4:35.585/5m and conditional FullValidation1,857/1,857
+  in10:09.537/15m, clean build/cleanup and exact discovery/theory reconciliation.
+  The bounded plan records every RED/GREEN and correction artifact, including
+  an initial pre-edit GREEN that is not counted as RED. T085/T089-T092/T177
+  and #1536 remain open; the top-level77/177 count does not change.
 - [ ] T086 [US3] Add danger, wound maximum, accepted wound/decline, and defeat consequence to player-safe conflict preview/audit in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
 - [ ] T087 [US3] Compose persistent profile wound transitions and typed owner-to-current-side `SpiritualWoundConflictContribution` evidence without duplicating wounds/effects or mutating `combatConditions[]`; fail closed on absent/duplicate/wrong-realm/ambiguous participant membership and clear only derived evidence on conflict close in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/SpiritualWoundConflictContributionProjector.cs`, `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs`
 - [ ] T088 [US3] Implement mandatory bounded non-training defeat outcomes while preserving the existing separate optional soul-dissipation proof in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`

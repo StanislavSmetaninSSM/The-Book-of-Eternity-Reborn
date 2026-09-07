@@ -1610,6 +1610,20 @@ strain/actor/resilience proof, danger/wound seals, actual wound opportunity
 publication and healing remain separate unfinished T084/T085 contours. This
 prerequisite neither decides the art schema nor closes the full spiritual story.
 
+The classifier prerequisite is accepted through `27f6804c` (original BASE
+`a8e551c7`, runtime `921feff0`), after parent source/raw-artifact inspection and
+independent Spec Compliant / Quality Approved re-review with zero open findings.
+Actual new behavior16/16, neighboring37/37 and final documentation122/122 PASS;
+one Fast7,630/7,630 in4:35.585 within five minutes and one conditional
+FullValidation1,857/1,857 in10:09.537 within fifteen minutes. Discovery/runtime
+theory expansions reconcile exactly; builds and cleanup are clean. Targeted
+semantic RED/GREEN also proves preservation of surrounding example guidance and
+removal of the obsolete marker-only prose. The initial pre-edit corrective
+1/1 GREEN is explicitly not regression proof. Detailed chronology and artifacts
+are in the linked bounded plan. This does not close any full spiritual task or
+change the top-level77/177 count; Source of Light's independent turn authority
+and actual wound/healing producers remain unfinished.
+
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
    re-trauma/defeat/dissipation tests.
 2. Extend conflict state, validation, preview, and GM context with client-authored wound
