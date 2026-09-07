@@ -419,6 +419,14 @@ are consequence primitives, not a catalog of complete spiritual wounds.
   this MUST NOT authorize rewriting the accepted resource-history prefix or
   treating historical prose as a new harmful strain event. The resource publisher's
   exact-prefix fence remains independent and unchanged.
+  The related Light Incarnate pre-grant/no-marker exemption during a validated
+  turn MUST use accepted pre-turn payload evidence as well: active exchanges
+  reuse their same-conflict one-use classifier, while recent resolutions consume
+  exact occurrences from their own pre-turn list. These surfaces MUST NOT share
+  an exemption pool, and absent dice MUST NOT erase a validated baseline.
+  Existing offline compatibility without a validated baseline and the exact
+  capstone closure/bonus rules remain unchanged. This prerequisite does not
+  establish full grant, wound, or publication authority.
 - **FR-032**: The maximum spiritual severity MUST be calculated from harmful margin, applied-art tier, target Spiritual Resilience tier, destination strain rank, extra strain jumps, and the conflict-mode cap according to the approved design formula.
 - **FR-033**: Natural 1 and natural 20 in the conflict exchange MUST NOT independently raise spiritual wound severity.
 - **FR-034**: Each side MUST receive at most one newly created spiritual wound per conflict.

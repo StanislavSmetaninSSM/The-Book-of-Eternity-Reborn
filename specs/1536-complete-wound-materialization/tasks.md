@@ -2152,6 +2152,15 @@ hand-written history/after-images, or a raw mutation fallback.
   The bounded plan records every RED/GREEN and correction artifact, including
   an initial pre-edit GREEN that is not counted as RED. T085/T089-T092/T177
   and #1536 remain open; the top-level77/177 count does not change.
+  Next adjacent prerequisite:
+  `docs/superpowers/plans/2026-09-07-light-incarnate-history-authority.md`
+  removes Light Incarnate's independent marker-only/pooled-no-marker exemption.
+  Active exchanges pass their existing accepted membership; recent resolutions
+  consume their own exact pre-turn occurrences once. Validated no-dice baselines
+  still require current authority. Twenty-two Integration cases plus GM
+  API/daemon/turn/matrix/example/manifest/source-guard synchronization leave bonus,
+  closure, offline compatibility and the resource publisher unchanged. This
+  prerequisite is not yet accepted and does not close T085 or its linked tasks.
 - [ ] T086 [US3] Add danger, wound maximum, accepted wound/decline, and defeat consequence to player-safe conflict preview/audit in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
 - [ ] T087 [US3] Compose persistent profile wound transitions and typed owner-to-current-side `SpiritualWoundConflictContribution` evidence without duplicating wounds/effects or mutating `combatConditions[]`; fail closed on absent/duplicate/wrong-realm/ambiguous participant membership and clear only derived evidence on conflict close in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/SpiritualWoundConflictContributionProjector.cs`, `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs`
 - [ ] T088 [US3] Implement mandatory bounded non-training defeat outcomes while preserving the existing separate optional soul-dissipation proof in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`

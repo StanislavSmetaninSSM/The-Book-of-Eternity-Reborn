@@ -1624,6 +1624,18 @@ are in the linked bounded plan. This does not close any full spiritual task or
 change the top-level77/177 count; Source of Light's independent turn authority
 and actual wound/healing producers remain unfinished.
 
+The adjacent T085 prerequisite is specified in
+`docs/superpowers/plans/2026-09-07-light-incarnate-history-authority.md`.
+Light Incarnate validation receives the existing active exchange membership or
+an exact one-use recent-resolution membership from a separate pre-turn list.
+It rejects unmatched pre-grant markers and no-marker current payloads even when
+a validated baseline has no dice. Existing offline compatibility, grant closure,
+bonus arithmetic, marker precedence and resource-prefix enforcement are unchanged.
+Twenty-two real file-backed cases and synchronized GM API/daemon/turn/matrix/
+example/manifest guidance cover only this admission boundary; full grant authority,
+spiritual wound production, arts and healing remain open. Parent has checked the
+complete-code plan against the current private interfaces before implementation.
+
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
    re-trauma/defeat/dissipation tests.
 2. Extend conflict state, validation, preview, and GM context with client-authored wound
