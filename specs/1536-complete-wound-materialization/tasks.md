@@ -2125,7 +2125,7 @@ hand-written history/after-images, or a raw mutation fallback.
   `contracts/spiritual-wound-live-turn-boundary.md` owns one logical player turn,
   internal GM continuation and one final common publication. No top-level task
   is closed by the following dependency sequence:
-  - [ ] T081-A [US3] Extract detached complete conflict validation consumed by
+  - [x] T081-A [US3] Extract detached complete conflict validation consumed by
     `ValidationService.AfterlifeSpiritualConflict.cs`, with frame acquisition in
     `ValidationService.AfterlifeSpiritualConflict.Frame.cs`; add a genuinely
     signed zero-error raw/publication/final-conflict fixture and captured-input
@@ -2139,12 +2139,20 @@ hand-written history/after-images, or a raw mutation fallback.
     The fixture-only step is accepted at `a54fc3d5`: genuine zero-error signed
     publication, clean unauthorized-die sensitivity RED/GREEN, final 2/2 and
     unchanged-neighbor 47/47 evidence; independent Spec compliant / Quality
-    Approved with parent diff/artifact verification. T081-A stays open for
-    production-consumed detached validation and its equivalence controls.
+    Approved with parent diff/artifact verification. That fixture did not alone
+    complete production-consumed detached validation or its equivalence controls.
     The complete production/test execution plan is
     `docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-extraction.md`
-    with its companion patch: executable pre-API RED, 27 new rows plus the
+    with its companion patch: executable pre-API RED, 28 new rows plus the
     retained two-row baseline, owner controls, independent review and one Fast.
+    Production extraction accepted at `4cb7d774`: complete diff and nine-run
+    artifact history inspected by parent, independent Spec compliant / Quality
+    Approved with the sole report-counter finding corrected. Corrected 8/8,
+    frame 30/30, resource owner 71/71, spiritual owner 449/449 (445 descriptors)
+    and Fast 7753/7753 in 4:23.090 are verified; zero warnings/errors, no timeout,
+    skips or duplicate executions, complete cleanup. Dynamic MemberData counts
+    and rejected transient diagnostics are recorded in the extraction plan.
+    Internal behavior-preserving refactor: no GM prompt/example/manifest change.
   - [ ] T081-B [US3] Extract a typed source-prefix resource/effect intermediate
     consumed by `AcceptedMechanicsPlanner.cs`; test retained identities, actual
     transition proof, dependent suffix, pending receipt waves and one final plan

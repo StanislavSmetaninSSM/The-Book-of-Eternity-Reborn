@@ -1630,8 +1630,16 @@ through the current validator and receive its own complete-code plan/review.
 That production step now follows
 `docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-extraction.md`
 and its complete companion patch. It stages an executable pre-API RED before
-27 new captured-input, repeated-state and real resource-failure rows; the two
-accepted baseline rows remain. Implementation and acceptance are still pending.
+28 new captured-input, repeated-state and real resource-failure rows; the two
+accepted baseline rows remain. T081-A is accepted at `4cb7d774`: the parent
+inspected the complete diff and actual nine-run artifact history; independent
+Spec compliant / Quality Approved review has no open findings. Corrected 8/8,
+complete frame 30/30, resource owner 71/71, spiritual owner 449/449 (445 discovered
+descriptors) and one Fast 7753/7753 in 4:23.090 passed with warning-free builds,
+complete cleanup and no timeout/skips/duplicate executions. The extraction plan
+records the historical failures, rejected transient code and reconciled dynamic
+theory accounting. No GM contract changed. T081-B..E and top-level T081/T084/T085
+remain open; this is complete validation, not wound-source admission.
 
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.

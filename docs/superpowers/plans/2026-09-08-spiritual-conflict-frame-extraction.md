@@ -60,7 +60,7 @@ signed baseline/status/turn/dice/settings/request. All input records contain
 immutable text/value data; `SnapshotDice` exposes a fresh copy. Evaluation performs
 no filesystem read and creates fresh mutable local reward/history state.
 
-- [ ] **Step 1: Add only the executable pre-API contract/behavior test**
+- [x] **Step 1: Add only the executable pre-API contract/behavior test**
 
 Use the complete code appendix below to create the resource partial containing
 only `ConflictFrame_DetachedApiExistsAndEvaluatesRealPublishedState`,
@@ -69,7 +69,7 @@ complete namespace-level `ConflictFrameIssueFingerprint` helper. Include their
 shown using directives and class/namespace envelope. No new frame type may appear
 in this first staged file. Do not modify production code or the fixture yet.
 
-- [ ] **Step 2: Observe the intended RED**
+- [x] **Step 2: Observe the intended RED**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_DetachedApiExistsAndEvaluatesRealPublishedState"
@@ -81,10 +81,10 @@ exist. A compile/setup failure is not this RED. After implementation, this same
 test must actually capture/evaluate real published state and compare full issues;
 an API-presence-only green is not sufficient.
 
-- [ ] **Step 3: Write remaining tests, then apply the exact extraction**
+- [x] **Step 3: Write remaining tests, then apply the exact extraction**
 
 First add the complete strongly typed test code and exact fixture hooks edit in
-the appendix (27 new rows in total, in addition to the two accepted baseline rows).
+the appendix (28 new rows in total, in addition to the two accepted baseline rows).
 Then apply the complete companion production patch, rebasing only these headers:
 
 ```text
@@ -97,20 +97,20 @@ build an alternate evaluator or invent context defaults. Do not describe the
 temporary missing-type compile state between test edits and production edits as
 semantic RED. Use the test observed in Step 2 as the component's pre-API RED.
 
-- [ ] **Step 4: Run focused GREEN and diagnose only actual failures**
+- [x] **Step 4: Run focused GREEN and diagnose only actual failures**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_|FullyQualifiedName~AfterlifeSpiritualConflictValidationTests.ConflictFrame_"
 ```
 
-Expected: 29 rows pass (27 new + 2 retained), zero build warnings/errors, no skipped
+Expected: 30 rows pass (28 new + 2 retained), zero build warnings/errors, no skipped
 rows, duplicate IDs, timeout or incomplete owned-tree cleanup. Use the default
 five-minute limit for this narrow selection. If a test setup is invalid, fix only
 the data against unchanged mechanics and preserve its assertions. If an extraction
 deviates from existing mechanics/authority, diagnose and restore equivalence.
 Report any needed product/authority decision before expanding scope.
 
-- [ ] **Step 5: Verify owning boundaries, self-review and commit**
+- [x] **Step 5: Verify owning boundaries, self-review and commit**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests"
@@ -154,6 +154,81 @@ full-solution test, PreMerge or unrelated diagnostic lane is part of this task.
 - Fast and independent review remain required before parent acceptance of T081-A.
   Source-prefix planning, witness/finalization and same-turn GM continuation stay
   explicitly tracked in T081-B..E; this task does not close the full wounds feature.
+
+## Source-confirmed test corrections during execution
+
+The first complete run executed 29 rows with 26 PASS and three failures. Parent
+traced them against unchanged production APIs before revising the test appendix:
+
+- `FileSystemManager.FileExists` invokes the read-attempt hook too. An absent
+  conflict has the original null read plus existence check (two hook events);
+  present input has one. Do not remove the production existence check.
+- A readable Shining root must be the existing `CreateDefaultState()` shape,
+  then set `lightSparks=0`; a root with only currency is not valid resource-owner
+  fixture data. This adds no new game-state schema or normalization behavior.
+- Manifest usability and individual signed-file readability are separate existing
+  boundaries. `ReadValidatedPendingTurnSnapshotFileAsync` returns null for a
+  byte/hash mismatch while a structurally usable manifest remains usable.
+  Preserve the signed realm/profile authority: do not downgrade to current/offline
+  context when an individual signed root is absent. The corrected two-row theory
+  separately checks actual detached-authority corruption and a tampered signed
+  soul. The latter retains signed turn/dice, never captures current Profiles,
+  and reports the existing active-wrong-realm error from unavailable signed soul.
+
+This adds one row: 28 new + 2 retained = 30 focused rows. The temporary runtime
+deviations made during diagnosis were not accepted; parent mechanically verified
+both production files were restored exactly to the companion patch. A seven-row
+green obtained with those deviations is historical diagnostic evidence only.
+The original executable pre-API RED remains valid and is not repeated. Resume
+with the corrected three-method selection (eight rows), then all 30 and the
+specified owner controls. Exact correction diagnostic:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_ProductionEarlyReturnDoesNotAcquireUnusedContext|FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_CapturedImagesSurviveAllFilesystemInputsChangingWithoutReads|FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_SnapshotTamperingPreservesManifestAndFileAuthorityBoundaries"
+```
+
+## Accepted checkpoint — 2026-09-08
+
+T081-A is accepted at `4cb7d774` (review range `d13bae58..4cb7d774`).
+The parent inspected all five changed files and mechanically confirmed both
+production files exactly match the companion extraction. Independent review is
+Spec compliant / Quality Approved: 0 Critical, 0 Important, one minor report
+counter correction resolved below. The review's external-test-evidence caveat
+is resolved by the parent's direct summary, log and TRX audit of all nine runs.
+
+Artifacts below are under `TestResults/test-lanes/`; PASS/total counts executions.
+
+| Artifact | PASS/total | Wall time | Evidence |
+|---|---:|---:|---|
+| `20260908-030611-733-44564-2991e36fedda4c4a95f4562f1c61a577-focused` | 0/1 | 1:20.464 | Required semantic RED after genuine publication |
+| `20260908-031001-978-30508-a19b5ba256bb4f83a5179668f6e3677e-focused` | 26/29 | 1:41.376 | Initial three fixture/expectation failures |
+| `20260908-031413-457-30404-e6341d2499c8461eba5778d1714970b9-focused` | 5/7 | 0:52.196 | Historical transient-runtime diagnosis |
+| `20260908-031654-959-48044-401408f96a1441d28726a86cfe0f59b1-focused` | 7/7 | 0:58.850 | Rejected temporary runtime; NOT accepted GREEN |
+| `20260908-032640-559-45760-60c5b50cbced4629a3a1c95cac55fa88-focused` | 8/8 | 1:01.088 | Corrected three-method selection; original runtime restored |
+| `20260908-032750-639-29392-56d80d25f2a4480d8a439831a25a902a-focused` | 30/30 | 1:17.090 | Complete frame selection |
+| `20260908-032915-682-36572-17d50284ac0f47e88ccb68c2f045bb30-focused` | 71/71 | 2:39.156 | Complete resource owner |
+| `20260908-033200-710-41528-6f70d1a713c44eb6925e262c2b2adecb-focused` | 449/449 | 3:34.789 | Complete spiritual-conflict owner |
+| `20260908-033832-061-49908-17c96c4d28eb45d7a65517dc4094b333-fast` | 7753/7753 | 4:23.090 | One parent Fast, default five-minute bound |
+
+All nine builds have zero warnings/errors; no run timed out or skipped a test,
+and all owned process trees were cleaned up. The accepted GREEN artifacts have
+zero failed tests. The spiritual owner discovers 445 descriptors and executes
+449 cases: its existing five-row `MalformedActiveCombatConditionCases` MemberData
+shares one TRX test ID but has distinct execution IDs. Fast discovers 7699
+descriptors and executes 7753 cases across 26 TRXs; no execution-ID duplicate or
+cross-TRX duplicate test ID exists. The parent's comparison with accepted Fast
+`20260907-222435-922-50316-773d6d82fc79454e815e8d13858f7af8-fast` found the same
+3954 methods and exactly the same execution-row count for every method. Dynamic
+theory expansion is not a duplicate execution. The implementer report's former
+449/449 discovery/execution wording has been corrected to 445/449.
+
+No Mortal World or afterlife prompt, documentation example, matrix, manifest or
+GM source guard needs a change: this is an internal, behavior-preserving complete
+validator extraction with the existing production consumer. No new GM capability,
+field, authority or diagnostic is exposed. T081-B..E, top-level T081/T084/T085 and
+the full wounds feature remain open; the 79/177 top-level accepted count is
+unchanged. Next is B1 ordinary reduction/assembly, followed by mandatory B2 real
+causal prefix execution; neither is implied by this acceptance.
 
 ## Reviewed executable code appendix
 
@@ -265,13 +340,13 @@ the real common publisher; no forged plan, receipt or publication is introduced.
    .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_|FullyQualifiedName~AfterlifeSpiritualConflictValidationTests.ConflictFrame_"
    ```
 
-   Use the default five-minute Focused cap for these 27 rows; do not enlarge it
+   Use the default five-minute Focused cap for these 28 new rows; do not enlarge it
    without measured evidence. Parent owns the neighbors/Fast checkpoint and the actual artifact inspection.
    No control was executed by this drafting agent.
 
 ## Coverage and intentional limits
 
-27 new xUnit rows: 23 resource-frame rows and 4 specialized reward/history rows.
+28 new xUnit rows: 24 resource-frame rows and 4 specialized reward/history rows.
 The preexisting baseline/signed-die sensitivity rows are additional, not duplicated
 here as new source methods.
 
@@ -325,7 +400,7 @@ T081-C signed-only loading.
 No arithmetic/overflow production change, source witness, provisional API,
 continuation API, unused-helper acceptance, or old-fixture relaxation is included.
 The two resource-acquisition fault rows exercise the narrow existing catch without
-global security suppression. This 27-row proposal tests actual final frame
+global security suppression. This 28-row proposal tests actual final frame
 inputs/evaluation rather than attempting to redesign the snapshot loader.
 
 ### Additional two resource-fault rows: exact stage and security boundary
@@ -471,7 +546,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var probe = new ConflictFrameReadProbe();
         await using var context = await CreateCompleteConflictFrameContextAsync(probe.Hooks);
         // Populate both optional captured inputs before a genuine fresh signed capture.
-        await context.WriteExactJsonAsync(ShiningAbodeState.StatePath, """{"lightSparks":0}""");
+        var shining = ShiningAbodeState.CreateDefaultState();
+        shining["lightSparks"] = 0;
+        await context.WriteExactJsonAsync(ShiningAbodeState.StatePath, shining.ToJsonString());
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.DifficultySettingsPath,
             """{"difficulty":"normal"}""");
         await context.CaptureValidatedPendingSnapshotAsync(42, "Chaos Sea",
@@ -676,7 +753,10 @@ public sealed partial class AfterlifeResourceCutoverTests
         probe.Start();
         var expected = await ValidateCompleteConflictFrameAsync(context);
         probe.Stop();
-        Assert.Equal(1, probe.Attempts(AfterlifeSpiritualConflictState.StatePath));
+        // FileExists also invokes this hook after the null read; both attempts are
+        // the unchanged production path, not an extra acquisition by the frame.
+        Assert.Equal(conflictText is null ? 2 : 1,
+            probe.Attempts(AfterlifeSpiritualConflictState.StatePath));
         if (expectedCode is null)
             Assert.Empty(expected);
         else
@@ -770,23 +850,52 @@ public sealed partial class AfterlifeResourceCutoverTests
             issue => issue.Code == "afterlife_conflict_dice_value_not_authorized");
     }
 
-    [Fact]
-    public async Task ConflictFrame_TamperedSnapshotRemainsUnusableWithoutAuthorityRepair()
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConflictFrame_SnapshotTamperingPreservesManifestAndFileAuthorityBoundaries(
+        bool tamperDetachedAuthority)
     {
         await using var context = await CreateCompleteConflictFrameContextAsync();
         await PublishCompleteConflictFrameAsync(context);
         var accepted = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
         Assert.True(accepted.HasValidatedSnapshot);
-        var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(FrameManifestPath));
-        var path = manifest["files"]![FrameSoulPath]!.GetValue<string>();
-        await context.WriteExactJsonAsync(path, """{"currentRealm":"Mortal World"}""");
-        // No hash rewrite or SyncAuthority: actual tampering must not be trusted.
+        AssertNoConflictFrameErrors(context.Validator.EvaluateSpiritualConflictValidationFrame(accepted));
+        if (tamperDetachedAuthority)
+        {
+            await context.WriteExactJsonAsync(PendingTurnSnapshotAuthority.AuthorityPath,
+                "{ deliberately invalid detached authority");
+        }
+        else
+        {
+            var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(FrameManifestPath));
+            var path = manifest["files"]![FrameSoulPath]!.GetValue<string>();
+            await context.WriteExactJsonAsync(path, """{"currentRealm":"Mortal World"}""");
+        }
+
+        // Manifest usability and each signed file's readability are separate existing
+        // boundaries. Never re-sign the corruption or substitute current profile data
+        // when an otherwise usable manifest's signed soul bytes fail their own hash.
         var frame = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
-        Assert.False(frame.HasValidatedSnapshot);
         Assert.Null(frame.Baseline.Soul);
-        Assert.NotNull(frame.Candidate.Profiles);
+        var actual = context.Validator.EvaluateSpiritualConflictValidationFrame(frame);
+        if (tamperDetachedAuthority)
+        {
+            Assert.False(frame.HasValidatedSnapshot);
+            Assert.NotNull(frame.Candidate.Profiles);
+        }
+        else
+        {
+            Assert.True(frame.HasValidatedSnapshot);
+            Assert.Null(frame.Candidate.Profiles);
+            Assert.Equal(accepted.SnapshotTurnNumber, frame.SnapshotTurnNumber);
+            Assert.Equal(accepted.SnapshotDice, frame.SnapshotDice);
+            Assert.Contains(actual, issue =>
+                issue.Severity == IssueSeverity.Error &&
+                issue.Code == "afterlife_conflict_active_wrong_realm");
+        }
         Assert.Equal(ConflictFrameIssueFingerprint.Create(await ValidateCompleteConflictFrameAsync(context)),
-            ConflictFrameIssueFingerprint.Create(context.Validator.EvaluateSpiritualConflictValidationFrame(frame)));
+            ConflictFrameIssueFingerprint.Create(actual));
     }
 
     [Theory]
