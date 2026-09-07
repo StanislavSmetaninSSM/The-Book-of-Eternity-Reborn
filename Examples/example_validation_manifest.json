@@ -175,11 +175,11 @@
       "statePath": "game_state/effects/effect_commands.json",
       "responseSurface": "effectChanges[].source exact selector catalog",
       "realms": ["Mortal World", "Chaos Sea", "Shining Abode"],
-      "description": "Representative exact selectors cover every supported source family and reject prose/name inference.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "Selectors are shown as a catalog independent of the different owning entity envelopes.",
-      "coverageLimit": "Exact eleven-kind source catalog and sourceId/definitionKey triples only; each owner materializer validates its complete entity separately.",
-      "requiredText": ["effect_mortal_source_families_v1", "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction", "world_event", "fate_card", "combat_action"]
+      "description": "Representative exact GM selectors cover eleven source families; the worked continuation distinguishes client-owned wound_legacy without granting a new apply selector.",
+      "coverageLimit": "Exact eleven-kind representative GM source catalog and sourceId/definitionKey triples, plus client-only wound_legacy continuation guidance; structural/catalog tests own canonical source/lifetime validation and closed authored links, and T070 owns heal/history/reload publication.",
+      "requiredText": ["effect_mortal_source_families_v1", "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction", "world_event", "fate_card", "combat_action", "wound_legacy", "Worked continuation after healing", "Do not apply, resend, or reconstruct the legacy effect."]
     },
     {
       "contractId": "effect_mortal_source_worked_v1",

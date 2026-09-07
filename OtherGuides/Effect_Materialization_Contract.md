@@ -27,12 +27,14 @@ schemaVersion, definitionKey, display, allowedRealms, allowedTargetKinds,
 components, parameterBounds, stacking, lifetime, triggers, removal, links
 ```
 
-The exact source kind is one of:
+The representative GM source selector kind is one of:
 
 ```text
 skill, spiritual_art, item, wound, quest, location, hazard, faction,
 world_event, fate_card, combat_action
 ```
+
+Client-owned `wound_legacy` is a separate canonical source kind, not an additional GM `effectChanges[].source` selector. A lasting mechanical consequence of an accepted heal uses `source.kind=wound_legacy` and `source.sourceId=legacyId`; a source-bound canonical lifetime derives `lifetime.linkKind=wound_legacy` and `targetId=legacyId` from that source owner. Authored legacy definitions require `links=[]` and retain their existing lifetime policy, never canonical `linkKind` or `targetId` lifetime fields. Structural validity is not creation authority: only the sealed wound treatment/effect transaction may create this source and its effect, and accepted typed legacy history supplies durable reload authority. Healing cleans up exact `sourceKind=wound` effects, not the independent legacy source; later effect removal does not erase legacy provenance. Never write, copy, or repair these canonical coordinates manually. The T070 heal/history/reload producer remains pending; this structural vocabulary alone does not enable that flow.
 
 The exact source ID must resolve in the accepted composed state. Display names, array positions, case variants, whitespace variants, confusable aliases, historical IDs, and prose are never authority. Same-turn materialized item/location owners use the exact temporary source reference exported by their accepted plan; the client seals it to a permanent ID.
 

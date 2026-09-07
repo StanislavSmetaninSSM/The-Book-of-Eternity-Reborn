@@ -691,7 +691,7 @@ For `uses`, every consuming event must have exactly one trigger with `consumeUse
 
 ## effect_mortal_source_families_v1
 
-Supported exact source kinds are `skill`, `spiritual_art`, `item`, `wound`, `quest`, `location`, `hazard`, `faction`, `world_event`, `fate_card`, and `combat_action`. Representative selectors:
+Representative exact GM source selector kinds are `skill`, `spiritual_art`, `item`, `wound`, `quest`, `location`, `hazard`, `faction`, `world_event`, `fate_card`, and `combat_action`. Representative selectors:
 
 ```json
 {
@@ -710,6 +710,8 @@ Supported exact source kinds are `skill`, `spiritual_art`, `item`, `wound`, `que
   ]
 }
 ```
+
+Worked continuation after healing: an earlier accepted treatment has healed a torn muscle but left a lasting movement restriction. The client-owned source is `source.kind=wound_legacy`, with the independent `legacyId`; the healed wound is no longer an active source. The GM describes the remaining restriction in the ordinary narrative and leaves its already accepted mechanics alone. Do not apply, resend, or reconstruct the legacy effect. In particular, do not add a twelfth `sourceSelectors` entry or invent an `effectChanges[].source` selector for `wound_legacy`. A later permitted dispel/removal uses the existing effect lifecycle route and does not delete the healed wound's legacy/history provenance. This is a continuation example, not a new heal command or permission to author canonical source/link coordinates.
 
 The source must exist, be current/active/unlocked/equipped as required, allow the exact realm/target, and own the definition key. Never infer one from display prose.
 
