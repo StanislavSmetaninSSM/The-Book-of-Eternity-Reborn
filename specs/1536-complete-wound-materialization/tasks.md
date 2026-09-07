@@ -1388,6 +1388,15 @@ entrypoints require no update for T065.
   duplicates; exact evidence is in the linked plan. The
   legacy preparation choice remains unanswered; canonical source/link contracts,
   real typed batches/finalization/history/reload/publication remain open T070.
+  The next bounded source/lifetime prerequisite is
+  `docs/superpowers/plans/2026-09-07-wound-legacy-canonical-vocabulary.md`:
+  admit the exact kind in canonical SourceKinds/LinkKinds for the existing
+  source-bound derivation, but preserve authored `links=[]` and the unchanged
+  definition LinkKinds set. Its complete-code plan covers48 structural/catalog/
+  documentation rows, existing non-public guards, six owned files, and shared
+  guide/worked-continuation/manifest updates without a new GM selector. The
+  broader private legacy adapter/history/reload publication and all unresolved
+  architecture choices remain open. Implement/review before checking this slice.
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
   gates for the sealed <=2 / staged-to-I contour; call

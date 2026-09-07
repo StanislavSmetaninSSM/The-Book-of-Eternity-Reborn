@@ -2503,6 +2503,13 @@ the active `sourceKind=wound` graph and cannot capture the independent
 `wound_legacy` source; later dispel/removal may end its effect but never deletes its
 legacy/history/replay provenance.
 
+Canonical representation uses that exact source kind. A source-bound lifetime
+derives `linkKind=wound_legacy` and `targetId=legacyId` from the source owner through
+the existing common effect planner; its authored definition still has the closed
+policy without those canonical coordinates and exact empty `links=[]`. Canonical
+vocabulary admission does not authorize a new GM source selector or definition link
+role, and does not replace the sealed preparation/history source authority above.
+
 `MortalWoundHealLegacyPlanner.Prepare(WoundAcceptedTurnBinding binding,
 MortalWoundTreatmentResolution resolution, WoundMaterializationEnvelope workingWound)`
 is the sole preparation API. It returns
