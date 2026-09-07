@@ -1641,6 +1641,20 @@ records the historical failures, rejected transient code and reconciled dynamic
 theory accounting. No GM contract changed. T081-B..E and top-level T081/T084/T085
 remain open; this is complete validation, not wound-source admission.
 
+T081-B is further split into B1 ordinary reduction/assembly and B2 actual causal
+execution. B1's complete three-file code/test plan is
+`docs/superpowers/plans/2026-09-08-accepted-mechanics-ordinary-reduction.md`
+with its companion patch. The production wrapper consumes a typed completed
+ordinary result and exactly-once final assembly; existing receipt/replay/identity,
+effect completion and Mortal publication behavior stay unchanged. Its six new
+tests plus signed/pending/Mortal controls do not prove a source prefix. B2 remains
+mandatory: retain the real scheduler, graph identities, ledger/history and causal
+transcript state, advance prefix effects without terminal sealing, resume after
+the authorized wound decision and recompose the unaccepted dependent suffix.
+The plan records concrete source seams and stop/resume/restart/failure acceptance
+requirements. No GM capability is exposed by B1; later runtime changes carry
+their own synchronized prompts, examples, manifests and validation guards.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

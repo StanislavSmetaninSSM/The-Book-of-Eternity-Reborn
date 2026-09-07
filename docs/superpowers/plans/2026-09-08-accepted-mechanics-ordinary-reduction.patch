@@ -1,0 +1,1079 @@
+*** Begin Patch
+*** Update File: BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+@@
+-    internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
+-        AcceptedMechanicsInput input,
+-        string inputFingerprint)
+-    {
+-        ArgumentNullException.ThrowIfNull(input);
+-        ArgumentException.ThrowIfNullOrWhiteSpace(inputFingerprint);
+-        var context = input.PlanningContext;
+-        if (context == null)
+-        {
+-            return new AcceptedMechanicsPlanningResult(
+-                null,
+-                Issue(
+-                    "accepted_mechanics_planning_context_missing",
+-                    "validated typed mechanics planning context",
+-                    "missing"));
+-        }
+-
+-        var woundStages = context.WoundStageBundle;
+-        if (woundStages is not null)
+-        {
+-            var woundEffectAgreement =
+-                AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(
+-                    context.EffectPlan,
+-                    woundStages);
+-            if (woundEffectAgreement.Count != 0)
+-            {
+-                return new AcceptedMechanicsPlanningResult(
+-                    null,
+-                    woundEffectAgreement);
+-            }
+-        }
+-
+-        var issues = new List<ValidationIssue>();
+-        var definitions = context.Definitions;
+-        var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
+-            StringComparer.Ordinal);
+-        if (context.Commands.DefinitionCreations.Count != 0)
+-        {
+-            var definitionBatch =
+-                ResourceDefinitionCatalog.BeginMaterializationBatch(
+-                    definitions);
+-            foreach (var creation in context.Commands.DefinitionCreations
+-                         .OrderBy(static value => value.CommandOrdinal))
+-            {
+-                using var proposal = JsonDocument.Parse(
+-                    creation.Definition.ToJsonString());
+-                var materialized = definitionBatch.MaterializeProposal(
+-                    proposal.RootElement,
+-                    input.Turn,
+-                    creation.EventRef,
+-                    static () => new ResourceDefinitionIdentity(
+-                        "resource_definition_" + Guid.NewGuid().ToString("N"),
+-                        "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
+-                issues.AddRange(materialized.Issues);
+-                if (!materialized.IsValid || materialized.Definition == null)
+-                    continue;
+-                sameTurnDefinitions.Add(
+-                    creation.DefinitionRef,
+-                    materialized.Definition);
+-            }
+-            definitions = definitionBatch.Freeze();
+-        }
+-
+-        var capacityTransitions = ComposeCapacityTransitions(
+-            input,
+-            context,
+-            definitions,
+-            sameTurnDefinitions,
+-            issues);
+-        var effectPlan = context.EffectPlan;
+-        var basePeriodicResolution = effectPlan == null
+-            ? new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
+-                Array.Empty<ResourceMutationSourceExport>(),
+-                Array.Empty<ResourceMutationIntent>(),
+-                Array.Empty<ValidationIssue>())
+-            : EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
+-                effectPlan,
+-                context.Owners,
+-                definitions);
+-        var priorResolvedBindings = context.PendingResolutionState is
+-            { Requests.Count: > 0 } activePendingState
+-            ? SelectPendingReplayBindings(activePendingState)
+-            : Array.Empty<ResourcePendingResolvedBinding>();
+-        var discoveryReplay = new ResolvedPendingReplaySession(
+-            priorResolvedBindings);
+-        var periodicResolution = discoveryReplay.Bind(basePeriodicResolution);
+-        issues.AddRange(periodicResolution.Issues);
+-        var sources = context.Sources;
+-        if (periodicResolution.SourceExports.Count != 0)
+-        {
+-            var sourceResult = ResourceMutationSourceCatalog.Create(
+-                context.Sources.Exports.Concat(periodicResolution.SourceExports));
+-            issues.AddRange(sourceResult.Issues);
+-            if (sourceResult.Catalog != null)
+-                sources = sourceResult.Catalog;
+-        }
+-        var ordinaryMutations = ComposeOrdinaryMutations(
+-            input,
+-            context,
+-            definitions,
+-            issues)
+-            .Concat(context.RegisteredSystemOutcomes.SelectMany(static outcome => outcome.Mutations))
+-            .ToArray();
+-        var mutations = ordinaryMutations
+-            .Concat(periodicResolution.Mutations)
+-            .ToArray();
+-        if (issues.Count != 0)
+-            return new AcceptedMechanicsPlanningResult(null, issues);
+-
+-        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveAndCollect(
+-            ResourceAppliedEvent resourceEvent,
+-            ResourceOperationKey producer)
+-        {
+-            var expansion = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
+-                effectPlan!,
+-                resourceEvent,
+-                producer,
+-                context.Owners,
+-                definitions);
+-            return discoveryReplay.Bind(expansion);
+-        }
+-
+-        var discoveryResourceResult = BuildResources(
+-            new AcceptedMechanicsResourceInput(
+-                input.Turn,
+-                definitions,
+-                context.State,
+-                context.History,
+-                sources,
+-                mutations,
+-                capacityTransitions,
+-                ExecutionSequenceOffset: context.ExecutionSequenceOffset,
+-                EventMutationResolver: effectPlan == null
+-                    ? null
+-                    : ResolveAndCollect,
+-                InitialTriggerCandidates: periodicResolution.TriggerCandidates,
+-                InitialEffectResolutionWork: periodicResolution.Work,
+-                EffectPlanAuthority: effectPlan == null
+-                    ? null
+-                    : CreateEffectPlanAuthority(effectPlan)),
+-            context.ResourceIdentityFactory ??
+-            new AcceptedMechanicsIdentityFactory());
+-        if (!discoveryResourceResult.IsValid ||
+-            discoveryResourceResult.StateAfterImage == null ||
+-            discoveryResourceResult.HistoryAfterImage == null)
+-        {
+-            return new AcceptedMechanicsPlanningResult(
+-                null,
+-                discoveryResourceResult.Issues);
+-        }
+-        var discoveryReplayIssues = discoveryReplay.ValidateComplete(
+-            discoveryResourceResult.AcceptedResolvedPendingRequestIds);
+-        if (discoveryReplayIssues.Count != 0)
+-        {
+-            return new AcceptedMechanicsPlanningResult(
+-                null,
+-                discoveryReplayIssues);
+-        }
+-
+-        var pendingDecision = ResolvePendingBoundary(
+-            input,
+-            context,
+-            definitions,
+-            discoveryResourceResult.AcceptedPendingResolutions,
+-            issues);
+-        if (!pendingDecision.IsValid)
+-            return new AcceptedMechanicsPlanningResult(null, pendingDecision.Issues);
+-        if (pendingDecision.IsTerminalSemanticReplay &&
+-            (discoveryResourceResult.AppliedTransitions.Count != 0 ||
+-             discoveryResourceResult.Events.Count != 0 ||
+-             discoveryResourceResult.ResourceTriggerExecutions.Count != 0 ||
+-             discoveryResourceResult.AcceptedPendingResolutions.Count != 0 ||
+-             discoveryResourceResult.AcceptedReactionExecutions.Count != 0))
+-        {
+-            return new AcceptedMechanicsPlanningResult(
+-                null,
+-                Issue(
+-                    "resource_pending_terminal_replay_conflict",
+-                    "an exact semantic replay with no newly applied mechanics",
+-                    "new mechanics were accepted"));
+-        }
+-        if (pendingDecision.AwaitingReceipt)
+-        {
+-            return BuildAwaitingReceiptPlan(
+-                input,
+-                inputFingerprint,
+-                context,
+-                pendingDecision,
+-                effectPlan);
+-        }
+-
+-        var resourceResult = discoveryResourceResult;
+-        if (pendingDecision.ResolvedBindings is { } resolvedBindings)
+-        {
+-            var actualReplay = new ResolvedPendingReplaySession(
+-                resolvedBindings);
+-            var actualPeriodicResolution = actualReplay.Bind(
+-                basePeriodicResolution);
+-            if (!actualPeriodicResolution.IsValid)
+-            {
+-                return new AcceptedMechanicsPlanningResult(
+-                    null,
+-                    actualPeriodicResolution.Issues);
+-            }
+-            var actualSourcesResult = ResourceMutationSourceCatalog.Create(
+-                context.Sources.Exports.Concat(
+-                    actualPeriodicResolution.SourceExports));
+-            if (actualSourcesResult.Catalog == null ||
+-                actualSourcesResult.Issues.Count != 0)
+-            {
+-                return new AcceptedMechanicsPlanningResult(
+-                    null,
+-                    actualSourcesResult.Issues);
+-            }
+-            sources = actualSourcesResult.Catalog;
+-            EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveActual(
+-                ResourceAppliedEvent resourceEvent,
+-                ResourceOperationKey producer)
+-            {
+-                var expansion = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
+-                    effectPlan!,
+-                    resourceEvent,
+-                    producer,
+-                    context.Owners,
+-                    definitions);
+-                return actualReplay.Bind(expansion);
+-            }
+-            resourceResult = BuildResources(
+-                new AcceptedMechanicsResourceInput(
+-                    input.Turn,
+-                    definitions,
+-                    context.State,
+-                    context.History,
+-                    sources,
+-                    ordinaryMutations
+-                        .Concat(actualPeriodicResolution.Mutations)
+-                        .ToArray(),
+-                    capacityTransitions,
+-                    ExecutionSequenceOffset: context.ExecutionSequenceOffset,
+-                    EventMutationResolver: effectPlan == null ? null : ResolveActual,
+-                    InitialTriggerCandidates:
+-                        actualPeriodicResolution.TriggerCandidates,
+-                    InitialEffectResolutionWork:
+-                        actualPeriodicResolution.Work,
+-                    EffectPlanAuthority: effectPlan == null
+-                        ? null
+-                        : CreateEffectPlanAuthority(effectPlan)),
+-                context.ResourceIdentityFactory ??
+-                new AcceptedMechanicsIdentityFactory());
+-            if (!resourceResult.IsValid ||
+-                resourceResult.StateAfterImage == null ||
+-                resourceResult.HistoryAfterImage == null)
+-            {
+-                return new AcceptedMechanicsPlanningResult(null, resourceResult.Issues);
+-            }
+-            var actualReplayIssues = actualReplay.ValidateComplete(
+-                resourceResult.AcceptedResolvedPendingRequestIds);
+-            if (actualReplayIssues.Count != 0)
+-            {
+-                return new AcceptedMechanicsPlanningResult(
+-                    null,
+-                    actualReplayIssues);
+-            }
+-            if (resourceResult.AcceptedPendingResolutions.Count != 0)
+-            {
+-                var nextPendingDecision = ResolvePendingBoundary(
+-                    input,
+-                    context,
+-                    definitions,
+-                    resourceResult.AcceptedPendingResolutions,
+-                    issues,
+-                    pendingStateOverride: pendingDecision.StateAfterImage,
+-                    receiptsOverride: new JsonArray());
+-                if (!nextPendingDecision.IsValid)
+-                {
+-                    return new AcceptedMechanicsPlanningResult(
+-                        null,
+-                        nextPendingDecision.Issues);
+-                }
+-                if (!nextPendingDecision.AwaitingReceipt)
+-                {
+-                    return new AcceptedMechanicsPlanningResult(
+-                        null,
+-                        Issue(
+-                            "resource_pending_next_wave_missing",
+-                            "one exact next pending wave for newly accepted bounded outputs",
+-                            "not-created"));
+-                }
+-                return BuildAwaitingReceiptPlan(
+-                    input,
+-                    inputFingerprint,
+-                    context,
+-                    nextPendingDecision,
+-                    effectPlan);
+-            }
+-        }
+-        if (effectPlan != null)
+-        {
+-            var finalizedEffects =
+-                EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
+-                effectPlan,
+-                resourceResult.EffectBoundaryTranscript!,
+-                context.EffectIdentityFactory ?? new EffectIdentityFactory());
+-            if (!finalizedEffects.Success || finalizedEffects.Plan == null)
+-            {
+-                return new AcceptedMechanicsPlanningResult(
+-                    null,
+-                    finalizedEffects.Issues);
+-            }
+-            effectPlan = finalizedEffects.Plan;
+-        }
+-        var ownerAgreementIssues = context.Owners.ValidateCanonicalAgreement(
+-            resourceResult.StateAfterImage,
+-            resourceResult.HistoryAfterImage);
+-        if (ownerAgreementIssues.Count != 0)
+-            return new AcceptedMechanicsPlanningResult(null, ownerAgreementIssues);
+-
+-        var definitionAfterImage = definitions.ToCanonicalRoot();
+-        var stateAfterImage = JsonNode.Parse(
+-            resourceResult.StateAfterImage.ToCanonicalJson())!.AsObject();
+-        var historyAfterImage = JsonNode.Parse(
+-            resourceResult.HistoryAfterImage.ToCanonicalJson())!.AsObject();
+-        var carriers = (effectPlan?.CarrierAfterImages ??
+-                new Dictionary<string, JsonObject>(StringComparer.Ordinal))
+-            .ToDictionary(
+-                static pair => pair.Key,
+-                static pair => pair.Value.DeepClone().AsObject(),
+-                StringComparer.Ordinal);
+-        var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
+-            .ToDictionary(
+-                static pair => pair.Key,
+-                static pair => pair.Value.DeepClone().AsObject(),
+-                StringComparer.Ordinal);
+-        var ownerTransitions = context.OwnerTransitions
+-            .Select(static value => value.Clone())
+-            .ToList();
+-        foreach (var outcome in context.RegisteredSystemOutcomes)
+-        {
+-            var projected = outcome.Project(resourceResult);
+-            issues.AddRange(projected.Issues);
+-            foreach (var pair in projected.CompanionAfterImages)
+-            {
+-                if (!ownerCompanionAfterImages.TryAdd(
+-                        pair.Key,
+-                        pair.Value.DeepClone().AsObject()))
+-                {
+-                    issues.AddRange(Issue(
+-                        "resource_registered_outcome_afterimage_conflict",
+-                        "one exact owner/companion after-image producer per path",
+-                        pair.Key));
+-                }
+-            }
+-            ownerTransitions.AddRange(projected.OwnerTransitions.Select(
+-                static value => value.Clone()));
+-        }
+-        if (issues.Count != 0)
+-            return new AcceptedMechanicsPlanningResult(null, issues);
+-        var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
+-            effectPlan,
+-            ownerCompanionAfterImages,
+-            woundStages,
+-            context.WoundAnchorPlan);
+-        if (!carrierComposition.Success)
+-        {
+-            return new AcceptedMechanicsPlanningResult(
+-                null,
+-                carrierComposition.Issues);
+-        }
+-        carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
+-            static pair => pair.Key,
+-            static pair => pair.Value.DeepClone().AsObject(),
+-            StringComparer.Ordinal);
+-        ownerCompanionAfterImages =
+-            carrierComposition.OwnerCompanionAfterImages.ToDictionary(
+-                static pair => pair.Key,
+-                static pair => pair.Value.DeepClone().AsObject(),
+-                StringComparer.Ordinal);
+-        var woundPublication = carrierComposition.WoundPublication;
+-        foreach (var transitionPath in ownerTransitions
+-                     .Select(static value => value.Path)
+-                     .Distinct(StringComparer.Ordinal))
+-        {
+-            if (ownerCompanionAfterImages.ContainsKey(transitionPath) ||
+-                carriers.ContainsKey(transitionPath) ||
+-                (woundPublication?.CarrierAfterImages.ContainsKey(transitionPath) ??
+-                 false))
+-            {
+-                issues.AddRange(Issue(
+-                    "accepted_mechanics_owner_transition_path_conflict",
+-                    "one typed owner transition or one whole-root after-image producer per path",
+-                    transitionPath));
+-            }
+-        }
+-        if (issues.Count != 0)
+-            return new AcceptedMechanicsPlanningResult(null, issues);
+-        var effectIdentity = effectPlan?.IdentityIndexAfterImage ??
+-            context.EffectIdentityRoot;
+-        var touched = new HashSet<string>(StringComparer.Ordinal)
+-        {
+-            ResourceMaterializationContract.DefinitionsPath,
+-            ResourceMaterializationContract.StatePath,
+-            ResourceMaterializationContract.HistoryPath,
+-            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+-            EffectAcceptedTurnPlan.IdentityIndexPath
+-        };
+-        if (!context.Commands.IsMissing)
+-            touched.Add(ResourceMaterializationContract.CommandPath);
+-        if (effectPlan != null)
+-        {
+-            touched.UnionWith(effectPlan.TouchedPaths);
+-            touched.UnionWith(effectPlan.DeletedPaths);
+-        }
+-        if (woundPublication is not null)
+-        {
+-            touched.Add(AcceptedMechanicsPlan.WoundCommandPath);
+-            touched.UnionWith(woundPublication.CarrierAfterImages.Keys);
+-            touched.Add(WoundIdentityState.StatePath);
+-            touched.Add(WoundHistoryState.HistoryPath);
+-        }
+-        touched.UnionWith(ownerCompanionAfterImages.Keys);
+-        touched.UnionWith(ownerTransitions.Select(static value => value.Path));
+-        if (pendingDecision.StateAfterImage != null)
+-            touched.Add(ResourcePendingResolutionState.PendingPath);
+-        var consumed = new HashSet<string>(StringComparer.Ordinal);
+-        if (!context.Commands.IsMissing)
+-            consumed.Add(ResourceMaterializationContract.CommandPath);
+-        if (effectPlan != null)
+-            consumed.UnionWith(effectPlan.DeletedPaths);
+-        if (woundPublication is not null)
+-            consumed.Add(AcceptedMechanicsPlan.WoundCommandPath);
+-
+-        return new AcceptedMechanicsPlanningResult(
+-            new AcceptedMechanicsPlan(
+-                inputFingerprint,
+-                definitionAfterImage,
+-                stateAfterImage,
+-                historyAfterImage,
+-                carriers,
+-                effectIdentity,
+-                pendingDecision.StateAfterImage == null
+-                    ? new Dictionary<string, JsonObject?>()
+-                    : new Dictionary<string, JsonObject?>
+-                    {
+-                        [ResourcePendingResolutionState.PendingPath] =
+-                            pendingDecision.StateAfterImage.ToCanonicalRoot()
+-                    },
+-                ownerCompanionAfterImages,
+-                input.BeforeImages,
+-                touched.ToArray(),
+-                consumed.ToArray(),
+-                input.AuthorityFingerprints,
+-                resourceResult.Events,
+-                new ResourceProjectionInput(
+-                    definitionAfterImage,
+-                    stateAfterImage,
+-                    historyAfterImage,
+-                    context.Owners.Fingerprint),
+-                context.Owners,
+-                effectPlan,
+-                ownerTransitions: ownerTransitions,
+-                woundStageBundle: woundStages,
+-                carrierComposition: woundStages is null
+-                    ? null
+-                    : carrierComposition,
+-                directWoundPublicationAuthority:
+-                    context.DirectWoundPublicationAuthority,
+-                treatmentResourcePublicationAuthority:
+-                    context.TreatmentResourcePublicationAuthority),
+-            Array.Empty<ValidationIssue>());
+-    }
++    internal enum AcceptedMechanicsReductionKind
++    {
++        Rejected,
++        AwaitingResourceReceipt,
++        CompletedOrdinaryReduction
++    }
++
++    // Non-publishable reduction result. This is not a source witness or a resumable
++    // graph cursor. Only CompleteAcceptedReduction constructs the ordinary final plan.
++    internal sealed class AcceptedMechanicsReduction
++    {
++        private readonly Lazy<AcceptedMechanicsPlanningResult> _completion;
++        private readonly ValidationIssue[] _issues;
++
++        private AcceptedMechanicsReduction(
++            AcceptedMechanicsReductionKind kind,
++            CompletedOrdinaryMechanicsReduction? completed,
++            AcceptedMechanicsResourcePlanningResult? discoveryResources,
++            AcceptedMechanicsResourcePlanningResult? selectedResources,
++            IEnumerable<ValidationIssue> issues,
++            Func<AcceptedMechanicsPlanningResult> completion)
++        {
++            Kind = kind;
++            Completed = completed;
++            DiscoveryResources = discoveryResources;
++            SelectedResources = selectedResources;
++            _issues = issues.ToArray();
++            _completion = new Lazy<AcceptedMechanicsPlanningResult>(
++                completion, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
++        }
++
++        internal AcceptedMechanicsReductionKind Kind { get; }
++        internal CompletedOrdinaryMechanicsReduction? Completed { get; }
++        // Observation is not source admission. In waiting outcomes these transcripts
++        // retain the attempted wave, not a completed candidate eligible for publication.
++        internal AcceptedMechanicsResourcePlanningResult? DiscoveryResources { get; }
++        internal AcceptedMechanicsResourcePlanningResult? SelectedResources { get; }
++        internal IReadOnlyList<ValidationIssue> Issues => Array.AsReadOnly(_issues.ToArray());
++
++        internal AcceptedMechanicsPlanningResult Complete() => _completion.Value;
++
++        internal static AcceptedMechanicsReduction Rejected(IEnumerable<ValidationIssue> issues)
++        {
++            var detachedIssues = issues.ToArray();
++            return new(AcceptedMechanicsReductionKind.Rejected, null, null, null,
++                detachedIssues, () => new AcceptedMechanicsPlanningResult(null, detachedIssues));
++        }
++
++        internal static AcceptedMechanicsReduction Awaiting(
++            AcceptedMechanicsInput input,
++            string inputFingerprint,
++            AcceptedMechanicsPlanningContext context,
++            ResourcePendingResolutionState pendingState,
++            JsonObject? safeGmPacket,
++            EffectAcceptedTurnPlan? effectPlan,
++            AcceptedMechanicsResourcePlanningResult discoveryResources,
++            AcceptedMechanicsResourcePlanningResult selectedResources)
++        {
++            var captured = CaptureAssemblyInput(input, context);
++            var packet = safeGmPacket?.DeepClone().AsObject();
++            return new(AcceptedMechanicsReductionKind.AwaitingResourceReceipt,
++                null, discoveryResources, selectedResources, Array.Empty<ValidationIssue>(),
++                () => BuildAwaitingReceiptPlan(
++                    captured, inputFingerprint, captured.PlanningContext!,
++                    new PendingBoundaryDecision(true, pendingState, packet,
++                        Array.Empty<ValidationIssue>()), effectPlan));
++        }
++
++        internal static AcceptedMechanicsReduction CompletedOrdinary(
++            CompletedOrdinaryMechanicsReduction completed,
++            AcceptedMechanicsResourcePlanningResult discoveryResources) =>
++            new(AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
++                completed, discoveryResources, completed.Resources, Array.Empty<ValidationIssue>(),
++                () => AssembleCompletedAcceptedReduction(completed));
++    }
++
++    internal sealed class CompletedOrdinaryMechanicsReduction
++    {
++        private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
++        private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
++        private readonly JsonObject? _pendingAfterImage;
++
++        internal CompletedOrdinaryMechanicsReduction(
++            AcceptedMechanicsInput input,
++            string inputFingerprint,
++            AcceptedMechanicsPlanningContext context,
++            ResourceDefinitionCatalog definitions,
++            AcceptedMechanicsResourcePlanningResult resources,
++            EffectAcceptedTurnPlan? effects,
++            ResourcePendingResolutionState? pendingAfterImage,
++            IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
++            IReadOnlyList<AcceptedMechanicsOwnerTransition> ownerTransitions)
++        {
++            Input = CaptureAssemblyInput(input, context);
++            InputFingerprint = inputFingerprint;
++            Definitions = definitions;
++            Resources = resources;
++            Effects = effects;
++            _pendingAfterImage = pendingAfterImage?.ToCanonicalRoot().DeepClone().AsObject();
++            _ownerCompanionAfterImages = ownerCompanionAfterImages.ToDictionary(
++                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
++                StringComparer.Ordinal);
++            _ownerTransitions = ownerTransitions.Select(static value => value.Clone()).ToArray();
++        }
++
++        internal AcceptedMechanicsInput Input { get; }
++        internal string InputFingerprint { get; }
++        internal ResourceDefinitionCatalog Definitions { get; }
++        internal AcceptedMechanicsResourcePlanningResult Resources { get; }
++        internal EffectAcceptedTurnPlan? Effects { get; }
++        internal JsonObject? PendingAfterImage => _pendingAfterImage?.DeepClone().AsObject();
++        internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
++            new ReadOnlyDictionary<string, JsonObject>(_ownerCompanionAfterImages.ToDictionary(
++                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
++                StringComparer.Ordinal));
++        internal IReadOnlyList<AcceptedMechanicsOwnerTransition> OwnerTransitions =>
++            Array.AsReadOnly(_ownerTransitions.Select(static value => value.Clone()).ToArray());
++    }
++
++    private static AcceptedMechanicsInput CaptureAssemblyInput(
++        AcceptedMechanicsInput input, AcceptedMechanicsPlanningContext context) =>
++        input.WithPlanningContext(new AcceptedMechanicsPlanningContext(
++            context.DefinitionRoot, context.Definitions, context.State, context.History,
++            context.Owners, context.Sources, context.Commands, context.EffectIdentityRoot,
++            context.EffectPlan, context.CapacityTransitions, context.OwnerCapacityDrafts,
++            context.TerminalOwners, context.OwnerCompanionAfterImages, context.OwnerTransitions,
++            registeredSystemOutcomes: Array.Empty<IResourceRegisteredSystemOutcomeDraft>(),
++            pendingResolutionState: context.PendingResolutionState,
++            resourceIdentityFactory: null,
++            effectIdentityFactory: null,
++            executionSequenceOffset: context.ExecutionSequenceOffset,
++            woundStageBundle: context.WoundStageBundle,
++            woundAnchorPlan: context.WoundAnchorPlan,
++            directWoundPublicationAuthority: context.DirectWoundPublicationAuthority,
++            treatmentResourcePublicationAuthority: context.TreatmentResourcePublicationAuthority));
++
++    internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
++        AcceptedMechanicsInput input,
++        string inputFingerprint) =>
++        CompleteAcceptedReduction(ReduceAcceptedPlan(input, inputFingerprint));
++
++    internal static AcceptedMechanicsPlanningResult CompleteAcceptedReduction(
++        AcceptedMechanicsReduction reduction)
++    {
++        ArgumentNullException.ThrowIfNull(reduction);
++        return reduction.Complete();
++    }
++
++    internal static AcceptedMechanicsReduction ReduceAcceptedPlan(
++        AcceptedMechanicsInput input,
++        string inputFingerprint)
++    {
++        ArgumentNullException.ThrowIfNull(input);
++        ArgumentException.ThrowIfNullOrWhiteSpace(inputFingerprint);
++        var context = input.PlanningContext;
++        if (context == null)
++        {
++            return AcceptedMechanicsReduction.Rejected(Issue(
++                    "accepted_mechanics_planning_context_missing",
++                    "validated typed mechanics planning context",
++                    "missing"));
++        }
++
++        var woundStages = context.WoundStageBundle;
++        if (woundStages is not null)
++        {
++            var woundEffectAgreement =
++                AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(
++                    context.EffectPlan,
++                    woundStages);
++            if (woundEffectAgreement.Count != 0)
++            {
++                return AcceptedMechanicsReduction.Rejected(woundEffectAgreement);
++            }
++        }
++
++        var issues = new List<ValidationIssue>();
++        var definitions = context.Definitions;
++        var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(
++            StringComparer.Ordinal);
++        if (context.Commands.DefinitionCreations.Count != 0)
++        {
++            var definitionBatch =
++                ResourceDefinitionCatalog.BeginMaterializationBatch(
++                    definitions);
++            foreach (var creation in context.Commands.DefinitionCreations
++                         .OrderBy(static value => value.CommandOrdinal))
++            {
++                using var proposal = JsonDocument.Parse(
++                    creation.Definition.ToJsonString());
++                var materialized = definitionBatch.MaterializeProposal(
++                    proposal.RootElement,
++                    input.Turn,
++                    creation.EventRef,
++                    static () => new ResourceDefinitionIdentity(
++                        "resource_definition_" + Guid.NewGuid().ToString("N"),
++                        "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
++                issues.AddRange(materialized.Issues);
++                if (!materialized.IsValid || materialized.Definition == null)
++                    continue;
++                sameTurnDefinitions.Add(
++                    creation.DefinitionRef,
++                    materialized.Definition);
++            }
++            definitions = definitionBatch.Freeze();
++        }
++
++        var capacityTransitions = ComposeCapacityTransitions(
++            input,
++            context,
++            definitions,
++            sameTurnDefinitions,
++            issues);
++        var effectPlan = context.EffectPlan;
++        var basePeriodicResolution = effectPlan == null
++            ? new EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution(
++                Array.Empty<ResourceMutationSourceExport>(),
++                Array.Empty<ResourceMutationIntent>(),
++                Array.Empty<ValidationIssue>())
++            : EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
++                effectPlan,
++                context.Owners,
++                definitions);
++        var priorResolvedBindings = context.PendingResolutionState is
++            { Requests.Count: > 0 } activePendingState
++            ? SelectPendingReplayBindings(activePendingState)
++            : Array.Empty<ResourcePendingResolvedBinding>();
++        var discoveryReplay = new ResolvedPendingReplaySession(
++            priorResolvedBindings);
++        var periodicResolution = discoveryReplay.Bind(basePeriodicResolution);
++        issues.AddRange(periodicResolution.Issues);
++        var sources = context.Sources;
++        if (periodicResolution.SourceExports.Count != 0)
++        {
++            var sourceResult = ResourceMutationSourceCatalog.Create(
++                context.Sources.Exports.Concat(periodicResolution.SourceExports));
++            issues.AddRange(sourceResult.Issues);
++            if (sourceResult.Catalog != null)
++                sources = sourceResult.Catalog;
++        }
++        var ordinaryMutations = ComposeOrdinaryMutations(
++            input,
++            context,
++            definitions,
++            issues)
++            .Concat(context.RegisteredSystemOutcomes.SelectMany(static outcome => outcome.Mutations))
++            .ToArray();
++        var mutations = ordinaryMutations
++            .Concat(periodicResolution.Mutations)
++            .ToArray();
++        if (issues.Count != 0)
++            return AcceptedMechanicsReduction.Rejected(issues);
++
++        EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveAndCollect(
++            ResourceAppliedEvent resourceEvent,
++            ResourceOperationKey producer)
++        {
++            var expansion = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
++                effectPlan!,
++                resourceEvent,
++                producer,
++                context.Owners,
++                definitions);
++            return discoveryReplay.Bind(expansion);
++        }
++
++        var discoveryResourceResult = BuildResources(
++            new AcceptedMechanicsResourceInput(
++                input.Turn,
++                definitions,
++                context.State,
++                context.History,
++                sources,
++                mutations,
++                capacityTransitions,
++                ExecutionSequenceOffset: context.ExecutionSequenceOffset,
++                EventMutationResolver: effectPlan == null
++                    ? null
++                    : ResolveAndCollect,
++                InitialTriggerCandidates: periodicResolution.TriggerCandidates,
++                InitialEffectResolutionWork: periodicResolution.Work,
++                EffectPlanAuthority: effectPlan == null
++                    ? null
++                    : CreateEffectPlanAuthority(effectPlan)),
++            context.ResourceIdentityFactory ??
++            new AcceptedMechanicsIdentityFactory());
++        if (!discoveryResourceResult.IsValid ||
++            discoveryResourceResult.StateAfterImage == null ||
++            discoveryResourceResult.HistoryAfterImage == null)
++        {
++            return AcceptedMechanicsReduction.Rejected(discoveryResourceResult.Issues);
++        }
++        var discoveryReplayIssues = discoveryReplay.ValidateComplete(
++            discoveryResourceResult.AcceptedResolvedPendingRequestIds);
++        if (discoveryReplayIssues.Count != 0)
++        {
++            return AcceptedMechanicsReduction.Rejected(discoveryReplayIssues);
++        }
++
++        var pendingDecision = ResolvePendingBoundary(
++            input,
++            context,
++            definitions,
++            discoveryResourceResult.AcceptedPendingResolutions,
++            issues);
++        if (!pendingDecision.IsValid)
++            return AcceptedMechanicsReduction.Rejected(pendingDecision.Issues);
++        if (pendingDecision.IsTerminalSemanticReplay &&
++            (discoveryResourceResult.AppliedTransitions.Count != 0 ||
++             discoveryResourceResult.Events.Count != 0 ||
++             discoveryResourceResult.ResourceTriggerExecutions.Count != 0 ||
++             discoveryResourceResult.AcceptedPendingResolutions.Count != 0 ||
++             discoveryResourceResult.AcceptedReactionExecutions.Count != 0))
++        {
++            return AcceptedMechanicsReduction.Rejected(Issue(
++                    "resource_pending_terminal_replay_conflict",
++                    "an exact semantic replay with no newly applied mechanics",
++                    "new mechanics were accepted"));
++        }
++        if (pendingDecision.AwaitingReceipt)
++        {
++            return AcceptedMechanicsReduction.Awaiting(
++                input, inputFingerprint, context,
++                pendingDecision.StateAfterImage!, pendingDecision.SafeGmPacket, effectPlan,
++                discoveryResourceResult, discoveryResourceResult);
++        }
++
++        var resourceResult = discoveryResourceResult;
++        if (pendingDecision.ResolvedBindings is { } resolvedBindings)
++        {
++            var actualReplay = new ResolvedPendingReplaySession(
++                resolvedBindings);
++            var actualPeriodicResolution = actualReplay.Bind(
++                basePeriodicResolution);
++            if (!actualPeriodicResolution.IsValid)
++            {
++                return AcceptedMechanicsReduction.Rejected(actualPeriodicResolution.Issues);
++            }
++            var actualSourcesResult = ResourceMutationSourceCatalog.Create(
++                context.Sources.Exports.Concat(
++                    actualPeriodicResolution.SourceExports));
++            if (actualSourcesResult.Catalog == null ||
++                actualSourcesResult.Issues.Count != 0)
++            {
++                return AcceptedMechanicsReduction.Rejected(actualSourcesResult.Issues);
++            }
++            sources = actualSourcesResult.Catalog;
++            EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveActual(
++                ResourceAppliedEvent resourceEvent,
++                ResourceOperationKey producer)
++            {
++                var expansion = EffectAcceptedTurnPlanner.ResolveResourceEventMutations(
++                    effectPlan!,
++                    resourceEvent,
++                    producer,
++                    context.Owners,
++                    definitions);
++                return actualReplay.Bind(expansion);
++            }
++            resourceResult = BuildResources(
++                new AcceptedMechanicsResourceInput(
++                    input.Turn,
++                    definitions,
++                    context.State,
++                    context.History,
++                    sources,
++                    ordinaryMutations
++                        .Concat(actualPeriodicResolution.Mutations)
++                        .ToArray(),
++                    capacityTransitions,
++                    ExecutionSequenceOffset: context.ExecutionSequenceOffset,
++                    EventMutationResolver: effectPlan == null ? null : ResolveActual,
++                    InitialTriggerCandidates:
++                        actualPeriodicResolution.TriggerCandidates,
++                    InitialEffectResolutionWork:
++                        actualPeriodicResolution.Work,
++                    EffectPlanAuthority: effectPlan == null
++                        ? null
++                        : CreateEffectPlanAuthority(effectPlan)),
++                context.ResourceIdentityFactory ??
++                new AcceptedMechanicsIdentityFactory());
++            if (!resourceResult.IsValid ||
++                resourceResult.StateAfterImage == null ||
++                resourceResult.HistoryAfterImage == null)
++            {
++                return AcceptedMechanicsReduction.Rejected(resourceResult.Issues);
++            }
++            var actualReplayIssues = actualReplay.ValidateComplete(
++                resourceResult.AcceptedResolvedPendingRequestIds);
++            if (actualReplayIssues.Count != 0)
++            {
++                return AcceptedMechanicsReduction.Rejected(actualReplayIssues);
++            }
++            if (resourceResult.AcceptedPendingResolutions.Count != 0)
++            {
++                var nextPendingDecision = ResolvePendingBoundary(
++                    input,
++                    context,
++                    definitions,
++                    resourceResult.AcceptedPendingResolutions,
++                    issues,
++                    pendingStateOverride: pendingDecision.StateAfterImage,
++                    receiptsOverride: new JsonArray());
++                if (!nextPendingDecision.IsValid)
++                {
++                    return AcceptedMechanicsReduction.Rejected(nextPendingDecision.Issues);
++                }
++                if (!nextPendingDecision.AwaitingReceipt)
++                {
++                    return AcceptedMechanicsReduction.Rejected(Issue(
++                            "resource_pending_next_wave_missing",
++                            "one exact next pending wave for newly accepted bounded outputs",
++                            "not-created"));
++                }
++                return AcceptedMechanicsReduction.Awaiting(
++                    input, inputFingerprint, context,
++                    nextPendingDecision.StateAfterImage!, nextPendingDecision.SafeGmPacket, effectPlan,
++                    discoveryResourceResult, resourceResult);
++            }
++        }
++        if (effectPlan != null)
++        {
++            var finalizedEffects =
++                EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
++                effectPlan,
++                resourceResult.EffectBoundaryTranscript!,
++                context.EffectIdentityFactory ?? new EffectIdentityFactory());
++            if (!finalizedEffects.Success || finalizedEffects.Plan == null)
++            {
++                return AcceptedMechanicsReduction.Rejected(finalizedEffects.Issues);
++            }
++            effectPlan = finalizedEffects.Plan;
++        }
++        var ownerAgreementIssues = context.Owners.ValidateCanonicalAgreement(
++            resourceResult.StateAfterImage,
++            resourceResult.HistoryAfterImage);
++        if (ownerAgreementIssues.Count != 0)
++            return AcceptedMechanicsReduction.Rejected(ownerAgreementIssues);
++
++        var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
++            .ToDictionary(
++                static pair => pair.Key,
++                static pair => pair.Value.DeepClone().AsObject(),
++                StringComparer.Ordinal);
++        var ownerTransitions = context.OwnerTransitions
++            .Select(static value => value.Clone())
++            .ToList();
++        foreach (var outcome in context.RegisteredSystemOutcomes)
++        {
++            var projected = outcome.Project(resourceResult);
++            issues.AddRange(projected.Issues);
++            foreach (var pair in projected.CompanionAfterImages)
++            {
++                if (!ownerCompanionAfterImages.TryAdd(
++                        pair.Key,
++                        pair.Value.DeepClone().AsObject()))
++                {
++                    issues.AddRange(Issue(
++                        "resource_registered_outcome_afterimage_conflict",
++                        "one exact owner/companion after-image producer per path",
++                        pair.Key));
++                }
++            }
++            ownerTransitions.AddRange(projected.OwnerTransitions.Select(
++                static value => value.Clone()));
++        }
++        if (issues.Count != 0)
++            return AcceptedMechanicsReduction.Rejected(issues);
++        return AcceptedMechanicsReduction.CompletedOrdinary(
++            new CompletedOrdinaryMechanicsReduction(
++                input, inputFingerprint, context, definitions, resourceResult, effectPlan,
++                pendingDecision.StateAfterImage, ownerCompanionAfterImages, ownerTransitions),
++            discoveryResourceResult);
++    }
++
++    private static AcceptedMechanicsPlanningResult AssembleCompletedAcceptedReduction(
++        CompletedOrdinaryMechanicsReduction completed)
++    {
++        var input = completed.Input;
++        var inputFingerprint = completed.InputFingerprint;
++        var context = input.PlanningContext!;
++        var resourceResult = completed.Resources;
++        var effectPlan = completed.Effects;
++        var woundStages = context.WoundStageBundle;
++        var definitionAfterImage = completed.Definitions.ToCanonicalRoot();
++        var stateAfterImage = JsonNode.Parse(resourceResult.StateAfterImage!.ToCanonicalJson())!.AsObject();
++        var historyAfterImage = JsonNode.Parse(resourceResult.HistoryAfterImage!.ToCanonicalJson())!.AsObject();
++        var pendingAfterImage = completed.PendingAfterImage;
++        var ownerCompanionAfterImages = completed.OwnerCompanionAfterImages.ToDictionary(
++            static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
++        var ownerTransitions = completed.OwnerTransitions.Select(static value => value.Clone()).ToList();
++        var issues = new List<ValidationIssue>();
++        var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
++            effectPlan,
++            ownerCompanionAfterImages,
++            woundStages,
++            context.WoundAnchorPlan);
++        if (!carrierComposition.Success)
++        {
++            return new AcceptedMechanicsPlanningResult(
++                null,
++                carrierComposition.Issues);
++        }
++        var carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
++            static pair => pair.Key,
++            static pair => pair.Value.DeepClone().AsObject(),
++            StringComparer.Ordinal);
++        ownerCompanionAfterImages =
++            carrierComposition.OwnerCompanionAfterImages.ToDictionary(
++                static pair => pair.Key,
++                static pair => pair.Value.DeepClone().AsObject(),
++                StringComparer.Ordinal);
++        var woundPublication = carrierComposition.WoundPublication;
++        foreach (var transitionPath in ownerTransitions
++                     .Select(static value => value.Path)
++                     .Distinct(StringComparer.Ordinal))
++        {
++            if (ownerCompanionAfterImages.ContainsKey(transitionPath) ||
++                carriers.ContainsKey(transitionPath) ||
++                (woundPublication?.CarrierAfterImages.ContainsKey(transitionPath) ??
++                 false))
++            {
++                issues.AddRange(Issue(
++                    "accepted_mechanics_owner_transition_path_conflict",
++                    "one typed owner transition or one whole-root after-image producer per path",
++                    transitionPath));
++            }
++        }
++        if (issues.Count != 0)
++            return new AcceptedMechanicsPlanningResult(null, issues);
++        var effectIdentity = effectPlan?.IdentityIndexAfterImage ??
++            context.EffectIdentityRoot;
++        var touched = new HashSet<string>(StringComparer.Ordinal)
++        {
++            ResourceMaterializationContract.DefinitionsPath,
++            ResourceMaterializationContract.StatePath,
++            ResourceMaterializationContract.HistoryPath,
++            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
++            EffectAcceptedTurnPlan.IdentityIndexPath
++        };
++        if (!context.Commands.IsMissing)
++            touched.Add(ResourceMaterializationContract.CommandPath);
++        if (effectPlan != null)
++        {
++            touched.UnionWith(effectPlan.TouchedPaths);
++            touched.UnionWith(effectPlan.DeletedPaths);
++        }
++        if (woundPublication is not null)
++        {
++            touched.Add(AcceptedMechanicsPlan.WoundCommandPath);
++            touched.UnionWith(woundPublication.CarrierAfterImages.Keys);
++            touched.Add(WoundIdentityState.StatePath);
++            touched.Add(WoundHistoryState.HistoryPath);
++        }
++        touched.UnionWith(ownerCompanionAfterImages.Keys);
++        touched.UnionWith(ownerTransitions.Select(static value => value.Path));
++        if (pendingAfterImage != null)
++            touched.Add(ResourcePendingResolutionState.PendingPath);
++        var consumed = new HashSet<string>(StringComparer.Ordinal);
++        if (!context.Commands.IsMissing)
++            consumed.Add(ResourceMaterializationContract.CommandPath);
++        if (effectPlan != null)
++            consumed.UnionWith(effectPlan.DeletedPaths);
++        if (woundPublication is not null)
++            consumed.Add(AcceptedMechanicsPlan.WoundCommandPath);
++
++        return new AcceptedMechanicsPlanningResult(
++            new AcceptedMechanicsPlan(
++                inputFingerprint,
++                definitionAfterImage,
++                stateAfterImage,
++                historyAfterImage,
++                carriers,
++                effectIdentity,
++                pendingAfterImage == null
++                    ? new Dictionary<string, JsonObject?>()
++                    : new Dictionary<string, JsonObject?>
++                    {
++                        [ResourcePendingResolutionState.PendingPath] =
++                            pendingAfterImage
++                    },
++                ownerCompanionAfterImages,
++                input.BeforeImages,
++                touched.ToArray(),
++                consumed.ToArray(),
++                input.AuthorityFingerprints,
++                resourceResult.Events,
++                new ResourceProjectionInput(
++                    definitionAfterImage,
++                    stateAfterImage,
++                    historyAfterImage,
++                    context.Owners.Fingerprint),
++                context.Owners,
++                effectPlan,
++                ownerTransitions: ownerTransitions,
++                woundStageBundle: woundStages,
++                carrierComposition: woundStages is null
++                    ? null
++                    : carrierComposition,
++                directWoundPublicationAuthority:
++                    context.DirectWoundPublicationAuthority,
++                treatmentResourcePublicationAuthority:
++                    context.TreatmentResourcePublicationAuthority),
++            Array.Empty<ValidationIssue>());
++    }
+*** End Patch

@@ -2158,6 +2158,22 @@ hand-written history/after-images, or a raw mutation fallback.
     transition proof, dependent suffix, pending receipt waves and one final plan
     in `AfterlifeSpiritualWoundLifecycleTests.cs`. Do not retain a temporary
     publishable plan or rerun identity allocation to simulate a continuation.
+    - [ ] T081-B1 [US3] Separate completed ordinary resource/effect reduction
+      from once-only final assembly in the existing production planner. Complete
+      code and six behavior tests are specified in
+      `docs/superpowers/plans/2026-09-08-accepted-mechanics-ordinary-reduction.md`
+      and its companion patch. Preserve receipt, identity, replay and Mortal
+      publication behavior; verify existing signed/pending/publication controls.
+      This internal refactor creates no wound-source authority or GM contract.
+    - [ ] T081-B2 [US3] Retain and production-consume actual causal execution:
+      prepared graph/identities, scheduler/frontier, resource ledger/history,
+      accepted effect transcript state and incremental effect advancement.
+      Stop at a closed source boundary, resume the same execution after an
+      authorized decision, and recompose only the unaccepted dependent suffix.
+      Prove exact unchanged-run equivalence, two wound-dependent exchanges,
+      receipt waves, last-use/terminal reservations, retry/cold identity proof,
+      failed suffix with no publication and one final common plan. B1 completion
+      alone must not close B2 or T081-B; full runtime/GM synchronization applies.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,
