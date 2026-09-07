@@ -5677,9 +5677,187 @@ internal static class AcceptedMechanicsPlanner
             SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
     }
 
+    // Owns one prepared graph execution. Checkpoints are observations, not source authority.
+    internal sealed class ResourceExecutionSession : IDisposable
+    {
+        private IEnumerator<ResourceExecutionStep>? _execution;
+        private int _busy;
+        private bool _disposed;
+        private bool _faulted;
+        private bool _stopAtClosedBoundary;
+
+        internal ResourceExecutionSession(
+            AcceptedMechanicsResourceInput input,
+            AcceptedMechanicsIdentityFactory identityFactory)
+        {
+            _execution = ExecuteResourceSession(input, identityFactory, this).GetEnumerator();
+        }
+
+        internal AcceptedMechanicsResourcePlanningResult? Result { get; private set; }
+        internal bool StopAtClosedBoundary => _stopAtClosedBoundary;
+        internal int CheckpointCount { get; private set; }
+
+        internal ResourceExecutionStep AdvanceToClosedBoundary() => Advance(stopAtClosedBoundary: true);
+
+        internal AcceptedMechanicsResourcePlanningResult Drain()
+        {
+            var step = Advance(stopAtClosedBoundary: false);
+            return step.Result ?? throw new InvalidOperationException(
+                "An uninterrupted resource drain must terminate with a result.");
+        }
+
+        private ResourceExecutionStep Advance(bool stopAtClosedBoundary)
+        {
+            if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
+                throw new InvalidOperationException("Resource execution cannot be re-entered.");
+            try
+            {
+                ObjectDisposedException.ThrowIf(_disposed, this);
+                if (_faulted)
+                    throw new InvalidOperationException("Faulted resource execution cannot resume.");
+                if (Result != null)
+                    throw new InvalidOperationException("Completed resource execution cannot resume.");
+                _stopAtClosedBoundary = stopAtClosedBoundary;
+                try
+                {
+                    if (_execution == null || !_execution.MoveNext())
+                        throw new InvalidOperationException("Resource execution ended without a result.");
+                    var step = _execution.Current;
+                    if (step.Checkpoint != null)
+                        CheckpointCount++;
+                    if (step.Result != null)
+                    {
+                        Result = step.Result;
+                        _execution.Dispose();
+                        _execution = null;
+                    }
+                    return step;
+                }
+                catch
+                {
+                    _faulted = true;
+                    _execution?.Dispose();
+                    _execution = null;
+                    throw;
+                }
+            }
+            finally
+            {
+                System.Threading.Volatile.Write(ref _busy, 0);
+            }
+        }
+
+        public void Dispose()
+        {
+            if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
+                throw new InvalidOperationException("Active resource execution cannot be disposed.");
+            try
+            {
+                if (_disposed)
+                    return;
+                _disposed = true;
+                _execution?.Dispose();
+                _execution = null;
+            }
+            finally
+            {
+                System.Threading.Volatile.Write(ref _busy, 0);
+            }
+        }
+    }
+
+    internal sealed class ResourceExecutionStep
+    {
+        private ResourceExecutionStep(
+            ResourceClosedBoundaryCheckpoint? checkpoint,
+            AcceptedMechanicsResourcePlanningResult? result)
+        {
+            Checkpoint = checkpoint;
+            Result = result;
+        }
+
+        internal ResourceClosedBoundaryCheckpoint? Checkpoint { get; }
+        internal AcceptedMechanicsResourcePlanningResult? Result { get; }
+        internal static ResourceExecutionStep Paused(ResourceClosedBoundaryCheckpoint checkpoint) =>
+            new(checkpoint ?? throw new ArgumentNullException(nameof(checkpoint)), null);
+        internal static ResourceExecutionStep Finished(AcceptedMechanicsResourcePlanningResult result) =>
+            new(null, result ?? throw new ArgumentNullException(nameof(result)));
+    }
+
+    // A closed resource causal frontier only: no completed effect plan/transcript,
+    // pending receipt, accepted source seal, common plan or publication authority.
+    internal sealed class ResourceClosedBoundaryCheckpoint
+    {
+        private readonly ResourceTransition[] _pendingHistoryTransitions;
+        private readonly ResourceTransition[] _appliedTransitions;
+        private readonly ResourceTransition[] _replayTransitions;
+        private readonly ResourceAppliedEvent[] _events;
+        private readonly long[] _closedEffectBoundaryOrdinals;
+
+        internal ResourceClosedBoundaryCheckpoint(
+            ResourceOperationKey lastCompletedOperation,
+            int nextExecutionSequence,
+            ResourceDefinitionCatalog definitions,
+            ResourceStateLedger state,
+            ResourceHistoryState historyBaseline,
+            IReadOnlyList<ResourceTransition> pendingHistoryTransitions,
+            IReadOnlyList<ResourceTransition> appliedTransitions,
+            IReadOnlyList<ResourceTransition> replayTransitions,
+            IReadOnlyList<ResourceAppliedEvent> events,
+            IEnumerable<long> closedEffectBoundaryOrdinals,
+            AcceptedMechanicsPlannerStatistics statistics)
+        {
+            LastCompletedOperation = lastCompletedOperation;
+            NextExecutionSequence = nextExecutionSequence;
+            Definitions = definitions;
+            State = state;
+            HistoryBaseline = historyBaseline;
+            _pendingHistoryTransitions = pendingHistoryTransitions.ToArray();
+            _appliedTransitions = appliedTransitions.ToArray();
+            _replayTransitions = replayTransitions.ToArray();
+            _events = events.ToArray();
+            _closedEffectBoundaryOrdinals = closedEffectBoundaryOrdinals.OrderBy(value => value).ToArray();
+            Statistics = statistics;
+        }
+
+        internal ResourceOperationKey LastCompletedOperation { get; }
+        internal int NextExecutionSequence { get; }
+        internal ResourceDefinitionCatalog Definitions { get; }
+        internal ResourceStateLedger State { get; }
+        internal ResourceHistoryState HistoryBaseline { get; }
+        internal IReadOnlyList<ResourceTransition> PendingHistoryTransitions =>
+            Array.AsReadOnly(_pendingHistoryTransitions.ToArray());
+        internal IReadOnlyList<ResourceTransition> AppliedTransitions =>
+            Array.AsReadOnly(_appliedTransitions.ToArray());
+        internal IReadOnlyList<ResourceTransition> ReplayTransitions =>
+            Array.AsReadOnly(_replayTransitions.ToArray());
+        internal IReadOnlyList<ResourceAppliedEvent> Events => Array.AsReadOnly(_events.ToArray());
+        internal IReadOnlyList<long> ClosedEffectBoundaryOrdinals =>
+            Array.AsReadOnly(_closedEffectBoundaryOrdinals.ToArray());
+        internal AcceptedMechanicsPlannerStatistics Statistics { get; }
+    }
+
+    internal static ResourceExecutionSession BeginResourceExecution(
+        AcceptedMechanicsResourceInput input,
+        AcceptedMechanicsIdentityFactory identityFactory)
+    {
+        ArgumentNullException.ThrowIfNull(input);
+        ArgumentNullException.ThrowIfNull(identityFactory);
+        return new ResourceExecutionSession(input, identityFactory);
+    }
+
     internal static AcceptedMechanicsResourcePlanningResult BuildResources(
         AcceptedMechanicsResourceInput input,
         AcceptedMechanicsIdentityFactory identityFactory)
+    {
+        using var session = BeginResourceExecution(input, identityFactory);
+        return session.Drain();
+    }
+
+    private static IEnumerable<ResourceExecutionStep> ExecuteResourceSession(
+        AcceptedMechanicsResourceInput input,
+        AcceptedMechanicsIdentityFactory identityFactory,
+        ResourceExecutionSession session)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
@@ -5716,17 +5894,21 @@ internal static class AcceptedMechanicsPlanner
         };
         var agreementIssues = input.History.ValidateStateAgreement(input.State);
         if (agreementIssues.Count != 0)
-            return Failure(agreementIssues, Statistics(metrics: metrics));
+        {
+            yield return ResourceExecutionStep.Finished(Failure(agreementIssues, Statistics(metrics: metrics)));
+            yield break;
+        }
         if (input.CapacityTransitions.Count >
             ResourceMaterializationContract.MaxCapacityTransitionsPerTurn)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 Issue(
                     "resource_planner_capacity_limit_exceeded",
                     $"at most {ResourceMaterializationContract.MaxCapacityTransitionsPerTurn} capacity transitions",
                     input.CapacityTransitions.Count.ToString(
                         System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(metrics: metrics));
+                Statistics(metrics: metrics)));
+            yield break;
         }
 
         var identityRegistry = new AllocatedIdentityRegistry();
@@ -5735,28 +5917,35 @@ internal static class AcceptedMechanicsPlanner
             identityFactory,
             identityRegistry);
         if (capacityPreparation.Issues.Count != 0)
-            return Failure(
+        {
+            yield return ResourceExecutionStep.Finished(Failure(
                 capacityPreparation.Issues,
-                Statistics(metrics: metrics));
+                Statistics(metrics: metrics)));
+            yield break;
+        }
         var preparation = PrepareMutations(
             input,
             identityFactory,
             identityRegistry);
         if (preparation.Issues.Count != 0)
-            return Failure(preparation.Issues, Statistics(metrics: metrics));
+        {
+            yield return ResourceExecutionStep.Finished(Failure(preparation.Issues, Statistics(metrics: metrics)));
+            yield break;
+        }
         var preparedMutations = preparation.Mutations;
         if (preparedMutations.Count(static value =>
                 value.Route.Phase != ResourceMutationPhase.EffectTrigger) >
             ResourceMaterializationContract.MaxMutationsBeforeTriggers)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 Issue(
                     "resource_planner_mutation_limit_exceeded",
                     $"at most {ResourceMaterializationContract.MaxMutationsBeforeTriggers} pre-trigger mutations",
                     preparedMutations.Count(static value =>
                         value.Route.Phase != ResourceMutationPhase.EffectTrigger).ToString(
                             System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(metrics: metrics));
+                Statistics(metrics: metrics)));
+            yield break;
         }
 
         var graphPreparation = PrepareCompleteResourceGraph(
@@ -5797,9 +5986,12 @@ internal static class AcceptedMechanicsPlanner
         metrics.SourceAuthorityFreezeCount =
             graphPreparation.Work.SourceAuthorityFreezeCount;
         if (!graphPreparation.IsValid)
-            return Failure(
+        {
+            yield return ResourceExecutionStep.Finished(Failure(
                 graphPreparation.Issues,
-                Statistics(metrics: metrics));
+                Statistics(metrics: metrics)));
+            yield break;
+        }
         preparedMutations = graphPreparation.Mutations;
         metrics.MutationDescriptorCount = preparedMutations.Count;
         metrics.GraphNodeDescriptorCount = graphPreparation.Graph!.OrderedNodes.Count;
@@ -5811,9 +6003,10 @@ internal static class AcceptedMechanicsPlanner
             metrics);
         if (!candidateAuthorities.IsValid)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 candidateAuthorities.Issues,
-                Statistics(metrics: metrics));
+                Statistics(metrics: metrics)));
+            yield break;
         }
         var workingLedger = new ResourceWorkingLedger(input.State.Entries);
         var workingHistory = new ResourceHistoryWorkingSet(input.History);
@@ -5846,9 +6039,12 @@ internal static class AcceptedMechanicsPlanner
                     input.Turn),
                 input.Definitions);
             if (!result.IsValid)
-                return Failure(
+            {
+                yield return ResourceExecutionStep.Finished(Failure(
                     result.Issues,
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
+            }
             workingLedger = result.WorkingLedger!;
             if (result.Transition != null)
                 appliedTransitions.Add(result.Transition);
@@ -5858,13 +6054,14 @@ internal static class AcceptedMechanicsPlanner
 
         if (workingLedger.Count > ResourceMaterializationContract.MaxLiveEntries)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 Issue(
                     "resource_state_limit_exceeded",
                     $"at most {ResourceMaterializationContract.MaxLiveEntries} live entries",
                     workingLedger.Count.ToString(
                         System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
         }
 
         var directBaselineState = workingLedger.Freeze();
@@ -5919,12 +6116,13 @@ internal static class AcceptedMechanicsPlanner
                 useSeeds.TryGetValue(candidate.UseSeed.EffectId, out var existingSeed) &&
                 existingSeed.RemainingUses != candidate.UseSeed.RemainingUses)
             {
-                return Failure(
+                yield return ResourceExecutionStep.Finished(Failure(
                     Issue(
                         "effect_use_seed_conflict",
                         "one exact canonical remaining-use seed per effect",
                         DescribeActivation(candidate.Activation.Identity)),
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
             }
             useSeeds.TryAdd(candidate.UseSeed.EffectId, candidate.UseSeed);
         }
@@ -5934,9 +6132,10 @@ internal static class AcceptedMechanicsPlanner
                 .ToArray());
         if (!initializedArbiter.IsValid || initializedArbiter.Arbiter == null)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 ArbiterIssues(initializedArbiter.Issues),
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
         }
         var arbiter = initializedArbiter.Arbiter;
         var candidatesByProducerEvent = graphPreparation.TriggerCandidates
@@ -6339,7 +6538,10 @@ internal static class AcceptedMechanicsPlanner
                 producerExecutionSequence: null,
                 producerMechanicsOrdinal: -1);
             if (initialIssues.Count != 0)
-                return Failure(initialIssues, Statistics(workingHistory, metrics));
+            {
+                yield return ResourceExecutionStep.Finished(Failure(initialIssues, Statistics(workingHistory, metrics)));
+                yield break;
+            }
             if (unresolvedPendingBoundaries.Count != pendingBoundaryCount)
                 break;
         }
@@ -6427,17 +6629,32 @@ internal static class AcceptedMechanicsPlanner
         }
 
         long? pendingFrontier;
+        ResourceOperationKey? completedAtBoundary = null;
         while (true)
         {
+            if (session.StopAtClosedBoundary &&
+                completedAtBoundary != null &&
+                unresolvedPendingBoundaries.Count == 0 &&
+                parentBoundaryByOrdinal.Keys.All(closedBoundaries.Contains))
+            {
+                var checkpoint = new ResourceClosedBoundaryCheckpoint(
+                    completedAtBoundary, executionSequence, input.Definitions,
+                    workingLedger.Freeze(), input.History, workingHistory.PendingTransitions,
+                    appliedTransitions, replayTransitions, events, closedBoundaries,
+                    Statistics(workingHistory, metrics));
+                completedAtBoundary = null;
+                yield return ResourceExecutionStep.Paused(checkpoint);
+            }
             var readyPendingFrontiers = ReadyPendingFrontiers();
             if (readyPendingFrontiers.Length > 1)
             {
-                return Failure(
+                yield return ResourceExecutionStep.Finished(Failure(
                     Issue(
                         "effect_boundary_pending_frontier_ambiguous",
                         "one exact ready pending leaf",
                         string.Join(",", readyPendingFrontiers)),
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
             }
             pendingFrontier = readyPendingFrontiers
                 .Select(static value => (long?)value)
@@ -6461,10 +6678,14 @@ internal static class AcceptedMechanicsPlanner
                     StringComparer.Ordinal);
                 var closeIssues = CompleteCausalOperation(prepared.OperationId);
                 if (closeIssues.Count != 0)
-                    return Failure(
+                {
+                    yield return ResourceExecutionStep.Finished(Failure(
                         closeIssues,
-                        Statistics(workingHistory, metrics));
+                        Statistics(workingHistory, metrics)));
+                    yield break;
+                }
                 scheduler.Complete(node);
+                completedAtBoundary = prepared.Intent.Key;
                 continue;
             }
 
@@ -6479,10 +6700,14 @@ internal static class AcceptedMechanicsPlanner
                     StringComparer.Ordinal);
                 var closeIssues = CompleteCausalOperation(prepared.OperationId);
                 if (closeIssues.Count != 0)
-                    return Failure(
+                {
+                    yield return ResourceExecutionStep.Finished(Failure(
                         closeIssues,
-                        Statistics(workingHistory, metrics));
+                        Statistics(workingHistory, metrics)));
+                    yield break;
+                }
                 scheduler.Complete(node);
+                completedAtBoundary = prepared.Intent.Key;
                 continue;
             }
 
@@ -6499,19 +6724,26 @@ internal static class AcceptedMechanicsPlanner
                 postDirectState,
                 prepared);
             if (amountResult.Issues.Count != 0)
-                return Failure(
+            {
+                yield return ResourceExecutionStep.Finished(Failure(
                     amountResult.Issues,
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
+            }
             if (!amountResult.ShouldApply)
             {
                 producedEvents[prepared.OperationId] = new HashSet<string>(
                     StringComparer.Ordinal);
                 var closeIssues = CompleteCausalOperation(prepared.OperationId);
                 if (closeIssues.Count != 0)
-                    return Failure(
+                {
+                    yield return ResourceExecutionStep.Finished(Failure(
                         closeIssues,
-                        Statistics(workingHistory, metrics));
+                        Statistics(workingHistory, metrics)));
+                    yield break;
+                }
                 scheduler.Complete(node);
+                completedAtBoundary = prepared.Intent.Key;
                 continue;
             }
 
@@ -6538,9 +6770,12 @@ internal static class AcceptedMechanicsPlanner
                     mutation.ResultConstraint),
                 input.Definitions);
             if (!result.IsValid)
-                return Failure(
+            {
+                yield return ResourceExecutionStep.Finished(Failure(
                     result.Issues,
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
+            }
             workingLedger = result.WorkingLedger!;
             if (result.Transition != null)
             {
@@ -6561,13 +6796,14 @@ internal static class AcceptedMechanicsPlanner
                             prepared.Intent.Key,
                             out appliedComponentId))
                     {
-                        return Failure(
+                        yield return ResourceExecutionStep.Finished(Failure(
                             Issue(
                                 "effect_boundary_component_evidence_invalid",
                                 "one accepted boundary and component for every nonzero trigger mutation",
                                 DescribeActivation(
                                     triggerCandidate.Activation.Identity)),
-                            Statistics(workingHistory, metrics));
+                            Statistics(workingHistory, metrics)));
+                        yield break;
                     }
                 }
                 var mutationMechanicsOrdinal =
@@ -6634,12 +6870,13 @@ internal static class AcceptedMechanicsPlanner
                             EffectReactionReleaseStage.AfterComponent);
                         if (releaseIssue != null)
                         {
-                            return Failure(
+                            yield return ResourceExecutionStep.Finished(Failure(
                                 Issue(
                                     releaseIssue.Code,
                                     releaseIssue.Expected,
                                     releaseIssue.Actual),
-                                Statistics(workingHistory, metrics));
+                                Statistics(workingHistory, metrics)));
+                            yield break;
                         }
                     }
                 }
@@ -6666,9 +6903,10 @@ internal static class AcceptedMechanicsPlanner
                         mutationMechanicsOrdinal);
                     if (boundaryIssues.Count != 0)
                     {
-                        return Failure(
+                        yield return ResourceExecutionStep.Finished(Failure(
                             boundaryIssues,
-                            Statistics(workingHistory, metrics));
+                            Statistics(workingHistory, metrics)));
+                        yield break;
                     }
                 }
             }
@@ -6687,14 +6925,18 @@ internal static class AcceptedMechanicsPlanner
             }
             var completionIssues = CompleteCausalOperation(prepared.OperationId);
             if (completionIssues.Count != 0)
-                return Failure(
+            {
+                yield return ResourceExecutionStep.Finished(Failure(
                     completionIssues,
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
+            }
             scheduler.Complete(node);
+            completedAtBoundary = prepared.Intent.Key;
         }
         if (scheduler.HasPendingNodes && pendingFrontier == null)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 Issue(
                     "effect_boundary_causal_scheduler_blocked",
                     "one ready operation inside the innermost open causal boundary",
@@ -6706,7 +6948,8 @@ internal static class AcceptedMechanicsPlanner
                             .OrderBy(static operationId =>
                                 operationId,
                                 StringComparer.Ordinal))),
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
         }
         if (pendingFrontier is { } pendingBoundaryOrdinal)
         {
@@ -6721,12 +6964,13 @@ internal static class AcceptedMechanicsPlanner
                 : effectTranscriptBuilder.SealPendingFrontier(pendingBoundary);
             if (frontierIssue != null)
             {
-                return Failure(
+                yield return ResourceExecutionStep.Finished(Failure(
                     Issue(
                         frontierIssue.Code,
                         frontierIssue.Expected,
                         frontierIssue.Actual),
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics)));
+                yield break;
             }
         }
         else
@@ -6737,12 +6981,13 @@ internal static class AcceptedMechanicsPlanner
         if (!effectBoundaryTranscriptResult.IsValid ||
             effectBoundaryTranscriptResult.Transcript == null)
         {
-            return Failure(
+            yield return ResourceExecutionStep.Finished(Failure(
                 effectBoundaryTranscriptResult.Issues.SelectMany(issue => Issue(
                     issue.Code,
                     issue.Expected,
                     issue.Actual)),
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
         }
         var effectBoundaryTranscript =
             effectBoundaryTranscriptResult.Transcript;
@@ -6750,14 +6995,20 @@ internal static class AcceptedMechanicsPlanner
         var stateAfterImage = workingLedger.Freeze();
         var frozen = workingHistory.Freeze(input.Definitions);
         if (!frozen.IsValid || frozen.History == null)
-            return Failure(
+        {
+            yield return ResourceExecutionStep.Finished(Failure(
                 frozen.Issues,
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
+        }
         var finalAgreement = frozen.History.ValidateStateAgreement(stateAfterImage);
         if (finalAgreement.Count != 0)
-            return Failure(
+        {
+            yield return ResourceExecutionStep.Finished(Failure(
                 finalAgreement,
-                Statistics(workingHistory, metrics));
+                Statistics(workingHistory, metrics)));
+            yield break;
+        }
 
         var resourceTriggerExecutions = acceptedCandidates
             .OrderBy(static accepted =>
@@ -6839,12 +7090,13 @@ internal static class AcceptedMechanicsPlanner
                         stamp.Identity,
                         out var candidateAuthority))
                 {
-                    return Failure(
+                    yield return ResourceExecutionStep.Finished(Failure(
                         Issue(
                             "resource_pending_candidate_authority_missing",
                             "one prevalidated immutable authority for every pending candidate",
                             DescribeActivation(candidate.Activation.Identity)),
-                        Statistics(workingHistory, metrics));
+                        Statistics(workingHistory, metrics)));
+                    yield break;
                 }
                 candidateFingerprint = candidateAuthority.CandidateFingerprint;
             }
@@ -6873,22 +7125,24 @@ internal static class AcceptedMechanicsPlanner
                             causalAuthority,
                             pending.EffectAuthority))
                     {
-                        return Failure(
+                        yield return ResourceExecutionStep.Finished(Failure(
                             Issue(
                                 "resource_pending_causal_replay_mismatch",
                                 "the exact accepted activation transcript stamp for the terminal binding",
                                 resolvedBinding.RequestId),
-                            Statistics(workingHistory, metrics));
+                            Statistics(workingHistory, metrics)));
+                        yield break;
                     }
                     if (!acceptedResolvedPendingRequestIds.Add(
                             resolvedBinding.RequestId))
                     {
-                        return Failure(
+                        yield return ResourceExecutionStep.Finished(Failure(
                             Issue(
                                 "resource_pending_causal_replay_duplicate",
                                 "one causal acceptance per terminal binding",
                                 resolvedBinding.RequestId),
-                            Statistics(workingHistory, metrics));
+                            Statistics(workingHistory, metrics)));
+                        yield break;
                     }
                 }
                 if (pending.AfterComponentId is { } predecessorId &&
@@ -6907,7 +7161,7 @@ internal static class AcceptedMechanicsPlanner
             }
         }
 
-        return new AcceptedMechanicsResourcePlanningResult(
+        yield return ResourceExecutionStep.Finished(new AcceptedMechanicsResourcePlanningResult(
             stateAfterImage,
             frozen.History,
             events,
@@ -6919,7 +7173,8 @@ internal static class AcceptedMechanicsPlanner
             acceptedPendingResolutions,
             acceptedReactionExecutions,
             acceptedResolvedPendingRequestIds.ToArray(),
-            effectBoundaryTranscript);
+            effectBoundaryTranscript));
+        yield break;
     }
 
     private static CompleteResourceGraphPreparation PrepareCompleteResourceGraph(

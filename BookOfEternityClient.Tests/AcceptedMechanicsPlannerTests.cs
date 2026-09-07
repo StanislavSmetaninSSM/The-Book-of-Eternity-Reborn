@@ -5,7 +5,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AcceptedMechanicsPlannerTests
+public sealed partial class AcceptedMechanicsPlannerTests
 {
     private const string FingerprintA =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
