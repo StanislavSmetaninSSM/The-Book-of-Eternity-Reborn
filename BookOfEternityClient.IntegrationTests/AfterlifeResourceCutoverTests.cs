@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AfterlifeResourceCutoverTests
+public sealed partial class AfterlifeResourceCutoverTests
 {
     [Fact]
     public async Task AcceptedTurn_ActionCostSpendsLedgerWithoutLegacyActionEconomy()

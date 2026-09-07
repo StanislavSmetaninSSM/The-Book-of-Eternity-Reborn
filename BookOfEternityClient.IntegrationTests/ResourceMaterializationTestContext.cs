@@ -102,22 +102,24 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
     internal async Task CaptureValidatedPendingSnapshotAsync(
         int turn = 42,
         string currentRealm = "Mortal World",
-        IEnumerable<string>? additionalTrackedPaths = null)
+        IEnumerable<string>? additionalTrackedPaths = null,
+        int[]? preGeneratedDices1d20 = null)
     {
         const string sessionId = "session_resource_materialization";
         const string requestId = "request_resource_materialization";
         const string playerAction = "Validate unified resource materialization.";
 
-        await WriteExactJsonAsync(
-            "input/turn_request.json",
-            new JsonObject
-            {
-                ["sessionId"] = sessionId,
-                ["requestId"] = requestId,
-                ["turnNumber"] = turn,
-                ["playerAction"] = playerAction,
-                ["currentRealm"] = currentRealm
-            }.ToJsonString());
+        var request = new JsonObject
+        {
+            ["sessionId"] = sessionId,
+            ["requestId"] = requestId,
+            ["turnNumber"] = turn,
+            ["playerAction"] = playerAction,
+            ["currentRealm"] = currentRealm
+        };
+        if (preGeneratedDices1d20 != null)
+            request["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
+        await WriteExactJsonAsync("input/turn_request.json", request.ToJsonString());
 
         var files = new JsonObject();
         var snapshotFileHashes = new JsonObject();
@@ -148,17 +150,19 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             ["requestId"] = requestId,
             ["turnNumber"] = turn,
             ["requestTimestamp"] = "2026-08-15T00:00:00Z",
-            ["playerAction"] = playerAction,
-            ["progressionControl"] = JsonSerializer.SerializeToNode(
-                new ProgressionControl { CurrentRealm = currentRealm }),
-            ["files"] = files,
-            ["snapshotFileHashes"] = snapshotFileHashes,
-            ["clientOwnedValidationHashes"] = new JsonObject(),
-            ["rollbackBackups"] = new JsonObject(),
-            ["rollbackBaselineFiles"] = rollbackBaselineFiles,
-            ["sourceLabel"] = "Unified resource materialization integration test",
-            ["manifestPayloadHash"] = string.Empty
+            ["playerAction"] = playerAction
         };
+        if (preGeneratedDices1d20 != null)
+            manifest["preGeneratedDices1d20"] = JsonSerializer.SerializeToNode(preGeneratedDices1d20);
+        manifest["progressionControl"] = JsonSerializer.SerializeToNode(
+            new ProgressionControl { CurrentRealm = currentRealm });
+        manifest["files"] = files;
+        manifest["snapshotFileHashes"] = snapshotFileHashes;
+        manifest["clientOwnedValidationHashes"] = new JsonObject();
+        manifest["rollbackBackups"] = new JsonObject();
+        manifest["rollbackBaselineFiles"] = rollbackBaselineFiles;
+        manifest["sourceLabel"] = "Unified resource materialization integration test";
+        manifest["manifestPayloadHash"] = string.Empty;
         manifest["manifestPayloadHash"] =
             PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
 
