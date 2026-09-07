@@ -2125,6 +2125,11 @@ hand-written history/after-images, or a raw mutation fallback.
 ### GREEN implementation
 
 - [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
+  Accepted 2026-09-07 clarification for T082/T093/T100: both new arts use the
+  existing scalar integer tiers, ordinary player training/direct upgrades and
+  persistent-entity progression. No per-art experience track or mixed schema.
+  Fresh/current complete profiles explicitly contain both tier-zero entries;
+  the persistent player profile mirrors soul state and never auto-upgrades itself.
 - [ ] T083 [US3] Extend spiritual conflict start/state with declared danger mode, escalation evidence, per-side wound seals, and bounded defeat outcome in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
   Accepted declaration/persistence prerequisite, shared with T077/T085/T089-T092:
   `docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md` supplies

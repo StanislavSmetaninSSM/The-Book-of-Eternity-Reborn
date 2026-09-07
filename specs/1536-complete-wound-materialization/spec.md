@@ -58,6 +58,10 @@
 - Q: Which skill identity is used by a Mortal treatment procedure? → A: `resolved_skill_tier` seals the exact selected requirement row's canonical `RollSkillId`; `fixed_zero` seals null. The shared resolver filters broad or exact-skill modifiers before the unchanged advantage/disadvantage reducer and Fate Shield logic.
 - Q: How does detached treatment replay verify scoped roll modifiers without persisting the full effect snapshot? → A: The procedure authority persists one versioned normalized roll-source authority containing only ordered mechanical `roll_modifier` rows. Live, fresh, and detached paths use the same common reducer. Detached validation proves that the persisted result follows from that source, while fresh validation remains the canonical origin check: it recaptures the source from accepted mechanics, requires exact agreement, and restores every tentative claim registry on mismatch.
 
+### Session 2026-09-07
+
+- Q: Do Spiritual Resilience and Spiritual Healing need a separate experience system? → A: No. Both develop like all other standard spiritual arts: ordinary player training/upgrades and ordinary persistent-entity progression, from visible tier 0 through V. No per-art experience track or progression redesign is introduced.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receive a Complete and Fair Wound (Priority: P1)
@@ -461,7 +465,7 @@ The destination-strain ceiling used by FR-032 is exact:
 
 #### Spiritual arts, healing, and natural recovery
 
-- **FR-040**: Spiritual Resilience and Spiritual Healing MUST be visible standard arts at tier 0 and MUST use ordinary standard-art progression through tier V.
+- **FR-040**: Spiritual Resilience and Spiritual Healing MUST be visible standard arts at tier 0 and MUST use ordinary standard-art progression through tier V: existing player training/upgrades and persistent-entity progression, with the same eligibility, costs, and acceptance rules as other standard arts. Neither art introduces a separate experience track or a new progression system.
 - **FR-041**: Spiritual Resilience MUST passively affect the maximum spiritual injury calculation and MUST NOT consume OD.
 - **FR-042**: Spiritual Healing tier 0 MUST support diagnosis only; tiers I-IV MUST treat matching-or-lower severity; tier V MUST treat every spiritual severity.
 - **FR-043**: Active spiritual healing MUST use the approved total, difficulty, margin bands, complication modifiers, and sealed die evidence.

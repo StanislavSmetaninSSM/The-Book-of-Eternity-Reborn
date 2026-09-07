@@ -3110,19 +3110,25 @@ existing independent terminal authority.
 
 ## 11. Standard spiritual arts
 
-Every persistent afterlife combat profile exposes:
+Every persistent afterlife entity profile exposes scalar tiers in `standardArts`:
 
 ```json
 {
   "standardArts": {
-    "spiritual_resilience": { "tier": 0, "experience": 0 },
-    "spiritual_healing": { "tier": 0, "experience": 0 }
+    "spiritual_resilience": 0,
+    "spiritual_healing": 0
   }
 }
 ```
 
-Tier is 0-5 and experience/progression follows the existing accepted afterlife entity
-progression pipeline. `spiritual_resilience` supplies the target tier used by the wound
+The player authority is `soul_state.json.afterlifeCombatProfile.artTiers`, with the
+same scalar entries. The persistent `player_soul` profile mirrors that authority;
+it does not earn independent automatic art upgrades. Tier is an integer 0-5.
+Both arts use existing player training/direct upgrades and existing accepted
+persistent-entity progression, including their ordinary eligibility and currency
+rules. There is no per-art `experience` field, object-tier schema, mixed reader,
+or separate experience pipeline (user confirmation, 2026-09-07).
+`spiritual_resilience` supplies the target tier used by the wound
 opportunity. `spiritual_healing` supplies diagnosis, active-healing gate/check, natural
 recovery rate, and service capability. An omitted tier in a complete current profile is
 invalid after cutover; current bootstrap/profile fixtures receive tier 0 explicitly.
@@ -3217,7 +3223,7 @@ feeds the same attempt resolver.
 
 The built-in `elyara` profile is normalized/validated to:
 
-- `spiritual_healing.tier = 5` and cannot be downgraded;
+- `standardArts.spiritual_healing = 5` and cannot be downgraded;
 - fixed discoverable Lazaret location;
 - public available service, multiplier 100;
 - supported negotiated compensation from her accepted character contract.
@@ -3226,7 +3232,7 @@ The built-in `elyara` profile is normalized/validated to:
 
 Each accepted Shining faction has at least one visible roster resident in
 `game_state/meta/guardian_abode_residents.json` whose
-`primaryRole.key = healing_support` and whose `spiritual_healing.tier` is 1-5. The
+`primaryRole.key = healing_support` and whose `standardArts.spiritual_healing` is 1-5. The
 resident's exact actor identity resolves to its afterlife profile. That profile may
 omit `healingServiceProfile` or declare restricted access. The role is ordinary
 visible roster information.

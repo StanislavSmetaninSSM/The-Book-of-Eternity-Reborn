@@ -1632,7 +1632,9 @@ as a Minor sequencing deviation and four separately traced Mortal fixture failur
 under T177. This bounded acceptance does not close any top-level task.
 Accepted escalation, full side seals, defeat/dissipation, first-exchange UI,
 arts/progression and real wound/healing production remain their open tasks;
-the separate art-schema and legacy-preparation choices are not made here.
+that historical prerequisite did not decide the art schema or legacy preparation.
+The 2026-09-07 art clarification below resolves the former; legacy preparation
+remains separate.
 
 The bounded T085 authority prerequisite
 `docs/superpowers/plans/2026-09-07-spiritual-exchange-history-authority.md`
@@ -1709,18 +1711,29 @@ preserves negative margins and fails closed on invalid domains or overflow.
 The pure 66-row test inventory covers arithmetic only, not accepted harmful-margin
 provenance, art registration, mode/escalation seals, per-side/re-trauma decisions
 or opportunity publication. T076/T084 remain open after this prerequisite.
-Source preflight also found that the approved new-art `{tier,experience}` example
-and the current scalar-tier/currency progression differ; reconcile that separately
-before T082/T100 instead of silently introducing mixed schemas. It does not block
-this value-only calculator. Bounded arithmetic is accepted at `1969a695` after
+Source preflight found that the former new-art object example differed from current
+scalar-tier progression. The user's explicit 2026-09-07 answer resolves this for
+T082/T093/T100: both new arts use the existing integer 0..5 tiers, player
+training/direct upgrades and persistent-entity automatic progression. The player
+`afterlifeCombatProfile.artTiers` remains authoritative and the persistent
+`player_soul.standardArts` remains a mirror excluded from automatic upgrades.
+Bootstrap/current profile fixtures receive explicit zero entries; validators reject
+missing required new-art tiers and malformed/object tiers after cutover. No per-art
+experience, mixed schema, new progression pipeline, or compatibility reader is added.
+Registration does not make passive resilience an operation, nor does it implement
+the later healing operation/resolver. The data model now matches this decision.
+The concrete current-profile/training/presentation cutover plan is
+`docs/superpowers/plans/2026-09-07-standard-wound-arts.md`.
+Bounded arithmetic is accepted at `1969a695` after
 parent source/artifact inspection and independent Spec Compliant / Quality
 Approved with zero open findings. Actual staged 42 RED -> 42 GREEN -> 24 RED ->
 66 GREEN, all at five minutes with clean builds/cleanup, proves only this math.
 One Fast completed 6,208 of 7,380 discovery rows: 6,207 PASS and the required
 unchanged legacy-source failure; arithmetic 1,172 uncompleted, not full GREEN.
 No runtime caller or GM contract was added, so no GM prompt/example or conditional
-FullValidation update was needed. Full T076/T084 and the above schema decision
-remain open; the linked sub-plan contains the exact evidence and boundaries.
+FullValidation update was needed. Full T076/T084 remain open; the linked sub-plan
+contains the exact evidence and boundaries. The art-schema decision is resolved
+above and must not be asked again.
 
 Next numerical prerequisite (2026-09-07):
 `docs/superpowers/plans/2026-09-07-spiritual-healing-outcome-math.md` defines the
@@ -1734,7 +1747,8 @@ all clean five-minute runs; one Fast completed 6,266 of 7,446 discovery rows wit
 6,265 PASS / one required unchanged legacy failure, arithmetic 1,180 uncompleted,
 not full GREEN. Full T094/T101 stay open for the actual shared resolver
 and accepted publication, while the existing GM synchronization tasks cover the
-future exposed workflow. This task does not settle the separate art-schema choice.
+future exposed workflow. This arithmetic task did not change the art schema;
+the subsequent 2026-09-07 clarification above selects ordinary scalar progression.
 
 Accepted recovery arithmetic prerequisite (2026-09-07):
 `docs/superpowers/plans/2026-09-07-spiritual-natural-recovery-math.md` supplies an
