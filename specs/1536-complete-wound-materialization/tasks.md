@@ -2185,6 +2185,18 @@ hand-written history/after-images, or a raw mutation fallback.
       receipt waves, last-use/terminal reservations, retry/cold identity proof,
       failed suffix with no publication and one final common plan. B1 completion
       alone must not close B2 or T081-B; full runtime/GM synchronization applies.
+      - [ ] T081-B2A [US3] Retain the actual fixed-graph resource execution in
+        one owned session, consumed by ordinary BuildResources/Drain. Complete
+        three-file code and nine tests are in
+        `docs/superpowers/plans/2026-09-08-retained-resource-execution-session.md`
+        and its companion patch. Explicit closed-frontier stepping preserves
+        prepared identities, scheduler, ledger/history, arbiter and transcript;
+        no terminal history/effect seal or common plan is created at a checkpoint.
+        This prerequisite does not update a wound-dependent suffix, admit a
+        spiritual source or complete effects. Preserve real zero-mutation sources;
+        full B2 remains required for live effect draft/journal, authorized wound
+        insertion, next-exchange consumption, suffix replacement and cold/receipt
+        continuation. Verify all prescribed owning/pending/signed/scale controls.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

@@ -1688,6 +1688,30 @@ Fast evidence gaps are resolved; historical failures remain recorded in the
 bounded plans. Only nested B1 is accepted; top-level79/177 and B2/C/D/E remain open.
 No GM capability/contract changed, so no prompt/example/matrix update is needed.
 
+The next independently testable prerequisite is T081-B2A, specified completely in
+`docs/superpowers/plans/2026-09-08-retained-resource-execution-session.md` and its
+companion patch. A production-consumed iterator retains the real fixed graph,
+identities, scheduler, mutable resource/history work, use arbiter and transcript.
+It can pause at closed resource causal frontiers without final sealing; ordinary
+Drain creates no checkpoint images and preserves existing results/work counters.
+Nine concrete tests plus owning, scale, pending and signed controls are required.
+This does not imply a whole spiritual exchange boundary or support replacing a
+prepared suffix; zero-mutation lawful sources remain mandatory downstream.
+
+The subsequent effect boundary must distinguish live state from final history
+assembly. The existing finalizer globally preflights released applications, writes
+non-consuming evidence, applies nonterminal reactions, projects consuming uses
+(including insertion before a replacement), applies non-bound lifecycles and
+folds terminal winners. Repeating it over prefixes would change ordering or apply
+work twice. After a nonterminal evidence view, implement an owned effect draft and
+operation journal with actual already-allocated materialization results, preserved
+ordinary compatibility ordering and exact frozen replacement dependencies. Admit
+authorized wounds into that same draft as causal operations and consume their
+timing-eligible effects when preparing the next exchange; final canonical history
+and common publication consume the retained results exactly once. Observation-only
+types cannot close B2. Whole-source authority, both-side/zero-cost exchange mapping,
+suffix recomposition and authenticated receipt/cold recovery remain required.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form
