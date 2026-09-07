@@ -10,7 +10,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AfterlifeDocumentationCoverageTests
+public sealed partial class AfterlifeDocumentationCoverageTests
 {
     [Fact]
     public void WoundTerminalGeneration_PreservesHistoryWithoutEnablingSpiritualTreatment()

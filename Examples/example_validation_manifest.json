@@ -718,6 +718,18 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "afterlife_spiritual_exchange_history_authority_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog",
+      "responseSurface": "afterlifeSpiritualConflictUpdate.exchange and retained accepted exchange history",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Same-conflict one-use snapshot authority for historical exchange dice, matchup and action-cost audit exemption; marker-alone backdating rejected, narrow readable-summary validation compatibility retained.",
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_ -> ValidationService.ValidateGameStateAsync(AfterlifeSpiritualConflictState); AfterlifeDocumentationCoverageTests.HistoricalExchangeAuthorityDocumentation_RequiresSnapshotNotBackdating",
+      "coverageLimit": "Behavioral exchange-audit classification and worked text coverage, not full wound or publication authority. The resource publisher still requires the exact pre-turn prefix. Source of Light has a separate turn-marker contract outside this prerequisite.",
+      "requiredText": ["afterlife_spiritual_exchange_history_authority_v1", "exchange_accepted_history_006", "exchangeAtTurn alone is not authority", "validation compatibility only", "exact pre-turn prefix", "afterlife_conflict_resource_log_prefix_mutated"]
+    },
+    {
       "contractId": "afterlife_actor_materialization_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",

@@ -184,14 +184,21 @@ public partial class ValidationService
             _consumed = new bool[_payloads.Count];
         }
 
-        public bool TryConsume(JsonObject payload)
+        public bool TryConsume(JsonObject payload, bool allowHistoricalSummaryDrift) =>
+            TryConsumeMatching(payload, ignoreSummary: false) ||
+            (allowHistoricalSummaryDrift && TryConsumeMatching(payload, ignoreSummary: true));
+
+        private bool TryConsumeMatching(JsonObject payload, bool ignoreSummary)
         {
             for (var index = 0; index < _payloads.Count; index++)
             {
                 if (_consumed[index])
                     continue;
 
-                if (!JsonNode.DeepEquals(_payloads[index], payload))
+                var matches = ignoreSummary
+                    ? MatchesExceptReadableSummary(_payloads[index], payload)
+                    : JsonNode.DeepEquals(_payloads[index], payload);
+                if (!matches)
                     continue;
 
                 _consumed[index] = true;
@@ -200,6 +207,32 @@ public partial class ValidationService
 
             return false;
         }
+
+        private static bool MatchesExceptReadableSummary(JsonObject accepted, JsonObject current)
+        {
+            if (!IsOptionalSummaryText(accepted["summary"]) || !IsOptionalSummaryText(current["summary"]))
+                return false;
+
+            foreach (var member in accepted)
+            {
+                if (member.Key == "summary")
+                    continue;
+                if (!current.TryGetPropertyValue(member.Key, out var value) ||
+                    !JsonNode.DeepEquals(member.Value, value))
+                    return false;
+            }
+
+            foreach (var member in current)
+            {
+                if (member.Key != "summary" && !accepted.ContainsKey(member.Key))
+                    return false;
+            }
+
+            return true;
+        }
+
+        private static bool IsOptionalSummaryText(JsonNode? node) =>
+            node is null || node is JsonValue value && value.TryGetValue<string>(out _);
     }
 
     private sealed class AfterlifeConflictRewardContext
@@ -1374,14 +1407,19 @@ public partial class ValidationService
         int? expectedNextOppositionActionCostBefore = ResolveScopedPreTurnResourceCurrent(conflict, diceContext, "opposition");
         if (conflict["exchangeLog"] is JsonArray exchangeLog)
         {
-            var preTurnExchangePayloads = new PreTurnConflictPayloadTracker(diceContext.PreTurnConflictPayloads);
+            var scopedPreTurnPayloads = diceContext.HasValidatedTurnBaseline &&
+                !string.IsNullOrWhiteSpace(diceContext.PreTurnActiveConflictId) &&
+                string.Equals(TryReadConflictId(conflict), diceContext.PreTurnActiveConflictId, StringComparison.OrdinalIgnoreCase)
+                    ? diceContext.PreTurnConflictPayloads
+                    : null;
+            var preTurnExchangePayloads = new PreTurnConflictPayloadTracker(scopedPreTurnPayloads);
             for (var index = 0; index < exchangeLog.Count; index++)
             {
                 if (exchangeLog[index] is JsonObject exchange)
                 {
                     var isPreTurnExchange =
-                        preTurnExchangePayloads.TryConsume(exchange) ||
-                        IsExchangeFromPriorTurn(exchange, diceContext);
+                        preTurnExchangePayloads.TryConsume(
+                            exchange, allowHistoricalSummaryDrift: HasPriorTurnMarker(exchange, diceContext));
                     var isCurrentExchange = diceContext.HasValidatedTurnBaseline && !isPreTurnExchange;
                     hasCurrentExchange = hasCurrentExchange || isCurrentExchange;
                     ValidateConflictExchange(
@@ -2903,7 +2941,7 @@ public partial class ValidationService
         }
     }
 
-    private static bool IsExchangeFromPriorTurn(JsonObject exchange, AfterlifeConflictDiceContext diceContext)
+    private static bool HasPriorTurnMarker(JsonObject exchange, AfterlifeConflictDiceContext diceContext)
     {
         if (!diceContext.HasValidatedTurnBaseline ||
             diceContext.CurrentTurn is not int currentTurn ||
