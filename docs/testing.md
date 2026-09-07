@@ -106,7 +106,7 @@ method-level decoys do not count. Moved WebUi tests share
 tests and was moved there unchanged so Integration does not reference Fast.
 The exact reviewed-heavy source/category manifest contains 67
 `FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
-class-level Integration manifest contains 39
+class-level Integration manifest contains 40
 `IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are
 recorded in `specs/1505-test-suite-performance/research.md` and enforced by
 their respective boundary guards.
@@ -116,6 +116,9 @@ their respective boundary guards.
 and lock-contention scenario is not a fixture-free unit test. The physical move
 preserves its single Fact and all assertions, waits and cleanup; it does not
 change the Fast limit, runner or production behavior.
+The Integration manifest also records the existing
+`SpiritualHealingArtValidationTests.cs` file-backed profile-validation owner;
+its category and all tests are unchanged.
 
 The diagnostic lanes select
 `BookOfEternityClient.IntegrationTests.csproj`. They are available when a

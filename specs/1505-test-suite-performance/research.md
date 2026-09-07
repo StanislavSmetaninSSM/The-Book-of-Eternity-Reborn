@@ -517,13 +517,18 @@ unchanged; only physical ownership and the class-level RegressionIntegration
 trait change. The pre-move failed Fast and passing isolated diagnostic remain
 recorded in `docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`;
 neither is relabeled as proof of a production concurrency fix.
+The same category guard exposed one older missing manifest entry:
+`SpiritualHealingArtValidationTests.cs` already owned real file-backed profile
+validation in RegressionIntegration. Recording that existing owner changes no
+category, test body or gameplay and brings the second manifest to40 entries.
 
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
-these 39 ordinal entries after class-level ownership hardening:
+these 40 ordinal entries after class-level ownership hardening:
 
 ```text
 AfterlifeSpiritualConflictValidationTests.cs
+SpiritualHealingArtValidationTests.cs
 BrowserCommandPresentationAuditTests.cs
 ExplorerModeCommandTests.cs
 ExplorerWebCommandServiceTests.cs

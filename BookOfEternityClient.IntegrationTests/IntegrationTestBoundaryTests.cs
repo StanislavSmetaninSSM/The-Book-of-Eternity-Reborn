@@ -208,6 +208,7 @@ public sealed class IntegrationTestBoundaryTests
     private static readonly string[] RegressionIntegrationSources =
     [
         "AfterlifeSpiritualConflictValidationTests.cs",
+        "SpiritualHealingArtValidationTests.cs",
         "BrowserCommandPresentationAuditTests.cs",
         "ExplorerModeCommandTests.cs",
         "ExplorerWebCommandServiceTests.cs",
