@@ -66,7 +66,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests
         };
         using var document = JsonDocument.Parse(response.ToJsonString());
         var issues = _validator.ValidateResponse(document.RootElement);
-        var issue = Assert.Single(issues.Where(IsDangerModeIssue));
+        var issue = Assert.Single(issues, IsDangerModeIssue);
         Assert.Equal("afterlife_conflict_danger_mode_invalid", issue.Code);
         Assert.EndsWith("." + seedProperty + ".dangerMode", issue.FilePath, StringComparison.Ordinal);
     }
