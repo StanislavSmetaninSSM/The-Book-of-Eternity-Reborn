@@ -2126,15 +2126,21 @@ hand-written history/after-images, or a raw mutation fallback.
 
 - [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - [ ] T083 [US3] Extend spiritual conflict start/state with declared danger mode, escalation evidence, per-side wound seals, and bounded defeat outcome in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs`
-  Planned declaration/persistence prerequisite, shared with T077/T085/T089-T092:
+  Accepted declaration/persistence prerequisite, shared with T077/T085/T089-T092:
   `docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md` supplies
   complete code for strict start/canonical danger tokens, immutable ordinary
   exchange/replacement carry, terminal-proof retention and signed same-ID
   active/recent continuity across every occurrence. It includes 66 Fast reducer
   rows, 50 Integration response/file/snapshot rows, one GM guard, exact current
-  fixture cutover and a manifest-backed persisted start example. No code/test
-  acceptance is claimed yet; full T083 remains open for accepted escalation,
-  per-side wound seals and bounded defeat. No implicit mode, migration, art
+  fixture cutover and a manifest-backed persisted start example. Runtime947832f0
+  and archive correction1576aa57 are independently final-state Spec compliant /
+  Quality Approved. Parent checked actual diffs, archive bytes, Fast7698PASS in
+  4:11.077/5m and exact reconciled Full coverage1859rows/1075methods. The original
+  official FullValidation remains FAILED; its corrected reruns are separate
+  evidence. Historical Integration RED50 was skipped, retained as a Minor process
+  deviation, with post-implementation mutation31FAIL/19PASS and restored50PASS.
+  Four Mortal source-fixture failures remain T177 work. Full T083 stays open for
+  accepted escalation, per-side wound seals and bounded defeat. No implicit mode, migration, art
   schema or healing authority is introduced by this prerequisite.
 - [ ] T084 [US3] Implement trauma-pressure calculation, destination/mode/source caps, harmful-margin audit, one-per-side/re-trauma rules, and opportunity export in `BookOfEternityClient/Services/SpiritualWoundOpportunityAdapter.cs`
   The accepted T076-linked pure arithmetic prerequisite (`1969a695`) adds
@@ -2383,7 +2389,19 @@ scope, then resume paused wound documentation and final controls against one fin
 - [X] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
 - [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
 
-T177 bounded fixture correction complete (2026-09-07):
+T177 bounded fixture checkpoints (2026-09-07):
+
+Next bounded correction (not yet accepted):
+`docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md` restores
+the generic effect rollback cohort's canonical source fixture. Four observed
+Mortal failures persist with danger validation disabled: legacy wound arrays
+cannot supply the typed canonical source, so the intended write probe is not
+reached. The plan changes only EffectMaterializationLifecycleTests.cs to the
+existing registered skill source, preserves all4methods/14rows and assertions,
+and requires exact RED/GREEN plus one Fast. No production, GM surface, source
+fallback or actual wound-owned binding is changed; full T177 stays open.
+
+Previously accepted bounded reflection correction:
 `docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` repairs only
 the two ordinary-stage reflection calls that still pass two arguments to current
 four-parameter registry methods. The catalog Fast's three failing rows stop at

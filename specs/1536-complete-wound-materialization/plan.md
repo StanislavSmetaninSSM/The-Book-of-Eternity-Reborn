@@ -1593,7 +1593,18 @@ needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain o
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
-The next bounded T077/T083/T085 declaration prerequisite is fully specified in
+The next bounded T177 fixture correction is specified in
+`docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
+Generic effect publication/rollback scenarios currently seed old array-form
+wounds, so source validation rejects them before their injected write failure.
+The one-file plan uses the existing registered materializable skill for those
+ordinary effects, with aligned command/canonical selectors and identity index.
+All fourteen original rollback rows, snapshots, probes and byte assertions stay
+intact; afterlife spiritual_art source overrides are unchanged. It introduces
+no wound gameplay, shared fixture, production or GM-contract change. T177 and
+the complete feature remain open until their broader work is actually verified.
+
+The accepted bounded T077/T083/T085 declaration prerequisite is specified in
 `docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md`. It requires
 one exact danger token on new starts and canonical active/recent objects,
 preserves it through ordinary exchange and terminal publication, and reuses the
@@ -1605,8 +1616,15 @@ The complete-code plan includes 66 deterministic reducer rows, 50 actual
 response/file/snapshot rows, one GM guard, explicit current-fixture cutover,
 six synchronized GM surfaces and the existing worked start's runtime persisted-
 value assertion. Its bounded Spec Kit consistency pass found no new scoped
-ambiguity or constitution conflict. Implementation and verification are still
-pending: this is not acceptance and does not close any top-level task.
+ambiguity or constitution conflict. Runtime947832f0 plus fixture correction1576aa57
+are independently final-state Spec compliant / Quality Approved, with parent
+actual source, archive and result-artifact inspection. Fast7698/7698 passes in
+4:11.077/5m. The original FullValidation failed1622/1623; corrected archive/command
+reruns plus exact missing-descriptor follow-through reconcile1859rows/1075methods
+without failed/missing/extra latest results, but do not relabel that official
+control as passing. The plan preserves the skipped historical Integration RED50
+as a Minor sequencing deviation and four separately traced Mortal fixture failures
+under T177. This bounded acceptance does not close any top-level task.
 Accepted escalation, full side seals, defeat/dissipation, first-exchange UI,
 arts/progression and real wound/healing production remain their open tasks;
 the separate art-schema and legacy-preparation choices are not made here.

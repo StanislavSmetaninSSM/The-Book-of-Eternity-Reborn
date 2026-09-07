@@ -8,6 +8,11 @@
 
 **Tech Stack:** C#/.NET 8, System.Text.Json.Nodes, existing file-backed ValidationService, xUnit, PowerShell 7 bounded lanes.
 
+**Status (2026-09-07):** Final-state implementation accepted at
+`a234fbe0..1576aa57`, independent Spec compliant / Quality Approved. Step 2
+retains a documented historical sequencing exception; it is not pending work
+to rerun or retroactively relabel. All broader feature tasks remain open.
+
 ## Global Constraints
 
 - Tracked source: [GitHub #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), bounded T077/T083/T085 declaration prerequisite and T089-T092 GM synchronization; specs/1536-complete-wound-materialization/spec.md, plan.md and tasks.md remain feature authority.
@@ -87,7 +92,7 @@ player-visible pre-first-exchange workflow.
 - Rename only the private async terminal-integrity method to ValidateAfterlifeConflictPreTurnIntegrityAsync(JsonObject?, List<ValidationIssue>); three call sites change with it.
 - New private validation hooks and helpers are completely defined below. Do not alter dice-context DTOs, grant math or the resource publisher.
 
-- [ ] **Step 1: Add the complete RED regression tests.**
+- [x] **Step 1: Add the complete RED regression tests.**
 
 Create BookOfEternityClient.Tests/SpiritualConflictDangerModeTests.cs exactly:
 ```csharp
@@ -716,6 +721,13 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 
 - [ ] **Step 2: Run bounded RED and inspect the actual failures before production edits.**
 
+**Recorded exception:** Fast semantic RED ran before implementation, but the
+prescribed Integration RED50 did not. Later controlled mutation proves 31
+negative cases fail and 19 positive cases remain passing; restored code passes
+all50. Independent review accepts final-state behavior with this Minor process
+deviation. This unchecked historical step must not trigger a repeat implementation
+or be described as completed test-first evidence.
+
 Run sequentially from the worktree with PowerShell 7:
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualConflictDangerModeTests|FullyQualifiedName~SpiritualDangerDeclarationDocumentation_"
@@ -729,7 +741,7 @@ contract/persisted example is absent. Confirm 67 Fast and 50 Integration rows
 were actually selected. A build error or unrelated setup failure is not semantic
 RED; repair only transcription/setup and rerun the affected selection.
 
-- [ ] **Step 3: Add the shared policy and exact runtime implementation.**
+- [x] **Step 3: Add the shared policy and exact runtime implementation.**
 
 Create BookOfEternityClient/Services/SpiritualConflictDangerPolicy.cs exactly:
 ```csharp
@@ -1143,7 +1155,7 @@ early return; the old terminal predicate and branches are not rewritten.
 -    };
 ```
 
-- [ ] **Step 4: Cut over current fixtures and synchronize the GM contract.**
+- [x] **Step 4: Cut over current fixtures and synchronize the GM contract.**
 
 Apply the following exact fixture patch. It adds 66 explicit declarations in
 11 files and makes the dissipation snapshot's matching pre-turn mode explicit.
@@ -2030,7 +2042,7 @@ requiredText alone would only prove source presence. Existing FullValidation
 covers this runtime route; inspect that method's result instead of adding an
 unnecessary duplicate manifest run.
 
-- [ ] **Step 5: Run GREEN, changed-helper owners, one Fast and conditional FullValidation.**
+- [x] **Step 5: Run GREEN, changed-helper owners, one Fast and conditional FullValidation.**
 
 Run each command sequentially; drain it fully before the next. First:
 ```powershell
@@ -2044,7 +2056,7 @@ Then the real canonical/start/terminal owner selection:
 
 Then one witness per changed accepted resource/effect/wound/balance helper:
 ```powershell
-.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictReducer_StartNeverCreatesLegacyActionEconomy|FullyQualifiedName~ResourceAfterlifeOwnerTests.AcceptedTurn_ConflictStartUsesTheCommonOwnerPlanAndPublication|FullyQualifiedName~EffectAfterlifeAdapterTests.ApplyExchange_PreservesCommonConditionCarrier|FullyQualifiedName~EffectAfterlifeAdapterTests.TryProcessCommand_SpiritualActionUsesAcceptedConditionProjection|FullyQualifiedName~EffectMaterializationLifecycleTests.EffectMaterializationLifecycleTests_PendingResolutionPublicationFailureRestoresEntireTrackedSet|FullyQualifiedName~WoundMaterializationTestFixturesTests.DangerModes_UseIndependentConflictEvidence|FullyQualifiedName~WoundMaterializationTestFixturesTests.SpiritualConflictSeed_PassesFileBackedAfterlifeConflictValidation|FullyQualifiedName~AfterlifeSpiritualConflictBalanceTests.ValidateGameStateAsync_AfterlifeConflictBalanceMatrix_AcceptsExpectedDiceBands"
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictReducer_StartNeverCreatesLegacyActionEconomy|FullyQualifiedName~ResourceAfterlifeOwnerTests.AcceptedTurn_ConflictStartUsesTheCommonOwnerPlanAndPublication|FullyQualifiedName~EffectAfterlifeAdapterTests.ApplyExchange_PreservesCommonConditionCarrier|FullyQualifiedName~ExplorerModeCommandTests.TryProcessCommand_SpiritualActionUsesAcceptedConditionProjection|FullyQualifiedName~GameEngineTurnLifecycleTests.EffectMaterializationLifecycleTests_OwnerCarrierPublicationFailureRestoresEntireTrackedSet|FullyQualifiedName~WoundMaterializationTestFixturesTests.DangerModes_UseIndependentConflictEvidence|FullyQualifiedName~WoundMaterializationTestFixturesTests.SpiritualConflictSeed_PassesFileBackedAfterlifeConflictValidation|FullyQualifiedName~AfterlifeSpiritualConflictBalanceTests.ValidateGameStateAsync_AfterlifeConflictBalanceMatrix_AcceptsExpectedDiceBands"
 ```
 
 Expected: every requested method is discovered, all selected rows PASS, zero
@@ -2068,7 +2080,7 @@ passes in FullValidation. Do not add a repeated adjacent Fast or PreMerge.
 If a control fails, retain its artifacts, diagnose the exact failing boundary,
 and report concerns instead of editing unrelated gameplay or changing coverage.
 
-- [ ] **Step 6: Self-review, commit the scoped files and report evidence.**
+- [x] **Step 6: Self-review, commit the scoped files and report evidence.**
 
 Inspect the actual diff against every constraint and supplied code block; verify
 the shared token set/caps, no implicit fallback, unchanged resource/dissipation
@@ -2122,3 +2134,96 @@ The parent inspects source and raw evidence before independent task review.
 - Placeholder/type/constraint scan is required before dispatch. The parent
   supplies the complete Global Constraints and File map with the extracted
   task brief; the helper by itself omits the plan header.
+
+## Acceptance and actual verification — 2026-09-07
+
+Accepted implementation947832f003307c76c8bfbb00fca73215551b1291 plus correction
+1576aa571b74c08c881ef2d21dd460c392c717c1; original reviewBASE is
+a234fbe07f3d4e2ff485861606604c7225de988d, not the last commit's parent.
+Independent task review and clarification are final-state Spec compliant /
+Quality Approved, zero Critical/Important and one retained Minor process issue:
+Integration RED50 did not run before implementation. No later run is described
+as historical test-first evidence. Step2 remains unchecked as an explicit
+non-recoverable sequencing exception, not unfinished implementation.
+
+Actual results under TestResults/test-lanes (all date prefix20260907):
+
+| Artifact suffix | Selection/result | Wall |
+| --- | --- | --- |
+| 152805-080-29176-80cea0b8b2754d76b9de9c8358f77622-focused | Empty discovery before tests existed; not semantic RED | 1:06.163 |
+| 153039-582-48288-5e94c742bdc84b97baceed36c8513faa-focused | Fast semantic RED67:20PASS/47FAIL | 32.471s |
+| 153308-819-47556-fdd2fe1f8f35451fbddc9823598eb90c-focused | Build-only CS0103, seven errors after accidental helper removal | 34.058s |
+| 153439-842-49616-34ea50655e68468c8781ac057f7d63bc-focused | Build-only CS0111, seven errors in the intermediate repair | 8.683s |
+| 153527-703-38780-297948358b0e4917828e95c429afa9be-focused | Reducer66+math66+docs124+previews2:258PASS | 1:14.463 |
+| 153648-995-34016-cc70f21ff5274f46ba27829a7a9c9a2e-focused | Danger50+core6:56PASS | 1:20.326 |
+| 153816-357-39120-7f789e950ba54b4da6d23d552d36b733-focused | Owners/balance20PASS; two intended owner methods absent from wrong filters | 34.214s |
+| 153855-372-38952-cd0078142ae6414b810b31d93c83ece9-focused | Exact Light Incarnate/dissipation6PASS | 23.579s |
+| 153922-879-35620-d101f2db206a41f88f0800d5ce259603-fast | Official Fast7698/7698PASS,26TRX,3942methods | 4:11.077/5m |
+| 154338-888-27584-2c64c88f6ccf49a485d703a3bb458cb3-focused | Mortal pending rollback1FAIL before injected write hook | 20.818s |
+| 154436-162-19492-3a6658aaa08f4ebf94c8af33ef270bcf-fullvalidation | Official FullValidation FAILED1622/1623; Shining /валидация leaks null | 9:48.895/15m |
+| 155430-105-35956-b13f3f6eb2be4c5baf32b9bb5b5effaa-focused | Correct projection1/afterlife owners2PASS, Mortal owners3FAIL | 35.371s |
+| 160739-930-47644-46d693c2375c4b1eb96b08d70883b30c-focused | Mutation diagnostics56:21PASS/35FAIL; wrong pending assertion instrumented | 2:12.337 |
+| 161011-513-30128-15a5eb7dc5d647beb73ac375177f7590-focused | Same56:21PASS/35FAIL; another wrong assertion instrumented | 1:34.703 |
+| 161210-108-50036-c1187eb006df43ae9f54e58c073c7627-focused | Correctly anchored diagnostic: danger19PASS/31FAIL, afterlife2PASS, Mortal4FAIL | 1:33.039 |
+| 162350-670-6028-85997f21994440709839531b13797a21-focused | Archive guard2 semanticRED | 1:24.737 |
+| 162729-284-36488-3bb07beb094e441c9d74a6e555137a31-focused | Restored danger50PASS | 39.822s |
+| 162815-870-1692-46690f9814ee4fdea5c1dac59edcac85-focused | Archive2+unchanged budget1:3PASS | 13.408s |
+| 162836-312-10800-8037fc01b44241308536bc0abc53a540-focused | Chaos command-display76PASS | 1:05.546 |
+| 162951-687-46720-58ca8bf905e74c95adec1c3fdf71d421-focused | Shining command-display78PASS, including original /валидация | 1:00.563 |
+| 163106-647-18348-3b7b6d3fce744b34882787eca8b8c52a-focused | Missing actor52methods/82rowsPASS | 1:23.528 |
+| 163238-995-32924-0f05ae1025e743a5bec64b0e3a2469e8-focused | Missing actor52methods/82rowsPASS | 1:46.188 |
+| 163434-419-45332-0bd87cdd393d4a17ad381fef78459230-focused | Missing QTE10methods/70rowsPASS | 39.697s |
+
+Every completed summary has no timeout, duplicate IDs or owned-tree cleanup
+failure. Successful builds have zero compiler warnings/errors; ordinary Git
+EOL notices are separately recorded. Intermediate compiler failures and repeated
+diagnostic attempts are retained, not hidden. Neighboring reducer helpers were
+restored; final net reducer diff is30added lines with no helper deletion.
+
+Parent independently reconciled Fast7644discovery+54dynamicrows against all
+7698actual rows/3942methods. The failed Full run completed960 of1074methods;
+exact original cancelled descriptors supplied missing52+52actor/10QTE methods.
+Their234rows have no overlap with completed methods. Corrected budget1/Chaos76/
+Shining78 reruns replace exactly the same case membership; archive guard adds
+one method/two rows. Combined latest coverage1859rows/1075methods has zero
+nonpassing/missing/extra result. This is reconciled evidence, NOT an official
+green FullValidation invocation. No repeated Fast, FullValidation or PreMerge
+was used to rename the failed original control.
+
+The runtime manifest test RuntimeManifestScenarios_DistributeThroughClientSurfaces
+is one passing Fact that executes all scenarios internally; its actual code
+checks expectedFileContains, including the worked start's persisted dangerMode.
+No additional scenario-row count is claimed.
+
+Correction scope adds exactly FileSystemExampleFixtureIntegrityTests.cs and the
+two maintained afterlife command-display ZIPs. Both active and recent entries
+needed explicit hostile test scaffolding. Parent compared all uncompressed entry
+bytes against947832f0:104Chaos/34Shining names/counts and all other entry bytes
+unchanged. Only game_state/meta/afterlife_spiritual_conflict_state.json changed
+inside each; removing exactly two inserted lines reproduces its original bytes
+and timestamps are preserved. This is a fixture cutover, not a user-save migration.
+Unchanged budgets pass because the untouched Mortal archive remains the maximum
+expanded/largest-entry fixture. No archive limits were raised.
+
+Temporary mutation touched two C# files. Lifecycle source returned to its exact
+original SHA-256; validator returned to identical Git-normalized candidate
+content with an acknowledged mixed-EOL physical-hash deviation. The correction
+commit contains no runtime source change. Independent review's binary ⚠ is
+resolved by the parent all-entry audit; its remote-state ⚠ is resolved by the
+bounded task's tool/action record: no push, PR, issue or other remote write ran.
+
+The original owner filter named file names as classes. Step5 now names the actual
+ExplorerModeCommandTests projection and GameEngineTurnLifecycleTests owner-carrier
+method; their exact reruns are recorded above. The originally selected pending
+method exercises a Mortal source, not the changed spiritual helper. Its failure
+and the three Mortal owner failures persist with all new declaration hooks
+disabled: old array wounds provide no canonical source, causing
+effect_source_selector_unresolved for wound_test_torn_side/bleeding_consequence.
+These remain T177 fixture work; production legacy fallback and weaker rollback
+assertions are not introduced.
+
+GM synchronization includes API, daemon, turn guide, afterlife matrix/glossary,
+worked example, runtime manifest and executable source guard. Mortal commands,
+art/progression/healing, player UI and daemon entrypoint paths are unchanged.
+The remaining T083/T085/T089-T092/T177/#1536 requirements stay open; top-level
+completion remains77/177. No issue closure or remote integration is implied.
