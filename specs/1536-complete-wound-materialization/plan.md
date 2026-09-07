@@ -1631,10 +1631,18 @@ an exact one-use recent-resolution membership from a separate pre-turn list.
 It rejects unmatched pre-grant markers and no-marker current payloads even when
 a validated baseline has no dice. Existing offline compatibility, grant closure,
 bonus arithmetic, marker precedence and resource-prefix enforcement are unchanged.
-Twenty-two real file-backed cases and synchronized GM API/daemon/turn/matrix/
+Twenty-three real file-backed cases and synchronized GM API/daemon/turn/matrix/
 example/manifest guidance cover only this admission boundary; full grant authority,
 spiritual wound production, arts and healing remain open. Parent has checked the
 complete-code plan against the current private interfaces before implementation.
+Accepted on 2026-09-07: `cbbfa98f` plus `d9547c52`, independently reviewed
+Spec compliant / Task quality Approved, with no Critical/Important findings.
+The correction restores the exact Integration source and adds a mutation-proved
+recent-summary-only rejection. Final owner54/54 and docs123/123 are GREEN;
+one Fast7631/7631 in3:50.280/5m and one Full1857/1857 in10:50.932/15m are verified
+against all raw artifacts and discovery. The bounded plan preserves the temporary
+CS1026 build failure, command-form deviation and two non-blocking Minor items.
+No full feature task is closed; top-level77/177 and the final T177 gate remain open.
 
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
    re-trauma/defeat/dissipation tests.

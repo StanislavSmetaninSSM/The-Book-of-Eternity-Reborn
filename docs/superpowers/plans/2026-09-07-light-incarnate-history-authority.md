@@ -70,7 +70,7 @@ actual spiritual wound/healing publication stay with their open tasks.
   Both existing direct capstone callers must pass the applicable membership.
 - No default true, public authority factory, cache or persisted result is added.
 
-- [ ] **Step 1: Add the complete Integration and documentation regression tests.**
+- [x] **Step 1: Add the complete Integration and documentation regression tests.**
 
 Create the Integration partial exactly as follows. Its fixtures use the existing
 complete capstone closure (grant7), actual snapshot/file helpers and current dice.
@@ -372,7 +372,7 @@ public sealed partial class AfterlifeDocumentationCoverageTests
 }
 ```
 
-- [ ] **Step 2: Observe the focused semantic RED before runtime or GM changes.**
+- [x] **Step 2: Observe the focused semantic RED before runtime or GM changes.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -TimeoutMinutes 5 -Filter "FullyQualifiedName~T085_LightIncarnateHistory_"
@@ -384,7 +384,7 @@ Run sequentially, fully drain each session. Expected Integration22 executes:
 Documentation1 fails on absent new invariant. Compile/setup/snapshot exceptions
 are not behavioral RED; investigate them before touching production code.
 
-- [ ] **Step 3: Replace the pooled lookup and pass explicit membership.**
+- [x] **Step 3: Replace the pooled lookup and pass explicit membership.**
 
 In AfterlifeConflictDiceContext replace only the third parameter declaration:
 
@@ -533,7 +533,7 @@ role/coercion arithmetic and no-closure rejection remain unchanged. Search all
 references to the renamed private members and both extended methods; no stale
 pool consumer or unupdated call may remain.
 
-- [ ] **Step 4: Synchronize the exact GM contract and worked contrast.**
+- [x] **Step 4: Synchronize the exact GM contract and worked contrast.**
 
 The following qualification is the exact shared contract paragraph:
 
@@ -585,7 +585,7 @@ existing entries and other arrays):
 }
 ```
 
-- [ ] **Step 5: Verify behavior, retained neighbors and the changed GM boundary.**
+- [x] **Step 5: Verify behavior, retained neighbors and the changed GM boundary.**
 
 First run the Integration and documentation filters from Step2 again, expecting
 22/22 and1/1 PASS. Then run these owner/checkpoint commands sequentially:
@@ -615,7 +615,7 @@ case coverage, not a successful Fast or T177 completion. If a real test fails,
 diagnose and report it before broadening scope or changing old assertions.
 Do not change lane capacity, membership or concurrency. No PreMerge here.
 
-- [ ] **Step 6: Self-review, commit exact scope and obtain independent review.**
+- [x] **Step 6: Self-review, commit exact scope and obtain independent review.**
 
 Inspect the complete ten-file diff and all actual summaries/TRXs/build/cleanup,
 run git diff --check, and recursively check the manifest for duplicate keys.
@@ -646,3 +646,83 @@ through the final HEAD. Do not close any full #1536 task from this prerequisite.
   resource-prefix warning remains intact. No Mortal prompt change is required.
 - The separate grant-authority lookup, full wound/arts/healing integration,
   recovery receipts and legacy preparation decision remain explicitly open.
+
+## Parent acceptance — 2026-09-07
+
+Accepted only this bounded history-admission prerequisite. Original task BASE
+`025fed7ea3eb1cebe3f343747812e26749f4c576`; implementation `cbbfa98f`; reviewed
+correction `d9547c52b859b904da29a992613ded243a021383`. The independent reviewer
+returned **Spec compliant / Task quality Approved**, with no Critical or
+Important findings, after reviewing the complete original-BASE-to-final-HEAD
+two-commit range. Parent inspected the final diffs, every listed run's actual
+summaries/TRXs/build/cleanup, and manifest duplicate properties/contract IDs.
+The ten-file source/GM scope is exact and `git diff --check` is clean.
+
+Review added one complementary fact before `CreateLightIncarnateHistoryRootAsync`
+in the supplied Integration block; all original constants and multiline source
+were restored exactly. This brings the new boundary selection to 23 cases:
+
+```csharp
+    [Fact]
+    public async Task T085_LightIncarnateHistory_ChangedRecentSummaryIsNotPreGrantEvidence()
+    {
+        var root = await CreateLightIncarnateHistoryRootAsync(recent: true, turn: 6);
+        await WriteValidatedConflictSnapshotFromCurrentAsync("Preserve the exact accepted resolution.");
+        GetLightIncarnateHistoryLog(root, recent: true)[0]!["summary"] = "Changed recent resolution wording.";
+        await WriteAndAssertLightIncarnateHistoryAsync(root, recent: true, 0, expectMismatch: true);
+    }
+```
+
+The new fact was proved by temporarily enabling recent summary drift, observing
+its exact semantic failure, then restoring the runtime line before the final
+owner run. The temporary mutation was never committed. The final runtime file's
+SHA-256 is `02F88277B3956896D33149845B3D060153B8D81D6EF4494311DC0EC751E2BB87`,
+identical to the successful Fast/Full candidate. No production, GM, example,
+manifest or Fast-test change followed those controls; the final correction is
+only the Integration partial, covered by the final owner run.
+
+All paths in this table are relative to `TestResults/test-lanes/`:
+
+| Run directory | Actual result | Wall time / cap |
+| --- | --- | --- |
+| `20260907-132357-976-43568-ba0fbced882a41d38bde91ad227684b9-focused` | Initial Integration RED: 17 semantic failures, 5 passing historical controls | 1:47.296 / 5m |
+| `20260907-132549-853-42172-de2b82db4a5241189ec4c0af5e03af22-focused` | Documentation RED: 1 missing-invariant failure | 0:33.865 / 5m |
+| `20260907-132940-794-3972-4a2ade7dff894ad2977d0c2984003ab1-focused` | Initial Integration GREEN: 22/22 | 1:45.403 / 5m |
+| `20260907-133130-528-38052-8af84d3d708f419f8b4121289fb0c70f-focused` | Initial documentation GREEN: 1/1 | 0:32.495 / 5m |
+| `20260907-133211-161-33512-5f075a0290c546779fef5a7af4ff5eec-focused` | Owner GREEN: 53/53, comprising 22 new + 16 prior + 15 existing | 1:07.839 / 5m |
+| `20260907-133349-703-30352-fc3e9739feea482284b27dc60708ace6-focused` | Build-only failure: temporary doc reflow CS1026, zero tests, exit 1 | 0:06.376 / 5m |
+| `20260907-133405-013-41764-dc5829dd0d604a3280e08d5fb3bef99f-focused` | Corrected documentation owners: 123/123 | 0:36.387 / 5m |
+| `20260907-133446-109-46568-68b6f8609c854d66a67c10991b97a87a-fast` | One Fast: 7,631/7,631, exit 0 | 3:50.280 / unchanged 5m |
+| `20260907-133841-490-35976-48df9de4f5f649c3af7712603922a42c-fullvalidation` | One conditional FullValidation: 1,857/1,857, exit 0 | 10:50.932 / measured 15m |
+| `20260907-140804-947-45568-405286808769476f9be7bad843a7ad9e-focused` | Deliberate recent-summary mutation RED: 1 semantic failure | 1:20.216 / 5m |
+| `20260907-140949-695-37248-2bc1f130ed9649428bd958c0507f6ae8-focused` | Restored final owners: 54/54, comprising 23 new + 16 prior + 15 existing | 1:52.908 / 5m |
+
+Every completed lane has clean owned-tree cleanup and no timeout. Successful
+builds have zero warnings/errors; the isolated CS1026 build-only failure remains
+recorded and is not behavioral RED. The actual lanes are sequential; the small
+13:35 runner self-test/discovery/hard-cap artifacts are not extra full controls.
+Fast's 26 TRXs reconcile 7,577 discovery rows plus 54 runtime-expanded theory
+rows across all 3,931 expected methods. Full's 11 TRXs reconcile 1,747 plus 110
+across all 1,074 methods. Both have no missing/extra method, duplicate execution
+ID, cross-TRX test ID, skipped or unexpected result.
+
+The final owner command used bare second operands (`&LightIncarnate`, etc.)
+instead of the fully qualified spelling above. Its exact command is preserved
+in the run log and implementation report. Parent compared every actual case
+name to the earlier full-form 53-case run: only the intended new fact was added,
+with no missing or unexpected case. The reviewer records this as a non-blocking
+command-form deviation, not a coverage gap; no duplicate run is warranted.
+
+Retain two Minor review items for final whole-branch/T177 review: the command-form
+deviation above, and the documentation guard's independent substrings rather
+than exact paragraph/anchor adjacency. Direct source review verified the actual
+GM paragraph placement. Alleged new loader duplication/broad catches were
+withdrawn after original-BASE comparison proved they were pre-existing.
+
+GM synchronization is complete for the turn guide, API, daemon guidance,
+afterlife matrix, worked example, manifest and source guard. Existing daemon
+entrypoints load those guides; no launcher change is needed. Mortal rules,
+prompts and commands do not change. Full T084/T085/T089-T092/T177 and #1536 remain
+open, as do actual wound/strain/actor/resilience provenance, grant authority,
+arts/healing/recovery publication and the pending legacy decision. This
+acceptance does not change the top-level 77/177 count or authorize merge/closure.
