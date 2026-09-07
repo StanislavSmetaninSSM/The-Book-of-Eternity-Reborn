@@ -2175,6 +2175,10 @@ hand-written history/after-images, or a raw mutation fallback.
       Its unchanged isolated diagnostic passes1/1. Required T177 ownership
       correction follows `docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`;
       exact relocated coverage, both guards and a corrected full Fast remain open.
+      Move `4e9b7ceb` preserves the browser Fact (passes) and Fast ownership guard;
+      the Integration guard exposes the older missing SpiritualHealingArtValidationTests
+      manifest entry. The same plan's Task2 records this existing file-backed owner
+      without changing arts/tests; final Integration manifest count becomes40.
     - [ ] T081-B2 [US3] Retain and production-consume actual causal execution:
       prepared graph/identities, scheduler/frontier, resource ledger/history,
       accepted effect transcript state and incremental effect advancement.

@@ -145,3 +145,78 @@ git commit -m "test: move browser action contention to integration (#1536)"
 ```
 
 Before commit, compare the moved source after removing its one added Trait line to the pre-dispatch original, normalizing line endings only. It must match exactly. Count the two arrays and matching documentation entries:67 and39, including the inserted row once each. Report all RED/GREEN commands, exact artifact paths, executed/passed/failed/skipped/duplicate counts, wall time, build output and cleanup; no parent Fast success claim. Parent owns independent review and subsequent acceptance.
+
+### Task 2: Restore the already-existing spiritual art Integration manifest entry
+
+**Files:** Only BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs,
+docs/testing.md and specs/1505-test-suite-performance/research.md. All other Global
+Constraints remain binding. This evidence-based follow-through changes the final
+Integration count from Task1's39 to40; Fast reviewed-heavy count stays67.
+
+**Interfaces:** Existing FileBackedRegressionIntegrationSources_MatchReviewedManifest;
+the existing SpiritualHealingArtValidationTests class and category are unchanged.
+
+- [x] **Step1: Use the actual category RED and verify its cause.**
+
+Task1 committed `4e9b7ceb`; moved browser Fact passed, but the category guard failed
+with exactly one unreviewed source, SpiritualHealingArtValidationTests.cs, in
+`20260908-045939-956-36892-f998f8cef0954bdcb6903ee707c3fb37-focused` (1/2,
+wall57.5465613s,exit1,clean build/cleanup,no timeout/duplicates/skips). Parent read
+summary/log/TRX, the full spiritual-art source, and pre-dispatch `02aa0dbf` source
+and manifest: the Integration class/category existed from `f94aeafb` while its
+manifest entry was absent. The class writes real entity/soul profiles and invokes
+scoped validation, so its existing RegressionIntegration ownership is correct.
+No runtime art behavior or test body correction is required; do not repeat RED.
+
+- [ ] **Step2: Apply only the complete manifest/docs patch.**
+
+```diff
+*** Begin Patch
+*** Update File: BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+@@
+     private static readonly string[] RegressionIntegrationSources =
+     [
+         "AfterlifeSpiritualConflictValidationTests.cs",
++        "SpiritualHealingArtValidationTests.cs",
+         "BrowserCommandPresentationAuditTests.cs",
+*** Update File: docs/testing.md
+@@
+-class-level Integration manifest contains 39
++class-level Integration manifest contains 40
+@@
+ change the Fast limit, runner or production behavior.
++The Integration manifest also records the existing
++`SpiritualHealingArtValidationTests.cs` file-backed profile-validation owner;
++its category and all tests are unchanged.
+*** Update File: specs/1505-test-suite-performance/research.md
+@@
+ neither is relabeled as proof of a production concurrency fix.
++The same category guard exposed one older missing manifest entry:
++`SpiritualHealingArtValidationTests.cs` already owned real file-backed profile
++validation in RegressionIntegration. Recording that existing owner changes no
++category, test body or gameplay and brings the second manifest to40 entries.
+@@
+-these 39 ordinal entries after class-level ownership hardening:
++these 40 ordinal entries after class-level ownership hardening:
+@@
+ AfterlifeSpiritualConflictValidationTests.cs
++SpiritualHealingArtValidationTests.cs
+ BrowserCommandPresentationAuditTests.cs
+*** End Patch
+```
+
+- [ ] **Step3: Prove the original two-row selection is green and commit/report.**
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~BrowserPlayerActionGenerationTests|FullyQualifiedName~IntegrationTestBoundaryTests.FileBackedRegressionIntegrationSources_MatchReviewedManifest"
+git diff --check
+git add -- BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs docs/testing.md specs/1505-test-suite-performance/research.md
+git commit -m "test: record spiritual art integration ownership (#1536)"
+```
+
+Expected2/2 with the identical original Fact/guard names. No repeat of the already
+green unchanged Fast source guard or art test suite is needed for a manifest-only
+change. Inspect actual artifacts and report discovery/execution/pass/fail/skip/
+duplicate counts, wall time, build output, cleanup, exact40-entry parity and commit.
+On another failure, retain it and report rather than extending scope. Parent owns
+full02aa0dbf..HEAD review, corrective Fast and final acceptance of both tasks.
