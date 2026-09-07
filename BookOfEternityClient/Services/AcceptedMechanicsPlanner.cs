@@ -5805,7 +5805,8 @@ internal static class AcceptedMechanicsPlanner
             IReadOnlyList<ResourceTransition> replayTransitions,
             IReadOnlyList<ResourceAppliedEvent> events,
             IEnumerable<long> closedEffectBoundaryOrdinals,
-            AcceptedMechanicsPlannerStatistics statistics)
+            AcceptedMechanicsPlannerStatistics statistics,
+            AcceptedEffectBoundaryTranscript.ClosedPrefix effectPrefix)
         {
             LastCompletedOperation = lastCompletedOperation;
             NextExecutionSequence = nextExecutionSequence;
@@ -5818,6 +5819,7 @@ internal static class AcceptedMechanicsPlanner
             _events = events.ToArray();
             _closedEffectBoundaryOrdinals = closedEffectBoundaryOrdinals.OrderBy(value => value).ToArray();
             Statistics = statistics;
+            EffectPrefix = effectPrefix;
         }
 
         internal ResourceOperationKey LastCompletedOperation { get; }
@@ -5835,6 +5837,7 @@ internal static class AcceptedMechanicsPlanner
         internal IReadOnlyList<long> ClosedEffectBoundaryOrdinals =>
             Array.AsReadOnly(_closedEffectBoundaryOrdinals.ToArray());
         internal AcceptedMechanicsPlannerStatistics Statistics { get; }
+        internal AcceptedEffectBoundaryTranscript.ClosedPrefix EffectPrefix { get; }
     }
 
     internal static ResourceExecutionSession BeginResourceExecution(
@@ -6637,11 +6640,20 @@ internal static class AcceptedMechanicsPlanner
                 unresolvedPendingBoundaries.Count == 0 &&
                 parentBoundaryByOrdinal.Keys.All(closedBoundaries.Contains))
             {
+                var prefix = effectTranscriptBuilder.CaptureClosedPrefix();
+                if (!prefix.IsValid || prefix.Prefix == null)
+                {
+                    yield return ResourceExecutionStep.Finished(Failure(
+                        prefix.Issues.SelectMany(issue => Issue(
+                            issue.Code, issue.Expected, issue.Actual)).ToArray(),
+                        Statistics(workingHistory, metrics)));
+                    yield break;
+                }
                 var checkpoint = new ResourceClosedBoundaryCheckpoint(
                     completedAtBoundary, executionSequence, input.Definitions,
                     workingLedger.Freeze(), input.History, workingHistory.PendingTransitions,
                     appliedTransitions, replayTransitions, events, closedBoundaries,
-                    Statistics(workingHistory, metrics));
+                    Statistics(workingHistory, metrics), prefix.Prefix);
                 completedAtBoundary = null;
                 yield return ResourceExecutionStep.Paused(checkpoint);
             }

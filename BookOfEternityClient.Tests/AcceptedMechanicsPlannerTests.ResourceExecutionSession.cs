@@ -8,6 +8,39 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class AcceptedMechanicsPlannerTests
 {
     [Fact]
+    public void ResourceSession_ClosedPrefixIsConsumedWithoutChangingFinalResultOrAllocations()
+    {
+        var input = SessionPeriodicInput(bounded: false);
+        var expectedCounter = new SessionAllocationCounter();
+        var expected = AcceptedMechanicsPlanner.BuildResources(input, expectedCounter.Factory);
+        Assert.True(expected.IsValid, SessionIssues(expected));
+        Assert.Equal(3, expected.AppliedTransitions.Count);
+
+        var counter = new SessionAllocationCounter();
+        using var session = AcceptedMechanicsPlanner.BeginResourceExecution(input, counter.Factory);
+        var checkpoint = Assert.IsType<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint>(
+            session.AdvanceToClosedBoundary().Checkpoint);
+        var prefix = checkpoint.EffectPrefix;
+        Assert.Single(prefix.AcceptedActivations);
+        Assert.Equal(2, prefix.AppliedComponentEvidence.Count);
+        Assert.Equal(2, prefix.ResourceMutations.Count);
+        Assert.Equal(checkpoint.ClosedEffectBoundaryOrdinals,
+            prefix.BoundaryCloses.Select(value => value.Boundary.BoundaryOrdinal).OrderBy(value => value));
+        var before = prefix.Fingerprint;
+        var originalMutationIds = prefix.ResourceMutations.Select(value => value.Transition.TransitionId).ToArray();
+        var calls = counter.Calls;
+        var actual = session.Drain();
+        Assert.True(actual.IsValid, SessionIssues(actual));
+        Assert.Equal(SessionResultImage(expected), SessionResultImage(actual));
+        Assert.Equal(expectedCounter.Ids, counter.Ids);
+        Assert.Equal(calls, counter.Calls);
+        Assert.Equal(before, prefix.Fingerprint);
+        Assert.Equal(originalMutationIds, prefix.ResourceMutations.Select(value => value.Transition.TransitionId));
+        Assert.Equal(2, prefix.ResourceMutations.Count);
+        Assert.Equal(3, actual.EffectBoundaryTranscript.ResourceMutations.Count);
+    }
+
+    [Fact]
     public void ResourceSession_ContractRedHasNonemptyProductionPositiveControl()
     {
         var input = SessionOrdinaryInput();

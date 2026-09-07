@@ -107,6 +107,13 @@ internal sealed record AcceptedEffectBoundaryTranscriptResult(
     internal bool IsValid => Transcript != null && Issues.Count == 0;
 }
 
+internal sealed record AcceptedEffectBoundaryPrefixResult(
+    AcceptedEffectBoundaryTranscript.ClosedPrefix? Prefix,
+    IReadOnlyList<EffectBoundaryTranscriptIssue> Issues)
+{
+    internal bool IsValid => Prefix != null && Issues.Count == 0;
+}
+
 internal sealed class AcceptedEffectBoundaryTranscript
 {
     private readonly EffectEventBoundaryStamp[] _boundaries;
@@ -814,8 +821,80 @@ internal sealed class AcceptedEffectBoundaryTranscript
             StringComparison.Ordinal));
     }
 
+    internal sealed class ClosedPrefix
+    {
+        private readonly AcceptedEffectBoundaryTranscript _image;
+
+        internal ClosedPrefix(AcceptedEffectBoundaryTranscript image)
+        {
+            ArgumentNullException.ThrowIfNull(image);
+            if (image.UseProjectionOrdinal != null ||
+                image.PendingFrontierBoundaryOrdinal != null)
+            {
+                throw new ArgumentException(
+                    "A closed prefix cannot carry a terminal or pending seal.",
+                    nameof(image));
+            }
+            _image = image;
+        }
+
+        internal EffectAcceptedPlanAuthorityStamp? PlanAuthority => _image.PlanAuthority;
+        internal string Fingerprint => _image.Fingerprint;
+        internal IReadOnlyList<EffectEventBoundaryStamp> Boundaries => _image.Boundaries;
+        internal IReadOnlyList<EffectEventBoundaryCloseStamp> BoundaryCloses => _image.BoundaryCloses;
+        internal IReadOnlyList<EffectBoundaryCausalClosureStamp> CausalClosures => _image.CausalClosures;
+        internal IReadOnlyList<AcceptedEffectBoundaryActivation> AcceptedActivations => _image.AcceptedActivations;
+        internal IReadOnlyList<RejectedEffectBoundaryActivation> RejectedActivations => _image.RejectedActivations;
+        internal IReadOnlyList<AppliedEffectComponentEvidence> AppliedComponentEvidence => _image.AppliedComponentEvidence;
+        internal IReadOnlyList<AcceptedResourceMutationEvidence> ResourceMutations => _image.ResourceMutations;
+        internal IReadOnlyList<ReleasedEffectReaction> ReleasedReactions => _image.ReleasedReactions;
+        internal IReadOnlyList<EffectTerminalAvailabilityReservation> TerminalAvailabilityReservations =>
+            _image.TerminalAvailabilityReservations;
+        internal IReadOnlyDictionary<EffectReactionExpansionKey, EffectReactionExpansionUsage> ExpansionUsage =>
+            _image.ExpansionUsage;
+
+        // Evidence lookup, not a source/instance-existence or general eligibility check.
+        internal bool TryGetLastConsumedUseBudget(EffectReplayIdentity subject, out int remainingUses)
+        {
+            ArgumentNullException.ThrowIfNull(subject);
+            var accepted = _image._acceptedActivations
+                .Where(value =>
+                    value.Activation.Stamp.ConsumesUse &&
+                    string.Equals(value.Activation.Stamp.Identity.EffectId, subject.EffectId, StringComparison.Ordinal) &&
+                    value.Activation.Stamp.EffectAuthority == subject.Authority)
+                .OrderByDescending(static value => value.Activation.Stamp.ActivationOrdinal)
+                .FirstOrDefault();
+            if (accepted?.Activation.UsesAfter is { } remaining)
+            {
+                remainingUses = remaining;
+                return true;
+            }
+            remainingUses = default;
+            return false;
+        }
+
+        // A positive answer reports exact terminal evidence, not a newly minted effect identity.
+        internal bool HasTerminalAvailabilityEvidence(EffectReplayIdentity subject)
+        {
+            ArgumentNullException.ThrowIfNull(subject);
+            return _image._terminalAvailabilityReservations.Any(value => value.Subject == subject) ||
+                _image._releasedReactions.Any(value =>
+                    ResolveTerminalAvailabilitySubject(
+                        value.Reaction,
+                        new EffectReplayIdentity(
+                            value.Activation.Identity.EffectId,
+                            value.Activation.EffectAuthority)) == subject);
+        }
+    }
+
     internal sealed class Builder
     {
+    private enum ValidationBoundary
+    {
+        Terminal,
+        ClosedPrefix
+    }
+
     private readonly EffectAcceptedPlanAuthorityStamp? _planAuthority;
     private readonly List<EffectEventBoundaryStamp> _boundaries = new();
     private readonly List<EffectEventBoundaryCloseStamp> _boundaryCloses = new();
@@ -1475,12 +1554,51 @@ internal sealed class AcceptedEffectBoundaryTranscript
         return null;
     }
 
+    private AcceptedEffectBoundaryTranscript CaptureImage() =>
+        new(
+            _planAuthority,
+            _boundaries,
+            _boundaryCloses,
+            _causalClosures,
+            _accepted,
+            _rejected,
+            _applied,
+            _resourceMutations,
+            _released,
+            _terminalReservations,
+            _expansion,
+            _useProjectionOrdinal,
+            _pendingFrontierBoundaryOrdinal);
+
+    internal AcceptedEffectBoundaryPrefixResult CaptureClosedPrefix()
+    {
+        EnsureMutable();
+        if (_useProjectionOrdinal != null || _pendingFrontierBoundaryOrdinal != null)
+        {
+            return new AcceptedEffectBoundaryPrefixResult(
+                null,
+                Array.AsReadOnly(new[]
+                {
+                    new EffectBoundaryTranscriptIssue(
+                        "effect_boundary_prefix_sealed",
+                        "an unsealed closed causal prefix",
+                        _useProjectionOrdinal != null ? "terminal" : "pending")
+                }));
+        }
+        var issues = _issues.Concat(Validate(ValidationBoundary.ClosedPrefix)).ToArray();
+        return issues.Length == 0
+            ? new AcceptedEffectBoundaryPrefixResult(
+                new ClosedPrefix(CaptureImage()),
+                Array.Empty<EffectBoundaryTranscriptIssue>())
+            : new AcceptedEffectBoundaryPrefixResult(null, Array.AsReadOnly(issues));
+    }
+
     internal AcceptedEffectBoundaryTranscriptResult Freeze()
     {
         if (_frozenResult != null)
             return _frozenResult;
         var issues = _issues
-            .Concat(Validate())
+            .Concat(Validate(ValidationBoundary.Terminal))
             .ToArray();
         if (issues.Length != 0)
         {
@@ -1490,20 +1608,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
             return _frozenResult;
         }
         _frozenResult = new AcceptedEffectBoundaryTranscriptResult(
-            new AcceptedEffectBoundaryTranscript(
-                _planAuthority,
-                _boundaries,
-                _boundaryCloses,
-                _causalClosures,
-                _accepted,
-                _rejected,
-                _applied,
-                _resourceMutations,
-                _released,
-                _terminalReservations,
-                _expansion,
-                _useProjectionOrdinal,
-                _pendingFrontierBoundaryOrdinal),
+            CaptureImage(),
             Array.Empty<EffectBoundaryTranscriptIssue>());
         return _frozenResult;
     }
@@ -1580,7 +1685,8 @@ internal sealed class AcceptedEffectBoundaryTranscript
         EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
         string Fingerprint);
 
-    private IReadOnlyList<EffectBoundaryTranscriptIssue> Validate()
+    private IReadOnlyList<EffectBoundaryTranscriptIssue> Validate(
+        ValidationBoundary validationBoundary)
     {
         var issues = new List<EffectBoundaryTranscriptIssue>();
         if (_planAuthority != null &&
@@ -2419,14 +2525,16 @@ internal sealed class AcceptedEffectBoundaryTranscript
                     pendingFrontier.Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
-        else if (_useProjectionOrdinal == null)
+        else if (_useProjectionOrdinal == null &&
+                 validationBoundary == ValidationBoundary.Terminal)
         {
             issues.Add(Issue(
                 "effect_boundary_use_projection_missing",
                 "one terminal use/lifetime projection ordinal",
                 "null"));
         }
-        if (_useProjectionOrdinal != null || pendingFrontier != null)
+        if (_useProjectionOrdinal != null || pendingFrontier != null ||
+            validationBoundary == ValidationBoundary.ClosedPrefix)
         {
             var mechanicsOrdinals = _boundaries
                 .Select(static value => value.OpenMechanicsOrdinal)
@@ -2450,6 +2558,15 @@ internal sealed class AcceptedEffectBoundaryTranscript
                     "effect_boundary_mechanics_order_invalid",
                     "zero-based contiguous unique authority ordinals ending in use projection",
                     string.Join(",", mechanicsOrdinals)));
+            }
+            if (validationBoundary == ValidationBoundary.ClosedPrefix &&
+                mechanicsOrdinals.LongLength != _nextMechanicsOrdinal)
+            {
+                issues.Add(Issue(
+                    "effect_boundary_prefix_frontier_invalid",
+                    "one observed mechanics ordinal for every allocated prefix ordinal",
+                    "observed=" + mechanicsOrdinals.LongLength.ToString(CultureInfo.InvariantCulture) +
+                    ";next=" + _nextMechanicsOrdinal.ToString(CultureInfo.InvariantCulture)));
             }
         }
         return issues;
