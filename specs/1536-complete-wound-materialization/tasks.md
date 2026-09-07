@@ -2185,7 +2185,7 @@ hand-written history/after-images, or a raw mutation fallback.
       receipt waves, last-use/terminal reservations, retry/cold identity proof,
       failed suffix with no publication and one final common plan. B1 completion
       alone must not close B2 or T081-B; full runtime/GM synchronization applies.
-      - [ ] T081-B2A [US3] Retain the actual fixed-graph resource execution in
+      - [X] T081-B2A [US3] Retain the actual fixed-graph resource execution in
         one owned session, consumed by ordinary BuildResources/Drain. Complete
         three-file code and nine tests are in
         `docs/superpowers/plans/2026-09-08-retained-resource-execution-session.md`
@@ -2197,6 +2197,29 @@ hand-written history/after-images, or a raw mutation fallback.
         full B2 remains required for live effect draft/journal, authorized wound
         insertion, next-exchange consumption, suffix replacement and cold/receipt
         continuation. Verify all prescribed owning/pending/signed/scale controls.
+        Accepted2026-09-08: codef5e4de2f, full reviewfc6887e6..f5e4de2f Spec/Quality
+        approved0C/I/M; exact production postimage and fixture-only corrections
+        inspected. Actual Focused9/9,432/432,6/6,11/11,2/2 and parentFast7767/7767,
+        wall5:00.6051031,default5m/TimedOut=false,build0/0,cleanupcomplete,zero
+        skips/duplicate executions/cross-descriptor IDs. Exact artifacts and both
+        historical REDs are recorded in the bounded plan. Full B2 remains open.
+      - [ ] T081-B2B [US3] Capture and production-consume a detached unsealed
+        closed effect prefix, with exact authority-keyed use/terminal evidence
+        and complete mechanics-frontier validation. Implement the five-file,
+        nine-Fact complete plan/companion
+        `docs/superpowers/plans/2026-09-08-nonterminal-effect-prefix.md`.
+        Preserve ordinary Drain, terminal Freeze and all corrected B2A helpers;
+        the view is not source authority or actual incremental effect state.
+      - [ ] T081-B2C [US3] Own actual effect materialization and identity/history
+        edits in the same retained draft and consume them through the production
+        finalizer and real wound insertion/next-exchange route. Follow the exact
+        dependency-local barrier, allocation/history-anchor, routing-deferral and
+        base-plus-insertion rules in
+        `docs/superpowers/plans/2026-09-08-spiritual-effect-draft-journal-design.md`.
+        Preserve the no-insertion global schedule; do not flush lifetime/terminal
+        folds at a wound barrier or substitute a journal DTO/observer for writes.
+        Prove all13 scenarios including consuming replacements, actual descendants
+        before worsening, repeated re-trauma and composite-authority rejection.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

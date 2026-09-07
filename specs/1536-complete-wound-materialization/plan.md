@@ -1688,7 +1688,7 @@ Fast evidence gaps are resolved; historical failures remain recorded in the
 bounded plans. Only nested B1 is accepted; top-level79/177 and B2/C/D/E remain open.
 No GM capability/contract changed, so no prompt/example/matrix update is needed.
 
-The next independently testable prerequisite is T081-B2A, specified completely in
+The accepted independently testable prerequisite T081-B2A is specified completely in
 `docs/superpowers/plans/2026-09-08-retained-resource-execution-session.md` and its
 companion patch. A production-consumed iterator retains the real fixed graph,
 identities, scheduler, mutable resource/history work, use arbiter and transcript.
@@ -1697,6 +1697,21 @@ Drain creates no checkpoint images and preserves existing results/work counters.
 Nine concrete tests plus owning, scale, pending and signed controls are required.
 This does not imply a whole spiritual exchange boundary or support replacing a
 prepared suffix; zero-mutation lawful sources remain mandatory downstream.
+
+B2A accepted2026-09-08 atf5e4de2f: full recordedfc6887e6..f5e4de2f review is
+Spec compliant / Quality Approved,0C/I/M. Parent verified exact production/test
+diffs and actual Focused9/9,432/432,6/6,11/11,2/2 plusFast7767/7767,wall5:00.6051031,
+default5m withTimedOut=false,build0/0,cleanupcomplete,no skips/duplicate executions
+or cross-descriptor IDs. All26FastTRXs and nine new session Facts were inspected.
+The bounded plan retains both RED artifacts and source-grounded fixture corrections.
+Only B2A is accepted; top-level79/177 and fullB2 remain open.
+
+Next T081-B2B is fully specified in
+`docs/superpowers/plans/2026-09-08-nonterminal-effect-prefix.md` and its companion.
+Its distinct ClosedPrefix view preserves all structural checks and validates the
+actual allocated mechanics frontier, including trailing orphan evidence. The
+retained session consumes the view only on explicit closed-boundary stepping;
+it is neither completed effect state nor spiritual source authority.
 
 The subsequent effect boundary must distinguish live state from final history
 assembly. The existing finalizer globally preflights released applications, writes
@@ -1711,6 +1726,18 @@ timing-eligible effects when preparing the next exchange; final canonical histor
 and common publication consume the retained results exactly once. Observation-only
 types cannot close B2. Whole-source authority, both-side/zero-cost exchange mapping,
 suffix recomposition and authenticated receipt/cold recovery remain required.
+
+The source-grounded ordering/ownership design is now durable in
+`docs/superpowers/plans/2026-09-08-spiritual-effect-draft-journal-design.md`
+(T081-B2C). Authorized materializing/worsening insertions create dependency-local
+barriers; declines and unrelated captures do not flush ordinary phases. Actual
+history edits retain exact consume-before-replacement/earlier-terminal anchors,
+point-in-execution replacement agreement and allocated result identities.
+Non-bound lifetime and terminal winners remain one global final pass. Physical
+reaction materialization does not grant new current-turn routing eligibility;
+new wound generations use their actual profile-bound eligibility. Real insertion
+and next-exchange consumers plus13 executable scenarios remain required before
+acceptance. This architecture record is not evidence that these paths exist.
 
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.

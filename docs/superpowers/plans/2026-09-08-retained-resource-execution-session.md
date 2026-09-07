@@ -28,10 +28,10 @@
 
 **Interfaces:** Consume existing AcceptedMechanicsResourceInput, AcceptedMechanicsIdentityFactory, graph/scheduler/working-set/transcript contracts; produce the nested session/step/checkpoint API fully implemented in the companion patch below. B1 ordinary reduction/assembly stays untouched.
 
-- [ ] **Step1: Verify the exact current method anchor and stage the semantic RED described below.**
-- [ ] **Step2: Apply the complete nine-test source and production companion, preserving the mechanical boundaries below.**
-- [ ] **Step3: Run the six exact bounded controls below, inspect actual artifacts and diagnose failures without broadening the contract.**
-- [ ] **Step4: Self-review, compare the production block/tests with the plan, commit only the three scoped files and write the full report.**
+- [X] **Step1: Verify the exact current method anchor and stage the semantic RED described below.**
+- [X] **Step2: Apply the complete nine-test source and production companion, preserving the mechanical boundaries below.**
+- [X] **Step3: Run the six exact bounded controls below, inspect actual artifacts and diagnose failures without broadening the contract.**
+- [X] **Step4: Self-review, compare the production block/tests with the plan, commit only the three scoped files and write the full report.**
 
 Companion repository path: `docs/superpowers/plans/2026-09-08-retained-resource-execution-session.patch`. It contains the complete replacement, not an instruction to invent method bodies. Rebase its file header to the absolute active worktree before apply_patch. The following design/test appendix is the controller-read complete proposal, now binding for this task. Neither the proposal nor this plan is test evidence.
 
@@ -647,3 +647,40 @@ git commit -m "refactor: retain resource execution across closed boundaries (#15
 
 Report exact changed files/commit, RED and each GREEN command/artifact, discovery/execution/pass/fail/skip/duplicate counts, wall time, build warnings/errors and owned-tree cleanup. Read summary/log/TRX rather than trusting console status. Record any fixture corrections separately and their source-grounded cause; do not change unrelated production contracts. Keep caller-abandonment, failed suffix and pending result non-publication explicit. Parent independently reviews the full recorded pre-dispatch BASE..HEAD and runs Fast; no completion of full B2 or #1536 is authorized here.
 
+## Accepted execution — 2026-09-08
+
+T081-B2A is complete at `f5e4de2f`, recorded review base
+`fc6887e64863a3fdc1cc26678cb616b7d92a8b7e`. Independent review is Spec compliant /
+Quality Approved with zero Critical, Important or Minor findings. Parent inspected
+the complete changed scope, exact1499-line production postimage, original-vs-actual
+test diff, and actual summaries/logs/TRXs. All assertions remain unchanged.
+
+The proposed periodic fixtures needed explicit typed initial/causal candidates:
+the low-level resolver returns mutation/pending data but does not create those
+candidates. The corrected helper carries its real component maps, pending outputs,
+source exports and origin. This is test fixture repair, not weaker validation.
+
+All artifact paths below are relative to `TestResults/test-lanes/`:
+
+| Control | Result | Wall time | Artifact |
+|---|---|---|---|
+| Old positive then missing-API semantic RED |0/1|1:12.6288105|`20260908-052947-920-35004-ba9a5f0153634b7fb3939596d0575f2e-focused`|
+| Historical fixture failure |6/9|1:09.6296742|`20260908-053201-712-37552-6a4803daa9e743eba73f3234c6de0669-focused`|
+| ResourceSession tests |9/9|0:32.6324641|`20260908-053649-352-8868-31fc14199d454069b90e36d4841f3dbf-focused`|
+| Owning planners/cache/source guards |432/432|0:40.5632905|`20260908-053729-443-20212-44c9db4ed2b44033987dc1674ccfdf04-focused`|
+| Integration scale |6/6|0:55.5283539|`20260908-053814-523-47356-98300183fe814f02b2c3f8056c2142b0-focused`|
+| Integration pending/receipt waves |11/11|1:03.5593275|`20260908-053914-661-46836-a665ed97498745cd877935ac709f3936-focused`|
+| Integration signed conflict |2/2|0:23.5681495|`20260908-054025-421-12484-b51b8d26b61743119d1a1a92feffb5d1-focused`|
+| Parent Fast |7767/7767|5:00.6051031|`20260908-055317-817-28696-712efc4947374b77bed621709e33ea9c-fast`|
+
+Every GREEN control has build warnings/errors0/0, no skipped or duplicated
+executions, default5m bound and complete owned-tree cleanup. Fast finished exit0
+with TimedOut=false at the exact elapsed time shown, not a claim of under5m.
+All26 Fast TRXs contain7767 distinct executions and7713 unique method IDs,
+zero cross-descriptor duplicate IDs, and all nine new session Facts. Existing
+dynamic theories account for the54 additional executed rows.
+
+Only nested B2A is accepted; top-level79/177 and full T081/B2/C/D/E/T084/T085/T177
+remain open. This internal change introduces no GM-authored/runtime contract,
+so Mortal/afterlife prompts, examples, matrix and manifests need no update here.
+No remote publication, issue closure, new worktree or session cleanup occurred.
