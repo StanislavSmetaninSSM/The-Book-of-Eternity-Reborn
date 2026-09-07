@@ -2175,8 +2175,11 @@ Actual results under TestResults/test-lanes (all date prefix20260907):
 | 163434-419-45332-0bd87cdd393d4a17ad381fef78459230-focused | Missing QTE10methods/70rowsPASS | 39.697s |
 
 Every completed summary has no timeout, duplicate IDs or owned-tree cleanup
-failure. Successful builds have zero compiler warnings/errors; ordinary Git
-EOL notices are separately recorded. Intermediate compiler failures and repeated
+failure. Original Integration153648 has one xUnit2031 warning at DangerMode.cs:69,
+missed in the initial audit; subsequent incremental builds reporting zero do not
+prove it was absent from source. The T177 follow-through14d2dfd6 repairs the
+assertion form and fresh171731 reports zero warnings/errors across50passing rows.
+Ordinary Git EOL notices are separately recorded. Intermediate compiler failures and repeated
 diagnostic attempts are retained, not hidden. Neighboring reducer helpers were
 restored; final net reducer diff is30added lines with no helper deletion.
 
@@ -2219,8 +2222,10 @@ method exercises a Mortal source, not the changed spiritual helper. Its failure
 and the three Mortal owner failures persist with all new declaration hooks
 disabled: old array wounds provide no canonical source, causing
 effect_source_selector_unresolved for wound_test_torn_side/bleeding_consequence.
-These remain T177 fixture work; production legacy fallback and weaker rollback
-assertions are not introduced.
+These were remaining T177 fixture work at this checkpoint. The later accepted
+`docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md` repairs the
+entire14-row cohort using a registered skill source, with no production legacy
+fallback or weaker rollback assertions.
 
 GM synchronization includes API, daemon, turn guide, afterlife matrix/glossary,
 worked example, runtime manifest and executable source guard. Mortal commands,

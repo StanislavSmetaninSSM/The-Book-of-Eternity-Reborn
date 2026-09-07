@@ -2139,7 +2139,8 @@ hand-written history/after-images, or a raw mutation fallback.
   official FullValidation remains FAILED; its corrected reruns are separate
   evidence. Historical Integration RED50 was skipped, retained as a Minor process
   deviation, with post-implementation mutation31FAIL/19PASS and restored50PASS.
-  Four Mortal source-fixture failures remain T177 work. Full T083 stays open for
+  The four traced Mortal source-fixture failures were subsequently repaired by
+  the accepted T177 rollback-fixture checkpoint below. Full T083 stays open for
   accepted escalation, per-side wound seals and bounded defeat. No implicit mode, migration, art
   schema or healing authority is introduced by this prerequisite.
 - [ ] T084 [US3] Implement trauma-pressure calculation, destination/mode/source caps, harmful-margin audit, one-per-side/re-trauma rules, and opportunity export in `BookOfEternityClient/Services/SpiritualWoundOpportunityAdapter.cs`
@@ -2391,15 +2392,20 @@ scope, then resume paused wound documentation and final controls against one fin
 
 T177 bounded fixture checkpoints (2026-09-07):
 
-Next bounded correction (not yet accepted):
+Accepted generic effect rollback correction:
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md` restores
-the generic effect rollback cohort's canonical source fixture. Four observed
-Mortal failures persist with danger validation disabled: legacy wound arrays
-cannot supply the typed canonical source, so the intended write probe is not
-reached. The plan changes only EffectMaterializationLifecycleTests.cs to the
-existing registered skill source, preserves all4methods/14rows and assertions,
-and requires exact RED/GREEN plus one Fast. No production, GM surface, source
-fallback or actual wound-owned binding is changed; full T177 stays open.
+the generic effect rollback cohort's canonical source fixture. Legacy wound
+arrays could not supply the typed canonical source, so eleven Mortal cases
+failed before their intended write probes. The core changes only
+EffectMaterializationLifecycleTests.cs to the existing registered skill source,
+preserving all4methods/14rows and assertions. An adjacent one-line predicate
+assertion fixes xUnit2031 in DangerMode.cs without changing semantics.
+Commits5235d413 and14d2dfd6 are independently Spec compliant / Quality Approved,
+zero findings. Parent checked actual diffs, exact RED3/14 then GREEN14/14,
+Fast7698/7698 in4:38.665/5m, and final clean12method/50row Integration control.
+The plan records build-warning provenance, runtime theory expansion and all
+artifacts. No production, GM surface, source fallback or actual wound-owned
+binding is changed; full T177/T070/#1536 and top-level77/177 remain open.
 
 Previously accepted bounded reflection correction:
 `docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` repairs only

@@ -1593,16 +1593,21 @@ needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain o
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
-The next bounded T177 fixture correction is specified in
+The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
-Generic effect publication/rollback scenarios currently seed old array-form
-wounds, so source validation rejects them before their injected write failure.
-The one-file plan uses the existing registered materializable skill for those
+Generic effect publication/rollback scenarios previously seeded old array-form
+wounds, so source validation rejected them before their injected write failure.
+The core correction uses the existing registered materializable skill for those
 ordinary effects, with aligned command/canonical selectors and identity index.
 All fourteen original rollback rows, snapshots, probes and byte assertions stay
 intact; afterlife spiritual_art source overrides are unchanged. It introduces
-no wound gameplay, shared fixture, production or GM-contract change. T177 and
-the complete feature remain open until their broader work is actually verified.
+no wound gameplay, shared fixture, production or GM-contract change. The adjacent
+one-line analyzer correction changes only Assert.Single's predicate overload.
+Commits5235d413/14d2dfd6 are independently Spec compliant / Quality Approved,
+zero findings. Actual14-row RED/GREEN, Fast7698PASS in4:38.665/5m and final clean
+50-row Integration control are parent-verified. The plan corrects earlier warning
+provenance and records exact dynamic-case accounting. T177 and the complete
+feature remain open until their broader work is actually verified.
 
 The accepted bounded T077/T083/T085 declaration prerequisite is specified in
 `docs/superpowers/plans/2026-09-07-spiritual-danger-declaration.md`. It requires
