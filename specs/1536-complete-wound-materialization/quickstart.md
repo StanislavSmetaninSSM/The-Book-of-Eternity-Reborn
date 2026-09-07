@@ -80,6 +80,13 @@ Prove all danger modes/formula boundaries, one wound per side, optional wound an
 dissipation, bounded defeat, arts 0-V, combat healing, safe-cycle self/provider/entity
 healing, natural recovery, Elyara invariants, and visible Shining healer role.
 
+Before the live spiritual portion is accepted, also execute the same-turn
+continuation controls from `contracts/spiritual-wound-live-turn-boundary.md`:
+zero-error signed source baseline, explicit decline and materialize, two dependent
+current exchanges, unchanged original dice/OD/progression coordinates, cold
+restart before/after decision, exact replay and all-or-nothing final publication.
+These are T081-A..E obligations, not claims that the new test owners already exist.
+
 ### Slice D: commands, parity, docs
 
 Expected owning tests:

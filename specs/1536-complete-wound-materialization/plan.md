@@ -1593,6 +1593,27 @@ needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain o
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
+The live integration boundary is pinned in
+`contracts/spiritual-wound-live-turn-boundary.md` (2026-09-08). Spiritual source
+validation and GM decision continuation stay within one original player turn and
+one final common publication. The draft preceding the decision is not accepted
+narrative or canonically committed source. Retain a causally completed prefix,
+original dice/resource coordinates and allocated identities; compose applicable
+wound effects before validating a dependent later exchange. Separate spiritual
+pending and append-only receipt roots preserve the closed Mortal schemas.
+
+Next production decomposition is: detached conflict checker consumed by the
+existing validator plus a genuinely zero-error signed fixture; source-only
+resource/effect intermediate consumed by the existing common planner; strict
+spiritual witness/finalization and same-turn continuation; decline then complete
+materialize/worsen/re-trauma/persistent effects; all existing source families and
+the remaining danger/defeat/optional-dissipation gates. The detailed contract
+records exact lifetime, rollback, restart, multi-exchange and GM synchronization
+obligations. A decline-only test is an internal milestone, not a reduced rollout.
+Each unit still needs its complete-code execution plan and verification. This
+planning update does not implement the producer, close T081/T084/T085, resurrect
+historical Fast failures, or decide the independent T070 preparation question.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

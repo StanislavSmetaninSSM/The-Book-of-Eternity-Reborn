@@ -2121,6 +2121,42 @@ hand-written history/after-images, or a raw mutation fallback.
 - [ ] T079 [P] [US3] Add RED non-training bounded anti-repeat defeat outcome and annihilation winner softer/optional dissipation tests in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualConflictValidationTests.DefeatWounds.cs`
 - [ ] T080 [P] [US3] Add RED exact spiritual I-IV consequence count, legal axes, counterplay/safe-exit, effect-link, exact actor-to-current-side contribution, side-relative axis, absent/duplicate/wrong-realm/ambiguous participant rejection, conflict-close persistence, and byte-identical `combatConditions[]` tests in `BookOfEternityClient.Tests/SpiritualWoundConsequenceTests.cs`; map the same actor once to each side and prove exact `actionCostAudit.player|opposition` plus `playerSideStrain|oppositionSideStrain` with byte-identical canonical payload, preserve a non-empty real `afterlife_combat_condition` sibling independently, and require a separate typed contribution collection with exact effect/component/wound-source, target actor, resolved side, operation, source/resolved axis, magnitude, and priority provenance
 - [ ] T081 [US3] Add RED conflict start -> exchange -> opportunity -> GM decline/lower/create/worsen -> resolve lifecycle and rollback fixtures in `BookOfEternityClient.IntegrationTests/AfterlifeSpiritualWoundLifecycleTests.cs`
+  Live implementation decomposition (2026-09-08), shared with T084-T092:
+  `contracts/spiritual-wound-live-turn-boundary.md` owns one logical player turn,
+  internal GM continuation and one final common publication. No top-level task
+  is closed by the following dependency sequence:
+  - [ ] T081-A [US3] Extract detached complete conflict validation consumed by
+    `ValidationService.AfterlifeSpiritualConflict.cs`, with frame acquisition in
+    `ValidationService.AfterlifeSpiritualConflict.Frame.cs`; add a genuinely
+    signed zero-error raw/publication/final-conflict fixture and captured-input
+    equivalence controls in `AfterlifeSpiritualConflictValidationTests.Wounds.cs`.
+    This does not export a wound source or change current arithmetic/offline rules.
+  - [ ] T081-B [US3] Extract a typed source-prefix resource/effect intermediate
+    consumed by `AcceptedMechanicsPlanner.cs`; test retained identities, actual
+    transition proof, dependent suffix, pending receipt waves and one final plan
+    in `AfterlifeSpiritualWoundLifecycleTests.cs`. Do not retain a temporary
+    publishable plan or rerun identity allocation to simulate a continuation.
+  - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
+    pending/receipt roots, exact cold reconstruction and narrow decision intake
+    through `ValidationService.WoundMaterialization.cs`,
+    `SpiritualWoundOpportunityAdapter.cs`, `GameEngine.ValidationAndRepair.cs`
+    and `GameEngine.TurnLifecycle.cs`; first prove real explicit decline, not an
+    empty/missing decision or test-authored command. Preserve the original turn,
+    snapshot, dice, OD, progression and rollback identities.
+  - [ ] T081-D [US3] Complete lower/create/worsen/explicit older re-trauma,
+    persistent actor effects and per-side seals in `WoundAcceptedTurnPlanner.cs`,
+    `SpiritualWoundConflictContributionProjector.cs` and the lifecycle/seal tests.
+    Include two current exchanges where the first wound changes applicable later
+    mechanics, both simultaneous sides, exact replay and recent-history pruning.
+  - [ ] T081-E [US3] Cover every required ordinary/special/guaranteed/start/terminal
+    source family, danger/defeat/optional-dissipation behavior and truthful final
+    preview through the existing T077-T092 owners and their worked GM examples.
+    No lawful materialize/source may be excluded or left in permanent repair
+    because only the decline milestone is implemented.
+  Each unit includes its relevant GM prompt/docs/example/manifest/source guards
+  with runtime changes and a complete-code execution plan before production edits.
+  The new architecture document is planning evidence only; no new source fixture
+  has yet proved zero errors, and overflow remains an unconfirmed source risk.
 
 ### GREEN implementation
 

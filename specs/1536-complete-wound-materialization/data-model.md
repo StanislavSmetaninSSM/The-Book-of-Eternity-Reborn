@@ -11,7 +11,9 @@
 | `game_state/wounds/wound_identity_index.json` | client-owned | One stable identity and one active carrier occurrence per wound |
 | `game_state/wounds/wound_history.json` | client-owned | Append-only accepted transition/replay/terminal evidence |
 | `game_state/wounds/wound_commands.json` | client-owned command staging | Exact materialization/treatment/diagnosis/recovery intents for one accepted request |
-| `game_state/wounds/wound_opportunity_receipts.json` | client-owned append-only | Durable accepted `none`/`materialize` decisions and cold-replay authority |
+| `game_state/wounds/wound_opportunity_receipts.json` | client-owned append-only | Durable accepted Mortal `none`/`materialize` decisions and cold-replay authority; closed Mortal schema |
+| `game_state/wounds/spiritual_wound_opportunity_receipts.json` | planned client-owned append-only | Spiritual conflict-instance/source/decision evidence in the single final common publication |
+| `game_state/control/pending_spiritual_wound_decisions.json` | planned client-owned pending | Resumable same-turn source prefix and GM decision continuation; not accepted history |
 | `game_state/control/pending_wound_resolutions.json` | client-owned pending | Bounded GM construction/repair work, exact receipts, and immutable authority |
 | `game_state/control/pending_mortal_wound_occurrences.json` | client-owned pending | Signed seven-kind Mortal occurrences captured by the active pending-turn snapshot |
 | `game_state/player/wounds.json` | composed client/GM semantic carrier | Mortal player active wounds |
@@ -3055,6 +3057,26 @@ the sealed before-image; a later qualifying success for an already recorded rout
 the resolution/history fingerprint is deterministic.
 
 ## 10. Spiritual conflict additions
+
+### Live turn and storage boundary
+
+`contracts/spiritual-wound-live-turn-boundary.md` pins the implementation ordering:
+one logical player turn, internal decision continuation, one final publication.
+The separate spiritual pending packet retains the original snapshot identity,
+causally completed source prefix, original dice/resource coordinates and exact
+allowed continuation fields. It does not overwrite the original snapshot or
+publish an accepted undecided source. New pending paths have explicit original
+absence in rollback plus independently reconstructed derived-packet authority;
+they are not falsely presented as pre-existing signed baseline contents.
+
+The separate spiritual receipt root records conflict instances and accepted
+source/decision rows, including `none`. The existing Mortal receipt parser and
+IDs are unchanged. Current conflict side seals are a checked projection of that
+spiritual authority. Recent-conflict pruning does not remove durable consumption.
+For multiple current exchanges, candidate wound effects feed the dependent suffix
+according to their registered scope; original source/dice coordinates and the
+single final publication remain fixed. These new roots and callers are planned,
+not implemented by this documentation update.
 
 ### Conflict danger envelope
 

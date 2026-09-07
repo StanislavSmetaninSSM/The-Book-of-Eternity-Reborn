@@ -725,6 +725,44 @@ fresh comparison and transactional restoration of die, Fate, and resource regist
 - Add a secret MAC or external authenticated snapshot: unnecessary new key/snapshot
   infrastructure for the current local pre-release trust boundary.
 
+## Live spiritual source and decision ordering — 2026-09-08
+
+**Decision**: Use one original player turn and one final common publication,
+with client-owned internal GM continuation over a frozen causal prefix when the
+wound envelope becomes known. Separate pending spiritual decision evidence from
+append-only accepted spiritual receipts; leave the closed Mortal schemas intact.
+The concrete lifecycle contract is `contracts/spiritual-wound-live-turn-boundary.md`.
+
+**Rationale**: The existing raw resource path projects conflict owners before
+effect/wound preparation, but actual resource transition and effect transcript
+proof completes later inside the common planner. The later filesystem state
+validation is not prior proof. Extract the existing complete checker and the
+planner's source intermediate as production-consumed boundaries, then finalize
+strict source authority before the GM decision. Current conflict replacement
+logs support multiple new exchanges: wound-dependent suffix work cannot be frozen
+as already valid under pre-wound mechanics. Keep original action/die/resource
+coordinates and apply registered effects to the detached candidate in order.
+
+**Alternatives rejected**:
+
+- Commit source now and require the next player action for its wound: introduces
+  an unintended visible delay and separates acquisition from its causing turn.
+- Nest two canonical subturn publications inside an outer transaction: adds
+  unnecessary rollback/identity complexity compared with a retained intermediate.
+- Rebuild the whole nominally pure plan for each continuation: can allocate new
+  resource/effect identities and repeat turn-wide triggers.
+- Freeze the whole multi-exchange batch before any wound choice: can accept a
+  later calculation under stale actor effects; atomic publication does not imply
+  a universal end-turn activation rule.
+- Reuse the generic-looking Mortal receipt path for spiritual rows: its concrete
+  parser, identities and fingerprints are a closed Mortal contract.
+
+**Implementation evidence boundary**: Source inventory and exact call-seam reads
+support this design. The required overall-zero-error signed fixture has not yet
+been executed, and arithmetic overflow is a risk, not a reproduced bug. Current
+ordinary-art Fast/Full controls pass; historical failing notes are not a present
+blocker. T081-A..E keep live callers and full source mechanics explicitly open.
+
 ## Resolved research conclusion
 
 All design-critical unknowns are resolved. Implementation can proceed without a
