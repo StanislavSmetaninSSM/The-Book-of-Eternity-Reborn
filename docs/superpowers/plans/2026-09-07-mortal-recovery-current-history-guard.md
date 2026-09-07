@@ -44,7 +44,7 @@
 - Existing recovery test private `Fixture.Create`, `RestartForReplay`, `PrepareFreshContinuationTurn`, `TamperPersistedRecoveryEvidence`, `CorruptLiveClock`, byte capture and reflection `InvokePlan` supply real authority. Do not create a second fixture or modify frozen replay/publication tests.
 - New internal overload: `string? FileSystemManager.ReadFileSync(CanonicalWriteLease writeLease, string relativePath)`. No public planner signature changes.
 
-- [ ] **Step 1: Add the sixteen file-backed behavioral rows and one doc guard.**
+- [x] **Step 1: Add the sixteen file-backed behavioral rows and one doc guard.**
 
 Change only the existing recovery class declaration to:
 
@@ -264,7 +264,7 @@ public void MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmiss
 }
 ```
 
-- [ ] **Step 2: Observe semantic RED before production/documentation changes.**
+- [x] **Step 2: Observe semantic RED before production/documentation changes.**
 
 Run sequentially from the worktree with PowerShell 7:
 
@@ -279,7 +279,7 @@ one semantic FAIL (absent prose). A compile/setup failure is not semantic RED:
 repair the test setup without weakening real-authority assertions and record it.
 Do not proceed if the real baseline fixtures cannot reach the existing planner.
 
-- [ ] **Step 3: Add the write-free explicit-lease reader and history admission.**
+- [x] **Step 3: Add the write-free explicit-lease reader and history admission.**
 
 In `FileSystemManager.ReadFileSync(string)`, retain the complete existing
 recovery/read/hook/reacquisition/finally block. Replace only its trailing decoder
@@ -393,7 +393,7 @@ arithmetic, receipt shape, registry, parser or accepted-state export:
 The catch maps only read/path failures; it does not mask programming/lease errors
 or rewrite parser diagnostics. Exception messages/absolute paths are not exported.
 
-- [ ] **Step 4: Synchronize the Mortal worked negative continuation.**
+- [x] **Step 4: Synchronize the Mortal worked negative continuation.**
 
 In both the common wound guide and worked example, insert this exact paragraph
 after `contracts remain in the complete route model. Scheduled natural recovery remains separate and unfinished.`
@@ -433,7 +433,7 @@ Do not create duplicate properties or a new entry:
 "mortal_wound_recovery_history_guard_v1"
 ```
 
-- [ ] **Step 5: Verify actual owner regressions and final documentation consumers.**
+- [x] **Step 5: Verify actual owner regressions and final documentation consumers.**
 
 Run the new sixteen-row Integration filter from Step2 after implementation; then
 run these sequential bounded owner controls (the owning filter includes new rows
@@ -445,7 +445,13 @@ again with the existing T069B controls so the complete boundary has one artifact
 .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
-Expected all selected rows PASS, one Fast within its unchanged five-minute cap.
+Expected all selected rows PASS. Run one Fast with its unchanged five-minute cap.
+If that control times out without a failing test, reconcile discovery and every
+completed TRX, then run only the exact uncompleted selection once through bounded
+Focused. Complete, non-overlapping case coverage may accept this implementation
+prerequisite; it does not make the original Fast successful or close T177's
+performance/final-verification obligation. An actual failing test still blocks
+acceptance. This development checkpoint is not the final PreMerge gate.
 Record actual discovered/executed counts separately; raw differences caused by
 runtime-expanded theories are not unfinished counts. Inspect every TRX plus
 summary/build/error/cleanup metadata, not merely command exit. No complete recovery
@@ -454,7 +460,7 @@ No FullValidation: these docs/example/manifest changes are explicitly Mortal-onl
 If a genuine new owner failure appears, diagnose it and report before broadening
 scope; do not hide or weaken it. No source changes while any lane is running.
 
-- [ ] **Step 6: Self-review, exact-file commit and independent acceptance.**
+- [x] **Step 6: Self-review, exact-file commit and independent acceptance.**
 
 Check all eight owned paths and `git diff --check`; recursively check the final
 manifest for duplicate properties. Stage/commit only those exact paths. Report
@@ -465,7 +471,67 @@ source/diff/actual artifacts and obtains fresh Spec Compliance/Quality review.
 Only after those gates mark this bounded guard complete. Full T069-C/T070/T074/
 T177/#1536 and the overall77/177 task count remain open/unchanged.
 
+## Accepted bounded prerequisite — 2026-09-07
+
+Exact source range `b2bc29f872fb16ea2df436b85096eef0252a517e` to
+`f9cd385ca9e64bdfb7a55e8b101d05f5f2910eda`. Parent inspected the complete
+eight-file diff, actual source, every result artifact below, final GM changes,
+recursive manifest duplicate-property scan and `git diff --check`. Independent
+Astra/high review is Spec Compliant / Quality Approved: zero source defects,
+zero Critical/Important findings and one retained historical Minor process finding.
+The reviewer explicitly accepted the documented development-checkpoint correction
+below after reading `AGENTS.md` and `docs/testing.md`; original Fast stays exit 124.
+
+All artifact directories are under `TestResults/test-lanes/`:
+
+| Artifact | Actual evidence |
+| --- | --- |
+| `20260907-111020-033-3864-1c0c92d9393244af8d42f2aae61f550f-focused` | Integration RED: 6 PASS / 10 expected semantic FAIL, 2:34.324; clean build. |
+| `20260907-111050-243-33760-fb3e4efdead547ddbddc4fbf3675f246-focused` | Documentation RED: 1 expected missing-marker FAIL, 1:22.806; two MSB3026 file-lock warnings. |
+| `20260907-111130-957-26684-8989161b17d24fc6b6ed19c04467309c-focused` | Duplicate Integration RED: same 6 PASS / 10 FAIL, 1:24.185; one MSB3101 file-lock warning. |
+| `20260907-111300-145-50040-b0193bf2570c49b38cded3bec1b59f32-focused` | Repeated documentation RED: 1 expected FAIL, 0:14.700; clean build. |
+| `20260907-111431-499-27168-5d7b5929cb7c4850ac59d3e82cd74a85-focused` | New Integration cases: 16/16 PASS, 2:11.630. |
+| `20260907-111655-030-39292-c38fc0d4d81d449392aaa55531cf8832-focused` | Integration owners: 42/42 PASS, 2:06.850. |
+| `20260907-111902-757-21260-41f373ba809f4c15bfa004c23b5a5356-focused` | Owning parser/documentation cases: 51/51 PASS, 0:33.901. |
+| `20260907-112003-876-33800-506b04f7c4d6406aa01e2eb34f55de8d-fast` | One Fast: 7,282 PASS across 21 completed TRXs; timeout 5:00.289, exit 124. |
+| `20260907-113236-579-48616-99329022fd574476b7827bca1ff57adf-focused` | Exact uncompleted selection: 347/347 PASS, 1:28.436, five-minute limit. |
+
+Fast discovery has 7,575 rows; seven existing runtime-expanded theories add 54.
+Parent reconciled every method: combined 7,629 PASS, no missing methods, no
+cross-run method/testId/executionId overlap. Raw method IDs and collapsed complex
+argument display labels can repeat inside existing theories; these are not duplicate
+executions. All final owner/continuation builds and all cleanup checks are clean;
+no skipped tests. This proves complete case coverage, not a successful Fast lane.
+
+The first three RED runs overlapped and caused the three disclosed lock warnings.
+This is a process deviation retained for final review. Subsequent runs were drained
+before source edits; formatting-only changes followed owner completion and preceded
+Fast. No additional RED or whole-Fast rerun was used to erase the evidence.
+
+GM synchronization is Mortal-only: shared wound guide, worked negative continuation,
+existing manifest entry and one deterministic source guard. No afterlife contract,
+pending/action surface or afterlife example changed, so FullValidation is not
+required for this prerequisite. Durable recovery publication/replay, cadence policy,
+T069-C/T070/T074/T177, whole-feature completion and final PreMerge remain open.
+Top-level completion remains 77/177. Full report, parent audit and independent review
+are in this worktree's `sdd/mortal-recovery-current-history-guard-*.md` metadata.
+
 ## Parent self-review
+
+### Verification-policy correction after measured timeout
+
+The initial plan's expectation of one completed Fast was stricter than the user's
+repository policy, which requires a bounded Fast control during implementation,
+keeps Fast fast, permits measured diagnostic follow-up and forbids spending the
+wound task on repeated timing attempts. One Fast was run with the five-minute
+cap unchanged; it timed out after7,282 PASS. Parent ran only its uncompleted347
+cases once through Focused, all PASS, with no cross-run method overlap. All7,629
+cases are covered (7,575 discovery plus54 known theory expansions), but the Fast
+exit124 remains recorded and T177 remains open. This clarifies this prerequisite's
+acceptance scope rather than changing the user's Fast limit, test assertions,
+test placement or the full feature's final gate. No second Fast is authorized by
+this correction. Independent review must assess this documented policy correction
+and complete evidence before bounded acceptance; no source change follows from it.
 
 - This is a bounded independent admission guard, not an attempt to finish Phase C
   before its durable receipt producer. All replay/result/cadence schema choices
