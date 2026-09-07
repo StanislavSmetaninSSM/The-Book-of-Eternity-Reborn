@@ -7,7 +7,7 @@
  {
      internal bool IsValid => Transcript != null && Issues.Count == 0;
  }
- 
+
 +internal sealed record AcceptedEffectBoundaryPrefixResult(
 +    AcceptedEffectBoundaryTranscript.ClosedPrefix? Prefix,
 +    IReadOnlyList<EffectBoundaryTranscriptIssue> Issues)
@@ -28,7 +28,7 @@
              effectId,
              StringComparison.Ordinal));
      }
- 
+
 +    internal sealed class ClosedPrefix
 +    {
 +        private readonly AcceptedEffectBoundaryTranscript _image;
@@ -108,7 +108,7 @@
          _pendingFrontierBoundaryOrdinal = boundary.BoundaryOrdinal;
          return null;
      }
- 
+
 +    private AcceptedEffectBoundaryTranscript CaptureImage() =>
 +        new(
 +            _planAuthority,

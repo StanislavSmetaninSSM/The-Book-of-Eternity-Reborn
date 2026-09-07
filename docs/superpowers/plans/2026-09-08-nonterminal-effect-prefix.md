@@ -66,7 +66,7 @@ The first command is RED staging; the remaining three must pass after implementa
  {
      internal bool IsValid => Transcript != null && Issues.Count == 0;
  }
- 
+
 +internal sealed record AcceptedEffectBoundaryPrefixResult(
 +    AcceptedEffectBoundaryTranscript.ClosedPrefix? Prefix,
 +    IReadOnlyList<EffectBoundaryTranscriptIssue> Issues)
@@ -87,7 +87,7 @@ The first command is RED staging; the remaining three must pass after implementa
              effectId,
              StringComparison.Ordinal));
      }
- 
+
 +    internal sealed class ClosedPrefix
 +    {
 +        private readonly AcceptedEffectBoundaryTranscript _image;
@@ -167,7 +167,7 @@ The first command is RED staging; the remaining three must pass after implementa
          _pendingFrontierBoundaryOrdinal = boundary.BoundaryOrdinal;
          return null;
      }
- 
+
 +    private AcceptedEffectBoundaryTranscript CaptureImage() =>
 +        new(
 +            _planAuthority,
