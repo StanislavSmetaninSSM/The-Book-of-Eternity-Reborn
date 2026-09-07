@@ -8,6 +8,34 @@
 
 **Tech Stack:** C#, xUnit, existing source/category guards, PowerShell 7 bounded lanes.
 
+## Acceptance — 2026-09-08
+
+Tasks1/2 are accepted, commits `02aa0dbf..5b57534c`, independent Spec compliant /
+Quality Approved, zero Critical/Important/Minor. Parent resolved the review's
+Fast CannotVerify gate with the actual complete run below.
+
+Parent read full diffs/reports and actual artifacts:
+
+- ownership RED: `20260908-045713-371-31196-14290378b34f41a58b8611bb074408f2-focused`,0/1,1:10.3486239;
+- Fast ownership GREEN: `20260908-045902-644-35132-c11c76a6f06843df970def4580c57aee-focused`,1/1,0:32.4970110;
+- moved Fact PASS / older missing manifest RED: `20260908-045939-956-36892-f998f8cef0954bdcb6903ee707c3fb37-focused`,1/2,0:57.5465613;
+- final original Fact+category guard GREEN: `20260908-050818-729-15184-989f149e24154d02aff8e1aaccbe2b0d-focused`,2/2,1:28.9212934;
+- parent full Fast: `20260908-051357-858-38248-99236dfb6b8748218d3425370e7c0d7f-fast`,7758/7758,4:54.9235103.
+
+All runs used the default5m bound, build0/0, no skip/timeout or runner duplicate,
+complete cleanup. Final Fast has26 TRXs,7704 discovery IDs/7758 unique executions
+through existing dynamic theories; the moved Fact does not remain in Fast.
+Parent compared the entire moved body to its base, excluding only the new Trait
+and normalizing line endings; equality is exact. Final inventories are67/40,
+and the40-entry Integration research list matches executable order exactly.
+The real filesystem/profile ownership of the older spiritual-art class was
+verified against its unchanged source and pre-dispatch git contents.
+
+This corrects test ownership and a manifest omission, not an established
+production race or OS scheduling cause. Historical timeout evidence is retained.
+No gameplay/GM/UI change; no GM prompt/example synchronization needed. T177 and
+#1536 are not closed by this bounded acceptance.
+
 ## Global Constraints
 
 - Tracked issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T177 verification follow-through, applying the approved #1505 Fast taxonomy. Follow constitution and active #1536 spec/plan/tasks.
@@ -37,7 +65,7 @@ Parent audited actual summary/log/TRX for Fast artifact `20260908-043905-270-291
 
 Isolated unchanged-code diagnostic `20260908-044530-565-22424-9d89553bb425471d904056fd415f4303-focused` passed1/1; wall15.6770040s, row0.7747730s, exit0, clean build/cleanup, no timeout/duplicates/skips. It does not establish why the other execution exceeded five seconds. Do not repeat either diagnostic as a substitute for the ownership RED below.
 
-- [ ] **Step 2: Add the Fast ownership requirement and observe the semantic RED.**
+- [x] **Step 2: Add the Fast ownership requirement and observe the semantic RED.**
 
 Apply only this first patch, then run the guard before moving the source:
 
@@ -57,7 +85,7 @@ Apply only this first patch, then run the guard before moving the source:
 
 Expected: exactly1 failing ownership row, reporting the current Fast path instead of the required Integration path. A compilation/launch failure is not semantic RED.
 
-- [ ] **Step 3: Move the complete source and synchronize exact ownership.**
+- [x] **Step 3: Move the complete source and synchronize exact ownership.**
 
 Use apply_patch Move to so no body is retyped or lost. Resolve all patch headers against the absolute worktree.
 
@@ -124,7 +152,7 @@ Use apply_patch Move to so no body is retyped or lost. Resolve all patch headers
 *** End Patch
 ```
 
-- [ ] **Step 4: Prove both boundaries and the unchanged relocated behavior.**
+- [x] **Step 4: Prove both boundaries and the unchanged relocated behavior.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~FastTestBoundaryTests.ReviewedHeavySources_ExistOnlyUnderIntegrationTests"
@@ -133,7 +161,7 @@ Use apply_patch Move to so no body is retyped or lost. Resolve all patch headers
 
 Expected:1/1 Fast guard;2/2 Integration (one original Fact plus one category guard). Verify actual discovery/TRX names, no duplicate or skipped row, build warnings/errors0, cleanup complete. If the original timeout recurs, stop and report it with artifacts instead of weakening waits/assertions or repeatedly rerunning. Parent will diagnose the retained failure separately.
 
-- [ ] **Step 5: Verify preservation, commit only the scoped paths and report.**
+- [x] **Step 5: Verify preservation, commit only the scoped paths and report.**
 
 ```powershell
 git diff --check
@@ -168,7 +196,7 @@ manifest entry was absent. The class writes real entity/soul profiles and invoke
 scoped validation, so its existing RegressionIntegration ownership is correct.
 No runtime art behavior or test body correction is required; do not repeat RED.
 
-- [ ] **Step2: Apply only the complete manifest/docs patch.**
+- [x] **Step2: Apply only the complete manifest/docs patch.**
 
 ```diff
 *** Begin Patch
@@ -205,7 +233,7 @@ No runtime art behavior or test body correction is required; do not repeat RED.
 *** End Patch
 ```
 
-- [ ] **Step3: Prove the original two-row selection is green and commit/report.**
+- [x] **Step3: Prove the original two-row selection is green and commit/report.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~BrowserPlayerActionGenerationTests|FullyQualifiedName~IntegrationTestBoundaryTests.FileBackedRegressionIntegrationSources_MatchReviewedManifest"

@@ -8,6 +8,34 @@
 
 **Tech Stack:** C#, .NET 8, xUnit, System.Text.Json, PowerShell 7 bounded lanes.
 
+## Acceptance — 2026-09-08
+
+T081-B1 is accepted, not T081-B2 or the whole feature. Production `c9230065` plus
+required fixture `05a35ba6` matches the complete plan; independent aggregate
+`e3949168..05a35ba6` review is Spec compliant / Quality Approved, zero Critical,
+Important or Minor findings. Its Fast CannotVerify gate is resolved by the
+parent-audited final run below. T177's separate browser/manifest correction
+`02aa0dbf..5b57534c` is also independently review-clean.
+
+Parent inspected every relevant summary/log/TRX and complete diff. Focused
+evidence: semantic API RED0/1; new6/6; owning423/423; signed2/2; Mortal4/4;
+original pending0/11 retained; corrected pending11/11 with identical names and
+assertions. The exact fixture correction and its evidence are recorded in
+`2026-09-08-pending-effect-fixture-sources.md`.
+
+Final Fast: `20260908-051357-858-38248-99236dfb6b8748218d3425370e7c0d7f-fast`,
+7758/7758, exit0, wall4:54.9235103, unchanged5m limit, build0/0, no skipped rows,
+no duplicate execution IDs or cross-descriptor test IDs, cleanup complete.
+All26 descriptor TRXs were read; discovery7704 expands to7758 through seven
+existing dynamic theories (8/15/7/12/8/7/4 rows,54 extra cases). All six B1 rows
+are present; the relocated browser Fact is absent from Fast and passed in
+Integration. Historical failed Fast2808/2809 and the isolated browser diagnostic
+remain failures/diagnostics, not retroactively successful controls.
+
+This internal split changes no GM-authored capability, Mortal/afterlife contract
+or UI; no prompt/example/matrix/manifest update is required. T081-B2/C/D/E and
+top-level T081/T084/T085/T177 remain open; accepted top-level count stays79/177.
+
 ## Global Constraints
 
 - Source issue: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536); this task is T081-B1 under OPEN T081-B. Constitution: `.specify/memory/constitution.md`.
@@ -34,15 +62,15 @@
 
 **Interfaces and complete code:** The reviewed executable appendix below supplies every new API, complete test file, helper and exact verification command. The companion supplies every production replacement body. Its 470 removed lines were mechanically matched to current source after T081-A acceptance at `9114bc2c`; the old block ends immediately before ResolvePendingBoundary.
 
-- [ ] **Step 1: Stage only the existing-API positive control and reflection RED.**
+- [x] **Step 1: Stage only the existing-API positive control and reflection RED.**
 
 Use the appendix's first Fact and all existing-type fixture/observer helpers. Make the existing test class partial; do not stage the other five typed Facts or production API yet. The old production wrapper must successfully reduce a nonempty ordinary input and emit one resource event before the missing-API assertion. A failed setup/build is not semantic RED.
 
-- [ ] **Step 2: Observe and record the exact pre-API RED.**
+- [x] **Step 2: Observe and record the exact pre-API RED.**
 
 Run the first command in the appendix. Require Assert.NotNull(method) to fail only after the old-wrapper positive control has passed. Retain the actual summary/log/TRX artifact; do not repeat that RED after implementation.
 
-- [ ] **Step 3: Stage all six tests, then apply the exact production companion.**
+- [x] **Step 3: Stage all six tests, then apply the exact production companion.**
 
 The owning declaration is exactly:
 
@@ -58,11 +86,11 @@ Use the complete test appendix and replace only this portable companion header b
 
 No additional runtime refactor or B2 placeholder is authorized. The brief provides full bodies; the temporary missing-type compile state before applying them is not another semantic RED.
 
-- [ ] **Step 4: Verify the six new rows and all listed owning controls.**
+- [x] **Step 4: Verify the six new rows and all listed owning controls.**
 
 Run appendix commands sequentially: six new rows, owning planner/cache/effect/source-guard selection, genuine signed conflict pair, existing pending-wave owners, and the four named real Mortal publication controls. Default five-minute limits apply. Preserve every failing artifact and diagnose actual failures against unchanged mechanics. Record discovered descriptors and executed rows separately where dynamic data expands; never call repeated MemberData IDs duplicate executions.
 
-- [ ] **Step 5: Inspect, self-review, commit only owned code/tests, and report.**
+- [x] **Step 5: Inspect, self-review, commit only owned code/tests, and report.**
 
 Run git diff --check and inspect the three-file diff. Confirm the wrapper consumes ReduceAcceptedPlan/CompleteAcceptedReduction and no allocation, projection or effect completion moved into assembly. Commit only the three owned files as `refactor: separate ordinary mechanics reduction from assembly (#1536)`. Write exact RED/GREEN/control commands, artifact paths, counters, warning/error/timeout/cleanup status, files, deviations and self-review to the controller's report path. Release all C# ownership. Do not change tracking checkboxes or issue state.
 

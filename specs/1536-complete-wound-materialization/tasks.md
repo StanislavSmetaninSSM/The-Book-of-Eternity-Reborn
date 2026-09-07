@@ -2158,27 +2158,24 @@ hand-written history/after-images, or a raw mutation fallback.
     transition proof, dependent suffix, pending receipt waves and one final plan
     in `AfterlifeSpiritualWoundLifecycleTests.cs`. Do not retain a temporary
     publishable plan or rerun identity allocation to simulate a continuation.
-    - [ ] T081-B1 [US3] Separate completed ordinary resource/effect reduction
+    - [x] T081-B1 [US3] Separate completed ordinary resource/effect reduction
       from once-only final assembly in the existing production planner. Complete
       code and six behavior tests are specified in
       `docs/superpowers/plans/2026-09-08-accepted-mechanics-ordinary-reduction.md`
       and its companion patch. Preserve receipt, identity, replay and Mortal
       publication behavior; verify existing signed/pending/publication controls.
       This internal refactor creates no wound-source authority or GM contract.
-      Code at `c9230065` is not yet accepted: new6/6,owner423/423,signed2/2 and
-      Mortal4/4 pass; required pending0/11 exposes the old generic wound fixture.
-      T177 follow-through is the complete two-file test-only plan
-      `docs/superpowers/plans/2026-09-08-pending-effect-fixture-sources.md`;
-      exact11-row GREEN, one Fast and independent review remain required.
-      Pending11/11 and independent review are now clean at `05a35ba6`; the parent
-      Fast stopped at2808/2809 on the browser contention test's preflight timeout.
-      Its unchanged isolated diagnostic passes1/1. Required T177 ownership
-      correction follows `docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`;
-      exact relocated coverage, both guards and a corrected full Fast remain open.
-      Move `4e9b7ceb` preserves the browser Fact (passes) and Fast ownership guard;
-      the Integration guard exposes the older missing SpiritualHealingArtValidationTests
-      manifest entry. The same plan's Task2 records this existing file-backed owner
-      without changing arts/tests; final Integration manifest count becomes40.
+      Accepted2026-09-08: core `c9230065`, required two-file fixture `05a35ba6`;
+      independent aggregate `e3949168..05a35ba6` Spec compliant / Quality Approved,
+      zero Critical/Important/Minor. Actual new6/6,owning423/423,signed2/2,Mortal4/4
+      and corrected pending11/11 are green; semantic and fixture REDs retained.
+      T177 browser/manifest follow-through `02aa0dbf..5b57534c` is independently
+      review-clean with exact body preservation, focused guards1/1 and2/2, final
+      inventories67/40. Full parent Fast7758/7758 (discovery7704),4:54.9235103,
+      build0/0, no timeout/skips/duplicate executions/cross-descriptor IDs, complete
+      cleanup; both reviews' Fast evidence gaps resolved. Exact artifacts and
+      historical failed Fast are recorded in the three bounded plans. This checks
+      only B1; top-level79/177 and full T081/T084/T085/T177 remain unchanged/open.
     - [ ] T081-B2 [US3] Retain and production-consume actual causal execution:
       prepared graph/identities, scheduler/frontier, resource ledger/history,
       accepted effect transcript state and incremental effect advancement.

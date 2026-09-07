@@ -8,6 +8,18 @@
 
 **Tech Stack:** C#, xUnit Integration, System.Text.Json.Nodes, PowerShell 7 bounded lanes.
 
+## Acceptance — 2026-09-08
+
+The exact two-file correction `05a35ba6` is accepted with B1. Parent inspected
+the complete diff/report and actual `20260908-043306-236-28720-59529f282f734e47860babfb9f004de0-focused`
+summary/log/TRX:11/11, wall2:14.5093462, default5m, build0/0, no skips/duplicate
+executions/timeout, cleanup complete. The eleven names match the retained RED.
+Registered skill selectors, matching display source labels and identity indexes
+are aligned before the unchanged snapshot; no assertion or receipt/replay
+behavior was removed. Independent B1 aggregate review `e3949168..05a35ba6`
+is Spec compliant / Quality Approved with no code findings; the parent Fast
+7758/7758 gate is recorded in the ordinary-reduction plan. No GM contract changed.
+
 ## Global Constraints
 
 - Tracked issue [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), T177 fixture correction required by T081-B1 acceptance. Constitution and `specs/1536-complete-wound-materialization/{spec,plan,tasks}.md` remain authority.
@@ -30,7 +42,7 @@
 
 The parent read actual summary/log/TRX evidence for `20260908-041114-524-51468-64a73eccf03f48ec9e39b7859c5737ab-focused`: zero of eleven pass; ten publication-binding exceptions and one raw apply-source failure. Build0/0, no skip/timeout/duplicate execution, complete cleanup, wall0:35.2524547. The source path was traced through the shared array-writing helper, current object-only wound collector and final effect binding; working rollback fixtures use the existing skill helper. This is the executable RED for this correction, not a failure to repeat.
 
-- [ ] **Step 2: Apply only the complete two-file source correction.**
+- [x] **Step 2: Apply only the complete two-file source correction.**
 
 Rebase the two patch headers to the absolute worktree before apply_patch. All supplied bodies are complete; no runtime or shared-fixture change is authorized.
 
@@ -140,7 +152,7 @@ Rebase the two patch headers to the absolute worktree before apply_patch. All su
 *** End Patch
 ```
 
-- [ ] **Step 3: Run the unchanged eleven-row cohort GREEN.**
+- [x] **Step 3: Run the unchanged eleven-row cohort GREEN.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ResourcePendingResolutionIntegrationTests|FullyQualifiedName~EffectPendingWaveIntegrationTests"
@@ -148,7 +160,7 @@ Rebase the two patch headers to the absolute worktree before apply_patch. All su
 
 Require exactly the eleven fully qualified rows listed in the diagnosis appendix, all passing, zero build warnings/errors, skips, timeout or duplicate execution, complete owned-tree cleanup. Keep all assertions. If a later failure becomes visible after fixing the source, retain its artifact, trace it and report NEEDS_CONTEXT before expanding scope; do not make a gameplay/authority change or weaken expected values.
 
-- [ ] **Step 4: Self-review, commit only both test files and report.**
+- [x] **Step 4: Self-review, commit only both test files and report.**
 
 Inspect git diff --check and the complete two-file diff. Confirm all old assertions, original IDs/receipt waves, definition/trigger/lifetime and snapshot calls are unchanged; the canonical source is adjusted before CreateIdentityIndex. Commit as `test: restore pending effect fixture sources (#1536)`. Report exact command, artifact, discovery/execution membership/counts, duration, warnings/errors, cleanup/timeout, changed files and concerns to the controller-specified report. No extra Fast, FullValidation or PreMerge. Release C# ownership.
 

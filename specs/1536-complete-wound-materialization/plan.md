@@ -1674,6 +1674,20 @@ canonical-file/session-replacement contention row belongs in RegressionIntegrati
 under the already approved taxonomy. Preserve all behavior and historical results;
 B1 still requires the corrected full Fast gate and acceptance evidence.
 
+B1 acceptance (2026-09-08): production `c9230065` and fixture `05a35ba6` are
+independently Spec compliant / Quality Approved, no code findings. All required
+Focused cohorts pass; exact pending11/11 is restored without assertion changes.
+The bounded T177 browser/manifest correction `02aa0dbf..5b57534c` is independently
+review-clean, retains the original browser Fact, and records existing spiritual
+art Integration ownership (final inventories67/40). Actual parent Fast artifact
+`20260908-051357-858-38248-99236dfb6b8748218d3425370e7c0d7f-fast` is7758/7758,
+wall4:54.9235103 under the unchanged5m limit, clean build/cleanup, no skips or
+duplicate executions/cross-descriptor IDs. All26 TRXs were inspected;7704 discovery
+IDs expand through seven existing dynamic theories (54extra cases). Both reviews'
+Fast evidence gaps are resolved; historical failures remain recorded in the
+bounded plans. Only nested B1 is accepted; top-level79/177 and B2/C/D/E remain open.
+No GM capability/contract changed, so no prompt/example/matrix update is needed.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form
