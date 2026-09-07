@@ -139,7 +139,7 @@ public partial class ValidationService
     private sealed record AfterlifeConflictDiceContext(
         int[]? AuthoritativeDice,
         int? LightIncarnateGrantTurn = null,
-        IReadOnlyList<JsonObject>? PreTurnNoTurnDicePayloads = null,
+        IReadOnlyList<JsonObject>? PreTurnRecentConflictPayloads = null,
         IReadOnlyList<JsonObject>? PreTurnConflictPayloads = null,
         string? PreTurnActiveConflictId = null,
         JsonNode? PreTurnActiveControlState = null,
@@ -154,8 +154,6 @@ public partial class ValidationService
         public bool HasAuthoritativeDice => AuthoritativeDice is { Length: > 0 };
         public bool HasLightIncarnate => LightIncarnateGrantTurn is > 0;
 
-        public bool IsPreTurnNoTurnDicePayload(JsonObject payload) =>
-            PreTurnNoTurnDicePayloads?.Any(preTurnPayload => JsonNode.DeepEquals(preTurnPayload, payload)) == true;
     }
 
     private sealed record PreTurnActiveConflictControlContext(
@@ -288,7 +286,7 @@ public partial class ValidationService
         var lightIncarnateGrantTurn = await ResolveLightIncarnateGrantTurnAsync();
         var preTurnConflictPayloads = await ResolvePreTurnConflictPayloadsAsync(manifest);
         var preTurnActiveControl = await ResolvePreTurnActiveConflictControlContextAsync(manifest);
-        var preTurnNoTurnDicePayloads = await ResolvePreTurnNoTurnConflictDicePayloadsAsync(manifest);
+        var preTurnRecentConflictPayloads = await ResolvePreTurnRecentConflictPayloadsAsync(manifest);
         var difficulty = await ResolveAfterlifeConflictDifficultyDefinitionAsync();
 
         if (manifest?.PreGeneratedDices1d20 is { Length: > 0 } manifestDice)
@@ -296,7 +294,7 @@ public partial class ValidationService
             return new AfterlifeConflictDiceContext(
                 manifestDice,
                 lightIncarnateGrantTurn,
-                preTurnNoTurnDicePayloads,
+                preTurnRecentConflictPayloads,
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
@@ -315,7 +313,7 @@ public partial class ValidationService
             return new AfterlifeConflictDiceContext(
                 null,
                 lightIncarnateGrantTurn,
-                preTurnNoTurnDicePayloads,
+                preTurnRecentConflictPayloads,
                 preTurnConflictPayloads,
                 preTurnActiveControl.ConflictId,
                 preTurnActiveControl.ControlState,
@@ -345,7 +343,7 @@ public partial class ValidationService
                     return new AfterlifeConflictDiceContext(
                         dice.ToArray(),
                         lightIncarnateGrantTurn,
-                        preTurnNoTurnDicePayloads,
+                        preTurnRecentConflictPayloads,
                         preTurnConflictPayloads,
                         preTurnActiveControl.ConflictId,
                         preTurnActiveControl.ControlState,
@@ -367,7 +365,7 @@ public partial class ValidationService
         return new AfterlifeConflictDiceContext(
             null,
             lightIncarnateGrantTurn,
-            preTurnNoTurnDicePayloads,
+            preTurnRecentConflictPayloads,
             preTurnConflictPayloads,
             preTurnActiveControl.ConflictId,
             preTurnActiveControl.ControlState,
@@ -672,7 +670,7 @@ public partial class ValidationService
         return new AfterlifeSoulDissipationContext(soulRoot, profiles);
     }
 
-    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnNoTurnConflictDicePayloadsAsync(
+    private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnRecentConflictPayloadsAsync(
         ValidationPendingTurnSnapshotManifest? manifest)
     {
         if (manifest == null)
@@ -691,14 +689,7 @@ public partial class ValidationService
             if (root["recentConflicts"] is JsonArray recentConflicts)
             {
                 foreach (var entry in recentConflicts.OfType<JsonObject>())
-                    TryAddPreTurnNoTurnDicePayload(payloads, entry);
-            }
-
-            if (root["activeConflict"] is JsonObject activeConflict &&
-                activeConflict["exchangeLog"] is JsonArray exchangeLog)
-            {
-                foreach (var entry in exchangeLog.OfType<JsonObject>())
-                    TryAddPreTurnNoTurnDicePayload(payloads, entry);
+                    TryAddPreTurnConflictPayload(payloads, entry);
             }
 
             return payloads;
@@ -708,18 +699,6 @@ public partial class ValidationService
             // Malformed conflict state is reported by the normal state validator.
             return Array.Empty<JsonObject>();
         }
-    }
-
-    private static void TryAddPreTurnNoTurnDicePayload(List<JsonObject> payloads, JsonObject payload)
-    {
-        if (payload["diceAudit"] is not JsonObject diceAudit)
-            return;
-
-        if (ResolveLightIncarnateAuditTurn(payload, diceAudit) is > 0)
-            return;
-
-        if (payload.DeepClone() is JsonObject clone)
-            payloads.Add(clone);
     }
 
     private async Task<IReadOnlyList<JsonObject>> ResolvePreTurnConflictPayloadsAsync(
@@ -1285,10 +1264,18 @@ public partial class ValidationService
         if (root["recentConflicts"] is JsonArray recentConflicts)
         {
             var rewardConflictIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            var preTurnProofTracker = new PreTurnConflictPayloadTracker(
+                diceContext.HasValidatedTurnBaseline ? diceContext.PreTurnRecentConflictPayloads : null);
             for (var index = 0; index < recentConflicts.Count; index++)
             {
-                if (recentConflicts[index] is JsonObject proof)
-                    ValidateRecentConflictProof(proof, $"{context}.recentConflicts[{index}]", issues, diceContext, rewardContext, rewardConflictIds, soulDissipationContext);
+                if (recentConflicts[index] is not JsonObject proof)
+                    continue;
+
+                var isPreTurnProof = preTurnProofTracker.TryConsume(
+                    proof, allowHistoricalSummaryDrift: false);
+                ValidateRecentConflictProof(
+                    proof, $"{context}.recentConflicts[{index}]", issues, diceContext,
+                    rewardContext, rewardConflictIds, soulDissipationContext, isPreTurnProof);
             }
         }
         else
@@ -1617,7 +1604,8 @@ public partial class ValidationService
         AfterlifeConflictDiceContext diceContext,
         AfterlifeConflictRewardContext rewardContext,
         HashSet<string> rewardConflictIds,
-        AfterlifeSoulDissipationContext soulDissipationContext)
+        AfterlifeSoulDissipationContext soulDissipationContext,
+        bool isPreTurnProof)
     {
         var combatConditionIds = ValidateCombatConditions(proof["combatConditions"], $"{context}.combatConditions", issues);
         var diceRequired = ResolveDiceAuditRequired(proof);
@@ -1637,7 +1625,8 @@ public partial class ValidationService
         if (proof["diceAudit"] is JsonObject diceAudit)
         {
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, diceContext, combatConditionIds);
-            ValidateLightIncarnateDiceAuditModifier(proof, diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(
+                proof, diceAudit, $"{context}.diceAudit", issues, diceContext, isPreTurnProof);
         }
 
         ValidateConflictRewardAudit(proof, context, issues, rewardContext, rewardConflictIds);
@@ -2937,7 +2926,8 @@ public partial class ValidationService
             ValidateAfterlifeConflictDiceAudit(diceAudit, $"{context}.diceAudit", issues, exchangeDiceContext, effectiveCombatConditionIds);
             if (before != null)
                 ValidateConflictPositionDiceModifier(diceAudit, before, context, issues);
-            ValidateLightIncarnateDiceAuditModifier(exchange, diceAudit, $"{context}.diceAudit", issues, diceContext);
+            ValidateLightIncarnateDiceAuditModifier(
+                exchange, diceAudit, $"{context}.diceAudit", issues, diceContext, isPreTurnExchange);
         }
     }
 

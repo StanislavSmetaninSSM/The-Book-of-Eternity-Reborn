@@ -718,6 +718,18 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "afterlife_light_incarnate_history_authority_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "afterlifeSpiritualConflictUpdate exchange/resolution diceAudit",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Accepted pre-turn capstone history versus a new, changed, duplicate or cross-surface pre-grant claim.",
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeSpiritualConflictValidationTests.T085_LightIncarnateHistory_ -> ValidationService.ValidateGameStateAsync(AfterlifeSpiritualConflictState); AfterlifeDocumentationCoverageTests.LightIncarnateHistoryDocumentation_RequiresAcceptedPayloadNotOldMarker",
+      "coverageLimit": "Light Incarnate historical admission only; not full wound or grant authority, resource publication, actor progression or healing.",
+      "requiredText": ["afterlife_light_incarnate_history_authority_v1", "exchange_light_history_006", "grantedAtTurn=7", "resolvedAtTurn=6", "backdating alone cannot waive light_incarnate", "afterlife_conflict_light_incarnate_modifier_mismatch", "not full wound or grant authority"]
+    },
+    {
       "contractId": "afterlife_spiritual_exchange_history_authority_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog",

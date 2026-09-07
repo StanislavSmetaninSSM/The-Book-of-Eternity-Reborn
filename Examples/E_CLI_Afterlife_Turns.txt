@@ -8830,6 +8830,16 @@ Correct accepted state fragments:
 }
 ```
 
+Worked history boundary: afterlife_light_incarnate_history_authority_v1
+
+Light Incarnate history requires accepted pre-turn payload evidence during a validated turn: consume one occurrence once, and active exchanges and recent resolutions never share a history pool. Active exchanges reuse the same-conflict exchange classifier; recent resolutions require an exact full payload match. Thus backdating alone cannot waive light_incarnate, and a validated baseline without dice is still a current-turn boundary. An accepted no-marker payload retains compatibility; an unmatched current payload needs explicit turn evidence and the applicable modifier. Historical pre-grant dice are preserved, while offline history without a validated baseline keeps its existing compatibility. This does not authorize editing the exact pre-turn prefix.
+
+The complete Source of Light closure grants the passive at grantedAtTurn=7. A validated turn-7 snapshot contains exchange_light_history_006 with exchangeAtTurn=6 and no light_incarnate modifier. Keep that accepted occurrence unchanged: its old dice do not acquire a retroactive bonus. The existing active-exchange audit compatibility may differ in only the top-level summary (missing/null/string), never mechanical data; publication still preserves the exact pre-turn prefix.
+
+By contrast, appending a new exchange with exchangeAtTurn=6, adding a new recent resolution with resolvedAtTurn=6, changing an old payload, or copying one accepted occurrence twice does not prove pre-grant history. The client reports afterlife_conflict_light_incarnate_modifier_mismatch for the current payload. Resolve that current audit with explicit current turn evidence and the applicable +8 lead / +4 support bonus, plus the existing +4 coercion bonus where applicable; do not repair it by changing accepted old dice. A recent resolution must match its own accepted recentConflicts[] occurrence exactly; it cannot borrow an active exchange or ignore a changed summary.
+
+An accepted no-marker occurrence remains compatible, but an unmatched current no-marker payload must supply turn evidence even when the validated baseline has no dice. This example demonstrates history admission, not full wound or grant authority; it does not grant an art, create a wound or authorize a resource-prefix rewrite.
+
 After this reward, any contested afterlife spiritual conflict at or after `grantedAtTurn` must include explicit turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. The modifier is valid only after the full Source of Light closure exists: completed Shining marker, soul passive, and exactly one matching Incarnated Light Soul Relic. Historical conflict logs before `grantedAtTurn` are not rewritten, and pre-unlock or incomplete-closure `light_incarnate` modifiers are invalid. Example player-led coercive action:
 
 ```json
