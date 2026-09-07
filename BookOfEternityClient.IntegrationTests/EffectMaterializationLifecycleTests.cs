@@ -141,7 +141,7 @@ public sealed partial class GameEngineTurnLifecycleTests
                 AfterPhysicalFilePublishedAsync = probe.AfterPhysicalFilePublishedAsync,
                 AfterCanonicalReadAttemptAsync = probe.AfterCanonicalReadAttemptAsync
             });
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectCarrierCatalog.PlayerPath,
             new JsonObject
@@ -168,7 +168,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         await context.WriteJsonAsync(
             EffectAcceptedTurnPlan.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateMortalRollbackEffectApply()));
         await context.WriteJsonAsync(
             "output/narrative_response.json",
             new JsonObject
@@ -391,9 +391,11 @@ public sealed partial class GameEngineTurnLifecycleTests
         var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
             ownerKind: "player",
             profile: "periodic_damage");
+        effect["source"] = CreateMortalRollbackEffectSource();
+        effect["display"]!["sourceLabel"] = "Кровавый след";
         effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectCarrierCatalog.PlayerPath,
             new JsonObject
@@ -413,7 +415,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     {
         if (string.Equals(carrierPath, EffectCarrierCatalog.NpcPath, StringComparison.Ordinal))
         {
-            await context.SeedPlayerWoundSourceAsync(CreateNonResourceEffectDefinition());
+            await context.SeedPlayerSkillSourceAsync(CreateNonResourceEffectDefinition());
             await context.WriteJsonAsync(
                 "game_state/npcs/npc_core.json",
                 new JsonObject
@@ -441,7 +443,7 @@ public sealed partial class GameEngineTurnLifecycleTests
         if (string.Equals(carrierPath, EffectCarrierCatalog.EnemiesPath, StringComparison.Ordinal) ||
             string.Equals(carrierPath, EffectCarrierCatalog.AlliesPath, StringComparison.Ordinal))
         {
-            await context.SeedPlayerWoundSourceAsync(CreateNonResourceEffectDefinition());
+            await context.SeedPlayerSkillSourceAsync(CreateNonResourceEffectDefinition());
             var collection = string.Equals(
                     carrierPath,
                     EffectCarrierCatalog.EnemiesPath,
@@ -548,10 +550,25 @@ public sealed partial class GameEngineTurnLifecycleTests
 
     private static JsonObject CreateNonResourceEffectApply(string targetKind)
     {
-        var command = EffectMaterializationTestFixture.CreateApplyCommand(targetKind);
+        var command = CreateMortalRollbackEffectApply(targetKind);
         command["parameters"] = new JsonObject();
         return command;
     }
+
+    private static JsonObject CreateMortalRollbackEffectApply(string targetKind = "player")
+    {
+        var command = EffectMaterializationTestFixture.CreateApplyCommand(targetKind);
+        command["source"] = CreateMortalRollbackEffectSource();
+        return command;
+    }
+
+    private static JsonObject CreateMortalRollbackEffectSource() =>
+        new()
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = EffectMaterializationTestContext.MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
 
     private static JsonObject CreateSpiritualRollbackDefinition()
     {
