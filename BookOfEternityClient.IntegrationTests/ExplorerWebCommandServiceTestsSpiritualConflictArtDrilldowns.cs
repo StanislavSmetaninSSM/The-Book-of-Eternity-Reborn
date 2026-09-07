@@ -12,7 +12,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns : IDisposable
+public sealed partial class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns : IDisposable
 {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web)
     {

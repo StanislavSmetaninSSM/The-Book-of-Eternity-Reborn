@@ -10052,8 +10052,8 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
             Assert.Contains(expectedRule, ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         if (artId == AfterlifeSpiritualConflictState.SpiritualHealingArtId)
         {
-            Assert.Contains("Правила искусства: на нулевой ступени доступна диагностика", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
-            Assert.Contains("Планируемое правило лечения: в бою база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Будущее правило искусства, когда лечение станет доступно: нулевая ступень предназначена для диагностики", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Будущее правило лечения, когда лечение станет доступно: в бою база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
         }
         Assert.DoesNotContain("лечение не влияет на запас ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }

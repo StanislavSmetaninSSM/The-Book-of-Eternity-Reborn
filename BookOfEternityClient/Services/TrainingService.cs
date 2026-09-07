@@ -371,6 +371,16 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
@@ -457,6 +467,16 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
@@ -871,6 +891,20 @@ public sealed class TrainingService
     {
         var localScope = await _localScopeService.ResolveAsync();
         var soulRoot = await ReadObjectAsync(SoulStatePath) ?? new JsonObject();
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingView(
+                RealmAfterlife,
+                Array.Empty<TrainingTeacherView>(),
+                Array.Empty<TrainingOffer>(),
+                false,
+                false,
+                null,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
         var afterlifeProfilesSnapshot = afterlifeProfilesRoot?.ToJsonString(JsonOpts);

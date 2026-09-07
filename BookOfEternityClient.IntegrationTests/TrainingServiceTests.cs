@@ -8,7 +8,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class TrainingServiceTests : IDisposable
+public sealed partial class TrainingServiceTests : IDisposable
 {
     private readonly string _rootPath;
     private readonly FileSystemManager _fs;
@@ -2893,7 +2893,10 @@ public sealed class TrainingServiceTests : IDisposable
             "radianceRank": 1,
             "retainedRadianceRank": 0,
             "spiritFocusTier": 1,
-            "artTiers": {}
+            "artTiers": {
+              "spiritual_resilience": 0,
+              "spiritual_healing": 0
+            }
           }
         }
         """);
@@ -3425,10 +3428,11 @@ public sealed class TrainingServiceTests : IDisposable
             },
             ["standardArts"] = new JsonObject
             {
-                ["spiritual_resilience"] = artId == "spiritual_resilience" ? mentorTier : 0,
-                ["spiritual_healing"] = artId == "spiritual_healing" ? mentorTier : 0
+                ["spiritual_resilience"] = 0,
+                ["spiritual_healing"] = 0
             }
         };
+        mentor["standardArts"]![artId] = mentorTier;
         var snapshotHash = TrainingService.ComputeSourceSnapshotHash(mentor);
         mentor["mentorTrainingShowcase"] = new JsonObject
         {

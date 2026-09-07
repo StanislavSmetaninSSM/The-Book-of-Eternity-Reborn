@@ -324,7 +324,12 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
           "turnNumber": 11,
           "inkFeathers": { "current": 900 },
           "afterlifeCombatProfile": {
-            "artTiers": { "pressure": 0, "guard": 1 },
+            "artTiers": {
+              "pressure": 0,
+              "guard": 1,
+              "spiritual_resilience": 0,
+              "spiritual_healing": 0
+            },
             "spiritFocusTier": 1,
             "specialArts": [
               {
@@ -362,7 +367,9 @@ public sealed class TrainingWebCommandServiceTests : IDisposable
             ["standardArts"] = new JsonObject
             {
                 ["guard"] = 3,
-                ["pressure"] = 2
+                ["pressure"] = 2,
+                ["spiritual_resilience"] = 0,
+                ["spiritual_healing"] = 0
             },
             ["mentorProfile"] = new JsonObject
             {

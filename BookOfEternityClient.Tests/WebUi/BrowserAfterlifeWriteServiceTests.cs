@@ -942,7 +942,7 @@ public sealed class BrowserAfterlifeWriteServiceTests : IDisposable
             ["enlightenmentRank"] = 1,
             ["radianceRank"] = 0,
             ["retainedRadianceRank"] = 0,
-            ["artTiers"] = new JsonObject(),
+            ["artTiers"] = AfterlifeSpiritualConflictState.CreateDefaultArtTiers(),
             [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0,
             ["lastRecoveryTurn"] = 0
         };

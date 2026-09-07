@@ -53,7 +53,11 @@ public sealed partial class AfterlifeDocumentationCoverageTests
                      "no independent art experience",
                      "is passive",
                      "is not an `operationType`",
-                     "do not supply or repair missing or invalid required tiers"
+                     "do not supply or repair missing or invalid required tiers",
+                     "training and `/spiritual_arts`",
+                     "reject a present malformed or incomplete",
+                     "before quote",
+                     "genuinely absent whole optional combat profile"
                  })
         {
             Assert.Contains(token, entrypoint, StringComparison.OrdinalIgnoreCase);

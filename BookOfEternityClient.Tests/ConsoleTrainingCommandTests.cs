@@ -203,7 +203,10 @@ public sealed class ConsoleTrainingCommandTests : IDisposable
             "radianceRank": 0,
             "retainedRadianceRank": 0,
             "spiritFocusTier": 0,
-            "artTiers": {}
+            "artTiers": {
+              "spiritual_resilience": 0,
+              "spiritual_healing": 0
+            }
           }
         }
         """);

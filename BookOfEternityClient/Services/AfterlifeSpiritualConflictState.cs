@@ -390,6 +390,59 @@ public static class AfterlifeSpiritualConflictState
         return defaultValue;
     }
 
+    internal static bool TryValidateCurrentRequiredWoundArtAuthority(
+        JsonObject soulRoot,
+        out string damage)
+    {
+        try
+        {
+            return TryValidateCurrentRequiredWoundArtAuthorityCore(soulRoot, out damage);
+        }
+        catch (ArgumentException)
+        {
+            damage = "Состояние души повреждено: soul_state.afterlifeCombatProfile содержит повторяющиеся JSON-поля.";
+            return false;
+        }
+    }
+
+    private static bool TryValidateCurrentRequiredWoundArtAuthorityCore(
+        JsonObject soulRoot,
+        out string damage)
+    {
+        const string profilePath = "soul_state.afterlifeCombatProfile";
+        damage = "";
+
+        if (!soulRoot.TryGetPropertyValue(SoulStateProfileProperty, out var profileNode))
+            return true;
+
+        if (profileNode is not JsonObject profile)
+        {
+            damage = $"{profilePath} должен быть object. Сначала исправьте боевой профиль души.";
+            return false;
+        }
+
+        if (!profile.TryGetPropertyValue("artTiers", out var artTiersNode) ||
+            artTiersNode is not JsonObject artTiers)
+        {
+            damage = $"{profilePath}.artTiers должен быть object с явными обязательными искусствами духовных ран.";
+            return false;
+        }
+
+        foreach (var requiredArtId in RequiredWoundArtIds)
+        {
+            if (!artTiers.TryGetPropertyValue(requiredArtId, out var tierNode) ||
+                tierNode is not JsonValue tierValue ||
+                !tierValue.TryGetValue<int>(out var tier) ||
+                tier is < 0 or > 5)
+            {
+                damage = $"{profilePath}.artTiers.{requiredArtId} должен быть integer 0..5.";
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static string? NormalizeAfterlifeRealmKey(string? realm)
     {
         if (string.IsNullOrWhiteSpace(realm))

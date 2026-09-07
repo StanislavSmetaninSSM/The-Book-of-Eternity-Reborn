@@ -12,7 +12,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class ExplorerWebCommandServiceTests :
+public sealed partial class ExplorerWebCommandServiceTests :
     IDisposable,
     IClassFixture<ExplorerWebCommandSeedTemplateFixture>
 {
@@ -3582,6 +3582,8 @@ public sealed class ExplorerWebCommandServiceTests :
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 600, ["total"] = 600 };
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0;
         soul["afterlifeCombatProfile"]!["artTiers"]![artId] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
