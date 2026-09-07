@@ -1553,6 +1553,17 @@ discovery/theory reconciliation are in the linked plan. This does not decide the
 unresolved private preparation witness, durable recovery receipt or spiritual-art
 schema, and does not complete legacy creation/history/reload/publication.
 
+`docs/superpowers/plans/2026-09-07-mortal-recovery-current-history-guard.md` is a
+separate T069-C admission prerequisite: after exact registry authority, read the
+current history under the supplied active lease without recovery/reacquisition,
+propagate malformed-history diagnostics or reject a valid semantic mismatch with
+the signed accepted-state seal, then retain existing sealed-clock arithmetic.
+Fresh/cold binding, missing/bad/changed history, no ambient context, equivalent
+JSON/BOM and authority precedence are covered by real file-backed tests. Mortal
+GM guidance, worked negative continuation, manifest and source guard stay aligned.
+No durable recovery receipt/schema, publisher or spiritual contract is chosen;
+full T069-C/T070/T074/T177 and the77/177 top-level count remain open.
+
 The bounded T177 verification prerequisite
 `docs/superpowers/plans/2026-09-07-wound-cache-reflection-fixture.md` is accepted
 through `7460800d` (exact BASE `9f3e1455`). Two ordinary test wrappers now send

@@ -1662,6 +1662,21 @@ NextDeteriorationAnchorMinute, PolicyRef, TickKey, WoundId)`, and
 `MortalWoundDeathHandoffIntent(AuthorityFingerprint, PolicyRef, TickKey, WoundId)`.
 None carries a mutation, writer, after-image, history row, or JSON payload.
 
+Before fresh numerical planning, after exact current capability/binding admission,
+the recovery planner reads the complete current history under that same supplied
+active lease and requires semantic agreement with the signed accepted-state history
+seal. This read is independent of ambient execution-context flow and cannot recover
+pending publications, reacquire a lease or write state. Missing/malformed history
+returns `InvalidHistory` with the original `wound_history_*` parser issues; a valid
+semantic mismatch returns `mortal_wound_recovery_history_mismatch`, and an unreadable
+or unsafe canonical file returns `mortal_wound_recovery_history_read_failed`, both
+at `game_state/wounds/wound_history.json`. Every InvalidHistory result has a non-empty
+frozen issue list and null `ReplayReceipt`/`Resolution`. Equivalent JSON formatting
+and BOM are not semantic changes. Stale/detached registry authority still rejects
+before this guard; accepted arithmetic still uses the signed snapshot's world minute.
+Legitimately changed accepted history needs a fresh signed snapshot/exported binding.
+This admission prerequisite does not define a durable receipt grammar or publisher.
+
 The recovery planner rejects a checked cadence/deadline/next-anchor time overflow with
 the sole issue `mortal_wound_recovery_checked_time_overflow` at
 `game_state/world/world_time.json`. A neutral or beneficial deterioration policy rejects
