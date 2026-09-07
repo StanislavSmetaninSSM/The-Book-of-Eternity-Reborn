@@ -104,12 +104,18 @@ read only from attributes on the expected class; comment, string, and
 method-level decoys do not count. Moved WebUi tests share
 `UiTestTextCollector` from `BookOfEternityClient.TestSupport`; the helper has no
 tests and was moved there unchanged so Integration does not reference Fast.
-The exact reviewed-heavy source/category manifest contains 66
+The exact reviewed-heavy source/category manifest contains 67
 `FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
-class-level Integration manifest contains 38
+class-level Integration manifest contains 39
 `IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are
 recorded in `specs/1505-test-suite-performance/research.md` and enforced by
 their respective boundary guards.
+
+`WebUi/BrowserPlayerActionGenerationTests.cs` is also owned by
+`RegressionIntegration`: its real canonical-file preflight, session replacement
+and lock-contention scenario is not a fixture-free unit test. The physical move
+preserves its single Fact and all assertions, waits and cleanup; it does not
+change the Fast limit, runner or production behavior.
 
 The diagnostic lanes select
 `BookOfEternityClient.IntegrationTests.csproj`. They are available when a

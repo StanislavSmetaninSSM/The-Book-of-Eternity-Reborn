@@ -237,6 +237,7 @@ public sealed class IntegrationTestBoundaryTests
         "MortalWoundOpportunityAdapterTests.cs",
         "ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs",
         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
+        Path.Combine("WebUi", "BrowserPlayerActionGenerationTests.cs"),
         Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs"),
         Path.Combine("WebUi", "BrowserShiningRelicForgeParityTests.cs"),
         Path.Combine("WebUi", "BrowserResidentInteractionsParityTests.cs"),

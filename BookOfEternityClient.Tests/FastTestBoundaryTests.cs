@@ -77,6 +77,7 @@ public sealed class FastTestBoundaryTests
         "ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs",
         "GmWorkerValidationRepairDelegatorTests.cs",
         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
+        Path.Combine("WebUi", "BrowserPlayerActionGenerationTests.cs"),
         Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs"),
         Path.Combine("WebUi", "BrowserShiningRelicForgeParityTests.cs"),
         Path.Combine("WebUi", "BrowserResidentInteractionsParityTests.cs"),

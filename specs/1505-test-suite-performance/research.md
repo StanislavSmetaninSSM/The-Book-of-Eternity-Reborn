@@ -425,9 +425,9 @@ complete HTTP host/browser flow -> E2E
 fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 ```
 
-### Exact executable manifests after #1536 scalar-course publication
+### Exact executable manifests after #1536 scalar-course publication and browser contention ownership
 
-The 66 entries below are the complete, ordinal contents of
+The 67 entries below are the complete, ordinal contents of
 `FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
 Integration ownership enforced at the same HEAD. The three historical special
 groups retain their complete class categories; method-level
@@ -493,6 +493,7 @@ groups retain their complete class categories; method-level
 | `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs` | `RegressionIntegration` |
 | `GmWorkerValidationRepairDelegatorTests.cs` | `ProcessIntegration` |
 | `WebUi/BrowserMortalWorldGenerationFencingTests.cs` | `RegressionIntegration` |
+| `WebUi/BrowserPlayerActionGenerationTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserStorageTransportParityTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserShiningRelicForgeParityTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserResidentInteractionsParityTests.cs` | `RegressionIntegration` |
@@ -509,9 +510,17 @@ rows total), and adds one missing-authority rejection; five pure projection rows
 remain in Fast. No lane limit, runner, class category or historical result below
 is changed by this inventory synchronization.
 
+The subsequent #1536/T177 browser-action ownership correction adds the real
+canonical-file/session-replacement contention source to both exact manifests.
+Its single Fact, hooks, assertions, four five-second waits and cleanup remain
+unchanged; only physical ownership and the class-level RegressionIntegration
+trait change. The pre-move failed Fast and passing isolated diagnostic remain
+recorded in `docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`;
+neither is relabeled as proof of a production concurrency fix.
+
 The second executable array,
 `IntegrationTestBoundaryTests.RegressionIntegrationSources`, contains exactly
-these 38 ordinal entries after class-level ownership hardening:
+these 39 ordinal entries after class-level ownership hardening:
 
 ```text
 AfterlifeSpiritualConflictValidationTests.cs
@@ -544,6 +553,7 @@ NpcTradeServiceRequestFlowTests.cs
 MortalWoundOpportunityAdapterTests.cs
 ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs
 WebUi/BrowserMortalWorldGenerationFencingTests.cs
+WebUi/BrowserPlayerActionGenerationTests.cs
 WebUi/BrowserStorageTransportParityTests.cs
 WebUi/BrowserShiningRelicForgeParityTests.cs
 WebUi/BrowserResidentInteractionsParityTests.cs
