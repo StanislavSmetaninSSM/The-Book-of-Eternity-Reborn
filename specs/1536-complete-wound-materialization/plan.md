@@ -1664,6 +1664,16 @@ receipt/replay assertion stay unchanged. The observed11-row failure is retained
 as RED, not waived or called proof of B1 non-regression. B1 remains open for its
 corrected cohort, Fast, actual artifact audit and independent review.
 
+The corrected cohort now passes11/11 at `05a35ba6`, with the exact original names
+and assertions. B1 review is Spec compliant / Quality Approved,0Critical/Important/
+Minor. Its parent Fast executed2809 rows,2808passed and one browser preflight wait
+timed out; the unchanged isolated browser diagnostic passed1/1. T177's bounded
+physical ownership correction is specified in
+`docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`: that real
+canonical-file/session-replacement contention row belongs in RegressionIntegration
+under the already approved taxonomy. Preserve all behavior and historical results;
+B1 still requires the corrected full Fast gate and acceptance evidence.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

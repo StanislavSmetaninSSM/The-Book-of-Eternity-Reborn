@@ -2170,6 +2170,11 @@ hand-written history/after-images, or a raw mutation fallback.
       T177 follow-through is the complete two-file test-only plan
       `docs/superpowers/plans/2026-09-08-pending-effect-fixture-sources.md`;
       exact11-row GREEN, one Fast and independent review remain required.
+      Pending11/11 and independent review are now clean at `05a35ba6`; the parent
+      Fast stopped at2808/2809 on the browser contention test's preflight timeout.
+      Its unchanged isolated diagnostic passes1/1. Required T177 ownership
+      correction follows `docs/superpowers/plans/2026-09-08-browser-action-test-ownership.md`;
+      exact relocated coverage, both guards and a corrected full Fast remain open.
     - [ ] T081-B2 [US3] Retain and production-consume actual causal execution:
       prepared graph/identities, scheduler/frontier, resource ledger/history,
       accepted effect transcript state and incremental effect advancement.
