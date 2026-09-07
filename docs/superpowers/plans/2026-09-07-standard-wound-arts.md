@@ -138,9 +138,13 @@ Use existing owner setup/helpers; give new methods the `StandardWoundArt` token 
 | Fresh bootstrap | System and freeform Guardian builders contain both scalar zeros and retain prior guard/maneuver tiers/materialization. Fresh soul builder uses `CreateDefaultCombatProfile`; use an existing fresh-New-Game owner or a narrow existing source guard for that call site rather than driving an unrelated interactive process. |
 | Player mirror | For both IDs at 0..5, `ApplyPlayerSoulProfileClientAuthority` copies the scalar from soul state, leaves no independent player art XP, disables automatic strategy and removes stale automatic ledger entries. The player's tiers/currency never grow from an NPC cycle. |
 | Entity ordinary strategy | For each art with exact `priorityOrder=[id]`, sufficient currency and a single accepted Chaos/Guardian/Resident or Shining cycle, tier 0..4 grows by one and spends `10*(oldTier+1)` Ink Feathers; tier 5 stays capped. Existing reserve/allowedSpends/forbiddenSpends and cycle replay gates still work. Verify the exact strategy ledger entry and no art XP field. Use detached `ProjectCanonicalRoot` for pure policy, the existing normalizer Integration owner for correlation/persistence. |
-| Self training | Both zero-tier offers have Russian names, next tier I, cost 500 Ink Feathers and the unchanged rank eligibility; buying once leaves 2000 of 2500 Ink Feathers, scalar tier 1 and the ordinary purchase receipt. Rank 0 cannot buy I; rank gates are E1/R2 for I, E3/R3 for II, E5/R5 for III, R7 for IV, R9 for V. Max V cannot be upgraded. |
+| Self training | Both zero-tier offers have Russian names, next tier I, cost 500 Ink Feathers and the unchanged rank eligibility; buying once leaves 2000 of 2500 Ink Feathers, scalar tier 1 and the ordinary purchase receipt. Rank 0 cannot buy I; rank gates are E1/R1 for I, E3/R3 for II, E5/R5 for III, R7 for IV, R9 for V. Max V cannot be upgraded. |
 | Mentor training | For each new art, authored/generated mentor offers require positive teacher tier, cannot exceed teacher/player caps, use 100/80/60% ordinary prices, and use the Russian fallback when `targetName` is absent. Buying writes the same scalar player tier and ordinary paid receipt; a zero-tier mentor cannot teach it. |
 | Direct upgrades/parity | Both new IDs and their Russian selectors appear in existing console/browser selection and can be upgraded through `/spiritual_arts` at the same ordinary price/rank gate. No new operation choice for resilience. Browser player cards must not expose raw IDs as titles or call passive resilience an attack. |
+
+The tier-I R1 gate corrects the earlier R2 plan typo: the existing `RadianceRanks`
+`spark` row already unlocks tier I, including retained R1. This preserves the
+user-approved ordinary-art progression; the runtime rank table does not change.
 
 Example complete new Integration theory inside the current `TrainingServiceTests` owner:
 
