@@ -3405,7 +3405,155 @@ internal static class AcceptedMechanicsPlanner
         ResourceMutationIntent Mutation,
         ResourceMutationSourceExport Source);
 
+    internal enum AcceptedMechanicsReductionKind
+    {
+        Rejected,
+        AwaitingResourceReceipt,
+        CompletedOrdinaryReduction
+    }
+
+    // Non-publishable reduction result. This is not a source witness or a resumable
+    // graph cursor. Only CompleteAcceptedReduction constructs the ordinary final plan.
+    internal sealed class AcceptedMechanicsReduction
+    {
+        private readonly Lazy<AcceptedMechanicsPlanningResult> _completion;
+        private readonly ValidationIssue[] _issues;
+
+        private AcceptedMechanicsReduction(
+            AcceptedMechanicsReductionKind kind,
+            CompletedOrdinaryMechanicsReduction? completed,
+            AcceptedMechanicsResourcePlanningResult? discoveryResources,
+            AcceptedMechanicsResourcePlanningResult? selectedResources,
+            IEnumerable<ValidationIssue> issues,
+            Func<AcceptedMechanicsPlanningResult> completion)
+        {
+            Kind = kind;
+            Completed = completed;
+            DiscoveryResources = discoveryResources;
+            SelectedResources = selectedResources;
+            _issues = issues.ToArray();
+            _completion = new Lazy<AcceptedMechanicsPlanningResult>(
+                completion, System.Threading.LazyThreadSafetyMode.ExecutionAndPublication);
+        }
+
+        internal AcceptedMechanicsReductionKind Kind { get; }
+        internal CompletedOrdinaryMechanicsReduction? Completed { get; }
+        // Observation is not source admission. In waiting outcomes these transcripts
+        // retain the attempted wave, not a completed candidate eligible for publication.
+        internal AcceptedMechanicsResourcePlanningResult? DiscoveryResources { get; }
+        internal AcceptedMechanicsResourcePlanningResult? SelectedResources { get; }
+        internal IReadOnlyList<ValidationIssue> Issues => Array.AsReadOnly(_issues.ToArray());
+
+        internal AcceptedMechanicsPlanningResult Complete() => _completion.Value;
+
+        internal static AcceptedMechanicsReduction Rejected(IEnumerable<ValidationIssue> issues)
+        {
+            var detachedIssues = issues.ToArray();
+            return new(AcceptedMechanicsReductionKind.Rejected, null, null, null,
+                detachedIssues, () => new AcceptedMechanicsPlanningResult(null, detachedIssues));
+        }
+
+        internal static AcceptedMechanicsReduction Awaiting(
+            AcceptedMechanicsInput input,
+            string inputFingerprint,
+            AcceptedMechanicsPlanningContext context,
+            ResourcePendingResolutionState pendingState,
+            JsonObject? safeGmPacket,
+            EffectAcceptedTurnPlan? effectPlan,
+            AcceptedMechanicsResourcePlanningResult discoveryResources,
+            AcceptedMechanicsResourcePlanningResult selectedResources)
+        {
+            var captured = CaptureAssemblyInput(input, context);
+            var packet = safeGmPacket?.DeepClone().AsObject();
+            return new(AcceptedMechanicsReductionKind.AwaitingResourceReceipt,
+                null, discoveryResources, selectedResources, Array.Empty<ValidationIssue>(),
+                () => BuildAwaitingReceiptPlan(
+                    captured, inputFingerprint, captured.PlanningContext!,
+                    new PendingBoundaryDecision(true, pendingState, packet,
+                        Array.Empty<ValidationIssue>()), effectPlan));
+        }
+
+        internal static AcceptedMechanicsReduction CompletedOrdinary(
+            CompletedOrdinaryMechanicsReduction completed,
+            AcceptedMechanicsResourcePlanningResult discoveryResources) =>
+            new(AcceptedMechanicsReductionKind.CompletedOrdinaryReduction,
+                completed, discoveryResources, completed.Resources, Array.Empty<ValidationIssue>(),
+                () => AssembleCompletedAcceptedReduction(completed));
+    }
+
+    internal sealed class CompletedOrdinaryMechanicsReduction
+    {
+        private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
+        private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
+        private readonly JsonObject? _pendingAfterImage;
+
+        internal CompletedOrdinaryMechanicsReduction(
+            AcceptedMechanicsInput input,
+            string inputFingerprint,
+            AcceptedMechanicsPlanningContext context,
+            ResourceDefinitionCatalog definitions,
+            AcceptedMechanicsResourcePlanningResult resources,
+            EffectAcceptedTurnPlan? effects,
+            ResourcePendingResolutionState? pendingAfterImage,
+            IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
+            IReadOnlyList<AcceptedMechanicsOwnerTransition> ownerTransitions)
+        {
+            Input = CaptureAssemblyInput(input, context);
+            InputFingerprint = inputFingerprint;
+            Definitions = definitions;
+            Resources = resources;
+            Effects = effects;
+            _pendingAfterImage = pendingAfterImage?.ToCanonicalRoot().DeepClone().AsObject();
+            _ownerCompanionAfterImages = ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            _ownerTransitions = ownerTransitions.Select(static value => value.Clone()).ToArray();
+        }
+
+        internal AcceptedMechanicsInput Input { get; }
+        internal string InputFingerprint { get; }
+        internal ResourceDefinitionCatalog Definitions { get; }
+        internal AcceptedMechanicsResourcePlanningResult Resources { get; }
+        internal EffectAcceptedTurnPlan? Effects { get; }
+        internal JsonObject? PendingAfterImage => _pendingAfterImage?.DeepClone().AsObject();
+        internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
+            new ReadOnlyDictionary<string, JsonObject>(_ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal));
+        internal IReadOnlyList<AcceptedMechanicsOwnerTransition> OwnerTransitions =>
+            Array.AsReadOnly(_ownerTransitions.Select(static value => value.Clone()).ToArray());
+    }
+
+    private static AcceptedMechanicsInput CaptureAssemblyInput(
+        AcceptedMechanicsInput input, AcceptedMechanicsPlanningContext context) =>
+        input.WithPlanningContext(new AcceptedMechanicsPlanningContext(
+            context.DefinitionRoot, context.Definitions, context.State, context.History,
+            context.Owners, context.Sources, context.Commands, context.EffectIdentityRoot,
+            context.EffectPlan, context.CapacityTransitions, context.OwnerCapacityDrafts,
+            context.TerminalOwners, context.OwnerCompanionAfterImages, context.OwnerTransitions,
+            registeredSystemOutcomes: Array.Empty<IResourceRegisteredSystemOutcomeDraft>(),
+            pendingResolutionState: context.PendingResolutionState,
+            resourceIdentityFactory: null,
+            effectIdentityFactory: null,
+            executionSequenceOffset: context.ExecutionSequenceOffset,
+            woundStageBundle: context.WoundStageBundle,
+            woundAnchorPlan: context.WoundAnchorPlan,
+            directWoundPublicationAuthority: context.DirectWoundPublicationAuthority,
+            treatmentResourcePublicationAuthority: context.TreatmentResourcePublicationAuthority));
+
     internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(
+        AcceptedMechanicsInput input,
+        string inputFingerprint) =>
+        CompleteAcceptedReduction(ReduceAcceptedPlan(input, inputFingerprint));
+
+    internal static AcceptedMechanicsPlanningResult CompleteAcceptedReduction(
+        AcceptedMechanicsReduction reduction)
+    {
+        ArgumentNullException.ThrowIfNull(reduction);
+        return reduction.Complete();
+    }
+
+    internal static AcceptedMechanicsReduction ReduceAcceptedPlan(
         AcceptedMechanicsInput input,
         string inputFingerprint)
     {
@@ -3414,9 +3562,7 @@ internal static class AcceptedMechanicsPlanner
         var context = input.PlanningContext;
         if (context == null)
         {
-            return new AcceptedMechanicsPlanningResult(
-                null,
-                Issue(
+            return AcceptedMechanicsReduction.Rejected(Issue(
                     "accepted_mechanics_planning_context_missing",
                     "validated typed mechanics planning context",
                     "missing"));
@@ -3431,9 +3577,7 @@ internal static class AcceptedMechanicsPlanner
                     woundStages);
             if (woundEffectAgreement.Count != 0)
             {
-                return new AcceptedMechanicsPlanningResult(
-                    null,
-                    woundEffectAgreement);
+                return AcceptedMechanicsReduction.Rejected(woundEffectAgreement);
             }
         }
 
@@ -3512,7 +3656,7 @@ internal static class AcceptedMechanicsPlanner
             .Concat(periodicResolution.Mutations)
             .ToArray();
         if (issues.Count != 0)
-            return new AcceptedMechanicsPlanningResult(null, issues);
+            return AcceptedMechanicsReduction.Rejected(issues);
 
         EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveAndCollect(
             ResourceAppliedEvent resourceEvent,
@@ -3551,17 +3695,13 @@ internal static class AcceptedMechanicsPlanner
             discoveryResourceResult.StateAfterImage == null ||
             discoveryResourceResult.HistoryAfterImage == null)
         {
-            return new AcceptedMechanicsPlanningResult(
-                null,
-                discoveryResourceResult.Issues);
+            return AcceptedMechanicsReduction.Rejected(discoveryResourceResult.Issues);
         }
         var discoveryReplayIssues = discoveryReplay.ValidateComplete(
             discoveryResourceResult.AcceptedResolvedPendingRequestIds);
         if (discoveryReplayIssues.Count != 0)
         {
-            return new AcceptedMechanicsPlanningResult(
-                null,
-                discoveryReplayIssues);
+            return AcceptedMechanicsReduction.Rejected(discoveryReplayIssues);
         }
 
         var pendingDecision = ResolvePendingBoundary(
@@ -3571,7 +3711,7 @@ internal static class AcceptedMechanicsPlanner
             discoveryResourceResult.AcceptedPendingResolutions,
             issues);
         if (!pendingDecision.IsValid)
-            return new AcceptedMechanicsPlanningResult(null, pendingDecision.Issues);
+            return AcceptedMechanicsReduction.Rejected(pendingDecision.Issues);
         if (pendingDecision.IsTerminalSemanticReplay &&
             (discoveryResourceResult.AppliedTransitions.Count != 0 ||
              discoveryResourceResult.Events.Count != 0 ||
@@ -3579,21 +3719,17 @@ internal static class AcceptedMechanicsPlanner
              discoveryResourceResult.AcceptedPendingResolutions.Count != 0 ||
              discoveryResourceResult.AcceptedReactionExecutions.Count != 0))
         {
-            return new AcceptedMechanicsPlanningResult(
-                null,
-                Issue(
+            return AcceptedMechanicsReduction.Rejected(Issue(
                     "resource_pending_terminal_replay_conflict",
                     "an exact semantic replay with no newly applied mechanics",
                     "new mechanics were accepted"));
         }
         if (pendingDecision.AwaitingReceipt)
         {
-            return BuildAwaitingReceiptPlan(
-                input,
-                inputFingerprint,
-                context,
-                pendingDecision,
-                effectPlan);
+            return AcceptedMechanicsReduction.Awaiting(
+                input, inputFingerprint, context,
+                pendingDecision.StateAfterImage!, pendingDecision.SafeGmPacket, effectPlan,
+                discoveryResourceResult, discoveryResourceResult);
         }
 
         var resourceResult = discoveryResourceResult;
@@ -3605,9 +3741,7 @@ internal static class AcceptedMechanicsPlanner
                 basePeriodicResolution);
             if (!actualPeriodicResolution.IsValid)
             {
-                return new AcceptedMechanicsPlanningResult(
-                    null,
-                    actualPeriodicResolution.Issues);
+                return AcceptedMechanicsReduction.Rejected(actualPeriodicResolution.Issues);
             }
             var actualSourcesResult = ResourceMutationSourceCatalog.Create(
                 context.Sources.Exports.Concat(
@@ -3615,9 +3749,7 @@ internal static class AcceptedMechanicsPlanner
             if (actualSourcesResult.Catalog == null ||
                 actualSourcesResult.Issues.Count != 0)
             {
-                return new AcceptedMechanicsPlanningResult(
-                    null,
-                    actualSourcesResult.Issues);
+                return AcceptedMechanicsReduction.Rejected(actualSourcesResult.Issues);
             }
             sources = actualSourcesResult.Catalog;
             EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution ResolveActual(
@@ -3658,15 +3790,13 @@ internal static class AcceptedMechanicsPlanner
                 resourceResult.StateAfterImage == null ||
                 resourceResult.HistoryAfterImage == null)
             {
-                return new AcceptedMechanicsPlanningResult(null, resourceResult.Issues);
+                return AcceptedMechanicsReduction.Rejected(resourceResult.Issues);
             }
             var actualReplayIssues = actualReplay.ValidateComplete(
                 resourceResult.AcceptedResolvedPendingRequestIds);
             if (actualReplayIssues.Count != 0)
             {
-                return new AcceptedMechanicsPlanningResult(
-                    null,
-                    actualReplayIssues);
+                return AcceptedMechanicsReduction.Rejected(actualReplayIssues);
             }
             if (resourceResult.AcceptedPendingResolutions.Count != 0)
             {
@@ -3680,25 +3810,19 @@ internal static class AcceptedMechanicsPlanner
                     receiptsOverride: new JsonArray());
                 if (!nextPendingDecision.IsValid)
                 {
-                    return new AcceptedMechanicsPlanningResult(
-                        null,
-                        nextPendingDecision.Issues);
+                    return AcceptedMechanicsReduction.Rejected(nextPendingDecision.Issues);
                 }
                 if (!nextPendingDecision.AwaitingReceipt)
                 {
-                    return new AcceptedMechanicsPlanningResult(
-                        null,
-                        Issue(
+                    return AcceptedMechanicsReduction.Rejected(Issue(
                             "resource_pending_next_wave_missing",
                             "one exact next pending wave for newly accepted bounded outputs",
                             "not-created"));
                 }
-                return BuildAwaitingReceiptPlan(
-                    input,
-                    inputFingerprint,
-                    context,
-                    nextPendingDecision,
-                    effectPlan);
+                return AcceptedMechanicsReduction.Awaiting(
+                    input, inputFingerprint, context,
+                    nextPendingDecision.StateAfterImage!, nextPendingDecision.SafeGmPacket, effectPlan,
+                    discoveryResourceResult, resourceResult);
             }
         }
         if (effectPlan != null)
@@ -3710,9 +3834,7 @@ internal static class AcceptedMechanicsPlanner
                 context.EffectIdentityFactory ?? new EffectIdentityFactory());
             if (!finalizedEffects.Success || finalizedEffects.Plan == null)
             {
-                return new AcceptedMechanicsPlanningResult(
-                    null,
-                    finalizedEffects.Issues);
+                return AcceptedMechanicsReduction.Rejected(finalizedEffects.Issues);
             }
             effectPlan = finalizedEffects.Plan;
         }
@@ -3720,19 +3842,8 @@ internal static class AcceptedMechanicsPlanner
             resourceResult.StateAfterImage,
             resourceResult.HistoryAfterImage);
         if (ownerAgreementIssues.Count != 0)
-            return new AcceptedMechanicsPlanningResult(null, ownerAgreementIssues);
+            return AcceptedMechanicsReduction.Rejected(ownerAgreementIssues);
 
-        var definitionAfterImage = definitions.ToCanonicalRoot();
-        var stateAfterImage = JsonNode.Parse(
-            resourceResult.StateAfterImage.ToCanonicalJson())!.AsObject();
-        var historyAfterImage = JsonNode.Parse(
-            resourceResult.HistoryAfterImage.ToCanonicalJson())!.AsObject();
-        var carriers = (effectPlan?.CarrierAfterImages ??
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal))
-            .ToDictionary(
-                static pair => pair.Key,
-                static pair => pair.Value.DeepClone().AsObject(),
-                StringComparer.Ordinal);
         var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
             .ToDictionary(
                 static pair => pair.Key,
@@ -3761,7 +3872,31 @@ internal static class AcceptedMechanicsPlanner
                 static value => value.Clone()));
         }
         if (issues.Count != 0)
-            return new AcceptedMechanicsPlanningResult(null, issues);
+            return AcceptedMechanicsReduction.Rejected(issues);
+        return AcceptedMechanicsReduction.CompletedOrdinary(
+            new CompletedOrdinaryMechanicsReduction(
+                input, inputFingerprint, context, definitions, resourceResult, effectPlan,
+                pendingDecision.StateAfterImage, ownerCompanionAfterImages, ownerTransitions),
+            discoveryResourceResult);
+    }
+
+    private static AcceptedMechanicsPlanningResult AssembleCompletedAcceptedReduction(
+        CompletedOrdinaryMechanicsReduction completed)
+    {
+        var input = completed.Input;
+        var inputFingerprint = completed.InputFingerprint;
+        var context = input.PlanningContext!;
+        var resourceResult = completed.Resources;
+        var effectPlan = completed.Effects;
+        var woundStages = context.WoundStageBundle;
+        var definitionAfterImage = completed.Definitions.ToCanonicalRoot();
+        var stateAfterImage = JsonNode.Parse(resourceResult.StateAfterImage!.ToCanonicalJson())!.AsObject();
+        var historyAfterImage = JsonNode.Parse(resourceResult.HistoryAfterImage!.ToCanonicalJson())!.AsObject();
+        var pendingAfterImage = completed.PendingAfterImage;
+        var ownerCompanionAfterImages = completed.OwnerCompanionAfterImages.ToDictionary(
+            static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
+        var ownerTransitions = completed.OwnerTransitions.Select(static value => value.Clone()).ToList();
+        var issues = new List<ValidationIssue>();
         var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
             effectPlan,
             ownerCompanionAfterImages,
@@ -3773,7 +3908,7 @@ internal static class AcceptedMechanicsPlanner
                 null,
                 carrierComposition.Issues);
         }
-        carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
+        var carriers = carrierComposition.EffectCarrierAfterImages.ToDictionary(
             static pair => pair.Key,
             static pair => pair.Value.DeepClone().AsObject(),
             StringComparer.Ordinal);
@@ -3826,7 +3961,7 @@ internal static class AcceptedMechanicsPlanner
         }
         touched.UnionWith(ownerCompanionAfterImages.Keys);
         touched.UnionWith(ownerTransitions.Select(static value => value.Path));
-        if (pendingDecision.StateAfterImage != null)
+        if (pendingAfterImage != null)
             touched.Add(ResourcePendingResolutionState.PendingPath);
         var consumed = new HashSet<string>(StringComparer.Ordinal);
         if (!context.Commands.IsMissing)
@@ -3844,12 +3979,12 @@ internal static class AcceptedMechanicsPlanner
                 historyAfterImage,
                 carriers,
                 effectIdentity,
-                pendingDecision.StateAfterImage == null
+                pendingAfterImage == null
                     ? new Dictionary<string, JsonObject?>()
                     : new Dictionary<string, JsonObject?>
                     {
                         [ResourcePendingResolutionState.PendingPath] =
-                            pendingDecision.StateAfterImage.ToCanonicalRoot()
+                            pendingAfterImage
                     },
                 ownerCompanionAfterImages,
                 input.BeforeImages,

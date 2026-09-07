@@ -9,7 +9,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class EffectAcceptedTurnPlannerTests
+public sealed partial class EffectAcceptedTurnPlannerTests
 {
     [Theory]
     [InlineData("roll_modifier", "scope", false)]
