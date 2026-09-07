@@ -10015,7 +10015,7 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
     [Theory]
     [InlineData("pressure", "Давление", null)]
     [InlineData("spiritual_resilience", "Духовная стойкость", "Пассивное действие, без затрат ОД")]
-    [InlineData("spiritual_healing", "Духовное исцеление", "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются")]
+    [InlineData("spiritual_healing", "Духовное исцеление", "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать")]
     public async Task StandardWoundArt_TryProcessCommand_SpiritualArts_UpgradesArtAndSpendsInkFeathers(
         string artId,
         string displayName,
@@ -10050,6 +10050,11 @@ public sealed partial class ExplorerModeCommandTests : IDisposable
         Assert.Equal(500, inkFeathers["total"]?.GetValue<int>());
         if (expectedRule != null)
             Assert.Contains(expectedRule, ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        if (artId == AfterlifeSpiritualConflictState.SpiritualHealingArtId)
+        {
+            Assert.Contains("Правила искусства: на нулевой ступени доступна диагностика", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("Планируемое правило лечения: в бою база 5 ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
+        }
         Assert.DoesNotContain("лечение не влияет на запас ОД", ExtractRenderedText(), StringComparison.OrdinalIgnoreCase);
     }
 

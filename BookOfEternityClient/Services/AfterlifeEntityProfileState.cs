@@ -1954,7 +1954,7 @@ internal static class AfterlifeEntityProfileState
         if (overrideNode.ContainsKey("standardArtTierDeltas"))
         {
             hasDelta = true;
-            if (!StandardArtTierDeltasAreProjectable(overrideNode["standardArtTierDeltas"]))
+            if (!StandardArtTierDeltasAreProjectable(profile, overrideNode["standardArtTierDeltas"]))
             {
                 invalidReason = "invalid_standard_art_delta";
                 return false;
@@ -2006,13 +2006,28 @@ internal static class AfterlifeEntityProfileState
                deltas.All(delta => allowedKeys.Contains(delta.Key) && TryGetNodeInt(delta.Value, out _));
     }
 
-    private static bool StandardArtTierDeltasAreProjectable(JsonNode? node)
+    private static bool StandardArtTierDeltasAreProjectable(JsonObject profile, JsonNode? node)
     {
         if (node is not JsonObject deltas)
             return false;
 
-        return deltas.Count > 0 &&
-               deltas.All(delta => StandardArtIds.Contains(delta.Key) && TryGetNodeInt(delta.Value, out _));
+        if (deltas.Count == 0)
+            return false;
+
+        foreach (var delta in deltas)
+        {
+            if (!StandardArtIds.Contains(delta.Key) || !TryGetNodeInt(delta.Value, out _))
+                return false;
+
+            var requiredArtId = ResolveRequiredWoundArtId(delta.Key);
+            if (requiredArtId != null &&
+                !TryReadRequiredWoundArtTier(profile, requiredArtId, out _, out _))
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static bool SpecialArtTierDeltasAreProjectable(
@@ -2453,8 +2468,21 @@ internal static class AfterlifeEntityProfileState
         ref CurrencyDelta spending,
         JsonArray upgrades)
     {
-        var arts = EnsureObject(profile, "standardArts");
-        var currentTier = Math.Clamp(GetNodeInt(arts[artId]), 0, MaxProfileTier);
+        JsonObject arts;
+        int currentTier;
+        var requiredArtId = ResolveRequiredWoundArtId(artId);
+        if (requiredArtId != null)
+        {
+            if (!TryReadRequiredWoundArtTier(profile, requiredArtId, out arts, out currentTier))
+                return false;
+            artId = requiredArtId;
+        }
+        else
+        {
+            arts = EnsureObject(profile, "standardArts");
+            currentTier = Math.Clamp(GetNodeInt(arts[artId]), 0, MaxProfileTier);
+        }
+
         if (currentTier >= MaxProfileTier)
             return false;
 
@@ -2719,8 +2747,38 @@ internal static class AfterlifeEntityProfileState
             if (!StandardArtIds.Contains(delta.Key))
                 continue;
 
-            arts[delta.Key] = SaturatingAddThenClamp(GetNodeInt(arts[delta.Key]), GetNodeInt(delta.Value), 0, MaxProfileTier);
+            var targetArtId = ResolveRequiredWoundArtId(delta.Key) ?? delta.Key;
+            arts[targetArtId] = SaturatingAddThenClamp(
+                GetNodeInt(arts[targetArtId]),
+                GetNodeInt(delta.Value),
+                0,
+                MaxProfileTier);
         }
+    }
+
+    private static string? ResolveRequiredWoundArtId(string artId) =>
+        AfterlifeSpiritualConflictState.RequiredWoundArtIds.FirstOrDefault(requiredArtId =>
+            string.Equals(requiredArtId, artId, StringComparison.OrdinalIgnoreCase));
+
+    private static bool TryReadRequiredWoundArtTier(
+        JsonObject profile,
+        string artId,
+        out JsonObject arts,
+        out int tier)
+    {
+        arts = null!;
+        tier = 0;
+        if (profile["standardArts"] is not JsonObject currentArts ||
+            !currentArts.TryGetPropertyValue(artId, out var tierNode) ||
+            !TryGetNodeInt(tierNode, out var currentTier) ||
+            currentTier is < 0 or > MaxProfileTier)
+        {
+            return false;
+        }
+
+        arts = currentArts;
+        tier = currentTier;
+        return true;
     }
 
     private static void MarkInvalidProgressionOverride(JsonObject result, JsonNode? overrideNode, string reason)

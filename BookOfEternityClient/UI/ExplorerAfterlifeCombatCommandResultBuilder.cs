@@ -2253,7 +2253,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 {
                     Id = "upgrade_target",
                     Prompt = "Что прокачать",
-                    Placeholder = "Давление / Защита / Контрприём / Манёвр / Оковы / Средоточие Души"
+                    Placeholder = string.Join(
+                        " / ",
+                        AfterlifeSpiritualConflictState.SpiritualArts
+                            .Select(static art => art.DisplayName)
+                            .Append("Средоточие Души"))
                 },
                 new UiSelectionPrompt
                 {
@@ -4347,7 +4351,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "champion_coordination" => "помогает стороне, когда за душу действует чемпион",
             "recover_spiritual_power" => "собирает Средоточие и возвращает запас ОД",
             AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "пассивно повышает стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД. Не является отдельным боевым приёмом",
-            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "диагностирует духовные раны; на нулевой ступени доступна только диагностика, а ступени I–IV лечат раны не тяжелее освоенной ступени, ступень V лечит любые духовные раны",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать. Правила искусства: на нулевой ступени доступна диагностика, ступени I–IV лечат раны не тяжелее освоенной ступени, ступень V — любые духовные раны",
             _ => "применяется по контексту духовного боя"
         };
 
@@ -4375,7 +4379,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "champion_coordination" => "база 2 ОД, поддержка чемпиона",
             "recover_spiritual_power" => "восстанавливает ОД",
             AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Пассивное действие, без затрат ОД",
-            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Планируемое правило лечения: в бою база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются",
             _ => "стоимость зависит от аудита"
         };
 

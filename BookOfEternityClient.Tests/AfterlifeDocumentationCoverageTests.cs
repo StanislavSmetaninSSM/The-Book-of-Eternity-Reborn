@@ -40,6 +40,25 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             Assert.Contains(token, corpus, StringComparison.OrdinalIgnoreCase);
         }
 
+        foreach (var entrypoint in new[] { matrix, taskGuide, afterlifeExamples })
+        foreach (var token in new[]
+                 {
+                     "spiritual_resilience",
+                     "spiritual_healing",
+                     "integer 0..5",
+                     "player_soul.standardArts",
+                     "afterlifeCombatProfile.artTiers",
+                     "progressionStrategy",
+                     "standardArtTierDeltas",
+                     "no independent art experience",
+                     "is passive",
+                     "is not an `operationType`",
+                     "do not supply or repair missing or invalid required tiers"
+                 })
+        {
+            Assert.Contains(token, entrypoint, StringComparison.OrdinalIgnoreCase);
+        }
+
         Assert.Contains("\"spiritual_resilience\": 0", afterlifeExamples, StringComparison.Ordinal);
         Assert.Contains("\"spiritual_healing\": 0", afterlifeExamples, StringComparison.Ordinal);
     }

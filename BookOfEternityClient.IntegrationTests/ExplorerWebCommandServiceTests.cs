@@ -3562,10 +3562,14 @@ public sealed class ExplorerWebCommandServiceTests :
     }
 
     [Theory]
-    [InlineData("pressure")]
-    [InlineData("spiritual_resilience")]
-    [InlineData("spiritual_healing")]
-    public async Task StandardWoundArt_SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile(string artId)
+    [InlineData("pressure", "pressure")]
+    [InlineData("spiritual_resilience", "spiritual_resilience")]
+    [InlineData("spiritual_healing", "spiritual_healing")]
+    [InlineData("spiritual_resilience", "Духовная стойкость")]
+    [InlineData("spiritual_healing", "Духовное исцеление")]
+    public async Task StandardWoundArt_SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile(
+        string artId,
+        string selector)
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await _fs.WriteFileAtomicAsync(
@@ -3590,7 +3594,7 @@ public sealed class ExplorerWebCommandServiceTests :
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["upgrade_target"] = JsonValue.Create(artId),
+                ["upgrade_target"] = JsonValue.Create(selector),
                 ["upgrade_currency"] = JsonValue.Create("ink_feathers")
             },
             OwnerId: "browser-test"));

@@ -97,7 +97,10 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
             OwnerLabel: "Browser issue 1067"));
 
         Assert.Equal(CommandExecutionState.RequiresInput, result.State);
-        Assert.Contains(result.Prompts, prompt => prompt.Id == "upgrade_target");
+        var targetPrompt = Assert.IsType<UiTextInputPrompt>(
+            Assert.Single(result.Prompts, prompt => prompt.Id == "upgrade_target"));
+        Assert.All(AfterlifeSpiritualConflictState.SpiritualArts, art =>
+            Assert.Contains(art.DisplayName, targetPrompt.Placeholder, StringComparison.Ordinal));
         Assert.Contains(result.Prompts, prompt => prompt.Id == "upgrade_currency");
         AssertNoIssue1067TechnicalLeak(result);
         AssertIssue1067Action(
@@ -126,9 +129,9 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
         "spiritual_healing",
         "Духовное исцеление",
         "Целительное духовное искусство",
-        "на нулевой ступени доступна только диагностика",
+        "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать",
         "не тяжелее освоенной ступени",
-        "В бою: база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются")]
+        "Планируемое правило лечения: в бою база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются")]
     public async Task StandardWoundArt_BrowserDetailUsesRussianPassiveAndHealingCopy(
         string id,
         string name,
@@ -142,7 +145,9 @@ public sealed class ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns
         var overview = await _service.ExecuteAsync(new ExplorerWebCommandRequest("/spiritual_arts"));
         var detail = await _service.ExecuteAsync(new ExplorerWebCommandRequest($"/spiritual_arts искусство {id}"));
 
-        Assert.Contains(name, CollectBlockText(overview.Blocks), StringComparison.Ordinal);
+        var overviewText = CollectBlockText(overview.Blocks);
+        Assert.Contains(name, overviewText, StringComparison.Ordinal);
+        Assert.Contains(expectedUse, overviewText, StringComparison.OrdinalIgnoreCase);
         Assert.Equal(CommandExecutionState.Completed, detail.State);
         var text = CollectBlockText(detail.Blocks);
         Assert.Contains($"Духовное искусство: {name}", text, StringComparison.Ordinal);

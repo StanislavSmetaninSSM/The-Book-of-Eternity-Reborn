@@ -1807,8 +1807,10 @@ public sealed class BrowserAfterlifeWriteService
         if (currency is not ("ink_feathers" or "light_sparks"))
             return BrowserPromptWriteResult.ValidationError("Валюта должна быть ink_feathers или light_sparks.");
         var targetIsSpiritFocus = string.Equals(target, "spirit_focus", StringComparison.OrdinalIgnoreCase);
-        var targetIsStandardArt = AfterlifeSpiritualConflictState.SpiritualArts.Any(item =>
-            string.Equals(item.ArtId, target, StringComparison.OrdinalIgnoreCase));
+        var standardArt = AfterlifeSpiritualConflictState.SpiritualArts.FirstOrDefault(item =>
+            string.Equals(item.ArtId, target, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(item.DisplayName, target, StringComparison.OrdinalIgnoreCase));
+        var targetIsStandardArt = standardArt != null;
         var targetIsSpecialArt = !targetIsSpiritFocus && !targetIsStandardArt;
 
         return await ExecuteAtomicAsync(
@@ -1836,7 +1838,7 @@ public sealed class BrowserAfterlifeWriteService
                 var result = targetIsSpiritFocus
                     ? ApplySpiritFocusUpgrade(soulRoot, shiningRoot, profile, currency, isShining)
                     : targetIsStandardArt
-                        ? ApplyStandardSpiritualArtUpgrade(soulRoot, shiningRoot, profile, target, currency, isShining)
+                        ? ApplyStandardSpiritualArtUpgrade(soulRoot, shiningRoot, profile, standardArt!.ArtId, currency, isShining)
                         : ApplySpecialSpiritualArtUpgrade(soulRoot, shiningRoot, entityProfilesRoot, profile, target, currency, isShining);
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);
