@@ -70,6 +70,19 @@ Parent then inspects actual evidence, runs one Fast, and requests independent ta
 
 ## Controller self-check
 
+### Required fixture follow-through discovered during execution
+
+Core B1 code is committed at `c9230065` and mechanically matches this plan.
+Semantic RED0/1, new6/6, owning423/423, signed2/2 and Mortal4/4 were inspected;
+the required pending cohort fails0/11 on its obsolete array-form wound source.
+Ten fail publication binding, one raw apply-source validation; no assertions
+were waived. The exact two-file test-only correction is tracked under T177 in
+`2026-09-08-pending-effect-fixture-sources.md`, with complete code and the existing
+RED artifact. These two Integration files are an explicit addition to the core
+three-file review scope, not additional runtime work. Parent acceptance still
+requires the unchanged eleven-row GREEN, one Fast and independent review. The
+generic resource-session proposal is not to be implemented before this gate.
+
 - All complete bodies and six concrete tests are present; no B2 implementation placeholder is supplied or required.
 - Current reduction order, receipt branches, final owner agreement and original registered outcome projection are preserved. Immutable input capture preserves wound stage/anchor/direct/treatment authority; assembly input deliberately drops outcome objects and allocation factories.
 - The first RED has a nonempty old-production positive control. Unit fixtures are explicit typed inputs, not fake live snapshot evidence; genuine signed and publication boundaries are exercised by retained Integration controls.

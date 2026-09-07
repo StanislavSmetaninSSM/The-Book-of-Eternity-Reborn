@@ -1655,6 +1655,15 @@ The plan records concrete source seams and stop/resume/restart/failure acceptanc
 requirements. No GM capability is exposed by B1; later runtime changes carry
 their own synchronized prompts, examples, manifests and validation guards.
 
+B1 implementation at `c9230065` awaits required pending-owner verification:
+six new,423owning,two signed and four Mortal rows pass, but11pending rows expose
+old array-form wound fixtures. T177's bounded two-test-file source correction is
+specified in `docs/superpowers/plans/2026-09-08-pending-effect-fixture-sources.md`.
+Existing registered skill sources replace only generic setup; runtime and every
+receipt/replay assertion stay unchanged. The observed11-row failure is retained
+as RED, not waived or called proof of B1 non-regression. B1 remains open for its
+corrected cohort, Fast, actual artifact audit and independent review.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

@@ -2165,6 +2165,11 @@ hand-written history/after-images, or a raw mutation fallback.
       and its companion patch. Preserve receipt, identity, replay and Mortal
       publication behavior; verify existing signed/pending/publication controls.
       This internal refactor creates no wound-source authority or GM contract.
+      Code at `c9230065` is not yet accepted: new6/6,owner423/423,signed2/2 and
+      Mortal4/4 pass; required pending0/11 exposes the old generic wound fixture.
+      T177 follow-through is the complete two-file test-only plan
+      `docs/superpowers/plans/2026-09-08-pending-effect-fixture-sources.md`;
+      exact11-row GREEN, one Fast and independent review remain required.
     - [ ] T081-B2 [US3] Retain and production-consume actual causal execution:
       prepared graph/identities, scheduler/frontier, resource ledger/history,
       accepted effect transcript state and incremental effect advancement.
