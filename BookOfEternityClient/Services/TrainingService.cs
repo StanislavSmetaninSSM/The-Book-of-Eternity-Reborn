@@ -890,7 +890,19 @@ public sealed class TrainingService
     private async Task<TrainingView> BuildAfterlifeTrainingViewAsync(int currentTurn, bool createPendingRequests)
     {
         var localScope = await _localScopeService.ResolveAsync();
-        var soulRoot = await ReadObjectAsync(SoulStatePath) ?? new JsonObject();
+        var soulRoot = await ReadObjectAsync(SoulStatePath);
+        if (soulRoot == null)
+        {
+            return new TrainingView(
+                RealmAfterlife,
+                Array.Empty<TrainingTeacherView>(),
+                Array.Empty<TrainingOffer>(),
+                false,
+                false,
+                null,
+                "Обучение духовным искусствам заблокировано: состояние души отсутствует или недоступно для чтения.");
+        }
+
         if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
                 soulRoot,
                 out var woundArtDamage))

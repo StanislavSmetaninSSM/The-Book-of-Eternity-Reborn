@@ -6,6 +6,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class TrainingServiceTests
 {
+    private const string SoulStatePath = "game_state/meta/soul_state.json";
+
     public static IEnumerable<object[]> StandardWoundArtInvalidTrainingAuthorityCases()
     {
         foreach (var artId in AfterlifeSpiritualConflictState.RequiredWoundArtIds)
@@ -98,6 +100,115 @@ public sealed partial class TrainingServiceTests
         Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]!["spiritual_resilience"]!.GetValue<int>());
         Assert.Equal(0, updated["afterlifeCombatProfile"]!["artTiers"]!["spiritual_healing"]!.GetValue<int>());
         Assert.Equal(2000, updated["inkFeathers"]!["current"]!.GetValue<int>());
+    }
+
+    [Theory]
+    [InlineData("missing", null)]
+    [InlineData("malformed", "{ not-json")]
+    [InlineData("non_object", "[]")]
+    public async Task StandardWoundArt_UnreadableSoulAuthority_TrainingViewRejectsBeforeQuote(
+        string mutation,
+        string? unreadableSoul)
+    {
+        await SeedShiningSoulStateAsync(inkFeathers: 2500);
+        var validView = await CreateService().EnsureTrainingAsync(currentTurn: 20, createPendingRequests: false);
+        Assert.Contains(
+            validView.SelfTrainingOffers,
+            offer => offer.OfferId == "self_art_spiritual_resilience_tier_1" && offer.Available);
+
+        var guardianLibrary = new SystemGuardianLibraryService(
+            _fs,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<SystemGuardianLibraryService>.Instance);
+        var profiles = guardianLibrary.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            CreateSystemGuardianPreset("myriel", "Мириэль Пепельная Звезда", "Magic"),
+            "Северная Искра",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-07-06T05:00:00Z"));
+        var systemGuardian = Assert.Single(profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray())!.AsObject();
+        systemGuardian["realm"] = "Shining Abode";
+        systemGuardian["locationId"] = "hall_lanterns";
+        systemGuardian["locationName"] = "Зал Фонарей";
+
+        var readyMentor = BuildAfterlifeMentor(
+            "resident_shining_offer",
+            "Наставница ясного света",
+            "Shining Abode",
+            "hall_lanterns",
+            "Зал Фонарей",
+            actorType: "resident");
+        var pendingMentor = BuildAfterlifeMentor(
+            "resident_shining_pending",
+            "Наставник без витрины",
+            "Shining Abode",
+            "hall_lanterns",
+            "Зал Фонарей",
+            actorType: "resident");
+        foreach (var mentor in new[] { readyMentor, pendingMentor })
+        {
+            mentor["standardArts"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0;
+            mentor["standardArts"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0;
+        }
+        readyMentor["mentorTrainingShowcase"]!["sourceActorSnapshotHash"] =
+            TrainingService.ComputeSourceSnapshotHash(readyMentor);
+        pendingMentor.Remove("mentorTrainingShowcase");
+        profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().Add(readyMentor);
+        profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().Add(pendingMentor);
+        await _fs.WriteFileAtomicAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
+
+        var validSoul = (await _fs.ReadFileAsync(SoulStatePath))!;
+        var profilesBefore = await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath);
+        var shiningBefore = await _fs.ReadFileAsync(ShiningAbodeState.StatePath);
+        var resolvedScope = await new LocalInteractionScopeService(_fs).ResolveAsync();
+        Assert.True(resolvedScope.IsResolved);
+        Assert.Equal(LocalInteractionRealmKind.ShiningAbode, resolvedScope.RealmKind);
+
+        var resolver = new SequenceLocalInteractionScopeResolver(
+            async call =>
+            {
+                if (call == 1)
+                {
+                    if (mutation == "missing")
+                        _fs.DeleteFile(SoulStatePath);
+                    else
+                        await _fs.WriteFileAtomicAsync(SoulStatePath, unreadableSoul!);
+                }
+                else if (call == 2)
+                {
+                    // The second resolution is reachable only while the product continues past
+                    // its authoritative soul read. Restore realm authority so the old fallback's
+                    // generated quotes and writes remain externally visible as semantic RED.
+                    await _fs.WriteFileAtomicAsync(SoulStatePath, validSoul);
+                }
+            },
+            resolvedScope,
+            resolvedScope,
+            resolvedScope);
+        var service = new TrainingService(
+            _fs,
+            Microsoft.Extensions.Logging.Abstractions.NullLogger<TrainingService>.Instance,
+            resolver);
+
+        try
+        {
+            var view = await service.EnsureTrainingAsync(currentTurn: 21);
+
+            Assert.Equal("afterlife", view.Realm);
+            Assert.DoesNotContain(view.SelfTrainingOffers, offer => offer.Available);
+            Assert.DoesNotContain(view.Teachers.SelectMany(teacher => teacher.Offers), offer => offer.Available);
+            Assert.Contains("состояние души", view.ScopeUnavailableReason, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("недоступ", view.ScopeUnavailableReason, StringComparison.OrdinalIgnoreCase);
+            Assert.False(view.RequestPending);
+            Assert.False(view.RequestCreatedThisCall);
+            Assert.Null(view.PendingGmAction);
+            Assert.False(_fs.FileExists(TrainingRequestState.PendingRequestPath));
+            Assert.Equal(profilesBefore, await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath));
+            Assert.Equal(shiningBefore, await _fs.ReadFileAsync(ShiningAbodeState.StatePath));
+            Assert.Equal(unreadableSoul, await _fs.ReadFileAsync(SoulStatePath));
+        }
+        finally
+        {
+            await _fs.WriteFileAtomicAsync(SoulStatePath, validSoul);
+        }
     }
 
     private async Task MutateTrainingWoundArtAuthorityAsync(string selectedArtId, string mutation)

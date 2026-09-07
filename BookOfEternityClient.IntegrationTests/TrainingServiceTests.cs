@@ -1865,28 +1865,47 @@ public sealed partial class TrainingServiceTests : IDisposable
     }
 
     [Theory]
-    [InlineData("spiritual_resilience", "radianceRank")]
-    [InlineData("spiritual_resilience", "retainedRadianceRank")]
-    [InlineData("spiritual_healing", "radianceRank")]
-    [InlineData("spiritual_healing", "retainedRadianceRank")]
-    public async Task StandardWoundArt_TierOneUsesExistingRadianceRankOneGate(
+    [InlineData("spiritual_resilience", "radianceRank", 1, 1, 0)]
+    [InlineData("spiritual_resilience", "radianceRank", 2, 3, 2)]
+    [InlineData("spiritual_resilience", "radianceRank", 3, 5, 4)]
+    [InlineData("spiritual_resilience", "retainedRadianceRank", 1, 1, 0)]
+    [InlineData("spiritual_resilience", "retainedRadianceRank", 2, 3, 2)]
+    [InlineData("spiritual_resilience", "retainedRadianceRank", 3, 5, 4)]
+    [InlineData("spiritual_healing", "radianceRank", 1, 1, 0)]
+    [InlineData("spiritual_healing", "radianceRank", 2, 3, 2)]
+    [InlineData("spiritual_healing", "radianceRank", 3, 5, 4)]
+    [InlineData("spiritual_healing", "retainedRadianceRank", 1, 1, 0)]
+    [InlineData("spiritual_healing", "retainedRadianceRank", 2, 3, 2)]
+    [InlineData("spiritual_healing", "retainedRadianceRank", 3, 5, 4)]
+    public async Task StandardWoundArt_RadianceAuthoritiesUseExistingTierOneToThreeGates(
         string id,
-        string rankField)
+        string rankField,
+        int nextTier,
+        int requiredRank,
+        int belowRank)
     {
         await SeedAfterlifeSoulStateAsync(inkFeathers: 2500);
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         var profile = soul["afterlifeCombatProfile"]!.AsObject();
+        profile["artTiers"]![id] = nextTier - 1;
         profile["enlightenmentRank"] = 0;
         profile["radianceRank"] = 0;
         profile["retainedRadianceRank"] = 0;
-        profile[rankField] = 1;
+        profile[rankField] = belowRank;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
 
-        var offer = Assert.Single(
+        var blocked = Assert.Single(
             (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
-            item => item.OfferId == $"self_art_{id}_tier_1");
+            item => item.OfferId == $"self_art_{id}_tier_{nextTier}");
+        Assert.False(blocked.Available);
 
-        Assert.True(offer.Available, offer.BlockReason);
+        profile[rankField] = requiredRank;
+        await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString());
+        var available = Assert.Single(
+            (await CreateService().EnsureTrainingAsync(21)).SelfTrainingOffers,
+            item => item.OfferId == $"self_art_{id}_tier_{nextTier}");
+
+        Assert.True(available.Available, available.BlockReason);
     }
 
     [Theory]
