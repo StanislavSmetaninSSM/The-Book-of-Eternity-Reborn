@@ -2124,7 +2124,11 @@ hand-written history/after-images, or a raw mutation fallback.
 
 ### GREEN implementation
 
-- [ ] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
+- [X] T082 [US3] Add `spiritual_resilience` tier 0-V to standard afterlife art/profile/bootstrap/progression authority without adding it to operation types in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
+  Accepted together with T100 on 2026-09-07 through `c5a8349d`; the complete
+  ordinary-art scope, review and verification are recorded under T100 and in
+  `docs/superpowers/plans/2026-09-07-standard-wound-arts.md`. This closes art
+  registration/progression, not the spiritual wound source/decision workflow.
   Accepted 2026-09-07 clarification for T082/T093/T100: both new arts use the
   existing scalar integer tiers, ordinary player training/direct upgrades and
   persistent-entity progression. No per-art experience track or mixed schema.
@@ -2249,13 +2253,46 @@ hand-written history/after-images, or a raw mutation fallback.
 
 ### GREEN implementation
 
-- [ ] T100 [US4] Add `spiritual_healing` tier 0-V to player-soul and persistent actor standard art bootstrap, validation, progression, training offers, and Russian display in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`, `BookOfEternityClient/Services/AfterlifeTrainingCostPolicy.cs`, and `BookOfEternityClient/Services/TrainingService.cs`
+- [X] T100 [US4] Add `spiritual_healing` tier 0-V to player-soul and persistent actor standard art bootstrap, validation, progression, training offers, and Russian display in `BookOfEternityClient/Services/AfterlifeEntityProfileState.cs`, `BookOfEternityClient/Services/AfterlifeTrainingCostPolicy.cs`, and `BookOfEternityClient/Services/TrainingService.cs`
+  Accepted together with T082 on 2026-09-07, complete task range
+  `072d0cd7..c5a8349d` (registration `f94aeafb`, rank-plan correction `db6bcd92`,
+  entity/presentation correction `fd502e8e`, player-writer correction `db8da630`,
+  Training-read correction `c5a8349d`). Parent inspected source, archive deltas
+  and raw verification evidence. Independent whole-task review plus correction
+  re-review returned Spec Compliant / Quality Approved, zero remaining findings
+  or evidence uncertainties. Both arts use scalar 0..5 tiers and existing costs,
+  rank gates, player training/direct upgrades and entity progression; no art XP,
+  migration or malformed-authority backfill. Final owning controls: Integration
+  205/205, Fast 7753/7753 in 3:48.325/5m, FullValidation 1909/1909 in 11:19.817/15m,
+  final documentation 125/125, Training follow-through 80/80 and post-copy 3/3.
+  These final controls have clean builds/cleanup and no timeout or duplicate IDs.
+  The linked concrete plan preserves the historical failed controls, setup-only
+  bootstrap RED and direct-build deviation; later GREEN does not relabel them.
+  Afterlife matrix, TaskGuide, glossary, worked examples, manifest and source
+  guards are synchronized. Mortal mechanics and GM contracts did not change.
+  T093 remains open for actual diagnosis-at-zero and insufficient-tier workflow;
+  T101-T112 and #1536 remain open. Top-level accepted count is now 79/177;
+  that unweighted task count is not a full-feature completion percentage.
 - [ ] T101 [US4] Implement the single tier gate, roll authority, result bands, natural 1/20 precedence, complication modifier, and bounded transitions in `BookOfEternityClient/Services/SpiritualHealingResolver.cs`
   The accepted T094-linked prerequisite (`4711d6a8`) adds unused
   `BookOfEternityClient/Services/SpiritualHealingOutcomeMath.cs`. It returns
   recomputable arithmetic, not accepted healing authority. T101 remains open for
   the single actual resolver, exact target/art/modifier/die proofs, transitions
   and shared self/NPC/command/roleplay/service integration.
+  Registration follow-through for T101/T102/T104 and command integration:
+  `ExplorerAfterlifeCombatCommandResultBuilder` and
+  `ExplorerMode.Afterlife.SpiritualConflict` currently say
+  `Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать`
+  and label the cost reference `Планируемое правило лечения`. These are
+  provisional registration-only descriptions, not the finished healing UX.
+  When the corresponding diagnosis/treatment paths become executable, update
+  those descriptions and their assertions in `ExplorerModeCommandTests.Afterlife.cs`
+  and `ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs`, plus
+  `ExplorerModeCommandTests.StandardWoundArtAuthority.cs` and
+  `ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArtHelp.cs`,
+  together with real handler/command coverage. Preserve the tier-zero diagnosis rule,
+  mastered-tier treatment gate and combat/out-of-combat cost distinction;
+  do not leave the unavailable wording in the completed feature.
 - [ ] T102 [US4] Add a counterable healing operation and art mapping without making resilience active in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`
 - [ ] T103 [US4] Resolve combat healing cost through `AfterlifeActionCostRules` and typed spiritual-action-point outcomes in `BookOfEternityClient/Services/AfterlifeActionCostRules.cs` and `BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs`
 - [ ] T104 [US4] Implement exact safe-cycle session/attempt identity, no-OD self/helper treatment, and world-cycle outcome composition in `BookOfEternityClient/Services/AfterlifeWoundHealingPlanner.cs`

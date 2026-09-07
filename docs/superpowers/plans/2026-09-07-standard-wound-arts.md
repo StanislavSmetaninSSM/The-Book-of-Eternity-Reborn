@@ -59,7 +59,7 @@
 - Produces two recognized scalar standard arts and one shared fresh-object helper, not a new writer or operation type.
 - Existing soul state, complete profile update, `standardArtTierDeltas`, strategy `priorityOrder`, training receipts and `/spiritual_arts` remain the only relevant authority paths.
 
-- [ ] **Step 1: Add semantic RED registry/default/cost tests before production edits.**
+- [X] **Step 1: Add semantic RED registry/default/cost tests before production edits.**
 
 Create this detached core in `SpiritualHealingArtTests.cs` (extend it with the pure mirror/strategy cases in Step 2):
 
@@ -128,7 +128,7 @@ public sealed class SpiritualHealingArtTests
 Run `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualHealingArtTests"`.
 Expected semantic RED: missing registry definitions/default zero keys, not compile errors. Retain command, artifacts and individual failures in the task report.
 
-- [ ] **Step 2: Add and observe RED at the real bootstrap, validation, progression and training boundaries.**
+- [X] **Step 2: Add and observe RED at the real bootstrap, validation, progression and training boundaries.**
 
 Use existing owner setup/helpers; give new methods the `StandardWoundArt` token so exact project-scoped filters select them. Complete deterministic JSON profiles use both zero entries; negative cases alter exactly one target after otherwise valid setup. Add these concrete rows:
 
@@ -177,7 +177,7 @@ public async Task StandardWoundArt_SelfTrainingUsesOrdinaryScalarPurchase(string
 
 Run the owning Fast and Integration filters separately before implementing their behavior. A passing regression on existing generic policy is not new-feature RED; report it honestly alongside the new failing registration/boundary rows. Do not skip the real Integration RED run.
 
-- [ ] **Step 3: Implement the registry, fresh bootstrap and strict current scalar profile contract.**
+- [X] **Step 3: Implement the registry, fresh bootstrap and strict current scalar profile contract.**
 
 In `AfterlifeSpiritualConflictState`, keep existing public signatures and add:
 
@@ -231,7 +231,7 @@ The player equivalent uses `artTiers`, path `.artTiers.{artId}`, code `afterlife
 
 Do not rewrite the ordinary cost, purchase, mirror, strategy or override algorithms if registration is enough. If a new test exposes an actual additional authority gap, report its source and proposed bounded correction before broadening that code.
 
-- [ ] **Step 4: Reconcile current data and Russian presentation.**
+- [X] **Step 4: Reconcile current data and Russian presentation.**
 
 For positive complete profile seeds, retain every existing tier and insert only:
 
@@ -248,7 +248,7 @@ Add both explicit Russian fallback names in `TrainingService.FormatStandardSpiri
 
 Browser overview copy becomes `Боевые, защитные и целительные искусства души. Развитие каждого искусства открывает его собственные возможности.`; section title `Искусства`. Resilience subtitle is `Пассивное духовное искусство`, healing subtitle is `Целительное духовное искусство`, existing subtitles stay unchanged. Resilience cost text is `Пассивное действие, без затрат ОД`, its use text explains resistance to spiritual wounds, and its counter text is `Не является отдельным боевым приёмом`. Healing use text includes the tier-0 diagnosis limitation and treatment of wounds no heavier than the mastered tier; it must not claim to restore OD. The detail must not offer either ID as an executable conflict operation during this slice. Avoid broad UI refactoring or new attack/counter buttons.
 
-- [ ] **Step 5: Synchronize GM guidance, worked example, manifest and guard.**
+- [X] **Step 5: Synchronize GM guidance, worked example, manifest and guard.**
 
 Extend the current afterlife profile/standard-art guidance with this contract, using existing sections rather than duplicating a giant profile guide:
 
@@ -268,7 +268,7 @@ Update a complete existing `afterlifeEntityProfileUpdates` example to include bo
 
 Check daemon/launcher guidance entrypoints: update only if the existing mandatory guide chain does not reach the amended guide. Record that check and the Mortal World no-update rationale. If FullValidation finds an affected archived save profile, perform the exact current-art cutover in those entries, preserving unrelated archive content and timestamps as the existing archive tests require.
 
-- [ ] **Step 6: Verify the integrated change, self-review and commit.**
+- [X] **Step 6: Verify the integrated change, self-review and commit.**
 
 Run the exact new/changed owner filters with a fresh build and inspect summary/log/TRX membership. Use `-FocusedProject Integration` for real filesystem owners and keep separate Fast filters. Expected all new tests GREEN, including current negative validators rejecting the intended field and existing owner tests retaining their semantics.
 
@@ -285,3 +285,80 @@ If a lane fails, inspect exact failures and use only coherent owning reruns; rec
 Do not change frontend files, so `npm run verify`/rendered layout checks are not required for unchanged layout. Validate the C# generated player presentation through the real console/browser command owner tests. Run the scoped copy detector once if it supports these changed C# read-model targets; report unsupported coverage rather than inventing a visual QA result.
 
 Inspect `git diff --check`, scope, JSON examples and both baseline/current profile validation paths. Commit only task-owned source/tests/docs/examples, never unrelated `.serena/` or SDD metadata. Record the full BASE..HEAD range and every verification artifact in the task report. Parent independent diff/artifact inspection and fresh task review precede any T082/T093/T100 checkbox closure. #1536 and the wound/healing workflows remain open.
+
+## Accepted implementation and verification — 2026-09-07
+
+Complete task range: `072d0cd77b5197a55bc65d1c18949bdd841a27aa..c5a8349d58f10ad7d7195d75bd8408174d05fd79`.
+Commits: `f94aeafb` registration, `db6bcd92` existing R1 rank-plan correction,
+`fd502e8e` entity authority/Russian selection/help, `db8da630` strict player
+quote/write authority and truthful help, `c5a8349d` unreadable Training soul
+rejection and current/retained R1/R3/R5 controls. Parent independently inspected
+the changed code and evidence; whole-task review and final correction re-review
+are Spec Compliant / Quality Approved with zero remaining findings or
+cannot-verify items. T082 and T100 are accepted. T093 remains open for actual
+diagnosis and insufficient-tier treatment integration; no healing operation or
+live spiritual wound producer is claimed here.
+
+Beyond the original file inventory, correction owners include
+`BookOfEternityClient/WebUi/BrowserAfterlifeWriteService.cs`,
+`BookOfEternityClient.Tests/AfterlifeSpiritualConflictStateWoundArtAuthorityTests.cs`
+and the Integration partials `ExplorerModeCommandTests.StandardWoundArtAuthority.cs`,
+`ExplorerWebCommandServiceTests.StandardWoundArtAuthority.cs`,
+`ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.StandardWoundArtHelp.cs`
+and `TrainingServiceTests.StandardWoundArtAuthority.cs`.
+
+All artifact identifiers below are beneath `TestResults/test-lanes/`.
+
+- Registry/cost semantic RED: `20260907-180805-270-32344-f30a6e5f06224b158454f198260c1fc1-focused`,
+  13 failures. Expanded run `20260907-182452-600-32760-dd0c982b212e41c78f9a8cab931f799e-focused`
+  had 2 PASS / 38 FAIL, but one bootstrap source-guard failure was setup-only
+  (obsolete solution marker), not semantic RED. Its later GREEN does not erase
+  that sequencing debt. Real Integration RED was 3 PASS / 78 semantic FAIL in
+  `20260907-182806-450-47876-0d58370ba2e24c54a9a1a7ea40666e24-focused`.
+- Final broad owning Integration: 205/205, build 0/0, 1:58.223/15m,
+  `20260907-221526-325-6192-aed86f5e27e54065bc9c2b901622e6e6-focused`.
+- Integrated Fast: 7753/7753, 26 TRX and 7753 unique execution IDs, build 0/0,
+  3:48.325/5m, `20260907-222435-922-50316-773d6d82fc79454e815e8d13858f7af8-fast`.
+- New official FullValidation: 1909/1909, 12 TRX and 1909 unique execution IDs,
+  build 0/0, 11:19.817/15m,
+  `20260907-222835-689-1592-8b527db573db4799933cf253894970a1-fullvalidation`.
+  Subsequent narrow IO boundary correction has its own 1 semantic RED / 1 GREEN
+  controls `20260907-224250-965-51516-a0328a49a1344ad6b72170fce0077fbd-focused`
+  and `20260907-224350-184-51820-eae957bc40324d9f82c3163e32a9ad01-focused`.
+  The broad run is the integrated pre-IO checkpoint, not a claimed rerun afterward.
+- Parent final-`db8da630` documentation control: 125/125, build 0/0, 49.493s/5m,
+  `20260907-225031-587-38700-39a442fb48964b8884ad921053a0b13c-focused`.
+- Training public-entrypoint RED: 3 semantic FAIL,
+  `20260907-232223-989-51504-f3a51bb8186447f28d9f0f6d0e9337f2-focused`,
+  0 build errors / 1 test analyzer warning. First GREEN had 3 PASS and a distinct
+  nullable test warning; both warnings were corrected. Final owner control:
+  80/80, build 0/0, 1:12.606/5m,
+  `20260907-232930-137-38188-2d3c57550a92487588e3a0dc58a342ed-focused`.
+  Later player-copy-only amendment: 3/3, build 0/0, 1:25.910/5m,
+  `20260907-233105-332-51908-9ffa9a7fa86e4b44948e57facca65d0c-focused`.
+  No duplicate broad control was needed for these bounded Training corrections.
+
+All final controls above have complete owned-process cleanup, no timeout, no
+skipped or duplicate execution IDs. The two archive updates were independently
+compared with baseline bytes: 138 entries, four changed JSON entries/seven scalar
+art maps, 134 byte-identical other payloads, all timestamps/attributes preserved.
+
+Historical failures remain failures: original FullValidation
+`20260907-191449-399-36216-74681424f46f4b6cae4ad8f5ac51dd12-fullvalidation`
+stopped at 280 PASS / 1 FAIL / 281 executed; later exact reconciliation covered
+1863 executions/1078 methods but did not turn that invocation GREEN. Intermediate
+Fast `20260907-221806-278-7548-e589a531d36648bc8c5cb71016d4ae8c-fast` and
+`20260907-222147-605-41820-ed56d409499144f89f11c1851f2e3134-fast` failed stale
+positive fixtures before the final completing run. A historical direct build
+violated the wrapper-only rule; subsequent compliant verification does not remove
+that process deviation. Detailed chronological reports and parent audits remain
+in the worktree Git metadata `sdd/` directory.
+
+GM synchronization: afterlife matrix, glossary, mandatory TaskGuide, worked
+examples, manifest and source guards describe the scalar tiers, mirror authority,
+ordinary progression and fail-closed-before-quote/write behavior. No Mortal
+mechanic or GM-authored contract changed. No new daemon/launcher entrypoint,
+frontend layout or browser control was needed. Healing-unavailable provisional
+copy and its rendered assertions have an explicit follow-through under T101 in
+`tasks.md`; they must change with actual diagnosis/treatment handlers. No remote
+operation, PreMerge, issue closure or complete-feature acceptance was performed.

@@ -1724,6 +1724,14 @@ Registration does not make passive resilience an operation, nor does it implemen
 the later healing operation/resolver. The data model now matches this decision.
 The concrete current-profile/training/presentation cutover plan is
 `docs/superpowers/plans/2026-09-07-standard-wound-arts.md`.
+That cutover is accepted through `c5a8349d` (whole scope `072d0cd7..c5a8349d`):
+independent whole-task review plus correction re-review is Spec Compliant /
+Quality Approved with zero remaining findings, and parent source/archive/raw
+artifact audits are complete. T082/T100 are accepted, but T093's actual diagnosis
+and insufficient-tier workflow and all live wound/healing producers remain open.
+Final integrated Fast7753/7753, FullValidation1909/1909, documentation125/125,
+Training follow-through80/80 and post-copy3/3 are recorded in the linked plan,
+separately from the historical failed controls and setup/direct-build deviations.
 Bounded arithmetic is accepted at `1969a695` after
 parent source/artifact inspection and independent Spec Compliant / Quality
 Approved with zero open findings. Actual staged 42 RED -> 42 GREEN -> 24 RED ->
