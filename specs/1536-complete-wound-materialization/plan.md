@@ -1614,6 +1614,25 @@ Each unit still needs its complete-code execution plan and verification. This
 planning update does not implement the producer, close T081/T084/T085, resurrect
 historical Fast failures, or decide the independent T070 preparation question.
 
+The first T081-A executable fixture is specified in
+`docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-baseline.md`.
+It reuses the existing resource cutover fixture through an Integration partial,
+with optional genuinely signed dice, real common publication and zero Error
+issues from both the complete raw resource and selected final conflict phases.
+Accepted at `a54fc3d5`, with final 2/2, unchanged-neighbor 47/47, clean sensitivity
+RED/GREEN and independent Spec compliant / Quality Approved; parent inspected
+the complete diff and exact artifacts. This is a test-only prerequisite, not yet
+detached validation or wound-source admission. Existing code-selected resource
+assertions remain intact. The
+production extraction separately retains current arithmetic, offline fallback,
+snapshot security and early-return read behavior; it must consume the new frame
+through the current validator and receive its own complete-code plan/review.
+That production step now follows
+`docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-extraction.md`
+and its complete companion patch. It stages an executable pre-API RED before
+27 new captured-input, repeated-state and real resource-failure rows; the two
+accepted baseline rows remain. Implementation and acceptance are still pending.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

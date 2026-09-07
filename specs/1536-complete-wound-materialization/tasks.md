@@ -2131,6 +2131,20 @@ hand-written history/after-images, or a raw mutation fallback.
     signed zero-error raw/publication/final-conflict fixture and captured-input
     equivalence controls in `AfterlifeSpiritualConflictValidationTests.Wounds.cs`.
     This does not export a wound source or change current arithmetic/offline rules.
+    The test-only genuine resource/publication baseline is implemented through
+    `AfterlifeResourceCutoverTests.ConflictFrame.cs` to reuse the existing validated
+    ledger fixture without duplication. Its complete-code execution plan is
+    `docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-baseline.md`;
+    detached-frame equivalence and source admission are not closed by that step.
+    The fixture-only step is accepted at `a54fc3d5`: genuine zero-error signed
+    publication, clean unauthorized-die sensitivity RED/GREEN, final 2/2 and
+    unchanged-neighbor 47/47 evidence; independent Spec compliant / Quality
+    Approved with parent diff/artifact verification. T081-A stays open for
+    production-consumed detached validation and its equivalence controls.
+    The complete production/test execution plan is
+    `docs/superpowers/plans/2026-09-08-spiritual-conflict-frame-extraction.md`
+    with its companion patch: executable pre-API RED, 27 new rows plus the
+    retained two-row baseline, owner controls, independent review and one Fast.
   - [ ] T081-B [US3] Extract a typed source-prefix resource/effect intermediate
     consumed by `AcceptedMechanicsPlanner.cs`; test retained identities, actual
     transition proof, dependent suffix, pending receipt waves and one final plan
@@ -2155,8 +2169,10 @@ hand-written history/after-images, or a raw mutation fallback.
     because only the decline milestone is implemented.
   Each unit includes its relevant GM prompt/docs/example/manifest/source guards
   with runtime changes and a complete-code execution plan before production edits.
-  The new architecture document is planning evidence only; no new source fixture
-  has yet proved zero errors, and overflow remains an unconfirmed source risk.
+  The architecture document remains planning evidence. The existing-mechanics
+  signed publication/conflict fixture now proves zero errors, but no spiritual
+  wound-source admission is implemented or accepted by it. Overflow remains an
+  unconfirmed source risk, not a defect silently changed by this refactor.
 
 ### GREEN implementation
 
