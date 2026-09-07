@@ -411,6 +411,14 @@ are consequence primitives, not a catalog of complete spiritual wounds.
 - **FR-029**: Every spiritual conflict MUST fix one danger mode at start, and any escalation MUST be explicit and accepted before its higher cap applies.
 - **FR-030**: Training MUST forbid spiritual wounds; controlled conflict MUST cap them at II; hostile and annihilation conflict MAY permit I-IV.
 - **FR-031**: Ordinary spiritual wound eligibility MUST occur only on an accepted harmful strain transition and MUST reuse the accepted exchange evidence without a second injury roll.
+  As a prerequisite, historical exchange dice/matchup/action-cost exemption MUST
+  consume one occurrence from the same validated pre-turn active conflict, not
+  trust `exchangeAtTurn` alone. Exact payload matching remains first. The existing
+  old-marker readable-summary audit compatibility MAY ignore only an optional
+  missing/null/string top-level `summary` when every other member is exact;
+  this MUST NOT authorize rewriting the accepted resource-history prefix or
+  treating historical prose as a new harmful strain event. The resource publisher's
+  exact-prefix fence remains independent and unchanged.
 - **FR-032**: The maximum spiritual severity MUST be calculated from harmful margin, applied-art tier, target Spiritual Resilience tier, destination strain rank, extra strain jumps, and the conflict-mode cap according to the approved design formula.
 - **FR-033**: Natural 1 and natural 20 in the conflict exchange MUST NOT independently raise spiritual wound severity.
 - **FR-034**: Each side MUST receive at most one newly created spiritual wound per conflict.

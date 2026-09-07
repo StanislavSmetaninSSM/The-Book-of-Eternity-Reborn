@@ -2132,6 +2132,17 @@ hand-written history/after-images, or a raw mutation fallback.
   caller. A value calculation is not accepted source evidence. T084 remains open
   for the actual adapter, harmful-side provenance and all per-side/export rules.
 - [ ] T085 [US3] Validate danger/opportunity/strain/art audit and reject GM-authored computed fields in `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs` and `BookOfEternityClient/Services/Validation/ValidationService.WoundMaterialization.cs`
+  Bounded historical-classifier prerequisite:
+  `docs/superpowers/plans/2026-09-07-spiritual-exchange-history-authority.md`
+  replaces marker-alone exemption with same-conflict one-use snapshot evidence.
+  Exact payload matching is first; old-marker optional readable top-level summary
+  drift remains compatible only when all other members are exact. The existing
+  resource publisher still demands the exact pre-turn prefix. Sixteen real
+  Integration cases plus a source guard/worked example/manifest establish only
+  this exchange-audit boundary. T089-T092 own the linked bounded GM synchronization
+  and Focused/oneFast/conditionalFullValidation evidence. Source of Light's separate
+  marker path, cross-exchange die ownership, full strain/actor/resilience authority,
+  wound producer/seals and all broader T085 requirements remain open.
 - [ ] T086 [US3] Add danger, wound maximum, accepted wound/decline, and defeat consequence to player-safe conflict preview/audit in `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`
 - [ ] T087 [US3] Compose persistent profile wound transitions and typed owner-to-current-side `SpiritualWoundConflictContribution` evidence without duplicating wounds/effects or mutating `combatConditions[]`; fail closed on absent/duplicate/wrong-realm/ambiguous participant membership and clear only derived evidence on conflict close in `BookOfEternityClient/Services/WoundAcceptedTurnPlanner.cs`, `BookOfEternityClient/Services/SpiritualWoundConflictContributionProjector.cs`, `BookOfEternityClient/Services/AfterlifeSpiritualConflictTurnPreviewService.cs`, and `BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.AfterlifeSpiritualConflict.cs`
 - [ ] T088 [US3] Implement mandatory bounded non-training defeat outcomes while preserving the existing separate optional soul-dissipation proof in `BookOfEternityClient/Services/AfterlifeSpiritualConflictState.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeSpiritualConflict.cs`

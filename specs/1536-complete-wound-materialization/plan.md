@@ -1593,6 +1593,23 @@ needed. Detailed artifacts are in the linked plan; full T177/T070/#1536 remain o
 
 ### Phase 3 — Spiritual conflict, arts, healing, and entity recovery
 
+The bounded T085 authority prerequisite
+`docs/superpowers/plans/2026-09-07-spiritual-exchange-history-authority.md`
+closes marker-alone historical exemption before an exchange can underpin spiritual
+wound evidence. It uses the existing signed payload tracker, scopes it to the same
+active conflict and consumes each occurrence once. Exact matching remains first;
+the existing older-marker/readable-summary audit regression is preserved only for
+missing/null/string top-level summary differences with all other members exact.
+This is validation compatibility, not permission to mutate a published history:
+the resource outcome builder still rejects any pre-turn prefix difference. Sixteen
+file-backed cases exercise current dice/matchup/action-cost authority and retained
+compatibility. Turn guide/matrix/worked contrast/manifest/source guard change
+together, with bounded Focused/oneFast/conditionalFullValidation evidence.
+Source of Light's independent marker path, cross-exchange dice consumption, full
+strain/actor/resilience proof, danger/wound seals, actual wound opportunity
+publication and healing remain separate unfinished T084/T085 contours. This
+prerequisite neither decides the art schema nor closes the full spiritual story.
+
 1. Add RED danger-mode, formula threshold, strain cap, optional/lower/one-per-side/
    re-trauma/defeat/dissipation tests.
 2. Extend conflict state, validation, preview, and GM context with client-authored wound
