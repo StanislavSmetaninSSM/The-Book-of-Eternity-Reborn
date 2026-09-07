@@ -55,7 +55,7 @@ example manifest entry covers all three realms and will be updated in place.
 
 **Interfaces:** Existing `EffectMaterializationContract.Validate(JsonElement,string,EffectMaterializationPhase)`, `EffectSourceDefinitionContract.ValidateArray(JsonElement,string,string)`, `EffectSourceAuthority.Build(EffectSourceAuthorityInput)`, canonical binding and public/repair resolution. No new production API.
 
-- [ ] **Step 1: Add the structural and catalog tests.**
+- [X] **Step 1: Add the structural and catalog tests.**
 
 Create `BookOfEternityClient.Tests/WoundLegacyCanonicalContractTests.cs` exactly:
 
@@ -333,7 +333,7 @@ public sealed partial class PromptDocumentationCoverageTests
 }
 ```
 
-- [ ] **Step 2: Observe semantic RED before production/docs changes.**
+- [X] **Step 2: Observe semantic RED before production/docs changes.**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Fast -TimeoutMinutes 5 -Filter "FullyQualifiedName~WoundLegacyCanonicalContractTests|FullyQualifiedName~InternalWoundLegacyVocabulary_IsClientOwnedAcrossSharedDocs"
@@ -346,7 +346,7 @@ controls passing.
 Inspect actual issues and test failures. A compile/fixture failure is not semantic
 RED; report any mismatch before changing the agreed production surface.
 
-- [ ] **Step 3: Add exactly the two canonical closed vocabulary entries.**
+- [X] **Step 3: Add exactly the two canonical closed vocabulary entries.**
 
 In `EffectMaterializationContract.cs`, replace `SourceKinds` with:
 
@@ -368,7 +368,7 @@ No other production code change. The canonical source-bound link uses the source
 owner's exact kind; this adds neither a `linkKind` input to definition lifetime
 nor a new permitted definition `links[].kind` value.
 
-- [ ] **Step 4: Synchronize shared GM guidance and its existing worked example.**
+- [X] **Step 4: Synchronize shared GM guidance and its existing worked example.**
 
 In `OtherGuides/Effect_Materialization_Contract.md`, change the heading sentence
 `The exact source kind is one of:` to `The representative GM source selector kind is one of:`.
@@ -403,7 +403,7 @@ keep every other field and row unchanged:
 }
 ```
 
-- [ ] **Step 5: Verify the new boundary, relevant owners and shared docs.**
+- [X] **Step 5: Verify the new boundary, relevant owners and shared docs.**
 
 Run Step 2's exact filter: expected 48/48 GREEN. Then:
 
@@ -426,7 +426,7 @@ so never label their raw arithmetic difference a missing/uncompleted set. A
 failing/partial run is not GREEN, and no unrelated failure is waived. No extra
 Fast, PreMerge, full-solution `dotnet test`, lane migration or timeout increase.
 
-- [ ] **Step 6: Self-review, exact-file commit and independent acceptance.**
+- [X] **Step 6: Self-review, exact-file commit and independent acceptance.**
 
 Run `git diff --check`, inspect only the six owned paths, and commit those
 exact paths (never `git add .`). Report source/test/GM changes and all actual
@@ -436,7 +436,48 @@ inspects the diff/source and actual evidence, and obtains fresh Spec Compliance
 and Quality review before checking this bounded task. Full T070/T074/T177 and
 #1536 remain open; no remote action follows this checkpoint.
 
-## Parent self-review
+## Acceptance evidence — 2026-09-07
+
+Bounded task accepted at `642eb4e24b298428bf9d31ebf02678344a9d58b6`, exact
+BASE `d4a0a06c5a97cbc02d8f746c4ff4ab3fd946faa8`. Parent inspected the complete
+six-file diff, full new tests, unchanged exact `source.kind=wound` cleanup,
+source-bound derivation and canonical binding checks. Independent task review:
+Spec Compliant / Quality Approved, zero Critical/Important/Minor findings.
+
+Actual artifacts under `TestResults/test-lanes/`:
+
+| Run | Artifact directory | Executed outcome | Wall time |
+| --- | --- | --- | --- |
+| Semantic RED | `20260907-102154-436-1528-bf6b0461ecfe40e9a7807124f9ffadc2-focused` | 35 PASS / 13 intended FAIL / 48 executed | 1:10.058 |
+| Owning GREEN | `20260907-102402-790-25760-612b6b9c6b224c27bdb5624a73b9d4e4-focused` | 371/371 PASS, including all 48 new rows | 1:03.483 |
+| One Fast | `20260907-102512-602-48800-b33b12795f1d4953ac2a98ee390b8069-fast` | 7,628/7,628 PASS; 26 TRXs | 3:23.368 |
+| Conditional FullValidation | `20260907-102841-447-42936-1a7c065bb47247b6b328899e0996c6d6-fullvalidation` | 1,857/1,857 PASS; 11 TRXs | 10:46.920 |
+| Final documentation guard | `20260907-103949-556-34068-21466d5781164cbf8e5f592d0e52770b-focused` | 1/1 PASS | 0:14.694 |
+| Final manifest/selector consumers | `20260907-104527-188-45336-5d065decab904883b75cc3b56f04d811-focused` | 2/2 PASS | 1:18.524 |
+
+The prescribed standalone 48-row GREEN command was not repeated: parent matched
+all 48 passing results in the 371-row owning run. After FullValidation the child
+removed one stale duplicate manifest description; the replacement values were
+already present. Both actual manifest/selector consumers then passed on the final
+file, resolving the review's second evidence caveat. Parent recursively checked
+the final manifest for duplicate properties and checked the complete BASE..HEAD
+diff. No duplicate properties or whitespace errors remain.
+
+Parent read every summary, TRX and relevant build/error log: all builds have zero
+warnings/errors; no timeout, skipped row, duplicate execution/cross-TRX test ID, or
+cleanup failure. Focused/Fast retained five minutes; FullValidation used the
+documented fifteen-minute diagnostic budget. Discovery is from discovery logs,
+not execution summaries: Fast 7,574 -> 7,628 through seven theory expansions
+(+54); FullValidation 1,747 -> 1,857 through five (+110). Method-level comparison
+matches all other methods. No additional Fast, FullValidation or PreMerge ran.
+
+Shared Mortal/afterlife guide, worked continuation, manifest and source guard were
+updated together. There is no new afterlife command/action/pending root, so no new
+matrix entry or afterlife turn example was required. Full T070/T074/T177/#1536,
+durable legacy publication and all unresolved architecture choices remain open;
+top-level task count remains 77/177. No push, PR, merge or issue closure.
+
+### Pre-implementation review
 
 - The two canonical sets are required by the approved source identity and its
   already-derived source-bound lifetime. The broader definition link set stays

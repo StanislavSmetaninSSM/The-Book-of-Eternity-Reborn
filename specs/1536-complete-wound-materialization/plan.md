@@ -1533,7 +1533,7 @@ unchanged mandatory legacy test pass in Fast. One five-minute Fast completed6450
 of7526 discovery rows, 6447PASS/three reflection-harness FAIL, arithmetic1076
 uncompleted. No full GREEN claim; exact artifacts are in the linked plan.
 
-Next bounded canonical prerequisite follows
+The bounded canonical prerequisite is accepted through `642eb4e2` (BASE `d4a0a06c`):
 `docs/superpowers/plans/2026-09-07-wound-legacy-canonical-vocabulary.md`.
 The existing source-bound planner derives canonical `linkKind` from the exact
 source kind, so canonical SourceKinds/LinkKinds must admit `wound_legacy`.
@@ -1543,7 +1543,13 @@ before code, and the provisional definition-link expansion was removed from the
 plan. Explicit non-public catalog/repair tests and authored-link rejection controls
 preserve the existing authority boundary. Shared guide, worked continuation and
 manifest distinguish this internal vocabulary from the unchanged eleven GM
-selectors; conditional FullValidation is required. This does not decide the
+selectors. Parent source/artifact audit and independent Spec Compliant / Quality
+Approved found zero open defects. Semantic RED35/48 -> owning GREEN371/371
+(all48 new rows); one Fast7,628/7,628 in3:23.368 and conditional
+FullValidation1,857/1,857 in10:46.920 passed. The final manifest's two actual
+consumers passed2/2 after duplicate-description cleanup; final source guard1/1.
+All builds/cleanup clean, no timeouts/skips/duplicate IDs. Exact artifacts and
+discovery/theory reconciliation are in the linked plan. This does not decide the
 unresolved private preparation witness, durable recovery receipt or spiritual-art
 schema, and does not complete legacy creation/history/reload/publication.
 

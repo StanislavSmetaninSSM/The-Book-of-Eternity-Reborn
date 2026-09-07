@@ -1388,7 +1388,8 @@ entrypoints require no update for T065.
   duplicates; exact evidence is in the linked plan. The
   legacy preparation choice remains unanswered; canonical source/link contracts,
   real typed batches/finalization/history/reload/publication remain open T070.
-  The next bounded source/lifetime prerequisite is
+  The bounded source/lifetime prerequisite is accepted through `642eb4e2`
+  (BASE `d4a0a06c`), with exact evidence in
   `docs/superpowers/plans/2026-09-07-wound-legacy-canonical-vocabulary.md`:
   admit the exact kind in canonical SourceKinds/LinkKinds for the existing
   source-bound derivation, but preserve authored `links=[]` and the unchanged
@@ -1396,7 +1397,13 @@ entrypoints require no update for T065.
   documentation rows, existing non-public guards, six owned files, and shared
   guide/worked-continuation/manifest updates without a new GM selector. The
   broader private legacy adapter/history/reload publication and all unresolved
-  architecture choices remain open. Implement/review before checking this slice.
+  architecture choices remain open. Parent source/artifact audit and independent
+  Spec Compliant / Quality Approved found zero defects. RED35/48 -> owning
+  GREEN371/371, including all48 new rows; one Fast7,628/7,628 in3:23.368 and
+  FullValidation1,857/1,857 in10:46.920 passed with clean builds/cleanup and no
+  timeout/skips/duplicate IDs. Final manifest consumers2/2 and source guard1/1
+  passed after metadata cleanup. Only this bounded slice is accepted; full T070,
+  T074/T177 and #1536 remain open, top-level count77/177 unchanged.
   T070 MUST consume the exact T067 outcome-intent/DeclaredResult pair without raw-route
   reparsing or identity allocation; update the existing non-heal/follow-up-heal reducer
   gates for the sealed <=2 / staged-to-I contour; call
