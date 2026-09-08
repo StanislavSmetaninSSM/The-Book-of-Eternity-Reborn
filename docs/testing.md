@@ -104,7 +104,7 @@ read only from attributes on the expected class; comment, string, and
 method-level decoys do not count. Moved WebUi tests share
 `UiTestTextCollector` from `BookOfEternityClient.TestSupport`; the helper has no
 tests and was moved there unchanged so Integration does not reference Fast.
-The exact reviewed-heavy source/category manifest contains 67
+The exact reviewed-heavy source/category manifest contains 68
 `FastTestBoundaryTests.ReviewedHeavySourcePaths` entries, while the exact
 class-level Integration manifest contains 40
 `IntegrationTestBoundaryTests.RegressionIntegrationSources` entries. Both are
@@ -119,6 +119,13 @@ change the Fast limit, runner or production behavior.
 The Integration manifest also records the existing
 `SpiritualHealingArtValidationTests.cs` file-backed profile-validation owner;
 its category and all tests are unchanged.
+
+`GmWorkerProposalOnlyDispatchTests.cs` belongs to `ProcessIntegration`: four of
+its six Facts launch real PowerShell workers, and two check the same dispatch
+workflow's no-launch/session-replacement paths against real filesystem state.
+The physical move preserves all six methods, assertions, the ten-second worker
+timeout and cleanup. Both ownership manifests prevent it returning to Fast;
+the Fast five-minute lane limit and process runner are unchanged.
 
 The diagnostic lanes select
 `BookOfEternityClient.IntegrationTests.csproj`. They are available when a

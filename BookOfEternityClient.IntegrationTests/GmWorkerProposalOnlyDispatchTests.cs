@@ -6,6 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
+[Trait("Category", "ProcessIntegration")]
 public sealed class GmWorkerProposalOnlyDispatchTests
 {
     private const string LocationPath = "game_state/world/current_location.json";

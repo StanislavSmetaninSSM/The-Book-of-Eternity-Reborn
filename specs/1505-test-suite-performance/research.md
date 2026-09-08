@@ -425,9 +425,9 @@ complete HTTP host/browser flow -> E2E
 fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
 ```
 
-### Exact executable manifests after #1536 scalar-course publication and browser contention ownership
+### Exact executable manifests after #1536 scalar-course publication, browser contention and GM dispatch ownership
 
-The 67 entries below are the complete, ordinal contents of
+The 68 entries below are the complete, ordinal contents of
 `FastTestBoundaryTests.ReviewedHeavySourcePaths`. Categories are the exact
 Integration ownership enforced at the same HEAD. The three historical special
 groups retain their complete class categories; method-level
@@ -492,6 +492,7 @@ groups retain their complete class categories; method-level
 | `MortalWoundOpportunityAdapterTests.cs` | `RegressionIntegration` |
 | `ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs` | `RegressionIntegration` |
 | `GmWorkerValidationRepairDelegatorTests.cs` | `ProcessIntegration` |
+| `GmWorkerProposalOnlyDispatchTests.cs` | `ProcessIntegration` |
 | `WebUi/BrowserMortalWorldGenerationFencingTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserPlayerActionGenerationTests.cs` | `RegressionIntegration` |
 | `WebUi/BrowserStorageTransportParityTests.cs` | `RegressionIntegration` |

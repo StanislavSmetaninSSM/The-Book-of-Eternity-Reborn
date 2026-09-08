@@ -76,6 +76,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundOpportunityAdapterTests.cs",
         "ExplorerWebCommandServiceTestsShiningAbodeDrilldowns.cs",
         "GmWorkerValidationRepairDelegatorTests.cs",
+        "GmWorkerProposalOnlyDispatchTests.cs",
         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
         Path.Combine("WebUi", "BrowserPlayerActionGenerationTests.cs"),
         Path.Combine("WebUi", "BrowserStorageTransportParityTests.cs"),

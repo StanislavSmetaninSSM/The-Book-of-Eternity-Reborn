@@ -205,6 +205,7 @@ public sealed class IntegrationTestBoundaryTests
             ["GmWorkerProcessHostTests.cs"] = [ProcessIntegrationTrait],
             ["GmWorkerProcessTreeTests.cs"] = [ProcessIntegrationTrait],
             ["GmWorkerProposalStoreTests.cs"] = [ProcessIntegrationTrait],
+            ["GmWorkerProposalOnlyDispatchTests.cs"] = [ProcessIntegrationTrait],
             ["GmWorkerValidationRepairDelegatorTests.cs"] = [ProcessIntegrationTrait],
             ["ImageServiceTests.cs"] = [ProcessIntegrationTrait],
             ["LocalWebUiBuiltFrontendSmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
