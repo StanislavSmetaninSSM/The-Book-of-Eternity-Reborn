@@ -12,7 +12,7 @@
 
 ## Status and exact companion
 
-**Parent-reviewed complete-code plan; not implemented or C#-verified.** The parent read the full original, all final deltas, and the final plan. Read-only sequential replay at `9f301262` found one exact match for every one of 40 update hunks, and both add-file targets absent. All 13 patch targets are absolute paths within this worktree. No source or test lane has been run for B0.
+**Implemented at `4de64a34`, fixture review correction at `084146ea`; acceptance pending the independent re-review and older test-boundary gate.** The parent read the full original, all final deltas, and the final plan. At corrected source `084146ea`, full-line replay from base `bd8f3d74` and comparison with all thirteen actual files confirms every corrected companion postimage. Actual initial evidence: semantic RED0/5, GREEN5/5, Integration17/17, GameEngine2/2 and existing156/156; correction RED1/2, GREEN2/2 and combined19+2/21. All builds0/0, no timeouts, cleanup complete. The unrelated boundary58/60 remains a failed artifact, not a passing control.
 
 - Worktree: `E:/Games/worktrees/boe-1536-wound-materialization`.
 - Audited production baseline: `e720b03f`; implementation source baseline: `9f301262eaa02b64266aa0b63b56bbce2ed4529f` (later planning-only commit is permitted).
@@ -126,7 +126,7 @@ No GM prompt, example, matrix, manifest, or player-facing surface changes are ne
 - Run named Focused selections only with their default 5-minute bound; no child Fast, FullValidation, PreMerge, unbounded suite, or speculative time-limit increase. Parent owns the meaningful combined B0/B1 Fast checkpoint; the already accepted projector Fast is not repeated for planning.
 - Preserve every failed attempt in the report. Compilation or fixture failures are not semantic RED. Do not create an artificial RED by breaking already implemented code.
 - The final companion includes two parent test corrections: assert the reflected presence property exists before SetValue, and test both raw boolean tampering and recomputation of only the manifest hash while keeping original detached authority.
-- Expected new rows: 5 deterministic Fast, 17 physical Integration class cases, and 2 GameEngine producer/restore cases. No B1 test is an acceptance prerequisite before B1 exists.
+- Expected new rows after fixture review correction: 5 deterministic Fast, 19 physical Integration class cases, and 2 GameEngine producer/restore cases. No B1 test is an acceptance prerequisite before B1 exists.
 - Escalate nontrivial contract/fixture corrections before changing reviewed code. With all named controls complete, one exact thirteen-file local implementation commit is permitted. Do not stage parent planning or metadata files.
 - Report to `sdd/spiritual-snapshot-presence-b0-task-1-report.md` in this worktree's Git metadata; list commands, exact artifacts, row counts, failures, final code state, and deviations.
 

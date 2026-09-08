@@ -2281,7 +2281,7 @@ hand-written history/after-images, or a raw mutation fallback.
             producers, a closed sixteen-path observation set, and the opt-in
             reader distinguish signed absence from uncovered paths. Preserve
             old optional reads, the 64-path bound, and both restore mechanisms.
-            Prove semantic RED/GREEN, 5 pure contracts, 17 Integration cases,
+            Prove semantic RED/GREEN, 5 pure contracts, 19 Integration cases,
             2 GameEngine cases and existing/boundary controls, then independent
             review before B1. Parent owns the combined B0/B1 Fast checkpoint.
             This client-owned metadata adds no GM-authored surface; no GM
@@ -2291,9 +2291,17 @@ hand-written history/after-images, or a raw mutation fallback.
             original source bytes or signed absence through its real reader
             under the canonical lease, then validate source declarations,
             targets and terminal exchanges without granting source admission.
-            Track the reviewed nine-file source-owner companion before code
-            dispatch; synchronize the linked source-action/terminal GM
-            examples and guards with this runtime change, not with B0.
+            Execute the reviewed nine-file complete-code companion in
+            `docs/superpowers/plans/2026-09-08-spiritual-source-owner-unit-b1.md`.
+            Parent full-line replay confirms all nine hunks and five new targets;
+            79 candidate rows are not yet execution evidence. Immediately
+            synchronize source-action/terminal GM examples and guards through
+            `docs/superpowers/plans/2026-09-08-spiritual-source-action-gm-sync.md`
+            with this runtime change, not with B0. Apply that eight-file unit
+            together with the old envelope parser-dependent Integration partial:
+            their section headings delimit exactly one envelope and two action
+            JSON fences. Parent owns one combined Fast and conditional
+            FullValidation after named controls/review, not separate repeated runs.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

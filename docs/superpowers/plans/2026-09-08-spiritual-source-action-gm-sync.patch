@@ -1,0 +1,453 @@
+*** Begin Patch
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualSourceEnvelope.cs
+@@
++using System.Text.RegularExpressions;
+ using Xunit;
+
+ namespace BookOfEternityClient.Tests;
+@@
+ public sealed partial class AfterlifeDocumentationCoverageTests
+ {
++    [Fact]
++    public void SpiritualSourceActionDocumentation_DeclaresExactTargetAndTerminalWitness()
++    {
++        var guide = NormalizeSpiritualSourceActionDocumentation(
++            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"));
++        foreach (var token in new[]
++        {
++            "## spiritual_wound_source_action_v1",
++            "player exchange object", "opposition incomingAction",
++            "spiritualWoundTarget", "actorType", "actorId", "retraumaWoundRef",
++            "closed object", "raw non-empty exact strings", "no surrounding whitespace",
++            "original affected-side lead", "original member of the affected side",
++            "canonical prior active spiritual wound", "immutable history",
++            "traumaPressure", "sourceSeverityCap", "maximumSeverityRank",
++            "guaranteedSeverityRank", "resolution.terminalExchange",
++            "complete existing exchange witness", "matching complete diceAudit",
++            "not a totals summary",
++            "not an admitted wound, opportunity, decision, receipt"
++        })
++            Assert.Contains(token, guide, StringComparison.Ordinal);
++    }
++
++    [Fact]
++    public void SpiritualSourceActionDocumentation_RoutesBothRealmsAndPendingContours()
++    {
++        var files = new[]
++        {
++            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
++            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
++            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
++            ReadRepoFile("Examples", "example_validation_manifest.json")
++        };
++        foreach (var text in files)
++        {
++            Assert.Contains("spiritual_wound_source_action_v1", text, StringComparison.Ordinal);
++            Assert.Contains("spiritualWoundTarget", text, StringComparison.Ordinal);
++            Assert.Contains("terminalExchange", text, StringComparison.Ordinal);
++            Assert.Contains("Chaos Sea", text, StringComparison.Ordinal);
++            Assert.Contains("Shining Abode", text, StringComparison.Ordinal);
++        }
++
++        var combined = string.Join(Environment.NewLine, files);
++        foreach (var token in new[]
++        {
++            "start", "escalation", "prefix", "terminal", "passive",
++            "champion", "dice-free voluntary", "optional dissipation",
++            "ValidateSpiritualWoundSourceActionShape",
++            "BeginSpiritualWoundSourceSessionAsync", "TerminalClosure",
++            "source-local", "C/D/E"
++        })
++            Assert.Contains(token, combined, StringComparison.Ordinal);
++    }
++
++    private static string NormalizeSpiritualSourceActionDocumentation(string text) =>
++        Regex.Replace(text.Replace("`", string.Empty, StringComparison.Ordinal), @"\s+", " ");
++
+     [Fact]
+     public void SpiritualSourceEnvelopeDocumentation_DeclaresClosedSourceAndHarderBounds()
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/OtherGuides/Wound_Materialization_Contract.md
+@@
+ Worked source: `spiritual_wound_source_envelope_v1` in
+ `Examples/E_CLI_Afterlife_Turns.txt`. The source-art fragment proves authoring and
+ closed parsing, not a full actor update, accepted battle, or wound publication.
++
++## spiritual_wound_source_action_v1
++
++In Chaos Sea and Shining Abode, a harmful spiritual action may optionally name its
++intended wound target. Put `spiritualWoundTarget` only on the player exchange object
++or on the opposition `incomingAction` object:
++
++```json
++{
++  "spiritualWoundTarget": {
++    "actorType": "guardian",
++    "actorId": "guardian_frame",
++    "retraumaWoundRef": "wound_torn_resonance"
++  }
++}
++```
++
++`spiritualWoundTarget` is a closed object. It contains exactly `actorType`, `actorId`,
++and optional `retraumaWoundRef`; all present values are raw non-empty exact strings with
++no surrounding whitespace. There are no aliases, case variants, confusable spellings,
++or second wound-reference field. Do not put the target in `specialArtAudit`,
++`specialArtAudits[]`, a resolution summary, or a wound decision.
++
++The acting player targets the opposition side; an opposition `incomingAction` targets
++the player side. An explicit actor must be an original member of the affected side.
++When the object is absent, the client selects the original affected-side lead; the GM
++does not restate or recompute that default. `retraumaWoundRef` may identify only one
++canonical prior active spiritual wound whose original carrier owner, realm, semantic
++identity, and immutable history all agree. Source preparation never makes a wound
++removed or changed in the current candidate valid; later admission must still prove
++current candidate agreement.
++
++The GM never authors `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
++`guaranteedSeverityRank`, or `spiritualWoundEnvelope` on an exchange, incoming action,
++or audit. The client derives the harmful margin, destination strain, danger cap, source
++cap, guarantee, tier, dice, and source binding from signed originals. Do not invent
++dice, operation evidence, damage, or a successful outcome for a passive source,
++champion coordination, or a dice-free voluntary action.
++
++A newly terminal harmful result carries `resolution.terminalExchange`. This is the
++complete existing exchange witness, including its full `before`, `after`, matchup,
++action-cost, and matching complete `diceAudit` when contested. It is not a totals
++summary. The resolution-level `diceAudit` must equal the terminal exchange audit; the
++exchange coordinate and dice cannot be reused from a retained/current exchange or a
++second terminal result.
++
++A source-local preparation is not an admitted wound, opportunity, decision, receipt,
++successful resource/effect publication, or accepted turn. Start, escalation, missing
++same-turn prefix, terminal closure, passive source, champion coordination, and
++dice-free voluntary contours remain pending until the client-owned C/D/E stages prove
++their actual authority. Never remove one of those lawful contours merely to avoid the
++pending requirement. Soul dissipation remains a separate optional dissipation choice
++in both real realms; it is never implied by this source field or terminal witness.
++
++Worked fragments: `spiritual_wound_source_action_v1` in
++`Examples/E_CLI_Afterlife_Turns.txt`. The first fragment is executable shape proof for
++both legal action locations. The second is a complete contested terminal witness that
++the signed production preparation retains as `TerminalClosure`; neither fragment is a
++full profile update, wound admission, receipt, or accepted turn.
+
+ ## wound_acquisition_narration_v1
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/OtherGuides/Afterlife_Contract_Matrix.md
+@@
+ declaration never replaces the validated event, harder limits, or final admission.
++
++Source-action targeting and terminal witnesses in both Chaos Sea and Shining Abode
++follow `spiritual_wound_source_action_v1` in the same guide and named afterlife
++example. Author optional exact `spiritualWoundTarget {actorType, actorId, optional
++retraumaWoundRef}` only on the player exchange or opposition `incomingAction`.
++Absence uses the original affected-side lead; an explicit actor is an original member
++of that affected side, and re-trauma uses canonical prior wound/history authority.
++Never invent or choose mechanical tier, source cap, harmful margin, guarantee, dice
++values, or outcome. Preserve required cost/dice reports copied from original client
++data and report only checked outcomes. The exact five computed action/audit fields are
++`traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
++`guaranteedSeverityRank`, and `spiritualWoundEnvelope`; never author them. A terminal
++resolution carries the complete existing `terminalExchange` and matching contested
++`diceAudit`, not a totals summary. Source-local preparation is not wound admission or
++a receipt: start/escalation/prefix/terminal, passive, champion, and dice-free voluntary
++contours remain pending for client-owned C/D/E proof. Dissipation stays optional.
+
+ The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/TaskGuides/CLI_Step_Main.txt
+@@
+     <SpiritualWoundSourceEnvelope>For Chaos Sea and Shining Abode, read spiritual_wound_source_envelope_v1 in OtherGuides/Wound_Materialization_Contract.md and the named Examples/E_CLI_Afterlife_Turns.txt source before authoring profiles[].specialArts[].spiritualWoundEnvelope. The source must be materialized before the harmful event. Absence means neutral IV with no guarantee and preserved ordinary harmful-strain eligibility. Present declarations are closed and cannot override formula/resilience, destination strain or danger. Never supply this authority in specialArtAudit or a current wound decision. Source preparation is not an admitted wound opportunity or successful resource/effect publication.</SpiritualWoundSourceEnvelope>
++    <SpiritualWoundSourceAction>For Chaos Sea and Shining Abode, read spiritual_wound_source_action_v1 in OtherGuides/Wound_Materialization_Contract.md and its named Examples/E_CLI_Afterlife_Turns.txt fragments. Put optional exact closed spiritualWoundTarget {actorType, actorId, optional retraumaWoundRef} only on the player exchange or opposition incomingAction. Absence selects the original affected-side lead; explicit targets must be original affected-side members and re-trauma uses canonical prior wound/history authority. Never invent or choose mechanical tier, source cap, harmful margin, guarantee, dice values, operation proof, or outcome; preserve required cost/dice reports copied from original client data and report only checked outcomes. Never put traumaPressure, sourceSeverityCap, maximumSeverityRank, guaranteedSeverityRank, or spiritualWoundEnvelope on actions/audits. A contested terminal resolution repeats the complete existing exchange as terminalExchange and an exactly matching complete diceAudit, not totals. Source-local preparation is not admitted wound or receipt; start/escalation/prefix/terminal, passive, champion, and dice-free voluntary contours remain pending for client-owned C/D/E proof. Soul dissipation remains optional.</SpiritualWoundSourceAction>
+     <Title>CLI Step: Main Turn Processing and File Operations</Title>
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/Examples/E_CLI_Afterlife_Turns.txt
+@@
+ example alone. Source preparation is not admitted wound or publication authority.
++
++## spiritual_wound_source_action_v1
++
++These are two complete source-local fragments for Chaos Sea and Shining Abode, not
++a complete `afterlifeSpiritualConflictUpdate`, wound decision, receipt, or accepted
++turn. The first fragment shows both legal target locations. The player exchange harms
++an original opposition member; the opposition incoming action harms an original player
++member. Omit the whole target to use the original affected-side lead.
++
++```json
++{
++  "playerExchange": {
++    "spiritualWoundTarget": {
++      "actorType": "guardian",
++      "actorId": "guardian_frame",
++      "retraumaWoundRef": "wound_torn_resonance"
++    }
++  },
++  "oppositionExchange": {
++    "incomingAction": {
++      "spiritualWoundTarget": {
++        "actorType": "player",
++        "actorId": "player_soul"
++      }
++    }
++  }
++}
++```
++
++Both `spiritualWoundTarget` objects are closed and use raw non-empty exact strings with
++no surrounding whitespace. `retraumaWoundRef` is optional and refers only to a
++canonical prior active spiritual wound with agreeing original carrier, owner, realm,
++identity, and immutable history. Do not add `traumaPressure`, `sourceSeverityCap`,
++`maximumSeverityRank`, `guaranteedSeverityRank`, or `spiritualWoundEnvelope` here.
++
++The next fragment is one complete source-local terminal resolution for the existing
++signed `conflict_resource_cost` fixture. `terminalExchange` is the full existing
++exchange witness, not a totals summary, and its contested `diceAudit` exactly matches
++the resolution audit. The client-owned signed preparation retains it as
++`TerminalClosure`; that pending result is deliberately not wound admission or success.
++
++```json
++{
++  "conflictId": "conflict_resource_cost",
++  "realm": "Chaos Sea",
++  "dangerMode": "hostile",
++  "operationType": "pressure",
++  "resolutionState": "resolved",
++  "resolvedAtTurn": 42,
++  "terminalExchange": {
++    "exchangeId": "exchange_conflict_frame_42",
++    "turnNumber": 42,
++    "operationType": "pressure",
++    "outcome": "success",
++    "before": {
++      "playerSideStrain": "clear",
++      "oppositionSideStrain": "clear",
++      "conflictPosition": "contested"
++    },
++    "after": {
++      "playerSideStrain": "clear",
++      "oppositionSideStrain": "strained",
++      "conflictPosition": "contested"
++    },
++    "matchupAudit": {
++      "playerOperation": "pressure",
++      "oppositionOperation": "pressure",
++      "primaryResolutionLane": "pressure",
++      "matchupRationale": "Давление души преодолевает встречное давление хранителя.",
++      "riskProfile": "offensive_pressure"
++    },
++    "actionCostAudit": {
++      "player": {
++        "operationType": "pressure",
++        "baseCost": 3,
++        "minCost": 1,
++        "artTier": 0,
++        "effectiveCost": 3,
++        "before": 6,
++        "after": 3,
++        "max": 6
++      },
++      "opposition": {
++        "operationType": "pressure",
++        "baseCost": 3,
++        "minCost": 1,
++        "artTier": 0,
++        "effectiveCost": 3,
++        "before": 6,
++        "after": 3,
++        "max": 6
++      }
++    },
++    "diceAudit": {
++      "formulaVersion": "afterlife_spiritual_conflict_v1",
++      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
++      "diceUsed": [
++        { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
++        { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
++      ],
++      "playerTotal": 15,
++      "oppositionTotal": 5,
++      "margin": 10,
++      "outcomeBand": "decisive_player_success",
++      "modifierBreakdown": { "player": [], "opposition": [] }
++    }
++  },
++  "diceAudit": {
++    "formulaVersion": "afterlife_spiritual_conflict_v1",
++    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
++    "diceUsed": [
++      { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
++      { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
++    ],
++    "playerTotal": 15,
++    "oppositionTotal": 5,
++    "margin": 10,
++    "outcomeBand": "decisive_player_success",
++    "modifierBreakdown": { "player": [], "opposition": [] }
++  }
++}
++```
++
++Do not shrink `terminalExchange` to totals, invent dice for a dice-free voluntary
++contour, turn passive or champion prose into an art spend, or treat a source-local
++pending result as acceptance. Start, escalation, missing prefix, terminal closure,
++passive, champion, and dice-free voluntary contours still require client-owned C/D/E
++proof. Soul dissipation remains a separate optional dissipation decision.
++
++## Afterlife turn workflow and worked examples
+
+ Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/Examples/example_validation_manifest.json
+@@
+       "requiredText": ["spiritual_wound_source_envelope_v1", "spiritualWoundEnvelope", "maximumSeverityRank", "guaranteedSeverityRank", "before", "neutral IV", "no guarantee"]
+     },
++    {
++      "contractId": "spiritual_wound_source_action_v1",
++      "file": "E_CLI_Afterlife_Turns.txt",
++      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json afterlifeSpiritualConflictUpdate exchange or recentConflicts[] terminal resolution",
++      "responseSurface": "player exchange spiritualWoundTarget, opposition incomingAction spiritualWoundTarget, and source-local resolution.terminalExchange",
++      "realms": ["Chaos Sea", "Shining Abode"],
++      "description": "Two typed fragments cover both legal exact target locations and one complete contested terminal witness without presenting source preparation as wound admission.",
++      "validationKind": "production-validator",
++      "validationRoute": "ExampleDocumentationValidationTests.SpiritualSourceAction_DocumentedTargetsUseProductionShapeValidator -> ValidationService.ValidateSpiritualWoundSourceActionShape; AfterlifeResourceCutoverTests.SpiritualSourceAction_DocumentedTerminalWitnessIsSourceLocalPendingOnly -> ValidationService.BeginSpiritualWoundSourceSessionAsync -> SpiritualSourceRequirement.TerminalClosure",
++      "focusedFragmentReason": "The first object contains two complete action-location fragments; the second is a complete resolution fragment evaluated against a real signed production preparation fixture, not a complete response or accepted turn.",
++      "coverageLimit": "Exact source-action shape and source-local signed preparation only; original affected-side membership and prior re-trauma are covered by B1 source tests, while C/D/E still own applied source/effect/champion binding, start/escalation/prefix/terminal closure, admission, insertion, receipts, and publication.",
++      "requiredText": ["spiritual_wound_source_action_v1", "spiritualWoundTarget", "retraumaWoundRef", "terminalExchange", "TerminalClosure", "source-local", "Chaos Sea", "Shining Abode", "C/D/E", "optional dissipation"]
++    },
+     {
+       "contractId": "afterlife_light_incarnate_history_authority_v1",
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualSourceAction.cs
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Core;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class ExampleDocumentationValidationTests
++{
++    internal static IReadOnlyList<JsonObject> SpiritualSourceActionExamples() =>
++        ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_source_action_v1");
++
++    [Fact]
++    public void SpiritualSourceAction_DocumentedTargetsUseProductionShapeValidator()
++    {
++        var examples = SpiritualSourceActionExamples();
++        Assert.Equal(2, examples.Count);
++        var locations = examples[0];
++        var playerExchange = Assert.IsType<JsonObject>(locations["playerExchange"]);
++        var oppositionExchange = Assert.IsType<JsonObject>(locations["oppositionExchange"]);
++
++        foreach (var (exchange, expectedActorType, expectedActorId, expectedRetrauma) in new[]
++                 {
++                     (playerExchange, "guardian", "guardian_frame", "wound_torn_resonance"),
++                     (oppositionExchange, "player", "player_soul", (string?)null)
++                 })
++        {
++            var issues = new List<ValidationIssue>();
++            ValidationService.ValidateSpiritualWoundSourceActionShape(
++                exchange, "documented.exchange", issues);
++            Assert.Empty(issues);
++            var action = exchange["incomingAction"] as JsonObject ?? exchange;
++            var target = Assert.IsType<JsonObject>(action["spiritualWoundTarget"]);
++            Assert.Equal(
++                expectedRetrauma is null
++                    ? new[] { "actorId", "actorType" }
++                    : new[] { "actorId", "actorType", "retraumaWoundRef" },
++                target.Select(static property => property.Key)
++                    .OrderBy(static property => property, StringComparer.Ordinal));
++            Assert.Equal(expectedActorType, target["actorType"]!.GetValue<string>());
++            Assert.Equal(expectedActorId, target["actorId"]!.GetValue<string>());
++            if (expectedRetrauma is null)
++                Assert.False(target.ContainsKey("retraumaWoundRef"));
++            else
++                Assert.Equal(expectedRetrauma, target["retraumaWoundRef"]!.GetValue<string>());
++        }
++
++        var forbidden = playerExchange.DeepClone().AsObject();
++        forbidden["sourceSeverityCap"] = 2;
++        var forbiddenIssues = new List<ValidationIssue>();
++        ValidationService.ValidateSpiritualWoundSourceActionShape(
++            forbidden, "documented.exchange", forbiddenIssues);
++        Assert.Contains(forbiddenIssues,
++            issue => issue.Code == "spiritual_source_computed_field_forbidden");
++    }
++
++    [Fact]
++    public void SpiritualSourceAction_ManifestDeclaresFragmentOnlyProductionRoutes()
++    {
++        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(
++            TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")));
++        var contract = Assert.Single(
++            manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
++            item => item.GetProperty("contractId").GetString() ==
++                    "spiritual_wound_source_action_v1");
++        Assert.Equal("production-validator", contract.GetProperty("validationKind").GetString());
++        Assert.Equal(new[] { "Chaos Sea", "Shining Abode" },
++            contract.GetProperty("realms").EnumerateArray()
++                .Select(static item => item.GetString()).ToArray());
++        var route = contract.GetProperty("validationRoute").GetString();
++        Assert.Contains("ValidateSpiritualWoundSourceActionShape", route, StringComparison.Ordinal);
++        Assert.Contains("BeginSpiritualWoundSourceSessionAsync", route, StringComparison.Ordinal);
++        Assert.Contains("TerminalClosure", route, StringComparison.Ordinal);
++        Assert.Contains("not a complete response or accepted turn",
++            contract.GetProperty("focusedFragmentReason").GetString(), StringComparison.Ordinal);
++        Assert.Contains("C/D/E", contract.GetProperty("coverageLimit").GetString(),
++            StringComparison.Ordinal);
++        Assert.Equal(2, SpiritualSourceActionExamples().Count);
++    }
++}
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSourceDocumentation.cs
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Core;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class AfterlifeResourceCutoverTests
++{
++    [Fact]
++    public async Task SpiritualSourceAction_DocumentedTerminalWitnessIsSourceLocalPendingOnly()
++    {
++        var examples = ExampleDocumentationValidationTests.SpiritualSourceActionExamples();
++        Assert.Equal(2, examples.Count);
++        var resolution = examples[1].DeepClone().AsObject();
++        var terminalExchange = Assert.IsType<JsonObject>(resolution["terminalExchange"]);
++        Assert.True(JsonNode.DeepEquals(
++            terminalExchange["diceAudit"], resolution["diceAudit"]));
++        Assert.Equal(new[]
++        {
++            "actionCostAudit", "after", "before", "diceAudit", "exchangeId",
++            "matchupAudit", "operationType", "outcome", "turnNumber"
++        }, terminalExchange.Select(static property => property.Key)
++            .OrderBy(static property => property, StringComparer.Ordinal));
++
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        var candidate = Assert.IsType<JsonObject>(
++            await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath));
++        candidate["activeConflict"] = null;
++        candidate["recentConflicts"] = new JsonArray(resolution);
++        await context.WriteExactJsonAsync(
++            AfterlifeSpiritualConflictState.StatePath, candidate.ToJsonString());
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var before = await context.FileSystem.ReadFileBytesAsync(
++            lease, AfterlifeSpiritualConflictState.StatePath);
++
++        var prepared = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
++
++        AssertNoConflictFrameErrors(prepared.Issues);
++        var session = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(prepared.Session);
++        var source = Assert.Single(session.Sources);
++        Assert.True(session.Owns(source));
++        Assert.Equal("player_soul:player_soul", source.ActingActor);
++        Assert.Equal("guardian:guardian_frame", source.AffectedActor);
++        Assert.Equal("opposition", source.AffectedSide);
++        Assert.Equal(new[] { 0, 1 }, session.ClaimedDice);
++        var pending = Assert.Single(session.PendingRequirements);
++        Assert.Equal(ValidationService.SpiritualSourceRequirement.TerminalClosure, pending.Kind);
++        Assert.NotEmpty(pending.CandidateJson);
++        Assert.True(session.HasWork);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++        Assert.Equal(before, await context.FileSystem.ReadFileBytesAsync(
++            lease, AfterlifeSpiritualConflictState.StatePath));
++    }
++}
+*** End Patch

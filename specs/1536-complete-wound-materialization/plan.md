@@ -2143,6 +2143,30 @@ terminal contract synchronization. Child verification is named Focused only;
 the parent owns one combined B0/B1 Fast checkpoint. B0 does not complete source
 admission, live insertion, full spiritual consequences or issue #1536.
 
+## 2026-09-08 — original spiritual source owner and executable GM fragments
+
+Source issue: #1536, T081-B2C-J2-B1 and T089-T092. The complete-code B1 plan is
+`docs/superpowers/plans/2026-09-08-spiritual-source-owner-unit-b1.md` and `.patch`.
+After B0 named controls/review, one lease-acquiring session owns original source
+bytes or signed absence, exact original participant/art/target/history bindings,
+the existing production-consumed raw checker and turn-wide dice claims. Source
+preparation alone grants no wound, effect/resource spend or publication authority.
+All start/escalation/prefix/terminal/passive/champion/dice-free requirements remain
+explicitly pending until the mandatory C/D/E stages prove their actual authority.
+The nine-file unit has 79 candidate tests and preserves existing checker semantics.
+
+The GM companion `docs/superpowers/plans/2026-09-08-spiritual-source-action-gm-sync.md`
+and `.patch` synchronizes the exact target and terminal witness contract in the
+shared wound guide, matrix, CLI entry, worked examples, manifest and source guards.
+Its eight files land together with the earlier envelope parser Integration partial
+after B1 APIs exist. Exact section boundaries prevent unrelated examples entering
+these fragment tests. Two Fast guards and three new Integration tests plus the old
+envelope parser test prove only their source-local contracts, not accepted turns.
+Mandatory cost/dice reports remain lawful; the GM cannot invent source authority.
+No Mortal gameplay change or new transport/command/pending-file surface is added;
+existing daemon/launcher routing already requires the modified guide/matrix.
+Parent owns the combined Fast and documentation-sensitive FullValidation checkpoint.
+
 ## Risk controls
 
 | Risk | Control |
