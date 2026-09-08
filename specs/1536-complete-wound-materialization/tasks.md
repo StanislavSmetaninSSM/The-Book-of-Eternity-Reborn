@@ -2714,6 +2714,19 @@ scope, then resume paused wound documentation and final controls against one fin
   combined Fast and the already-required GM-sensitive FullValidation. Test-only
   placement changes no Mortal/afterlife GM contract. Full T177 remains open.
 
+- [ ] T177-SNAPSHOT-WOUND-INVENTORY [US8] Reconcile the B0 closed original-path
+  declaration with the exact wound source inventory after combined Fast
+  `20260908-233632-202-19176-e7f4558435bf46fcba7c3cf466d7d5d2-fast`
+  failed the real production discovery guard (6015/6016, no lane timeout).
+  In `WoundMaterializationSourceGuardTests.cs`, add one accepted-mechanics owner
+  for `PendingTurnSnapshotPathPresenceV1` and allow the player wound path only
+  within its `ClosedLogicalPaths` initializer, before the `LogicalPaths` accessor.
+  Keep every discovery token, scanner, assertion and existing allowance unchanged;
+  no whole-file exclusion or runtime edit. Prove the existing complete guard class
+  green, inspect the same failed/passing TestId, and obtain independent review
+  before the corrected combined Fast and already-required GM FullValidation.
+  This test-inventory correction changes no Mortal/afterlife GM contract.
+
 T177 bounded fixture checkpoints (2026-09-07):
 
 Accepted generic effect rollback correction:

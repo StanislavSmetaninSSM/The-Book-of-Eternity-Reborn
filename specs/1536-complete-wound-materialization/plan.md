@@ -2249,6 +2249,20 @@ insertion/eight consumers and E cold single publication remain in scope. In
 particular C1's retained pending guard does not implement receipt resume and its
 new live API must not replace the engine path until those gates are implemented.
 
+## 2026-09-08 — B0 wound source-inventory correction
+
+Source issue: #1536, T177-SNAPSHOT-WOUND-INVENTORY. After the reviewed process
+test move, combined Fast6015/6016 failed only the production wound discovery
+guard: B0's `PendingTurnSnapshotPathPresenceV1.ClosedLogicalPaths` legitimately
+declares `game_state/player/wounds.json`, but has no inventory entry. The exact
+failed artifact is recorded in tasks.md; it is not full Fast acceptance.
+Add one accepted-mechanics inventory owner and a narrowly bounded initializer
+allowance in the existing source guard, preserving every scanner/assertion/token.
+Run the complete owning guard class, compare the original failed TestId, inspect
+the diff and request independent review. Then run corrected combined Fast and
+the still-required GM FullValidation before C1. No production, game-contract,
+GM prompt/example/manifest or deadline changes are needed for this correction.
+
 ## Risk controls
 
 | Risk | Control |

@@ -299,6 +299,13 @@ public sealed class WoundMaterializationSourceGuardTests
             "internal static WoundCarrierCatalog Build(",
             "internal void ScanNpcs("),
         new(
+            "accepted-wound-snapshot-original-path-presence",
+            InventoryCategory.AcceptedMechanicsIntegrationSeam,
+            "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
+            "internal static class PendingTurnSnapshotPathPresenceV1",
+            "private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =",
+            "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
+        new(
             "accepted-mortal-wound-source-adapter",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/MortalWoundOpportunityAdapter.cs",
@@ -403,6 +410,7 @@ public sealed class WoundMaterializationSourceGuardTests
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
         Scope("accepted-player-wound-carrier-path", "accepted-wound-carrier-catalog", "game_state/player/wounds.json", "internal const string PlayerPath", "internal const string NpcPath"),
+        Scope("accepted-snapshot-player-wound-path", "accepted-wound-snapshot-original-path-presence", "game_state/player/wounds.json", "private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =", "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
     };
 
     [Fact]
