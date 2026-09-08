@@ -2310,6 +2310,8 @@ public partial class ValidationService
         var requiresCurrentMatchupAudit =
             exchange["diceAudit"] is JsonObject &&
             isCurrentExchange;
+        if (isCurrentExchange)
+            ValidateSpiritualWoundSourceActionShape(exchange, context, issues);
         ValidateSpecialArtAudit(exchange, operationType, actionCostAuthority, context, issues);
         ValidateActionCostAudit(
             exchange,

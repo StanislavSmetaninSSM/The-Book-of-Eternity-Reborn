@@ -21,6 +21,7 @@ public partial class ValidationService
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        _spiritualWoundSourceSession = null;
         var retainedTreatment = await
             ValidateRetainedMortalWoundTreatmentPublicationAsync(writeLease);
         if (retainedTreatment is not null)
@@ -29,6 +30,7 @@ public partial class ValidationService
         AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
         EffectAcceptedTurnPlanAuthority.InvalidateValidated(_fs, writeLease);
         var keepCommonHandoff = false;
+        var keepSpiritualSourceHandoff = false;
         try
         {
             var issues = await ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
@@ -36,10 +38,14 @@ public partial class ValidationService
             keepCommonHandoff = AcceptedMechanicsPlanAuthority.HasValidated(
                 _fs,
                 writeLease);
+            keepSpiritualSourceHandoff =
+                !issues.Any(static issue => issue.Severity == IssueSeverity.Error);
             return issues;
         }
         finally
         {
+            if (!keepSpiritualSourceHandoff)
+                _spiritualWoundSourceSession = null;
             if (!keepCommonHandoff)
             {
                 AcceptedMechanicsPlanAuthority.InvalidateValidated(_fs, writeLease);
@@ -323,6 +329,25 @@ public partial class ValidationService
         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
             return issues;
 
+        if (AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
+                preTurnAfterlifeOwners.SoulState["currentRealm"]?.GetValue<string>()) is
+            "chaos_sea" or "shining_abode")
+        {
+            // The source owner performs its own signed read under this real lease.
+            // These already-read owner DTOs are not spiritual source authority.
+            var preparation = await BeginSpiritualWoundSourceSessionAsync(writeLease);
+            issues.AddRange(preparation.Issues);
+            if (preparation.Session is not { } sourceSession ||
+                sourceSession.SessionId != manifest.SessionId ||
+                sourceSession.RequestId != manifest.RequestId ||
+                sourceSession.SnapshotToken != manifest.ManifestPayloadHash ||
+                sourceSession.TurnNumber != manifest.TurnNumber)
+                issues.Add(SourceIssue(AfterlifeSpiritualConflictState.StatePath,
+                    "spiritual_source_snapshot_binding_mismatch",
+                    "source session must match the current resource snapshot"));
+            if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+                return issues;
+        }
         var effectCommandJson = await _fs.ReadFileAsync(EffectAcceptedTurnPlan.CommandPath);
         var isTerminalReceiptReplay = IsTerminalEffectReceiptReplay(
             effectCommandJson,
@@ -500,6 +525,8 @@ public partial class ValidationService
                         woundHandoff.StageBundle.BundleFingerprint
                 }
         };
+        if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionInput)
+            internalInputs["spiritualSourcePreparation"] = sourceSessionInput.BuildInputBinding();
         var beforePaths = new HashSet<string>(StringComparer.Ordinal)
         {
             ResourceMaterializationContract.DefinitionsPath,
@@ -524,6 +551,8 @@ public partial class ValidationService
             beforePaths.UnionWith(
                 WoundAcceptedTurnSnapshotContract.RequiredPaths);
         }
+        if (_spiritualWoundSourceSession is { HasWork: true } sourceSessionForBinding)
+            beforePaths.UnionWith(sourceSessionForBinding.SelectedPaths);
         beforePaths.UnionWith(ownerComposition.OwnerCompanionAfterImages.Keys);
         beforePaths.UnionWith(ownerComposition.OwnerTransitions.Select(static value => value.Path));
         beforePaths.UnionWith(acceptedItemOwners.Select(static owner => owner.FilePath));

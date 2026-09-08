@@ -64,7 +64,7 @@ internal static class SpiritualWoundOpportunityMath
         return new(input, previous, next, extra, pressure, formula, next, modeCap, increasing, maximum);
     }
 
-    private static int StrainRank(string? strain) => strain switch
+    internal static int StrainRank(string? strain) => strain switch
     {
         "clear" => 0,
         "strained" => 1,

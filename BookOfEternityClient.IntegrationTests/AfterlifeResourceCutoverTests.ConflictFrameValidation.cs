@@ -106,19 +106,25 @@ public sealed partial class AfterlifeResourceCutoverTests
             """{"difficulty":"normal"}""");
         await context.CaptureValidatedPendingSnapshotAsync(42, "Chaos Sea",
             preGeneratedDices1d20: [15, 5, 12, 8]);
-        await PublishCompleteConflictFrameAsync(context);
+        await WriteCompleteConflictFrameExchangeAsync(context);
         // This fixture normally has no settings; readable normal settings require
         // their actual complete dice audit even though the modifier remains zero.
         var configuredRoot = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
             AfterlifeSpiritualConflictState.StatePath));
-        configuredRoot["activeConflict"]!["exchangeLog"]![0]!["diceAudit"]!["difficultyAudit"] = new JsonObject
+        var update = Assert.IsType<JsonObject>(
+            configuredRoot[AfterlifeSpiritualConflictState.ResponseField]);
+        var difficultyAudit = new JsonObject
         {
             ["difficulty"] = "normal",
             ["source"] = "game_state/core/game_settings.json.difficulty",
             ["oppositionModifier"] = 0,
             ["rewardMultiplierPercent"] = 100
         };
+        update["exchange"]!["diceAudit"]!["difficultyAudit"] = difficultyAudit;
+        update["activeConflictAfter"]!["exchangeLog"]![0]!["diceAudit"]!["difficultyAudit"] =
+            difficultyAudit.DeepClone();
         await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, configuredRoot.ToJsonString());
+        await PublishPreparedCompleteConflictFrameAsync(context);
         var frame = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
         Assert.True(frame.HasValidatedSnapshot);
         Assert.Null(frame.Candidate.Profiles);
@@ -372,13 +378,12 @@ public sealed partial class AfterlifeResourceCutoverTests
     {
         var probe = new ConflictFrameReadProbe();
         await using var context = await CreateCompleteConflictFrameContextAsync(probe.Hooks);
-        await context.CaptureValidatedPendingSnapshotAsync(42, "Chaos Sea",
-            preGeneratedDices1d20: emptyDice ? Array.Empty<int>() : null);
+        await PublishCompleteConflictFrameAsync(context);
+        await RewritePublishedFrameManifestDiceForDiagnosticAsync(context, emptyDice);
         // This changes only live fallback data; identity/turn and all signed bytes stay intact.
         var request = Assert.IsType<JsonObject>(await context.ReadJsonAsync(FrameRequestPath));
         request["preGeneratedDices1d20"] = new JsonArray(15, "ignored", 5, null, 12, 8);
         await context.WriteExactJsonAsync(FrameRequestPath, request.ToJsonString());
-        await PublishCompleteConflictFrameAsync(context);
         var frame = await context.Validator.CaptureSpiritualConflictValidationFrameAsync();
         Assert.True(frame.HasValidatedSnapshot);
         Assert.Equal(42, frame.SnapshotTurnNumber);
@@ -597,10 +602,37 @@ public sealed partial class AfterlifeResourceCutoverTests
     private static async Task PublishCompleteConflictFrameAsync(ResourceMaterializationTestContext context)
     {
         await WriteCompleteConflictFrameExchangeAsync(context);
+        await PublishPreparedCompleteConflictFrameAsync(context);
+    }
+
+    private static async Task PublishPreparedCompleteConflictFrameAsync(
+        ResourceMaterializationTestContext context)
+    {
         AssertNoConflictFrameErrors(await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
         var plan = await PeekPlanAsync(context);
         await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
         Assert.Same(plan, await context.Normalizer.BindTo(lease).NormalizeAcceptedMechanicsAsync(backups: null));
+    }
+
+    private static async Task RewritePublishedFrameManifestDiceForDiagnosticAsync(
+        ResourceMaterializationTestContext context,
+        bool emptyDice)
+    {
+        var manifest = Assert.IsType<JsonObject>(await context.ReadJsonAsync(FrameManifestPath));
+        if (emptyDice)
+            manifest["preGeneratedDices1d20"] = new JsonArray();
+        else
+            Assert.True(manifest.Remove("preGeneratedDices1d20"));
+        manifest["manifestPayloadHash"] =
+            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
+        await context.WriteExactJsonAsync(FrameManifestPath, manifest.ToJsonString());
+        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(context.FileSystem);
+
+        var files = Assert.IsType<JsonObject>(manifest["files"]);
+        var originalConflictPath = files[AfterlifeSpiritualConflictState.StatePath]!.GetValue<string>();
+        var originalConflict = Assert.IsType<JsonObject>(
+            await context.ReadJsonAsync(originalConflictPath));
+        Assert.Empty(originalConflict["activeConflict"]!["exchangeLog"]!.AsArray());
     }
 
     private sealed class ConflictFrameReadProbe

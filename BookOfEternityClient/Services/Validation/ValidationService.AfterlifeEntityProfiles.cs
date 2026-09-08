@@ -2410,6 +2410,15 @@ public partial class ValidationService
                 artContext,
                 effectRealm,
                 issues);
+            if (!SpiritualWoundSourceEnvelope.TryRead(art, out _, out var envelopeError))
+                issues.Add(new ValidationIssue(
+                    artContext + "." + SpiritualWoundSourceEnvelope.Property,
+                    IssueSeverity.Error,
+                    "Особое духовное искусство должно иметь точную исходную декларацию раны.",
+                    code: "afterlife_entity_profile_spiritual_wound_envelope_invalid",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "closed spiritualWoundEnvelope v1 or absent",
+                    actual: envelopeError));
 
             var artId = RequireProfileString(art, artContext, "artId", "afterlife_entity_profile_special_art_missing_id", issues);
             if (!string.IsNullOrWhiteSpace(artId) && !ids.Add(artId))
