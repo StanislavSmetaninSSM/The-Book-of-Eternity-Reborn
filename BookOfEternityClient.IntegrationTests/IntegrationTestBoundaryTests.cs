@@ -14,8 +14,8 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class IntegrationTestBoundaryTests
 {
-    private const int BroadValidationSentinelBudget = 7;
-    private const int ReviewedBroadValidationCallCount = 7;
+    private const int BroadValidationSentinelBudget = 8;
+    private const int ReviewedBroadValidationCallCount = 8;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
@@ -139,10 +139,13 @@ public sealed class IntegrationTestBoundaryTests
         new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["ChaosSeaCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["EffectSkillScopeLifecycleTests.cs"] = "EffectSkillScopeCatalog",
             ["MathAssistantContractValidationTests.cs"] = "ReadableDocument",
             ["MechanicalBonusAuthorityValidationTests.cs"] = "MechanicalBonus",
             ["MortalBootstrapValidationTests.cs"] = "MortalBootstrap",
             ["MortalCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["MortalWoundTreatmentResourcePublicationLifecycleTests.Severity.cs"] =
+                "MortalWoundTreatmentLifecycle",
             ["ReadableDocumentAuthorityValidationTests.cs"] = "ReadableDocument",
             ["SarefMainStoryStateValidationTests.cs"] = "SarefStory",
             ["ShiningAbodeCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
@@ -162,8 +165,17 @@ public sealed class IntegrationTestBoundaryTests
             [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
-            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2
+            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2,
+            [$"{IntegrationTestsDirectory}/MortalWoundTreatmentResourcePublicationLifecycleTests.cs"] = 1
         };
+
+    private static readonly string[] ReviewedPublishedTreatmentFullStateCallers =
+    [
+        "GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry",
+        "GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch",
+        "GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof",
+        "GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication"
+    ];
 
     private static readonly string[] GuardianPartialSources =
     [
@@ -882,11 +894,13 @@ public sealed class IntegrationTestBoundaryTests
             "CanonicalInventory",
             "CanonicalNpc",
             "CommandDisplaySave",
+            "EffectSkillScopeCatalog",
             "FactionState",
             "GuardianArchiveTrade",
             "GuardianPolicy",
             "MechanicalBonus",
             "MortalBootstrap",
+            "MortalWoundTreatmentLifecycle",
             "NpcState",
             "PlayerGuardian",
             "Qte",
@@ -912,6 +926,23 @@ public sealed class IntegrationTestBoundaryTests
                 GameStateValidationPhase.None,
                 profile.Phases & ~GameStateValidationPhase.Selectable);
         });
+
+        Assert.Equal(
+            GameStateValidationPhase.PlayerStateFiles |
+            GameStateValidationPhase.SkillContractConsistency,
+            IntegrationValidationProfiles.EffectSkillScopeCatalog.Phases);
+        Assert.Equal(
+            GameStateValidationPhase.RequiredFields |
+            GameStateValidationPhase.CrossReferences |
+            GameStateValidationPhase.PlayerStateFiles |
+            GameStateValidationPhase.NpcStateFiles |
+            GameStateValidationPhase.SkillContractConsistency |
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.MetaMiscStateFiles |
+            GameStateValidationPhase.AcceptedTurnEffectMaterializationCompleteness |
+            GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness |
+            GameStateValidationPhase.ClientOwnedControlFiles,
+            IntegrationValidationProfiles.MortalWoundTreatmentLifecycle.Phases);
     }
 
     [Fact]
@@ -1078,7 +1109,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest()
     {
         var callSites = EnumerateIntegrationAndSupportSources()
             .SelectMany(candidate =>
@@ -1093,7 +1124,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
     {
         var callSites = ReviewedBroadValidationCallLocations().ToList();
         callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
@@ -1114,7 +1145,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
     {
         var callSites = ReviewedBroadValidationCallLocations()
             .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
@@ -1126,18 +1157,18 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    "observed 8 exceeds sentinel budget 7",
+                    "observed 9 exceeds sentinel budget 8",
                     StringComparison.Ordinal));
         Assert.Contains(
             $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Broad-validation sentinel budget is 7",
+            "Broad-validation sentinel budget is 8",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Expected reviewed call sites: 7",
+            "Expected reviewed call sites: 8",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -1302,9 +1333,60 @@ public sealed class IntegrationTestBoundaryTests
 
         Assert.True(
             uncategorized.Length == 0,
-            "Direct full-validation integration sources must carry Category=FullValidation:" +
+            "Direct full-validation integration sources must carry Category=FullValidation on their owning tests:" +
             Environment.NewLine +
             string.Join(Environment.NewLine, uncategorized));
+
+        const string publishedTreatmentSourceName =
+            "MortalWoundTreatmentResourcePublicationLifecycleTests.cs";
+        const string publishedTreatmentHelperName =
+            "CreatePublishedTreatmentFullStateProbeAsync";
+        var publishedTreatmentSource = File.ReadAllText(
+            SourcePath(IntegrationTestsDirectory, publishedTreatmentSourceName));
+        var publishedTreatmentRoot = CSharpSyntaxTree
+            .ParseText(publishedTreatmentSource)
+            .GetCompilationUnitRoot();
+        Assert.DoesNotContain(
+            publishedTreatmentRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            declaration => CategoryTraits(declaration).Contains(
+                "FullValidation",
+                StringComparer.Ordinal));
+        var actualFullStateCallers = publishedTreatmentRoot
+            .DescendantNodes()
+            .OfType<InvocationExpressionSyntax>()
+            .Where(invocation => string.Equals(
+                invocation.Expression is IdentifierNameSyntax identifier
+                    ? identifier.Identifier.ValueText
+                    : InvokedMemberName(invocation),
+                publishedTreatmentHelperName,
+                StringComparison.Ordinal))
+            .Select(invocation => invocation
+                .Ancestors()
+                .OfType<MethodDeclarationSyntax>()
+                .First()
+                .Identifier
+                .ValueText)
+            .Order(StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(
+            ReviewedPublishedTreatmentFullStateCallers.Order(StringComparer.Ordinal),
+            actualFullStateCallers);
+        var actualFullValidationMethods = MethodCategoryTraits(
+                publishedTreatmentSourceName)
+            .Where(mapping => mapping.Value.Contains(
+                "FullValidation",
+                StringComparer.Ordinal))
+            .ToDictionary(
+                mapping => mapping.Key,
+                mapping => mapping.Value,
+                StringComparer.Ordinal);
+        Assert.Equal(
+            ReviewedPublishedTreatmentFullStateCallers.Order(StringComparer.Ordinal),
+            actualFullValidationMethods.Keys.Order(StringComparer.Ordinal));
+        Assert.All(ReviewedPublishedTreatmentFullStateCallers, methodName =>
+            Assert.Equal(
+                new[] { "FullValidation" },
+                actualFullValidationMethods[methodName]));
 
         Assert.All(BroadValidationPreMergeSentinelSources, fileName =>
             Assert.Contains(
@@ -2748,13 +2830,13 @@ public sealed class IntegrationTestBoundaryTests
             .ToArray();
         var violations = new List<string>();
 
-        if (ReviewedBroadValidationCallManifest.Count != 5 ||
+        if (ReviewedBroadValidationCallManifest.Count != 6 ||
             ReviewedBroadValidationCallManifest.Values.Sum() !=
             ReviewedBroadValidationCallCount)
         {
             violations.Add(
                 "Reviewed broad-validation manifest must contain exactly " +
-                $"5 files and {ReviewedBroadValidationCallCount} call sites.");
+                $"6 files and {ReviewedBroadValidationCallCount} call sites.");
         }
 
         if (callSiteArray.Length > BroadValidationSentinelBudget)

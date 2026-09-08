@@ -727,7 +727,8 @@ public sealed partial class GameEngineTurnLifecycleTests
             : (await new ValidationService(
                     context.FileSystem,
                     NullLogger<ValidationService>.Instance)
-                .ValidateGameStateAsync())
+                .ValidateGameStateAsync(
+                    IntegrationValidationProfiles.MortalWoundTreatmentLifecycle))
                 .Where(static issue => issue.Severity == IssueSeverity.Error)
                 .ToArray();
         Assert.True(

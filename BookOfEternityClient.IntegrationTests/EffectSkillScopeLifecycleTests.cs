@@ -1048,7 +1048,8 @@ public sealed partial class GameEngineTurnLifecycleTests
         await WriteOrdinaryTurnPlayerSkillAsync();
         var preflightIssues = await new ValidationService(
             _fs,
-            NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
+            NullLogger<ValidationService>.Instance).ValidateGameStateAsync(
+                IntegrationValidationProfiles.EffectSkillScopeCatalog);
         Assert.True(
             preflightIssues.Count == 0,
             string.Join(Environment.NewLine, preflightIssues.Select(static issue => issue.ToString())));

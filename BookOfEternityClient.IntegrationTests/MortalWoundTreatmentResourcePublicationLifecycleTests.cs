@@ -246,6 +246,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Fact]
+    [Trait("Category", "FullValidation")]
     public async Task GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry()
     {
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
@@ -288,6 +289,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     [InlineData("foreign_actor")]
     [InlineData("foreign_path")]
     [InlineData("extra_inventory_mutation")]
+    [Trait("Category", "FullValidation")]
     public async Task GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof(
         string adversarialAxis)
     {
@@ -385,6 +387,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Fact]
+    [Trait("Category", "FullValidation")]
     public async Task GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch()
     {
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
@@ -963,6 +966,7 @@ public sealed partial class GameEngineTurnLifecycleTests
     }
 
     [Fact]
+    [Trait("Category", "FullValidation")]
     public async Task GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication()
     {
         await using var context = await CreateHeldTreatmentPipelineContextAsync(
