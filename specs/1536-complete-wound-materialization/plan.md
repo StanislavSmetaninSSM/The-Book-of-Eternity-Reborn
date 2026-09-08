@@ -1770,6 +1770,22 @@ carrier/source/target/skill/processed-event/phase execution and consume real wou
 insertion/current-generation before authority in the next exchange. No further
 observer-only prerequisite or fullB2 acceptance follows from J1 alone.
 
+The next bounded unit T081-B2C-J2-A is tracked for implementation in
+`docs/superpowers/plans/2026-09-08-effect-draft-write-owner-unit-a.md`
+and its complete six-file companion. Production completion will consume the
+actual owned carrier/source/target/skill state, J1 writer and ordinary phase
+runner; exact application receipts include non-create stack/refresh/merge
+updates and actual carrier/history/allocation ranges. Parent reviewed the
+candidate bodies and mechanically confirmed the relocated finalizer preserves
+the old algorithms and ordering. Seven OLD payload/allocation goldens, the
+real-production ownership-contract RED,23 GREEN rows, existing Integration
+consumers, independent review and parent Fast remain required. No C# evidence
+or implementation acceptance is claimed by this planning record.
+This internal refactor changes no GM-authored contract, so it needs no Mortal
+or afterlife prompt/example/matrix/manifest change. Live source acquisition,
+current-generation insertion, versioned routing and the next-exchange consumer
+remain mandatory J2 work with their tracked GM synchronization.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

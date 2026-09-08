@@ -2243,6 +2243,20 @@ hand-written history/after-images, or a raw mutation fallback.
           Integration7/7; parent Fast7789/7789 in4:48.801/default5m, build0/0,
           no skips/cross-descriptor duplicates and complete cleanup. Parent
           read actual evidence; only this nested subtask is accepted.
+        - [ ] T081-B2C-J2-A [US3] Make ordinary production effect completion
+          consume the real carrier/source/target/skill/phase owner and retain
+          exact application edits, including non-create outcomes, plus J1
+          history/allocation ranges. Follow the six-file complete-code plan
+          and companion in
+          `docs/superpowers/plans/2026-09-08-effect-draft-write-owner-unit-a.md`.
+          Record seven OLD payload/allocation goldens and the real-production
+          ownership-contract RED, then23 GREEN rows and the prescribed planner,
+          scale, pending-wave and afterlife controls. Parent review and Fast
+          remain required. These are ordinary-phase receipts, not spiritual
+          source admission or a completed per-operation dependency journal.
+          Real source acquisition, current-generation wound insertion and
+          next-exchange consumption remain mandatory in the same J2 slice;
+          this unit cannot close B2C, T081 or #1536.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

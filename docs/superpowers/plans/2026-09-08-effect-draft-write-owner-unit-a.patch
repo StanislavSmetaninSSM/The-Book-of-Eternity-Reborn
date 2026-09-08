@@ -1,0 +1,2101 @@
+*** Begin Patch
+*** Update File: BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs
+@@
+
+ namespace BookOfEternityClient.Services;
+
+-internal static class EffectAcceptedTurnPlanner
++internal static partial class EffectAcceptedTurnPlanner
+ {
+     internal sealed class AcceptedBoundaryCompletionProof
+     {
+@@
+                 "null");
+             return Failed(missingIssues);
+         }
+-        if (plan.IsAcceptedBoundaryComplete)
+-        {
+-            var repeatedIssues = new List<ValidationIssue>();
+-            Add(
+-                repeatedIssues,
+-                EffectAcceptedTurnPlan.CommandPath,
+-                "effect_boundary_completion_repeated",
+-                "one initial effect plan completed exactly once",
+-                "already completed");
+-            return Failed(repeatedIssues);
+-        }
+-        var expectedPlanAuthority =
+-            AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan);
+-        if (!transcript.IsComplete ||
+-            transcript.PlanAuthority != expectedPlanAuthority)
+-        {
+-            var mismatchIssues = new List<ValidationIssue>();
+-            Add(
+-                mismatchIssues,
+-                EffectAcceptedTurnPlan.CommandPath,
+-                "effect_boundary_transcript_plan_mismatch",
+-                "one complete transcript with the exact five-field accepted effect plan authority including skill scope",
+-                transcript.IsComplete
+-                    ? transcript.PlanAuthority?.InputFingerprint ?? "missing"
+-                    : "pending-frontier");
+-            return Failed(mismatchIssues);
+-        }
+-        var appliedByActivation = transcript.AppliedComponentEvidence
+-            .GroupBy(static evidence => evidence.Activation)
+-            .ToDictionary(static group => group.Key, static group => group.ToArray());
+-        var executions = transcript.AcceptedActivations
+-            .OrderBy(static accepted =>
+-                accepted.Activation.Stamp.ActivationOrdinal)
+-            .Select(accepted =>
+-            {
+-                appliedByActivation.TryGetValue(
+-                    accepted.Activation.Stamp.Identity,
+-                    out var evidence);
+-                evidence ??= Array.Empty<AppliedEffectComponentEvidence>();
+-                var componentMap = evidence.ToDictionary(
+-                    static value => value.Mutation,
+-                    static value => value.ComponentId);
+-                return new EffectResourceTriggerExecution(
+-                    accepted.Activation.Stamp.Identity.EffectId,
+-                    accepted.Activation.Stamp.Identity.TriggerId,
+-                    accepted.Activation.Stamp.Identity.EventKind,
+-                    accepted.Activation.Stamp.Identity.EventRef,
+-                    componentMap.Keys.ToArray(),
+-                    accepted.Activation.Stamp.UsesBefore,
+-                    componentMap.Values
+-                        .Distinct(StringComparer.Ordinal)
+-                        .OrderBy(static value => value, StringComparer.Ordinal)
+-                        .ToArray(),
+-                    accepted.Activation.Stamp.Identity.TriggerEventRef,
+-                    componentMap);
+-            })
+-            .ToArray();
+-        return FinalizeAfterResourceGraphCore(
+-            plan,
+-            executions,
+-            identityFactory,
+-            transcript);
++        using var draft = EffectAcceptedDraft.Begin(plan, identityFactory);
++        return draft.Complete(transcript);
+     }
+
+-    private static EffectAcceptedTurnPlanningResult FinalizeAfterResourceGraphCore(
+-        EffectAcceptedTurnPlan plan,
+-        IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
+-        EffectIdentityFactory identityFactory,
+-        AcceptedEffectBoundaryTranscript authoritativeTranscript)
+-    {
+-        ArgumentNullException.ThrowIfNull(plan);
+-        ArgumentNullException.ThrowIfNull(executedTriggers);
+-        ArgumentNullException.ThrowIfNull(identityFactory);
+-        ArgumentNullException.ThrowIfNull(authoritativeTranscript);
+
+-        var issues = new List<ValidationIssue>();
+-        var eventInput = plan.EventInput;
+-        if (!TryReadPositiveInt(eventInput["turn"], out var turn))
+-        {
+-            Add(
+-                issues,
+-                "eventInput.turn",
+-                "effect_plan_event_authority_invalid",
+-                "positive accepted turn",
+-                Describe(eventInput["turn"]));
+-            return Failed(issues);
+-        }
+-
+-        var workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
+-        using var identityRoot = new EffectIdentityHistoryOwner(
+-            plan.IdentityIndexAfterImage, identityFactory,
+-            plan.AllocatedEffectIds, plan.AllocatedTransitionIds);
+-        identityFactory = identityRoot.Factory;
+-        var identityState = ParseIdentity(identityRoot.ReadSnapshot());
+-        issues.AddRange(identityState.Issues);
+-        if (identityState.State == null || issues.Count != 0)
+-            return Failed(issues);
+-        var processedEventRefs = identityState.State.Entries
+-            .SelectMany(static entry => entry.Transitions)
+-            .Select(static transition => transition.EventRef)
+-            .ToHashSet(StringComparer.Ordinal);
+-        var transitionIds = plan.AllocatedTransitionIds.ToList();
+-        var effectIds = plan.AllocatedEffectIds.ToList();
+-        var activeEffects = plan.ActiveEffects
+-            .Select(static effect => effect.DeepClone().AsObject())
+-            .ToList();
+-        var usedSources = plan.SourceBindings.ToList();
+-        var usedTargets = plan.Targets.ToList();
+-        var executionKeys = new HashSet<string>(StringComparer.Ordinal);
+-        var acceptedExecutions = new List<EffectResourceTriggerExecution>();
+-        var deferredReactions = new List<EffectReactionExecution>();
+-        var reactionEventRefs = new HashSet<string>(StringComparer.Ordinal);
+-        var reactionSourceBindings = new Dictionary<
+-            EffectSourceKey,
+-            EffectSourceAuthorityEntry>();
+-        var authoritativeReleasedReactions = authoritativeTranscript
+-            .ReleasedReactions
+-            .OrderBy(static value => value.MechanicsOrdinal)
+-            .ToArray();
+-        var acceptedStamps = authoritativeTranscript.AcceptedActivations
+-            .Select(static accepted => accepted.Activation.Stamp)
+-            .ToHashSet();
+-        foreach (var released in authoritativeReleasedReactions)
+-        {
+-            var reaction = released.Reaction;
+-            if (!acceptedStamps.Contains(released.Activation) ||
+-                !string.Equals(
+-                    released.Activation.Identity.EffectId,
+-                    reaction.EffectId,
+-                    StringComparison.Ordinal) ||
+-                !string.Equals(
+-                    released.Activation.Identity.TriggerId,
+-                    reaction.TriggerId,
+-                    StringComparison.Ordinal) ||
+-                !string.Equals(
+-                    released.Activation.Identity.EventKind,
+-                    reaction.EventKind,
+-                    StringComparison.Ordinal) ||
+-                !string.Equals(
+-                    released.Activation.Identity.TriggerEventRef,
+-                    reaction.TriggerEventRef,
+-                    StringComparison.Ordinal))
+-            {
+-                Add(
+-                    issues,
+-                    "effect.reactions",
+-                    "effect_reaction_activation_authority_invalid",
+-                    "one exact accepted activation stamp for every released reaction",
+-                    reaction.EventRef);
+-                continue;
+-            }
+-            if (!ReactionStageMatchesDependency(
+-                    released.Stage,
+-                    reaction.Dependency))
+-            {
+-                Add(
+-                    issues,
+-                    "effect.reactions",
+-                    "effect_reaction_release_stage_invalid",
+-                    reaction.Dependency,
+-                    released.Stage.ToString());
+-                continue;
+-            }
+-            if (!reactionEventRefs.Add(reaction.EventRef))
+-            {
+-                Add(
+-                    issues,
+-                    "effect.reactions",
+-                    "effect_reaction_event_duplicate",
+-                    "one exact reaction execution per derived event identity",
+-                    reaction.EventRef);
+-                continue;
+-            }
+-            deferredReactions.Add(reaction);
+-        }
+-        var reactionExpansionUsage = authoritativeTranscript.ExpansionUsage
+-            .ToDictionary(static pair => pair.Key, static pair => pair.Value);
+-        foreach (var group in deferredReactions.GroupBy(static reaction =>
+-                     new EffectReactionExpansionKey(
+-                         reaction.EffectId,
+-                         reaction.ComponentId)))
+-        {
+-            if (!reactionExpansionUsage.TryGetValue(
+-                    group.Key,
+-                    out var usage) ||
+-                usage.Count != group.Count() ||
+-                group.Any(reaction =>
+-                    reaction.MaxExpansion != usage.Maximum) ||
+-                usage.Count > usage.Maximum)
+-            {
+-                Add(
+-                    issues,
+-                    "effect.reactions",
+-                    "effect_reaction_expansion_authority_invalid",
+-                    "exact released-reaction count and source maximum",
+-                    group.Key.EffectId + "/" + group.Key.ComponentId);
+-            }
+-        }
+-        if (reactionExpansionUsage.Values.Sum(static usage => usage.Count) !=
+-            deferredReactions.Count)
+-        {
+-            Add(
+-                issues,
+-                "effect.reactions",
+-                "effect_reaction_expansion_authority_invalid",
+-                "expansion usage accounting for every released reaction exactly once",
+-                authoritativeTranscript.ExpansionCount.ToString(
+-                    System.Globalization.CultureInfo.InvariantCulture));
+-        }
+-        var totalReactionExpansion = reactionExpansionUsage.Values.Sum(
+-            static usage => (long)usage.Count);
+-        if (totalReactionExpansion > EffectReactionContract.MaximumExpansion)
+-        {
+-            Add(
+-                issues,
+-                "effect.reactions",
+-                "effect_reaction_expansion_exceeded",
+-                $"at most {EffectReactionContract.MaximumExpansion} reaction operations in one accepted transition",
+-                totalReactionExpansion.ToString(
+-                    System.Globalization.CultureInfo.InvariantCulture));
+-        }
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        foreach (var execution in executedTriggers)
+-        {
+-            var executionKey = string.Join(
+-                "\0",
+-                execution.EffectId,
+-                execution.TriggerId,
+-                execution.EventKind,
+-                execution.EventRef);
+-            if (!executionKeys.Add(executionKey))
+-            {
+-                Add(
+-                    issues,
+-                    "effect.resourceTriggerExecutions",
+-                    "effect_resource_trigger_execution_duplicate",
+-                    "one exact applied trigger activation",
+-                    executionKey.Replace('\0', '/'));
+-                continue;
+-            }
+-            acceptedExecutions.Add(execution);
+-        }
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        var preMutationCatalog = EffectCarrierCatalog.Build(
+-            workspace.ToInput());
+-        issues.AddRange(preMutationCatalog.Issues);
+-        var woundLineageAuthority = WoundReactionLineageAuthority.Build(
+-            plan.SourceAuthority,
+-            identityState.State,
+-            preMutationCatalog,
+-            plan.WoundApplicationRootEffectBindings);
+-        issues.AddRange(woundLineageAuthority.Issues);
+-        var reactionApplicationPlans =
+-            PrepareReleasedReactionApplicationPlans(
+-                authoritativeReleasedReactions,
+-                preMutationCatalog,
+-                plan.SourceAuthority,
+-                woundLineageAuthority,
+-                plan.SkillScopeAuthority,
+-                issues);
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-        var reactionApplicationResults = new Dictionary<
+-            string,
+-            ReactionApplicationResult>(StringComparer.Ordinal);
+-
+-        foreach (var execution in acceptedExecutions.Where(static execution =>
+-                     !execution.RemainingUseBudget.HasValue))
+-        {
+-            ApplyNonConsumingTriggerEvidence(
+-                execution,
+-                turn,
+-                workspace,
+-                identityRoot,
+-                identityFactory,
+-                transitionIds,
+-                activeEffects,
+-                processedEventRefs,
+-                issues);
+-        }
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        var preReactionCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
+-        issues.AddRange(preReactionCatalog.Issues);
+-        var preReactionEffects = new Dictionary<string, JsonObject>(
+-            StringComparer.Ordinal);
+-        foreach (var occurrence in preReactionCatalog.Occurrences)
+-        {
+-            if (!preReactionEffects.TryAdd(
+-                    occurrence.EffectId,
+-                    occurrence.Effect.DeepClone().AsObject()))
+-            {
+-                Add(
+-                    issues,
+-                    "effect.resourceTriggerExecutions",
+-                    "effect_resource_trigger_identity_target_ambiguous",
+-                    "one exact pre-reaction active effect per identity",
+-                    occurrence.EffectId);
+-            }
+-        }
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        var reactionsToApplyBeforeProjection = authoritativeReleasedReactions
+-            .Where(static released =>
+-                !IsTerminalAvailabilityReaction(released.Reaction))
+-            .Select(static released => released.Reaction)
+-            .ToList();
+-        foreach (var reaction in reactionsToApplyBeforeProjection)
+-        {
+-            ApplyReactionExecution(
+-                reaction,
+-                reaction.Target.Realm,
+-                eventInput,
+-                workspace,
+-                identityRoot,
+-                identityFactory,
+-                effectIds,
+-                transitionIds,
+-                activeEffects,
+-                usedSources,
+-                usedTargets,
+-                processedEventRefs,
+-                issues,
+-                plan.SourceAuthority,
+-                reactionSourceBindings,
+-                reactionApplicationPlans,
+-                reactionApplicationResults,
+-                plan.SkillScopeAuthority);
+-            if (issues.Count != 0)
+-                return Failed(issues);
+-        }
+-        ValidateReleasedReplacementAuthority(
+-            authoritativeReleasedReactions,
+-            reactionApplicationPlans,
+-            reactionApplicationResults,
+-            identityRoot,
+-            issues);
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        foreach (var execution in acceptedExecutions)
+-        {
+-            if (!execution.RemainingUseBudget.HasValue)
+-                continue;
+-
+-            var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
+-            issues.AddRange(catalog.Issues);
+-            if (!catalog.TryResolveOne(execution.EffectId, out var occurrence))
+-            {
+-                if (TryApplyConsumingTriggerEvidenceBeforeReplacement(
+-                        execution,
+-                        turn,
+-                        preReactionEffects,
+-                        authoritativeReleasedReactions,
+-                        identityRoot,
+-                        identityFactory,
+-                        transitionIds,
+-                        processedEventRefs,
+-                        issues))
+-                {
+-                    continue;
+-                }
+-                Add(
+-                    issues,
+-                    "effect.resourceTriggerExecutions",
+-                    "effect_resource_trigger_lifetime_target_unresolved",
+-                    "one exact active effect for an applied consuming trigger",
+-                    execution.EffectId);
+-                continue;
+-            }
+-            var lifetime = occurrence.Effect["lifetime"] as JsonObject;
+-            if (lifetime == null ||
+-                !string.Equals(
+-                    lifetime["mode"]?.GetValue<string>(),
+-                    "uses",
+-                    StringComparison.Ordinal) ||
+-                !TryReadPositiveInt(
+-                    lifetime["remainingUses"],
+-                    out var currentRemainingUses) ||
+-                currentRemainingUses != execution.RemainingUseBudget.Value)
+-            {
+-                Add(
+-                    issues,
+-                    "effect.resourceTriggerExecutions",
+-                    "effect_activation_replay_budget_mismatch",
+-                    "the exact accepted uses-before stamp at transcript projection",
+-                    execution.EffectId + "/" +
+-                    execution.RemainingUseBudget.Value.ToString(
+-                        System.Globalization.CultureInfo.InvariantCulture) + "/" +
+-                    Describe(lifetime?["remainingUses"]));
+-                continue;
+-            }
+-            ApplyLifecycleReduction(
+-                occurrence,
+-                new EffectLifecycleEvent(
+-                    execution.EventRef,
+-                    turn,
+-                    execution.EventKind,
+-                    execution.TriggerId),
+-                workspace,
+-                identityRoot,
+-                identityFactory,
+-                transitionIds,
+-                activeEffects,
+-                processedEventRefs,
+-                issues);
+-        }
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        ApplyDueLifecycleEvents(
+-            eventInput,
+-            sourceAuthority: null,
+-            workspace,
+-            identityRoot,
+-            identityFactory,
+-            transitionIds,
+-            activeEffects,
+-            processedEventRefs,
+-            issues,
+-            boundContinuationsOnly: false);
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        ApplyAcceptedTerminalReactionFold(
+-            authoritativeReleasedReactions,
+-            eventInput,
+-            workspace,
+-            identityRoot,
+-            identityFactory,
+-            effectIds,
+-            transitionIds,
+-            activeEffects,
+-            usedSources,
+-            usedTargets,
+-            processedEventRefs,
+-            issues,
+-            plan.SourceAuthority,
+-            reactionSourceBindings);
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-        workspace.FinalizeAcceptedSpiritualConflict(
+-            plan.AcceptedCarrierBaselines.SpiritualConflict);
+-        ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
+-        if (issues.Count != 0)
+-            return Failed(issues);
+-
+-        var afterImages = plan.CarrierAfterImages.ToDictionary(
+-            static pair => pair.Key,
+-            static pair => pair.Value.DeepClone().AsObject(),
+-            StringComparer.Ordinal);
+-        foreach (var pair in workspace.AfterImages)
+-            afterImages[pair.Key] = pair.Value.DeepClone().AsObject();
+-        var touchedPaths = plan.TouchedPaths
+-            .Concat(afterImages.Keys)
+-            .Append(EffectAcceptedTurnPlan.IdentityIndexPath)
+-            .Distinct(StringComparer.Ordinal)
+-            .OrderBy(static path => path, StringComparer.Ordinal)
+-            .ToArray();
+-
+-        return new EffectAcceptedTurnPlanningResult(
+-            new EffectAcceptedTurnPlan(
+-                plan.InputFingerprint,
+-                plan.CarrierAuthorityFingerprint,
+-                plan.SourceAuthorityFingerprint,
+-                plan.TargetAuthorityFingerprint,
+-                plan.AllocatedCombatantIds,
+-                identityRoot.AllocatedEffectIds,
+-                identityRoot.AllocatedTransitionIds,
+-                usedSources
+-                    .Select(static entry => entry.Key)
+-                    .Distinct()
+-                    .ToArray(),
+-                usedTargets
+-                    .Distinct()
+-                    .ToArray(),
+-                usedSources
+-                    .DistinctBy(static entry => entry.Key)
+-                    .ToArray(),
+-                Array.Empty<EffectReactionExecution>(),
+-                checked((int)totalReactionExpansion),
+-                reactionExpansionUsage,
+-                activeEffects,
+-                workspace.ToInput(),
+-                plan.SourceAuthority,
+-                plan.TargetAuthority,
+-                eventInput,
+-                plan.CarrierBeforeImages,
+-                afterImages,
+-                plan.IdentityIndexBeforeImage,
+-                identityRoot.Publish(),
+-                touchedPaths,
+-                plan.DeletedPaths,
+-                acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
+-                acceptedBoundaryCompletionProof:
+-                    AcceptedBoundaryCompletionAuthority,
+-                acceptedBoundaryBasePlanFingerprint:
+-                    WoundAcceptedTurnFingerprints
+-                        .ComputeAcceptedEffectPlanPayload(plan),
+-                woundApplicationRootEffectBindings:
+-                    plan.WoundApplicationRootEffectBindings,
+-                skillScopeAuthority: plan.SkillScopeAuthority),
+-            Array.Empty<ValidationIssue>());
+-    }
+-
+     private static PreparedWoundOperations PrepareWoundOperations(
+         EffectAcceptedTurnInput input,
+         WoundPreparedAcceptedTurnPlan prepared,
+@@
+         ReactionReplacementRuntimeExpectation? replacementExpectation = null,
+         EffectRollSkillScopeAuthority? skillScopeAuthority = null)
+     {
++        var carrierEditStart = workspace.EditCount;
++        var identityWriteStart = identityRoot.WriteCount;
++        var allocationStart = identityRoot.AllocationCount;
+         var definition = application.Source.Definition;
+         if (definition["display"] is not JsonObject display ||
+             !TryReadExact(display["category"], out var category) ||
+@@
+                 }
+                 effect = condition;
+             }
+-            slot.Collection.Add(effect.DeepClone());
+-            workspace.Touch(slot);
++            workspace.AddEffect(slot, effect);
+             activeEffects.Add(effect);
+             var identityEntry = CreateIdentityEntry(
+                 effect,
+@@
+                 resolution.TerminatesExisting
+                     ? replacementExpectation?.ExactTarget
+                     : null);
+-            return new ApplicationExecutionFacts(
++            return workspace.RecordApplication(new ApplicationExecutionFacts(
+                 resolution.TerminatesExisting
+                     ? "replace"
+                     : "created_new_identity",
+@@
+                 effect.DeepClone().AsObject(),
+                 identityEntry.DeepClone().AsObject(),
+                 reactionResult,
+-                provenance);
++                provenance), application, skillScopeAuthority, identityRoot,
++                carrierEditStart, identityWriteStart, allocationStart, issues);
+         }
+
+         if (!TryExact(resolution.ExistingEffectId ?? string.Empty) ||
+@@
+             issues);
+         AddOrReplaceAffected(activeEffects, updated);
+         processedEventRefs.Add(application.EventRef);
+-        return new ApplicationExecutionFacts(
++        return workspace.RecordApplication(new ApplicationExecutionFacts(
+             resolution.Outcome,
+             resolution.ExistingEffectId!,
+             transitionId,
+@@
+             null,
+             null,
+             null,
+-            provenance);
++            provenance), application, skillScopeAuthority, identityRoot,
++            carrierEditStart, identityWriteStart, allocationStart, issues);
+     }
+
+     private static IReadOnlyList<ValidationIssue> ValidateBoundApplicationComponents(
+@@
+         JsonObject? CreatedEffect,
+         JsonObject? CreatedIdentityEntry,
+         ReactionApplicationResult? ReactionResult,
+-        ApplicationProvenance Provenance);
++        ApplicationProvenance Provenance)
++    {
++        internal EffectDraftApplicationReceipt? Materialization { get; init; }
++    }
+
+     private abstract record ApplicationProvenance
+     {
+@@
+         private readonly JsonObject? _afterlifeProfiles;
+         private JsonObject? _spiritualConflict;
+         private readonly Dictionary<string, JsonObject> _afterImages = new(StringComparer.Ordinal);
++        private readonly List<EffectDraftCarrierEdit> _edits = new();
++        private readonly List<EffectDraftApplicationReceipt> _applications = new();
+
+         internal CarrierWorkspace(EffectCarrierCatalogInput input)
+         {
+@@
+
+         internal IReadOnlyDictionary<string, JsonObject> AfterImages => _afterImages;
+
++        internal int EditCount => _edits.Count;
++        internal int ApplicationCount => _applications.Count;
++
++        internal IReadOnlyList<EffectDraftCarrierEdit> ReadEditsFrom(int start) =>
++            Array.AsReadOnly(_edits.GetRange(start, _edits.Count - start).ToArray());
++
++        internal IReadOnlyList<EffectDraftApplicationReceipt> ReadApplicationsFrom(int start) =>
++            Array.AsReadOnly(_applications.GetRange(start, _applications.Count - start).ToArray());
++
++        internal void AddEffect(CarrierSlot slot, JsonObject effect)
++        {
++            var owned = effect.DeepClone().AsObject();
++            slot.Collection.Add(owned);
++            Touch(slot);
++            _edits.Add(new EffectDraftCarrierEdit(
++                _edits.Count, owned["effectId"]?.GetValue<string>() ?? string.Empty,
++                slot.Coordinate, null, owned.ToJsonString()));
++        }
++
++        internal ApplicationExecutionFacts RecordApplication(
++            ApplicationExecutionFacts facts,
++            Application application,
++            EffectRollSkillScopeAuthority? skillScopeAuthority,
++            EffectIdentityHistoryOwner identityRoot,
++            int carrierEditStart,
++            int identityWriteStart,
++            int allocationStart,
++            List<ValidationIssue> issues)
++        {
++            if (issues.Count != 0)
++                return facts;
++            var receipt = new EffectDraftApplicationReceipt(
++                facts.Disposition, facts.EffectId, facts.TransitionId,
++                application.EventRef, facts.CreatedEventRef, facts.CausalEventRef,
++                new EffectDraftSourceBinding(application.Source),
++                facts.Target, facts.CarrierCoordinate,
++                facts.CreatedEffect?.ToJsonString(),
++                facts.CreatedIdentityEntry?.ToJsonString(),
++                facts.ReactionResult?.ResultIdentity,
++                facts.ReactionResult?.ReplacedIdentity,
++                skillScopeAuthority?.Fingerprint, application.Parameters?.ToJsonString(),
++                facts.Provenance switch
++                {
++                    ApplicationProvenance.Reaction => EffectDraftApplicationProvenanceKind.Reaction,
++                    ApplicationProvenance.SeverityGeneration => EffectDraftApplicationProvenanceKind.SeverityGeneration,
++                    _ => EffectDraftApplicationProvenanceKind.Direct
++                },
++                facts.Provenance switch
++                {
++                    ApplicationProvenance.Reaction value => value.ParentEffectId,
++                    ApplicationProvenance.SeverityGeneration value => value.ParentEffectId,
++                    _ => null
++                },
++                ReadEditsFrom(carrierEditStart),
++                identityRoot.ReadWritesFrom(identityWriteStart),
++                identityRoot.ReadAllocationsFrom(allocationStart));
++            _applications.Add(receipt);
++            return facts with { Materialization = receipt };
++        }
++
+         internal void Touch(CarrierSlot slot) =>
+             _afterImages[slot.Path] = slot.Root;
+
+@@
+             removed = match.Effect.DeepClone().AsObject();
+             match.Slot.Collection.RemoveAt(match.Index);
+             Touch(match.Slot);
++            _edits.Add(new EffectDraftCarrierEdit(
++                _edits.Count, effectId, match.Slot.Coordinate, removed.ToJsonString(), null));
+             return true;
+         }
+
+@@
+                 }
+                 replacement = projectedReplacement;
+             }
+-            match.Slot.Collection[match.Index] = replacement.DeepClone();
++            var beforeJson = match.Effect.ToJsonString();
++            var owned = replacement.DeepClone().AsObject();
++            match.Slot.Collection[match.Index] = owned;
+             Touch(match.Slot);
++            _edits.Add(new EffectDraftCarrierEdit(
++                _edits.Count, effectId, match.Slot.Coordinate, beforeJson, owned.ToJsonString()));
+             return true;
+         }
+
+*** Update File: BookOfEternityClient/Services/EffectIdentityHistoryOwner.cs
+@@
+     internal IReadOnlyList<EffectIdentityReplacementAgreement> ReplacementAgreements =>
+         Array.AsReadOnly(_agreements.ToArray());
+
++    // Bounded detached ranges for the enclosing materialization owner. These
++    // do not change write, allocation, anchor or publication semantics.
++    internal int WriteCount => _writes.Count;
++    internal int AllocationCount => _allocations.Count;
++    internal int ReplacementAgreementCount => _agreements.Count;
++
++    internal IReadOnlyList<EffectIdentityWriteReceipt> ReadWritesFrom(int start) =>
++        Array.AsReadOnly(_writes.GetRange(start, _writes.Count - start).ToArray());
++
++    internal IReadOnlyList<EffectIdentityAllocationReceipt> ReadAllocationsFrom(int start) =>
++        Array.AsReadOnly(_allocations.GetRange(start, _allocations.Count - start).ToArray());
++
++    internal IReadOnlyList<EffectIdentityReplacementAgreement> ReadReplacementAgreementsFrom(int start) =>
++        Array.AsReadOnly(_agreements.GetRange(start, _agreements.Count - start).ToArray());
++
+     internal JsonObject ReadSnapshot()
+     {
+         EnsureNotDisposed();
+*** Add File: BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs
++using System.Text.Json.Nodes;
++
++namespace BookOfEternityClient.Services;
++
++internal static partial class EffectAcceptedTurnPlanner
++{
++    // Owns the ordinary completion's real mutable effect state and phase execution.
++    // Begin captures the immutable base reference without reading/allocating its
++    // materialized state, preserving the old transcript-rejection ordering.
++    // No source admission, insertion or resumed-prefix API is exposed by Unit A.
++    internal sealed class EffectAcceptedDraft : IDisposable
++    {
++        private readonly EffectAcceptedTurnPlan plan;
++        private EffectIdentityFactory identityFactory;
++        private readonly List<ValidationIssue> issues = new();
++        private JsonObject eventInput = null!;
++        private int turn;
++        private CarrierWorkspace workspace = null!;
++        private EffectIdentityHistoryOwner identityRoot = null!;
++        private EffectIdentityParseResult identityState = null!;
++        private HashSet<string> processedEventRefs = null!;
++        private List<string> transitionIds = null!;
++        private List<string> effectIds = null!;
++        private List<JsonObject> activeEffects = null!;
++        private List<EffectSourceAuthorityEntry> usedSources = null!;
++        private List<EffectTargetKey> usedTargets = null!;
++        private HashSet<string> executionKeys = null!;
++        private List<EffectResourceTriggerExecution> acceptedExecutions = null!;
++        private List<EffectReactionExecution> deferredReactions = null!;
++        private HashSet<string> reactionEventRefs = null!;
++        private Dictionary<EffectSourceKey, EffectSourceAuthorityEntry> reactionSourceBindings = null!;
++        private ReleasedEffectReaction[] authoritativeReleasedReactions = null!;
++        private Dictionary<EffectReactionExpansionKey, EffectReactionExpansionUsage> reactionExpansionUsage = null!;
++        private EffectCarrierCatalog preMutationCatalog = null!;
++        private WoundReactionLineageAuthority woundLineageAuthority = null!;
++        private Dictionary<string, ReactionApplicationPlan> reactionApplicationPlans = null!;
++        private Dictionary<string, ReactionApplicationResult> reactionApplicationResults = null!;
++        private Dictionary<string, JsonObject> preReactionEffects = null!;
++        private readonly List<EffectDraftPhaseReceipt> _phases = new();
++        private EffectDraftPhase? _openPhase;
++        private int _carrierStart;
++        private int _applicationStart;
++        private int _writeStart;
++        private int _allocationStart;
++        private int _agreementStart;
++        private int _sourceStart;
++        private int _targetStart;
++        private HashSet<string> _processedBefore = null!;
++        private int _busy;
++        private bool _completed;
++        private bool _faulted;
++        private bool _disposed;
++
++        private EffectAcceptedDraft(EffectAcceptedTurnPlan acceptedBase, EffectIdentityFactory factory)
++        {
++            plan = acceptedBase ?? throw new ArgumentNullException(nameof(acceptedBase));
++            identityFactory = factory ?? throw new ArgumentNullException(nameof(factory));
++        }
++
++        internal static EffectAcceptedDraft Begin(
++            EffectAcceptedTurnPlan acceptedBase, EffectIdentityFactory identityFactory) =>
++            new(acceptedBase, identityFactory);
++
++        internal IReadOnlyList<EffectDraftPhaseReceipt> Phases => Array.AsReadOnly(_phases.ToArray());
++
++        internal EffectAcceptedTurnPlanningResult Complete(AcceptedEffectBoundaryTranscript transcript)
++        {
++            if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
++                throw new InvalidOperationException("Effect draft completion cannot be re-entered.");
++            try
++            {
++                ObjectDisposedException.ThrowIf(_disposed, this);
++                if (_completed || _faulted)
++                    throw new InvalidOperationException("The effect draft is no longer writable.");
++                try
++                {
++                    var result = CompleteCore(transcript);
++                    _completed = result.Success;
++                    _faulted = !result.Success;
++                    return result;
++                }
++                catch
++                {
++                    _faulted = true;
++                    throw;
++                }
++            }
++            finally
++            {
++                System.Threading.Volatile.Write(ref _busy, 0);
++            }
++        }
++
++        internal JsonObject ReadIdentityIndex()
++        {
++            EnsureReadable();
++            return identityRoot.ReadSnapshot();
++        }
++
++        internal EffectCarrierCatalogInput ReadCarriers()
++        {
++            EnsureReadable();
++            var input = workspace.ToInput();
++            return new EffectCarrierCatalogInput(
++                input.PlayerEffects?.DeepClone().AsObject(),
++                input.NpcEffects?.DeepClone().AsObject(),
++                input.EnemyCombatants?.DeepClone().AsObject(),
++                input.AllyCombatants?.DeepClone().AsObject(),
++                input.AfterlifeProfiles?.DeepClone().AsObject(),
++                input.SpiritualConflict?.DeepClone().AsObject());
++        }
++
++        private void EnsureReadable()
++        {
++            ObjectDisposedException.ThrowIf(_disposed, this);
++            if (!_completed || _faulted || System.Threading.Volatile.Read(ref _busy) != 0)
++                throw new InvalidOperationException("Only a completed, unfaulted effect draft exposes its state image.");
++        }
++
++        private void BeginPhase(EffectDraftPhase phase)
++        {
++            if (_openPhase != null || (int)phase != _phases.Count)
++                throw new InvalidOperationException("Effect draft phases must run exactly once in canonical order.");
++            _openPhase = phase;
++            _carrierStart = workspace.EditCount;
++            _applicationStart = workspace.ApplicationCount;
++            _writeStart = identityRoot.WriteCount;
++            _allocationStart = identityRoot.AllocationCount;
++            _agreementStart = identityRoot.ReplacementAgreementCount;
++            _sourceStart = usedSources.Count;
++            _targetStart = usedTargets.Count;
++            _processedBefore = new HashSet<string>(processedEventRefs, StringComparer.Ordinal);
++        }
++
++        private void EndPhase()
++        {
++            if (_openPhase == null || issues.Count != 0)
++                throw new InvalidOperationException("A failed or unopened effect phase cannot be recorded as applied.");
++            _phases.Add(new EffectDraftPhaseReceipt(
++                _openPhase.Value,
++                workspace.ReadEditsFrom(_carrierStart),
++                workspace.ReadApplicationsFrom(_applicationStart),
++                identityRoot.ReadWritesFrom(_writeStart),
++                identityRoot.ReadAllocationsFrom(_allocationStart),
++                identityRoot.ReadReplacementAgreementsFrom(_agreementStart),
++                processedEventRefs.Except(_processedBefore, StringComparer.Ordinal),
++                usedSources.Skip(_sourceStart),
++                usedTargets.Skip(_targetStart),
++                plan.SkillScopeAuthority?.Fingerprint));
++            _openPhase = null;
++        }
++
++        public void Dispose()
++        {
++            if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
++                throw new InvalidOperationException("Active effect draft completion cannot be disposed.");
++            try
++            {
++                if (_disposed)
++                    return;
++                _disposed = true;
++                identityRoot?.Dispose();
++            }
++            finally
++            {
++                System.Threading.Volatile.Write(ref _busy, 0);
++            }
++        }
++
++        private EffectAcceptedTurnPlanningResult CompleteCore(
++            AcceptedEffectBoundaryTranscript transcript)
++        {
++            if (plan == null || transcript == null || identityFactory == null)
++            {
++                var missingIssues = new List<ValidationIssue>();
++                Add(
++                    missingIssues,
++                    EffectAcceptedTurnPlan.CommandPath,
++                    "effect_boundary_transcript_missing",
++                    "one accepted plan, validated boundary transcript, and identity factory",
++                    "null");
++                return Failed(missingIssues);
++            }
++            if (plan.IsAcceptedBoundaryComplete)
++            {
++                var repeatedIssues = new List<ValidationIssue>();
++                Add(
++                    repeatedIssues,
++                    EffectAcceptedTurnPlan.CommandPath,
++                    "effect_boundary_completion_repeated",
++                    "one initial effect plan completed exactly once",
++                    "already completed");
++                return Failed(repeatedIssues);
++            }
++            var expectedPlanAuthority =
++                AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan);
++            if (!transcript.IsComplete ||
++                transcript.PlanAuthority != expectedPlanAuthority)
++            {
++                var mismatchIssues = new List<ValidationIssue>();
++                Add(
++                    mismatchIssues,
++                    EffectAcceptedTurnPlan.CommandPath,
++                    "effect_boundary_transcript_plan_mismatch",
++                    "one complete transcript with the exact five-field accepted effect plan authority including skill scope",
++                    transcript.IsComplete
++                        ? transcript.PlanAuthority?.InputFingerprint ?? "missing"
++                        : "pending-frontier");
++                return Failed(mismatchIssues);
++            }
++            var appliedByActivation = transcript.AppliedComponentEvidence
++                .GroupBy(static evidence => evidence.Activation)
++                .ToDictionary(static group => group.Key, static group => group.ToArray());
++            var executions = transcript.AcceptedActivations
++                .OrderBy(static accepted =>
++                    accepted.Activation.Stamp.ActivationOrdinal)
++                .Select(accepted =>
++                {
++                    appliedByActivation.TryGetValue(
++                        accepted.Activation.Stamp.Identity,
++                        out var evidence);
++                    evidence ??= Array.Empty<AppliedEffectComponentEvidence>();
++                    var componentMap = evidence.ToDictionary(
++                        static value => value.Mutation,
++                        static value => value.ComponentId);
++                    return new EffectResourceTriggerExecution(
++                        accepted.Activation.Stamp.Identity.EffectId,
++                        accepted.Activation.Stamp.Identity.TriggerId,
++                        accepted.Activation.Stamp.Identity.EventKind,
++                        accepted.Activation.Stamp.Identity.EventRef,
++                        componentMap.Keys.ToArray(),
++                        accepted.Activation.Stamp.UsesBefore,
++                        componentMap.Values
++                            .Distinct(StringComparer.Ordinal)
++                            .OrderBy(static value => value, StringComparer.Ordinal)
++                            .ToArray(),
++                        accepted.Activation.Stamp.Identity.TriggerEventRef,
++                        componentMap);
++                })
++                .ToArray();
++            return RunCore(executions, transcript);
++        }
++
++        private EffectAcceptedTurnPlanningResult RunCore(
++            IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
++            AcceptedEffectBoundaryTranscript authoritativeTranscript)
++        {
++            ArgumentNullException.ThrowIfNull(plan);
++            ArgumentNullException.ThrowIfNull(executedTriggers);
++            ArgumentNullException.ThrowIfNull(identityFactory);
++            ArgumentNullException.ThrowIfNull(authoritativeTranscript);
++
++            eventInput = plan.EventInput;
++            if (!TryReadPositiveInt(eventInput["turn"], out turn))
++            {
++                Add(
++                    issues,
++                    "eventInput.turn",
++                    "effect_plan_event_authority_invalid",
++                    "positive accepted turn",
++                    Describe(eventInput["turn"]));
++                return Failed(issues);
++            }
++
++            workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
++            identityRoot = new EffectIdentityHistoryOwner(
++                plan.IdentityIndexAfterImage, identityFactory,
++                plan.AllocatedEffectIds, plan.AllocatedTransitionIds);
++            identityFactory = identityRoot.Factory;
++            identityState = ParseIdentity(identityRoot.ReadSnapshot());
++            issues.AddRange(identityState.Issues);
++            if (identityState.State == null || issues.Count != 0)
++                return Failed(issues);
++            processedEventRefs = identityState.State.Entries
++                .SelectMany(static entry => entry.Transitions)
++                .Select(static transition => transition.EventRef)
++                .ToHashSet(StringComparer.Ordinal);
++            transitionIds = plan.AllocatedTransitionIds.ToList();
++            effectIds = plan.AllocatedEffectIds.ToList();
++            activeEffects = plan.ActiveEffects
++                .Select(static effect => effect.DeepClone().AsObject())
++                .ToList();
++            usedSources = plan.SourceBindings.ToList();
++            usedTargets = plan.Targets.ToList();
++            executionKeys = new HashSet<string>(StringComparer.Ordinal);
++            acceptedExecutions = new List<EffectResourceTriggerExecution>();
++            deferredReactions = new List<EffectReactionExecution>();
++            reactionEventRefs = new HashSet<string>(StringComparer.Ordinal);
++            reactionSourceBindings = new Dictionary<
++                EffectSourceKey,
++                EffectSourceAuthorityEntry>();
++            authoritativeReleasedReactions = authoritativeTranscript
++                .ReleasedReactions
++                .OrderBy(static value => value.MechanicsOrdinal)
++                .ToArray();
++            var acceptedStamps = authoritativeTranscript.AcceptedActivations
++                .Select(static accepted => accepted.Activation.Stamp)
++                .ToHashSet();
++            foreach (var released in authoritativeReleasedReactions)
++            {
++                var reaction = released.Reaction;
++                if (!acceptedStamps.Contains(released.Activation) ||
++                    !string.Equals(
++                        released.Activation.Identity.EffectId,
++                        reaction.EffectId,
++                        StringComparison.Ordinal) ||
++                    !string.Equals(
++                        released.Activation.Identity.TriggerId,
++                        reaction.TriggerId,
++                        StringComparison.Ordinal) ||
++                    !string.Equals(
++                        released.Activation.Identity.EventKind,
++                        reaction.EventKind,
++                        StringComparison.Ordinal) ||
++                    !string.Equals(
++                        released.Activation.Identity.TriggerEventRef,
++                        reaction.TriggerEventRef,
++                        StringComparison.Ordinal))
++                {
++                    Add(
++                        issues,
++                        "effect.reactions",
++                        "effect_reaction_activation_authority_invalid",
++                        "one exact accepted activation stamp for every released reaction",
++                        reaction.EventRef);
++                    continue;
++                }
++                if (!ReactionStageMatchesDependency(
++                        released.Stage,
++                        reaction.Dependency))
++                {
++                    Add(
++                        issues,
++                        "effect.reactions",
++                        "effect_reaction_release_stage_invalid",
++                        reaction.Dependency,
++                        released.Stage.ToString());
++                    continue;
++                }
++                if (!reactionEventRefs.Add(reaction.EventRef))
++                {
++                    Add(
++                        issues,
++                        "effect.reactions",
++                        "effect_reaction_event_duplicate",
++                        "one exact reaction execution per derived event identity",
++                        reaction.EventRef);
++                    continue;
++                }
++                deferredReactions.Add(reaction);
++            }
++            reactionExpansionUsage = authoritativeTranscript.ExpansionUsage
++                .ToDictionary(static pair => pair.Key, static pair => pair.Value);
++            foreach (var group in deferredReactions.GroupBy(static reaction =>
++                         new EffectReactionExpansionKey(
++                             reaction.EffectId,
++                             reaction.ComponentId)))
++            {
++                if (!reactionExpansionUsage.TryGetValue(
++                        group.Key,
++                        out var usage) ||
++                    usage.Count != group.Count() ||
++                    group.Any(reaction =>
++                        reaction.MaxExpansion != usage.Maximum) ||
++                    usage.Count > usage.Maximum)
++                {
++                    Add(
++                        issues,
++                        "effect.reactions",
++                        "effect_reaction_expansion_authority_invalid",
++                        "exact released-reaction count and source maximum",
++                        group.Key.EffectId + "/" + group.Key.ComponentId);
++                }
++            }
++            if (reactionExpansionUsage.Values.Sum(static usage => usage.Count) !=
++                deferredReactions.Count)
++            {
++                Add(
++                    issues,
++                    "effect.reactions",
++                    "effect_reaction_expansion_authority_invalid",
++                    "expansion usage accounting for every released reaction exactly once",
++                    authoritativeTranscript.ExpansionCount.ToString(
++                        System.Globalization.CultureInfo.InvariantCulture));
++            }
++            var totalReactionExpansion = reactionExpansionUsage.Values.Sum(
++                static usage => (long)usage.Count);
++            if (totalReactionExpansion > EffectReactionContract.MaximumExpansion)
++            {
++                Add(
++                    issues,
++                    "effect.reactions",
++                    "effect_reaction_expansion_exceeded",
++                    $"at most {EffectReactionContract.MaximumExpansion} reaction operations in one accepted transition",
++                    totalReactionExpansion.ToString(
++                        System.Globalization.CultureInfo.InvariantCulture));
++            }
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            foreach (var execution in executedTriggers)
++            {
++                var executionKey = string.Join(
++                    "\0",
++                    execution.EffectId,
++                    execution.TriggerId,
++                    execution.EventKind,
++                    execution.EventRef);
++                if (!executionKeys.Add(executionKey))
++                {
++                    Add(
++                        issues,
++                        "effect.resourceTriggerExecutions",
++                        "effect_resource_trigger_execution_duplicate",
++                        "one exact applied trigger activation",
++                        executionKey.Replace('\0', '/'));
++                    continue;
++                }
++                acceptedExecutions.Add(execution);
++            }
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            preMutationCatalog = EffectCarrierCatalog.Build(
++                workspace.ToInput());
++            issues.AddRange(preMutationCatalog.Issues);
++            woundLineageAuthority = WoundReactionLineageAuthority.Build(
++                plan.SourceAuthority,
++                identityState.State,
++                preMutationCatalog,
++                plan.WoundApplicationRootEffectBindings);
++            issues.AddRange(woundLineageAuthority.Issues);
++            reactionApplicationPlans =
++                PrepareReleasedReactionApplicationPlans(
++                    authoritativeReleasedReactions,
++                    preMutationCatalog,
++                    plan.SourceAuthority,
++                    woundLineageAuthority,
++                    plan.SkillScopeAuthority,
++                    issues);
++            if (issues.Count != 0)
++                return Failed(issues);
++            reactionApplicationResults = new Dictionary<
++                string,
++                ReactionApplicationResult>(StringComparer.Ordinal);
++
++            BeginPhase(EffectDraftPhase.NonConsumingTrigger);
++            foreach (var execution in acceptedExecutions.Where(static execution =>
++                         !execution.RemainingUseBudget.HasValue))
++            {
++                ApplyNonConsumingTriggerEvidence(
++                    execution,
++                    turn,
++                    workspace,
++                    identityRoot,
++                    identityFactory,
++                    transitionIds,
++                    activeEffects,
++                    processedEventRefs,
++                    issues);
++            }
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            EndPhase();
++            var preReactionCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
++            issues.AddRange(preReactionCatalog.Issues);
++            preReactionEffects = new Dictionary<string, JsonObject>(
++                StringComparer.Ordinal);
++            foreach (var occurrence in preReactionCatalog.Occurrences)
++            {
++                if (!preReactionEffects.TryAdd(
++                        occurrence.EffectId,
++                        occurrence.Effect.DeepClone().AsObject()))
++                {
++                    Add(
++                        issues,
++                        "effect.resourceTriggerExecutions",
++                        "effect_resource_trigger_identity_target_ambiguous",
++                        "one exact pre-reaction active effect per identity",
++                        occurrence.EffectId);
++                }
++            }
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            BeginPhase(EffectDraftPhase.NonterminalReaction);
++            var reactionsToApplyBeforeProjection = authoritativeReleasedReactions
++                .Where(static released =>
++                    !IsTerminalAvailabilityReaction(released.Reaction))
++                .Select(static released => released.Reaction)
++                .ToList();
++            foreach (var reaction in reactionsToApplyBeforeProjection)
++            {
++                ApplyReactionExecution(
++                    reaction,
++                    reaction.Target.Realm,
++                    eventInput,
++                    workspace,
++                    identityRoot,
++                    identityFactory,
++                    effectIds,
++                    transitionIds,
++                    activeEffects,
++                    usedSources,
++                    usedTargets,
++                    processedEventRefs,
++                    issues,
++                    plan.SourceAuthority,
++                    reactionSourceBindings,
++                    reactionApplicationPlans,
++                    reactionApplicationResults,
++                    plan.SkillScopeAuthority);
++                if (issues.Count != 0)
++                    return Failed(issues);
++            }
++            EndPhase();
++            BeginPhase(EffectDraftPhase.ReplacementAgreement);
++            ValidateReleasedReplacementAuthority(
++                authoritativeReleasedReactions,
++                reactionApplicationPlans,
++                reactionApplicationResults,
++                identityRoot,
++                issues);
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            EndPhase();
++            BeginPhase(EffectDraftPhase.ConsumingTrigger);
++            foreach (var execution in acceptedExecutions)
++            {
++                if (!execution.RemainingUseBudget.HasValue)
++                    continue;
++
++                var catalog = EffectCarrierCatalog.Build(workspace.ToInput());
++                issues.AddRange(catalog.Issues);
++                if (!catalog.TryResolveOne(execution.EffectId, out var occurrence))
++                {
++                    if (TryApplyConsumingTriggerEvidenceBeforeReplacement(
++                            execution,
++                            turn,
++                            preReactionEffects,
++                            authoritativeReleasedReactions,
++                            identityRoot,
++                            identityFactory,
++                            transitionIds,
++                            processedEventRefs,
++                            issues))
++                    {
++                        continue;
++                    }
++                    Add(
++                        issues,
++                        "effect.resourceTriggerExecutions",
++                        "effect_resource_trigger_lifetime_target_unresolved",
++                        "one exact active effect for an applied consuming trigger",
++                        execution.EffectId);
++                    continue;
++                }
++                var lifetime = occurrence.Effect["lifetime"] as JsonObject;
++                if (lifetime == null ||
++                    !string.Equals(
++                        lifetime["mode"]?.GetValue<string>(),
++                        "uses",
++                        StringComparison.Ordinal) ||
++                    !TryReadPositiveInt(
++                        lifetime["remainingUses"],
++                        out var currentRemainingUses) ||
++                    currentRemainingUses != execution.RemainingUseBudget.Value)
++                {
++                    Add(
++                        issues,
++                        "effect.resourceTriggerExecutions",
++                        "effect_activation_replay_budget_mismatch",
++                        "the exact accepted uses-before stamp at transcript projection",
++                        execution.EffectId + "/" +
++                        execution.RemainingUseBudget.Value.ToString(
++                            System.Globalization.CultureInfo.InvariantCulture) + "/" +
++                        Describe(lifetime?["remainingUses"]));
++                    continue;
++                }
++                ApplyLifecycleReduction(
++                    occurrence,
++                    new EffectLifecycleEvent(
++                        execution.EventRef,
++                        turn,
++                        execution.EventKind,
++                        execution.TriggerId),
++                    workspace,
++                    identityRoot,
++                    identityFactory,
++                    transitionIds,
++                    activeEffects,
++                    processedEventRefs,
++                    issues);
++            }
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            EndPhase();
++            BeginPhase(EffectDraftPhase.FinalLifetime);
++            ApplyDueLifecycleEvents(
++                eventInput,
++                sourceAuthority: null,
++                workspace,
++                identityRoot,
++                identityFactory,
++                transitionIds,
++                activeEffects,
++                processedEventRefs,
++                issues,
++                boundContinuationsOnly: false);
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            EndPhase();
++            BeginPhase(EffectDraftPhase.FinalTerminal);
++            ApplyAcceptedTerminalReactionFold(
++                authoritativeReleasedReactions,
++                eventInput,
++                workspace,
++                identityRoot,
++                identityFactory,
++                effectIds,
++                transitionIds,
++                activeEffects,
++                usedSources,
++                usedTargets,
++                processedEventRefs,
++                issues,
++                plan.SourceAuthority,
++                reactionSourceBindings);
++            if (issues.Count != 0)
++                return Failed(issues);
++            EndPhase();
++            workspace.FinalizeAcceptedSpiritualConflict(
++                plan.AcceptedCarrierBaselines.SpiritualConflict);
++            ValidateAfterImages(workspace, identityRoot, activeEffects, issues);
++            if (issues.Count != 0)
++                return Failed(issues);
++
++            var afterImages = plan.CarrierAfterImages.ToDictionary(
++                static pair => pair.Key,
++                static pair => pair.Value.DeepClone().AsObject(),
++                StringComparer.Ordinal);
++            foreach (var pair in workspace.AfterImages)
++                afterImages[pair.Key] = pair.Value.DeepClone().AsObject();
++            var touchedPaths = plan.TouchedPaths
++                .Concat(afterImages.Keys)
++                .Append(EffectAcceptedTurnPlan.IdentityIndexPath)
++                .Distinct(StringComparer.Ordinal)
++                .OrderBy(static path => path, StringComparer.Ordinal)
++                .ToArray();
++
++            return new EffectAcceptedTurnPlanningResult(
++                new EffectAcceptedTurnPlan(
++                    plan.InputFingerprint,
++                    plan.CarrierAuthorityFingerprint,
++                    plan.SourceAuthorityFingerprint,
++                    plan.TargetAuthorityFingerprint,
++                    plan.AllocatedCombatantIds,
++                    identityRoot.AllocatedEffectIds,
++                    identityRoot.AllocatedTransitionIds,
++                    usedSources
++                        .Select(static entry => entry.Key)
++                        .Distinct()
++                        .ToArray(),
++                    usedTargets
++                        .Distinct()
++                        .ToArray(),
++                    usedSources
++                        .DistinctBy(static entry => entry.Key)
++                        .ToArray(),
++                    Array.Empty<EffectReactionExecution>(),
++                    checked((int)totalReactionExpansion),
++                    reactionExpansionUsage,
++                    activeEffects,
++                    workspace.ToInput(),
++                    plan.SourceAuthority,
++                    plan.TargetAuthority,
++                    eventInput,
++                    plan.CarrierBeforeImages,
++                    afterImages,
++                    plan.IdentityIndexBeforeImage,
++                    identityRoot.Publish(),
++                    touchedPaths,
++                    plan.DeletedPaths,
++                    acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
++                    acceptedBoundaryCompletionProof:
++                        AcceptedBoundaryCompletionAuthority,
++                    acceptedBoundaryBasePlanFingerprint:
++                        WoundAcceptedTurnFingerprints
++                            .ComputeAcceptedEffectPlanPayload(plan),
++                    woundApplicationRootEffectBindings:
++                        plan.WoundApplicationRootEffectBindings,
++                    skillScopeAuthority: plan.SkillScopeAuthority),
++                Array.Empty<ValidationIssue>());
++        }
++    }
++}
+*** Add File: BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftState.cs
++using System.Text.Json.Nodes;
++
++namespace BookOfEternityClient.Services;
++
++internal static partial class EffectAcceptedTurnPlanner
++{
++    internal enum EffectDraftPhase
++    {
++        NonConsumingTrigger,
++        NonterminalReaction,
++        ReplacementAgreement,
++        ConsumingTrigger,
++        FinalLifetime,
++        FinalTerminal
++    }
++
++    internal enum EffectDraftApplicationProvenanceKind
++    {
++        Direct,
++        Reaction,
++        SeverityGeneration
++    }
++
++    // Immutable retained material, not a spiritual source or insertion capability.
++    internal sealed record EffectDraftCarrierEdit(
++        int Ordinal,
++        string EffectId,
++        EffectCarrierCoordinate Carrier,
++        string? BeforeJson,
++        string? AfterJson)
++    {
++        internal JsonObject? ReadBefore() => BeforeJson == null
++            ? null : JsonNode.Parse(BeforeJson)!.AsObject();
++        internal JsonObject? ReadAfter() => AfterJson == null
++            ? null : JsonNode.Parse(AfterJson)!.AsObject();
++    }
++
++    internal sealed class EffectDraftSourceBinding
++    {
++        private readonly string _definitionJson;
++        private readonly string[] _predicates;
++
++        internal EffectDraftSourceBinding(EffectSourceAuthorityEntry source)
++        {
++            Key = source.Key;
++            _definitionJson = source.Definition.ToJsonString();
++            Materializable = source.Materializable;
++            Active = source.Active;
++            SameTurn = source.SameTurn;
++            SourceRef = source.SourceRef;
++            RequiredApplicationAuthority = source.RequiredApplicationAuthority;
++            _predicates = source.SatisfiedPredicates.OrderBy(value => value, StringComparer.Ordinal).ToArray();
++        }
++
++        internal EffectSourceKey Key { get; }
++        internal bool Materializable { get; }
++        internal bool Active { get; }
++        internal bool SameTurn { get; }
++        internal string? SourceRef { get; }
++        internal string? RequiredApplicationAuthority { get; }
++        internal IReadOnlyList<string> SatisfiedPredicates => Array.AsReadOnly(_predicates);
++        internal JsonObject ReadDefinition() => JsonNode.Parse(_definitionJson)!.AsObject();
++    }
++
++    internal sealed class EffectDraftApplicationReceipt
++    {
++        private readonly EffectDraftCarrierEdit[] _carrierEdits;
++        private readonly EffectIdentityWriteReceipt[] _identityWrites;
++        private readonly EffectIdentityAllocationReceipt[] _allocations;
++        private readonly string? _createdEffect;
++        private readonly string? _createdIdentity;
++        private readonly string? _parameters;
++
++        internal EffectDraftApplicationReceipt(
++            string disposition, string effectId, string transitionId,
++            string eventRef, string? createdEventRef, string causalEventRef,
++            EffectDraftSourceBinding source, EffectTargetKey target,
++            EffectCarrierCoordinate carrier, string? createdEffect, string? createdIdentity,
++            EffectReplayIdentity? resultIdentity, EffectReplayIdentity? replacedIdentity,
++            string? skillScopeFingerprint, string? parameters,
++            EffectDraftApplicationProvenanceKind provenanceKind, string? producerEffectId,
++            IReadOnlyList<EffectDraftCarrierEdit> carrierEdits,
++            IReadOnlyList<EffectIdentityWriteReceipt> identityWrites,
++            IReadOnlyList<EffectIdentityAllocationReceipt> allocations)
++        {
++            Disposition = disposition;
++            EffectId = effectId;
++            TransitionId = transitionId;
++            EventRef = eventRef;
++            CreatedEventRef = createdEventRef;
++            CausalEventRef = causalEventRef;
++            Source = source;
++            Target = target;
++            Carrier = carrier;
++            _createdEffect = createdEffect;
++            _createdIdentity = createdIdentity;
++            ResultIdentity = resultIdentity;
++            ReplacedIdentity = replacedIdentity;
++            SkillScopeFingerprint = skillScopeFingerprint;
++            _parameters = parameters;
++            ProvenanceKind = provenanceKind;
++            ProducerEffectId = producerEffectId;
++            _carrierEdits = carrierEdits.ToArray();
++            _identityWrites = identityWrites.ToArray();
++            _allocations = allocations.ToArray();
++        }
++
++        internal string Disposition { get; }
++        internal string EffectId { get; }
++        internal string TransitionId { get; }
++        internal string EventRef { get; }
++        internal string? CreatedEventRef { get; }
++        internal string CausalEventRef { get; }
++        internal EffectDraftSourceBinding Source { get; }
++        internal EffectTargetKey Target { get; }
++        internal EffectCarrierCoordinate Carrier { get; }
++        internal EffectReplayIdentity? ResultIdentity { get; }
++        internal EffectReplayIdentity? ReplacedIdentity { get; }
++        internal string? SkillScopeFingerprint { get; }
++        internal EffectDraftApplicationProvenanceKind ProvenanceKind { get; }
++        internal string? ProducerEffectId { get; }
++        internal JsonObject? ReadParameters() => _parameters == null
++            ? null : JsonNode.Parse(_parameters)!.AsObject();
++        internal IReadOnlyList<EffectDraftCarrierEdit> CarrierEdits => Array.AsReadOnly(_carrierEdits);
++        internal IReadOnlyList<EffectIdentityWriteReceipt> IdentityWrites => Array.AsReadOnly(_identityWrites);
++        internal IReadOnlyList<EffectIdentityAllocationReceipt> Allocations => Array.AsReadOnly(_allocations);
++        internal JsonObject? ReadCreatedEffect() => _createdEffect == null
++            ? null : JsonNode.Parse(_createdEffect)!.AsObject();
++        internal JsonObject? ReadCreatedIdentity() => _createdIdentity == null
++            ? null : JsonNode.Parse(_createdIdentity)!.AsObject();
++    }
++
++    internal sealed class EffectDraftPhaseReceipt
++    {
++        internal EffectDraftPhaseReceipt(
++            EffectDraftPhase phase,
++            IReadOnlyList<EffectDraftCarrierEdit> carrierEdits,
++            IReadOnlyList<EffectDraftApplicationReceipt> applications,
++            IReadOnlyList<EffectIdentityWriteReceipt> writes,
++            IReadOnlyList<EffectIdentityAllocationReceipt> allocations,
++            IReadOnlyList<EffectIdentityReplacementAgreement> agreements,
++            IEnumerable<string> processedEventRefs,
++            IEnumerable<EffectSourceAuthorityEntry> addedSources,
++            IEnumerable<EffectTargetKey> addedTargets,
++            string? skillScopeFingerprint)
++        {
++            Phase = phase;
++            CarrierEdits = Array.AsReadOnly(carrierEdits.ToArray());
++            Applications = Array.AsReadOnly(applications.ToArray());
++            IdentityWrites = Array.AsReadOnly(writes.ToArray());
++            Allocations = Array.AsReadOnly(allocations.ToArray());
++            ReplacementAgreements = Array.AsReadOnly(agreements.ToArray());
++            ProcessedEventRefs = Array.AsReadOnly(
++                processedEventRefs.OrderBy(value => value, StringComparer.Ordinal).ToArray());
++            AddedSources = Array.AsReadOnly(addedSources.Select(value => new EffectDraftSourceBinding(value)).ToArray());
++            AddedTargets = Array.AsReadOnly(addedTargets.ToArray());
++            SkillScopeFingerprint = skillScopeFingerprint;
++        }
++
++        internal EffectDraftPhase Phase { get; }
++        internal IReadOnlyList<EffectDraftCarrierEdit> CarrierEdits { get; }
++        internal IReadOnlyList<EffectDraftApplicationReceipt> Applications { get; }
++        internal IReadOnlyList<EffectIdentityWriteReceipt> IdentityWrites { get; }
++        internal IReadOnlyList<EffectIdentityAllocationReceipt> Allocations { get; }
++        internal IReadOnlyList<EffectIdentityReplacementAgreement> ReplacementAgreements { get; }
++        internal IReadOnlyList<string> ProcessedEventRefs { get; }
++        internal IReadOnlyList<EffectDraftSourceBinding> AddedSources { get; }
++        internal IReadOnlyList<EffectTargetKey> AddedTargets { get; }
++        internal string? SkillScopeFingerprint { get; }
++    }
++}
+*** Add File: BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.Draft.cs
++using System.Reflection;
++using System.Reflection.Emit;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class EffectAcceptedTurnPlannerTests
++{
++    [Theory]
++    [InlineData(false, 3)]
++    [InlineData(true, 1)]
++    [InlineData(true, 2)]
++    public void DraftOwner_OrdinaryReplacementGolden(bool consumes, int uses)
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: consumes, uses: uses);
++        var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
++            fixture.Plan, fixture.Transcript, fixture.Factory);
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        var plan = result.Plan!;
++        var old = DraftOwnerEntry(plan.IdentityIndexAfterImage, fixture.OldId);
++        var child = Assert.Single(plan.ActiveEffects);
++        var childId = child["effectId"]!.GetValue<string>();
++        Assert.NotEqual(fixture.OldId, childId);
++        Assert.Equal(new[] { "effect_identity_owner_1" }, plan.AllocatedEffectIds);
++        Assert.Equal(consumes
++            ? new[] { "effect", "transition", "transition", "transition" }
++            : new[] { "transition", "effect", "transition", "transition" }, fixture.Factory.Kinds);
++        Assert.Equal(consumes ? new[] { "consume", "replace" } : new[] { "trigger", "replace" },
++            old["transitions"]!.AsArray().TakeLast(2)
++                .Select(value => value!["kind"]!.GetValue<string>()));
++        Assert.Equal("replaced", old["state"]!.GetValue<string>());
++        Assert.Equal("active", DraftOwnerEntry(plan.IdentityIndexAfterImage, childId)["state"]!.GetValue<string>());
++        Assert.True(plan.IsAcceptedBoundaryComplete);
++        Assert.Empty(plan.DeferredReactions);
++        PrintDraftOwnerGolden("replace/" + consumes + "/" + uses, plan, fixture.Factory);
++    }
++
++    [Theory]
++    [InlineData("stack", 1, "stack", 2, 3)]
++    [InlineData("stack", 3, "no_change", 3, 3)]
++    [InlineData("refresh", 1, "refresh", 1, 3)]
++    [InlineData("merge", 1, "merge", 2, 6)]
++    public void DraftOwner_OrdinaryNonCreateGolden(
++        string policy, int stacks, string disposition, int expectedStacks, int expectedAmount)
++    {
++        var fixture = CreateDraftOwnerFixture(nonCreatePolicy: policy, incumbentStacks: stacks);
++        var result = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
++            fixture.Plan, fixture.Transcript, fixture.Factory);
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        var plan = result.Plan!;
++        Assert.Empty(plan.AllocatedEffectIds);
++        Assert.Equal(new[] { "transition", "transition" }, fixture.Factory.Kinds);
++        Assert.Equal(2, plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray().Count);
++        var incumbent = plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray()
++            .OfType<JsonObject>().Single(value => value["effectId"]!.GetValue<string>() == fixture.IncumbentId);
++        Assert.Equal(expectedStacks, incumbent["stacking"]!["currentStacks"]!.GetValue<int>());
++        Assert.Equal(expectedAmount, incumbent["components"]![0]!["payload"]!["amount"]!.GetValue<int>());
++        Assert.Equal(3, incumbent["lifetime"]!["remainingTurns"]!.GetValue<int>());
++        var entry = DraftOwnerEntry(plan.IdentityIndexAfterImage, fixture.IncumbentId!);
++        Assert.Equal(disposition == "no_change" ? "stack" : disposition,
++            entry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
++        Assert.Equal(fixture.Factory.Ids[1],
++            entry["transitions"]!.AsArray()[^1]!["transitionId"]!.GetValue<string>());
++        Assert.Equal("active", entry["state"]!.GetValue<string>());
++        Assert.Equal(new[] { "create", "trigger" },
++            DraftOwnerEntry(plan.IdentityIndexAfterImage, fixture.OldId)["transitions"]!.AsArray()
++                .Select(value => value!["kind"]!.GetValue<string>()));
++        PrintDraftOwnerGolden(policy + "/" + stacks, plan, fixture.Factory);
++    }
++
++    [Fact]
++    public void DraftOwner_ContractRedStartsWithRealReplacement()
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: true);
++        var ordinary = EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
++            fixture.Plan, fixture.Transcript, fixture.Factory);
++        Assert.True(ordinary.Success, IdentityOwnerIssues(ordinary));
++        Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, fixture.Factory.Kinds);
++        var adapter = typeof(EffectAcceptedTurnPlanner).GetMethod(
++            "CompleteAcceptedBoundaryTranscript", BindingFlags.NonPublic | BindingFlags.Static)!;
++        Assert.Contains(DraftOwnerCalledMethods(adapter), method =>
++            method.DeclaringType?.Name == "EffectAcceptedDraft" && method.Name == "Complete");
++        var nested = typeof(EffectAcceptedTurnPlanner).GetNestedType(
++            "EffectAcceptedDraft", BindingFlags.NonPublic);
++        Assert.NotNull(nested);
++        var begin = nested!.GetMethod("Begin", BindingFlags.NonPublic | BindingFlags.Static);
++        var complete = nested.GetMethod("Complete", BindingFlags.NonPublic | BindingFlags.Instance);
++        var read = nested.GetMethod("ReadIdentityIndex", BindingFlags.NonPublic | BindingFlags.Instance);
++        var phases = nested.GetProperty("Phases", BindingFlags.NonPublic | BindingFlags.Instance);
++        Assert.NotNull(begin);
++        Assert.NotNull(complete);
++        Assert.NotNull(read);
++        Assert.NotNull(phases);
++        using var draft = Assert.IsAssignableFrom<IDisposable>(
++            begin!.Invoke(null, new object[] { fixture.Plan, new IdentityOwnerFactory() }));
++        var result = Assert.IsType<EffectAcceptedTurnPlanningResult>(
++            complete!.Invoke(draft, new object[] { fixture.Transcript }));
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        Assert.True(JsonNode.DeepEquals(ordinary.Plan!.IdentityIndexAfterImage,
++            Assert.IsType<JsonObject>(read!.Invoke(draft, null))));
++        Assert.Equal(6, Assert.IsAssignableFrom<System.Collections.IEnumerable>(
++            phases!.GetValue(draft)).Cast<object>().Count());
++    }
++
++    private sealed record DraftOwnerFixture(
++        EffectAcceptedTurnPlan Plan,
++        AcceptedEffectBoundaryTranscript Transcript,
++        IdentityOwnerFactory Factory,
++        string OldId,
++        string? IncumbentId);
++
++    private static DraftOwnerFixture CreateDraftOwnerFixture(
++        bool consumes = false, int uses = 2,
++        string? nonCreatePolicy = null, int incumbentStacks = 1,
++        bool collideTransitions = false,
++        bool malformedReplacementTransition = false, string? replacementTransitionId = null)
++    {
++        const string rootKey = "draft_owner_root";
++        const string childKey = "draft_owner_child";
++        const string childStackKey = "draft-owner-child";
++        const string rootStackKey = "draft-owner-root";
++        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
++        root["definitionKey"] = rootKey;
++        root["stacking"]!["stackKey"] = nonCreatePolicy == null ? childStackKey : rootStackKey;
++        root["components"]![0]!["payload"]!["resultKind"] = "apply_definition";
++        root["components"]![0]!["payload"]!["definitionKey"] = childKey;
++        root["components"]![0]!["payload"]!["parameters"] = new JsonObject { ["amount"] = 3 };
++        root["components"]![0]!["payload"]!["maxExpansion"] = 2;
++        var child = EffectMaterializationTestFixture.CreateDefinition();
++        child["definitionKey"] = childKey;
++        child["stacking"]!["stackKey"] = childStackKey;
++        child["stacking"]!["policy"] = nonCreatePolicy ?? "replace";
++        child["stacking"]!["maxStacks"] = nonCreatePolicy is "stack" or "merge" ? 3 : 1;
++        child["stacking"]!["atMaximum"] = "no_change";
++        child["stacking"]!["refreshMode"] = nonCreatePolicy == "refresh" ? "reset" : null;
++        child["stacking"]!["mergeRule"] = nonCreatePolicy == "merge" ? "sum" : null;
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "event_reaction");
++        effect["source"]!["definitionKey"] = rootKey;
++        effect["stacking"]!["stackKey"] = nonCreatePolicy == null ? childStackKey : rootStackKey;
++        if (consumes)
++        {
++            root["triggers"]![0]!["consumeUses"] = true;
++            root["lifetime"] = new JsonObject
++            {
++                ["mode"] = "uses", ["initialUses"] = uses,
++                ["consumingEventTypes"] = new JsonArray("owner_damaged")
++            };
++            effect["lifetime"] = new JsonObject
++            {
++                ["mode"] = "uses", ["remainingUses"] = uses,
++                ["consumingTriggerIds"] = new JsonArray("on_owner_damaged"),
++                ["displayText"] = "Accepted uses remain"
++            };
++        }
++        effect["components"] = root["components"]!.DeepClone();
++        effect["triggers"] = root["triggers"]!.DeepClone();
++        var input = CreateReactionInput(effect, root, child);
++        string? incumbentId = null;
++        if (nonCreatePolicy != null)
++        {
++            incumbentId = "effect_draft_owner_incumbent";
++            var incumbent = EffectMaterializationTestFixture.CreateCanonicalEffect();
++            incumbent["effectId"] = incumbentId;
++            incumbent["source"]!["kind"] = "quest";
++            incumbent["source"]!["sourceId"] = "quest_effect_reaction_test";
++            incumbent["source"]!["definitionKey"] = childKey;
++            incumbent["stacking"] = child["stacking"]!.DeepClone();
++            incumbent["stacking"]!.AsObject().Remove("atMaximum");
++            incumbent["stacking"]!["currentStacks"] = incumbentStacks;
++            incumbent["chronology"]!["lastTransitionId"] = "effect_transition_draft_owner_incumbent";
++            incumbent["chronology"]!["createdEventRef"] = "turn_42:draft_owner_incumbent_created";
++            var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect, incumbent);
++            identity["entries"]![1]!["transitions"]![0]!["transitionId"] =
++                "effect_transition_draft_owner_incumbent";
++            identity["entries"]![1]!["transitions"]![0]!["eventRef"] =
++                "turn_42:draft_owner_incumbent_created";
++            input = input with
++            {
++                PreTurnCarriers = new EffectCarrierCatalogInput(
++                    new JsonObject
++                    {
++                        ["schemaVersion"] = 1,
++                        ["activeEffects"] = new JsonArray(effect.DeepClone(), incumbent.DeepClone())
++                    }, null, null, null, null, null),
++                PreTurnIdentityIndex = identity
++            };
++        }
++        var factory = new IdentityOwnerFactory(
++            collideTransitions, malformedReplacementTransition, replacementTransitionId);
++        var built = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
++        Assert.True(built.Success, IdentityOwnerIssues(built));
++        var plan = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
++        Assert.Empty(factory.Ids);
++        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
++        var due = EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
++            plan, ResourceOwnerAuthority.CreateCurrentPlayerAuthority(definitions), definitions);
++        Assert.Empty(due.Issues);
++        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
++        Assert.True(bootstrap.IsValid);
++        var sources = ResourceMutationSourceCatalog.Create(due.SourceExports);
++        Assert.True(sources.IsValid);
++        var resources = AcceptedMechanicsPlanner.BuildResources(new AcceptedMechanicsResourceInput(
++            Turn: 42, Definitions: bootstrap.Definitions!, State: bootstrap.State!, History: bootstrap.History!,
++            Sources: sources.Catalog!, Mutations: due.Mutations,
++            InitialTriggerCandidates: due.TriggerCandidates, InitialEffectResolutionWork: due.Work,
++            EffectPlanAuthority: AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan)),
++            new AcceptedMechanicsIdentityFactory());
++        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
++        Assert.Single(resources.EffectBoundaryTranscript.AcceptedActivations);
++        Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions);
++        return new DraftOwnerFixture(plan, resources.EffectBoundaryTranscript, factory,
++            effect["effectId"]!.GetValue<string>(), incumbentId);
++    }
++
++    private static JsonObject DraftOwnerEntry(JsonObject identity, string effectId) =>
++        identity["entries"]!.AsArray().OfType<JsonObject>()
++            .Single(value => value["effectId"]!.GetValue<string>() == effectId);
++
++    private static void PrintDraftOwnerGolden(
++        string scenario, EffectAcceptedTurnPlan plan, IdentityOwnerFactory factory) =>
++        Console.WriteLine("DRAFT_OWNER_GOLDEN " + scenario + " " +
++            WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan) + " " +
++            string.Join(",", factory.Kinds.Zip(factory.Ids, (kind, id) => kind + ":" + id)));
++
++    // Decode operands rather than searching raw token bytes or source text.
++    private static IEnumerable<MethodBase> DraftOwnerCalledMethods(MethodInfo method)
++    {
++        var codes = typeof(OpCodes).GetFields(BindingFlags.Public | BindingFlags.Static)
++            .Where(field => field.FieldType == typeof(OpCode))
++            .Select(field => (OpCode)field.GetValue(null)!)
++            .GroupBy(code => unchecked((ushort)code.Value))
++            .ToDictionary(group => group.Key, group => group.First());
++        var bytes = method.GetMethodBody()!.GetILAsByteArray()!;
++        for (var offset = 0; offset < bytes.Length;)
++        {
++            ushort key = bytes[offset++];
++            if (key == 0xfe)
++                key = (ushort)(0xfe00 | bytes[offset++]);
++            var code = codes[key];
++            if (code.OperandType == OperandType.InlineMethod)
++                yield return method.Module.ResolveMethod(BitConverter.ToInt32(bytes, offset))!;
++            offset += code.OperandType switch
++            {
++                OperandType.InlineNone => 0,
++                OperandType.ShortInlineBrTarget or OperandType.ShortInlineI or OperandType.ShortInlineVar => 1,
++                OperandType.InlineVar => 2,
++                OperandType.InlineI or OperandType.InlineBrTarget or OperandType.InlineField or
++                    OperandType.InlineMethod or OperandType.InlineSig or OperandType.InlineString or
++                    OperandType.InlineTok or OperandType.InlineType or OperandType.ShortInlineR => 4,
++                OperandType.InlineI8 or OperandType.InlineR => 8,
++                OperandType.InlineSwitch => checked(4 + 4 * BitConverter.ToInt32(bytes, offset)),
++                _ => throw new InvalidOperationException("Unexpected IL operand " + code.OperandType)
++            };
++        }
++    }
++}
+*** Add File: BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.DraftMaterialization.cs
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++using static BookOfEternityClient.Services.EffectAcceptedTurnPlanner;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class EffectAcceptedTurnPlannerTests
++{
++    [Theory]
++    [InlineData(false, 3)]
++    [InlineData(true, 1)]
++    [InlineData(true, 2)]
++    public void DraftOwner_ReplacementRetainsExactWriteRangesAndRealCarrierEdits(bool consumes, int uses)
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: consumes, uses: uses);
++        using var draft = EffectAcceptedDraft.Begin(fixture.Plan, fixture.Factory);
++        Assert.Empty(fixture.Factory.Ids);
++        Assert.Empty(draft.Phases);
++        var result = draft.Complete(fixture.Transcript);
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        Assert.Equal(Enum.GetValues<EffectDraftPhase>(), draft.Phases.Select(value => value.Phase));
++        var reactionPhase = draft.Phases.Single(value => value.Phase == EffectDraftPhase.NonterminalReaction);
++        var application = Assert.Single(reactionPhase.Applications);
++        Assert.Equal("replace", application.Disposition);
++        Assert.Equal(2, application.CarrierEdits.Count);
++        var removed = application.CarrierEdits[0];
++        var created = application.CarrierEdits[1];
++        Assert.Equal(fixture.OldId, removed.EffectId);
++        Assert.NotNull(removed.ReadBefore());
++        Assert.Null(removed.ReadAfter());
++        Assert.Equal(application.EffectId, created.EffectId);
++        Assert.Null(created.ReadBefore());
++        Assert.True(JsonNode.DeepEquals(application.ReadCreatedEffect(), created.ReadAfter()));
++        Assert.Equal(application.Target, result.Plan!.Targets.Single());
++        Assert.Equal(application.Carrier, removed.Carrier);
++        Assert.Equal(application.Carrier, created.Carrier);
++        Assert.Equal("draft_owner_child", application.Source.Key.DefinitionKey);
++        Assert.Equal(EffectDraftApplicationProvenanceKind.Reaction, application.ProvenanceKind);
++        Assert.Equal(fixture.OldId, application.ProducerEffectId);
++        Assert.Equal(3, application.ReadParameters()!["amount"]!.GetValue<int>());
++        Assert.Equal(application.EffectId, application.ResultIdentity!.EffectId);
++        Assert.Equal(fixture.OldId, application.ReplacedIdentity!.EffectId);
++        Assert.Equal(new[] { EffectIdentityWriteKind.AppendTransition, EffectIdentityWriteKind.CreateEntry },
++            application.IdentityWrites.Select(value => value.Kind));
++        Assert.Equal(new[] { EffectIdentityAllocationKind.Effect, EffectIdentityAllocationKind.Transition,
++            EffectIdentityAllocationKind.Transition }, application.Allocations.Select(value => value.Kind));
++        Assert.True(JsonNode.DeepEquals(
++            application.ReadCreatedIdentity(), JsonNode.Parse(application.IdentityWrites[1].PayloadJson)));
++        var agreementPhase = draft.Phases.Single(value => value.Phase == EffectDraftPhase.ReplacementAgreement);
++        var agreement = Assert.Single(agreementPhase.ReplacementAgreements);
++        Assert.Equal(application.ResultIdentity, agreement.Result);
++        Assert.Equal(application.ReplacedIdentity, agreement.Replaced);
++        Assert.Equal(2, agreement.Anchors.Count);
++        Assert.Empty(agreementPhase.Allocations);
++        Assert.Empty(agreementPhase.IdentityWrites);
++        var consumption = draft.Phases.Single(value => value.Phase == EffectDraftPhase.ConsumingTrigger);
++        if (consumes)
++        {
++            var write = Assert.Single(consumption.IdentityWrites);
++            Assert.Equal(EffectIdentityWriteKind.InsertBeforeTransition, write.Kind);
++            Assert.Equal(application.IdentityWrites[0].PayloadJson, write.AnchorJson);
++            Assert.Empty(consumption.CarrierEdits); // the replaced carrier is never restored
++            Assert.Equal(3, Assert.Single(consumption.Allocations).Ordinal);
++        }
++        else
++        {
++            Assert.Empty(consumption.IdentityWrites);
++            var trigger = draft.Phases.Single(value => value.Phase == EffectDraftPhase.NonConsumingTrigger);
++            Assert.Single(trigger.CarrierEdits);
++            Assert.Single(trigger.IdentityWrites);
++            Assert.Equal(0, Assert.Single(trigger.Allocations).Ordinal);
++        }
++        Assert.Equal(fixture.Factory.Ids, draft.Phases.SelectMany(value => value.Allocations)
++            .Select(value => value.Identity));
++        Assert.Equal(Enumerable.Range(0, fixture.Factory.Ids.Count).Select(value => (long)value),
++            draft.Phases.SelectMany(value => value.Allocations).Select(value => value.Ordinal));
++        Assert.True(JsonNode.DeepEquals(result.Plan.IdentityIndexAfterImage, draft.ReadIdentityIndex()));
++        Assert.True(JsonNode.DeepEquals(result.Plan.ResourceTriggerCarriers.PlayerEffects,
++            draft.ReadCarriers().PlayerEffects));
++    }
++
++    [Theory]
++    [InlineData("stack", 1, "stack")]
++    [InlineData("stack", 3, "no_change")]
++    [InlineData("refresh", 1, "refresh")]
++    [InlineData("merge", 1, "merge")]
++    public void DraftOwner_NonCreateReceiptContainsActualUpdatedImage(string policy, int stacks, string disposition)
++    {
++        var fixture = CreateDraftOwnerFixture(nonCreatePolicy: policy, incumbentStacks: stacks);
++        var before = fixture.Plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray()
++            .OfType<JsonObject>().Single(value => value["effectId"]!.GetValue<string>() == fixture.IncumbentId);
++        using var draft = EffectAcceptedDraft.Begin(fixture.Plan, fixture.Factory);
++        var result = draft.Complete(fixture.Transcript);
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        var phase = draft.Phases.Single(value => value.Phase == EffectDraftPhase.NonterminalReaction);
++        var application = Assert.Single(phase.Applications);
++        Assert.Equal(disposition, application.Disposition);
++        Assert.Equal(fixture.IncumbentId, application.EffectId);
++        Assert.Null(application.ReadCreatedEffect());
++        Assert.Null(application.ReadCreatedIdentity());
++        Assert.Null(application.ResultIdentity);
++        Assert.Null(application.ReplacedIdentity);
++        Assert.Equal(EffectDraftApplicationProvenanceKind.Reaction, application.ProvenanceKind);
++        Assert.Equal(fixture.OldId, application.ProducerEffectId);
++        var edit = Assert.Single(application.CarrierEdits);
++        Assert.True(JsonNode.DeepEquals(before, edit.ReadBefore()));
++        var after = result.Plan!.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray()
++            .OfType<JsonObject>().Single(value => value["effectId"]!.GetValue<string>() == fixture.IncumbentId);
++        Assert.True(JsonNode.DeepEquals(after, edit.ReadAfter()));
++        Assert.NotEqual(edit.BeforeJson, edit.AfterJson); // no_change still records its real stack chronology
++        var write = Assert.Single(application.IdentityWrites);
++        Assert.Equal(EffectIdentityWriteKind.AppendTransition, write.Kind);
++        Assert.Equal(fixture.IncumbentId, write.EffectId);
++        Assert.Equal(application.TransitionId, Assert.Single(application.Allocations).Identity);
++        Assert.Equal(EffectIdentityAllocationKind.Transition, application.Allocations[0].Kind);
++        Assert.Empty(draft.Phases.SelectMany(value => value.ReplacementAgreements));
++        Assert.Single(phase.AddedSources);
++        Assert.Equal(application.Source.Key, phase.AddedSources[0].Key);
++        Assert.Equal(new[] { application.Target }, phase.AddedTargets);
++    }
++
++    [Fact]
++    public void DraftOwner_ReadsAreDetachedCompletionAndDisposeAreOnceOnly()
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: true);
++        using var draft = EffectAcceptedDraft.Begin(fixture.Plan, fixture.Factory);
++        Assert.Throws<InvalidOperationException>(() => draft.ReadCarriers());
++        var baseline = fixture.Plan.IdentityIndexAfterImage.ToJsonString();
++        var result = draft.Complete(fixture.Transcript);
++        Assert.True(result.Success, IdentityOwnerIssues(result));
++        var expectedIdentity = draft.ReadIdentityIndex().ToJsonString();
++        var expectedCarrier = draft.ReadCarriers().PlayerEffects!.ToJsonString();
++        var application = Assert.Single(draft.Phases.SelectMany(value => value.Applications));
++        var expectedCreated = application.ReadCreatedEffect()!.ToJsonString();
++        var expectedDefinition = application.Source.ReadDefinition().ToJsonString();
++        draft.ReadIdentityIndex()["entries"]!.AsArray().Clear();
++        draft.ReadCarriers().PlayerEffects!["activeEffects"]!.AsArray().Clear();
++        result.Plan!.IdentityIndexAfterImage["entries"]!.AsArray().Clear();
++        application.ReadCreatedEffect()!["state"] = "not_owner_state";
++        application.ReadCreatedIdentity()!["state"] = "not_owner_state";
++        application.CarrierEdits[1].ReadAfter()!["state"] = "not_owner_state";
++        application.Source.ReadDefinition()["components"]!.AsArray().Clear();
++        Assert.Equal(expectedIdentity, draft.ReadIdentityIndex().ToJsonString());
++        Assert.Equal(expectedCarrier, draft.ReadCarriers().PlayerEffects!.ToJsonString());
++        Assert.Equal(expectedCreated, application.ReadCreatedEffect()!.ToJsonString());
++        Assert.Equal(expectedDefinition, application.Source.ReadDefinition().ToJsonString());
++        Assert.Equal(baseline, fixture.Plan.IdentityIndexAfterImage.ToJsonString());
++        var count = fixture.Factory.Ids.Count;
++        Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
++        Assert.Equal(count, fixture.Factory.Ids.Count);
++        draft.Dispose();
++        draft.Dispose();
++        Assert.Throws<ObjectDisposedException>(() => draft.ReadIdentityIndex());
++        Assert.Throws<ObjectDisposedException>(() => draft.Complete(fixture.Transcript));
++        Assert.Equal(6, draft.Phases.Count); // immutable evidence stays inspectable
++    }
++
++    [Theory]
++    [InlineData("collision", null, "effect_identity_duplicate_transition")]
++    [InlineData("malformed", null, "effect_identity_invalid_field")]
++    [InlineData("malformed", "", "effect_identity_invalid_field")]
++    [InlineData("malformed", " ", "effect_identity_invalid_field")]
++    public void DraftOwner_InvalidAllocatorRetainsOwningDiagnosticStage(
++        string scenario, string? transitionId, string expectedCode)
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: true,
++            collideTransitions: scenario == "collision",
++            malformedReplacementTransition: scenario == "malformed",
++            replacementTransitionId: transitionId);
++        using var draft = EffectAcceptedDraft.Begin(fixture.Plan, fixture.Factory);
++        var result = draft.Complete(fixture.Transcript);
++        Assert.False(result.Success);
++        Assert.Null(result.Plan);
++        Assert.Contains(result.Issues, value => value.Code == expectedCode);
++        Assert.DoesNotContain(result.Issues, value => value.Code == "effect_reaction_replacement_authority_invalid");
++        Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, fixture.Factory.Kinds);
++        Assert.Equal(6, draft.Phases.Count); // late canonical validation, not an earlier receipt exception
++        Assert.Throws<InvalidOperationException>(() => draft.ReadIdentityIndex());
++        Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
++    }
++
++    [Fact]
++    public void DraftOwner_AllocatorExceptionFaultsWithoutExportingFailedPhase()
++    {
++        var fixture = CreateDraftOwnerFixture(consumes: true);
++        using var draft = EffectAcceptedDraft.Begin(fixture.Plan, new IdentityOwnerThrowingFactory());
++        Assert.Throws<IOException>(() => draft.Complete(fixture.Transcript));
++        var phase = Assert.Single(draft.Phases);
++        Assert.Equal(EffectDraftPhase.NonConsumingTrigger, phase.Phase);
++        Assert.Empty(phase.Allocations);
++        Assert.Empty(phase.Applications);
++        Assert.Throws<InvalidOperationException>(() => draft.ReadCarriers());
++        Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
++    }
++
++    [Fact]
++    public void DraftOwner_OriginalCompletionRejectionRemainsBeforeMaterialization()
++    {
++        var first = CreateDraftOwnerFixture(consumes: true);
++        var other = CreateDraftOwnerFixture(consumes: false);
++        using var draft = EffectAcceptedDraft.Begin(first.Plan, first.Factory);
++        var result = draft.Complete(other.Transcript);
++        Assert.False(result.Success);
++        Assert.Contains(result.Issues, issue => issue.Code == "effect_boundary_transcript_plan_mismatch");
++        Assert.Empty(draft.Phases);
++        Assert.Empty(first.Factory.Ids);
++        Assert.Throws<InvalidOperationException>(() => draft.Complete(first.Transcript));
++    }
++
++    [Fact]
++    public void DraftOwner_J1RangesAreBoundedDetachedAndKeepReceiptLifetime()
++    {
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
++        var baseline = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
++        var effectId = effect["effectId"]!.GetValue<string>();
++        using var owner = new EffectIdentityHistoryOwner(baseline, new IdentityOwnerFactory());
++        Assert.Equal(0, owner.WriteCount);
++        Assert.Equal(0, owner.AllocationCount);
++        Assert.Equal(0, owner.ReplacementAgreementCount);
++        var empty = owner.ReadWritesFrom(0);
++        var transition = IdentityOwnerTransition(owner.Factory.CreateTransitionId(),
++            "trigger", "turn_42:draft_owner_range", effectId, effectId);
++        Assert.True(owner.TryAppendTransition(effectId, "active", transition));
++        var writes = owner.ReadWritesFrom(0);
++        var allocations = owner.ReadAllocationsFrom(0);
++        Assert.Empty(empty);
++        Assert.Single(writes);
++        Assert.Single(allocations);
++        Assert.Empty(owner.ReadWritesFrom(owner.WriteCount));
++        Assert.Empty(owner.ReadAllocationsFrom(owner.AllocationCount));
++        Assert.Empty(owner.ReadReplacementAgreementsFrom(0));
++        Assert.Throws<ArgumentOutOfRangeException>(() => owner.ReadWritesFrom(-1));
++        Assert.ThrowsAny<ArgumentException>(() => owner.ReadWritesFrom(2));
++        Assert.Throws<ArgumentOutOfRangeException>(() => owner.ReadAllocationsFrom(-1));
++        Assert.ThrowsAny<ArgumentException>(() => owner.ReadAllocationsFrom(2));
++        owner.Publish();
++        owner.Dispose();
++        Assert.Equal(1, owner.WriteCount);
++        Assert.Equal(writes, owner.ReadWritesFrom(0));
++        Assert.Equal(allocations, owner.ReadAllocationsFrom(0));
++        Assert.Throws<ObjectDisposedException>(() => owner.ReadSnapshot());
++    }
++}
+*** End Patch
