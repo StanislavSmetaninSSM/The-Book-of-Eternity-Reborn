@@ -1747,8 +1747,8 @@ new wound generations use their actual profile-bound eligibility. Real insertion
 and next-exchange consumers plus13 executable scenarios remain required before
 acceptance. This architecture record is not evidence that these paths exist.
 
-The first write-owning production unit T081-B2C-J1 now has a complete code/test
-plan and companion in
+The first write-owning production unit T081-B2C-J1 is accepted with its code/test
+plan, companion and parent verification record in
 `docs/superpowers/plans/2026-09-08-effect-identity-history-owner.md`.
 Its owner is consumed by shared initial/final effect planning and all14 identity
 mutation helpers; actual creates/appends/anchored inserts and allocation order
@@ -1757,7 +1757,14 @@ caught and corrected a proposed early uniqueness exception: duplicate child IDs
 in the real two-consuming cascade must retain the old second-release replacement
 authority failure before consuming allocations, while malformed transition IDs
 retain their applicable final-validation path. Old-production characterization
-and13Fast+1Integration rows are required; this plan is not test evidence.
+and13Fast+1Integration rows were executed and parent-verified. Commit80b09558
+has a complete e96de0d7..80b09558 independent Spec compliant / Quality Approved
+review, zero findings. Actual OLD RED0/1, OLD characterizations1/1 and3/3,
+GREEN13/13,131/131 and Integration7/7, plus parent Fast7789/7789 in
+4:48.8006972/default5m are recorded in the accepted plan. All28FastTRXs were
+inspected, with no non-passing or cross-descriptor duplicate executions;
+all runs have build0/0 and complete cleanup. Finalizing the user-paused review
+required no duplicate C# execution on unchanged source.
 J1 remains only identity/history ownership. J2 in the same feature slice must own
 carrier/source/target/skill/processed-event/phase execution and consume real wound
 insertion/current-generation before authority in the next exchange. No further

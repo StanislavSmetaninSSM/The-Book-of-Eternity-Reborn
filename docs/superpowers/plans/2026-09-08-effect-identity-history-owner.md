@@ -31,11 +31,44 @@
 
 **Interfaces:** Consume existing EffectIdentityFactory, identity JSON, typed replacement identities and unchanged planner helper phases. Produce EffectIdentityHistoryOwner with the complete receipt/factory/image APIs implemented in the companion below; all14 typed helper changes are listed in the full design appendix.
 
-- [ ] **Step1: Verify original contexts, stage the exact old-API subset and record the semantic reflection RED.**
-- [ ] **Step2: Stage and execute the exact OLD-production collision/malformed-ID characterization rows before production changes.**
-- [ ] **Step3: Apply the complete remaining tests and production companion; preserve the old checks and order.**
-- [ ] **Step4: Execute all three prescribed GREEN Focused selections; inspect summaries/logs/TRX and retain failed artifacts.**
-- [ ] **Step5: Self-review full scope/companion agreement, commit only four scoped files and write the report.**
+- [X] **Step1: Verify original contexts, stage the exact old-API subset and record the semantic reflection RED.**
+- [X] **Step2: Stage and execute the exact OLD-production collision/malformed-ID characterization rows before production changes.**
+- [X] **Step3: Apply the complete remaining tests and production companion; preserve the old checks and order.**
+- [X] **Step4: Execute all three prescribed GREEN Focused selections; inspect summaries/logs/TRX and retain failed artifacts.**
+- [X] **Step5: Self-review full scope/companion agreement, commit only four scoped files and write the report.**
+
+### Parent acceptance — 2026-09-08
+
+Accepted only T081-B2C-J1 at `80b0955870d17965449c2a60ec005fd3b07e71e5`,
+against recorded base `e96de0d787bb858b9025d0dd065e972d7ff22df3`.
+Independent review: Spec compliant / Task Quality Approved, zero Critical,
+Important or Minor findings and no unresolved evidence. The review was paused
+by the user, then formally completed after resumption without repeating checks.
+Parent inspected both new files and both existing-file diffs; reconstruction
+of all30 sequential update hunks and two added files proves exact agreement
+with the complete companion, normalizing line endings only.
+
+Parent-verified Focused artifacts: semantic OLD RED at145944, 0/1 with the
+intended missing-owner Assert.NotNull after real consuming replacement;
+OLD duplicate-child characterization at150017, 1/1; OLD malformed-transition
+characterization at150125, 3/3; GREEN at150400, 13/13; planner/cache at150446,
+131/131; Integration at150509, 7/7. All six runs used the default5m bound,
+build0 warnings/0 errors, no skipped/duplicate executions and complete cleanup.
+The full paths are retained in the worktree's
+`sdd/effect-identity-history-owner-task-1-report.md`.
+
+Parent Fast artifact
+`20260908-151013-510-39796-e116a597e40741c280f495cc1b47d69d-fast`:
+7789/7789, `00:04:48.8006972` within default5m, no timeout, build0/0 and
+complete cleanup. All28TRXs were inspected:7735unique test IDs,7789unique
+executions, no non-passing/cross-descriptor duplicate rows, all13new Fast rows.
+No new C# run was needed solely to finalize the paused review.
+
+This internal writer changes no Mortal/afterlife GM contract; no prompt,
+example, matrix, manifest or source-guard update is needed for J1. Full J2
+draft/source/insertion/next-exchange/engine work remains mandatory and open.
+The design/staging appendix below is retained as pre-implementation history,
+not as a claim that implementation or verification is still unperformed.
 
 The complete executable companion is `docs/superpowers/plans/2026-09-08-effect-identity-history-owner.patch`, reproduced below. It was converted mechanically from the inspected ordinary diff into apply_patch format, with blank context whitespace normalized; production/test postimages are unchanged. Do not use git apply. For RED staging extract only the named complete members from this companion. Reconcile already-staged postimages rather than duplicating declarations.
 
