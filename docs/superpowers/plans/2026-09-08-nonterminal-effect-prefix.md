@@ -30,10 +30,10 @@
 
 **Interfaces:** Consume AcceptedEffectBoundaryTranscript.Builder, EffectReplayIdentity and the existing ResourceExecutionSession closed pause. Produce AcceptedEffectBoundaryPrefixResult, AcceptedEffectBoundaryTranscript.ClosedPrefix, Builder.CaptureClosedPrefix() and ResourceClosedBoundaryCheckpoint.EffectPrefix, fully implemented in the companion below.
 
-- [ ] **Step1: Stage only the old-API positive-control/reflection Fact and owning partial declaration; record the semantic RED.**
-- [ ] **Step2: Apply the complete companion production and test postimages, preserving every other test/helper and the terminal validator contract.**
-- [ ] **Step3: Run the three exact GREEN controls, inspect their actual summaries/logs/TRX and retain all failed artifacts.**
-- [ ] **Step4: Self-review complete scope and exact companion agreement; commit only the five scoped files and write the full implementation report.**
+- [X] **Step1: Stage only the old-API positive-control/reflection Fact and owning partial declaration; record the semantic RED.**
+- [X] **Step2: Apply the complete companion production and test postimages, preserving every other test/helper and the terminal validator contract.**
+- [X] **Step3: Run the three exact GREEN controls, inspect their actual summaries/logs/TRX and retain all failed artifacts.**
+- [X] **Step4: Self-review complete scope and exact companion agreement; commit only the five scoped files and write the full implementation report.**
 
 Companion: `docs/superpowers/plans/2026-09-08-nonterminal-effect-prefix.patch`. It supplies all production bodies and all nine Facts; the same complete text follows below so this task's extracted brief is self-contained. Rebase Update/Add File headers to the absolute active worktree for apply_patch. This is planned code, not execution evidence.
 
@@ -681,3 +681,37 @@ The first command is RED staging; the remaining three must pass after implementa
      public void ResourceSession_ContractRedHasNonemptyProductionPositiveControl()
 *** End Patch
 ```
+
+## Accepted execution — 2026-09-08
+
+T081-B2B is complete at `02fafbdf9cc57101f3c9655c90afc519ad12c2c3`, recorded
+review base `3e4518cb5ed9b0534d1d62b2d846fae4d8887156`. Independent task review
+is Spec compliant / Quality Approved, zero Critical/Important/Minor findings.
+Parent read the complete report and reconstructed all five expected postimages
+from the companion: four are exact; the transcript only wraps the Validate
+parameter onto a second line. No existing assertion or corrected B2A helper changed.
+
+Actual artifacts below are relative to `TestResults/test-lanes/`:
+
+| Control | Result | Wall time | Artifact |
+|---|---|---|---|
+| Old terminal positive then reflection RED |0/1|1:08.8167407|`20260908-060841-898-44648-cca25cfbf0ea4201b1cb4c68f0e2407b-focused`|
+| Transcript/arbiter/session |45/45|1:09.4421773|`20260908-061218-403-45508-76b102a1dd934cdda8bea26ad793d9cf-focused`|
+| Accepted effect planner |109/109|0:16.2685881|`20260908-061333-228-20812-52f948db89ba4838ad4d4a75ad24a30f-focused`|
+| Integration pending waves |5/5|1:29.5636335|`20260908-061353-815-13104-3d0bd76e92394d2dbe083898be46bb4c-focused`|
+| Parent Fast |7776/7776|4:59.1412643|`20260908-143347-839-21648-4521cf2b487841adb63f6c0eff95649c-fast`|
+
+Parent inspected all summaries/logs/TRXs. Every GREEN control used the default5m
+bound, finished exit0/TimedOut=false, build warnings/errors0/0, no skipped or
+duplicate executions, and complete owned-tree cleanup. All26FastTRXs contain
+7776 distinct executions,7722 unique method IDs and no cross-descriptor duplicates;
+all8new builder Facts and10session Facts are present. Existing dynamic theories
+account for54extra rows. The review's non-diff-verifiable execution/cleanup items
+are resolved by actual artifacts; the code commit contains only the five scoped
+files, and unrelated .serena metadata was not staged or manually edited.
+
+Only nested B2B is accepted. Top-level79/177 and fullT081/B2/C/D/E/T084/T085/T177
+remain open. This unsealed view does not implement source admission, actual effect
+materialization during continuation or live wound insertion. No GM-facing contract
+changed, so Mortal/afterlife prompts/examples/matrix/manifests need no update here.
+No remote publication, issue closure, branch/worktree or session cleanup occurred.

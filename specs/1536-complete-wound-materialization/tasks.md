@@ -2203,13 +2203,19 @@ hand-written history/after-images, or a raw mutation fallback.
         wall5:00.6051031,default5m/TimedOut=false,build0/0,cleanupcomplete,zero
         skips/duplicate executions/cross-descriptor IDs. Exact artifacts and both
         historical REDs are recorded in the bounded plan. Full B2 remains open.
-      - [ ] T081-B2B [US3] Capture and production-consume a detached unsealed
+      - [X] T081-B2B [US3] Capture and production-consume a detached unsealed
         closed effect prefix, with exact authority-keyed use/terminal evidence
         and complete mechanics-frontier validation. Implement the five-file,
         nine-Fact complete plan/companion
         `docs/superpowers/plans/2026-09-08-nonterminal-effect-prefix.md`.
         Preserve ordinary Drain, terminal Freeze and all corrected B2A helpers;
         the view is not source authority or actual incremental effect state.
+        Accepted2026-09-08: code02fafbdf, full review3e4518cb..02fafbdf approved0C/I/M.
+        Parent reconstructed all five postimages and inspected actual RED0/1,
+        GREEN45/45,109/109,5/5 andFast7776/7776,wall4:59.1412643,default5m,
+        build0/0,cleanupcomplete,no skips/duplicates. All8new builder/10session
+        Facts present; only one signature wrap differs from planned code.
+        Exact artifacts and no-GM-update rationale are in the bounded plan.
       - [ ] T081-B2C [US3] Own actual effect materialization and identity/history
         edits in the same retained draft and consume them through the production
         finalizer and real wound insertion/next-exchange route. Follow the exact
