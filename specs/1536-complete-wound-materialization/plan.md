@@ -1790,15 +1790,20 @@ or afterlife prompt/example/matrix/manifest change. Live source acquisition,
 current-generation insertion, versioned routing and the next-exchange consumer
 remain mandatory J2 work with their tracked GM synchronization.
 
-The next J2-B source-envelope acquisition/checker unit has a pending explicit
-rules choice: the existing formula and live contract require a registered source
-severity ceiling, but ordinary ceilings and canonical special/guaranteed source
-declarations are not defined by the cost table or source DTO. The proposed rule
-awaiting user confirmation is no additional ordinary-action ceiling beyond the
-approved formula, destination strain and danger limits; special restrictions
-or guaranteed results must be declared in pre-materialized canonical sources
-and still fit harder bounds. No such rule has yet been silently adopted, no
-source family excluded and no caller-constructed capability admitted.
+The J2-B source-envelope rules choice was explicitly approved by the user on
+2026-09-08 and recorded in spec.md (Clarifications, US3, FR-032), research.md,
+data-model.md and both spiritual contracts. Ordinary actions have no additional
+ceiling beyond the approved formula, destination strain and danger limits: the
+source term is neutral IV. The same applies to special sources without a wound
+declaration, which retain ordinary eligibility and have no guaranteed result.
+Special restrictions or guaranteed results require an exact pre-materialized
+canonical declaration and still fit every harder bound. The complete J2-B plan
+must specify canonical acquisition, the closed declaration extension, the shared
+production checker and real signed positive/negative tests. A cost table, DTO,
+frame or caller cap is not that authority. No source family is excluded and
+source-only preparation is not admission. GM prompts/examples/source guards for
+the new executable declaration belong to that implementation change; this
+clarification changes only planned requirements, not a runtime or GM output schema.
 
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.

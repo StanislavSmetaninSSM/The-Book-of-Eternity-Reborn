@@ -352,6 +352,15 @@ controlled caps at II. Destination caps are exactly `clear -> none`, `strained -
 opportunities may worsen that wound. An older wound changes only through explicit
 re-trauma.
 
+**Source-envelope clarification (user-approved 2026-09-08)**: Ordinary spiritual
+actions have no extra source cap, represented by neutral IV when combining caps.
+An exact pre-materialized canonical special source may restrict that maximum or
+guarantee a wound within every harder bound. Neither cost nor a caller-authored
+audit establishes that declaration. Without it, a special source retains ordinary
+harmful-strain eligibility and does not guarantee a wound. The source producer
+must prove both the prior declaration and the actual trigger; a conflicting
+guarantee cannot bypass formula, destination-strain, or danger limits.
+
 **Rationale**: Strain is the existing afterlife harm contour. Basing the opportunity on
 its accepted transition avoids introducing HP or automatic post-battle fatigue and
 keeps training safe by default.

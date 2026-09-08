@@ -2265,9 +2265,11 @@ hand-written history/after-images, or a raw mutation fallback.
           payload/allocation outputs audited, build0/0/cleanup complete.
         - [ ] T081-B2C-J2-B [US3] Acquire the real original spiritual source
           under the canonical lease and make the production validator consume
-          the shared strict checker. First resolve the recorded source-envelope
-          rule in plan.md: ordinary source ceiling and canonical pre-materialized
-          special/guaranteed declarations. Do not infer it from a caller cap,
+          the shared strict checker. Apply the user-approved 2026-09-08 rule:
+          ordinary sources and special sources without a wound declaration have
+          neutral-IV source caps and no guarantee; special restrictions/guarantees
+          require exact pre-materialized canonical declarations within harder
+          bounds. Do not infer that authority from a caller cap,
           DTO, frame or hash; do not omit ordinary/special/guaranteed/start/
           terminal families. Source-only preparation is not admitted wound,
           successful resource spend or publishable receipt. Complete-code plan

@@ -3101,8 +3101,15 @@ not implemented by this documentation update.
 Each accepted strain transition records immutable audit inputs:
 `harmfulMargin`, `appliedArtTier`, `targetResilienceTier`, previous/new strain,
 extra jump steps, raw trauma pressure, formula severity, destination cap, danger cap,
-and final maximum. These are client-computed or copied from validated conflict
+source cap, any exact pre-materialized guaranteed-trigger authority, and final
+maximum. These are client-computed or copied from validated conflict
 authority; the GM cannot author them.
+
+For ordinary actions and special sources without a wound declaration, the source
+cap is neutral IV and guarantee authority is absent (user confirmation, 2026-09-08).
+A special cap or guarantee is acquired from the exact pre-materialized canonical
+source, not the current exchange or wound proposal. It cannot loosen a harder cap.
+This derived audit is not a caller-constructible proof of a successful source event.
 
 The destination cap is exactly `clear -> none`, `strained -> I`, `fractured -> II`,
 `overwhelmed -> III`, and `broken -> IV`. A multi-rank jump uses the accepted final

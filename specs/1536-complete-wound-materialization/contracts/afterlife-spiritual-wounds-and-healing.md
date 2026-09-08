@@ -50,6 +50,21 @@ and source cap. `harmfulMargin` is the sealed harmful margin before any normaliz
 critical-success display adjustment. Natural 1/20 do not raise the maximum. All audit
 inputs are client-computed or copied from validated conflict authority.
 
+The user-approved source rule (2026-09-08) is no additional ordinary-action cap:
+the source term is neutral IV unless an exact pre-materialized canonical source
+declares a stricter limit. A special art without that declaration has the same
+ordinary harmful-strain eligibility and no guaranteed wound. Art cost, zero cost,
+a passive role, or a caller-supplied ceiling cannot establish or remove eligibility.
+
+A special ceiling or guaranteed severity must be proven from the source's accepted
+declaration before the harmful event. The current wound proposal or exchange cannot
+invent or strengthen that authority. A proven guaranteed trigger requires its
+declared result only inside all applicable hard limits; it cannot override training,
+the formula, destination strain, or a stricter source ceiling. Contradictory proof
+must reject, not increase the maximum or silently turn the guarantee into an ordinary
+optional result. This rule does not itself prove that the source event or its
+resource/effect reductions succeeded.
+
 The exact destination-strain cap is:
 
 | Destination | Rank | Cap |

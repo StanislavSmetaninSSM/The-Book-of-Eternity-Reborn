@@ -62,6 +62,10 @@
 
 - Q: Do Spiritual Resilience and Spiritual Healing need a separate experience system? → A: No. Both develop like all other standard spiritual arts: ordinary player training/upgrades and ordinary persistent-entity progression, from visible tier 0 through V. No per-art experience track or progression redesign is introduced.
 
+### Session 2026-09-08
+
+- Q: Do ordinary spiritual actions have an additional source-specific wound-severity ceiling? → A: No. Ordinary actions use the approved formula, target Spiritual Resilience, destination strain, and danger limits without an additional source restriction. A special restriction or guaranteed wound must already be declared by a materialized canonical source and still obey every harder limit. Absence of such a declaration means no additional source cap and no guarantee; it does not disable that source's ordinary harmful-strain wound eligibility.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Receive a Complete and Fair Wound (Priority: P1)
@@ -121,6 +125,9 @@ As an afterlife player, I can enter spiritual conflicts whose danger is declared
 5. **Given** an older active wound, **When** no explicit action targeted it, **Then** the new exchange cannot silently re-traumatize it.
 6. **Given** a non-training defeat, **When** the conflict resolves, **Then** a bounded defeat outcome prevents immediate repetition of the same aggression.
 7. **Given** annihilation mode and valid winner authority, **When** the winner chooses a softer outcome, **Then** soul dissipation does not occur.
+8. **Given** an ordinary action or a special art without a pre-materialized wound restriction, **When** its validated harmful strain transition permits severity IV, **Then** no additional source ceiling lowers that maximum and the GM may still choose a lower wound or none.
+9. **Given** a source with a pre-materialized severity-II ceiling, **When** the formula, destination, and danger would allow IV, **Then** its maximum remains II; a newly authored or changed declaration in the harmful exchange cannot supply prior source authority.
+10. **Given** a pre-materialized guaranteed wound whose trigger is proven by the accepted source, **When** the declared severity fits every hard limit, **Then** declining that required result is invalid; if it contradicts a harder limit, the guarantee cannot override that limit or silently raise the maximum.
 
 ---
 
@@ -444,7 +451,7 @@ are consequence primitives, not a catalog of complete spiritual wounds.
   Existing offline compatibility without a validated baseline and the exact
   capstone closure/bonus rules remain unchanged. This prerequisite does not
   establish full grant, wound, or publication authority.
-- **FR-032**: The maximum spiritual severity MUST be calculated from harmful margin, applied-art tier, target Spiritual Resilience tier, destination strain rank, extra strain jumps, and the conflict-mode cap according to the approved design formula.
+- **FR-032**: The maximum spiritual severity MUST be calculated from harmful margin, applied-art tier, target Spiritual Resilience tier, destination strain rank, extra strain jumps, and the conflict-mode cap according to the approved design formula. Ordinary spiritual actions MUST have no additional source-specific ceiling. A special source restriction or guaranteed wound MUST derive from an exact pre-materialized canonical source declaration proven before the harmful event, never from the current wound proposal, a caller-provided cap, or art cost. Such a declaration MUST NOT override the formula, destination-strain, danger, or other harder bounds. Absence of a special declaration MUST mean no additional source restriction and no guarantee, while preserving ordinary harmful-strain eligibility for that source.
 - **FR-033**: Natural 1 and natural 20 in the conflict exchange MUST NOT independently raise spiritual wound severity.
 - **FR-034**: Each side MUST receive at most one newly created spiritual wound per conflict.
 - **FR-035**: Later wound choices in the same conflict MAY worsen that exact conflict wound within the new envelope and MUST NOT create a duplicate.

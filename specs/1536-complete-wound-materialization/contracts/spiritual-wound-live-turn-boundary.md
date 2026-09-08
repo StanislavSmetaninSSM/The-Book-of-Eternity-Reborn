@@ -83,6 +83,11 @@ For each admitted harmful transition, independently establish:
   authority, and a normalized/clamped tier is not raw validation evidence.
 - Prior danger declaration, any accepted escalation, registered source ceiling,
   and exact explicit old-wound action reference when re-trauma is requested.
+  The source ceiling is neutral IV for ordinary actions and for special sources
+  without a wound declaration (user confirmation, 2026-09-08). A stricter ceiling
+  or guarantee requires the exact pre-materialized canonical source; absence
+  supplies neither a guarantee nor a prohibition on ordinary eligibility. A current
+  GM seed, DTO, frame, hash, or caller cap is not proof of a prior declaration.
 - Successful resource/effect reductions for the exact source prefix. A failed
   subordinate stage cannot leave an offer, accepted receipt or resource spend.
 
