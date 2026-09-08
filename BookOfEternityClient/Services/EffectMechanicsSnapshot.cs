@@ -22,7 +22,10 @@ internal sealed record EffectMechanicalComponent(
     string Profile,
     int Priority,
     int CurrentStacks,
-    JsonElement Payload);
+    JsonElement Payload)
+{
+    internal EffectSourceKey? Source { get; init; }
+}
 
 internal sealed record EffectMechanicsAuditEntry(
     string DisplayName,
@@ -120,13 +123,20 @@ internal sealed record EffectMechanicsSnapshot(
                 ? ReadExact(display?["category"]) ?? "effect"
                 : "hidden";
             var target = effect["target"] as JsonObject;
+            var realm = ReadExact(effect["realm"]) ?? string.Empty;
             var targetKind = ReadExact(target?["kind"]) ?? string.Empty;
             var targetId = ReadExact(target?["targetId"]) ?? string.Empty;
+            var source = effect["source"] as JsonObject;
+            var sourceKey = new EffectSourceKey(
+                realm,
+                ReadExact(source?["kind"]) ?? string.Empty,
+                ReadExact(source?["sourceId"]) ?? string.Empty,
+                ReadExact(source?["definitionKey"]) ?? string.Empty);
             var profiles = new List<string>();
 
             effects.Add(new EffectAcceptedInstance(
                 occurrence.EffectId,
-                ReadExact(effect["realm"]) ?? string.Empty,
+                realm,
                 targetKind,
                 targetId,
                 occurrence.Coordinate.Kind,
@@ -146,7 +156,7 @@ internal sealed record EffectMechanicsSnapshot(
                     var payload = component["payload"]!.AsObject();
                     components.Add(new EffectMechanicalComponent(
                         occurrence.EffectId,
-                        ReadExact(effect["realm"]) ?? string.Empty,
+                        realm,
                         targetKind,
                         targetId,
                         isVisible,
@@ -156,7 +166,14 @@ internal sealed record EffectMechanicsSnapshot(
                         profile,
                         component["priority"]!.GetValue<int>(),
                         ReadPositiveInt(effect["stacking"]?["currentStacks"], 1),
-                        ToDetachedElement(payload)));
+                        ToDetachedElement(payload))
+                    {
+                        Source = new EffectSourceKey(
+                            sourceKey.Realm,
+                            sourceKey.Kind,
+                            sourceKey.SourceId,
+                            sourceKey.DefinitionKey)
+                    });
                 }
             }
 
