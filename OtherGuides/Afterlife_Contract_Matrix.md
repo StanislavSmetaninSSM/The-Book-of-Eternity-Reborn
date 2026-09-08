@@ -348,6 +348,22 @@ The optional canonical `spiritualWoundEnvelope` must pre-exist the harmful event
 absence is neutral IV with no guarantee, not lost ordinary eligibility. A source
 declaration never replaces the validated event, harder limits, or final admission.
 
+Source-action targeting and terminal witnesses in both Chaos Sea and Shining Abode
+follow `spiritual_wound_source_action_v1` in the same guide and named afterlife
+example. Author optional exact `spiritualWoundTarget {actorType, actorId, optional
+retraumaWoundRef}` only on the player exchange or opposition `incomingAction`.
+Absence uses the original affected-side lead; an explicit actor is an original member
+of that affected side, and re-trauma uses canonical prior wound/history authority.
+Never invent or choose mechanical tier, source cap, harmful margin, guarantee, dice
+values, or outcome. Preserve required cost/dice reports copied from original client
+data and report only checked outcomes. The exact five computed action/audit fields are
+`traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
+`guaranteedSeverityRank`, and `spiritualWoundEnvelope`; never author them. A terminal
+resolution carries the complete existing `terminalExchange` and matching contested
+`diceAudit`, not a totals summary. Source-local preparation is not wound admission or
+a receipt: start/escalation/prefix/terminal, passive, champion, and dice-free voluntary
+contours remain pending for client-owned C/D/E proof. Dissipation stays optional.
+
 The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
 
 Use this system when roleplay creates a real spiritual contest in `Chaos Sea` or ordinary active `Shining Abode`: coercive Guardian pressure, duels between Guardians/residents/radiant actors, contested bindings, forced-incarnation attempts, or side-vs-side champion contests. The GM starts the conflict when the scene requires it; the client does not pre-create the conflict. Conflict realm/mode authority is evaluated from the validated pre-turn `soul_state.json` and, for Shining, the validated pre-turn `shining_abode_state.json`; same-turn edits to `currentRealm`, Shining `availability`, or `preparedIncarnationPackage` cannot make a conflict legal. For a worked valid start/exchange pattern, see example 24 in `Examples/E_CLI_Afterlife_Turns.txt`. For Russian player/GM labels and canonical English JSON terms, use `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`.

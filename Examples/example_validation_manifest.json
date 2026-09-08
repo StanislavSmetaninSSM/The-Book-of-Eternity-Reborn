@@ -731,6 +731,19 @@
       "requiredText": ["spiritual_wound_source_envelope_v1", "spiritualWoundEnvelope", "maximumSeverityRank", "guaranteedSeverityRank", "before", "neutral IV", "no guarantee"]
     },
     {
+      "contractId": "spiritual_wound_source_action_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json afterlifeSpiritualConflictUpdate exchange or recentConflicts[] terminal resolution",
+      "responseSurface": "player exchange spiritualWoundTarget, opposition incomingAction spiritualWoundTarget, and source-local resolution.terminalExchange",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Two typed fragments cover both legal exact target locations and one complete contested terminal witness without presenting source preparation as wound admission.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualSourceAction_DocumentedTargetsUseProductionShapeValidator -> ValidationService.ValidateSpiritualWoundSourceActionShape; AfterlifeResourceCutoverTests.SpiritualSourceAction_DocumentedTerminalWitnessIsSourceLocalPendingOnly -> ValidationService.BeginSpiritualWoundSourceSessionAsync -> SpiritualSourceRequirement.TerminalClosure",
+      "focusedFragmentReason": "The first object contains two complete action-location fragments; the second is a complete resolution fragment evaluated against a real signed production preparation fixture, not a complete response or accepted turn.",
+      "coverageLimit": "Exact source-action shape and source-local signed preparation only; original affected-side membership and prior re-trauma are covered by B1 source tests, while C/D/E still own applied source/effect/champion binding, start/escalation/prefix/terminal closure, admission, insertion, receipts, and publication.",
+      "requiredText": ["spiritual_wound_source_action_v1", "spiritualWoundTarget", "retraumaWoundRef", "terminalExchange", "TerminalClosure", "source-local", "Chaos Sea", "Shining Abode", "C/D/E", "optional dissipation"]
+    },
+    {
       "contractId": "afterlife_light_incarnate_history_authority_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",

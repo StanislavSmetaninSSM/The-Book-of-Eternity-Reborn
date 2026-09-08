@@ -262,6 +262,65 @@ Worked source: `spiritual_wound_source_envelope_v1` in
 `Examples/E_CLI_Afterlife_Turns.txt`. The source-art fragment proves authoring and
 closed parsing, not a full actor update, accepted battle, or wound publication.
 
+## spiritual_wound_source_action_v1
+
+In Chaos Sea and Shining Abode, a harmful spiritual action may optionally name its
+intended wound target. Put `spiritualWoundTarget` only on the player exchange object
+or on the opposition `incomingAction` object:
+
+```json
+{
+  "spiritualWoundTarget": {
+    "actorType": "guardian",
+    "actorId": "guardian_frame",
+    "retraumaWoundRef": "wound_torn_resonance"
+  }
+}
+```
+
+`spiritualWoundTarget` is a closed object. It contains exactly `actorType`, `actorId`,
+and optional `retraumaWoundRef`; all present values are raw non-empty exact strings with
+no surrounding whitespace. There are no aliases, case variants, confusable spellings,
+or second wound-reference field. Do not put the target in `specialArtAudit`,
+`specialArtAudits[]`, a resolution summary, or a wound decision.
+
+The acting player targets the opposition side; an opposition `incomingAction` targets
+the player side. An explicit actor must be an original member of the affected side.
+When the object is absent, the client selects the original affected-side lead; the GM
+does not restate or recompute that default. `retraumaWoundRef` may identify only one
+canonical prior active spiritual wound whose original carrier owner, realm, semantic
+identity, and immutable history all agree. Source preparation never makes a wound
+removed or changed in the current candidate valid; later admission must still prove
+current candidate agreement.
+
+The GM never authors `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
+`guaranteedSeverityRank`, or `spiritualWoundEnvelope` on an exchange, incoming action,
+or audit. The client derives the harmful margin, destination strain, danger cap, source
+cap, guarantee, tier, dice, and source binding from signed originals. Do not invent
+dice, operation evidence, damage, or a successful outcome for a passive source,
+champion coordination, or a dice-free voluntary action.
+
+A newly terminal harmful result carries `resolution.terminalExchange`. This is the
+complete existing exchange witness, including its full `before`, `after`, matchup,
+action-cost, and matching complete `diceAudit` when contested. It is not a totals
+summary. The resolution-level `diceAudit` must equal the terminal exchange audit; the
+exchange coordinate and dice cannot be reused from a retained/current exchange or a
+second terminal result.
+
+A source-local preparation is not an admitted wound, opportunity, decision, receipt,
+successful resource/effect publication, or accepted turn. Start, escalation, missing
+same-turn prefix, terminal closure, passive source, champion coordination, and
+dice-free voluntary contours remain pending until the client-owned C/D/E stages prove
+their actual authority. Never remove one of those lawful contours merely to avoid the
+pending requirement. Soul dissipation remains a separate optional dissipation choice
+in both real realms; it is never implied by this source field or terminal witness.
+
+Worked fragments: `spiritual_wound_source_action_v1` in
+`Examples/E_CLI_Afterlife_Turns.txt`. The first fragment is executable shape proof for
+both legal action locations. The second is a complete contested terminal witness that
+the signed production preparation retains as `TerminalClosure`; neither fragment is a
+full profile update, wound admission, receipt, or accepted turn.
+
 ## wound_acquisition_narration_v1
 
 `display.acquisitionNarration` must describe this exact accepted wound and must appear

@@ -46,6 +46,136 @@ A present null field is invalid. Do not alter the source after seeing the roll,
 copy the envelope into an exchange audit, or submit a wound decision from this
 example alone. Source preparation is not admitted wound or publication authority.
 
+## spiritual_wound_source_action_v1
+
+These are two complete source-local fragments for Chaos Sea and Shining Abode, not
+a complete `afterlifeSpiritualConflictUpdate`, wound decision, receipt, or accepted
+turn. The first fragment shows both legal target locations. The player exchange harms
+an original opposition member; the opposition incoming action harms an original player
+member. Omit the whole target to use the original affected-side lead.
+
+```json
+{
+  "playerExchange": {
+    "spiritualWoundTarget": {
+      "actorType": "guardian",
+      "actorId": "guardian_frame",
+      "retraumaWoundRef": "wound_torn_resonance"
+    }
+  },
+  "oppositionExchange": {
+    "incomingAction": {
+      "spiritualWoundTarget": {
+        "actorType": "player",
+        "actorId": "player_soul"
+      }
+    }
+  }
+}
+```
+
+Both `spiritualWoundTarget` objects are closed and use raw non-empty exact strings with
+no surrounding whitespace. `retraumaWoundRef` is optional and refers only to a
+canonical prior active spiritual wound with agreeing original carrier, owner, realm,
+identity, and immutable history. Do not add `traumaPressure`, `sourceSeverityCap`,
+`maximumSeverityRank`, `guaranteedSeverityRank`, or `spiritualWoundEnvelope` here.
+
+The next fragment is one complete source-local terminal resolution for the existing
+signed `conflict_resource_cost` fixture. `terminalExchange` is the full existing
+exchange witness, not a totals summary, and its contested `diceAudit` exactly matches
+the resolution audit. The client-owned signed preparation retains it as
+`TerminalClosure`; that pending result is deliberately not wound admission or success.
+
+```json
+{
+  "conflictId": "conflict_resource_cost",
+  "realm": "Chaos Sea",
+  "dangerMode": "hostile",
+  "operationType": "pressure",
+  "resolutionState": "resolved",
+  "resolvedAtTurn": 42,
+  "terminalExchange": {
+    "exchangeId": "exchange_conflict_frame_42",
+    "turnNumber": 42,
+    "operationType": "pressure",
+    "outcome": "success",
+    "before": {
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested"
+    },
+    "after": {
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "strained",
+      "conflictPosition": "contested"
+    },
+    "matchupAudit": {
+      "playerOperation": "pressure",
+      "oppositionOperation": "pressure",
+      "primaryResolutionLane": "pressure",
+      "matchupRationale": "Давление души преодолевает встречное давление хранителя.",
+      "riskProfile": "offensive_pressure"
+    },
+    "actionCostAudit": {
+      "player": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 6,
+        "after": 3,
+        "max": 6
+      },
+      "opposition": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 6,
+        "after": 3,
+        "max": 6
+      }
+    },
+    "diceAudit": {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
+        { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
+      ],
+      "playerTotal": 15,
+      "oppositionTotal": 5,
+      "margin": 10,
+      "outcomeBand": "decisive_player_success",
+      "modifierBreakdown": { "player": [], "opposition": [] }
+    }
+  },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
+      { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
+    ],
+    "playerTotal": 15,
+    "oppositionTotal": 5,
+    "margin": 10,
+    "outcomeBand": "decisive_player_success",
+    "modifierBreakdown": { "player": [], "opposition": [] }
+  }
+}
+```
+
+Do not shrink `terminalExchange` to totals, invent dice for a dice-free voluntary
+contour, turn passive or champion prose into an art spend, or treat a source-local
+pending result as acceptance. Start, escalation, missing prefix, terminal closure,
+passive, champion, and dice-free voluntary contours still require client-owned C/D/E
+proof. Soul dissipation remains a separate optional dissipation decision.
+
+## Afterlife turn workflow and worked examples
+
 Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
 
 WOUND-OWNED GENERATION — CLIENT LIFECYCLE EXAMPLE
