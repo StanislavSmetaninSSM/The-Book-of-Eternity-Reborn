@@ -204,4 +204,15 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 ## Acceptance boundary
 
+Review correction at source `4de64a34` (not yet accepted): independent review
+found the shared Integration fixture enlarged rollback membership by unioning
+the observation set into trackedPaths. The parent verified the code and rules;
+the original rollback contract governs over that companion mistake. Preserve
+the old tracked set separately, capture its union with the sixteen observed
+paths, and add rollback rows only for original tracked members. A new two-row
+Integration regression proves observation-only settings stay excluded while
+explicit additionalTrackedPaths still include settings, with signed bytes in
+both cases. This remains T081-B2C-J2-B0 and changes no production producer or
+GM contract. The separate old boundary58/60 failure remains unresolved.
+
 B0 is complete only when all six typed hash DTOs agree, all three actual producers emit an authenticated closed map under real leases, old-shaped current snapshots preserve legacy behavior but cannot prove opt-in absence, the reader exposes only authenticated absent paths, and rollback membership is unchanged. B0 does not admit spiritual wound sources, materialize wounds, change gameplay, update GM contracts, or complete T081-B2C-J2-B / #1536.
