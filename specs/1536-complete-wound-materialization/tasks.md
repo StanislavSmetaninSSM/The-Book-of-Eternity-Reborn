@@ -2293,7 +2293,7 @@ hand-written history/after-images, or a raw mutation fallback.
             boundary gate is now genuinely GREEN60/60 at ecffabdc after
             T177-BROAD-OWNERSHIP review0C/I/M; owner12/12 also passes.
             Earlier RED, fixture correction and timeout artifacts are retained.
-          - [ ] T081-B2C-J2-B1 [US3] After reviewed B0 named controls, acquire
+          - [X] T081-B2C-J2-B1 [US3] After reviewed B0 named controls, acquire
             original source bytes or signed absence through its real reader
             under the canonical lease, then validate source declarations,
             targets and terminal exchanges without granting source admission.
@@ -2307,8 +2307,8 @@ hand-written history/after-images, or a raw mutation fallback.
             and its exact companion preserve the diagnostic/historical boundary.
             No current/default source fallback was added and no final assertion
             was removed. Independent review at66d11b02 is Spec compliant / Quality
-            Approved0C/I/M; parent read full source/evidence/report. B1 stays open
-            until the immediately following GM synchronization and combined gate.
+            Approved0C/I/M; parent read full source/evidence/report. The bounded
+            B1 source-local task is accepted at the combined checkpoint below.
             Immediately synchronize source-action/terminal GM examples and guards through
             `docs/superpowers/plans/2026-09-08-spiritual-source-action-gm-sync.md`
             with this runtime change, not with B0. Apply that eight-file unit
@@ -2316,6 +2316,14 @@ hand-written history/after-images, or a raw mutation fallback.
             their section headings delimit exactly one envelope and two action
             JSON fences. Parent owns one combined Fast and conditional
             FullValidation after named controls/review, not separate repeated runs.
+            Accepted2026-09-09: GM9 sourcee8b1c71e has exact companion agreement,
+            strict Integration4/4 and documentation129/129, independent0C/I/M.
+            Reviewed process move01cae542 and narrow inventory correctionab2dd976
+            resolve two preserved Fast failures without changing runtime/deadlines.
+            Corrected Fast7870/7870 in4:07.056/default5m and conditional
+            FullValidation1920/1920 in12:26.460/default15m pass; parent inspected
+            actual logs/summaries/all40TRXs and exact discovery/theory membership.
+            This does not close parent B, T081, C1/C2/D/E, T177 or full #1536.
         - [ ] T081-B2C-J2-C1 [US3] After the B0/B1/GM checkpoint, implement the
           shared retained resource execution core and next-whole-exchange staging
           from `docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md`
@@ -2704,7 +2712,7 @@ scope, then resume paused wound documentation and final controls against one fin
   Spec compliant / Quality Approved0C/I/M, build0/0 and cleanup complete.
   No Fast/FullValidation result is claimed by this bounded acceptance.
 
-- [ ] T177-GM-PROCESS-OWNERSHIP [US8] Correct the real PowerShell proposal-dispatch
+- [X] T177-GM-PROCESS-OWNERSHIP [US8] Correct the real PowerShell proposal-dispatch
   suite's Fast ownership exposed by the combined B0/B1/GM checkpoint. Execute
   `docs/superpowers/plans/2026-09-08-gm-proposal-dispatch-process-boundary.md`
   and its literal companion: move all six unchanged Facts to Integration with
@@ -2713,8 +2721,11 @@ scope, then resume paused wound documentation and final controls against one fin
   Integration7, exact moved source equality, independent review, then corrected
   combined Fast and the already-required GM-sensitive FullValidation. Test-only
   placement changes no Mortal/afterlife GM contract. Full T177 remains open.
+  Accepted2026-09-09 at01cae542 plus combined checkpointab2dd976: exact source
+  equality, ownershipRED0/1->GREEN1/1, Integration7/7, independent0C/I/M,
+  Fast7870/7870 and existing GM FullValidation1920/1920. No timeout expansion.
 
-- [ ] T177-SNAPSHOT-WOUND-INVENTORY [US8] Reconcile the B0 closed original-path
+- [X] T177-SNAPSHOT-WOUND-INVENTORY [US8] Reconcile the B0 closed original-path
   declaration with the exact wound source inventory after combined Fast
   `20260908-233632-202-19176-e7f4558435bf46fcba7c3cf466d7d5d2-fast`
   failed the real production discovery guard (6015/6016, no lane timeout).
@@ -2726,6 +2737,10 @@ scope, then resume paused wound documentation and final controls against one fin
   green, inspect the same failed/passing TestId, and obtain independent review
   before the corrected combined Fast and already-required GM FullValidation.
   This test-inventory correction changes no Mortal/afterlife GM contract.
+  Accepted2026-09-09 atab2dd976: exact8-line inventory-only correction,
+  unchanged complete guard body by inverse audit, owning5/5 with the same
+  original failed TestId, independent0C/I/M, corrected Fast7870/7870 and
+  conditional FullValidation1920/1920. Prior partial Fast remains FAILED.
 
 T177 bounded fixture checkpoints (2026-09-07):
 

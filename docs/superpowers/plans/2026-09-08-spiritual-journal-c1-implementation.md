@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Parent uses superpowers:subagent-driven-development for this single coherent task. The user has explicitly authorized delegation and model choice; parent selects each model explicitly, dispatches one source-owning implementer and a separate task reviewer, and owns evidence/acceptance gates. This metadata-review child does not delegate. Steps use checkbox syntax for tracking.
 
-**Parent tracking status:** The parent has read the entire original companion and every correction, including the accepted zero-exchange identity guard, actual-phase evidence pins, and checkpoint sequencing. This plan is tracked under #1536/T081-B2C-J2-C1 before source edits. B1 source is at66d11b02; its review and the combined B0/B1/GM Fast plus conditional FullValidation must finish before C1 source dispatch. No C1 runtime/test success is claimed.
+**Parent tracking status:** The parent has read the entire original companion and every correction, including the accepted zero-exchange identity guard, actual-phase evidence pins, and checkpoint sequencing. This plan is tracked under #1536/T081-B2C-J2-C1 before source edits. B1 source is at66d11b02; its independent review and the combined B0/B1/GM Fast7870/7870 plus conditional FullValidation1920/1920 are accepted2026-09-09 atab2dd976. C1 is ready for its separately verified implementation; no C1 source or test success is claimed yet.
 
 **Goal:** Refactor the production resource planner into one retained execution owner that can accept the next resource-local whole-exchange batch before allocation and expose detached, exact closed intervals without completing the effect plan.
 

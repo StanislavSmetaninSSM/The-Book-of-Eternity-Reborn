@@ -2207,9 +2207,13 @@ global lane limit was changed by the boundary repair.
 B1 source commit66d11b02 now contains the reviewed nine-file companion plus the
 exact diagnostic fixture correction; source60, pure20, corrected3 and unchanged26
 pass. Independent source review is Spec compliant / Quality Approved0C/I/M,
-and parent inspected the full source/report/evidence. The immediately following GM action/envelope synchronization
-and one parent combined B0/B1/GM Fast plus conditional FullValidation remain
-required. B0/source-local B1 do not admit or materialize a spiritual wound;
+and parent inspected the full source/report/evidence. GM action/envelope source
+e8b1c71e is now independently reviewed0C/I/M with strict Integration4/4 and
+documentation129/129. Corrected combined checkpointab2dd976 passes
+Fast7870/7870 in4:07.056/default5m and FullValidation1920/1920 in12:26.460/15m.
+Parent inspected actual logs/summaries/all40TRXs and exact discovery/theory
+membership; both earlier partial Fast failures remain preserved as failures.
+The B1 source-local task is accepted. B0/source-local B1 do not admit or materialize a spiritual wound;
 full T081, T177, C/D/E, US3 and issue #1536 remain OPEN.
 
 ## 2026-09-08 — retained whole-exchange resource execution C1
@@ -2220,8 +2224,10 @@ test passes alone, and its real PowerShell/filesystem workflow belongs to
 ProcessIntegration. Tracked child T177-GM-PROCESS-OWNERSHIP follows
 `docs/superpowers/plans/2026-09-08-gm-proposal-dispatch-process-boundary.md`
 and its literal companion, preserving all six Facts and deadlines. Named
-ownership/functional controls and review precede corrected combined Fast and
-the still-required FullValidation; no C1 source is enabled before those gates.
+ownership/functional controls and independent review are accepted. A second
+preserved Fast failure led to the exact B0 inventory correction below, also
+independently reviewed. Both corrected broad controls are now GREEN; no C1
+source was changed during those runs.
 
 Source issue: #1536, T081-B2C-J2-C1. Parent reviewed the full nine-file companion in
 `docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md` and
@@ -2240,8 +2246,9 @@ replays. Exact both-side transition witnesses precede interval closure, and zero
 does not substitute for missing evidence. Local intervals and source strings are
 not B1 source capabilities or final wound admission.
 
-Dispatch waits for B1 review and the combined B0/B1/GM Fast plus conditional
-FullValidation. Parent owns a separate meaningful C1 Fast after its focused tests
+The B1 review and combined B0/B1/GM Fast plus conditional FullValidation
+predecessor gates are accepted2026-09-09 atab2dd976. C1 is ready for its separate
+implementation, not complete. Parent owns a meaningful C1 Fast after its focused tests
 and independent review. No new GM contract in pure C1: no Mortal/afterlife prompt,
 example, manifest or documentation guard update, and no C1 FullValidation.
 Mandatory C2 source/version binding and same-owner pending continuation, D wound
@@ -2262,6 +2269,9 @@ Run the complete owning guard class, compare the original failed TestId, inspect
 the diff and request independent review. Then run corrected combined Fast and
 the still-required GM FullValidation before C1. No production, game-contract,
 GM prompt/example/manifest or deadline changes are needed for this correction.
+Accepted2026-09-09 atab2dd976: owning5/5, same failed TestId nowPASS, exact
+original guard body after reversing only the8addedlines, independent0C/I/M,
+and corrected combined Fast/FullValidation above. No broader task is closed.
 
 ## Risk controls
 

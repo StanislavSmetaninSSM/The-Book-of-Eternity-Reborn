@@ -9,7 +9,7 @@
 
 ## Status and predecessor gate
 
-Current execution status: B0 and the broad-validation boundary are parent-accepted at4044e8cf. Parent inspected the complete B1 companion and exact tenth-file diagnostic correction; all ten postimages match their reviewed companions. Source60, pure20, corrected exact3 and unchanged frame26 controls pass. The exact ten-file source commit is66d11b02. Independent full B1 review is Spec compliant / Quality Approved with zero Critical, Important or Minor findings; parent read the full report and accepted this source gate. The immediately following GM/combined checkpoint remains pending, so the complete B1 task is not yet closed. The original planning gates below are retained as historical execution instructions.
+Current execution status: B0 and the broad-validation boundary are parent-accepted at4044e8cf. Parent inspected the complete B1 companion and exact tenth-file diagnostic correction; all ten postimages match their reviewed companions. Source60, pure20, corrected exact3 and unchanged frame26 controls pass. The exact ten-file source commit is66d11b02. Independent full B1 review is Spec compliant / Quality Approved with zero Critical, Important or Minor findings; parent read the full report and accepted this source gate. GM9 synchronization and the corrected combined Fast/FullValidation are now accepted2026-09-09 atab2dd976, so the bounded B1 source-local task is complete. The original planning gates below are retained as historical execution instructions, not outstanding B1 tasks; all broader C/D/E obligations remain open.
 
 The tenth source/test file is bounded by the complete reviewed plan and companion
 `docs/superpowers/plans/2026-09-08-spiritual-source-b1-frame-fixture-correction.md`
@@ -23,7 +23,16 @@ Accepted source gate2026-09-08: corrected3 artifact215034-262-20720-
 Both default5m, build0/0, no timeout/duplicates, cleanup complete. Source60/pure20
 evidence above is retained. Full report is worktree git-metadata
 sdd/spiritual-source-b1-review.md; cross-task B0 evidence is separately accepted,
-while GM synchronization, combined Fast/FullValidation and all C/D/E remain required.
+while the later GM/combined acceptance is recorded below and all C/D/E remain required.
+
+Accepted combined checkpoint2026-09-09: exact GM9 sourcee8b1c71e,
+strict Integration4/4 and documentation129/129, independent0C/I/M.
+After reviewed process move01cae542 and inventory correctionab2dd976,
+Fast7870/7870 in4:07.0563038/default5m and FullValidation1920/1920
+in12:26.4604013/default15m pass. Exact result directories and preserved
+historical failures are recorded in the adjacent GM synchronization plan.
+Parent checked actual summary/log/TRX/discovery, including all eight
+full-state owner rows. B1 source-local acceptance is not wound admission.
 
 The cap rule is resolved: user approval recorded at1cb6afd1 authorizes neutral IV/no guarantee for ordinary sources; special ceilings/guarantees are original canonical declarations. Unit A source is accepted at e720b03f. Parent's later docs/projector-plan commits do not change B1's four existing runtime targets; D implementation has no B0/B1 file overlap.
 
@@ -139,24 +148,24 @@ A non-empty pending list is not success for admission. Even an empty list proves
 
 Do not execute until B0 is implemented/verified and this complete B1 companion has passed the parent gate. Preserve artifacts and inspect actual TRX summaries; commands below are intended controls, not reported results.
 
-- [ ] Record actual BASE and confirm B0 is implemented/accepted; B1's four existing target files must still match the mechanically reviewed preimage before applying the companion. D/projector changes are independent.
-- [ ] Run existing ordinary production OLD:
+- [x] Record actual BASE and confirm B0 is implemented/accepted; B1's four existing target files must still match the mechanically reviewed preimage before applying the companion. D/projector changes are independent.
+- [x] Run existing ordinary production OLD:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ConflictFrame_SignedPressureExchangePublishesWithNoOwningPhaseErrors"`
   Expected: existing full raw/common-publication/final-check control passes.
-- [ ] Apply only SpiritualSourceAdmission.Old.cs. Run:
+- [x] Apply only SpiritualSourceAdmission.Old.cs. Run:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~SourceOwner_RedRawRejectsOriginalOutOfRangeResilience"`
   Expected semantic RED: existing source lacks the new spiritual_source_input_invalid rejection for original raw resilience6; no absent API compilation failure.
-- [ ] Apply the final reviewed B1 runtime and typed tests from the companion. B0's producer/reader/fixture changes must already be present; do not copy or reimplement them in B1.
-- [ ] GREEN signed source rows plus OLD regression:
+- [x] Apply the final reviewed B1 runtime and typed tests from the companion. B0's producer/reader/fixture changes must already be present; do not copy or reimplement them in B1.
+- [x] GREEN signed source rows plus OLD regression:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.SourceOwner_|FullyQualifiedName~ConflictFrame_SignedPressureExchangePublishesWithNoOwningPhaseErrors"`
-- [ ] Preserve the genuine pre-implementation raw source RED above. Run the exact-target negative and positive rows against the final production-consumed guard in the deterministic Focused selection below; do not temporarily break a newly implemented method merely to manufacture another RED. No extra mutation-control lane is required.
-- [ ] GREEN deterministic source declaration:
+- [x] Preserve the genuine pre-implementation raw source RED above. Run the exact-target negative and positive rows against the final production-consumed guard in the deterministic Focused selection below; do not temporarily break a newly implemented method merely to manufacture another RED. No extra mutation-control lane is required.
+- [x] GREEN deterministic source declaration:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualWoundSourceEnvelopeTests"`
-- [ ] Retain complete diagnostic frame/history/offline controls:
+- [x] Retain complete diagnostic frame/history/offline controls:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AfterlifeResourceCutoverTests.ConflictFrame_"`
   This is diagnostic reuse only; none of these frames becomes a spiritual capability.
-- [ ] Parent coordinates the parser-dependent worked-example Integration test and required afterlife FullValidation from its GM companion, then one combined Fast at the meaningful implementation checkpoint. No duplicate Fast immediately before eventual PreMerge.
-- [ ] Inspect exact nine-file diff and git diff --check, preserve all failures, and report only verified outcomes. After the named controls are GREEN, one exact nine-file local commit is permitted. Fresh review checks spec compliance and source quality; parent inspects actual source/artifacts before acceptance. Report to worktree-metadata sdd/spiritual-source-owner-b1-task-1-report.md. Scope/fixture/API deviations require parent review before changing the frozen code.
+- [x] Parent coordinates the parser-dependent worked-example Integration test and required afterlife FullValidation from its GM companion, then one combined Fast at the meaningful implementation checkpoint. No duplicate Fast immediately before eventual PreMerge.
+- [x] Inspect exact nine-file diff and git diff --check, preserve all failures, and report only verified outcomes. After the named controls are GREEN, one exact nine-file local commit is permitted. Fresh review checks spec compliance and source quality; parent inspects actual source/artifacts before acceptance. Report to worktree-metadata sdd/spiritual-source-owner-b1-task-1-report.md. Scope/fixture/API deviations require parent review before changing the frozen code.
 
 Current signed tests cover coherent signed Chaos Sea and Shining Abode ownership (the Shining row rebuilds resource state/history and composed authority after changing profile bindings/soul/conflict realm, not just a realm string); dice-free ordinary and special incoming harm retained as AppliedSourceBinding; real lease/original-reader ownership; request, manifest coverage, signed-byte and original dice mutations; integer/fractional/out-of-range tiers and all legal resilience0..5; two-exchange dice uniqueness; both signed harmful directions; original player scalar authority versus mirror; special caps/guarantees including cap0; passive no-fabricated-spend; start/escalation/terminal pending; optional existing turn markers; exact re-trauma original history; terminal retained/repeated identity and missing prefix; and no common-plan admission from Begin alone.
 
@@ -176,8 +185,8 @@ New B0-dependent source tests prove:
 
 Still required before source dispatch:
 
-- [ ] B0's implementation and its source/hash/restore/lifecycle controls are accepted by parent. No rewriting/re-signing an old active user manifest to manufacture missing observations.
-- [ ] Parent reads every final B1 body and accepts the frozen-API alignment and nine-header/hunk replay.
+- [x] B0's implementation and its source/hash/restore/lifecycle controls are accepted by parent. No rewriting/re-signing an old active user manifest to manufacture missing observations.
+- [x] Parent reads every final B1 body and accepts the frozen-API alignment and nine-header/hunk replay.
 - [ ] Future C/D proves actual applied-effect/champion coordination and dice-free source binding; future C/E proves start/escalation/prefix/terminal closure. These are mandatory typed requirements, not exclusions or fabricated tiers.
 
 Full C/D/E work remains required in the same feature slice: actual source reductions and suffix dependency graph, J1-backed current-generation insertion, next-exchange routing consumer, prior visible start/escalation authority, terminal closure and publication gate. B cannot be declared a delivered wound capability by itself.

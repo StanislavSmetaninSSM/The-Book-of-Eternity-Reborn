@@ -7,6 +7,43 @@
 **Architecture:** Extend the already-landed `spiritual_wound_source_envelope_v1` checkpoint with one adjacent `spiritual_wound_source_action_v1` section and two explicitly fragment-scoped examples. Fast guards pin the prose/routing/manifest boundary; typed Integration tests parse the printed fragments, call B1's actual `ValidateSpiritualWoundSourceActionShape`, and place the printed terminal resolution into the existing signed production preparation fixture, where it must remain `TerminalClosure` pending and must not mint common-plan authority.
 **Tech Stack:** Existing C#/.NET 8, xUnit, `System.Text.Json.Nodes`, existing test helpers, Markdown/JSON examples, and PowerShell 7 bounded lanes; no package or product runtime beyond the separately reviewed B1 dependency.
 
+## Accepted source-local checkpoint — 2026-09-09
+
+The exact nine-file source commit is e8b1c71e: this eight-file companion plus
+the old envelope parser partial. Parent restored the complete approved bodies
+after an implementer simplified six files; earlier runs remain historical.
+The final exact terminal-member and target-member assertions are preserved.
+Independent review is SpecCompliant / QualityApproved0C/I/M and parent-read.
+
+All artifacts are under TestResults/test-lanes:
+
+| Final control | Artifact | Result | Wall |
+| --- | --- | --- | --- |
+| Strict signed/parser/manifest Integration | 20260908-224508-704-30016-4d7f41730cf0407ebe826fdcf147c011-focused | 4/4 | 43.2274281s |
+| All afterlife documentation guards | 20260908-224701-599-49580-768fb72e88464bc0a998547027381183-focused | 129/129 | 25.0695290s |
+| Corrected combined Fast | 20260908-235120-541-24348-6ae5e757ff6f415fa8ce91289e0ff9fe-fast | 7870/7870 | 4:07.0563038 |
+| Conditional FullValidation | 20260908-235606-506-49312-42ddc9dcf46a46b1b94c3d3e21198975-fullvalidation | 1920/1920 | 12:26.4604013 |
+
+All final controls have clean builds/cleanup and no timeout/skips/duplicates.
+Fast retained5m and FullValidation15m limits. Parent reconciled all40 broad
+TRXs, exact method sets and runtime-theory expansions (Fast54, Full110).
+The three FullValidation parser/manifest IDs match Focused; the signed terminal
+row remains in its existing Integration category and is proven by Focused4.
+All eight reviewed full-state treatment rows are present/PASS in FullValidation.
+
+Preserve genuine source-docs RED0/2
+20260908-223340-637-27256-76544fa234584433af1f762ee00a11f0-focused and
+initial GREEN2/2 20260908-223650-230-33912-e325579b24ba406f871070b260478fdc-focused.
+Preserve both partial Fast failures: 230104-211-45628 real worker timeout and
+233632-202-19176 missing B0 inventory scope. Reviewed source01cae542 moved the
+unchanged six real-process tests; sourceab2dd976 added only the exact inventory
+entry/scope. Neither fix changes production or increases deadlines.
+
+This accepts GM source-local synchronization and the B1 prerequisite only.
+Mortal mechanics, daemon/launcher transport and UI are unchanged; existing
+mandatory guide routes suffice. C1/C2/D/E, wound admission/insertion, healing,
+publication, T081/T089-T092/T177 and full #1536 remain open.
+
 ## Global Constraints
 
 - Exact worktree: `E:/Games/worktrees/boe-1536-wound-materialization`; B1's source baseline is `30f0897c699bc883e38decdf6c8deb53d8f18819`. Parent reported docs-only checkpoint `9f301262eaa02b64266aa0b63b56bbce2ed4529f` before concurrent B0 work began; recheck the live HEAD and B1 target hashes at implementation. Apply only after B0 is accepted and the frozen B1 companion is implemented/reviewed.
@@ -58,15 +95,15 @@ No B1 runtime source file, envelope companion file, Spec Kit artifact, task chec
 - Create: `E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualSourceDocumentation.cs`
 - Parent-owned dependency applied in the same bounded change: `E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualSourceEnvelope.cs` from the existing envelope companion.
 
-- [ ] **Step 1: Confirm B0 is accepted, B1 is implemented/reviewed with its frozen APIs, and parent has tracked this eight-file action companion plus the old parent-owned envelope Integration partial.**
+- [x] **Step 1: Confirm B0 is accepted, B1 is implemented/reviewed with its frozen APIs, and parent has tracked this eight-file action companion plus the old parent-owned envelope Integration partial.**
 
 Expected: B1 exposes `ValidateSpiritualWoundSourceActionShape`, `BeginSpiritualWoundSourceSessionAsync`, and `SpiritualWoundSourceEnvelope.TryRead`; no C/D/E authority is inferred.
 
-- [ ] **Step 2: Apply only the Fast-file update, including both the Regex import hunk and the two `SpiritualSourceActionDocumentation_` guard bodies.**
+- [x] **Step 2: Apply only the Fast-file update, including both the Regex import hunk and the two `SpiritualSourceActionDocumentation_` guard bodies.**
 
 The guide assertion normalizes only Markdown backticks and whitespace before exact token matching. It does not lowercase, trim identities, fold confusables, or weaken the raw closed-string contract.
 
-- [ ] **Step 3: Run the two Fast documentation guards for a genuine semantic RED.**
+- [x] **Step 3: Run the two Fast documentation guards for a genuine semantic RED.**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualSourceActionDocumentation_"
@@ -74,11 +111,11 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~Spiritu
 
 Expected: 0/2 with missing action guide/routing/manifest content after a successful compile. Preserve the exact result artifact.
 
-- [ ] **Step 4: Apply the remaining seven files from this companion and the old parent-owned envelope Integration partial.**
+- [x] **Step 4: Apply the remaining seven files from this companion and the old parent-owned envelope Integration partial.**
 
 The new `## spiritual_wound_source_action_v1` heading separates the envelope and action sections, and `## Afterlife turn workflow and worked examples` terminates the action section. The existing envelope test extracts its first named JSON fence; the new action parser enumerates exactly two action fences and excludes unrelated examples. Matrix/CLI guidance forbids inventing or choosing mechanical authority while explicitly preserving required cost/dice reports copied from original client data and checked outcomes.
 
-- [ ] **Step 5: Run the same two Fast guards GREEN.**
+- [x] **Step 5: Run the same two Fast guards GREEN.**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualSourceActionDocumentation_"
@@ -86,7 +123,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~Spiritu
 
 Expected: 2/2 PASS with the same exact IDs, clean build/cleanup, no timeout or skips.
 
-- [ ] **Step 6: Run one combined four-row Integration selection.**
+- [x] **Step 6: Run one combined four-row Integration selection.**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~SpiritualSourceAction_|FullyQualifiedName~SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser"
@@ -94,7 +131,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter
 
 Expected: 4/4 PASS: the old envelope parser row plus the two typed target/manifest rows and one signed real-file/lease terminal-pending row. Do not run redundant per-pair selections.
 
-- [ ] **Step 7: Run the complete afterlife documentation guards.**
+- [x] **Step 7: Run the complete afterlife documentation guards.**
 
 ```powershell
 pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
@@ -102,7 +139,7 @@ pwsh .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~Afterli
 
 Expected: all discovered rows PASS. Record exact discovery/execution counts and the result directory.
 
-- [ ] **Step 8: Hand the scoped diff and evidence to parent; parent owns final tracking, commits, one combined Fast, and conditional FullValidation.**
+- [x] **Step 8: Hand the scoped diff and evidence to parent; parent owns final tracking, commits, one combined Fast, and conditional FullValidation.**
 
 Report the eight action-companion files, the separately parent-owned envelope partial, RED/GREEN artifacts, exact four Integration IDs, and the no-update rationale: Mortal docs, rules glossary, daemon/launcher bodies, afterlife pending/control registry, and UI are unchanged because there is no new transport, state file, or player command. Do not run another Fast, commit, edit task checkboxes, or claim T089-T092/#1536 complete; C/D/E source reduction, admission, insertion, lifecycle, receipts, and publication remain open.
 
