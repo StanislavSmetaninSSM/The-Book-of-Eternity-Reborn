@@ -2704,6 +2704,16 @@ scope, then resume paused wound documentation and final controls against one fin
   Spec compliant / Quality Approved0C/I/M, build0/0 and cleanup complete.
   No Fast/FullValidation result is claimed by this bounded acceptance.
 
+- [ ] T177-GM-PROCESS-OWNERSHIP [US8] Correct the real PowerShell proposal-dispatch
+  suite's Fast ownership exposed by the combined B0/B1/GM checkpoint. Execute
+  `docs/superpowers/plans/2026-09-08-gm-proposal-dispatch-process-boundary.md`
+  and its literal companion: move all six unchanged Facts to Integration with
+  ProcessIntegration, add both ownership entries, synchronize inventory68, and
+  preserve worker/lane deadlines. Prove genuine path-ownership RED/GREEN1 and
+  Integration7, exact moved source equality, independent review, then corrected
+  combined Fast and the already-required GM-sensitive FullValidation. Test-only
+  placement changes no Mortal/afterlife GM contract. Full T177 remains open.
+
 T177 bounded fixture checkpoints (2026-09-07):
 
 Accepted generic effect rollback correction:

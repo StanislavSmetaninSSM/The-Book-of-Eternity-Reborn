@@ -1,0 +1,45 @@
+*** Begin Patch
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/FastTestBoundaryTests.cs
+@@
+         "GmWorkerValidationRepairDelegatorTests.cs",
++        "GmWorkerProposalOnlyDispatchTests.cs",
+         Path.Combine("WebUi", "BrowserMortalWorldGenerationFencingTests.cs"),
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/GmWorkerProposalOnlyDispatchTests.cs
+*** Move to: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/GmWorkerProposalOnlyDispatchTests.cs
+@@
+ namespace BookOfEternityClient.Tests;
+
++[Trait("Category", "ProcessIntegration")]
+ public sealed class GmWorkerProposalOnlyDispatchTests
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+@@
+             ["GmWorkerProposalStoreTests.cs"] = [ProcessIntegrationTrait],
++            ["GmWorkerProposalOnlyDispatchTests.cs"] = [ProcessIntegrationTrait],
+             ["GmWorkerValidationRepairDelegatorTests.cs"] = [ProcessIntegrationTrait],
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/docs/testing.md
+@@
+-The exact reviewed-heavy source/category manifest contains 67
++The exact reviewed-heavy source/category manifest contains 68
+@@
+ its category and all tests are unchanged.
+
++`GmWorkerProposalOnlyDispatchTests.cs` belongs to `ProcessIntegration`: four of
++its six Facts launch real PowerShell workers, and two check the same dispatch
++workflow's no-launch/session-replacement paths against real filesystem state.
++The physical move preserves all six methods, assertions, the ten-second worker
++timeout and cleanup. Both ownership manifests prevent it returning to Fast;
++the Fast five-minute lane limit and process runner are unchanged.
++
+ The diagnostic lanes select
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/specs/1505-test-suite-performance/research.md
+@@
+-### Exact executable manifests after #1536 scalar-course publication and browser contention ownership
++### Exact executable manifests after #1536 scalar-course publication, browser contention and GM dispatch ownership
+
+-The 67 entries below are the complete, ordinal contents of
++The 68 entries below are the complete, ordinal contents of
+@@
+ | `GmWorkerValidationRepairDelegatorTests.cs` | `ProcessIntegration` |
++| `GmWorkerProposalOnlyDispatchTests.cs` | `ProcessIntegration` |
+ | `WebUi/BrowserMortalWorldGenerationFencingTests.cs` | `RegressionIntegration` |
+*** End Patch

@@ -2214,6 +2214,15 @@ full T081, T177, C/D/E, US3 and issue #1536 remain OPEN.
 
 ## 2026-09-08 — retained whole-exchange resource execution C1
 
+Predecessor checkpoint diagnostic: the first combined B0/B1/GM Fast stopped at
+an unchanged real-worker dispatch timeout, not a wound assertion. The exact
+test passes alone, and its real PowerShell/filesystem workflow belongs to
+ProcessIntegration. Tracked child T177-GM-PROCESS-OWNERSHIP follows
+`docs/superpowers/plans/2026-09-08-gm-proposal-dispatch-process-boundary.md`
+and its literal companion, preserving all six Facts and deadlines. Named
+ownership/functional controls and review precede corrected combined Fast and
+the still-required FullValidation; no C1 source is enabled before those gates.
+
 Source issue: #1536, T081-B2C-J2-C1. Parent reviewed the full nine-file companion in
 `docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md` and
 `.patch`, including a later exact accepted-exchange-ID guard. One source owner
