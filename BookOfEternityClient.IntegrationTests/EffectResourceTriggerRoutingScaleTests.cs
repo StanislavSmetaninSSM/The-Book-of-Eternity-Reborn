@@ -673,6 +673,79 @@ public sealed class EffectResourceTriggerRoutingScaleTests
     }
 
     [Fact]
+    public void IdentityHistoryOwner_TwoConsumingDuplicateChildrenKeepReplacementAuthorityFailure()
+    {
+        const string childKey = "identity_owner_collision_replacement";
+        var child = EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
+        child["definitionKey"] = childKey;
+        child["stacking"]!["policy"] = "replace";
+        child["stacking"]!["maxStacks"] = 1;
+        child["stacking"]!["atMaximum"] = "no_change";
+        var fixture = CreateAcceptedEventBudgetFixture(
+            remainingUses: 2,
+            current: 10m,
+            reactionResultKind: "apply_definition",
+            applyDefinitionSource: child,
+            distinctReactionPerTrigger: true,
+            triggerSpecs: new[]
+            {
+                new BudgetTriggerSpec("trigger_budget_replace_10_first", "resource_damaged",
+                    Priority: 10, IncludePeriodic: false, IncludeReaction: true),
+                new BudgetTriggerSpec("trigger_budget_replace_20_second", "resource_damaged",
+                    Priority: 20, IncludePeriodic: false, IncludeReaction: true)
+            });
+        var damage = CreateBudgetMutation(fixture.Coordinate,
+            "turn_43:budget:identity_owner_duplicate_children", ResourceOperation.Damage, amount: 2m);
+        var factory = new IdentityOwnerDuplicateChildFactory();
+        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { damage }, factory);
+        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
+        var transcript = result.Resources.EffectBoundaryTranscript;
+        var accepted = transcript.AcceptedActivations
+            .OrderBy(value => value.Activation.Stamp.ActivationOrdinal).ToArray();
+        Assert.Equal(2, accepted.Length);
+        Assert.Single(accepted.Select(value => value.Boundary.BoundaryOrdinal).Distinct());
+        Assert.Equal(new int?[] { 2, 1 }, accepted.Select(value => value.Activation.Stamp.UsesBefore));
+        var releases = transcript.ReleasedReactions.OrderBy(value => value.MechanicsOrdinal).ToArray();
+        Assert.Equal(2, releases.Length);
+        Assert.All(releases, release =>
+        {
+            Assert.Equal("apply_definition", release.Reaction.ResultKind);
+            Assert.Equal(childKey, release.Reaction.DownstreamSourceKey?.DefinitionKey);
+        });
+        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(result.Finalized);
+        Assert.False(finalized.Success);
+        Assert.Null(finalized.Plan);
+        var issue = Assert.Single(finalized.Issues);
+        Assert.Equal("effect_reaction_replacement_authority_invalid", issue.Code);
+        Assert.Equal(releases[1].Reaction.EventRef, issue.Actual);
+        // First release passed agreement; second failed there. No consume allocation
+        // or final canonical validation occurred, and no writer exception escaped.
+        Assert.Equal(new[] { "effect", "transition", "transition", "effect", "transition", "transition" },
+            factory.Kinds);
+        Assert.Equal(new[] { "effect_identity_owner_duplicate_child", "effect_identity_owner_duplicate_child" },
+            factory.EffectIds);
+    }
+
+    private sealed class IdentityOwnerDuplicateChildFactory : EffectIdentityFactory
+    {
+        internal List<string> Kinds { get; } = new();
+        internal List<string> EffectIds { get; } = new();
+        private int _transitions;
+        internal override string CreateEffectId()
+        {
+            const string id = "effect_identity_owner_duplicate_child";
+            Kinds.Add("effect");
+            EffectIds.Add(id);
+            return id;
+        }
+        internal override string CreateTransitionId()
+        {
+            Kinds.Add("transition");
+            return "effect_transition_identity_owner_duplicate_child_" + ++_transitions;
+        }
+    }
+
+    [Fact]
     public void AcceptedBoundary_TwoConsumingSameStackReplacementsRecordBothUsesBeforeOriginalReplace()
     {
         const string replacementDefinitionKey =

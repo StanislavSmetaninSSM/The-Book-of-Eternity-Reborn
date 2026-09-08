@@ -2307,8 +2307,11 @@ internal static class EffectAcceptedTurnPlanner
         }
 
         var workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
-        var identityRoot = plan.IdentityIndexAfterImage;
-        var identityState = ParseIdentity(identityRoot);
+        using var identityRoot = new EffectIdentityHistoryOwner(
+            plan.IdentityIndexAfterImage, identityFactory,
+            plan.AllocatedEffectIds, plan.AllocatedTransitionIds);
+        identityFactory = identityRoot.Factory;
+        var identityState = ParseIdentity(identityRoot.ReadSnapshot());
         issues.AddRange(identityState.Issues);
         if (identityState.State == null || issues.Count != 0)
             return Failed(issues);
@@ -2688,8 +2691,8 @@ internal static class EffectAcceptedTurnPlanner
                 plan.SourceAuthorityFingerprint,
                 plan.TargetAuthorityFingerprint,
                 plan.AllocatedCombatantIds,
-                effectIds,
-                transitionIds,
+                identityRoot.AllocatedEffectIds,
+                identityRoot.AllocatedTransitionIds,
                 usedSources
                     .Select(static entry => entry.Key)
                     .Distinct()
@@ -2711,7 +2714,7 @@ internal static class EffectAcceptedTurnPlanner
                 plan.CarrierBeforeImages,
                 afterImages,
                 plan.IdentityIndexBeforeImage,
-                identityRoot,
+                identityRoot.Publish(),
                 touchedPaths,
                 plan.DeletedPaths,
                 acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
@@ -4566,8 +4569,9 @@ internal static class EffectAcceptedTurnPlanner
         var carrierCatalog = EffectCarrierCatalog.Build(carriers);
         issues.AddRange(carrierCatalog.Issues);
         var identityBeforeImage = input.PreTurnIdentityIndex?.DeepClone().AsObject();
-        var identityRoot = identityBeforeImage?.DeepClone().AsObject() ?? EmptyIdentityIndex();
-        var identityState = ParseIdentity(identityRoot);
+        using var identityRoot = new EffectIdentityHistoryOwner(identityBeforeImage ?? EmptyIdentityIndex(), identityFactory);
+        identityFactory = identityRoot.Factory;
+        var identityState = ParseIdentity(identityRoot.ReadSnapshot());
         issues.AddRange(identityState.Issues);
         if (issues.Count > 0)
             return Failed(issues);
@@ -4732,7 +4736,7 @@ internal static class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
-        var reactionIdentityState = ParseIdentity(identityRoot);
+        var reactionIdentityState = ParseIdentity(identityRoot.ReadSnapshot());
         issues.AddRange(reactionIdentityState.Issues);
         var reactionCarrierCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
         issues.AddRange(reactionCarrierCatalog.Issues);
@@ -4788,8 +4792,8 @@ internal static class EffectAcceptedTurnPlanner
                 input.SourceAuthority.CanonicalFingerprint,
                 targetAuthority.CanonicalFingerprint,
                 combatantIds,
-                effectIds,
-                transitionIds,
+                identityRoot.AllocatedEffectIds,
+                identityRoot.AllocatedTransitionIds,
                 usedSources.Select(static item => item.Key).ToArray(),
                 usedTargets,
                 usedSources
@@ -4808,7 +4812,7 @@ internal static class EffectAcceptedTurnPlanner
                 carrierBeforeImages,
                 afterImages,
                 identityBeforeImage,
-                identityRoot,
+                identityRoot.Publish(),
                 touchedPaths,
                 new[] { EffectAcceptedTurnPlan.CommandPath },
                 acceptedCarrierBaselines:
@@ -6070,7 +6074,7 @@ internal static class EffectAcceptedTurnPlanner
         WoundTerminalRequest request,
         CarrierWorkspace workspace,
         EffectIdentityState identities,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         int turn,
         List<string> transitionIds,
@@ -6142,7 +6146,7 @@ internal static class EffectAcceptedTurnPlanner
         TerminalOperation operation,
         CarrierWorkspace workspace,
         EffectIdentityState identityState,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         int turn,
         List<string> transitionIds,
@@ -6328,7 +6332,7 @@ internal static class EffectAcceptedTurnPlanner
         string realm,
         JsonObject eventInput,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         int turn,
         List<string> effectIds,
@@ -6500,7 +6504,7 @@ internal static class EffectAcceptedTurnPlanner
                 turn,
                 createEventRef,
                 provenance);
-            identityRoot["entries"]!.AsArray().Add(identityEntry);
+            identityRoot.CreateEntry(identityEntry);
             processedEventRefs.Add(application.EventRef);
             var reactionResult = new ReactionApplicationResult(
                 new EffectReplayIdentity(
@@ -6607,7 +6611,7 @@ internal static class EffectAcceptedTurnPlanner
         JsonObject eventInput,
         EffectSourceAuthority? sourceAuthority,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> transitionIds,
         List<JsonObject> activeEffects,
@@ -6728,7 +6732,7 @@ internal static class EffectAcceptedTurnPlanner
         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
         JsonObject eventInput,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> effectIds,
         List<string> transitionIds,
@@ -6819,7 +6823,7 @@ internal static class EffectAcceptedTurnPlanner
 
     private static void AppendAcceptedTerminalAfterEarlierTerminal(
         ReleasedEffectReaction released,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> transitionIds,
         HashSet<string> processedEventRefs,
@@ -6844,12 +6848,7 @@ internal static class EffectAcceptedTurnPlanner
             EffectReactionResultBehavior.Remove);
         if (!isRemove)
         {
-            var entry = identityRoot["entries"]?.AsArray()
-                .OfType<JsonObject>()
-                .SingleOrDefault(candidate => string.Equals(
-                    candidate["effectId"]?.GetValue<string>(),
-                    reaction.EffectId,
-                    StringComparison.Ordinal));
+            var entry = identityRoot.FindEntries(reaction.EffectId).SingleOrDefault();
             if (entry?["transitions"] is not JsonArray transitions ||
                 transitions.Count == 0)
             {
@@ -6863,8 +6862,10 @@ internal static class EffectAcceptedTurnPlanner
             }
             var suspendTransitionId = identityFactory.CreateTransitionId();
             transitionIds.Add(suspendTransitionId);
-            transitions.Insert(
+            identityRoot.InsertBeforeTransition(
+                reaction.EffectId,
                 transitions.Count - 1,
+                transitions[^1]!.AsObject(),
                 CreateTransition(
                     suspendTransitionId,
                     "suspend",
@@ -6894,7 +6895,7 @@ internal static class EffectAcceptedTurnPlanner
 
     private static bool HasAcceptedTerminalProjection(
         ReleasedEffectReaction released,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         IReadOnlySet<string> processedEventRefs)
     {
         if (!processedEventRefs.Contains(
@@ -6902,13 +6903,7 @@ internal static class EffectAcceptedTurnPlanner
         {
             return false;
         }
-        var entries = identityRoot["entries"]?.AsArray()
-            .OfType<JsonObject>()
-            .Where(entry => string.Equals(
-                entry["effectId"]?.GetValue<string>(),
-                released.Reaction.EffectId,
-                StringComparison.Ordinal))
-            .ToArray() ?? Array.Empty<JsonObject>();
+        var entries = identityRoot.FindEntries(released.Reaction.EffectId);
         if (entries.Length != 1)
             return false;
         return entries[0]["state"]?.GetValue<string>() is
@@ -6920,7 +6915,7 @@ internal static class EffectAcceptedTurnPlanner
         string realm,
         JsonObject eventInput,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> effectIds,
         List<string> transitionIds,
@@ -7271,7 +7266,7 @@ internal static class EffectAcceptedTurnPlanner
         EffectCarrierOccurrence occurrence,
         EffectLifecycleEvent lifecycleEvent,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> transitionIds,
         List<JsonObject> activeEffects,
@@ -7353,19 +7348,13 @@ internal static class EffectAcceptedTurnPlanner
         int turn,
         Dictionary<string, JsonObject> preReactionEffects,
         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> transitionIds,
         HashSet<string> processedEventRefs,
         List<ValidationIssue> issues)
     {
-        var entries = identityRoot["entries"]?.AsArray()
-            .OfType<JsonObject>()
-            .Where(entry => string.Equals(
-                entry["effectId"]?.GetValue<string>(),
-                execution.EffectId,
-                StringComparison.Ordinal))
-            .ToArray() ?? Array.Empty<JsonObject>();
+        var entries = identityRoot.FindEntries(execution.EffectId);
         if (entries.Length != 1 ||
             !string.Equals(
                 entries[0]["state"]?.GetValue<string>(),
@@ -7470,8 +7459,10 @@ internal static class EffectAcceptedTurnPlanner
 
         var transitionId = identityFactory.CreateTransitionId();
         transitionIds.Add(transitionId);
-        transitions.Insert(
+        identityRoot.InsertBeforeTransition(
+            execution.EffectId,
             transitions.Count - 1,
+            replacementTransition,
             CreateTransition(
                 transitionId,
                 "consume",
@@ -7496,13 +7487,12 @@ internal static class EffectAcceptedTurnPlanner
         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
         IReadOnlyDictionary<string, ReactionApplicationPlan> applicationPlans,
         IReadOnlyDictionary<string, ReactionApplicationResult> applicationResults,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         List<ValidationIssue> issues)
     {
         var identityEntries = new Dictionary<string, JsonObject>(
             StringComparer.Ordinal);
-        foreach (var entry in identityRoot["entries"]?.AsArray()
-                     .OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
+        foreach (var entry in identityRoot.ReadEntries())
         {
             if (TryReadExact(entry["effectId"], out var effectId))
                 identityEntries.TryAdd(effectId, entry);
@@ -7576,7 +7566,11 @@ internal static class EffectAcceptedTurnPlanner
                       result.ResultIdentity,
                       reaction.EventRef);
             if (validExpectation && validCreate && validReplacement)
+            {
+                identityRoot.RetainReplacementAgreement(
+                    reaction.EventRef, result.ResultIdentity, expectedTarget, expectedCreateEventRef, reaction.EffectId);
                 continue;
+            }
             Add(
                 issues,
                 "effect.reactions",
@@ -7673,7 +7667,7 @@ internal static class EffectAcceptedTurnPlanner
         EffectResourceTriggerExecution execution,
         int turn,
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         EffectIdentityFactory identityFactory,
         List<string> transitionIds,
         List<JsonObject> activeEffects,
@@ -7807,20 +7801,13 @@ internal static class EffectAcceptedTurnPlanner
             StringComparison.Ordinal);
 
     private static void AppendIdentityTransition(
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         string effectId,
         string state,
         JsonObject transition,
         List<ValidationIssue> issues)
     {
-        var matches = identityRoot["entries"]!.AsArray()
-            .OfType<JsonObject>()
-            .Where(entry => string.Equals(
-                entry["effectId"]?.GetValue<string>(),
-                effectId,
-                StringComparison.Ordinal))
-            .ToArray();
-        if (matches.Length != 1 || matches[0]["transitions"] is not JsonArray transitions)
+        if (!identityRoot.TryAppendTransition(effectId, state, transition))
         {
             Add(
                 issues,
@@ -7830,8 +7817,6 @@ internal static class EffectAcceptedTurnPlanner
                 effectId);
             return;
         }
-        matches[0]["state"] = state;
-        transitions.Add(transition);
     }
 
     private static JsonObject CreateTransition(
@@ -8108,7 +8093,7 @@ internal static class EffectAcceptedTurnPlanner
 
     private static void ValidateAfterImages(
         CarrierWorkspace workspace,
-        JsonObject identityRoot,
+        EffectIdentityHistoryOwner identityRoot,
         IReadOnlyList<JsonObject> activeEffects,
         List<ValidationIssue> issues)
     {
@@ -8130,7 +8115,7 @@ internal static class EffectAcceptedTurnPlanner
                     EffectMaterializationPhase.CanonicalActive));
         }
         issues.AddRange(EffectCarrierCatalog.Build(workspace.ToInput()).Issues);
-        issues.AddRange(ParseIdentity(identityRoot).Issues);
+        issues.AddRange(ParseIdentity(identityRoot.ReadSnapshot()).Issues);
     }
 
     private static void ValidateRoot(JsonObject root, List<ValidationIssue> issues)
