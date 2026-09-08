@@ -2377,6 +2377,14 @@ hand-written history/after-images, or a raw mutation fallback.
 
 ### GM contract synchronization
 
+Bounded J2-B source-envelope documentation prerequisite (2026-09-08):
+`docs/superpowers/plans/2026-09-08-spiritual-source-envelope-gm-sync.md`
+and its complete companion own T089-T092's canonical source declaration guide,
+entrypoint routing, worked special-art fragment, exact manifest coverage and
+Fast/Integration documentation guards. The source rule is user-approved at
+1cb6afd1; runtime parsing/acquisition belongs to T081-B2C-J2-B. This does not
+close full source-action/terminal/pending contracts or any top-level story task.
+
 - [ ] T089 [P] [US3] Add RED danger/formula/GM-decline/lower/one-per-side/defeat/dissipation afterlife documentation guards plus exact eight-profile payload, persistent actor carrier/lifetime, forbidden `spiritual_conflict_side`, typed current-side contribution, no-`combatConditions[]` duplication, and conflict-close persistence assertions in `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualWounds.cs` and corresponding afterlife example/manifest assertions in `BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs`
 - [ ] T090 [US3] Update spiritual conflict rules, terminology, GM context, and afterlife matrix with the persistent actor-effect versus transient combat-condition distinction and typed no-duplication contribution flow in `Rules/Block_21.txt`, `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, `OtherGuides/Afterlife_Contract_Matrix.md`, and `TaskGuides/CLI_Step_Main.txt`
 - [ ] T091 [US3] Add no-wound, lower-than-maximum, guaranteed, over-limit repair, one-per-side worsening, persistent wound/effect survival after conflict with unchanged `combatConditions[]`, bounded defeat, and optional dissipation examples in `Examples/E_CLI_Afterlife_Turns.txt` and `Examples/example_validation_manifest.json`

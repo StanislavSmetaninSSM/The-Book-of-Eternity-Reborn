@@ -1,5 +1,51 @@
 CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
 
+## spiritual_wound_source_envelope_v1
+
+This complete special-art source fragment belongs to a previously materialized
+Guardian profile in Chaos Sea or Shining Abode. Place it only in that exact
+profile's specialArts[] through its lawful materialization/update contour, before
+the harmful event. It is not a complete profile update or a battle result.
+Read OtherGuides/Wound_Materialization_Contract.md before using spiritualWoundEnvelope.
+
+```json
+{
+  "artId": "art_echo_seam_pressure",
+  "displayName": "Надлом эха",
+  "ownerActorType": "guardian",
+  "ownerActorId": "guardian_echo_seam",
+  "baseOperation": "pressure",
+  "tier": 1,
+  "costMultiplierPercent": 175,
+  "upgradeCost": { "inkFeathers": 250, "lightSparks": 0 },
+  "effectSummary": "Принятое давление может повредить устойчивый узел чужого духовного рисунка.",
+  "combatEffect": {
+    "summary": "Надлом эха ограничивает тяжесть раны и заранее задаёт условный результат при доказанном вредящем переходе.",
+    "trigger": "Только действительное применение pressure с проверенным ухудшением strain цели.",
+    "mechanicalAxis": "sideStrain",
+    "allowedPayoff": "Существующий разрешённый переход strain; рана только по предложенной клиентом возможности.",
+    "limit": "Не выше II; обещанная I не обходит стойкость, формулу, итоговый strain и опасность боя.",
+    "auditRequirement": "Назвать точное искусство, его владельца и фактический эффект в specialArtAudit; не писать вычисленную тяжесть."
+  },
+  "canTeachPlayer": false,
+  "spiritualWoundEnvelope": {
+    "schemaVersion": 1,
+    "maximumSeverityRank": 2,
+    "guaranteedSeverityRank": 1
+  }
+}
+```
+
+The source declares a ceiling of II and a guaranteed I only when its trigger and
+every harder bound are proven. Training does not become harmful merely because
+the art has this field. A contradiction is invalid, not a request to invent a
+compromise. To declare only the II ceiling, materialize guaranteedSeverityRank
+as null. To leave an art ordinary, omit the entire optional field: its source
+cap is then neutral IV with no guarantee and ordinary eligibility is retained.
+A present null field is invalid. Do not alter the source after seeing the roll,
+copy the envelope into an exchange audit, or submit a wound decision from this
+example alone. Source preparation is not admitted wound or publication authority.
+
 Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
 
 WOUND-OWNED GENERATION — CLIENT LIFECYCLE EXAMPLE

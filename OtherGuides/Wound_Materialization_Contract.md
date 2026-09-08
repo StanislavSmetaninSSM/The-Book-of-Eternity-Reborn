@@ -224,6 +224,44 @@ Death and soul dissipation are separate outcomes. They are never required merely
 because a wound opportunity exists, and soul dissipation always remains a separate
 optional winner decision under its own contract.
 
+## spiritual_wound_source_envelope_v1
+
+In Chaos Sea and Shining Abode, an optional source declaration lives only at
+`profiles[].specialArts[].spiritualWoundEnvelope` in
+`game_state/meta/afterlife_entity_profiles.json`, including the player_soul profile;
+never in soul_state.afterlifeCombatProfile.artTiers. The owning special art must
+already be materialized before the harmful event. Keep its ordinary owner,
+`baseOperation`, tier, cost, and `combatEffect` contract.
+
+The declaration is a closed object containing exactly `schemaVersion` equal to 1,
+`maximumSeverityRank` as an integer 0..4, and `guaranteedSeverityRank` as null or
+an integer 1..maximumSeverityRank. There are no extra, duplicate, confusable, or
+display-name field aliases. A present null or malformed declaration is invalid.
+
+An absent declaration means neutral IV as the source cap and no guarantee. It
+preserves ordinary harmful-strain eligibility, including for a special art:
+absence is not a prohibition and does not make injury mandatory. Rank 0 explicitly
+forbids a wound from that declared source. A lower cap restricts the source; it
+does not raise the formula/resilience, destination strain, or danger limits.
+
+A guaranteed severity still requires a proven trigger and all harder limits.
+A contradiction fails validation; do not silently raise the maximum, lower the
+guarantee, or convert it to an optional wound. Art cost, zero cost, passive prose,
+`specialArtAudit`, and a current wound decision cannot establish prior source
+authority. Never add or strengthen the declaration after seeing the roll.
+
+The client checks the current profile shape and independently acquires the
+original source under the signed turn snapshot. This source-only preparation is
+not an admitted wound opportunity or proof of successful resource/effect reduction.
+Do not manufacture wound decisions, receipts, extra dice, or a publication from
+this declaration alone. The GM still authors the wound's nature and consequences
+only when the client supplies a valid opportunity. Mortal wounds keep their
+setting-authored source/treatment contract; this field is afterlife-only.
+
+Worked source: `spiritual_wound_source_envelope_v1` in
+`Examples/E_CLI_Afterlife_Turns.txt`. The source-art fragment proves authoring and
+closed parsing, not a full actor update, accepted battle, or wound publication.
+
 ## wound_acquisition_narration_v1
 
 `display.acquisitionNarration` must describe this exact accepted wound and must appear

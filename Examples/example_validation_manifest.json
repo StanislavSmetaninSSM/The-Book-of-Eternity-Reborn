@@ -718,6 +718,19 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "spiritual_wound_source_envelope_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json.profiles[].specialArts[].spiritualWoundEnvelope",
+      "responseSurface": "pre-materialized canonical special-art source only",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "A complete special-art source fragment declares a II cap and conditional guaranteed I without bypassing prior source authority or harder limits.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser -> SpiritualWoundSourceEnvelope.TryRead",
+      "focusedFragmentReason": "The complete source-art row is deliberately not a complete actor profile, profile update, exchange, or accepted-turn publication.",
+      "coverageLimit": "Closed declaration parsing and exact documented source values only; signed source acquisition, actor membership, original dice and strain, resource/effect reductions, pending decisions and final publication remain the source/lifecycle tests' responsibility.",
+      "requiredText": ["spiritual_wound_source_envelope_v1", "spiritualWoundEnvelope", "maximumSeverityRank", "guaranteedSeverityRank", "before", "neutral IV", "no guarantee"]
+    },
+    {
       "contractId": "afterlife_light_incarnate_history_authority_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",

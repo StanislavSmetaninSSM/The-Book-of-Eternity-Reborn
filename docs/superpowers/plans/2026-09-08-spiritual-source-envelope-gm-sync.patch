@@ -1,0 +1,225 @@
+*** Begin Patch
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.SpiritualSourceEnvelope.cs
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class AfterlifeDocumentationCoverageTests
++{
++    [Fact]
++    public void SpiritualSourceEnvelopeDocumentation_DeclaresClosedSourceAndHarderBounds()
++    {
++        var guide = ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md");
++        foreach (var token in new[]
++        {
++            "## spiritual_wound_source_envelope_v1",
++            "profiles[].specialArts[].spiritualWoundEnvelope",
++            "schemaVersion", "maximumSeverityRank", "guaranteedSeverityRank",
++            "integer 0..4", "integer 1..maximumSeverityRank",
++            "neutral IV", "no guarantee", "ordinary harmful-strain eligibility",
++            "before the harmful event", "formula", "destination strain", "danger",
++            "specialArtAudit", "not an admitted wound opportunity",
++            "current wound decision", "including the player_soul profile",
++            "never in soul_state.afterlifeCombatProfile.artTiers",
++            "A present null or malformed declaration is invalid"
++        })
++            Assert.Contains(token, guide, StringComparison.Ordinal);
++    }
++
++    [Fact]
++    public void SpiritualSourceEnvelopeDocumentation_RoutesBothRealmsToWorkedSource()
++    {
++        foreach (var entrypoint in new[]
++        {
++            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
++            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt"),
++            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
++        })
++        {
++            Assert.Contains("spiritualWoundEnvelope", entrypoint, StringComparison.Ordinal);
++            Assert.Contains("spiritual_wound_source_envelope_v1", entrypoint, StringComparison.Ordinal);
++            Assert.Contains("OtherGuides/Wound_Materialization_Contract.md", entrypoint, StringComparison.Ordinal);
++            Assert.Contains("neutral IV", entrypoint, StringComparison.Ordinal);
++        }
++    }
++}
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/OtherGuides/Wound_Materialization_Contract.md
+@@
+-## wound_acquisition_narration_v1
++## spiritual_wound_source_envelope_v1
++
++In Chaos Sea and Shining Abode, an optional source declaration lives only at
++`profiles[].specialArts[].spiritualWoundEnvelope` in
++`game_state/meta/afterlife_entity_profiles.json`, including the player_soul profile;
++never in soul_state.afterlifeCombatProfile.artTiers. The owning special art must
++already be materialized before the harmful event. Keep its ordinary owner,
++`baseOperation`, tier, cost, and `combatEffect` contract.
++
++The declaration is a closed object containing exactly `schemaVersion` equal to 1,
++`maximumSeverityRank` as an integer 0..4, and `guaranteedSeverityRank` as null or
++an integer 1..maximumSeverityRank. There are no extra, duplicate, confusable, or
++display-name field aliases. A present null or malformed declaration is invalid.
++
++An absent declaration means neutral IV as the source cap and no guarantee. It
++preserves ordinary harmful-strain eligibility, including for a special art:
++absence is not a prohibition and does not make injury mandatory. Rank 0 explicitly
++forbids a wound from that declared source. A lower cap restricts the source; it
++does not raise the formula/resilience, destination strain, or danger limits.
++
++A guaranteed severity still requires a proven trigger and all harder limits.
++A contradiction fails validation; do not silently raise the maximum, lower the
++guarantee, or convert it to an optional wound. Art cost, zero cost, passive prose,
++`specialArtAudit`, and a current wound decision cannot establish prior source
++authority. Never add or strengthen the declaration after seeing the roll.
++
++The client checks the current profile shape and independently acquires the
++original source under the signed turn snapshot. This source-only preparation is
++not an admitted wound opportunity or proof of successful resource/effect reduction.
++Do not manufacture wound decisions, receipts, extra dice, or a publication from
++this declaration alone. The GM still authors the wound's nature and consequences
++only when the client supplies a valid opportunity. Mortal wounds keep their
++setting-authored source/treatment contract; this field is afterlife-only.
++
++Worked source: `spiritual_wound_source_envelope_v1` in
++`Examples/E_CLI_Afterlife_Turns.txt`. The source-art fragment proves authoring and
++closed parsing, not a full actor update, accepted battle, or wound publication.
++
++## wound_acquisition_narration_v1
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/OtherGuides/Afterlife_Contract_Matrix.md
+@@
+ ## Afterlife Spiritual Conflict Contract
++
++Source-art wound declarations in both Chaos Sea and Shining Abode follow
++`spiritual_wound_source_envelope_v1` in
++`OtherGuides/Wound_Materialization_Contract.md` and its named afterlife example.
++The optional canonical `spiritualWoundEnvelope` must pre-exist the harmful event;
++absence is neutral IV with no guarantee, not lost ordinary eligibility. A source
++declaration never replaces the validated event, harder limits, or final admission.
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/TaskGuides/CLI_Step_Main.txt
+@@
+-    <Title>CLI Step: Main Turn Processing and File Operations</Title>
++    <SpiritualWoundSourceEnvelope>For Chaos Sea and Shining Abode, read spiritual_wound_source_envelope_v1 in OtherGuides/Wound_Materialization_Contract.md and the named Examples/E_CLI_Afterlife_Turns.txt source before authoring profiles[].specialArts[].spiritualWoundEnvelope. The source must be materialized before the harmful event. Absence means neutral IV with no guarantee and preserved ordinary harmful-strain eligibility. Present declarations are closed and cannot override formula/resilience, destination strain or danger. Never supply this authority in specialArtAudit or a current wound decision. Source preparation is not an admitted wound opportunity or successful resource/effect publication.</SpiritualWoundSourceEnvelope>
++    <Title>CLI Step: Main Turn Processing and File Operations</Title>
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/Examples/E_CLI_Afterlife_Turns.txt
+@@
+ CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
++
++## spiritual_wound_source_envelope_v1
++
++This complete special-art source fragment belongs to a previously materialized
++Guardian profile in Chaos Sea or Shining Abode. Place it only in that exact
++profile's specialArts[] through its lawful materialization/update contour, before
++the harmful event. It is not a complete profile update or a battle result.
++Read OtherGuides/Wound_Materialization_Contract.md before using spiritualWoundEnvelope.
++
++```json
++{
++  "artId": "art_echo_seam_pressure",
++  "displayName": "Надлом эха",
++  "ownerActorType": "guardian",
++  "ownerActorId": "guardian_echo_seam",
++  "baseOperation": "pressure",
++  "tier": 1,
++  "costMultiplierPercent": 175,
++  "upgradeCost": { "inkFeathers": 250, "lightSparks": 0 },
++  "effectSummary": "Принятое давление может повредить устойчивый узел чужого духовного рисунка.",
++  "combatEffect": {
++    "summary": "Надлом эха ограничивает тяжесть раны и заранее задаёт условный результат при доказанном вредящем переходе.",
++    "trigger": "Только действительное применение pressure с проверенным ухудшением strain цели.",
++    "mechanicalAxis": "sideStrain",
++    "allowedPayoff": "Существующий разрешённый переход strain; рана только по предложенной клиентом возможности.",
++    "limit": "Не выше II; обещанная I не обходит стойкость, формулу, итоговый strain и опасность боя.",
++    "auditRequirement": "Назвать точное искусство, его владельца и фактический эффект в specialArtAudit; не писать вычисленную тяжесть."
++  },
++  "canTeachPlayer": false,
++  "spiritualWoundEnvelope": {
++    "schemaVersion": 1,
++    "maximumSeverityRank": 2,
++    "guaranteedSeverityRank": 1
++  }
++}
++```
++
++The source declares a ceiling of II and a guaranteed I only when its trigger and
++every harder bound are proven. Training does not become harmful merely because
++the art has this field. A contradiction is invalid, not a request to invent a
++compromise. To declare only the II ceiling, materialize guaranteedSeverityRank
++as null. To leave an art ordinary, omit the entire optional field: its source
++cap is then neutral IV with no guarantee and ordinary eligibility is retained.
++A present null field is invalid. Do not alter the source after seeing the roll,
++copy the envelope into an exchange audit, or submit a wound decision from this
++example alone. Source preparation is not admitted wound or publication authority.
+
+ Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/Examples/example_validation_manifest.json
+@@
+   "afterlifeEntityProfileCoverage": [
++    {
++      "contractId": "spiritual_wound_source_envelope_v1",
++      "file": "E_CLI_Afterlife_Turns.txt",
++      "statePath": "game_state/meta/afterlife_entity_profiles.json.profiles[].specialArts[].spiritualWoundEnvelope",
++      "responseSurface": "pre-materialized canonical special-art source only",
++      "realms": ["Chaos Sea", "Shining Abode"],
++      "description": "A complete special-art source fragment declares a II cap and conditional guaranteed I without bypassing prior source authority or harder limits.",
++      "validationKind": "production-validator",
++      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser -> SpiritualWoundSourceEnvelope.TryRead",
++      "focusedFragmentReason": "The complete source-art row is deliberately not a complete actor profile, profile update, exchange, or accepted-turn publication.",
++      "coverageLimit": "Closed declaration parsing and exact documented source values only; signed source acquisition, actor membership, original dice and strain, resource/effect reductions, pending decisions and final publication remain the source/lifecycle tests' responsibility.",
++      "requiredText": ["spiritual_wound_source_envelope_v1", "spiritualWoundEnvelope", "maximumSeverityRank", "guaranteedSeverityRank", "before", "neutral IV", "no guarantee"]
++    },
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.SpiritualSourceEnvelope.cs
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class ExampleDocumentationValidationTests
++{
++    [Fact]
++    public void SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser()
++    {
++        const string contractId = "spiritual_wound_source_envelope_v1";
++        var json = ExtractNamedJsonFence("E_CLI_Afterlife_Turns.txt", contractId);
++        using var source = JsonDocument.Parse(json);
++        Assert.True(SpiritualWoundSourceEnvelope.TryRead(source.RootElement, out var envelope, out var error), error);
++        Assert.NotNull(envelope);
++        Assert.Equal(2, envelope.MaximumSeverityRank);
++        Assert.Equal(1, envelope.GuaranteedSeverityRank);
++        Assert.Equal("guardian", source.RootElement.GetProperty("ownerActorType").GetString());
++        Assert.Equal("guardian_echo_seam", source.RootElement.GetProperty("ownerActorId").GetString());
++        Assert.Equal("pressure", source.RootElement.GetProperty("baseOperation").GetString());
++        Assert.Equal("sideStrain", source.RootElement.GetProperty("combatEffect").GetProperty("mechanicalAxis").GetString());
++
++        // The two alternatives are derived from the actual authored source,
++        // not a separate fixture that could drift away from the example.
++        var ordinary = JsonNode.Parse(json)!.AsObject();
++        Assert.True(ordinary.Remove(SpiritualWoundSourceEnvelope.Property));
++        Assert.True(SpiritualWoundSourceEnvelope.TryRead(ordinary, out var ordinaryEnvelope, out error), error);
++        Assert.NotNull(ordinaryEnvelope);
++        Assert.Equal(4, ordinaryEnvelope.MaximumSeverityRank);
++        Assert.Null(ordinaryEnvelope.GuaranteedSeverityRank);
++        var contradictory = JsonNode.Parse(json)!.AsObject();
++        contradictory[SpiritualWoundSourceEnvelope.Property]!["guaranteedSeverityRank"] = 3;
++        Assert.False(SpiritualWoundSourceEnvelope.TryRead(contradictory, out _, out error));
++        Assert.False(string.IsNullOrWhiteSpace(error));
++
++        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(
++            TestRepoPaths.RepoRoot, "Examples", "example_validation_manifest.json")));
++        var contract = Assert.Single(
++            manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
++            row => row.GetProperty("contractId").GetString() == contractId);
++        Assert.Equal("E_CLI_Afterlife_Turns.txt", contract.GetProperty("file").GetString());
++        Assert.Equal("production-validator", contract.GetProperty("validationKind").GetString());
++        Assert.Contains("SpiritualWoundSourceEnvelope.TryRead",
++            contract.GetProperty("validationRoute").GetString()!, StringComparison.Ordinal);
++        Assert.Contains("not a complete actor profile",
++            contract.GetProperty("focusedFragmentReason").GetString()!, StringComparison.Ordinal);
++        Assert.Contains("final publication",
++            contract.GetProperty("coverageLimit").GetString()!, StringComparison.Ordinal);
++        Assert.Equal(new[] { "Chaos Sea", "Shining Abode" },
++            contract.GetProperty("realms").EnumerateArray().Select(row => row.GetString()).ToArray());
++    }
++}
+*** End Patch
