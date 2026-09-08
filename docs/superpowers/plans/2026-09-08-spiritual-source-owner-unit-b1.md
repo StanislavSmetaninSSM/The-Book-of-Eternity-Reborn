@@ -125,7 +125,7 @@ A non-empty pending list is not success for admission. Even an empty list proves
 
 Do not execute until B0 is implemented/verified and this complete B1 companion has passed the parent gate. Preserve artifacts and inspect actual TRX summaries; commands below are intended controls, not reported results.
 
-- [ ] Record actual BASE and confirm B0 is implemented/accepted; B1's four existing target files must still match the mechanically reviewed postimage. D/projector changes are independent.
+- [ ] Record actual BASE and confirm B0 is implemented/accepted; B1's four existing target files must still match the mechanically reviewed preimage before applying the companion. D/projector changes are independent.
 - [ ] Run existing ordinary production OLD:
   `pwsh .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ConflictFrame_SignedPressureExchangePublishesWithNoOwningPhaseErrors"`
   Expected: existing full raw/common-publication/final-check control passes.

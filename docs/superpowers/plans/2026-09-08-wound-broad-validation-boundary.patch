@@ -183,7 +183,9 @@
 +            .DescendantNodes()
 +            .OfType<InvocationExpressionSyntax>()
 +            .Where(invocation => string.Equals(
-+                InvokedMemberName(invocation),
++                invocation.Expression is IdentifierNameSyntax identifier
++                    ? identifier.Identifier.ValueText
++                    : InvokedMemberName(invocation),
 +                publishedTreatmentHelperName,
 +                StringComparison.Ordinal))
 +            .Select(invocation => invocation

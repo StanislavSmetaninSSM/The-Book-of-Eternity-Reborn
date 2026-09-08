@@ -12,7 +12,7 @@
 
 ## Status and exact companion
 
-**Implemented at `4de64a34`, fixture review correction at `084146ea`; acceptance pending the independent re-review and older test-boundary gate.** The parent read the full original, all final deltas, and the final plan. At corrected source `084146ea`, full-line replay from base `bd8f3d74` and comparison with all thirteen actual files confirms every corrected companion postimage. Actual initial evidence: semantic RED0/5, GREEN5/5, Integration17/17, GameEngine2/2 and existing156/156; correction RED1/2, GREEN2/2 and combined19+2/21. All builds0/0, no timeouts, cleanup complete. The unrelated boundary58/60 remains a failed artifact, not a passing control.
+**B0 accepted2026-09-08 at corrected source `084146ea`, after independent re-review and the repaired boundary gate at `ecffabdc`.** The parent read the full original, all final deltas, and the final plan. At corrected source `084146ea`, full-line replay from base `bd8f3d74` and comparison with all thirteen actual files confirms every corrected companion postimage. Actual initial evidence: semantic RED0/5, GREEN5/5, Integration17/17, GameEngine2/2 and existing156/156; correction RED1/2, GREEN2/2 and combined19+2/21. All builds0/0, no timeouts, cleanup complete. The unrelated boundary58/60 remains a failed historical artifact; the real corrected control is60/60, with exact owner12/12 and separate independent review0C/I/M. B0 re-review is also0C/I/M. The parent-owned combined B0/B1/GM Fast remains pending; no source-admission or full #1536 completion is claimed.
 
 - Worktree: `E:/Games/worktrees/boe-1536-wound-materialization`.
 - Audited production baseline: `e720b03f`; implementation source baseline: `9f301262eaa02b64266aa0b63b56bbce2ed4529f` (later planning-only commit is permitted).
@@ -204,7 +204,7 @@ pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQual
 
 ## Acceptance boundary
 
-Review correction at source `4de64a34` (not yet accepted): independent review
+Historical review correction at source `4de64a34`: independent review
 found the shared Integration fixture enlarged rollback membership by unioning
 the observation set into trackedPaths. The parent verified the code and rules;
 the original rollback contract governs over that companion mistake. Preserve
@@ -213,6 +213,9 @@ paths, and add rollback rows only for original tracked members. A new two-row
 Integration regression proves observation-only settings stay excluded while
 explicit additionalTrackedPaths still include settings, with signed bytes in
 both cases. This remains T081-B2C-J2-B0 and changes no production producer or
-GM contract. The separate old boundary58/60 failure remains unresolved.
+GM contract. Correction `084146ea` passed independent re-review; the separate
+old boundary58/60 failure was resolved by reviewed `ecffabdc` with actual60/60
+and owner12/12. All failed artifacts and the original premature-commit process
+deviation remain recorded; they are not relabeled as passing results.
 
 B0 is complete only when all six typed hash DTOs agree, all three actual producers emit an authenticated closed map under real leases, old-shaped current snapshots preserve legacy behavior but cannot prove opt-in absence, the reader exposes only authenticated absent paths, and rollback membership is unchanged. B0 does not admit spiritual wound sources, materialize wounds, change gameplay, update GM contracts, or complete T081-B2C-J2-B / #1536.

@@ -2182,6 +2182,25 @@ rows, requires boundary60/60 and exact owner12/12 Focused controls plus review,
 and changes no production or GM-authored contract. No duplicate broad lane is
 required; the later combined checkpoint records actual category discovery.
 
+## 2026-09-08 — B0 and test-boundary prerequisite acceptance
+
+Source issue: #1536, T081-B2C-J2-B0 and T177-BROAD-OWNERSHIP only. Corrected
+B0 source084146ea has exact thirteen-file companion agreement, pure5/5,
+Integration19/19 plus GameEngine2/2, existing156/156 and independent source
+re-review0C/I/M. Its previously external boundary gate is now resolved by the
+five-file test-only sourceecffabdc: boundary60/60, owner12/12, exact full-state
+oracle preserved and fresh independent review0C/I/M. Parent read actual diffs,
+reports, logs, summaries and TRX evidence; both companions reproduce the actual
+postimages. The default5m owner timeout is retained; the identical approved10m
+rerun took5:17.092 with all twelve rows, not a reduced filter. No runtime or
+global lane limit was changed by the boundary repair.
+
+B1 source dispatch is now authorized on this branch using its reviewed complete
+nine-file companion. The immediately following GM action/envelope synchronization
+and one parent combined B0/B1/GM Fast plus conditional FullValidation remain
+required. B0/source-local B1 do not admit or materialize a spiritual wound;
+full T081, T177, C/D/E, US3 and issue #1536 remain OPEN.
+
 ## Risk controls
 
 | Risk | Control |

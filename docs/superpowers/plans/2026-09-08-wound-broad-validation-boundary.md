@@ -81,7 +81,7 @@ Rejected alternatives:
 - Produce: internal test-only profiles `IntegrationValidationProfiles.EffectSkillScopeCatalog` and `IntegrationValidationProfiles.MortalWoundTreatmentLifecycle`; reviewed eight-call/six-file manifest; exact four-method/eight-row FullValidation caller ownership.
 - Preserve: every test name outside the manifest's three Seven/Eighth names, every behavioral assertion and row, the parameterless helper body, class-level LifecycleIntegration, runner/lane contracts, and production code.
 
-- [ ] **Step 1: Adopt the existing actual boundary failure as RED; do not manufacture another defect.**
+- [X] **Step 1: Adopt the existing actual boundary failure as RED; do not manufacture another defect.**
 
 Inspect `summary.json`, `dotnet-test.log`, and the TRX from the retained artifact.
 Required RED is 60 total/executed, 58 passed, 2 failed, with observed ten versus
@@ -91,7 +91,7 @@ another C# run reproducing identical evidence. If current sources no longer matc
 the ten call sites or the five proposed files changed after `084146ea`, stop and
 report the exact diff before applying the patch.
 
-- [ ] **Step 2: Apply the complete companion patch exactly.**
+- [X] **Step 2: Apply the complete companion patch exactly.**
 
 Use `apply_patch` with the complete contents of:
 
@@ -124,7 +124,7 @@ case supplies no item and asserts wound/effect generation. Do not remove any pha
 listed above without first proving the omitted player/NPC/combatant, skill,
 continuity, or control surface is outside the method's assertions.
 
-- [ ] **Step 3: Run the boundary class GREEN at the default five-minute limit.**
+- [X] **Step 3: Run the boundary class GREEN at the default five-minute limit.**
 
 ```powershell
 .\scripts\test-csharp.ps1 `
@@ -141,7 +141,7 @@ The category Fact must prove the full-state helper has exactly four callers, tho
 four and only those four methods have method-level `FullValidation`, and the partial
 class has none.
 
-- [ ] **Step 4: Run all affected behavioral owners GREEN in one exact 12-row Focused selection.**
+- [X] **Step 4: Run all affected behavioral owners GREEN in one exact 12-row Focused selection.**
 
 ```powershell
 $ownerFilter = @(
@@ -168,7 +168,7 @@ five-minute limit first. Only if this unchanged coherent selection measurably ti
 out may the owner rerun the same filter with one explicit bounded override and
 record both artifacts.
 
-- [ ] **Step 5: Inspect the exact five-file correction and commit only after parent authorization.**
+- [X] **Step 5: Inspect the exact five-file correction and commit only after parent authorization.**
 
 ```powershell
 git diff --check
@@ -215,6 +215,42 @@ the unchanged prior selection. Record the actual total rather than assuming a st
 absolute lane count. DeepValidation excludes LifecycleIntegration and PreMerge
 already excludes both FullValidation and ordinary LifecycleIntegration; neither
 filter needs modification.
+
+## Actual implementation evidence — 2026-09-08
+
+Source commit `ecffabdc002cacfc3362d071c26c747d443313b2` changes exactly the five
+Integration files above from base `293dd3e52933076416381b824a90b57f8ae7aae2`.
+The companion includes the tested local direct-call query correction:
+`IdentifierNameSyntax` is recognized before the existing `InvokedMemberName`
+fallback. Shared helper semantics and the exact four-caller assertions are unchanged.
+
+All artifacts are under `TestResults/test-lanes/`:
+
+- Original RED `20260908-191851-547-28128-e81df7516e2e46e09e5a20299287550e-focused`:
+  58/60 in `00:00:41.1512485`, ten versus seven broad calls and three uncategorized sources.
+- First patch attempt `20260908-195515-776-40396-1c885b8c00ad4433b421d73b59e46244-focused`:
+  59/60 in `00:01:40.4561960`. The new query missed unqualified helper calls;
+  the correction recognizes their actual Roslyn syntax without weakening assertions.
+- Corrected boundary `20260908-200014-800-42492-d560af4509a94f028458c9b8a76c5de3-focused`:
+  60/60 in `00:01:11.2190827` at the default five-minute limit.
+- Identical twelve-row owner selection at the default limit,
+  `20260908-200135-785-39400-333c2689f8254191a81d3d9a601dfef9-focused`:
+  timed out at `00:05:00.1250762`, exit 124. All twelve rows were discovered and the
+  test host ran; no final TRX was emitted. Summary 0/0 is not zero discovery or PASS.
+- One explicitly approved measured extension,
+  `20260908-200900-983-32428-3418b08e567c4a85abcc810fe71e2d6e-focused`:
+  12/12 in `00:05:17.0916827` with `-TimeoutMinutes 10`, same filter and assertions.
+  Actual per-case durations range from 12.99 to 39.69 seconds, confirming real
+  execution cost rather than a build/discovery stall. No global lane limit changed.
+
+The parent inspected both GREEN summaries, complete logs, actual TRX rows and
+unique IDs: all expected rows executed, no skips or duplicate IDs, build zero
+warnings/errors, no GREEN timeout, and successful owned-tree cleanup. These
+results do not claim Fast, FullValidation, completion of T177, or completion of #1536.
+Fresh independent source review at `ecffabdc` is Spec COMPLIANT / Quality APPROVED
+with zero Critical, Important or Minor findings. The parent read the complete
+review, verified the unchanged helper and actual runner filters, and accepts only
+T177-BROAD-OWNERSHIP. The combined B0/B1/GM Fast checkpoint remains pending.
 
 ## Parent self-review
 
