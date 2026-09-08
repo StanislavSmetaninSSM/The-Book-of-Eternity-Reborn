@@ -110,6 +110,21 @@ internal sealed class EffectIdentityHistoryOwner : IDisposable
     internal IReadOnlyList<EffectIdentityReplacementAgreement> ReplacementAgreements =>
         Array.AsReadOnly(_agreements.ToArray());
 
+    // Bounded detached ranges for the enclosing materialization owner. These
+    // do not change write, allocation, anchor or publication semantics.
+    internal int WriteCount => _writes.Count;
+    internal int AllocationCount => _allocations.Count;
+    internal int ReplacementAgreementCount => _agreements.Count;
+
+    internal IReadOnlyList<EffectIdentityWriteReceipt> ReadWritesFrom(int start) =>
+        Array.AsReadOnly(_writes.GetRange(start, _writes.Count - start).ToArray());
+
+    internal IReadOnlyList<EffectIdentityAllocationReceipt> ReadAllocationsFrom(int start) =>
+        Array.AsReadOnly(_allocations.GetRange(start, _allocations.Count - start).ToArray());
+
+    internal IReadOnlyList<EffectIdentityReplacementAgreement> ReadReplacementAgreementsFrom(int start) =>
+        Array.AsReadOnly(_agreements.GetRange(start, _agreements.Count - start).ToArray());
+
     internal JsonObject ReadSnapshot()
     {
         EnsureNotDisposed();
