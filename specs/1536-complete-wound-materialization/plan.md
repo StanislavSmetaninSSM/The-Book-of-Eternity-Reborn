@@ -1747,6 +1747,22 @@ new wound generations use their actual profile-bound eligibility. Real insertion
 and next-exchange consumers plus13 executable scenarios remain required before
 acceptance. This architecture record is not evidence that these paths exist.
 
+The first write-owning production unit T081-B2C-J1 now has a complete code/test
+plan and companion in
+`docs/superpowers/plans/2026-09-08-effect-identity-history-owner.md`.
+Its owner is consumed by shared initial/final effect planning and all14 identity
+mutation helpers; actual creates/appends/anchored inserts and allocation order
+are retained without per-operation whole-workspace snapshots. Parent source audit
+caught and corrected a proposed early uniqueness exception: duplicate child IDs
+in the real two-consuming cascade must retain the old second-release replacement
+authority failure before consuming allocations, while malformed transition IDs
+retain their applicable final-validation path. Old-production characterization
+and13Fast+1Integration rows are required; this plan is not test evidence.
+J1 remains only identity/history ownership. J2 in the same feature slice must own
+carrier/source/target/skill/processed-event/phase execution and consume real wound
+insertion/current-generation before authority in the next exchange. No further
+observer-only prerequisite or fullB2 acceptance follows from J1 alone.
+
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.
 Generic effect publication/rollback scenarios previously seeded old array-form

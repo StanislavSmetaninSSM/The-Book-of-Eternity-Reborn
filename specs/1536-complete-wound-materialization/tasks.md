@@ -2226,6 +2226,17 @@ hand-written history/after-images, or a raw mutation fallback.
         folds at a wound barrier or substitute a journal DTO/observer for writes.
         Prove all13 scenarios including consuming replacements, actual descendants
         before worsening, repeated re-trauma and composite-authority rejection.
+        - [ ] T081-B2C-J1 [US3] Own actual identity-history creation, append,
+          anchored insertion and effect-factory allocation projection; both
+          production initial/final plan builders consume the owner's image.
+          Implement the complete four-file plan/companion
+          `docs/superpowers/plans/2026-09-08-effect-identity-history-owner.md`.
+          Prove13Fast rows plus a real Integration duplicate-child cascade,
+          including OLD-production characterization and exact failure stage.
+          Preserve consumption-before-replace and the original ordinary phases.
+          This checks identity/history ownership only; J2 must immediately add
+          actual carrier/source/phase ownership with real wound insertion and
+          next-exchange consumption, not another observer-only prerequisite.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,
