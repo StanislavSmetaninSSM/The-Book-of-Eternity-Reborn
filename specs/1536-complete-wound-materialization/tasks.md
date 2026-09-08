@@ -2274,6 +2274,26 @@ hand-written history/after-images, or a raw mutation fallback.
           terminal families. Source-only preparation is not admitted wound,
           successful resource spend or publishable receipt. Complete-code plan
           and actual signed positive/negative controls precede implementation.
+          - [ ] T081-B2C-J2-B0 [US3] Implement authenticated original-path
+            presence via the parent-reviewed complete-code plan and companion
+            `docs/superpowers/plans/2026-09-08-spiritual-snapshot-presence-b0.md`.
+            Six nullable hash-aligned manifest DTOs, three real lease-bound
+            producers, a closed sixteen-path observation set, and the opt-in
+            reader distinguish signed absence from uncovered paths. Preserve
+            old optional reads, the 64-path bound, and both restore mechanisms.
+            Prove semantic RED/GREEN, 5 pure contracts, 17 Integration cases,
+            2 GameEngine cases and existing/boundary controls, then independent
+            review before B1. Parent owns the combined B0/B1 Fast checkpoint.
+            This client-owned metadata adds no GM-authored surface; no GM
+            prompt/example update is required for B0 alone. B0 is not wound
+            admission and does not complete its parent or issue #1536.
+          - [ ] T081-B2C-J2-B1 [US3] After reviewed B0 named controls, acquire
+            original source bytes or signed absence through its real reader
+            under the canonical lease, then validate source declarations,
+            targets and terminal exchanges without granting source admission.
+            Track the reviewed nine-file source-owner companion before code
+            dispatch; synchronize the linked source-action/terminal GM
+            examples and guards with this runtime change, not with B0.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

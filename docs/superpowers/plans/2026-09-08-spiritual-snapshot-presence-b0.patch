@@ -1,0 +1,1285 @@
+*** Begin Patch
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/PendingTurnSnapshotReader.cs
+@@
+ namespace BookOfEternityClient.Services;
+
++internal static class PendingTurnSnapshotPathPresenceV1
++{
++    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
++        Array.AsReadOnly(new[]
++        {
++            "game_state/meta/soul_state.json",
++            "game_state/resources/resource_definitions.json",
++            "game_state/resources/resource_state.json",
++            "game_state/resources/resource_history.json",
++            "game_state/resources/resource_owner_authority.json",
++            "game_state/meta/afterlife_spiritual_conflict_state.json",
++            "game_state/meta/afterlife_entity_profiles.json",
++            "game_state/meta/shining_abode_state.json",
++            "game_state/core/game_settings.json",
++            "game_state/effects/effect_identity_index.json",
++            "game_state/wounds/wound_identity_index.json",
++            "game_state/wounds/wound_history.json",
++            "game_state/player/wounds.json",
++            "game_state/npcs/npc_wounds.json",
++            "game_state/combat/enemies.json",
++            "game_state/combat/allies.json"
++        });
++
++    internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
++
++    internal static Dictionary<string, bool> Create(
++        IReadOnlyDictionary<string, string> files,
++        IReadOnlyDictionary<string, string> snapshotFileHashes)
++    {
++        ArgumentNullException.ThrowIfNull(files);
++        ArgumentNullException.ThrowIfNull(snapshotFileHashes);
++
++        ValidateCoverageDictionary(files, "files");
++        ValidateCoverageDictionary(snapshotFileHashes, "snapshotFileHashes");
++        var fileKeys = files.Keys.ToHashSet(StringComparer.Ordinal);
++        var hashKeys = snapshotFileHashes.Keys.ToHashSet(StringComparer.Ordinal);
++        if (!fileKeys.SetEquals(hashKeys))
++        {
++            throw new InvalidDataException(
++                "Pending-turn snapshot file and hash coverage must agree exactly before presence is observed.");
++        }
++
++        var result = new Dictionary<string, bool>(StringComparer.Ordinal);
++        foreach (var logicalPath in ClosedLogicalPaths)
++        {
++            var fileRows = files
++                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
++                .ToArray();
++            var hashRows = snapshotFileHashes
++                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
++                .ToArray();
++            var confusable = files.Keys.Concat(snapshotFileHashes.Keys).Any(key =>
++                string.Equals(key, logicalPath, StringComparison.OrdinalIgnoreCase) &&
++                !string.Equals(key, logicalPath, StringComparison.Ordinal));
++            if (confusable || fileRows.Length != hashRows.Length || fileRows.Length > 1)
++            {
++                throw new InvalidDataException(
++                    $"Pending-turn snapshot coverage for '{logicalPath}' is ambiguous or case-confusable.");
++            }
++            result.Add(logicalPath, fileRows.Length == 1);
++        }
++        return result;
++    }
++
++    private static void ValidateCoverageDictionary(
++        IReadOnlyDictionary<string, string> coverage,
++        string label)
++    {
++        var exact = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
++        foreach (var pair in coverage)
++        {
++            if (string.IsNullOrWhiteSpace(pair.Key) ||
++                string.IsNullOrWhiteSpace(pair.Value))
++            {
++                throw new InvalidDataException(
++                    $"Pending-turn snapshot {label} coverage contains a blank key or value.");
++            }
++            if (exact.TryGetValue(pair.Key, out var previous) &&
++                !string.Equals(previous, pair.Key, StringComparison.Ordinal))
++            {
++                throw new InvalidDataException(
++                    $"Pending-turn snapshot {label} coverage contains confusable keys '{previous}' and '{pair.Key}'.");
++            }
++            exact[pair.Key] = pair.Key;
++        }
++    }
++}
++
+ /// <summary>
+@@
+-        ValidateNoCaseConfusableCoverage(selection, manifest, issues);
++        ValidateNoCaseConfusableCoverage(selection, manifest, issues);
+         if (issues.Count != 0)
+             return Failure(issues);
+@@
+             return Failure(issues);
+         }
+
++        ValidateOriginalPathPresenceV1(manifest, issues);
++        if (issues.Count != 0)
++            return Failure(issues);
++
+         if (!string.Equals(
+@@
+-        var selectedPaths = ResolveSelectedPaths(selection, manifest, issues);
++        var selectedPaths = ResolveSelectedPaths(
++            selection,
++            manifest,
++            issues,
++            out var absentLogicalPaths);
+@@
+                 realm,
+                 manifest.PreGeneratedDices1d20,
+-                bytesByPath),
++                bytesByPath,
++                absentLogicalPaths),
+@@
+         var optional = new HashSet<string>(StringComparer.Ordinal);
++        var requireSignedAbsenceForMissingOptionalPaths = false;
+         if (paths is PendingTurnSnapshotPathSelection pathSelection)
+         {
+             foreach (var path in pathSelection.OptionalLogicalPaths)
+                 optional.Add(path);
++            requireSignedAbsenceForMissingOptionalPaths =
++                pathSelection.RequireSignedAbsenceForMissingOptionalPaths;
+         }
+@@
+-        return new PendingTurnSnapshotValidatedPathSelection(
++        if (requireSignedAbsenceForMissingOptionalPaths)
++        {
++            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths
++                .ToHashSet(StringComparer.Ordinal);
++            foreach (var path in result.Where(optional.Contains))
++            {
++                if (observed.Contains(path))
++                    continue;
++                Add(
++                    issues,
++                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++                    "pending_turn_snapshot_reader_required_paths_invalid",
++                    $"observed optional path is outside originalPathPresenceV1: {path}");
++            }
++            if (issues.Count != 0)
++                return PendingTurnSnapshotValidatedPathSelection.Empty;
++        }
++        return new PendingTurnSnapshotValidatedPathSelection(
+             Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),
+-            Array.AsReadOnly(result.Where(optional.Contains).ToArray()));
++            Array.AsReadOnly(result.Where(optional.Contains).ToArray()),
++            requireSignedAbsenceForMissingOptionalPaths);
+     }
+
+     private static IReadOnlyList<string> ResolveSelectedPaths(
+         PendingTurnSnapshotValidatedPathSelection selection,
+         LiveTurnPendingSnapshotManifest manifest,
+-        ICollection<ValidationIssue> issues)
++        ICollection<ValidationIssue> issues,
++        out IReadOnlyList<string> absentLogicalPaths)
+     {
+         var result = new List<string>(
+             selection.RequiredLogicalPaths.Count + selection.OptionalLogicalPaths.Count);
++        var absent = new List<string>();
+         foreach (var path in selection.RequiredLogicalPaths)
+         {
+-            if (!TryResolveExactCoverage(path, manifest, optional: false, issues, out var selected))
++            if (!TryResolveExactCoverage(
++                    path,
++                    manifest,
++                    optional: false,
++                    requireSignedAbsence: false,
++                    issues,
++                    out var selected,
++                    out _))
+             {
+                 continue;
+             }
+@@
+         foreach (var path in selection.OptionalLogicalPaths)
+         {
+-            if (!TryResolveExactCoverage(path, manifest, optional: true, issues, out var selected))
++            if (!TryResolveExactCoverage(
++                    path,
++                    manifest,
++                    optional: true,
++                    selection.RequireSignedAbsenceForMissingOptionalPaths,
++                    issues,
++                    out var selected,
++                    out var observedAbsent))
+                 continue;
+             if (selected)
+                 result.Add(path);
++            if (observedAbsent)
++                absent.Add(path);
+         }
++        absentLogicalPaths = Array.AsReadOnly(
++            absent.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
+         return Array.AsReadOnly(result.ToArray());
+     }
+
++    private static void ValidateOriginalPathPresenceV1(
++        LiveTurnPendingSnapshotManifest manifest,
++        ICollection<ValidationIssue> issues)
++    {
++        if (manifest.OriginalPathPresenceV1 is null)
++            return;
++
++        var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
++            .ToHashSet(StringComparer.Ordinal);
++        var actual = manifest.OriginalPathPresenceV1.Keys
++            .ToHashSet(StringComparer.Ordinal);
++        if (manifest.OriginalPathPresenceV1.Count != expected.Count ||
++            !actual.SetEquals(expected))
++        {
++            Add(
++                issues,
++                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++                "pending_turn_snapshot_reader_presence_invalid",
++                "originalPathPresenceV1 must contain exactly the closed v1 logical-path set");
++            return;
++        }
++
++        foreach (var logicalPath in PendingTurnSnapshotPathPresenceV1.LogicalPaths)
++        {
++            var fileCount = manifest.Files.Keys.Count(key =>
++                string.Equals(key, logicalPath, StringComparison.Ordinal));
++            var hashCount = manifest.SnapshotFileHashes.Keys.Count(key =>
++                string.Equals(key, logicalPath, StringComparison.Ordinal));
++            var observedPresent = manifest.OriginalPathPresenceV1[logicalPath];
++            var agrees = observedPresent
++                ? fileCount == 1 && hashCount == 1
++                : fileCount == 0 && hashCount == 0;
++            if (agrees)
++                continue;
++            Add(
++                issues,
++                logicalPath,
++                "pending_turn_snapshot_reader_presence_invalid",
++                "signed original-path observation contradicts exact snapshot file/hash coverage");
++        }
++    }
++
+@@
+         LiveTurnPendingSnapshotManifest manifest,
+         bool optional,
++        bool requireSignedAbsence,
+         ICollection<ValidationIssue> issues,
+-        out bool selected)
++        out bool selected,
++        out bool observedAbsent)
+     {
+         selected = false;
++        observedAbsent = false;
+@@
+-        if (optional && fileExact == 0 && hashExact == 0)
++        if (optional && fileExact == 0 && hashExact == 0)
++        {
++            if (!requireSignedAbsence)
++                return true;
++            if (manifest.OriginalPathPresenceV1 is not null &&
++                manifest.OriginalPathPresenceV1.TryGetValue(path, out var present) &&
++                !present)
++            {
++                observedAbsent = true;
++                return true;
++            }
++            Add(
++                issues,
++                path,
++                "pending_turn_snapshot_reader_absence_unproven",
++                "optional logical path is uncovered without authenticated original absence");
+-            return true;
++            return false;
++        }
+@@
+     private sealed record PendingTurnSnapshotValidatedPathSelection(
+         IReadOnlyList<string> RequiredLogicalPaths,
+-        IReadOnlyList<string> OptionalLogicalPaths)
++        IReadOnlyList<string> OptionalLogicalPaths,
++        bool RequireSignedAbsenceForMissingOptionalPaths)
+     {
+         internal static PendingTurnSnapshotValidatedPathSelection Empty { get; } = new(
+             Array.Empty<string>(),
+-            Array.Empty<string>());
++            Array.Empty<string>(),
++            false);
+@@
+     private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
+     private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
++    private readonly ReadOnlyCollection<string> _absentLogicalPaths;
+@@
+         string realm,
+         IReadOnlyList<int>? acceptedD20EventValues,
+-        IReadOnlyDictionary<string, byte[]> bytesByPath)
++        IReadOnlyDictionary<string, byte[]> bytesByPath,
++        IReadOnlyList<string> absentLogicalPaths)
+@@
+         _coveredLogicalPaths = Array.AsReadOnly(
+             bytesByPath.Keys.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
++        _absentLogicalPaths = Array.AsReadOnly(
++            absentLogicalPaths.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
+@@
+     internal IReadOnlyList<int> AcceptedD20EventValues => _acceptedD20EventValues;
+     internal IReadOnlyList<string> CoveredLogicalPaths => _coveredLogicalPaths;
++    internal IReadOnlyList<string> AbsentLogicalPaths => _absentLogicalPaths;
+@@
+     internal PendingTurnSnapshotPathSelection(
+         IEnumerable<string> requiredLogicalPaths,
+         IEnumerable<string> optionalLogicalPaths)
++        : this(
++            requiredLogicalPaths,
++            optionalLogicalPaths,
++            requireSignedAbsenceForMissingOptionalPaths: false)
++    {
++    }
++
++    private PendingTurnSnapshotPathSelection(
++        IEnumerable<string> requiredLogicalPaths,
++        IEnumerable<string> optionalLogicalPaths,
++        bool requireSignedAbsenceForMissingOptionalPaths)
+     {
+@@
+         _allLogicalPaths = Array.AsReadOnly(
+             RequiredLogicalPaths.Concat(OptionalLogicalPaths).ToArray());
++        RequireSignedAbsenceForMissingOptionalPaths =
++            requireSignedAbsenceForMissingOptionalPaths;
+     }
+
++    internal static PendingTurnSnapshotPathSelection CreateWithObservedOptionalPaths(
++        IEnumerable<string> requiredLogicalPaths,
++        IEnumerable<string> optionalLogicalPaths) =>
++        new(
++            requiredLogicalPaths,
++            optionalLogicalPaths,
++            requireSignedAbsenceForMissingOptionalPaths: true);
++
+     internal IReadOnlyList<string> RequiredLogicalPaths { get; }
+     internal IReadOnlyList<string> OptionalLogicalPaths { get; }
++    internal bool RequireSignedAbsenceForMissingOptionalPaths { get; }
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Core/GameEngine/GameEngine.PrivateImplementation.cs
+@@
+         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Core/GameEngine/GameEngine.SessionAndSnapshots.cs
+@@
+         if (rollbackSnapshot?.ValidationSnapshotFiles is { Count: > 0 })
+@@
+         }
++        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+
+         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+@@
+         }
++        var originalPathPresenceV1 =
++            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
+
+         var manifest = new PendingTurnSnapshotManifest
+@@
+             Files = files,
+             SnapshotFileHashes = snapshotHashes,
++            OriginalPathPresenceV1 = originalPathPresenceV1,
+             ClientOwnedValidationHashes = clientOwnedValidationHashes,
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/LiveTurnPreparationService.cs
+@@
+-        var rollbackBaselineFiles = EnumerateSnapshotFiles(writeLease)
++        var rollbackBaselineFiles = EnumerateSnapshotFiles(writeLease)
+             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
+             .ToList();
++        var snapshotFiles = new HashSet<string>(
++            rollbackBaselineFiles,
++            StringComparer.OrdinalIgnoreCase);
++        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+
+-        foreach (var file in rollbackBaselineFiles)
++        foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
++        var originalPathPresenceV1 =
++            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
+@@
+             Files = files,
+             SnapshotFileHashes = snapshotHashes,
++            OriginalPathPresenceV1 = originalPathPresenceV1,
+             ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
+@@
+     public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+     public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++    public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+     public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/WebUi/BrowserAfterlifeTurnRequestQueue.cs
+@@
+         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+-        foreach (var file in baselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
++        var snapshotFiles = new HashSet<string>(baselineFiles, StringComparer.OrdinalIgnoreCase);
++        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
++        foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
++        var originalPathPresenceV1 =
++            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
+@@
+             Files = files,
+             SnapshotFileHashes = snapshotHashes,
++            OriginalPathPresenceV1 = originalPathPresenceV1,
+             ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
+@@
+         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/Validation/ValidationService.PrivateImplementation.cs
+@@
+         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/GuardianPowerEventState.cs
+@@
+         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/CanonicalStateNormalizer/CanonicalStateNormalizer.SoulAndMeta.cs
+@@
+         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
++        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
+         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/ResourceMaterializationTestContext.cs
+@@
+         var files = new JsonObject();
+         var snapshotFileHashes = new JsonObject();
++        var typedFiles = new Dictionary<string, string>(StringComparer.Ordinal);
++        var typedSnapshotFileHashes = new Dictionary<string, string>(StringComparer.Ordinal);
+         var rollbackBaselineFiles = new JsonArray();
+@@
+         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
+             .Concat(AllResourcePaths)
+             .Append(FullPartyInteractionsPath)
++            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+             .Concat(additionalTrackedPaths ?? Array.Empty<string>())
+@@
++            var snapshotHash = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+-            snapshotFileHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
++            snapshotFileHashes[path] = snapshotHash;
++            typedFiles.Add(path, snapshotPath);
++            typedSnapshotFileHashes.Add(path, snapshotHash);
+             rollbackBaselineFiles.Add(path);
+         }
++        var originalPathPresenceV1 = JsonSerializer.SerializeToNode(
++            PendingTurnSnapshotPathPresenceV1.Create(
++                typedFiles,
++                typedSnapshotFileHashes))!.AsObject();
+@@
+         manifest["files"] = files;
+         manifest["snapshotFileHashes"] = snapshotFileHashes;
++        manifest["originalPathPresenceV1"] = originalPathPresenceV1;
+         manifest["clientOwnedValidationHashes"] = new JsonObject();
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/PendingTurnSnapshotPresenceContractTests.cs
++using System.Collections;
++using System.Reflection;
++using System.Text;
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using System.Text.Json.Serialization;
++using BookOfEternityClient.Core;
++using BookOfEternityClient.Models;
++using BookOfEternityClient.Services;
++using BookOfEternityClient.WebUi;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed class PendingTurnSnapshotPresenceContractTests
++{
++    private const string PropertyName = "OriginalPathPresenceV1";
++
++    private static readonly string[] ExpectedPaths =
++    [
++        "game_state/meta/soul_state.json",
++        "game_state/resources/resource_definitions.json",
++        "game_state/resources/resource_state.json",
++        "game_state/resources/resource_history.json",
++        "game_state/resources/resource_owner_authority.json",
++        "game_state/meta/afterlife_spiritual_conflict_state.json",
++        "game_state/meta/afterlife_entity_profiles.json",
++        "game_state/meta/shining_abode_state.json",
++        "game_state/core/game_settings.json",
++        "game_state/effects/effect_identity_index.json",
++        "game_state/wounds/wound_identity_index.json",
++        "game_state/wounds/wound_history.json",
++        "game_state/player/wounds.json",
++        "game_state/npcs/npc_wounds.json",
++        "game_state/combat/enemies.json",
++        "game_state/combat/allies.json"
++    ];
++
++    [Fact]
++    public void ClosedObservationContract_HasExactImmutableSixteenPaths()
++    {
++        var helper = ClientAssembly.GetType(
++            "BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1");
++        Assert.NotNull(helper);
++        var logicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
++            helper!.GetProperty(
++                "LogicalPaths",
++                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
++
++        Assert.Equal(ExpectedPaths, logicalPaths);
++        Assert.Throws<NotSupportedException>(
++            () => ((IList)logicalPaths).Add("game_state/forged.json"));
++    }
++
++    [Fact]
++    public void TypedManifestShapes_PopulatedRoundTripsAlignPayloadHashesAndNullOmission()
++    {
++        var options = new JsonSerializerOptions
++        {
++            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
++            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
++        };
++        string? expectedJson = null;
++        string? expectedHash = null;
++        foreach (var type in ManifestTypes())
++        {
++            var property = type.GetProperty(PropertyName);
++            Assert.NotNull(property);
++            Assert.Equal(typeof(Dictionary<string, bool>), property!.PropertyType);
++
++            var names = type.GetProperties()
++                .OrderBy(static candidate => candidate.MetadataToken)
++                .Select(static candidate => candidate.Name)
++                .ToArray();
++            Assert.Equal(
++                Array.IndexOf(names, "SnapshotFileHashes") + 1,
++                Array.IndexOf(names, PropertyName));
++
++            var instance = Activator.CreateInstance(type, nonPublic: true)!;
++            var oldJson = JsonSerializer.Serialize(instance, type, options);
++            Assert.DoesNotContain("originalPathPresenceV1", oldJson, StringComparison.Ordinal);
++
++            PopulateManifest(instance, type);
++            var json = JsonSerializer.Serialize(instance, type, options);
++            Assert.Contains("\"originalPathPresenceV1\"", json, StringComparison.Ordinal);
++            var roundTripped = JsonSerializer.Deserialize(json, type, options);
++            Assert.NotNull(roundTripped);
++            Assert.Equal(json, JsonSerializer.Serialize(roundTripped, type, options));
++            expectedJson ??= json;
++            Assert.Equal(expectedJson, json);
++            var hash = PendingTurnSnapshotAuthority.ComputeSha256(
++                Encoding.UTF8.GetBytes(json));
++            expectedHash ??= hash;
++            Assert.Equal(expectedHash, hash);
++        }
++    }
++
++    [Fact]
++    public void Create_DerivesExactPresenceAndRejectsUntrustworthyCoverage()
++    {
++        var create = PresenceHelperType.GetMethod(
++            "Create",
++            BindingFlags.Static | BindingFlags.NonPublic)!;
++        var files = new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[0]] =
++                "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json"
++        };
++        var hashes = new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[0]] = new string('A', 64)
++        };
++        var map = Assert.IsType<Dictionary<string, bool>>(
++            create.Invoke(null, [files, hashes]));
++
++        Assert.Equal(ExpectedPaths, map.Keys);
++        Assert.True(map[ExpectedPaths[0]]);
++        Assert.All(ExpectedPaths.Skip(1), path => Assert.False(map[path]));
++
++        hashes.Clear();
++        var asymmetric = Assert.Throws<TargetInvocationException>(
++            () => create.Invoke(null, [files, hashes]));
++        Assert.IsType<InvalidDataException>(asymmetric.InnerException);
++
++        files.Clear();
++        hashes.Clear();
++        var caseVariant = ExpectedPaths[0].ToUpperInvariant();
++        files[caseVariant] = "snapshot";
++        hashes[caseVariant] = new string('B', 64);
++        var confusable = Assert.Throws<TargetInvocationException>(
++            () => create.Invoke(null, [files, hashes]));
++        Assert.IsType<InvalidDataException>(confusable.InnerException);
++
++        files.Clear();
++        hashes.Clear();
++        files[ExpectedPaths[0]] = "snapshot";
++        hashes[ExpectedPaths[0]] = " ";
++        var blankHash = Assert.Throws<TargetInvocationException>(
++            () => create.Invoke(null, [files, hashes]));
++        Assert.IsType<InvalidDataException>(blankHash.InnerException);
++    }
++
++    [Fact]
++    public void ReaderPresenceAgreement_FalseRequiresBothCoverageRowsAbsent()
++    {
++        var manifestType = ClientAssembly.GetType(
++            "BookOfEternityClient.Services.LiveTurnPendingSnapshotManifest")!;
++        var manifest = Activator.CreateInstance(manifestType, nonPublic: true)!;
++        var presence = ExpectedPaths.ToDictionary(
++            static path => path,
++            static _ => false,
++            StringComparer.Ordinal);
++        var presenceProperty = manifestType.GetProperty(PropertyName);
++        Assert.NotNull(presenceProperty);
++        presenceProperty!.SetValue(manifest, presence);
++        var files = new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[9]] = "snapshot/settings.json"
++        };
++        var hashes = new Dictionary<string, string>(StringComparer.Ordinal);
++        manifestType.GetProperty("Files")!.SetValue(manifest, files);
++        manifestType.GetProperty("SnapshotFileHashes")!.SetValue(manifest, hashes);
++        var validate = ClientAssembly.GetType(
++                "BookOfEternityClient.Services.PendingTurnSnapshotReader")!
++            .GetMethod(
++                "ValidateOriginalPathPresenceV1",
++                BindingFlags.Static | BindingFlags.NonPublic)!;
++        var issues = new List<ValidationIssue>();
++
++        validate.Invoke(null, [manifest, issues]);
++        Assert.Contains(
++            issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_presence_invalid");
++
++        issues.Clear();
++        files.Clear();
++        hashes[ExpectedPaths[9]] = new string('C', 64);
++        validate.Invoke(null, [manifest, issues]);
++        Assert.Contains(
++            issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_presence_invalid");
++    }
++
++    [Fact]
++    public void SelectionFactories_PreserveLegacyAndSixtyFourPathBoundContract()
++    {
++        var selectionType = ClientAssembly.GetType(
++            "BookOfEternityClient.Services.PendingTurnSnapshotPathSelection");
++        Assert.NotNull(selectionType);
++        var constructor = selectionType!.GetConstructor(
++            BindingFlags.Instance | BindingFlags.NonPublic,
++            binder: null,
++            [typeof(IEnumerable<string>), typeof(IEnumerable<string>)],
++            modifiers: null);
++        var factory = selectionType.GetMethod(
++            "CreateWithObservedOptionalPaths",
++            BindingFlags.Static | BindingFlags.NonPublic);
++        Assert.NotNull(constructor);
++        Assert.NotNull(factory);
++
++        var legacy = constructor!.Invoke([new[] { ExpectedPaths[0] }, new[] { ExpectedPaths[9] }]);
++        var observed = factory!.Invoke(null, [new[] { ExpectedPaths[0] }, new[] { ExpectedPaths[9] }])!;
++        var flag = selectionType.GetProperty(
++            "RequireSignedAbsenceForMissingOptionalPaths",
++            BindingFlags.Instance | BindingFlags.NonPublic)!;
++        Assert.False((bool)flag.GetValue(legacy)!);
++        Assert.True((bool)flag.GetValue(observed)!);
++        Assert.Equal(2, ((IReadOnlyCollection<string>)observed).Count);
++        var authorityType = ClientAssembly.GetType(
++            "BookOfEternityClient.Services.PendingTurnSnapshotReadAuthority")!;
++        var absentLogicalPaths = authorityType.GetProperty(
++            "AbsentLogicalPaths",
++            BindingFlags.Instance | BindingFlags.NonPublic);
++        Assert.NotNull(absentLogicalPaths);
++        Assert.Equal(
++            typeof(IReadOnlyList<string>),
++            absentLogicalPaths!.PropertyType);
++    }
++
++    private static Assembly ClientAssembly => typeof(FileSystemManager).Assembly;
++
++    private static Type PresenceHelperType
++    {
++        get
++        {
++            var type = ClientAssembly.GetType(
++                "BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1");
++            Assert.NotNull(type);
++            return type!;
++        }
++    }
++
++    private static void PopulateManifest(object instance, Type type)
++    {
++        Set("SessionId", "presence-session");
++        Set("RequestId", "presence-request");
++        Set("TurnNumber", 42);
++        Set("RequestTimestamp", "2026-09-08T00:00:00Z");
++        Set("PlayerAction", "Observe source presence.");
++        Set("PreGeneratedDices1d20", new[] { 7, 11 });
++        Set("GachaBaseResult", new JsonObject { ["baseRarity"] = "rare" });
++        Set("ProgressionControl", new ProgressionControl { CurrentRealm = "Chaos Sea" });
++        Set("Files", new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[0]] =
++                "game_state/control/pending_turn_snapshot/game_state/meta/soul_state.json"
++        });
++        Set("SnapshotFileHashes", new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[0]] = new string('A', 64)
++        });
++        Set(
++            PropertyName,
++            ExpectedPaths.ToDictionary(
++                static path => path,
++                static path => path == ExpectedPaths[0],
++                StringComparer.Ordinal));
++        Set("ClientOwnedValidationHashes", new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            ["game_state/control/client-owned.json"] = new string('B', 64)
++        });
++        Set("RollbackBackups", new Dictionary<string, string>(StringComparer.Ordinal)
++        {
++            [ExpectedPaths[0]] = "game_state/meta/soul_state.json.rollback.presence"
++        });
++        Set("RollbackBaselineFiles", new List<string> { ExpectedPaths[0] });
++        Set("SourceLabel", "presence-contract");
++        Set("ManifestPayloadHash", string.Empty);
++        return;
++
++        void Set(string propertyName, object value) =>
++            type.GetProperty(propertyName)!.SetValue(instance, value);
++    }
++
++    private static IEnumerable<Type> ManifestTypes()
++    {
++        yield return typeof(GameEngine).GetNestedType(
++            "PendingTurnSnapshotManifest",
++            BindingFlags.NonPublic)!;
++        yield return ClientAssembly.GetType(
++            "BookOfEternityClient.Services.LiveTurnPendingSnapshotManifest")!;
++        yield return typeof(BrowserAfterlifeTurnRequestQueue).GetNestedType(
++            "BrowserPendingTurnSnapshotManifest",
++            BindingFlags.NonPublic)!;
++        yield return typeof(ValidationService).GetNestedType(
++            "ValidationPendingTurnSnapshotManifest",
++            BindingFlags.NonPublic)!;
++        yield return typeof(GuardianPowerEventState).GetNestedType(
++            "PendingTurnSnapshotManifest",
++            BindingFlags.NonPublic)!;
++        yield return typeof(CanonicalStateNormalizer).GetNestedType(
++            "PendingTurnSnapshotAuthorityManifest",
++            BindingFlags.NonPublic)!;
++    }
++}
+*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/PendingTurnSnapshotPresenceIntegrationTests.cs
++using System.Text;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Configuration;
++using BookOfEternityClient.Core;
++using BookOfEternityClient.Services;
++using BookOfEternityClient.WebUi;
++using Microsoft.Extensions.Logging.Abstractions;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++[Trait("Category", "RegressionIntegration")]
++public sealed class PendingTurnSnapshotPresenceIntegrationTests
++{
++    private const string SoulPath = "game_state/meta/soul_state.json";
++    private const string SettingsPath = "game_state/core/game_settings.json";
++
++    private static readonly string[] RequiredPaths =
++    [
++        SoulPath,
++        ResourceMaterializationTestContext.DefinitionsPath,
++        ResourceMaterializationTestContext.StatePath,
++        ResourceMaterializationTestContext.HistoryPath,
++        ResourceMaterializationTestContext.AuthorityPath
++    ];
++    private static readonly string[] OptionalPaths =
++        PendingTurnSnapshotPathPresenceV1.LogicalPaths
++            .Skip(RequiredPaths.Length)
++            .ToArray();
++
++    [Fact]
++    public async Task LiveProducer_SignedAbsenceSurvivesLaterCurrentFileAndReaderUsesRealLease()
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++
++        var captured = await ReadManifestAsync(context);
++        Assert.False(captured["originalPathPresenceV1"]![SettingsPath]!.GetValue<bool>());
++        Assert.Null(captured["files"]![SettingsPath]);
++
++        await context.WriteExactJsonAsync(SettingsPath, """{"difficulty":"later-current"}""");
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                RequiredPaths,
++                OptionalPaths));
++
++        Assert.True(result.Success);
++        Assert.NotNull(result.Snapshot);
++        Assert.Contains(SettingsPath, result.Snapshot!.AbsentLogicalPaths);
++        Assert.DoesNotContain(SettingsPath, result.Snapshot.CoveredLogicalPaths);
++        Assert.Throws<NotSupportedException>(
++            () => ((ICollection<string>)result.Snapshot.AbsentLogicalPaths)
++                .Add("game_state/forged.json"));
++        Assert.Equal(
++            PendingTurnSnapshotPathPresenceV1.LogicalPaths.Order(StringComparer.Ordinal),
++            result.Snapshot.CoveredLogicalPaths
++                .Concat(result.Snapshot.AbsentLogicalPaths)
++                .Order(StringComparer.Ordinal));
++        Assert.Throws<KeyNotFoundException>(
++            () => result.Snapshot.ReadRequiredBytes(SettingsPath));
++    }
++
++    [Fact]
++    public async Task BrowserProducer_SignedPresenceReturnsCapturedBytesWithoutChangingRollbackMembership()
++    {
++        await using var context = await CreateSeededContextAsync();
++        var settingsBytes = Encoding.UTF8.GetBytes("""{"difficulty":"captured"}""");
++        await context.WriteExactBytesAsync(SettingsPath, settingsBytes);
++        const string rollbackPath =
++            "game_state/control/pending_turn_snapshot/soul.browser.rollback.json";
++        await context.WriteExactBytesAsync(
++            rollbackPath,
++            (await context.FileSystem.ReadFileBytesAsync(SoulPath))!);
++
++        var stateManager = new StateManager(
++            context.FileSystem,
++            new GameSettings(),
++            NullLogger<StateManager>.Instance);
++        var queue = new BrowserAfterlifeTurnRequestQueue(context.FileSystem, stateManager);
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            await queue.QueueDirectChaosSeaGachaAsync(
++                lease,
++                new LocalUiSessionLockOwner(
++                    "presence-browser",
++                    "test",
++                    "presence-browser",
++                    TimeSpan.FromMinutes(1)),
++                "Observe original source presence.",
++                new PendingTurnState { PreGeneratedDices1d20 = [11] },
++                rollbackPath,
++                "Chaos Sea");
++        }
++
++        var manifest = await ReadManifestAsync(context);
++        Assert.True(manifest["originalPathPresenceV1"]![SettingsPath]!.GetValue<bool>());
++        Assert.DoesNotContain(
++            "game_state/control/spiritual_source_snapshot_coverage.json",
++            manifest["rollbackBaselineFiles"]!.AsArray()
++                .Select(static node => node!.GetValue<string>()));
++
++        await context.WriteExactJsonAsync(SettingsPath, """{"difficulty":"later"}""");
++        await using var readLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var read = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            readLease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                [SoulPath],
++                [SettingsPath]));
++        Assert.True(read.Success);
++        Assert.Equal(settingsBytes, read.Snapshot!.ReadRequiredBytes(SettingsPath));
++        Assert.DoesNotContain(SettingsPath, read.Snapshot.AbsentLogicalPaths);
++    }
++
++    [Fact]
++    public async Task OldCurrentTurnManifest_UncoveredObservedOptionalFailsButLegacyOptionalStillSkips()
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        manifest.Remove("originalPathPresenceV1");
++        await ResignAsync(context, manifest);
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var observed = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                RequiredPaths,
++                [SettingsPath]));
++        Assert.False(observed.Success);
++        Assert.Null(observed.Snapshot);
++        Assert.Contains(
++            observed.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_absence_unproven");
++
++        var legacy = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            new PendingTurnSnapshotPathSelection(RequiredPaths, [SettingsPath]));
++        Assert.True(legacy.Success);
++        Assert.Empty(legacy.Snapshot!.AbsentLogicalPaths);
++        Assert.DoesNotContain(SettingsPath, legacy.Snapshot.CoveredLogicalPaths);
++    }
++
++    [Theory]
++    [InlineData(false)]
++    [InlineData(true)]
++    public async Task ChangedPresenceWithOriginalDetachedAuthorityFailsClosed(bool rehashManifest)
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        manifest["originalPathPresenceV1"]![SettingsPath] = true;
++        if (rehashManifest)
++        {
++            manifest["manifestPayloadHash"] = string.Empty;
++            manifest["manifestPayloadHash"] =
++                PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
++        }
++        await context.WriteExactJsonAsync(
++            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++            manifest.ToJsonString());
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Contains(
++            result.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_authority_invalid");
++    }
++
++    [Theory]
++    [InlineData("missing")]
++    [InlineData("extra")]
++    [InlineData("unicode-confusable")]
++    [InlineData("contradiction")]
++    [InlineData("missing-coverage-contradiction")]
++    public async Task ResignedPresenceShapeOrCoverageContradictionFailsClosed(string mutation)
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        var presence = manifest["originalPathPresenceV1"]!.AsObject();
++        switch (mutation)
++        {
++            case "missing":
++                presence.Remove(SettingsPath);
++                break;
++            case "extra":
++                presence["game_state/meta/not_in_v1.json"] = false;
++                break;
++            case "unicode-confusable":
++                presence["game_ѕtate/core/game_settings.json"] = false;
++                break;
++            case "contradiction":
++                presence[SoulPath] = false;
++                break;
++            case "missing-coverage-contradiction":
++                presence[SettingsPath] = true;
++                break;
++        }
++        await ResignAsync(context, manifest);
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Contains(
++            result.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_presence_invalid");
++    }
++
++    [Theory]
++    [InlineData("files")]
++    [InlineData("hashes")]
++    public async Task ResignedFalseObservationWithOneSidedCoverageFailsClosed(
++        string oneSidedCoverage)
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        if (oneSidedCoverage == "files")
++        {
++            manifest["files"]!.AsObject()[SettingsPath] =
++                "game_state/control/pending_turn_snapshot/game_state/core/game_settings.json";
++        }
++        else
++        {
++            manifest["snapshotFileHashes"]!.AsObject()[SettingsPath] =
++                new string('D', 64);
++        }
++        await ResignAsync(context, manifest);
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Contains(
++            result.Issues,
++            static issue =>
++                issue.Code == "pending_turn_snapshot_reader_coverage_case_mismatch");
++    }
++
++    [Fact]
++    public async Task ResignedNonBooleanPresenceFailsTypedManifestShape()
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        manifest["originalPathPresenceV1"]![SettingsPath] = "false";
++        await ResignAsync(context, manifest);
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Contains(
++            result.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
++    }
++
++    [Fact]
++    public async Task RawCaseConfusablePresenceKeyFailsBeforeAnyAbsenceAuthority()
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        manifest["originalPathPresenceV1"]!.AsObject()[SettingsPath.ToUpperInvariant()] = false;
++        await context.WriteExactJsonAsync(
++            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++            manifest.ToJsonString());
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Null(result.Snapshot);
++        Assert.Contains(
++            result.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
++    }
++
++    [Fact]
++    public async Task RawDuplicatePresenceKeyFailsBeforeAnyAbsenceAuthority()
++    {
++        await using var context = await CreateSeededContextAsync();
++        await PrepareLiveAsync(context);
++        var manifest = await ReadManifestAsync(context);
++        var json = manifest.ToJsonString();
++        var row = $"\"{SettingsPath}\":false";
++        Assert.Contains(row, json, StringComparison.Ordinal);
++        json = json.Replace(row, $"{row},{row}", StringComparison.Ordinal);
++        await context.WriteExactJsonAsync(
++            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++            json);
++
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = ReadObserved(context, lease);
++
++        Assert.False(result.Success);
++        Assert.Null(result.Snapshot);
++        Assert.Contains(
++            result.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_manifest_invalid");
++    }
++
++    [Fact]
++    public async Task ObservedSelection_RealSnapshotAcceptsSixtyFourAndRejectsSixtyFive()
++    {
++        await using var context = await CreateSeededContextAsync();
++        var extraRequired = Enumerable.Range(0, 48)
++            .Select(static index => $"game_state/test/presence_{index:D2}.json")
++            .ToArray();
++        foreach (var path in extraRequired)
++            await context.WriteExactJsonAsync(path, """{}""");
++        await PrepareLiveAsync(context);
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var sixtyFour = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                RequiredPaths.Concat(extraRequired),
++                OptionalPaths));
++        Assert.True(sixtyFour.Success);
++        Assert.Equal(
++            64,
++            sixtyFour.Snapshot!.CoveredLogicalPaths.Count +
++            sixtyFour.Snapshot.AbsentLogicalPaths.Count);
++        Assert.All(
++            extraRequired,
++            path => Assert.Contains(path, sixtyFour.Snapshot.CoveredLogicalPaths));
++
++        var sixtyFive = PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                RequiredPaths.Concat(extraRequired).Append(
++                    "game_state/test/presence_over_limit.json"),
++                OptionalPaths));
++        Assert.False(sixtyFive.Success);
++        Assert.Contains(
++            sixtyFive.Issues,
++            static issue => issue.Code == "pending_turn_snapshot_reader_required_paths_invalid");
++    }
++
++    [Fact]
++    public async Task RealmAutoRollback_PresenceMetadataRestoresExactForbiddenBytesWithoutMetadataArtifact()
++    {
++        const string forbiddenPath = "game_state/factions/faction_core.json";
++        const string syntheticPath =
++            "game_state/control/spiritual_source_snapshot_coverage.json";
++        await using var context = await CreateSeededContextAsync();
++        var before = Encoding.UTF8.GetPreamble()
++            .Concat(Encoding.UTF8.GetBytes("""{"factions":[{"factionId":"before"}]}"""))
++            .ToArray();
++        await context.WriteExactBytesAsync(forbiddenPath, before);
++        await context.CaptureValidatedPendingSnapshotAsync(
++            currentRealm: "Chaos Sea",
++            additionalTrackedPaths: [forbiddenPath]);
++        var manifest = await ReadManifestAsync(context);
++        Assert.NotNull(manifest["originalPathPresenceV1"]);
++        Assert.Null(manifest["files"]![syntheticPath]);
++
++        await context.WriteExactJsonAsync(
++            forbiddenPath,
++            """{"factions":[{"factionId":"wrong-realm"}]}""");
++        var service = new RealmSegregationAutoRollbackService(
++            context.FileSystem,
++            NullLogger<RealmSegregationAutoRollbackService>.Instance);
++        var rollback = await service.TryRollbackForbiddenRealmMutationsAsync(
++            "Chaos Sea",
++            [forbiddenPath],
++            "presence metadata restore boundary");
++
++        Assert.True(rollback.RolledBack);
++        Assert.Equal(before, await context.FileSystem.ReadFileBytesAsync(forbiddenPath));
++        Assert.False(context.FileSystem.FileExists(syntheticPath));
++    }
++
++    private static PendingTurnSnapshotReadResult ReadObserved(
++        ResourceMaterializationTestContext context,
++        FileSystemManager.CanonicalWriteLease lease) =>
++        PendingTurnSnapshotReader.ReadCurrent(
++            context.FileSystem,
++            lease,
++            PendingTurnSnapshotPathSelection.CreateWithObservedOptionalPaths(
++                RequiredPaths,
++                [SettingsPath]));
++
++    private static async Task<ResourceMaterializationTestContext> CreateSeededContextAsync()
++    {
++        var context = await ResourceMaterializationTestContext.CreateAsync();
++        foreach (var path in RequiredPaths)
++            await context.WriteExactJsonAsync(path, """{}""");
++        return context;
++    }
++
++    private static Task PrepareLiveAsync(ResourceMaterializationTestContext context) =>
++        new LiveTurnPreparationService(context.FileSystem).PrepareAsync(
++            new LiveTurnPreparationOptions
++            {
++                SessionId = "presence-live",
++                RequestId = "presence-live-request",
++                TurnNumber = 42,
++                CurrentRealm = "Mortal World",
++                PlayerAction = "Observe original source presence.",
++                PreGeneratedDices1d20 = [7]
++            });
++
++    private static async Task<JsonObject> ReadManifestAsync(
++        ResourceMaterializationTestContext context) =>
++        Assert.IsType<JsonObject>(
++            await context.ReadJsonAsync(
++                LiveTurnPreparationService.PendingTurnSnapshotManifestPath));
++
++    private static async Task ResignAsync(
++        ResourceMaterializationTestContext context,
++        JsonObject manifest)
++    {
++        manifest["manifestPayloadHash"] = string.Empty;
++        manifest["manifestPayloadHash"] =
++            PendingTurnSnapshotTestAuthority.ComputeManifestPayloadHash(manifest);
++        await context.WriteExactJsonAsync(
++            LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
++            manifest.ToJsonString());
++        await PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(
++            context.FileSystem);
++    }
++}
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/GameEngineTurnLifecycleTests.cs
+@@
+     public async Task CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes()
+@@
+         Assert.Equal("bytes", snapshotHashMode);
+     }
+
++    [Fact]
++    public async Task CreateCanonicalBaselineSnapshotAsync_RecordsClosedOriginalPathPresenceWithoutChangingRollbackMembership()
++    {
++        const string settingsPath = "game_state/core/game_settings.json";
++        const string absentPath = "game_state/wounds/wound_history.json";
++        var settingsBytes = Encoding.UTF8.GetBytes("""{"difficulty":"hard"}""");
++        await _fs.WriteFileAtomicBytesAsync(settingsPath, settingsBytes);
++        _fs.DeleteFile(absentPath);
++        var engine = CreateGameEngine();
++        var request = CreateSnapshotByteContractRequest("presence_contract");
++        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
++            engine,
++            "CreatePreTurnBackup",
++            "presence_contract");
++
++        await InvokePrivateTaskResultAsync(
++            engine,
++            "CreateCanonicalBaselineSnapshotAsync",
++            request,
++            rollbackSnapshot,
++            "presence-contract-test");
++
++        var manifest = JsonNode.Parse(
++            (await _fs.ReadFileAsync(
++                LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!)!.AsObject();
++        var presence = manifest["originalPathPresenceV1"]!.AsObject();
++        var files = manifest["files"]!.AsObject();
++        var rollbackBaseline = manifest["rollbackBaselineFiles"]!.AsArray()
++            .Select(static node => node!.GetValue<string>())
++            .ToArray();
++
++        Assert.Equal(PendingTurnSnapshotPathPresenceV1.LogicalPaths, presence.Select(static row => row.Key));
++        Assert.True(presence[settingsPath]!.GetValue<bool>());
++        Assert.False(presence[absentPath]!.GetValue<bool>());
++        Assert.NotNull(files[settingsPath]);
++        Assert.Null(files[absentPath]);
++        Assert.DoesNotContain(absentPath, rollbackBaseline, StringComparer.OrdinalIgnoreCase);
++        Assert.Null(files["game_state/control/spiritual_source_snapshot_coverage.json"]);
++    }
++
+@@
+     public async Task PreTurnRollback_RestoresExactOriginalBytesWithoutAddingBom()
+@@
+         Assert.Equal(baseline, await _fs.ReadFileBytesAsync(path));
+     }
+
++    [Fact]
++    public async Task PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics()
++    {
++        const string restoredPath = "game_state/world/weather.json";
++        const string absentTrackedPath = "game_state/wounds/wound_history.json";
++        const string syntheticPath =
++            "game_state/control/spiritual_source_snapshot_coverage.json";
++        var baseline = Encoding.UTF8.GetBytes("""{"weather":"before"}""");
++        await _fs.WriteFileAtomicBytesAsync(restoredPath, baseline);
++        _fs.DeleteFile(absentTrackedPath);
++        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
++        var request = CreateSnapshotByteContractRequest("presence_rollback");
++        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
++            engine,
++            "CreatePreTurnBackup",
++            "presence_rollback");
++        await InvokePrivateTaskResultAsync(
++            engine,
++            "CreateCanonicalBaselineSnapshotAsync",
++            request,
++            rollbackSnapshot,
++            "presence-rollback-test");
++
++        await _fs.WriteFileAtomicAsync(restoredPath, """{"weather":"after"}""");
++        await _fs.WriteFileAtomicAsync(absentTrackedPath, """{"entries":[]}""");
++        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
++
++        Assert.Equal(baseline, await _fs.ReadFileBytesAsync(restoredPath));
++        Assert.False(_fs.FileExists(absentTrackedPath));
++        Assert.False(_fs.FileExists(syntheticPath));
++    }
++
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+@@
+         "MortalWoundTreatmentResolverTests.cs",
++        "PendingTurnSnapshotPresenceIntegrationTests.cs",
+         "QteSceneServiceTests.cs",
+*** End Patch

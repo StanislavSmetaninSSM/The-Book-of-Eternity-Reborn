@@ -2123,6 +2123,26 @@ semantic RED0/1, Focused35/35 plus existing743/743, independent code review0C/I/
 and parent Fast7849/7849 in4:24.343/default5m with all28TRXs inspected. Only this
 prerequisite is accepted; no live consumer or full T080/T087/US3 completion is claimed.
 
+## 2026-09-08 — authenticated original snapshot presence prerequisite
+
+Source issue: #1536, T081-B2C-J2-B0; execution plan and complete companion:
+`docs/superpowers/plans/2026-09-08-spiritual-snapshot-presence-b0.md` and `.patch`.
+The parent reviewed the full contract and code, including all final corrections;
+all forty update hunks match the current source uniquely and two new targets
+are absent. One thirteen-file implementation task owns six nullable aligned
+manifest DTOs, the closed sixteen-path helper, three real lease-bound producers,
+the authenticated opt-in reader, and pure/physical-integration evidence. The
+signed manifest field is never a synthetic canonical file or restore member.
+Old optional-reader behavior and the existing total 64-path bound remain intact.
+
+B0 adds only client-owned snapshot authentication metadata; no GM-authored or
+player-facing capability changes, so no GM prompt/example update is required
+for this prerequisite alone. The B1 source owner consumes its frozen API only
+after B0 named controls and independent review. B1 owns the source-action and
+terminal contract synchronization. Child verification is named Focused only;
+the parent owns one combined B0/B1 Fast checkpoint. B0 does not complete source
+admission, live insertion, full spiritual consequences or issue #1536.
+
 ## Risk controls
 
 | Risk | Control |
