@@ -2243,7 +2243,7 @@ hand-written history/after-images, or a raw mutation fallback.
           Integration7/7; parent Fast7789/7789 in4:48.801/default5m, build0/0,
           no skips/cross-descriptor duplicates and complete cleanup. Parent
           read actual evidence; only this nested subtask is accepted.
-        - [ ] T081-B2C-J2-A [US3] Make ordinary production effect completion
+        - [X] T081-B2C-J2-A [US3] Make ordinary production effect completion
           consume the real carrier/source/target/skill/phase owner and retain
           exact application edits, including non-create outcomes, plus J1
           history/allocation ranges. Follow the six-file complete-code plan
@@ -2257,6 +2257,21 @@ hand-written history/after-images, or a raw mutation fallback.
           Real source acquisition, current-generation wound insertion and
           next-exchange consumption remain mandatory in the same J2 slice;
           this unit cannot close B2C, T081 or #1536.
+          Accepted2026-09-08 at e720b03f: six exact companion postimages,
+          independent Spec compliant / Quality Approved review (0C/I/M),
+          actual OLD7/7 and ownershipRED0/1, GREEN23/23, planner145/145,
+          Integration70/70+5/5+46/46 and final23/23. Parent Fast7812/7812
+          in4:18.111/default5m; all28TRXs,23newrows and exact7OLD/GREEN
+          payload/allocation outputs audited, build0/0/cleanup complete.
+        - [ ] T081-B2C-J2-B [US3] Acquire the real original spiritual source
+          under the canonical lease and make the production validator consume
+          the shared strict checker. First resolve the recorded source-envelope
+          rule in plan.md: ordinary source ceiling and canonical pre-materialized
+          special/guaranteed declarations. Do not infer it from a caller cap,
+          DTO, frame or hash; do not omit ordinary/special/guaranteed/start/
+          terminal families. Source-only preparation is not admitted wound,
+          successful resource spend or publishable receipt. Complete-code plan
+          and actual signed positive/negative controls precede implementation.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

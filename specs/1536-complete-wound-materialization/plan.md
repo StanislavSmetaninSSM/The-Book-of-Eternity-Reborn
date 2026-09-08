@@ -1770,21 +1770,35 @@ carrier/source/target/skill/processed-event/phase execution and consume real wou
 insertion/current-generation before authority in the next exchange. No further
 observer-only prerequisite or fullB2 acceptance follows from J1 alone.
 
-The next bounded unit T081-B2C-J2-A is tracked for implementation in
+The bounded unit T081-B2C-J2-A is accepted at `e720b03f` in
 `docs/superpowers/plans/2026-09-08-effect-draft-write-owner-unit-a.md`
-and its complete six-file companion. Production completion will consume the
+and its complete six-file companion. Production completion consumes the
 actual owned carrier/source/target/skill state, J1 writer and ordinary phase
 runner; exact application receipts include non-create stack/refresh/merge
 updates and actual carrier/history/allocation ranges. Parent reviewed the
 candidate bodies and mechanically confirmed the relocated finalizer preserves
-the old algorithms and ordering. Seven OLD payload/allocation goldens, the
-real-production ownership-contract RED,23 GREEN rows, existing Integration
-consumers, independent review and parent Fast remain required. No C# evidence
-or implementation acceptance is claimed by this planning record.
+the old algorithms and ordering. Actual seven OLD payload/allocation goldens
+match the GREEN output exactly; the semantic ownership-contract RED reached its
+intended call assertion. GREEN23/23, planner145/145, Integration70/70,5/5,46/46,
+final owner23/23 and parent Fast7812/7812 in4:18.111/default5m passed with
+build0/0 and complete cleanup. Parent audited all28FastTRXs, all23new rows,
+zero nonpassing/cross-descriptor duplicate executions, and the complete clean
+independent Spec compliant / Quality Approved review (0C/I/M). This accepts
+only actual ordinary write/phase ownership, not the live spiritual chain.
 This internal refactor changes no GM-authored contract, so it needs no Mortal
 or afterlife prompt/example/matrix/manifest change. Live source acquisition,
 current-generation insertion, versioned routing and the next-exchange consumer
 remain mandatory J2 work with their tracked GM synchronization.
+
+The next J2-B source-envelope acquisition/checker unit has a pending explicit
+rules choice: the existing formula and live contract require a registered source
+severity ceiling, but ordinary ceilings and canonical special/guaranteed source
+declarations are not defined by the cost table or source DTO. The proposed rule
+awaiting user confirmation is no additional ordinary-action ceiling beyond the
+approved formula, destination strain and danger limits; special restrictions
+or guaranteed results must be declared in pre-materialized canonical sources
+and still fit harder bounds. No such rule has yet been silently adopted, no
+source family excluded and no caller-constructed capability admitted.
 
 The accepted bounded T177 fixture correction is specified in
 `docs/superpowers/plans/2026-09-07-mortal-effect-rollback-fixtures.md`.

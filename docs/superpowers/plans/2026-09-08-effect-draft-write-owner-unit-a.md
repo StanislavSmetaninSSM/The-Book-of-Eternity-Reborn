@@ -12,7 +12,7 @@
 
 ## Status and exact companion
 
-**Parent reviewed and tracked for implementation; not yet implemented or verified by C#.** Parent read the complete plan and all new/changed companion bodies, and mechanically compared the relocated finalizer against its original: after the documented local-to-owned-state and phase-instrumentation changes, only its signature differs. The original diagnostic checks, phase algorithms and their order are retained. C# evidence and independent review remain required.
+**Accepted T081-B2C-J2-A on 2026-09-08 at `e720b03f81f535377edc40b5334027baa0788a53`.** Parent read the complete plan and all new/changed companion bodies, and mechanically compared the relocated finalizer against its original: after the documented local-to-owned-state and phase-instrumentation changes, only its signature differs. The original diagnostic checks, phase algorithms and their order are retained. The actual C# evidence and clean independent review are recorded below; this accepts only the ordinary write-owner unit.
 
 - Original source baseline: `80b0955870d17965449c2a60ec005fd3b07e71e5`.
 - Parent's J1 acceptance commit `15e13a73` is documentation-only; reconcile source if implementation starts from another postimage.
@@ -42,14 +42,14 @@
 | `BookOfEternityClient/Services/EffectIdentityHistoryOwner.cs` | Add15 lines: counts and suffix-read projections only |
 | `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.Draft.cs` | New700-line nested owned draft and relocated admission/finalizer body |
 | `BookOfEternityClient/Services/EffectAcceptedTurnPlanner.DraftState.cs` | New171-line immutable carrier/source/application/phase retained material |
-| `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.Draft.cs` | New258-line old-API fixtures, seven behavior-golden rows and one ownership-contract RED/GREEN row |
+| `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.Draft.cs` | New259-line old-API fixtures, seven behavior-golden rows and one ownership-contract RED/GREEN row |
 | `BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.DraftMaterialization.cs` | New244-line direct production-owner tests:15 rows |
 
 No integration source edits are necessary: existing real cascade/pending/afterlife consumers are required controls below. SDK file inclusion and the existing partial test class supply the new files.
 
 ## New API and exact semantics
 
-All bodies are in the companion. The following are actual proposed APIs implemented there, not current-source claims.
+All bodies are in the companion. The following APIs are implemented in the accepted production source.
 
 ### Draft lifetime and production consumption
 
@@ -98,9 +98,9 @@ The counts do not clone. Suffix reads copy only the requested tail; invalid rang
 
 ### Step1 — exact source preflight and staging
 
-- [ ] Confirm the six file scopes and actual source match the companion; preserve unrelated .serena metadata.
-- [ ] Add **only the complete** `EffectAcceptedTurnPlannerTests.Draft.cs` file from the companion. It depends on existing private helpers/types in the accepted J1 partial and existing `CreateReactionInput`, not any new production type at compile time.
-- [ ] Do not yet add `DraftMaterialization.cs` or production files.
+- [X] Confirm the six file scopes and actual source match the companion; preserve unrelated .serena metadata.
+- [X] Add **only the complete** `EffectAcceptedTurnPlannerTests.Draft.cs` file from the companion. It depends on existing private helpers/types in the accepted J1 partial and existing `CreateReactionInput`, not any new production type at compile time.
+- [X] Do not yet add `DraftMaterialization.cs` or production files.
 
 ### Step2 — meaningful OLD controls
 
@@ -128,9 +128,9 @@ Expected **0/1**, at the assertion that the actual production completion method 
 
 ### Step4 — apply complete production and typed tests
 
-- [ ] Apply the remaining companion file sections exactly, adding the15 typed owner rows in DraftMaterialization.cs.
-- [ ] Preserve all existing J1 tests, initial-plan callers, fixed ordinary completion signature, diagnostics and old allocator ordering.
-- [ ] Execute the following separate bounded selections:
+- [X] Apply the remaining companion file sections exactly, adding the15 typed owner rows in DraftMaterialization.cs.
+- [X] Preserve all existing J1 tests, initial-plan callers, fixed ordinary completion signature, diagnostics and old allocator ordering.
+- [X] Execute the following separate bounded selections:
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~DraftOwner_"
@@ -184,14 +184,14 @@ Invoke Compare-DraftOwnerGolden with the **actual two** recorded run directories
 
 ### Step6 — independent review/handoff
 
-- [ ] Inspect actual source diff versus this companion and verify run summaries/TRX/logs, including failed RED evidence.
-- [ ] Confirm the production adapter calls the owner, all actual effect collection writes go through the workspace and all returned plan images/IDs originate from the owner/J1.
-- [ ] Confirm original diagnostics/ID stages for malformed transitions, duplicate child cascade, frozen replacement drift, after-component reactions, terminal winner groups and ordinary lifecycle.
-- [ ] Measure actual scale/serialization overhead without raising lane bounds or moving deterministic tests out of Fast to hide it.
-- [ ] Commit only the accepted six source/test files if parent authorizes implementation commit. Parent separately owns tracking/metadata acceptance and meaningful Fast/review.
-- [ ] Report internal-only no-GM-update rationale and explicitly keep real source/insertion/next-exchange/full J2 open.
+- [X] Inspect actual source diff versus this companion and verify run summaries/TRX/logs, including failed RED evidence.
+- [X] Confirm the production adapter calls the owner, all actual effect collection writes go through the workspace and all returned plan images/IDs originate from the owner/J1.
+- [X] Confirm original diagnostics/ID stages for malformed transitions, duplicate child cascade, frozen replacement drift, after-component reactions, terminal winner groups and ordinary lifecycle.
+- [X] Measure actual scale/serialization overhead without raising lane bounds or moving deterministic tests out of Fast to hide it.
+- [X] Commit only the accepted six source/test files if parent authorizes implementation commit. Parent separately owns tracking/metadata acceptance and meaningful Fast/review.
+- [X] Report internal-only no-GM-update rationale and explicitly keep real source/insertion/next-exchange/full J2 open.
 
-## Mechanical/source audit already performed (not C# verification)
+## Pre-implementation mechanical/source audit (historical, not C# verification)
 
 - All13 planner update hunks and the1 J1 update hunk have unique exact original contexts.
 - In-memory sequential hunk replay reconstructed both proposed source postimages exactly.
@@ -209,7 +209,7 @@ Invoke Compare-DraftOwnerGolden with the **actual two** recorded run directories
 3. Read-only J1 count/range additions are necessary to avoid repeated whole-journal copies at each application; they do not revise J1's just-accepted history owner.
 4. Application/source/image serialization adds bounded per-write work. Focused scale controls and the unchanged parent Fast bound must measure it; no performance outcome is claimed.
 5. A failure after an actual mutation faults the unpublished owner and exports no final image. Previously successful phase evidence remains inspectable, matching its non-authority role. This is not a new retry/rollback transport.
-6. Parent reviewed the complete companion before tracking implementation; implementation, actual verification and independent review remain outstanding. Unit A acceptance alone cannot close T081-B2C/B2/C/D/E/T084/T085 or #1536.
+6. Parent reviewed the complete companion before tracking implementation; implementation, actual verification and independent review are now accepted for this bounded unit. Unit A acceptance alone cannot close T081-B2C/B2/C/D/E/T084/T085 or #1536.
 
 ### Parent fixture correction before production changes — 2026-09-08
 
@@ -225,3 +225,61 @@ Retain this failed artifact, repeat the seven OLD controls on unchanged producti
 and use that successful OLD artifact for the required OLD/GREEN comparison.
 This assertion correction is not the ownership-contract RED and is not proof
 of owner implementation or acceptance.
+
+## Parent acceptance — 2026-09-08
+
+Accepted only **T081-B2C-J2-A**, source commit
+`e720b03f81f535377edc40b5334027baa0788a53`, full recorded task range
+`6837eab670d785019812481d289f8ff7d694c817..e720b03f81f535377edc40b5334027baa0788a53`.
+The intermediate `9475cd54` changes only the parent-approved plan/companion
+numeric assertion. All six production/test postimages exactly match the amended
+companion after line-ending normalization:13 planner hunks,1 J1 hunk and4 adds.
+Parent also compared the relocated algorithm against its original; the old
+operation and diagnostic ordering is preserved, not independently replayed.
+
+Independent Sol/high review is **Spec compliant / Task Quality Approved**,
+Critical0 / Important0 / Minor0. Parent read the full report and actual source
+diff/postimages, not only the implementer's or reviewer's final message.
+
+All artifact directories below are under `TestResults/test-lanes/`:
+
+| Gate | Result | Wall time | Artifact directory |
+| --- | --- | --- | --- |
+| Corrected OLD | 7/7 | 42.697s | `20260908-161546-002-48648-b7f547c595164fbf940d54fadedc5c5f-focused` |
+| Ownership-contract RED | expected0/1 | 15.218s | `20260908-161633-901-17724-ca709a91cf6c417b9ac46218c234d8ab-focused` |
+| Draft-owner GREEN | 23/23 | 20.454s | `20260908-162129-612-49888-b4fe4414886641b1822bbc840ec46574-focused` |
+| Planner | 145/145 | 17.101s | `20260908-162154-548-33268-adc739bd68f94a8abc63baaaf09f7548-focused` |
+| Routing scale Integration | 70/70 | 40.420s | `20260908-162219-594-28440-987e609ee9bd4d6ba0dda72dc0c939a0-focused` |
+| Pending-wave Integration | 5/5 | 54.839s | `20260908-162303-438-48392-3c7b248688fc47daa9dddb89239b78c7-focused` |
+| Afterlife adapter Integration | 46/46 | 1:59.406 | `20260908-162401-880-20020-af4b2a3c2f2e47a88ed846a34af175cb-focused` |
+| Final post-edit owner | 23/23 | 20.102s | `20260908-162824-474-22720-7e834b3829c44fa3baabb1579dc6ebd0-focused` |
+| Parent Fast | 7812/7812 | 4:18.111 | `20260908-163340-131-51536-1986dbd486a344aea60bd3103d811777-fast` |
+
+Parent read the actual summaries, build logs and TRXs. All these runs used the
+default5m bounds, no timeouts, no skipped/duplicate executions, build0warnings/
+0errors and complete owned-process cleanup. RED reached the decoded-IL
+owner-call assertion at line84 after the real old replacement and four
+allocator calls, not a setup/compilation failure.
+The corrected OLD and GREEN each contain exactly seven golden scenario keys;
+every accepted-plan payload fingerprint and allocator kind/ID sequence matches.
+All28 Fast TRXs were inspected:7812 unique executions,7758 unique test IDs,
+zero non-passing or cross-descriptor duplicate rows; all23 new owner rows present.
+Scale and Fast stayed within existing bounds; no lane reclassification or
+timeout increase was used and no isolated micro-performance improvement is claimed.
+
+Historical implementation errors are retained, not counted as semantic RED:
+the initial OLD6/7 numeric assertion artifact documented above;
+`20260908-161821-404-28412-1f8e2217640e4eeda00c87601fcfe340-focused` (CS1022 extra
+closing brace,0executed); and the incomplete-staging8/8 runs
+`20260908-161913-118-13160-8fa83e992f2f4b91b1a20c0a83a82974-focused` and
+`20260908-162038-014-48928-3f72874f294d445ebb8d6f08867202c7-focused`.
+The transient typed test copy in the main checkout was this task's new file;
+it was removed via explicit apply_patch after adding the correct worktree file.
+Parent confirmed the wrong main path is absent; no existing user file changed.
+The final six files match the approved companion exactly.
+
+No Mortal World or afterlife prompts/docs/examples/matrix/manifest/source-guard
+contract changed: this is an internal behavior-preserving owner refactor.
+The real source envelope, insertion, versioned routing, next-exchange consumers,
+engine continuation/cold recovery and their GM synchronization remain mandatory
+J2 work. No B2C, T081, whole feature, GitHub issue or merge is accepted here.
