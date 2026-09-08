@@ -9,7 +9,21 @@
 
 ## Status and predecessor gate
 
-The B1 candidate is complete against the parent-accepted frozen B0 API. It is **not authorized for source dispatch before B0 implementation/verification and the parent's full companion review**. No runtime GREEN or feature acceptance is claimed.
+Current execution status: B0 and the broad-validation boundary are parent-accepted at4044e8cf. Parent inspected the complete B1 companion and exact tenth-file diagnostic correction; all ten postimages match their reviewed companions. Source60, pure20, corrected exact3 and unchanged frame26 controls pass. The exact ten-file source commit is66d11b02. Independent full B1 review is Spec compliant / Quality Approved with zero Critical, Important or Minor findings; parent read the full report and accepted this source gate. The immediately following GM/combined checkpoint remains pending, so the complete B1 task is not yet closed. The original planning gates below are retained as historical execution instructions.
+
+The tenth source/test file is bounded by the complete reviewed plan and companion
+`docs/superpowers/plans/2026-09-08-spiritual-source-b1-frame-fixture-correction.md`
+and `.patch`. No production semantics change is authorized by that correction.
+Parent verified actual summary/log/TRX evidence and exact unchanged TestId sets
+before the ten-file source commit. Parent planning files stay separate.
+
+Accepted source gate2026-09-08: corrected3 artifact215034-262-20720-
+2897fd5a4fbd438190ffea290f09bf7b passes3/3 in1:03.8292200; unchanged26 artifact
+215232-613-34528-e2c1298a3fbc4757a3259d9d8fd036c6 passes26/26 in1:15.4553359.
+Both default5m, build0/0, no timeout/duplicates, cleanup complete. Source60/pure20
+evidence above is retained. Full report is worktree git-metadata
+sdd/spiritual-source-b1-review.md; cross-task B0 evidence is separately accepted,
+while GM synchronization, combined Fast/FullValidation and all C/D/E remain required.
 
 The cap rule is resolved: user approval recorded at1cb6afd1 authorizes neutral IV/no guarantee for ordinary sources; special ceilings/guarantees are original canonical declarations. Unit A source is accepted at e720b03f. Parent's later docs/projector-plan commits do not change B1's four existing runtime targets; D implementation has no B0/B1 file overlap.
 
@@ -167,6 +181,70 @@ Still required before source dispatch:
 - [ ] Future C/D proves actual applied-effect/champion coordination and dice-free source binding; future C/E proves start/escalation/prefix/terminal closure. These are mandatory typed requirements, not exclusions or fabricated tiers.
 
 Full C/D/E work remains required in the same feature slice: actual source reductions and suffix dependency graph, J1-backed current-generation insertion, next-exchange routing consumer, prior visible start/escalation authority, terminal closure and publication gate. B cannot be declared a delivered wound capability by itself.
+
+## Actual first implementation and bounded fixture correction — 2026-09-08
+
+At base4044e8cf the OLD production control passed twice because the implementer
+mistook a wrapper response without process metadata for a completed/lost launch
+and reissued the command. The two top-level runs overlapped; the runner did not
+duplicate the invocation internally. Both artifacts are retained, not counted as
+two independent required controls, and no repeat OLD run is authorized. A yielded
+or metadata-less wrapper response must never cause a replacement lane launch
+without first proving the original owned execution has ended.
+
+Genuine RED204842-934-50484-be3e4559415741bc82bd2d5c159ca07d is0/1 against the
+old implementation, with an empty issue collection and successful compile.
+First full source selection205042-218-50240-77b509a1a3fb440b9a98fc09e53dd430
+executed60/60:58passed,2failed in3:27.189/default5m, build0/0, no timeout or
+duplicate IDs, cleanup complete. Only re-trauma `exact` and `current_removal`
+failed; no commit or later controls ran after that failure.
+
+Parent inspected actual TRX, the complete failing test, `ResolveRetrauma`,
+`WoundCarrierCatalog.Builder.ScanAfterlifeProfiles`, and history/identity fixture
+contracts. Root cause: the new test wrote and removed `profiles[].wounds`, but
+the existing canonical carrier reads only `profiles[].activeWounds`. Therefore
+both positives had no original carrier, while the two negative rows could pass
+for that same unintended reason. Production validation is correct and unchanged.
+
+The complete companion now corrects both fixture assignments, proves the original
+catalog has exactly the expected wound and owner, and pins each negative row's
+specific `ValidationIssue.Actual` reason. Positive diagnostics include Actual.
+All four rows and source semantics remain intact. First rerun only
+`FullyQualifiedName~SourceOwner_RetraumaResolvesExactOriginalCarrierIdentityAndHistory`
+(Integration Focused, expected4/4), then the unchanged60-row source control and
+the still-unrun20 deterministic plus existing ConflictFrame controls. Keep all
+prior artifacts. Parent review and the combined checkpoint are still required.
+
+Resumed evidence: re-trauma210315 passed4/4 in1:03.725 but exposed one xUnit2031
+warning in the parent-authored assertion. The companion now uses the equivalent
+`Assert.Single(collection, predicate)` overload. Full source210426 passed60/60
+in2:32.655 with exactly the same60 test IDs as the earlier failure and with the
+original semantic RED test now passing. Pure source-envelope210704 passed20/20
+in34.165s, including real learning/progression preservation. Both report build0/0,
+no timeout/duplicates and successful cleanup.
+
+The existing diagnostic frame control remains unresolved:210752 executed26
+rows,23passed/3failed; a subsequent consolidated run210934 executed30 rows,
+27passed/3failed, including all four re-trauma rows passing after a clean compile.
+The same two absent/empty-dice fallback cases and one captured-settings case fail
+during publication setup before their intended frame assertions. The implementer
+continued the consolidated run after the earlier failure; this process deviation
+and all artifacts are retained, with no commit or further lane authorized.
+An independent read-only diagnosis must determine the exact production-versus-
+fixture authority boundary before correction. No current/default dice or settings
+may replace authenticated original spiritual-source inputs merely to pass tests.
+Existing lawful diagnostic/historical/offline behavior must remain covered.
+
+Parent has now read the complete independent audit, affected methods and existing
+test signing helper, and accepted the test-only diagnosis. The settings proposal
+must contain difficultyAudit in both response copies before raw publication.
+The diagnostic absent/empty-dice condition must be created only after genuine
+publication, by re-signing manifest metadata without recapturing original files.
+An explicit empty original exchangeLog assertion prevents a historical false-green.
+The adjacent frame-fixture correction plan owns only this tenth Integration file,
+then Focused3 and unchanged Focused26 at default5m. Do not repeat the already-green
+source60, pure20 or re-trauma4 for this fixture-only correction. Source semantics,
+all26 existing rows and final assertions remain unchanged; no acceptance is claimed.
 
 ## Bounded review deviations and risk
 

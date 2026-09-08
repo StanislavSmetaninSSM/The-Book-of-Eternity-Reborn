@@ -2155,6 +2155,15 @@ All start/escalation/prefix/terminal/passive/champion/dice-free requirements rem
 explicitly pending until the mandatory C/D/E stages prove their actual authority.
 The nine-file unit has 79 candidate tests and preserves existing checker semantics.
 
+Implementation control found three old diagnostic frame fixtures constructing
+source-invalid proposals before their intended offline/captured-frame assertions.
+The parent-reviewed `2026-09-08-spiritual-source-b1-frame-fixture-correction.md`
+and complete companion add only a tenth Integration fixture file to B1 ownership:
+normal settings audit precedes publication; diagnostic dice metadata changes follow
+genuine publication and retain pre-exchange original files. Exact3 then unchanged26
+Focused controls must pass before the ten-file source commit/review. The already-
+green source60/pure20 evidence is retained, not rerun for this test-only change.
+
 The GM companion `docs/superpowers/plans/2026-09-08-spiritual-source-action-gm-sync.md`
 and `.patch` synchronizes the exact target and terminal witness contract in the
 shared wound guide, matrix, CLI entry, worked examples, manifest and source guards.
@@ -2195,11 +2204,41 @@ postimages. The default5m owner timeout is retained; the identical approved10m
 rerun took5:17.092 with all twelve rows, not a reduced filter. No runtime or
 global lane limit was changed by the boundary repair.
 
-B1 source dispatch is now authorized on this branch using its reviewed complete
-nine-file companion. The immediately following GM action/envelope synchronization
+B1 source commit66d11b02 now contains the reviewed nine-file companion plus the
+exact diagnostic fixture correction; source60, pure20, corrected3 and unchanged26
+pass. Independent source review is Spec compliant / Quality Approved0C/I/M,
+and parent inspected the full source/report/evidence. The immediately following GM action/envelope synchronization
 and one parent combined B0/B1/GM Fast plus conditional FullValidation remain
 required. B0/source-local B1 do not admit or materialize a spiritual wound;
 full T081, T177, C/D/E, US3 and issue #1536 remain OPEN.
+
+## 2026-09-08 — retained whole-exchange resource execution C1
+
+Source issue: #1536, T081-B2C-J2-C1. Parent reviewed the full nine-file companion in
+`docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md` and
+`.patch`, including a later exact accepted-exchange-ID guard. One source owner
+executes the old semantic allocation RED plus three exact fixed goldens, then the
+shared retained-state refactor. OLD14 includes exactly one expected semantic failure;
+GREEN22 and Integration20 must pass with the unchanged three OLD/GREEN payloads.
+Evidence pins name the actual distinct invocation paths/IDs and summary hashes;
+recency never selects or replaces an OLD baseline.
+
+The fixed adapter and staged resource-local path retain one actual ledger, history,
+allocator registry, use arbiter, accepted sets and effect transcript. Baseline routing
+uses the original uncompleted plan/index and full canonical use seeds once. Only a
+selected next batch and its new causal descriptors allocate; old accepted work never
+replays. Exact both-side transition witnesses precede interval closure, and zero
+does not substitute for missing evidence. Local intervals and source strings are
+not B1 source capabilities or final wound admission.
+
+Dispatch waits for B1 review and the combined B0/B1/GM Fast plus conditional
+FullValidation. Parent owns a separate meaningful C1 Fast after its focused tests
+and independent review. No new GM contract in pure C1: no Mortal/afterlife prompt,
+example, manifest or documentation guard update, and no C1 FullValidation.
+Mandatory C2 source/version binding and same-owner pending continuation, D wound
+insertion/eight consumers and E cold single publication remain in scope. In
+particular C1's retained pending guard does not implement receipt resume and its
+new live API must not replace the engine path until those gates are implemented.
 
 ## Risk controls
 

@@ -2299,15 +2299,40 @@ hand-written history/after-images, or a raw mutation fallback.
             targets and terminal exchanges without granting source admission.
             Execute the reviewed nine-file complete-code companion in
             `docs/superpowers/plans/2026-09-08-spiritual-source-owner-unit-b1.md`.
-            Parent full-line replay confirms all nine hunks and five new targets;
-            79 candidate rows are not yet execution evidence. Immediately
-            synchronize source-action/terminal GM examples and guards through
+            Parent full-line replay confirms all nine source postimages and the
+            reviewed tenth-file correction at source commit66d11b02. Current
+            evidence: source60, pure20, corrected exact3 and unchanged frame26
+            all pass, with exact retained TestId sets. The bounded fixture plan
+            `docs/superpowers/plans/2026-09-08-spiritual-source-b1-frame-fixture-correction.md`
+            and its exact companion preserve the diagnostic/historical boundary.
+            No current/default source fallback was added and no final assertion
+            was removed. Independent review at66d11b02 is Spec compliant / Quality
+            Approved0C/I/M; parent read full source/evidence/report. B1 stays open
+            until the immediately following GM synchronization and combined gate.
+            Immediately synchronize source-action/terminal GM examples and guards through
             `docs/superpowers/plans/2026-09-08-spiritual-source-action-gm-sync.md`
             with this runtime change, not with B0. Apply that eight-file unit
             together with the old envelope parser-dependent Integration partial:
             their section headings delimit exactly one envelope and two action
             JSON fences. Parent owns one combined Fast and conditional
             FullValidation after named controls/review, not separate repeated runs.
+        - [ ] T081-B2C-J2-C1 [US3] After the B0/B1/GM checkpoint, implement the
+          shared retained resource execution core and next-whole-exchange staging
+          from `docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md`
+          and its complete nine-file companion. Preserve fixed-input goldens,
+          accepted prefix identities, single arbiter and both-side causal closure;
+          reject accepted exchange ID reuse even for zero work. OLD14 has exactly
+          one semantic allocation RED; GREEN22, Integration20 and exact pinned
+          three OLD/GREEN payloads precede independent review and one parent Fast.
+          Internal client-only data: no new GM-authored/publication contract and
+          no C1 FullValidation. This is not source admission or complete Unit C.
+        - [ ] T081-B2C-J2-C2 [US3] Bind C1 intervals to actual B1 source references
+          and the current original-turn effect generation; register/retire new
+          instances without resetting the shared arbiter. Implement owner-bound
+          receipt and missing-side resume on that same retained session, including
+          lawful start/terminal/passive/champion/dice-free contours. A pending guard
+          or reconstructed DTO is not continuation. D actual wound insertion/eight
+          consumers and E cold single publication remain mandatory before cutover.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,

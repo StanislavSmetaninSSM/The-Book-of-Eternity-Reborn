@@ -1675,7 +1675,12 @@
 +        var wound = WoundContractTestData.CreateActiveWound(
 +            realm: "chaos_sea", ownerKind: "guardian", ownerId: "guardian_frame",
 +            carrierPath: WoundCarrierCatalog.AfterlifeProfilesPath, domain: "spiritual");
-+        profiles["profiles"]![1]!["wounds"] = new JsonArray(wound);
++        profiles["profiles"]![1]!["activeWounds"] = new JsonArray(wound);
++        var originalCarriers = WoundCarrierCatalog.Build(new(null, null, null, null, profiles));
++        Assert.Empty(originalCarriers.Issues);
++        var originalOccurrence = Assert.Single(originalCarriers.Occurrences);
++        Assert.Equal("wound_test_torn_side", originalOccurrence.WoundId);
++        Assert.Equal("guardian_frame", originalOccurrence.Coordinate.OwnerId);
 +        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "wound");
 +        Assert.True(parsed.IsValid, string.Join("; ", parsed.Issues.Select(issue => issue.Code)));
 +        var fingerprint = WoundIdentityState.ComputeSemanticFingerprint(parsed.Wound!);
@@ -1707,7 +1712,7 @@
 +        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 +        if (mutation == "current_removal")
 +        {
-+            profiles["profiles"]![1]!["wounds"] = new JsonArray();
++            profiles["profiles"]![1]!["activeWounds"] = new JsonArray();
 +            await context.WriteExactJsonAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
 +        }
 +        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
@@ -1715,11 +1720,17 @@
 +        if (mutation is "history" or "missing_reference")
 +        {
 +            Assert.Null(result.Session);
-+            Assert.Contains(result.Issues, issue => issue.Code == "spiritual_source_input_invalid");
++            var sourceIssue = Assert.Single(result.Issues,
++                issue => issue.Code == "spiritual_source_input_invalid");
++            Assert.Equal(mutation == "history"
++                ? "original re-trauma history/identity/carrier agreement"
++                : "exact active original re-trauma wound", sourceIssue.Actual);
 +        }
 +        else
 +        {
-+            AssertNoConflictFrameErrors(result.Issues);
++            Assert.True(!result.Issues.Any(issue => issue.Severity == IssueSeverity.Error),
++                string.Join(Environment.NewLine, result.Issues.Select(
++                    issue => $"{issue.Code}: {issue.Actual}")));
 +            var session = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(result.Session);
 +            Assert.Equal("wound_test_torn_side", Assert.Single(session.Sources).RetraumaWoundId);
 +            // Current removal remains a mandatory C/E candidate-agreement check.

@@ -675,6 +675,24 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **SC-015**: Broad/exact/mismatch/identity-less, treatment, dormancy/restoration, replay, and rollback matrices produce the expected contribution and state outcomes with zero technical `skillId` leakage and zero wound mutation from skill availability alone.
 - **SC-016**: Semantic scans and executable documentation/source guards find zero active two-field `roll_modifier` payloads or implicit missing-scope behavior across repository state, fixtures, sources, examples, and GM guidance.
 
+## Internal spiritual exchange staging boundary — 2026-09-08
+
+Source issue: #1536. T081-B2C-J2-C1 introduces one shared client-owned resource
+execution state for fixed input and staged whole exchanges. Preparing or replacing
+the next unaccepted exchange allocates nothing and changes no accepted prefix.
+Both sides and all causal descendants close before one owned interval is emitted;
+an accepted exchange identity cannot close again, including zero-cost exchanges.
+Exact fixed-input state, history, identities, statistics and causal results remain
+unchanged. Missing evaluation or a receipt stays unsealed pending, not zero evidence.
+
+This internal refactor adds no Mortal World or afterlife GM-authored capability,
+command, schema, pending file or publication path. C1 does not enable live gameplay.
+C2 must bind actual B1 source ownership and current effect generations and implement
+same-owner receipt/missing-side continuation; D must insert wounds and consume their
+effects in all eight dependent combat surfaces; E must reconstruct interrupted turns
+and publish exactly once. These are mandatory parts of #1536, not deferred gameplay
+exclusions or grounds for closing the full feature.
+
 ## Verification Plan *(mandatory)*
 
 - **C# verification**: During implementation use `pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused` with exact wound-domain filters and an explicit `-FocusedProject Integration` for integration classes; run one meaningful `Fast` checkpoint; run `RegressionIntegration` when changing the exhaustive spiritual-conflict matrix; run one `PreMerge` immediately before each merge.
