@@ -28,6 +28,43 @@ public sealed class PendingTurnSnapshotPresenceIntegrationTests
             .Skip(RequiredPaths.Length)
             .ToArray();
 
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ResourceFixture_ObservationPreservesRollbackMembership(
+        bool explicitlyTrackSettings)
+    {
+        await using var context = await CreateSeededContextAsync();
+        var settingsBytes = Encoding.UTF8.GetBytes("""{"difficulty":"captured"}""");
+        await context.WriteExactBytesAsync(SettingsPath, settingsBytes);
+        var baselinePaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
+            .Concat(ResourceMaterializationTestContext.AllResourcePaths)
+            .Append(ResourceMaterializationTestContext.FullPartyInteractionsPath)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain(SettingsPath, baselinePaths);
+        if (explicitlyTrackSettings)
+            baselinePaths.Add(SettingsPath);
+        var expectedBaseline = baselinePaths
+            .Where(path => context.FileSystem.FileExists(path))
+            .OrderBy(static path => path, StringComparer.Ordinal)
+            .ToArray();
+
+        await context.CaptureValidatedPendingSnapshotAsync(
+            additionalTrackedPaths: explicitlyTrackSettings ? [SettingsPath] : null);
+
+        var manifest = await ReadManifestAsync(context);
+        Assert.True(manifest["originalPathPresenceV1"]![SettingsPath]!.GetValue<bool>());
+        Assert.NotNull(manifest["files"]![SettingsPath]);
+        Assert.NotNull(manifest["snapshotFileHashes"]![SettingsPath]);
+        Assert.Equal(expectedBaseline, manifest["rollbackBaselineFiles"]!.AsArray()
+            .Select(static node => node!.GetValue<string>()).ToArray());
+        Assert.Empty(manifest["rollbackBackups"]!.AsObject());
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        var result = ReadObserved(context, lease);
+        Assert.True(result.Success);
+        Assert.Equal(settingsBytes, result.Snapshot!.ReadRequiredBytes(SettingsPath));
+    }
+
     [Fact]
     public async Task LiveProducer_SignedAbsenceSurvivesLaterCurrentFileAndReaderUsesRealLease()
     {

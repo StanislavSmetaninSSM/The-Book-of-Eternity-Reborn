@@ -129,12 +129,14 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(AllResourcePaths)
             .Append(FullPartyInteractionsPath)
-            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
             .Concat(additionalTrackedPaths ?? Array.Empty<string>())
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var snapshotPaths = trackedPaths
+            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
 
-        foreach (var path in trackedPaths)
+        foreach (var path in snapshotPaths)
         {
             var bytes = await FileSystem.ReadFileBytesAsync(path);
             if (bytes == null)
@@ -147,7 +149,8 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             snapshotFileHashes[path] = snapshotHash;
             typedFiles.Add(path, snapshotPath);
             typedSnapshotFileHashes.Add(path, snapshotHash);
-            rollbackBaselineFiles.Add(path);
+            if (trackedPaths.Contains(path))
+                rollbackBaselineFiles.Add(path);
         }
         var originalPathPresenceV1 = JsonSerializer.SerializeToNode(
             PendingTurnSnapshotPathPresenceV1.Create(
