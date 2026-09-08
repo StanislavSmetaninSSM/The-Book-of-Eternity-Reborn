@@ -2099,6 +2099,26 @@ work. T177 runs semantic scans, one meaningful Fast checkpoint, required documen
 and FullValidation controls, conditional regression integration, independent review,
 and diff/status safety checks; PreMerge remains reserved for an actual merge request.
 
+## 2026-09-08 — bounded spiritual contribution projector prerequisite
+
+Source issue: #1536, T080/T081-D/T087. The complete-code execution plan and
+companion are `docs/superpowers/plans/2026-09-08-spiritual-wound-contribution-projection.md`
+and `.patch`. The accepted effect snapshot gains exact typed source provenance;
+the pure projector validates current conflict membership and exact wound-source
+definitions, then returns detached typed rows for the eight registered profiles.
+Wounded nonparticipants are outside the duel; malformed, duplicate, unresolved,
+or wrong-realm declared participants fail closed. Every legal nonterminal conflict
+state retains the projection, while closure clears only derived contributions.
+
+This prerequisite has no live caller until Unit D can supply the real current
+owned draft generation after insertion. Do not add a stale canonical-disk preview
+adapter. Same-turn suffix consumption, all eight actual mechanical consumers,
+source admission, pending/recovery and final publication remain open. Its new
+tests are deterministic Fast tests; the implementer runs only named Focused
+controls, and the parent owns one combined Fast checkpoint. No new GM-authored
+contract is exposed by this internal prerequisite, so its guide/example update
+belongs to the later live integration rather than claiming an authorable feature.
+
 ## Risk controls
 
 | Risk | Control |

@@ -2281,6 +2281,13 @@ hand-written history/after-images, or a raw mutation fallback.
     and `GameEngine.TurnLifecycle.cs`; first prove real explicit decline, not an
     empty/missing decision or test-authored command. Preserve the original turn,
     snapshot, dice, OD, progression and rollback identities.
+  Bounded T080/T081-D/T087 projector prerequisite (2026-09-08): execute
+  `docs/superpowers/plans/2026-09-08-spiritual-wound-contribution-projection.md`
+  and its complete companion. Preserve exact source provenance and all legal
+  nonterminal conflict states; ignore wounds of unambiguous nonparticipants,
+  but reject malformed/unresolved/duplicate declared membership. This internal
+  pure prerequisite does not complete wound consequences, live insertion,
+  dependent suffix consumption, T080, T087 or US3. Parent owns the combined Fast.
   - [ ] T081-D [US3] Complete lower/create/worsen/explicit older re-trauma,
     persistent actor effects and per-side seals in `WoundAcceptedTurnPlanner.cs`,
     `SpiritualWoundConflictContributionProjector.cs` and the lifecycle/seal tests.
