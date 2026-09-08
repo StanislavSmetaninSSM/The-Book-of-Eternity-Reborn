@@ -5,6 +5,94 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
+internal static class PendingTurnSnapshotPathPresenceV1
+{
+    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+        Array.AsReadOnly(new[]
+        {
+            "game_state/meta/soul_state.json",
+            "game_state/resources/resource_definitions.json",
+            "game_state/resources/resource_state.json",
+            "game_state/resources/resource_history.json",
+            "game_state/resources/resource_owner_authority.json",
+            "game_state/meta/afterlife_spiritual_conflict_state.json",
+            "game_state/meta/afterlife_entity_profiles.json",
+            "game_state/meta/shining_abode_state.json",
+            "game_state/core/game_settings.json",
+            "game_state/effects/effect_identity_index.json",
+            "game_state/wounds/wound_identity_index.json",
+            "game_state/wounds/wound_history.json",
+            "game_state/player/wounds.json",
+            "game_state/npcs/npc_wounds.json",
+            "game_state/combat/enemies.json",
+            "game_state/combat/allies.json"
+        });
+
+    internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
+
+    internal static Dictionary<string, bool> Create(
+        IReadOnlyDictionary<string, string> files,
+        IReadOnlyDictionary<string, string> snapshotFileHashes)
+    {
+        ArgumentNullException.ThrowIfNull(files);
+        ArgumentNullException.ThrowIfNull(snapshotFileHashes);
+
+        ValidateCoverageDictionary(files, "files");
+        ValidateCoverageDictionary(snapshotFileHashes, "snapshotFileHashes");
+        var fileKeys = files.Keys.ToHashSet(StringComparer.Ordinal);
+        var hashKeys = snapshotFileHashes.Keys.ToHashSet(StringComparer.Ordinal);
+        if (!fileKeys.SetEquals(hashKeys))
+        {
+            throw new InvalidDataException(
+                "Pending-turn snapshot file and hash coverage must agree exactly before presence is observed.");
+        }
+
+        var result = new Dictionary<string, bool>(StringComparer.Ordinal);
+        foreach (var logicalPath in ClosedLogicalPaths)
+        {
+            var fileRows = files
+                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
+                .ToArray();
+            var hashRows = snapshotFileHashes
+                .Where(pair => string.Equals(pair.Key, logicalPath, StringComparison.Ordinal))
+                .ToArray();
+            var confusable = files.Keys.Concat(snapshotFileHashes.Keys).Any(key =>
+                string.Equals(key, logicalPath, StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(key, logicalPath, StringComparison.Ordinal));
+            if (confusable || fileRows.Length != hashRows.Length || fileRows.Length > 1)
+            {
+                throw new InvalidDataException(
+                    $"Pending-turn snapshot coverage for '{logicalPath}' is ambiguous or case-confusable.");
+            }
+            result.Add(logicalPath, fileRows.Length == 1);
+        }
+        return result;
+    }
+
+    private static void ValidateCoverageDictionary(
+        IReadOnlyDictionary<string, string> coverage,
+        string label)
+    {
+        var exact = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        foreach (var pair in coverage)
+        {
+            if (string.IsNullOrWhiteSpace(pair.Key) ||
+                string.IsNullOrWhiteSpace(pair.Value))
+            {
+                throw new InvalidDataException(
+                    $"Pending-turn snapshot {label} coverage contains a blank key or value.");
+            }
+            if (exact.TryGetValue(pair.Key, out var previous) &&
+                !string.Equals(previous, pair.Key, StringComparison.Ordinal))
+            {
+                throw new InvalidDataException(
+                    $"Pending-turn snapshot {label} coverage contains confusable keys '{previous}' and '{pair.Key}'.");
+            }
+            exact[pair.Key] = pair.Key;
+        }
+    }
+}
+
 /// <summary>
 /// Reads immutable bytes from the current detached-authority pending-turn snapshot.
 /// It never treats the live canonical root as the accepted before-image.
@@ -98,6 +186,10 @@ internal static class PendingTurnSnapshotReader
             return Failure(issues);
         }
 
+        ValidateOriginalPathPresenceV1(manifest, issues);
+        if (issues.Count != 0)
+            return Failure(issues);
+
         if (!string.Equals(
                 payload.SnapshotHashMode,
                 PendingTurnSnapshotAuthority.ExactSnapshotHashMode,
@@ -175,7 +267,11 @@ internal static class PendingTurnSnapshotReader
             return Failure(issues);
         }
 
-        var selectedPaths = ResolveSelectedPaths(selection, manifest, issues);
+        var selectedPaths = ResolveSelectedPaths(
+            selection,
+            manifest,
+            issues,
+            out var absentLogicalPaths);
         if (issues.Count != 0)
             return Failure(issues);
 
@@ -242,7 +338,8 @@ internal static class PendingTurnSnapshotReader
                 manifest.TurnNumber,
                 realm,
                 manifest.PreGeneratedDices1d20,
-                bytesByPath),
+                bytesByPath,
+                absentLogicalPaths),
             Array.Empty<ValidationIssue>());
     }
 
@@ -252,10 +349,13 @@ internal static class PendingTurnSnapshotReader
     {
         var result = new List<string>();
         var optional = new HashSet<string>(StringComparer.Ordinal);
+        var requireSignedAbsenceForMissingOptionalPaths = false;
         if (paths is PendingTurnSnapshotPathSelection pathSelection)
         {
             foreach (var path in pathSelection.OptionalLogicalPaths)
                 optional.Add(path);
+            requireSignedAbsenceForMissingOptionalPaths =
+                pathSelection.RequireSignedAbsenceForMissingOptionalPaths;
         }
         var exact = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var yieldedCount = 0;
@@ -295,21 +395,48 @@ internal static class PendingTurnSnapshotReader
                 "count=0");
             return PendingTurnSnapshotValidatedPathSelection.Empty;
         }
+        if (requireSignedAbsenceForMissingOptionalPaths)
+        {
+            var observed = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+                .ToHashSet(StringComparer.Ordinal);
+            foreach (var path in result.Where(optional.Contains))
+            {
+                if (observed.Contains(path))
+                    continue;
+                Add(
+                    issues,
+                    LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                    "pending_turn_snapshot_reader_required_paths_invalid",
+                    $"observed optional path is outside originalPathPresenceV1: {path}");
+            }
+            if (issues.Count != 0)
+                return PendingTurnSnapshotValidatedPathSelection.Empty;
+        }
         return new PendingTurnSnapshotValidatedPathSelection(
             Array.AsReadOnly(result.Where(path => !optional.Contains(path)).ToArray()),
-            Array.AsReadOnly(result.Where(optional.Contains).ToArray()));
+            Array.AsReadOnly(result.Where(optional.Contains).ToArray()),
+            requireSignedAbsenceForMissingOptionalPaths);
     }
 
     private static IReadOnlyList<string> ResolveSelectedPaths(
         PendingTurnSnapshotValidatedPathSelection selection,
         LiveTurnPendingSnapshotManifest manifest,
-        ICollection<ValidationIssue> issues)
+        ICollection<ValidationIssue> issues,
+        out IReadOnlyList<string> absentLogicalPaths)
     {
         var result = new List<string>(
             selection.RequiredLogicalPaths.Count + selection.OptionalLogicalPaths.Count);
+        var absent = new List<string>();
         foreach (var path in selection.RequiredLogicalPaths)
         {
-            if (!TryResolveExactCoverage(path, manifest, optional: false, issues, out var selected))
+            if (!TryResolveExactCoverage(
+                    path,
+                    manifest,
+                    optional: false,
+                    requireSignedAbsence: false,
+                    issues,
+                    out var selected,
+                    out _))
             {
                 continue;
             }
@@ -318,12 +445,65 @@ internal static class PendingTurnSnapshotReader
         }
         foreach (var path in selection.OptionalLogicalPaths)
         {
-            if (!TryResolveExactCoverage(path, manifest, optional: true, issues, out var selected))
+            if (!TryResolveExactCoverage(
+                    path,
+                    manifest,
+                    optional: true,
+                    selection.RequireSignedAbsenceForMissingOptionalPaths,
+                    issues,
+                    out var selected,
+                    out var observedAbsent))
                 continue;
             if (selected)
                 result.Add(path);
+            if (observedAbsent)
+                absent.Add(path);
         }
+        absentLogicalPaths = Array.AsReadOnly(
+            absent.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
         return Array.AsReadOnly(result.ToArray());
+    }
+
+    private static void ValidateOriginalPathPresenceV1(
+        LiveTurnPendingSnapshotManifest manifest,
+        ICollection<ValidationIssue> issues)
+    {
+        if (manifest.OriginalPathPresenceV1 is null)
+            return;
+
+        var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
+        var actual = manifest.OriginalPathPresenceV1.Keys
+            .ToHashSet(StringComparer.Ordinal);
+        if (manifest.OriginalPathPresenceV1.Count != expected.Count ||
+            !actual.SetEquals(expected))
+        {
+            Add(
+                issues,
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
+                "pending_turn_snapshot_reader_presence_invalid",
+                "originalPathPresenceV1 must contain exactly the closed v1 logical-path set");
+            return;
+        }
+
+        foreach (var logicalPath in PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+        {
+            var fileCount = manifest.Files.Keys.Count(key =>
+                string.Equals(key, logicalPath, StringComparison.Ordinal));
+            var hashCount = manifest.SnapshotFileHashes.Keys.Count(key =>
+                string.Equals(key, logicalPath, StringComparison.Ordinal));
+            var observedPresent = manifest.OriginalPathPresenceV1[logicalPath];
+            var agrees = observedPresent
+                ? fileCount == 1 && hashCount == 1
+                : fileCount == 0 && hashCount == 0;
+            if (agrees)
+                continue;
+            Add(
+                issues,
+                logicalPath,
+                "pending_turn_snapshot_reader_presence_invalid",
+                "signed original-path observation contradicts exact snapshot file/hash coverage");
+        }
     }
 
     private static void ValidateNoCaseConfusableCoverage(
@@ -393,10 +573,13 @@ internal static class PendingTurnSnapshotReader
         string path,
         LiveTurnPendingSnapshotManifest manifest,
         bool optional,
+        bool requireSignedAbsence,
         ICollection<ValidationIssue> issues,
-        out bool selected)
+        out bool selected,
+        out bool observedAbsent)
     {
         selected = false;
+        observedAbsent = false;
         var fileKeys = manifest.Files.Keys
             .Where(key => string.Equals(key, path, StringComparison.OrdinalIgnoreCase))
             .ToArray();
@@ -424,7 +607,23 @@ internal static class PendingTurnSnapshotReader
         }
 
         if (optional && fileExact == 0 && hashExact == 0)
-            return true;
+        {
+            if (!requireSignedAbsence)
+                return true;
+            if (manifest.OriginalPathPresenceV1 is not null &&
+                manifest.OriginalPathPresenceV1.TryGetValue(path, out var present) &&
+                !present)
+            {
+                observedAbsent = true;
+                return true;
+            }
+            Add(
+                issues,
+                path,
+                "pending_turn_snapshot_reader_absence_unproven",
+                "optional logical path is uncovered without authenticated original absence");
+            return false;
+        }
 
         Add(
             issues,
@@ -667,11 +866,13 @@ internal static class PendingTurnSnapshotReader
 
     private sealed record PendingTurnSnapshotValidatedPathSelection(
         IReadOnlyList<string> RequiredLogicalPaths,
-        IReadOnlyList<string> OptionalLogicalPaths)
+        IReadOnlyList<string> OptionalLogicalPaths,
+        bool RequireSignedAbsenceForMissingOptionalPaths)
     {
         internal static PendingTurnSnapshotValidatedPathSelection Empty { get; } = new(
             Array.Empty<string>(),
-            Array.Empty<string>());
+            Array.Empty<string>(),
+            false);
     }
 
     private enum PendingTurnSnapshotContextStatus
@@ -688,6 +889,7 @@ internal sealed class PendingTurnSnapshotReadAuthority
     private readonly ReadOnlyDictionary<string, byte[]> _bytesByPath;
     private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
     private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
+    private readonly ReadOnlyCollection<string> _absentLogicalPaths;
 
     internal PendingTurnSnapshotReadAuthority(
         string sessionId,
@@ -696,7 +898,8 @@ internal sealed class PendingTurnSnapshotReadAuthority
         int turnNumber,
         string realm,
         IReadOnlyList<int>? acceptedD20EventValues,
-        IReadOnlyDictionary<string, byte[]> bytesByPath)
+        IReadOnlyDictionary<string, byte[]> bytesByPath,
+        IReadOnlyList<string> absentLogicalPaths)
     {
         SessionId = sessionId;
         RequestId = requestId;
@@ -707,6 +910,8 @@ internal sealed class PendingTurnSnapshotReadAuthority
             acceptedD20EventValues?.ToArray() ?? Array.Empty<int>());
         _coveredLogicalPaths = Array.AsReadOnly(
             bytesByPath.Keys.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
+        _absentLogicalPaths = Array.AsReadOnly(
+            absentLogicalPaths.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
         _bytesByPath = new ReadOnlyDictionary<string, byte[]>(
             bytesByPath.ToDictionary(
                 pair => pair.Key,
@@ -722,6 +927,7 @@ internal sealed class PendingTurnSnapshotReadAuthority
 
     internal IReadOnlyList<int> AcceptedD20EventValues => _acceptedD20EventValues;
     internal IReadOnlyList<string> CoveredLogicalPaths => _coveredLogicalPaths;
+    internal IReadOnlyList<string> AbsentLogicalPaths => _absentLogicalPaths;
 
     public byte[] ReadRequiredBytes(string logicalPath)
     {
@@ -749,6 +955,17 @@ internal sealed class PendingTurnSnapshotPathSelection : IReadOnlyCollection<str
     internal PendingTurnSnapshotPathSelection(
         IEnumerable<string> requiredLogicalPaths,
         IEnumerable<string> optionalLogicalPaths)
+        : this(
+            requiredLogicalPaths,
+            optionalLogicalPaths,
+            requireSignedAbsenceForMissingOptionalPaths: false)
+    {
+    }
+
+    private PendingTurnSnapshotPathSelection(
+        IEnumerable<string> requiredLogicalPaths,
+        IEnumerable<string> optionalLogicalPaths,
+        bool requireSignedAbsenceForMissingOptionalPaths)
     {
         ArgumentNullException.ThrowIfNull(requiredLogicalPaths);
         ArgumentNullException.ThrowIfNull(optionalLogicalPaths);
@@ -756,10 +973,21 @@ internal sealed class PendingTurnSnapshotPathSelection : IReadOnlyCollection<str
         OptionalLogicalPaths = Array.AsReadOnly(optionalLogicalPaths.ToArray());
         _allLogicalPaths = Array.AsReadOnly(
             RequiredLogicalPaths.Concat(OptionalLogicalPaths).ToArray());
+        RequireSignedAbsenceForMissingOptionalPaths =
+            requireSignedAbsenceForMissingOptionalPaths;
     }
+
+    internal static PendingTurnSnapshotPathSelection CreateWithObservedOptionalPaths(
+        IEnumerable<string> requiredLogicalPaths,
+        IEnumerable<string> optionalLogicalPaths) =>
+        new(
+            requiredLogicalPaths,
+            optionalLogicalPaths,
+            requireSignedAbsenceForMissingOptionalPaths: true);
 
     internal IReadOnlyList<string> RequiredLogicalPaths { get; }
     internal IReadOnlyList<string> OptionalLogicalPaths { get; }
+    internal bool RequireSignedAbsenceForMissingOptionalPaths { get; }
     public int Count => _allLogicalPaths.Count;
     public IEnumerator<string> GetEnumerator() => _allLogicalPaths.GetEnumerator();
     IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();

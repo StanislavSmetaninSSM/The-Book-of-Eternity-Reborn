@@ -123,10 +123,13 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
 
         var files = new JsonObject();
         var snapshotFileHashes = new JsonObject();
+        var typedFiles = new Dictionary<string, string>(StringComparer.Ordinal);
+        var typedSnapshotFileHashes = new Dictionary<string, string>(StringComparer.Ordinal);
         var rollbackBaselineFiles = new JsonArray();
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(AllResourcePaths)
             .Append(FullPartyInteractionsPath)
+            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
             .Concat(additionalTrackedPaths ?? Array.Empty<string>())
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static path => path, StringComparer.Ordinal);
@@ -140,9 +143,16 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
             await FileSystem.WriteFileAtomicBytesAsync(snapshotPath, bytes);
             files[path] = snapshotPath;
-            snapshotFileHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+            var snapshotHash = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+            snapshotFileHashes[path] = snapshotHash;
+            typedFiles.Add(path, snapshotPath);
+            typedSnapshotFileHashes.Add(path, snapshotHash);
             rollbackBaselineFiles.Add(path);
         }
+        var originalPathPresenceV1 = JsonSerializer.SerializeToNode(
+            PendingTurnSnapshotPathPresenceV1.Create(
+                typedFiles,
+                typedSnapshotFileHashes))!.AsObject();
 
         var manifest = new JsonObject
         {
@@ -158,6 +168,7 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
             new ProgressionControl { CurrentRealm = currentRealm });
         manifest["files"] = files;
         manifest["snapshotFileHashes"] = snapshotFileHashes;
+        manifest["originalPathPresenceV1"] = originalPathPresenceV1;
         manifest["clientOwnedValidationHashes"] = new JsonObject();
         manifest["rollbackBackups"] = new JsonObject();
         manifest["rollbackBaselineFiles"] = rollbackBaselineFiles;

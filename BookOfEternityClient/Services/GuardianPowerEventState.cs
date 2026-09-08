@@ -35,6 +35,7 @@ internal static class GuardianPowerEventState
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();

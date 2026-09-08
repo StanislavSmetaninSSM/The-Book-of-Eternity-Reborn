@@ -125,9 +125,15 @@ internal sealed class LiveTurnPreparationService
         var rollbackBaselineFiles = EnumerateSnapshotFiles(writeLease)
             .OrderBy(path => path, StringComparer.OrdinalIgnoreCase)
             .ToList();
+        var snapshotFiles = new HashSet<string>(
+            rollbackBaselineFiles,
+            StringComparer.OrdinalIgnoreCase);
+        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
 
-        foreach (var file in rollbackBaselineFiles)
+        foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
+        var originalPathPresenceV1 =
+            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
 
         var manifest = new LiveTurnPendingSnapshotManifest
         {
@@ -143,6 +149,7 @@ internal sealed class LiveTurnPreparationService
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
+            OriginalPathPresenceV1 = originalPathPresenceV1,
             ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
             RollbackBackups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase),
             RollbackBaselineFiles = rollbackBaselineFiles,
@@ -422,6 +429,7 @@ internal sealed class LiveTurnPendingSnapshotManifest
     public ProgressionControl? ProgressionControl { get; set; }
     public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+    public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
     public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
     public List<string> RollbackBaselineFiles { get; set; } = new();

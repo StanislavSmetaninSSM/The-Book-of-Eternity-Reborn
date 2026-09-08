@@ -447,6 +447,7 @@ public partial class GameEngine
                     snapshotFiles.Add(file);
             }
         }
+        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
 
         foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
         {
@@ -457,6 +458,8 @@ public partial class GameEngine
                 files,
                 snapshotHashes);
         }
+        var originalPathPresenceV1 =
+            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
 
         var manifest = new PendingTurnSnapshotManifest
         {
@@ -472,6 +475,7 @@ public partial class GameEngine
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
+            OriginalPathPresenceV1 = originalPathPresenceV1,
             ClientOwnedValidationHashes = clientOwnedValidationHashes,
             RollbackBackups = rollbackSnapshot != null
                 ? new Dictionary<string, string>(rollbackSnapshot.BackupFiles, StringComparer.OrdinalIgnoreCase)
