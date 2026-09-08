@@ -2655,6 +2655,19 @@ scope, then resume paused wound documentation and final controls against one fin
 - [X] T176 [US8] **Synchronize GM contracts, examples, manifests, and guards**: turn scope documentation/source guards RED, then synchronize `OtherGuides/Effect_Materialization_Contract.md`, `OtherGuides/Wound_Materialization_Contract.md`, `Examples/E_CLI_Effect_Materialization.txt`, `Examples/E_CLI_Wound_Materialization.txt`, `Examples/E_CLI_Afterlife_Turns.txt`, `Examples/example_validation_manifest.json`, and owning prompt/effect/wound/afterlife/example guards; preserve existing Task 7 wound documentation edits, prove broad wound, focused wound, and non-wound focused authoring, and record the no-daemon-change rationale when existing mandatory context-pack paths already load the updated files
 - [ ] T177 [US8] **Complete verification and review**: run semantic legacy scans, one meaningful Fast checkpoint, focused afterlife/prompt/example documentation controls, required FullValidation, and RegressionIntegration only when focused lifecycle evidence leaves a related boundary uncovered; request independent review of offered/current trust, `RollSkillId`, repair, projection, detachment, replay/rollback, and lane placement, apply only verified corrections with focused tests, run `git diff --check`/status/log safety checks, and reserve PreMerge for a later explicit push/PR/merge request
 
+- [ ] T177-BROAD-OWNERSHIP [US8] Repair the actual 58/60 Integration boundary
+  failure exposed during B0 via the complete-code plan and companion
+  `docs/superpowers/plans/2026-09-08-wound-broad-validation-boundary.md`.
+  Scope the catalog setup and failure-only severity diagnostic with exact
+  named profiles; preserve the genuinely complete-state publication oracle.
+  Only its four callers/eight rows gain method-level FullValidation, guarded
+  by an exact caller/category manifest. Review eight calls rather than blindly
+  accepting all ten; keep a ninth-call negative control. Preserve behavioral
+  assertions and all existing test rows. Prove boundary60/60 and owner12/12,
+  then independent review; parent owns the next combined Fast and conditional
+  FullValidation. Test-only ownership maintenance has no GM/afterlife contract
+  changes. This prerequisite does not complete T177, US3 or issue #1536.
+
 T177 bounded fixture checkpoints (2026-09-07):
 
 Accepted generic effect rollback correction:

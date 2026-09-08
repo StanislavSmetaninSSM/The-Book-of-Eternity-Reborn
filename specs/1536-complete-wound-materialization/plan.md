@@ -2167,6 +2167,21 @@ No Mortal gameplay change or new transport/command/pending-file surface is added
 existing daemon/launcher routing already requires the modified guide/matrix.
 Parent owns the combined Fast and documentation-sensitive FullValidation checkpoint.
 
+## 2026-09-08 — reviewed broad-validation test ownership repair
+
+Source issue: #1536, T177-BROAD-OWNERSHIP. The complete-code plan and companion
+`docs/superpowers/plans/2026-09-08-wound-broad-validation-boundary.md` and `.patch`
+address the actual boundary58/60 failure from three older parameterless calls.
+Two calls only support setup or failure diagnostics and use precise named
+profiles; the third's global single-error oracle remains a full validation.
+Its four owning methods/eight rows gain FullValidation, without recategorizing
+the huge partial lifecycle class. An exact caller/category guard and reviewed
+eight-call/six-file manifest preserve the original seven and reject a ninth.
+The five-file test-only correction preserves behavioral assertions and test
+rows, requires boundary60/60 and exact owner12/12 Focused controls plus review,
+and changes no production or GM-authored contract. No duplicate broad lane is
+required; the later combined checkpoint records actual category discovery.
+
 ## Risk controls
 
 | Risk | Control |
