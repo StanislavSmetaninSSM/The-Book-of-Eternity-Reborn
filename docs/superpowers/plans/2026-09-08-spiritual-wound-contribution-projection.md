@@ -60,7 +60,7 @@ No overload accepts pre-resolved sides, participant rows, source booleans, proof
 
 **Produces:** `SpiritualWoundConflictContributionProjection` for the later Unit D suffix consumers. It does not produce a canonical after-image.
 
-- [ ] **Step 1: Establish the semantic RED without a missing-type compile failure**
+- [X] **Step 1: Establish the semantic RED without a missing-type compile failure**
 
 Apply only the `SpiritualWoundConsequenceTests.ContractRed.cs` section from the companion with `apply_patch`.
 
@@ -72,11 +72,11 @@ Run from the assigned worktree:
 
 Expected: build succeeds; exactly `0/1` passes. The assertion reports that `EffectMechanicalComponent.Source` is missing (and, once that first gap is fixed alone, that `SpiritualWoundConflictContributionProjector` is missing). This is a deterministic typed-authority behavior RED, not a compiler-only RED.
 
-- [ ] **Step 2: Apply the complete production and behavioral test body**
+- [X] **Step 2: Apply the complete production and behavioral test body**
 
 Apply the remaining three companion sections exactly with `apply_patch`. Do not use `git apply`, generate another DTO, or edit Unit A's draft files in this prerequisite.
 
-- [ ] **Step 3: Run the focused GREEN control**
+- [X] **Step 3: Run the focused GREEN control**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~SpiritualWoundConsequenceTests"
@@ -84,7 +84,7 @@ Apply the remaining three companion sections exactly with `apply_patch`. Do not 
 
 Expected: `35/35` pass, zero skips, clean build and cleanup. The 35 cases are 1 contract row, 8 registered-profile rows, 7 accepted actor-spelling rows across 5 persistent target kinds, 4 side/axis rows, 4 membership rejection rows, 4 closure/nonparticipant/source/detachment facts, 4 additional legal nonterminal-state rows, and 3 illegal/unknown active-conflict-state rows.
 
-- [ ] **Step 4: Run focused existing snapshot/source/target controls**
+- [X] **Step 4: Run focused existing snapshot/source/target controls**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~EffectMechanicsSnapshotTests|FullyQualifiedName~EffectSourceAuthorityTests|FullyQualifiedName~EffectTargetAuthorityTests|FullyQualifiedName~SpiritualWoundEffectProfileContractTests"
@@ -92,7 +92,7 @@ Expected: `35/35` pass, zero skips, clean build and cleanup. The 35 cases are 1 
 
 Expected: all selected existing tests pass; no existing roll resolver constructor or behavior changes because `Source` is an init property rather than a new positional parameter.
 
-- [ ] **Step 5: Parent runs one meaningful combined Fast checkpoint after the implementation handoff**
+- [X] **Step 5: Parent runs one meaningful combined Fast checkpoint after the implementation handoff**
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Fast
@@ -100,7 +100,7 @@ Expected: all selected existing tests pass; no existing roll resolver constructo
 
 The implementer must not run this checkpoint or hold the parent lane after the Focused handoff. Parent expected result: complete Fast project passes within the five-minute bound with zero duplicate IDs/timeouts and successful owned-tree cleanup. Do not move these fixture-free tests to Integration to avoid the Fast result.
 
-- [ ] **Step 6: Review and hand off without overclaiming live integration**
+- [X] **Step 6: Review and hand off without overclaiming live integration**
 
 Inspect the actual diff and runner `summary.json`/TRX/log artifacts. Confirm no source/target authority bypass, no partial contributions on membership/source failure, no mutable alias, no conflict/effect/wound/condition mutation, and exact deterministic output ordering by priority/effect/component. The parent authorizes one local checkpoint commit of only the four scoped files after the required Focused evidence and diff inspection. No remote operation, issue closure, branch change, or cleanup is authorized.
 
@@ -117,3 +117,33 @@ Only deterministic fixture-free Fast tests are appropriate here. Do not add file
 - Membership is derived internally from current conflict participants and existing target authority; no caller-authored proof surface exists.
 - The plan contains no placeholder code or undefined implementation type; the full body is in the single companion.
 - Scope stays reviewable by one fresh implementer and does not duplicate the concurrent source-acquisition/checker work.
+
+## Accepted prerequisite checkpoint — 2026-09-08
+
+Implemented at `30f0897c699bc883e38decdf6c8deb53d8f18819`, task base
+`b0f20ab3658aa77975ac4690129b7708cc2c6bec`. Parent audited all four final
+postimages. Production matches the companion exactly. Three test-only corrections
+are reflected in the companion: keep the existing fixture's valid target-derived
+identity owner kind in both tests (not invalid `afterlife_profile`), and expose
+`object` in the public xUnit theory while retaining the boxed internal enum assertion.
+
+Actual semantic RED: 0/1 at missing `EffectMechanicalComponent.Source`; final
+projector Focused 35/35 and existing snapshot/source/target/catalog Focused 743/743.
+Earlier incorrect-owner fixture failures and CS0051 build failure are retained
+in `sdd/spiritual-contribution-task-1-report.md`, not presented as semantic RED.
+Parent inspected all six actual runner summaries and TRXs, including the same
+contract test ID failing then passing. Independent Sol/high review: Spec compliant,
+Quality Approved, code Critical0/Important0/Minor0. Two report-only timing typos
+were corrected from the exact summaries.
+
+Parent Fast: 7849/7849 in `00:04:24.3435932`, default five-minute bound, no timeout,
+skips or duplicate executions, build0/0, successful owned-tree cleanup. All 28 TRXs
+were inspected: 7849 unique executions, 7795 unique test IDs, all 35 new projector
+rows and both preceding source-envelope documentation guards included. Artifact:
+`TestResults/test-lanes/20260908-183545-287-2192-a0d450be90314e97a477fa58e50209c5-fast`.
+
+Only this internal prerequisite is accepted. No live caller or downstream consumer
+is claimed; T080/T081-D/T087/US3/#1536 remain open. Mortal/afterlife GM guides,
+examples, manifests and source guards were explicitly considered: no new authorable
+contract is exposed here, so the live Unit D synchronization remains mandatory.
+No remote operation, merge, issue closure or cleanup was performed.

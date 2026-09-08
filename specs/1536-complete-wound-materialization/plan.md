@@ -2118,6 +2118,10 @@ tests are deterministic Fast tests; the implementer runs only named Focused
 controls, and the parent owns one combined Fast checkpoint. No new GM-authored
 contract is exposed by this internal prerequisite, so its guide/example update
 belongs to the later live integration rather than claiming an authorable feature.
+Accepted at `30f0897c`: exact production postimages, corrected valid typed fixtures,
+semantic RED0/1, Focused35/35 plus existing743/743, independent code review0C/I/M,
+and parent Fast7849/7849 in4:24.343/default5m with all28TRXs inspected. Only this
+prerequisite is accepted; no live consumer or full T080/T087/US3 completion is claimed.
 
 ## Risk controls
 

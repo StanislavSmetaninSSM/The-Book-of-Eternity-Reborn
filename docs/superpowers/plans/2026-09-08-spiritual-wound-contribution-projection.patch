@@ -677,7 +677,6 @@
 +        };
 +        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
 +        var owner = identity["entries"]![0]!["owner"]!.AsObject();
-+        owner["kind"] = "afterlife_profile";
 +        owner["ownerId"] = "guardian_projector";
 +        owner["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
 +
@@ -779,7 +778,7 @@
 +    [MemberData(nameof(RegisteredProfileCases))]
 +    public void Project_PreservesEveryRegisteredProfilePayloadAndProvenance(
 +        string profile,
-+        SpiritualWoundProjectionKind projectionKind,
++        object projectionKind,
 +        string sourceAxis,
 +        string magnitudeJson)
 +    {
@@ -1108,7 +1107,6 @@
 +        };
 +        var identity = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
 +        var owner = identity["entries"]![0]!["owner"]!.AsObject();
-+        owner["kind"] = "afterlife_profile";
 +        owner["ownerId"] = actorId;
 +        owner["carrierPath"] = EffectCarrierCatalog.AfterlifeProfilesPath;
 +        var snapshot = EffectMechanicsSnapshot.Build(new EffectMechanicsInput(
