@@ -210,3 +210,18 @@ Invoke Compare-DraftOwnerGolden with the **actual two** recorded run directories
 4. Application/source/image serialization adds bounded per-write work. Focused scale controls and the unchanged parent Fast bound must measure it; no performance outcome is claimed.
 5. A failure after an actual mutation faults the unpublished owner and exports no final image. Previously successful phase evidence remains inspectable, matching its non-authority role. This is not a new retry/rollback transport.
 6. Parent reviewed the complete companion before tracking implementation; implementation, actual verification and independent review remain outstanding. Unit A acceptance alone cannot close T081-B2C/B2/C/D/E/T084/T085 or #1536.
+
+### Parent fixture correction before production changes — 2026-09-08
+
+The first OLD run `20260908-160848-811-48368-97bb7372d71c4fb68726b1808a27f30f-focused`
+executed7 rows:6 passed and the merge row failed when the new assertion attempted
+`GetValue<int>()` on the existing reducer's `JsonValue<double>`. Parent read the
+actual summary/TRX and `EffectLifecycleScheduler.TryMergePayload`: all numeric
+merge results are already written as finite doubles. Production is unchanged.
+The companion now compares the exact numeric value via JSON deserialization to
+double for all four non-create rows; expected amounts and every other assertion
+remain unchanged. The old-API test file is259 lines after this one-line expansion.
+Retain this failed artifact, repeat the seven OLD controls on unchanged production,
+and use that successful OLD artifact for the required OLD/GREEN comparison.
+This assertion correction is not the ownership-contract RED and is not proof
+of owner implementation or acceptance.

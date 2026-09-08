@@ -1653,7 +1653,8 @@
 +        var incumbent = plan.ResourceTriggerCarriers.PlayerEffects!["activeEffects"]!.AsArray()
 +            .OfType<JsonObject>().Single(value => value["effectId"]!.GetValue<string>() == fixture.IncumbentId);
 +        Assert.Equal(expectedStacks, incumbent["stacking"]!["currentStacks"]!.GetValue<int>());
-+        Assert.Equal(expectedAmount, incumbent["components"]![0]!["payload"]!["amount"]!.GetValue<int>());
++        Assert.Equal((double)expectedAmount, System.Text.Json.JsonSerializer.Deserialize<double>(
++            incumbent["components"]![0]!["payload"]!["amount"]!.ToJsonString()));
 +        Assert.Equal(3, incumbent["lifetime"]!["remainingTurns"]!.GetValue<int>());
 +        var entry = DraftOwnerEntry(plan.IdentityIndexAfterImage, fixture.IncumbentId!);
 +        Assert.Equal(disposition == "no_change" ? "stack" : disposition,
