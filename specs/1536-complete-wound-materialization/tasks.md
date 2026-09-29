@@ -7,11 +7,23 @@
 
 ## Current execution boundary — 2026-09-30
 
-Gameplay tasks remain paused. Testing-only T066–T071 are complete in
-[feature 1505](../1505-test-suite-performance/tasks.md) under the approved
-CATEGORY-SELECTION-DECISION rev1. Historical Fast/PreMerge/full-suite requirements
-below are superseded; select only affected categories. Migration verification and
-independent review passed. Stop for owner inspection before any gameplay work.
+Owner resumed development on 2026-09-30 and approved the completion strategy:
+Astra owns implementation, one independent Astra XHigh reviewer checks each
+completed coherent block, and verified blocks are committed/pushed to this
+feature branch. This supersedes earlier gameplay/publication pauses; merge and
+issue closure still require final acceptance. Testing-only T066–T071 in
+[feature 1505](../1505-test-suite-performance/tasks.md) are complete.
+CATEGORY-SELECTION-DECISION rev1 supersedes every historical Fast/PreMerge/full-
+suite gate below. Select affected categories only; do not rerun unchanged passes.
+
+- [ ] T081-RESUME-RECONCILIATION (#1536 / #1552) Reconcile Mortal recovery
+  R1/R2/R3 and dependent-frontier implementation, independent review manifests
+  and actual verification artifacts. Separate accepted work, implemented work
+  missing evidence and absent behavior in the current plan. Replace superseded
+  broad-run gates with impact-selected coverage without weakening assertions.
+  Close child tasks only on inspected source/evidence, then execute the already
+  approved RESULT-CLOSURE-BINDING B0–B5. Maintain the compact current checkpoint;
+  retain historical evidence below instead of duplicating it.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -5384,7 +5396,15 @@ retaining this task/spec authority.
   coalesce this class only into four balanced descriptors while retaining all704
   selected cases and the common lane bound. Verify owning tests, measure process preparation and review
   the coherent test/runner/documentation block independently before acceptance.
-- [ ] T081-D-PERFORMANCE-RUNTIME-UNBLOCK [US2] Owner-approved2026-09-29 exception
+Recovery acceptance reconciliation, 2026-09-30: RUNTIME-UNBLOCK and R1/R2/R3 are
+accepted within their bounded original scope after actual source/artifact
+inspection and separate Astra XHigh evidence review. Current 43-file agreement,
+23/23 + 4/4 + 47/47, later 35/35 cache and 27/27 activity/guidance evidence are
+recorded in plan.md's current checkpoint. Obsolete aggregate verification and
+publication-pause clauses in the historical descriptions below are superseded;
+they are not additional required work. Full T069/T070 and FRONTIER remain open.
+
+- [x] T081-D-PERFORMANCE-RUNTIME-UNBLOCK [US2] Owner-approved2026-09-29 exception
   to ONLY TEST WORK, limited to the three presented PreMerge blockers (#1536).
   Correct signed/live treatment-history equality by actual semantic value while
   preserving every prefix coordinate/result and rejecting changed history.
@@ -5409,18 +5429,18 @@ retaining this task/spec authority.
   retain Fast7, original test selection and important assertions. Record actual
   timing and stop for owner inspection. Acceptance of the parent performance task
   remains open until successful complete verification; no commit/push/merge/closure.
-- [ ] T081-D-PERFORMANCE-RECOVERY-R1 [US2] Implement approved revision1 durable
+- [x] T081-D-PERFORMANCE-RECOVERY-R1 [US2] Implement approved revision1 durable
   recovery codec, exact epoch consumption and invalid-history-first replay in
   Services/MortalWoundRecoveryPersistence.cs, MortalWoundRecoveryPlanner.cs and
   WoundHistoryState.RecoveryReplay.cs; preserve closed source/receipt grammar and
   prove pure tamper/arithmetic plus retained owning replay cases. Plan R1.
-- [ ] T081-D-PERFORMANCE-RECOVERY-R2 [US2] After R1 interfaces are fixed and FR-065
+- [x] T081-D-PERFORMANCE-RECOVERY-R2 [US2] After R1 interfaces are fixed and FR-065
   shared hooks are handed off, implement private recovery continuation and genuine
   common publication in Services/MortalWoundRecoveryAcceptedPlanComposer.cs and
   WoundAcceptedTurnPlanner.MortalRecoveryPublication.cs with targeted existing
   registry/cache/common hooks. Preserve actual effects, bounded threshold/full
   healing, no-op/death handoff, owner/binding and atomic rejection. Plan R2.
-- [ ] T081-D-PERFORMANCE-RECOVERY-R3 [US2] After R1/R2, strengthen owning
+- [x] T081-D-PERFORMANCE-RECOVERY-R3 [US2] After R1/R2, strengthen owning
   IntegrationTests/MortalWoundRecoveryTests*.cs without dropping important cases,
   synchronize the existing Mortal GM guide/example/guards and inspect XML/Focused
   results; complete independent Astra XHigh review, successful full PreMerge≤30
@@ -5441,10 +5461,11 @@ retaining this task/spec authority.
   Recompute frontier permissions/correlation only after actual predecessor validation;
   retain original choice, dice, actors and closed prefix. Remains required for full
   POSITION-DECISION acceptance; arithmetic-only closure does not complete this task.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B0 [US3] Align research/data-model, live-turn
+- [x] T081-D-POSITION-RESULT-CLOSURE-B0 [US3] Align research/data-model, live-turn
   contract and quickstart with approved RESULT-CLOSURE-BINDING revision1 (#1536,
   reviewed spec65BDA9AB), then run scoped Spec Kit analysis. Follow plan.md B0–B5;
-  wait for current FRONTIER acceptance before changing its frozen47-file packet.
+  approved documentation alignment may proceed during evidence reconciliation;
+  preserve the frozen FRONTIER runtime/tests until its acceptance, before B1.
   No new journal schema, correlation formula, exchange or authority.
 - [ ] T081-D-POSITION-RESULT-CLOSURE-B1 [US3] After B0 and FRONTIER acceptance,
   capture genuine saved-choice RED: lawful binding13/10 after pressure5/15 loses
@@ -5470,8 +5491,8 @@ retaining this task/spec authority.
   exact cleanup and once-only publication; reject forged B and altered accepted A.
 - [ ] T081-D-POSITION-RESULT-CLOSURE-B5 [US3] After B4, synchronize afterlife GM
   guides/live contract/CLI-worker instructions/example/manifest/guards and record
-  prompt/Mortal decisions. Inspect XML build, Focused/owning lifecycle/process,
-  required docs guard, Fast7 and conditional FullValidation30 evidence. Complete
+  prompt/Mortal decisions. Inspect XML build and the selected, documented categories
+  covering changed policy, owning lifecycle/transport and GM docs/examples. Complete
   independent Astra XHigh review and corrections before child acceptance. Parent
   RESULT-CLOSURE/#1536 remain open with all other operation/result chains unchanged.
 - [x] T081-E-SOURCE-CEILINGS-LIFECYCLE [US3] Prove approved acceptance8–9 and

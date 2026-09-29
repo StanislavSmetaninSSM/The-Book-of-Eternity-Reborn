@@ -558,9 +558,10 @@ B, original choice/resources/dice, cold accepted-A recovery and one publication.
 Repeat for force_binding +2→+1 with only setup:true and mixed position/cost burden.
 Reject forbidden current/prefix edits, premature echo, forged B, changed accepted
 A, ignored raw wrappers and unrelated ordinary errors beside the echo mismatch.
-Keep lifecycle/process cases outside Fast, using scripts/test-csharp.ps1 and
-measured selected budgets. Required afterlife docs, Fast7, conditional
-FullValidation30 and independent Astra XHigh review precede child acceptance.
+Use scripts/test-csharp.ps1 with only affected documented categories and measured
+budgets. Separate pure policy, saved-choice and real warm/cold transport checks.
+Include changed afterlife guidance/example guards and independent Astra XHigh
+review; retired Fast/FullValidation/PreMerge gates do not apply.
 
 ## C4 GM continuation revision2 verification (#1536)
 

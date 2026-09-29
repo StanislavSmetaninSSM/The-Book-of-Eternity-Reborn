@@ -510,3 +510,30 @@ Preserve the exact correlated completion signal for normal cold lifecycle entry
 and stop the current gameplay loop on this held disposition. Explicit re-entry
 may attempt recovery; do not spin on the same persistent write failure or invent
 a new terminal success signal. Treatment-publication retry behavior is unchanged.
+
+## Approved last-binding result correction — RESULT-CLOSURE-BINDING rev1
+
+This bounded #1536 refinement follows spec.md; it is not a generic dice-band
+outcome converter. The original owner proves an originally lawful last binding
+that changed only control, now lacking its prerequisite after the saved wound.
+Strong binding retains its stronger prerequisite: boolean setup:true alone
+does not preserve force_binding after effective +2 becomes +1.
+
+Actual GM response A may correct only proved arithmetic, independently proved
+cost fields, outcome and after.controlState. It chooses ordinarily valid
+no_effect/blocked and copies exact before-control value/presence. Dice, setup,
+actors, operation, canonical position, strain, closed prefix, selected wound
+and the future final-control field remain frozen.
+
+After actual A validates and closes the final exchange, request B permits only
+the effective raw final-control carrier and the already validated last control
+value/presence. Intermediate A validation may project only the independently
+proved echo mismatch in a detached copy; an unrelated ordinary error rejects.
+No physical final control changes before B. After B the real complete raw draft
+must validate without detached replacement, before once-only publication.
+
+Persist A using the existing exact progress row after genuine exchange closure.
+Cold replay rederives A, then B with zero exchanges remaining. B creates no
+synthetic row or wound opportunity. Each response has its own continuation ID
+and Ready; forged B, ignored wrapper fields and changed accepted A reject.
+Existing request, checkpoint-row and correlation schemas remain unchanged.

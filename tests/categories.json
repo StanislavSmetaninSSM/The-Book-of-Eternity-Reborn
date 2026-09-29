@@ -952,6 +952,39 @@
       ]
     },
     {
+      "id": "spiritual-staged-recovery-before-ready",
+      "responsibility": "Cold recovery after the real A draft write but before A Ready; require the original A response before B and publish once.",
+      "excludes": "Recovery after authenticated Ready or issued B, worker transport, and unrelated turn lifecycles.",
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-staged-recovery-ready", "when": "The change affects authentication or recovery of already-written A transport."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 15,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB"]}]
+    },
+    {
+      "id": "spiritual-staged-recovery-ready",
+      "responsibility": "Cold recovery with the original A Ready already present; authenticate A before a separate B response.",
+      "excludes": "Pre-Ready draft recovery, already-issued B recovery, worker transport, and unrelated turn lifecycles.",
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-staged-recovery-issued-successor", "when": "The change alters accepted A preservation or successor request recovery."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 15,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB"]}]
+    },
+    {
+      "id": "spiritual-staged-recovery-issued-successor",
+      "responsibility": "Cold recovery after B request publication; preserve accepted A and the saved wound, require B Ready, and publish once.",
+      "excludes": "Earlier A draft/Ready cuts, worker transport, and unrelated turn lifecycles.",
+      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
+      "related": [{"id": "spiritual-cutover-staged-publication", "when": "The change alters private progress write/readback or staged publication ownership."}],
+      "requirements": {"frontendBuild": false, "exclusive": true},
+      "timeoutMinutes": 15,
+      "expectedSeconds": null,
+      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA"]}]
+    },
+    {
       "id": "turn-lifecycle-spiritual",
       "responsibility": "Spiritual conflict turn interruption, continuation, recovery, and published lifecycle state.",
       "excludes": "Standalone rule calculations outside turn preparation and publication.",
@@ -1000,10 +1033,7 @@
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualSourceCeilings_OrdinaryAllowsIVAndPublishesChosenII",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualSourceCeilings_OriginalSpecialCapIIConstrainsIVAndPublishesII",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualSourceCeilings_UnrestrictedSpecialAllowsIVAndPublishesChosenII",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterACommitBeforeCleanupIssuesB",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB",
-            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_FileAThenBPublishesOnce",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_StaleAReadyDoesNotCompleteB",
             "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_WarmOrphanReadyAfterACommitBlocksB",

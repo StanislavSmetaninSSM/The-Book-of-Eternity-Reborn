@@ -2,48 +2,32 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "test-selection-contracts",
-      "reason": "#1505 category migration changes selection, process ownership and result accounting.",
+      "category": "spiritual-staged-recovery-before-ready",
+      "reason": "#1536 T081-RESUME-RECONCILIATION: approved frontier acceptance has no completed execution at the real A-write interruption.",
       "contracts": [
-        "catalog membership",
-        "bounded runner",
-        "TRX completeness",
-        "owned process cleanup"
+        "preserved original choice",
+        "cold recovery before A Ready",
+        "separate A and B responses",
+        "once-only publication"
       ]
     },
     {
-      "category": "frontend-command-results",
-      "reason": "#1505 replaces aggregate frontend invocation with selected Node and Vitest adapters.",
+      "category": "spiritual-staged-recovery-ready",
+      "reason": "#1536 T081-RESUME-RECONCILIATION: verify the unexecuted cold A-Ready boundary.",
       "contracts": [
-        "selected frontend files",
-        "assertion results",
-        "frontend failure propagation"
+        "original Ready authentication",
+        "accepted A preservation",
+        "separate B response"
       ]
     },
     {
-      "category": "frontend-shell-types",
-      "reason": "#1505 distinguishes compile-time frontend contracts from executed test assertions.",
+      "category": "spiritual-staged-recovery-issued-successor",
+      "reason": "#1536 T081-RESUME-RECONCILIATION: verify the unexecuted cold cut after B request publication.",
       "contracts": [
-        "selected TypeScript contract compilation",
-        "honest verification kind"
+        "durable accepted A",
+        "current B correlation",
+        "once-only publication"
       ]
-    },
-    {
-      "category": "frontend-shell-input",
-      "reason": "#1505 removes hidden aggregate imports and makes the selected UI source check independent of caller directory.",
-      "contracts": [
-        "standalone frontend entrypoints",
-        "UI source paths"
-      ]
-    },
-    {
-      "reason": "#1505 changes documented frontend commands and category-aware CI; verify their source contracts without host/gameplay scenarios.",
-      "contracts": [
-        "frontend workspace scripts",
-        "CI selection",
-        "contributor instructions"
-      ],
-      "category": "frontend-test-workflow"
     }
   ]
 }

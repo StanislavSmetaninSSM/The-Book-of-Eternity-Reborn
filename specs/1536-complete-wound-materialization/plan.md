@@ -8,6 +8,72 @@ plus the approved Superpowers design at
 `docs/superpowers/specs/2026-08-26-complete-wound-materialization-design.md`.
 
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
+## Current completion checkpoint — resumed 2026-09-30
+
+Source: #1536 / #1552, T081-RESUME-RECONCILIATION. Owner approved resumption
+and the revised completion approach after the state assessment. Parent Astra
+owns the implementation; a separate Astra XHigh agent reviews the coherent
+completed block. Commit and push verified blocks to this feature branch; no
+merge or issue closure before final acceptance. This replaces earlier pauses.
+
+Execution order:
+1. Reconcile current Mortal recovery R1/R2/R3 and dependent-frontier code against
+   actual test artifacts and independent review evidence. Implemented does not
+   mean accepted; obsolete broad-run gates do not justify repeating valid work.
+2. Close remaining prerequisite evidence with only affected categories; fix
+   substantiated defects first. No full suite or sequence of all categories.
+3. Execute approved RESULT-CLOSURE-BINDING revision1 B0–B5 below: one real valid
+   baseline, observed RED, exact bounded correction, warm/cold verification,
+   synchronized GM contract and independent review.
+4. Continue the remaining physical-treatment completion, spiritual conflict
+   source families, actual spiritual healing/recovery, shared player UI, healer
+   services, and final requirement-based acceptance. None is silently dropped.
+
+Reconciliation 2026-09-30: independent Astra XHigh accepted the bounded recovery
+R1/R2/R3 and RUNTIME-UNBLOCK slices after inspecting actual 4b106de0 (23/23),
+9cadbcff (4/4), 24983227 (47/47), later cache 36f50fd0 (35/35), activity/guidance
+57868cc9 (27/27), and original rollback/reentry evidence. All 43 relevant current
+recovery/runtime/test/GM files match the post-affinity reviewed-source manifest.
+These child tasks are closed; full T069/T070 and US2 remain subject to their
+remaining criteria. Failed/incomplete old aggregate runs remain recorded as such.
+
+FRONTIER's 17 production files match reviewed E49692EE; six relevant optimized
+lifecycle helpers match performance-final-manifest.json. Preserve the accepted
+worker A/B, stale-A, orphan and accepted-A-before-cleanup evidence. Three explicit
+spec acceptance cuts lack completed execution: after A draft apply, after A
+Ready, and after B request publication. Run their three new semantic categories
+individually (15-minute protective category bounds, measured time initially
+unknown); do not rerun the old 43-method lifecycle category. Pure inventory
+validation covers the selector move without executing unrelated tests.
+RESULT-CLOSURE production remains gated on these actual missing results.
+The older logs below are historical evidence, not additional execution orders.
+Use the existing approved B0–B5 plan with category-based verification; preserve
+all six RESULT-CLOSURE rules, negative cases and original continuation contracts.
+Optional Spec Kit auto-commit hooks are deferred to the reviewed block commit.
+
+Scoped Spec Kit analysis (B0 design, 2026-09-30): setup-plan/setup-tasks and
+check-prerequisites now resolve feature1536, preserving its existing files.
+The six approved RESULT-CLOSURE rules map respectively to B2 source/policy,
+B2 immutable bounds, B2 ordinary failed result, B2 strong alternatives,
+B3 detached-only echo validation, and B4 persisted final-A/zero-exchange B.
+B5 owns GM synchronization, both real response paths and selected verification.
+Research/quickstart already specify the original-valid fixture and three required
+regressions; data-model/live contract now include terminal progress semantics.
+No gameplay scope or public schema changes. Remaining prerequisite: the three
+unexecuted FRONTIER cuts above; do not infer their success from this analysis.
+
+Reconciliation/design/catalog block verification: independent Astra XHigh review
+accepted the exact ten-file diff after correcting active B0/B5 wording. B0 is
+complete; FRONTIER and B1 remain open. Discovery-only category audit 9d65cb18
+passed (94 categories, 10,180 discovered methods, zero executed tests; 1m57s),
+and plan-only d51e55e5 selected exactly the three intended methods (12s). The
+selector multiset is unchanged; no test or assertion was removed. XML builds
+succeeded with three existing Integration CS1587 warnings and no errors.
+`git diff --check` passed. These checks justify this documentation/catalog block,
+not gameplay acceptance; record the three actual cold outcomes separately.
+
+### Historical publication and execution checkpoints
+
 Publication amendment, 2026-09-30: owner requests preservation on GitHub of all
 accumulated work, including #1536. Execute T072-PUBLISH-CHECKPOINT in feature
 1505: inventory-reviewed commit and non-force push of this feature branch and
@@ -819,7 +885,9 @@ Ordered execution against tasks.md:
    quickstart with last-exchange A → terminal-control B, including cold replay
    when no original exchanges remain. Keep row shape and hashes unchanged.
    Run scoped Spec Kit analysis over approved spec, this plan and new tasks.
-   Do not alter the current47-file FRONTIER packet during its owning tests.
+   Approved documentation alignment may proceed during evidence reconciliation.
+   Preserve the current FRONTIER runtime/tests during its owning tests and wait
+   for FRONTIER acceptance before B1 or dependent production changes.
 2. **B1 — genuine RED.** Add the signed saved-choice fixture: pressure5/15,
    later binding13/10, canonical position+1, materialized binding burden1.
    Both arithmetic bands remain player_success; lost leverage must expose only
@@ -854,18 +922,20 @@ Ordered execution against tasks.md:
 6. **B5 — GM synchronization/acceptance.** Update wound guide, afterlife matrix,
    live contract, CLI/worker guidance, worked GM example, manifest and guards
    together. Inspect prompt/Mortal surfaces and record updates or no-update reasons.
-   Run XML builds, minimal Focused groups, separately bounded owning lifecycle/
-   process cases, required afterlife documentation guard, one Fast7 and conditional
-   FullValidation30. Review exact coherent diff/evidence with independent Astra
+   Run XML builds and only impact-selected categories covering exchange policy,
+   genuine lifecycle/cold replay, related process transport and changed GM
+   documentation/examples. Split categories by contract when required; no retired
+   lane or whole-suite gate applies. Review exact coherent diff/evidence with independent Astra
    XHigh, resolve findings and inspect artifacts before accepting this child.
 
 Coverage: B2 owns current/prefix tampering, both prerequisite rules and mixed-cost;
 B3 owns exact carrier/presence, premature echo, retained successful control and
 unrelated ordinary errors beside the eligible mismatch; B4 owns cold history,
 saved choice, cumulative images and single publication; B5 owns GM authoring and
-shared client entrypoints. Heavy tests remain outside Fast. Document measured
-justification before changing selected budgets. Parent RESULT-CLOSURE, D/C5/E
-and #1536 stay open; no PreMerge, staging, commit, push, merge or closure here.
+shared client entrypoints. Separate pure policy checks from owning transport
+scenarios; document measured budgets. Parent RESULT-CLOSURE, D/C5/E and #1536
+stay open until their own criteria are met. The 2026-09-30 resumption permits
+reviewed block commits/pushes, not a merge or premature issue closure.
 
 ## Current execution checkpoint — 2026-09-28
 

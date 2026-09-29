@@ -4533,6 +4533,32 @@ file protections forbid GM/worker writes and live replacement; cold reconstructi
 checks shape, hashes, chain and original-owner mechanics. Coherent external
 rewriting of all private evidence and hashes is outside this change's guarantee.
 
+### Last-binding result and terminal control — approved RESULT-CLOSURE-BINDING rev1
+
+This refinement retains the private progress row and correlation schema above.
+The original owner proves an originally lawful last binding whose saved wound
+removes its operation-specific prerequisite and whose other before/after fields
+agree. A permits exact `outcome` and `after.controlState` plus independently
+proved arithmetic/cost fields. Valid `no_effect`/`blocked` copies exact before
+control and presence. It cannot edit setup, dice, actors, operation, strain,
+canonical position, closed prefix or final control. Strong binding retains its
+stronger prerequisite; sufficient alternatives never grant result permissions.
+
+Only actual corrected A can close the final original exchange. Validation may
+project solely an independently proved terminal-control echo mismatch into a
+detached copy; every other ordinary check remains mandatory and physical raw
+input is unchanged. Actual closure permits the existing progress row even when
+that consumes the last remaining original exchange. Cold replay must rederive
+and validate A before consuming that row, then derive B with zero exchanges
+remaining; row-count equality alone is not authority for this terminal case.
+
+B permits only the effective raw carrier's exact final-control field and the
+already validated last exchange's control value/presence. Ignored wrappers and
+whole containers remain forbidden. B uses its own dependent_draft correlation
+and Ready, preserves A and creates no exchange/source/opportunity/progress row.
+The actual complete raw draft must pass ordinary validation without replacement
+after B and before once-only publication. No public field or schema is added.
+
 ## Mortal recovery persisted result — approved revision1, 2026-09-29 (#1536)
 
 One client-owned `recover` transition result contains a closed versioned source
