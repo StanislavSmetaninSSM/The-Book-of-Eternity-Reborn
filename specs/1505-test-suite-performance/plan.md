@@ -16,6 +16,19 @@ feature branch/history. The earlier no-stage/commit/push restriction below is
 superseded for that preservation step. No merge, issue closure, gameplay work or
 claim of full #1536 acceptance is authorized. Existing test evidence is preserved;
 unchanged tests are not rerun merely to upload the same source tree.
+
+Publication receipt, 2026-09-30: T072 completed. The
+[snapshot e181539a](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/e181539a4330a20781fd71e2c0432b826e396c56)
+preserves all 586 intended changed/new files together with 527 preceding local
+commits on [the feature branch](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/tree/1536-complete-wound-materialization).
+Independent Astra XHigh publication review accepted the inventory, content
+matching and status wording. The non-force push succeeded after the owner
+approved GitHub CLI's missing workflow permission; `git ls-remote` confirmed the
+exact snapshot SHA. Eight local Serena files and ignored generated/runtime
+artifacts remain local. Non-patch whitespace checks passed; 87 whitespace
+findings in eight historical patch artifacts were preserved unchanged. This
+verifies preservation only; no gameplay acceptance or broad test rerun occurred.
+
 Execution: parent owns implementation using Superpowers executing-plans and TDD;
 bounded catalog work can be delegated to Sol High; one independent Astra XHigh
 reviews the completed coherent block. Publication follows the amendment above;

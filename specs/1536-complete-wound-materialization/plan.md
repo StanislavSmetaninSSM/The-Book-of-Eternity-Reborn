@@ -16,6 +16,12 @@ checkpoint. #1536 remains unfinished; no merge, issue closure or gameplay
 continuation. Current tree includes completed/reviewed slices and remaining WIP;
 the task checkboxes and detailed checkpoints below retain that distinction.
 
+Publication complete, 2026-09-30: snapshot
+[`e181539a`](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/commit/e181539a4330a20781fd71e2c0432b826e396c56)
+and all preceding local branch history are on GitHub; the remote SHA was verified.
+T072's inventory/review evidence is recorded in the [#1505 plan](../1505-test-suite-performance/plan.md).
+The gameplay pause and unfinished task status below remain in force.
+
 Current: **#1505 / #1536 category migration T066–T071 complete**, 2026-09-30.
 Independent Astra XHigh review accepted the corrections. Selected controls and
 discovery-only audit passed; see #1505 plan for artifacts. STOP for owner

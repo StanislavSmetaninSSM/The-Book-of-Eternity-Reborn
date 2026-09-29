@@ -428,7 +428,7 @@ prepared independently of runner implementation once its schema is fixed.
 
 ### Owner-requested GitHub checkpoint — 2026-09-30
 
-- [ ] T072-PUBLISH-CHECKPOINT (#1505 / #1536) Preserve all accumulated wound
+- [x] T072-PUBLISH-CHECKPOINT (#1505 / #1536) Preserve all accumulated wound
   materialization and category-migration source, tests, prompts, examples and
   tracked planning history on GitHub. The owner's direct request authorizes
   staging, committing and pushing the existing feature branch and its local
@@ -438,6 +438,11 @@ prepared independently of runner implementation once its schema is fixed.
   inventory and status wording, verify the committed tree matches the intended
   files, push without force, and confirm the remote commit. This is durable WIP
   preservation, not completion of #1536 or merge approval; do not resume gameplay.
+  Evidence: independent Astra XHigh publication review accepted the exact
+  586-file inventory and preserved history; snapshot
+  `e181539a4330a20781fd71e2c0432b826e396c56` was pushed without force to
+  `origin/1536-complete-wound-materialization` and the remote SHA matched.
+  See the publication receipt in [plan.md](plan.md).
 
 ## Suspended cross-feature amendment — #1536 / #1505, 2026-09-30
 
