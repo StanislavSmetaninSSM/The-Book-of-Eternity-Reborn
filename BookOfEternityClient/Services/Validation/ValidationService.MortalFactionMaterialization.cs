@@ -1240,7 +1240,7 @@ public partial class ValidationService
                  {
                      await ReadPreTurnTrackedFileAsync(
                          MortalLocationMaterializationContract.WorldMapPath),
-                     await _fs.ReadFileAsync(
+                     await ReadSameTurnOwnerCurrentTextAsync(
                          MortalLocationMaterializationContract.WorldMapPath)
                  })
         {
@@ -1279,7 +1279,7 @@ public partial class ValidationService
                          "world_map_creation")
                  })
         {
-            var json = await _fs.ReadFileAsync(path);
+            var json = await ReadSameTurnOwnerCurrentTextAsync(path);
             if (string.IsNullOrWhiteSpace(json))
                 continue;
 
@@ -1354,7 +1354,7 @@ public partial class ValidationService
         var npcs = new List<JsonElement>();
         foreach (var json in new[]
                  {
-                     await _fs.ReadFileAsync(MortalNpcCorePath),
+                     await ReadSameTurnOwnerCurrentTextAsync(MortalNpcCorePath),
                      await ReadPreTurnTrackedFileAsync(MortalNpcCorePath)
                  })
         {
@@ -1484,7 +1484,7 @@ public partial class ValidationService
     {
         var json = preTurn
             ? await ReadPreTurnTrackedFileAsync(MortalFactionChroniclesPath)
-            : await _fs.ReadFileAsync(MortalFactionChroniclesPath);
+            : await ReadSameTurnOwnerCurrentTextAsync(MortalFactionChroniclesPath);
         var result = new HashSet<string>(StringComparer.Ordinal);
         if (string.IsNullOrWhiteSpace(json))
             return result;
@@ -1573,7 +1573,7 @@ public partial class ValidationService
     private async Task<JsonElement?> ReadMortalMaterializationRootAsync(
         string path)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
         try

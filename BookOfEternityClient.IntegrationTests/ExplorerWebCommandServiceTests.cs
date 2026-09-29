@@ -3608,6 +3608,12 @@ public sealed partial class ExplorerWebCommandServiceTests :
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    /// <summary>
+    /// Upgrades a special spiritual art from a valid current soul profile and records the change.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the new tier, derived currency cost, local ledger and session-lock release are checked.
+    /// </returns>
     [Fact]
     public async Task SubmitPromptSessionAsync_SpiritualArtsSpecialUpgrade_UpdatesEntityProfile()
     {
@@ -3622,6 +3628,8 @@ public sealed partial class ExplorerWebCommandServiceTests :
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 500 };
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var profiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var specialArt = profiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
@@ -3643,7 +3651,9 @@ public sealed partial class ExplorerWebCommandServiceTests :
             },
             OwnerId: "browser-test"));
 
-        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.True(
+            completed.State == CommandExecutionState.Completed,
+            $"Expected completed special-art upgrade; actual response: {SerializeResult(completed)}");
         var updatedSoul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         var updatedProfiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var updatedSpecialArt = updatedProfiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();

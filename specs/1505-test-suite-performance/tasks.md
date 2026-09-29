@@ -6,6 +6,10 @@
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
 
+**Active execution:** T066–T071 under CATEGORY-SELECTION-DECISION rev1, approved
+2026-09-30. Earlier phases and documented Lane commands are historical evidence;
+their broad-control requirements are superseded. Do not execute those commands.
+
 ## Phase 1: Setup and Baseline
 
 - [x] T001 Confirm issue #1505, branch `work/1505-test-suite-performance`, isolated worktree, and clean tracked baseline.
@@ -369,3 +373,80 @@ has no duplicate membership, and two Fast controls finish below five minutes.
 .\scripts\test-csharp.ps1 -Lane DeepValidation
 .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
+
+## Current direction — category selection, 2026-09-30
+
+The owner's latest instruction stops the lane-split verification below and
+supersedes mandatory Fast/PreMerge/full-suite execution. No broad controls may
+resume; the exact category strategy was approved on 2026-09-30. Historical completed
+tasks retain their evidence; unfinished old controls are suspended, not passed.
+
+- [x] T065-CATEGORY-STRATEGY-SPEC (#1505 / #1536) Prepare and present
+  `CATEGORY-SELECTION-DECISION`, revision 1, in `spec.md`: evolving documented
+  categories, executor-owned category maintenance, impact-based selection with
+  no all-suite control, discovery/accounting guards, local/CI/documentation
+  migration, and isolated fixture policy. Obtain approval of the exact written
+  revision. Then update `plan.md` and implementation tasks through Spec Kit and
+  run consistency analysis before changing the runner or tests. This task does
+  not authorize gameplay work, commit, push, merge, or resuming old controls.
+  Exact revision 1 approved by owner on 2026-09-30: «подтверждаю».
+
+### Active category implementation (#1505 / #1536)
+
+- [x] T066 [US1/US2] Implement catalog schema/selection in
+  `scripts/testing/TestCategoryCatalog.psm1` with RED/GREEN evidence in
+  `scripts/tests/test-category-catalog.tests.ps1`; populate `tests/categories.json`
+  from actual C#/frontend inventory, split large partials and document each
+  responsibility. Cover unknown/empty/stale selectors, unmapped tests,
+  multi-membership deduplication and extension without a runner enum.
+- [x] T067 [US1/US3] Implement bounded category execution in
+  `scripts/test-csharp.ps1` and `scripts/testing/TestCategoryExecution.ps1`.
+  Preserve owned processes, cleanup, result completeness and exact method filters;
+  reject old lanes and implicit full runs. Migrate obsolete boundary tests in
+  `FastTestBoundaryTests.cs` and `IntegrationTestBoundaryTests*.cs` to category
+  contracts, proving cross-project/dynamic-theory/partial-failure cases.
+- [x] T068 [US1/US4] Add selected frontend file execution and reporting; migrate
+  frontend `package.json`, `.github/workflows/dotnet-ci.yml` and explicit
+  `tests/selection.json` to category selection. Verify Node/Vitest selection,
+  missing reports, skips and failed assertions without any full suite.
+- [x] T069 [US2/US4] Audit existing fixture caches and document decisions in
+  `docs/testing.md`; change only caches with confirmed risks/unjustified
+  complexity and verify affected isolation boundaries. Migrate `AGENTS.md`,
+  `docs/development-workflow.md`, GitHub templates and active #1505/#1536
+  verification instructions; add practical category creation/splitting examples.
+- [x] T070 [US1/US3] Validate all catalog ownership through discovery only;
+  execute the selected infrastructure/process/frontend categories and any
+  actually changed fixture categories. Check XML builds, exact selection,
+  result completeness, timings and owned cleanup. Record evidence in `plan.md`.
+- [x] T071 [US4] Obtain independent Astra XHigh review of the exact completed
+  migration, original CAT-001–010 requirements and verification choices. Fix
+  validated findings, rerun affected categories, record process assessment and
+  report to owner; stop before gameplay work or external publication.
+
+Dependencies: T066 → T067 → T068 → T069/T070 → T071. Catalog data can be
+prepared independently of runner implementation once its schema is fixed.
+
+### Owner-requested GitHub checkpoint — 2026-09-30
+
+- [ ] T072-PUBLISH-CHECKPOINT (#1505 / #1536) Preserve all accumulated wound
+  materialization and category-migration source, tests, prompts, examples and
+  tracked planning history on GitHub. The owner's direct request authorizes
+  staging, committing and pushing the existing feature branch and its local
+  history, superseding the earlier publication pause for this checkpoint only.
+  Exclude machine-local Serena configuration, ignored test results, runtime
+  state and build/dependency outputs. Independently review the publication
+  inventory and status wording, verify the committed tree matches the intended
+  files, push without force, and confirm the remote commit. This is durable WIP
+  preservation, not completion of #1536 or merge approval; do not resume gameplay.
+
+## Suspended cross-feature amendment — #1536 / #1505, 2026-09-30
+
+Implementation and verification of the owner-approved #1536 test-lane boundary are tracked under
+`specs/1536-complete-wound-materialization/tasks.md`
+(`T081-D-PERFORMANCE-LANE-SPLIT-*`). Those tasks were the checklist for
+FR-014/SC-013: a separate complete spiritual cutover lane, exact PreMerge
+sentinels, unchanged process cases, robust planned/completed accounting, both
+30-minute controls and independent review. Earlier completed tasks above remain
+historical; they do not authorize counting an incomplete PreMerge as the final
+control. Both unfinished full timing controls are now suspended by the owner's
+new category strategy; they must not be resumed or marked as passed.

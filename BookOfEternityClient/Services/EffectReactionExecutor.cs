@@ -343,7 +343,7 @@ internal static class EffectReactionExecutor
                 .ToArray();
             if (targetMatches.Length != 1 ||
                 !TryReadExact(targetMatches[0]["profile"], out var targetProfile) ||
-                targetProfile is not ("periodic_damage" or "periodic_restore"))
+                !EffectComponentProfiles.IsPeriodicResourceProfile(targetProfile))
             {
                 Add(
                     issues,
@@ -438,7 +438,7 @@ internal static class EffectReactionExecutor
                     targetComponentId,
                     out var targetComponent) ||
                 !TryReadExact(targetComponent["profile"], out var targetProfile) ||
-                targetProfile is not ("periodic_damage" or "periodic_restore"))
+                !EffectComponentProfiles.IsPeriodicResourceProfile(targetProfile))
             {
                 Add(
                     issues,

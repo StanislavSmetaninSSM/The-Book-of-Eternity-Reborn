@@ -21,7 +21,12 @@ internal enum AcceptedTurnValidationDisposition
     Accepted,
     TerminalRejected,
     RetryablePublicationRearmed,
-    RetryablePublicationHeldBlocked
+    RetryablePublicationHeldBlocked,
+
+    /// <summary>
+    /// Preserves the original turn and committed spiritual decision while its pending projection awaits recovery.
+    /// </summary>
+    SpiritualContinuationHeldBlocked
 }
 
 public partial class GameEngine
@@ -38,6 +43,9 @@ public partial class GameEngine
     ];
     private WoundPlayerNotification[] _acceptedTurnWoundNotifications =
         Array.Empty<WoundPlayerNotification>();
+    private SpiritualWoundPublishedOutput? _acceptedTurnSpiritualOutput;
+    private ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
+        _acceptedTurnSpiritualConflictValidation;
 
     private sealed class CompensatedTreatmentPublicationException : Exception
     {
@@ -233,6 +241,14 @@ public partial class GameEngine
             if (allowRepairLoop)
                 errors = await FilterRestoredForbiddenRealmBaselineErrorsAsync(source, errors);
 
+            if (errors.Any(static issue => issue.Code == "spiritual_completed_conflict_validation_mismatch"))
+            {
+                _logger.LogError("Completed spiritual publication lost its exact validation binding after {Source}.", source);
+                if (beforeTerminalRepairReturn is not null)
+                    await beforeTerminalRepairReturn();
+                return false;
+            }
+
             if (errors.Count == 0)
             {
                 if (allowRepairLoop && lastRepairErrors is { Count: > 0 })
@@ -331,6 +347,27 @@ public partial class GameEngine
         }
     }
 
+    /// <summary>
+    /// Validates and publishes one accepted turn, preserving original authority through bounded repair and continuation.
+    /// </summary>
+    /// <param name="source">
+    /// Caller label used for validation diagnostics.
+    /// </param>
+    /// <param name="activeSnapshotContext">
+    /// Validated original snapshot, or <see langword="null"/> when it must be resolved from disk.
+    /// </param>
+    /// <param name="rollbackSnapshot">
+    /// Original rollback capability, or <see langword="null"/> when rollback is unavailable.
+    /// </param>
+    /// <param name="expectedTurn">
+    /// Exact original turn number to validate.
+    /// </param>
+    /// <param name="progressionControl">
+    /// Original progression obligations, or <see langword="null"/> when no progression is expected.
+    /// </param>
+    /// <returns>
+    /// Accepted after common publication and validation, or a terminal disposition requiring caller settlement.
+    /// </returns>
     private async Task<AcceptedTurnValidationDisposition>
         ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
         string source,
@@ -340,6 +377,8 @@ public partial class GameEngine
         ProgressionControl? progressionControl)
     {
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
+        _acceptedTurnSpiritualOutput = null;
+        _acceptedTurnSpiritualConflictValidation = null;
         var finalizedTreatmentReplayQuarantineFailure =
             await TryQuarantineFinalizedTreatmentReplayAsync(expectedTurn);
         if (finalizedTreatmentReplayQuarantineFailure.HasValue)
@@ -363,12 +402,38 @@ public partial class GameEngine
         List<ValidationIssue>? woundRepairRetryErrors = null;
         IReadOnlyList<RepairResubmissionPathObligation>? woundRequiredResubmissionPaths = null;
         byte[]? pendingResolutionRepairCheckpoint = null;
-        using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
 
         while (true)
         {
             await EnsureClientOwnedSystemFilesHealthyAsync();
-            var rawIssues = await CollectAcceptedTurnRawStateIssuesAsync();
+            var spiritualAdmission = SpiritualContinuationAdmission.Admitted;
+            UpstreamAcceptedTurnValidation upstreamValidation;
+            using (var upstreamSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest))
+                upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
+            if (upstreamValidation.RejectSpiritualBoundary)
+            {
+                LogSpiritualContinuationIssues(upstreamValidation.Issues);
+                return AcceptedTurnValidationDisposition.TerminalRejected;
+            }
+            var rawIssues = upstreamValidation.Issues.ToList();
+            if (!rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+            {
+                spiritualAdmission = await ContinueAcceptedSpiritualTurnAsync(source, expectedTurn, activeSnapshotContext);
+                if (spiritualAdmission == SpiritualContinuationAdmission.Rejected)
+                    return AcceptedTurnValidationDisposition.TerminalRejected;
+                if (spiritualAdmission == SpiritualContinuationAdmission.RetryableHeld)
+                    return AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked;
+                var freshSnapshot = await ResolveActivePendingTurnSnapshotContextAsync();
+                activeSnapshotContext = freshSnapshot.Context;
+            }
+            using var pendingSnapshotScope = _validator.UsePrevalidatedPendingTurnSnapshotScope(activeSnapshotContext?.Manifest);
+            rawIssues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+            if (spiritualAdmission == SpiritualContinuationAdmission.RequiresInitialResourceValidation &&
+                !rawIssues.Any(issue => issue.Severity == IssueSeverity.Error))
+            {
+                _logger.LogWarning("Original spiritual capture failed without ordinary resource errors; publication remains rejected.");
+                return AcceptedTurnValidationDisposition.TerminalRejected;
+            }
             if (mortalLocationRetryObligations is { Count: > 0 } &&
                 (!await HasExactMortalLocationRepairResubmissionAsync(mortalLocationRetryObligations) ||
                  rollbackSnapshot == null ||
@@ -857,6 +922,8 @@ public partial class GameEngine
             }
 
             var treatmentPublicationCompensatedForRepair = false;
+            using var completedConflictValidationScope = _validator.UseCompletedSpiritualConflictValidationScope(
+                canonicalRefresh.SpiritualConflictValidation);
             var currentStateValid = await ValidateCurrentGameStateOrShowErrorsAsync(
                     source,
                     rollbackSnapshot,
@@ -927,6 +994,8 @@ public partial class GameEngine
             await RefreshRuntimeStateAsync();
             if (treatmentResourcePublicationTransaction is null)
             {
+                _acceptedTurnSpiritualOutput = canonicalRefresh.SpiritualWoundOutput;
+                _acceptedTurnSpiritualConflictValidation = canonicalRefresh.SpiritualConflictValidation;
                 _acceptedTurnWoundNotifications = canonicalRefresh.WoundNotifications
                     .Select(static value => value with
                     {
@@ -1366,16 +1435,38 @@ public partial class GameEngine
         CompleteAcceptedTurnWithoutTreatmentResourcePublication() =>
         AcceptedTurnValidationDisposition.Accepted;
 
+    /// <summary>
+    /// Collects raw-state diagnostics for callers without a continuation gate, stopping on private spiritual authority rejection.
+    /// </summary>
+    /// <returns>
+    /// Upstream diagnostics followed by resource diagnostics only when private spiritual authority permits admission.
+    /// </returns>
     private async Task<List<ValidationIssue>> CollectAcceptedTurnRawStateIssuesAsync()
+    {
+        var upstreamValidation = await CollectAcceptedTurnUpstreamRawStateIssuesAsync();
+        var issues = upstreamValidation.Issues.ToList();
+        if (!upstreamValidation.RejectSpiritualBoundary)
+            issues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
+        return issues;
+    }
+
+    /// <summary>
+    /// Collects upstream raw-state issues before spiritual continuation and resource admission.
+    /// </summary>
+    /// <returns>
+    /// Critical, NPC, faction, location and item diagnostics in the existing admission order,
+    /// together with an explicit terminal rejection when private spiritual authority fails admission.
+    /// </returns>
+    private async Task<UpstreamAcceptedTurnValidation> CollectAcceptedTurnUpstreamRawStateIssuesAsync()
     {
         var issues = await _criticalStateHealth.ValidateAcceptedTurnRawStateAsync();
         issues.AddRange(await _validator.ValidateNpcCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateFactionCoreChangesBeforeNormalizationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawFactionMaterializationAsync());
         issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalLocationMaterializationAsync());
-        issues.AddRange(await _validator.ValidateAcceptedTurnRawMortalItemMaterializationAsync());
-        issues.AddRange(await _validator.ValidateAcceptedTurnRawResourceMaterializationAsync());
-        return issues;
+        var itemValidation = await ValidateAcceptedTurnUpstreamRawItemsAsync();
+        issues.AddRange(itemValidation.Issues);
+        return new UpstreamAcceptedTurnValidation(issues, itemValidation.RejectSpiritualBoundary);
     }
 
     private async Task<bool> HasExactMortalLocationRepairResubmissionAsync(
@@ -1901,6 +1992,8 @@ public partial class GameEngine
     private async Task<bool> ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(
         RollbackSnapshot? rollbackSnapshot)
     {
+        var spiritualValidation = Interlocked.Exchange(ref _acceptedTurnSpiritualConflictValidation, null);
+        using var completedConflictScope = _validator.UseCompletedSpiritualConflictValidationScope(spiritualValidation);
         var accepted = await ValidateCurrentGameStateOrShowErrorsAsync(
             PostAcceptedMaterializedStateValidationSource,
             rollbackSnapshot,
@@ -1969,7 +2062,7 @@ public partial class GameEngine
 
         var resourceFreePostSealIssues = refresh.Issues.ToList();
         IReadOnlyList<WoundPlayerNotification> resourceFreeWoundNotifications =
-            Array.Empty<WoundPlayerNotification>();
+            refresh.SpiritualWoundOutput?.Notifications ?? Array.Empty<WoundPlayerNotification>();
         if (refresh.MechanicsPlan?.WoundStageBundle is not null)
         {
             resourceFreePostSealIssues.AddRange(
@@ -1992,7 +2085,9 @@ public partial class GameEngine
             true,
             resourceFreePostSealIssues,
             refresh.MechanicsPlan,
-            AcceptedWoundNotifications: resourceFreeWoundNotifications);
+            AcceptedWoundNotifications: resourceFreeWoundNotifications,
+            SpiritualWoundOutput: refresh.SpiritualWoundOutput,
+            SpiritualConflictValidation: refresh.SpiritualConflictValidation);
     }
 
     private async Task<WoundAcceptedTurnOutputBindingResult>
@@ -2083,14 +2178,44 @@ public partial class GameEngine
         return issues;
     }
 
+    /// <summary>
+    /// Carries accepted refresh diagnostics and publication handoffs into the caller's remaining validation and response steps.
+    /// </summary>
+    /// <param name="BaselineUsable">
+    /// <see langword="true"/> when the signed baseline was available; otherwise <see langword="false"/>.
+    /// </param>
+    /// <param name="PostSealIssues">
+    /// Diagnostics that must be resolved before accepting the refreshed state.
+    /// </param>
+    /// <param name="MechanicsPlan">
+    /// Accepted mechanics plan, or <see langword="null"/> if none was accepted.
+    /// </param>
+    /// <param name="TreatmentResourcePublicationTransaction">
+    /// Treatment transaction requiring settlement, or <see langword="null"/> on other paths.
+    /// </param>
+    /// <param name="AcceptedWoundNotifications">
+    /// Detached ordered presentation; <see langword="null"/> is exposed as an empty notification list.
+    /// </param>
+    /// <param name="SpiritualWoundOutput">
+    /// Detached spiritual output witnesses for response construction, or <see langword="null"/> without successful spiritual publication.
+    /// </param>
+    /// <param name="SpiritualConflictValidation">
+    /// Published causal comparisons for both remaining validation passes, or <see langword="null"/> on ordinary paths.
+    /// </param>
     private sealed record AcceptedTurnCanonicalRefreshResult(
         bool BaselineUsable,
         IReadOnlyList<ValidationIssue> PostSealIssues,
         AcceptedMechanicsPlan? MechanicsPlan = null,
         MortalWoundTreatmentResourcePublicationTransaction?
             TreatmentResourcePublicationTransaction = null,
-        IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null)
+        IReadOnlyList<WoundPlayerNotification>? AcceptedWoundNotifications = null,
+        SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
+        ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
+            SpiritualConflictValidation = null)
     {
+        /// <summary>
+        /// Gets the ordered accepted notifications, or an empty list when no presentation was supplied.
+        /// </summary>
         internal IReadOnlyList<WoundPlayerNotification> WoundNotifications { get; } =
             AcceptedWoundNotifications ?? Array.Empty<WoundPlayerNotification>();
     }
@@ -7383,12 +7508,37 @@ public partial class GameEngine
         builder.AppendLine("- Изменения состояния: перечисли точные canonical surfaces, включая собственный журнал мыслей, или явно обоснуй отсутствие изменения.");
     }
 
+    /// <summary>
+    /// Dispatches ordinary repair or an explicit spiritual continuation through the configured worker bridge.
+    /// </summary>
+    /// <param name="prioritizedErrors">
+    /// Actual validation diagnostics; an owner-issued continuation may supply an empty list.
+    /// </param>
+    /// <param name="requestMetadata">
+    /// Exact original session, request and turn identity.
+    /// </param>
+    /// <param name="createdAtUtc">
+    /// UTC creation timestamp of the request already published for this dispatch.
+    /// </param>
+    /// <param name="attempt">
+    /// Positive request attempt number used for worker task correlation.
+    /// </param>
+    /// <param name="expectedSessionGeneration">
+    /// Original session generation that must remain current.
+    /// </param>
+    /// <param name="spiritualWoundContinuation">
+    /// Owner-derived bounded continuation, or <see langword="null"/> for ordinary repair.
+    /// </param>
+    /// <returns>
+    /// Worker dispatch and Ready outcome; acceptance without Ready does not consume a continuation response.
+    /// </returns>
     private async Task<GmWorkerValidationRepairDispatchResult> RunWorkerValidationRepairIfAvailableAsync(
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         (string SessionId, string RequestId, int TurnNumber) requestMetadata,
         string createdAtUtc,
         int attempt,
-        string expectedSessionGeneration)
+        string expectedSessionGeneration,
+        SpiritualWoundContinuationRequest? spiritualWoundContinuation = null)
     {
         try
         {
@@ -7413,7 +7563,8 @@ public partial class GameEngine
                 },
                 createdAtUtc,
                 attempt,
-                expectedSessionGeneration);
+                expectedSessionGeneration,
+                spiritualWoundContinuation: spiritualWoundContinuation);
 
             if (result.Outcome is not GmWorkerValidationRepairOutcome.SkippedNoWorker and
                 not GmWorkerValidationRepairOutcome.Applied)
@@ -7686,6 +7837,15 @@ public partial class GameEngine
         return (dispatch, reportErrors);
     }
 
+    /// <summary>
+    /// Reads ordinary repair metadata while rejecting an unsolicited continuation envelope.
+    /// </summary>
+    /// <param name="json">
+    /// Ready JSON, or <see langword="null"/> when absent.
+    /// </param>
+    /// <returns>
+    /// Ordinary metadata, or <see langword="null"/> for absent, malformed or continuation-bearing Ready.
+    /// </returns>
     private static ValidationRepairReady? ReadValidationRepairReady(string? json)
     {
         if (string.IsNullOrWhiteSpace(json))
@@ -7693,6 +7853,10 @@ public partial class GameEngine
 
         try
         {
+            using var document = JsonDocument.Parse(json);
+            if (document.RootElement.EnumerateObject().Any(property => string.Equals(
+                    property.Name, SpiritualWoundContinuationProtocol.EnvelopeName, StringComparison.OrdinalIgnoreCase)))
+                return null;
             return JsonSerializer.Deserialize<ValidationRepairReady>(json, JsonOpts);
         }
         catch

@@ -1,4 +1,7 @@
 using System.Collections;
+using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Nodes;
@@ -30,7 +33,9 @@ namespace BookOfEternityClient.Tests;
 /// CanonicalWriteLease, WoundAcceptedTurnBinding, MortalWoundRecoveryResolution) for a
 /// recovery result. Both must register an <see cref="AcceptedMechanicsPlan"/> with the
 /// common accepted-plan authority; <see cref="CanonicalStateNormalizer"/> is the sole
-/// publisher. Tests never write carrier/index/history, a receipt, or an after-image.
+/// publisher. Empty non-player carrier foundations are seeded before the signed target
+/// scan; tests never write a materialized wound, identity/history row, consumed receipt,
+/// or canonical wound after-image.
 /// T069 interruption classification is separately
 /// MortalWoundDeteriorationPolicyAuthority.Create(FileSystemManager, CanonicalWriteLease,
 /// WoundAcceptedTurnBinding, string woundId, string policyRef).
@@ -83,6 +88,141 @@ public sealed partial class MortalWoundRecoveryTests
         Scenario.InactiveNeutralPolicy(),
         Scenario.InactiveBeneficialPolicy()
     }.Select(static value => new object[] { value });
+
+    /// <summary>
+    /// Shares genuine source publication across clocks while signing each distinct
+    /// evaluation turn and retaining independent authorities and exact source bytes.
+    /// </summary>
+    [Fact]
+    public void FixtureSourceCache_ReusesPublishedSourceAcrossGenuinelySignedEvaluationClocks()
+    {
+        var baseline = Scenario.MultiCadenceJump();
+        var authored = baseline.Wound.DeepClone().AsObject();
+        authored["display"]!["name"] = "recovery_source_cache_contract_" + Guid.NewGuid().ToString("N");
+        baseline = baseline with { Wound = authored };
+        var firstScenario = baseline with { Minute = 109 };
+        var secondScenario = baseline with { Minute = 110 };
+        var thirdScenario = baseline with { Minute = 135 };
+        var first = Fixture.Create(firstScenario);
+        Fixture? firstToDispose = first;
+        try
+        {
+            using var second = Fixture.Create(secondScenario);
+            Assert.Equal(1, Fixture.GetSourcePreparationCount(firstScenario));
+            Assert.Equal(1, Fixture.GetSourcePreparationCount(secondScenario));
+            Assert.Equal(1, Fixture.GetPreparationCount(firstScenario));
+            Assert.Equal(1, Fixture.GetPreparationCount(secondScenario));
+            Assert.NotEqual(first.FileSystem.BasePath, second.FileSystem.BasePath);
+            Assert.NotSame(first.FileSystem, second.FileSystem);
+            Assert.NotSame(first.Lease, second.Lease);
+            Assert.NotSame(first.FileSystem.CanonicalRootAuthorityIdentity,
+                second.FileSystem.CanonicalRootAuthorityIdentity);
+            var firstAuthority = AssertRecoveryFixtureClock(first, firstScenario.Minute);
+            var secondAuthority = AssertRecoveryFixtureClock(second, secondScenario.Minute);
+            Assert.NotSame(firstAuthority, secondAuthority);
+            Assert.NotEqual(firstAuthority.SessionGeneration, secondAuthority.SessionGeneration);
+            Assert.NotEqual(firstAuthority.AcceptedStateFingerprint, secondAuthority.AcceptedStateFingerprint);
+            Assert.False(firstAuthority.IsLeaseBoundTo(second.FileSystem, second.Lease));
+            Assert.False(secondAuthority.IsLeaseBoundTo(first.FileSystem, first.Lease));
+            var sourceHistory = File.ReadAllBytes(second.FileSystem.ResolvePath(WoundHistoryState.HistoryPath));
+            var sourceIdentity = File.ReadAllBytes(second.FileSystem.ResolvePath(WoundIdentityState.StatePath));
+            var sourceRecoveryAnchor = Assert.IsType<byte[]>(second.CaptureRecoveryAnchorBytes());
+            Assert.Equal(100, JsonNode.Parse(sourceRecoveryAnchor)!["anchorMinute"]!.GetValue<long>());
+            Assert.Equal(sourceHistory, File.ReadAllBytes(first.FileSystem.ResolvePath(WoundHistoryState.HistoryPath)));
+            Assert.Equal(sourceIdentity, File.ReadAllBytes(first.FileSystem.ResolvePath(WoundIdentityState.StatePath)));
+            Assert.Equal(sourceRecoveryAnchor, first.CaptureRecoveryAnchorBytes());
+            Assert.Null(first.InitialDeteriorationAnchorBytes);
+            Assert.Null(first.PostStabilizationDeteriorationAnchorBytes);
+            Assert.Equal(first.InitialDeteriorationAnchorBytes, second.InitialDeteriorationAnchorBytes);
+            Assert.Equal(first.PostStabilizationDeteriorationAnchorBytes, second.PostStabilizationDeteriorationAnchorBytes);
+            var history = WoundHistoryState.Parse(File.ReadAllText(second.FileSystem.ResolvePath(WoundHistoryState.HistoryPath)),
+                WoundHistoryState.HistoryPath);
+            Assert.True(history.IsValid, Issues(history.Issues));
+            Assert.Equal(new[] { "create", "treat" }, history.State!.Transitions.Select(row => row.Kind));
+            var snapshotPath = LiveTurnPreparationService.PendingTurnSnapshotDirectory + "/" +
+                WoundCarrierCatalog.PlayerPath;
+            var originalSnapshot = File.ReadAllBytes(second.FileSystem.ResolvePath(snapshotPath));
+            File.WriteAllBytes(first.FileSystem.ResolvePath(snapshotPath), System.Text.Encoding.UTF8.GetBytes("{}"));
+            var rejected = first.ExportCurrentResult();
+            Assert.False(Assert.IsType<bool>(Required(rejected, "IsValid")));
+            Assert.Null(Optional(rejected, "Authority"));
+            Assert.NotEmpty(Values(rejected, "Issues"));
+            Assert.Equal(originalSnapshot, File.ReadAllBytes(second.FileSystem.ResolvePath(snapshotPath)));
+            AssertRecoveryFixtureClock(second, secondScenario.Minute);
+            var retiredRoot = first.FileSystem.BasePath;
+            first.Dispose();
+            firstToDispose = null;
+            Assert.False(Directory.Exists(retiredRoot));
+            Assert.False(firstAuthority.HasCurrentAdmissionAuthority());
+
+            using var third = Fixture.Create(thirdScenario);
+            var thirdAuthority = AssertRecoveryFixtureClock(third, thirdScenario.Minute);
+            Assert.Equal(1, Fixture.GetSourcePreparationCount(thirdScenario));
+            Assert.Equal(1, Fixture.GetPreparationCount(thirdScenario));
+            Assert.NotEqual(second.FileSystem.BasePath, third.FileSystem.BasePath);
+            Assert.NotEqual(secondAuthority.SessionGeneration, thirdAuthority.SessionGeneration);
+            Assert.NotEqual(firstAuthority.SessionGeneration, thirdAuthority.SessionGeneration);
+            Assert.False(thirdAuthority.IsLeaseBoundTo(second.FileSystem, second.Lease));
+            Assert.Equal(originalSnapshot, File.ReadAllBytes(third.FileSystem.ResolvePath(snapshotPath)));
+            Assert.Equal(sourceHistory, File.ReadAllBytes(third.FileSystem.ResolvePath(WoundHistoryState.HistoryPath)));
+            Assert.Equal(sourceIdentity, File.ReadAllBytes(third.FileSystem.ResolvePath(WoundIdentityState.StatePath)));
+            Assert.Equal(sourceRecoveryAnchor, third.CaptureRecoveryAnchorBytes());
+            Assert.Equal(second.InitialDeteriorationAnchorBytes, third.InitialDeteriorationAnchorBytes);
+            Assert.Equal(second.PostStabilizationDeteriorationAnchorBytes, third.PostStabilizationDeteriorationAnchorBytes);
+            var measurements = new[] { firstScenario, secondScenario, thirdScenario }
+                .Select(Fixture.ReadPreparationMeasurement).ToArray();
+            foreach (var measurement in measurements)
+                Assert.Equal(100L, Assert.IsType<long>(Required(measurement, "SourceCurrentTimeInMinutes")));
+            var diagnosticDirectory = Path.Combine(TestRepoPaths.RepoRoot, "TestResults", "fixture-performance");
+            Directory.CreateDirectory(diagnosticDirectory);
+            File.WriteAllText(Path.Combine(diagnosticDirectory,
+                $"recovery-source-{Environment.ProcessId}-{Guid.NewGuid():N}.json"), JsonSerializer.Serialize(new
+                {
+                    Test = nameof(FixtureSourceCache_ReusesPublishedSourceAcrossGenuinelySignedEvaluationClocks),
+                    SourceMeasurementScope = "genuine source construction and byte capture, excluding cleanup",
+                    ClockMeasurementScope = "evaluation clock write, real turn44 signing and accepted-state export, excluding source copy",
+                    Measurements = measurements
+                }));
+        }
+        finally
+        {
+            firstToDispose?.Dispose();
+        }
+    }
+
+    /// <summary>
+    /// Authenticates the real signed evaluation clock and its fresh accepted-state owner.
+    /// </summary>
+    /// <param name="fixture">
+    /// Fresh caller-owned fixture whose current files and signed snapshot are compared.
+    /// </param>
+    /// <param name="minute">
+    /// The exact evaluation minute expected in both signed and live canonical world time.
+    /// </param>
+    /// <returns>
+    /// The currently admitted authority bound to this fixture's root and lease.
+    /// </returns>
+    private static MortalWoundTreatmentAcceptedStateAuthority AssertRecoveryFixtureClock(Fixture fixture, long minute)
+    {
+        var fs = fixture.FileSystem;
+        fixture.AssertCarrierIdentityHistoryAgreement();
+        Assert.Equal(minute, EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+            File.ReadAllText(fs.ResolvePath(EffectAcceptedTurnInputComposer.WorldTimePath))));
+        var read = PendingTurnSnapshotReader.ReadCurrent(fs, fixture.Lease,
+            [EffectAcceptedTurnInputComposer.WorldTimePath]);
+        Assert.True(read.Success, Issues(read.Issues));
+        var signed = Assert.IsType<PendingTurnSnapshotReadAuthority>(read.Snapshot);
+        Assert.Equal(minute, EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+            System.Text.Encoding.UTF8.GetString(signed.ReadRequiredBytes(EffectAcceptedTurnInputComposer.WorldTimePath))));
+        Assert.Equal(44, signed.TurnNumber);
+        Assert.Equal(fixture.Binding.SnapshotToken, signed.SnapshotToken);
+        var authority = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            Required(fixture.ExportCurrentResult(), "Authority"));
+        Assert.Equal(minute, authority.CurrentGameMinute);
+        Assert.True(authority.HasCurrentAdmissionAuthority());
+        Assert.True(authority.IsLeaseBoundTo(fs, fixture.Lease));
+        return authority;
+    }
 
     [Theory]
     [MemberData(nameof(PlannerRows))]
@@ -394,6 +534,13 @@ public sealed partial class MortalWoundRecoveryTests
         AssertFingerprint(Required(authority, "AuthorityFingerprint"));
     }
 
+    /// <summary>
+    /// Verifies that authentic negative treatment evidence prevents request preparation
+    /// or accepted-state export before any common-plan composition can occur.
+    /// </summary>
+    /// <param name="mutation">
+    /// The exact provider, skill, item, location, or consent fault to capture in a fresh signed turn.
+    /// </param>
     [Theory]
     [InlineData("missing_provider")]
     [InlineData("stale_skill")]
@@ -403,19 +550,118 @@ public sealed partial class MortalWoundRecoveryTests
     public void AcceptedStateExport_RejectsCanonicalTreatmentAuthorityFaultBeforeComposition(
         string mutation)
     {
-        using var fixture = Fixture.Create(Scenario.AtDueBoundary());
-        fixture.MutateTreatmentAuthorityRoot(mutation);
-        var before = fixture.CaptureCanonicalTreeBytes();
-
-        var exported = fixture.ExportCurrentResult();
-
-        AssertClosed(exported, "Authority", "IsValid", "Issues");
-        Assert.False(Assert.IsType<bool>(Required(exported, "IsValid")));
-        Assert.Null(Optional(exported, "Authority"));
-        Assert.NotEmpty(Values(exported, "Issues"));
-        fixture.AssertCanonicalTreeBytesUnchanged(before);
+        using var fixture = Fixture.Create(Scenario.RequiresStabilization());
+        fixture.AssertPersistedTreatmentRequirements();
+        var positiveBefore = fixture.CaptureCanonicalTreeBytes();
+        var positiveExport = fixture.ExportCurrentResult();
+        AssertClosed(positiveExport, "Authority", "IsValid", "Issues");
+        Assert.True(Assert.IsType<bool>(Required(positiveExport, "IsValid")),
+            Issues(Values(positiveExport, "Issues").Select(Assert.IsType<ValidationIssue>)));
+        Assert.Empty(Values(positiveExport, "Issues"));
+        var positiveAuthority = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+            Required(positiveExport, "Authority"));
+        var positiveRequest = fixture.PrepareCurrentProcedureRequest(
+            positiveAuthority, "operation_t062_admission_positive");
+        Assert.True(positiveRequest.IsValid, Issues(positiveRequest.Issues));
+        Assert.Empty(positiveRequest.Issues);
+        var preparedPositive = Assert.IsType<MortalWoundTreatmentAttemptRequest>(
+            positiveRequest.Request);
+        Assert.True(preparedPositive.RollbackNewProvisionalClaims(positiveAuthority));
+        fixture.AssertCanonicalTreeBytesUnchanged(positiveBefore);
         Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
             fixture.FileSystem, fixture.Lease, out _, out _));
+
+        fixture.PrepareSignedTreatmentAuthorityFault(mutation);
+        fixture.AssertPersistedTreatmentRequirements();
+        var before = fixture.CaptureCanonicalTreeBytes();
+        try
+        {
+            var exported = fixture.ExportCurrentResult();
+            AssertClosed(exported, "Authority", "IsValid", "Issues");
+            var exportIssues = Values(exported, "Issues")
+                .Select(Assert.IsType<ValidationIssue>).ToArray();
+            switch (mutation)
+            {
+                case "missing_provider":
+                case "missing_item":
+                case "mismatched_location":
+                    Assert.False(Assert.IsType<bool>(Required(exported, "IsValid")),
+                        "A structurally inconsistent signed source must not export an authority.");
+                    Assert.Null(Optional(exported, "Authority"));
+                    var expected = mutation switch
+                    {
+                        "missing_provider" => (
+                            Code: "mortal_wound_treatment_accepted_state_consent_invalid",
+                            Path: MortalLocationMaterializationContract.CurrentLocationPath + ".customStates",
+                            Expected: "exact co-present consent actors",
+                            Actual: "consent_field_medic_player_01"),
+                        "missing_item" => (
+                            Code: "mortal_wound_treatment_accepted_state_item_identity_mismatch",
+                            Path: "game_state/inventory/item_identity_index.json",
+                            Expected: "one exact current occurrence for every active identity",
+                            Actual: "sterile_thread: state=active; occurrences=0"),
+                        "mismatched_location" => (
+                            Code: "mortal_wound_treatment_accepted_state_presence_invalid",
+                            Path: "game_state/npcs/npc_core.json",
+                            Expected: "loc_field_clinic_001",
+                            Actual: "loc_elsewhere_001"),
+                        _ => throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null)
+                    };
+                    Assert.Contains(exportIssues, issue =>
+                        issue.Code == expected.Code && issue.FilePath == expected.Path &&
+                        issue.Expected == expected.Expected && issue.Actual == expected.Actual);
+                    break;
+                case "stale_skill":
+                case "withdrawn_consent":
+                    Assert.True(Assert.IsType<bool>(Required(exported, "IsValid")),
+                        Issues(exportIssues));
+                    Assert.Empty(exportIssues);
+                    var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+                        Required(exported, "Authority"));
+                    var preparation = fixture.PrepareCurrentProcedureRequest(
+                        acceptedState, "operation_t062_admission_negative");
+                    try
+                    {
+                        Assert.False(preparation.IsValid,
+                            $"Expected no request for {mutation}; actual IsValid={preparation.IsValid}; " +
+                            $"Request={preparation.Request?.RequestFingerprint ?? "null"}; {Issues(preparation.Issues)}");
+                        Assert.Null(preparation.Request);
+                        var route = Assert.Single(acceptedState.CurrentWound.Treatment.Routes);
+                        var requiredKind = mutation == "stale_skill" ? "skill_tier" : "consent";
+                        var requirementIndex = Assert.Single(route.Requirements
+                            .Select((requirement, index) => (Requirement: requirement, Index: index)),
+                            row => row.Requirement.GetProperty("kind").GetString() == requiredKind).Index;
+                        var requirementsPath = string.IsNullOrEmpty(route.SourcePath)
+                            ? "wound.treatment.routes[0].requirements"
+                            : route.SourcePath + ".requirements";
+                        var expectedCode = mutation == "stale_skill"
+                            ? "mortal_wound_requirement_skill_inactive"
+                            : "mortal_wound_requirement_consent_missing";
+                        var expectedRequirement = mutation == "stale_skill"
+                            ? "active exact skill authority"
+                            : "active granted current consent";
+                        var actualRequirement = mutation == "stale_skill" ? "inactive" : "withdrawn";
+                        Assert.Contains(preparation.Issues, issue =>
+                            issue.Code == expectedCode &&
+                            issue.FilePath == $"{requirementsPath}[{requirementIndex}]" &&
+                            issue.Expected == expectedRequirement && issue.Actual == actualRequirement);
+                    }
+                    finally
+                    {
+                        if (preparation.Request is { } unexpectedRequest)
+                            Assert.True(unexpectedRequest.RollbackNewProvisionalClaims(acceptedState));
+                    }
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
+            }
+        }
+        finally
+        {
+            fixture.AssertCanonicalTreeBytesUnchanged(before);
+            Assert.False(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fixture.FileSystem, fixture.Lease, out _, out _));
+        }
     }
 
     [Fact]
@@ -620,7 +866,10 @@ public sealed partial class MortalWoundRecoveryTests
         Assert.Equal(resolution.GetType(), method.GetParameters()[3].ParameterType);
         var result = Invoke(method, fixture.FileSystem, fixture.Lease, fixture.Binding, resolution);
         AssertClosed(result, "AcceptedPlan", "Disposition", "Issues", "Receipt", "WoundStageBundle");
-        Assert.Equal("Composed", Convert.ToString(Required(result, "Disposition")));
+        var compositionIssues = Values(result, "Issues").Select(Assert.IsType<ValidationIssue>).ToArray();
+        Assert.True(Convert.ToString(Required(result, "Disposition")) == "Composed",
+            "Recovery must compose successfully. " + string.Join("; ", compositionIssues.Select(
+                static issue => $"{issue.Code}@{issue.FilePath}: {issue.Message}; actual={issue.Actual}")));
         Assert.Empty(Values(result, "Issues"));
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(Required(result, "WoundStageBundle"));
         Assert.Equal(fixture.Binding.SessionId, bundle.Input.Binding.SessionId);
@@ -634,6 +883,10 @@ public sealed partial class MortalWoundRecoveryTests
         Assert.Equal(fixture.Binding.Realm, bundle.FinalPlan.Binding.Realm);
         Assert.Equal(fixture.Binding.Turn, bundle.FinalPlan.Binding.Turn);
         var acceptedPlan = Assert.IsType<AcceptedMechanicsPlan>(Required(result, "AcceptedPlan"));
+        var completedEffects = Assert.IsType<EffectAcceptedTurnPlan>(acceptedPlan.EffectPlan);
+        Assert.True(completedEffects.IsAcceptedBoundaryComplete);
+        Assert.Equal(WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(bundle.EffectBatchPlan.EffectPlan),
+            completedEffects.AcceptedBoundaryBasePlanFingerprint);
         AssertPublishedWoundPlan(acceptedPlan, bundle, fixture.WoundId);
         Fixture.AssertComposeDidNotWrite(fixture.FileSystem, before, acceptedPlan);
         fixture.AssertCanonicalTreeBytesUnchanged(wholeTreeBefore);
@@ -722,7 +975,7 @@ public sealed partial class MortalWoundRecoveryTests
         var carriers = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
             plan.WoundCarrierAfterImages[WoundCarrierCatalog.PlayerPath], null, null, null, null));
         Assert.Empty(carriers.Issues);
-        Assert.True(carriers.TryResolveOne(selectedWoundId, out var occurrence));
+        carriers.TryResolveOne(selectedWoundId, out var occurrence);
         var identity = WoundIdentityState.Parse(
             plan.WoundIdentityAfterImage!.ToJsonString(), WoundIdentityState.StatePath);
         var history = WoundHistoryState.Parse(
@@ -730,7 +983,7 @@ public sealed partial class MortalWoundRecoveryTests
         Assert.True(identity.IsValid, Issues(identity.Issues));
         Assert.True(history.IsValid, Issues(history.Issues));
         Assert.True(identity.State!.TryGetEntry(selectedWoundId, out var entry));
-        Assert.Empty(WoundIdentityState.ValidateActiveAgreement(entry!, occurrence.Wound, "recoveryPlan"));
+        AssertSelectedWoundState(carriers, occurrence, entry!, history.State!, "recoveryPlan");
         Assert.Empty(history.State!.ValidateAgreement(identity.State, carriers));
         var final = actual.FinalPlan;
         Assert.Contains(selectedWoundId, final.AllocatedWoundIds);
@@ -799,6 +1052,12 @@ public sealed partial class MortalWoundRecoveryTests
         bool DeathHandoff, bool ReplayAfterCommit,
         bool PolicyValid, bool StartsStabilized, bool NoMechanics)
     {
+        /// <summary>
+        /// Gets whether genuine creation should publish an additional action-control
+        /// root to exercise rejection when a later severity budget cannot retain both roots.
+        /// </summary>
+        internal bool IncludeSecondCreationRoot { get; init; }
+
         internal static Scenario DueMinusOne() => Create("cadence_due_minus_one", "progressive", 109,
             "NotDue", null, 110, null, [], elapsedCadences: 0);
         internal static Scenario AtDueBoundary() => Create("cadence_due", "progressive", 110,
@@ -809,7 +1068,7 @@ public sealed partial class MortalWoundRecoveryTests
             "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"], elapsedCadences: 3,
             nextRecoveryAnchor: 140);
         internal static Scenario StabilizationRebasesCadence() => Create("stabilization_rebases_cadence", "requires_stabilization", 159,
-            "NotDue", null, 160, null, [], stabilizationMinute: 150, anchor: 150);
+            "NotDue", null, 160, null, [], stabilizationMinute: 150, anchor: 150, elapsedCadences: 0);
         internal static Scenario GraceMinusOne() => Create("grace_minus_one", "requires_stabilization", 129,
             "BlockedNotStabilized", "untreated_infection", 110, 130, [], "increase_severity", stabilized: false,
             elapsedCadences: 0);
@@ -845,10 +1104,23 @@ public sealed partial class MortalWoundRecoveryTests
             death: true, elapsedCadences: 0, elapsedDeteriorationCadences: 1);
         internal static Scenario Replay() => Create("replay_precedes_malformed_clock", "progressive", 110,
             "Progressed", null, 110, null, ["MortalWoundRecoveryProgressIntent"], replay: true);
-        internal static Scenario DeteriorationAnchorLifecycle() => Create(
-            "deterioration_anchor_clear_and_reentry", "requires_stabilization", 160,
-            "NotDue", null, 110, 130, [], "increase_severity", "untreated_infection",
-            stabilized: true, stabilizationMinute: 150, anchor: 150, noMechanics: true);
+        /// <summary>
+        /// Creates the anchor lifecycle case with an independent recovery blocker that
+        /// keeps its effect-free wound actionable after sealed stabilization.
+        /// </summary>
+        /// <returns>
+        /// A scenario whose deterioration condition is cleared by stabilization while
+        /// contamination continues to block recovery.
+        /// </returns>
+        internal static Scenario DeteriorationAnchorLifecycle()
+        {
+            var scenario = Create(
+                "deterioration_anchor_clear_and_reentry", "requires_stabilization", 160,
+                "NotDue", null, 110, 130, [], "increase_severity", "untreated_infection",
+                stabilized: true, stabilizationMinute: 150, anchor: 150, noMechanics: true);
+            scenario.Wound["recovery"]!["blockers"]!.AsArray().Add("contaminated");
+            return scenario;
+        }
         internal static Scenario StrictlyWorsening() => Create("strictly_worsening_interruption", "requires_stabilization", 130,
             "Deteriorated", "missed_course_dose", 110, 130, ["MortalWoundRecoveryDeteriorationIntent"],
             "increase_severity", "missed_course_dose", false, policyValid: true);
@@ -959,8 +1231,91 @@ public sealed partial class MortalWoundRecoveryTests
         }
     };
 
-    private sealed class Fixture : IDisposable
+    private sealed partial class Fixture : IDisposable
     {
+        private static readonly ConcurrentDictionary<string, Lazy<PreparedRecoverySource>> PreparedRecoverySources =
+            new(StringComparer.Ordinal);
+        private static readonly ConcurrentDictionary<string, int> SourcePreparationCounts = new(StringComparer.Ordinal);
+        private static readonly ConcurrentDictionary<string, double> ClockFinalizationMilliseconds = new(StringComparer.Ordinal);
+
+        /// <summary>
+        /// Stores detached publication bytes before the evaluation clock is written.
+        /// </summary>
+        /// <param name="Tree">
+        /// Genuine post-creation or post-stabilization session files, excluding runtime authority.
+        /// </param>
+        /// <param name="WoundId">
+        /// Wound identity allocated by the genuine creation publisher.
+        /// </param>
+        /// <param name="InitialDeteriorationAnchorBytes">
+        /// Private creation-anchor comparison bytes, or <see langword="null"/> when that epoch is absent.
+        /// </param>
+        /// <param name="PostStabilizationDeteriorationAnchorBytes">
+        /// Private settled-anchor comparison bytes, or <see langword="null"/> when no condition epoch remains.
+        /// </param>
+        /// <param name="PreparationMilliseconds">
+        /// Actual source construction and byte-capture duration, excluding source cleanup.
+        /// </param>
+        /// <param name="SourceCurrentTimeInMinutes">
+        /// Actual canonical world minute retained before any evaluation-clock write.
+        /// </param>
+        private sealed record PreparedRecoverySource(PreparedFixtureTree Tree, string WoundId,
+            byte[]? InitialDeteriorationAnchorBytes, byte[]? PostStabilizationDeteriorationAnchorBytes,
+            double PreparationMilliseconds, long SourceCurrentTimeInMinutes);
+
+        /// <summary>
+        /// Keys every input read before evaluation signing while keeping original world-time bytes exact.
+        /// </summary>
+        /// <param name="scenario">
+        /// Complete authored source setup; evaluation minute and expected outcomes are not source inputs.
+        /// </param>
+        /// <returns>
+        /// A deterministic source key retaining creation, stabilization and source-root distinctions.
+        /// </returns>
+        private static string GetSourcePreparationKey(Scenario scenario) => WoundAcceptedTurnFingerprintWriter.Compute(new[]
+        {
+            "mortal_wound_recovery_test_source_preparation", "1", scenario.Wound.ToJsonString(),
+            scenario.WorldTime.ToJsonString(), scenario.CreationMinute.ToString(CultureInfo.InvariantCulture),
+            scenario.StabilizationMinute?.ToString(CultureInfo.InvariantCulture),
+            scenario.StartsStabilized ? "true" : "false", scenario.NoMechanics ? "true" : "false",
+            scenario.IncludeSecondCreationRoot ? "true" : "false"
+        });
+
+        /// <summary>
+        /// Reads the number of genuine upstream factories invoked for an exact source profile.
+        /// </summary>
+        /// <param name="scenario">
+        /// Source setup whose evaluation minute does not affect this counter.
+        /// </param>
+        /// <returns>
+        /// Zero before preparation, otherwise the number of invoked source factories.
+        /// </returns>
+        internal static int GetSourcePreparationCount(Scenario scenario) =>
+            SourcePreparationCounts.TryGetValue(GetSourcePreparationKey(scenario), out var count) ? count : 0;
+
+        /// <summary>
+        /// Copies completed source and clock timing scalars without retaining a root or live authority.
+        /// </summary>
+        /// <param name="scenario">
+        /// Exact source and evaluation profile already prepared through <see cref="Create"/>.
+        /// </param>
+        /// <returns>
+        /// Detached diagnostic values for the actual source factory and evaluation signer.
+        /// </returns>
+        internal static object ReadPreparationMeasurement(Scenario scenario)
+        {
+            var source = PreparedRecoverySources[GetSourcePreparationKey(scenario)].Value;
+            return new
+            {
+                EvaluationMinute = scenario.Minute,
+                SourcePreparations = GetSourcePreparationCount(scenario),
+                FullClockPreparations = GetPreparationCount(scenario),
+                SourcePreparationMilliseconds = source.PreparationMilliseconds,
+                source.SourceCurrentTimeInMinutes,
+                ClockFinalizationMilliseconds = ClockFinalizationMilliseconds[GetPreparationKey(scenario)]
+            };
+        }
+
         private Fixture(string root, FileSystemManager fs, FileSystemManager.CanonicalWriteLease lease,
             WoundAcceptedTurnBinding binding, string woundId, Scenario scenario,
             byte[]? initialDeteriorationAnchorBytes, byte[]? postStabilizationDeteriorationAnchorBytes)
@@ -988,8 +1343,40 @@ public sealed partial class MortalWoundRecoveryTests
             "MortalWoundRecoveryDeteriorationIntent", StringComparer.Ordinal);
         private Scenario Scenario { get; }
 
-        internal static Fixture Create(Scenario scenario)
+        /// <summary>
+        /// Materializes genuine completed signed preparation into a fresh canonical tree
+        /// and exports recovery authority under that fixture's own lease and generation.
+        /// </summary>
+        /// <param name="scenario">
+        /// The recovery conditions, clock boundaries and treatment setup to prepare.
+        /// </param>
+        /// <param name="hooks">
+        /// Optional hooks for the fresh caller-owned filesystem; null uses ordinary I/O.
+        /// Hooks are never used to build the shared immutable preparation.
+        /// </param>
+        /// <returns>
+        /// A fixture owning its fresh filesystem, current write lease and recovery binding.
+        /// </returns>
+        internal static Fixture Create(Scenario scenario, FileSystemManagerHooks? hooks = null) =>
+            CreateFromPreparedTemplate(scenario, hooks);
+
+        /// <summary>
+        /// Builds the earlier source through genuine creation and optional sealed
+        /// stabilization, retaining every original publication and setup assertion.
+        /// </summary>
+        /// <param name="scenario">
+        /// Detached upstream setup; evaluation minute and expected-result fields are not read.
+        /// </param>
+        /// <param name="key">
+        /// Exact source-profile key used only to count genuine preparation attempts.
+        /// </param>
+        /// <returns>
+        /// Portable source bytes and private comparison copies after disposing the hookless source owner.
+        /// </returns>
+        private static PreparedRecoverySource PrepareRecoverySourceTemplate(Scenario scenario, string key)
         {
+            SourcePreparationCounts.AddOrUpdate(key, 1, static (_, count) => checked(count + 1));
+            var preparationTimer = Stopwatch.StartNew();
             var root = Path.Combine(Path.GetTempPath(), "boe-t062-" + Guid.NewGuid().ToString("N"));
             Directory.CreateDirectory(root);
             var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
@@ -1000,10 +1387,58 @@ public sealed partial class MortalWoundRecoveryTests
                 var parsed = WoundMaterializationContract.Parse(scenario.Wound.ToJsonString(), "recoveryBaseline");
                 Assert.True(parsed.IsValid, Issues(parsed.Issues));
                 WriteCanonicalTreatmentAuthorityRoots(fs);
+                WriteCanonicalResourceAuthority(fs);
                 AssertCanonicalTreatmentAuthorityRoots(fs);
                 var creationInput = scenario.NoMechanics
                     ? WoundAcceptedTurnTestFixture.CreateNoMechanicsInput()
                     : WoundAcceptedTurnTestFixture.CreateDefaultInput();
+                if (parsed.Wound!.Severity.Rank != Assert.Single(creationInput.Transitions).ProposedAfter.Severity.Rank)
+                {
+                    var rankedDraft = Assert.Single(creationInput.Transitions);
+                    creationInput = creationInput with
+                    {
+                        Opportunities = creationInput.Opportunities.Select(value => value with
+                        {
+                            MaximumSeverityRank = parsed.Wound.Severity.Rank
+                        }).ToArray(),
+                        Transitions = new[] { rankedDraft with
+                        {
+                            ProposedAfter = rankedDraft.ProposedAfter with
+                            {
+                                Severity = parsed.Wound.Severity with
+                                {
+                                    LastChangeEventRef = rankedDraft.ProposedAfter.Severity.LastChangeEventRef
+                                },
+                                Consequences = rankedDraft.ProposedAfter.Consequences with
+                                {
+                                    SlotBudget = parsed.Wound.Severity.Rank
+                                }
+                            }
+                        }}
+                    };
+                }
+                if (scenario.IncludeSecondCreationRoot)
+                {
+                    var extraRootDraft = Assert.Single(creationInput.Transitions);
+                    var extraDefinition = WoundContractTestData.CreateOwnedEffectDefinition(
+                        extraRootDraft.LocalWoundRef, "mortal_world", "definition_recovery_extra_root", "action_control");
+                    // The genuine creation assembler adds its exact canonical wound/source link.
+                    extraDefinition["links"] = new JsonArray();
+                    creationInput = creationInput with
+                    {
+                        Transitions = new[] { extraRootDraft with
+                        {
+                            EffectDefinitions = extraRootDraft.EffectDefinitions.Append(
+                                new WoundAcceptedEffectDefinitionDraft("draft_recovery_extra_effect", extraDefinition)).ToArray(),
+                            RootApplications = extraRootDraft.RootApplications.Append(
+                                new WoundAcceptedRootApplicationDraft("draft_recovery_extra_application", "draft_recovery_extra_effect",
+                                    "recovery_extra_root_application", WoundRootOwnershipDomain.BaseWound)).ToArray(),
+                            SlotBindings = extraRootDraft.SlotBindings.Append(
+                                new WoundAcceptedConsequenceSlotBinding(2, "action_control", "draft_recovery_extra_application",
+                                    "Movement remains restricted by the wound.")).ToArray()
+                        }}
+                    };
+                }
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath, scenario.WorldTime);
                 creationInput = PrepareSignedCreationTurn(fs, creationInput);
                 AssertLiveTurnCorrelation(fs, creationInput.Binding, creationInput);
@@ -1013,11 +1448,16 @@ public sealed partial class MortalWoundRecoveryTests
                 {
                     Transitions = new[] { creationDraft with
                     {
-                        ProposedAfter = creationDraft.ProposedAfter with { Recovery = parsed.Wound!.Recovery }
+                        ProposedAfter = creationDraft.ProposedAfter with
+                        {
+                            Recovery = parsed.Wound!.Recovery,
+                            Treatment = parsed.Wound.Treatment
+                        }
                     }}
                 };
                 var preparedResult = WoundAcceptedTurnPlanner.Prepare(creationInput);
-                Assert.Empty(preparedResult.Issues);
+                Assert.True(preparedResult.Issues.Count == 0, string.Join("; ", preparedResult.Issues.Select(
+                    issue => $"{issue.Code}@{issue.FilePath}: {issue.Message}; expected={issue.Expected}; actual={issue.Actual}")));
                 var prepared = Assert.IsType<WoundPreparedAcceptedTurnPlan>(preparedResult.Plan);
                 var effect = WoundEffectBatchPlanner.Build(prepared,
                     WoundAcceptedTurnTestFixture.CreateEffectInput(prepared),
@@ -1043,10 +1483,65 @@ public sealed partial class MortalWoundRecoveryTests
                     lease = null;
                     PrepareLiveTurn(fs, 43, "stabilization");
                     lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
-                    ResolveAndPublishStabilization(fs, lease, woundId);
+                    ResolveAndPublishStabilization(fs, ref lease, woundId);
+                    lease = Assert.IsType<FileSystemManager.CanonicalWriteLease>(lease);
+                    if (scenario.NoMechanics)
+                    {
+                        var stabilized = ReadCanonicalWound(fs, woundId);
+                        Assert.Empty(stabilized.Consequences.Entries);
+                        Assert.Equal("stabilized", stabilized.Care.State);
+                        Assert.DoesNotContain("not_stabilized", stabilized.Recovery.Blockers);
+                        Assert.Contains("contaminated", stabilized.Recovery.Blockers);
+                    }
                 }
                 var postStabilizationDeteriorationAnchorBytes =
                     CaptureDeteriorationAnchorBytes(fs);
+                var tree = PreparedFixtureTree.Capture(fs.GameSessionPath);
+                var sourceMinute = Assert.IsType<long>(EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
+                    File.ReadAllText(fs.ResolvePath(EffectAcceptedTurnInputComposer.WorldTimePath))));
+                preparationTimer.Stop();
+                return new(tree, woundId, initialDeteriorationAnchorBytes?.ToArray(),
+                    postStabilizationDeteriorationAnchorBytes?.ToArray(),
+                    preparationTimer.Elapsed.TotalMilliseconds, sourceMinute);
+            }
+            finally
+            {
+                if (lease is not null) lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+                DeleteOwnedPreparationRoot(root);
+            }
+        }
+
+        /// <summary>
+        /// Signs a distinct recovery evaluation clock from detached genuine source publication.
+        /// </summary>
+        /// <param name="scenario">
+        /// Complete setup selecting the source profile and the exact evaluation minute to sign.
+        /// </param>
+        /// <returns>
+        /// A temporary fresh owner that must be disposed after its completed signed files are captured.
+        /// </returns>
+        private static Fixture CreateUncached(Scenario scenario)
+        {
+            var key = GetSourcePreparationKey(scenario);
+            var detached = scenario with
+            {
+                Wound = scenario.Wound.DeepClone().AsObject(),
+                WorldTime = scenario.WorldTime.DeepClone().AsObject(),
+                IntentTypes = scenario.IntentTypes.ToArray()
+            };
+            var source = PreparedRecoverySources.GetOrAdd(key, _ =>
+                new Lazy<PreparedRecoverySource>(() => PrepareRecoverySourceTemplate(detached, key),
+                    LazyThreadSafetyMode.ExecutionAndPublication)).Value;
+            var root = Path.Combine(Path.GetTempPath(), "boe-t062-" + Guid.NewGuid().ToString("N"));
+            Directory.CreateDirectory(root);
+            var fs = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+            fs.EnsureDirectoryStructure();
+            FileSystemManager.CanonicalWriteLease? lease = null;
+            try
+            {
+                source.Tree.Materialize(fs.GameSessionPath);
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+                var clockTimer = Stopwatch.StartNew();
                 Write(fs, EffectAcceptedTurnInputComposer.WorldTimePath,
                     new JsonObject { ["currentTimeInMinutes"] = scenario.Minute });
                 lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
@@ -1055,17 +1550,36 @@ public sealed partial class MortalWoundRecoveryTests
                 lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
                 // T066 must export the recovery binding from the current prepared turn;
                 // the bootstrap creation binding is never reused for this continuation.
-                var recoveryBinding = ExportRecoveryBinding(fs, lease, woundId);
-                return new(root, fs, lease, recoveryBinding, woundId, scenario,
-                    initialDeteriorationAnchorBytes,
-                    postStabilizationDeteriorationAnchorBytes);
+                var recoveryBinding = ExportRecoveryBinding(fs, lease, source.WoundId);
+                clockTimer.Stop();
+                ClockFinalizationMilliseconds[GetPreparationKey(scenario)] = clockTimer.Elapsed.TotalMilliseconds;
+                return new(root, fs, lease, recoveryBinding, source.WoundId, scenario,
+                    source.InitialDeteriorationAnchorBytes?.ToArray(),
+                    source.PostStabilizationDeteriorationAnchorBytes?.ToArray());
             }
             catch
             {
                 if (lease is not null) lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
-                Directory.Delete(root, recursive: true);
+                DeleteOwnedPreparationRoot(root);
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Removes only the isolated temporary preparation directory owned by this fixture family.
+        /// </summary>
+        /// <param name="root">
+        /// Absolute preparation root below the system temporary directory with the expected fixture prefix.
+        /// </param>
+        private static void DeleteOwnedPreparationRoot(string root)
+        {
+            var absolute = Path.GetFullPath(root);
+            var expectedTempRoot = Path.GetFullPath(Path.GetTempPath()).TrimEnd(
+                Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar) + Path.DirectorySeparatorChar;
+            if (!absolute.StartsWith(expectedTempRoot, StringComparison.OrdinalIgnoreCase) ||
+                !Path.GetFileName(absolute).StartsWith("boe-t062-", StringComparison.Ordinal))
+                throw new InvalidOperationException($"Refusing to remove unexpected preparation root '{absolute}'.");
+            if (Directory.Exists(absolute)) Directory.Delete(absolute, recursive: true);
         }
 
         internal void AssertCarrierIdentityHistoryAgreement()
@@ -1073,21 +1587,19 @@ public sealed partial class MortalWoundRecoveryTests
             var player = Read(WoundCarrierCatalog.PlayerPath);
             var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(player, null, null, null, null));
             Assert.Empty(catalog.Issues);
-            Assert.True(catalog.TryResolveOne(WoundId, out var occurrence));
+            catalog.TryResolveOne(WoundId, out var occurrence);
             var identity = WoundIdentityState.Parse(File.ReadAllText(FileSystem.ResolvePath(WoundIdentityState.StatePath)), WoundIdentityState.StatePath);
             var history = WoundHistoryState.Parse(File.ReadAllText(FileSystem.ResolvePath(WoundHistoryState.HistoryPath)), WoundHistoryState.HistoryPath);
             Assert.True(identity.IsValid, Issues(identity.Issues));
             Assert.True(history.IsValid, Issues(history.Issues));
             Assert.True(identity.State!.TryGetEntry(WoundId, out var entry));
-            Assert.Empty(WoundIdentityState.ValidateActiveAgreement(entry!, occurrence.Wound, "recoveryBaseline"));
+            AssertSelectedWoundState(catalog, occurrence, entry!, history.State!, "recoveryBaseline");
             Assert.Empty(history.State!.ValidateAgreement(identity.State, catalog));
         }
 
         internal byte[] CaptureRecoveryStateBytes()
         {
-            var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
-            var wound = Assert.IsType<JsonObject>(Assert.Single(
-                player["activeWounds"]!.AsArray()));
+            var wound = ReadActiveOrTerminalRecoveryWound(FileSystem, WoundId);
             return System.Text.Encoding.UTF8.GetBytes(wound["recovery"]!.ToJsonString());
         }
 
@@ -1099,9 +1611,7 @@ public sealed partial class MortalWoundRecoveryTests
 
         internal byte[]? CaptureRecoveryAnchorBytes()
         {
-            var player = ReadRoot(FileSystem, WoundCarrierCatalog.PlayerPath);
-            var wound = Assert.IsType<JsonObject>(Assert.Single(
-                player["activeWounds"]!.AsArray()));
+            var wound = ReadActiveOrTerminalRecoveryWound(FileSystem, WoundId);
             return wound["recovery"]?["recoveryAnchor"] is { } anchor
                 ? System.Text.Encoding.UTF8.GetBytes(anchor.ToJsonString())
                 : null;
@@ -1109,9 +1619,9 @@ public sealed partial class MortalWoundRecoveryTests
 
         private static byte[]? CaptureDeteriorationAnchorBytes(FileSystemManager fs)
         {
-            var player = ReadRoot(fs, WoundCarrierCatalog.PlayerPath);
-            var wound = Assert.IsType<JsonObject>(Assert.Single(
-                player["activeWounds"]!.AsArray()));
+            var identity = ReadRoot(fs, WoundIdentityState.StatePath);
+            var selected = Assert.IsType<JsonObject>(Assert.Single(identity["entries"]!.AsArray()));
+            var wound = ReadActiveOrTerminalRecoveryWound(fs, selected["woundId"]!.GetValue<string>());
             return wound["recovery"]?["deteriorationAnchor"] is { } anchor
                 ? System.Text.Encoding.UTF8.GetBytes(anchor.ToJsonString())
                 : null;
@@ -1146,7 +1656,14 @@ public sealed partial class MortalWoundRecoveryTests
 
         internal object ExportCurrentResult() => ExportAcceptedStateResult(FileSystem, Lease, WoundId);
 
-        internal void MutateTreatmentAuthorityRoot(string mutation)
+        /// <summary>
+        /// Captures one exact negative treatment source mutation in a fresh authenticated
+        /// pending turn after releasing the positive preparation's lease and claims.
+        /// </summary>
+        /// <param name="mutation">
+        /// The supported negative authority axis; unknown values throw without signing.
+        /// </param>
+        internal void PrepareSignedTreatmentAuthorityFault(string mutation)
         {
             var npc = ReadRoot(FileSystem, "game_state/npcs/npc_core.json");
             var medic = Assert.IsType<JsonObject>(Assert.Single(
@@ -1166,25 +1683,133 @@ public sealed partial class MortalWoundRecoveryTests
                     medic["currentLocationId"] = "loc_elsewhere_001";
                     break;
                 case "withdrawn_consent":
-                    var currentLocation = ReadRoot(
-                        FileSystem,
-                        MortalLocationMaterializationContract.CurrentLocationPath);
-                    var consent = Assert.Single(
-                        currentLocation["customStates"]!.AsArray().OfType<JsonObject>(),
-                        static row => string.Equals(
-                            row["kind"]?.GetValue<string>(),
-                            MortalWoundTreatmentSceneAuthorityContract.ConsentKind,
-                            StringComparison.Ordinal));
-                    consent["status"] = "withdrawn";
-                    Write(
-                        FileSystem,
-                        MortalLocationMaterializationContract.CurrentLocationPath,
-                        currentLocation);
+                    PrepareCanonicalConsentWithdrawal();
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(mutation), mutation, null);
             }
             Write(FileSystem, "game_state/npcs/npc_core.json", npc);
+            Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            PrepareLiveTurn(FileSystem, 45, "negative treatment authority " + mutation);
+            Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            var signedRequest = ReadRoot(FileSystem, LiveTurnPreparationService.TurnRequestPath);
+            Assert.Equal("request_t062_45", signedRequest["requestId"]!.GetValue<string>());
+        }
+
+        /// <summary>
+        /// Prepares canonical consent withdrawal with the existing narrow location-update
+        /// planner before fresh signing, preserving the actual location origin and history.
+        /// This produces fixture prerequisites rather than claiming common-plan publication.
+        /// </summary>
+        private void PrepareCanonicalConsentWithdrawal()
+        {
+            var worldMap = ReadRoot(FileSystem, MortalLocationMaterializationContract.WorldMapPath);
+            var current = ReadRoot(FileSystem, MortalLocationMaterializationContract.CurrentLocationPath);
+            var index = ReadRoot(FileSystem, MortalLocationIdentityState.StatePath);
+            var originalLocation = Assert.IsType<JsonObject>(Assert.Single(worldMap["locations"]!.AsArray()));
+            var locationId = originalLocation["locationId"]!.GetValue<string>();
+            var customStates = originalLocation["customStates"]!.DeepClone().AsArray();
+            var consent = Assert.Single(customStates.OfType<JsonObject>(), static row =>
+                row["kind"]?.GetValue<string>() == MortalWoundTreatmentSceneAuthorityContract.ConsentKind);
+            Assert.Equal("granted", consent["status"]!.GetValue<string>());
+            consent["status"] = "withdrawn";
+            var updates = new JsonObject
+            {
+                ["locationUpdates"] = new JsonArray(new JsonObject
+                {
+                    ["locationId"] = locationId,
+                    ["customStates"] = customStates
+                })
+            };
+            var signedRequest = ReadRoot(FileSystem, LiveTurnPreparationService.TurnRequestPath);
+            Assert.Equal(Binding.Turn, signedRequest["turnNumber"]!.GetValue<int>());
+            var updateTurn = checked(Binding.Turn + 1);
+            var planned = MortalLocationAcceptedTurnPlanner.Build(new MortalLocationAcceptedTurnInput(
+                worldMap, current, index, RawCurrentLocationData: null,
+                RawWorldMapUpdates: updates, Turn: updateTurn));
+            Assert.True(planned.Success, Issues(planned.Issues));
+            Assert.Empty(planned.Issues);
+            var plan = Assert.IsType<MortalLocationAcceptedTurnPlan>(planned.Plan);
+            var finalCurrent = Assert.IsType<JsonObject>(plan.FinalCurrentLocation);
+            var expectedMap = worldMap.DeepClone().AsObject();
+            expectedMap["locations"]![0]!["customStates"] = customStates.DeepClone();
+            Assert.True(JsonNode.DeepEquals(expectedMap, plan.FinalWorldMap));
+            var expectedCurrent = current.DeepClone().AsObject();
+            expectedCurrent["customStates"] = customStates.DeepClone();
+            Assert.True(JsonNode.DeepEquals(expectedCurrent, finalCurrent));
+            var originalEntry = Assert.IsType<JsonObject>(Assert.Single(index["locationEntries"]!.AsArray()));
+            var finalEntry = Assert.IsType<JsonObject>(Assert.Single(plan.FinalIdentityIndex["locationEntries"]!.AsArray()));
+            foreach (var property in originalEntry.Where(static property => property.Key != "transitions"))
+                Assert.True(JsonNode.DeepEquals(property.Value, finalEntry[property.Key]), property.Key);
+            Assert.True(JsonNode.DeepEquals(index["linkEntries"], plan.FinalIdentityIndex["linkEntries"]));
+            var previousTransitions = originalEntry["transitions"]!.AsArray();
+            var finalTransitions = finalEntry["transitions"]!.AsArray();
+            Assert.Equal(previousTransitions.Count + 1, finalTransitions.Count);
+            Assert.True(JsonNode.DeepEquals(previousTransitions, new JsonArray(finalTransitions
+                .Take(previousTransitions.Count).Select(static transition => transition!.DeepClone()).ToArray())));
+            var update = Assert.IsType<JsonObject>(finalTransitions[^1]);
+            Assert.Equal("location_update", update["kind"]!.GetValue<string>());
+            Assert.Equal(updateTurn, update["turn"]!.GetValue<int>());
+            Assert.Equal(locationId, update["entityId"]!.GetValue<string>());
+            var identity = MortalLocationIdentityState.Parse(plan.FinalIdentityIndex);
+            Assert.Empty(identity.Issues);
+            Assert.Empty(identity.ValidateCanonicalState(plan.FinalWorldMap));
+            Assert.True(identity.IsAcceptedCanonicalLocation(finalCurrent));
+            Assert.Equal(locationId, MortalLocationPlayerProjection.Create(
+                plan.FinalWorldMap, finalCurrent, plan.FinalIdentityIndex).CurrentLocationId);
+            Assert.Equal(new[]
+            {
+                MortalLocationMaterializationContract.WorldMapPath,
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                MortalLocationIdentityState.StatePath
+            }.OrderBy(static path => path, StringComparer.Ordinal),
+                plan.TouchedPaths.OrderBy(static path => path, StringComparer.Ordinal));
+            Write(FileSystem, MortalLocationMaterializationContract.WorldMapPath, plan.FinalWorldMap);
+            Write(FileSystem, MortalLocationMaterializationContract.CurrentLocationPath, finalCurrent);
+            Write(FileSystem, MortalLocationIdentityState.StatePath, plan.FinalIdentityIndex);
+        }
+
+        /// <summary>
+        /// Verifies that genuine creation preserved every scenario treatment prerequisite
+        /// rather than dropping the provider, consent, facility, and location requirements.
+        /// </summary>
+        internal void AssertPersistedTreatmentRequirements()
+        {
+            var wound = ReadCanonicalWound(FileSystem, WoundId);
+            var canonical = JsonNode.Parse(WoundMaterializationContract.SerializeCanonical(wound))!;
+            var persisted = canonical["treatment"]!["routes"]![0]!["requirements"]!;
+            var expected = Scenario.Wound["treatment"]!["routes"]![0]!["requirements"]!;
+            Assert.True(JsonNode.DeepEquals(expected, persisted));
+            Assert.Equal(new[] { "item_quantity", "skill_tier", "provider", "consent", "facility", "location" },
+                persisted.AsArray().Select(requirement => requirement!["kind"]!.GetValue<string>()));
+        }
+
+        /// <summary>
+        /// Calls the genuine six-argument procedure request factory with the exported
+        /// current wound, complete canonical history, route, and signed accepted event.
+        /// </summary>
+        /// <param name="acceptedState">
+        /// The current exported authority owned by this fixture's active lease.
+        /// </param>
+        /// <param name="operationKey">
+        /// An unused exact operation identifier for this preparation-only request.
+        /// </param>
+        /// <returns>
+        /// The actual factory result, including its sealed request or precise rejection issues.
+        /// </returns>
+        internal MortalWoundTreatmentAttemptRequestResult PrepareCurrentProcedureRequest(
+            MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+            string operationKey)
+        {
+            var history = WoundHistoryState.Parse(
+                File.ReadAllText(FileSystem.ResolvePath(WoundHistoryState.HistoryPath)),
+                WoundHistoryState.HistoryPath);
+            Assert.True(history.IsValid, Issues(history.Issues));
+            var wound = acceptedState.CurrentWound;
+            var routeId = Assert.Single(wound.Treatment.Routes).RouteId;
+            var eventRef = Assert.Single(acceptedState.Binding.AcceptedEvents).EventRef;
+            return MortalWoundTreatmentPlanner.PrepareProcedureRequest(
+                acceptedState, history, wound, operationKey, routeId, eventRef);
         }
 
         internal void RestartForReplay()
@@ -1197,10 +1822,22 @@ public sealed partial class MortalWoundRecoveryTests
             AssertCarrierIdentityHistoryAgreement();
         }
 
-        internal void PrepareFreshContinuationTurn(int turn, string operation)
+        /// <summary>
+        /// Signs a fresh continuation at the selected canonical minute after the prior publication.
+        /// </summary>
+        /// <param name="turn">
+        /// The distinct accepted turn number.
+        /// </param>
+        /// <param name="operation">
+        /// The player operation recorded by the real turn preparation.
+        /// </param>
+        /// <param name="minute">
+        /// The new canonical minute, or null to retain the scenario's original minute.
+        /// </param>
+        internal void PrepareFreshContinuationTurn(int turn, string operation, long? minute = null)
         {
             Write(FileSystem, EffectAcceptedTurnInputComposer.WorldTimePath,
-                new JsonObject { ["currentTimeInMinutes"] = Scenario.Minute });
+                new JsonObject { ["currentTimeInMinutes"] = minute ?? Scenario.Minute });
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             PrepareLiveTurn(FileSystem, turn, operation);
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
@@ -1209,6 +1846,19 @@ public sealed partial class MortalWoundRecoveryTests
             Assert.Equal($"request_t062_{turn}", Binding.RequestId);
         }
 
+        /// <summary>
+        /// Persists one targeted harmful occurrence before signing and publishes its
+        /// worsening decision through the ordinary adapter and canonical normalizer.
+        /// </summary>
+        /// <param name="turn">
+        /// The fresh decision turn following the current accepted source turn.
+        /// </param>
+        /// <param name="minute">
+        /// The canonical minute at which retrauma reenters the deterioration condition.
+        /// </param>
+        /// <returns>
+        /// The transition identity allocated by the genuine worsening publication.
+        /// </returns>
         internal WorseningReentryPublication PublishSealedWorseningReentry(int turn, long minute)
         {
             var before = ReadCanonicalWound(FileSystem, WoundId);
@@ -1216,10 +1866,11 @@ public sealed partial class MortalWoundRecoveryTests
             Assert.DoesNotContain("not_stabilized", before.Recovery.Blockers);
             const string narration =
                 "Повторный удар разрывает уже сведённые края раны; прежняя стабилизация утрачена.";
-            var opportunityRef = $"wound-opportunity-t062-retrauma-{turn}";
+            var occurrence = PrepareWorseningReentryOccurrence(
+                FileSystem, Lease, Binding, before, turn);
             var decision = new JsonObject
             {
-                ["opportunityRef"] = opportunityRef,
+                ["opportunityRef"] = occurrence.OpportunityRef,
                 ["decision"] = "materialize",
                 ["woundRef"] = "wound_local_t062_retrauma",
                 ["proposal"] = CreateWorseningReentryProposal(before, narration)
@@ -1238,10 +1889,50 @@ public sealed partial class MortalWoundRecoveryTests
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             PrepareLiveTurn(FileSystem, turn, "formal combat retrauma");
             Lease = FileSystem.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
-            var sourceEvent = CreateWorseningReentrySource(
-                before,
-                opportunityRef,
-                turn);
+            var snapshotRead = PendingTurnSnapshotReader.ReadCurrent(
+                FileSystem,
+                Lease,
+                new[]
+                {
+                    MortalWoundOccurrenceState.StatePath,
+                    MortalWoundOpportunityReceiptState.StatePath,
+                    WoundHistoryState.HistoryPath,
+                    WoundCarrierCatalog.PlayerPath,
+                    WoundCarrierCatalog.NpcPath,
+                    WoundCarrierCatalog.EnemiesPath,
+                    WoundCarrierCatalog.AlliesPath,
+                    WoundCarrierCatalog.AfterlifeProfilesPath
+                });
+            Assert.True(snapshotRead.Success, Issues(snapshotRead.Issues));
+            var snapshot = Assert.IsType<PendingTurnSnapshotReadAuthority>(snapshotRead.Snapshot);
+            Assert.Equal(turn, snapshot.TurnNumber);
+            Assert.Equal($"request_t062_{turn}", snapshot.RequestId);
+            using var occurrenceStream = new MemoryStream(
+                snapshot.ReadRequiredBytes(MortalWoundOccurrenceState.StatePath), writable: false);
+            using var occurrenceReader = new StreamReader(
+                occurrenceStream,
+                new System.Text.UTF8Encoding(encoderShouldEmitUTF8Identifier: false, throwOnInvalidBytes: true),
+                detectEncodingFromByteOrderMarks: true);
+            var signedOccurrences = MortalWoundOccurrenceState.Parse(
+                occurrenceReader.ReadToEnd(), MortalWoundOccurrenceState.StatePath);
+            Assert.True(signedOccurrences.IsValid, Issues(signedOccurrences.Issues));
+            var signedOccurrence = Assert.Single(
+                signedOccurrences.State!.Occurrences,
+                value => value.OccurrenceId == occurrence.OccurrenceId);
+            Assert.Equal(occurrence.OccurrenceFingerprint, signedOccurrence.OccurrenceFingerprint);
+            foreach (var path in snapshot.CoveredLogicalPaths)
+                Assert.Equal(snapshot.ReadRequiredBytes(path),
+                    File.ReadAllBytes(FileSystem.ResolvePath(path)));
+            var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
+                signedOccurrence,
+                signedOccurrences.State.Occurrences.Where(value =>
+                    value.ProducerOperationKey == signedOccurrence.ProducerOperationKey).ToArray(),
+                snapshot.SessionId,
+                snapshot.RequestId,
+                snapshot.SnapshotToken,
+                snapshot.TurnNumber);
+            Assert.True(rebound.Success, Issues(rebound.Issues));
+            var sourceEvent = CreateWorseningReentrySource(signedOccurrence);
             var treeBeforeComposition = CaptureCanonicalTreeBytes();
             var composed = ComposeAcceptedWorseningResponse(
                 FileSystem,
@@ -1249,12 +1940,18 @@ public sealed partial class MortalWoundRecoveryTests
                 sourceEvent,
                 response);
             AssertCanonicalTreeBytesUnchanged(treeBeforeComposition);
-            Assert.True(composed.Success, Issues(composed.Issues));
+            Assert.True(composed.Success, string.Join(" | ", composed.Issues.Select(
+                static issue => $"{issue.Code}@{issue.FilePath}: expected={issue.Expected}; actual={issue.Actual}")));
+            var opportunity = Assert.Single(composed.MaterializedOpportunities);
+            Assert.Equal(signedOccurrence.OccurrenceId, opportunity.OpportunityId);
+            Assert.Equal(snapshot.SnapshotToken, opportunity.SnapshotToken);
+            Assert.Equal(rebound.EventsFingerprint, opportunity.AcceptedEventsFingerprint);
             var worseningDraft = Assert.Single(composed.Transitions);
             Assert.Equal("worsen", worseningDraft.Kind);
             Assert.Equal("untreated", worseningDraft.ProposedAfter.Care.State);
             Assert.Null(worseningDraft.ProposedAfter.Care.StabilizedAtTurn);
             Assert.Contains("not_stabilized", worseningDraft.ProposedAfter.Recovery.Blockers);
+            Assert.Contains("contaminated", worseningDraft.ProposedAfter.Recovery.Blockers);
             Lease.DisposeAsync().AsTask().GetAwaiter().GetResult();
             var distributor = new StateDistributor(
                 FileSystem,
@@ -1263,7 +1960,7 @@ public sealed partial class MortalWoundRecoveryTests
             var validationIssues = new ValidationService(
                     FileSystem,
                     NullLogger<ValidationService>.Instance)
-                .ValidateAcceptedTurnRawEffectMaterializationAsync()
+                .ValidateAcceptedTurnRawResourceMaterializationAsync()
                 .GetAwaiter().GetResult();
             Assert.DoesNotContain(
                 validationIssues,
@@ -1304,8 +2001,14 @@ public sealed partial class MortalWoundRecoveryTests
                         "sha256:" + new string('0', 64);
                     break;
                 case "receipt":
-                    var fingerprints = FindProperties(history, "receiptFingerprint").ToArray();
-                    var receipt = Assert.Single(fingerprints);
+                    var parsed = WoundHistoryState.Parse(history.ToJsonString(), WoundHistoryState.HistoryPath);
+                    Assert.True(parsed.IsValid, Issues(parsed.Issues));
+                    var recoveryRow = Assert.Single(parsed.State!.Transitions,
+                        row => row.WoundId == WoundId && row.TransitionResult is MortalWoundRecoveryPersistedResult);
+                    var rawRecoveryRow = Assert.Single(transitions.OfType<JsonObject>(),
+                        row => row["transitionId"]!.GetValue<string>() == recoveryRow.TransitionId);
+                    var receipt = Assert.Single(FindProperties(
+                        Assert.IsType<JsonObject>(rawRecoveryRow["transitionResult"]), "receiptFingerprint"));
                     receipt["receiptFingerprint"] = "sha256:" + new string('0', 64);
                     break;
                 default:
@@ -1343,23 +2046,38 @@ public sealed partial class MortalWoundRecoveryTests
             Assert.Same(plan, published);
         }
 
+        /// <summary>
+        /// Persists and restores a genuine procedure command before publishing
+        /// stabilization and settling its coordinated resource and dice claims.
+        /// </summary>
+        /// <param name="fs">
+        /// The fixture filesystem containing the signed current turn and canonical wound.
+        /// </param>
+        /// <param name="lease">
+        /// The active canonical write lease. It is released for external distribution
+        /// and coordinated publication, then replaced with a fresh lease before return.
+        /// </param>
+        /// <param name="woundId">
+        /// The exact canonical wound identifier selected for stabilization.
+        /// </param>
         private static void ResolveAndPublishStabilization(
             FileSystemManager fs,
-            FileSystemManager.CanonicalWriteLease lease,
+            ref FileSystemManager.CanonicalWriteLease? lease,
             string woundId)
         {
+            var activeLease = Assert.IsType<FileSystemManager.CanonicalWriteLease>(lease);
             var planner = typeof(WoundMaterializationContract).Assembly.GetType(
                 "BookOfEternityClient.Services.WoundAcceptedTurnPlanner", false, false);
             Assert.True(planner is not null, "T070 treatment publication is absent.");
             var compose = ExactStatic(planner!, "ComposeMortalWoundTreatmentPublication", 6);
             Assert.Equal(typeof(FileSystemManager), compose.GetParameters()[0].ParameterType);
-            Assert.Equal(lease.GetType(), compose.GetParameters()[1].ParameterType);
+            Assert.Equal(activeLease.GetType(), compose.GetParameters()[1].ParameterType);
             Assert.Equal(typeof(GameResponse), compose.GetParameters()[2].ParameterType);
             Assert.Equal("MortalWoundTreatmentAcceptedStateAuthority", compose.GetParameters()[3].ParameterType.Name);
             Assert.Contains("Request", compose.GetParameters()[4].ParameterType.Name, StringComparison.Ordinal);
             Assert.Contains("Resolution", compose.GetParameters()[5].ParameterType.Name, StringComparison.Ordinal);
             var acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
-                ExportAcceptedState(fs, lease, woundId));
+                ExportAcceptedState(fs, activeLease, woundId));
             var binding = acceptedState.Binding;
             var before = ReadCanonicalWound(fs, woundId);
             var history = WoundHistoryState.Parse(File.ReadAllText(fs.ResolvePath(WoundHistoryState.HistoryPath)), WoundHistoryState.HistoryPath);
@@ -1372,8 +2090,13 @@ public sealed partial class MortalWoundRecoveryTests
             var prepared = Invoke(ExactStatic(treatmentPlanner!, "PrepareProcedureRequest", 6),
                 acceptedState, history, before, "operation_t062_stabilize", routeId, eventRef);
             AssertClosed(prepared, "IsValid", "Issues", "Request");
-            Assert.True(Assert.IsType<bool>(Required(prepared, "IsValid")));
-            Assert.Empty(Values(prepared, "Issues"));
+            var preparationIssues = Values(prepared, "Issues")
+                .Select(Assert.IsType<ValidationIssue>)
+                .ToArray();
+            Assert.True(
+                Assert.IsType<bool>(Required(prepared, "IsValid")),
+                Issues(preparationIssues));
+            Assert.Empty(preparationIssues);
             var request = Required(prepared, "Request");
             var resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateProcedureAttempt", 4),
                 request, history, before, acceptedState);
@@ -1381,9 +2104,70 @@ public sealed partial class MortalWoundRecoveryTests
             Assert.Equal("Resolved", Convert.ToString(Required(resolutionResult, "Disposition")));
             Assert.Empty(Values(resolutionResult, "Issues"));
             var resolution = Required(resolutionResult, "Resolution");
+            const string finalSceneText =
+                "The accepted stabilization is persisted before canonical publication.";
+            var commandRoot = WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(
+                binding,
+                Assert.IsType<MortalWoundTreatmentResolution>(resolution),
+                finalSceneText);
+            var parsedCommand = WoundResponseInputComposer.ParseCommandRoot(
+                JsonSerializer.SerializeToElement(commandRoot));
+            Assert.True(parsedCommand.Success, Issues(parsedCommand.Issues));
+            var recomposedCommand = WoundResponseInputComposer.RecomposeCommandRoot(
+                binding,
+                parsedCommand,
+                Array.Empty<WoundOpportunityDecisionReceipt>());
+            Assert.True(recomposedCommand.Success, Issues(recomposedCommand.Issues));
+            Assert.True(JsonNode.DeepEquals(commandRoot, recomposedCommand.CommandRoot));
+            activeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            lease = null;
+            try
+            {
+                var modified = new StateDistributor(fs, NullLogger<StateDistributor>.Instance)
+                    .DistributeAsync(
+                        new GameResponse { Response = finalSceneText },
+                        recomposedCommand)
+                    .GetAwaiter().GetResult();
+                Assert.Contains(AcceptedMechanicsPlan.WoundCommandPath, modified);
+            }
+            finally
+            {
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            }
+            activeLease = Assert.IsType<FileSystemManager.CanonicalWriteLease>(lease);
+            Assert.True(JsonNode.DeepEquals(
+                commandRoot,
+                ReadRoot(fs, AcceptedMechanicsPlan.WoundCommandPath)));
+            acceptedState = Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(
+                ExportAcceptedState(fs, activeLease, woundId));
+            AssertLiveTurnCorrelation(fs, acceptedState.Binding, input: null);
+            history = WoundHistoryState.Parse(
+                File.ReadAllText(fs.ResolvePath(WoundHistoryState.HistoryPath)),
+                WoundHistoryState.HistoryPath);
+            Assert.True(history.IsValid, Issues(history.Issues));
+            var persistedRequests = acceptedState.RestorePersistedTreatmentRequests(history);
+            Assert.True(persistedRequests.IsValid, Issues(persistedRequests.Issues));
+            Assert.Empty(persistedRequests.Issues);
+            var originalRequest = Assert.IsType<MortalWoundTreatmentAttemptRequest>(request);
+            request = Assert.Single(persistedRequests.Requests, candidate => string.Equals(
+                candidate.RequestFingerprint,
+                originalRequest.RequestFingerprint,
+                StringComparison.Ordinal));
+            before = ReadCanonicalWound(fs, woundId);
+            resolutionResult = Invoke(ExactStatic(treatmentPlanner, "CreateProcedureAttempt", 4),
+                request, history, before, acceptedState);
+            AssertClosed(resolutionResult, "Disposition", "Issues", "ReplayReceipt", "Resolution");
+            Assert.Equal("Resolved", Convert.ToString(Required(resolutionResult, "Disposition")));
+            Assert.Empty(Values(resolutionResult, "Issues"));
+            resolution = Required(resolutionResult, "Resolution");
+            Assert.True(JsonNode.DeepEquals(commandRoot,
+                WoundResponseInputComposer.ComposeMortalWoundTreatmentCommandRoot(
+                    acceptedState.Binding,
+                    Assert.IsType<MortalWoundTreatmentResolution>(resolution),
+                    finalSceneText)));
             var governedBefore = CaptureAllGovernedBytes(fs);
             var wholeTreeBefore = CaptureTreeBytes(fs.GameSessionPath);
-            var composed = Invoke(compose, fs, lease, new GameResponse(), acceptedState, request, resolution);
+            var composed = Invoke(compose, fs, activeLease, new GameResponse(), acceptedState, request, resolution);
             AssertClosed(composed, "IsValid", "Issues", "Plan");
             var compositionIssues = Values(composed, "Issues")
                 .Select(Assert.IsType<ValidationIssue>)
@@ -1399,8 +2183,53 @@ public sealed partial class MortalWoundRecoveryTests
                 woundId);
             AssertAllGovernedBytesUnchanged(fs, governedBefore);
             AssertTreeBytesUnchanged(fs, wholeTreeBefore);
-            Assert.Same(plan, new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance)
-                .BindTo(lease).NormalizeAcceptedMechanicsAsync(null).GetAwaiter().GetResult());
+            Assert.True(AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fs, activeLease, out _, out var cached));
+            Assert.Same(plan, cached.Plan);
+            activeLease.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            lease = null;
+            try
+            {
+                var published = AcceptedTurnCanonicalStateRefresh.NormalizeAndValidateWithPlanAsync(
+                        fs,
+                        new CanonicalStateNormalizer(fs, NullLogger<CanonicalStateNormalizer>.Instance),
+                        new ValidationService(fs, NullLogger<ValidationService>.Instance),
+                        new Dictionary<string, string>(StringComparer.Ordinal))
+                    .GetAwaiter().GetResult();
+                var transaction = published.TreatmentResourcePublicationTransaction;
+                try
+                {
+                    Assert.Empty(published.Issues);
+                    Assert.Same(plan, published.MechanicsPlan);
+                    Assert.NotNull(transaction);
+                    var publishedTree = CaptureTreeBytes(fs.GameSessionPath);
+                    var probe = transaction!.ProbeAsync(fs).GetAwaiter().GetResult();
+                    Assert.True(probe.IsValid, Issues(probe.Issues));
+                    Assert.Empty(probe.Issues);
+                    Assert.Equal(0, probe.ChangedCount);
+                    Assert.Equal(originalRequest.RequestFingerprint, probe.RequestFingerprint);
+                    Assert.Equal(
+                        plan.TreatmentResourcePublicationAuthority!.Finalization.FinalizationFingerprint,
+                        probe.FinalizationFingerprint);
+                    AssertTreeBytesUnchanged(fs, publishedTree);
+                    var settled = transaction.CompleteAsync(fs).GetAwaiter().GetResult();
+                    Assert.True(settled.IsValid, Issues(settled.Issues));
+                    Assert.Empty(settled.Issues);
+                    Assert.Equal(1, settled.ChangedCount);
+                    Assert.Equal(
+                        MortalWoundTreatmentPublicationTransactionOutcome.Finalized,
+                        settled.Outcome);
+                }
+                finally
+                {
+                    if (transaction is not null)
+                        ((IAsyncDisposable)transaction).DisposeAsync().AsTask().GetAwaiter().GetResult();
+                }
+            }
+            finally
+            {
+                lease = fs.AcquireCanonicalWriteLeaseAsync().GetAwaiter().GetResult();
+            }
             Assert.NotEqual("untreated", ReadCanonicalWound(fs, woundId).Care.State);
         }
 
@@ -1469,6 +2298,19 @@ public sealed partial class MortalWoundRecoveryTests
             Assert.All(plan.BeforeImages.Keys, path => Assert.Contains(path, governed.Keys));
         }
 
+        /// <summary>
+        /// Compares every published JSON afterimage and preserves exact bytes for
+        /// all governed paths outside the accepted writes and deletions.
+        /// </summary>
+        /// <param name="fs">
+        /// The filesystem whose canonical publication is checked.
+        /// </param>
+        /// <param name="beforeCompose">
+        /// The exact governed baseline bytes, including missing paths.
+        /// </param>
+        /// <param name="plan">
+        /// The accepted common plan that determines the expected publication.
+        /// </param>
         internal static void AssertAcceptedPlanPublishedExactly(
             FileSystemManager fs,
             IReadOnlyDictionary<string, byte[]?> beforeCompose,
@@ -1486,7 +2328,10 @@ public sealed partial class MortalWoundRecoveryTests
             {
                 var bytes = ReadBytes(fs, pair.Key);
                 Assert.NotNull(bytes);
-                var actual = JsonNode.Parse(System.Text.Encoding.UTF8.GetString(bytes!));
+                using var stream = new MemoryStream(bytes!, writable: false);
+                using var reader = new StreamReader(stream, System.Text.Encoding.UTF8,
+                    detectEncodingFromByteOrderMarks: true);
+                var actual = JsonNode.Parse(reader.ReadToEnd());
                 Assert.True(JsonNode.DeepEquals(pair.Value, actual), pair.Key);
             }
             foreach (var path in deletes)
@@ -1723,6 +2568,19 @@ public sealed partial class MortalWoundRecoveryTests
             return occurrence.Wound;
         }
 
+        /// <summary>
+        /// Creates the readable retrauma proposal while retaining unrelated recovery blockers.
+        /// Canonical anchors remain owned by the accepted worsening planner.
+        /// </summary>
+        /// <param name="before">
+        /// The exact stabilized canonical wound before the new harmful occurrence.
+        /// </param>
+        /// <param name="narration">
+        /// The player-visible explanation of the lost stabilization.
+        /// </param>
+        /// <returns>
+        /// A physical worsening proposal without caller-authored canonical anchors.
+        /// </returns>
         private static JsonObject CreateWorseningReentryProposal(
             WoundMaterializationEnvelope before,
             string narration)
@@ -1744,7 +2602,11 @@ public sealed partial class MortalWoundRecoveryTests
             recovery.Remove("recoveryAnchor");
             recovery.Remove("deteriorationAnchor");
             recovery["currentStepProgress"] = 0;
-            recovery["blockers"] = new JsonArray("not_stabilized");
+            recovery["blockers"] = new JsonArray(before.Recovery.Blockers
+                .Append("not_stabilized")
+                .Distinct(StringComparer.Ordinal)
+                .Select(static value => (JsonNode?)JsonValue.Create(value))
+                .ToArray());
             return new JsonObject
             {
                 ["classification"] = classification,
@@ -1757,50 +2619,179 @@ public sealed partial class MortalWoundRecoveryTests
             };
         }
 
-        private static JsonObject CreateWorseningReentrySource(
+        /// <summary>
+        /// Appends a targeted physical producer occurrence using the current signed source
+        /// binding and persists the canonical roots required by the worsening adapter.
+        /// </summary>
+        /// <param name="fs">
+        /// The isolated canonical fixture filesystem.
+        /// </param>
+        /// <param name="lease">
+        /// The active lease protecting producer state before the next turn is signed.
+        /// </param>
+        /// <param name="binding">
+        /// The exported binding of the actual current accepted source turn.
+        /// </param>
+        /// <param name="before">
+        /// The stabilized canonical wound targeted by this retrauma occurrence.
+        /// </param>
+        /// <param name="turn">
+        /// The later decision turn used to distinguish this producer operation and source.
+        /// </param>
+        /// <returns>
+        /// The persisted occurrence with its generated identity and opportunity reference.
+        /// </returns>
+        private static MortalWoundOccurrence PrepareWorseningReentryOccurrence(
+            FileSystemManager fs,
+            FileSystemManager.CanonicalWriteLease lease,
+            WoundAcceptedTurnBinding binding,
             WoundMaterializationEnvelope before,
-            string opportunityRef,
-            int turn) => new()
+            int turn)
+        {
+            AssertLiveTurnCorrelation(fs, binding, input: null);
+            Assert.True(turn > binding.Turn);
+            var sourceSnapshotRead = PendingTurnSnapshotReader.ReadCurrent(
+                fs, lease, new[] { WoundCarrierCatalog.PlayerPath, WoundHistoryState.HistoryPath });
+            Assert.True(sourceSnapshotRead.Success, Issues(sourceSnapshotRead.Issues));
+            var sourceSnapshot = Assert.IsType<PendingTurnSnapshotReadAuthority>(sourceSnapshotRead.Snapshot);
+            Assert.Equal(binding.SessionId, sourceSnapshot.SessionId);
+            Assert.Equal(binding.RequestId, sourceSnapshot.RequestId);
+            Assert.Equal(binding.SnapshotToken, sourceSnapshot.SnapshotToken);
+            Assert.Equal(binding.Turn, sourceSnapshot.TurnNumber);
+
+            var coordinates = binding.AcceptedEvents.Select(static value =>
+                new WoundAcceptedResponseEventCoordinate(value.EventRef, value.Kind, value.AuthorityId))
+                .ToArray();
+            var selected = coordinates[0];
+            const string readableCause = "Повторный удар снова раскрыл стабилизированную рану.";
+            var projection = new WoundAcceptedResponseEventProjection(
+                binding.SessionId, binding.RequestId, binding.SnapshotToken, binding.Turn, coordinates);
+            var events = WoundAcceptedEventAuthorityComposer.Compose(projection,
+                new[] { new WoundSelectedEventEvidence(0, new WoundOpportunityEventEvidence(
+                    "formal", selected.Kind, selected.AuthorityId, "harmful", 3, readableCause)) });
+            Assert.True(events.Success, Issues(events.Issues));
+            var harm = new MortalWoundAcceptedHarmResult(
+                0, 0, before.Owner, before.Classification.Domain, "mortal_formal_injury_v1",
+                new MortalWoundOccurrenceSource("combat_action", $"combat_retrauma_t062_{turn}", "active"),
+                new MortalWoundOccurrenceOutcome("harmful", 3, readableCause),
+                4, null, null,
+                new WoundOpportunitySafeContext("вы", "повторный удар",
+                    new[] { "anatomical", "systemic", "other" }),
+                new MortalWoundOccurrenceWorseningTarget(before.WoundId, "retrauma"));
+            var producer = MortalWoundAcceptedProducerResult.CreateRegistered(
+                "formal", $"producer_operation_retrauma_t062_{turn}", projection, new[] { harm });
+            var candidate = new MortalWoundOccurrenceCandidate(
+                producer.AcceptedResponse.SessionId, producer.AcceptedResponse.RequestId,
+                producer.AcceptedResponse.SnapshotToken, producer.AcceptedResponse.Turn,
+                producer.ProducerOperationKey, harm.ProducerCandidateOrdinal, producer.Harms.Count,
+                producer.AdapterKind, harm.AcceptedEventOrdinal, events.Events, harm.Owner,
+                harm.Domain, harm.ProfileKey, harm.Source, harm.Outcome, harm.HardMaximumSeverityRank,
+                harm.MinimumSeverityRank, harm.GuaranteedTrigger, harm.SafeContext,
+                harm.WorseningTarget, producer.SourceResultFingerprint);
+            var pending = MortalWoundOccurrenceState.Parse(
+                fs.ReadFileSync(MortalWoundOccurrenceState.StatePath) ??
+                    "{\"schemaVersion\":1,\"occurrences\":[]}",
+                MortalWoundOccurrenceState.StatePath);
+            var receipts = MortalWoundOpportunityReceiptState.Parse(
+                fs.ReadFileSync(MortalWoundOpportunityReceiptState.StatePath) ??
+                    "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}",
+                MortalWoundOpportunityReceiptState.StatePath);
+            Assert.True(pending.IsValid, Issues(pending.Issues));
+            Assert.True(receipts.IsValid, Issues(receipts.Issues));
+            var append = MortalWoundOccurrenceState.PlanAppend(
+                pending.State!, new MortalWoundOccurrenceCandidateBatch(new[] { candidate }), receipts.State!);
+            Assert.Equal("appended", append.Disposition);
+            Assert.Empty(append.Issues);
+            var appended = Assert.IsType<MortalWoundOccurrenceState>(append.State);
+            fs.WriteFileAtomicAsync(lease, MortalWoundOccurrenceState.StatePath,
+                MortalWoundOccurrenceState.SerializeCanonical(appended)).GetAwaiter().GetResult();
+            if (fs.ReadFileSync(MortalWoundOpportunityReceiptState.StatePath) is null)
+                fs.WriteFileAtomicAsync(lease, MortalWoundOpportunityReceiptState.StatePath,
+                    MortalWoundOpportunityReceiptState.SerializeCanonical(receipts.State!)).GetAwaiter().GetResult();
+
+            // Target uniqueness is resolved over required signed carrier bytes; this
+            // fixture has no non-player wound entries or combat/afterlife actors.
+            var emptyCarriers = new Dictionary<string, JsonObject>(StringComparer.Ordinal)
+            {
+                [WoundCarrierCatalog.NpcPath] = new()
+                {
+                    ["schemaVersion"] = 1, ["entries"] = new JsonArray()
+                },
+                [WoundCarrierCatalog.EnemiesPath] = new() { ["enemiesData"] = new JsonArray() },
+                [WoundCarrierCatalog.AlliesPath] = new() { ["alliesData"] = new JsonArray() },
+                [WoundCarrierCatalog.AfterlifeProfilesPath] = new()
+                {
+                    ["schemaVersion"] = 1, ["profiles"] = new JsonArray()
+                }
+            };
+            foreach (var pair in emptyCarriers)
+                if (fs.ReadFileSync(pair.Key) is null)
+                    fs.WriteFileAtomicAsync(lease, pair.Key, pair.Value.ToJsonString()).GetAwaiter().GetResult();
+            var catalog = WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                ReadRoot(fs, WoundCarrierCatalog.PlayerPath),
+                ReadRoot(fs, WoundCarrierCatalog.NpcPath),
+                ReadRoot(fs, WoundCarrierCatalog.EnemiesPath),
+                ReadRoot(fs, WoundCarrierCatalog.AlliesPath),
+                ReadRoot(fs, WoundCarrierCatalog.AfterlifeProfilesPath)));
+            Assert.Empty(catalog.Issues);
+            Assert.True(catalog.TryResolveOne(before.WoundId, out var target));
+            Assert.Equal(1, catalog.CountExactOccurrences(before.WoundId));
+            Assert.Equal(WoundMaterializationContract.SerializeCanonical(before),
+                WoundMaterializationContract.SerializeCanonical(target.Wound));
+            var persisted = MortalWoundOccurrenceState.Parse(
+                fs.ReadFileSync(MortalWoundOccurrenceState.StatePath), MortalWoundOccurrenceState.StatePath);
+            Assert.True(persisted.IsValid, Issues(persisted.Issues));
+            return Assert.Single(persisted.State!.Occurrences,
+                value => value.ProducerOperationKey == producer.ProducerOperationKey);
+        }
+
+        /// <summary>
+        /// Projects GM-visible correlation only from the exact signed pending occurrence.
+        /// </summary>
+        /// <param name="occurrence">
+        /// The persisted targeted occurrence recovered from the new signed snapshot.
+        /// </param>
+        /// <returns>
+        /// Correlation JSON whose identity and semantics match that occurrence.
+        /// </returns>
+        private static JsonObject CreateWorseningReentrySource(MortalWoundOccurrence occurrence) => new()
         {
             ["schemaVersion"] = 1,
-            ["adapterKind"] = "formal",
-            ["acceptedEventOrdinal"] = 0,
-            ["opportunityRef"] = opportunityRef,
+            ["adapterKind"] = occurrence.AdapterKind,
+            ["acceptedEventOrdinal"] = occurrence.AcceptedEventOrdinal,
+            ["opportunityRef"] = occurrence.OpportunityRef,
             ["owner"] = new JsonObject
             {
-                ["realm"] = before.Owner.Realm,
-                ["ownerKind"] = before.Owner.OwnerKind,
-                ["ownerId"] = before.Owner.OwnerId,
-                ["carrierPath"] = before.Owner.CarrierPath
+                ["realm"] = occurrence.Owner.Realm,
+                ["ownerKind"] = occurrence.Owner.OwnerKind,
+                ["ownerId"] = occurrence.Owner.OwnerId,
+                ["carrierPath"] = occurrence.Owner.CarrierPath
             },
-            ["domain"] = before.Classification.Domain,
-            ["profileKey"] = "mortal_formal_injury_v1",
+            ["domain"] = occurrence.Domain,
+            ["profileKey"] = occurrence.ProfileKey,
             ["source"] = new JsonObject
             {
-                ["kind"] = "combat_action",
-                ["sourceId"] = $"combat_retrauma_t062_{turn}",
-                ["state"] = "active"
+                ["kind"] = occurrence.Source.Kind,
+                ["sourceId"] = occurrence.Source.SourceId,
+                ["state"] = occurrence.Source.State
             },
             ["outcome"] = new JsonObject
             {
-                ["kind"] = "harmful",
-                ["maximumSeverityRank"] = 3,
-                ["readableCause"] =
-                    "Повторный удар снова раскрыл стабилизированную рану."
+                ["kind"] = occurrence.Outcome.Kind,
+                ["maximumSeverityRank"] = occurrence.Outcome.MaximumSeverityRank,
+                ["readableCause"] = occurrence.Outcome.ReadableCause
             },
             ["safeContext"] = new JsonObject
             {
-                ["target"] = "вы",
-                ["cause"] = "повторный удар",
-                ["allowedLocationKinds"] = new JsonArray(
-                    "anatomical",
-                    "systemic",
-                    "other")
+                ["target"] = occurrence.SafeContext.Target,
+                ["cause"] = occurrence.SafeContext.Cause,
+                ["allowedLocationKinds"] = new JsonArray(occurrence.SafeContext.AllowedLocationKinds
+                    .Select(static value => (JsonNode?)JsonValue.Create(value)).ToArray())
             },
             ["worseningTarget"] = new JsonObject
             {
-                ["woundId"] = before.WoundId,
-                ["causeKind"] = "retrauma"
+                ["woundId"] = occurrence.WorseningTarget!.WoundId,
+                ["causeKind"] = occurrence.WorseningTarget.CauseKind
             }
         };
 
@@ -1869,6 +2860,46 @@ public sealed partial class MortalWoundRecoveryTests
                 CurrentRealm = "Mortal World", PlayerAction = "T062 " + operation,
                 PreGeneratedDices1d20 = new[] { 17 }
             }).GetAwaiter().GetResult();
+
+        /// <summary>
+        /// Seeds genuine Mortal player resources before turn signing so wound effect
+        /// continuation resolves against canonical definitions and owner authority.
+        /// </summary>
+        /// <param name="fs">
+        /// The fresh fixture filesystem receiving the bootstrap resource quartet.
+        /// </param>
+        private static void WriteCanonicalResourceAuthority(FileSystemManager fs)
+        {
+            var bootstrap = ResourceBootstrapStateBuilder.BuildMortalPlayer(
+                incarnationNumber: 1,
+                turn: 1,
+                permanentStrength: 10,
+                permanentConstitution: 10,
+                permanentIntelligence: 10,
+                permanentWisdom: 10,
+                permanentFaith: 10);
+            Assert.True(bootstrap.IsValid, Issues(bootstrap.Issues));
+            var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
+            var state = Assert.IsType<ResourceStateLedger>(bootstrap.State);
+            var history = Assert.IsType<ResourceHistoryState>(bootstrap.History);
+            Write(fs, ResourceMaterializationContract.DefinitionsPath,
+                JsonNode.Parse(definitions.ToCanonicalJson())!.AsObject());
+            Write(fs, ResourceMaterializationContract.StatePath,
+                JsonNode.Parse(state.ToCanonicalJson())!.AsObject());
+            Write(fs, ResourceMaterializationContract.HistoryPath,
+                JsonNode.Parse(history.ToCanonicalJson())!.AsObject());
+            var authority = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
+                    definitions,
+                    fs.ReadFileAsync,
+                    state,
+                    history,
+                    CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap)
+                .GetAwaiter().GetResult();
+            Assert.True(authority.IsValid, Issues(authority.Issues));
+            Assert.False(string.IsNullOrWhiteSpace(authority.CanonicalAuthorityJson));
+            Write(fs, CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+                JsonNode.Parse(authority.CanonicalAuthorityJson)!.AsObject());
+        }
 
         private static void WriteCanonicalTreatmentAuthorityRoots(FileSystemManager fs)
         {

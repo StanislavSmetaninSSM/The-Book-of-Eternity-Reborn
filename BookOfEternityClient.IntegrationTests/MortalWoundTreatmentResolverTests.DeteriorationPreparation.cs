@@ -120,16 +120,7 @@ public sealed partial class MortalWoundTreatmentResolverTests
             EffectMaterializationTestFixture.CreateDefinition("roll_modifier")
                 ["components"]!.DeepClone();
         definitions[1]!["definition"]!["components"]![0]!["payload"] =
-            new JsonObject
-            {
-                ["operations"] = new JsonArray("skill_check"),
-                ["contribution"] = "disadvantage",
-                ["scope"] = new JsonObject
-                {
-                    ["kind"] = "skill",
-                    ["skillId"] = "skill_field_medicine_01"
-                }
-            };
+            EffectMaterializationTestFixture.CreateFocusedRollModifierPayload("skill_field_medicine_01");
         definitions[1]!["definition"]!["triggers"] = new JsonArray();
         original!["definition"]!["components"]![0]!["payload"]!["action"] =
             "use_item";

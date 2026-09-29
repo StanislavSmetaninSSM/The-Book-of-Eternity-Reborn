@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class EffectResourceTriggerRoutingScaleTests
+public sealed partial class EffectResourceTriggerRoutingScaleTests
 {
     private const string FingerprintA =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -745,6 +745,9 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         }
     }
 
+    /// <summary>
+    /// Preserves the historical accepted-boundary result when two consuming reactions replace the same effect stack.
+    /// </summary>
     [Fact]
     public void AcceptedBoundary_TwoConsumingSameStackReplacementsRecordBothUsesBeforeOriginalReplace()
     {
@@ -782,10 +785,16 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "turn_43:budget:two_consuming_replacements",
             ResourceOperation.Damage,
             amount: 2m);
+        var resourceIdentityFactory =
+            new ScenarioOneRecordingResourceIdentityFactory();
+        var effectIdentityFactory =
+            new ScenarioOneRecordingEffectIdentityFactory();
 
         var result = BuildAcceptedEventBudgetPlan(
             fixture,
-            new[] { rootDamage });
+            new[] { rootDamage },
+            effectIdentityFactory,
+            resourceIdentityFactory);
 
         Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
         var transcript = result.Resources.EffectBoundaryTranscript;
@@ -886,6 +895,11 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             finalEffect["source"]!["definitionKey"]!.GetValue<string>());
         Assert.Equal("turns", finalEffect["lifetime"]!["mode"]!.GetValue<string>());
         Assert.Equal(3, finalEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
+        AssertScenarioOneLegacyGolden(
+            result,
+            finalizedPlan,
+            resourceIdentityFactory,
+            effectIdentityFactory);
     }
 
     [Fact]
@@ -2448,6 +2462,61 @@ public sealed class EffectResourceTriggerRoutingScaleTests
     }
 
     [Fact]
+    public void AcceptedEventArbiterBoundary_ZeroAppliedChildDoesNotSatisfyAfterComponentReaction()
+    {
+        var fixture = CreateAcceptedEventBudgetFixture(
+            remainingUses: 1,
+            current: 10m,
+            reactionDependency: "after_component",
+            reactionAfterComponentId: "component_budget_periodic",
+            triggerSpecs: new[]
+            {
+                new BudgetTriggerSpec(
+                    "trigger_budget_zero_applied_after_component",
+                    "resource_spent",
+                    Priority: 10,
+                    IncludePeriodic: true,
+                    IncludeReaction: true)
+            });
+        var producerBaseline = AddBudgetProducerResource(fixture);
+        fixture = producerBaseline.Fixture;
+        var rootSpend = CreateBudgetMutation(
+            producerBaseline.Coordinate,
+            "turn_43:budget:zero_applied_after_component",
+            ResourceOperation.Spend,
+            amount: 2m);
+
+        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { rootSpend });
+
+        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
+        Assert.Single(
+            result.Resources.AppliedTransitions,
+            static transition =>
+                transition.Phase == ResourceMutationPhase.EffectTrigger &&
+                transition.RequestedAmount > 0m &&
+                transition.AppliedAmount == 0m);
+        Assert.Contains(
+            result.Resources.Events,
+            static resourceEvent =>
+                string.Equals(
+                    resourceEvent.EventKind,
+                    "resource_restored",
+                    StringComparison.Ordinal) &&
+                resourceEvent.AppliedAmount == 0m);
+        var execution = Assert.Single(result.Resources.ResourceTriggerExecutions);
+        Assert.Empty(execution.MutationKeys);
+        Assert.Empty(execution.ComponentIds ?? Array.Empty<string>());
+        Assert.Empty(result.Resources.EffectBoundaryTranscript.ReleasedReactions);
+        Assert.Empty(result.Resources.AcceptedReactionExecutions);
+        Assert.Empty(result.Resources.AcceptedPendingResolutions);
+
+        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(
+            result.Finalized);
+        Assert.True(finalized.Success, Format(finalized.Issues));
+        Assert.Equal(0, finalized.Plan!.ReactionExpansionCount);
+    }
+
+    [Fact]
     public void AcceptedEventArbiterBoundary_DueLifecycleReactionOnlyConsumesUseOnceAcrossFinalize()
     {
         var fixture = CreateAcceptedEventBudgetFixture(
@@ -3520,10 +3589,29 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 definitions));
     }
 
+    /// <summary>
+    /// Builds and completes one accepted event-budget plan with optional deterministic identity factories.
+    /// </summary>
+    /// <param name="fixture">
+    /// The accepted effect, resource, and authority fixture used by the boundary.
+    /// </param>
+    /// <param name="mutations">
+    /// The root resource mutations to execute before effect completion.
+    /// </param>
+    /// <param name="finalizationFactory">
+    /// The effect identity factory used during completion, or <see langword="null"/> to use the production default.
+    /// </param>
+    /// <param name="resourceIdentityFactory">
+    /// The resource identity factory used during mutation execution, or <see langword="null"/> to use the deterministic test default.
+    /// </param>
+    /// <returns>
+    /// The resource result, accepted reactions, and completed effect result for the boundary.
+    /// </returns>
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
         AcceptedEventBudgetFixture fixture,
         IReadOnlyList<ResourceMutationIntent> mutations,
-        EffectIdentityFactory? finalizationFactory = null)
+        EffectIdentityFactory? finalizationFactory = null,
+        AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null)
     {
         return BuildAcceptedEventBudgetPlan(
             fixture,
@@ -3532,7 +3620,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             Array.Empty<
                 EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>(),
             EffectAcceptedTurnPlanner.EffectResourceResolutionWork.Empty,
-            finalizationFactory);
+            finalizationFactory,
+            resourceIdentityFactory);
     }
 
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
@@ -3552,6 +3641,33 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             finalizationFactory: null);
     }
 
+    /// <summary>
+    /// Executes the supplied resource work and completes its accepted effect-boundary transcript.
+    /// </summary>
+    /// <param name="fixture">
+    /// The accepted effect, resource, and authority fixture used by the boundary.
+    /// </param>
+    /// <param name="mutations">
+    /// The resource mutations to execute.
+    /// </param>
+    /// <param name="sources">
+    /// The admitted resource mutation source catalog.
+    /// </param>
+    /// <param name="initialTriggerCandidates">
+    /// Trigger candidates already retained before resource execution starts.
+    /// </param>
+    /// <param name="initialWork">
+    /// Effect resource work already retained before resource execution starts.
+    /// </param>
+    /// <param name="finalizationFactory">
+    /// The effect identity factory used during completion, or <see langword="null"/> to use the production default.
+    /// </param>
+    /// <param name="resourceIdentityFactory">
+    /// The resource identity factory used during mutation execution, or <see langword="null"/> to use the deterministic test default.
+    /// </param>
+    /// <returns>
+    /// The resource result, accepted reactions, and completed effect result for the boundary.
+    /// </returns>
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
         AcceptedEventBudgetFixture fixture,
         IReadOnlyList<ResourceMutationIntent> mutations,
@@ -3560,7 +3676,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
             initialTriggerCandidates,
         EffectAcceptedTurnPlanner.EffectResourceResolutionWork initialWork,
-        EffectIdentityFactory? finalizationFactory)
+        EffectIdentityFactory? finalizationFactory,
+        AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null)
     {
         EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution Resolve(
             ResourceAppliedEvent resourceEvent,
@@ -3588,7 +3705,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 EffectPlanAuthority:
                     AcceptedMechanicsPlanner.CreateEffectPlanAuthority(
                         fixture.Plan)),
-            IdentityFactory());
+            resourceIdentityFactory ?? IdentityFactory());
         if (!resources.IsValid)
         {
             return new AcceptedEventBudgetResult(
@@ -4152,10 +4269,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var periodic = effect["components"]![0]!.DeepClone().AsObject();
         periodic["componentId"] = periodicComponentId;
         periodic["payload"]!["amount"] = 3;
-        var dependentPeriodic = string.Equals(
-                reactionResultKind,
-                "trigger_component",
-                StringComparison.Ordinal)
+        var dependentPeriodic = reactionResultKind is
+                "trigger_component" or "bounded_receipt"
             ? EffectMaterializationTestFixture
                 .CreateDefinition("periodic_damage")["components"]![0]!
                 .DeepClone()
@@ -4193,10 +4308,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             };
             if (reactionAfterComponentId != null)
                 payload["afterComponentId"] = reactionAfterComponentId;
-            if (string.Equals(
-                    resultKind,
-                    "trigger_component",
-                    StringComparison.Ordinal))
+            if (resultKind is "trigger_component" or "bounded_receipt")
             {
                 Assert.NotNull(dependentPeriodic);
                 payload["componentId"] = dependentPeriodicComponentId;

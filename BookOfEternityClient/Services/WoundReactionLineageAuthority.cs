@@ -22,11 +22,13 @@ internal sealed class WoundReactionLineageAuthority
     private const int MaximumIssues = 20;
     private readonly EffectSourceAuthority _sourceAuthority;
     private readonly Dictionary<string, LineageIdentity> _identitiesByEffectId;
+    private readonly Dictionary<string, HistoricalIdentity> _history;
     private readonly ValidationIssue[] _issues;
 
     private WoundReactionLineageAuthority(
         EffectSourceAuthority sourceAuthority,
         Dictionary<string, LineageIdentity> identitiesByEffectId,
+        Dictionary<string, HistoricalIdentity> history,
         IReadOnlyList<ValidationIssue> issues)
     {
         _sourceAuthority = sourceAuthority;
@@ -35,6 +37,7 @@ internal sealed class WoundReactionLineageAuthority
             static pair => pair.Value.DetachedCopy(),
             StringComparer.Ordinal);
         _issues = issues.ToArray();
+        _history = new(history, StringComparer.Ordinal);
     }
 
     internal bool Success => _issues.Length == 0;
@@ -42,11 +45,37 @@ internal sealed class WoundReactionLineageAuthority
     internal IReadOnlyList<ValidationIssue> Issues =>
         Array.AsReadOnly(_issues.ToArray());
 
+    /// <summary>
+    /// Validates current wound lineage and retains immutable definition epochs for identities retired by later generations.
+    /// </summary>
+    /// <param name="sourceAuthority">
+    /// Current validated source groups.
+    /// </param>
+    /// <param name="identities">
+    /// Parsed current effect identities and histories.
+    /// </param>
+    /// <param name="carriers">
+    /// Current physical effect occurrences.
+    /// </param>
+    /// <param name="applicationRootBindings">
+    /// Exact application-to-root bindings for the current groups.
+    /// </param>
+    /// <param name="previousEpoch">
+    /// Successful preceding routing epoch retained by the actual owner, or <see langword="null"/> for original validation.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Actual registered insertion proving completed wound retirements, or null for the original path.
+    /// </param>
+    /// <returns>
+    /// Current lineage and preserved historical definitions, or issues preventing their use.
+    /// </returns>
     internal static WoundReactionLineageAuthority Build(
         EffectSourceAuthority sourceAuthority,
         EffectIdentityState identities,
         EffectCarrierCatalog carriers,
-        IReadOnlyList<WoundApplicationRootEffectBinding> applicationRootBindings)
+        IReadOnlyList<WoundApplicationRootEffectBinding> applicationRootBindings,
+        WoundReactionLineageAuthority? previousEpoch = null,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         ArgumentNullException.ThrowIfNull(sourceAuthority);
         ArgumentNullException.ThrowIfNull(identities);
@@ -56,6 +85,11 @@ internal sealed class WoundReactionLineageAuthority
         var issues = new List<ValidationIssue>();
         AddRange(issues, sourceAuthority.Issues);
         AddRange(issues, carriers.Issues);
+        if (previousEpoch != null)
+            AddRange(issues, previousEpoch.Issues);
+        var history = previousEpoch is { Success: true }
+            ? new Dictionary<string, HistoricalIdentity>(previousEpoch._history, StringComparer.Ordinal)
+            : new Dictionary<string, HistoricalIdentity>(StringComparer.Ordinal);
         var groups = sourceAuthority.SnapshotWoundGroupAuthorities();
         var groupKeys = groups
             .Select(static group => group.Key)
@@ -76,6 +110,8 @@ internal sealed class WoundReactionLineageAuthority
                 applicationEffects,
                 claimedRootEffects,
                 lineage,
+                history,
+                retirementHistory,
                 issues);
         }
 
@@ -102,9 +138,32 @@ internal sealed class WoundReactionLineageAuthority
         return new WoundReactionLineageAuthority(
             sourceAuthority,
             lineage,
+            history,
             issues);
     }
 
+    /// <summary>
+    /// Resolves one wound-owned apply-definition reaction against the exact current producer
+    /// lineage, its source-group epoch and the downstream definition sealed by that group.
+    /// </summary>
+    /// <param name="producer">
+    /// The active carrier occurrence that released the reaction. It must equal the producer
+    /// retained by the current lineage.
+    /// </param>
+    /// <param name="component">
+    /// The persisted producer component that must define the exact outgoing apply-definition edge.
+    /// </param>
+    /// <param name="target">
+    /// The reaction target, which must equal the target owned by the producer's wound source group.
+    /// </param>
+    /// <param name="downstreamDefinitionKey">
+    /// The exact downstream definition key named by the released reaction.
+    /// </param>
+    /// <returns>
+    /// The current source binding and inherited ownership domain when the producer, edge, target,
+    /// source-group epoch and catalog definition agree with the sealed lineage; otherwise,
+    /// validation issues.
+    /// </returns>
     internal WoundReactionLineageResolution ResolveApplyDefinition(
         EffectCarrierOccurrence producer,
         JsonObject component,
@@ -145,7 +204,7 @@ internal sealed class WoundReactionLineageAuthority
                 out var producerDefinition) ||
             !producerIdentity.Group.Definitions.TryGetValue(
                 downstreamDefinitionKey,
-                out _) ||
+                out var downstreamDefinition) ||
             !producerIdentity.Group.Edges.TryGetValue(
                 producerIdentity.DefinitionKey,
                 out var targets) ||
@@ -191,6 +250,23 @@ internal sealed class WoundReactionLineageAuthority
             "wound",
             producerIdentity.Group.Authority.Key.SourceId,
             downstreamDefinitionKey);
+        if (!_sourceAuthority.TryResolveWoundGroup(
+                producerIdentity.Group.Authority.Key,
+                out var currentSourceGroup) ||
+            !string.Equals(
+                currentSourceGroup.GraphAuthorityFingerprint,
+                producerIdentity.Group.Authority.GraphAuthorityFingerprint,
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                producer.JsonPath + ".components",
+                "effect_reaction_wound_lineage_source_invalid",
+                "The source catalog must retain the exact source-group epoch sealed by the current producer lineage.",
+                producerIdentity.Group.Authority.GraphAuthorityFingerprint,
+                currentSourceGroup?.GraphAuthorityFingerprint ?? "missing");
+            return Failed(issues);
+        }
         var resolution = _sourceAuthority.ResolveCanonicalBinding(
             sourceKey,
             target.Kind);
@@ -199,6 +275,9 @@ internal sealed class WoundReactionLineageAuthority
             resolution.Source is null ||
             resolution.Source.Materializable ||
             !resolution.Source.Active ||
+            !JsonNode.DeepEquals(
+                resolution.Source.Definition,
+                downstreamDefinition) ||
             !string.Equals(
                 resolution.Source.Key.Realm,
                 target.Realm,
@@ -251,6 +330,39 @@ internal sealed class WoundReactionLineageAuthority
         };
     }
 
+    /// <summary>
+    /// Validates one wound source group and retains its exact current and historical definition authority.
+    /// </summary>
+    /// <param name="group">
+    /// Source-owned definitions and current root bindings.
+    /// </param>
+    /// <param name="sourceAuthority">
+    /// Source catalog authorizing definitions and exports.
+    /// </param>
+    /// <param name="identities">
+    /// Complete parsed identities from the same routing view.
+    /// </param>
+    /// <param name="carriers">
+    /// Current effect occurrences from that routing view.
+    /// </param>
+    /// <param name="applicationEffects">
+    /// Actual application references mapped to allocated effect identities.
+    /// </param>
+    /// <param name="claimedRootEffects">
+    /// Tracks root identities already claimed by preceding groups.
+    /// </param>
+    /// <param name="lineage">
+    /// Receives validated current lineage identities.
+    /// </param>
+    /// <param name="history">
+    /// Previously validated definition and identity history, updated on successful checks.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving completed terminal images; null retains original-baseline validation.
+    /// </param>
+    /// <param name="issues">
+    /// Receives root, definition, occurrence and history diagnostics.
+    /// </param>
     private static void BuildGroup(
         WoundSourceGroupAuthority group,
         EffectSourceAuthority sourceAuthority,
@@ -259,6 +371,8 @@ internal sealed class WoundReactionLineageAuthority
         IReadOnlyDictionary<string, string> applicationEffects,
         ISet<string> claimedRootEffects,
         IDictionary<string, LineageIdentity> lineage,
+        IDictionary<string, HistoricalIdentity> history,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory,
         List<ValidationIssue> issues)
     {
         var definitions = group.Definitions.ToDictionary(
@@ -304,14 +418,31 @@ internal sealed class WoundReactionLineageAuthority
             identities,
             analyzerRoots,
             analyzerDefinitions,
-            WoundEffectLineageDiagnosticProfile.Reaction);
+            WoundEffectLineageDiagnosticProfile.Reaction, retirementHistory);
         AddRange(issues, analysis.Issues);
 
         foreach (var entry in analysis.RetiredEntries)
         {
             var definitionKey = ReadDefinitionKey(entry);
-            if (definitions.TryGetValue(definitionKey, out var definition))
+            if (history.TryGetValue(entry.EffectId, out var prior))
             {
+                if (prior.Group.Authority.Key != group.Key || !prior.Agrees(entry))
+                {
+                    Add(issues, "effect.reactions.woundLineage." + entry.EffectId,
+                        "effect_reaction_wound_lineage_history_changed",
+                        "A retired identity must preserve its validated header and prior history.",
+                        "the actual preceding identity epoch", entry.EffectId);
+                    continue;
+                }
+                var priorIssueCount = issues.Count;
+                ValidateIdentityAuthority(prior.Group.Authority, entry, prior.Group.Definitions[prior.DefinitionKey],
+                    carriers, issues, out _);
+                if (issues.Count == priorIssueCount)
+                    history[entry.EffectId] = HistoricalIdentity.Capture(prior.Group, entry);
+            }
+            else if (definitions.TryGetValue(definitionKey, out var definition))
+            {
+                var priorIssueCount = issues.Count;
                 ValidateIdentityAuthority(
                     group,
                     entry,
@@ -319,6 +450,8 @@ internal sealed class WoundReactionLineageAuthority
                     carriers,
                     issues,
                     out _);
+                if (issues.Count == priorIssueCount)
+                    history[entry.EffectId] = HistoricalIdentity.Capture(groupState, entry);
             }
         }
 
@@ -332,6 +465,7 @@ internal sealed class WoundReactionLineageAuthority
             {
                 continue;
             }
+            var currentIssueCount = issues.Count;
             ValidateIdentityAuthority(
                 group,
                 entry,
@@ -339,6 +473,8 @@ internal sealed class WoundReactionLineageAuthority
                 carriers,
                 issues,
                 out var occurrence);
+            if (issues.Count == currentIssueCount)
+                history[entry.EffectId] = HistoricalIdentity.Capture(groupState, entry);
             if (!lineage.TryAdd(
                     entry.EffectId,
                     new LineageIdentity(
@@ -804,6 +940,118 @@ internal sealed class WoundReactionLineageAuthority
                 "Rebuild the accepted wound source group, exact root-result map, effect carriers, and first-create identity lineage before retrying the reaction.");
 
     private sealed record ResolvedRoot(WoundRootLineageAuthorityRow Row);
+
+    /// <summary>
+    /// Retains one validated identity's definition epoch and compact continuity evidence without retaining an epoch chain.
+    /// </summary>
+    private sealed class HistoricalIdentity
+    {
+        /// <summary>
+        /// Captures immutable fingerprints while sharing the validated group's private definition snapshot.
+        /// </summary>
+        /// <param name="group">
+        /// Exact definition group used to validate this identity.
+        /// </param>
+        /// <param name="entry">
+        /// Parsed identity whose current validation succeeded.
+        /// </param>
+        private HistoricalIdentity(LineageGroup group, EffectIdentityEntry entry)
+        {
+            Group = group;
+            DefinitionKey = ReadDefinitionKey(entry);
+            _state = entry.State;
+            _transitionCount = entry.Transitions.Count;
+            _headerFingerprint = HeaderFingerprint(entry.Raw);
+            _transitionFingerprint = PrefixFingerprint(entry.Raw, _transitionCount);
+            _fullFingerprint = Digest(entry.Raw);
+        }
+
+        /// <summary>
+        /// Gets the private shared definition epoch.
+        /// </summary>
+        internal LineageGroup Group { get; }
+        /// <summary>
+        /// Gets the exact definition key within the retained epoch.
+        /// </summary>
+        internal string DefinitionKey { get; }
+        private readonly string _state;
+        private readonly int _transitionCount;
+        private readonly string _headerFingerprint;
+        private readonly string _transitionFingerprint;
+        private readonly string _fullFingerprint;
+
+        /// <summary>
+        /// Records an already validated identity without modifying its definition snapshot.
+        /// </summary>
+        /// <param name="group">
+        /// Group supplying the original definition for this identity.
+        /// </param>
+        /// <param name="entry">
+        /// Successfully validated current identity image.
+        /// </param>
+        /// <returns>
+        /// Compact private continuity evidence for the next epoch.
+        /// </returns>
+        internal static HistoricalIdentity Capture(LineageGroup group, EffectIdentityEntry entry) => new(group, entry);
+
+        /// <summary>
+        /// Checks a retired identity against its preceding validated image without admitting history rewrites.
+        /// </summary>
+        /// <param name="entry">
+        /// Current parsed retired identity.
+        /// </param>
+        /// <returns>
+        /// True for an unchanged terminal image or preserved live header and transition prefix; otherwise false.
+        /// </returns>
+        internal bool Agrees(EffectIdentityEntry entry) => _state is not ("active" or "suspended")
+            ? _fullFingerprint == Digest(entry.Raw)
+            : entry.Transitions.Count >= _transitionCount && _headerFingerprint == HeaderFingerprint(entry.Raw) &&
+              _transitionFingerprint == PrefixFingerprint(entry.Raw, _transitionCount);
+
+        /// <summary>
+        /// Fingerprints all immutable identity header fields.
+        /// </summary>
+        /// <param name="raw">
+        /// Parsed identity JSON.
+        /// </param>
+        /// <returns>
+        /// Canonical fingerprint excluding state and transition history.
+        /// </returns>
+        private static string HeaderFingerprint(JsonObject raw)
+        {
+            var header = raw.DeepClone().AsObject();
+            header.Remove("state");
+            header.Remove("transitions");
+            return Digest(header);
+        }
+
+        /// <summary>
+        /// Fingerprints the exact ordered retained prefix of an identity history.
+        /// </summary>
+        /// <param name="raw">
+        /// Parsed identity JSON containing its transition array.
+        /// </param>
+        /// <param name="count">
+        /// Number of previously validated transitions.
+        /// </param>
+        /// <returns>
+        /// Canonical prefix fingerprint.
+        /// </returns>
+        private static string PrefixFingerprint(JsonObject raw, int count) => Digest(
+            new JsonArray(raw["transitions"]!.AsArray().Take(count).Select(node => node!.DeepClone()).ToArray()));
+
+        /// <summary>
+        /// Computes canonical private comparison evidence.
+        /// </summary>
+        /// <param name="node">
+        /// JSON image to fingerprint.
+        /// </param>
+        /// <returns>
+        /// A comparison fingerprint, not an independently reconstructible authority.
+        /// </returns>
+        private static string Digest(JsonNode node) => WoundAcceptedTurnFingerprintWriter.Compute(
+            new[] { WoundAcceptedTurnFingerprintWriter.CanonicalJson(node) });
+    }
 
     private sealed class LineageGroup
     {

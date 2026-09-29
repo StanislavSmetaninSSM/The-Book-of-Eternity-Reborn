@@ -20,19 +20,56 @@ internal sealed class MortalLocationCompanionAuthority
     private readonly ExactIdentityIndex _quests;
     private readonly ExactIdentityIndex _worldEvents;
 
+    /// <summary>
+    /// Stores exact companion identities and their complete detached input binding.
+    /// </summary>
+    /// <param name="codexEntries">
+    /// Exact identities read from the codex root.
+    /// </param>
+    /// <param name="quests">
+    /// Exact identities read from the quest root.
+    /// </param>
+    /// <param name="worldEvents">
+    /// Exact identities read from the world event root.
+    /// </param>
+    /// <param name="fingerprint">
+    /// Hash of all three detached roots, including fields outside the identity arrays.
+    /// </param>
     private MortalLocationCompanionAuthority(
         ExactIdentityIndex codexEntries,
         ExactIdentityIndex quests,
-        ExactIdentityIndex worldEvents)
+        ExactIdentityIndex worldEvents,
+        string fingerprint)
     {
         _codexEntries = codexEntries;
         _quests = quests;
         _worldEvents = worldEvents;
+        Fingerprint = fingerprint;
     }
+
+    /// <summary>
+    /// Gets the detached complete companion input binding used by accepted-turn planning caches.
+    /// </summary>
+    internal string Fingerprint { get; }
 
     internal static MortalLocationCompanionAuthority Empty { get; } =
         FromCanonicalRoots(codexRoot: null, questRoot: null, worldEventRoot: null);
 
+    /// <summary>
+    /// Reads exact companion identities and binds the complete supplied roots for cache reuse.
+    /// </summary>
+    /// <param name="codexRoot">
+    /// Codex root; <see langword="null"/> represents an absent root.
+    /// </param>
+    /// <param name="questRoot">
+    /// Quest root; <see langword="null"/> represents an absent root.
+    /// </param>
+    /// <param name="worldEventRoot">
+    /// World event root; <see langword="null"/> represents an absent root.
+    /// </param>
+    /// <returns>
+    /// Detached companion authority and complete-input fingerprint.
+    /// </returns>
     internal static MortalLocationCompanionAuthority FromCanonicalRoots(
         JsonNode? codexRoot,
         JsonNode? questRoot,
@@ -50,7 +87,13 @@ internal sealed class MortalLocationCompanionAuthority
         return new MortalLocationCompanionAuthority(
             codexEntries,
             quests,
-            worldEvents);
+            worldEvents,
+            SpiritualWoundStateJson.Hash(new JsonObject
+            {
+                ["codex"] = codexRoot?.DeepClone(),
+                ["quests"] = questRoot?.DeepClone(),
+                ["events"] = worldEventRoot?.DeepClone()
+            }, "location_companion_input"));
     }
 
     internal MortalLocationReferenceResolution ResolveLoreBinding(

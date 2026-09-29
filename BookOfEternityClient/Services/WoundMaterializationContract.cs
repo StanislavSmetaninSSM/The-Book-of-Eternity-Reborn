@@ -1012,6 +1012,10 @@ internal static class WoundMaterializationContract
             ValidateOwnedDefinitionAuthority(definition, woundId, owner, classification, issues);
         }
 
+        if (string.Equals(classification.Domain, "spiritual", StringComparison.Ordinal))
+            WoundConsequenceEnvelopeCatalog.ValidateDetachedSpiritualGraph(severity.Rank,
+                graph.Definitions.Select(static definition => definition.Definition).ToArray(), path, issues);
+
         var rootsByEffect = new Dictionary<WoundWorkingReference, OwnedRootNode>();
         var rootsByDefinition = new Dictionary<string, OwnedRootNode>(StringComparer.Ordinal);
         var exactEffectIds = new HashSet<WoundWorkingReference>();

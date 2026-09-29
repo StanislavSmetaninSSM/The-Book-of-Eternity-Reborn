@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 /// <summary>
@@ -364,12 +365,13 @@ public partial class CanonicalStateNormalizer
         IReadOnlyDictionary<string, string>? backups,
         MortalItemAcceptedTurnNormalizationMode mortalItemMode,
         AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight,
-        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null)
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
-        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups);
+        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);
         await NormalizeMortalItemsAsync(
             backups,
             mortalLocationPlan?.AcceptedStorageCoordinates,
@@ -389,8 +391,12 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
         await NormalizeSoulStateAsync(backups);
-        await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
-        await NormalizeAfterlifeEntityProfilesAsync(backups);
+        if (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))
+            await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
+        if (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath))
+            await NormalizeAfterlifeEntityProfilesAsync(backups);
         await NormalizeAfterlifeActiveThreatsAsync(backups);
         await NormalizeChaosSeaGuardianPoliticsAsync(backups);
         await NormalizeAfterlifeChroniclesAsync(backups);
@@ -428,7 +434,8 @@ public partial class CanonicalStateNormalizer
                  mortalLocationPlan,
                  acceptedMechanicsPreflight,
                  normalizedAcceptedCarrierBaselines: true,
-                 treatmentPublicationReceipt);
+                 treatmentPublicationReceipt,
+                 spiritualPublicationReceipt);
     }
 
     private void EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority()

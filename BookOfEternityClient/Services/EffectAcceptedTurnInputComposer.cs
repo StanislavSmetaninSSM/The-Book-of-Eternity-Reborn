@@ -1808,6 +1808,26 @@ internal static class EffectAcceptedTurnInputComposer
         return new CanonicalWoundSourceComposition(exports, groups, issues);
     }
 
+    /// <summary>
+    /// Composes only the exact prepared wound source set for operation validation.
+    /// This scoped authority does not replace the live turn's existing source authority or routing state.
+    /// </summary>
+    /// <param name="prepared">
+    /// Sealed prepared wound operations whose retained authority is validated before source composition.
+    /// </param>
+    /// <returns>
+    /// The exact prepared wound sources and groups, or their composition issues.
+    /// </returns>
+    internal static EffectSourceAuthority BuildPreparedWoundOperationAuthority(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        var binding = prepared.Binding;
+        var composed = ComposePreparedWoundSources(binding.SessionId, binding.SnapshotToken, binding.Turn,
+            binding.Realm, prepared, null);
+        return EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
+            Array.Empty<EffectSourceExport>(), composed.Exports, new HashSet<string>(StringComparer.Ordinal),
+            WoundGroups: composed.Groups, CompositionIssues: composed.Issues));
+    }
+
     private static CanonicalWoundSourceComposition ComposePreparedWoundSources(
         string sessionId,
         string snapshotToken,

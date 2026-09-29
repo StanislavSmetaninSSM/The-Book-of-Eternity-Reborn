@@ -3,6 +3,16 @@
 **Feature**: `1536-complete-wound-materialization`  
 **Source issue**: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
 
+## Current verification policy — 2026-09-30
+
+[CATEGORY-SELECTION-DECISION rev1](../1505-test-suite-performance/spec.md)
+supersedes every Fast/PreMerge/FullValidation/full-suite instruction in this
+historical quickstart. Use [docs/testing.md](../../docs/testing.md): choose only
+categories for changed contracts and consumers, update the catalog when needed,
+and record reasons. No all-suite control, including a serial run of every category.
+The current task is testing-only T066–T071 in feature 1505; gameplay stays paused
+until migration verification, independent review and owner inspection.
+
 ## 1. Read the authority documents
 
 Before editing, read:
@@ -329,6 +339,44 @@ Assert:
 - non-training defeat has a bounded anti-repeat result;
 - dissipation remains optional.
 
+For the approved T081-C durable boundary, start from a production-valid signed source
+fixture and require zero Error issues from both owning raw validation and final conflict
+validation. Exercise the production continuation and common publisher rather than a
+test-authored wound command, receipt, carrier or history row:
+
+1. Persist the first pending decision wave. Assert that the original snapshot, source
+   prefix, resource/effect transcript, dice claims, cursor, images and preserved draft
+   round-trip through the strict parser, while accepted receipt/history/carrier roots and
+   visible history remain byte-identical.
+2. Cold-start a fresh service instance and explicitly decline. Assert that the pending
+   packet reconstructs the exact source authority, the one final common plan appends a
+   `none` receipt and consumes the pending packet, and no wound command, transition,
+   acquisition notification, second spend, reroll or progression step occurs.
+3. Repeat from a fresh baseline with `materialize`. Assert one matching decision receipt,
+   command result, carrier/index update and history transition, plus one bound acquisition
+   narrative and notification in the same common publication.
+4. Put a dependent later exchange after the offered exchange. Assert chronological
+   recovery/spend order, the same original dice, application of the staged wound effect
+   to the detached later source, and no intermediate canonical write.
+5. Offer both conflict sides in one exchange. Assert deterministic source order, separate
+   explicit decisions and per-side create/worsen/re-trauma policy without treating a
+   decline as use of the new-wound allowance.
+6. Cold-start before a decision, after staging a decision and after successful publication.
+   The first two resume the exact cursor; the last proves receipt/plan agreement and does
+   not replay a leftover pending packet.
+7. Mutate one source coordinate, decision, snapshot identity, before-image, candidate
+   image, resource/effect fingerprint or embedded source witness at a time. Each change
+   fails closed before canonical publication.
+8. Inject write and read-back failures with both roots initially absent and present.
+   Assert byte-exact restoration of existence/content and removal only of staging owned
+   by the failed operation.
+9. Replay exact declines and materializations and assert no new ordinal, command, spend,
+   transition, notification or public narrative. Change the decision under the same
+   coordinate and assert conflict.
+10. Prune the display `recentConflicts` history and reuse a display conflict ID after a
+    terminal instance. Assert the durable ledger retains the old consumption and creates
+    a new instance only for a genuinely new accepted start.
+
 ### E. Spiritual healing
 
 For wound II and healer tier II, cover all four margin bands plus natural 1/20. Assert
@@ -348,8 +396,12 @@ recovery after a failed session.
 
 ### G. Providers
 
-- Elyara is visible from first Chaos Sea entry, tier V, in the Lazaret, and cannot be
-  downgraded.
+- Elyara is initially visible from first Chaos Sea entry, tier V, in the Lazaret,
+  and cannot be downgraded. After she accompanies the player to the Shining Abode,
+  the same healing command resolves her current location in both console and browser.
+- After Elyara dies, her healing command is absent. Offers made before death or
+  relocation cannot charge, travel or treat using stale state; life/location/access
+  are revalidated. Bootstrap/normalization preserves relocation/death without duplication.
 - Severity I-IV public quotes are 25/50/100/200 at 100%; multiplier endpoints and
   upward rounding are exact.
 - Accepted failed/partial attempts charge once; cancel/rollback charges zero.
@@ -494,3 +546,62 @@ cache, restart, replay, rollback, and treatment lifecycle rows in Integration. A
 focused GREEN controls, run one meaningful Fast checkpoint, focused documentation
 guards, conditional FullValidation because shared Mortal/afterlife examples change,
 and independent review. Run PreMerge only when an actual merge is requested.
+
+## Approved last-binding closure verification (#1536)
+
+Follow plan.md B0–B5 and approved spec.md RESULT-CLOSURE-BINDING revision1.
+This block is pending implementation and follows current FRONTIER acceptance.
+Use genuine signed pressure5/15 → binding13/10 and one saved materialized wound;
+arithmetic stays player_success while binding loses its prerequisite. Require
+separate actual GM replies for current outcome/control A and exact final-control
+B, original choice/resources/dice, cold accepted-A recovery and one publication.
+Repeat for force_binding +2→+1 with only setup:true and mixed position/cost burden.
+Reject forbidden current/prefix edits, premature echo, forged B, changed accepted
+A, ignored raw wrappers and unrelated ordinary errors beside the echo mismatch.
+Keep lifecycle/process cases outside Fast, using scripts/test-csharp.ps1 and
+measured selected budgets. Required afterlife docs, Fast7, conditional
+FullValidation30 and independent Astra XHigh review precede child acceptance.
+
+## C4 GM continuation revision2 verification (#1536)
+
+Use the signed dependent-exchange fixture to submit one real wound decision.
+Before repairing the next exchange, inspect the retained pendingSubmission:
+exact command and selection-only allocation suffix, unchanged committed cursor
+and physical pending. Dispose and reopen the owner, repair only permitted draft
+fields, then resume without another decision. Require identical allocated IDs
+and times, one normal successor and atomic removal of the submission. Repeat for
+automatic guarantee satisfaction, prior committed layers, tampering and writer faults.
+
+Pure protocol controls cover exact request/response roundtrip, recursive duplicate
+and unknown fields, wrong version/case/phase/correlation, decision cardinality,
+ordinary repair compatibility and the legal none-only exhausted-rank offer.
+Keep these tests in Fast. Run persistence and restart controls separately through
+`scripts/test-csharp.ps1 -Lane Focused -FocusedProject Integration`; pure protocol
+and worker-contract controls use the default Focused project.
+
+The later owning dispatch controls must exercise both file-helper and worker
+routes for none/materialize, sequential offers and dependent repair/restart.
+Verify original action/dice/progression and unrelated siblings, no canonical
+publication before common completion, and stale-worker rejection both before
+apply and before ready. Protocol-only tests do not establish live dispatch or
+whole-turn crash-finalization completion. Update worked GM examples and required
+documentation guards before the complete boundary's independent review.
+
+## Approved Mortal recovery publication verification (#1536, revision1)
+
+Run the owning MortalWoundRecoveryTests selections through PS7 and
+`scripts/test-csharp.ps1 -Lane Focused -FocusedProject Integration`; split by
+actual method only when the selected control would exceed its documented bound.
+Require real common publication for deadline−1/deadline/deadline+1, multi-cadence,
+stabilization/reentry, blocked/no-natural, deterioration and typed death handoff.
+Inspect exact progress/severity, full-heal archive/effect termination and source
+anchor preservation. At100/10/135 require next140; at136 require no second
+progress/adverse application; at140 require exactly one newly elapsed interval.
+
+Warm/cold same-minute replay returns the exact original receipt, no resolution,
+plan or bytes. Altered receipt/history returns InvalidHistory before corrupt
+live-clock access. Reject changed resolution and stale owner without claims or
+writes. XML build and mandatory independent Astra XHigh review cover the whole
+bounded runtime/tests/docs block. One complete successful PreMerge≤30minutes
+(including Fast and cleanup) establishes performance acceptance; stop afterward
+for owner inspection. Full death lifecycle and unrelated feature work remain open.

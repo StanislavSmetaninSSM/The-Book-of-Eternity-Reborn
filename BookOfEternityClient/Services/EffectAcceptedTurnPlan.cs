@@ -111,6 +111,105 @@ internal sealed class EffectAcceptedTurnPlan
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string IdentityIndexPath = "game_state/effects/effect_identity_index.json";
 
+    /// <summary>
+    /// Retains the private recovery executor's immutable stage evidence across
+    /// detached copies. Only the owning planner can authenticate this value.
+    /// </summary>
+    internal object? MortalRecoveryExecutionAuthority { get; }
+
+    /// <summary>
+    /// Freezes one effect execution result and retains any private continuation proof.
+    /// </summary>
+    /// <param name="inputFingerprint">
+    /// Fingerprint of the admitted effect input.
+    /// </param>
+    /// <param name="carrierAuthorityFingerprint">
+    /// Fingerprint of the original carrier authority.
+    /// </param>
+    /// <param name="sourceAuthorityFingerprint">
+    /// Fingerprint of the admitted source authority.
+    /// </param>
+    /// <param name="targetAuthorityFingerprint">
+    /// Fingerprint of the admitted target authority.
+    /// </param>
+    /// <param name="allocatedCombatantIds">
+    /// Combatant identities allocated during accepted planning.
+    /// </param>
+    /// <param name="allocatedEffectIds">
+    /// Effect identities allocated by the owned identity factory.
+    /// </param>
+    /// <param name="allocatedTransitionIds">
+    /// Effect transition identities allocated during execution.
+    /// </param>
+    /// <param name="sources">
+    /// Source keys used by the resulting plan.
+    /// </param>
+    /// <param name="targets">
+    /// Target keys used by the resulting plan.
+    /// </param>
+    /// <param name="sourceBindings">
+    /// Detached final source bindings, unique by source key.
+    /// </param>
+    /// <param name="deferredReactions">
+    /// Reactions awaiting the common accepted boundary.
+    /// </param>
+    /// <param name="reactionExpansionCount">
+    /// Total already consumed reaction expansion count.
+    /// </param>
+    /// <param name="reactionExpansionUsage">
+    /// Per-component expansion usage whose sum matches the total.
+    /// </param>
+    /// <param name="activeEffects">
+    /// Detached active effects produced or updated during planning.
+    /// </param>
+    /// <param name="resourceTriggerCarriers">
+    /// Current carriers used to resolve resource triggers.
+    /// </param>
+    /// <param name="sourceAuthority">
+    /// Source catalog used for subsequent routing.
+    /// </param>
+    /// <param name="targetAuthority">
+    /// Target catalog used for subsequent routing.
+    /// </param>
+    /// <param name="eventInput">
+    /// Accepted event and clock context retained by this plan.
+    /// </param>
+    /// <param name="carrierBeforeImages">
+    /// Original publication carrier images; absent roots are null.
+    /// </param>
+    /// <param name="carrierAfterImages">
+    /// Resulting carrier images to publish.
+    /// </param>
+    /// <param name="identityIndexBeforeImage">
+    /// Original identity index, or null when absent.
+    /// </param>
+    /// <param name="identityIndexAfterImage">
+    /// Actual resulting identity index.
+    /// </param>
+    /// <param name="touchedPaths">
+    /// Paths touched by the coordinated publication.
+    /// </param>
+    /// <param name="deletedPaths">
+    /// Paths removed by the coordinated publication.
+    /// </param>
+    /// <param name="acceptedCarrierBaselines">
+    /// Accepted carrier baselines, or null to derive them from original carrier images.
+    /// </param>
+    /// <param name="acceptedBoundaryCompletionProof">
+    /// Private common-boundary completion proof, or null before completion.
+    /// </param>
+    /// <param name="acceptedBoundaryBasePlanFingerprint">
+    /// Original plan payload fingerprint for a completed boundary, or null beforehand.
+    /// </param>
+    /// <param name="woundApplicationRootEffectBindings">
+    /// Current same-turn wound root aliases, or null for none.
+    /// </param>
+    /// <param name="skillScopeAuthority">
+    /// Accepted skill-scope snapshot, or null when unavailable.
+    /// </param>
+    /// <param name="mortalRecoveryExecutionAuthority">
+    /// Private ordered recovery execution evidence, or null for an ordinary plan.
+    /// </param>
     internal EffectAcceptedTurnPlan(
         string inputFingerprint,
         string carrierAuthorityFingerprint,
@@ -144,9 +243,11 @@ internal sealed class EffectAcceptedTurnPlan
         string? acceptedBoundaryBasePlanFingerprint = null,
         IReadOnlyList<WoundApplicationRootEffectBinding>?
             woundApplicationRootEffectBindings = null,
-        EffectRollSkillScopeAuthority? skillScopeAuthority = null)
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null,
+        object? mortalRecoveryExecutionAuthority = null)
     {
         InputFingerprint = inputFingerprint;
+        MortalRecoveryExecutionAuthority = mortalRecoveryExecutionAuthority;
         SkillScopeAuthority = skillScopeAuthority;
         CarrierAuthorityFingerprint = carrierAuthorityFingerprint;
         SourceAuthorityFingerprint = sourceAuthorityFingerprint;
@@ -398,7 +499,8 @@ internal sealed class EffectAcceptedTurnPlan
             source._acceptedBoundaryCompletionProof,
             source._acceptedBoundaryBasePlanFingerprint,
             source.WoundApplicationRootEffectBindings,
-            source.SkillScopeAuthority);
+            source.SkillScopeAuthority,
+            source.MortalRecoveryExecutionAuthority);
     }
 
     private static ReadOnlyCollection<T> ReadOnly<T>(IReadOnlyList<T> values) =>

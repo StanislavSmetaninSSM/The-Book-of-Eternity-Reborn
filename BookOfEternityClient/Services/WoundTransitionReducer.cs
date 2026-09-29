@@ -79,13 +79,39 @@ internal sealed record WoundTreatmentEvidence(
     WoundDeclaredTransitionOutcome Outcome)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
+/// <summary>
+/// Carries typed recovery evidence and an optional private Mortal continuation companion.
+/// </summary>
+/// <param name="AuthorityRef">
+/// The accepted recovery authority reference.
+/// </param>
+/// <param name="ExpectedBeforeFingerprint">
+/// The complete semantic seal of the exact before wound.
+/// </param>
+/// <param name="ExpectedAfterFingerprint">
+/// The complete semantic seal of the proposed after wound.
+/// </param>
+/// <param name="TickKey">
+/// The unique accepted tick for this boundary.
+/// </param>
+/// <param name="ClockOrCycleRef">
+/// The declared recovery clock or cycle reference.
+/// </param>
+/// <param name="Outcome">
+/// The complete declared scalar and consequence result to validate.
+/// </param>
+/// <param name="MortalContinuationAuthority">
+/// The actual private Mortal companion, or null for ordinary recovery.
+/// This capability is never serialized into an authored or canonical JSON surface.
+/// </param>
 internal sealed record WoundRecoveryEvidence(
     string AuthorityRef,
     string ExpectedBeforeFingerprint,
     string ExpectedAfterFingerprint,
     string TickKey,
     string ClockOrCycleRef,
-    WoundDeclaredTransitionOutcome Outcome)
+    WoundDeclaredTransitionOutcome Outcome,
+    [property: System.Text.Json.Serialization.JsonIgnore] object? MortalContinuationAuthority = null)
     : WoundTransitionEvidence(AuthorityRef, ExpectedBeforeFingerprint, ExpectedAfterFingerprint);
 
 internal sealed record WoundHealingEvidence(
@@ -996,6 +1022,65 @@ internal static partial class WoundTransitionReducer
         }
     }
 
+    /// <summary>
+    /// Derives the care state retained by a sealed worsening without changing unrelated care coordinates.
+    /// </summary>
+    /// <param name="before">
+    /// The exact wound before-image. Only a stabilized physical wound loses stabilization.
+    /// </param>
+    /// <returns>
+    /// The expected care state after worsening.
+    /// </returns>
+    internal static WoundCare DeriveWorseningCare(WoundMaterializationEnvelope before)
+    {
+        ArgumentNullException.ThrowIfNull(before);
+        return string.Equals(before.Classification.Domain, "physical", StringComparison.Ordinal) &&
+               string.Equals(before.Care.State, "stabilized", StringComparison.Ordinal)
+            ? before.Care with { State = "untreated", StabilizedAtTurn = null }
+            : before.Care;
+    }
+
+    /// <summary>
+    /// Derives the ordered recovery blockers retained by a sealed worsening.
+    /// </summary>
+    /// <param name="before">
+    /// The exact wound before-image supplying the original blockers and stabilization policy.
+    /// </param>
+    /// <returns>
+    /// The original blockers, with only an absent required stabilization blocker appended on care reset.
+    /// </returns>
+    internal static IReadOnlyList<string> DeriveWorseningBlockers(WoundMaterializationEnvelope before)
+    {
+        ArgumentNullException.ThrowIfNull(before);
+        var hasStabilizationPolicy = before.Recovery.DeteriorationPolicy is { } policy &&
+            policy.ValueKind == JsonValueKind.Object &&
+            policy.TryGetProperty("unmetConditions", out var conditions) &&
+            conditions.ValueKind == JsonValueKind.Array && conditions.GetArrayLength() == 1 &&
+            conditions[0].ValueKind == JsonValueKind.String &&
+            string.Equals(conditions[0].GetString(), "not_stabilized", StringComparison.Ordinal);
+        return DeriveWorseningCare(before) != before.Care &&
+               (string.Equals(before.Recovery.Mode, "requires_stabilization", StringComparison.Ordinal) ||
+                hasStabilizationPolicy) &&
+               !before.Recovery.Blockers.Contains("not_stabilized", StringComparer.Ordinal)
+            ? before.Recovery.Blockers.Append("not_stabilized").ToArray()
+            : before.Recovery.Blockers.ToArray();
+    }
+
+    /// <summary>
+    /// Validates a sealed worsening against the exact source wound and its bounded care reset.
+    /// </summary>
+    /// <param name="request">
+    /// The transition request carrying typed worsening evidence.
+    /// </param>
+    /// <param name="before">
+    /// The exact active wound before-image.
+    /// </param>
+    /// <param name="after">
+    /// The proposed wound after-image before client-owned condition-anchor allocation.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving evidence, scope and state conflicts.
+    /// </param>
     private static void ValidateWorsen(
         WoundTransitionRequest request,
         WoundMaterializationEnvelope before,
@@ -1061,7 +1146,12 @@ internal static partial class WoundTransitionReducer
         if (issues.Count == 0)
             ValidateFreshSeverityRootSet(before, after, issues);
         if (issues.Count == 0 &&
-            (!SameRecoveryPolicyExceptStep(before.Recovery, after.Recovery) ||
+            (!SameRecoveryPolicyExceptStep(before.Recovery,
+                after.Recovery with { Blockers = before.Recovery.Blockers }) ||
+            !SequenceEqual(DeriveWorseningBlockers(before), after.Recovery.Blockers) ||
+            after.Care != DeriveWorseningCare(before) ||
+            after.Recovery.RecoveryAnchor != before.Recovery.RecoveryAnchor ||
+            after.Recovery.DeteriorationAnchor != before.Recovery.DeteriorationAnchor ||
             !SameComplicationFacts(before.Complications, after.Complications) ||
             !CanonicalEqual(
                 before,
@@ -1655,7 +1745,10 @@ internal static partial class WoundTransitionReducer
                 $"{before.Severity.Rank}->{after.Severity.Rank}");
         }
         if (after.Severity.Rank == before.Severity.Rank &&
-            after.Recovery.CurrentStepProgress < before.Recovery.CurrentStepProgress)
+            after.Recovery.CurrentStepProgress < before.Recovery.CurrentStepProgress &&
+            !(evidence.Outcome.Heals && FollowUpHealStageIsLegal(before, after) &&
+              WoundAcceptedTurnPlanner.RecoveryContinuationProvesFullHeal(
+                  evidence.MortalContinuationAuthority, before)))
         {
             Add(
                 issues,
@@ -1676,6 +1769,10 @@ internal static partial class WoundTransitionReducer
         {
             if (before.Severity.Rank != after.Severity.Rank)
                 ValidateFreshSeverityRootSet(before, after, issues);
+            else if (evidence.Outcome.AllowsWorsening &&
+                     WoundAcceptedTurnPlanner.RecoveryContinuationProvesAddComplication(
+                         evidence.MortalContinuationAuthority, before))
+                ValidateSameRankTreatmentOwnedSourceDelta(before, after, evidence.Outcome, issues);
             else
                 ValidateSameRankOwnedSourceDelta(before, after, null, issues);
         }

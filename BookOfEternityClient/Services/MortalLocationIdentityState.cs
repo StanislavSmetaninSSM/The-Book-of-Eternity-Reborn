@@ -5,26 +5,249 @@ using System.Text.Json.Nodes;
 
 namespace BookOfEternityClient.Services;
 
-internal sealed class MortalLocationIdentityFactory
+/// <summary>
+/// Binds a creation identity to its admitted source and input path.
+/// </summary>
+/// <param name="InitialId">
+/// Admitted initial reference for the created location or link.
+/// </param>
+/// <param name="MaterializationId">
+/// Admitted materialization identity.
+/// </param>
+/// <param name="SourceTurn">
+/// Turn that admitted the creation.
+/// </param>
+/// <param name="Route">
+/// Accepted creation route.
+/// </param>
+/// <param name="SourceAuthorityKind">
+/// Kind of the admitted source authority.
+/// </param>
+/// <param name="SourceAuthorityId">
+/// Identity of the admitted source authority.
+/// </param>
+/// <param name="InputPath">
+/// Nonempty path of the creation operation in its source input.
+/// </param>
+/// <param name="SourceLocationId">
+/// Existing source location reference for a link, or <see langword="null"/> when absent.
+/// </param>
+/// <param name="SourceInitialId">
+/// Same-turn source initial reference for a link, or <see langword="null"/> when absent.
+/// </param>
+/// <param name="TargetLocationId">
+/// Existing target location reference for a link, or <see langword="null"/> when absent.
+/// </param>
+/// <param name="TargetInitialId">
+/// Same-turn target initial reference for a link, or <see langword="null"/> when absent.
+/// </param>
+internal sealed record MortalLocationCreationAllocation(
+    string InitialId,
+    string MaterializationId,
+    int SourceTurn,
+    string Route,
+    string SourceAuthorityKind,
+    string SourceAuthorityId,
+    string InputPath,
+    string? SourceLocationId = null,
+    string? SourceInitialId = null,
+    string? TargetLocationId = null,
+    string? TargetInitialId = null);
+
+/// <summary>
+/// Binds a lifecycle identity to the admitted operation and affected entity.
+/// </summary>
+/// <param name="Kind">
+/// Lifecycle operation kind.
+/// </param>
+/// <param name="Turn">
+/// Turn that admitted the operation.
+/// </param>
+/// <param name="EntityId">
+/// Permanent entity identity receiving the transition.
+/// </param>
+/// <param name="OperationRef">
+/// Path of the admitted lifecycle operation.
+/// </param>
+/// <param name="SourceLocationId">
+/// Source location reference, or <see langword="null"/> when the operation has none.
+/// </param>
+/// <param name="TargetLocationId">
+/// Target location reference, or <see langword="null"/> when the operation has none.
+/// </param>
+/// <param name="ChildId">
+/// Governed child identity, or <see langword="null"/> for an entity transition.
+/// </param>
+internal sealed record MortalLocationTransitionAllocation(
+    string Kind,
+    int Turn,
+    string EntityId,
+    string OperationRef,
+    string? SourceLocationId,
+    string? TargetLocationId,
+    string? ChildId);
+
+/// <summary>
+/// Binds a threat identity to its admitted target and complete addition request.
+/// </summary>
+/// <param name="Turn">
+/// Turn that admitted the threat addition.
+/// </param>
+/// <param name="TargetLocationId">
+/// Existing target location identity, or <see langword="null"/> for a same-turn target.
+/// </param>
+/// <param name="InitialTargetLocationId">
+/// Same-turn target initial reference, or <see langword="null"/> for an existing target.
+/// </param>
+/// <param name="OperationRef">
+/// Path of the admitted threat addition operation.
+/// </param>
+/// <param name="ThreatFingerprint">
+/// Canonical comparison hash of the complete admitted threat body before identity assignment.
+/// </param>
+internal sealed record MortalLocationThreatAllocation(
+    int Turn,
+    string? TargetLocationId,
+    string? InitialTargetLocationId,
+    string OperationRef,
+    string ThreatFingerprint);
+
+/// <summary>
+/// Creates permanent Mortal location identities using the ordinary random generator.
+/// </summary>
+internal class MortalLocationIdentityFactory
 {
     private readonly Func<Guid> _guidFactory;
 
+    /// <summary>
+    /// Uses <paramref name="guidFactory"/> for each new identity.
+    /// </summary>
+    /// <param name="guidFactory">
+    /// Optional generator; <see langword="null"/> uses <see cref="Guid.NewGuid()"/>.
+    /// </param>
     internal MortalLocationIdentityFactory(Func<Guid>? guidFactory = null)
     {
         _guidFactory = guidFactory ?? Guid.NewGuid;
     }
 
-    internal string CreateLocationId() => "loc_" + Next();
+    /// <summary>
+    /// Gets whether this allocation factory remains usable.
+    /// </summary>
+    internal virtual bool IsHealthy => true;
 
-    internal string CreateLocationReceiptId() => "mlocrec_" + Next();
+    /// <summary>
+    /// Creates a permanent location identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new location identity.
+    /// </returns>
+    internal virtual string CreateLocationId() => "loc_" + Next();
 
-    internal string CreateLinkId() => "lnk_" + Next();
+    /// <summary>
+    /// Creates an identity for an admitted location creation.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted creation coordinate.
+    /// </param>
+    /// <returns>
+    /// A new location identity.
+    /// </returns>
+    internal virtual string CreateLocationId(MortalLocationCreationAllocation allocation) => CreateLocationId();
 
-    internal string CreateLinkReceiptId() => "mlinkrec_" + Next();
+    /// <summary>
+    /// Creates a location receipt identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new location receipt identity.
+    /// </returns>
+    internal virtual string CreateLocationReceiptId() => "mlocrec_" + Next();
 
-    internal string CreateTransitionId() => "mltrn_" + Next();
+    /// <summary>
+    /// Creates a receipt identity for an admitted location creation.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted creation coordinate.
+    /// </param>
+    /// <returns>
+    /// A new location receipt identity.
+    /// </returns>
+    internal virtual string CreateLocationReceiptId(MortalLocationCreationAllocation allocation) => CreateLocationReceiptId();
 
-    internal string CreateThreatId() => "threat_" + Next();
+    /// <summary>
+    /// Creates a permanent link identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new link identity.
+    /// </returns>
+    internal virtual string CreateLinkId() => "lnk_" + Next();
+
+    /// <summary>
+    /// Creates an identity for an admitted link creation.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted creation and endpoint coordinate.
+    /// </param>
+    /// <returns>
+    /// A new link identity.
+    /// </returns>
+    internal virtual string CreateLinkId(MortalLocationCreationAllocation allocation) => CreateLinkId();
+
+    /// <summary>
+    /// Creates a link receipt identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new link receipt identity.
+    /// </returns>
+    internal virtual string CreateLinkReceiptId() => "mlinkrec_" + Next();
+
+    /// <summary>
+    /// Creates a receipt identity for an admitted link creation.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted creation and endpoint coordinate.
+    /// </param>
+    /// <returns>
+    /// A new link receipt identity.
+    /// </returns>
+    internal virtual string CreateLinkReceiptId(MortalLocationCreationAllocation allocation) => CreateLinkReceiptId();
+
+    /// <summary>
+    /// Creates a lifecycle transition identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new transition identity.
+    /// </returns>
+    internal virtual string CreateTransitionId() => "mltrn_" + Next();
+
+    /// <summary>
+    /// Creates an identity for an admitted lifecycle operation.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted lifecycle coordinate.
+    /// </param>
+    /// <returns>
+    /// A new transition identity.
+    /// </returns>
+    internal virtual string CreateTransitionId(MortalLocationTransitionAllocation allocation) => CreateTransitionId();
+
+    /// <summary>
+    /// Creates a threat identity with its existing gameplay prefix.
+    /// </summary>
+    /// <returns>
+    /// A new threat identity.
+    /// </returns>
+    internal virtual string CreateThreatId() => "threat_" + Next();
+
+    /// <summary>
+    /// Creates an identity for an admitted threat addition.
+    /// </summary>
+    /// <param name="allocation">
+    /// Admitted target and threat operation.
+    /// </param>
+    /// <returns>
+    /// A new threat identity.
+    /// </returns>
+    internal virtual string CreateThreatId(MortalLocationThreatAllocation allocation) => CreateThreatId();
 
     private string Next() => _guidFactory().ToString("N");
 }

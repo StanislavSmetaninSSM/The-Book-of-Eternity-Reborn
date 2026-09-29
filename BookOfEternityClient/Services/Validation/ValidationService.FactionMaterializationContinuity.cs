@@ -100,8 +100,8 @@ public partial class ValidationService
             string FactionId)> materializedFactions)
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        var currentFileExists = _fs.FileExists(MortalFactionMaterializationPath);
-        var currentJson = await _fs.ReadFileAsync(MortalFactionMaterializationPath);
+        var currentFileExists = SameTurnOwnerCurrentFileExists(MortalFactionMaterializationPath);
+        var currentJson = await ReadSameTurnOwnerCurrentTextAsync(MortalFactionMaterializationPath);
         if (string.IsNullOrWhiteSpace(currentJson))
         {
             if (currentFileExists ||
@@ -285,8 +285,8 @@ public partial class ValidationService
             string FactionId)> materializedFactions)
     {
         var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        var currentFileExists = _fs.FileExists(ShiningFactionMaterializationPath);
-        var currentJson = await _fs.ReadFileAsync(ShiningFactionMaterializationPath);
+        var currentFileExists = SameTurnOwnerCurrentFileExists(ShiningFactionMaterializationPath);
+        var currentJson = await ReadSameTurnOwnerCurrentTextAsync(ShiningFactionMaterializationPath);
         if (string.IsNullOrWhiteSpace(currentJson))
         {
             if (currentFileExists ||

@@ -19,6 +19,32 @@
 
 ## Clarifications
 
+### Session 2026-09-22 — T081-C Durable Spiritual Decision Contract Approved
+
+The next architectural checkpoint is the exact durable T081-C contract already written in
+`contracts/spiritual-wound-live-turn-boundary.md`. The recommended design uses two distinct
+client-owned roots: resumable in-turn evidence in
+`game_state/control/pending_spiritual_wound_decisions.json`, and append-only accepted
+instance/closure/source/decision evidence in
+`game_state/wounds/spiritual_wound_opportunity_receipts.json`. The common accepted-mechanics
+transaction is the only publisher. Persisting a pending packet never creates an accepted receipt;
+an explicit `none` decision still creates a durable receipt, while `materialize` must agree with
+one exact wound/history transition. Cold reconstruction must rebuild authority from the original
+pending snapshot, retained source prefix and staged decisions without trusting caller hashes or
+process-local objects. Failure and rollback restore the original baseline, including originally
+absent roots, and exact replay produces no new command, spend, transition or notification.
+
+The owner approved this exact contract on 2026-09-22. This checkpoint also owns final live
+wound-carrier assembly and one common publication, including
+the source-only/decline case. It does not change the approved wound formula, profile set, option-A
+reaction boundary, resource chronology, healing rules, player commands, or the still-unresolved
+recovery/force-incarnation cost decision. Implementation planning and task decomposition may now
+proceed against this approved boundary.
+
+### Session 2026-09-19
+
+- Q: Preserve the eight spiritual wound profiles and correct the impossible spiritual-reaction acceptance scenario, or expand spiritual wounds with reactions? → A: Owner selected recommended option A. Preserve the eight profiles plus `wound_consequence`; spiritual reaction graphs remain forbidden. Require real spiritual insertion, next-exchange contributions, worsening/re-trauma and common completion; cover reaction descendants, replacements and anchored consumption through legal physical wounds/general effects in the same engine. This changes the acceptance matrix explicitly; it does not claim the former impossible scenario passed or waive cold reconstruction.
+
 ### Session 2026-08-29
 
 - Q: How is a hidden-route discovery cycle represented and rejected without moving exact world-reference authority into the structural parser? → A: Each diagnosis path declares closed `requiresKnownFacts`; the client computes a least fixed point from already known routes and visible complications, while exact world reachability remains a separate fresh authority proof.
@@ -182,12 +208,15 @@ As an afterlife player, I can seek a known Chaos Sea healer, discover visible he
 
 **Acceptance Scenarios**:
 
-1. **Given** first entry to the Chaos Sea, **When** the player seeks healing, **Then** Elyara and the Lazaret are discoverable and her tier cannot be downgraded below V.
+1. **Given** first entry to the Chaos Sea with Elyara alive in her initial location, **When** the player seeks healing, **Then** Elyara and the Lazaret are discoverable and her tier cannot be downgraded below V.
 2. **Given** a public treatment attempt, **When** the player confirms the displayed Ink Feather price, **Then** the exact quoted amount is paid once even on a valid failed or partial attempt.
 3. **Given** a canceled or rolled-back attempt, **When** publication fails, **Then** no payment remains consumed.
 4. **Given** an accepted roleplay agreement, **When** treatment resolves, **Then** the agreed favor, debt, quest, or free aid replaces currency but not the healer-tier gate, roll, target, or world-cycle cost.
 5. **Given** a materialized Shining faction, **When** its visible roster is inspected, **Then** at least one resident has the visible primary `healing_support` role and a valid tier I-V.
 6. **Given** a faction healer without public-service access, **When** the player lacks the required relationship or agreement, **Then** the healer remains visible but command treatment is unavailable.
+7. **Given** Elyara has accompanied the player to the Shining Abode, **When** the player selects «Пойти к Элиаре за лечением», **Then** the same command resolves her current canonical location and ordinary reachability/access requirements instead of routing to the Chaos Sea Lazaret; console and browser agree.
+8. **Given** Elyara has died, **When** healing offers are built or a previously offered command is submitted, **Then** her treatment command is unavailable and the stale request is rejected before payment, travel or treatment; bootstrap and normalization must not revive or duplicate her to restore the service.
+9. **Given** Elyara moves after a treatment offer is displayed, **When** that offer is confirmed, **Then** the client revalidates her current location and access before any side effect rather than using the stale destination.
 
 ---
 
@@ -455,6 +484,10 @@ are consequence primitives, not a catalog of complete spiritual wounds.
 - **FR-033**: Natural 1 and natural 20 in the conflict exchange MUST NOT independently raise spiritual wound severity.
 - **FR-034**: Each side MUST receive at most one newly created spiritual wound per conflict.
 - **FR-035**: Later wound choices in the same conflict MAY worsen that exact conflict wound within the new envelope and MUST NOT create a duplicate.
+- **FR-035A (2026-09-24 approved clarification)**: When a later spiritual source has a proven pre-materialized wound guarantee and the same side already has its one new conflict wound, the client MUST compare the exact current wound severity with the guaranteed rank. If it is lower, a lawful worsening MUST reach exactly the guaranteed rank without exceeding the source's hard maximum. If it is equal or higher, the client MUST treat the guarantee as already satisfied by that exact wound, including when the wound is at or above the source maximum.
+  - The client MUST NOT create another wound, raise severity beyond the source maximum, append a wound-history transition for an already satisfied guarantee, ask the GM to decline a guaranteed result, or silently omit the source.
+  - The client MUST derive one append-only `guarantee_satisfied` decision from the authenticated source and current owned wound state; this is a client-owned outcome, not a GM-authored choice. Its receipt row MUST bind the exact existing `woundId` and `satisfiedSeverityRank` at satisfaction time, carry null `transitionId` and `selectedSeverityRank`, and preserve the complete source witness and causal order. The closed receipt schema MUST accept this outcome while continuing to read existing version-1 `none` and `materialize` rows.
+  - Cold replay MUST reproduce the same decision without reapplying mechanics; a changed source, wound identity, severity, side or conflict instance MUST reject. An explicit older-wound re-trauma retains its separate target authority and MUST NOT use the side's conflict wound as a substitute. If no exact current conflict wound proves satisfaction, the turn MUST fail closed rather than invent a result.
 - **FR-036**: Re-traumatizing an older active wound MUST require an explicit action and exact causal evidence.
 - **FR-037**: Every non-training defeat without soul dissipation MUST produce a bounded conflict outcome with scope and end condition that prevents immediate repetition of the same aggression.
 - **FR-038**: Soul dissipation MUST always require valid authority and an explicit winner choice and MUST never be automatic or mandatory.
@@ -611,7 +644,7 @@ cannot be supplied by later correlation input, and makes `none` invalid after re
 - **FR-078**: Public afterlife command treatment MUST quote 25, 50, 100, or 200 Ink Feathers for severity I-IV before a bounded 50%-200% provider multiplier rounded upward to a whole Feather.
 - **FR-079**: An accepted public attempt MUST charge the sealed price once even on partial success or failure; cancellation, rejection, or rollback MUST retain no charge.
 - **FR-080**: A roleplay agreement MAY replace currency with free aid, favor, debt, quest, or another explicit consideration but MUST use the same final healing gate, roll, target, attempt, and world-cycle handler.
-- **FR-081**: Elyara of the Last Wound MUST be discoverable from first Chaos Sea entry, fixed at Spiritual Healing tier V, publicly available at the Lazaret, and priced at the ordinary multiplier.
+- **FR-081**: Elyara of the Last Wound MUST initially be discoverable from first Chaos Sea entry, fixed at Spiritual Healing tier V, and provide public treatment at the Lazaret at the ordinary multiplier. The Lazaret is her initial service location, not a permanent presence guarantee. The universal «Пойти к Элиаре за лечением» command MUST resolve the same canonical Elyara's current location, including the Shining Abode when she accompanies the player, subject to ordinary reachability and access rules. Her death MUST make the command unavailable entirely. Offer construction and execution MUST revalidate life state, location and access; stale offers MUST NOT spend payment, travel or treat. Bootstrap/normalization MUST preserve accepted relocation and death rather than restore, duplicate or resurrect her for service availability. These rules apply equally to console and browser.
 - **FR-082**: Traveling to or receiving safe-cycle treatment from Elyara MUST advance the afterlife world scheduler exactly once.
 - **FR-083**: Every materialized Shining faction in the single Shining Abode MUST have at least one visible primary `healing_support` resident with Spiritual Healing tier I-V.
 - **FR-084**: A Shining healer's role MUST be visible with the roster, while service access MAY depend on faction-specific relationship, payment, debt, or agreement conditions.
@@ -707,8 +740,1049 @@ exclusions or grounds for closing the full feature.
 - The current spiritual strain ranks, accepted roll margin, standard-art tier 0-V model, and ordinary art-cost reduction remain available.
 - The world remains pre-release; active templates and fixtures can move directly to the new schema without compatibility readers.
 - There is one Shining Abode containing multiple independently materialized Shining factions.
-- Elyara of the Last Wound remains the canonical always-available Healing-domain Guardian and Lazaret owner.
+- Elyara of the Last Wound remains the canonical Healing-domain Guardian and initial Lazaret healer; she may accompany the player to the Shining Abode or die in combat. Service availability follows her canonical life state, current location and access, not an always-available NPC assumption (owner clarification, 2026-09-22).
 - Ink Feathers remain the ordinary command-service currency in both Chaos Sea and Shining contexts; Light Sparks are not ordinary payment.
 - A safe afterlife cycle is a completed canonical progression cycle outside active conflict and without an explicit unsafe-state blocker.
 - Physical wounds do not automatically transfer to a soul; any spiritual legacy requires a separately accepted spiritual wound or independent effect.
 - No closed list of complete Mortal or spiritual wounds will be introduced.
+
+## Chronological spiritual resources — clarification 2026-09-16
+
+#1536 / C2-ORDER: the owner chose chronological exchanges over global whole-turn
+phase sorting. Execute the original ordinary/lifecycle prefix once, then each
+exchange and its causal closure in journal order. A wait retains that same owner
+and prefix. Recovery in an earlier exchange precedes a later exchange cost.
+The fixed adapter keeps its old behavior; cross-mode equality is required only
+when ordering agrees. Detailed rules and examples are authoritative in
+`contracts/spiritual-wound-live-turn-boundary.md`, chronological execution section.
+
+## C2-PREFIX — ordinary resources before the first exchange (review version 2026-09-19)
+
+Source: [issue #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536), task T081-B2C-J2-C2-PREFIX.
+Status: this written version was explicitly approved by the owner on 2026-09-19; implementation remains subject to canonical planning, task decomposition and consistency analysis.
+
+### Requested result and scope
+
+In the retained chronological path, the first spiritual exchange must use the
+resource state produced by the accepted ordinary/lifecycle prefix of this turn.
+For example, starting with 6 action points, an ordinary spend of 1 leaves 5;
+the first exchange's audit 5 -> 2 for a cost of 3 must be accepted. The original
+signed before-state remains 6 and must not be rewritten to manufacture agreement.
+Cover both direct resource changes and resource changes caused by accepted effects.
+
+### Preserved contracts
+
+- Execute the ordinary/lifecycle prefix once, including its causal work and required receipts, before the first exchange. An unfinished prefix cannot authorize an exchange.
+- Preserve signed snapshot identity, original input fingerprints, source ownership, audit arithmetic, actor membership, dice ownership, source tiers and all unrelated source validation. A caller-supplied ledger or claimed starting balance is not sufficient evidence.
+- Bind source acceptance to the actual prefix produced by the retained resource/effect owners. Do not replay ordinary commands or rewrite the original snapshot, earlier audits or accepted resource history.
+- Pending completion and rejected retries retain the same owners and accepted prefix. A stale or foreign prefix, changed pinned input, or failed prefix must not authorize source commitment or canonical publication.
+- Keep existing per-exchange chronology and causal closure. Preserve the fixed adapter's existing global ordering and validation behavior; cross-mode equality remains conditional on matching order.
+
+### Acceptance criteria
+
+1. A real signed capture accepts ordinary spend 6 -> 5 followed by an exchange audit 5 -> 2; it records each accepted mutation once and preserves the original signed balance of 6.
+2. An equivalent net change caused by an accepted effect is reflected in the first exchange audit, including required receipt completion. An unresolved prefix prevents exchange acceptance; a rejected receipt neither advances the source nor repeats accepted prefix work.
+3. An audit still claiming the old balance (6 -> 3 after that prefix) is rejected. Forged, stale or foreign prefix evidence cannot substitute for the actual retained owners' result.
+4. Direct and triggered prefix recovery also precede exchange costs, subject to the existing resource bounds. A net-zero prefix and a turn without ordinary resource changes preserve existing behavior.
+5. Missing-side continuation preserves completed prefix transitions and identities; retrying or completing evidence does not charge ordinary costs again. Late failure publishes no partial canonical state and leaves no usable accepted source/common capability.
+6. Existing signed-source rejection controls and fixed-mode behavior remain valid. Focused regression evidence and independent XHigh review are required before marking this task complete; run one Fast control at the meaningful implementation checkpoint.
+
+### Boundaries and pending decisions
+
+This block repairs internal prefix-to-source binding. It does not enable the GM
+entrypoint, add commands or receipt formats, admit wounds/current generations,
+implement cold reconstruction/publication, or complete C2/D/E. Therefore this
+internal block requires no new GM prompt/example; integrated runtime cutover
+still requires the existing GM documentation, worked examples and source guards.
+The separately approved effect-profile extension below does change the generic
+GM contract and therefore requires its own synchronized documentation and examples.
+The implementation plan must settle the exact ownership/evidence API and the
+separation of original source checks from prefix-dependent audit checks without
+weakening either. These are open design details, not permission to bypass checks.
+The owner's chronological ordering decision is retained; approval of this written
+scope was received on 2026-09-19. Update canonical plan.md and tasks.md through
+Spec Kit planning/task phases and perform consistency analysis before code changes.
+
+### C2-PREFIX effect capability decision — approved, 2026-09-19
+
+Implementation inspection confirmed a pre-existing contract gap affecting
+acceptance criteria2/4: canonical spiritual_action_points allows Spend/Gain,
+whereas the existing periodic_damage/periodic_restore effect profiles produce
+Damage/Restore. Therefore a genuine accepted effect cannot currently perform the
+AP change that those criteria require. Tests on soul_integrity prove prefix
+causal closure and receipt handling, but do NOT satisfy AP-changing-effect proof.
+The criteria above remain unchanged and open.
+
+Owner explicitly approved this written extension on 2026-09-19: add periodic_spend and periodic_gain
+resource-effect profiles, subject to each resource's existing allowed operations,
+source/owner authority, event routing, use budgets and bounded receipt rules.
+Preserve existing Damage/Restore profiles and AP Spend/Gain policy. Cover genuine
+AP spending/recovery effects before first exchange and synchronize GM effect
+contracts/examples/manifests/source guards. This is additional gameplay/GM scope;
+implementation must follow the updated plan/tasks and consistency check.
+Criteria2/4 remain open until genuine AP-effect tests pass. Do not relabel
+custom-resource tests as AP-effect evidence.
+
+### C2-GEN: духовные реакции — вариант A согласован, 2026-09-19 (#1536)
+
+Независимое ревью подтвердило противоречие между действующей спецификацией и
+архитектурными примерами B/C в `docs/superpowers/plans/2026-09-08-spiritual-effect-draft-journal-design.md`.
+Духовной ране разрешены восемь специальных профилей и маркер `wound_consequence`.
+`event_reaction` и расширение графа реакцией разрешены физическим ранам, но
+отклоняются для всех определений духовной раны, включая недостигаемые и дочерние.
+Поэтому пример «новая духовная рана → реакция от её корня → дочерний эффект →
+повторная травма» сейчас нельзя построить из разрешённых игровых возможностей.
+Ранее одобренные `periodic_spend`/`periodic_gain` относятся к общим эффектам;
+то решение прямо сохраняет списки разрешённых последствий ран.
+
+Владелец проекта явно выбрал рекомендованный вариант A. Игровые ограничения
+сохраняются; критерии ниже уточняются по разрешённым областям применения.
+GEN остаётся открытым до реализации и проверки, включая восемь существующих
+механических потребителей, повторные травмы и единую публикацию.
+
+**Принятый вариант A — сохранить текущие возможности духовных ран.**
+Сохраняются восемь профилей и маркер; духовные раны не создают дочерних эффектов
+через реакции. По решению владельца архитектурные примеры и приёмочная
+матрица разделяются: духовная цепочка проверяет реальную вставку, следующий обмен,
+повторные травмы и завершение; реакции, замены, дочерние эффекты и привязанные
+списания проверяются на разрешённых физических ранах и общих эффектах в том же
+движке. Запрещённые духовные графы остаются отрицательными тестами. Это явное
+уточнение критериев, а не заявление о выполнении прежнего невозможного сценария.
+Проверки привязки нового корня раны, его источника, потомков и прекращения требуют
+реальной физической раны, вставленной через тот же механизм черновика. Общие эффекты
+дополняют эти проверки и не заменяют их обычным заранее существовавшим эффектом.
+
+**Отклонённый вариант B — расширить духовные раны ограниченными реакциями.**
+Следующее описание сохраняется только как запись непринятой альтернативы и
+не разрешает реализацию:
+Для тяжести III–IV разрешается `event_reaction` только с `resultKind=apply_definition`,
+с одним достижимым дочерним определением без вложенных расширений. Дочерние
+механические компоненты используют только существующие восемь духовных профилей;
+маркер остаётся без стоимости. Реакция занимает один слот, каждый компонент
+дочернего последствия — ещё один; применяются исходные ограничения тяжести и
+безопасных действий. Используется существующая ограниченная семантика
+`maxExpansion=2`, точного источника/владельца и допустимой замены в одной области
+владения. Общие ресурсные профили автоматически в духовные раны не добавляются.
+Приёмка дополнительно требует реальной духовной цепочки B/C, проверок бюджета,
+запрета рекурсии и чужих источников, полного холодного восстановления, а также
+синхронного обновления GM-документации, примера и защитных тестов.
+
+Принятый вариант A отражается в `plan.md`, `tasks.md` и архитектурной матрице
+с сохранением всех тринадцати сценариев в их законных областях применения.
+Перед зависимой реализацией проводится проверка согласованности Spec Kit.
+
+## Уточнение стоимости духовных последствий — утверждено 2026-09-26 (#1536)
+
+Статус: **точная редакция утверждена пользователем 2026-09-26; зависимая реализация разрешена после согласования plan/tasks/contracts и проверки согласованности**.
+Это уточняет два незавершённых случая существующего `spiritual_action_cost_burden`,
+не добавляет профиль или духовные реакции. Обычные платные операции уже имеют
+формулу; для следующих случаев код и таблица профиля пока не задают полное правило.
+
+Утверждённые правила:
+
+1. `recover_spiritual_power`: сначала оплачивается штраф раны, затем восстанавливается
+   сила по действующим правилам результата/противодействия и ограничения максимума.
+   `actionCostAudit.before` — ресурс до оплаты, `after` — после собственного
+   восстановления действия. Последующие реакции остаются отдельными переходами;
+   `after` не подменяет окончательный ledger после их исполнения.
+   При нехватке ресурса для штрафа действие не принимается. Например, при запасе 1,
+   штрафе 1 и успешном восстановлении 3 результат равен 3; при запасе 0 действие
+   недоступно. Прежние величины восстановления 3/2/0 и 0..1 под противодействием
+   применяются после оплаты; неудачная попытка также оплачивается. Например,
+   запас 1, штраф 1, восстановление 0 дают итог 0: итоговая разница может быть
+   отрицательной. Ресурсный журнал содержит настоящее Spend, затем Gain, а не только
+   итоговую разницу; реакции и остаток применений проходят через прежнего владельца.
+   Без штрафа сохраняется прежнее восстановление.
+2. `force_incarnation`: сохраняется отсутствие базовой платы; при применимом штрафе
+   раны списывается только этот штраф. Для такого действия нужен `actionCostAudit`
+   с baseCost=0, minCost=0, artTier=0, effectiveCost=сумме применимых штрафов.
+   artTier=0 здесь — новая конвенция стоимостного audit, не уровень искусства актёра.
+   Без применимого штрафа прежний путь без платы и без обязательного audit сохраняется.
+   Недостаток ресурса отклоняет действие. Это не меняет допуск/контроль воплощения.
+
+Приёмка: обе стороны конфликта, отсутствие штрафа, правильный и
+пропущенный штраф, нехватка ресурса, восстановление у максимума и под противодействием,
+настоящий упорядоченный ресурсный журнал, неизменность закрытого префикса, повтор
+без двойной оплаты. Синхронизация GM-контракта и рабочих примеров обязательна перед
+включением возможностей в общий ход. До завершения реализации оба случая с применимым
+штрафом остаются явно незавершёнными и отклоняются, остальные задачи GEN продолжаются.
+
+## Восстановление исходного духовного хода — предложение C2-R1, 2026-09-22 (#1536)
+
+Статус: **утверждено пользователем 2026-09-22; реализация разрешена**.
+Относится к T081-C2-PENDING-RECONSTRUCTION и последующему общему опубликованию C4.
+Завершённый C1 сохраняет статус проверенного ядра текущего закрытого формата.
+
+### Причина уточнения
+
+Исходный snapshot содержит состояние до хода, а текущие candidateAfterImages могут
+меняться после решений о ранах. Вместе они не сохраняют полный первоначальный
+распределённый черновик GM. Кроме того, обычные владельцы эффектов и ресурсов
+выдают случайные идентификаторы и время создания запросов. Новый процесс не
+воспроизведёт их одним повторным исполнением. Проверка вычислимого хеша пакета
+эти пробелы не закрывает.
+
+### Предлагаемое поведение и границы
+
+1. Клиент сохраняет отдельную закрытую контрольную запись незавершённого захвата:
+   `game_state/control/spiritual_wound_capture_checkpoint.json`.
+   Она привязана к точным исходным session/request/turn/snapshot и исходному
+   инвентарю путей. Запись содержит неизменные первоначальные входные файлы
+   с точными байтами и признаком отсутствия; последовательность принятых
+   продолжений с их исходными входами и решениями; журнал фактически выданных
+   случайных идентификаторов и времён; номер последнего успешно сохранённого
+   продвижения и ожидаемый fingerprint соответствующего pending-пакета.
+   Это служебное состояние клиента, недоступное для записи через GM-команды.
+2. Исходный snapshot никогда не заменяется, не дополняется задним числом и не
+   перепечатывается ради легализации черновика. Контрольная запись сохраняет
+   происхождение входов внутри существующей переносимой границы доверия
+   клиентских файлов. Хеши обнаруживают расхождение, но не являются подписью.
+   Защита от согласованной подмены всех клиентских файлов доверия сторонним
+   редактором не заявляется; новый сервис ключей или шифрования не добавляется.
+3. Идентификаторы остаются случайными и непрозрачными: сохраняются реально
+   выданные значения, без опубликованного seed и без вывода ID из GM-входов.
+   Запись связывает выдачу с типом, владельцем, причинной операцией и порядком.
+   При восстановлении владелец обязан запросить те же выдачи на тех же шагах:
+   пропуск, лишняя выдача, иной тип или причинная операция отклоняют восстановление.
+   Существующие детерминированные идентификаторы ран не меняются.
+   Время создания исходного ресурсного запроса также повторяется точно.
+4. Клиент начинает с прежнего snapshot, заново проверяет исходный черновик
+   обычными владельцами и исполняет сохранённые продолжения в исходном порядке.
+   Сохранённые source/receipt/image/fingerprint сами по себе не дают разрешения
+   на расход ресурса, создание раны или принятие хода. Действительность каждого
+   перехода повторно устанавливают реальные владельцы ресурсов, эффектов и ран.
+   Неизменными остаются первоначальные действия, актёры, координаты кубиков и
+   независимые корректные части черновика; правки зависимых частей проходят
+   прежние проверки продолжения.
+5. Контрольная запись определяет последнее сохранённое продвижение. Pending-пакет
+   остаётся производным состоянием существующего закрытого формата C1.
+   Оба файла сверяются до выдачи контекста GM или разрешения продолжить ход.
+   Незавершённая запись, устаревший либо отсутствующий производный пакет после
+   сбоя не позволяют принять более поздние решения. Восстановить пакет можно
+   только повторным исполнением последнего сохранённого продвижения.
+   Отсутствующая или повреждённая контрольная запись при существующем pending
+   останавливает продолжение; она не создаётся задним числом из pending.
+6. Сохранение промежуточного продвижения не публикует канонические эффекты,
+   раны, оплату или уведомления. Под действующей блокировкой записи клиент
+   сначала полностью проверяет следующее ограниченное продвижение в памяти,
+   затем атомарно заменяет контрольную запись и проверяет её чтением.
+   Это единственная точка сохранения продвижения. После неё клиент записывает
+   и проверяет производный pending. Ошибка этой второй записи требует
+   восстановления проекции уже сохранённого продвижения, а не повторной
+   выдачи ID или исполнения нового решения. Если результат первой записи
+   неизвестен, точное чтение прежней записи означает отсутствие продвижения,
+   точное чтение новой — сохранённое продвижение; иной результат останавливает
+   работу. До точки сохранения неудачная попытка не добавляет принятый журнал
+   и не меняет исходные решения. Завершение и потребление обеих служебных
+   записей входят в единственный общий план, включая read-back и rollback.
+   Состояния несовпадающих поколений проверяются и при перезапуске после
+   прерванного сохранения, и при неудачном общем опубликовании.
+7. Новый путь получает те же защиты владения, snapshot/rollback-покрытие и
+   исключение из пользовательского статуса и GM repair-resubmission, что и
+   существующие приватные корни C1. Руководство GM, пример продолжения,
+   manifest и защитные тесты обновляются в C2. Новых команд игрока, правил
+   стоимости или расширения возможностей эффектов это уточнение не вводит.
+   Активное содержимое самой контрольной записи и pending не включается
+   рекурсивно в candidateAfterImages. Их исходные before-images и членство
+   в зарегистрированном инвентаре сохраняются для точного rollback.
+
+### Приёмка
+
+- Холодный запуск до решения и после принятого решения восстанавливает точные
+  исходные входы, ID, время запросов, источники, ресурсы, эффекты и кубики.
+- Подмена только pending, его источников/решений/образов с пересчитанными хешами
+  не заменяет сохранённое исходное продвижение.
+- Неправильный порядок, тип или причинная привязка выдач, лишняя либо
+  недостающая выдача и изменённое время отклоняются до принятия хода.
+- Нельзя изменить ещё не выполненное первоначальное действие, его актёра,
+  координату кубика или независимого корректного соседа под видом продолжения.
+- Сбой между сохранениями, исчезновение производного pending и повторный
+  запуск восстанавливают только последнее сохранённое продвижение; нет
+  двойной оплаты, новых ID для прежнего результата или повторного уведомления.
+- Изначальное отсутствие обоих служебных файлов учитывается точно. Отказ
+  до сохранения контрольной записи оставляет прежнюю запись/отсутствие;
+  отказ pending после её сохранения удерживает новую контрольную запись
+  и требует восстановления pending. Неудачное общее опубликование выполняет
+  rollback к точным исходным байтам/отсутствию по прежнему контракту.
+- Реальные случайные выдачи эффектов, переходов, combatant/member, ресурсных
+  определений/seal и запросов покрыты; новый seed не используется.
+- Независимое XHigh-ревью, owning Focused, связанные интеграционные проверки,
+  документационные проверки, FullValidation и Fast остаются обязательными.
+
+Перед зависимой реализацией требуется уточнить закрытую схему новой записи,
+точки выдачи ID/времени и протокол сохранения в data-model/contracts/plan/tasks,
+затем выполнить проверку согласованности Spec Kit. Этот раздел не утверждает
+реализацию восстановления и не меняет пока действующий формат pending.
+
+## Доставка ответа GM в том же духовном ходе — C4-GM-TRANSPORT, 2026-09-26 (#1536)
+
+Статус: **редакция 2 утверждена пользователем 2026-09-26; реализация разрешена**.
+Редакция 2 добавляет сохранение выбранного решения до зависимого исправления;
+предыдущее предложение без этого правила заменено после независимого ревью.
+Уточняет оставленный открытым транспортный выбор в плане C4. Цель: GM получает
+только текущее предложение о ране и отвечает в рамках исходного хода; клиент
+применяет решение один раз, затем продолжает следующий обмен или общее
+опубликование. Уже утверждённые игровые правила, последовательность обменов,
+границы C2/C3/C4 и единственный канонический publisher не меняются.
+
+### Выбранный путь и границы
+
+Предлагается расширить существующие `validation_repair_request.json` и
+`validation_repair_ready.json` в `game_state/control/` необязательным полем
+`spiritualWoundContinuation`. Это отдельный режим продолжения в существующем
+транспорте, а не объявление корректного предложения ошибкой. Первичное предложение
+не требует выдуманной ошибки; `errors` может быть пустым только в этом режиме.
+`fullTurnResubmissionRequired` равен `false`; перед dispatch не восстанавливается
+baseline и не запрашивается повтор всего хода. Настоящие ошибки по-прежнему
+получают ограниченную диагностику и исправление в пределах текущей фазы.
+
+Альтернативы: отдельный control-файл добавил бы ещё одну границу сохранения и
+очистки; перенос решения в narrative смешал бы текст сцены с командами и изменил
+бы его закрытую схему. Расширение существующего request/ready сохраняет общий
+путь console/browser и оба уже поддерживаемых способа работы GM — файлы и worker.
+Новые HTTP endpoints, команды игрока и канонические корни не входят в предложение.
+
+### Закрытые конверты запроса и ответа
+
+Request envelope содержит ровно следующие поля:
+
+| Поле | Контракт |
+|------|----------|
+| `schemaVersion` | Целое `1`. |
+| `continuationId` | Непустая непрозрачная клиентская корреляция текущего проверенного продвижения и фазы. Не полномочие и не замена проверки C2. |
+| `phase` | Только `decision` или `dependent_draft`. |
+| `offer` | В `decision` — точная безопасная проекция `SpiritualC2PrivateOffer`; в `dependent_draft` — `null`. |
+| `sceneTextSource` | Ровно `{ "path": "output/narrative_response.json", "field": "response" }`. |
+| `dependentDraftFields` | Массив уникальных объектов `{ "path": string, "jsonPointer": string }`, выданных клиентом; в `decision` пуст. |
+
+`offer` содержит только `opportunityRef`, `minimumSeverityRank`,
+`requiredSeverityRank` (целое или `null`), `maximumSeverityRank`, `target`,
+`cause`, `allowedLocationKinds`, `allowedDecisions` из текущего C2-адаптера.
+Границы ранга и словари не назначает GM. Приватные source/receipt/owner,
+allocation journal, checkpoint и pending images в предложение не включаются.
+
+Response envelope содержит ровно `schemaVersion`, `continuationId` и
+`woundDecisions`. Например, ответ на необязательное предложение:
+
+```json
+{
+  "spiritualWoundContinuation": {
+    "schemaVersion": 1,
+    "continuationId": "swc_current_client_reference",
+    "woundDecisions": [
+      { "opportunityRef": "current_client_opportunity", "decision": "none" }
+    ]
+  }
+}
+```
+
+Пример показывает добавляемое поле; обычные обязательные metadata ready остаются.
+Значения ссылок копируются из реального request, а не из примера. В `decision`
+массив содержит ровно одно решение текущего offer; `materialize` использует
+существующую закрытую proposal-схему `WoundResponseInputComposer`. В
+`dependent_draft` массив строго пуст: прежнее выбранное решение не заменяется.
+Вне этого режима конверт ответа запрещён; отсутствие конверта при активном
+продолжении не означает `none`. Неизвестные поля и повторяющиеся JSON-ключи
+в обоих конвертах отклоняются, типы и регистр имён проверяются точно.
+
+Текст остаётся только в `output/narrative_response.json.response`. Разрешено
+исправлять `response` и обычный `timestamp` по существующей схеме, сохраняя
+остальные корректные output-соседи; решения внутрь narrative не помещаются.
+Клиент читает согласованный текст и ответ под своей блокировкой, передаёт
+решение в C2 и проверяет обязательное описание каждой материализованной раны.
+Публикация и показ игроку ждут завершения всего исходного хода.
+
+### Сохранение решения и допустимое зависимое исправление
+
+`sessionId`, `requestId`, `turnNumber`, session generation, исходный signed
+snapshot, действия, актёры, координаты кубиков и progression control сохраняются.
+После ожидания GM клиент повторно открывает текущий C2 checkpoint под lease и
+сверяет фазу, текущее предложение и разрешённые поля с выданным request.
+`continuationId` связывается с точным проверенным checkpoint, фазой и allowlist;
+ответ от другого продвижения, фазы, запроса или session не применяется.
+Для зависимого исправления эта привязка включает точный `pendingSubmission`,
+описанный ниже: одинаковый committed cursor не разрешает заменить выбор.
+После холодного запуска допускается перевыпуск корреляции только после
+восстановления C2 реальными владельцами; старый ready не становится новым решением.
+Request/ready сами по себе не восстанавливают отсутствующую приватную authority.
+
+Если новая рана меняет результат следующего обмена, клиент запрашивает
+`dependent_draft` с точными JSON pointers, вычисленными существующей проверкой
+зависимостей C2. Это разрешение предложить исправление, а не обойти проверки
+владельцев. Сохраняются выбранное решение и точные клиентские wound-command bytes;
+после ограниченного исправления повторяется сохранение C2. При невозможности
+доказать допустимый набор полей клиент блокирует продолжение вместо расширения
+разрешения до всего файла. Нет разрешения менять первоначальные действия,
+актёров, кубики, закрытые обмены, порядок либо независимых корректных соседей.
+
+Перед запросом `dependent_draft` клиент атомарно сохраняет и проверяет чтением
+закрытый необязательный `pendingSubmission` внутри уже существующего
+`spiritual_wound_capture_checkpoint.json`. Новый файл не вводится. Эта запись
+отдельна от `advances` и `committedAdvance`: прежние сохранённые обмены, cursor
+и производный pending остаются на последнем принятом продвижении. Запись
+связывает исходные session/request/turn/snapshot, предыдущее продвижение и
+координату текущего источника с точными составленными клиентом command bytes
+(включая привязку исходного текста), а также с реально выданным ID/time-prefix
+до окончания выбранной вставки раны. Она не сохраняет как принятые результаты
+ещё невалидного следующего обмена. Физический command, публичный request/ready
+или вычислимый хеш не заменяют эту запись и не дают полномочий на исполнение.
+
+Если гарантия уже удовлетворена, запись вместо GM-решения связывает реальный
+клиентский исход `guarantee_satisfied` и отсутствие нового command с тем же
+источником и предыдущим продвижением. Она не придумывает новое предложение GM.
+После холодного запуска реальные владельцы повторяют committed layers, заново
+проверяют сохранённый выбор либо гарантию и строго воспроизводят сохранённый
+ID/time-prefix. Только после этого определяется зависимый участок и allowlist.
+Несовпадение команды, происхождения или журнала блокирует продолжение; выбор не
+заменяется новым ответом и не восстанавливается задним числом из command-файла.
+
+Успешное исправление записывает обычное продвижение C2 и очищает
+`pendingSubmission` одной атомарной заменой checkpoint с проверкой чтением,
+после чего обновляется производный pending по C2-R1. Сбой до подтверждённой
+замены сохраняет прежний точный выбранный вариант для повторения; неоднозначное
+чтение блокирует работу. Перезапуск между этими записями не создаёт второй выбор,
+новые ID для уже сохранённой вставки или повторную оплату. Отсутствующая запись
+при неподтверждённом command не разрешает считать его прежним выбранным решением.
+
+GM не пишет checkpoint, spiritual pending, wound commands, receipts, signed
+snapshot или журналы клиентских ID. Изменения вне разрешённых полей отклоняются
+до сохранения продвижения. Ошибка до commit не расходует ресурс и не создаёт
+каноническую рану. Сбой pending после checkpoint восстанавливается по C2-R1;
+неудачная общая публикация сохраняет существующий точный rollback.
+Повтор уже сохранённого ответа не выполняет его заново: клиент восстанавливает
+текущее продвижение и выдаёт актуальный следующий шаг. Чужая session не очищается.
+
+### Два способа доставки и приёмка
+
+Файловый GM передаёт response envelope через существующий helper завершения
+repair. Worker получает тот же request envelope в task packet и возвращает
+тот же response envelope в proposal. Apply gate проверяет корреляцию, фазу,
+решение и допустимые изменения до их применения; проверенный ответ переносится
+в обычный ready. Перед записью ready клиент ещё раз под lease проверяет точную
+корреляцию продолжения, фазу и текущее продвижение, а не только session generation:
+задержавшийся worker не перезаписывает ответ более нового продолжения той же session.
+Worker не записывает ready или приватные C2-файлы через
+`changedFiles`. Завершённый proposal без `changedFiles` разрешён только для
+валидного ответа текущего `decision`, если текст уже подходит; это не ослабляет
+обычные worker-контракты. `draftText` и `note` не служат скрытым транспортом.
+
+Приёмка: оба способа проходят реальный исходный signed ход с `none` и
+`materialize`, двумя последовательными предложениями и зависимым исправлением;
+сохраняются исходные request/dice/progression и независимые части черновика.
+Пропущенный/лишний/чужой/stale ответ, подмена фазы, неизвестный ключ и запрещённая
+правка не продвигают C2. Подмена client command при сохранённом
+`pendingSubmission`, его потеря, сбой записи и холодный повтор обоих вариантов
+(`materialize` и `guarantee_satisfied`) проверяются отдельно; неизменный вариант
+должен успешно продолжаться. Проверяется гонка старого worker после apply перед
+ready нового предложения. Перезапуск и повтор доставки не дублируют оплату, ID,
+рану или уведомление. Проверяются отмена/смена session и отсутствие удерживаемой
+canonical lease во время ожидания GM. Приёмка C4 дополнительно требует общего
+опубликования, конечного narrative, уведомлений и cold-after-success.
+Обычные repair, worker и Mortal пути сохраняют прежние ограничения.
+
+Перед реализацией после утверждения: точная схема и dispatch описываются в
+contracts/plan/tasks текущей feature с проверкой согласованности Spec Kit.
+GM matrix/guide, helper/daemon/worker instructions, пример, manifest и guards
+обновляются вместе с кодом. Owning Focused, связанные lifecycle/worker проверки,
+XML, Fast, условный FullValidation и независимый Astra XHigh обязательны.
+
+## Уточнение POSITION-DECISION — штраф стартовой позиции, редакция 1
+
+Статус: **редакция 1 явно утверждена владельцем 2026-09-27**.
+Задача: #1536 / T081-D-POSITION-DECISION. Ответ владельца: «Утвердить редакцию 1 (рекомендуется)».
+Зависимая реализация следует после согласования plan/tasks/contracts и проверки их непротиворечивости.
+
+Цель — определить уже предусмотренный `spiritual_position_burden` без повторного
+автоматического ухудшения сохранённой позиции от одной и той же раны. Величина
+компонента остаётся прежней: один шаг при I–II, не более двух при III–IV.
+Предлагается штраф к эффективной стартовой позиции конкретного обмена.
+
+### Предлагаемое правило
+
+Каноническая позиция перед обменом имеет существующий ранг:
+`opposition_dominant = -2`, `opposition_advantaged = -1`, `contested = 0`,
+`player_advantaged = +1`, `player_dominant = +2`.
+Клиент вычисляет `effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, +2)`.
+
+1. Для каждой стороны складываются величины действующих компонентов
+   `spiritual_position_burden` точного действующего участника, операция которых
+   совпадает с его операцией в этом обмене. Каждый принятый компонент учитывается
+   один раз. Компоненты других участников, операций и уже завершившиеся эффекты
+   не участвуют; неоднозначное владение не заменяется нулевым штрафом.
+2. Сначала складываются все применимые величины обеих сторон, затем ограничивается
+   итоговый ранг диапазоном -2..+2. Суммы сторон отдельно не обрезаются.
+   Равные штрафы сторон компенсируются в общей позиции. Дубли одного компонента
+   не становятся дополнительным штрафом.
+3. Эффективная позиция задаёт существующий позиционный модификатор броска:
+   при ненулевом ранге преимущество получает соответствующая сторона в размере
+   `2 * abs(effective)`, при нуле позиционного модификатора нет. Поле `position`
+   существующего `conflict_position` модификатора обозначает эту эффективную
+   позицию; новые поля, канонические файлы и полномочия GM не вводятся.
+4. Эффективная позиция применяется также к требованиям, зависящим от стартовой
+   позиции текущего действия, включая позиционные предпосылки обычных и усиленных
+   оков. Остальные способы законно выполнить эти предпосылки сохраняются.
+5. `exchange.before.conflictPosition` остаётся точным каноническим состоянием
+   перед обменом; `after.conflictPosition` — обычным результатом действия.
+   Штраф не переписывает ни одно из этих значений автоматически. Последующий
+   обмен вычисляет эффективную позицию от своего принятого канонического `before`,
+   без повторного вычитания из уже скорректированного временного значения.
+6. Успешный или частично успешный манёвр по-прежнему должен реально изменить
+   каноническую позицию `before -> after`. Нельзя принять одинаковые значения
+   под предлогом, что штраф поглотил результат. Существующие ограничения манёвра
+   на strain, control и улучшение позиции под активным контролем сохраняются.
+7. Прежняя действующая рана влияет с первого подходящего обмена. Вставленная
+   после обмена рана влияет только на следующие подходящие обмены в порядке
+   принятого исходного хода. Закрытый обмен не пересчитывается. Холодное
+   восстановление и последующая проверка используют его исходный принятый
+   контекст, а не позднейший набор ран. Лечение или окончание эффекта снимает
+   только будущий применимый штраф и само по себе не повышает каноническую позицию.
+
+### Игровые примеры и приёмка
+
+- У игрока рана I со штрафом `pressure: 1`; канонически он имеет преимущество
+  `+1`. Для давления стартовая позиция становится эффективно `0`, поэтому
+  позиционного бонуса нет. Если действие не меняет позицию, канонически остаётся
+  `+1`. Следующее давление снова начинается эффективно с `0`, а не с `-1`.
+- Противник после предыдущего обмена получил штраф `pressure: 2`. Игрок выполняет
+  манёвр со своим штрафом `maneuver: 1`, противник — давление; каноническая позиция
+  `0`. Эффективно получается `0 + 2 - 1 = +1`, что даёт игроку существующий бонус
+  `+2`. Успешный манёвр может изменить каноническую позицию с `0` на `+1`.
+  Новая рана противника не меняет результат предыдущего обмена.
+
+Приёмка требует обе стороны, совпадение/несовпадение операции и точного актёра,
+суммирование нескольких ран, равные встречные штрафы, насыщение обоих краёв,
+несколько последовательных действий без накопительного ухудшения, обычные и
+усиленные оковы, сохранение требований манёвра, вставку/окончание эффекта между
+обменами, зависимое исправление следующего черновика, холодное восстановление и
+отклонение подделанного модификатора. Канонические данные, расход ресурса,
+закрытые исходные кубики и уже принятые обмены сохраняются. GM-руководства,
+пример, manifest и проверки обновляются вместе с реализацией после утверждения.
+
+Альтернатива — постоянное ухудшение либо ограничение канонической позиции —
+не входит в эту редакцию: она потребовала бы других правил повторного применения,
+лечения и успешного манёвра при насыщении. Остальные неуточнённые профили T081-D,
+лечение T107 и общий объём #1536 этим решением не закрываются.
+
+## DEPENDENT-FRONTIER-DECISION — редакция 1, 2026-09-28
+
+**Статус: редакция 1 явно утверждена пользователем 2026-09-28.**
+Задача: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+T081-D-POSITION-DEPENDENCY. Это уточнение протокола GM после сохранённого выбора
+раны; POSITION-DECISION, игровые формулы и правила исходов не меняются.
+Разрешена зависимая реализация этой редакции по плану и задачам текущей feature.
+
+### Причина и выбранное решение
+
+Пересчёт позиции может потребовать нового описания критического результата в
+среднем обмене. Клиент знает обязательные числовые поля, но не может сочинить
+два текста GM. Поэтому разрешённые исправления следующего обмена иногда можно
+доказать только после получения и проверки этого описания. Один заранее
+вычисленный запрос на все исправления не покрывает такой случай.
+
+Предлагается последовательность точных запросов: GM завершает выданный набор A,
+затем клиент при необходимости выдаёт новый набор B. Отклонение всего такого
+хода оставляет согласованный сценарий невыполненным; выдумывание текста или
+заранее разрешённые будущие изменения нарушают сохранённые контракты. Эти две
+альтернативы не выбираются.
+
+### Обязательный контракт
+
+1. Запрос A разрешает только указанные в нём исправления. Клиент восстанавливает
+   его полный конверт из исходной приватной пары и доказанного состояния обхода;
+   идентификатор корреляции и полный конверт должны совпасть. Пути из ответа GM
+   или сохранённого транспортного файла сами по себе не дают прав на изменение.
+2. GM исправляет A и отвечает существующим конвертом `dependent_draft` с пустым
+   `woundDecisions`. Весь фактический кандидат сначала проверяется по политике A.
+   Добавлять изменения будущего B в ответ A запрещено, даже если позже они могли
+   бы стать допустимыми. Сохраняются закрытые обмены, подписанные кубики,
+   независимые модификаторы, выбранная рана и её идентичность.
+3. Дальнейший обход разрешён только после полного точного исправления A и
+   обычной проверки фактического обмена. Для нового критического результата
+   обязательны точные вычисленные поля и оба непустых текста GM. Неполный либо
+   недопустимый ответ не открывает следующий набор исправлений. Клиент не
+   подставляет выдуманные тексты или последствия действия.
+4. `Ready`, связанный с A, означает завершение именно A. Если после этого
+   доказаны новые поддерживаемые зависимости, клиент выдаёт B с собственным
+   конвертом и корреляцией и ожидает отдельный ответ. A не считается ответом на B.
+   Если новых зависимостей нет и черновик полностью допустим, продолжается
+   существующий путь завершения. Неподдерживаемая зависимость не превращается
+   в успешное завершение A или разрешение произвольных правок.
+5. Между A и B клиент сохраняет исходный выбор раны, приватное состояние и
+   исходные данные хода; канонический результат ещё не публикуется. Удаляются
+   только точно сопоставленные транспортные записи A. Устаревший ответ/Ready A
+   после выдачи B не принимается. Замена исходной приватной пары, поколения
+   сессии или владельца отменяет допустимость прежнего ответа.
+6. Файловый GM и worker имеют одинаковые правила. Worker проверяет разрешения A
+   до записи, фактический результат после записи и владение перед Ready.
+   Проверенное завершение A может открыть B; недопустимые изменения откатываются
+   существующим механизмом. Сохраняются резервация worker, точное сравнение
+   запроса, контроль исходного хода и условная запись/очистка Ready.
+7. После перезапуска существующий запрос A и его ответ сверяются до автоматического
+   продолжения сохранённого черновика. Прогресс восстанавливается из исходной
+   приватной пары и допустимых фактических исправлений. Наличие транспортного
+   файла не заменяет эту проверку; непрошенные будущие правки не принимаются
+   только потому, что после перезапуска весь черновик выглядит допустимым.
+8. Новых JSON-полей, игроковых команд или хранимых источников полномочий не
+   добавляется. Формула корреляции сохраняется. Различение отказа, полного
+   разрешения и перехода к следующему набору — внутренний результат клиента;
+   обычная строгая проверка полностью исправленного черновика не ослабляется.
+
+### Пример и критерии приёмки
+
+В первом обмене игрок получает рану со штрафом давления 1. Во втором обмене
+исходные кубики 20/18 и независимый бонус игрока +1 дают 21/18; штраф позиции
+даёт противнику +2, итог становится 21/20. Полоса остаётся `player_success`,
+но требуется критическое описание. Запрос A содержит только точные исправления
+второго обмена. После допустимого описания GM клиент может доказать запрос B
+для третьего обмена: исходные 9/8 становятся 9/10. В этом примере результаты
+`no_effect` и неизменный strain допустимы; новых последствий клиент не сочиняет.
+
+- Действительные файловый и worker пути проходят A → B → завершение с тем же
+  выбором раны и однократным логическим применением ресурса, раны и результата хода.
+- Холодное восстановление проверяется после записи исправлений A, после Ready A
+  и после выдачи B. При сбое публикации сохраняется прежняя гарантия: все исходные
+  данные либо весь принятый результат, без заявления о физическом exactly-once.
+- Ответ A с будущими правками B, пустым критическим текстом, неверным числовым
+  полем, изменённым кубиком или независимым модификатором отклоняется. Проверяются
+  сохранность приватных/канонических данных, worker rollback, устаревший Ready A
+  и замена приватной пары перед Ready.
+- Существующие исправления расхода и полностью вычислимые позиционные цепочки
+  сохраняют прежнюю стабильную корреляцию и завершение одним ответом.
+- Обновляются GM-руководства, реальный пример A → B, manifest и source guards;
+  выполняются адресные проверки, Fast, требуемый FullValidation и независимое
+  ревью Astra XHigh. T081-D-POSITION-RESULT-CLOSURE остаётся отдельной открытой
+  задачей; эта редакция не разрешает новые зависимости последствий операции.
+
+## DEPENDENT-FRONTIER-DECISION — редакция 2, 2026-09-28
+
+**Статус: редакция 2 явно утверждена пользователем 2026-09-28.**
+Задача: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
+T081-D-POSITION-DEPENDENCY-FRONTIER. Редакция 1 утверждена; эта редакция уточняет
+только приватное сохранение прогресса между запросами A и B и заменяет её
+ограничения в пунктах 5, 7 и 8 в явно указанной ниже части. Расширение приватного
+checkpoint разрешено по обновлённому плану и задачам. Остальные правила редакции 1,
+включая отдельные ответы, сохранённую рану и запрет будущих правок, сохраняются.
+
+### Почему нужно уточнение
+
+Без сохранённого принятого изображения A два состояния после перезапуска
+неразличимы: клиент действительно принял A и открыл B либо в черновик сразу
+внесли A+B и подменили публичный запрос на B. Кроме того, другое допустимое
+критическое описание A даёт ту же арифметику и тот же перечень полей. Простая
+повторная проверка правильности не доказывает неизменность уже принятого текста.
+
+Существующий `pendingSubmission` разрешает только первоначальную запись выбора
+или её точное повторение. Обычный `advances` требует нового решения и полного
+продолжения; его нельзя использовать как скрытый частичный переход для A.
+Поэтому предлагается минимальное расширение существующего приватного checkpoint.
+
+### Приватная запись принятого исправления
+
+В `checkpoint.pendingSubmission` разрешается необязательное закрытое поле
+`dependentDraftProgress`: упорядоченный массив записей со следующими полями:
+
+- `ordinal`: последовательный номер, начиная с 1, без пропусков и повторов;
+- `acceptedContinuationId`: точная корреляция завершённого запроса A;
+- `dependentDraftFields`: полный точный перечень полей этого запроса как
+  проверочное свидетельство, а не источник разрешений;
+- `inputChanges`: точные принятые изображения изменённых разрешённых файлов в
+  существующем формате `path`, `existed`, `contentBase64`, `contentFingerprint`.
+
+Хранятся сами принятые байты, включая оба текста критического результата, а не
+только хеш текущего файла. Удаление файла не разрешается. Все вложенные формы
+закрытые; неизвестные поля, дубли, подмена путей и неверные отпечатки отклоняются.
+Число записей ограничено числом исходных оставшихся обменов: запись требует
+реального прохождения хотя бы одного нового обмена до следующей поддерживаемой
+зависимости. Пустой повтор либо прежняя ошибка не создаёт запись.
+До первой записи поле отсутствует; пустой массив не является альтернативной
+формой. Приватный checkpoint записывается в единственной канонической форме
+клиента: восстановление префикса до каждой записи должно давать точные байты
+предыдущего checkpoint и соответствующую корреляцию, а не только равный JSON.
+
+Эта запись принадлежит клиенту и не может быть authored/исправлена GM. Сама по
+себе она не даёт полномочий на исполнение или публикацию: при каждом восстановлении
+реальные исходные владельцы повторно выводят разрешения и проверяют сохранённые
+изображения. Новый файл состояния или отдельное хранилище не добавляется.
+
+### Переход A → B
+
+1. Под существующей блокировкой клиент сопоставляет полный текущий запрос A,
+   его Ready и исходный ход. Проверяет весь фактический кандидат только по A,
+   полный исправленный обмен обычным валидатором и наличие доказанного следующего
+   поддерживаемого набора исправлений. A+B одним ответом остаётся запрещённым.
+2. Клиент повторно сверяет фактические изображения и добавляет одну запись
+   `dependentDraftProgress`, сохраняя предыдущие записи побайтно. Выбранное
+   решение, исходная команда, выделенные идентификаторы/время, обычные `advances`,
+   `committedAdvance` и приватный pending packet не меняются.
+3. Checkpoint атомарно заменяется и проверяется чтением по существующему правилу
+   «старое / новое / неоднозначное изображение». Только подтверждённая новая
+   запись устойчиво открывает следующий набор B. Неоднозначность блокирует
+   дальнейшее исполнение. Повторное восстановление не добавляет ту же запись
+   второй раз, не применяет рану и не списывает ресурс повторно.
+4. После подтверждения клиент освобождает прежних владельцев и восстанавливает
+   их из обновлённого checkpoint. Удаляет только точно сопоставленные устаревшие
+   транспортные записи A и публикует запрос B. Формула корреляции сохраняется:
+   новые байты checkpoint естественно связывают B с принятым A.
+5. Запись checkpoint открывает B до публикации публичного запроса. Если между
+   этими действиями произошёл сбой, восстановление выводит B из приватного
+   прогресса. Старые A request/Ready — только кандидаты на точную очистку:
+   проверяются исходные координаты хода, записанная корреляция и восстановленный
+   полный конверт A. Несовпадающий транспорт сохраняется, продолжение блокируется.
+   Старый A ни при каких обстоятельствах не считается ответом на B.
+6. Worker проверяет A до записи, после записи и перед Ready, но сам не меняет
+   этот журнал. Его дописывает GameEngine при приёме точного Ready, одинаково
+   для файлового и worker маршрутов. Проверки владения и rollback сохраняются.
+7. После полного исправления хода обычное продвижение сохраняет совокупное
+   принятое изображение, включая все предыдущие A, прежде чем очищает
+   `pendingSubmission` вместе с журналом. Холодное восстановление после этой
+   границы также не теряет ранее принятые тексты и изменения.
+
+### Холодное восстановление и приёмка
+
+Восстановление сначала воспроизводит исходный принятый префикс и сохранённый
+выбор раны. Затем последовательно проверяет каждую запись прогресса: независимо
+выводит политику и полный запрос, сравнивает записанные поля и корреляцию,
+проверяет всё сохранённое изменение только по этой политике, исполняет обычную
+проверку исправленного обмена и использует принятое изображение как исходное
+для следующей записи. Текущие публичные файлы не заменяют предыдущие изображения.
+
+Текущий черновик рассматривается только как кандидат для первого ещё не принятого
+набора исправлений. Без записи A актуальным остаётся A; поддельный публичный B
+не позволяет его обойти. После открытия B ранее принятые поля A, включая точные
+критические тексты, неизменны. Обычные разрешённые поля текущего ответа сохраняют
+свои прежние правила, в том числе текст narrative response и timestamp.
+
+К приёмке редакции 1 добавляются: поддельный B без записи A; подмена принятого
+текста A в текущем черновике после открытия B; недопустимая вставка, перестановка
+или замена записей журнала, нарушающая его форму, цепочку либо исходный контракт;
+расширенные записанные разрешения; A+B в одном изображении; сбой и неоднозначное
+чтение checkpoint; перезапуск после принятия A, но до очистки A/публикации B;
+устаревший Ready A после открытия B; замена checkpoint перед worker Ready.
+Проверяются точное сохранение решения/команды/идентификаторов и отсутствие
+повторной записи, ресурса, раны или публикации при восстановлении.
+
+Граница проверки соответствует существующим приватным данным клиента: GM и worker
+не получают права записи журнала; при живом переходе замена checkpoint выявляется
+точным сравнением. Холодное восстановление проверяет форму, отпечатки, цепочку и
+реально воспроизведённые разрешения/механику. Это не криптографическое доказательство
+истории: внешний процесс, способный согласованно переписать приватный журнал,
+его изображения и все отпечатки в другую целиком допустимую историю, находится
+вне этой гарантии. Новая криптографическая защита сохранений не вводится.
+
+Это разрешение нового **приватного поля checkpoint и проверяемого перехода
+сохранения**, а не новых публичных JSON-полей, команд или самостоятельного
+источника полномочий. Игровые формулы, публичный конверт, формула корреляции,
+запрет частичного обычного advancement и отложенная каноническая публикация
+сохраняются. RESULT-CLOSURE остаётся отдельной задачей.
+
+## RESULT-CLOSURE-BINDING — предложение, редакция 1, 2026-09-29
+
+Статус: **утверждено владельцем 2026-09-29**. Явный ответ «Утвердить редакцию 1
+(рекомендуется)» относится к точному представленному тексту с SHA-256 `65BDA9AB…`.
+Перед зависимой реализацией обязательны соответствующие plan.md, tasks.md и
+проверка согласованности; утверждение не означает завершение реализации.
+Источник: GitHub #1536 / T081-D-POSITION-RESULT-CLOSURE. Это ограниченный первый
+блок этой задачи; он не закрывает остальные зависимости исходов и длинных цепочек.
+Утверждённые POSITION-DECISION и DEPENDENT-FRONTIER-DECISION не изменяются.
+
+### Требуемый результат и границы
+
+После материализации выбранной раны последний исходный обмен `binding` или
+`force_binding` может потерять обязательное эффективное преимущество. Если
+подготовка и решающий успех также не дают законной предпосылки, клиент должен
+выдать ограниченный запрос исправления, сохранив весь исходный ход и выбор раны.
+GM исправляет неуспешный исход и состояние контроля по существующим правилам;
+клиент проверяет их, а не придумывает результат за GM.
+
+Этот блок охватывает только случай, когда успешные оковы меняли состояние
+контроля, а остальные поля `before` и `after` последнего обмена совпадали.
+Полная исходная проверка должна подтверждать законность обмена до новой раны.
+Неприменимые раны, утрата исходной власти, уже ошибочный исходный обмен, иные
+изменения strain/позиции и последующие обмены не расширяют эти разрешения:
+они остаются заблокированными либо обрабатываются своим ранее утверждённым путём.
+Остальная RESULT-CLOSURE остаётся открытой; её критерии не сокращаются.
+
+### Предлагаемое правило исправления
+
+1. Только владелец исходного хода выводит потерю предпосылки из принятого
+   префикса, сохранённой раны и текущего конкретного обмена. Одного публичного
+   сообщения об ошибке или имени `operationType` недостаточно для разрешений.
+2. Первый запрос разрешает существующую точную группу зависимой арифметики,
+   если она требуется, и только два новых поля этого обмена: `outcome` и
+   `after.controlState`. Операция, подготовка, участники, входящее действие,
+   кубики, независимые модификаторы, strain и каноническая позиция остаются
+   исходными. Это правило не добавляет разрешений расхода, но сохраняет все
+   независимо выведенные разрешения его исправления по уже утверждённым правилам:
+   одна рана может иметь одновременно штраф позиции и стоимости действия.
+   Нельзя менять закрытый предшествующий обмен.
+3. GM выбирает существующий `no_effect` или `blocked`; выбранный вариант должен
+   пройти обычную полную проверку обмена. `after.controlState` копируется точно
+   из принятого `before.controlState`, включая все поля и их отсутствие.
+   Смешанный вариант «неуспешный исход с прежними успешными оковами», частичное
+   исправление арифметики и добавление новых последствий не принимаются.
+4. Если законная подготовка, решающий успех либо оставшееся эффективное
+   преимущество по-прежнему разрешают эти оковы, разрешения результата не
+   открываются. Формула броска не превращается в универсальное правило выбора
+   `outcome`; диапазон результата может остаться тем же после штрафа.
+   Сильная предпосылка `force_binding` сохраняется отдельно: эффективного `+1`
+   или одного boolean `setup: true` недостаточно. Нужны эффективное `+2`,
+   существующие `setupState`/`bindingSetup = ready` либо решающий успех.
+5. Лишь после настоящего ответа GM и обычной проверки исправленного обмена
+   клиент может выдать отдельный следующий `dependent_draft` для итогового
+   состояния контроля конфликта. Он разрешает только точное поле текущего
+   исходного носителя, соответствующее `activeConflict.controlState`.
+   Путь, значение и наличие поля выводятся владельцем по существующему приоритету
+   исходных носителей; игнорируемые соседние поля wrapper, целые контейнеры и
+   другой жизненный контур не разрешаются. Допустимое значение и наличие —
+   точная копия уже проверенного последнего `exchange.after.controlState`.
+   Одновременно исправлять будущий итог в первом
+   ответе запрещено; это не новый выбор исхода и не полномочие произвольной записи.
+   Для этой промежуточной границы допускается только независимо доказанное
+   несоответствие итогового контроля: физически он остаётся точным исходным полем.
+   В отдельном временном изображении для проверки можно заменить лишь этот
+   итог точной копией действительно исправленного последнего обмена. Все обычные
+   правила самого обмена, ресурсов и остальных данных обязательны; никакая иная
+   ошибка не игнорируется. Это не физическая запись и не каноническая публикация.
+   После ответа на итоговое поле нужна полная обычная проверка настоящего сырого
+   черновика без такой промежуточной замены.
+6. Для каждого запроса нужны его собственный `continuationId` и Ready. Приватный
+   журнал принятого прогресса, сохранение точных прежних изображений, холодный
+   повтор, отказ при подмене и отложенная единственная публикация используют
+   утверждённые гарантии редакции 2. Принятая арифметика и результат первого
+   ответа не меняются при исправлении итогового поля.
+   Первый ответ может добавить запись прогресса только после реального закрытия
+   последнего оставшегося исходного обмена. Холодный повтор независимо
+   восстанавливает его запрос до записи, политику и принятые изображения, затем
+   выводит итоговый запрос, даже когда непринятых обменов больше нет. Итоговый
+   запрос не создаёт нового обмена/возможности раны или синтетической записи
+   прогресса. Он завершается своим ответом и обычным сохранением совокупного
+   принятого изображения; форма журнала и формула корреляции не меняются.
+
+### Пример и приёмка
+
+В двух обменах каноническая позиция остаётся `player_advantaged` (`+1`).
+Первое давление: исходные кубики `5/15`, позиционный бонус игрока `+2`,
+итоги `7/15`, margin `-8`; игрок получает strain `clear → strained` и
+сохранённую рану I со штрафом позиции `binding: 1`. Этот обмен остаётся закрытым.
+Последние оковы до раны: кубики `13/10`, бонус `+2`, итоги `15/10`, margin `5`,
+`player_success`, контроль `none → player hindered`. После раны эффективная
+позиция равна `0`: итоги `13/10`, margin `3`, диапазон всё ещё `player_success`.
+Без setup и decisive успеха предпосылка оков потеряна. GM может исправить этот
+обмен на `no_effect` с неизменным контролем `none`, затем отдельным ответом
+исправить итоговый контроль на уже проверенное `none`. Ни один кубик, расход,
+strain, сохранённый выбор или каноническая позиция не переписываются.
+
+Приёмка требует настоящего сохранённого выбора и последовательных публичных
+ответов в исходном GameEngine-ходе; оба вида оков; холодное восстановление после
+принятия исправленного обмена до ответа на итоговое поле; прежние ресурсы и
+однократную публикацию. Отрицательные проверки отклоняют добавленную подготовку,
+подмену операции/кубиков/участника, сохранённый успешный контроль, изменения
+закрытого префикса, чужие поля `after`, итоговое поле в первом ответе, поддельный
+последующий запрос и изменение ранее принятого результата после перезапуска.
+Отдельно проверяются достаточная setup/decisive предпосылка, неприменимая рана и
+случай за пределами этого ограниченного блока: новые разрешения не возникают.
+Обязательны три отдельные регрессии: одновременное исправление позиции и
+независимо доказанной стоимости; `force_binding` с падением эффективного ранга
+`+2 → +1` и только `setup: true` открывает исправление результата; посторонняя
+ошибка обычной проверки вместе с разрешённым несоответствием итогового контроля
+по-прежнему отклоняется и не скрывается временным изображением.
+
+GM-руководства, живой контракт, worked example, manifest и документационные
+проверки обновляются вместе с реализацией. Нужны адресные прогоны, Fast,
+условный FullValidation и независимое ревью Astra XHigh; тяжёлые реальные
+сценарии остаются в соответствующей интеграционной группе.
+
+### Рассмотренные варианты
+
+Рекомендуется отдельный ответ GM на итоговое поле: он сохраняет существующую
+границу авторства и явно проверяемую последовательность. Автоматическая запись
+итогового контроля клиентом сократила бы число ответов, но расширила бы его
+полномочия на исходный черновик; эта альтернатива не разрешается данной редакцией.
+Сохранение общего отказа без ограниченного исправления безопасно, но не даёт
+завершить уже законно начатый ход с выбранной раной и не выполняет этот пункт.
+
+## MORTAL-RECOVERY-PUBLICATION — редакция 1, утверждена 2026-09-29
+
+**Статус: точная редакция 1 утверждена владельцем 2026-09-29.** Связанные задачи:
+#1536, T069-C/T070 и T081-D-PERFORMANCE-RUNTIME-UNBLOCK. Разрешение устранить
+три блокера PreMerge получено; прежняя спецификация прямо оставляла постоянный
+формат квитанции восстановления неопределённым. Эта редакция закрывает именно
+эту границу. Владелец ответил «Утвердить редакцию 1» на ссылку и описание этой
+точной редакции; зависимая реализация разрешена в указанных ниже границах.
+
+### Результат и границы
+
+Реальная, принятая клиентом проверка естественного восстановления получает
+замкнутый неизменяемый результат и квитанцию в существующей истории раны.
+Планировщик, эффектный этап и общий принятый план сохраняют одного владельца;
+только обычная координированная публикация записывает состояние. Новый файл
+контроля, команда GM, произвольный JSON-переход, обход создания раны или второй
+издатель не вводятся. Полная T070, команды лечения, RESULT-CLOSURE и потребитель
+смертельного исхода вне этого блока остаются открытыми.
+
+### Механический результат принятой проверки
+
+Один новый прошедший интервал восстановления добавляет один пункт прогресса.
+При достижении существующего `currentStepThreshold` рана переходит на одну
+ступень тяжести вниз; `carryOverflow=true` переносит остаток, а `false` отбрасывает
+его после первого достигнутого порога. Тот же объявленный порог применяется к
+следующей ступени. Достижение порога на ступени I использует отдельный существующий
+этап полного исцеления и завершения последствий в том же общем плане. Вся цепочка
+ограничена четырьмя ступенями, не циклом по каждому прошедшему интервалу; арифметика
+проверяется на переполнение. Смена тяжести действительно завершает старые эффекты
+и создаёт законные новые поколения по FR-027; пустой эффектный пакет не заменяет
+рематериализацию. Этот пункт требует явного утверждения: прежний Mortal-контракт
+определял расписание и порог, но не задавал полную функцию перехода через порог.
+
+Один применимый результат ухудшения выполняется один раз за принятую проверку:
+`increase_severity` повышает тяжесть ровно на одну ступень даже при нескольких
+пропущенных интервалах. Все учтённые интервалы при этом отмечаются как потреблённые.
+Результат обязан оставаться применимым; IV не превращается в смерть автоматически.
+Если одновременно есть восстановление и ухудшение, сохраняется порядок уже
+выданных типизированных намерений; невозможный совмещённый результат отвергается
+целиком без частичной публикации. `death_contour` сохраняется как типизированная
+передача владельцу жизненного цикла, без прямого изменения жизни или смерти раной.
+Фактическое исполнение отдельного жизненного цикла не объявляется реализованным.
+
+`NotDue`, `BlockedNotStabilized` и `NoNaturalRecovery` могут публиковать результат
+проверки и квитанцию, но не добавляют прогресс, не ухудшают рану и не потребляют
+ещё не наступившие интервалы. Нет нового броска, платы или сообщения о лечении.
+
+### Расписание и постоянное доказательство
+
+Якоря сохраняют исходную принятую эпоху создания/стабилизации и начала условия.
+Результат хранит отдельно уже учтённые порядковые номера интервалов для каждой
+эпохи. Новая проверка использует только разницу между прошедшими и уже учтёнными
+интервалами. Например, якорь100, период10 и время135 дают три интервала и следующий
+срок140; сохранение результата не сдвигает следующий срок на150. Якорь ухудшения
+не переписывается для подавления повторного применения. Настоящая стабилизация
+или повторная травма меняет только соответствующую эпоху по FR-065; записи другой
+эпохи не доказывают потребление её интервалов.
+
+Новый клиентский результат `recover` хранится в существующем `transitionResult`.
+Его замкнутые части: версия, полный источник раны до проверки, исходная принятая
+привязка/событие, исходный типизированный результат планировщика и принятая минута,
+координаты обеих эпох и потреблённые интервалы до/после, координаты перехода и
+отпечатки до/после, типизированная передача жизненному циклу при её наличии,
+квитанция и отпечаток всего результата. Коллекции и JSON-проекции отделены от
+авторитета; внешний вызывающий код не может изменять их или выдавать собственную
+структуру за полномочие. Квитанция по-прежнему имеет ровно четыре поля:
+`AuthorityFingerprint`, `ReceiptFingerprint`, `TickKey`, `WoundId`.
+
+Парсер заново проверяет закрытую форму, исходную рану, арифметику, семантические
+координаты, квитанцию и согласие с внешней строкой истории. Один лишь правильный
+формат отпечатка не является доказательством результата. Одна логическая проверка
+имеет одну итоговую квитанцию; дополнительные стадии тяжести/исцеления связаны с
+тем же принятым результатом и не выпускают её повторно.
+
+Порядок повторного применения: текущий реестровый владелец и привязка → полная
+проверка текущей истории и её подписанного состояния → поиск постоянного результата
+по актуальному `lastTickKey` и принятой минуте → только затем новая арифметика.
+Повтор в новую формальную привязку при той же минуте возвращает исходную квитанцию,
+без новых намерений, плана или записи. Чужой/изменённый результат отвергается.
+Повреждённая история или квитанция даёт `InvalidHistory` раньше обращения к
+испорченным живым часам. Новый `TickKey` из изменившейся после публикации раны
+не заменяет исходное доказательство повторного применения.
+
+### Приёмка
+
+Нужны реальные общие публикации для срока−1/срока/срока+1, нескольких интервалов,
+перебазирования стабилизацией, блокировки и отсутствия естественного восстановления,
+ухудшения и типизированной передачи жизненному циклу. Проверяются точные состояния
+прогресса/тяжести/эффектов и постоянные квитанции, последующий срок без пропуска,
+неповторение ухудшения внутри одного интервала, холодный повтор при той же минуте,
+повреждение истории/квитанции, изменённый результат, прежние владельцы и откат.
+Композиция не пишет ни один канонический байт; неуспех не регистрирует план.
+Существующие сценарии сохраняются, а ожидания расположения полностью исцелённой
+раны уточняются до точной проверки архива и завершения всех последствий.
+
+Руководство GM получает честное описание реализованной клиентской границы и
+пошаговый пример прогресса/повтора; оно не утверждает завершение всего смертельного
+жизненного цикла. Требуются адресные проверки, XML-сборка, независимое Astra XHigh
+ревью и полный PreMerge≤30 минут. Fast остаётся7 минут; после контроля работа
+останавливается для проверки владельцем. Это не разрешает менять отбор проверок
+или выдавать быстрое падение за измерение полного успешного набора.
+
+## TEST-LANE-BOUNDARY-DECISION, редакция 1 — утверждена владельцем (2026-09-30)
+
+**Остановлено последующим указанием владельца 2026-09-30.** Обязательные широкие
+контроли из этого раздела и предыдущих разделов больше не выполняются. Новая
+стратегия описана в [CATEGORY-SELECTION-DECISION, редакция 1](../1505-test-suite-performance/spec.md)
+и утверждена владельцем 2026-09-30 («подтверждаю»). Прежняя реализация и результаты сохранены;
+незавершённые прогоны не считаются успешными. Разработка игровых возможностей
+по-прежнему приостановлена до окончания и проверки работы над тестовой средой.
+
+Источник: #1536 и задача производительности тестов #1505. Это утверждённое
+изменение прежнего условия неизменного отбора PreMerge из FR-014 задачи #1505
+и из разделов выше. Предел `PreMerge≤30` пока сохраняется.
+
+### Результат и границы
+
+Сохранить короткий повседневный контроль и все значимые проверки материализации,
+не заставляя один PreMerge последовательно проходить каждую подробную матрицу.
+`Fast` остаётся в пределах семи минут, PreMerge — в пределах 30 минут.
+Если полный измеренный набор не укладывается после оптимизации, изменение
+предела требует отдельного точного предложения и утверждения; ни одна штатная
+группа не получает часовой предел. Изменяются
+только состав тестовых групп, подготовка фикстур, проверка покрытия и документация
+тестирования. Игровые правила, производственный код и контракты GM вне области.
+
+В прогоне 2026-09-30 после 29:22 завершились 9345 случаев с двумя падениями,
+но из 67 параллельных дескрипторов завершились лишь 36; две из четырёх групп
+AfterlifeResourceCutoverTests и последующие ProcessIntegration/E2E не дошли до
+полной проверки. Число в итоговом JSON считало выполненные TRX, а не весь план.
+Поэтому 29:22 не служит доказательством выполнения полного PreMerge за 30 минут.
+Два падения исправлены только в тестах; адресный контроль прошёл 2/2 и
+независимое Astra XHigh ревью не нашло замечаний.
+
+### Предлагаемая граница
+
+1. Вынести 704 обычных случая `AfterlifeResourceCutoverTests` в именованную
+   интеграционную группу духовного конфликта с отдельным 30-минутным запуском.
+   Пять случаев этого же тестового класса с категорией
+   `ProcessIntegration` остаются в прежней отдельной фазе и не попадают в
+   новый обычный запуск. Не удалять ни один уникальный сценарий.
+   Подготовленные неизменяемые байты
+   можно повторно использовать только при точном совпадении параметров; каждый
+   тест по-прежнему получает новый корень, поколение, lease, владельцев и
+   настоящий холодный переход там, где он является предметом проверки.
+2. Оставить в PreMerge небольшой явно зафиксированный набор представителей
+   этой матрицы: исходное допущение, выбор/переход раны, зависимый следующий
+   запрос, холодное возобновление и окончательную публикацию. Для каждого
+   механизма должна оставаться хотя бы одна проверка полного пути; конкретный
+   перечень тестов закрепляется в плане и защищается проверкой отбора. Остальная
+   матрица обязательна отдельной группой при изменении духовного конфликта,
+   ран, восстановления, C2/C3/C4 или соответствующих контрактов, а не при
+   каждом небольшом изменении проекта.
+3. Сохранить полный Fast, остальную штатную Integration, отдельные фазы
+   ProcessIntegration и E2E, стартовую волну ExplorerWeb, существующие
+   ограничения параллелизма и выявление дублей внутри PreMerge. Проверка
+   отбора должна доказывать отсутствие потерь относительно прежней полной
+   обычной матрицы: каждый из 704 случаев присутствует в новой отдельной
+   группе, пять процессных остаются в ProcessIntegration, а
+   представители PreMerge — ожидаемое намеренное пересечение между группами.
+4. Проводить адресные проверки изменённого тестового механизма, контроль Fast
+   при значимом рубеже, полную новую интеграционную группу и затем один полный
+   PreMerge. Каждый запуск должен удержать JSON/TRX/лог, действительное число
+   запланированных и выполненных тестов, отсутствие пропусков/дублей внутри
+   запуска и успешную очистку. Одна проверка всей границы проходит независимое
+   Astra XHigh ревью. После успешного полного контроля сообщить измеренное
+   время и остановиться для проверки владельцем.
+
+### Рассмотренные варианты
+
+Продолжать включать все подробные случаи в PreMerge и просто поднять его
+тайм-аут — не рекомендуется: завершённая часть текущего плана уже заняла
+почти 30 минут, а полное время не измерено. Удалять тяжелые случаи без
+доказанной повторяемости — также не рекомендуется. Отдельная полная группа
+сохраняет доступность этих проверок и делает обычный PreMerge обозримым.
+
+### Нерешённое измерение
+
+Точный список восьми представителей закреплён в `plan.md` и защищается
+проверкой отбора. Предел отдельной группы — 30 минут.
+Если он недостижим без потери важного покрытия, отдельную матрицу следует
+разделить ещё раз. Любое повышение предела требует измерений и отдельного
+утверждения точного значения. Первая полная проверка покажет, достаточно ли
+одного переноса
+духовной матрицы или требуется дополнительное разделение других тяжелых классов.

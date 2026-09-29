@@ -152,6 +152,13 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
     internal WoundMaterializationEnvelope CurrentWound => _currentWound;
     internal string WoundSourcePath => _woundSourcePath;
     internal WoundHistoryState History => _history;
+
+    /// <summary>
+    /// Gets detached accepted event values for strict recovery-source comparison.
+    /// These values do not grant procedure dice or publication authority.
+    /// </summary>
+    internal IReadOnlyList<int> RecoveryAcceptedD20EventValues =>
+        Array.AsReadOnly(_acceptedD20EventValues.ToArray());
     internal long CurrentGameMinute { get; }
     internal EffectMechanicsSnapshot EffectMechanics => _effectMechanics;
     internal IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource>
@@ -496,14 +503,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
             Get(roots, WoundCarrierCatalog.AfterlifeProfilesPath));
         var woundCatalog = WoundCarrierCatalog.Build(woundCarriers);
         issues.AddRange(woundCatalog.Issues);
-        if (!woundCatalog.TryResolveOne(woundId, out var occurrence))
-        {
-            issues.Add(Issue(
-                "treatmentSelection.woundId",
-                "mortal_wound_treatment_accepted_state_wound_unresolved",
-                "one exact current wound across the accepted carrier set",
-                $"{woundId}: occurrences={woundCatalog.CountExactOccurrences(woundId)}"));
-        }
+        woundCatalog.TryResolveOne(woundId, out var occurrence);
 
         var identity = WoundIdentityState.Parse(
             Decode(signed.ReadRequiredBytes(WoundIdentityState.StatePath)),
@@ -519,6 +519,14 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
         {
             issues.AddRange(history.State.ValidateAgreement(identity.State, woundCatalog));
         }
+        if (occurrence is null && identity.State is not null && history.State is not null &&
+            issues.Count == 0 && woundCatalog.CountExactOccurrences(woundId) == 0)
+            occurrence = ResolveHealedRecoveryReplaySource(woundId, identity.State, history.State);
+        if (occurrence is null)
+            issues.Add(Issue("treatmentSelection.woundId",
+                "mortal_wound_treatment_accepted_state_wound_unresolved",
+                "one exact active wound or sealed terminal recovery snapshot",
+                $"{woundId}: occurrences={woundCatalog.CountExactOccurrences(woundId)}"));
         if (occurrence is not null && identity.State is not null)
         {
             if (!identity.State.TryGetEntry(woundId, out var identityEntry))
@@ -529,7 +537,7 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                     "one exact current identity entry for the selected wound",
                     woundId));
             }
-            else
+            else if (occurrence.Wound.Lifecycle == "active")
             {
                 issues.AddRange(WoundIdentityState.ValidateActiveAgreement(
                     identityEntry,
@@ -2062,6 +2070,48 @@ internal sealed class MortalWoundTreatmentAcceptedStateAuthority
                 exception.GetType().Name));
             return false;
         }
+    }
+
+    /// <summary>
+    /// Resolves a healed wound exclusively from the verified recovery result and terminal identity.
+    /// The returned source supports exact receipt replay and cannot authorize fresh recovery.
+    /// </summary>
+    /// <param name="woundId">
+    /// The exact selected wound identifier.
+    /// </param>
+    /// <param name="identity">
+    /// The signed current identity whose complete history agreement was checked.
+    /// </param>
+    /// <param name="history">
+    /// The parsed signed history with validated linked recovery stages.
+    /// </param>
+    /// <returns>
+    /// A detached exact terminal snapshot, or <see langword="null"/> without terminal proof.
+    /// </returns>
+    private static WoundCarrierOccurrence? ResolveHealedRecoveryReplaySource(
+        string woundId, WoundIdentityState identity, WoundHistoryState history)
+    {
+        if (!identity.TryGetEntry(woundId, out var entry) || entry.Status != "healed")
+            return null;
+        var candidates = history.Transitions
+            .Where(row => row.WoundId == woundId)
+            .Select(row => row.TransitionResult).OfType<MortalWoundRecoveryPersistedResult>()
+            .Select(result => result.Stages.Last()).Where(stage => stage.Terminal && stage.Kind == "heal" &&
+                stage.TransitionId == entry.TerminalTransitionId).ToArray();
+        if (candidates.Length != 1)
+            return null;
+        var wound = WoundAcceptedTurnData.CloneWound(candidates[0].AfterWound)!;
+        if (wound.WoundId != woundId || wound.Lifecycle != "healed" ||
+            wound.LastTransition.TransitionId != entry.TerminalTransitionId ||
+            wound.LastTransition.Ordinal != entry.LastTransitionOrdinal ||
+            WoundIdentityState.ComputeSemanticFingerprint(wound) != entry.SemanticFingerprint ||
+            wound.Owner.Realm != entry.Realm || wound.Owner.OwnerKind != entry.OwnerKind ||
+            wound.Owner.OwnerId != entry.OwnerId || wound.Owner.CarrierPath != entry.CarrierPath)
+            return null;
+        return new WoundCarrierOccurrence(woundId, wound.Owner.CarrierPath,
+            WoundHistoryState.HistoryPath + ".transitions.recoveryTerminalSnapshot",
+            new WoundCarrierCoordinate(wound.Owner.Realm, wound.Owner.OwnerKind,
+                wound.Owner.OwnerId, wound.Owner.CarrierPath), wound);
     }
 
     private static bool TryParseProjectionCatalogObject(

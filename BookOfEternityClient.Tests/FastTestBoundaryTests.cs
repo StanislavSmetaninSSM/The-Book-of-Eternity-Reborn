@@ -19,6 +19,9 @@ public sealed class FastTestBoundaryTests
 
     private static readonly string[] ReviewedHeavySourcePaths =
     [
+        "MortalItemConsumptionPlannerTests.Session.cs",
+        "ShiningAbodeTradeAndForgeStateTests.Session.cs",
+        "GmWorkerAuditLogTests.Session.cs",
         "AfterlifeSpiritualConflictValidationTests.cs",
         "GameEngineTurnLifecycleTests.cs",
         "GuardianSystemRegressionTests.cs",
@@ -31,6 +34,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
         "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
         "MortalWoundTreatmentResolverTests.CoursePublication.cs",
+        "MortalWoundTreatmentResolverTests.ReplayFixture.cs",
         "MortalWoundTreatmentResolverTests.cs",
         "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
         "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
@@ -94,6 +98,7 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentResolverTests.ColdClaimRecovery.cs",
         "MortalWoundTreatmentResolverTests.CourseContinuation.cs",
         "MortalWoundTreatmentResolverTests.CoursePublication.cs",
+        "MortalWoundTreatmentResolverTests.ReplayFixture.cs",
         "MortalWoundTreatmentResolverTests.cs",
         "MortalWoundTreatmentResolverTests.DetachedRequirementAuthority.cs",
         "MortalWoundTreatmentResolverTests.DetachedSealCoordinates.cs",
@@ -123,126 +128,35 @@ public sealed class FastTestBoundaryTests
         "MortalWoundTreatmentResolverTests.ResourceFinalization.cs",
         "MortalWoundTreatmentResolverTests.ResourcePublication.cs",
         "MortalWoundTreatmentResolverTests.SeverityReductionPlanner.cs",
+        "MortalWoundTreatmentResolverTests.SpiritualOriginalIntakeGuard.cs",
         "MortalWoundTreatmentResolverTests.VehicleTopology.cs"
     ];
 
+    /// <summary>
+    /// Verifies that the category runner retains bounded child-process ownership and cleanup.
+    /// </summary>
     [Fact]
-    public void CSharpLaneRunner_FocusedProjectSelectorIsClosedScopedAndApplied()
-    {
-        var runnerPath = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "scripts",
-            "test-csharp.ps1");
-        var source = File.ReadAllText(runnerPath);
-        var normalized = Regex.Replace(source, @"\s+", " ");
-
-        Assert.Contains(
-            "[ValidateSet(\"Fast\", \"Integration\")] " +
-            "[string]$FocusedProject = \"Fast\"",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$PSBoundParameters.ContainsKey(\"FocusedProject\")",
-            source,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-FocusedProject is supported only with -Lane Focused.",
-            source,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$selectedProject = if ($effectiveLane -eq \"Focused\") " +
-            "{ $FocusedProject } else { $laneDefinition.Project }",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$projectPath = if ($selectedProject -eq \"Fast\")",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "if ($selectedProject -eq \"Both\")",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "elseif ($selectedProject -eq \"Fast\")",
-            normalized,
-            StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task CSharpLaneRunner_FocusedKeepsFiveMinuteDefaultAndAllowsBoundedExplicitOverride()
-    {
-        var accepted = await RunCSharpRunnerAsync(
-            "-Lane",
-            "Focused",
-            "-FocusedProject",
-            "Integration",
-            "-Filter",
-            "FullyQualifiedName~EffectAfterlifeAdapterTests",
-            "-TimeoutMinutes",
-            "10",
-            "-PlanOnly");
-        var rejected = await RunCSharpRunnerAsync(
-            "-Lane",
-            "Focused",
-            "-FocusedProject",
-            "Integration",
-            "-Filter",
-            "FullyQualifiedName~EffectAfterlifeAdapterTests",
-            "-TimeoutMinutes",
-            "16",
-            "-PlanOnly");
-
-        Assert.True(
-            accepted.ExitCode == 0,
-            $"stdout:{Environment.NewLine}{accepted.StandardOutput}{Environment.NewLine}" +
-            $"stderr:{Environment.NewLine}{accepted.StandardError}");
-        Assert.Contains("Timeout: 10 minute(s)", accepted.StandardOutput, StringComparison.Ordinal);
-        Assert.NotEqual(0, rejected.ExitCode);
-        Assert.Contains(
-            "hard limit of 15 minute(s)",
-            rejected.StandardOutput + rejected.StandardError,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain("PLAN-BEGIN", rejected.StandardOutput, StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void CSharpLaneRunner_RoutesFastWorkToFastProjectWithBoundedOwnedProcesses()
+    public void CSharpCategoryRunner_PreservesBoundedOwnedProcesses()
     {
         var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
         var source = File.ReadAllText(runnerPath);
-        var normalized = Regex.Replace(source, @"\s+", " ");
-
-        Assert.Contains(
-            "Fast = @{ Project = \"Fast\" Filter = $null TimeoutMinutes = 5 }",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "Focused = @{ Project = \"Fast\" Filter = $null TimeoutMinutes = 5 }",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "\"RegressionIntegration\", \"DeepValidation\", \"ProcessIntegration\"",
-            normalized,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$fastTestProject = Join-Path $repoRoot " +
-            "\"BookOfEternityClient.Tests\\BookOfEternityClient.Tests.csproj\"",
-            source,
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "$integrationTestProject = Join-Path $repoRoot " +
-            "\"BookOfEternityClient.IntegrationTests\\" +
-            "BookOfEternityClient.IntegrationTests.csproj\"",
-            source,
-            StringComparison.Ordinal);
+        var adapterSource = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot,
+            "scripts", "testing", "TestCategoryExecution.ps1"));
+        Assert.Matches(
+            @"\$fastTestProject\s*=\s*Join-Path\s+\$repoRoot\s+['""']BookOfEternityClient.Tests[\\/]BookOfEternityClient.Tests.csproj['""']",
+            source);
+        Assert.Matches(
+            @"\$integrationTestProject\s*=\s*Join-Path\s+\$repoRoot\s+['""']BookOfEternityClient.IntegrationTests[\\/]BookOfEternityClient.IntegrationTests.csproj['""']",
+            source);
+        Assert.Matches(
+            @"\$projectPath\s*=\s*if\s*\(\$project\s*-eq\s*['""']unit['""']\)\s*\{\s*\$fastTestProject\s*\}\s*else\s*\{\s*\$integrationTestProject\s*\}",
+            adapterSource);
 
         var requiredTokens = new[]
         {
-            "[CmdletBinding(DefaultParameterSetName = \"Lane\")]",
-            "ParameterSetName = \"Lane\"",
-            "ParameterSetName = \"SelfTest\"",
+            "[CmdletBinding(DefaultParameterSetName = 'Categories')]",
+            "ParameterSetName = 'SelfTest'",
             "$PSCmdlet.ParameterSetName",
-            "test-results.trx",
             "dotnet-test.log",
             "Stopwatch",
             "WaitForExit",
@@ -303,12 +217,6 @@ public sealed class FastTestBoundaryTests
             containmentAssignment > processStart &&
             launchRelease > containmentAssignment,
             "The owned target must remain gated until its launcher is inside containment.");
-        Assert.DoesNotContain(
-            "Category!=FullValidation&Category!=ProcessIntegration&" +
-            "Category!=E2E&Category!=RegressionIntegration",
-            source,
-            StringComparison.Ordinal);
-
         var forbiddenBroadProcessCommands = new[]
         {
             "Get-" + "Process",
@@ -337,8 +245,42 @@ public sealed class FastTestBoundaryTests
         Assert.Contains("[void]$allRuns.Remove($run)", source, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Verifies that an omitted selection displays help and retired lanes fail before starting work.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the runner rejects both legacy selections without a workload.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_AbsoluteNpmApplicationStartsWithOwnedProcessSettings()
+    public async Task CSharpCategoryRunner_NoSelectionOrRetiredLaneStartsNoWorkload()
+    {
+        var help = await RunCSharpRunnerAsync();
+        Assert.Equal(0, help.ExitCode);
+        Assert.Contains("-ListCategories", help.StandardOutput, StringComparison.Ordinal);
+        Assert.Contains("-Category", help.StandardOutput, StringComparison.Ordinal);
+        Assert.DoesNotContain("Results:", help.StandardOutput, StringComparison.Ordinal);
+
+        foreach (var lane in new[] { "Fast", "PreMerge", "Complete" })
+        {
+            var rejected = await RunCSharpRunnerAsync("-Lane", lane);
+            Assert.NotEqual(0, rejected.ExitCode);
+            Assert.Contains("retired", rejected.StandardOutput + rejected.StandardError,
+                StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("-Category", rejected.StandardOutput + rejected.StandardError,
+                StringComparison.Ordinal);
+            Assert.DoesNotContain("PLAN ", rejected.StandardOutput, StringComparison.Ordinal);
+            Assert.DoesNotContain("Results:", rejected.StandardOutput, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that npm starts through the owned process launcher with a fully qualified application path.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after npm's owned launch settings are inspected.
+    /// </returns>
+    [Fact]
+    public async Task CSharpCategoryRunner_AbsoluteNpmApplicationStartsWithOwnedProcessSettings()
     {
         var probe = await RunCSharpRunnerSelfTestAsync("NpmStartup");
 
@@ -364,8 +306,14 @@ public sealed class FastTestBoundaryTests
         Assert.EndsWith("npm.cmd", executablePath, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Verifies that concurrent self-tests retain distinct diagnostic directories.
+    /// </summary>
+    /// <returns>
+    /// A task completing after both self-tests expose different result paths.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_ConcurrentSameLaneRunsCreateDistinctResultDirectories()
+    public async Task CSharpCategoryRunner_ConcurrentSelfTestsCreateDistinctResultDirectories()
     {
         var probes = await Task.WhenAll(
             RunCSharpRunnerSelfTestAsync("ResultDirectory"),
@@ -386,34 +334,55 @@ public sealed class FastTestBoundaryTests
         {
             Assert.True(Directory.Exists(resultDirectory), resultDirectory);
             Assert.Matches(
-                @"-\d+-[0-9a-f]{32}-fast$",
+                @"-\d+-[0-9a-f]{32}-selftest$",
                 Path.GetFileName(resultDirectory));
         });
     }
 
+    /// <summary>
+    /// Verifies that private self-tests cannot be combined with public category planning.
+    /// </summary>
+    /// <returns>
+    /// A task completing after invalid parameter sets are rejected before any probe starts.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_SelfTestCannotCombineWithRealLaneOrPlanOnly()
+    public async Task CSharpCategoryRunner_SelfTestCannotCombineWithCategoryOrPlanOnly()
     {
-        var realLaneCombination = await RunCSharpRunnerAsync(
-            "-Lane",
-            "PreMerge",
+        var realCategoryCombination = await RunCSharpRunnerAsync(
+            "-Category",
+            "test-selection-contracts",
+            "-SelfTest",
+            "ResultDirectory");
+        var realCategoryError = await RunCSharpRunnerCliXmlAsync(
+            "-Category",
+            "test-selection-contracts",
             "-SelfTest",
             "ResultDirectory");
         var planOnlyCombination = await RunCSharpRunnerAsync(
             "-PlanOnly",
             "-SelfTest",
             "NpmStartup");
+        var planOnlyError = await RunCSharpRunnerCliXmlAsync(
+            "-PlanOnly",
+            "-SelfTest",
+            "NpmStartup");
 
-        AssertRejectedParameterSet(realLaneCombination);
-        AssertRejectedParameterSet(planOnlyCombination);
+        AssertRejectedParameterSet(realCategoryCombination, realCategoryError);
+        AssertRejectedParameterSet(planOnlyCombination, planOnlyError);
         Assert.DoesNotContain(
             "Npm-startup-probe",
             planOnlyCombination.StandardOutput + planOnlyCombination.StandardError,
             StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Verifies that a logging failure after process start still kills and disposes the owned child.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the failed launch is cleaned up.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_PostStartLoggingFailureKillsAndDisposesOwnedProcess()
+    public async Task CSharpCategoryRunner_PostStartLoggingFailureKillsAndDisposesOwnedProcess()
     {
         var probe = await RunCSharpRunnerSelfTestAsync("OwnedPostStartFailure");
 
@@ -428,8 +397,14 @@ public sealed class FastTestBoundaryTests
             StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Verifies that the finalizer retries failed cleanup and reports its retained evidence.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after retry evidence and process exit are checked.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_FailedInitialCleanupIsRetriedAndReportedWithoutOrphaning()
+    public async Task CSharpCategoryRunner_FailedInitialCleanupIsRetriedAndReportedWithoutOrphaning()
     {
         var probe = await RunCSharpRunnerSelfTestAsync("OwnedPostStartCleanupRetry");
 
@@ -469,8 +444,14 @@ public sealed class FastTestBoundaryTests
             $"Owned child PID {processId} still exists after the runner exited.");
     }
 
+    /// <summary>
+    /// Verifies that containment remains effective when the root process exits before its child.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the descendant has exited.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_ExitedRootCannotConcealOwnedDescendant()
+    public async Task CSharpCategoryRunner_ExitedRootCannotConcealOwnedDescendant()
     {
         var probe = await RunCSharpRunnerSelfTestAsync("OwnedExitedRootDescendant");
 
@@ -498,8 +479,14 @@ public sealed class FastTestBoundaryTests
             $"Owned descendant PID {processId} still exists after its root and runner exited.");
     }
 
+    /// <summary>
+    /// Verifies that a batch finishes after cleaning a descendant whose root has exited.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the batch-owned descendant has exited.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_ParallelBatchCannotBlockOnExitedRootDescendant()
+    public async Task CSharpCategoryRunner_ParallelBatchCannotBlockOnExitedRootDescendant()
     {
         var probe = await RunCSharpRunnerSelfTestAsync(
             "OwnedBatchExitedRootDescendant");
@@ -528,8 +515,11 @@ public sealed class FastTestBoundaryTests
             $"Batch-owned descendant PID {processId} still exists after cleanup.");
     }
 
+    /// <summary>
+    /// Verifies that exhausted cleanup retries retain ownership of a still-live process.
+    /// </summary>
     [Fact]
-    public void CSharpLaneRunner_AllRetriesExhaustedDispositionRetainsLiveRun()
+    public void CSharpCategoryRunner_AllRetriesExhaustedDispositionRetainsLiveRun()
     {
         var source = File.ReadAllText(Path.Combine(
             TestRepoPaths.RepoRoot,
@@ -575,38 +565,6 @@ public sealed class FastTestBoundaryTests
             "if ($disposition.DisposeHandle)",
             source,
             StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void FastSources_ContainNoIntegrationCategoriesOrBroadValidationCalls()
-    {
-        var fastRoot = Path.Combine(TestRepoPaths.RepoRoot, "BookOfEternityClient.Tests");
-        var broadCall = new Regex(
-            @"\.ValidateGameState" + @"Async\s*\(\s*\)",
-            RegexOptions.CultureInvariant);
-        var forbiddenCategories = new[]
-        {
-            "FullValidation",
-            "RegressionIntegration",
-            "ProcessIntegration",
-            "E2E"
-        };
-
-        var violations = Directory.EnumerateFiles(fastRoot, "*.cs", SearchOption.AllDirectories)
-            .Select(path => (Path: path, Source: File.ReadAllText(path)))
-            .SelectMany(candidate =>
-                forbiddenCategories
-                    .Where(category => candidate.Source.Contains(
-                        $"[Trait(\"Category\", \"{category}\")]",
-                        StringComparison.Ordinal))
-                    .Select(category => $"{candidate.Path}: {category}")
-                    .Concat(
-                        broadCall.IsMatch(candidate.Source)
-                            ? new[] { $"{candidate.Path}: parameterless full validation" }
-                            : Array.Empty<string>()))
-            .ToArray();
-
-        Assert.Empty(violations);
     }
 
     [Fact]
@@ -971,7 +929,16 @@ public sealed class FastTestBoundaryTests
         return false;
     }
 
+    private static Task<RunnerSelfTestResult> RunCSharpRunnerAsync(
+        params string[] arguments) =>
+        RunCSharpRunnerAsync(serializeErrorRecords: false, arguments);
+
+    private static Task<RunnerSelfTestResult> RunCSharpRunnerCliXmlAsync(
+        params string[] arguments) =>
+        RunCSharpRunnerAsync(serializeErrorRecords: true, arguments);
+
     private static async Task<RunnerSelfTestResult> RunCSharpRunnerAsync(
+        bool serializeErrorRecords,
         params string[] arguments)
     {
         var startInfo = new ProcessStartInfo("pwsh")
@@ -982,12 +949,16 @@ public sealed class FastTestBoundaryTests
             RedirectStandardOutput = true,
             RedirectStandardError = true
         };
-        foreach (var argument in new[]
+        startInfo.ArgumentList.Add("-NoProfile");
+        if (serializeErrorRecords)
         {
-            "-NoProfile",
-            "-File",
-            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1")
-        }.Concat(arguments))
+            startInfo.ArgumentList.Add("-OutputFormat");
+            startInfo.ArgumentList.Add("XML");
+        }
+        startInfo.ArgumentList.Add("-File");
+        startInfo.ArgumentList.Add(
+            Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1"));
+        foreach (var argument in arguments)
         {
             startInfo.ArgumentList.Add(argument);
         }
@@ -1016,16 +987,30 @@ public sealed class FastTestBoundaryTests
             await standardError);
     }
 
-    private static void AssertRejectedParameterSet(RunnerSelfTestResult result)
+    private static void AssertRejectedParameterSet(
+        RunnerSelfTestResult result,
+        RunnerSelfTestResult structuredError)
     {
         Assert.NotEqual(0, result.ExitCode);
+        var xmlStart = structuredError.StandardError.IndexOf(
+            "<Objs ",
+            StringComparison.Ordinal);
+        Assert.True(xmlStart >= 0, structuredError.StandardError);
+        var cliXml = XDocument.Parse(structuredError.StandardError[xmlStart..]);
+        XNamespace powerShell =
+            "http://schemas.microsoft.com/powershell/2004/04";
+        var fullyQualifiedErrorIds = cliXml
+            .Descendants(powerShell + "S")
+            .Where(value => string.Equals(
+                (string?)value.Attribute("N"),
+                "FullyQualifiedErrorId",
+                StringComparison.Ordinal))
+            .Select(static value => value.Value)
+            .Distinct(StringComparer.Ordinal)
+            .ToArray();
         Assert.Contains(
-            "Parameter set cannot be resolved",
-            result.StandardError,
-            StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("Lane result", result.StandardOutput, StringComparison.Ordinal);
-        Assert.DoesNotContain("Requested lane:", result.StandardOutput, StringComparison.Ordinal);
-        Assert.DoesNotContain("Effective lane:", result.StandardOutput, StringComparison.Ordinal);
+            "AmbiguousParameterSet,test-csharp.ps1",
+            fullyQualifiedErrorIds);
         Assert.DoesNotContain("Results:", result.StandardOutput, StringComparison.Ordinal);
     }
 

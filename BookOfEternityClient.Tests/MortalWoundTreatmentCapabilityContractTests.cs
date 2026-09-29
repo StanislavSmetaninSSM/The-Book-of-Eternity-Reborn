@@ -98,12 +98,26 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
         Assert.Equal("Field Medicine", Assert.Single(result.Sources).DisplayName);
     }
 
-    [Fact]
-    public void ParseActorCatalog_DerivesCurrentLifecycleFromCatalogMembershipAndIgnoresLookalikes()
+    /// <summary>
+    /// Derives lifecycle from catalog membership while retaining the canonical
+    /// activity flag and ignoring similarly named caller fields.
+    /// </summary>
+    /// <param name="activeFlag">
+    /// The canonical activity value; null omits the field and uses the current catalog's default.
+    /// </param>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    [InlineData(null)]
+    public void ParseActorCatalog_DerivesCurrentLifecycleFromCatalogMembershipAndPreservesActivity(bool? activeFlag)
     {
         var skill = Skill("skill_field_medicine_01", "Field Medicine", withCapability: true);
         skill["lifecycle"] = "retired";
-        skill["active"] = false;
+        skill["isActive"] = false;
+        if (activeFlag.HasValue)
+            skill["active"] = activeFlag.Value;
+        else
+            skill.Remove("active");
         var active = Root("activeSkillChanges", skill);
 
         var result = MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
@@ -114,7 +128,7 @@ public sealed class MortalWoundTreatmentCapabilityContractTests
         Assert.True(result.IsValid);
         var source = Assert.Single(result.Sources);
         Assert.Equal("active", source.Lifecycle);
-        Assert.True(source.Active);
+        Assert.Equal(activeFlag ?? true, source.Active);
     }
 
     [Fact]

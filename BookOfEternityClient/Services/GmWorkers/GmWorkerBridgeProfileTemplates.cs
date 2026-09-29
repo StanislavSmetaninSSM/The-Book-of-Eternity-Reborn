@@ -36,8 +36,8 @@ public static class GmWorkerBridgeProfileTemplates
         Permissions = new WorkerScopePolicy
         {
             TaskTypes = [WorkerTaskType.ValidationRepair],
-            ReadPaths = ["game_state/**", "lore/**", "input/**", "ready/**"],
-            ProposalWritePaths = ["game_state/**", "lore/**", "ready/**"],
+            ReadPaths = ["game_state/**", "lore/**", "input/**", "ready/**", "output/narrative_response.json"],
+            ProposalWritePaths = ["game_state/**", "lore/**", "ready/**", "output/narrative_response.json"],
             ProposalOnly = false,
             RequiresValidation = true
         }

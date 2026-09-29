@@ -655,6 +655,16 @@ internal static class EffectMaterializationTestFixture
                 }
             }),
             "periodic_damage" => CreatePeriodicDamageComponent(),
+            "periodic_spend" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resource"] = "energy", ["amount"] = 1,
+                ["floorPolicy"] = "registered_resource_floor"
+            }),
+            "periodic_gain" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resource"] = "energy", ["amount"] = 1,
+                ["capPolicy"] = "registered_resource_cap"
+            }),
             "periodic_restore" => CreateProfileComponent(profile, new JsonObject
             {
                 ["resource"] = "health",
@@ -729,7 +739,7 @@ internal static class EffectMaterializationTestFixture
             {
                 ["value"] = CreateNumericBound(-100, 100)
             },
-            "periodic_damage" or "periodic_restore" => new JsonObject
+            "periodic_damage" or "periodic_restore" or "periodic_spend" or "periodic_gain" => new JsonObject
             {
                 ["amount"] = CreateNumericBound(1, 10)
             },

@@ -199,6 +199,21 @@ internal sealed partial record WoundOpportunityAuthority
 
     private WoundOpportunityWorseningTargetAuthority? _worseningTarget;
 
+    /// <summary>
+    /// Gets the privately minted original-source guarantee, when signed provenance replaces creation-turn evidence.
+    /// </summary>
+    internal ValidationService.SpiritualOriginalTurnCapture.OriginalSourceGuarantee? OriginalSourceGuarantee { get; init; }
+
+    /// <summary>
+    /// Gets the exact required severity from either supported guarantee provenance, or <see langword="null"/> for optional harm.
+    /// </summary>
+    internal int? RequiredSeverityRank => GuaranteedTrigger?.RequiredSeverityRank ?? OriginalSourceGuarantee?.RequiredSeverityRank;
+
+    /// <summary>
+    /// Gets the guaranteed trigger identity for wound origin construction, or <see langword="null"/> for optional harm.
+    /// </summary>
+    internal string? GuaranteedTriggerId => GuaranteedTrigger?.TriggerId ?? OriginalSourceGuarantee?.TriggerId;
+
     internal WoundOpportunityWorseningTargetAuthority? WorseningTarget
     {
         get => CloneWorseningTarget(_worseningTarget);
@@ -363,7 +378,7 @@ internal sealed partial record WoundOpportunityAuthority
         WoundOpportunityAuthority value)
     {
         ArgumentNullException.ThrowIfNull(value);
-        return ComputeAuthorityFingerprint(
+        var fingerprint = ComputeAuthorityFingerprint(
             value.SessionId,
             value.RequestId,
             value.SnapshotToken,
@@ -385,6 +400,11 @@ internal sealed partial record WoundOpportunityAuthority
             value.WorseningTarget,
             value.SafeContext,
             value.InputEvidenceFingerprint);
+        return value.OriginalSourceGuarantee == null ? fingerprint : WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+        {
+            "book_of_eternity.wound.original_source_opportunity", "1", fingerprint,
+            value.OriginalSourceGuarantee.AuthorityFingerprint
+        });
     }
 
     internal static bool HasCompleteShape(WoundOpportunityAuthority? value)
@@ -421,6 +441,8 @@ internal sealed partial record WoundOpportunityAuthority
             return false;
         }
 
+        if (value.OriginalSourceGuarantee != null)
+            return value.OriginalSourceGuarantee.Matches(value);
         if (value.GuaranteedTrigger is null)
             return value.MinimumSeverityRank is null;
         var guarantee = value.GuaranteedTrigger;
@@ -515,14 +537,18 @@ internal sealed partial record WoundOpportunityAuthority
             }
 
             var wound = parsed.Wound;
+            var exhaustedOptionalConflict = request.Domain == "spiritual" &&
+                (request.Owner.Realm is "chaos_sea" or "shining_abode") &&
+                evidence.CauseKind == "same_conflict" &&
+                !minimumSeverityRank.HasValue && wound.Severity.Rank >= maximumSeverityRank;
             if (!string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal) ||
                 wound.Owner != request.Owner ||
                 !string.Equals(
                     wound.Classification.Domain,
                     request.Domain,
                     StringComparison.Ordinal) ||
-                wound.Severity.Rank is < 1 or >= 4 ||
-                wound.Severity.Rank >= maximumSeverityRank ||
+                wound.Severity.Rank is < 1 or > 4 ||
+                !exhaustedOptionalConflict && wound.Severity.Rank >= maximumSeverityRank ||
                 (minimumSeverityRank.HasValue &&
                  minimumSeverityRank.Value <= wound.Severity.Rank))
             {
@@ -808,6 +834,11 @@ internal sealed partial record WoundOpportunityAuthority
         try
         {
             var wound = target.Wound;
+            var exhaustedOptionalConflict = opportunity.Domain == "spiritual" &&
+                (opportunity.Owner.Realm is "chaos_sea" or "shining_abode") &&
+                target.CauseKind == "same_conflict" &&
+                !opportunity.MinimumSeverityRank.HasValue &&
+                wound.Severity.Rank >= opportunity.MaximumSeverityRank;
             return WorseningCauseKinds.Contains(target.CauseKind) &&
                    string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal) &&
                    wound.Owner == opportunity.Owner &&
@@ -815,8 +846,9 @@ internal sealed partial record WoundOpportunityAuthority
                        wound.Classification.Domain,
                        opportunity.Domain,
                        StringComparison.Ordinal) &&
-                   wound.Severity.Rank is >= 1 and < 4 &&
-                   wound.Severity.Rank < opportunity.MaximumSeverityRank &&
+                   wound.Severity.Rank is >= 1 and <= 4 &&
+                   (exhaustedOptionalConflict ||
+                    wound.Severity.Rank < opportunity.MaximumSeverityRank) &&
                    (!opportunity.MinimumSeverityRank.HasValue ||
                     opportunity.MinimumSeverityRank.Value > wound.Severity.Rank) &&
                    string.Equals(
@@ -1054,7 +1086,7 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
                         "none with no severity or wound reference",
                         "unexpected materialization fields");
                 }
-                if (opportunity.GuaranteedTrigger is not null)
+                if (opportunity.RequiredSeverityRank is not null)
                 {
                     Add(
                         issues,
@@ -1087,15 +1119,15 @@ internal sealed partial record WoundOpportunityDecisionAuthority(
                         $"I-{Roman(opportunity.MaximumSeverityRank)}",
                         Roman(selectedSeverity.Value));
                 }
-                if (opportunity.GuaranteedTrigger is not null &&
+                if (opportunity.RequiredSeverityRank is not null &&
                     selectedSeverity !=
-                    opportunity.GuaranteedTrigger.RequiredSeverityRank)
+                    opportunity.RequiredSeverityRank)
                 {
                     Add(
                         issues,
                         "woundDecision.severityRank",
                         "wound_guaranteed_severity_mismatch",
-                        Roman(opportunity.GuaranteedTrigger.RequiredSeverityRank),
+                        Roman(opportunity.RequiredSeverityRank.Value),
                         Roman(selectedSeverity.Value));
                 }
                 var worseningTarget = opportunity.WorseningTarget;

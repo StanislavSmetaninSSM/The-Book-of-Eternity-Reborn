@@ -274,6 +274,12 @@ internal sealed class EffectSourceAuthority
     private readonly Dictionary<EffectIdentitySourceGroup, WoundSourceGroupAuthority>
         _woundGroups;
 
+    /// <summary>
+    /// Freezes a validated source builder, preserving whether local reference selectors are available.
+    /// </summary>
+    /// <param name="builder">
+    /// Builder containing validated catalogs and their selector mode.
+    /// </param>
     private EffectSourceAuthority(Builder builder)
     {
         _entries = new Dictionary<EffectSourceKey, EffectSourceAuthorityEntry>(builder.Entries);
@@ -305,6 +311,9 @@ internal sealed class EffectSourceAuthority
             _woundGroups.Values,
             Issues,
             _grantedApplicationAuthorities);
+        if (builder.CanonicalOnly)
+            Fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+                "book_of_eternity.effect_source.canonical_view.v1:" + Fingerprint)));
         CanonicalFingerprint = CreateCanonicalFingerprint(
             _entries.Values,
             _ownerExports,
@@ -322,6 +331,41 @@ internal sealed class EffectSourceAuthority
     internal string Fingerprint { get; }
 
     internal string CanonicalFingerprint { get; }
+
+    /// <summary>
+    /// Describes a bounded set of exact canonical source differences without relaxing publication checks.
+    /// </summary>
+    /// <param name="actual">
+    /// Independently rebuilt canonical authority at the publication boundary.
+    /// </param>
+    /// <returns>
+    /// Missing, added or changed source coordinates and validation codes, limited to twelve differences.
+    /// </returns>
+    internal string DescribeCanonicalDifferences(EffectSourceAuthority actual)
+    {
+        ArgumentNullException.ThrowIfNull(actual);
+        var expectedParts = Parts(this);
+        var actualParts = Parts(actual);
+        return string.Join("; ", expectedParts.Keys.Concat(actualParts.Keys).Distinct(StringComparer.Ordinal)
+            .OrderBy(key => key, StringComparer.Ordinal)
+            .Where(key => expectedParts.GetValueOrDefault(key) != actualParts.GetValueOrDefault(key))
+            .Take(12).Select(key => (expectedParts.ContainsKey(key)
+                ? actualParts.ContainsKey(key) ? "changed " : "missing " : "added ") + key));
+
+        static Dictionary<string, string> Parts(EffectSourceAuthority authority)
+        {
+            var parts = authority._entries.ToDictionary(pair => "entry " + pair.Key,
+                pair => CreateCanonicalFingerprint([pair.Value], [], [], []), StringComparer.Ordinal);
+            foreach (var group in authority._ownerExports.GroupBy(value =>
+                         new EffectSourceOwnerKey(value.Realm, value.Kind, value.SourceId)))
+                parts["owner " + group.Key] = CreateCanonicalFingerprint([], group, [], []);
+            foreach (var pair in authority._woundGroups)
+                parts["wound " + pair.Key] = CreateCanonicalFingerprint([], [], [pair.Value], []);
+            foreach (var issue in authority.Issues)
+                parts[$"issue {issue.Code}: {issue.FilePath}"] = "present";
+            return parts;
+        }
+    }
 
     internal bool IsCanonicalPublicationSubsetOf(
         EffectSourceAuthority canonicalAuthority)
@@ -426,12 +470,139 @@ internal sealed class EffectSourceAuthority
         return false;
     }
 
-    internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input)
+    /// <summary>
+    /// Composes a canonical routing view of a prepared wound generation and the retained unrelated source exports and grants.
+    /// Operation-local reference selectors remain in their original scoped catalogs.
+    /// The returned catalog does not authorize insertion or replace either original catalog.
+    /// </summary>
+    /// <param name="prepared">
+    /// Authenticated preparation supplying the source graph. A registered live worsening replaces only its own prior group;
+    /// other source collisions remain invalid.
+    /// </param>
+    /// <returns>
+    /// A detached combined catalog with any preparation or composition issues.
+    /// </returns>
+    internal EffectSourceAuthority WithNewPreparedWound(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        var addition = EffectAcceptedTurnInputComposer.BuildPreparedWoundOperationAuthority(prepared);
+        var replacements = new HashSet<EffectIdentitySourceGroup>();
+        if (prepared.DraftBefore is { } before && before.MatchesPrepared(prepared) && addition.Issues.Count == 0)
+            foreach (var batch in prepared.EffectOperationBatches.Where(batch => batch.TransitionAuthority.TransitionKind == "worsen"))
+            {
+                var key = new EffectIdentitySourceGroup(prepared.Binding.Realm, "wound", batch.PreparedWoundId);
+                if (_woundGroups.ContainsKey(key) && addition._woundGroups.ContainsKey(key))
+                    replacements.Add(key);
+            }
+        var exports = _ownerExports.Where(export => !replacements.Contains(
+            new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))).Concat(addition._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(export => !export.SameTurn).ToArray(),
+            exports.Where(export => export.SameTurn).ToArray(),
+            _historicalAliases.Union(addition._historicalAliases).ToHashSet(StringComparer.Ordinal),
+            _grantedApplicationAuthorities.Union(addition._grantedApplicationAuthorities).ToHashSet(StringComparer.Ordinal),
+            _woundGroups.Values.Where(group => !replacements.Contains(group.Key)).Concat(addition._woundGroups.Values).ToArray(),
+            Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
+    }
+
+    /// <summary>
+    /// Captures a wound-only comparison catalog while the completed original execution owner remains alive.
+    /// The detached catalog grants no insertion or publication authority.
+    /// </summary>
+    /// <param name="completion">
+    /// Sealed ordered insertion proof whose preparations must still pass their live ownership checks.
+    /// </param>
+    /// <param name="effects">
+    /// Exact completed effect result issued with the proof.
+    /// </param>
+    /// <returns>
+    /// Validated immutable wound sources, including groups with no effect slots.
+    /// </returns>
+    internal static EffectSourceAuthority CaptureCompletedWoundPublication(
+        SpiritualLiveWoundCompletion completion, EffectAcceptedTurnPlan effects)
+    {
+        if (!completion.MatchesEffects(effects))
+            throw new InvalidDataException("Wound source transfer requires its exact completed effect owner.");
+        var result = Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)));
+        var selected = new HashSet<EffectIdentitySourceGroup>();
+        foreach (var insertion in completion.Insertions)
+        {
+            selected.Add(new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId));
+            result = result.WithNewPreparedWound(insertion.Prepared);
+        }
+        if (result.Issues.Count != 0 || !selected.SetEquals(result._woundGroups.Keys) ||
+            !selected.SetEquals(result._ownerExports.Select(export =>
+                new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))))
+            throw new InvalidDataException("Completed wound source transfer does not match its exact insertion chain.");
+        return result;
+    }
+
+    /// <summary>
+    /// Replaces only completed wound groups' application-lineage representation after checking their canonical sources.
+    /// Every unrelated source and validation issue remains independently reconstructed.
+    /// </summary>
+    /// <param name="completedWounds">
+    /// Immutable wound-only catalog captured before disposal by the exact publication owner.
+    /// </param>
+    /// <returns>
+    /// Comparison catalog retaining accepted application lineage and canonical source identity and definitions.
+    /// </returns>
+    internal EffectSourceAuthority WithCompletedWoundPublication(EffectSourceAuthority completedWounds)
+    {
+        var replaced = completedWounds._woundGroups.Keys.ToHashSet();
+        if (completedWounds.Issues.Count != 0)
+            throw new InvalidDataException("Completed wound source transfer contains invalid sources.");
+        foreach (var (key, expected) in completedWounds._woundGroups)
+        {
+            if (!_woundGroups.TryGetValue(key, out var actual) || actual.Owner != expected.Owner ||
+                actual.Target != expected.Target || actual.Definitions.Count != expected.Definitions.Count ||
+                expected.Definitions.Any(definition => !actual.Definitions.Any(current =>
+                    current.DefinitionKey == definition.DefinitionKey && JsonNode.DeepEquals(current.Definition, definition.Definition))))
+                throw new InvalidDataException("Published wound source differs from its completed owner or definitions.");
+            var live = _ownerExports.Single(export => export.Realm == key.Realm && export.Kind == key.Kind && export.SourceId == key.SourceId);
+            var retained = completedWounds._ownerExports.Single(export => export.Realm == key.Realm && export.Kind == key.Kind && export.SourceId == key.SourceId);
+            if (live.Active != retained.Active || live.Materializable != retained.Materializable)
+                throw new InvalidDataException("Published wound source lifecycle differs from its completion.");
+        }
+        var exports = _ownerExports.Where(export => !replaced.Contains(
+            new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId)))
+            .Concat(completedWounds._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(export => !export.SameTurn).ToArray(), exports.Where(export => export.SameTurn).ToArray(),
+            _historicalAliases.Union(completedWounds._historicalAliases).ToHashSet(StringComparer.Ordinal),
+            _grantedApplicationAuthorities.Union(completedWounds._grantedApplicationAuthorities).ToHashSet(StringComparer.Ordinal),
+            _woundGroups.Values.Where(group => !replaced.Contains(group.Key)).Concat(completedWounds._woundGroups.Values).ToArray(),
+            Issues.Concat(completedWounds.Issues).ToArray()), canonicalOnly: true);
+    }
+
+    /// <summary>
+    /// Builds a source catalog with strict canonical and local-reference selector validation.
+    /// </summary>
+    /// <param name="input">
+    /// Source exports, groups, history and grants to validate.
+    /// </param>
+    /// <returns>
+    /// The source catalog and its validation issues.
+    /// </returns>
+    internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input) => BuildCore(input, canonicalOnly: false);
+
+    /// <summary>
+    /// Validates source content with the selector mode required by the calling catalog composer.
+    /// </summary>
+    /// <param name="input">
+    /// Source exports, groups, history and grants to validate.
+    /// </param>
+    /// <param name="canonicalOnly">
+    /// Disables indexing of operation-local references when <see langword="true"/>, while preserving their metadata validation.
+    /// </param>
+    /// <returns>
+    /// A catalog retaining validated source data and any issues.
+    /// </returns>
+    private static EffectSourceAuthority BuildCore(EffectSourceAuthorityInput input, bool canonicalOnly)
     {
         ArgumentNullException.ThrowIfNull(input);
         var builder = new Builder(
             input.HistoricalSourceIds,
-            input.GrantedApplicationAuthorities ?? new HashSet<string>(StringComparer.Ordinal));
+            input.GrantedApplicationAuthorities ?? new HashSet<string>(StringComparer.Ordinal), canonicalOnly);
         var compositionIssues = input.CompositionIssues ??
             Array.Empty<ValidationIssue>();
         builder.AddCompositionIssues(compositionIssues);
@@ -1363,10 +1534,28 @@ internal sealed class EffectSourceAuthority
         internal HashSet<EffectSourceKey> InvalidKeys { get; } = new();
         internal List<ValidationIssue> Issues { get; } = new();
 
+        /// <summary>
+        /// Gets whether this builder omits operation-local reference lookup indexes.
+        /// </summary>
+        internal bool CanonicalOnly { get; }
+
+        /// <summary>
+        /// Initializes source history, validated application grants and the reference-selector mode.
+        /// </summary>
+        /// <param name="historicalSourceIds">
+        /// Historical identities used for confusable identity checks.
+        /// </param>
+        /// <param name="grantedApplicationAuthorities">
+        /// Built-in application authorities to validate and retain.
+        /// </param>
+        /// <param name="canonicalOnly">
+        /// Omits local reference lookup indexes when <see langword="true"/>.
+        /// </param>
         internal Builder(
             IEnumerable<string> historicalSourceIds,
-            IEnumerable<string> grantedApplicationAuthorities)
+            IEnumerable<string> grantedApplicationAuthorities, bool canonicalOnly)
         {
+            CanonicalOnly = canonicalOnly;
             HistoricalAliases = historicalSourceIds
                 .Select(MortalLocationIdentityState.BuildConfusableKey)
                 .ToHashSet(StringComparer.Ordinal);
@@ -1703,6 +1892,8 @@ internal sealed class EffectSourceAuthority
                     Issues.Add(NewIssue(sourcePath + ".sourceRef", "effect_source_authority_invalid_ref", "exact same-turn sourceRef", export.SourceRef));
                     continue;
                 }
+                if (CanonicalOnly)
+                    continue;
                 var reference = new EffectSourceReferenceKey(
                     export.Realm,
                     export.Kind,

@@ -87,6 +87,11 @@ public partial class GameEngine
         public string DetectedAtUtc { get; set; } = "";
         public int RevalidationAttempt { get; set; }
         public bool FullTurnResubmissionRequired { get; set; }
+        /// <summary>
+        /// Carries the current owner-derived continuation, or is omitted for ordinary repair.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public SpiritualWoundContinuationRequest? SpiritualWoundContinuation { get; set; }
         public string GmInstructions { get; set; } = "";
         public List<string> SummaryGroups { get; set; } = new();
         public List<JsonObject> HarnessRepairPackets { get; set; } = new();

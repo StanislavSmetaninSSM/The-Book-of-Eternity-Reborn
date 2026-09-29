@@ -123,8 +123,21 @@ internal static partial class WoundResponseInputComposer
     private static readonly IReadOnlySet<string> SerializedWorseningTargetFields = Set(
         "causeKind", "expectedBeforeFingerprint", "wound");
 
+    /// <summary>
+    /// Parses a closed wound command, using retained source ownership to admit an original-source guarantee.
+    /// </summary>
+    /// <param name="root">
+    /// Command root to parse without trusting its serialized authority claims.
+    /// </param>
+    /// <param name="trustedOriginalSourceOpportunities">
+    /// Current owner-issued opportunities for exact guarantee matching; <see langword="null"/> rejects such claims.
+    /// </param>
+    /// <returns>
+    /// Parsed commands and validation issues; success requires every serialized guarantee to match one retained opportunity.
+    /// </returns>
     internal static WoundResponseCommandParsingResult ParseCommandRoot(
-        JsonElement root)
+        JsonElement root,
+        IReadOnlyList<WoundOpportunityAuthority>? trustedOriginalSourceOpportunities = null)
     {
         var issues = new List<ValidationIssue>();
         FindCommandDuplicateProperties(root, AcceptedMechanicsPlan.WoundCommandPath, issues);
@@ -215,7 +228,8 @@ internal static partial class WoundResponseInputComposer
                 }
                 else
                 {
-                    var command = ParseCommand(element, index, issues);
+                    var command = ParseCommand(element, index, issues,
+                        trustedOriginalSourceOpportunities);
                     if (command is not null)
                     {
                         commands.Add(command);
@@ -362,7 +376,8 @@ internal static partial class WoundResponseInputComposer
     private static WoundResponseCommandDraft? ParseCommand(
         JsonElement element,
         int index,
-        ICollection<ValidationIssue> issues)
+        ICollection<ValidationIssue> issues,
+        IReadOnlyList<WoundOpportunityAuthority>? trustedOriginalSourceOpportunities)
     {
         var path = $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}]";
         var start = issues.Count;
@@ -389,7 +404,8 @@ internal static partial class WoundResponseInputComposer
 
         WoundOpportunityAuthority? opportunity = null;
         if (fields.TryGetValue("opportunity", out var opportunityElement))
-            opportunity = ParseOpportunity(opportunityElement, path + ".opportunity", issues);
+            opportunity = ParseOpportunity(opportunityElement, path + ".opportunity", issues,
+                trustedOriginalSourceOpportunities);
 
         JsonElement decision = default;
         if (!fields.TryGetValue("decision", out var decisionElement) ||
@@ -431,8 +447,25 @@ internal static partial class WoundResponseInputComposer
     private static WoundOpportunityAuthority? ParseOpportunity(
         JsonElement element,
         string path,
-        ICollection<ValidationIssue> issues)
+        ICollection<ValidationIssue> issues,
+        IReadOnlyList<WoundOpportunityAuthority>? trustedOriginalSourceOpportunities)
     {
+        if (element.ValueKind == JsonValueKind.Object &&
+            element.TryGetProperty("originalSourceGuarantee", out _))
+        {
+            var matches = trustedOriginalSourceOpportunities?
+                .Where(value => value.OriginalSourceGuarantee is not null &&
+                                WoundOpportunityAuthority.HasCompleteShape(value) &&
+                                JsonNode.DeepEquals(JsonNode.Parse(element.GetRawText()),
+                                    SerializeOpportunity(value)))
+                .ToArray();
+            if (matches is { Length: 1 })
+                return WoundAcceptedTurnData.CloneOpportunity(matches[0]);
+            AddCommandIssue(issues, path, "wound_command_opportunity_invalid",
+                "one exact opportunity retained by the original signed source owner",
+                "unowned or changed original-source guarantee");
+            return null;
+        }
         var start = issues.Count;
         if (!TryReadFields(
                 element,

@@ -1,4 +1,4 @@
-using System.Text;
+﻿using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -40,6 +40,27 @@ public partial class ValidationService
         WoundAcceptedTurnInput Input,
         WoundPreparedAcceptedTurnPlan PreparedPlan,
         EffectApplicationDiagnosticLocations? EffectLocations);
+
+    /// <summary>
+    /// Carries validated pre-allocation data; a copy or matching fingerprint does not grant live selection authority.
+    /// </summary>
+    /// <param name="Commands">
+    /// Reconstructed typed command image matching the validated response.
+    /// </param>
+    /// <param name="Input">
+    /// Original wound input with authenticated source, owner and before-image data.
+    /// </param>
+    /// <param name="EffectLocations">
+    /// Validated component diagnostic locations before allocated sources are bound, or null when absent.
+    /// </param>
+    /// <param name="OriginalCommands">
+    /// Frozen original command rows independently checked against their applicable accepted authority.
+    /// </param>
+    private sealed record AcceptedTurnWoundSelection(
+        JsonObject Commands,
+        WoundAcceptedTurnInput Input,
+        EffectApplicationDiagnosticLocations? EffectLocations,
+        WoundResponseCommandParsingResult OriginalCommands);
 
     private sealed record AcceptedTurnWoundPlanningHandoff(
         JsonObject Commands,
@@ -167,7 +188,6 @@ public partial class ValidationService
         ArgumentNullException.ThrowIfNull(commandJson);
         ArgumentNullException.ThrowIfNull(issues);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-
         var parsedCommands = ParseAcceptedTurnWoundCommands(
             commandJson,
             manifest,
@@ -356,7 +376,102 @@ public partial class ValidationService
             receipts.State);
     }
 
+    /// <summary>
+    /// Validates the response, prepares its wound identities and binds diagnostic locations to the actual prepared sources.
+    /// </summary>
+    /// <param name="draft">
+    /// Parsed response with signed before-images, or null when no wound response is present.
+    /// </param>
+    /// <param name="manifest">
+    /// Validated pending-turn snapshot binding.
+    /// </param>
+    /// <param name="realm">
+    /// Accepted realm used by source and owner checks.
+    /// </param>
+    /// <param name="effectInput">
+    /// Accepted effect input supplying target, skill and carrier authority.
+    /// </param>
+    /// <param name="resourceOwners">
+    /// Available resource owner composition; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="resourceDefinitions">
+    /// Available resource definitions; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="resourceState">
+    /// Available original resource ledger; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease protecting preparation and cache access.
+    /// </param>
+    /// <param name="issues">
+    /// Receives validation or preparation failures.
+    /// </param>
+    /// <returns>
+    /// The exact prepared handoff, or null when absent or invalid.
+    /// </returns>
     private AcceptedTurnPreparedWoundHandoff? PrepareAcceptedTurnWoundHandoff(
+        AcceptedTurnRawWoundDraft? draft,
+        ValidationPendingTurnSnapshotManifest manifest,
+        string realm,
+        EffectAcceptedTurnInput effectInput,
+        ResourceOwnerCompositionResult? resourceOwners,
+        ResourceDefinitionCatalog? resourceDefinitions,
+        ResourceStateLedger? resourceState,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        List<ValidationIssue> issues)
+    {
+        var selection = ComposeAcceptedTurnWoundSelection(draft, manifest, realm, effectInput,
+            resourceOwners, resourceDefinitions, resourceState, writeLease, issues);
+        if (selection is null)
+            return null;
+        var prepared = WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(
+            _fs, writeLease, selection.Input);
+        issues.AddRange(prepared.Issues);
+        if (!prepared.Success || prepared.Plan is null)
+        {
+            AddMissingWoundStageIssue(issues, "wound_materialization_prepared_stage_partial",
+                "one complete prepared wound stage");
+            return null;
+        }
+        return new AcceptedTurnPreparedWoundHandoff(selection.Commands,
+            WoundAcceptedTurnData.CloneInput(selection.Input)!, prepared.Plan,
+            selection.EffectLocations?.BindPreparedSources(prepared.Plan));
+    }
+
+    /// <summary>
+    /// Reconstructs occurrence or treatment-event authority and validates the response before allocating wound identities.
+    /// </summary>
+    /// <param name="draft">
+    /// Parsed commands and signed before-images; null means that no wound response is present.
+    /// </param>
+    /// <param name="manifest">
+    /// Validated pending snapshot binding for the active turn.
+    /// </param>
+    /// <param name="realm">
+    /// Accepted realm against which source and owner coordinates are checked.
+    /// </param>
+    /// <param name="effectInput">
+    /// Accepted effect inputs supplying target, skill and owner-carrier authority.
+    /// </param>
+    /// <param name="resourceOwners">
+    /// Available resource owner composition; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="resourceDefinitions">
+    /// Available resource definitions; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="resourceState">
+    /// Available original resource ledger; null skips the optional resource-binding check.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease protecting the validated input reads.
+    /// </param>
+    /// <param name="issues">
+    /// Receives reconstruction, proposal and authority validation failures.
+    /// </param>
+    /// <returns>
+    /// Validated pre-allocation selection data, or null when absent or invalid; data alone grants no live authority.
+    /// </returns>
+    private AcceptedTurnWoundSelection? ComposeAcceptedTurnWoundSelection(
         AcceptedTurnRawWoundDraft? draft,
         ValidationPendingTurnSnapshotManifest manifest,
         string realm,
@@ -512,24 +627,11 @@ public partial class ValidationService
             draft.PreTurnHistory,
             effectInput.PreTurnCarriers,
             effectInput.PreTurnIdentityIndex);
-        var prepared = WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(
-            _fs,
-            writeLease,
-            input);
-        issues.AddRange(prepared.Issues);
-        if (!prepared.Success || prepared.Plan is null)
-        {
-            AddMissingWoundStageIssue(
-                issues,
-                "wound_materialization_prepared_stage_partial",
-                "one complete prepared wound stage");
-            return null;
-        }
-        return new AcceptedTurnPreparedWoundHandoff(
+        return new AcceptedTurnWoundSelection(
             recomposed.CommandRoot,
             WoundAcceptedTurnData.CloneInput(input)!,
-            prepared.Plan,
-            effectLocations?.BindPreparedSources(prepared.Plan));
+            effectLocations,
+            draft.ParsedCommands);
     }
 
     private static void AddMissingWoundStageIssue(

@@ -1,5 +1,5 @@
 *** Begin Patch
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
 @@
              section: "wound_materialization",
              expected: expected,
@@ -106,7 +106,9 @@
 +                    _conflictId != null && !string.Equals(_conflictId, batch.ConflictId, StringComparison.Ordinal))
 +                    throw new InvalidOperationException("Only the next wholly unaccepted exchange can be staged.");
 +                if (_staged != null &&
-+                    !string.Equals(_staged.ExchangeId, batch.ExchangeId, StringComparison.Ordinal))
++                    (!string.Equals(_staged.ConflictId, batch.ConflictId, StringComparison.Ordinal) ||
++                     !string.Equals(_staged.ExchangeId, batch.ExchangeId, StringComparison.Ordinal) ||
++                     _staged.Ordinal != batch.Ordinal))
 +                    throw new InvalidOperationException("Replacement must preserve the next exchange coordinate.");
 +                _staged = batch;
 +            }
@@ -1764,7 +1766,7 @@
          out ResourceTriggerGraphNode node,
          out bool shouldExecute) =>
          TryTakeNext(
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs
 @@
      private const string ResourceKey = "spiritual_action_points";
      private const string ConflictPath = AfterlifeSpiritualConflictState.StatePath;
@@ -2180,7 +2182,7 @@
          ResourceOwnerKey key,
          out ResourceCoordinate? coordinate,
          out decimal current,
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs
 @@
 
              return _lifecycleTriggers.TryGetValue(
@@ -2207,7 +2209,7 @@
          private static void AddIndexed<TKey>(
              Dictionary<TKey, List<IndexedResourceTrigger>> index,
              TKey key,
-*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs
+*** Add File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs
 +namespace BookOfEternityClient.Services;
 +
 +internal static partial class AcceptedMechanicsPlanner
@@ -3868,7 +3870,7 @@
 +
 +    }
 +}
-*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/EffectAcceptedTurnPlanner.BaseResourceRouting.cs
+*** Add File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient/Services/EffectAcceptedTurnPlanner.BaseResourceRouting.cs
 +namespace BookOfEternityClient.Services;
 +
 +internal static partial class EffectAcceptedTurnPlanner
@@ -3946,7 +3948,7 @@
 +        }
 +    }
 +}
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
 @@
          {
              Assert.Throws<InvalidOperationException>(() => active.AdvanceToClosedBoundary());
@@ -3972,9 +3974,14 @@
 +        var counter = new SessionAllocationCounter();
 +        var result = AcceptedMechanicsPlanner.BuildResources(input, counter.Factory);
 +        Assert.True(result.IsValid, SessionIssues(result));
-+        Assert.NotEmpty(result.AppliedTransitions);
 +        if (contour == "pending")
++        {
++            Assert.Empty(result.AppliedTransitions);
 +            Assert.NotEmpty(result.AcceptedPendingResolutions);
++            Assert.False(result.EffectBoundaryTranscript!.IsComplete);
++        }
++        else
++            Assert.NotEmpty(result.AppliedTransitions);
 +        _liveGoldenOutput.WriteLine("C1_FIXED_GOLDEN:" + contour + ":" +
 +            Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
 +                SessionResultImage(result) + "\n" + JsonSerializer.Serialize(counter.Ids))));
@@ -4082,7 +4089,13 @@
 +            SessionLiveBaseline(input), counter.Factory);
 +        var batch = SessionLiveBatch(input, 0, 10m);
 +        session.StageNextExchange(batch);
++        Assert.Equal(0, counter.Calls);
++        Assert.Throws<InvalidOperationException>(() => session.StageNextExchange(
++            SessionLiveBatch(input, 0, 10m, conflictId: "foreign_conflict")));
++        Assert.Equal(0, counter.Calls);
 +        var first = session.AdvanceThroughExchange().Interval!;
++        Assert.Equal(batch.ConflictId, first.ConflictId);
++        Assert.Equal(batch.ExchangeId, first.ExchangeId);
 +        var fingerprint = first.EffectAfter.Fingerprint;
 +        Assert.True(session.Owns(first));
 +        var forged = new AcceptedMechanicsPlanner.SpiritualExchangeInterval(batch,
@@ -4305,7 +4318,7 @@
              secondAmount, dependencies: new[] { first.Key });
          return new AcceptedMechanicsResourceInput(
              2, baseline.Definitions, baseline.State, baseline.History, baseline.Sources, new[] { first, second });
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
 @@
  using System.Globalization;
  using System.Reflection;
@@ -4325,7 +4338,7 @@
 
      public static TheoryData<bool, string, bool, string>
          ReactionUseProjectionMatrix
-*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.SpiritualExchangeIntervals.cs
+*** Add File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.SpiritualExchangeIntervals.cs
 +using System.Text.Json;
 +using BookOfEternityClient.Services;
 +using Xunit;
@@ -4506,7 +4519,16 @@
 +            .ToDictionary(value => value.OperationId, value => value.index, StringComparer.Ordinal);
 +        var transitions = result.AppliedTransitions.Select((value, index) => (value.TransitionId, index))
 +            .ToDictionary(value => value.TransitionId, value => value.index, StringComparer.Ordinal);
-+        var transcript = result.EffectBoundaryTranscript;
++        var transcript = Assert.IsType<AcceptedEffectBoundaryTranscript>(
++            result.EffectBoundaryTranscript);
++        foreach (var closure in transcript.CausalClosures)
++        {
++            Assert.Equal(closure.OperationIds.Count,
++                closure.OperationIds.Distinct(StringComparer.Ordinal).Count());
++            Assert.Equal(closure.OperationIds.Count, closure.ReplayStableOperationKeys.Count);
++            Assert.Equal(closure.ReplayStableOperationKeys.Count,
++                closure.ReplayStableOperationKeys.Distinct(StringComparer.Ordinal).Count());
++        }
 +        return JsonSerializer.Serialize(new
 +        {
 +            Events = result.Events.Select(value => new
@@ -4531,7 +4553,9 @@
 +            CausalClosures = transcript.CausalClosures.Select(value => new
 +            {
 +                value.Boundary.BoundaryOrdinal,
-+                Operations = value.OperationIds.Select(operation => operations[operation]).OrderBy(index => index),
++                AppliedOperations = value.OperationIds.Where(operations.ContainsKey)
++                    .Select(operation => operations[operation]).OrderBy(index => index),
++                UnappliedOperationCount = value.OperationIds.Count(operation => !operations.ContainsKey(operation)),
 +                value.ReplayStableOperationKeys
 +            }),
 +            Activations = transcript.AcceptedActivations.Select(value => new
@@ -4570,7 +4594,7 @@
 +        internal AcceptedMechanicsIdentityFactory Factory { get; }
 +    }
 +}
-*** Add File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExchangeIntervals.cs
+*** Add File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualExchangeIntervals.cs
 +using System.Text.Json.Nodes;
 +using BookOfEternityClient.Services;
 +using Xunit;

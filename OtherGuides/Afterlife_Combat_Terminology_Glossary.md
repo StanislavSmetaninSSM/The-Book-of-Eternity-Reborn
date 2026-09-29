@@ -116,15 +116,51 @@ These are mechanical rules, not flavor synonyms. If a player writes prose, class
 - On `mode=start`, the player maximum is registered from `soul_state.afterlifeCombatProfile.spiritFocusTier`; the player owner is `afterlife_actor/player_soul`, while the opposition scoped owner is bound by `activeConflict.resourceOwnerBindings.opposition.resourceOwnerId`.
 - Every new/current exchange that spends or restores ОД must carry `actionCostAudit.player`: `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`.
 - Every new/current exchange that resolves an active costed opposition operation must also carry `actionCostAudit.opposition` in the same shape. The opposition operation is taken from `incomingAction.finalOperationType` when present; otherwise use `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`. `finalOperationType` is authoritative: do not fall back to stale `incomingAction.operationType` for `matchupAudit`, `actionCostAudit.opposition`, or non-player special-art costs.
-- Formula: `effectiveCost = max(minCost, baseCost - artTier)`.
-- `actionCostAudit.player.artTier` comes from the validated pre-turn soul profile. `actionCostAudit.opposition.artTier` comes from the validated pre-turn afterlife entity profile for the opposition lead actor, with the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` used only as compatibility fallback.
+- Ordinary base formula: `effectiveCost = max(minCost, baseCost - artTier)`; applicable wound burdens are additional. The two special wound-cost cases below define recovery and forced incarnation.
+- Except for the prescribed `force_incarnation` wound audit below, `actionCostAudit.player.artTier` comes from the validated pre-turn soul profile. `actionCostAudit.opposition.artTier` comes from the validated pre-turn afterlife entity profile for the opposition lead actor, with the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` used only as compatibility fallback.
 - Special arts multiply the acting side's standard cost. A player-owned special art that powers the player's operation must add `actionCostAudit.player.specialArtId`, `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied `effectiveCost`; a non-player/incoming special art that powers the opposition operation must add the same fields under `actionCostAudit.opposition`.
 - Base/min costs: `pressure 3/1`, `guard 2/1`, `counter 4/2`, `maneuver 3/1`, `binding 4/2`, `force_binding 5/2`, `break_binding 3/1`, `incarnation_resistance 3/1`, `champion_coordination 2/1`, `recover_spiritual_power 0/0`.
 - `recover_spiritual_power` restores ОД up to the acting side's projected resource maximum: success +3, partial_success +2, punished recovery +0..1.
-- Every `actionCostAudit.<side>.before/after` must match the exact pre-turn/projected `spiritual_action_points` transition; the client, not the GM, writes the ledger/history result.
+- Every `actionCostAudit.<side>.before/after` must match the validated action arithmetic from the exact resource projection. For burdened recovery, `after` is the action-only capped result, not a promise about the ledger after causal reactions. The client, not the GM, writes the ledger/history result.
 - If a side has no current-turn `actionCostAudit.<side>`, no resource mutation is emitted. Do not edit ОД, the resource ledger, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 - Punished recovery happens against `pressure`, `maneuver`, `binding`, `force_binding`, or `force_incarnation`; strong timing is against `guard`, `counter`, `none`, or `passive`.
 - `withdraw`, `surrender`, and `negotiate` remain legal at 0 ОД unless a later contract explicitly changes terminal choice rules.
+
+### spiritual_wound_special_action_costs_v1
+
+Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to player and opposition and only to the exact acting owner's applicable `spiritual_action_cost_burden`. For `recover_spiritual_power`, pay the burden first; insufficient funds reject the action, and failure still pays. Apply ordinary 3/2/0 recovery or opposed 0..1 recovery to the post-payment balance, capped by the maximum. `actionCostAudit.after` is the action-only result: the client records Spend, drains its causal reactions, then requests Gain for the original capped amount `after - (before - effectiveCost)`. Never net the mutations or enlarge that request after a reaction; the final ledger can differ from `after`. For `force_incarnation`, positive burden is the only cost: require exactly `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`, with `baseCost=0, minCost=0, artTier=0` and `effectiveCost` equal to the owned burden sum. Here zero artTier is an audit convention, not the actor's art level. No burden means no force audit and no payment; incarnation admission/control is unchanged. See the worked `spiritual_wound_special_action_costs_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`.
+
+For example, maximum 6, before 4, burden 1 and successful recovery gives audit
+`after=6` and a fixed Gain request of 3. A Spend-triggered loss of 1 produces
+4→3→2→5; a triggered gain of 1 produces 4→3→4→6 with only 2 of the requested 3
+applied. At before 6, the original capped Gain request is only 1 even if a
+reaction lowers the balance. With before 1, burden 1 and failed recovery,
+`after=0`: payment remains real even though the net change is negative. With
+before 0, the same burden makes recovery unavailable. Without a burden the
+ordinary recovery path remains unchanged.
+
+For an unchanged, unexecuted `force_incarnation` action, a newly installed wound
+may require a previously absent seven-field side audit (or an absent
+`actionCostAudit` root containing only qualifying sides). Its original effective
+operation must still be force incarnation, including `incomingAction.finalOperationType`
+precedence. Preserve the completed prefix, action, actor, dice and existing
+sibling audits. No null/scalar replacement, extra fields or special-art fields
+are permitted. Shape alone grants no authority: the client proves the exact
+actor's positive burden, amount and affordability, including cold replay.
+
+The inverse correction is permitted only for an unchanged, unexecuted force
+action whose previously prescribed seven-field audit is now stale after finite-use
+expiry. The actual next owner reconstruction must prove zero burden. Remove only
+that side audit. Remove the empty audit root only if no sibling remains; preserve
+sibling audits, non-force audits and any root that still contains them. Keeping the stale
+positive audit requests dependent repair, not payment; a fake zero audit is also
+invalid. Removing the audit while a positive burden remains is rejected as missing
+required evidence. The completed prefix, action, actor and dice remain frozen;
+this grants no permission to remove arbitrary or extra-field audits. Cold replay
+repeats the same shape and owner checks.
+
+Completed actions never acquire either presence exception or pay twice. This cost rule
+adds no wound profile or reaction graph and does not enable live C4 publication.
 
 ## Средоточие Души / Spirit Focus
 
@@ -166,16 +202,16 @@ Every new/current contested exchange with `diceAudit` must also include `matchup
 
 ## Position Modifiers
 
-`conflictPosition` is not flavor. In every contested exchange with non-`contested` `before.conflictPosition`, `diceAudit.modifierBreakdown` must include the starting position as exactly one explicit modifier with exact matching `position`; do not split, duplicate, blank, omit, or add extra `conflict_position` entries:
+`conflictPosition` is not flavor. Derive the effective starting position under `spiritual_wound_position_v1` below; without applicable wound burdens it equals canonical `before.conflictPosition`. For a non-`contested` effective rank, `diceAudit.modifierBreakdown` must include exactly one explicit modifier with exact matching `position`; do not split, duplicate, blank, omit, or add extra `conflict_position` entries:
 
-| Starting position | Required modifier |
+| Effective starting position | Required modifier |
 |---|---|
 | `player_advantaged` | `modifierBreakdown.player[]` contains `{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 }` |
 | `player_dominant` | `modifierBreakdown.player[]` contains the same shape with `position="player_dominant"` and `value=4` |
 | `opposition_advantaged` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_advantaged"` and `value=2` |
 | `opposition_dominant` | `modifierBreakdown.opposition[]` contains the same shape with `position="opposition_dominant"` and `value=4` |
 
-`contested` means zero `conflict_position` entries. The modifier uses the position before the exchange because the roll is made from the starting tactical state; the after-state records what changed.
+Effective `contested` means zero `conflict_position` entries. The modifier uses the effective starting rank; the canonical before-state remains unchanged and the after-state records the ordinary action result. Do not split or duplicate the modifier.
 
 ## Преимущество / Помеха
 
@@ -263,6 +299,26 @@ Afterlife conflict rewards are mechanical, not flavor. A reward is allowed only 
 Natural 20 / натуральная 20 and natural 1 / натуральная 1 are bounded criticals. Bounded criticals are symmetric: a favorable critical for the player (player-side natural 20 or opposition-side natural 1) raises a worse margin result only to ordinary `player_success`, while an unfavorable critical for the player (player-side natural 1 or opposition-side natural 20) lowers a better margin result only to ordinary `opposition_success`. Opposed criticals cancel and use the margin band. A critical does not create `decisive_player_success` or `decisive_opposition_success` by itself; decisive outcomes still require the margin to already reach the decisive threshold.
 
 When a critical changes the margin-derived band, `diceAudit.criticalResult` must include `playerNaturalRoll`, `oppositionNaturalRoll`, `marginOutcomeBand`, `normalizedOutcomeBand`, `scaleLimit`, and `narrativeConstraint`. `scaleLimit` is the "no impossible mosquito victory" field: it explains the maximum plausible effect for this action, power gap, side model, and current conflict position.
+
+## spiritual_wound_position_v1
+
+A wound's position burden is a penalty to the effective starting position for the
+exact actor's matching operation. It does not repeatedly degrade the saved
+`conflictPosition`. Ranks are -2/-1/0/+1/+2 in the order shown below. Compute
+`effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)`:
+sum each accepted component once and combine both sides before clamping.
+Equal opposing burdens cancel. Other participants, other operations and ended
+effects contribute nothing; ambiguous ownership must not be assumed to mean zero.
+
+Use the effective token in the existing `conflict_position.position` modifier:
+one +2/+4 row on the advantaged/dominant side, no row at effective contested.
+Use the same effective rank for binding/force-binding positional prerequisites;
+setup and decisive-success alternatives remain unchanged. Canonical before/after,
+actual maneuver movement, strain and control restrictions remain ordinary rules.
+An inserted wound affects only later matching exchanges; expiry or healing removes
+future burden without rewriting history or improving saved position. See
+`OtherGuides/Wound_Materialization_Contract.md` and the worked
+`spiritual_wound_position_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`.
 
 ## State Value Labels
 

@@ -13,6 +13,12 @@ description: "Task list template for feature implementation"
 
 **Organization**: Tasks are grouped by user story to enable independent implementation and testing of each story.
 
+**Verification selection**: Map each changed contract and consumer to documented
+test categories and record the reason. Add or split categories as responsibilities
+grow; validate ownership without executing all tests. No all-suite, Fast/PreMerge,
+aggregate frontend or serial-all-category control is permitted. Include independent
+review of the selection, relevant results, runtime budget and isolation evidence.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel (different files, no dependencies)

@@ -391,12 +391,20 @@ public sealed partial class GameEngineTurnLifecycleTests
             repairSessionGeneration));
     }
 
+    /// <summary>
+    /// Keeps changed client mechanics evidence out of GM repair resubmission obligations.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the rollback obligation projection is checked.
+    /// </returns>
     [Fact]
     public async Task EffectMaterializationRepairLifecycleTests_ClientOwnedPreparationNeverBecomesGmResubmissionWork()
     {
         const string gmOutputPath = "output/narrative_response.json";
         var clientOwnedPaths = new[]
         {
+            SpiritualWoundDecisionPendingState.StatePath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             SystemModService.ManifestPath,
             ProgressionScheduleService.SchedulePath,
             ResourceMaterializationContract.DefinitionsPath,

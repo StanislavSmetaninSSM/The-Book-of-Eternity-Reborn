@@ -1772,3 +1772,21 @@ forgery therefore fails the canonical check, and cold recovery restores the comp
 die, Fate, and treatment-resource registries before returning failure. Missing authority,
 an absent nullable `RollSkillId` property, and the old procedure fingerprint domain are
 unsupported; no compatibility reader exists.
+
+## Mortal recovery publication — approved revision1, 2026-09-29 (#1536)
+
+The client publishes each accepted natural-recovery evaluation through its
+ordinary common plan, including not-due/blocked/no-natural evaluations. GM does
+not author recovery receipts, ticks, anchor updates or consumed ordinals. One
+new recovery interval adds one progress point; the declared threshold lowers
+one severity tier, threshold at I fully heals. Declared carryOverflow controls
+remaining progress. Severity changes terminate/rematerialize actual effects.
+An adverse policy applies once per evaluation and consumes all elapsed adverse
+intervals. A death contour is a typed lifecycle handoff, not direct death.
+
+Original epochs are retained; only validated durable consumed ordinals suppress
+repeat application. Anchor100/cadence10/time135 consumes3 and leaves next140.
+Same-minute replay under a fresh binding returns the original four-field receipt
+without a plan or write, including terminal archive replay. Complete history and
+receipt agreement is checked before malformed live clocks. Composition remains
+pure; the sole coordinated publisher provides atomic accepted after-images.

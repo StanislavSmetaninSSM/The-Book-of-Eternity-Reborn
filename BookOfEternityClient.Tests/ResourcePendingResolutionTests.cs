@@ -4,7 +4,10 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ResourcePendingResolutionTests
+/// <summary>
+/// Verifies bounded resource requests, receipt authority and exact replay.
+/// </summary>
+public sealed partial class ResourcePendingResolutionTests
 {
     private const string FingerprintA =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -292,6 +295,33 @@ public sealed class ResourcePendingResolutionTests
         Assert.Equal("narrated_no_state_change", terminal.ResultKind);
         Assert.Null(terminal.Amount);
         Assert.Equal("resolved_and_consumed", terminal.State);
+    }
+
+    [Fact]
+    public void Resolve_ZeroDeltaConsumesRequestWithoutMutationProjection()
+    {
+        var state = CreatePending(Draft()).State!;
+
+        var result = state.Resolve(
+            new JsonArray(Receipt("resource_delta", amount: 0)),
+            Context(),
+            ResourceDefinitionCatalog.CreateBuiltIn());
+
+        Assert.True(result.IsValid, Format(result.Issues));
+        Assert.Empty(result.Mutations);
+        Assert.Empty(result.SourceExports);
+        Assert.Empty(result.StateAfterImage!.Requests);
+        var terminal = Assert.Single(result.StateAfterImage.TerminalReceipts);
+        Assert.Equal("resource_resolution_test", terminal.RequestId);
+        Assert.Equal("resource_delta", terminal.ResultKind);
+        Assert.Equal(0m, terminal.Amount);
+        Assert.Equal("resolved_and_consumed", terminal.State);
+        var binding = Assert.Single(result.ResolvedPendingBindings);
+        Assert.Equal(0m, binding.Amount);
+        Assert.False(ResourcePendingResolutionState.TryProjectMutationSourceExport(
+            binding,
+            out var source));
+        Assert.Null(source);
     }
 
     [Fact]

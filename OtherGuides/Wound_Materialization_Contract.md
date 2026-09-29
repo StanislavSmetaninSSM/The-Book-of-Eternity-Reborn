@@ -94,8 +94,8 @@ Stale history is invalid authority, not a missed-dose outcome; other treatment d
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
 Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
-The `heal`, explicit death and legacy producers remain pending implementation; their approved authored
-contracts remain in the complete route model. Scheduled natural recovery remains separate and unfinished.
+The direct treatment `heal`, explicit death and legacy producers remain pending implementation; their approved authored
+contracts remain in the complete route model. Scheduled natural recovery uses a separate client-owned continuation.
 Mortal recovery admission example (`mortal_wound_recovery_history_guard_v1`): the
 client has accepted a wound and sealed the current pending snapshot. If its current
 history is missing or malformed, the planner returns `InvalidHistory` with the
@@ -107,8 +107,36 @@ missed dose, an elapsed recovery tick or permission to improvise healing. Equiva
 JSON formatting remains valid; arithmetic uses the accepted snapshot's sealed world minute,
 not a newly edited live clock. The client must restore accepted history or prepare
 and export a fresh accepted snapshot after a legitimate publication. Never hand-write history, a tick, an anchor or a receipt.
-This admission check does not publish recovery, healing or a receipt; scheduled
-natural recovery publication and durable replay remain unfinished.
+This admission check does not publish recovery, healing or a receipt; the admitted
+resolution is composed into the existing common plan, whose coordinated publisher
+alone writes recovery state, effects, identity, history and the closed receipt.
+
+Mortal recovery publication example (`mortal_wound_recovery_publication_v1`):
+an already accepted stabilized rank-II physical wound has anchor100, cadence10,
+progress0, threshold2 and carryOverflow=true. At minute135 the client counts three
+new intervals: the first threshold lowers severity to I, leaving progress1.
+Every severity change actually terminates the previous effects and rematerializes
+the lawful consequences with fresh generations. The original anchor stays100,
+consumed intervals become3 and the next due minute stays140. At136 there is no
+new interval; at140 one new point reaches the rank-I threshold and a separate
+full-heal stage terminates its effects and removes its active carrier. The full
+terminal wound snapshot remains in verified history. All stages belong to one
+common publication; no intermediate state is written. A graph that cannot fit
+the resulting slot budget is rejected without silently dropping consequences.
+After reopening at the same signed minute, the client returns the original
+four-field receipt without a new transition or write, including after full heal.
+This replay requires the same accepted final wound state. A later genuine treatment
+transition can retain the old tick key while starting a new stabilization epoch:
+for example, a blocked check at110 followed by accepted stabilization at110 permits
+a fresh NotDue check with next due120. Complete history must prove that intervening
+transition and its exact current wound; the new check then has its own replay receipt.
+Missing, changed or reordered linked history is InvalidHistory before live-clock
+arithmetic. Multiple elapsed deterioration intervals trigger one declared adverse
+result and consume all elapsed intervals; increase_severity adds one rank and
+resets progress to0. A death_contour is retained as a typed lifecycle handoff;
+the separate death consumer remains unfinished. GM authors the complete recovery
+policy in the ordinary wound proposal, never tick keys, epochs, receipt hashes
+or recovery transitions. No new GM command or response surface is introduced.
 Selected direct and policy additions use the graph publication contract below.
 
 Ordered `remove_complication` is published through the same atomic treatment/effect batch.
@@ -183,6 +211,9 @@ universal medicine list. Every Mortal wound must include at least one complete t
 route with exact requirements, resource policy, resolution, and outcomes; an empty
 `treatment.routes` array is invalid. A declared route does not itself supply its provider,
 items, or skills: the client validates their current authority when treatment is attempted.
+An exact current skill with canonical `active=false` cannot authorize treatment.
+Catalog membership supplies its lifecycle, but does not overwrite that activity flag;
+similarly named `isActive` and caller-authored lifecycle fields grant no authority.
 Spiritual wounds use the afterlife healing and natural-time
 contracts described by their owning feature stages.
 
@@ -293,6 +324,28 @@ identity, and immutable history all agree. Source preparation never makes a woun
 removed or changed in the current candidate valid; later admission must still prove
 current candidate agreement.
 
+For two sources in the same original turn, when the client has already created
+this side's one wound and the later source's maximum exceeds its current rank,
+the later source without an explicit older-wound re-trauma target uses
+the current owned conflict wound as its worsening target. The GM does not put
+that new wound's future or allocated ID into the exchange or response. The
+client's next offer raises the minimum severity above the current rank and
+rejects a second rank-I creation. An explicit older-wound target continues to
+use its separate `retraumaWoundRef` proof. In a later turn, the client also
+verifies the signed conflict receipt and current wound history before reusing
+that same wound. An optional source at or below its current rank offers only
+`none`. An already satisfied guarantee advances through the separate
+client-owned `guarantee_satisfied` path described below.
+
+When one closed exchange harms both sides and neither side has a newly created
+wound in that conflict yet, the client offers each side's source in causal
+order. The GM may materialize one wound for each affected side with target-
+specific complete proposals and exact acquisition narration for both. The
+shared exchange coordinate does not merge those wounds: each side has its own
+new wound ID, create transition and receipt row. If a side already owns its
+conflict wound, that side follows its same-conflict worsen, `none`, or
+`guarantee_satisfied` route independently of the other side.
+
 The GM never authors `traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
 `guaranteedSeverityRank`, or `spiritualWoundEnvelope` on an exchange, incoming action,
 or audit. The client derives the harmful margin, destination strain, danger cap, source
@@ -320,6 +373,83 @@ Worked fragments: `spiritual_wound_source_action_v1` in
 both legal action locations. The second is a complete contested terminal witness that
 the signed production preparation retains as `TerminalClosure`; neither fragment is a
 full profile update, wound admission, receipt, or accepted turn.
+
+## spiritual_wound_explicit_decline_receipt_v1
+
+When the same-turn client continuation offers a positive spiritual wound source
+without a guaranteed severity, the GM may answer with an explicit decline:
+`{"opportunityRef":"spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","decision":"none"}`.
+Use the exact offered `opportunityRef`; do not add a `proposal`, `woundRef`,
+severity or acquisition narration. An omitted decision remains unfinished input,
+and a guaranteed source cannot be declined. The already admitted exchange and
+ordinary resource/effect mechanics still require their normal completion.
+For a later optional source on the same conflict side, if the existing wound
+already meets that source's maximum, the client offers `none` as the only legal
+choice. The same response above completes that source without a second wound;
+a direct `materialize` attempt fails even when it bypasses the displayed offer.
+
+After C2 has completed and cold replay has reconstructed the exact owner packet,
+the private C3 reducer derives an append-only source row and `none` decision row
+for each positive source. The decision binds its full source witness, signed
+original turn, instance, global and instance ordinals, continuation generation
+and wave. Its selected severity, wound ID and transition ID are null. This
+receipt-only companion after-image counts as touched work in the common plan;
+it creates no wound, carrier/index/history change or acquisition notification.
+The GM never authors the receipt root. Live GameEngine/daemon dispatch and
+accepted publication await C4; the example demonstrates the accepted response
+shape and private reduction contract, not a currently live player flow.
+
+See `spiritual_wound_private_roots_v1` in `Examples/E_CLI_Afterlife_Turns.txt`
+for the worked decline and empty private-root shapes.
+
+## spiritual_wound_materialize_receipt_v1
+
+For an offered spiritual wound, the GM may choose `materialize` and supply the
+ordinary wound proposal with the exact offered `opportunityRef`. The final scene
+must include the proposal's acquisition narration. The GM does not choose a
+canonical wound ID, transition ID or private receipt row. After every C2 source
+has a decision, the private C3 reducer pairs each `materialize` choice with its
+actual source-bound wound insertion in exchange order. It copies the wound and
+transition IDs from the reducer's history, while `none` decisions keep null IDs.
+Several decisions may share an exchange, and a later insertion may worsen an
+earlier wound; the receipt retains both transitions in causal order.
+Within one completed conflict packet, the client rejects a second newly created
+wound for the same side. An explicitly targeted, separately proven older active
+wound remains eligible for re-traumatization. The current cold C2 continuation
+freezes action targets before decision replay, so it does not yet provide a
+GM-authored dependent reference to a wound created earlier in that same packet.
+
+The completed accepted plan combines the final wound carrier, identity index,
+history, effects and receipt under exact original before-images. This C3 result
+is detached and unpublished. Live GameEngine/daemon dispatch, transaction
+write/read-back and player notification still await C4. The client rejects an
+unproved or mismatched insertion instead of accepting a proposal as proof.
+
+## spiritual_wound_guarantee_satisfied_receipt_v1
+
+For a later guaranteed source on the same conflict side, the client compares
+the exact current conflict wound with the source's pre-existing guaranteed
+rank. If that wound already meets or exceeds the guarantee, C2 advances
+automatically without a new GM `woundDecisions` command. C3 records
+`guarantee_satisfied` with the same `woundId` and its
+`satisfiedSeverityRank` at that source boundary. `selectedSeverityRank` and
+`transitionId` are null; no second wound, effect insertion or wound-history
+transition is created. A later lawful worsening does not rewrite the rank in
+this receipt. This also applies when the existing rank is at or above the
+new source's calculated hard maximum, including a zero maximum.
+The ordinary accepted plan requires this authenticated C3 receipt even when
+the current turn inserts no wound at all.
+
+If the current conflict wound is below the guarantee, a `materialize`
+decision must worsen that wound to exactly the guaranteed rank within the
+hard maximum. If no exact owned conflict wound proves satisfaction and the
+guarantee exceeds the maximum, the source fails closed. The GM cannot decline
+a guaranteed source or name a substitute older wound; an explicit older-wound
+re-trauma retains its separate target authority. Cold replay reconstructs
+the same client-owned outcome from signed source, instance, side and current
+wound evidence; changed evidence rejects instead of silently skipping the
+source. See `spiritual_wound_private_roots_v1` in
+`Examples/E_CLI_Afterlife_Turns.txt` for the worked continuation.
 
 ## wound_acquisition_narration_v1
 
@@ -539,6 +669,112 @@ onto its current conflict side only while that exact actor is an unambiguous par
 
 Inspection, communication, help, treatment, withdrawal, surrender, negotiation, and
 the separate dissipation choice remain safe. A wound profile cannot block them.
+
+For `spiritual_action_cost_burden`, the exact owner's applicable burden is paid
+before `recover_spiritual_power`, including failure; insufficient funds reject.
+`force_incarnation` has no base cost and requires only the positive wound burden
+in its seven-field 0/0/0 audit; without burden it remains free without audit.
+The action-only recovery audit and ordered Spend/reactions/Gain rule are documented
+under `spiritual_wound_special_action_costs_v1` in
+`OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
+in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
+
+## spiritual_wound_position_v1
+
+`spiritual_position_burden` changes the effective starting position of the matching
+exchange, not its saved position. Use ranks `opposition_dominant=-2`,
+`opposition_advantaged=-1`, `contested=0`, `player_advantaged=1`,
+`player_dominant=2` and compute
+`effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)`.
+Sum each accepted component once for the exact acting participant and its declared
+operation. Other actors, other operations and ended effects do not contribute.
+Combine both sides before clamping; equal burdens cancel, and neither side's sum
+is capped separately. Magnitude remains one step at I-II, at most two at III-IV.
+
+The existing `conflict_position` modifier's `position` names this effective rank.
+Effective zero requires no position row; otherwise use exactly one row on the
+advantaged side with `value = 2 * abs(effective)`. Preserve every unrelated modifier,
+the original dice and roll modes. Effective position also governs the positional
+prerequisites of `binding` and `force_binding`; their existing setup and decisive
+success alternatives remain available.
+
+Keep `before.conflictPosition` canonical and write the ordinary action result in
+`after.conflictPosition`. Do not subtract the burden from either saved field.
+A successful or partially successful maneuver still requires an actual canonical
+position change, with all existing strain and control restrictions. Repeated
+actions do not erode position automatically. Healing or expiry removes only future
+applicable burden and does not itself improve canonical position.
+
+A newly inserted wound affects only later matching exchanges. Never recompute a
+closed exchange using the current wound list. Cold restoration preserves the
+original accepted context; a self-consistent retained audit does not authorize a
+new exchange. For a dependent correction, follow the client's current exact repair
+request and preserve its saved wound choice, closed prefix and original dice.
+GM must not write client-owned wound/effect identities or add an effective-position
+field. The worked `spiritual_wound_position_v1` fragments in
+`Examples/E_CLI_Afterlife_Turns.txt` show the existing authorable fields.
+
+For a client-issued `dependent_draft` caused by `spiritual_position_burden`, keep
+the saved wound choice and use only the current `dependentDraftFields`. The
+client derives the effective rank from the actual next exchange and its accepted
+actors, operations and effects. A permitted modifier-array pointer is not blanket
+permission to replace that array: preserve every nonposition row and its relative
+order. Remove the obsolete position row, insert or replace the single prescribed
+row on the correct side, or leave no position row at effective zero. Correct only
+the listed totals, margin, outcome band and required natural-critical evidence
+using the same dice and roll modes. Cost changes require their own listed
+permissions; a position correction alone does not authorize them.
+
+The original action, actor, art, target, canonical position, closed prefix and
+saved choice remain unchanged. Never infer permission to rewrite an outcome or
+`after` state from a dice correction. If changed arithmetic requires different
+consequences, the client must supply separately proved current permissions;
+otherwise that continuation remains blocked. Return `woundDecisions: []` in the
+existing envelope and preserve the current `continuationId`. Cold recovery
+reopens the saved selection; it does not invite a replacement decision.
+
+Submit the complete prescribed arithmetic group together; partial or mixed
+old/new groups are rejected. An unchanged draft remains diagnosable, but it cannot
+advance while the original position error remains.
+
+See the worked spiritual_wound_position_dependency_v1 example for a bounded
+correction that preserves the result band and an independent modifier.
+
+### spiritual_wound_dependent_frontiers_v1
+
+A dependent correction may require several client-issued requests. Complete only
+the currently issued frontier A: its complete prescribed arithmetic group and,
+when required, both nonempty GM-authored critical texts. Keep the saved wound
+choice, original dice, independent modifiers and closed prefix. Ready completes
+only the issued frontier; it does not promise that every later exchange is ready.
+After validating A, the client may issue a new frontier B with its own exact
+continuationId. Read that new request and answer it separately with
+`woundDecisions: []`. Do not reuse A's response or Ready for B.
+
+Future B corrections are forbidden in A, even if their arithmetic would later
+be valid. A listed modifier or critical-result pointer permits only the exact
+prescribed structure; it cannot change independent rows or invent consequences.
+Missing critical text, wrong scalars or unrelated edits cannot unlock B. The
+client validates the entire candidate against A before discovering later fields.
+The saved selection is not applied again between requests, and canonical
+publication waits for complete accepted-turn validation.
+
+File and worker routes follow the same rule. Worker checks before apply, after
+apply and before Ready preserve rollback and current ownership. Cold recovery
+reconciles outstanding transport before automatic continuation; public request
+files are not authority. A stale Ready or changed private pair is rejected.
+GM must not reconstruct private state, replace a choice, delete Ready or guess
+the next correlation. See the worked A-to-B example under this marker in
+`Examples/E_CLI_Afterlife_Turns.txt`.
+
+The pre-turn preview has not selected the next operations or acting participants.
+If an accepted active `spiritual_position_burden` belongs to a current participant,
+`dicePreview` is null and `authoringReminders` explains the operation-dependent
+position. Do not use canonical position as an unconditional mandatory modifier or
+infer a zero burden from that null. Select the exact actors and operations first,
+then calculate the effective rank and dice result using the rule above. Unaffected
+previews retain their existing dice calculation; this preview grants no authority
+to change canonical position or a closed exchange.
 
 ## wound_treatment_scene_authority_v1
 
@@ -785,7 +1021,7 @@ Selected non-death apply_deterioration outcomes publish through the same authent
 The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.
 Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.
 Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.
-Death, heal and legacy publication remain unfinished.
+Direct treatment death, heal and legacy publication remain unfinished.
 
 Selected policy outcomes are legal only in procedure partial/failed results and actual interrupted courses.
 An interrupted course clears only its course pointer and does not consume the current or future dose.
@@ -1114,3 +1350,143 @@ maximumAtCreation remains unchanged. All permanent identities and publication au
   }
 }
 ```
+
+## spiritual_wound_terminal_closure_v1
+
+The internal publication boundary following this C3 plan is documented below as
+spiritual_wound_common_publication_v1; live GM dispatch uses C4-B.
+
+For the bounded private terminal path, an existing `resolve` response retains a
+complete `terminalExchange` directly after the signed active baseline. Resolution
+and exchange dice audits agree exactly; original operation, actors, costs and
+source evidence remain authoritative. Follow the matching afterlife matrix and
+worked example. Existing reward and reward anti-farm rules are unchanged.
+
+The last action and its causal effects finish before opposition resource
+retirement (Spend before Retire). A real completed owner proof permits one
+immutable closure; original instance/start and earlier receipt rows remain
+unchanged. An accepted prior closure is required before a reused display ID can
+create a distinct instance. GM must not write private receipt/proof fields or
+retire resource owners. Missing prefixes and broader terminal source families
+remain explicit unfinished work, not implicit declines. C3 is an unpublished
+common plan; live GameEngine/daemon publication uses the C4 common publisher.
+
+## spiritual_wound_source_only_publication_v1
+
+When every original exchange source has a zero ceiling and no guarantee, the
+client returns `no_offer`: no wound decision is requested. For an already signed
+`dangerMode: training` conflict, author the ordinary exchange, its complete dice
+and cost audits, and narration. Do not change the signed danger declaration to
+avoid a wound. No fabricated none, woundDecisions, wound command or C2 checkpoint
+is needed; missing answers to positive offers still never mean decline.
+
+The client exhausts the original exchange inventory and completes ordinary costs
+and effects. Its instance-only receipt has no new source/decision rows; a terminal
+exchange additionally produces the actual immutable closure, with Spend before
+Retire. Existing reward rules and persistent actor wound/effect groups remain
+unchanged. GM must not write private instance, closure, receipt or resource-owner
+fields. A single common publisher commits the completed result without reallocating
+identities. Legal empty private roots are bound by their exact bytes just like
+absent roots; publication consumes them and failure restores signed bytes/absence.
+
+This bounded warm handoff is used by live B3 routing.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+Receipt-only state does not prove whole-turn acceptance.
+The worked example is `spiritual_wound_source_only_publication_v1`
+in `Examples/E_CLI_Afterlife_Turns.txt`.
+
+## spiritual_wound_common_publication_v1
+
+The internal C4-A common transaction receives the completed spiritual plan without
+replanning, with one-shot publication authority and separate signed original,
+draft and committed physical images. Uncommitted edits reject with zero writes;
+failure after writes restores signed original bytes and signed absence. Successful
+publication checks the receipt against the final wound/effect/history images and
+consumes both private roots plus wound_commands, including none. GM must not write
+private publication or receipt fields. The matching afterlife matrix and worked
+example describe this client boundary; live GM dispatch uses C4-B.
+
+Live accepted output: preserve every accepted acquisition and worsening description
+in the final output/narrative_response.json.response, in exchange order. Creating
+then worsening the same wound produces two player messages at the respective ranks;
+none and guarantee_satisfied produce no extra acquisition notification. The client
+binds the final narrative, interface and debug output to the accepted publication,
+rejects substituted output, and consumes each accepted notification once. Refreshing
+the same completed response does not replay those notifications. These are client
+responsibilities: GM must not author notification IDs or publication/completion flags.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+GM waits for the current client request and must not resend a saved choice.
+Receipt-only state does not prove whole-turn acceptance; do not reconstruct private authority.
+
+## spiritual_wound_continuation_envelope_v1
+
+The existing repair/worker protocol has a closed optional
+`spiritualWoundContinuation` envelope. Use it only when supplied by the client.
+Copy schemaVersion 1 and exact continuationId. In phase `decision`, return one
+current `woundDecisions` row: explicit none, or the existing complete materialize
+proposal with woundRef. Respect the offered decisions, locations and severity;
+a none-only offer can have a minimum rank above its maximum. In `dependent_draft`,
+return an empty array and correct only the client-listed dependentDraftFields.
+Never replace the saved choice or write private checkpoint, command or receipt roots.
+
+Narration stays in output/narrative_response.json.response, with the ordinary
+timestamp and preserved independent siblings. Request/response keys are exact-case;
+unknown fields and duplicate keys are rejected. Missing response never means none,
+and ordinary repair must not include this envelope. A completed decision proposal
+may have empty changedFiles if no draft correction is needed; ordinary repair and
+dependent correction retain their changedFiles requirement. These are structural
+checks only: genuine owner admission and before-apply/before-ready rechecks remain
+mandatory. The strict envelope parser alone does not enable live dispatch;
+GameEngine authenticates and resumes C2. See the matching worked envelope example.
+
+For the file helper, use `Complete-BoeValidationRepair
+-SpiritualWoundContinuationJson <raw response-envelope JSON>` only for a current
+client request containing this envelope. Pass the response object itself, without
+another `spiritualWoundContinuation` wrapper. Explicit `none`, a complete
+`materialize` proposal and `dependent_draft` with `woundDecisions: []` use the same
+parameter. The helper rejects missing responses, stale correlation, unknown or
+duplicate keys and case aliases before publishing Ready. Ordinary repair calls
+`Complete-BoeValidationRepair` without this parameter and forbids a continuation
+response. A decision request may have `errors: []`; continuation always has
+`fullTurnResubmissionRequired: false` and never restores the turn baseline.
+
+The helper compares exact request and Ready read witnesses under the canonical
+write lock before atomic Ready publication. A changed request or newer Ready,
+including a Ready for the same request, causes rejection without overwriting it.
+An already published continuation Ready also blocks a new submission; wait for
+the client to consume or reject it instead of replacing or deleting it.
+Reread the current request after rejection; do not delete Ready or resend an old
+response blindly. The helper does not consume C2: the GameEngine must authenticate
+the current owner, read the scene and consume/resume the response under its lease.
+Helper transport support does not establish completion of live GameEngine routing.
+The worked file-helper commands are in `Examples/E_CLI_Afterlife_Turns.txt` under
+`spiritual_wound_continuation_envelope_v1`.
+
+## spiritual_wound_pending_submission_v1
+
+Before a selected wound can affect a later original exchange, the private client
+transport retains pendingSubmission in the existing checkpoint. It binds the exact
+selected decision, original composed command including scene text, and real
+selection ID/time prefix. The committed cursor and derived pending remain unchanged.
+An already satisfied guarantee retains guarantee_satisfied with command null;
+there is no new GM choice. Cold recovery uses the real original owners and must
+not reoffer the saved choice or allocate its identities again. A corrected
+continuation advances and clears pendingSubmission in one checkpoint replacement,
+then updates derived pending. Failure before confirmed advancement preserves the
+selected record; ambiguous read-back blocks. GM must not write this record, repair
+its hashes, replace the saved command or treat a command file as replay authority.
+The direct in-memory decision draft remains write-free. This private persistence
+boundary alone does not authorize dispatch; GameEngine authenticates and resumes
+C2 through C4-B. After interruption, the client restores the signed original turn or retains the complete accepted turn.
+GM waits for the current client request and must not resend a saved choice.
+
+The live entry uses checkpoint-first recovery when a confirmed checkpoint's
+derived pending write fails. A repeated write failure retains the original turn
+and saved choice for cold recovery; GM must not write private recovery files or
+replace the decision. Wait for the current client request before another response.
+The original completion signal stays unchanged while the current gameplay loop
+stops. Explicit session re-entry uses that signal through the normal lifecycle;
+the client does not mint a replacement GM success.
+An ordinary repairable resource omission before C2 exists keeps the existing
+full-turn repair route. Public request/Ready files never restore missing private
+authority, and a failed initial capture with no ordinary errors stays rejected.

@@ -720,6 +720,15 @@ internal static partial class EffectAcceptedTurnPlanner
                 : EmptyTriggers;
         }
 
+        // Enumerates retained snapshots, never probes a future resource event.
+        internal IReadOnlyList<CanonicalEffectUseSeed> CanonicalUseSeeds =>
+            Array.AsReadOnly(_lifecycleTriggers.Values.SelectMany(value => value)
+                .Select(value => value.UseSeed)
+                .OfType<CanonicalEffectUseSeed>()
+                .Distinct()
+                .OrderBy(value => value.EffectId, StringComparer.Ordinal)
+                .ToArray());
+
         internal static EffectResourceTriggerIndex Build(
             EffectCarrierCatalogInput carriers,
             EffectTargetAuthority targetAuthority) =>
@@ -952,13 +961,15 @@ internal static partial class EffectAcceptedTurnPlanner
         internal EffectSourceRoutingBinding? ResolvePlanSourceBinding(
             EffectAcceptedTurnPlan plan,
             ref int indexLookupCount,
-            ref int candidateVisitCount) =>
+            ref int candidateVisitCount,
+            EffectSourceAuthority? currentSources = null) =>
             EffectAcceptedTurnPlanner.ResolvePlanSourceBinding(
                 plan,
                 _occurrence.Effect,
                 _workMeter,
                 ref indexLookupCount,
-                ref candidateVisitCount);
+                ref candidateVisitCount,
+                currentSources);
 
         internal EffectReactionPlanningResult PlanResourceEvent(
             string triggerId,
@@ -1404,7 +1415,7 @@ internal static partial class EffectAcceptedTurnPlanner
             }
 
             var profile = componentNode["profile"]!.GetValue<string>();
-            if (profile is not ("periodic_damage" or "periodic_restore"))
+            if (!EffectComponentProfiles.IsPeriodicResourceProfile(profile))
                 continue;
             using var componentDocument = JsonDocument.Parse(
                 componentNode.ToJsonString());
@@ -2026,13 +2037,42 @@ internal static partial class EffectAcceptedTurnPlanner
             definitions);
     }
 
+    /// <summary>
+    /// Resolves resource-triggered candidates against the original or actual installed wound routing epoch.
+    /// </summary>
+    /// <param name="plan">
+    /// Original accepted effect plan supplying the stable plan authority.
+    /// </param>
+    /// <param name="producerEvent">
+    /// Potential event bound to the prepared resource producer.
+    /// </param>
+    /// <param name="producer">
+    /// Exact operation key emitting the potential event.
+    /// </param>
+    /// <param name="ownerAuthority">
+    /// Accepted resource owner authority for consequence targets.
+    /// </param>
+    /// <param name="definitions">
+    /// Resource definitions used by the same resource executor.
+    /// </param>
+    /// <param name="current">
+    /// Actual installed wound routing epoch; null selects the original effect base.
+    /// </param>
+    /// <param name="selectedEffectIds">
+    /// Optional restrictive root set for additive visits of retained producers; null resolves every matching effect.
+    /// </param>
+    /// <returns>
+    /// Validated candidates, resource mutations and source exports, or diagnostics preventing execution.
+    /// </returns>
     private static EffectPeriodicResourceResolution
         ResolveResourceEventMutationCandidates(
         EffectAcceptedTurnPlan plan,
         ResourceAppliedEvent producerEvent,
         ResourceOperationKey producer,
         ResourceOwnerAuthority ownerAuthority,
-        ResourceDefinitionCatalog definitions)
+        ResourceDefinitionCatalog definitions,
+        BaseResourceRouting.WoundRoutingPreparation? current = null,
+        IReadOnlySet<string>? selectedEffectIds = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(producerEvent);
@@ -2054,16 +2094,16 @@ internal static partial class EffectAcceptedTurnPlanner
             return FailedPeriodicResourceResolution(issues);
         }
 
-        var triggerIndex = plan.ResourceTriggerIndex;
+        var triggerIndex = current?.Index ?? plan.ResourceTriggerIndex;
         issues.AddRange(triggerIndex.Issues);
-        var identityState = ParseIdentity(plan.IdentityIndexAfterImage);
+        var identityState = ParseIdentity(current?.State.EffectIdentity ?? plan.IdentityIndexAfterImage);
         issues.AddRange(identityState.Issues);
-        var carrierCatalog = EffectCarrierCatalog.Build(plan.ResourceTriggerCarriers);
+        var carrierCatalog = EffectCarrierCatalog.Build(current?.State.EffectCarriers ?? plan.ResourceTriggerCarriers);
         issues.AddRange(carrierCatalog.Issues);
         WoundReactionLineageAuthority? woundLineageAuthority = null;
         if (identityState.State != null && issues.Count == 0)
         {
-            woundLineageAuthority = WoundReactionLineageAuthority.Build(
+            woundLineageAuthority = current?.Lineage ?? WoundReactionLineageAuthority.Build(
                 plan.SourceAuthority,
                 identityState.State,
                 carrierCatalog,
@@ -2093,18 +2133,21 @@ internal static partial class EffectAcceptedTurnPlanner
             producerEvent.EventKind);
         foreach (var candidate in candidates)
         {
+            if (selectedEffectIds != null && !selectedEffectIds.Contains(candidate.EffectId))
+                continue;
             var routing = candidate.OpenRoutingHandle(workMeter);
             var triggerId = candidate.TriggerId;
             var plannedReactions = routing.PlanResourceEvent(
                 triggerId,
                 producerEvent,
-                plan.SourceAuthority,
+                current?.Sources ?? plan.SourceAuthority,
                 woundLineageAuthority);
             issues.AddRange(plannedReactions.Issues);
             var sourceBinding = routing.ResolvePlanSourceBinding(
                 plan,
                 ref sourceBindingIndexLookupCount,
-                ref sourceBindingCandidateVisitCount);
+                ref sourceBindingCandidateVisitCount,
+                current?.Sources);
             var resolved = routing.ResolveResourceEvent(
                 triggerId,
                 producer,
@@ -2223,6 +2266,21 @@ internal static partial class EffectAcceptedTurnPlanner
     }
 
 
+    /// <summary>
+    /// Validates the exact prepared wound batch and composes its ordered application and terminal requests.
+    /// </summary>
+    /// <param name="input">
+    /// Original effect input with the scoped prepared source and event authorities.
+    /// </param>
+    /// <param name="prepared">
+    /// Sealed wound preparation; a live preparation must retain its actual draft-before registration.
+    /// </param>
+    /// <param name="issues">
+    /// Receives handoff, source, target and operation validation failures.
+    /// </param>
+    /// <returns>
+    /// Prepared requests whose execution is permitted only when validation produced no issues.
+    /// </returns>
     private static PreparedWoundOperations PrepareWoundOperations(
         EffectAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan prepared,
@@ -2230,6 +2288,12 @@ internal static partial class EffectAcceptedTurnPlanner
     {
         var applications = new List<WoundApplicationRequest>();
         var terminations = new List<WoundTerminalRequest>();
+        if (prepared.DraftBefore is { } ownedBefore && !ownedBefore.MatchesPrepared(prepared))
+        {
+            AddWoundBatchIssue(issues, "prepared.draftBefore", "wound_plan_effect_handoff_invalid",
+                "the actual retained preparation and draft-before owner", "stale or foreign");
+            return new PreparedWoundOperations(applications, terminations);
+        }
         var binding = prepared.Binding;
         var batches = prepared.EffectOperationBatches;
         var preparedWounds = prepared.PreparedWounds;
@@ -2497,7 +2561,7 @@ internal static partial class EffectAcceptedTurnPlanner
         if (transitionAuthority.TransitionKind is "worsen" or "treat")
         {
             var baselineCatalog = WoundCarrierCatalog.Build(
-                prepared.BaselineAuthority.PreTurnCarriers);
+                prepared.DraftBefore?.Data.WoundCarriers ?? prepared.BaselineAuthority.PreTurnCarriers);
             var matches = baselineCatalog.Occurrences.Where(value =>
                     string.Equals(
                         value.WoundId,
@@ -2652,7 +2716,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 path,
                 issues,
                 authenticatedRemoval ? treatmentContinuation.OutcomePreparation.SeverityReduction?.Before : null,
-                selectedGraph))
+                selectedGraph, prepared.DraftBefore?.Data, prepared.DraftBefore?.RetirementHistory, prepared.DraftBefore))
         {
             return;
         }
@@ -3115,6 +3179,48 @@ internal static partial class EffectAcceptedTurnPlanner
         return issues.Count == count;
     }
 
+    /// <summary>
+    /// Checks each proposed root's exact predecessor against the preserved original or separately owned current effect state.
+    /// </summary>
+    /// <param name="input">
+    /// Original effect input, including its unchanged pre-turn snapshots.
+    /// </param>
+    /// <param name="transitionKind">
+    /// Validated wound transition kind selecting creation or rematerialization rules.
+    /// </param>
+    /// <param name="beforeWound">
+    /// Exact wound whose prior generation is being validated.
+    /// </param>
+    /// <param name="definitions">
+    /// Proposed source-owned definitions indexed by exact key.
+    /// </param>
+    /// <param name="roots">
+    /// Ordered proposed roots and their declared predecessors.
+    /// </param>
+    /// <param name="path">
+    /// Diagnostic path of the prepared batch.
+    /// </param>
+    /// <param name="issues">
+    /// Receives lineage, state and predecessor mismatch diagnostics.
+    /// </param>
+    /// <param name="retainedCoordinateWound">
+    /// Treatment coordinate source, or <see langword="null"/> to use <paramref name="beforeWound"/>.
+    /// </param>
+    /// <param name="selectedGraph">
+    /// Authenticated selected treatment graph, or <see langword="null"/> for ordinary wound roots.
+    /// </param>
+    /// <param name="operationBefore">
+    /// Detached current data from the validated retained draft-before proof, or <see langword="null"/> for the original input.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving completed terminal identities, or <see langword="null"/> for the original baseline.
+    /// </param>
+    /// <param name="draftBefore">
+    /// Exact live proof of current terminal cut images; null preserves the signed-baseline predecessor checks.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when every required predecessor agrees; otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool ValidateGenerationPredecessors(
         EffectAcceptedTurnInput input,
         string transitionKind,
@@ -3124,7 +3230,10 @@ internal static partial class EffectAcceptedTurnPlanner
         string path,
         List<ValidationIssue> issues,
         WoundMaterializationEnvelope? retainedCoordinateWound,
-        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph)
+        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph,
+        WoundOperationBeforeData? operationBefore,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore)
     {
         var coordinateWound = retainedCoordinateWound ?? beforeWound;
         var beforeDomains = coordinateWound.Consequences.OwnedEffectSources
@@ -3160,13 +3269,14 @@ internal static partial class EffectAcceptedTurnPlanner
         }
         EffectCarrierCatalog? effectCatalog = null;
         EffectIdentityState? effectIdentities = null;
+        var effectCarriers = operationBefore?.EffectCarriers ?? input.PreTurnCarriers;
+        var effectIdentity = operationBefore?.EffectIdentity ?? input.PreTurnIdentityIndex;
         if (transitionKind is "worsen" or "treat" &&
-            input.PreTurnCarriers is not null &&
-            input.PreTurnIdentityIndex is not null)
+            effectCarriers is not null && effectIdentity is not null)
         {
-            effectCatalog = EffectCarrierCatalog.Build(input.PreTurnCarriers);
+            effectCatalog = EffectCarrierCatalog.Build(effectCarriers);
             using var document = JsonDocument.Parse(
-                input.PreTurnIdentityIndex.ToJsonString());
+                effectIdentity.ToJsonString());
             var parsed = EffectIdentityState.Parse(
                 document.RootElement,
                 EffectIdentityState.StatePath);
@@ -3180,7 +3290,7 @@ internal static partial class EffectAcceptedTurnPlanner
         var suppliedPredecessors = new HashSet<string>(StringComparer.Ordinal);
         var generationAuthority = transitionKind is "worsen" or "treat" &&
             effectCatalog is not null && effectIdentities is not null
-                ? new WoundRootGenerationAuthority(beforeWound, effectCatalog, effectIdentities)
+                ? new WoundRootGenerationAuthority(beforeWound, effectCatalog, effectIdentities, retirementHistory, draftBefore)
                 : null;
         if (generationAuthority is { Issues.Count: > 0 })
         {
@@ -3195,32 +3305,25 @@ internal static partial class EffectAcceptedTurnPlanner
                 root.OwnershipDomain.Kind,
                 root.OwnershipDomain.ComplicationId);
             beforeByCoordinate.TryGetValue(coordinate, out var expectedPrior);
-            if (expectedPrior is not null &&
-                (!definitions.TryGetValue(root.DefinitionKey, out var definition) ||
-                 !WoundEffectCarrierAdapter.TryCreateTargetKey(
-                     beforeWound.Owner,
-                     out var expectedTarget) ||
-                 !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(
-                     beforeWound.Owner,
-                     expectedTarget,
-                     definition.Definition,
-                     out var expectedCarrier) ||
-                 generationAuthority is null ||
-                 !generationAuthority.Agrees(
-                     expectedPrior,
-                     new EffectSourceKey(
-                         beforeWound.Owner.Realm,
-                         "wound",
-                         beforeWound.WoundId,
-                         root.DefinitionKey),
-                     expectedTarget,
-                     expectedCarrier,
-                     definition.Definition,
-                     root.OwnershipDomain)))
+            if (expectedPrior is not null)
             {
-                if (generationAuthority?.IsTerminalRoot(expectedPrior) == true)
-                    valid = false;
-                expectedPrior = null;
+                EffectTargetKey expectedTarget = null!;
+                EffectCarrierCoordinate expectedCarrier = null!;
+                var expectedSource = new EffectSourceKey(beforeWound.Owner.Realm, "wound", beforeWound.WoundId, root.DefinitionKey);
+                var hasCoordinate = definitions.TryGetValue(root.DefinitionKey, out var definition) &&
+                    WoundEffectCarrierAdapter.TryCreateTargetKey(beforeWound.Owner, out expectedTarget) &&
+                    WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(beforeWound.Owner, expectedTarget,
+                        definition.Definition, out expectedCarrier);
+                if (!hasCoordinate || generationAuthority is null ||
+                    !generationAuthority.Agrees(expectedPrior, expectedSource, expectedTarget,
+                        expectedCarrier, definition!.Definition, root.OwnershipDomain))
+                {
+                    if (generationAuthority?.IsTerminalRoot(expectedPrior) == true &&
+                        (!hasCoordinate || !generationAuthority.CanOmitCutTerminalPredecessor(expectedPrior,
+                            expectedSource, expectedTarget, expectedCarrier, definition!.Definition, root.OwnershipDomain)))
+                        valid = false;
+                    expectedPrior = null;
+                }
             }
             var expected = transitionKind switch
             {
@@ -3279,7 +3382,8 @@ internal static partial class EffectAcceptedTurnPlanner
         IReadOnlyDictionary<string, WoundAcceptedEventAuthority> acceptedEvents,
         string path,
         List<ValidationIssue> issues,
-        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph)
+        MortalWoundTreatmentSelectedGraphCompilation? selectedGraph,
+        bool ownedRecovery = false)
     {
         var issueCount = issues.Count;
         var sourceSelector = root.SourceSelector;
@@ -3471,7 +3575,8 @@ internal static partial class EffectAcceptedTurnPlanner
         // A typed, authenticated treatment batch re-materializes its sealed definition graph;
         // it does not offer a new selector choice. Its structural diagnostics remain internal.
         var origin = selectedGraph?.NewDefinitionOrigins.SingleOrDefault(row => row.DefinitionKey == root.DefinitionKey);
-        var acceptedContinuation = batch.TransitionAuthority.TransitionKind == "treat" && origin is null;
+        var acceptedContinuation = (batch.TransitionAuthority.TransitionKind == "treat" && origin is null) ||
+            (ownedRecovery && batch.TransitionAuthority.TransitionKind == "recover");
         var diagnosticPath = path + ".components";
         if (origin is not null)
             diagnosticPath = SelectedDefinitionPath(origin);
@@ -3657,11 +3762,30 @@ internal static partial class EffectAcceptedTurnPlanner
         }
     }
 
+    /// <summary>
+    /// Checks prepared terminal requests against the current live closure and retained retirement history.
+    /// </summary>
+    /// <param name="requests">
+    /// Prepared terminal requests grouped by selected wound.
+    /// </param>
+    /// <param name="catalog">
+    /// Current effect occurrences before any terminal mutation.
+    /// </param>
+    /// <param name="identities">
+    /// Parsed identities matching the current occurrences.
+    /// </param>
+    /// <param name="issues">
+    /// Receives closure and terminal authority validation failures.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving completed terminal images; null retains original-baseline validation.
+    /// </param>
     private static void ValidateWoundTerminalRequests(
         IReadOnlyList<WoundTerminalRequest> requests,
         EffectCarrierCatalog catalog,
         EffectIdentityState identities,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         foreach (var group in requests.GroupBy(static request =>
                      (request.Batch.LocalWoundRef,
@@ -3672,7 +3796,7 @@ internal static partial class EffectAcceptedTurnPlanner
             var lineage = WoundEffectLineagePlanner.Plan(
                 first.Wound,
                 identities,
-                selectedRoots);
+                selectedRoots, retirementHistory);
             issues.AddRange(lineage.Issues);
             if (lineage.Issues.Count != 0)
                 continue;
@@ -3962,7 +4086,16 @@ internal static partial class EffectAcceptedTurnPlanner
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(identityFactory);
 
+        if (prepared.RecoveryContinuationAuthority is not null)
+            return BuildMortalRecovery(input, prepared, identityFactory);
+
         var issues = new List<ValidationIssue>();
+        if (prepared.DraftBefore != null)
+        {
+            AddWoundBatchIssue(issues, "prepared.draftBefore", "spiritual_wound_owned_application_required",
+                "application by the retained live effect draft", "ordinary whole-turn batch");
+            return Failed(issues);
+        }
         PreparedWoundOperations operations;
         string effectInputFingerprint;
         try
@@ -4015,7 +4148,8 @@ internal static partial class EffectAcceptedTurnPlanner
         string fingerprint,
         EffectIdentityFactory identityFactory,
         IReadOnlyList<WoundApplicationRequest> woundApplications,
-        IReadOnlyList<WoundTerminalRequest> woundTerminations)
+        IReadOnlyList<WoundTerminalRequest> woundTerminations,
+        WoundPreparedAcceptedTurnPlan? recoveryPrepared = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         ArgumentNullException.ThrowIfNull(identityFactory);
@@ -4186,6 +4320,18 @@ internal static partial class EffectAcceptedTurnPlanner
         if (issues.Count > 0)
             return Failed(issues);
 
+        MortalRecoveryExecutionProof? recoveryProof = null;
+        var finalSourceAuthority = input.SourceAuthority;
+        if (recoveryPrepared is not null)
+        {
+            recoveryProof = ExecuteMortalRecovery(input, recoveryPrepared, workspace,
+                identityRoot, identityFactory, turn, effectIds, transitionIds, activeEffects,
+                processedEventRefs, usedSources, usedTargets, woundApplicationRootEffectBindings,
+                issues, out finalSourceAuthority);
+            if (recoveryProof is null || issues.Count != 0)
+                return Failed(issues);
+        }
+
         foreach (var request in woundApplications)
         {
             var issueCount = issues.Count;
@@ -4237,7 +4383,7 @@ internal static partial class EffectAcceptedTurnPlanner
         if (reactionIdentityState.State == null || issues.Count > 0)
             return Failed(issues);
         var woundLineageAuthority = WoundReactionLineageAuthority.Build(
-            input.SourceAuthority,
+            finalSourceAuthority,
             reactionIdentityState.State,
             reactionCarrierCatalog,
             woundApplicationRootEffectBindings);
@@ -4247,7 +4393,7 @@ internal static partial class EffectAcceptedTurnPlanner
 
         var reactionPlan = EffectReactionExecutor.Plan(
             input.EventInput,
-            input.SourceAuthority,
+            finalSourceAuthority,
             workspace.ToInput(),
             woundLineageAuthority);
         issues.AddRange(reactionPlan.Issues);
@@ -4279,8 +4425,7 @@ internal static partial class EffectAcceptedTurnPlanner
             .Distinct(StringComparer.Ordinal)
             .OrderBy(static path => path, StringComparer.Ordinal)
             .ToArray();
-        return new EffectAcceptedTurnPlanningResult(
-            new EffectAcceptedTurnPlan(
+        var completedPlan = new EffectAcceptedTurnPlan(
                 fingerprint,
                 carrierAuthorityFingerprint,
                 input.SourceAuthority.CanonicalFingerprint,
@@ -4300,7 +4445,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     EffectReactionExpansionUsage>(),
                 activeEffects,
                 resourceTriggerCarriers,
-                input.SourceAuthority,
+                finalSourceAuthority,
                 targetAuthority,
                 input.EventInput,
                 carrierBeforeImages,
@@ -4313,7 +4458,11 @@ internal static partial class EffectAcceptedTurnPlanner
                     input.AcceptedCarrierBaselines ?? carriers,
                 woundApplicationRootEffectBindings:
                     woundApplicationRootEffectBindings,
-                skillScopeAuthority: input.SkillScopeAuthority),
+                skillScopeAuthority: input.SkillScopeAuthority,
+                mortalRecoveryExecutionAuthority: recoveryProof);
+        recoveryProof?.Seal(completedPlan);
+        return new EffectAcceptedTurnPlanningResult(
+            completedPlan,
             Array.Empty<ValidationIssue>());
     }
 
@@ -5618,7 +5767,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return;
         }
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            operation.OperationRef, "wound_expire", operation.EffectId));
         transitionIds.Add(transitionId);
         AppendIdentityTransition(
             identityRoot,
@@ -5703,7 +5853,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return;
         }
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            operation.EventRef, "terminal_" + operation.Operation, operation.EffectId));
         transitionIds.Add(transitionId);
         AppendIdentityTransition(
             identityRoot,
@@ -5933,11 +6084,14 @@ internal static partial class EffectAcceptedTurnPlanner
 
         if (resolution.CreatesNewIdentity)
         {
-            var effectId = identityFactory.CreateEffectId();
+            var effectId = identityFactory.CreateEffectId(new EffectIdentityAllocationKey(
+                application.EventRef, "application_create_effect",
+                SpiritualWoundStateJson.Canonical(JsonSerializer.SerializeToNode(application.Target))));
             effectIds.Add(effectId);
             if (resolution.TerminatesExisting)
             {
-                var replaceTransitionId = identityFactory.CreateTransitionId();
+                var replaceTransitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+                    application.EventRef, "replacement_retire", resolution.ExistingEffectId!));
                 transitionIds.Add(replaceTransitionId);
                 AppendIdentityTransition(
                     identityRoot,
@@ -5953,7 +6107,8 @@ internal static partial class EffectAcceptedTurnPlanner
                     issues);
             }
 
-            var createTransitionId = identityFactory.CreateTransitionId();
+            var createTransitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+                application.EventRef, "application_create_transition", effectId));
             transitionIds.Add(createTransitionId);
             var createEventRef = resolution.TerminatesExisting
                 ? CreateApplicationTransitionEventRef(
@@ -6042,7 +6197,8 @@ internal static partial class EffectAcceptedTurnPlanner
         var transitionKind = resolution.Outcome == "no_change"
             ? "stack"
             : resolution.Outcome;
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            application.EventRef, "stack_" + transitionKind, resolution.ExistingEffectId!));
         transitionIds.Add(transitionId);
         UpdateEffectChronology(updated, transitionId, turn);
         if (!workspace.TryReplaceEffect(resolution.ExistingEffectId!, updated))
@@ -6358,7 +6514,8 @@ internal static partial class EffectAcceptedTurnPlanner
                     reaction.EffectId);
                 return;
             }
-            var suspendTransitionId = identityFactory.CreateTransitionId();
+            var suspendTransitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+                reaction.EventRef, "folded_suspend", reaction.EffectId));
             transitionIds.Add(suspendTransitionId);
             identityRoot.InsertBeforeTransition(
                 reaction.EffectId,
@@ -6374,7 +6531,8 @@ internal static partial class EffectAcceptedTurnPlanner
             processedEventRefs.Add(reaction.EventRef);
             return;
         }
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            reaction.EventRef, "folded_remove", reaction.EffectId));
         transitionIds.Add(transitionId);
         AppendIdentityTransition(
             identityRoot,
@@ -6626,7 +6784,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return;
         }
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            reaction.EventRef, "reaction_" + descriptor.Behavior, reaction.EffectId));
         transitionIds.Add(transitionId);
         if (descriptor.Behavior == EffectReactionResultBehavior.EventOutcome)
         {
@@ -6780,7 +6939,8 @@ internal static partial class EffectAcceptedTurnPlanner
         if (!reduction.Success || reduction.Outcome == "no_change")
             return;
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            lifecycleEvent.EventRef, "lifecycle_" + reduction.Outcome, occurrence.EffectId));
         transitionIds.Add(transitionId);
         if (reduction.Outcome == "expire")
         {
@@ -6955,7 +7115,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return true;
         }
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            execution.EventRef, "folded_trigger_consumption", execution.EffectId));
         transitionIds.Add(transitionId);
         identityRoot.InsertBeforeTransition(
             execution.EffectId,
@@ -7188,7 +7349,8 @@ internal static partial class EffectAcceptedTurnPlanner
             return;
         }
 
-        var transitionId = identityFactory.CreateTransitionId();
+        var transitionId = identityFactory.CreateTransitionId(new EffectIdentityAllocationKey(
+            execution.EventRef, "trigger_execution", execution.EffectId));
         var triggered = occurrence.Effect.DeepClone().AsObject();
         UpdateEffectChronology(triggered, transitionId, turn);
         if (!workspace.TryReplaceEffect(execution.EffectId, triggered))
@@ -7822,7 +7984,7 @@ internal static partial class EffectAcceptedTurnPlanner
         ResourceDefinition definition,
         List<ValidationIssue> issues)
     {
-        if (component.Operation != ResourceOperation.Damage)
+        if (component.Operation is not (ResourceOperation.Damage or ResourceOperation.Spend))
             return null;
         if (string.Equals(
                 component.BoundPolicy,
@@ -7876,7 +8038,7 @@ internal static partial class EffectAcceptedTurnPlanner
             issues,
             $"effect.components[{component.ComponentId}].payload.floorPolicy",
             "effect_resource_floor_policy_unknown",
-            "registered closed periodic-damage floor policy",
+            "registered closed damage or spend floor policy",
             component.BoundPolicy);
         return null;
     }
@@ -8120,7 +8282,8 @@ internal static partial class EffectAcceptedTurnPlanner
         JsonObject effect,
         EffectResourceRoutingWorkMeter workMeter,
         ref int indexLookupCount,
-        ref int candidateVisitCount)
+        ref int candidateVisitCount,
+        EffectSourceAuthority? currentSources = null)
     {
         if (effect["source"] is not JsonObject source ||
             !TryReadExact(effect["realm"], out var realm) ||
@@ -8132,6 +8295,16 @@ internal static partial class EffectAcceptedTurnPlanner
         }
         var key = new EffectSourceKey(realm, kind, sourceId, definitionKey);
         indexLookupCount++;
+        if (currentSources != null)
+        {
+            if (!TryReadExact(effect["target"]?["kind"], out var targetKind))
+                return null;
+            var current = currentSources.ResolveCanonicalRoutingBinding(key, targetKind, workMeter);
+            if (!current.Success)
+                return null;
+            candidateVisitCount++;
+            return current.Source;
+        }
         if (!plan.TryResolveRoutingSourceBinding(key, workMeter, out var binding))
             return null;
         candidateVisitCount++;

@@ -161,7 +161,23 @@ internal static class AfterlifeArchiveState
         }
     }
 
-    public static void ApplyActionResolutions(JsonObject root, JsonArray resolutions, int currentTurn)
+    /// <summary>
+    /// Applies admitted archive outcomes and records their existing or client-generated timestamps.
+    /// </summary>
+    /// <param name="root">
+    /// Mutable soul root containing stored archives and action receipts.
+    /// </param>
+    /// <param name="resolutions">
+    /// Resolution objects checked before archive mutation; each must match a reservation or receipt.
+    /// </param>
+    /// <param name="currentTurn">
+    /// Turn recorded in each outcome, clamped to zero when negative.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional fallback clock; <see langword="null"/> preserves ordinary UTC reads.
+    /// </param>
+    public static void ApplyActionResolutions(JsonObject root, JsonArray resolutions, int currentTurn,
+        AcceptedTurnProjectionClock? projectionClock = null)
     {
         if (TryDescribeInvalidArchiveActionResolutions(resolutions, out var failureDescription))
             throw new InvalidOperationException(failureDescription);
@@ -210,7 +226,10 @@ internal static class AfterlifeArchiveState
                 [AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus] = GetNodeInt(resolution[AfterlifeArchiveActionState.ConsultationOutcomeArchiveWarningTierBonus]),
                 ["reason"] = GetNodeString(resolution["reason"]) ?? string.Empty,
                 ["resolvedAtTurn"] = Math.Max(0, currentTurn),
-                ["resolvedAtUtc"] = GetNodeString(resolution["resolvedAtUtc"]) ?? DateTime.UtcNow.ToString("o")
+                ["resolvedAtUtc"] = GetNodeString(resolution["resolvedAtUtc"]) ??
+                    (projectionClock?.GetUtcNow(AcceptedTurnProjectionTimeKind.ArchiveResolution,
+                        new JsonObject { ["turn"] = currentTurn, ["resolution"] = resolution.DeepClone() })
+                        .UtcDateTime ?? DateTime.UtcNow).ToString("o")
             });
         }
     }

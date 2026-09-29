@@ -6,14 +6,20 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class WoundMaterializationLifecycleTests
 {
+    /// <summary>
+    /// Verifies that one published signed occurrence retains its receipt through one hundred identical responses.
+    /// </summary>
+    /// <returns>
+    /// A task completing after all replays preserve the receipt and leave the published wound, effect, and history unchanged.
+    /// </returns>
     [Fact]
     public async Task WoundMaterializationReplayTests_ConsumedOpportunityReceiptSurvivesOneHundredExactResponseReplays()
     {
         await using var context = await CreatePlayerContextAsync();
-        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
-        var response = Response(Decision(
-            "materialize",
-            CreatePhysicalProposal(severity: "II", includeMechanicalRoot: true)));
+        var authority = await CreateSignedAuthorityAsync(context, maximumSeverityRank: 2);
+        var decision = Decision("materialize", CreateRepairRoundtripProposal("treatment"));
+        decision["opportunityRef"] = authority.Opportunity.PublicRef;
+        var response = Response(decision);
         var accepted = WoundResponseInputComposer.Compose(
             authority.Binding,
             new[] { authority.Opportunity },
@@ -64,14 +70,22 @@ public sealed partial class WoundMaterializationLifecycleTests
             EffectCarrierCatalog.PlayerPath))["activeEffects"]!.AsArray());
     }
 
+    /// <summary>
+    /// Verifies that an accepted severity repair publishes once from a signed occurrence and remains stable through one hundred replays.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the repair wave is consumed and all replays preserve the receipt and published canonical bytes.
+    /// </returns>
     [Fact]
     public async Task WoundMaterializationReplayTests_CorrectedRepairSurvivesOneHundredExactResponseReplays()
     {
         await using var context = await CreatePlayerContextAsync();
-        var authority = await CreateAuthorityAsync(context, maximumSeverityRank: 2);
+        var authority = await CreateSignedAuthorityAsync(context, maximumSeverityRank: 2);
         var validProposal = CreateRepairRoundtripProposal("severity");
         var rejectedProposal = validProposal.DeepClone().AsObject();
         ApplyRejectedRepairMutation("severity", rejectedProposal);
+        var rejectedDecision = Decision("materialize", rejectedProposal);
+        rejectedDecision["opportunityRef"] = authority.Opportunity.PublicRef;
         var issue = new ValidationIssue(
             "woundDecisions[0].proposal.severity",
             IssueSeverity.Error,
@@ -101,7 +115,7 @@ public sealed partial class WoundMaterializationLifecycleTests
                         new[] { "none", "materialize" },
                         "I",
                         "II",
-                        Decision("materialize", rejectedProposal),
+                        rejectedDecision,
                         new[] { issue })
                 })));
         var repairAuthority = new WoundRepairPacketAuthority(
@@ -123,7 +137,9 @@ public sealed partial class WoundMaterializationLifecycleTests
             out var acceptedPacket));
         var correctedProposal = acceptedPacket.PreservedProposal.DeepClone().AsObject();
         ApplyRepairCorrection("severity", correctedProposal, validProposal);
-        var correctedResponse = Response(Decision("materialize", correctedProposal));
+        var correctedDecision = Decision("materialize", correctedProposal);
+        correctedDecision["opportunityRef"] = authority.Opportunity.PublicRef;
+        var correctedResponse = Response(correctedDecision);
         var corrected = WoundResponseInputComposer.Compose(
             authority.Binding,
             new[] { authority.Opportunity },
@@ -175,6 +191,13 @@ public sealed partial class WoundMaterializationLifecycleTests
 
 public sealed class WoundMaterializationReplayTests
 {
+    /// <summary>
+    /// Retains only immutable accepted course-history JSON for detached replay fixtures.
+    /// </summary>
+    private static readonly Lazy<string> PreparedTreatmentHistory = new(
+        MortalWoundTreatmentResolverTests.CreatePublishedCourseReplayHistory,
+        LazyThreadSafetyMode.ExecutionAndPublication);
+
     private static readonly string[] ReplayTrackedPaths =
     [
         WoundMaterializationTestContext.PlayerWoundsPath,
@@ -210,6 +233,18 @@ public sealed class WoundMaterializationReplayTests
         "output"
     };
 
+    /// <summary>
+    /// Preserves one accepted receipt and exact stored bytes across one hundred identical treatment replays.
+    /// </summary>
+    /// <param name="contour">
+    /// Existing success, repair, crash-recovery or consumed-command replay contour.
+    /// </param>
+    /// <param name="retainExactCrashCommand">
+    /// Whether the exact already-accepted command remains on disk for crash-recovery assertions.
+    /// </param>
+    /// <returns>
+    /// A task completing after all one hundred receipt, sealed-result, duplicate-state and byte-preservation checks.
+    /// </returns>
     [Theory]
     [MemberData(nameof(AcceptedReplayContours))]
     public async Task ExactAcceptedTreatmentReplay_OneHundredRepeatsReturnOneReceiptAndZeroDuplicateState(
@@ -251,6 +286,11 @@ public sealed class WoundMaterializationReplayTests
             Assert.Equal(scenario.PaymentFingerprint, receipt.PaymentFingerprint);
             Assert.Equal(scenario.OutputFingerprint, receipt.OutputFingerprint);
             Assert.Equal("Рана очищена и стабилизирована.", receipt.ReadableSummary);
+            var treatmentResult = Assert.IsType<MortalWoundTreatmentPersistedResult>(
+                receipt.TransitionResult);
+            Assert.True(JsonNode.DeepEquals(
+                scenario.History["transitions"]![2]!["transitionResult"],
+                treatmentResult.ToCanonicalJson()));
         }
 
         await context.AssertBeforeImagesUnchangedAsync(before);
@@ -314,72 +354,42 @@ public sealed class WoundMaterializationReplayTests
             retainExactCrashCommand: false);
     }
 
+    /// <summary>
+    /// Builds the existing outer replay sentinels around a detached genuine course-history prefix.
+    /// </summary>
+    /// <param name="contour">
+    /// Name retained by the independent replay-state and correlation sentinels.
+    /// </param>
+    /// <returns>
+    /// A fresh three-row course history retaining both actual predecessors and the complete second-milestone result.
+    /// </returns>
     private static ReplayScenario CreateReplayScenario(string contour)
     {
         var suffix = contour.ToLowerInvariant();
-        var woundId = "wound_replay_" + suffix;
-        var createAfterFingerprint = Fingerprint('a');
-        var treatmentAfterFingerprint = Fingerprint('b');
-        var sourceFingerprint = Fingerprint('c');
-        var outputFingerprint = Fingerprint('d');
-        var operationKey = "operation_replay_treatment_" + suffix;
-        var eventRef = "event_replay_treatment_" + suffix;
-        var attemptId = "attempt_replay_treatment_" + suffix;
-        var courseId = "course_replay_treatment_" + suffix;
-        const int courseMilestoneOrdinal = 2;
+        var history = JsonNode.Parse(PreparedTreatmentHistory.Value)!.AsObject();
+        var parsed = WoundHistoryState.Parse(history.ToJsonString(), WoundHistoryState.HistoryPath);
+        Assert.True(parsed.IsValid, Describe(parsed.Issues));
+        var state = Assert.IsType<WoundHistoryState>(parsed.State);
+        Assert.Equal(3, state.Transitions.Count);
+        var accepted = state.Transitions.Last();
+        var treatmentResult = Assert.IsType<MortalWoundTreatmentPersistedResult>(accepted.TransitionResult);
+        var coordinates = treatmentResult.Request.Coordinates;
+        var woundId = coordinates.WoundId;
+        var operationKey = coordinates.OperationKey;
+        var eventRef = coordinates.EventRef;
+        var attemptId = coordinates.AttemptId;
+        var courseId = Assert.IsType<string>(treatmentResult.Receipt.CourseId);
+        var courseMilestoneOrdinal = Assert.IsType<int>(
+            treatmentResult.Receipt.CourseMilestoneOrdinal);
+        Assert.Equal(2, courseMilestoneOrdinal);
         var cycleKey = "cycle_replay_treatment_" + suffix;
         var paymentFingerprint = Fingerprint('9');
-        var history = new JsonObject
-        {
-            ["schemaVersion"] = 1,
-            ["nextOrdinal"] = 3,
-            ["transitions"] = new JsonArray(
-                new JsonObject
-                {
-                    ["transitionId"] = "transition_replay_create_" + suffix,
-                    ["woundId"] = woundId,
-                    ["ordinal"] = 1,
-                    ["woundTransitionOrdinal"] = 1,
-                    ["kind"] = "create",
-                    ["turn"] = 42,
-                    ["eventRef"] = "event_replay_create_" + suffix,
-                    ["operationKey"] = "operation_replay_create_" + suffix,
-                    ["beforeFingerprint"] =
-                        WoundHistoryState.ComputeNonexistentBeforeFingerprint(woundId),
-                    ["afterFingerprint"] = createAfterFingerprint,
-                    ["sourceFingerprint"] = sourceFingerprint,
-                    ["attemptId"] = null,
-                    ["courseId"] = null,
-                    ["courseMilestoneOrdinal"] = null,
-                    ["cycleKey"] = null,
-                    ["paymentFingerprint"] = null,
-                    ["outputFingerprint"] = Fingerprint('8'),
-                    ["readableSummary"] = "Рана принята как отдельная сущность.",
-                    ["terminal"] = false
-                },
-                new JsonObject
-                {
-                    ["transitionId"] = "transition_replay_treat_" + suffix,
-                    ["woundId"] = woundId,
-                    ["ordinal"] = 2,
-                    ["woundTransitionOrdinal"] = 2,
-                    ["kind"] = "treat",
-                    ["turn"] = 43,
-                    ["eventRef"] = eventRef,
-                    ["operationKey"] = operationKey,
-                    ["beforeFingerprint"] = createAfterFingerprint,
-                    ["afterFingerprint"] = treatmentAfterFingerprint,
-                    ["sourceFingerprint"] = sourceFingerprint,
-                    ["attemptId"] = attemptId,
-                    ["courseId"] = courseId,
-                    ["courseMilestoneOrdinal"] = courseMilestoneOrdinal,
-                    ["cycleKey"] = cycleKey,
-                    ["paymentFingerprint"] = paymentFingerprint,
-                    ["outputFingerprint"] = outputFingerprint,
-                    ["readableSummary"] = "Рана очищена и стабилизирована.",
-                    ["terminal"] = false
-                })
-        };
+        var outputFingerprint = Fingerprint('d');
+        var target = history["transitions"]![2]!.AsObject();
+        target["cycleKey"] = cycleKey;
+        target["paymentFingerprint"] = paymentFingerprint;
+        target["outputFingerprint"] = outputFingerprint;
+        target["readableSummary"] = "Рана очищена и стабилизирована.";
         return new ReplayScenario(
             suffix,
             woundId,
@@ -536,7 +546,7 @@ public sealed class WoundMaterializationReplayTests
                 WoundHistoryState.HistoryPath)),
             WoundHistoryState.HistoryPath);
         Assert.True(history.IsValid, Describe(history.Issues));
-        Assert.Equal(2, history.State!.Transitions.Count);
+        Assert.Equal(3, history.State!.Transitions.Count);
         Assert.Single(history.State.Transitions, value => string.Equals(
             value.OperationKey,
             scenario.OperationKey,

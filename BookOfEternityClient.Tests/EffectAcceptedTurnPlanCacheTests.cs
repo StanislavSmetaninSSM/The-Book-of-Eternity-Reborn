@@ -4,7 +4,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class EffectAcceptedTurnPlanCacheTests
+public sealed partial class EffectAcceptedTurnPlanCacheTests
 {
     [Fact]
     public void SkillScope_UnchangedAcceptedAmbiguousCatalogDoesNotBlockAllScopeComposition()

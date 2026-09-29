@@ -5,6 +5,51 @@ namespace BookOfEternityClient.Services;
 
 internal class EffectIdentityFactory : CombatantIdentityFactory
 {
+    /// <summary>
+    /// Allocates an ordinary effect identity while allowing a capture adapter to retain its causal key.
+    /// </summary>
+    /// <param name="key">
+    /// Non-null immutable event, semantic role and subject coordinate.
+    /// </param>
+    /// <returns>
+    /// The identity returned by the existing allocation policy.
+    /// </returns>
+    internal virtual string CreateEffectId(EffectIdentityAllocationKey key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        return CreateEffectId();
+    }
+
+    /// <summary>
+    /// Allocates an ordinary transition identity while allowing a capture adapter to retain its causal key.
+    /// </summary>
+    /// <param name="key">
+    /// Non-null immutable event, semantic role and subject coordinate.
+    /// </param>
+    /// <returns>
+    /// The identity returned by the existing allocation policy.
+    /// </returns>
+    internal virtual string CreateTransitionId(EffectIdentityAllocationKey key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        return CreateTransitionId();
+    }
+
+    /// <summary>
+    /// Allocates an ordinary resolution identity while allowing a capture adapter to retain its causal key.
+    /// </summary>
+    /// <param name="key">
+    /// Non-null immutable event, semantic role and subject coordinate.
+    /// </param>
+    /// <returns>
+    /// The identity returned by the existing allocation policy.
+    /// </returns>
+    internal virtual string CreateResolutionId(EffectIdentityAllocationKey key)
+    {
+        ArgumentNullException.ThrowIfNull(key);
+        return CreateResolutionId();
+    }
+
     internal virtual string CreateEffectId() => "effect_" + Guid.NewGuid().ToString("N");
 
     internal virtual string CreateTransitionId() => "effect_transition_" + Guid.NewGuid().ToString("N");

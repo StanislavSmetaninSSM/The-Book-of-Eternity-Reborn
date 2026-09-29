@@ -4,44 +4,59 @@ namespace BookOfEternityClient.Services;
 
 internal static partial class WoundResponseInputComposer
 {
-    private static JsonObject SerializeOpportunity(WoundOpportunityAuthority value) => new()
+    private static JsonObject SerializeOpportunity(WoundOpportunityAuthority value)
     {
-        ["schemaVersion"] = 1,
-        ["sessionId"] = value.SessionId,
-        ["requestId"] = value.RequestId,
-        ["snapshotToken"] = value.SnapshotToken,
-        ["opportunityId"] = value.OpportunityId,
-        ["publicRef"] = value.PublicRef,
-        ["eventRef"] = value.EventRef,
-        ["eventKind"] = value.EventKind,
-        ["eventAuthorityId"] = value.EventAuthorityId,
-        ["acceptedEventsFingerprint"] = value.AcceptedEventsFingerprint,
-        ["owner"] = SerializeOwner(value.Owner),
-        ["domain"] = value.Domain,
-        ["profileKey"] = value.ProfileKey,
-        ["sourceKind"] = value.SourceKind,
-        ["sourceId"] = value.SourceId,
-        ["sourceState"] = value.SourceState,
-        ["minimumSeverityRank"] = value.MinimumSeverityRank,
-        ["maximumSeverityRank"] = value.MaximumSeverityRank,
-        ["guaranteedTrigger"] = value.GuaranteedTrigger is null
-            ? null
-            : SerializeGuarantee(value.GuaranteedTrigger),
-        ["worseningTarget"] = value.WorseningTarget is null
-            ? null
-            : SerializeWorseningTarget(value.WorseningTarget),
-        ["safeContext"] = new JsonObject
+        var result = new JsonObject
         {
-            ["target"] = value.SafeContext.Target,
-            ["cause"] = value.SafeContext.Cause,
-            ["allowedLocationKinds"] = new JsonArray(
-                value.SafeContext.AllowedLocationKinds
-                    .Select(static item => (JsonNode)JsonValue.Create(item)!)
-                    .ToArray())
-        },
-        ["inputEvidenceFingerprint"] = value.InputEvidenceFingerprint,
-        ["authorityFingerprint"] = value.AuthorityFingerprint
-    };
+            ["schemaVersion"] = 1,
+            ["sessionId"] = value.SessionId,
+            ["requestId"] = value.RequestId,
+            ["snapshotToken"] = value.SnapshotToken,
+            ["opportunityId"] = value.OpportunityId,
+            ["publicRef"] = value.PublicRef,
+            ["eventRef"] = value.EventRef,
+            ["eventKind"] = value.EventKind,
+            ["eventAuthorityId"] = value.EventAuthorityId,
+            ["acceptedEventsFingerprint"] = value.AcceptedEventsFingerprint,
+            ["owner"] = SerializeOwner(value.Owner),
+            ["domain"] = value.Domain,
+            ["profileKey"] = value.ProfileKey,
+            ["sourceKind"] = value.SourceKind,
+            ["sourceId"] = value.SourceId,
+            ["sourceState"] = value.SourceState,
+            ["minimumSeverityRank"] = value.MinimumSeverityRank,
+            ["maximumSeverityRank"] = value.MaximumSeverityRank,
+            ["guaranteedTrigger"] = value.GuaranteedTrigger is null
+                ? null
+                : SerializeGuarantee(value.GuaranteedTrigger),
+            ["worseningTarget"] = value.WorseningTarget is null
+                ? null
+                : SerializeWorseningTarget(value.WorseningTarget),
+            ["safeContext"] = new JsonObject
+            {
+                ["target"] = value.SafeContext.Target,
+                ["cause"] = value.SafeContext.Cause,
+                ["allowedLocationKinds"] = new JsonArray(
+                    value.SafeContext.AllowedLocationKinds
+                        .Select(static item => (JsonNode)JsonValue.Create(item)!)
+                        .ToArray())
+            },
+            ["inputEvidenceFingerprint"] = value.InputEvidenceFingerprint,
+            ["authorityFingerprint"] = value.AuthorityFingerprint
+        };
+        if (value.OriginalSourceGuarantee is { } original)
+            result["originalSourceGuarantee"] = new JsonObject
+            {
+                ["schemaVersion"] = 1,
+                ["provenance"] = "signed_original_source",
+                ["requestTurn"] = original.RequestTurn,
+                ["triggerId"] = original.TriggerId,
+                ["requiredSeverityRank"] = original.RequiredSeverityRank,
+                ["sourceContractFingerprint"] = original.SourceContractFingerprint,
+                ["authorityFingerprint"] = original.AuthorityFingerprint
+            };
+        return result;
+    }
 
     private static JsonObject SerializeWorseningTarget(
         WoundOpportunityWorseningTargetAuthority value) => new()

@@ -311,7 +311,7 @@ internal static class EffectReactionContract
                 !definition.Components.TryGetValue(
                     reaction.TargetComponentId,
                     out var target) ||
-                target.Profile is not ("periodic_damage" or "periodic_restore"))
+                !EffectComponentProfiles.IsPeriodicResourceProfile(target.Profile))
             {
                 Add(
                     issues,
@@ -333,7 +333,7 @@ internal static class EffectReactionContract
             !definition.Components.TryGetValue(
                 reaction.AfterComponentId,
                 out var predecessor) ||
-            predecessor.Profile is not ("periodic_damage" or "periodic_restore"))
+            !EffectComponentProfiles.IsPeriodicResourceProfile(predecessor.Profile))
         {
             Add(
                 issues,

@@ -1,235 +1,104 @@
-[CmdletBinding(DefaultParameterSetName = "Lane")]
+[CmdletBinding(DefaultParameterSetName = 'Categories')]
 param(
-    [Parameter(ParameterSetName = "Lane")]
-    [ValidateSet(
-        "Fast",
-        "Focused",
-        "FullValidation",
-        "RegressionIntegration",
-        "DeepValidation",
-        "ProcessIntegration",
-        "E2E",
-        "LifecycleIntegration",
-        "Complete",
-        "PreMerge"
-    )]
-    [string]$Lane = "Fast",
-
-    [Parameter(ParameterSetName = "Lane")]
-    [string]$Filter,
-
-    [Parameter(ParameterSetName = "Lane")]
-    [ValidateSet("Fast", "Integration")]
-    [string]$FocusedProject = "Fast",
-
-    [Parameter(ParameterSetName = "Lane")]
-    [ValidateRange(0, 120)]
-    [int]$TimeoutMinutes = 0,
-
-    [Parameter(ParameterSetName = "Lane")]
-    [ValidateRange(1, 8)]
-    [Alias("GuardianParallelism")]
-    [int]$Parallelism = 4,
-
-    [Parameter(ParameterSetName = "Lane")]
-    [switch]$NoBuild,
-
-    [Parameter(ParameterSetName = "Lane")]
-    [switch]$PlanOnly,
-
-    [ValidateSet(
-        "NpmStartup",
-        "ResultDirectory",
-        "TrxSummary",
-        "DurationSchedule",
-        "PreMergeWaves",
-        "OwnedPostStartFailure",
-        "OwnedPostStartCleanupRetry",
-        "OwnedExitedRootDescendant",
-        "OwnedBatchExitedRootDescendant"
-    )]
-    [Parameter(Mandatory, ParameterSetName = "SelfTest", DontShow)]
+    [Parameter(ParameterSetName = 'Categories')][string[]]$Category,
+    [Parameter(Mandatory, ParameterSetName = 'List')][switch]$ListCategories,
+    [Parameter(Mandatory, ParameterSetName = 'Audit')][switch]$ValidateCatalog,
+    [Parameter(Mandatory, ParameterSetName = 'Selection')][string]$SelectionFile,
+    [Parameter(ParameterSetName = 'Categories')]
+    [Parameter(ParameterSetName = 'Selection')]
+    [Parameter(ParameterSetName = 'Audit')]
+    [ValidateRange(0, 30)][int]$TimeoutMinutes = 0,
+    [Parameter(ParameterSetName = 'Categories')]
+    [Parameter(ParameterSetName = 'Selection')]
+    [ValidateRange(1, 4)][int]$Parallelism = 2,
+    [Parameter(ParameterSetName = 'Categories')]
+    [Parameter(ParameterSetName = 'Selection')]
+    [Parameter(ParameterSetName = 'Audit')][switch]$NoBuild,
+    [Parameter(ParameterSetName = 'Categories')]
+    [Parameter(ParameterSetName = 'Selection')][switch]$PlanOnly,
+    [Parameter(Mandatory, ParameterSetName = 'Retired')][string]$Lane,
+    [Parameter(ParameterSetName = 'Retired')][string]$Filter,
+    [Parameter(ParameterSetName = 'Retired')][string]$FocusedProject,
+    [Parameter(Mandatory, ParameterSetName = 'SelfTest', DontShow)]
+    [ValidateSet('NpmStartup', 'ResultDirectory', 'TrxSummary',
+        'OwnedPostStartFailure', 'OwnedPostStartCleanupRetry', 'RuntimeCleanupDeadline',
+        'OwnedExitedRootDescendant', 'OwnedBatchExitedRootDescendant')]
     [string]$SelfTest,
-
-    [Parameter(ParameterSetName = "SelfTest", DontShow)]
-    [string]$SelfTestTrxDirectory
+    [Parameter(ParameterSetName = 'SelfTest', DontShow)][string]$SelfTestTrxDirectory
 )
 
 Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-$FastParallelismLimit = 2
-$FocusedMaximumTimeoutMinutes = 15
-$LifecycleIntegrationMaximumTimeoutMinutes = 30
-$PreMergeParallelism = 4
-$PreMergeFastParallelismLimit = 2
-$ComposedSmallClassBinCount = 4
-$DeepValidationSmallClassBinCount = 6
-$DeepValidationInProcessParallelismEstimate = 3
-$DeepValidationGuardianCaseTarget = 30
-$DeepValidationStorageHeavySchedulingGroup = "DeepValidationStorageHeavy"
-$DeepValidationStorageHeavyClasses = @(
-    "BookOfEternityClient.Tests.ValidatorFixtureTests",
-    "BookOfEternityClient.Tests.GuardianArchiveAndTradeRequestValidationTests"
-)
-$DeepValidationClassConcurrencyWeights = @{
-    "BookOfEternityClient.Tests.ValidatorFixtureTests" = 2
+$ErrorActionPreference = 'Stop'
+if ($PSVersionTable.PSVersion.Major -lt 7) { throw 'This runner requires PowerShell 7.' }
+if ($PSCmdlet.ParameterSetName -eq 'Retired') {
+    throw "Lane '$Lane' is retired. Use -ListCategories, then -Category with explicit domain categories. No tests were started."
 }
-$LargeClassCaseTarget = 120
-$OwnedCleanupPassLimit = 2
-$PreMergeMinimumCases = 4240
-$DeepValidationMinimumCases = 1950
-$DeepValidationClassDurationCosts = @{
-    "BookOfEternityClient.Tests.ValidatorFixtureTests" = 542
-    "BookOfEternityClient.Tests.GuardianArchiveAndTradeRequestValidationTests" = 600
-    "BookOfEternityClient.Tests.ActorMaterializationValidationTests" = 285
-    "BookOfEternityClient.Tests.SarefMainStoryStateValidationTests" = 271
-    "BookOfEternityClient.Tests.SourceOfLightCapstoneValidationTests" = 201
-    "BookOfEternityClient.Tests.NpcCoreChangesTests" = 194
-    "BookOfEternityClient.Tests.ExampleDocumentationValidationTests" = 192
-    "BookOfEternityClient.Tests.MortalBootstrapValidationTests" = 178
-    "BookOfEternityClient.Tests.PlayerGuardianFoundationValidationTests" = 170
-    "BookOfEternityClient.Tests.MechanicalBonusAuthorityValidationTests" = 170
-    "BookOfEternityClient.Tests.MortalCommandDisplaySaveTests" = 154
-    "BookOfEternityClient.Tests.ChaosSeaCommandDisplaySaveTests" = 138
-    "BookOfEternityClient.Tests.CanonicalStateNormalizerTests" = 136
-    "BookOfEternityClient.Tests.AfterlifeRealmSegregationValidationTests" = 132
-    "BookOfEternityClient.Tests.ShiningAbodeCommandDisplaySaveTests" = 132
-    "BookOfEternityClient.Tests.AfterlifeEntityProfileValidationTests" = 131
-    "BookOfEternityClient.Tests.GuardianPolicyKernelTests" = 119
-    "BookOfEternityClient.Tests.ShiningPoliticalResolutionValidationTests" = 108
-    "BookOfEternityClient.Tests.ReadableDocumentAuthorityValidationTests" = 100
-    "BookOfEternityClient.Tests.AfterlifeSpiritualConflictBalanceTests" = 87
-    "BookOfEternityClient.Tests.QuestRewardAuthorityValidationTests" = 84
-    "BookOfEternityClient.Tests.ChaosSeaPendingRequestHygieneTests" = 83
-    "BookOfEternityClient.Tests.ValidationServiceQteTests" = 50
+$repoRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot '..'))
+$isSelfTest = $PSCmdlet.ParameterSetName -eq 'SelfTest'
+if (-not $isSelfTest -and -not $ListCategories -and -not $ValidateCatalog -and
+    [string]::IsNullOrWhiteSpace($SelectionFile) -and ($null -eq $Category -or $Category.Count -eq 0)) {
+    Write-Host @"
+Select verification by affected contract; there is no default or complete suite.
+  ./scripts/test-csharp.ps1 -ListCategories
+  ./scripts/test-csharp.ps1 -Category category-id -PlanOnly
+  ./scripts/test-csharp.ps1 -Category category-id
+  ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+  ./scripts/test-csharp.ps1 -ValidateCatalog   # discovery only, no tests
+See docs/testing.md and tests/categories.json.
+"@
+    exit 0
 }
-$RegressionIntegrationClassDurationCosts = @{
-    "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" = 350
-    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 112
-    "BookOfEternityClient.Tests.ExplorerModeCommandTests" = 251
-    "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests" = 548
-}
-$PreMergeClassDurationCosts = @{
-    "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" = 112
-    "BookOfEternityClient.Tests.ExplorerModeCommandTests" = 251
-    "BookOfEternityClient.Tests.ExplorerWebCommandServiceTests" = 548
-    "BookOfEternityClient.Tests.FactionMaterializationValidationTests" = 194
-    "BookOfEternityClient.Tests.LocalWebUiHostTests" = 119
-    "BookOfEternityClient.Tests.FullValidationEquivalenceTests" = 27
-    "BookOfEternityClient.Tests.MortalCommandDisplaySaveTests" = 8
-    "BookOfEternityClient.Tests.FactionCoreChangesTests" = 62
-    "BookOfEternityClient.Tests.MortalItemMaterializationValidationTests" = 60
-}
-$RetainedGuardianShardDurationCosts = @{
-    AcceptedAuthority = 280
-    ActorBrain = 85
-    Lifecycle = 35
-    MortalFactPersistence = 10
-    PowerJournalOfferings = 160
-    ProjectsPower = 285
-    QuestProgress = 55
-    RivalResidents = 330
-    TradeOfferingResonance = 430
-}
-$LifecycleIntegrationMinimumCases = 186
-$coreIntegrationFilter =
-    "Category!=FullValidation&Category!=DeepValidation&" +
-    "Category!=ProcessIntegration&Category!=E2E&" +
-    "(Category!=LifecycleIntegration|Category=PreMergeSentinel)&" +
-    "(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)"
-$deepValidationFilter =
-    "(Category=FullValidation|Category=DeepValidation)&" +
-    "Category!=LifecycleIntegration&" +
-    "Category!=ProcessIntegration&Category!=E2E"
-$lifecycleIntegrationFilter =
-    "Category=LifecycleIntegration&" +
-    "Category!=ProcessIntegration&Category!=E2E"
-
-if ($PSVersionTable.PSVersion.Major -lt 7) {
-    throw "scripts/test-csharp.ps1 requires PowerShell 7 or newer."
-}
-
-$laneDefinitions = @{
-    Fast = @{
-        Project = "Fast"
-        Filter = $null
-        TimeoutMinutes = 5
-    }
-    Focused = @{
-        Project = "Fast"
-        Filter = $null
-        TimeoutMinutes = 5
-    }
-    FullValidation = @{
-        Project = "Integration"
-        Filter = "Category=FullValidation"
-        TimeoutMinutes = 15
-    }
-    RegressionIntegration = @{
-        Project = "Integration"
-        Filter = "Category=RegressionIntegration"
-        TimeoutMinutes = 15
-    }
-    DeepValidation = @{
-        Project = "Integration"
-        Filter = $deepValidationFilter
-        TimeoutMinutes = 15
-    }
-    LifecycleIntegration = @{
-        Project = "Integration"
-        Filter = $lifecycleIntegrationFilter
-        TimeoutMinutes = 10
-    }
-    ProcessIntegration = @{
-        Project = "Integration"
-        Filter = "Category=ProcessIntegration"
-        TimeoutMinutes = 15
-    }
-    E2E = @{
-        Project = "Integration"
-        Filter = "Category=E2E"
-        TimeoutMinutes = 15
-    }
-    PreMerge = @{
-        Project = "Both"
-        Filter = $null
-        TimeoutMinutes = 30
-    }
-}
-
-$isSelfTest = $PSCmdlet.ParameterSetName -eq "SelfTest"
-$effectiveLane = $null
-$laneDefinition = $null
-$selectedProject = $null
-$effectiveTimeoutMinutes = $null
+Import-Module (Join-Path $PSScriptRoot 'testing/TestCategoryCatalog.psm1') -Force
+$catalog = $null
+$selectionReasons = @()
+$selectedCategories = @()
+$effectiveTimeoutMinutes = 0
 if (-not $isSelfTest) {
-    $effectiveLane = if ($Lane -eq "Complete") { "PreMerge" } else { $Lane }
-    $laneDefinition = $laneDefinitions[$effectiveLane]
-    $selectedProject = if ($effectiveLane -eq "Focused") {
-        $FocusedProject
+    $catalog = Read-TestCategoryCatalog -Path (Join-Path $repoRoot 'tests/categories.json')
+    if ($ListCategories) {
+        $catalog.categories | Select-Object id, responsibility, excludes, changeHints, related, timeoutMinutes, expectedSeconds |
+            ConvertTo-Json -Depth 8
+        exit 0
     }
-    else {
-        $laneDefinition.Project
+    if (-not [string]::IsNullOrWhiteSpace($SelectionFile)) {
+        $request = Get-Content -LiteralPath $SelectionFile -Raw | ConvertFrom-Json -AsHashtable
+        if ($request.schemaVersion -ne 1 -or @($request.selections).Count -eq 0) {
+            throw 'Selection file requires schemaVersion 1 and explicit selections with reasons.'
+        }
+        foreach ($entry in $request.selections) {
+            if ([string]::IsNullOrWhiteSpace($entry.category) -or
+                [string]::IsNullOrWhiteSpace($entry.reason) -or @($entry.contracts).Count -eq 0) {
+                throw 'Each selection requires a category, reason and affected contracts.'
+            }
+        }
+        $Category = @($request.selections | ForEach-Object category)
+        $selectionReasons = @($request.selections)
     }
-    $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) {
-        $TimeoutMinutes
+    foreach ($id in $Category) {
+        $matches = @($catalog.categories | Where-Object { $_.id -ceq $id })
+        if ($matches.Count -ne 1) { throw "Unknown category '$id'. Use -ListCategories; no workload started." }
+        $selectedCategories += $matches[0]
     }
-    else {
-        [int]$laneDefinition.TimeoutMinutes
+    if (-not $ValidateCatalog -and $selectedCategories.Count -eq 0) {
+        throw 'Choose at least one explicit category.'
     }
+    $budget = if ($ValidateCatalog) { 10 } else {
+        [Math]::Min(30, 5 + ($selectedCategories | Measure-Object timeoutMinutes -Sum).Sum)
+    }
+    $effectiveTimeoutMinutes = if ($TimeoutMinutes -gt 0) { $TimeoutMinutes } else { [int]$budget }
 }
-
-$repoRoot = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".."))
-$fastTestProject = Join-Path $repoRoot "BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj"
-$integrationTestProject = Join-Path $repoRoot "BookOfEternityClient.IntegrationTests\BookOfEternityClient.IntegrationTests.csproj"
-
+$effectiveLane = 'Categories'
+$Lane = 'Categories'
+$OwnedCleanupPassLimit = 2
+$fastTestProject = Join-Path $repoRoot 'BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj'
+$integrationTestProject = Join-Path $repoRoot 'BookOfEternityClient.IntegrationTests/BookOfEternityClient.IntegrationTests.csproj'
 function New-UniqueResultDirectory {
     param(
         [Parameter(Mandatory)]
         [string]$RunLabel
     )
 
-    $resultRoot = Join-Path $repoRoot "TestResults\test-lanes"
+    $resultRoot = Join-Path $repoRoot "TestResults\test-categories"
     [void][System.IO.Directory]::CreateDirectory($resultRoot)
 
     for ($attempt = 1; $attempt -le 5; $attempt++) {
@@ -256,9 +125,13 @@ function New-UniqueResultDirectory {
     }
 }
 
-$resultLabel = if ($isSelfTest) { "fast" } else { $Lane }
+$resultLabel = if ($isSelfTest) { "selftest" } else { "categories" }
 $resultDirectory = New-UniqueResultDirectory -RunLabel $resultLabel
 $logPath = Join-Path $resultDirectory "dotnet-test.log"
+$testWorkerRuntimeBase = [System.IO.Path]::GetFullPath(
+    [System.IO.Path]::Combine(
+        [System.IO.Path]::GetTempPath(),
+        ("boe-test-worker-runtime-" + [Guid]::NewGuid().ToString("N"))))
 
 $logHeader = if ($isSelfTest) {
     @(
@@ -291,9 +164,13 @@ $cleanupSucceeded = $true
 $exitCode = 0
 $failureMessage = $null
 $laneFilter = $null
+$testRuns = @()
 $trxSummaryOverride = $null
 $lastPostStartCleanup = $null
 $lastExitedRootDescendant = $null
+$runtimeCleanupSucceeded = $true
+$runtimeCleanup = $null
+$runtimeCleanupSelfTest = $false
 
 if ($IsWindows -and
     $null -eq ("BookOfEternity.Testing.OwnedProcessJob" -as [type])) {
@@ -630,6 +507,8 @@ function Start-OwnedProcess {
 
         [string]$FileName = "dotnet",
 
+        [string]$WorkingDirectory = $repoRoot,
+
         [switch]$Quiet,
 
         [switch]$SimulateInitialCleanupFailure
@@ -639,11 +518,14 @@ function Start-OwnedProcess {
     $launchGate = $null
     $payloadPath = $null
     $startInfo = [System.Diagnostics.ProcessStartInfo]::new()
-    $startInfo.WorkingDirectory = $repoRoot
+    $startInfo.WorkingDirectory = $WorkingDirectory
     $startInfo.UseShellExecute = $false
     $startInfo.CreateNoWindow = $true
     $startInfo.RedirectStandardOutput = $true
     $startInfo.RedirectStandardError = $true
+    # Keep child workspaces outside virtualized AppData and canonical fixtures.
+    # Only owned children inherit this setting; the caller's environment is unchanged.
+    $startInfo.Environment["BOE_WORKER_RUNTIME_BASE_PATH"] = $testWorkerRuntimeBase
     $process = [System.Diagnostics.Process]::new()
     $started = $false
     try {
@@ -971,49 +853,82 @@ function Invoke-OwnedPhase {
     }
 }
 
-function Get-GuardianTestMethods {
-    param(
-        [Parameter(Mandatory)]
-        [string]$SourceRoot,
-
-        [Parameter(Mandatory)]
-        [string[]]$SourceFiles
-    )
-
-    $methods = [System.Collections.Generic.List[string]]::new()
-    foreach ($sourceFile in $SourceFiles) {
-        $path = Join-Path $SourceRoot $sourceFile
-        if (-not (Test-Path -LiteralPath $path -PathType Leaf)) {
-            throw "Guardian shard source not found: $path"
-        }
-
-        $pendingTestAttribute = $false
-        foreach ($line in Get-Content -LiteralPath $path) {
-            if ($line -match '^\s*\[(Fact|Theory)(Attribute)?(\(|\])') {
-                $pendingTestAttribute = $true
-                continue
-            }
-
-            if (-not $pendingTestAttribute) {
-                continue
-            }
-
-            if ($line -match '^\s*$' -or $line -match '^\s*\[') {
-                continue
-            }
-
-            if ($line -match '^\s*public\s+(?:async\s+)?(?:Task(?:<[^>]+>)?|void)\s+(?<name>[A-Za-z_][A-Za-z0-9_]*)\s*\(') {
-                [void]$methods.Add($Matches.name)
-                $pendingTestAttribute = $false
-                continue
-            }
-
-            throw "Could not parse guardian test declaration after Fact/Theory in ${sourceFile}: $line"
+function Invoke-OwnedWorkerRuntimeCleanup {
+    if (-not (Test-Path -LiteralPath $testWorkerRuntimeBase)) {
+        return
+    }
+    $script:runtimeCleanupSucceeded = $false
+    foreach ($workload in @($allRuns)) {
+        if (-not $workload.Process.HasExited -or
+            -not (Test-OwnedProcessContainmentEmpty -Run $workload)) {
+            throw "Worker runtime cleanup requires all workload trees to be exited and empty."
         }
     }
-
-    return @($methods)
+    if ([DateTime]::UtcNow -ge $deadlineUtc) {
+        $script:timedOut = $true
+        throw "Worker runtime cleanup has no remaining lane budget."
+    }
+    $startedPath = Join-Path $resultDirectory "runtime-cleanup-started.json"
+    $finishedPath = Join-Path $resultDirectory "runtime-cleanup-delay-finished.txt"
+    $arguments = @(
+        "-NoProfile", "-File",
+        (Join-Path $PSScriptRoot "test-csharp-worker-runtime-cleanup.ps1"),
+        "-RuntimeBasePath", $testWorkerRuntimeBase
+    )
+    if ($runtimeCleanupSelfTest) {
+        $arguments += @(
+            "-SelfTestDelayMilliseconds", "5000",
+            "-SelfTestStartedPath", $startedPath,
+            "-SelfTestFinishedPath", $finishedPath
+        )
+    }
+    $script:runtimeCleanup = [pscustomobject]@{
+        Attempted = $true
+        RuntimeBasePath = $testWorkerRuntimeBase
+        StartedPath = $startedPath
+        FinishedPath = $finishedPath
+        ChildProcessId = $null
+        Run = $null
+        OwnedProcessExited = $false
+        ContainmentEmpty = $false
+        Disposed = $false
+        RegisteredAfterCleanup = $true
+    }
+    $run = Start-OwnedProcess `
+        -Name "Worker-runtime-cleanup" `
+        -FileName (Get-Command pwsh -ErrorAction Stop).Source `
+        -Arguments $arguments `
+        -Quiet
+    $runtimeCleanup.Run = $run
+    if ($runtimeCleanupSelfTest) {
+        # Establish that the actual cleanup child reached its delay before making
+        # the same existing deadline expire; startup speed cannot fake this test.
+        while (-not (Test-Path -LiteralPath $startedPath -PathType Leaf)) {
+            if ($run.Process.HasExited) {
+                Complete-OwnedProcess -Run $run
+                throw "Runtime cleanup probe exited before establishing its delay."
+            }
+            if ([DateTime]::UtcNow -ge $deadlineUtc) {
+                $script:timedOut = $true
+                throw "Runtime cleanup probe startup exceeded the lane deadline."
+            }
+            Start-Sleep -Milliseconds 25
+        }
+        $runtimeCleanup.ChildProcessId = (
+            Get-Content -LiteralPath $startedPath -Raw | ConvertFrom-Json).ProcessId
+        $script:deadlineUtc = [DateTime]::UtcNow.AddMilliseconds(750)
+    }
+    Invoke-OwnedPhase `
+        -Run $run `
+        -TimeoutMessage "Worker runtime cleanup exceeded the lane deadline." `
+        -FailureDescription "Worker runtime cleanup"
+    if (Test-Path -LiteralPath $testWorkerRuntimeBase) {
+        throw "Worker runtime cleanup returned without removing its owned directory."
+    }
+    $script:runtimeCleanupSucceeded = $true
 }
+
+
 
 function New-TestArguments {
     param(
@@ -1027,6 +942,9 @@ function New-TestArguments {
         [string]$TestFilter
     )
 
+    if ([string]::IsNullOrWhiteSpace($TestFilter)) {
+        throw 'Test execution requires an explicit resolved method filter; full-project execution is disabled.'
+    }
     $arguments = [System.Collections.Generic.List[string]]::new()
     foreach ($argument in @(
         "test",
@@ -1051,13 +969,10 @@ function New-TestArguments {
     return @($arguments)
 }
 
-function Get-DiscoveredTestCases {
+function Get-TestDiscoveryArguments {
     param(
         [Parameter(Mandatory)]
         [string]$ProjectPath,
-
-        [Parameter(Mandatory)]
-        [string]$SelectionName,
 
         [AllowNull()]
         [string]$TestFilter
@@ -1080,17 +995,24 @@ function Get-DiscoveredTestCases {
         [void]$arguments.Add($TestFilter)
     }
 
-    $discoveryRun = Start-OwnedProcess `
-        -Name "$SelectionName-discovery" `
-        -Arguments @($arguments) `
-        -Quiet
-    Invoke-OwnedPhase `
-        -Run $discoveryRun `
-        -TimeoutMessage "Test discovery exceeded the lane deadline." `
-        -FailureDescription "Test discovery for '$SelectionName'"
+    return @($arguments)
+}
+
+function ConvertFrom-TestDiscoveryOutput {
+    param(
+        [Parameter(Mandatory)]
+        [object]$DiscoveryRun,
+
+        [Parameter(Mandatory)]
+        [string]$SelectionName
+    )
+
+    if (-not $DiscoveryRun.Finalized -or $DiscoveryRun.ExitCode -ne 0) {
+        throw "Test discovery for '$SelectionName' did not complete successfully."
+    }
 
     $testCases = [System.Collections.Generic.List[object]]::new()
-    foreach ($line in $discoveryRun.StandardOutputText -split "\r?\n") {
+    foreach ($line in $DiscoveryRun.StandardOutputText -split "\r?\n") {
         $displayName = $line.Trim()
         if (-not $displayName.StartsWith(
             "BookOfEternityClient.Tests.",
@@ -1117,57 +1039,39 @@ function Get-DiscoveredTestCases {
     return @($testCases)
 }
 
-function Get-IntegrationClassDurationCost {
+function Get-DiscoveredTestCases {
     param(
         [Parameter(Mandatory)]
-        [string]$LaneName,
+        [string]$ProjectPath,
 
         [Parameter(Mandatory)]
-        [string]$ClassName,
+        [string]$SelectionName,
 
-        [Parameter(Mandatory)]
-        [ValidateRange(1, 1000000)]
-        [int]$FallbackCost
+        [AllowNull()]
+        [string]$TestFilter
     )
 
-    if ($LaneName -eq "PreMerge" -and
-        $ClassName -eq
-            "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests") {
-        return $FallbackCost
-    }
-
-    $durationCosts = switch ($LaneName) {
-        "DeepValidation" { $DeepValidationClassDurationCosts }
-        "RegressionIntegration" { $RegressionIntegrationClassDurationCosts }
-        "PreMerge" { $PreMergeClassDurationCosts }
-        default { $null }
-    }
-    if ($null -ne $durationCosts -and $durationCosts.ContainsKey($ClassName)) {
-        return [int]$durationCosts[$ClassName]
-    }
-    return $FallbackCost
-}
-
-function Get-RetainedGuardianShardDurationCost {
-    param(
-        [Parameter(Mandatory)]
-        [string]$ShardName,
-
-        [Parameter(Mandatory)]
-        [ValidateRange(1, 1000000)]
-        [int]$FallbackCost,
-
-        [Parameter(Mandatory)]
-        [ValidateRange(1, 1000)]
-        [int]$ChunkCount
+    $arguments = @(
+        Get-TestDiscoveryArguments -ProjectPath $ProjectPath -TestFilter $TestFilter
     )
-
-    if ($RetainedGuardianShardDurationCosts.ContainsKey($ShardName)) {
-        return [int][Math]::Ceiling(
-            $RetainedGuardianShardDurationCosts[$ShardName] / $ChunkCount)
-    }
-    return $FallbackCost
+    $discoveryRun = Start-OwnedProcess `
+        -Name "$SelectionName-discovery" `
+        -Arguments $arguments `
+        -Quiet
+    Invoke-OwnedPhase `
+        -Run $discoveryRun `
+        -TimeoutMessage "Test discovery exceeded the lane deadline." `
+        -FailureDescription "Test discovery for '$SelectionName'"
+    return @(
+        ConvertFrom-TestDiscoveryOutput `
+            -DiscoveryRun $discoveryRun `
+            -SelectionName $SelectionName
+    )
 }
+
+
+
+
 
 function Test-DescriptorSchedulingGroupAvailable {
     param(
@@ -1243,68 +1147,34 @@ function Test-DescriptorCapacityAvailable {
         $activeWeight + $descriptorWeight) -le $MaximumParallelism
 }
 
-function Get-DeepValidationSmallClassBinCost {
+
+
+
+
+
+
+function Get-ExpectedMethodCounts {
     param(
         [Parameter(Mandatory)]
-        [object]$Bin
-    )
-
-    $parallelizedCost = [Math]::Ceiling(
-        $Bin.Weight / $DeepValidationInProcessParallelismEstimate)
-    return [Math]::Max([int]$Bin.PeakWeight, [int]$parallelizedCost)
-}
-
-function New-BalancedBins {
-    param(
-        [Parameter(Mandatory)]
-        [object[]]$Items,
+        [object[]]$TestCases,
 
         [Parameter(Mandatory)]
-        [ValidateRange(1, 1000)]
-        [int]$BinCount
+        [string[]]$MethodNames
     )
 
-    $bins = for ($index = 0; $index -lt $BinCount; $index++) {
-        [pscustomobject]@{
-            Weight = 0
-            PeakWeight = 0
-            Cases = 0
-            Items = [System.Collections.Generic.List[object]]::new()
-        }
+    $selected = [System.Collections.Generic.HashSet[string]]::new(
+        [StringComparer]::Ordinal)
+    foreach ($methodName in $MethodNames) {
+        [void]$selected.Add($methodName)
     }
-
-    foreach ($item in $Items | Sort-Object Weight -Descending) {
-        $bin = $bins | Sort-Object Weight | Select-Object -First 1
-        [void]$bin.Items.Add($item)
-        $bin.Weight += [int]$item.Weight
-        $bin.PeakWeight = [Math]::Max($bin.PeakWeight, [int]$item.Weight)
-        $bin.Cases += if ($null -ne $item.PSObject.Properties["Cases"]) {
-            [int]$item.Cases
-        }
-        else {
-            [int]$item.Weight
-        }
+    $groups = @($TestCases | Where-Object { $selected.Contains($_.MethodName) } |
+        Group-Object MethodName -CaseSensitive)
+    if ($groups.Count -ne $selected.Count) {
+        throw "A test descriptor contains methods absent from its discovered selection."
     }
-
-    return @($bins | Where-Object { $_.Items.Count -gt 0 })
-}
-
-function Join-TestFilter {
-    param(
-        [AllowNull()]
-        [string]$SelectionFilter,
-
-        [AllowNull()]
-        [string]$CategoryFilter
-    )
-
-    if ([string]::IsNullOrWhiteSpace($SelectionFilter)) {
-        return $CategoryFilter
-    }
-    if ([string]::IsNullOrWhiteSpace($CategoryFilter)) {
-        return $SelectionFilter
-    }
-    return "($SelectionFilter)&($CategoryFilter)"
+    return @($groups | ForEach-Object {
+        [pscustomobject]@{ Name = $_.Name; Cases = $_.Count }
+    })
 }
 
 function New-RunDescriptor {
@@ -1330,6 +1200,9 @@ function New-RunDescriptor {
         [Parameter(Mandatory)]
         [int]$EstimatedCost,
 
+        [Parameter(Mandatory)]
+        [object[]]$ExpectedMethodCounts,
+
         [AllowNull()]
         [string]$SchedulingGroup,
 
@@ -1344,7 +1217,9 @@ function New-RunDescriptor {
         ProjectPath = $ProjectPath
         Filter = $TestFilter
         EstimatedCases = $EstimatedCases
+        TrxFileName = $TrxFileName
         EstimatedCost = $EstimatedCost
+        ExpectedMethodCounts = @($ExpectedMethodCounts)
         SchedulingGroup = $SchedulingGroup
         ConcurrencyWeight = $ConcurrencyWeight
         Arguments = New-TestArguments `
@@ -1354,416 +1229,9 @@ function New-RunDescriptor {
     }
 }
 
-function New-SelectionRuns {
-    param(
-        [Parameter(Mandatory)]
-        [object]$Selection,
 
-        [Parameter(Mandatory)]
-        [string]$Phase,
 
-        [switch]$Balanced
-    )
 
-    $testCases = @(
-        Get-DiscoveredTestCases `
-            -ProjectPath $Selection.ProjectPath `
-            -SelectionName $Selection.Name `
-            -TestFilter $Selection.Filter
-    )
-    if (-not $Balanced) {
-        return @(
-            New-RunDescriptor `
-                -Phase $Phase `
-                -Name $Selection.Name `
-                -ProjectPath $Selection.ProjectPath `
-                -TestFilter $Selection.Filter `
-                -TrxFileName "$($Selection.Name.ToLowerInvariant())-test-results.trx" `
-                -EstimatedCases $testCases.Count `
-                -EstimatedCost $testCases.Count
-        )
-    }
-
-    $descriptors = [System.Collections.Generic.List[object]]::new()
-    $guardianClass = "BookOfEternityClient.Tests.GuardianSystemRegressionTests"
-    $guardianCases = @(
-        $testCases |
-            Where-Object ClassName -eq "BookOfEternityClient.Tests.GuardianSystemRegressionTests"
-    )
-    $baseCases = @($testCases | Where-Object ClassName -ne $guardianClass)
-    $baseClassGroups = @($baseCases | Group-Object ClassName)
-    $runIndex = 0
-
-    foreach ($classGroup in $baseClassGroups | Where-Object Count -gt $LargeClassCaseTarget) {
-        $classDurationCost = Get-IntegrationClassDurationCost `
-            -LaneName $effectiveLane `
-            -ClassName $classGroup.Name `
-            -FallbackCost $classGroup.Count
-        $classSchedulingGroup = if (
-            $effectiveLane -eq "DeepValidation" -and
-            $classGroup.Name -in $DeepValidationStorageHeavyClasses
-        ) {
-            $DeepValidationStorageHeavySchedulingGroup
-        }
-        else {
-            $null
-        }
-        $classConcurrencyWeight = if (
-            $effectiveLane -eq "DeepValidation" -and
-            $DeepValidationClassConcurrencyWeights.ContainsKey($classGroup.Name)
-        ) {
-            [int]$DeepValidationClassConcurrencyWeights[$classGroup.Name]
-        }
-        else {
-            1
-        }
-        $methodItems = @(
-            $classGroup.Group |
-                Group-Object MethodName |
-                ForEach-Object {
-                    [pscustomobject]@{
-                        Weight = [Math]::Max(
-                            1,
-                            [Math]::Ceiling(
-                                $_.Count * $classDurationCost / $classGroup.Count))
-                        Cases = $_.Count
-                        Selection = "FullyQualifiedName=$($_.Name)"
-                    }
-                }
-        )
-        $binCount = [Math]::Ceiling($classGroup.Count / $LargeClassCaseTarget)
-        foreach ($bin in @(New-BalancedBins -Items $methodItems -BinCount $binCount)) {
-            $runIndex++
-            $selectionFilter = ($bin.Items | ForEach-Object Selection) -join "|"
-            $testFilter = Join-TestFilter `
-                -SelectionFilter $selectionFilter `
-                -CategoryFilter $Selection.Filter
-            [void]$descriptors.Add((
-                New-RunDescriptor `
-                    -Phase $Phase `
-                    -Name "$($Selection.Name)-Base-$($classGroup.Name.Split('.')[-1])-$($runIndex.ToString('D2'))" `
-                    -ProjectPath $Selection.ProjectPath `
-                    -TestFilter $testFilter `
-                    -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
-                    -EstimatedCases $bin.Cases `
-                    -EstimatedCost $bin.Weight `
-                    -SchedulingGroup $classSchedulingGroup `
-                    -ConcurrencyWeight $classConcurrencyWeight
-            ))
-        }
-    }
-
-    $smallClassItems = @(
-        $baseClassGroups |
-            Where-Object Count -le $LargeClassCaseTarget |
-            ForEach-Object {
-                $durationCost = Get-IntegrationClassDurationCost `
-                    -LaneName $effectiveLane `
-                    -ClassName $_.Name `
-                    -FallbackCost $_.Count
-                [pscustomobject]@{
-                    Weight = $durationCost
-                    Cases = $_.Count
-                    Selection = "FullyQualifiedName~$($_.Name)."
-                    SchedulingGroup = if (
-                        $effectiveLane -eq "DeepValidation" -and
-                        $_.Name -in $DeepValidationStorageHeavyClasses
-                    ) {
-                        $DeepValidationStorageHeavySchedulingGroup
-                    }
-                    else {
-                        $null
-                    }
-                    ConcurrencyWeight = if (
-                        $effectiveLane -eq "DeepValidation" -and
-                        $DeepValidationClassConcurrencyWeights.ContainsKey($_.Name)
-                    ) {
-                        [int]$DeepValidationClassConcurrencyWeights[$_.Name]
-                    }
-                    else {
-                        1
-                    }
-                }
-            }
-    )
-    $smallClassBinCount = if ($effectiveLane -eq "RegressionIntegration") {
-        1
-    }
-    elseif ($effectiveLane -eq "DeepValidation") {
-        $DeepValidationSmallClassBinCount
-    }
-    else {
-        $ComposedSmallClassBinCount
-    }
-    foreach ($bin in @(
-        New-BalancedBins -Items $smallClassItems -BinCount $smallClassBinCount
-    )) {
-        $runIndex++
-        $selectionFilter = ($bin.Items | ForEach-Object Selection) -join "|"
-        $testFilter = Join-TestFilter `
-            -SelectionFilter $selectionFilter `
-            -CategoryFilter $Selection.Filter
-        $estimatedCost = if ($effectiveLane -eq "DeepValidation") {
-            Get-DeepValidationSmallClassBinCost -Bin $bin
-        }
-        else {
-            $bin.Weight
-        }
-        $schedulingGroups = @(
-            $bin.Items |
-                ForEach-Object SchedulingGroup |
-                Where-Object { -not [string]::IsNullOrWhiteSpace($_) } |
-                Sort-Object -Unique
-        )
-        if ($schedulingGroups.Count -gt 1) {
-            throw "A balanced descriptor contains incompatible scheduling groups: $($schedulingGroups -join ', ')"
-        }
-        $schedulingGroup = if ($schedulingGroups.Count -eq 1) {
-            $schedulingGroups[0]
-        }
-        else {
-            $null
-        }
-        $concurrencyWeight = (
-            $bin.Items |
-                Measure-Object ConcurrencyWeight -Maximum
-        ).Maximum
-        [void]$descriptors.Add((
-            New-RunDescriptor `
-                -Phase $Phase `
-                -Name "$($Selection.Name)-Base-mixed-$($runIndex.ToString('D2'))" `
-                -ProjectPath $Selection.ProjectPath `
-                -TestFilter $testFilter `
-                -TrxFileName "$($Selection.Name.ToLowerInvariant())-base-$($runIndex.ToString('D2')).trx" `
-                -EstimatedCases $bin.Cases `
-                -EstimatedCost $estimatedCost `
-                -SchedulingGroup $schedulingGroup `
-                -ConcurrencyWeight $concurrencyWeight
-        ))
-    }
-
-    if ($guardianCases.Count -gt 0) {
-        $guardianSourceRoot = Split-Path -Parent $Selection.ProjectPath
-        $guardianShards = [ordered]@{
-            AcceptedAuthority = @("GuardianSystemRegressionTests.AcceptedAuthority.cs")
-            ActorBrain = @("GuardianSystemRegressionTests.ActorBrain.cs")
-            Lifecycle = @(
-                "GuardianSystemRegressionTests.IdleValidation.cs",
-                "GuardianSystemRegressionTests.LifecycleSnapshots.cs"
-            )
-            MortalFactPersistence = @("MortalFactPersistenceValidationTests.cs")
-            PowerJournalOfferings = @("GuardianSystemRegressionTests.PowerJournalOfferings.cs")
-            ProjectsPower = @("GuardianSystemRegressionTests.ProjectsPower.cs")
-            QuestProgress = @("GuardianSystemRegressionTests.QuestProgress.cs")
-            RivalResidents = @("GuardianSystemRegressionTests.RivalResidents.cs")
-            TradeOfferingResonance = @("GuardianSystemRegressionTests.TradeOfferingResonance.cs")
-        }
-
-        $guardianCaseGroups = @($guardianCases | Group-Object MethodName)
-        $guardianCaseCounts = [System.Collections.Generic.Dictionary[string, int]]::new(
-            [StringComparer]::Ordinal)
-        foreach ($methodGroup in $guardianCaseGroups) {
-            $guardianCaseCounts.Add($methodGroup.Name, $methodGroup.Count)
-        }
-
-        $listedFiles = [System.Collections.Generic.HashSet[string]]::new(
-            [StringComparer]::Ordinal)
-        $sourceMethods = [System.Collections.Generic.HashSet[string]]::new(
-            [StringComparer]::Ordinal)
-        $selectedGuardianMethods = [System.Collections.Generic.HashSet[string]]::new(
-            [StringComparer]::Ordinal)
-        $guardianRunIndex = 0
-
-        foreach ($shard in $guardianShards.GetEnumerator()) {
-            foreach ($sourceFile in $shard.Value) {
-                if (-not $listedFiles.Add($sourceFile)) {
-                    throw "Guardian shard source is listed more than once: $sourceFile"
-                }
-            }
-
-            $methodNames = @(
-                Get-GuardianTestMethods `
-                    -SourceRoot $guardianSourceRoot `
-                    -SourceFiles $shard.Value
-            )
-            if ($methodNames.Count -eq 0) {
-                throw "Guardian shard '$($shard.Key)' contains no Fact/Theory methods."
-            }
-
-            $methodItems = [System.Collections.Generic.List[object]]::new()
-            foreach ($methodName in $methodNames) {
-                $fullyQualifiedMethod = "$guardianClass.$methodName"
-                if (-not $sourceMethods.Add($fullyQualifiedMethod)) {
-                    throw "Guardian test method is assigned to more than one source shard: $fullyQualifiedMethod"
-                }
-                if (-not $guardianCaseCounts.ContainsKey($fullyQualifiedMethod)) {
-                    continue
-                }
-                [void]$selectedGuardianMethods.Add($fullyQualifiedMethod)
-                [void]$methodItems.Add([pscustomobject]@{
-                    Weight = $guardianCaseCounts[$fullyQualifiedMethod]
-                    Cases = $guardianCaseCounts[$fullyQualifiedMethod]
-                    Selection = "FullyQualifiedName=$fullyQualifiedMethod"
-                })
-            }
-
-            if ($methodItems.Count -eq 0) {
-                continue
-            }
-
-            $domainCaseCount = ($methodItems | Measure-Object Weight -Sum).Sum
-            $domainCaseTarget = if ($effectiveLane -eq "DeepValidation") {
-                $DeepValidationGuardianCaseTarget
-            }
-            else {
-                60
-            }
-            $domainBinCount = [Math]::Max(
-                1,
-                [Math]::Ceiling($domainCaseCount / $domainCaseTarget))
-            $domainChunkIndex = 0
-            foreach ($bin in @(
-                New-BalancedBins -Items @($methodItems) -BinCount $domainBinCount
-            )) {
-                $runIndex++
-                $guardianRunIndex++
-                $domainChunkIndex++
-                $selectionFilter = ($bin.Items | ForEach-Object Selection) -join "|"
-                $testFilter = Join-TestFilter `
-                    -SelectionFilter $selectionFilter `
-                    -CategoryFilter $Selection.Filter
-                $estimatedCost = if ($effectiveLane -in @(
-                    "DeepValidation",
-                    "RegressionIntegration"
-                )) {
-                    Get-RetainedGuardianShardDurationCost `
-                        -ShardName $shard.Key `
-                        -FallbackCost ($bin.Weight * 4) `
-                        -ChunkCount $domainBinCount
-                }
-                else {
-                    $bin.Weight * 4
-                }
-                [void]$descriptors.Add((
-                    New-RunDescriptor `
-                        -Phase $Phase `
-                        -Name "$($Selection.Name)-Guardian-$($shard.Key)-$($domainChunkIndex.ToString('D2'))" `
-                        -ProjectPath $Selection.ProjectPath `
-                        -TestFilter $testFilter `
-                        -TrxFileName "$($Selection.Name.ToLowerInvariant())-guardian-$($guardianRunIndex.ToString('D2')).trx" `
-                        -EstimatedCases $bin.Cases `
-                        -EstimatedCost $estimatedCost
-                ))
-            }
-        }
-
-        $unassignedGuardianMethods = @(
-            $guardianCaseGroups |
-                Where-Object { -not $selectedGuardianMethods.Contains($_.Name) } |
-                Select-Object -ExpandProperty Name
-        )
-        if ($unassignedGuardianMethods.Count -gt 0) {
-            throw "Discovered Guardian methods are not assigned to a shard: $($unassignedGuardianMethods -join ', ')"
-        }
-
-        $unlistedTestSources = @(
-            Get-ChildItem -LiteralPath $guardianSourceRoot -Filter "*.cs" |
-                Where-Object {
-                    $source = Get-Content -LiteralPath $_.FullName -Raw
-                    $source -match 'partial\s+class\s+GuardianSystemRegressionTests' -and
-                    $source -match '(?m)^\s*\[(Fact|Theory)(Attribute)?(\(|\])' -and
-                    -not $listedFiles.Contains($_.Name)
-                } |
-                Select-Object -ExpandProperty Name
-        )
-        if ($unlistedTestSources.Count -gt 0) {
-            throw "Guardian test source is not assigned to a shard: $($unlistedTestSources -join ', ')"
-        }
-    }
-
-    return @(
-        $descriptors |
-            Sort-Object `
-                @{ Expression = "ConcurrencyWeight"; Descending = $true },
-                @{ Expression = "EstimatedCost"; Descending = $true },
-                @{ Expression = "Name"; Descending = $false }
-    )
-}
-
-function New-TestRuns {
-    if ($effectiveLane -eq "PreMerge") {
-        $preMergeParallelSelections = @(
-            [pscustomobject]@{
-                Name = "Fast"
-                ProjectPath = $fastTestProject
-                Filter = $null
-            },
-            [pscustomobject]@{
-                Name = "Integration"
-                ProjectPath = $integrationTestProject
-                Filter = $coreIntegrationFilter
-            }
-        )
-        $preMergeExclusiveSelections = @(
-            [pscustomobject]@{
-                Name = "ProcessIntegration"
-                ProjectPath = $integrationTestProject
-                Filter = "Category=ProcessIntegration&Category!=E2E"
-            },
-            [pscustomobject]@{
-                Name = "E2E"
-                ProjectPath = $integrationTestProject
-                Filter = "Category=E2E"
-            }
-        )
-
-        $preMergeRuns = [System.Collections.Generic.List[object]]::new()
-        foreach ($selection in $preMergeParallelSelections) {
-            foreach ($descriptor in @(
-                New-SelectionRuns `
-                    -Selection $selection `
-                    -Phase "Parallel" `
-                    -Balanced
-            )) {
-                [void]$preMergeRuns.Add($descriptor)
-            }
-        }
-        foreach ($selection in $preMergeExclusiveSelections) {
-            foreach ($descriptor in @(
-                New-SelectionRuns `
-                    -Selection $selection `
-                    -Phase $selection.Name
-            )) {
-                [void]$preMergeRuns.Add($descriptor)
-            }
-        }
-        return @(Order-PreMergeTestRuns -Descriptors @($preMergeRuns))
-    }
-
-    $projectPath = if ($selectedProject -eq "Fast") {
-        $fastTestProject
-    }
-    else {
-        $integrationTestProject
-    }
-    $selection = [pscustomobject]@{
-        Name = $effectiveLane
-        ProjectPath = $projectPath
-        Filter = $laneFilter
-    }
-    $balanced = $effectiveLane -in @(
-        "Fast",
-        "FullValidation",
-        "RegressionIntegration",
-        "DeepValidation"
-    )
-    return @(
-        New-SelectionRuns `
-            -Selection $selection `
-            -Phase $effectiveLane `
-            -Balanced:$balanced
-    )
-}
 
 function Invoke-DescriptorBatch {
     param(
@@ -1831,6 +1299,9 @@ function Invoke-DescriptorBatch {
             if ($null -ne $descriptor.PSObject.Properties["FileName"]) {
                 $startParameters.FileName = $descriptor.FileName
             }
+            if ($null -ne $descriptor.PSObject.Properties["Quiet"]) {
+                $startParameters.Quiet = [bool]$descriptor.Quiet
+            }
             $run = Start-OwnedProcess @startParameters
             [void]$active.Add([pscustomobject]@{
                 Descriptor = $descriptor
@@ -1858,56 +1329,9 @@ function Invoke-DescriptorBatch {
     }
 }
 
-function Get-PreMergeParallelWaves {
-    param(
-        [Parameter(Mandatory)]
-        [object[]]$Descriptors
-    )
 
-    $explorerWebPrefix = "Integration-Base-ExplorerWebCommandServiceTests-"
-    $explorerWebRuns = @(
-        $Descriptors |
-            Where-Object {
-                $_.Phase -eq "Parallel" -and
-                $_.Name.StartsWith($explorerWebPrefix, [StringComparison]::Ordinal)
-            }
-    )
-    $remainingRuns = @(
-        $Descriptors |
-            Where-Object {
-                $_.Phase -eq "Parallel" -and
-                -not $_.Name.StartsWith($explorerWebPrefix, [StringComparison]::Ordinal)
-            }
-    )
 
-    if ($explorerWebRuns.Count -gt 0) {
-        [pscustomobject]@{
-            Name = "ExplorerWebStartup"
-            Descriptors = $explorerWebRuns
-        }
-    }
-    if ($remainingRuns.Count -gt 0) {
-        [pscustomobject]@{
-            Name = "RemainingParallel"
-            Descriptors = $remainingRuns
-        }
-    }
-}
 
-function Order-PreMergeTestRuns {
-    param(
-        [Parameter(Mandatory)]
-        [object[]]$Descriptors
-    )
-
-    $parallelRuns = @($Descriptors | Where-Object Phase -eq "Parallel")
-    foreach ($parallelWave in @(
-        Get-PreMergeParallelWaves -Descriptors $parallelRuns
-    )) {
-        @($parallelWave.Descriptors)
-    }
-    @($Descriptors | Where-Object Phase -ne "Parallel")
-}
 
 function Get-TrxSummary {
     param(
@@ -1922,6 +1346,10 @@ function Get-TrxSummary {
     }
     $testOccurrences = [System.Collections.Generic.List[object]]::new()
     $parseErrors = [System.Collections.Generic.List[string]]::new()
+    $casesByTrxFile = [System.Collections.Generic.Dictionary[string, int]]::new(
+        [StringComparer]::OrdinalIgnoreCase)
+    $methodCasesByTrxFile = [System.Collections.Generic.Dictionary[string, object]]::new(
+        [StringComparer]::OrdinalIgnoreCase)
 
     foreach ($trxFile in @(
         Get-ChildItem -LiteralPath $TrxDirectory -Filter "*.trx" -File
@@ -1929,11 +1357,26 @@ function Get-TrxSummary {
         try {
             [xml]$trx = Get-Content -LiteralPath $trxFile.FullName -Raw
             $trxCounters = $trx.SelectSingleNode("//*[local-name()='Counters']")
-            if ($null -ne $trxCounters) {
-                foreach ($property in @("Total", "Executed", "Passed", "Failed")) {
-                    $attributeName = $property.ToLowerInvariant()
-                    $counters[$property] += [int]$trxCounters.GetAttribute($attributeName)
+            if ($null -eq $trxCounters) {
+                throw "TRX '$($trxFile.Name)' has no test counters."
+            }
+            $fileCounters = @{}
+            foreach ($property in @("Total", "Executed", "Passed", "Failed")) {
+                $value = 0
+                if (-not [int]::TryParse($trxCounters.GetAttribute($property.ToLowerInvariant()), [ref]$value) -or $value -lt 0) {
+                    throw "TRX '$($trxFile.Name)' has an invalid $property counter."
                 }
+                $fileCounters[$property] = $value
+            }
+
+            $resultRows = @($trx.SelectNodes("//*[local-name()='UnitTestResult']"))
+            $passedRows = @($resultRows | Where-Object { $_.GetAttribute('outcome') -eq 'Passed' }).Count
+            $failedRows = @($resultRows | Where-Object { $_.GetAttribute('outcome') -eq 'Failed' }).Count
+            $executedRows = @($resultRows | Where-Object { $_.GetAttribute('outcome') -ne 'NotExecuted' }).Count
+            if (@($resultRows | Where-Object { [string]::IsNullOrWhiteSpace($_.GetAttribute('outcome')) }).Count -ne 0 -or
+                $fileCounters.Total -ne $resultRows.Count -or $fileCounters.Executed -ne $executedRows -or
+                $fileCounters.Passed -ne $passedRows -or $fileCounters.Failed -ne $failedRows) {
+                throw "TRX '$($trxFile.Name)' counters disagree with physical result outcomes."
             }
 
             $storageByTestId = [System.Collections.Generic.Dictionary[string, string]]::new(
@@ -1955,12 +1398,15 @@ function Get-TrxSummary {
 
             $seenInTrx = [System.Collections.Generic.HashSet[string]]::new(
                 [StringComparer]::Ordinal)
+            $fileOccurrences = [System.Collections.Generic.List[object]]::new()
+            $methodCases = [System.Collections.Generic.Dictionary[string, int]]::new(
+                [StringComparer]::Ordinal)
             foreach ($result in @(
                 $trx.SelectNodes("//*[local-name()='UnitTestResult']")
             )) {
                 $testId = $result.GetAttribute("testId")
                 if ([string]::IsNullOrWhiteSpace($testId)) {
-                    continue
+                    throw "UnitTestResult in '$($trxFile.Name)' has no testId."
                 }
                 if (-not $storageByTestId.ContainsKey($testId)) {
                     throw (
@@ -1970,12 +1416,34 @@ function Get-TrxSummary {
                 $storage = $storageByTestId[$testId]
                 $key = "$storage::$testId"
                 if ($seenInTrx.Add($key)) {
-                    [void]$testOccurrences.Add([pscustomobject]@{
+                    [void]$fileOccurrences.Add([pscustomobject]@{
                         Key = $key
                         TestId = $testId
                         TrxFile = $trxFile.Name
                     })
                 }
+                $testName = $result.GetAttribute("testName")
+                if ([string]::IsNullOrWhiteSpace($testName)) {
+                    throw "UnitTestResult testId '$testId' in '$($trxFile.Name)' has no testName."
+                }
+                $argumentStart = $testName.IndexOf('(')
+                $methodName = if ($argumentStart -ge 0) {
+                    $testName.Substring(0, $argumentStart)
+                }
+                else {
+                    $testName
+                }
+                if (-not $methodCases.TryAdd($methodName, 1)) {
+                    $methodCases[$methodName]++
+                }
+            }
+            foreach ($property in @("Total", "Executed", "Passed", "Failed")) {
+                $counters[$property] += $fileCounters[$property]
+            }
+            $casesByTrxFile.Add($trxFile.Name, $fileCounters.Total)
+            $methodCasesByTrxFile.Add($trxFile.Name, $methodCases)
+            foreach ($occurrence in $fileOccurrences) {
+                [void]$testOccurrences.Add($occurrence)
             }
         }
         catch {
@@ -1997,6 +1465,37 @@ function Get-TrxSummary {
         Failed = $counters.Failed
         DuplicateTests = @($duplicateTests)
         ParseErrors = @($parseErrors)
+        CasesByTrxFile = $casesByTrxFile
+        MethodCasesByTrxFile = $methodCasesByTrxFile
+    }
+}
+
+function Get-UnderfilledDescriptorNames {
+    param(
+        [Parameter(Mandatory)]
+        [AllowEmptyCollection()]
+        [object[]]$Descriptors,
+
+        [Parameter(Mandatory)]
+        [object]$TrxSummary
+    )
+
+    foreach ($descriptor in $Descriptors) {
+        $fileName = $descriptor.TrxFileName
+        if (-not $TrxSummary.CasesByTrxFile.ContainsKey($fileName) -or
+            -not $TrxSummary.MethodCasesByTrxFile.ContainsKey($fileName) -or
+            $TrxSummary.CasesByTrxFile[$fileName] -lt $descriptor.EstimatedCases) {
+            $descriptor.Name
+            continue
+        }
+        $actualMethods = $TrxSummary.MethodCasesByTrxFile[$fileName]
+        foreach ($expected in $descriptor.ExpectedMethodCounts) {
+            if (-not $actualMethods.ContainsKey($expected.Name) -or
+                $actualMethods[$expected.Name] -lt $expected.Cases) {
+                $descriptor.Name
+                break
+            }
+        }
     }
 }
 
@@ -2113,6 +1612,8 @@ function Test-ExactProcessAlive {
     }
 }
 
+. (Join-Path $PSScriptRoot 'testing/TestCategoryExecution.ps1')
+
 try {
     if ($isSelfTest) {
         switch ($SelfTest) {
@@ -2143,186 +1644,10 @@ try {
                     throw "TRX summary self-test found duplicate TRX test IDs: $($trxSummaryOverride.DuplicateTests -join ', ')"
                 }
             }
-            "DurationSchedule" {
-                $probeItems = @(
-                    [pscustomobject]@{
-                        Weight = 542
-                        Cases = 2
-                        Selection = "heavy"
-                    },
-                    [pscustomobject]@{
-                        Weight = 399
-                        Cases = 58
-                        Selection = "medium"
-                    },
-                    [pscustomobject]@{
-                        Weight = 100
-                        Cases = 45
-                        Selection = "light"
-                    }
-                )
-                $probeBins = @(
-                    New-BalancedBins -Items $probeItems -BinCount 2
-                )
-                $caseCount = (
-                    $probeBins |
-                        Measure-Object Cases -Sum
-                ).Sum
-                $rankedBins = @(
-                    $probeBins |
-                        ForEach-Object {
-                            [pscustomobject]@{
-                                Bin = $_
-                                Cost = Get-DeepValidationSmallClassBinCost -Bin $_
-                            }
-                        } |
-                        Sort-Object Cost -Descending
-                )
-                $maxCost = $rankedBins[0].Cost
-                $firstSelection = (
-                    $rankedBins[0].Bin.Items |
-                        Sort-Object Weight -Descending |
-                        Select-Object -First 1
-                ).Selection
-                $exclusiveDescriptor = [pscustomobject]@{
-                    SchedulingGroup = "storage-heavy"
-                }
-                $exclusiveActive = @(
-                    [pscustomobject]@{
-                        Descriptor = [pscustomobject]@{
-                            SchedulingGroup = "storage-heavy"
-                        }
-                    }
-                )
-                $sameGroupAvailable =
-                    Test-DescriptorSchedulingGroupAvailable `
-                        -Descriptor $exclusiveDescriptor `
-                        -ActiveEntries $exclusiveActive
-                $otherGroupAvailable =
-                    Test-DescriptorSchedulingGroupAvailable `
-                        -Descriptor ([pscustomobject]@{
-                            SchedulingGroup = "other"
-                        }) `
-                        -ActiveEntries $exclusiveActive
-                $exclusive = -not $sameGroupAvailable -and $otherGroupAvailable
-                $weightedDescriptor = [pscustomobject]@{
-                    ConcurrencyWeight = 2
-                }
-                $twoActiveSlots = @(
-                    1..2 |
-                        ForEach-Object {
-                            [pscustomobject]@{
-                                Descriptor = [pscustomobject]@{
-                                    ConcurrencyWeight = 1
-                                }
-                            }
-                        }
-                )
-                $threeActiveSlots = @(
-                    1..3 |
-                        ForEach-Object {
-                            [pscustomobject]@{
-                                Descriptor = [pscustomobject]@{
-                                    ConcurrencyWeight = 1
-                                }
-                            }
-                        }
-                )
-                $weighted =
-                    (Test-DescriptorCapacityAvailable `
-                        -Descriptor $weightedDescriptor `
-                        -ActiveEntries $twoActiveSlots `
-                        -MaximumParallelism 4) -and
-                    -not (Test-DescriptorCapacityAvailable `
-                        -Descriptor $weightedDescriptor `
-                        -ActiveEntries $threeActiveSlots `
-                        -MaximumParallelism 4)
-                $bounded = Test-DescriptorCapacityAvailable `
-                    -Descriptor $weightedDescriptor `
-                    -ActiveEntries @() `
-                    -MaximumParallelism 1
-                $regression =
-                    (Get-IntegrationClassDurationCost `
-                        -LaneName "RegressionIntegration" `
-                        -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
-                        -FallbackCost 166) -eq 112 -and
-                    (Get-RetainedGuardianShardDurationCost `
-                        -ShardName "TradeOfferingResonance" `
-                        -FallbackCost 160 `
-                        -ChunkCount 2) -eq 215
-                $preMerge =
-                    (Get-IntegrationClassDurationCost `
-                        -LaneName "PreMerge" `
-                        -ClassName "BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests" `
-                        -FallbackCost 166) -eq 112 -and
-                    (Get-IntegrationClassDurationCost `
-                        -LaneName "PreMerge" `
-                        -ClassName "BookOfEternityClient.Tests.AfterlifeSpiritualConflictValidationTests" `
-                        -FallbackCost 10) -eq 10
-                $preMergeSmall =
-                    (Get-IntegrationClassDurationCost `
-                        -LaneName "PreMerge" `
-                        -ClassName "BookOfEternityClient.Tests.LocalWebUiHostTests" `
-                        -FallbackCost 54) -eq 119 -and
-                    (Get-IntegrationClassDurationCost `
-                        -LaneName "PreMerge" `
-                        -ClassName "BookOfEternityClient.Tests.FactionCoreChangesTests" `
-                        -FallbackCost 31) -eq 62
-                if ($caseCount -ne 105 -or
-                    $maxCost -ne 542 -or
-                    $firstSelection -ne "heavy" -or
-                    -not $exclusive -or
-                    -not $weighted -or
-                    -not $bounded -or
-                    -not $regression -or
-                    -not $preMerge -or
-                    -not $preMergeSmall) {
-                    throw "Duration schedule did not preserve case counts or long-first order."
-                }
-                Write-Host (
-                    "DURATION-SCHEDULE cases=$caseCount; " +
-                    "maxCost=$maxCost; first=$firstSelection; " +
-                    "exclusive=$exclusive; weighted=$weighted; " +
-                    "bounded=$bounded; regression=$regression; " +
-                    "preMerge=$preMerge; preMergeSmall=$preMergeSmall")
-            }
-            "PreMergeWaves" {
-                $syntheticRuns = @(
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Fast-01"; EstimatedCases = 733 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Fast-02"; EstimatedCases = 733 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-07"; EstimatedCases = 111 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-09"; EstimatedCases = 108 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-08"; EstimatedCases = 110 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-ExplorerWebCommandServiceTests-10"; EstimatedCases = 107 },
-                    [pscustomobject]@{ Phase = "Parallel"; Name = "Integration-Base-mixed-13"; EstimatedCases = 54 },
-                    [pscustomobject]@{ Phase = "ProcessIntegration"; Name = "ProcessIntegration"; EstimatedCases = 490 },
-                    [pscustomobject]@{ Phase = "E2E"; Name = "E2E"; EstimatedCases = 15 }
-                )
-                $parallelRuns = @($syntheticRuns | Where-Object Phase -eq "Parallel")
-                $waves = @(Get-PreMergeParallelWaves -Descriptors $parallelRuns)
-                $explorerCount = @($waves[0].Descriptors).Count
-                $explorerWave =
-                    $waves.Count -eq 2 -and
-                    $explorerCount -eq 4 -and
-                    @(
-                        $waves[0].Descriptors |
-                            Where-Object {
-                                $_.Name -like "Integration-Base-ExplorerWebCommandServiceTests-*"
-                            }
-                    ).Count -eq 4
-                $remaining =
-                    $waves[1].Name -eq "RemainingParallel" -and
-                    @($waves[1].Descriptors).Count -eq 3 -and
-                    $waves[1].Descriptors[0].Name -eq "Fast-01"
-                $casesPreserved =
-                    ($waves.Descriptors | Measure-Object EstimatedCases -Sum).Sum -eq
-                    ($parallelRuns | Measure-Object EstimatedCases -Sum).Sum
-                if (-not $explorerWave -or -not $remaining -or -not $casesPreserved) {
-                    throw "PreMerge startup waves did not preserve the parallel descriptors."
-                }
-                Write-Host (
-                    "PREMERGE-WAVES explorer=$explorerCount; " +
-                    "remaining=$remaining; cases=$casesPreserved")
+            "RuntimeCleanupDeadline" {
+                [void][System.IO.Directory]::CreateDirectory($testWorkerRuntimeBase)
+                Set-Content -LiteralPath (Join-Path $testWorkerRuntimeBase "deadline-sentinel.txt") -Value "diagnostic runtime"
+                $runtimeCleanupSelfTest = $true
             }
             "ResultDirectory" {
                 Add-Content -LiteralPath $logPath -Value (
@@ -2515,181 +1840,11 @@ try {
         }
     }
     else {
-        if ($Lane -eq "Focused" -and [string]::IsNullOrWhiteSpace($Filter)) {
-            throw "Lane Focused requires -Filter with a VSTest filter expression."
-        }
-        if ($Lane -ne "Focused" -and -not [string]::IsNullOrWhiteSpace($Filter)) {
-            throw "-Filter is supported only with -Lane Focused."
-        }
-        if ($PSBoundParameters.ContainsKey("FocusedProject") -and
-            $Lane -ne "Focused") {
-            throw "-FocusedProject is supported only with -Lane Focused."
-        }
-        $maximumTimeoutMinutes = switch ($effectiveLane) {
-            "Focused" { $FocusedMaximumTimeoutMinutes }
-            "LifecycleIntegration" { $LifecycleIntegrationMaximumTimeoutMinutes }
-            default { [int]$laneDefinition.TimeoutMinutes }
-        }
-        if ($TimeoutMinutes -gt $maximumTimeoutMinutes) {
-            throw "Lane '$Lane' has a hard limit of $maximumTimeoutMinutes minute(s)."
-        }
-
-        $laneFilter = if ($Lane -eq "Focused") { $Filter } else { $laneDefinition.Filter }
-        Add-Content -LiteralPath $logPath -Value (
-            "ValidatedFilter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })")
-
-        if (-not $PlanOnly) {
-        if ($effectiveLane -in @("E2E", "PreMerge")) {
-            $npmCommandPath = Resolve-NpmCommandPath
-            $frontendRun = Start-OwnedProcess `
-                -Name "Frontend-verify" `
-                -FileName $npmCommandPath `
-                -Arguments @("run", "verify", "--prefix", "BookOfEternityClient.WebFrontend")
-            Invoke-OwnedPhase `
-                -Run $frontendRun `
-                -TimeoutMessage "Frontend verification exceeded the lane deadline." `
-                -FailureDescription "Frontend verification"
-        }
-
-        if (-not $NoBuild) {
-            $buildSelections = if ($selectedProject -eq "Both") {
-                @(
-                    [pscustomobject]@{
-                        Name = "Build-Fast"
-                        ProjectPath = $fastTestProject
-                    },
-                    [pscustomobject]@{
-                        Name = "Build-Integration"
-                        ProjectPath = $integrationTestProject
-                    }
-                )
-            }
-            elseif ($selectedProject -eq "Fast") {
-                @(
-                    [pscustomobject]@{
-                        Name = "Build-Fast"
-                        ProjectPath = $fastTestProject
-                    }
-                )
-            }
-            else {
-                @(
-                    [pscustomobject]@{
-                        Name = "Build-Integration"
-                        ProjectPath = $integrationTestProject
-                    }
-                )
-            }
-
-            foreach ($buildSelection in $buildSelections) {
-                $buildRun = Start-OwnedProcess `
-                    -Name $buildSelection.Name `
-                    -Arguments @(
-                        "build",
-                        $buildSelection.ProjectPath,
-                        "--no-restore",
-                        "--verbosity",
-                        "minimal"
-                    )
-                Invoke-OwnedPhase `
-                    -Run $buildRun `
-                    -TimeoutMessage "$($buildSelection.Name) exceeded the lane deadline." `
-                    -FailureDescription $buildSelection.Name
-            }
-        }
+        Invoke-TestCategoryWork
     }
-
-    $testRuns = @(New-TestRuns)
-    if ($PlanOnly) {
-        $planRows = @(
-            $testRuns |
-                Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost,
-                    SchedulingGroup, ConcurrencyWeight
-        )
-        $planLines = [System.Collections.Generic.List[string]]::new()
-        [void]$planLines.Add("PLAN-BEGIN EffectiveLane=$effectiveLane")
-        foreach ($planRow in $planRows) {
-            [void]$planLines.Add(
-                "PLAN $($planRow | ConvertTo-Json -Compress -Depth 3)")
-        }
-        [void]$planLines.Add("PLAN-END EffectiveLane=$effectiveLane")
-        Add-Content -LiteralPath $logPath -Value @("", "Execution plan", @($planLines))
-        $planLines | Write-Host
-    }
-    else {
-        if ($effectiveLane -eq "PreMerge") {
-            $parallelRuns = @($testRuns | Where-Object Phase -eq "Parallel")
-            foreach ($parallelWave in @(
-                Get-PreMergeParallelWaves -Descriptors $parallelRuns
-            )) {
-                Invoke-DescriptorBatch `
-                    -Descriptors @($parallelWave.Descriptors) `
-                    -MaximumParallelism ([Math]::Min($Parallelism, $PreMergeParallelism)) `
-                    -MaximumFastParallelism $PreMergeFastParallelismLimit
-            }
-
-            foreach ($phase in @("ProcessIntegration", "E2E")) {
-                $exclusiveRuns = @($testRuns | Where-Object Phase -eq $phase)
-                Invoke-DescriptorBatch `
-                    -Descriptors $exclusiveRuns `
-                    -MaximumParallelism 1
-            }
-        }
-        else {
-            $effectiveParallelism = if ($effectiveLane -eq "Fast") {
-                [Math]::Min($Parallelism, $FastParallelismLimit)
-            }
-            elseif ($effectiveLane -eq "DeepValidation") {
-                [Math]::Min($Parallelism, $PreMergeParallelism)
-            }
-            elseif ($effectiveLane -eq "LifecycleIntegration") {
-                1
-            }
-            elseif ($effectiveLane -in @(
-                "FullValidation",
-                "RegressionIntegration"
-            )) {
-                $Parallelism
-            }
-            else {
-                1
-            }
-            Invoke-DescriptorBatch `
-                -Descriptors $testRuns `
-                -MaximumParallelism $effectiveParallelism
-        }
-
-        $runSummary = Get-TrxSummary
-        if ($runSummary.ParseErrors.Count -ne 0) {
-            $exitCode = 1
-            throw "TRX parsing failed: $($runSummary.ParseErrors -join '; ')"
-        }
-        if ($runSummary.Total -eq 0) {
-            $exitCode = 1
-            throw "Lane '$Lane' produced no discovered test results."
-        }
-        $isComposedCoverageLane = $effectiveLane -in @(
-            "PreMerge",
-            "DeepValidation"
-        )
-        if ($isComposedCoverageLane -and $runSummary.DuplicateTests.Count -ne 0) {
-            $exitCode = 1
-            throw "$effectiveLane produced duplicate TRX test IDs: " +
-                "$($runSummary.DuplicateTests -join ', ')"
-        }
-        $minimumCases = switch ($effectiveLane) {
-            "PreMerge" { $PreMergeMinimumCases }
-            "DeepValidation" { $DeepValidationMinimumCases }
-            "LifecycleIntegration" { $LifecycleIntegrationMinimumCases }
-            default { 0 }
-        }
-        if ($minimumCases -gt 0 -and $runSummary.Total -lt $minimumCases) {
-            $exitCode = 1
-            throw "$effectiveLane produced $($runSummary.Total) cases; " +
-                "expected at least the $minimumCases-case reviewed baseline."
-        }
-    }
-    }
+    $runtimeCleanupClock = [Diagnostics.Stopwatch]::StartNew()
+    try { Invoke-OwnedWorkerRuntimeCleanup }
+    finally { $script:categoryPhaseResults.Add([ordered]@{ Name = 'Runtime-cleanup'; Seconds = $runtimeCleanupClock.Elapsed.TotalSeconds; Completed = $runtimeCleanupSucceeded }) }
 }
 catch {
     if ($exitCode -eq 0) {
@@ -2851,6 +2006,13 @@ finally {
         if (-not $disposition.CleanupSucceeded) {
             $cleanupSucceeded = $false
         }
+        if ($null -ne $runtimeCleanup -and
+            [object]::ReferenceEquals($runtimeCleanup.Run, $run)) {
+            $runtimeCleanup.OwnedProcessExited = $processExited
+            $runtimeCleanup.ContainmentEmpty = $containmentEmpty
+            $runtimeCleanup.Disposed = $disposed
+            $runtimeCleanup.RegisteredAfterCleanup = $allRuns.Contains($run)
+        }
         if ($isPostStartRetry) {
             $lastPostStartCleanup.CleanupPasses = $cleanupPasses
             $lastPostStartCleanup.StopAttempts = $stopAttempts
@@ -2865,11 +2027,16 @@ finally {
         }
     }
 
+    if (Test-Path -LiteralPath $testWorkerRuntimeBase) {
+        $runtimeCleanupSucceeded = $false
+        Add-Content -LiteralPath $logPath -Value (
+            "Owned test worker runtime retained after failure or timeout: $testWorkerRuntimeBase")
+        if ($exitCode -eq 0) { $exitCode = 1; $failureMessage = 'Owned runtime directory cleanup did not complete.' }
+    }
     if (-not $cleanupSucceeded -and $exitCode -eq 0) {
         $exitCode = 1
         $failureMessage = "Owned process-tree cleanup did not complete."
     }
-    $stopwatch.Stop()
 }
 
 $trxSummary = if ($null -ne $trxSummaryOverride) {
@@ -2944,6 +2111,37 @@ else {
         ExitedAfterCleanup = $descendantExited
     }
 }
+$runtimeCleanupSummary = if ($null -eq $runtimeCleanup) {
+    $null
+}
+else {
+    [ordered]@{
+        Attempted = $runtimeCleanup.Attempted
+        RuntimeBasePath = $runtimeCleanup.RuntimeBasePath
+        StartedPath = $runtimeCleanup.StartedPath
+        FinishedPath = $runtimeCleanup.FinishedPath
+        ChildProcessId = $runtimeCleanup.ChildProcessId
+        OwnedProcessExited = $runtimeCleanup.OwnedProcessExited
+        ContainmentEmpty = $runtimeCleanup.ContainmentEmpty
+        Disposed = $runtimeCleanup.Disposed
+        RegisteredAfterCleanup = $runtimeCleanup.RegisteredAfterCleanup
+    }
+}
+$plannedDescriptorCount = @($testRuns).Count
+$plannedCaseCount = 0
+foreach ($plannedRun in $testRuns) {
+    $plannedCaseCount += $plannedRun.EstimatedCases
+}
+$completedDescriptorCount = @($testRuns | Where-Object {
+    Test-Path -LiteralPath (Join-Path $resultDirectory $_.TrxFileName) -PathType Leaf
+}).Count
+$underfilledDescriptorNames = @(Get-UnderfilledDescriptorNames `
+    -Descriptors $testRuns -TrxSummary $trxSummary)
+$selectionComplete = -not $PlanOnly -and $plannedDescriptorCount -gt 0 -and
+    $completedDescriptorCount -eq $plannedDescriptorCount -and
+    $underfilledDescriptorNames.Count -eq 0 -and
+    $trxSummary.Executed -eq $trxSummary.Total -and
+    $trxSummary.ParseErrors.Count -eq 0
 $summary = if ($isSelfTest) {
     [ordered]@{
         SelfTest = $SelfTest
@@ -2951,6 +2149,8 @@ $summary = if ($isSelfTest) {
         ExitCode = $exitCode
         TimedOut = $timedOut
         OwnedTreeCleanupSucceeded = $cleanupSucceeded
+        RuntimeCleanupSucceeded = $runtimeCleanupSucceeded
+        RuntimeCleanup = $runtimeCleanupSummary
         Tests = [ordered]@{
             Total = $trxSummary.Total
             Executed = $trxSummary.Executed
@@ -2964,13 +2164,31 @@ $summary = if ($isSelfTest) {
 }
 else {
     [ordered]@{
-        RequestedLane = $Lane
-        EffectiveLane = $effectiveLane
+        Categories = @($Category)
+        Reasons = $selectionReasons
+        DiscoveryOnly = [bool]$ValidateCatalog
+        PlanOnly = [bool]$PlanOnly
+        Revision = $script:categoryRevision
+        CatalogAudit = $script:catalogAudit
+        CategoryResults = @($script:categoryResults)
+        AdapterResults = @($script:adapterResults)
+        PhaseResults = @($script:categoryPhaseResults)
+        Strategy = "SelectedCategories"
         TimeoutMinutes = $effectiveTimeoutMinutes
         WallTime = $stopwatch.Elapsed.ToString()
         ExitCode = $exitCode
         TimedOut = $timedOut
         OwnedTreeCleanupSucceeded = $cleanupSucceeded
+        RuntimeCleanupSucceeded = $runtimeCleanupSucceeded
+        RuntimeCleanup = $runtimeCleanupSummary
+        Selection = [ordered]@{
+            PlannedDescriptors = $plannedDescriptorCount
+            CompletedDescriptors = $completedDescriptorCount
+            PlannedCases = $plannedCaseCount
+            CompletedCases = $trxSummary.Total
+            UnderfilledDescriptors = $underfilledDescriptorNames
+            Complete = $selectionComplete
+        }
         Tests = [ordered]@{
             Total = $trxSummary.Total
             Executed = $trxSummary.Executed
@@ -2981,9 +2199,6 @@ else {
     }
 }
 $summaryFileName = if ($isSelfTest) { "self-test-summary.json" } else { "summary.json" }
-$summary | ConvertTo-Json -Depth 4 |
-    Set-Content -LiteralPath (Join-Path $resultDirectory $summaryFileName)
-
 $summaryLines = if ($isSelfTest) {
     @(
         ""
@@ -3002,15 +2217,15 @@ $summaryLines = if ($isSelfTest) {
 else {
     @(
         ""
-        "Lane result"
-        "  Requested lane: $Lane"
-        "  Effective lane: $effectiveLane"
+        "Category result"
+        "  Categories: $($Category -join ', ')"
         "  Filter: $(if ([string]::IsNullOrWhiteSpace($laneFilter)) { "<none>" } else { $laneFilter })"
         "  Timeout: $effectiveTimeoutMinutes minute(s)"
         "  Wall time: $($stopwatch.Elapsed)"
         "  Exit code: $exitCode"
         "  Timed out: $timedOut"
         "  Owned-tree cleanup: $(if ($cleanupSucceeded) { "complete" } else { "failed" })"
+        "  Planned selection: descriptors=$plannedDescriptorCount, cases=$plannedCaseCount; completed descriptors=$completedDescriptorCount, cases=$($trxSummary.Total), complete=$selectionComplete"
         "  Tests: total=$($trxSummary.Total), executed=$($trxSummary.Executed), passed=$($trxSummary.Passed), failed=$($trxSummary.Failed)"
         "  Duplicate test IDs: $($trxSummary.DuplicateTests.Count)"
         "  Results: $resultDirectory"
@@ -3038,5 +2253,37 @@ if (-not [string]::IsNullOrWhiteSpace($failureMessage)) {
     $summaryLines += "  Failure: $failureMessage"
 }
 
+if ($exitCode -eq 0 -and [DateTime]::UtcNow -ge $deadlineUtc) {
+    $timedOut = $true
+    $exitCode = 124
+    $failureMessage = "The lane deadline expired before cleanup and report generation completed."
+    $summary.ExitCode = $exitCode
+    $summary.TimedOut = $true
+    $summaryLines = @($summaryLines | ForEach-Object {
+        if ($_.StartsWith("  Exit code:", [StringComparison]::Ordinal)) { "  Exit code: $exitCode" }
+        elseif ($_.StartsWith("  Timed out:", [StringComparison]::Ordinal)) { "  Timed out: $timedOut" }
+        else { $_ }
+    })
+    $summaryLines += "  Failure: $failureMessage"
+}
+$summary.WallTime = $stopwatch.Elapsed.ToString()
+$summaryLines = @($summaryLines | ForEach-Object {
+    if ($_.StartsWith("  Wall time:", [StringComparison]::Ordinal)) { "  Wall time: $($summary.WallTime)" }
+    else { $_ }
+})
+$summary | ConvertTo-Json -Depth 12 |
+    Set-Content -LiteralPath (Join-Path $resultDirectory $summaryFileName)
 $summaryLines | Tee-Object -FilePath $logPath -Append | Write-Host
+$stopwatch.Stop()
+if ($exitCode -eq 0 -and [DateTime]::UtcNow -ge $deadlineUtc) {
+    $timedOut = $true
+    $exitCode = 124
+    $summary.ExitCode = $exitCode
+    $summary.TimedOut = $true
+    $summary.WallTime = $stopwatch.Elapsed.ToString()
+    $summary | ConvertTo-Json -Depth 12 |
+        Set-Content -LiteralPath (Join-Path $resultDirectory $summaryFileName)
+    Add-Content -LiteralPath $logPath -Value (
+        "The lane deadline expired before successful runner exit; complete wall time: $($summary.WallTime).")
+}
 exit $exitCode

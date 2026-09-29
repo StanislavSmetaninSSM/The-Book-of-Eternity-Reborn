@@ -15,8 +15,9 @@ npm run dev:local --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
-npm run verify --prefix BookOfEternityClient.WebFrontend
 npm run preview --prefix BookOfEternityClient.WebFrontend
+./scripts/test-csharp.ps1 -ListCategories
+./scripts/test-csharp.ps1 -Category browser-api-host
 ```
 
 Or from this directory:
@@ -28,15 +29,15 @@ npm run dev:local
 npm run dev
 npm run typecheck
 npm run build
-npm run verify
 npm run preview
+../scripts/test-csharp.ps1 -ListCategories
 ```
 
 `npm run dev:local` is the one-command local Browser Client workflow for #771. It starts the C# local web host at `http://127.0.0.1:8787` with `--web` and starts the Vite development server on loopback, normally `http://127.0.0.1:5173`; open the Vite URL while editing React so hot reload stays active. The Vite proxy forwards `/api` and `/assets` requests to the C# backend at `http://127.0.0.1:8787`, so local development does not need broad CORS.
 
 The combined command is local-only. It does not enable public/LAN binding, `0.0.0.0`, cloud tunnels, telemetry, or an idle-exit workaround. If a backend idle-exit symptom is reproduced later, handle it with exact logs in a separate tracked issue instead of changing this helper.
 
-`npm run dev` starts only Vite and `npm run preview` starts only the preview server; both bind to `127.0.0.1` for local development. Use them when you intentionally run the C# backend separately. `npm run build` writes production assets to `dist/`. `npm run verify` is the CI/local frontend gate: it typechecks both TypeScript projects, runs the player-facing command-result sanitizer fixture for launcher/prompt-session copy, and then builds the production bundle.
+`npm run dev` starts only Vite and `npm run preview` starts only the preview server; both bind to `127.0.0.1` for local development. Use them when you intentionally run the C# backend separately. `npm run build` typechecks both TypeScript projects and writes production assets to `dist/`. The category runner lists available domains and runs only the categories you select; see `docs/testing.md` for selection and result artifacts.
 
 ## Relationship to `dotnet run -- --web`
 
@@ -74,7 +75,7 @@ Future Browser Client tasks (#683-#689) should extend these route regions rather
 - gallery, media, and QTE visuals under `Медиа`;
 - local profile, language, audio, and comfort settings under `Настройки`.
 
-Verify shell changes with `npm run typecheck --prefix BookOfEternityClient.WebFrontend`, `npm run build --prefix BookOfEternityClient.WebFrontend`, and focused browser .NET tests such as `BrowserFrontendWorkspaceTests` / `LocalWebUiHostTests`.
+Verify shell changes with `./scripts/test-csharp.ps1 -ListCategories`, then select the affected frontend and browser host categories from `docs/testing.md`.
 
 ## Route iconography and states (#721)
 
@@ -87,8 +88,9 @@ Route cards expose semantic presentation states derived from the existing browse
 Issue #723 adds a dependency-light HTML visual smoke artifact for the Browser Client default first screen. Run:
 
 ```powershell
-npm run verify --prefix BookOfEternityClient.WebFrontend
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~LocalWebUiBuiltFrontendSmokeTests|FullyQualifiedName~BrowserFrontendWorkspaceTests|FullyQualifiedName~LocalWebUiDocumentationTests" --logger "console;verbosity=minimal"
+npm ci --prefix BookOfEternityClient.WebFrontend
+./scripts/test-csharp.ps1 -Category browser-api-host
+./scripts/test-csharp.ps1 -Category frontend-test-workflow
 ```
 
 The test writes `TestResults/browser-smoke/first-screen-visual-qa.html` next to `root.html`, `game-route.html`, `network.json`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`. CI uploads the directory as `browser-smoke-artifacts`.
@@ -176,8 +178,8 @@ Contract update workflow:
 1. Update the C# DTO/endpoint first; C# remains the authority.
 2. Update `src/api/contracts.ts` and any affected `BrowserApiClient` method in `src/api/client.ts`.
 3. Update the matching JSON under `src/api/contract-fixtures/`.
-4. Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~BrowserApiContractTests|FullyQualifiedName~BrowserFrontendWorkspaceTests|FullyQualifiedName~LocalWebUiDocumentationTests" --logger "console;verbosity=minimal"`.
-5. Run `npm run typecheck --prefix BookOfEternityClient.WebFrontend` and `npm run build --prefix BookOfEternityClient.WebFrontend`.
+4. Run `./scripts/test-csharp.ps1 -Category browser-api-host` for the C# DTO/host and frontend fixture contracts.
+5. Run `./scripts/test-csharp.ps1 -Category frontend-test-workflow` when changing the documented frontend workflow; use `./scripts/test-csharp.ps1 -ListCategories` to find other affected domains.
 
 `BrowserApiContractTests` serializes representative C# DTOs and compares them to the tracked `contract-fixtures`; `contract-fixture-checks.ts` imports the same fixtures so TypeScript verifies their shape. Default player UI should show the normalized `playerMessage` from failed requests, while `technicalDetails` belongs behind explicit advanced diagnostics.
 
@@ -185,15 +187,16 @@ Later issues deepen the route content (menus, game screens, settings, media/QTE 
 
 ## Verification pipeline (#705)
 
-Use the same frontend-first sequence locally and in CI when changing browser frontend, local host, typed API contracts, or smoke coverage:
+Install frontend dependencies, then select the browser host and any other affected domains locally. The category runner builds frontend assets needed by the built-host smoke before that test starts. CI uses its tracked selection file; see `docs/testing.md` for category selection and result artifacts.
 
 ```powershell
 npm ci --prefix BookOfEternityClient.WebFrontend
-npm run verify --prefix BookOfEternityClient.WebFrontend
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+./scripts/test-csharp.ps1 -ListCategories
+./scripts/test-csharp.ps1 -Category browser-api-host
+./scripts/test-csharp.ps1 -Category browser-command-parity
 ```
 
-`Category=BrowserWebUiBuiltFrontend` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network/navigation diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `navigation-ia.html`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. `navigation-ia.html` is the dependency-light desktop/mobile visual smoke artifact for #727; full screenshots require a future tracked browser automation dependency, so this pipeline intentionally stays local/offline-friendly and dependency-light.
+`browser-api-host` starts the C# `LocalWebUiHost` against the built Vite `dist/` output and verifies the root shell, SPA route fallback, player-state APIs, and non-masked `/api/*` plus `/assets/*` misses. The smoke writes HTML/network/navigation diagnostics to `TestResults/browser-smoke/` (`root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `navigation-ia.html`). CI uploads those diagnostics as `browser-smoke-artifacts` when present. `navigation-ia.html` is the dependency-light desktop/mobile visual smoke artifact for #727; full screenshots require a future tracked browser automation dependency, so this pipeline intentionally stays local/offline-friendly and dependency-light.
 
 ## Boundaries for future agents
 

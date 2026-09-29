@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
@@ -11,21 +12,29 @@ public partial class CanonicalStateNormalizer
         AcceptedMechanicsWoundStageBundle? woundStageBundle,
         bool allowDirectWoundBootstrap,
         MortalWoundTreatmentResourcePublicationAuthority?
-            resourcePublicationAuthority)
+            resourcePublicationAuthority,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         var liveCarriers = await ReadEffectPublicationCarriersAsync();
         var expectedCarrierFingerprint = normalizedAcceptedCarrierBaselines
             ? EffectCarrierCatalog.CreateAuthorityFingerprint(
                 plan.AcceptedCarrierBaselines)
             : plan.CarrierAuthorityFingerprint;
-        if (!string.Equals(
+        if (spiritualPublicationReceipt is not null)
+        {
+            RequireCurrentSpiritualPublication(spiritualPublicationReceipt, spiritualPublicationReceipt.Plan);
+            if (!ReferenceEquals(spiritualPublicationReceipt.Plan.EffectPlan, plan))
+                throw StaleEffectPlan("spiritual completed effect plan");
+            await ValidateSpiritualPublicationCarriersAsync(spiritualPublicationReceipt, liveCarriers);
+        }
+        else if (!string.Equals(
                 expectedCarrierFingerprint,
                 EffectCarrierCatalog.CreateAuthorityFingerprint(liveCarriers),
                 StringComparison.Ordinal))
         {
             throw StaleEffectPlan("effect carrier catalog");
         }
-        if (!normalizedAcceptedCarrierBaselines)
+        if (!normalizedAcceptedCarrierBaselines && spiritualPublicationReceipt is null)
         {
             foreach (var (path, beforeImage) in plan.CarrierBeforeImages)
             {
@@ -44,12 +53,24 @@ public partial class CanonicalStateNormalizer
                 plan.IdentityIndexBeforeImage,
                 liveIdentityIndex) &&
             !(allowDirectWoundBootstrap && liveIdentityIndex is null &&
+              IsPristineEffectIdentityIndex(plan.IdentityIndexBeforeImage)) &&
+            !(spiritualPublicationReceipt is not null && liveIdentityIndex is null &&
+              spiritualPublicationReceipt.Authority.PublicationInputs.TryGetValue(
+                  EffectAcceptedTurnPlan.IdentityIndexPath, out var originalIndex) && !originalIndex.Existed &&
               IsPristineEffectIdentityIndex(plan.IdentityIndexBeforeImage)))
         {
             throw StaleEffectPlan(EffectAcceptedTurnPlan.IdentityIndexPath);
         }
 
-        var afterImages = plan.CarrierAfterImages;
+        var afterImages = plan.CarrierAfterImages.ToDictionary(
+            static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        if (spiritualPublicationReceipt is not null)
+        {
+            foreach (var pair in spiritualPublicationReceipt.Plan.EffectCarrierAfterImages
+                         .Concat(spiritualPublicationReceipt.Plan.WoundCarrierAfterImages)
+                         .Concat(spiritualPublicationReceipt.Plan.OwnerCompanionAfterImages))
+                afterImages[pair.Key] = pair.Value;
+        }
         var effectiveCarriers = new EffectCarrierCatalogInput(
             AfterImageOrLive(EffectCarrierCatalog.PlayerPath, liveCarriers.PlayerEffects),
             AfterImageOrLive(EffectCarrierCatalog.NpcPath, liveCarriers.NpcEffects),
@@ -60,7 +81,9 @@ public partial class CanonicalStateNormalizer
         var sourceRoots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal);
         foreach (var path in EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
         {
-            sourceRoots[path] = await ReadEffectPublicationNodeAsync(path);
+            sourceRoots[path] = spiritualPublicationReceipt is null
+                ? await ReadEffectPublicationNodeAsync(path)
+                : await ReadSpiritualFinalSourceAsync(spiritualPublicationReceipt.Plan, path);
         }
 
         var catalog = EffectCarrierCatalog.Build(effectiveCarriers);
@@ -68,6 +91,11 @@ public partial class CanonicalStateNormalizer
             EffectAcceptedTurnInputComposer.BuildCanonicalSourceAuthority(
                 sourceRoots,
                 woundStageBundle?.PreparedPlan);
+        if (spiritualPublicationReceipt is not null)
+        {
+            ValidateSpiritualWoundPublicationSources(spiritualPublicationReceipt, sourceRoots);
+            sourceAuthority = spiritualPublicationReceipt.Authority.ComposePublicationSourceAuthority(sourceAuthority, plan);
+        }
         var targetAuthority =
             EffectAcceptedTurnInputComposer.BuildCanonicalTargetAuthority(
                 effectiveCarriers,
@@ -83,7 +111,8 @@ public partial class CanonicalStateNormalizer
                 plan.SourceAuthorityFingerprint,
                 sourceAuthority.CanonicalFingerprint) != true)
         {
-            throw StaleEffectPlan("effect source authority catalog");
+            throw new InvalidDataException("Effect authority at 'effect source authority catalog' changed after effect validation: " +
+                plan.SourceAuthority.DescribeCanonicalDifferences(sourceAuthority));
         }
         if (!string.Equals(
                 plan.TargetAuthorityFingerprint,

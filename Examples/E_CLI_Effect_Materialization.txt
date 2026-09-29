@@ -4,7 +4,7 @@ Read `OtherGuides/Effect_Materialization_Contract.md` first. These examples show
 
 ## effect_mortal_profiles_v1
 
-The general component library is closed. These are the nine general component
+The general component library is closed. These are the eleven general component
 fragments; the eight dedicated spiritual-wound profiles appear separately under
 `wound_spiritual_profiles_v1`. Each fragment belongs inside a complete
 `activeEffectDefinitions[]` entry and cannot act as a standalone effect:
@@ -55,6 +55,18 @@ fragments; the eight dedicated spiritual-wound profiles appear separately under
       "profile": "periodic_restore",
       "priority": 100,
       "payload": { "resource": "health", "amount": 3, "capPolicy": "registered_resource_cap" }
+    },
+    {
+      "componentId": "component_spend",
+      "profile": "periodic_spend",
+      "priority": 100,
+      "payload": { "resource": "energy", "amount": 1, "floorPolicy": "registered_resource_floor" }
+    },
+    {
+      "componentId": "component_gain",
+      "profile": "periodic_gain",
+      "priority": 100,
+      "payload": { "resource": "energy", "amount": 1, "capPolicy": "registered_resource_cap" }
     },
     {
       "componentId": "component_control",
@@ -1187,11 +1199,20 @@ three legal slots and one complete source definition. `woundRef` and `definition
 are response-local; every permanent wound/effect/transition identity and the exact
 wound source link remain client-owned.
 
+The same complete response also illustrates a later source in a conflict where
+this side already received a rank-II wound in an earlier exchange of the same
+original turn and the client offers severity III under a higher hard maximum.
+In that case the client binds this rank-III proposal to the
+current wound as a `worsen` transition; `fractured_resonance_local` is still only
+a response-local reference, not a request to create a second wound. The GM
+does not copy the first wound's permanent ID into this response. The two
+private receipt rows use that one ID and distinct ordered transition IDs.
+
 ```json
 {
   "woundDecisions": [
     {
-      "opportunityRef": "wound_opportunity_spiritual_exchange_84",
+      "opportunityRef": "spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
       "decision": "materialize",
       "woundRef": "fractured_resonance_local",
       "proposal": {

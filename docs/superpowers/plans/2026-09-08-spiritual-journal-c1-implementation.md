@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Parent uses superpowers:subagent-driven-development for this single coherent task. The user has explicitly authorized delegation and model choice; parent selects each model explicitly, dispatches one source-owning implementer and a separate task reviewer, and owns evidence/acceptance gates. This metadata-review child does not delegate. Steps use checkbox syntax for tracking.
 
-**Parent tracking status:** The parent has read the entire original companion and every correction, including the accepted zero-exchange identity guard, actual-phase evidence pins, and checkpoint sequencing. This plan is tracked under #1536/T081-B2C-J2-C1 before source edits. B1 source is at66d11b02; its independent review and the combined B0/B1/GM Fast7870/7870 plus conditional FullValidation1920/1920 are accepted2026-09-09 atab2dd976. C1 is ready for its separately verified implementation; no C1 source or test success is claimed yet.
+**Parent tracking status:** Bounded C1 and verification follow-up C1-V1 are accepted by the parent on2026-09-13. The parent read the complete companion and corrections, verified actual source hashes against independent reviews, inspected final GREEN22/22, Integration20/20, V1 Focused2/2 and all30TRXs from corrected Fast7882/7882, and reran the exact three full fixed goldens against the same immutable corrected OLD pin. Both independent reviews are Spec PASS/Quality PASS with0openC/I/M. See the final acceptance record below for exact artifact paths and limits. B1 at66d11b02 and its prior combined Fast7870/7870 plus conditional FullValidation1920/1920 atab2dd976 remain separate historical gates. C2/D/E and full #1536 remain open.
 
 **Goal:** Refactor the production resource planner into one retained execution owner that can accept the next resource-local whole-exchange batch before allocation and expose detached, exact closed intervals without completing the effect plan.
 
@@ -12,8 +12,54 @@
 
 ## Global constraints and status
 
+Parent OLD-fixture correction2026-09-09: the initial run
+20260909-001823-083-38640-deddf28fd3004abd8a095ec81408dd03-focused produced12/14,
+not the expected13/14. The intended allocation RED is4versus2; the second failure
+is the new golden's unconditional AppliedTransitions NotEmpty, before its pending
+assertion. Existing ResourceSession_UnresolvedReceiptNeverYieldsAClosedCheckpoint
+passes and the same bounded fixture deliberately has no mutations while waiting.
+The corrected golden requires pending applied transitions empty, accepted pending
+resolutions nonempty and transcript incomplete; other contours retain nonempty
+applied transitions. No fixture input or production code changes. All three literal
+copies (OLD, inverse, final companion) must agree. Preserve original
+spiritual-journal-c1-old-lane.json unchanged as the invalid-golden attempt; the
+corrected OLD phase uses the distinct spiritual-journal-c1-old-corrected-golden-lane.json
+through both capture and full-payload comparison below. A valid corrected OLD
+must precede production changes; do not refresh expected goldens after GREEN.
+
+Parent Integration-helper correction 2026-09-13: corrected GREEN Fast passed
+22/22 and all three fixed-input goldens matched byte-for-byte. Integration run
+20260913-014313-714-18888-18fbed93fd1d41ebbd4a13935055a74d-focused
+passed 19/20 but exposed one test-helper assumption, not a production-contract
+failure: LiveCausalSemantics indexed every causal-closure operation through an
+AppliedTransitions-only dictionary. The transcript contract lawfully includes
+causal operations that produce no applied transition and separately retains its
+complete unique ReplayStableOperationKeys set. The bounded correction asserts
+non-null transcript evidence, equal unique operation/stable-key cardinality,
+compares the applied subset by canonical transition ordinal, records the
+non-applied count and retains the complete stable-key set. It also removes the
+CS8602 helper warning. No production body, fixture, expected gameplay behavior,
+causal relationship or identity-uniqueness guarantee changes. Preserve the
+original failed Integration receipt; run only the named one-test Focused control
+before returning the complete Integration20 gate to the parent.
+
+Parent staged-coordinate correction 2026-09-13: review found that the live
+StageNextExchange replacement guard compared only ExchangeId. Before the first
+TakeStaged call, _conflictId is still null, so a same-ordinal, same-exchange-ID
+batch with a foreign ConflictId could replace the staged batch. The strengthened
+existing Fast test stages the foreign replacement before AdvanceThroughExchange,
+requires rejection with zero allocation, and then proves that the original
+staged conflict/exchange coordinate is the interval that advances. Focused RED
+20260913-015139-244-28264-0e87da30d1c64162bd4ff0565d271e57-focused
+built with zero warnings/errors and failed only because no exception was thrown.
+The minimal production guard compares staged ConflictId, ExchangeId and Ordinal.
+Focused GREEN
+20260913-015355-188-22844-f8ba2f2e53c64ec3ade14fc3b337be68-focused
+passed 1/1 with zero warnings/errors and complete cleanup. No B1, C2, source
+admission, GM contract or publication surface changes.
+
 - Source issue: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536). Active durable artifacts: specs/1536-complete-wound-materialization/spec.md, plan.md, tasks.md, contracts/spiritual-wound-live-turn-boundary.md. Governance: .specify/memory/constitution.md and applicable AGENTS.md.
-- This is a metadata-only planning deliverable, not an implementation or accepted C1 result. No C# command was run; no repository source/test/spec/index/HEAD was written by this planner. Parent must read every companion body before tracking or dispatch.
+- The full C1 companion has been applied but is not an accepted C1 result. The helper correction passed its named one-test Focused control at 20260913-014951-936-18832-adf6eedc096049d7a413907bf6526710-focused with zero warnings/errors, and the staged-coordinate correction has the RED/GREEN evidence above. Parent still owns the repeated GREEN22, Integration20, independent review and Fast gates. No index/HEAD was written.
 - Approved architecture: docs/superpowers/plans/2026-09-08-spiritual-effect-draft-journal-design.md. Read together with metadata effect-draft-live-j2-execution-plan.md, spiritual-next-exchange-consumer-seams.md and spiritual-journal-c-next-seam-audit.md. The audit recommends boundaries; actual source determines APIs.
 - Base: ecffabdc002cacfc3362d071c26c747d443313b2. During preparation parent advanced HEAD to 4044e8cf6a0f068127019195c6800ec3afaa2a7e and began B1; all five existing source targets below still equal their pinned base blobs. Recheck exact target hashes after B1, not HEAD alone.
 - Preserve existing B2A/B2B results, side-chain semantics, statistics and allocation chronology. In particular do not weaken ResourceSession_StopResumeMatchesDrainAndAllocatesOnlyDuringPreparation.
@@ -26,7 +72,7 @@
 
 ## Exact files and responsibilities
 
-All source paths below are relative to E:/Games/worktrees/boe-1536-wound-materialization. The companion has absolute target headers.
+All source paths below are relative to D:/Games/worktrees/boe-1536-wound-materialization. The companion has absolute target headers.
 
 | Action | Path | Responsibility |
 |---|---|---|
@@ -111,13 +157,13 @@ Proposed tracked child: T081-B2C-J2-C1 [US3], under source issue #1536. Parent m
 
 **Produces:** the complete signatures and bodies in spiritual-journal-c1-implementation.patch: BeginLiveResourceExecution(AcceptedMechanicsResourceInput, AcceptedMechanicsIdentityFactory, BaseResourceRouting?), StageNextExchange(ExchangeBatch), AdvanceThroughExchange(), Owns(SpiritualExchangeInterval), BaseResourceRouting.Capture, BuildResult.Exchanges/PendingRequirements, and detached interval/pending data. No source/admission/publication capability is produced.
 
-- [ ] Read governance, active artifacts, this plan and every companion body. Reconcile current B1 source; preserve unrelated dirty files. Verify the five base blobs and four absent new targets in the table below.
-- [ ] Parent verifies its B0/B1/GM combined Fast and GM-sensitive conditional FullValidation are already complete/reviewed, then records the single C1 tracked task and bounded scope before code edits. Parent dispatches one coherent source-owning implementer with the complete code companion, exact task brief and report path; the user-authorized model is selected explicitly.
-- [ ] Apply only the following complete OLD-compilable test patch with apply_patch. It uses no newly introduced type in compiled expressions. Its production positive succeeds on OLD; OLD then actually allocates the suffix before its first checkpoint and fails 2 versus 4 allocator calls.
+- [x] Read governance, active artifacts, this plan and every companion body. Reconcile current B1 source; preserve unrelated dirty files. Verify the five base blobs and four absent new targets in the table below.
+- [x] Parent verifies its B0/B1/GM combined Fast and GM-sensitive conditional FullValidation are already complete/reviewed, then records the single C1 tracked task and bounded scope before code edits. Parent dispatches one coherent source-owning implementer with the complete code companion, exact task brief and report path; the user-authorized model is selected explicitly.
+- [x] Apply only the following complete OLD-compilable test patch with apply_patch. It uses no newly introduced type in compiled expressions. Its production positive succeeds on OLD; OLD then actually allocates the suffix before its first checkpoint and fails 2 versus 4 allocator calls.
 
 ```text
 *** Begin Patch
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
 @@
 +    private readonly Xunit.Abstractions.ITestOutputHelper _liveGoldenOutput;
 +
@@ -135,9 +181,14 @@ Proposed tracked child: T081-B2C-J2-C1 [US3], under source issue #1536. Parent m
 +        var counter = new SessionAllocationCounter();
 +        var result = AcceptedMechanicsPlanner.BuildResources(input, counter.Factory);
 +        Assert.True(result.IsValid, SessionIssues(result));
-+        Assert.NotEmpty(result.AppliedTransitions);
 +        if (contour == "pending")
++        {
++            Assert.Empty(result.AppliedTransitions);
 +            Assert.NotEmpty(result.AcceptedPendingResolutions);
++            Assert.False(result.EffectBoundaryTranscript!.IsComplete);
++        }
++        else
++            Assert.NotEmpty(result.AppliedTransitions);
 +        _liveGoldenOutput.WriteLine("C1_FIXED_GOLDEN:" + contour + ":" +
 +            Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
 +                SessionResultImage(result) + "\n" + JsonSerializer.Serialize(counter.Ids))));
@@ -199,11 +250,11 @@ Proposed tracked child: T081-B2C-J2-C1 [US3], under source issue #1536. Parent m
 *** End Patch
 ```
 
-- [ ] Run the OLD Fast-project focused selection and retain its summary/log/TRX. Expected 14 executions: 13 pass (ten unchanged session controls plus three golden rows), one semantic RED with actual allocator calls 4 versus expected 2. Build failure, missing fixture, missing test or reflection failure is not the expected RED.
+- [x] Run the OLD Fast-project focused selection and retain its summary/log/TRX. Expected 14 executions: 13 pass (ten unchanged session controls plus three golden rows), one semantic RED with actual allocator calls 4 versus expected 2. Build failure, missing fixture, missing test or reflection failure is not the expected RED.
 
 ```powershell
-Set-Location -LiteralPath 'E:/Games/worktrees/boe-1536-wound-materialization'
-$c1OldPinPath = 'E:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-old-lane.json'
+Set-Location -LiteralPath 'D:/Games/worktrees/boe-1536-wound-materialization'
+$c1OldPinPath = 'D:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-old-corrected-golden-lane.json'
 if (Test-Path -LiteralPath $c1OldPinPath) { throw 'Existing OLD evidence pin requires explicit parent reconciliation; never replace it by recency.' }
 & .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AcceptedMechanicsPlannerTests.ResourceSession_" 6>&1 | Tee-Object -Variable c1OldOutput
 $c1OldExit = $LASTEXITCODE
@@ -225,19 +276,19 @@ $c1OldJson -split "`r?`n" | ForEach-Object { '+' + $_ }
 "*** End Patch"
 ```
 
-- [ ] Apply the emitted OLD evidence-pin patch with apply_patch before changing production code. Record this exact absolute artifact path, run ID and summary hash in the task report and parent ledger. The pin is generated only from this command's Results line, not a directory search; never relabel or overwrite it with a GREEN retry.
+- [x] Apply the emitted OLD evidence-pin patch with apply_patch before changing production code. Record this exact absolute artifact path, run ID and summary hash in the task report and parent ledger. The pin is generated only from this command's Results line, not a directory search; never relabel or overwrite it with a GREEN retry.
 
-- [ ] Run the OLD integration controls. Expected 11/11: six AcceptedMechanicsPlannerScaleTests and five EffectPendingWaveIntegrationTests. Keep all exact capacity/depth/scale/receipt/wave assertions.
+- [x] Run the OLD integration controls. Expected 11/11: six AcceptedMechanicsPlannerScaleTests and five EffectPendingWaveIntegrationTests. Keep all exact capacity/depth/scale/receipt/wave assertions.
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AcceptedMechanicsPlannerScaleTests|FullyQualifiedName~EffectPendingWaveIntegrationTests"
 ```
 
-- [ ] Restore only the temporary OLD test insertion with the exact inverse below, using apply_patch. This is not git reset/checkout and removes no user edit. If its context changed, stop and reconcile the overlapping test edit.
+- [x] Restore only the temporary OLD test insertion with the exact inverse below, using apply_patch. This is not git reset/checkout and removes no user edit. If its context changed, stop and reconcile the overlapping test edit.
 
 ```text
 *** Begin Patch
-*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
+*** Update File: D:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.Tests/AcceptedMechanicsPlannerTests.ResourceExecutionSession.cs
 @@
 -    private readonly Xunit.Abstractions.ITestOutputHelper _liveGoldenOutput;
 -
@@ -255,9 +306,14 @@ $c1OldJson -split "`r?`n" | ForEach-Object { '+' + $_ }
 -        var counter = new SessionAllocationCounter();
 -        var result = AcceptedMechanicsPlanner.BuildResources(input, counter.Factory);
 -        Assert.True(result.IsValid, SessionIssues(result));
--        Assert.NotEmpty(result.AppliedTransitions);
 -        if (contour == "pending")
+-        {
+-            Assert.Empty(result.AppliedTransitions);
 -            Assert.NotEmpty(result.AcceptedPendingResolutions);
+-            Assert.False(result.EffectBoundaryTranscript!.IsComplete);
+-        }
+-        else
+-            Assert.NotEmpty(result.AppliedTransitions);
 -        _liveGoldenOutput.WriteLine("C1_FIXED_GOLDEN:" + contour + ":" +
 -            Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
 -                SessionResultImage(result) + "\n" + JsonSerializer.Serialize(counter.Ids))));
@@ -319,13 +375,13 @@ $c1OldJson -split "`r?`n" | ForEach-Object { '+' + $_ }
 *** End Patch
 ```
 
-- [ ] Apply the full companion with apply_patch. It contains every production and test body, including the retained 1,333-line original execution body refactor and every new helper. Do not reconstruct the implementation from prose. The companion's literal bytes are the code step; its nine absolute targets are authoritative. The OLD tests are included again as part of the final test file, now with eight additional live controls.
-- [ ] Review the diff before testing. Confirm fixed mode still performs all preparation before first execution; one original state/arbiter/allocator remains live; old mutations never enter a later expansion frontier; pending exits before any sealing/freezing; no B0/B1 file or final engine caller was changed.
-- [ ] Run GREEN Fast-project focused selection. Expected 22/22: ten unchanged session tests, nine live Facts including the now-green semantic test, and three exact fixed golden rows.
+- [x] Apply the full companion with apply_patch. It contains every production and test body, including the retained 1,333-line original execution body refactor and every new helper. Do not reconstruct the implementation from prose. The companion's literal bytes are the code step; its nine absolute targets are authoritative. The OLD tests are included again as part of the final test file, now with eight additional live controls.
+- [x] Review the diff before testing. Confirm fixed mode still performs all preparation before first execution; one original state/arbiter/allocator remains live; old mutations never enter a later expansion frontier; pending exits before any sealing/freezing; no B0/B1 file or final engine caller was changed.
+- [x] Run GREEN Fast-project focused selection. Expected 22/22: ten unchanged session tests, nine live Facts including the now-green semantic test, and three exact fixed golden rows.
 
 ```powershell
-Set-Location -LiteralPath 'E:/Games/worktrees/boe-1536-wound-materialization'
-$c1GreenPinPath = 'E:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-green-lane.json'
+Set-Location -LiteralPath 'D:/Games/worktrees/boe-1536-wound-materialization'
+$c1GreenPinPath = 'D:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-green-lane.json'
 if (Test-Path -LiteralPath $c1GreenPinPath) { throw 'Existing GREEN evidence pin requires explicit parent reconciliation; never replace it by recency.' }
 & .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AcceptedMechanicsPlannerTests.ResourceSession_" 6>&1 | Tee-Object -Variable c1GreenOutput
 $c1GreenExit = $LASTEXITCODE
@@ -347,19 +403,19 @@ $c1GreenJson -split "`r?`n" | ForEach-Object { '+' + $_ }
 "*** End Patch"
 ```
 
-- [ ] Apply the emitted GREEN evidence-pin patch with apply_patch and record the exact path/ID/hash in the task report. A retry requires an explicitly reviewed replacement of the GREEN pin; retain the original OLD pin and identify both selected runs explicitly. No recency heuristic may choose either phase.
+- [x] Apply the emitted GREEN evidence-pin patch with apply_patch and record the exact path/ID/hash in the task report. A retry requires an explicitly reviewed replacement of the GREEN pin; retain the original OLD pin and identify both selected runs explicitly. No recency heuristic may choose either phase.
 
-- [ ] Run GREEN integration selection. Expected 20/20: the same eleven OLD scale/pending controls, four new accepted-plan interval Facts, and five file-backed outcome rows (three Facts plus two start/terminal theory rows).
+- [x] Run GREEN integration selection. Expected 20/20: the same eleven OLD scale/pending controls, four new accepted-plan interval Facts, and five file-backed outcome rows (three Facts plus two start/terminal theory rows).
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~AcceptedMechanicsPlannerScaleTests|FullyQualifiedName~EffectPendingWaveIntegrationTests|FullyQualifiedName~SpiritualExchangeInterval_"
 ```
 
-- [ ] Compare the three OLD/GREEN C1_FIXED_GOLDEN payloads byte-for-byte. They serialize full canonical state/history, applied/replay/events, issue payloads, all statistics, transcript fingerprint/completeness, full pending causal data, reactions, resolved request IDs, trigger execution data and exact allocated GUID lists. The complete PowerShell comparison below reads only the two phase-pinned metadata receipts generated from the actual OLD and GREEN invocations. It checks distinct path/ID, unchanged summary hash, exact row counts, opposite semantic RED/GREEN outcomes, cleanup and all three payloads; it never enumerates lane directories to select a run.
+- [x] Compare the three OLD/GREEN C1_FIXED_GOLDEN payloads byte-for-byte. They serialize full canonical state/history, applied/replay/events, issue payloads, all statistics, transcript fingerprint/completeness, full pending causal data, reactions, resolved request IDs, trigger execution data and exact allocated GUID lists. The complete PowerShell comparison below reads only the two phase-pinned metadata receipts generated from the actual OLD and GREEN invocations. It checks distinct path/ID, unchanged summary hash, exact row counts, opposite semantic RED/GREEN outcomes, cleanup and all three payloads; it never enumerates lane directories to select a run.
 
 ```powershell
-$c1PinRoot = 'E:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd'
-$c1OldPin = Get-Content -LiteralPath (Join-Path $c1PinRoot 'spiritual-journal-c1-old-lane.json') -Raw | ConvertFrom-Json
+$c1PinRoot = 'D:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd'
+$c1OldPin = Get-Content -LiteralPath (Join-Path $c1PinRoot 'spiritual-journal-c1-old-corrected-golden-lane.json') -Raw | ConvertFrom-Json
 $c1GreenPin = Get-Content -LiteralPath (Join-Path $c1PinRoot 'spiritual-journal-c1-green-lane.json') -Raw | ConvertFrom-Json
 if ($c1OldPin.Phase -cne 'OLD' -or $c1GreenPin.Phase -cne 'GREEN') { throw 'Incorrect evidence phases.' }
 if ($c1OldPin.RunId -eq $c1GreenPin.RunId -or $c1OldPin.ResultsPath -eq $c1GreenPin.ResultsPath) { throw 'OLD and GREEN must be distinct explicitly pinned runs.' }
@@ -416,15 +472,15 @@ foreach ($c1Contour in @('ordinary', 'periodic', 'pending')) {
 $c1OldPin, $c1GreenPin | Select-Object Phase, RunId, ResultsPath, SummarySha256
 ```
 
-- [ ] Parent confirms the pinned absolute paths/run IDs in both receipts equal its recorded OLD and selected GREEN invocations and the named OLD failure is allocator calls 4 versus 2, not a reflection/build failure. Any change to fixed state/history/IDs/stats/transcript requires fixing the refactor; do not refresh expected values or relax B2A/B2B assertions.
-- [ ] Parent reads every resulting source/test body and inspects all focused summary/log/TRX evidence, including named row membership, no skips/duplicates, zero build warnings/errors, TimedOut=false and owned-tree cleanup success. Parent obtains an independent C1 task review with both spec-compliance and quality verdicts, then runs one separate meaningful C1 Fast checkpoint. The earlier combined B0/B1/GM Fast and conditional FullValidation must already have finished before C1 dispatch; they are neither repeated here nor retroactively combined with C1. No worker Fast or repeated broad lane is included.
-- [ ] Parent runs the separate meaningful C1 checkpoint only after the named focused evidence and independent task review are accepted:
+- [x] Parent confirms the pinned absolute paths/run IDs in both receipts equal its recorded OLD and selected GREEN invocations and the named OLD failure is allocator calls 4 versus 2, not a reflection/build failure. Any change to fixed state/history/IDs/stats/transcript requires fixing the refactor; do not refresh expected values or relax B2A/B2B assertions.
+- [x] Parent reads every resulting source/test body and inspects all focused summary/log/TRX evidence, including named row membership, no skips/duplicates, zero build warnings/errors, TimedOut=false and owned-tree cleanup success. Parent obtains an independent C1 task review with both spec-compliance and quality verdicts, then runs one separate meaningful C1 Fast checkpoint. The earlier combined B0/B1/GM Fast and conditional FullValidation must already have finished before C1 dispatch; they are neither repeated here nor retroactively combined with C1. No worker Fast or repeated broad lane is included.
+- [x] Parent runs the separate meaningful C1 checkpoint only after the named focused evidence and independent task review are accepted:
 
 ```powershell
 .\scripts\test-csharp.ps1 -Lane Fast
 ```
 
-- [ ] Record the no-GM-update rationale below, remaining C2/D/E obligations and actual verification paths. Parent alone marks this bounded task complete after review/evidence. Commit only the reviewed tracked scope if separately authorized; no blanket git add, remote publication or issue closure.
+- [x] Record the no-GM-update rationale below, remaining C2/D/E obligations and actual verification paths. Parent alone marks this bounded task complete after review/evidence. Commit only the reviewed tracked scope if separately authorized; no blanket git add, remote publication or issue closure.
 
 ## Coverage and non-claims
 
@@ -455,12 +511,12 @@ Five existing target blobs, verified equal both in the working files and at ecff
 | BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs | 74529d409e2dc70fd7c46f956e8f3019de4930ba |
 
 Companion: docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.patch
-SHA-256: A2D460BD7B48BBE34187698E5EED96D8EB79480482AF807E8CF36B0F3BA8B4D1
-Parent promotion normalizes bare diff-context blank lines only; all nine source/test postimages are unchanged.
+SHA-256: 8E3805E2BCEB4A3990452FB7D2E519E4574651A8C718D15DAA776EFF1B3913C4
+Parent promotion normalizes bare diff-context blank lines only. The D:/Games target-header translation changes no postimage; the corrected pending-golden branch changes only the session-test postimage.
 
-Initial-review postimages remain under E:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-postimages/ as historical snapshots. This bounded correction changes only the plan and complete companion, so its planner/session-test snapshots are superseded; reconstruct the current postimages from the companion, not those two historical files. Only the companion is applied to source. Read-only git diff --no-index produced five unified diffs with eight context lines. An in-memory whole-line replay required exactly one match for each of eighteen hunks and applied them in order. The initial companion reconstructed all original review postimages exactly. The corrected companion was fully replayed again: only the session's four retained-ID guard lines and the 49-line deterministic test insertion differ from those reviewed postimages; the other seven file bodies are exact. Four Add File targets were confirmed absent and have complete bodies. There was no substring-only applicability assertion, git apply, index write or C# run.
+Initial-review postimages remain under E:/Games/The Book of Eternity Reborn/.git/worktrees/boe-1536-wound-materialization/sdd/spiritual-journal-c1-postimages/ as historical snapshots. These bounded corrections supersede the historical planner, session-test and accepted-plan interval-test postimages; reconstruct current final postimages from the companion. An in-memory whole-line replay of the corrected companion against current HEAD required exactly one match for each of eighteen update hunks and applied them in order; all four Add File bodies also matched their actual targets exactly. Relative to the initial-review postimages, the planner postimage has the two-line full staged-coordinate guard expansion; the session postimage contains the already recorded four retained-ID guard lines and 49-line deterministic test insertion, the five-line pending-golden expectation expansion, and the six-line pre-advance foreign-conflict regression; the accepted-plan interval-test postimage contains the eleven-line causal-helper correction described above. The other six postimages are unchanged by these corrections. Both latest deltas compiled and passed their exact named one-test Focused controls; independent review and parent full gates remain pending. There was no git apply or index write.
 
-Postimage line counts: AcceptedMechanicsPlanner.cs 8738; LiveTurn.cs 1660; outcome 606; EffectAcceptedTurnPlanner.cs 9255; BaseResourceRouting.cs 77; session tests 880; scale original 5580; scale new 244; afterlife new 148. Hashes and exact replay are mechanical evidence only, not compilation or test success.
+Postimage line counts: AcceptedMechanicsPlanner.cs 8740; LiveTurn.cs 1660; outcome 606; EffectAcceptedTurnPlanner.cs 9255; BaseResourceRouting.cs 77; session tests 891; scale original 5580; scale new 255; afterlife new 148. Hashes and exact replay are mechanical evidence only, not review acceptance or full-gate test success.
 
 ## Review risks and acceptance boundary
 
@@ -473,3 +529,66 @@ Postimage line counts: AcceptedMechanicsPlanner.cs 8738; LiveTurn.cs 1660; outco
 7. Parent's B1 work may change HEAD; exact source targets must be rehashed immediately before applying. Any overlapping change invalidates mechanical applicability and requires a new reviewed companion.
 
 The permitted C1 completion statement is: shared production resource core retained, live resource-local whole-exchange staging/closure implemented and tested, fixed compatibility proven, pending/source prerequisites kept unsealed. It is not: full journal admission, complete C, wound materialization, receipt-resume, cold reconstruction or single-publication engine cutover.
+
+## Observed Fast verification follow-up (2026-09-13)
+
+Tracked under #1536 / T081-B2C-J2-C1-V1 before edits. The first parent Fast run
+`20260913-020621-837-26732-a5004cf3b74f43dca464405178624e3d-fast` stopped after
+5669 executions with two failures: the wound ownership inventory still expects
+the former non-partial planner declaration, and the invalid parameter-set test
+expects English PowerShell prose on the restored Russian Windows installation.
+
+The nine-file source companion remains unchanged by this follow-up. Make only
+the required verification corrections in `WoundMaterializationSourceGuardTests.cs`
+and `FastTestBoundaryTests.cs`: match the actual exact partial declaration, and
+assert the stable structured PowerShell parameter-binding error identity while
+preserving direct CLI invocation, rejected argument combinations, nonzero exit,
+no lane-start evidence, and existing deadlines/cleanup. Do not match a growing
+list of translated messages or accept any generic nonzero failure. Parent owns
+the combined focused verification and one justified corrected Fast run after
+independent review. No GM-facing contract, runner implementation, production
+behavior, category placement or FullValidation boundary changes.
+
+## Parent acceptance record (2026-09-13)
+
+All C1 implementation and evidence steps above have been completed. The original
+failed OLD, first Integration and first Fast artifacts remain unchanged. The
+eleven existing cold-build CS1998 warnings were recorded against unchanged HEAD
+sources; the final controls below have zero build warnings and errors under
+system SDK10.0.401/runtime8.0.31, without changing target frameworks.
+
+Artifacts are rooted at `TestResults/test-lanes/` in the active D:/Games/worktrees/boe-1536-wound-materialization worktree:
+
+- Corrected OLD14: `20260913-005724-621-24132-7177304af20d4d5b9f92e1a109925d41-focused`,13PASS+1 intended allocator RED, immutable corrected-golden pin.
+- Final GREEN22: `20260913-020234-712-11164-faf7fdb9bf894ebe8e66b756575d371e-focused`,22/22; selected GREEN pin with the previous selection archived.
+- Final Integration20: `20260913-020431-636-11572-980395682de54d869a14cbbe8e5d5af0-focused`,20/20.
+- V1 combined Focused: `20260913-021849-370-28256-7730cf11f9aa40dc936651f6a5259b99-focused`,2/2.
+- Corrected Fast: `20260913-022031-360-25788-7b45153e40764e18b9d0ef56d558d744-fast`,7882/7882 in3:18.8668776/default5m; summary SHA256 `95C62D3A779B737474372817F63BB0D9FA644F0F974BDC4C45532F14554E19B7`.
+
+Every final lane exits0 with no timeout, skips or cross-TRX duplicate test IDs and
+complete owned-tree cleanup. Parent parsed all7882 Fast rows across30TRXs and
+confirmed7882 unique execution IDs. The seven repeated test-definition IDs are
+ordinary theory rows within their owning single TRX, matching the runner's
+explicit same-TRX deduplication contract; none occurs in multiple shards.
+
+Scratch evidence directory: `.superpowers/sdd/2026-09-08-spiritual-journal-c1-implementation/`.
+`c1-fixed-golden-corrected-comparison.log` confirms all three full payloads exact.
+`c1-full-independent-review.md` (SHA256 E24E635D20818FDE00C1E7361CBC7B749B966C0C1E3C80B93504DFFF3815527D)
+and `c1-fast-verification-review.md` (SHA256 D9116ED71BAF8B1ACD68E5AA8C325B54ED50160703249CB523C1B49A49B30733)
+both pass spec and quality with no open findings. Parent inspected these reviews
+and the reviewed source hashes, not an agent completion statement alone.
+
+Completion covers the shared retained resource core and resource-local exchange
+staging/closure only. Source admission, original-turn generation binding,
+registration/retirement, real pending resume, all wound consumers, cold restart
+and single final publication remain mandatory C2/D/E work. The no-GM-update
+rationale above still applies only to C1. No commit, push, issue closure,
+PreMerge or C1 FullValidation was performed.
+
+### Scope clarification 2026-09-16
+
+Owner chose chronological spiritual exchanges in #1536 C2-ORDER. Fixed/live
+comparison above applies to inputs with matching execution order; it does not
+require global phase sorting across future live exchanges. Fixed-adapter goldens
+remain unchanged. See the chronological section of the live-turn boundary
+contract for the ordinary prefix and recovery-before-later-cost examples.

@@ -1,4 +1,23 @@
-# Quickstart: C# Verification Lanes
+# Quickstart: Selected Test Categories
+
+Current policy: CATEGORY-SELECTION-DECISION rev1, approved 2026-09-30.
+Read [docs/testing.md](../../docs/testing.md), choose categories by changed
+contracts/consumers and update `tests/selection.json` with reasons.
+
+```powershell
+./scripts/test-csharp.ps1 -ListCategories
+./scripts/test-csharp.ps1 -Category test-selection-contracts -PlanOnly
+./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+./scripts/test-csharp.ps1 -ValidateCatalog
+```
+
+The last command audits ownership by discovery without executing tests.
+Category names are extensible catalog data. Full-suite and serial-all controls
+are prohibited everywhere. Use independent mutable fixtures; immutable copied
+templates remain conditional, not mandatory. See current spec/plan/tasks for
+scope and evidence. No gameplay continuation until owner inspection.
+
+## Historical lane quickstart (superseded; do not execute these commands)
 
 **Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 

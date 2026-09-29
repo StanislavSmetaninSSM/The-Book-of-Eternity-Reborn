@@ -12,7 +12,7 @@
 | `game_state/wounds/wound_history.json` | client-owned | Append-only accepted transition/replay/terminal evidence |
 | `game_state/wounds/wound_commands.json` | client-owned command staging | Exact materialization/treatment/diagnosis/recovery intents for one accepted request |
 | `game_state/wounds/wound_opportunity_receipts.json` | client-owned append-only | Durable accepted Mortal `none`/`materialize` decisions and cold-replay authority; closed Mortal schema |
-| `game_state/wounds/spiritual_wound_opportunity_receipts.json` | planned client-owned append-only | Spiritual conflict-instance/source/decision evidence in the single final common publication |
+| `game_state/wounds/spiritual_wound_opportunity_receipts.json` | planned client-owned append-only | Spiritual conflict-instance/closure/source/decision evidence in the single final common publication |
 | `game_state/control/pending_spiritual_wound_decisions.json` | planned client-owned pending | Resumable same-turn source prefix and GM decision continuation; not accepted history |
 | `game_state/control/pending_wound_resolutions.json` | client-owned pending | Bounded GM construction/repair work, exact receipts, and immutable authority |
 | `game_state/control/pending_mortal_wound_occurrences.json` | client-owned pending | Signed seven-kind Mortal occurrences captured by the active pending-turn snapshot |
@@ -3253,9 +3253,14 @@ feeds the same attempt resolver.
 The built-in `elyara` profile is normalized/validated to:
 
 - `standardArts.spiritual_healing = 5` and cannot be downgraded;
-- fixed discoverable Lazaret location;
-- public available service, multiplier 100;
+- initially discoverable Lazaret location, with accepted relocation preserved;
+- public service, multiplier 100, offered only while alive and currently reachable;
 - supported negotiated compensation from her accepted character contract.
+
+The universal healing command resolves her canonical current location, including the
+Shining Abode when she accompanies the player. Death removes command availability;
+stale offers revalidate life/location/access before any side effect. Normalization must
+not restore the initial location, resurrect or duplicate her to maintain availability.
 
 ### Shining faction invariant
 
@@ -3841,3 +3846,706 @@ raise power, expand a component into several consequences, or create `great`/`di
 strength. Repository bootstrap state, built-in definitions, fixtures, examples, and tests
 all use explicit scope; old non-empty payloads without scope are unsupported and receive
 no migration or fallback.
+
+## 22. Durable spiritual decision continuation and accepted receipts
+
+The approved T081-C boundary adds two independent version-1 state machines. The
+pending state is a replaceable snapshot for one unfinished original turn. The receipt
+state is append-only accepted history. Neither schema accepts Mortal occurrence or
+Mortal receipt rows, and neither is a second wound-command or carrier root.
+
+### 22.1 Pending spiritual decision state
+
+`game_state/control/pending_spiritual_wound_decisions.json` has the closed root shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "pending": {
+    "sessionId": "exact-original-session",
+    "requestId": "exact-original-request",
+    "snapshotToken": "exact-original-pending-snapshot",
+    "turn": 42,
+    "realm": "chaos_sea",
+    "continuationGeneration": 1,
+    "conflictInstanceRef": "client-derived-instance-reference",
+    "originalSnapshotFingerprint": "sha256:...",
+    "retainedPrefixFingerprint": "sha256:...",
+    "bounds": {
+      "exchangeCount": 2,
+      "sourceSlotCount": 4,
+      "diceCount": 2,
+      "imagePathCount": 40
+    },
+    "cursor": {
+      "exchangeOrdinal": 2,
+      "waveOrdinal": 1,
+      "nextSourceOrdinal": 0
+    },
+    "sources": [],
+    "stagedDecisions": [],
+    "diceClaims": [],
+    "beforeImages": [],
+    "candidateAfterImages": [],
+    "preservedDraft": {
+      "contentBase64": "eyJzY2hlbWFWZXJzaW9uIjoxfQ==",
+      "contentFingerprint": "sha256:..."
+    },
+    "packetFingerprint": "sha256:..."
+  }
+}
+```
+
+`pending` is either this object or JSON `null`; absence of the file and an explicit
+empty root remain different original before-images for rollback. A packet is bound to
+one original pending-turn snapshot. `continuationGeneration` increases only when the
+client issues the next bounded GM decision wave. The cursor advances monotonically
+through immutable source order. A staged decision cannot be removed, reordered or
+changed; exact replay preserves it and a changed value conflicts.
+
+Each source row carries the exact conflict instance, exchange and side coordinate,
+acting and affected actor coordinates, signed margin, selected dice claims, registered
+operation/art/tier evidence, danger/escalation authority, source ceiling, optional
+explicit re-trauma target, resource/effect completion fingerprints and its source
+fingerprint. A zero-ceiling source has no decision slot. Every positive-ceiling source
+appears exactly once and receives exactly one staged `none` or `materialize` decision
+before completion.
+
+Every image row contains a registered relative path, original existence flag, exact
+content (or explicit null for absence), content fingerprint and image-role discriminator.
+Paths must belong to the accepted-turn snapshot inventory; duplicate or unregistered
+paths reject the packet. Candidate images cannot replace the original rollback image.
+The preserved draft is detached exact JSON plus its fingerprint. The visibility-safe GM
+projection is derived from this private packet and cannot be parsed back into authority.
+
+Version 1 retains one pending packet. Collection bounds are derived from the original
+admitted draft and snapshot, rather than adding action limits: `exchangeCount` is the
+number of new ordered exchanges, `sourceSlotCount` is checked `2 * exchangeCount` (at
+most one harmful source per side per exchange), `diceCount` is the original accepted
+D20 pool length, and `imagePathCount` is the exact registered capture path-set count.
+Each image collection is bounded by that path set; sources and decisions are bounded
+by source slots; unique die claims by the pool; decision waves by eligible exchanges.
+The strict parser checks these finite counts and cross-field relationships; cold
+reconstruction independently derives them from original authority and rejects any
+caller increase. All counts use nonnegative signed 32-bit integers and checked
+arithmetic. There is no separate 16-wave or 64-source gameplay cap.
+
+The pending wrapper adds no new preserved-response byte limit: decoded draft bytes
+must satisfy the same ordinary response parser and intake constraints used when the
+original draft was admitted. C1 tests strict JSON/base64 and exact-byte round trips;
+C2 proves parity with ordinary intake at its actual supported boundaries. Do not
+invent or claim a pre-existing numeric payload limit. Duplicate JSON properties,
+unknown wrapper fields, invalid identifier text, overflow and mismatched fingerprints
+reject the whole root.
+
+C1 implementation conventions: the exchange cursor counts completed exchanges, so every
+retained source and claim is strictly before it. The source cursor is the first unhandled
+source index; all earlier positive sources have staged decisions and zero ceilings need
+none. A non-null packet requires at least one retained positive source, including when all
+its decisions are staged but common publication is still pending. No later exchange is
+retained past an unresolved positive-source exchange. Cursor exhaustion alone is not
+publication authority.
+
+The trusted parser argument is the owning registered capture path inventory, including
+registered dynamic plan paths; its exact distinct count equals `imagePathCount`. Each
+image array may contain a bounded subset, without duplicate paths. C2 independently
+proves required rollback coverage against the actual capture. This is not inferred from
+array length or supplied by serialized packet rows.
+
+Decoded preserved-response and wound-draft bytes use raw-byte SHA-256 fingerprints.
+C1 checks strict UTF-8 object syntax and duplicates while preserving exact bytes; C2
+must run ordinary response/proposal intake and validate permitted dependent edits.
+Structured digests use the existing versioned spiritual JSON hash domain: `staged_decision`
+excludes its own digest; `pending_packet` excludes `packetFingerprint`. The comparison
+`pending_prefix` preimage has exactly cursor, sources, stagedDecisions, diceClaims and
+candidateAfterImages, in their retained array order. This digest describes serialized
+prefix evidence; it neither substitutes for an original owner's execution seal nor
+authenticates source admission. Reconstruction derives that evidence again from the
+original owner before comparing either digest.
+
+The pure replacement retains the exact trusted inventory as detached nonserialized context;
+matching counts do not permit switching path sets. New sources and claims cannot be added
+behind the prior completed-exchange frontier. New staged decisions belong only to the
+previously offered source prefix and current wave; one replacement may open at most one
+new eligible exchange, advancing the generation once after the earlier prefix is handled.
+Appending zero-ceiling evidence or reaching full exhaustion does not invent another wave.
+The terminal wave bound is legal only after all exchanges execute and all sources are handled.
+Within an unchanged generation the offered wave remains exact; only the fully completed
+terminal sentinel may change it without opening a new eligible wave.
+An unresolved current exchange shares its partially staged wave or follows an earlier
+exchange's staged wave. A staged re-trauma severity must exceed the retained wound severity.
+
+First-offer implementation convention: an empty pending root may start generation1 with
+no staged decisions; parsing an existing packet is the separate cold-restart path.
+The original spiritual opportunity receipt ledger must be covered by the signed
+pending snapshot or have explicit signed absence before C1 creates an instance.
+New snapshots observe that receipt as the nineteenth closed presence path;
+legacy 16- and 18-path manifests remain readable for unrelated operations,
+but uncovered historical absence cannot authorize a first offer. Signed A
+receipt bytes or absence stay distinct from the distributed draft and
+publication rollback image B, and are rechecked before the offer.
+This does not require an unnecessary GM continuation for an initially complete response.
+That response may complete through its owning common path; if it uses pending storage, the
+owner establishes the first-offer state and applies ordinary decision intake before writing
+the resulting stage. Pure comparison never authorizes persistence or final consumption.
+
+The pending packet and every nested object are closed. The exact field contracts are:
+
+| Object | Required fields and types | Null/ordering rules |
+| --- | --- | --- |
+| packet | `sessionId`, `requestId`, `snapshotToken`, `realm`, `conflictInstanceRef`, `originalSnapshotFingerprint`, `retainedPrefixFingerprint`, `packetFingerprint`: exact strings; `turn`: integer >= 1; `continuationGeneration`: integer >= 1 and <= `bounds.exchangeCount`; `bounds`: bounds object; `cursor`: cursor object; `sources`: source-witness array; `stagedDecisions`: staged-decision array; `diceClaims`: die-claim array; `beforeImages`, `candidateAfterImages`: image arrays; `preservedDraft`: preserved-draft object | All fields required. Array order is semantic. No extra fields. No packet is needed without an eligible decision wave. |
+| bounds | `exchangeCount`, `sourceSlotCount`, `diceCount`, `imagePathCount`: nonnegative signed 32-bit integers | Exact original-authority-derived counts defined above; `sourceSlotCount = checked(2 * exchangeCount)`. |
+| cursor | `exchangeOrdinal`, `waveOrdinal`, `nextSourceOrdinal`: nonnegative integers | Exchange and wave positions may equal `bounds.exchangeCount` only at exhaustion. `nextSourceOrdinal` ranges from 0 through `sources.Count`, inclusive; equality means all currently retained sources were handled. Final completion also requires every admitted exchange executed and no unresolved positive source. |
+| actor coordinate | `actorKind`, `actorId`: exact strings | Both required and nonempty; no display name. |
+| die claim | `sourceIndex`: integer 0..`bounds.diceCount - 1`; `value`: integer 1..20; `exchangeOrdinal`: integer 0..`bounds.exchangeCount - 1`; `claimFingerprint`: fingerprint | Ordered by `(exchangeOrdinal, sourceIndex)`; `sourceIndex` is unique turn-wide and its value equals the original accepted D20 at that index. Both affected-side witnesses may reference the same exchange claim without claiming or consuming it again. |
+| staged decision | `opportunityRef`, `sourceId`, `decisionFingerprint`: exact strings; `sourceOrdinal`: packet-local source index; `waveOrdinal`: integer 0..`bounds.exchangeCount - 1`; `decision`: `none|materialize`; `selectedSeverityRank`: nullable integer; `woundDraftBase64`: nullable strict-JSON bytes; `woundDraftFingerprint`: nullable fingerprint | `none` requires all three materialization fields null and no mandatory guarantee. `materialize` requires rank 1..4, both wound-draft fields and agreement with the source maximum/guarantee contract. Decisions follow positive-ceiling source order, skipping zero-ceiling rows without a fabricated decision. |
+| image | `path`: exact registered relative path; `role`: `original_before|candidate_after`; `existed`: boolean; `contentBase64`: nullable string; `contentFingerprint`: fingerprint | `existed=false` requires null content and the existing absent before-image fingerprint. `existed=true` preserves exact bytes, including whitespace/encoding, and the existing before-image fingerprint. Never normalize original bytes for rollback. Array and role must agree. |
+| preserved draft | `contentBase64`: exact UTF-8 response JSON bytes; `contentFingerprint`: fingerprint | Both required; decoded content must satisfy the ordinary accepted-turn response parser. Preserve original bytes; no additional numeric payload limit is introduced here. |
+
+A source witness has exactly these fields:
+
+| Field | Type and rule |
+| --- | --- |
+| `sourceId`, `coordinate`, `conflictId`, `exchangeId` | Exact nonempty strings. `sourceId` is `spiritual_source_` plus the lowercase SHA-256 digest from `sourceFingerprint`; both derived fields are excluded from its preimage. |
+| `turnEvidence` | Closed durable source context defined below; included in `sourceFingerprint`. It supplies original turn identity, bounds and selected dice without depending on a pending file. |
+| `sourceOrdinal`, `exchangeOrdinal` | Nonnegative packet-local source and new-exchange positions, below the authority-derived source/exchange bounds. Source positions are contiguous; both sides may share one exchange position. They reset for a new original turn and are not lifetime ordinals. |
+| `affectedSide` | Exact `player|opposition`. |
+| `actingActor`, `affectedActor` | Closed actor-coordinate objects. |
+| `operation`, `appliedArtId`, `appliedArtKind` | Exact registered strings; art kind is `standard|special`. |
+| `appliedArtTier`, `targetResilienceTier` | Raw integers 0..5. |
+| `priorStrainRank`, `destinationStrainRank` | Integers 0..4 (`clear` through `broken`) with destination greater than prior for an admitted harmful source. |
+| `extraStrainJumps` | Integer 0..3, exactly `max(0, destinationStrainRank - priorStrainRank - 1)`. |
+| `harmfulMargin` | Signed 64-bit integer in the affected side's direction. |
+| `maximumSeverityRank` | Integer 0..4 after every formula and danger/source cap. Zero is valid retained harmful-source evidence and has neither a decision nor an accepted opportunity receipt. |
+| `guaranteedSeverityRank` | Null or integer 1..`maximumSeverityRank`. |
+| `dangerMode` | Exact `training|controlled|hostile|annihilation`; training requires maximum zero and has no wound opportunity. |
+| `dangerDeclarationFingerprint` | Fingerprint of the exact prior declaration. |
+| `escalationFingerprint` | Null or fingerprint of an accepted prior escalation. |
+| `retraumaWoundId`, `retraumaWoundJsonBase64` | Both null for an ordinary opportunity or both present for an explicit validated older-wound action. |
+| `exchangeJsonBase64` | Canonical bytes for the retained validated exchange evidence. |
+| `specialArtJsonBase64` | Null for a standard art; canonical original special-art bytes for a special art. |
+| `selectedDiceIndices` | Ordered unique integer array whose entries agree exactly with `turnEvidence.diceClaims` for this exchange. At publication these claims also agree with the live packet. |
+| `resourceResultFingerprint`, `effectPlanFingerprint`, `conflictBeforeFingerprint`, `conflictAfterFingerprint`, `sourceFingerprint` | Required fingerprints; `sourceFingerprint` covers all witness fields except itself and derived `sourceId`, including explicit null positions. |
+
+All byte fields use strict base64. Draft/exchange/art/wound JSON is validated by its owning
+strict parser without duplicate properties; original before-images preserve raw bytes even
+when an owning parser must reject their content. Byte fingerprints cover decoded bytes,
+not base64 spelling. Exact actor, art,
+exchange, strain, dice, danger, resource and effect agreement is revalidated from the original
+snapshot during cold reconstruction; the row cannot grant authority by self-consistency.
+
+`turnEvidence` has exactly `sessionId`, `requestId`, `snapshotToken`, `turn`, `realm`,
+`originalSnapshotFingerprint`, `bounds`, `acceptedD20Values` and `diceClaims`. Identity
+strings use the packet rules; `turn` is positive; `realm` is `chaos_sea|shining_abode`;
+the fingerprint is required. `bounds` has the exact closed shape above.
+`acceptedD20Values` is the original ordered array of integers 1..20 and its length equals
+`bounds.diceCount`. `diceClaims` contains this exchange's ordered closed die-claim rows;
+each source index and value must agree with that retained pool and this exchange ordinal.
+These fields are immutable original context plus this source's already-validated exchange
+claims, so appending a later wave cannot alter earlier witness fingerprints.
+
+During staging/publication, the source owner proves equality of `turnEvidence` with the
+original signed snapshot, frozen draft bounds and actual resource/effect execution. This
+origin check requires the original snapshot and cannot be replaced by a matching hash.
+After acceptance, the durable reader validates the retained closed context, recomputes
+source/decision math and fingerprints, verifies references/ordinals and cross-root accepted
+history agreement using receipt evidence alone; it does not reopen a consumed pending
+packet. Self-consistent imported rows do not mint new live-source authority or permit a
+historical source to execute again. Snapshot-only admission checks are performed before
+publication, not falsely claimed as a fresh origin check by a historical ledger parser.
+
+Owning-parser implementation ruling for C1/C2: historical embedded exchange validation
+uses shared authority-independent checks owned by the spiritual conflict validator, plus
+exact witness joins (exchange ID/turn, affected strain and signed margin, acting operation,
+dice, art/audit owner/tier/operation/envelope and explicit re-trauma target). It does not
+fabricate a conflict roster, profile or resource context, and must not switch the full
+validator to its weaker pre-turn mode to simulate validation. Original membership,
+profile existence, resource/effect execution, danger provenance and re-trauma
+carrier/identity/history agreement require the full original source owner during C2
+reconstruction. Retained special arts reuse the owning profile-art rules through a
+single-art projection with retained owner/realm comparison inputs; retained wounds use
+`WoundMaterializationContract.Parse`. This separates intrinsic payload validation from
+origin authentication without removing either requirement or introducing a new authority.
+
+The intrinsic exchange boundary also includes current-source matchup and operation rules,
+both control/tempo snapshot shapes, embedded active-control snapshot presence, position/dice
+agreement, all special-audit container rules and both sides' required cost fields, registered
+constants, special bindings and internally checkable deltas. A nonzero declared Light Incarnate
+bonus must match its retained role/operation and carry a supported turn marker. It does not
+authenticate the unlock. Guard creation is separated from existing-window consumption:
+only the original owner can decide whether an owned wound denies a new tempo grant; the
+historical reader still validates consumption. Original prior-control equality, condition
+existence, exact wound cost burden, recovery maximum and unlock timing remain C2 checks.
+Player-side cost authority remains the soul even with a non-player lead, so the reader must
+not equate that lead's source-art tier with the soul's cost tier. Opposition and soul-source
+tiers do join their acting-side cost evidence.
+Embedded art-audit owners use the production owner's existing actor-resolution equivalence,
+including its unique-soul aliases; they are not reinterpreted as new durable actor coordinates.
+The durable witness itself still requires the canonical `player_soul:player_soul` coordinate.
+
+### 22.2 Spiritual opportunity receipt state
+
+`game_state/wounds/spiritual_wound_opportunity_receipts.json` has the closed append-only
+root shape:
+
+```json
+{
+  "schemaVersion": 1,
+  "nextInstanceOrdinal": 1,
+  "nextClosureOrdinal": 1,
+  "nextSourceOrdinal": 1,
+  "nextDecisionOrdinal": 1,
+  "instances": [],
+  "closures": [],
+  "sources": [],
+  "decisions": []
+}
+```
+
+An instance row binds a client-derived `instanceId`, ordinal, displayed conflict ID,
+realm, accepted start session/request/snapshot/turn, exact signed baseline conflict
+fingerprint and instance fingerprint. A supported
+active current-schema conflict is bound once on first admission. Reusing a display ID
+after a terminal instance creates a new instance; it never reopens the old one.
+
+An instance row is immutable and has exactly `instanceId`, `ordinal`, `displayConflictId`,
+`realm`, `startSessionId`, `startRequestId`, `startSnapshotToken`, `startTurn`,
+`baselineConflictFingerprint` and `instanceFingerprint`. `ordinal` is a positive contiguous
+integer; `realm` is `chaos_sea|shining_abode`; all other scalar fields are exact nonempty
+strings except `startTurn`, which is an integer >= 1.
+
+A later accepted terminal state appends one immutable closure row instead of editing the
+instance. A closure row has exactly `closureId`, `ordinal`, `instanceId`, `terminalTurn`,
+`terminalEventRef`, `terminalConflictFingerprint` and `closureFingerprint`. `ordinal` is a
+positive contiguous integer, `terminalTurn` is >= the instance start turn, the event reference
+must resolve to an accepted terminal conflict event, and one instance has at most one closure.
+The display ID may identify a new instance only after such a closure is accepted.
+
+A source row is append-only accepted evidence for one admitted source coordinate. It
+has exactly `ordinal`, `instanceId`, `instanceSourceOrdinal` and `witness`; `witness` is
+the complete closed detached source object described in section 22.1 with a positive maximum.
+The row ordinal is global and `instanceSourceOrdinal` is a positive lifetime ordinal within
+the instance; each ranges from 1 through 20,000 and is contiguous in its own scope. The
+witness's packet-local source position remains unchanged, including gaps in accepted source
+rows caused by zero-ceiling sources. Neither lifetime ordinal is bounded by a packet count.
+The root contains no accepted-but-undecided queue: every newly appended source
+row must have exactly one newly appended agreeing decision row in the same common plan.
+
+A decision row has exactly `ordinal`, `decisionId`, `instanceId`, `sourceId`,
+`opportunityRef`, `sourceWitness`, `binding`, `decision`, `selectedSeverityRank`, `woundId`,
+`transitionId`, `sourceFingerprint` and `decisionFingerprint`. `binding` is closed and has
+exactly `sessionId`, `requestId`, `snapshotToken`, `turn`, `continuationGeneration`,
+`waveOrdinal` and `sourceOrdinal`; integer bounds use the retained
+`sourceWitness.turnEvidence.bounds`, and the binding's session/request/snapshot/turn equals
+that durable context. At publication the binding also equals the active packet and wave.
+`sourceWitness`
+is the complete closed witness from section 22.1 and must be semantically identical to the
+new or pre-existing source row. `none` requires severity and both identities to be null.
+`materialize` requires severity 1..4 plus exact wound and transition IDs and agreement with
+one newly composed wound carrier/index and history transition. `sourceFingerprint` repeats
+the exact witness fingerprint; `decisionFingerprint` covers the full row except itself.
+
+The pure receipt reader enforces intrinsic historical agreement without reconstructing live
+authority. Decision order equals accepted source order. A guarantee is the exact selected
+severity, not a floor; an explicit retained re-trauma materialization names that older wound
+and increases its retained severity. Current carrier/index/history freshness remains a
+publication check. Repeated wound IDs with distinct transitions remain legal for worsening.
+Both sides of an exchange share the same continuation generation and wave ordinal; later
+eligible exchanges advance both within the original request. The reader does not invent a
+generation-to-wave offset or require contiguous numbering beyond the declared bounds.
+
+All sources of one original session/request form one contiguous group, share one instance
+and identical original context (snapshot, turn, realm, bounds and D20 pool), and preserve
+increasing packet-local source order. Instance turns cannot move backward within a session.
+An instance/exchange ID identifies one original request and exchange position; both sides
+share identical retained exchange bytes and claims. Distinct exchanges cannot reuse a die.
+The source order is a subsequence of the owner's player-then-opposition exchange order:
+with causal slot `2 * exchangeOrdinal + sideIndex` (player0, opposition1), successive
+source-ordinal differences cannot exceed causal-slot differences, starting both at -1.
+This permits omitted zero-ceiling sources without accepting impossible gaps or reordering;
+it does not prove those omitted sources existed. The reusable diagnostic `coordinate`
+string is not a unique source identity.
+
+Append comparison preserves all four ordered row prefixes, rejects new sources for an
+already closed instance, and cannot extend any original request already present in accepted
+history. A complete original turn publishes all its decisions together; exact replay does
+not turn an accepted prefix into a later second publication.
+
+Instances, closures, sources and decisions only append; ordinal counters equal the next contiguous
+ordinal. Version 1 permits at most 20,000 rows in each collection. Exact replay returns
+the existing rows and emits no new command, spend, transition, notification or ordinal.
+Reuse of any instance/closure/source/decision/opportunity coordinate with changed evidence is a
+conflict. Recent-conflict pruning never deletes these rows or reopens a side allowance.
+
+### 22.3 Cross-root publication invariants
+
+- Before final acceptance, only the retained original-turn capture under its active canonical
+  lease may create or replace the unfinished pending packet. Each replacement preserves the
+  original rollback baseline. It may advance generation/cursor, append newly staged exact
+  decisions and newly validated source rows, and update the derived candidate images, retained
+  prefix fingerprint and permitted dependent draft fields after applying those decisions.
+  Previously validated source evidence, original dice claims, prior decisions and original
+  before-images remain immutable. Every derived change is revalidated by its existing production
+  owner before persistence. Only the common accepted-mechanics plan may consume the pending root
+  or append the receipt root.
+- Persisting or reconstructing a pending packet creates no accepted receipt, wound,
+  history transition, resource spend, notification or visible turn history.
+- The final plan proves the original pending snapshot, current live before-images,
+  completed ordinary reduction, staged decisions, final conflict projection and every
+  receipt/wound/history after-image before it registers publishable authority.
+- A decline remains real common-plan work even when no wound command or transition exists.
+- `materialize` has exactly one common wound command result and exactly one matching
+  receipt decision; the receipt cannot authorize a later independent write.
+- Publication, read-back validation and rollback include both roots. Rollback restores
+  exact bytes and existence, including an originally absent root.
+- A leftover pending file after successful publication is consumed only after exact
+  receipt/plan agreement; its presence never causes the source to run again.
+## 23. C2-R1 original-capture persistence (approved 2026-09-22, #1536)
+
+The approved C2-R1 amendment in spec.md governs the additional private checkpoint. Its parser
+does not replace original-snapshot and owner validation. Section22.1 pending remains unchanged.
+
+The initial in-memory original-input view owns a frozen ordinal path inventory and exact current
+input byte images, including explicit absence. It is bound to the physical original snapshot's
+session/request/turn/token. Its inventory covers dynamic distributed inputs and independent
+siblings, not merely the mechanics freshness subset. Declared original snapshot paths are inventory
+metadata only; selected snapshot byte/presence authority retains its existing separate semantics.
+Input bytes are never normalized in this view, aliases are detached and unknown paths fail closed.
+Noncanonical root casing is rejected across current and declared paths before inventory filtering,
+so case variants cannot silently lose independent inputs. Snapshot storage, authority, the registered
+Explorer rollback subtree and active checkpoint/pending payloads are not recursively embedded;
+accepted-plan original before-images still cover client-owned roots. This view grants no write,
+normalization, reconstruction or publication capability. The persisted checkpoint below is a
+separate comparison record; its bytes never replace the signed snapshot or owner validation.
+Excluded physical authority/control observations retain separate exact in-memory freshness
+witnesses and are compared under the active lease and original identity; they are never read through
+the candidate view or recursively exported with draft inputs. Original accepted before-images remain
+distinct from both kinds of current-input observations.
+
+### 23.1 Allocation and time journal
+
+The checkpoint retains an ordered array of closed rows. Each row has exactly `ordinal` (zero-based
+contiguous integer), `kind`, `owner`, `coordinate`, and `value` (exact normalized nonempty strings).
+The identity key is the ordinal tuple `(kind, owner, coordinate)`; duplicate keys are invalid.
+Owners supply stable typed causal coordinates, including a slot when an operation allocates more
+than one value of a kind. Coordinates never use a display label or a mutable global call count as
+their only causal identity. Strict replay compares each request with its next complete key and
+returns the retained value without invoking the generator. Extra/missing/reordered requests fail.
+Append mode first consumes that same retained prefix, then permits ordinary new random/time calls.
+Both modes fault after a mismatch or generator failure; faulted and incompletely replayed streams
+cannot export candidate rows. Inputs and exported JSON are detached. These are comparison rules,
+not proof of gameplay validity or original-capture authenticity.
+
+Allowed kinds and exact value forms:
+
+| Kind | Value |
+| --- | --- |
+| effect | `effect_` + 32 lowercase hexadecimal GUID digits |
+| effect_transition | `effect_transition_` + the same GUID form |
+| effect_resolution | `effect_resolution_` + the same GUID form |
+| combatant | `combatant_` + the same GUID form |
+| member | `member_` + the same GUID form |
+| vehicle | `vehicle_` + the same GUID form |
+| item | `itm_` + the same GUID form |
+| location | `loc_` + the same GUID form |
+| location_receipt | `mlocrec_` + the same GUID form |
+| location_link | `lnk_` + the same GUID form |
+| location_link_receipt | `mlinkrec_` + the same GUID form |
+| location_transition | `mltrn_` + the same GUID form |
+| location_threat | `threat_` + the same GUID form |
+| resource_definition | `resource_definition_` + the same GUID form |
+| resource_definition_seal | `resource_definition_seal_` + the same GUID form |
+| resource_resolution | `resource_resolution_` + the same GUID form |
+| resource_operation | `resource_operation_` + the same GUID form |
+| resource_transition | `resource_transition_` + the same GUID form |
+| utc_time | UTC DateTimeOffset round-trip `O` text with zero offset |
+
+The seven item/location families are the accepted COLD-INTAKE-ALLOCATIONS prerequisite; full
+cold reconstruction remains open. Their semantic kind names map explicitly to existing gameplay
+prefixes. Item keys bind creation/carrier/path/route/source/turn coordinates; location/link/receipt
+keys bind admitted initial/materialization references, operation path, turn and endpoints;
+transition/threat keys bind the affected entity and actual operation/child coordinate. Actual
+owner tests establish reachability and the preserved allocation/collision rules, including signed
+fresh-validator replay without writes. A journal containing later continuation allocations need not be exhausted at
+initial capture; complete replay/export is the exhaustion boundary.
+
+Identity values cannot repeat within the journal; timestamps may repeat. No seed, fallback
+allocation during strict replay, gameplay-dependent new cap, or deterministic wound-ID change is
+introduced. Owner hooks must supply actual values from existing random factories or the original
+clock. The checkpoint owner only accepts journals produced by successful bounded execution.
+An owner may explicitly invalidate an attempt after a later execution failure; no subsequent
+allocation or export is legal. Resource mutation/capacity keys use separate comparison domains
+over their complete existing typed operation keys. These keys do not certify amount, policy,
+dependencies or receipts, which remain subject to original-input and actual owner validation.
+Effect coordinates bind exact event, semantic role and subject. New application subjects use
+canonical structured realm/kind/targetId; replacement retirement uses the old effect ID and its
+own role, creation history uses the new effect ID and a different role. Combatant/member
+coordinates bind the admitted same-turn reference. History-owner forwarding preserves both its
+allocation receipts and lifetime/fault guards, including reference allocation. Ordinary factory
+overrides remain compatible through typed overloads delegating to the existing parameterless
+policies; journal adapters prohibit parameterless calls.
+
+The signed C2-R1 allocation inventory also proves ordinary vehicle creation is reachable during
+spiritual capture. Its allocation coordinate binds the admitted exact vehicleRef, with a separate
+vehicles owner domain; retained original input and actual owner admission still validate the full
+proposal. This records an existing random ID family and introduces no new gameplay command.
+
+Pure projection clocks use the existing utc_time family. One attempt-owned clock memoizes a
+canonical typed role plus complete owner-supplied causal evidence, so repeated reads of the same
+projection do not request duplicate allocations. Fresh replay consumes the first allocation in
+order; memo hits are forbidden after journal invalidation. Conflict closure keys use the effective
+resolution plus canonical mode, excluding resolvedAtUtc and the separately validated terminalExchange
+witness completion, not the containing root, whose unrelated fields can differ across
+resource/effect/source projections. Ordinary admission and exact origin checks remain independent.
+Other roles cover memory grant time, archive resolution time and survival consumption time.
+The planned OUTPUT-PROJECTION prerequisite adds InterfaceOutputTimestamp for the existing optional
+interface timestamp fallback, under the same utc_time/projections journal family. Its key binds
+the original session/request/snapshot/turn, exact interface path and original byte-image fingerprint.
+It is generated once during named intake before continuation, with no allocation on memo reads.
+The retained original output projection is immutable decoded text plus a changed flag for each
+present narrative/interface file; absence is separate from present-empty. This projection grants
+no validation or publication authority and never replaces the original raw-byte witness. Ordinary
+validation and its stale-output Warning remain unchanged; full candidate-reader admission and
+later dependent output are separate C2 work. See plan.md's output boundary before implementation.
+Memory grant identity is required by its existing validator; its unreachable random fallback is
+not an additional journal family. No persisted checkpoint schema is implied by these clock hooks.
+
+Before live binding, speculative source validation needs an in-memory combined scope for journal
+and clock memo. Rejection restores cursor, appended rows, complete key/identity indexes (including
+unconsumed retained rows) and memo together. A single owner-bound scope can commit once; cleanup
+after commit or prior cleanup cannot affect a newer scope. Permanent journal faults never roll
+back. Export is forbidden while speculation is active. These private savepoints are not serialized,
+do not grant gameplay authority and cannot undo already advanced resource/effect state.
+
+Discarded conflict validation uses a non-committable probe: known memo keys retain their exact
+accepted times; unknown keys use a UTC tick absent from retained JSON strings and memo times.
+These temporary values never consume journal rows or read the underlying clock. Evidence
+enumeration finishes before either snapshot, so reentrant accepted allocations remain consistent.
+Only diagnostics leave the source helpers; provisional tickets stay inside them.
+
+Capture journals opt into mandatory allocation scopes; standalone journal defaults remain unchanged.
+The guard covers replay cursor consumption as well as new rows. Nested allocation callbacks and
+callback-driven scope closure permanently fault the journal. Accepted memo-only clock reads remain
+valid outside a scope while the journal is healthy. Final combined cleanup can retry after a rejected
+early callback disposal, restoring memo and releasing registrations without reviving journal health.
+
+### 23.2 Closed capture checkpoint and advancement protocol
+
+`game_state/control/spiritual_wound_capture_checkpoint.json` is client-owned. The closed version-1
+root has exactly `schemaVersion` (integer 1) and `checkpoint` (the object below or JSON `null`).
+An absent file and a present empty root have distinct original before-images. A non-null checkpoint
+exists only for an unfinished original turn with a derived C1 pending packet; an initially complete
+turn proceeds to common publication without creating it. The checkpoint object has exactly:
+
+| Field | Type and rule |
+| --- | --- |
+| `sessionId`, `requestId`, `snapshotToken` | Exact nonempty original identifiers, equal to the reopened signed snapshot and candidate input view. |
+| `turn`, `realm`, `originalSnapshotFingerprint` | Positive turn, `chaos_sea|shining_abode`, and `sha256:` followed by the lowercase validated manifest payload hash exposed as `PendingTurnSnapshotReadAuthority.SnapshotToken`. The same value appears in the derived C1 packet; it is checked again by reopening the snapshot. |
+| `originalDraftImages` | Complete ordinally sorted path/image array for the first named original input view, including initially absent paths. No path may be repeated or differ only by case. |
+| `physicalWitnesses` | Ordinally sorted immutable original authority path, existence and byte-fingerprint rows for the snapshot manifest, snapshot authority and turn request. These have no candidate bytes and never include mutable checkpoint, pending, repair or status payloads. |
+| `initialAllocationCount`, `initialPendingPacketFingerprint` | Nonnegative journal prefix length after the first successful capture and fingerprint of its derived C1 packet. |
+| `advances` | Ordered committed continuation rows; each applies to the prior derived packet only. |
+| `committedAdvance` | Nonnegative integer exactly equal to `advances.Count`; zero denotes the initially committed offer. |
+| `allocations` | Complete ordered closed section 23.1 journal, through the last committed advancement. |
+| `expectedPendingPacketFingerprint` | Exact fingerprint of the last derived C1 packet; equals `initialPendingPacketFingerprint` when `committedAdvance` is zero. |
+| `checkpointFingerprint` | Existing spiritual JSON canonical hash with domain `spiritual_capture_checkpoint_v1`, over this closed object excluding this field. It is not a signature. |
+
+Each `originalDraftImages` row has exactly `path`, `existed`, `contentBase64`, and
+`contentFingerprint`. `path` belongs to `SpiritualOriginalDraftInputs.PathInventory`, uses its
+canonical safe spelling, and cannot name snapshot storage, rollback artifacts, checkpoint/pending
+payloads or another excluded control. `existed=false` requires JSON `null` content and the
+existing absent-image fingerprint; `existed=true` requires exact base64 bytes, including empty
+bytes, and their existing raw-byte fingerprint. The array is the complete frozen inventory, not
+only paths observed by resource/effect composition. The reopened signed snapshot must declare all
+its original paths, and all required fixed original paths must occur in the array. Additional
+dynamic draft siblings may occur only under the existing draft roots. The checkpoint does not
+claim that an ordinary hash independently authenticated those siblings.
+
+Each `physicalWitnesses` row has exactly `path`, `existed`, and `contentFingerprint`. Its exact
+set is the three original authority paths `game_state/control/pending_turn_snapshot.json`,
+`game_state/control/pending_turn_snapshot.authority.json`, and `input/turn_request.json`.
+All three are required present under the original signed turn; an absent witness rejects the
+checkpoint rather than weakening origin checks.
+The mutable checkpoint, pending packet, GM repair request, ready marker and daemon/status files
+are not frozen as durable original witnesses; their current state is checked by their own
+transport/authority owner at each intake. A cold reader compares the three immutable witnesses
+with real files under the same lease and independently reopens the original snapshot, authority
+and request. This array does not become candidate input, authorization to edit a control, or a
+source of rollback bytes. The live capture may still compare other excluded physical observations
+for freshness before its first checkpoint commit; they are not replay origins after a lawful
+continuation changes the transport state.
+
+An `advances` row has exactly `ordinal`, `priorPendingPacketFingerprint`, `inputChanges`,
+`newDecisionFingerprints`, `allocationCount`, and `resultPendingPacketFingerprint`. Ordinals start
+at 1 and are contiguous. The prior fingerprint equals the preceding result (or the initial
+fingerprint); the final result equals `expectedPendingPacketFingerprint`. `inputChanges` is an
+ordinally sorted nonduplicate subset of the original draft inventory using the same exact image
+shape as above. It records the exact post-continuation images of submitted decision/prose and
+permitted dependent fields; an absent image can represent a deletion. `newDecisionFingerprints`
+is the nonempty ordered suffix of C1 staged decisions accepted by this advancement. The row's
+`allocationCount` is the cumulative journal length after its successful execution, is at least
+the prior count, and never exceeds `allocations.Count`; the last count equals that full length.
+With no advance rows, `initialAllocationCount` equals `allocations.Count`.
+The C1 packet, not this row, carries the actual decision, source, cursor, image and draft shapes.
+The row is comparison evidence only: neither a changed input image nor a decision fingerprint
+grants permission to edit an independent original action or to materialize a wound.
+
+The structural parser rejects duplicate JSON properties, extra/missing fields, malformed base64,
+invalid fingerprints, unsafe or case-aliased paths, unsorted/repeated images, noncontiguous
+ordinals, broken fingerprint or allocation boundaries, and a mismatched root digest. It bounds
+original and changed image arrays by the supplied complete draft inventory and checks journal
+counts against retained rows. The signed pre-turn snapshot alone cannot establish the later
+accepted GM draft's exchange/source counts or the allocation count of the real owners. After
+structural parsing but before recovery, repair or advancement, cold reconstruction must derive
+the original accepted exchange/source and ordinary input bounds from real owner replay, enforce
+the advance and decision-suffix counts against those bounds, and consume the exact journal
+cursor at each step. No arbitrary fixed gameplay or response-size cap is introduced. Structural
+parsing proves only shape and internal comparison consistency. Cold reconstruction reopens the original signed
+snapshot, checks exact identity and physical witnesses, rebuilds the original draft view, and
+reruns production location/item, resource, effect, spiritual source and wound owners in original
+order with the journal in strict replay mode. It reapplies each saved `inputChanges` through the
+same permitted-dependent-edit validator and proves the newly staged decision suffix. It strictly
+validates each fully rederived C1 packet and compares its computed packet fingerprint with the
+initial or per-advance marker; only the final derived packet is compared structurally with an
+intact physical pending packet. Pending bytes never become replay input, and a missing/stale
+packet is repaired from the rederived final packet. The replayed allocation cursor must equal
+each recorded count and consume the complete journal at the end. Current physical GM draft files
+are not compared blindly with initial A: the committed layered view is reconstructed from A and
+saved input changes. Later physical edits are treated only as a new uncommitted bounded candidate
+after recovery, with the usual permitted-edit and freshness checks; they cannot alter replay.
+Any source, image, decision, snapshot, cursor, alias or allocation mismatch rejects before spend,
+write, notification or accepted-plan authority.
+
+Under one active canonical write lease, the retained capture derives a candidate advancement in
+memory and completes all owner validation before writing. It atomically replaces the checkpoint
+first and verifies the exact written bytes by read-back. If the replacement result is ambiguous,
+an exact prior byte image means no advancement, an exact candidate image means the advancement is
+committed, and any other image stops continuation. Only after confirmed checkpoint commit does
+it atomically replace and read back the derived C1 pending root. A missing/stale/damaged pending
+after that point blocks new decisions until strict replay repairs its projection from the last
+committed checkpoint; the repair may not allocate a new value or accept a later input. A pending
+packet without a matching checkpoint also blocks continuation and is never used to fabricate a
+checkpoint. If read-back shows the old checkpoint, the speculative in-memory source/resource/
+effect/wound owners and allocation cursor are discarded; the next attempt starts from strict
+replay of the old committed checkpoint. When that old image is original absence or an empty
+`checkpoint:null` root, there is no committed origin to replay: preserve its exact bytes/absence
+and begin a new named original capture against the unchanged signed baseline. Any pending packet
+without a checkpoint blocks that fresh capture. If it shows the new checkpoint but pending write fails,
+those speculative owners are likewise discarded and the next attempt replays the newly committed
+checkpoint. Any third image revokes the candidate and blocks continuation. Journal speculation
+cannot roll back already advanced owner state. The GM receives no private checkpoint bytes.
+
+The original signed before-images of both service paths, including absence, are carried by the
+existing accepted-plan rollback authority after both paths join the snapshot's closed original
+presence observation and the reader selects them as observed optional paths, never mandatory
+present paths. A pre-update snapshot without those signed observations cannot start this
+direct-cutover unfinished path; its legacy presence map remains valid for unrelated ordinary
+snapshot reads. The existing 64-selected-path reader cap is unchanged.
+They are not read from the current checkpoint or recursively embedded as active payloads. The
+common final plan alone consumes both service roots and includes them in its atomic write,
+read-back and rollback coverage. A completed publication with a leftover service root requires
+exact accepted receipt/plan agreement before treating that root as consumed. Persisting or
+repairing an unfinished checkpoint emits no canonical wound/effect/resource spend, receipt,
+notification or visible history.
+
+## C4 pending-submission and GM transport — approved revision2 (#1536)
+
+The optional closed `checkpoint.pendingSubmission` object contains the required
+`priorCommittedAdvance`, `priorPendingPacketFingerprint`, `stagedDecision`,
+`command`, and `allocations`. It inherits the original immutable checkpoint
+tuple. The checkpoint fingerprint covers this extension without granting authority.
+Approved DEPENDENT-FRONTIER-DECISION revision2 (2026-09-28) additionally permits
+the optional closed `dependentDraftProgress` described below.
+
+The prior fields identify the unchanged committed cursor and pending packet.
+`stagedDecision` is the complete existing C2 decision row, including its source,
+wave, decision fingerprint and applicable wound or satisfaction data. `command`
+contains exact `contentBase64` and `contentFingerprint`, including original scene
+text; it is null exactly for the client-owned `guarantee_satisfied` outcome.
+`allocations` contains only the real selection suffix with global journal ordinals.
+The concatenated committed journal and suffix must pass strict journal validation.
+Root allocations, advances, committedAdvance and expected pending fingerprint
+remain unchanged until successful ordinary advancement.
+
+`PlanPendingSubmission` permits absent-to-exact staging or exact replay, never
+replacement or clearing of the selected choice. A distinct owner-controlled
+dependent-progress transition may only append the validated journal below.
+`PlanAdvance` preserves the saved
+selection and its allocation prefix and clears the submission atomically with
+the normal successor checkpoint. Checkpoint read-back retains existing old/new/
+ambiguous-image handling; physical pending remains a derived committed projection.
+
+Cold replay reconstructs committed layers first; synthetic committed prefixes
+omit pendingSubmission. Real owner execution then reapplies the saved selection,
+compares the complete staged row and exhausts the combined journal before append
+is enabled. The old offer must not be exposed and no replacement decision accepted.
+The write-free decision-draft API remains write-free; persistence belongs to the
+transport owner before attempting later exchanges.
+
+Public `SpiritualWoundContinuationRequest`, `SpiritualWoundContinuationResponse`,
+`SpiritualWoundContinuationOffer` and field/scene DTOs carry only the approved safe
+transport shape. Strict raw parsing precedes loose worker deserialization. These
+DTOs and correlation fingerprints never export private authority or checkpoint bytes.
+
+### Private dependentDraftProgress — approved revision2, 2026-09-28
+
+`checkpoint.pendingSubmission.dependentDraftProgress` is absent before the first
+accepted staged correction; if present, it is a nonempty ordered array. Every
+row has exactly `ordinal`, `acceptedContinuationId`, `dependentDraftFields` and
+`inputChanges`. Ordinals start at1 and are contiguous. Fields use the existing
+closed path/jsonPointer comparison shape in exact owner-derived order. Image rows
+use the existing closed `path`, `existed`, `contentBase64`, `contentFingerprint`
+shape; paths must be unique permitted dependent-draft paths, presence must be true
+and exact bytes/fingerprints must agree. Full admitted images retain actual GM
+critical texts; a hash alone cannot reconstruct the accepted baseline.
+
+Each row requires ordinary source validation across at least one additional
+original exchange to a supported successor dependency; row count is bounded by
+the original remaining exchange inventory. No unchanged/error-only retry creates
+a row. The client canonical checkpoint encoding and absent-versus-nonempty rule
+must reconstruct exact pre-row checkpoint bytes for correlation comparison.
+
+The engine appends only after consuming an authenticated exact current A Ready,
+validating the whole candidate against independently derived A permissions and
+rechecking actual images. Previous rows, stagedDecision, command, allocations,
+ordinary advances, committedAdvance and physical pending packet are unchanged.
+Atomic checkpoint write/readback retains old/new/ambiguous handling. A confirmed
+append durably activates B; public B publication follows owner reconstruction and
+exact obsolete-A cleanup. Workers validate/apply/Ready but never write this field.
+
+Cold reconstruction replays each row using original owners, derives the complete
+pre-row request and fields independently, compares correlation/fields, validates
+the whole saved image change and ordinary exchange, then freezes the accepted
+image as the next baseline. Public request/Ready files and recorded field lists
+are never permission sources. Current physical images may change only the first
+uncommitted frontier. A forged public B without the preceding row is rejected;
+accepted A critical text cannot be changed in the current draft under B.
+
+After append but before cleanup/publication, exact obsolete A transport can be
+recognized from reconstructed pre-row envelope, recorded correlation and original
+turn coordinates; delete only the exact observed matching bytes. Mismatches are
+preserved and block. Final ordinary advancement retains cumulative accepted images
+before removing pendingSubmission and its progress; it must not lose earlier A.
+
+The journal is replay-checked private comparison evidence, not standalone
+execution/publication authority or a cryptographic history seal. Existing private
+file protections forbid GM/worker writes and live replacement; cold reconstruction
+checks shape, hashes, chain and original-owner mechanics. Coherent external
+rewriting of all private evidence and hashes is outside this change's guarantee.
+
+## Mortal recovery persisted result — approved revision1, 2026-09-29 (#1536)
+
+One client-owned `recover` transition result contains a closed versioned source
+wound, original accepted source/binding/event, typed resolution and minute,
+recovery/condition epoch coordinates and consumed-before/after ordinals, ordered
+bounded transition coordinates and before/after seals, optional typed death
+handoff, one four-field receipt and whole-result fingerprint. Source JSON and
+collections are detached. Parser reconstructs mechanics/fingerprints and agrees
+with outer history; it does not infer authority from hashes alone.
+
+Recovery epoch is anchor kind/minute/transition ID; condition epoch additionally
+uses exact condition/policy. Foreign-epoch rows do not consume current cadence.
+Original anchor values remain unchanged by numerical consumption. The current
+wound's lastTickKey and signed minute identify an authenticated stored receipt.
+A fully healed archived wound can replay that terminal evaluation but cannot
+start another natural recovery evaluation. No separate persistent file exists.

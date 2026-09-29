@@ -216,10 +216,10 @@ commit.
 The built-in Guardian `elyara` / Элиара Последней Раны must satisfy all of these
 client-protected invariants:
 
-- present and discoverable from first Chaos Sea entry even when another active Guardian
+- initially present and discoverable from first Chaos Sea entry even when another active Guardian
   was selected;
 - Spiritual Healing tier V, protected from GM/profile downgrade;
-- fixed public location `Лазарет Незаживающего Света`;
+- initial public location `Лазарет Незаживающего Света`, with accepted relocation preserved;
 - public service multiplier 100%;
 - Ink Feather prices 25/50/100/200 for severity I-IV;
 - negotiated favor/debt/quest/free-aid compensation when her character contract allows;
@@ -228,6 +228,14 @@ client-protected invariants:
 The existing system Guardian manifest/dossier, fresh-game profile construction,
 availability logic, prompts, and tests must all agree. Library `alwaysAvailable` alone
 is not sufficient service materialization.
+
+These initial guarantees do not make Elyara immortal or permanently present at the
+Lazaret. «Пойти к Элиаре за лечением» is one universal command resolving her current
+canonical location, including the Shining Abode when she accompanies the player,
+subject to ordinary reachability/access. After her death the command is unavailable.
+Both UIs and command execution revalidate life/location/access; stale offers reject
+before payment, travel or treatment. Bootstrap/normalization must not relocate,
+resurrect or duplicate her to restore service availability.
 
 ## Shining faction healer role
 

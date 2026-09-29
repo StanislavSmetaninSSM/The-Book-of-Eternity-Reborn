@@ -120,19 +120,27 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Equal(new[] { application.Target }, phase.AddedTargets);
     }
 
+    /// <summary>
+    /// Verifies that draft reads do not allocate, returned JSON is detached, completion is
+    /// once-only, and disposal rejects further reads or completion while retaining evidence.
+    /// </summary>
     [Fact]
     public void DraftOwner_ReadsAreDetachedCompletionAndDisposeAreOnceOnly()
     {
         var fixture = CreateDraftOwnerFixture(consumes: true);
         using var draft = EffectAcceptedDraft.Begin(fixture.Plan, fixture.Factory);
         Assert.Throws<InvalidOperationException>(() => draft.ReadCarriers());
+        Assert.Empty(fixture.Factory.Ids);
         var baseline = fixture.Plan.IdentityIndexAfterImage.ToJsonString();
         var result = draft.Complete(fixture.Transcript);
         Assert.True(result.Success, IdentityOwnerIssues(result));
+        var allocationCountAfterCompletion = fixture.Factory.Ids.Count;
         var expectedIdentity = draft.ReadIdentityIndex().ToJsonString();
         var expectedCarrier = draft.ReadCarriers().PlayerEffects!.ToJsonString();
         var application = Assert.Single(draft.Phases.SelectMany(value => value.Applications));
         var expectedCreated = application.ReadCreatedEffect()!.ToJsonString();
+        var expectedCreatedIdentity = application.ReadCreatedIdentity()!.ToJsonString();
+        var expectedCarrierEditAfter = application.CarrierEdits[1].ReadAfter()!.ToJsonString();
         var expectedDefinition = application.Source.ReadDefinition().ToJsonString();
         draft.ReadIdentityIndex()["entries"]!.AsArray().Clear();
         draft.ReadCarriers().PlayerEffects!["activeEffects"]!.AsArray().Clear();
@@ -144,8 +152,11 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Equal(expectedIdentity, draft.ReadIdentityIndex().ToJsonString());
         Assert.Equal(expectedCarrier, draft.ReadCarriers().PlayerEffects!.ToJsonString());
         Assert.Equal(expectedCreated, application.ReadCreatedEffect()!.ToJsonString());
+        Assert.Equal(expectedCreatedIdentity, application.ReadCreatedIdentity()!.ToJsonString());
+        Assert.Equal(expectedCarrierEditAfter, application.CarrierEdits[1].ReadAfter()!.ToJsonString());
         Assert.Equal(expectedDefinition, application.Source.ReadDefinition().ToJsonString());
         Assert.Equal(baseline, fixture.Plan.IdentityIndexAfterImage.ToJsonString());
+        Assert.Equal(allocationCountAfterCompletion, fixture.Factory.Ids.Count);
         var count = fixture.Factory.Ids.Count;
         Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
         Assert.Equal(count, fixture.Factory.Ids.Count);
@@ -180,6 +191,10 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
     }
 
+    /// <summary>
+    /// Verifies that an allocator exception faults the draft without exporting any partial
+    /// carrier, identity, application, source, target, or processed-event journal evidence.
+    /// </summary>
     [Fact]
     public void DraftOwner_AllocatorExceptionFaultsWithoutExportingFailedPhase()
     {
@@ -188,8 +203,14 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Throws<IOException>(() => draft.Complete(fixture.Transcript));
         var phase = Assert.Single(draft.Phases);
         Assert.Equal(EffectDraftPhase.NonConsumingTrigger, phase.Phase);
+        Assert.Empty(phase.CarrierEdits);
         Assert.Empty(phase.Allocations);
         Assert.Empty(phase.Applications);
+        Assert.Empty(phase.IdentityWrites);
+        Assert.Empty(phase.ReplacementAgreements);
+        Assert.Empty(phase.ProcessedEventRefs);
+        Assert.Empty(phase.AddedSources);
+        Assert.Empty(phase.AddedTargets);
         Assert.Throws<InvalidOperationException>(() => draft.ReadCarriers());
         Assert.Throws<InvalidOperationException>(() => draft.Complete(fixture.Transcript));
     }

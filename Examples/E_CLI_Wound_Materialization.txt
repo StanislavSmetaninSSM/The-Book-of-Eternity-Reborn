@@ -48,6 +48,9 @@ to every operation. Every Mortal wound needs at least one complete treatment rou
 This setting offers examination and cooling care using one linen cooling pad and a
 provider's field-medicine capability. The route does not grant the item or capability:
 the client must resolve the exact provider requirements when treatment is attempted.
+An exact current skill with canonical `active=false` cannot authorize treatment.
+Catalog membership supplies its lifecycle, but does not overwrite that activity flag;
+similarly named `isActive` and caller-authored lifecycle fields grant no authority.
 Only a successful procedure stabilizes the wound; partial and failed attempts make no
 improvement. Until accepted stabilization, recovery is blocked and grants no free cure.
 
@@ -981,7 +984,7 @@ Selected non-death apply_deterioration outcomes publish through the same authent
 The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.
 Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.
 Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.
-Death, heal and legacy publication remain unfinished.
+Direct treatment death, heal and legacy publication remain unfinished.
 
 Selected policy outcomes are legal only in procedure partial/failed results and actual interrupted courses.
 An interrupted course clears only its course pointer and does not consume the current or future dose.
@@ -1637,8 +1640,8 @@ Stale history is invalid authority, not a missed-dose outcome; other treatment d
 A different pending attempt for the same course milestone conflicts even without resource claims; exact retry is inert.
 Source IDs, course IDs, time evidence, attempt/operation coordinates and fingerprints remain client-owned.
 Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.
-The `heal`, explicit death and legacy producers remain pending implementation; their approved authored
-contracts remain in the complete route model. Scheduled natural recovery remains separate and unfinished.
+The direct treatment `heal`, explicit death and legacy producers remain pending implementation; their approved authored
+contracts remain in the complete route model. Scheduled natural recovery uses a separate client-owned continuation.
 Mortal recovery admission example (`mortal_wound_recovery_history_guard_v1`): the
 client has accepted a wound and sealed the current pending snapshot. If its current
 history is missing or malformed, the planner returns `InvalidHistory` with the
@@ -1650,8 +1653,36 @@ missed dose, an elapsed recovery tick or permission to improvise healing. Equiva
 JSON formatting remains valid; arithmetic uses the accepted snapshot's sealed world minute,
 not a newly edited live clock. The client must restore accepted history or prepare
 and export a fresh accepted snapshot after a legitimate publication. Never hand-write history, a tick, an anchor or a receipt.
-This admission check does not publish recovery, healing or a receipt; scheduled
-natural recovery publication and durable replay remain unfinished.
+This admission check does not publish recovery, healing or a receipt; the admitted
+resolution is composed into the existing common plan, whose coordinated publisher
+alone writes recovery state, effects, identity, history and the closed receipt.
+
+Mortal recovery publication example (`mortal_wound_recovery_publication_v1`):
+an already accepted stabilized rank-II physical wound has anchor100, cadence10,
+progress0, threshold2 and carryOverflow=true. At minute135 the client counts three
+new intervals: the first threshold lowers severity to I, leaving progress1.
+Every severity change actually terminates the previous effects and rematerializes
+the lawful consequences with fresh generations. The original anchor stays100,
+consumed intervals become3 and the next due minute stays140. At136 there is no
+new interval; at140 one new point reaches the rank-I threshold and a separate
+full-heal stage terminates its effects and removes its active carrier. The full
+terminal wound snapshot remains in verified history. All stages belong to one
+common publication; no intermediate state is written. A graph that cannot fit
+the resulting slot budget is rejected without silently dropping consequences.
+After reopening at the same signed minute, the client returns the original
+four-field receipt without a new transition or write, including after full heal.
+This replay requires the same accepted final wound state. A later genuine treatment
+transition can retain the old tick key while starting a new stabilization epoch:
+for example, a blocked check at110 followed by accepted stabilization at110 permits
+a fresh NotDue check with next due120. Complete history must prove that intervening
+transition and its exact current wound; the new check then has its own replay receipt.
+Missing, changed or reordered linked history is InvalidHistory before live-clock
+arithmetic. Multiple elapsed deterioration intervals trigger one declared adverse
+result and consume all elapsed intervals; increase_severity adds one rank and
+resets progress to0. A death_contour is retained as a typed lifecycle handoff;
+the separate death consumer remains unfinished. GM authors the complete recovery
+policy in the ordinary wound proposal, never tick keys, epochs, receipt hashes
+or recovery transitions. No new GM command or response surface is introduced.
 Selected direct and policy additions use the graph publication contract above.
 
 Врач проводит три этапа: первую перевязку без немедленного улучшения, ослабление раны через

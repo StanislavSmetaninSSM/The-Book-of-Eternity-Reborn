@@ -19,9 +19,14 @@ public sealed class BrowserPlayerActionGenerationTests : IDisposable
         Directory.CreateDirectory(_rootPath);
     }
 
+    /// <summary>
+    /// Proves replacement waits for the admitted submission and then removes its
+    /// pending action, using one bounded deadline for the whole concurrent operation.
+    /// </summary>
     [Fact]
     public async Task SubmitAsync_ConcurrentNewGameWaitsAndCannotKeepOldPendingAction()
     {
+        using var testDeadline = new CancellationTokenSource(TimeSpan.FromSeconds(30));
         var afterPreflight = new TaskCompletionSource(
             TaskCreationOptions.RunContinuationsAsynchronously);
         var continueSubmit = new TaskCompletionSource(
@@ -59,18 +64,25 @@ public sealed class BrowserPlayerActionGenerationTests : IDisposable
 
         var submit = service.SubmitAsync(
             new BrowserPlayerActionRequest("Я открываю запечатанное письмо."));
-        await afterPreflight.Task.WaitAsync(TimeSpan.FromSeconds(5));
+        try
+        {
+            await afterPreflight.Task.WaitAsync(testDeadline.Token);
 
-        var replacement = fs.ClearGameStateAsync();
-        await replacementContended.Task.WaitAsync(TimeSpan.FromSeconds(5));
-        Assert.False(replacement.IsCompleted);
+            var replacement = fs.ClearGameStateAsync();
+            await replacementContended.Task.WaitAsync(testDeadline.Token);
+            Assert.False(replacement.IsCompleted);
 
-        continueSubmit.TrySetResult();
-        var result = await submit.WaitAsync(TimeSpan.FromSeconds(5));
-        await replacement.WaitAsync(TimeSpan.FromSeconds(5));
+            continueSubmit.TrySetResult();
+            var result = await submit.WaitAsync(testDeadline.Token);
+            await replacement.WaitAsync(testDeadline.Token);
 
-        Assert.True(result.Success, result.TechnicalDetail ?? result.PlayerMessage);
-        Assert.False(fs.FileExists("input/pending_player_action.json"));
+            Assert.True(result.Success, result.TechnicalDetail ?? result.PlayerMessage);
+            Assert.False(fs.FileExists("input/pending_player_action.json"));
+        }
+        finally
+        {
+            continueSubmit.TrySetResult();
+        }
     }
 
     public void Dispose()

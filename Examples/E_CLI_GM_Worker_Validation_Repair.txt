@@ -183,6 +183,29 @@ every non-delete `afterSha256` is the exact 64-character SHA-256 digest of its
 own proposal content. For an afterlife validation-repair task,
 `afterlifeProposal` is optional; bounded `changedFiles` must still be inside
 both `allowedProposalPaths` and `afterlifeContract.allowedAfterlifeSurfaces`.
+An explicit `spiritualWoundContinuation` has one narrow additional output path:
+`output/narrative_response.json` may be hash-pinned in `contextFiles` and included
+in `allowedProposalPaths` alongside the dependent conflict file. Keep
+`allowedAfterlifeSurfaces` limited to the actual afterlife state paths. This does
+not permit other outputs, path aliases, or mixed ordinary repair. For example,
+after a selected wound changes the next guard cost, propose only the client-listed
+cost leaves in the conflict and any needed narrative response/timestamp correction;
+return `woundDecisions: []` with the current continuation ID. Preserve all other
+narrative fields, original actions, actors, dice and closed exchanges.
+The apply gate reopens genuine C2 before writing, validates exact draft permissions,
+and rechecks current mechanics after apply. Invalid costs roll back the proposed
+files; the worker never submits the saved wound decision or advances C2. Even a
+valid public continuation ID cannot authorize altered offer data, another request,
+private roots, commands or resource-state edits. See the closed envelope example
+in `Examples/E_CLI_Afterlife_Turns.txt`. The delegator accepts an explicit current
+continuation even with no validation issues; it derives proposal paths from the
+client-issued envelope instead of diagnostic paths. Before publishing Ready it
+reopens the current continuation and copies the proposal response unchanged. A
+changed continuation or a newer Ready file prevents publication; the newer Ready
+is preserved even when the continuation itself is unchanged. An already published
+continuation Ready blocks dispatch and apply: the worker must not replace that
+response or its scene while the client has not consumed or rejected it. Neither
+dispatch nor Ready advances C2. GameEngine integration remains separately tracked.
 For every entry, `changeKind is mandatory` and must be exactly `add`, `replace`, or `delete`;
 omission, zero/unspecified, and undefined values are rejected.
 For afterlife repair, `game_state/meta/soul_state.json` is hash-pinned read-only realm authority:

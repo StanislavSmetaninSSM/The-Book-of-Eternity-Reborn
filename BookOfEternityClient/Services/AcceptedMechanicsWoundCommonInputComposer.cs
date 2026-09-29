@@ -58,6 +58,70 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 treatmentContinuationAuthority: continuationAuthority,
                 treatmentReservationAuthority: reservationAuthority);
 
+    /// <summary>
+    /// Composes the common input from one authenticated recovery stage bundle.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The owning canonical filesystem.
+    /// </param>
+    /// <param name="writeLease">
+    /// Its active canonical write lease.
+    /// </param>
+    /// <param name="bundle">
+    /// The registry-owned prepared, effect and final recovery stages.
+    /// </param>
+    /// <returns>
+    /// A detached complete common input, or diagnostics without writing files.
+    /// </returns>
+    internal static AcceptedMechanicsWoundCommonInputCompositionResult ComposeRecoveryContinuation(
+        FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedMechanicsWoundStageBundle bundle)
+    {
+        if (!WoundAcceptedTurnPlanner.TryReadRecoveryContinuation(
+                bundle.PreparedPlan.RecoveryContinuationAuthority, out var continuation))
+            return Failed(WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_recovery_continuation_provenance_mismatch",
+                "one sealed private recovery continuation", "missing or foreign authority");
+        return ComposeCore(fileSystem, writeLease, bundle, anchorPlan: null,
+            treatmentCurrentTimeInMinutes: null,
+            recoveryCurrentTimeInMinutes: continuation.Resolution.CurrentTimeInMinutes,
+            recoveryContinuationAuthority: bundle.PreparedPlan.RecoveryContinuationAuthority);
+    }
+
+    /// <summary>
+    /// Reads a complete common input for exactly one authenticated wound publication path.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The filesystem that owns the canonical baselines.
+    /// </param>
+    /// <param name="writeLease">
+    /// Its active canonical write lease.
+    /// </param>
+    /// <param name="bundle">
+    /// The registry-owned wound stages to compose.
+    /// </param>
+    /// <param name="anchorPlan">
+    /// The anchor authority, or null for treatment and recovery continuations.
+    /// </param>
+    /// <param name="treatmentCurrentTimeInMinutes">
+    /// The signed treatment clock, or null for another publication path.
+    /// </param>
+    /// <param name="treatmentContinuationAuthority">
+    /// The private treatment continuation, or null when treatment is not selected.
+    /// </param>
+    /// <param name="treatmentReservationAuthority">
+    /// The treatment reservation, or null when treatment is not selected.
+    /// </param>
+    /// <param name="recoveryCurrentTimeInMinutes">
+    /// The signed recovery clock, or null for another publication path.
+    /// </param>
+    /// <param name="recoveryContinuationAuthority">
+    /// The private recovery continuation, or null when recovery is not selected.
+    /// </param>
+    /// <returns>
+    /// A detached common input, or diagnostics without canonical writes.
+    /// </returns>
     private static AcceptedMechanicsWoundCommonInputCompositionResult ComposeCore(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -65,20 +129,31 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
         MortalWoundCanonicalAnchorPlan? anchorPlan,
         long? treatmentCurrentTimeInMinutes,
         object? treatmentContinuationAuthority = null,
-        object? treatmentReservationAuthority = null)
+        object? treatmentReservationAuthority = null,
+        long? recoveryCurrentTimeInMinutes = null,
+        object? recoveryContinuationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(bundle);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
-        if ((anchorPlan is null) == (treatmentCurrentTimeInMinutes is null))
+        if ((anchorPlan is null ? 0 : 1) +
+            (treatmentCurrentTimeInMinutes is null ? 0 : 1) +
+            (recoveryCurrentTimeInMinutes is null ? 0 : 1) != 1)
         {
             return Failed(
                 WoundIdentityState.StatePath,
                 "accepted_mechanics_wound_publication_authority_mismatch",
-                "exactly one initial-create anchor or treatment-continuation clock authority",
+                "exactly one anchor, treatment or recovery publication authority",
                 "missing or competing publication authority");
         }
+        if (recoveryCurrentTimeInMinutes is not null &&
+            (treatmentContinuationAuthority is not null || treatmentReservationAuthority is not null ||
+             !WoundAcceptedTurnPlanner.RecoveryContinuationFinalPlanAgrees(
+                 recoveryContinuationAuthority, bundle)))
+            return Failed(WoundIdentityState.StatePath,
+                "accepted_mechanics_wound_recovery_continuation_provenance_mismatch",
+                "the exact private recovery stages", "changed or competing authority");
         if (treatmentCurrentTimeInMinutes is not null &&
             (treatmentContinuationAuthority is null ||
              !ReferenceEquals(
@@ -240,7 +315,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             var currentTime = EffectAcceptedTurnInputComposer.ReadCanonicalWorldTime(
                 worldTimeJson);
             var expectedCurrentTime = anchorPlan?.CurrentTimeInMinutes ??
-                treatmentCurrentTimeInMinutes!.Value;
+                treatmentCurrentTimeInMinutes ?? recoveryCurrentTimeInMinutes!.Value;
             if (currentTime != expectedCurrentTime)
             {
                 issues.Add(Issue(
@@ -294,7 +369,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 ? CanonicalResourceOwnerAuthorityPurpose.ExplicitBootstrap
                 : CanonicalResourceOwnerAuthorityPurpose.ExistingSessionValidation;
             ResourceOwnerAuthority? owners = null;
-            if (anchorPlan is not null)
+            if (anchorPlan is not null || recoveryCurrentTimeInMinutes is not null)
             {
                 var ownerResult = CanonicalResourceOwnerAuthorityComposer.ComposeAsync(
                         definitions,
@@ -316,7 +391,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             }
 
             MortalItemAcceptedTurnNormalizationSnapshot? treatmentItemSnapshot = null;
-            if (anchorPlan is null)
+            if (treatmentCurrentTimeInMinutes is not null)
             {
                 var treatmentItemProjectionRoots =
                     CaptureMortalItemProjectionRoots(Read, issues);
@@ -446,7 +521,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 treatmentResourcePublicationAuthority = null;
             IReadOnlyDictionary<string, JsonObject>
                 treatmentPlanSkillAfterImages = treatmentSkillAfterImages;
-            if (anchorPlan is null)
+            if (treatmentCurrentTimeInMinutes is not null)
             {
                 var resourcePublication = WoundAcceptedTurnPlanner
                     .BuildTreatmentResourcePublication(
@@ -591,15 +666,19 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                 woundCommands["anchorPlanFingerprint"] = anchorPlan.Fingerprint;
             else
                 woundCommands["authorityKind"] =
-                    "accepted_mortal_wound_treatment_continuation";
+                    recoveryCurrentTimeInMinutes is not null
+                        ? "accepted_mortal_wound_recovery_continuation"
+                        : "accepted_mortal_wound_treatment_continuation";
             var definitionRoot = definitions.ToCanonicalRoot();
             var stateRoot = JsonNode.Parse(state.ToCanonicalJson())!.AsObject();
             var historyRoot = JsonNode.Parse(history.ToCanonicalJson())!.AsObject();
             var internalInputs = new JsonObject
             {
-                ["authorityKind"] = anchorPlan is null
-                    ? "accepted_mortal_wound_treatment_continuation"
-                    : "accepted_mortal_wound_initial_create",
+                ["authorityKind"] = anchorPlan is not null
+                    ? "accepted_mortal_wound_initial_create"
+                    : recoveryCurrentTimeInMinutes is not null
+                        ? "accepted_mortal_wound_recovery_continuation"
+                        : "accepted_mortal_wound_treatment_continuation",
                 ["definitions"] = definitionRoot.DeepClone(),
                 ["state"] = stateRoot.DeepClone(),
                 ["history"] = historyRoot.DeepClone(),
@@ -610,6 +689,9 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
             };
             if (anchorPlan is not null)
                 internalInputs["woundAnchorPlanFingerprint"] = anchorPlan.Fingerprint;
+            if (recoveryCurrentTimeInMinutes is not null)
+                internalInputs["recoveryContinuationFingerprint"] =
+                    WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(recoveryContinuationAuthority!);
             if (treatmentCurrentTimeInMinutes is not null)
             {
                 internalInputs["treatmentSkillProjectionFingerprint"] =
@@ -651,7 +733,7 @@ internal static class AcceptedMechanicsWoundCommonInputComposer
                     treatmentResourcePublicationAuthority.RegisteredOutcome
                         .ExpectedBeforeImages.Keys);
             }
-            if (anchorPlan is not null)
+            if (anchorPlan is not null || recoveryCurrentTimeInMinutes is not null)
             {
                 requiredPaths.UnionWith(
                     EffectAcceptedTurnInputComposer.SourceAuthorityPaths);

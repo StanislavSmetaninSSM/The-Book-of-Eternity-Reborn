@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "test-selection-contracts",
+      "reason": "#1505 category migration changes selection, process ownership and result accounting.",
+      "contracts": [
+        "catalog membership",
+        "bounded runner",
+        "TRX completeness",
+        "owned process cleanup"
+      ]
+    },
+    {
+      "category": "frontend-command-results",
+      "reason": "#1505 replaces aggregate frontend invocation with selected Node and Vitest adapters.",
+      "contracts": [
+        "selected frontend files",
+        "assertion results",
+        "frontend failure propagation"
+      ]
+    },
+    {
+      "category": "frontend-shell-types",
+      "reason": "#1505 distinguishes compile-time frontend contracts from executed test assertions.",
+      "contracts": [
+        "selected TypeScript contract compilation",
+        "honest verification kind"
+      ]
+    },
+    {
+      "category": "frontend-shell-input",
+      "reason": "#1505 removes hidden aggregate imports and makes the selected UI source check independent of caller directory.",
+      "contracts": [
+        "standalone frontend entrypoints",
+        "UI source paths"
+      ]
+    },
+    {
+      "reason": "#1505 changes documented frontend commands and category-aware CI; verify their source contracts without host/gameplay scenarios.",
+      "contracts": [
+        "frontend workspace scripts",
+        "CI selection",
+        "contributor instructions"
+      ],
+      "category": "frontend-test-workflow"
+    }
+  ]
+}

@@ -109,13 +109,38 @@ internal static class WoundEffectIdentityLineageAnalyzer
 {
     private const int MaximumIssues = 20;
 
+    /// <summary>
+    /// Classifies current and retired wound identities from bound roots and authenticated retirement history.
+    /// </summary>
+    /// <param name="sourceGroup">
+    /// Exact wound source group being analyzed.
+    /// </param>
+    /// <param name="identities">
+    /// Complete parsed identity state used to verify membership and continuity.
+    /// </param>
+    /// <param name="currentRoots">
+    /// Bound roots of the current wound generation.
+    /// </param>
+    /// <param name="currentDefinitions">
+    /// Current definition domains and allowed reaction targets.
+    /// </param>
+    /// <param name="diagnosticProfile">
+    /// Selects the caller-specific diagnostic codes.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving completed terminal images; null retains original-baseline validation.
+    /// </param>
+    /// <returns>
+    /// Current ownership, retired identities and validation diagnostics.
+    /// </returns>
     internal static WoundEffectIdentityLineageAnalysis Analyze(
         EffectIdentitySourceGroup sourceGroup,
         EffectIdentityState identities,
         IReadOnlyList<WoundEffectIdentityLineageRoot> currentRoots,
         IReadOnlyDictionary<string, WoundEffectIdentityLineageDefinition>
             currentDefinitions,
-        WoundEffectLineageDiagnosticProfile diagnosticProfile)
+        WoundEffectLineageDiagnosticProfile diagnosticProfile,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         ArgumentNullException.ThrowIfNull(sourceGroup);
         ArgumentNullException.ThrowIfNull(identities);
@@ -305,6 +330,25 @@ internal static class WoundEffectIdentityLineageAnalyzer
                 diagnosticProfile,
                 issues);
         }
+
+        if (retirementHistory != null && !retirementHistory.ValidatesRetiredContinuity(sourceGroup, identities))
+            Add(issues, diagnosticProfile, "history_changed", sourceGroup.SourceId,
+                "Every actual retired generation must remain present with its exact completed terminal image.",
+                "complete privately registered retirement history", "missing or changed identity");
+
+        if (retirementHistory != null)
+            foreach (var member in members)
+            {
+                var authenticated = retirementHistory.AuthenticatesRetiredIdentity(sourceGroup, member, out var known);
+                if (!known)
+                    continue;
+                if (!authenticated || current.ContainsKey(member.EffectId))
+                    Add(issues, diagnosticProfile, "history_changed", member.EffectId,
+                        "An actual retired generation must retain its exact completed terminal image.",
+                        "unchanged privately registered retirement", member.EffectId);
+                else
+                    retired.Add(member.EffectId);
+            }
 
         foreach (var member in members.Where(entry =>
                      currentDefinitions.ContainsKey(DefinitionKey(entry))))
@@ -837,6 +881,7 @@ internal static class WoundEffectIdentityLineageAnalyzer
                 "cycle" => "effect_reaction_wound_lineage_cycle",
                 "generation_invalid" => "effect_reaction_wound_lineage_generation_invalid",
                 "retired_active" => "effect_reaction_wound_lineage_retired_active",
+                "history_changed" => "effect_reaction_wound_lineage_history_changed",
                 "create_invalid" => "effect_reaction_wound_lineage_create_invalid",
                 _ => "effect_reaction_wound_lineage_unreachable"
             }
@@ -853,6 +898,7 @@ internal static class WoundEffectIdentityLineageAnalyzer
                 "cycle" => "accepted_mechanics_wound_lineage_cycle",
                 "generation_invalid" => "accepted_mechanics_wound_lineage_generation_invalid",
                 "retired_active" => "accepted_mechanics_wound_lineage_retired_active",
+                "history_changed" => "accepted_mechanics_wound_lineage_history_changed",
                 "active_unreachable" => "accepted_mechanics_wound_lineage_active_unreachable",
                 "current_unreachable" => "accepted_mechanics_wound_lineage_current_unreachable",
                 _ => "accepted_mechanics_wound_lineage_create_invalid"

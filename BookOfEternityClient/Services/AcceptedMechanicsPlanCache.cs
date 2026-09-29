@@ -1,4 +1,6 @@
 using System.Text.Json;
+using SpiritualC4PublicationAuthority = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority;
+using SpiritualC4PublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
@@ -47,6 +49,8 @@ internal sealed class AcceptedMechanicsPlanCache
     private string? _validatedBindingFingerprint;
     private AcceptedMechanicsPlanBinding? _validatedBinding;
     private AcceptedMechanicsPlanningResult? _validatedResult;
+    private SpiritualC4PublicationAuthority? _spiritualPublication;
+    private SpiritualC4PublicationReceipt? _spiritualTaken;
     private WoundRepairPacketAuthority? _woundRepairAuthority;
     private readonly Dictionary<string, WoundRepairPacket> _woundRepairPackets =
         new(StringComparer.Ordinal);
@@ -61,7 +65,7 @@ internal sealed class AcceptedMechanicsPlanCache
         get
         {
             lock (_gate)
-                return _validatedResult != null;
+                return _validatedResult != null || _spiritualTaken is not null;
         }
     }
 
@@ -146,6 +150,161 @@ internal sealed class AcceptedMechanicsPlanCache
             packet = candidate;
             if (_woundRepairPackets.Count == 0)
                 ClearWoundRepairWaveCore();
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Registers an owner-issued completed plan without executing the ordinary planner.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Exact filesystem whose physical inputs the authority binds.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical lease spanning registration.
+    /// </param>
+    /// <param name="authority">
+    /// Fresh original-capture capability; a previously transferred capability is rejected.
+    /// </param>
+    /// <returns>
+    /// True only when the completed plan is registered under this cache's current fence.
+    /// </returns>
+    internal bool RegisterSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority)
+    {
+        ArgumentNullException.ThrowIfNull(authority);
+        lock (_gate)
+        {
+            if (_spiritualTaken is not null || !authority.CurrentInputsAgree(fileSystem, lease))
+                return false;
+            if (!authority.TryBindCache(_cacheAuthority))
+                return false;
+            InvalidateAllCore();
+            _spiritualPublication = authority;
+            _validatedBinding = authority.Binding;
+            _validatedBindingFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(_validatedBinding);
+            _validatedResult = new AcceptedMechanicsPlanningResult(authority.Plan, Array.Empty<ValidationIssue>());
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Reads the sealed completed entry without consuming publication ownership.
+    /// </summary>
+    /// <param name="authority">
+    /// Exact registered authority on success; null otherwise.
+    /// </param>
+    /// <returns>
+    /// True only while the registered completion remains intact and untaken.
+    /// </returns>
+    internal bool TryPeekSpiritualPublication(out SpiritualC4PublicationAuthority authority)
+    {
+        lock (_gate)
+        {
+            if (_spiritualPublication is { } current && current.HasValidSeal() &&
+                ReferenceEquals(_validatedResult?.Plan, current.Plan))
+            {
+                authority = current;
+                return true;
+            }
+            authority = null!;
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Takes the exact completed entry once after rechecking its entire physical binding.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Exact filesystem bound by the completion.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical lease retained by the common transaction.
+    /// </param>
+    /// <param name="authority">
+    /// Exact capability returned by the dedicated peek.
+    /// </param>
+    /// <param name="receipt">
+    /// Fenced transaction receipt on success; null otherwise.
+    /// </param>
+    /// <returns>
+    /// True only for the first valid take of this exact registered completion.
+    /// </returns>
+    internal bool TryTakeSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority,
+        out SpiritualC4PublicationReceipt receipt)
+    {
+        lock (_gate)
+        {
+            receipt = null!;
+            if (_spiritualTaken is not null || !ReferenceEquals(_spiritualPublication, authority) ||
+                !ReferenceEquals(_validatedResult?.Plan, authority.Plan) ||
+                _validatedBindingFingerprint != AcceptedMechanicsPlanFingerprints.ComputeInput(authority.Binding) ||
+                !authority.CurrentInputsAgree(fileSystem, lease))
+                return false;
+            receipt = new SpiritualC4PublicationReceipt(authority, _cacheAuthority, _validatedFence);
+            _spiritualTaken = receipt;
+            ClearValidatedSlotCore();
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Checks retained transaction ownership after publication may have changed physical inputs.
+    /// </summary>
+    /// <param name="receipt">
+    /// Exact receipt returned by this cache's dedicated take.
+    /// </param>
+    /// <returns>
+    /// True while receipt identity, cache fence and completed plan remain current.
+    /// </returns>
+    internal bool IsTakenSpiritualPublicationCurrent(SpiritualC4PublicationReceipt receipt)
+    {
+        lock (_gate)
+            return ReferenceEquals(_spiritualTaken, receipt) &&
+                ReferenceEquals(receipt.CacheOwner, _cacheAuthority) &&
+                ReferenceEquals(receipt.Fence, _validatedFence) && receipt.Authority.HasValidSeal();
+    }
+
+    /// <summary>
+    /// Closes an exact successful publication attempt without writing canonical state.
+    /// </summary>
+    /// <param name="receipt">
+    /// Current transaction receipt; foreign or already settled receipts are rejected.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when this call enables detached completed comparisons and closes the successful attempt; otherwise <see langword="false"/> for a foreign, stale or invalid receipt.
+    /// </returns>
+    internal bool SettleSpiritualPublication(SpiritualC4PublicationReceipt receipt)
+    {
+        lock (_gate)
+        {
+            if (!IsTakenSpiritualPublicationCurrent(receipt))
+                return false;
+            receipt.Authority.MarkCompletedConflictValidationPublished(_cacheAuthority);
+            InvalidateAllCore();
+            return true;
+        }
+    }
+
+    /// <summary>
+    /// Revokes an exact failed take even when its plan seal has become invalid.
+    /// </summary>
+    /// <param name="receipt">
+    /// Exact receipt owned by this cache and its current fence.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when this call closes the owned failed attempt; <see langword="false"/> for foreign or settled receipts.
+    /// </returns>
+    internal bool FailSpiritualPublication(SpiritualC4PublicationReceipt receipt)
+    {
+        lock (_gate)
+        {
+            if (!ReferenceEquals(_spiritualTaken, receipt) ||
+                !ReferenceEquals(receipt.CacheOwner, _cacheAuthority) ||
+                !ReferenceEquals(receipt.Fence, _validatedFence))
+                return false;
+            InvalidateAllCore();
             return true;
         }
     }
@@ -240,7 +399,8 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
-            if (_validatedResult != null &&
+            if (_spiritualPublication is null && _spiritualTaken is null &&
+                _validatedResult != null &&
                 string.Equals(
                     _validatedBindingFingerprint,
                     fingerprint,
@@ -269,7 +429,8 @@ internal sealed class AcceptedMechanicsPlanCache
         var fingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(liveBinding);
         lock (_gate)
         {
-            if (_validatedBinding is not null &&
+            if (_spiritualPublication is null && _spiritualTaken is null &&
+                _validatedBinding is not null &&
                 _validatedResult is { Plan: { } plan } current &&
                 ReferenceEquals(plan, expectedPlan) &&
                 string.Equals(
@@ -398,12 +559,16 @@ internal sealed class AcceptedMechanicsPlanCache
 
     private void InvalidateValidatedCore()
     {
+        _spiritualPublication?.Revoke();
+        _spiritualTaken?.Authority.Revoke();
+        _spiritualTaken = null;
         _validatedFence = new object();
         ClearValidatedSlotCore();
     }
 
     private void ClearValidatedSlotCore()
     {
+        _spiritualPublication = null;
         _validatedBindingFingerprint = null;
         _validatedBinding = null;
         _validatedResult = null;
@@ -776,6 +941,16 @@ internal static class AcceptedMechanicsPlanAuthority
                 suppliedBundle?.BundleFingerprint ?? "missing");
         }
 
+        if (bundle.PreparedPlan.RecoveryContinuationAuthority is { } recoveryAuthority)
+        {
+            if (!WoundAcceptedTurnPlanner.RecoveryContinuationFinalPlanAgrees(recoveryAuthority, bundle) ||
+                planningContext.WoundAnchorPlan is not null ||
+                planningContext.DirectWoundPublicationAuthority is not null ||
+                planningContext.TreatmentResourcePublicationAuthority is not null)
+                return WoundAnchorContextFailure("changed or competing recovery authority");
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
+                fileSystem, writeLease, input, bundle);
+        }
         var anchors = MortalWoundCanonicalAnchorPlan.Create(
             fileSystem,
             writeLease,
@@ -810,6 +985,15 @@ internal static class AcceptedMechanicsPlanAuthority
         ArgumentNullException.ThrowIfNull(bundle);
         fileSystem.EnsureCanonicalWriteLeaseActive(writeLease);
 
+        if (bundle.PreparedPlan.RecoveryContinuationAuthority is not null)
+        {
+            var recovery = AcceptedMechanicsWoundCommonInputComposer.ComposeRecoveryContinuation(
+                fileSystem, writeLease, bundle);
+            if (!recovery.Success || recovery.Input is null)
+                return new AcceptedMechanicsPlanningResult(null, recovery.Issues);
+            return AcceptedTurnAuthorityRegistry.GetOrBuildCommonWoundValidated(
+                fileSystem, writeLease, recovery.Input, bundle);
+        }
         var anchors = MortalWoundCanonicalAnchorPlan.Create(
             fileSystem,
             writeLease,
@@ -848,6 +1032,123 @@ internal static class AcceptedMechanicsPlanAuthority
                 repairHint:
                     "Rebuild the common accepted-turn input and canonical anchor plan from one validated handoff.")
         });
+
+    /// <summary>
+    /// Registers an exact completed spiritual plan without invoking the planner.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <returns>
+    /// True only when the owner-issued completed plan is registered.
+    /// </returns>
+    internal static bool RegisterSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority) =>
+        AcceptedTurnAuthorityRegistry.RegisterSpiritualPublication(fileSystem, lease, authority);
+
+    /// <summary>
+    /// Reads the dedicated spiritual publication capability without consuming it.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <returns>
+    /// True only when a sealed untaken publication is available.
+    /// </returns>
+    internal static bool TryPeekSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, out SpiritualC4PublicationAuthority authority) =>
+        AcceptedTurnAuthorityRegistry.TryPeekSpiritualPublication(fileSystem, lease, out authority);
+
+    /// <summary>
+    /// Takes one exact spiritual publication after checking current physical inputs.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only for the first valid take of the exact registered capability.
+    /// </returns>
+    internal static bool TryTakeSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority, out SpiritualC4PublicationReceipt receipt) =>
+        AcceptedTurnAuthorityRegistry.TryTakeSpiritualPublication(fileSystem, lease, authority, out receipt);
+
+    /// <summary>
+    /// Checks the exact retained spiritual transaction receipt and invalidation fence.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only while the exact taken completion remains owned by the cache.
+    /// </returns>
+    internal static bool IsTakenSpiritualPublicationCurrent(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        AcceptedTurnAuthorityRegistry.IsTakenSpiritualPublicationCurrent(fileSystem, lease, receipt);
+
+    /// <summary>
+    /// Closes a successful spiritual publication and revokes its capability.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only when the current publication attempt is settled.
+    /// </returns>
+    internal static bool CompleteSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        AcceptedTurnAuthorityRegistry.CompleteSpiritualPublication(fileSystem, lease, receipt);
+
+    /// <summary>
+    /// Closes a failed spiritual publication after the common transaction restores state.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only when the current publication attempt is settled.
+    /// </returns>
+    internal static bool FailSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        AcceptedTurnAuthorityRegistry.FailSpiritualPublication(fileSystem, lease, receipt);
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildValidated(
         FileSystemManager fileSystem,

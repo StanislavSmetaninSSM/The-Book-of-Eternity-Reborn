@@ -56,35 +56,56 @@ public partial class ValidationService
         return issues;
     }
 
+    /// <summary>
+    /// Validates raw item owners and optionally binds their allocations to one private spiritual attempt.
+    /// </summary>
+    /// <param name="issues">
+    /// Mutable issue collection receiving all raw item admission failures.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active real canonical lease retained throughout item admission.
+    /// </param>
+    /// <param name="spiritualAllocations">
+    /// Private original-intake allocation owner, or <see langword="null"/> to preserve ordinary item admission.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Detached original current draft, or <see langword="null"/> for ordinary physical reads.
+    /// </param>
     private async Task ValidateAcceptedTurnRawMortalItemMaterializationAsync(
         List<ValidationIssue> issues,
-        FileSystemManager.CanonicalWriteLease writeLease)
+        FileSystemManager.CanonicalWriteLease writeLease,
+        SpiritualOriginalAllocationOwner? spiritualAllocations = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
-        var retainedTreatment = await CaptureRetainedTreatmentItemAdmissionAsync(
-            writeLease,
-            issues);
+        if (currentInputs != null && spiritualAllocations?.Items is null)
+            throw new InvalidOperationException("Original item intake requires its private identity owner.");
+        var retainedTreatment = currentInputs == null
+            ? await CaptureRetainedTreatmentItemAdmissionAsync(writeLease, issues)
+            : null;
         var keepRetainedTreatment = false;
         if (retainedTreatment is null)
         {
             MortalItemAcceptedTurnAuthority.InvalidateValidatedItems(
                 _fs,
-                writeLease);
+                writeLease,
+                currentInputs != null ? spiritualAllocations?.Items : null);
         }
         try
         {
             var locationPlanningIssues = new List<ValidationIssue>();
             var locationPlan = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
                 locationPlanningIssues,
-                writeLease);
+                writeLease, spiritualAllocations?.Locations, currentInputs);
             var current = await LoadMortalItemCatalogAsync(
                 writeLease,
                 includeNpcInventoryCommands: true,
                 issues,
                 locationPlanningIssues.Any(issue => issue.Severity == IssueSeverity.Error)
                 ? null
-                : locationPlan);
+                : locationPlan,
+                currentInputs);
             MortalItemRouteAuthorityCatalog? routeAuthorities = null;
             MortalItemAcceptedTransferCatalog? transferCatalog = null;
             MortalItemCatalogFiles? previous = null;
@@ -124,7 +145,8 @@ public partial class ValidationService
                     acceptedStorageCoordinates: locationPlanningIssues.Any(issue =>
                         issue.Severity == IssueSeverity.Error)
                         ? null
-                : locationPlan?.AcceptedStorageCoordinates);
+                : locationPlan?.AcceptedStorageCoordinates,
+                    currentInputs: currentInputs);
                 AddRouteAuthorityIssues(routeAuthorities, issues);
 
                 currentIndex = MortalItemIdentityState.Parse(current.IdentityIndexJson);
@@ -142,11 +164,21 @@ public partial class ValidationService
                     return;
                 }
                 validatedManifest = snapshotLookup.Manifest;
+                if (currentInputs != null &&
+                    !currentInputs.MatchesIdentity(validatedManifest.SessionId,
+                        validatedManifest.RequestId, validatedManifest.ManifestPayloadHash,
+                        validatedManifest.TurnNumber))
+                {
+                    issues.Add(SourceIssue(InventoryEquipmentService.ItemsPath,
+                        "spiritual_original_input_identity_mismatch",
+                        "the exact original item snapshot identity"));
+                    return;
+                }
 
                 await ValidateRawOffscreenLocationStorageAuthorityAsync(
                     snapshotLookup.Manifest,
                     issues,
-                    writeLease);
+                    writeLease, currentInputs);
 
                 foreach (var occurrence in current.Catalog.Occurrences.Where(occurrence =>
                              IsRawMortalItemCreation(occurrence.Item)))
@@ -203,7 +235,8 @@ public partial class ValidationService
                     writeLease,
                     previous.Catalog,
                     current.Catalog,
-                    snapshotLookup.Manifest.TurnNumber);
+                    snapshotLookup.Manifest.TurnNumber,
+                    currentInputs);
                 issues.AddRange(transferCatalog.Issues);
                 ValidateRawCurrentItemContinuity(previous.Catalog, current.Catalog, issues);
             }
@@ -225,7 +258,8 @@ public partial class ValidationService
                         ParseProjectionRoot(
                             await ReadCurrentItemFileAsync(
                                 writeLease,
-                                path: MortalItemAcceptedTransferCatalog.PlayerRemovalPath),
+                                path: MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
+                                currentInputs),
                             MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
                             issues);
                     var backupProjectionRoots = previous is null
@@ -264,7 +298,8 @@ public partial class ValidationService
                         routeAuthorities,
                         transferCatalog,
                                 currentProjectionRoots,
-                                backupProjectionRoots);
+                                backupProjectionRoots,
+                                spiritualAllocations?.Items, validatedManifest.RequestId, validatedManifest.TurnNumber);
                         }
                         else if (routeAuthorities is not null &&
                                  transferCatalog is not null &&
@@ -820,14 +855,32 @@ public partial class ValidationService
             normalized.StartsWith(root + "[", StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// Compares offscreen storage contents with the physical pre-turn snapshot.
+    /// </summary>
+    /// <param name="manifest">
+    /// Validated physical pre-turn snapshot manifest.
+    /// </param>
+    /// <param name="issues">
+    /// Collection receiving storage authority failures.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical current reads.
+    /// </param>
     private async Task ValidateRawOffscreenLocationStorageAuthorityAsync(
         ValidationPendingTurnSnapshotManifest manifest,
         List<ValidationIssue> issues,
-        FileSystemManager.CanonicalWriteLease? writeLease = null)
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
         var path = MortalLocationStorageContentsState.StatePath;
         var preTurnExists = manifest.Files.ContainsKey(path);
-        var currentExists = writeLease == null
+        var currentExists = currentInputs != null
+            ? currentInputs.ReadImage(path).Existed
+            : writeLease == null
             ? _fs.FileExists(path)
             : _fs.FileExists(writeLease, path);
         if (!preTurnExists && !currentExists)
@@ -847,7 +900,7 @@ public partial class ValidationService
         }
         if (currentExists)
         {
-            currentJson = await ReadCurrentItemFileAsync(writeLease, path);
+            currentJson = await ReadCurrentItemFileAsync(writeLease, path, currentInputs);
             current = TryParseOffscreenLocationStorageState(currentJson);
         }
 
@@ -895,40 +948,64 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Loads current item carriers and companion roots from the selected current-input source.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="includeNpcInventoryCommands">
+    /// Includes the NPC inventory command carrier when <see langword="true"/>.
+    /// </param>
+    /// <param name="issues">
+    /// Collection receiving carrier and companion validation issues.
+    /// </param>
+    /// <param name="effectiveLocationPlan">
+    /// Accepted location plan for interpreting current storage carriers, or <see langword="null"/>.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Current catalog, identity-index text and detached projection inputs.
+    /// </returns>
     private async Task<MortalItemCatalogFiles> LoadMortalItemCatalogAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
         bool includeNpcInventoryCommands,
         List<ValidationIssue> issues,
-        MortalLocationAcceptedTurnPlan? effectiveLocationPlan = null)
+        MortalLocationAcceptedTurnPlan? effectiveLocationPlan = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
+        if (currentInputs != null && writeLease == null)
+            throw new InvalidOperationException("Original current inputs require a real canonical lease.");
         var playerJson = await ReadCurrentItemFileAsync(
             writeLease,
-            InventoryEquipmentService.ItemsPath);
+            InventoryEquipmentService.ItemsPath, currentInputs);
         var npcCoreJson = await ReadCurrentItemFileAsync(
             writeLease,
-            NpcCoreChangesContract.NpcCorePath);
+            NpcCoreChangesContract.NpcCorePath, currentInputs);
         var npcCommandsJson = includeNpcInventoryCommands
             ? await ReadCurrentItemFileAsync(
                 writeLease,
-                "game_state/npcs/npc_inventory.json")
+                "game_state/npcs/npc_inventory.json", currentInputs)
             : null;
         var currentLocationJson = await ReadCurrentItemFileAsync(
             writeLease,
-            StorageTransportMoveService.CurrentLocationPath);
+            StorageTransportMoveService.CurrentLocationPath, currentInputs);
         var offscreenLocationStorageJson = await ReadCurrentItemFileAsync(
             writeLease,
-            MortalLocationStorageContentsState.StatePath);
+            MortalLocationStorageContentsState.StatePath, currentInputs);
         var vehiclesJson = await ReadCurrentItemFileAsync(
             writeLease,
-            StorageTransportMoveService.VehiclesPath);
+            StorageTransportMoveService.VehiclesPath, currentInputs);
         var identityIndexJson = await ReadCurrentItemFileAsync(
             writeLease,
-            MortalItemIdentityState.StatePath);
+            MortalItemIdentityState.StatePath, currentInputs);
 
         var companions = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
         foreach (var path in MortalItemCompanionPaths)
         {
-            var json = await ReadCurrentItemFileAsync(writeLease, path);
+            var json = await ReadCurrentItemFileAsync(writeLease, path, currentInputs);
             var companion = ParseProjectionRoot(json, path, issues) as JsonObject;
             if (companion != null)
                 companions.Add(path, companion);
@@ -1054,10 +1131,33 @@ public partial class ValidationService
         return new MortalItemCatalogFiles(catalog, identityIndexJson, input, vehiclesJson);
     }
 
+    /// <summary>
+    /// Reads one current item carrier from the retained view or ordinary filesystem.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="path">
+    /// Exact current carrier path.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Decoded text, or <see langword="null"/> when the selected carrier is absent.
+    /// </returns>
     private async Task<string?> ReadCurrentItemFileAsync(
         FileSystemManager.CanonicalWriteLease? writeLease,
-        string path)
+        string path,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
+        if (currentInputs != null)
+        {
+            if (writeLease == null)
+                throw new InvalidOperationException("Original current inputs require a real canonical lease.");
+            _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+            return currentInputs.ReadText(path);
+        }
         return writeLease == null
             ? await _fs.ReadFileAsync(path)
             : await _fs.ReadFileAsync(writeLease, path);

@@ -482,13 +482,27 @@ public partial class ValidationService
         return true;
     }
 
+    /// <summary>
+    /// Evaluates captured conflict inputs with ordinary rules and optional exact published causal comparisons.
+    /// </summary>
+    /// <param name="frame">
+    /// Captured current inputs and authenticated original baseline.
+    /// </param>
+    /// <param name="completion">
+    /// Published original-turn comparisons, or <see langword="null"/> for ordinary and live preparation validation.
+    /// </param>
+    /// <returns>
+    /// Validation diagnostics, including an error if published exchange evidence no longer matches.
+    /// </returns>
     internal IReadOnlyList<ValidationIssue> EvaluateSpiritualConflictValidationFrame(
-        SpiritualConflictValidationFrame frame)
+        SpiritualConflictValidationFrame frame,
+        SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation? completion = null)
     {
         ArgumentNullException.ThrowIfNull(frame);
         var issues = new List<ValidationIssue>();
         if (!TryParseSpiritualConflictCurrentImage(frame.Candidate.Conflict, issues, out var root))
         {
+            if (completion is not null) issues.Add(CompletedSpiritualConflictMismatch());
             ValidateSpiritualConflictCapturedPreTurnIntegrity(
                 frame.HasValidatedSnapshot ? frame.Baseline.Conflict : null, null, issues);
             return issues.AsReadOnly();
@@ -496,12 +510,24 @@ public partial class ValidationService
 
         var gateContext = CreateSpiritualConflictGateContext(frame);
         var diceContext = CreateSpiritualConflictDiceContext(frame);
-        var actionCostAuthority = CreateSpiritualConflictActionCostContext(frame);
+        var actionCostAuthority = CreateSpiritualConflictActionCostContext(frame) with
+        {
+            CompletedConflictValidation = completion
+        };
         var rewardContext = CreateSpiritualConflictRewardContext(frame, gateContext);
         var soulDissipationContext = CreateSpiritualConflictSoulDissipationContext(frame);
         ValidateSpiritualConflictCapturedPreTurnIntegrity(
             frame.HasValidatedSnapshot ? frame.Baseline.Conflict : null, root, issues);
-        ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, actionCostAuthority, rewardContext, soulDissipationContext);
+        try
+        {
+            completion?.ValidateRoot(root!);
+            ValidateAfterlifeSpiritualConflictRoot(root, AfterlifeSpiritualConflictState.StatePath, issues, diceContext, actionCostAuthority, rewardContext, soulDissipationContext);
+        }
+        catch (InvalidOperationException) when (completion is not null)
+        {
+            issues.Add(CompletedSpiritualConflictMismatch());
+            return issues.AsReadOnly();
+        }
         ValidateAfterlifeConflictRewardStateDeltas(rewardContext, issues);
 
         if (root["activeConflict"] is JsonObject activeConflict)

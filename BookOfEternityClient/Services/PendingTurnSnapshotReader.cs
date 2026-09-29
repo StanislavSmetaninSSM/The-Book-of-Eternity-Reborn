@@ -7,7 +7,7 @@ namespace BookOfEternityClient.Services;
 
 internal static class PendingTurnSnapshotPathPresenceV1
 {
-    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+    private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =
         Array.AsReadOnly(new[]
         {
             "game_state/meta/soul_state.json",
@@ -28,7 +28,28 @@ internal static class PendingTurnSnapshotPathPresenceV1
             "game_state/combat/allies.json"
         });
 
+    private static readonly ReadOnlyCollection<string> PreviousClosedLogicalPaths =
+        Array.AsReadOnly(LegacyClosedLogicalPaths
+            .Concat([SpiritualWoundCaptureCheckpointState.StatePath,
+                     SpiritualWoundDecisionPendingState.StatePath])
+            .ToArray());
+
+    private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =
+        Array.AsReadOnly(PreviousClosedLogicalPaths
+            .Concat([SpiritualWoundOpportunityReceiptState.StatePath])
+            .ToArray());
+
     internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;
+    /// <summary>
+    /// Gets the closed presence set emitted before private spiritual service roots were observed.
+    /// Existing signed turns can still be read for unrelated work.
+    /// </summary>
+    internal static IReadOnlyList<string> LegacyLogicalPaths => LegacyClosedLogicalPaths;
+    /// <summary>
+    /// Gets the closed presence set emitted before spiritual opportunity receipts were observed.
+    /// Existing signed turns remain readable for unrelated work.
+    /// </summary>
+    internal static IReadOnlyList<string> PreviousLogicalPaths => PreviousClosedLogicalPaths;
 
     internal static Dictionary<string, bool> Create(
         IReadOnlyDictionary<string, string> files,
@@ -339,7 +360,8 @@ internal static class PendingTurnSnapshotReader
                 realm,
                 manifest.PreGeneratedDices1d20,
                 bytesByPath,
-                absentLogicalPaths),
+                absentLogicalPaths,
+                manifest.Files.Keys),
             Array.Empty<ValidationIssue>());
     }
 
@@ -473,20 +495,25 @@ internal static class PendingTurnSnapshotReader
 
         var expected = PendingTurnSnapshotPathPresenceV1.LogicalPaths
             .ToHashSet(StringComparer.Ordinal);
+        var legacy = PendingTurnSnapshotPathPresenceV1.LegacyLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
+        var previous = PendingTurnSnapshotPathPresenceV1.PreviousLogicalPaths
+            .ToHashSet(StringComparer.Ordinal);
         var actual = manifest.OriginalPathPresenceV1.Keys
             .ToHashSet(StringComparer.Ordinal);
-        if (manifest.OriginalPathPresenceV1.Count != expected.Count ||
-            !actual.SetEquals(expected))
+        if (!((manifest.OriginalPathPresenceV1.Count == expected.Count && actual.SetEquals(expected)) ||
+              (manifest.OriginalPathPresenceV1.Count == previous.Count && actual.SetEquals(previous)) ||
+              (manifest.OriginalPathPresenceV1.Count == legacy.Count && actual.SetEquals(legacy))))
         {
             Add(
                 issues,
                 LiveTurnPreparationService.PendingTurnSnapshotManifestPath,
                 "pending_turn_snapshot_reader_presence_invalid",
-                "originalPathPresenceV1 must contain exactly the closed v1 logical-path set");
+                "originalPathPresenceV1 must contain exactly a supported closed logical-path set");
             return;
         }
 
-        foreach (var logicalPath in PendingTurnSnapshotPathPresenceV1.LogicalPaths)
+        foreach (var logicalPath in actual)
         {
             var fileCount = manifest.Files.Keys.Count(key =>
                 string.Equals(key, logicalPath, StringComparison.Ordinal));
@@ -890,7 +917,38 @@ internal sealed class PendingTurnSnapshotReadAuthority
     private readonly ReadOnlyCollection<int> _acceptedD20EventValues;
     private readonly ReadOnlyCollection<string> _coveredLogicalPaths;
     private readonly ReadOnlyCollection<string> _absentLogicalPaths;
+    private readonly ReadOnlyCollection<string> _declaredOriginalLogicalPaths;
 
+    /// <summary>
+    /// Retains selected validated snapshot bytes and separate declared inventory metadata.
+    /// </summary>
+    /// <param name="sessionId">
+    /// Original signed session identifier.
+    /// </param>
+    /// <param name="requestId">
+    /// Original signed request identifier.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact validated manifest payload hash.
+    /// </param>
+    /// <param name="turnNumber">
+    /// Original signed turn number.
+    /// </param>
+    /// <param name="realm">
+    /// Validated original realm.
+    /// </param>
+    /// <param name="acceptedD20EventValues">
+    /// Selected signed die values, or <see langword="null"/> for none.
+    /// </param>
+    /// <param name="bytesByPath">
+    /// Selected exact snapshot bytes; these alone grant selected byte reads.
+    /// </param>
+    /// <param name="absentLogicalPaths">
+    /// Selected paths with validated original absence.
+    /// </param>
+    /// <param name="declaredOriginalLogicalPaths">
+    /// Declared manifest paths, or <see langword="null"/> for no additional metadata. Declaration alone grants no byte or absence authority.
+    /// </param>
     internal PendingTurnSnapshotReadAuthority(
         string sessionId,
         string requestId,
@@ -899,7 +957,8 @@ internal sealed class PendingTurnSnapshotReadAuthority
         string realm,
         IReadOnlyList<int>? acceptedD20EventValues,
         IReadOnlyDictionary<string, byte[]> bytesByPath,
-        IReadOnlyList<string> absentLogicalPaths)
+        IReadOnlyList<string> absentLogicalPaths,
+        IEnumerable<string>? declaredOriginalLogicalPaths = null)
     {
         SessionId = sessionId;
         RequestId = requestId;
@@ -912,6 +971,9 @@ internal sealed class PendingTurnSnapshotReadAuthority
             bytesByPath.Keys.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
         _absentLogicalPaths = Array.AsReadOnly(
             absentLogicalPaths.OrderBy(static path => path, StringComparer.Ordinal).ToArray());
+        _declaredOriginalLogicalPaths = Array.AsReadOnly(
+            (declaredOriginalLogicalPaths ?? Array.Empty<string>())
+            .OrderBy(static path => path, StringComparer.Ordinal).ToArray());
         _bytesByPath = new ReadOnlyDictionary<string, byte[]>(
             bytesByPath.ToDictionary(
                 pair => pair.Key,
@@ -928,6 +990,10 @@ internal sealed class PendingTurnSnapshotReadAuthority
     internal IReadOnlyList<int> AcceptedD20EventValues => _acceptedD20EventValues;
     internal IReadOnlyList<string> CoveredLogicalPaths => _coveredLogicalPaths;
     internal IReadOnlyList<string> AbsentLogicalPaths => _absentLogicalPaths;
+    /// <summary>
+    /// Gets declared manifest paths as detached metadata, without extending selected byte or absence authority.
+    /// </summary>
+    internal IReadOnlyList<string> DeclaredOriginalLogicalPaths => _declaredOriginalLogicalPaths;
 
     public byte[] ReadRequiredBytes(string logicalPath)
     {

@@ -9,6 +9,66 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class SpiritualWoundEffectProfileContractTests
 {
+    [Theory]
+    [InlineData("\"0\"")]
+    [InlineData("null")]
+    [InlineData("true")]
+    [InlineData("[]")]
+    [InlineData("{}")]
+    public void SpiritualWoundOwnedSourceGraph_MalformedPriorityReturnsIssues(string priorityJson)
+    {
+        var wound = WoundContractTestData.CreateSpiritualActiveWound();
+        wound["consequences"]!["ownedEffectSources"]!["definitions"]![0]!["components"]![0]!["priority"] =
+            JsonNode.Parse(priorityJson);
+        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "wound");
+        Assert.False(parsed.IsValid);
+        Assert.Contains(parsed.Issues, issue => issue.Code == "wound_consequence_spiritual_profile_invalid");
+    }
+
+    [Fact]
+    public void SpiritualWoundOwnedSourceGraph_PreservesLegalZeroSlotMarker()
+    {
+        var wound = WoundContractTestData.CreateSpiritualActiveWound();
+        var sources = wound["consequences"]!["ownedEffectSources"]!;
+        var marker = WoundContractTestData.CreateOwnedEffectSourcesForTarget(
+            "wound_spiritual_test", "chaos_sea", "player",
+            ("effect_spiritual_marker", "definition_spiritual_marker", "wound_consequence"));
+        sources["definitions"]!.AsArray().Add(marker["definitions"]![0]!.DeepClone());
+        sources["rootBindings"]!.AsArray().Add(marker["rootBindings"]![0]!.DeepClone());
+        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "wound");
+        Assert.True(parsed.IsValid, Describe(parsed.Issues));
+        Assert.Equal(2, parsed.Wound!.Consequences.SlotsUsed);
+    }
+
+    [Theory]
+    [InlineData("magnitude", "wound_consequence_spiritual_magnitude_invalid")]
+    [InlineData("availability", "wound_consequence_spiritual_profile_unavailable")]
+    [InlineData("duplicate", "wound_consequence_duplicate_coordinate")]
+    public void SpiritualWoundOwnedSourceGraph_EnforcesSeverityAndCoordinates(string mutation, string expectedCode)
+    {
+        var wound = WoundContractTestData.CreateSpiritualActiveWound();
+        var definitions = wound["consequences"]!["ownedEffectSources"]!["definitions"]!;
+        var component = definitions[1]!["components"]![0]!;
+        var entry = wound["consequences"]!["entries"]![1]!;
+        if (mutation == "magnitude")
+            component["payload"]!["magnitude"] = 3;
+        else if (mutation == "availability")
+        {
+            component["profile"] = "spiritual_strain_burden";
+            component["payload"]!["axis"] = "sideStrain";
+            entry["profileKey"] = "spiritual_strain_burden";
+        }
+        else
+        {
+            component["profile"] = "spiritual_roll_hindrance";
+            component["payload"] = definitions[0]!["components"]![0]!["payload"]!.DeepClone();
+            entry["profileKey"] = "spiritual_roll_hindrance";
+        }
+        var parsed = WoundMaterializationContract.Parse(wound.ToJsonString(), "wound");
+        Assert.False(parsed.IsValid);
+        Assert.Contains(parsed.Issues, issue => issue.Code == expectedCode);
+    }
+
     private static readonly string[] Profiles =
     {
         "spiritual_roll_hindrance",

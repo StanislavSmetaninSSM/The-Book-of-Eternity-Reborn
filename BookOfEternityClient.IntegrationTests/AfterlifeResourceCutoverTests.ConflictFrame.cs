@@ -7,6 +7,7 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeResourceCutoverTests
 {
+    private static int _defaultConflictFramePreparationCount;
     [Fact]
     public async Task ConflictFrame_SignedPressureExchangePublishesWithNoOwningPhaseErrors()
     {
@@ -57,17 +58,96 @@ public sealed partial class AfterlifeResourceCutoverTests
             issue.Code == "afterlife_conflict_dice_value_not_authorized");
     }
 
+    /// <summary>
+    /// Rejects validation errors while retaining their expected and actual source evidence in the failure message.
+    /// </summary>
+    /// <param name="issues">
+    /// Validation results whose error diagnostics must be absent.
+    /// </param>
     private static void AssertNoConflictFrameErrors(IEnumerable<ValidationIssue> issues)
     {
         var errors = issues.Where(issue => issue.Severity == IssueSeverity.Error).ToArray();
         Assert.True(errors.Length == 0, string.Join(Environment.NewLine,
-            errors.Select(issue => $"{issue.Code}: {issue}")));
+            errors.Select(issue => $"{issue.Code}: {issue}; expected={issue.Expected}; actual={issue.Actual}")));
     }
 
+    /// <summary>
+    /// Seeds a signed spiritual conflict with optional upstream baselines fixed before snapshot creation.
+    /// </summary>
+    /// <param name="hooks">
+    /// Optional filesystem hooks for the fixture's real canonical reads and writes.
+    /// </param>
+    /// <param name="seedOriginalInputs">
+    /// Optional baseline writer run before composing authority and signing the original snapshot.
+    /// The two exact named intake seeders may reuse completed signed bytes; arbitrary callbacks run for each fixture.
+    /// </param>
+    /// <param name="signedDice">
+    /// Optional exact ordered die pool signed into this test context; <see langword="null"/> uses 15, 5, 12, 8.
+    /// </param>
+    /// <param name="playerCurrent">
+    /// Initial player action points; defaults to the ordinary maximum of six.
+    /// </param>
+    /// <param name="oppositionCurrent">
+    /// Initial opposition action points; defaults to the ordinary maximum of six.
+    /// </param>
+    /// <param name="initializeContext">
+    /// Optional base-session seeding before any spiritual original state is written.
+    /// </param>
+    /// <param name="captureOriginalSnapshot">
+    /// Optional real lifecycle signer after original authority is complete; <see langword="null"/> uses the existing fixture signer.
+    /// </param>
+    /// <param name="bypassPreparedFixture">
+    /// Builds a cacheable signed profile rather than copying it; used only by the fixture cache factories.
+    /// </param>
+    /// <returns>
+    /// Owned filesystem context with one authenticated original pending snapshot.
+    /// </returns>
     private static async Task<ResourceMaterializationTestContext> CreateCompleteConflictFrameContextAsync(
-        FileSystemManagerHooks? hooks = null)
+        FileSystemManagerHooks? hooks = null,
+        Func<ResourceMaterializationTestContext, Task>? seedOriginalInputs = null,
+        int[]? signedDice = null,
+        decimal playerCurrent = 6m,
+        decimal oppositionCurrent = 6m,
+        Func<ResourceMaterializationTestContext, Task>? initializeContext = null,
+        Func<ResourceMaterializationTestContext, Task>? captureOriginalSnapshot = null,
+        bool bypassPreparedFixture = false)
     {
+        var trustedKey = ReadTrustedConflictFrameKey(hooks, seedOriginalInputs, signedDice,
+            playerCurrent, oppositionCurrent, initializeContext, captureOriginalSnapshot);
+        var defaultFrame = trustedKey is { SeedVersion: "default_v1", OrderedDice: "15,5,12,8",
+            PlayerCurrent: 6m, OppositionCurrent: 6m };
+        var originalIntakeFrame = trustedKey is { SeedVersion: "original_intake_v1", OrderedDice: "15,5,12,8",
+            PlayerCurrent: 6m, OppositionCurrent: 6m };
+        if (trustedKey is not null && !bypassPreparedFixture)
+        {
+            var template = defaultFrame ? DefaultConflictFrameTemplate : originalIntakeFrame
+                ? OriginalIntakeConflictFrameTemplate
+                : TrustedConflictFrameTemplates.GetOrAdd(trustedKey, static key =>
+                    new Lazy<Task<PreparedFixtureTree>>(() => PrepareTrustedConflictFrameTemplateAsync(key),
+                        LazyThreadSafetyMode.ExecutionAndPublication));
+            var prepared = await template.Value;
+            var copy = await ResourceMaterializationTestContext.CreateAsync();
+            try
+            {
+                prepared.Materialize(copy.FileSystem.GameSessionPath);
+                return copy;
+            }
+            catch
+            {
+                await copy.DisposeAsync();
+                throw;
+            }
+        }
+        if (defaultFrame)
+            Interlocked.Increment(ref _defaultConflictFramePreparationCount);
+        if (originalIntakeFrame)
+            Interlocked.Increment(ref _originalIntakeConflictFramePreparationCount);
+        Interlocked.Increment(ref _uncachedConflictFramePreparationCount);
+        if (trustedKey is not null)
+            TrustedConflictFramePreparations.AddOrUpdate(trustedKey, 1, static (_, count) => count + 1);
         var context = await ResourceMaterializationTestContext.CreateAsync(hooks);
+        if (initializeContext != null)
+            await initializeContext(context);
         var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
         Assert.True(bootstrap.IsValid, string.Join(Environment.NewLine, bootstrap.Issues));
         var definitions = Assert.IsType<ResourceDefinitionCatalog>(bootstrap.Definitions);
@@ -110,7 +190,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             },
             ["supporters"] = new JsonArray()
         };
-        var (state, history) = BuildActionPointState(definitions, profiles, conflict, soul, 6m, 6m);
+        var (state, history) = BuildActionPointState(definitions, profiles, conflict, soul, playerCurrent, oppositionCurrent);
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.DefinitionsPath, definitions.ToCanonicalJson());
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.StatePath, state.ToCanonicalJson());
         await context.WriteExactJsonAsync(ResourceMaterializationTestContext.HistoryPath, history.ToCanonicalJson());
@@ -122,9 +202,14 @@ public sealed partial class AfterlifeResourceCutoverTests
             ["activeConflict"] = conflict,
             ["recentConflicts"] = new JsonArray()
         }.ToJsonString());
+        if (seedOriginalInputs != null)
+            await seedOriginalInputs(context);
         await WriteComposedAuthorityAsync(context, definitions, state, history);
-        await context.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
-            preGeneratedDices1d20: [15, 5, 12, 8]);
+        if (captureOriginalSnapshot != null)
+            await captureOriginalSnapshot(context);
+        else
+            await context.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
+                preGeneratedDices1d20: signedDice ?? [15, 5, 12, 8]);
         return context;
     }
 

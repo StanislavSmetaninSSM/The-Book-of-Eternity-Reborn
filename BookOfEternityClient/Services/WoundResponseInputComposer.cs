@@ -383,6 +383,7 @@ internal static partial class WoundResponseInputComposer
             opportunities.Any(static value => value is null) ||
             opportunities.Any(value =>
                 !WoundOpportunityAuthority.HasCompleteShape(value) ||
+                value.OriginalSourceGuarantee is { } originalGuarantee && originalGuarantee.RequestTurn != binding.Turn ||
                 !string.Equals(value.SessionId, binding.SessionId, StringComparison.Ordinal) ||
                 !string.Equals(value.RequestId, binding.RequestId, StringComparison.Ordinal) ||
                 !string.Equals(value.SnapshotToken, binding.SnapshotToken, StringComparison.Ordinal) ||
@@ -734,7 +735,7 @@ internal static partial class WoundResponseInputComposer
                     ["target"] = opportunity.SafeContext.Target,
                     ["realm"] = ReadableRealm(binding.Realm)
                 },
-                opportunity.GuaranteedTrigger is null
+                opportunity.RequiredSeverityRank is null
                     ? new[] { "none", "materialize" }
                     : new[] { "materialize" },
                 Roman(opportunity.MinimumSeverityRank ?? 1),

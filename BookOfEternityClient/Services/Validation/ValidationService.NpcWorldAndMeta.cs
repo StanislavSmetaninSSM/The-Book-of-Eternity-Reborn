@@ -4525,7 +4525,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -4916,9 +4916,22 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Identifies client-owned or separately validated paths excluded from generic GM file repair.
+    /// </summary>
+    /// <param name="normalizedPath">
+    /// Non-null repository-relative path with forward slash separators.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when generic GM JSON repair must skip the path;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SpiritualWoundDecisionPendingState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SpiritualWoundOpportunityReceiptState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(MortalLocationIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith(MortalLocationIdentityState.StatePath + ".", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
@@ -7198,7 +7211,7 @@ public partial class ValidationService
         {
             try
             {
-                var json = _fs.ReadFileAsync(path).GetAwaiter().GetResult();
+                var json = ReadSameTurnOwnerCurrentTextAsync(path).GetAwaiter().GetResult();
                 if (string.IsNullOrWhiteSpace(json))
                     continue;
 

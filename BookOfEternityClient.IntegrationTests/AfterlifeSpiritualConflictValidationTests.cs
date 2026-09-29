@@ -5402,6 +5402,9 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
     public async Task ValidateGameStateAsync_BindingWithAdvantageIsAllowed()
     {
         await WriteSoulStateAsync();
+        var audit = BuildPlayerSuccessDiceAudit();
+        AddConflictPositionModifier(audit, "player", "player_advantaged", 2);
+        Assert.Equal("player_success", audit["outcomeBand"]!.GetValue<string>());
         await WriteConflictStateWithRawExchangeAsync($$"""
         {
           "exchangeId": "exchange_binding_with_leverage_001",
@@ -5412,7 +5415,7 @@ public sealed partial class AfterlifeSpiritualConflictValidationTests : IDisposa
             "conflictPosition": "player_dominant",
             "bindingState": "imposed"
           },
-          "diceAudit": {{BuildPlayerSuccessDiceAuditJson()}}
+          "diceAudit": {{audit.ToJsonString()}}
         }
         """);
 

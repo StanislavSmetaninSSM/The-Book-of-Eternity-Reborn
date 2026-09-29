@@ -1,13 +1,36 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
 public partial class CanonicalStateNormalizer
 {
+    /// <summary>
+    /// Publishes accepted location outputs through the existing writer, retaining completed spiritual identities when supplied.
+    /// </summary>
+    /// <param name="backups">
+    /// Signed pre-turn backup mapping required for location commands.
+    /// </param>
+    /// <param name="spiritualPublicationReceipt">
+    /// Exact taken common-publication receipt, or null to retain ordinary location planning.
+    /// </param>
+    /// <returns>
+    /// The published location plan, or null when the turn contains no location commands.
+    /// </returns>
     internal async Task<MortalLocationAcceptedTurnPlan?> NormalizeMortalLocationsAsync(
-        IReadOnlyDictionary<string, string>? backups)
+        IReadOnlyDictionary<string, string>? backups,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
+        MortalLocationAcceptedTurnPlan? completedLocationPlan = null;
+        if (spiritualPublicationReceipt is not null)
+        {
+            var lease = _writeLease ?? throw new InvalidOperationException("Location publication requires its canonical lease.");
+            if (!AcceptedMechanicsPlanAuthority.IsTakenSpiritualPublicationCurrent(
+                    _fs, lease, spiritualPublicationReceipt))
+                throw new InvalidDataException("Location publication requires the exact taken spiritual completion.");
+            completedLocationPlan = spiritualPublicationReceipt.Authority.MortalLocationPlan;
+        }
         var currentMap = await ReadMortalLocationObjectRootAsync(
             MortalLocationMaterializationContract.WorldMapPath);
         var currentProjection = await ReadMortalLocationObjectRootAsync(
@@ -73,7 +96,11 @@ public partial class CanonicalStateNormalizer
         var rawFactionCore = await ReadMortalLocationObjectRootAsync(
             FactionCoreChangesContract.FactionCorePath);
 
-        var result = MortalLocationAcceptedTurnPlanAuthority.GetOrBuild(
+        if (spiritualPublicationReceipt is not null && completedLocationPlan is null)
+            throw new InvalidDataException("Spiritual location commands have no original completed location plan.");
+        var result = completedLocationPlan is not null
+            ? new MortalLocationAcceptedTurnPlanningResult(completedLocationPlan, Array.Empty<ValidationIssue>())
+            : MortalLocationAcceptedTurnPlanAuthority.GetOrBuild(
             _fs,
             new MortalLocationAcceptedTurnInput(
                 preTurnMap,

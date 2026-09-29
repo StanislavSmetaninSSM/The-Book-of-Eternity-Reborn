@@ -1,5 +1,70 @@
 # Phase 0 Research: Complete Wound Materialization and Healing
 
+## Approved terminal binding refinement — 2026-09-29 (#1536)
+
+- Decision: owner-approved RESULT-CLOSURE-BINDING revision1 uses exact GM-authored
+  failed-binding result A followed by a separate exact terminal-control echo B.
+- Evidence: pressure5/15 and binding13/10 preserve player_success after a wound
+  removes position leverage; ordinary binding/strong-binding prerequisites, rather
+  than a generic dice-band conversion, determine the bounded permission.
+- Strong-binding fixture candidate: signed later dice13/11 with canonical +2
+  give17/11, margin6; burden1 leaves effective +1 and15/11, margin4. Both bands
+  remain player_success (decisive begins at8). Only setup:true does not meet the
+  separate strong prerequisite. Preserve the original force-binding payoff's
+  two restricted operations; prove the unmodified original normally validates
+  before using this candidate as the regression.
+- Strong-binding source prerequisites: register `force_binding` tier3 in both
+  original soul combat artTiers and player standardArts before signing; use its
+  own matchup lane/risk `force_binding`/`control_leverage`, original cost2 and
+  exact none→player-hindered control with sourceOperation=force_binding and
+  two distinct restrictions (nearest fixture uses maneuver/binding). With first
+  pressure5/15 and canonical+2, harmful margin is only6: equal pressure/resilience
+  tiers with clear→strained yield no wound. A genuine rank-I candidate therefore
+  needs applied pressure one tier above resilience, with all original authority
+  mirrors and pressure costs aligned before capture. Do not proceed from an
+  invalid or zero-offer original; B1 validates this candidate at runtime.
+- Intermediate validation may project only a genuinely proved final-control echo
+  mismatch in a detached view. Other ordinary errors still reject; physical raw
+  input stays frozen until its own response and must validate fully after B.
+- Independently proved existing cost corrections remain available. Final-exchange
+  A may create genuine progress; cold replay derives B with no exchange remaining,
+  and B creates no synthetic row. Existing schema and hashes are preserved.
+- Current implementation routing: `NeedsSequentialDependentContext` requires
+  more than one remaining original exchange. The last-binding refinement must
+  route its bounded owner proof with one remaining exchange and recover the
+  independently proved terminal B after that genuine exchange closes. Routing
+  from the operation family alone must never grant result/control permissions;
+  preserve the ordinary cost-only compatibility path and measure its owning gate.
+- The current walk also returns before replaying the last exchange's dependent
+  correction, rejects progress count equal to remaining exchanges, and rejects a
+  completed walk with no next exchange fields. B2–B4 must handle only the proved
+  last-binding refinement through these boundaries: real GM A must validate and
+  close its original exchange before terminal B is derived; diagnostic arithmetic
+  projection must never invent the failed outcome/control. Equality alone cannot
+  authorize terminal B, and neither B nor a retry may append another progress row.
+- Mixed position/cost fixture candidate: rank I cannot carry both burdens because
+  spiritual slot count equals rank. Use rank II, one owned definition with two
+  distinct components/slot coordinates, each burden1 for the same operation.
+  Before signing, the binding candidate's pressure5/15 with canonical+1 must
+  author clear→fractured; equal pressure/resilience gives13 trauma pressure and
+  maximumII under controlled/hostile danger. Its ordinary tier2 binding cost2
+  becomes3, leaving playerAP6→3→0. The force-binding variant additionally needs
+  applied pressure one tier above resilience because canonical+2 reduces the
+  first harmful margin to6. These are read-only source-derived candidates,
+  not accepted fixtures: B1 must genuinely validate the original and offer rankII
+  before selecting the wound; never alter an already accepted prefix.
+- Raw carrier research: direct control uses `/activeConflict/controlState`.
+  A replacement-wrapper candidate uses
+  `/afterlifeSpiritualConflictUpdate/activeConflictAfter/controlState`; the
+  `conflictStateAfter` sibling is ignored when `activeConflictAfter` is an object.
+  Explicit exchange after-control has precedence even when null, then replacement
+  presence, then canonical presence. Preserve those presence distinctions and
+  prove the actual effective carrier before granting terminal B. A malformed
+  present wrapper must not fall back to direct authority.
+- Rejected alternatives: automatic physical root rewrite expands client authority;
+  general refusal does not complete the approved saved-choice flow. Detailed
+  implementation/verification ordering is canonical in plan.md B0–B5/tasks.md.
+
 **Feature**: `1536-complete-wound-materialization`  
 **Source issue**: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)  
 **Research date**: 2026-08-26
@@ -428,9 +493,13 @@ The exact quote is sealed before confirmation and charged once per accepted atte
 including partial/failure; cancel/rollback charges nothing. Accepted roleplay
 compensation replaces currency but not the same healing resolver or safe cycle.
 
-Protect built-in Guardian `elyara`: Spiritual Healing V, visible from first Chaos Sea
-entry, located in `Лазарет Незаживающего Света`, public at 100%, with negotiated
-compensation where her character contract permits it. Every materialized Shining
+Protect built-in Guardian `elyara`: Spiritual Healing V, initially visible from first Chaos Sea
+entry at `Лазарет Незаживающего Света`, public at 100%, with negotiated
+compensation where her character contract permits it. Owner clarification (2026-09-22):
+she may accompany the player to the Shining Abode or die. The universal command uses
+her current canonical location/access and disappears after death; stale offers are
+revalidated before side effects, and bootstrap must not undo relocation/death.
+Every materialized Shining
 faction must expose at least one resident whose visible primary role is
 `healing_support` and whose tier is I-V; the role does not make service public.
 The role is stored in the existing `guardian_abode_residents.json` roster while art
@@ -772,9 +841,85 @@ been executed, and arithmetic overflow is a risk, not a reproduced bug. Current
 ordinary-art Fast/Full controls pass; historical failing notes are not a present
 blocker. T081-A..E keep live callers and full source mechanics explicitly open.
 
+### Durable continuation and receipt decision — approved 2026-09-22
+
+**Decision**: Persist unfinished same-turn continuation and accepted history in two
+different closed version-1 roots. `pending_spiritual_wound_decisions.json` owns only
+the original snapshot authority, retained source prefix, staged decisions, decision
+cursor, detached candidate evidence and preserved draft needed to resume the current
+turn. `spiritual_wound_opportunity_receipts.json` owns append-only conflict-instance,
+source and final-decision evidence and is written only by the one common accepted plan.
+An explicit `none` decision creates a receipt without a wound transition; a
+`materialize` decision must bind exactly one matching wound/history transition.
+
+Cold recovery reconstructs authority from the original pending snapshot and canonical
+evidence. A persisted hash is comparison data and never replaces origin validation.
+The final accepted plan consumes the pending packet and publishes the receipt, wound,
+history, effects, conflict and narrative together. Exact replay emits no command,
+resource spend, transition or notification. Rollback restores the original existence
+and bytes of both roots and every other touched path.
+
+**Rationale**: A single mixed queue/ledger would make an unfinished GM continuation look
+accepted or require post-publication sealing. Separate roots preserve the distinction
+between resumable work and durable history while the common transaction preserves
+atomicity across source, decision and wound state. Reusing the Mortal root would also
+violate its closed physical-occurrence schema and different lifecycle semantics.
+
+**Alternatives rejected**:
+
+- Put spiritual rows into the Mortal pending/receipt schemas: their closed fields,
+  fingerprints and occurrence lifecycle do not represent spiritual conflict instances.
+- Emit a durable receipt when the continuation packet is saved: records acceptance
+  before the original turn passes final validation and publication.
+- Keep continuation authority only in memory: cannot resume the same turn after a cold
+  process restart and cannot prove the original rollback baseline.
+- Publish source/resource state first and seal the decision afterward: creates a second
+  writer and permits a partial accepted turn.
+
 ## Resolved research conclusion
 
 All design-critical unknowns are resolved. Implementation can proceed without a
 clarification gate. File-level refinements may be made during TDD when nearby code
 proves a more appropriate partial-class split, provided the canonical paths, authority
 boundaries, approved mechanics, and no-migration decision above remain unchanged.
+
+## C4 transport refinement — 2026-09-26, approved revision2 (#1536)
+
+- Decision: extend existing repair request/ready and worker task/proposal with
+  one closed spiritualWoundContinuation envelope. Narrative remains response/
+  timestamp only. Source: actual GameEngine.PrivateImplementation, file helper,
+  GmWorkerModels/Delegator and SpiritualC2PrivateAdapter inspection.
+- Rationale: neither current ready nor worker proposal transports the existing
+  typed wound decision. A new root duplicates persistence/cleanup; narrative or
+  note as an implicit command weakens closed contracts. Both clients already
+  converge on GameEngine, so no new HTTP transport is needed.
+- Durable choice: independent Astra XHigh found that a dependent failure leaves
+  only uncommitted physical command bytes. Existing checkpoints cannot identify
+  that frozen choice on restart. Owner-approved pendingSubmission in the existing
+  checkpoint retains the selection and exact allocation prefix, with real-owner
+  replay and atomic advancement/clearing. Public correlation is not authority.
+- Remaining separate C4 risk: a C3 receipt identifies published spiritual work
+  but does not prove the complete common publication/output or story finalization.
+  The cold-after-success requirement remains open; transport work does not claim
+  to solve it. This qualifies the earlier resolved-research conclusion for the
+  later live lifecycle integration, without changing approved gameplay rules.
+
+## Mortal recovery publication revision1 — 2026-09-29 (#1536)
+
+- Decision: use a private recovery continuation through existing wound/effect
+  stages and the common accepted plan; sole normalizer remains the writer.
+- Rationale: treatment continuation demonstrates the required sealed stages,
+  but treatment reservations/skill/item authority do not authorize recovery.
+- Rejected alternatives: synthetic create/treatment, direct history writes,
+  hash-shaped caller records and a separate receipt/control file.
+- Owner approved the exact MORTAL-RECOVERY-PUBLICATION revision1. A cadence
+  contributes one progress point, threshold lowers one tier, I threshold fully
+  heals, overflow follows the declared flag, and one adverse result consumes all
+  newly elapsed adverse ordinals. Original epochs stay fixed; durable consumed
+  ordinals prevent repeated application and a skipped next deadline.
+- Replay must authenticate full history before live-clock reads and return the
+  original receipt under a fresh binding at the same signed minute. Healed
+  archive selection authorizes replay only, never a fresh recovery operation.
+- Consultation: bounded read-only Astra High examined existing registry/stage/
+  common/normalizer hooks. No unresolved product choice remains in this slice;
+  full death-contour consumption stays outside acceptance.

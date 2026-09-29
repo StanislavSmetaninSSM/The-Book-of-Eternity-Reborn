@@ -1,4 +1,4 @@
-using System.Text.Json;
+﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.IO;
@@ -852,34 +852,87 @@ public sealed partial class WoundMaterializationLifecycleTests
             Assert.IsType<WoundOpportunityAuthority>(result.Opportunity));
     }
 
+    /// <summary>
+    /// Creates a persisted physical occurrence and signs its pending turn snapshot.
+    /// </summary>
+    /// <param name="context">
+    /// Isolated initialized Mortal player workspace.
+    /// </param>
+    /// <param name="maximumSeverityRank">
+    /// Maximum severity allowed by the accepted harmful event.
+    /// </param>
+    /// <param name="acceptedOwner">
+    /// Accepted wound owner; null selects the current Mortal player.
+    /// </param>
+    /// <param name="extraSnapshotPaths">
+    /// Additional existing files to include in the signed pending snapshot; null adds none.
+    /// </param>
+    /// <returns>
+    /// Reconstructed opportunity and event binding for the newly signed snapshot.
+    /// </returns>
     private static async Task<CreationAuthority> CreateSignedAuthorityAsync(
         ResourceMaterializationTestContext context,
         int maximumSeverityRank,
-        WoundOwnerCoordinate? acceptedOwner = null)
+        WoundOwnerCoordinate? acceptedOwner = null,
+        IReadOnlyList<string>? extraSnapshotPaths = null) =>
+        Assert.Single(await CreateSignedAuthorityBatchAsync(context, maximumSeverityRank,
+            acceptedOwner, extraSnapshotPaths, 42, 1, null));
+
+    /// <summary>
+    /// Persists a complete physical occurrence producer batch and signs its shared pending snapshot.
+    /// </summary>
+    /// <param name="context">
+    /// Isolated initialized Mortal workspace containing any target wound.
+    /// </param>
+    /// <param name="maximumSeverityRank">
+    /// Harmful event severity ceiling shared by the producer batch.
+    /// </param>
+    /// <param name="acceptedOwner">
+    /// Wound owner; null selects the current Mortal player.
+    /// </param>
+    /// <param name="extraSnapshotPaths">
+    /// Additional existing snapshot payloads; null adds none.
+    /// </param>
+    /// <param name="turn">
+    /// Pending turn receiving occurrences from the preceding source turn.
+    /// </param>
+    /// <param name="count">
+    /// Number of distinct occurrences in the one complete signed producer batch.
+    /// </param>
+    /// <param name="target">
+    /// Existing canonical wound for retrauma; null creates untargeted injury opportunities.
+    /// </param>
+    /// <returns>
+    /// Reconstructed original opportunities sharing one authenticated event binding.
+    /// </returns>
+    private static async Task<IReadOnlyList<CreationAuthority>> CreateSignedAuthorityBatchAsync(
+        ResourceMaterializationTestContext context, int maximumSeverityRank,
+        WoundOwnerCoordinate? acceptedOwner, IReadOnlyList<string>? extraSnapshotPaths,
+        int turn, int count, WoundMaterializationEnvelope? target)
     {
         var sourceSnapshotToken = await WoundMaterializationValidationTests
             .ReadSnapshotTokenAsync(context);
         var evidence = new WoundOpportunityEventEvidence(
             "formal",
             "accepted_turn",
-            "turn_41",
+            $"turn_{turn - 1}",
             "harmful",
             maximumSeverityRank,
             "Острый край ранит левое предплечье во время обвала.");
+        var evidences = Enumerable.Range(0, count).Select(ordinal => evidence with
+        {
+            AuthorityId = turn == 42 && count == 1 ? evidence.AuthorityId : $"turn_{turn - 1}_harm_{ordinal}"
+        }).ToArray();
         var sourceEvents = WoundAcceptedEventAuthorityComposer.Compose(
             new WoundAcceptedResponseEventProjection(
                 SessionId,
                 RequestId,
                 sourceSnapshotToken,
-                41,
-                new[]
-                {
-                    new WoundAcceptedResponseEventCoordinate(
-                        EventRef,
-                        evidence.AuthorityKind,
-                        evidence.AuthorityId)
-                }),
-            new[] { new WoundSelectedEventEvidence(0, evidence) });
+                turn - 1,
+                Enumerable.Range(0, count).Select(ordinal => new WoundAcceptedResponseEventCoordinate(
+                    turn == 42 && count == 1 ? EventRef : $"turn_{turn}:accepted_retrauma_{ordinal}",
+                    evidences[ordinal].AuthorityKind, evidences[ordinal].AuthorityId)).ToArray()),
+            Enumerable.Range(0, count).Select(ordinal => new WoundSelectedEventEvidence(ordinal, evidences[ordinal])).ToArray());
         Assert.True(sourceEvents.Success, Describe(sourceEvents.Issues));
 
         var owner = acceptedOwner ?? new WoundOwnerCoordinate(
@@ -887,16 +940,16 @@ public sealed partial class WoundMaterializationLifecycleTests
             "player",
             "player_current",
             WoundCarrierCatalog.PlayerPath);
-        var candidate = new MortalWoundOccurrenceCandidate(
+        var candidates = Enumerable.Range(0, count).Select(ordinal => new MortalWoundOccurrenceCandidate(
             SessionId,
             RequestId,
             sourceSnapshotToken,
-            41,
-            "producer_operation_creation_player_001",
-            0,
-            1,
+            turn - 1,
+            turn == 42 ? "producer_operation_creation_player_001" : $"producer_operation_retrauma_{turn}",
+            ordinal,
+            count,
             "formal",
-            0,
+            ordinal,
             sourceEvents.Events,
             owner,
             "physical",
@@ -916,20 +969,20 @@ public sealed partial class WoundMaterializationLifecycleTests
                 "вы",
                 "острый край во время обвала",
                 new[] { "anatomical", "systemic", "other" }),
-            null,
-            Fingerprint("signed-occurrence-source"));
-        var emptyOccurrences = MortalWoundOccurrenceState.Parse(
-            "{\"schemaVersion\":1,\"occurrences\":[]}",
+            target == null ? null : new MortalWoundOccurrenceWorseningTarget(target.WoundId, "retrauma"),
+            Fingerprint("signed-occurrence-source"))).ToArray();
+        var pendingOccurrences = MortalWoundOccurrenceState.Parse(
+            await context.FileSystem.ReadFileAsync(MortalWoundOccurrenceState.StatePath),
             MortalWoundOccurrenceState.StatePath);
-        var emptyReceipts = MortalWoundOpportunityReceiptState.Parse(
-            "{\"schemaVersion\":1,\"nextOrdinal\":1,\"receipts\":[]}",
+        var priorReceipts = MortalWoundOpportunityReceiptState.Parse(
+            await context.FileSystem.ReadFileAsync(MortalWoundOpportunityReceiptState.StatePath),
             MortalWoundOpportunityReceiptState.StatePath);
-        Assert.True(emptyOccurrences.IsValid, Describe(emptyOccurrences.Issues));
-        Assert.True(emptyReceipts.IsValid, Describe(emptyReceipts.Issues));
+        Assert.True(pendingOccurrences.IsValid, Describe(pendingOccurrences.Issues));
+        Assert.True(priorReceipts.IsValid, Describe(priorReceipts.Issues));
         var append = MortalWoundOccurrenceState.PlanAppend(
-            Assert.IsType<MortalWoundOccurrenceState>(emptyOccurrences.State),
-            new MortalWoundOccurrenceCandidateBatch(new[] { candidate }),
-            Assert.IsType<MortalWoundOpportunityReceiptState>(emptyReceipts.State));
+            Assert.IsType<MortalWoundOccurrenceState>(pendingOccurrences.State),
+            new MortalWoundOccurrenceCandidateBatch(candidates),
+            Assert.IsType<MortalWoundOpportunityReceiptState>(priorReceipts.State));
         Assert.Equal("appended", append.Disposition);
         Assert.Empty(append.Issues);
         var occurrenceState = Assert.IsType<MortalWoundOccurrenceState>(append.State);
@@ -937,55 +990,63 @@ public sealed partial class WoundMaterializationLifecycleTests
             MortalWoundOccurrenceState.StatePath,
             MortalWoundOccurrenceState.SerializeCanonical(occurrenceState));
         await context.CaptureValidatedPendingSnapshotAsync(
-            additionalTrackedPaths: WoundMaterializationValidationTests.SnapshotWoundPaths);
+            turn: turn, additionalTrackedPaths: WoundMaterializationValidationTests.SnapshotWoundPaths
+                .Concat(extraSnapshotPaths ?? Array.Empty<string>()).ToArray());
 
         var snapshotToken = await WoundMaterializationValidationTests
             .ReadSnapshotTokenAsync(context);
-        var occurrence = Assert.Single(occurrenceState.Occurrences);
-        var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
-            occurrence,
-            occurrenceState.Occurrences,
-            SessionId,
-            RequestId,
-            snapshotToken,
-            42);
-        Assert.True(rebound.Success, Describe(rebound.Issues));
-        var binding = new WoundAcceptedTurnBinding(
-            SessionId,
-            RequestId,
-            snapshotToken,
-            "mortal_world",
-            42,
-            rebound.Events,
-            rebound.EventsFingerprint);
-        var selectedEvent = rebound.Events[occurrence.AcceptedEventOrdinal];
-        var opportunity = WoundOpportunityAuthority.Compose(
-            new WoundOpportunityBuildRequest(
+        var result = new List<CreationAuthority>();
+        var producerBatch = occurrenceState.Occurrences.Where(value =>
+            value.ProducerOperationKey == candidates[0].ProducerOperationKey).ToArray();
+        Assert.Equal(count, producerBatch.Length);
+        foreach (var occurrence in producerBatch)
+        {
+            var rebound = WoundAcceptedEventAuthorityComposer.RebindMortalOccurrence(
+                occurrence,
+                producerBatch,
+                SessionId,
+                RequestId,
+                snapshotToken,
+                turn);
+            Assert.True(rebound.Success, Describe(rebound.Issues));
+            var binding = new WoundAcceptedTurnBinding(
+                SessionId,
+                RequestId,
+                snapshotToken,
+                "mortal_world",
+                turn,
+                rebound.Events,
+                rebound.EventsFingerprint);
+            var selectedEvent = rebound.Events[occurrence.AcceptedEventOrdinal];
+            var opportunity = WoundOpportunityAuthority.Compose(
+                new WoundOpportunityBuildRequest(
+                    binding,
+                    occurrence.OccurrenceId,
+                    occurrence.OpportunityRef,
+                    selectedEvent.EventRef,
+                    occurrence.Owner,
+                    occurrence.Domain,
+                    occurrence.ProfileKey,
+                    occurrence.Source.Kind,
+                    occurrence.Source.SourceId,
+                    occurrence.Source.State,
+                    new WoundOpportunityEventEvidence(
+                        occurrence.AdapterKind,
+                        selectedEvent.Kind,
+                        selectedEvent.AuthorityId,
+                        occurrence.Outcome.Kind,
+                        occurrence.Outcome.MaximumSeverityRank,
+                        occurrence.Outcome.ReadableCause),
+                    occurrence.HardMaximumSeverityRank,
+                    null,
+                    occurrence.SafeContext,
+                    target == null ? null : new WoundOpportunityWorseningTargetEvidence(target, "retrauma")));
+            Assert.True(opportunity.Success, Describe(opportunity.Issues));
+            result.Add(new CreationAuthority(
                 binding,
-                occurrence.OccurrenceId,
-                occurrence.OpportunityRef,
-                selectedEvent.EventRef,
-                occurrence.Owner,
-                occurrence.Domain,
-                occurrence.ProfileKey,
-                occurrence.Source.Kind,
-                occurrence.Source.SourceId,
-                occurrence.Source.State,
-                new WoundOpportunityEventEvidence(
-                    occurrence.AdapterKind,
-                    selectedEvent.Kind,
-                    selectedEvent.AuthorityId,
-                    occurrence.Outcome.Kind,
-                    occurrence.Outcome.MaximumSeverityRank,
-                    occurrence.Outcome.ReadableCause),
-                occurrence.HardMaximumSeverityRank,
-                null,
-                occurrence.SafeContext,
-                null));
-        Assert.True(opportunity.Success, Describe(opportunity.Issues));
-        return new CreationAuthority(
-            binding,
-            Assert.IsType<WoundOpportunityAuthority>(opportunity.Opportunity));
+                Assert.IsType<WoundOpportunityAuthority>(opportunity.Opportunity)));
+        }
+        return result;
     }
 
     private static GameResponse Response(JsonObject decision) => new()

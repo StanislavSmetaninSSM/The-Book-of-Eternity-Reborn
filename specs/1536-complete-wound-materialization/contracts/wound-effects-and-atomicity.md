@@ -462,6 +462,23 @@ inspection, communication, help, treatment, and exit.
 | `spiritual_counter_burden` | `counterPayoff` | reduce one payoff step per slot at I-IV |
 | `spiritual_art_restriction` | one standard combat art | unavailable at I-II; restrict at III; forbid at IV |
 
+Approved POSITION-DECISION revision1 (spec.md, owner approval2026-09-27) defines
+`spiritual_position_burden` as an operation-scoped effective starting position.
+Using the existing player-relative ranks -2..+2, compute
+`effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, +2)`.
+Sum every applicable current component once for its exact acting participant and
+operation; combine both sides before clamping. Effective position controls the
+existing position dice modifier and position-dependent binding prerequisites.
+The modifier's existing `position` value names the effective position. Canonical
+exchange before/after positions do not automatically change; successful maneuver
+still requires its ordinary actual canonical change. The same wound does not
+progressively erode position on repeated actions. New or expired effects affect
+only subsequent eligible exchanges; accepted earlier exchanges retain their
+causal proof. Retained payload arithmetic alone never authorizes the effective
+rank: live reconstruction or exact accepted historical/publication evidence must
+establish it. This approved target contract does not declare the still-open
+T081-D position consumer/dependency implementation complete.
+
 Every instance targets one declared non-safety operation/family, costs one slot, and is
 unique by profile/operation coordinate within the wound. `spiritual_healing`, wound
 inspection, communication, help, withdrawal, surrender, negotiation, and the separate
@@ -524,6 +541,47 @@ membership. It never translates the persistent component into
 second canonical wound/effect copy. Conflict closure removes only derived evidence;
 the actor-carried wound, definition graph, root binding, and effect remain until their
 own accepted lifecycle transition.
+
+## Approved special action-cost cases (2026-09-26, #1536)
+
+For `spiritual_action_cost_burden`, `recover_spiritual_power` pays the applicable
+owned burden before its ordinary recovery. The audit's `before` precedes payment;
+`after` follows this action's recovery, not later reactions. Insufficient resources
+reject the action. The existing success/partial/failure recovery of 3/2/0 and
+opposed recovery of 0..1 operate on the post-payment balance and remain capped by
+the canonical maximum. Emit actual ordered Spend then Gain mutations, including
+payment on failure; never substitute only their net difference. Zero-amount
+mutations follow the existing no-op policy. Resource/effect ownership, trigger
+causality and replay keys remain under the ordinary common planner.
+
+The audit describes action-only arithmetic. The existing scheduler drains
+Spend-triggered causal work before the dependent Gain; those separate mutations
+may change the actual Gain's starting balance. Freeze the validated recovery
+request as `audit.after - (audit.before - effectiveCost)`, including its original
+maximum cap. Execute that request against the actual current ledger with the
+ordinary Gain bound policy; do not enlarge it after a reaction or force the
+ledger to `audit.after`. For maximum 6, before 4, burden 1 and successful recovery,
+the audit ends at 6. A Spend-triggered loss of 1 produces actual transitions
+4→3, 3→2, 2→5; a triggered gain of 1 produces 4→3, 3→4, then a request for 3
+with only 2 applied. At before 6, the originally capped recovery request is 1,
+even if an intervening reaction later lowers the balance. Only this dependent
+recovery Gain needs reaction-relative transition evidence; the payment and
+unrelated operation checks remain exact. These rules retain existing scheduler
+causality and reducer bounds rather than introducing a different reaction phase.
+
+For `force_incarnation`, an applicable burden is the only cost. Its required audit
+uses baseCost=0, minCost=0 and artTier=0 (an audit convention, not actor art level),
+with effectiveCost equal to the applicable owned burden sum. Without any burden,
+retain the existing free path without requiring an audit. Insufficient resources
+reject the action; incarnation admission/control rules are unchanged. Both sides
+use the same rules. If an earlier payment exhausts a finite-use wound, an obsolete
+audit on an unchanged future force action must be removed through dependent
+correction, with the actual next owner proving zero burden. Preserve unrelated
+audits and completed evidence; removing evidence while a positive burden remains
+cannot waive payment. This realizes the existing free-action and effect-lifetime
+rules rather than adding a new operation or refund.
+This paragraph specifies approved behavior; the cost task
+must pass implementation, GM synchronization and verification before cutover.
 
 ## Severity rematerialization
 

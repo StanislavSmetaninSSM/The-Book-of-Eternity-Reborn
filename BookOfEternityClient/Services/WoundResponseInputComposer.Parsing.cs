@@ -359,7 +359,7 @@ internal static partial class WoundResponseInputComposer
                 ["createdAtTurn"] = binding.Turn,
                 ["createdAtCycleId"] = null,
                 ["opportunityId"] = opportunity.OpportunityId,
-                ["guaranteedTriggerId"] = opportunity.GuaranteedTrigger?.TriggerId,
+                ["guaranteedTriggerId"] = opportunity.GuaranteedTriggerId,
                 ["readableCause"] = opportunity.SafeContext.Cause
             },
             ["classification"] = classificationNode,
@@ -461,6 +461,30 @@ internal static partial class WoundResponseInputComposer
             : new TransitionComposition(null, null);
     }
 
+    /// <summary>
+    /// Composes a worsening from the sealed source wound while retaining client-owned recovery anchors.
+    /// </summary>
+    /// <param name="binding">
+    /// The accepted-turn binding selecting the transition turn.
+    /// </param>
+    /// <param name="opportunity">
+    /// The sealed opportunity carrying the exact worsening target before-image.
+    /// </param>
+    /// <param name="response">
+    /// The parsed materialization decision and complete worsening proposal.
+    /// </param>
+    /// <param name="decision">
+    /// The sealed decision supplying the operation and local transition identity.
+    /// </param>
+    /// <param name="finalSceneText">
+    /// The final scene text checked against the worsening narration, or <see langword="null"/> for empty text.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving proposal, preservation and narration conflicts.
+    /// </param>
+    /// <returns>
+    /// The composed transition and notification, or an empty composition when validation fails.
+    /// </returns>
     private static TransitionComposition TryComposeWorsenTransition(
         WoundAcceptedTurnBinding binding,
         WoundOpportunityAuthority opportunity,
@@ -546,6 +570,14 @@ internal static partial class WoundResponseInputComposer
                 proposed.Recovery.CurrentStepProgress.ToString(
                     CultureInfo.InvariantCulture));
         }
+        var expectedBlockers = WoundTransitionReducer.DeriveWorseningBlockers(before);
+        if (!proposed.Recovery.Blockers.SequenceEqual(expectedBlockers, StringComparer.Ordinal))
+        {
+            Add(issues, path + ".recovery.blockers",
+                "wound_response_worsening_blockers_changed",
+                "the retained ordered blockers and only the derived stabilization-condition reentry",
+                "changed recovery blockers");
+        }
         if (issues.Count != start)
             return new TransitionComposition(null, null);
 
@@ -584,13 +616,18 @@ internal static partial class WoundResponseInputComposer
                 MaximumAtCreation = before.Severity.MaximumAtCreation,
                 LastChangeEventRef = opportunity.EventRef
             },
-            Care = before.Care,
+            Care = WoundTransitionReducer.DeriveWorseningCare(before),
             Complications = before.Complications.Select(static value => value with
             {
                 OwnedEffectIds = Array.Empty<string>()
             }).ToArray(),
             Consequences = proposed.Consequences,
-            Recovery = proposed.Recovery,
+            Recovery = proposed.Recovery with
+            {
+                Blockers = expectedBlockers,
+                RecoveryAnchor = before.Recovery.RecoveryAnchor,
+                DeteriorationAnchor = before.Recovery.DeteriorationAnchor
+            },
             LastTransition = new WoundLastTransition(
                 localTransitionRef,
                 checked(before.LastTransition.Ordinal + 1),

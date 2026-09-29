@@ -831,10 +831,32 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         }
     }
 
+    /// <summary>
+    /// Allocates each admitted threat addition against its target, turn, and source operation.
+    /// </summary>
+    /// <param name="additions">
+    /// Validated threat addition commands awaiting permanent identities.
+    /// </param>
+    /// <param name="preTurnLocations">
+    /// Canonical locations used for collision checks.
+    /// </param>
+    /// <param name="locationCandidates">
+    /// Accepted same-turn locations used for collision checks.
+    /// </param>
+    /// <param name="turn">
+    /// Accepted source turn for the threat additions.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Factory selected for this accepted-turn attempt.
+    /// </param>
+    /// <param name="issues">
+    /// Receives identity collision issues.
+    /// </param>
     private static void AssignThreatIds(
         IReadOnlyList<ThreatAdditionCommand> additions,
         JsonArray preTurnLocations,
         IReadOnlyList<LocationCandidate> locationCandidates,
+        int turn,
         MortalLocationIdentityFactory identityFactory,
         List<ValidationIssue> issues)
     {
@@ -857,7 +879,12 @@ internal static partial class MortalLocationAcceptedTurnPlanner
 
         foreach (var addition in additions)
         {
-            var threatId = identityFactory.CreateThreatId();
+            var threatId = identityFactory.CreateThreatId(new MortalLocationThreatAllocation(
+                turn,
+                addition.LocationId,
+                addition.InitialLocationId,
+                addition.Context,
+                SpiritualWoundStateJson.Hash(addition.Threat, "location_threat_request")));
             if (!exact.Add(threatId) ||
                 !confusable.Add(MortalLocationIdentityState.BuildConfusableKey(threatId)))
             {
@@ -1035,7 +1062,8 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             after,
             context,
             locationId,
-            locationId);
+            locationId,
+            childId);
         transition["childId"] = childId;
         AppendLifecycleTransition(
             indexEntries,

@@ -97,11 +97,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
             scenario = scenario with { ExpectedIntentCount = 2 };
         }
         var component = EffectMaterializationTestFixture.CreateDefinition("roll_modifier")["components"]!.DeepClone();
-        component[0]!["payload"] = new JsonObject
-        {
-            ["operations"] = new JsonArray("skill_check"), ["contribution"] = "disadvantage",
-            ["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_grip" }
-        };
+        component[0]!["payload"] =
+            EffectMaterializationTestFixture.CreateFocusedRollModifierPayload("skill_grip");
         var retained = scenario.Before["consequences"]!["ownedEffectSources"]!["definitions"]![newSelector ? 1 : 0]!;
         retained["components"] = component.DeepClone();
         retained["triggers"] = new JsonArray();
@@ -307,11 +304,8 @@ public sealed partial class MortalWoundTreatmentResolverTests
         }
         var selectedDefinition = definitions[childOnly ? 1 : 0]!["definition"]!;
         selectedDefinition["components"] = EffectMaterializationTestFixture.CreateDefinition("roll_modifier")["components"]!.DeepClone();
-        selectedDefinition["components"]![0]!["payload"] = new JsonObject
-        {
-            ["operations"] = new JsonArray("skill_check"), ["contribution"] = "disadvantage",
-            ["scope"] = new JsonObject { ["kind"] = "skill", ["skillId"] = "skill_field_medicine_01" }
-        };
+        selectedDefinition["components"]![0]!["payload"] =
+            EffectMaterializationTestFixture.CreateFocusedRollModifierPayload("skill_field_medicine_01");
         selectedDefinition["triggers"] = new JsonArray();
         if (!childOnly) definitions[0]!["root"]!["slots"]![0]!["profileKey"] = "roll_modifier";
         scenario.Before["recovery"]!["deteriorationPolicy"]!["result"] = operation;

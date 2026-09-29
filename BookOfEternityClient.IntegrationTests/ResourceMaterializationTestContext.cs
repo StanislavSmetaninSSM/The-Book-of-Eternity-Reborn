@@ -62,13 +62,33 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
 
     internal string RootPath { get; }
 
-    internal static Task<ResourceMaterializationTestContext> CreateAsync(
+    /// <summary>
+    /// Creates an isolated resource fixture with its own real runtime session generation.
+    /// </summary>
+    /// <param name="hooks">
+    /// Optional hooks applied to this fixture's filesystem; <see langword="null"/> uses ordinary operations.
+    /// </param>
+    /// <returns>
+    /// A fresh context whose generation was initialized under its own canonical write lease.
+    /// </returns>
+    internal static async Task<ResourceMaterializationTestContext> CreateAsync(
         FileSystemManagerHooks? hooks = null)
     {
         var rootPath = Path.Combine(
             Path.GetTempPath(),
             "boe-resource-materialization-" + Guid.NewGuid().ToString("N"));
-        return Task.FromResult(new ResourceMaterializationTestContext(rootPath, hooks));
+        var context = new ResourceMaterializationTestContext(rootPath, hooks);
+        try
+        {
+            await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+            context.FileSystem.GetOrCreateSessionGeneration(lease);
+            return context;
+        }
+        catch
+        {
+            await context.DisposeAsync();
+            throw;
+        }
     }
 
     internal Task WriteExactBytesAsync(string relativePath, byte[] bytes)
@@ -99,14 +119,38 @@ internal sealed partial class ResourceMaterializationTestContext : IAsyncDisposa
         return Task.CompletedTask;
     }
 
+    /// <summary>
+    /// Captures a signed test snapshot for one independently identified turn request.
+    /// </summary>
+    /// <param name="turn">
+    /// Turn number recorded in the request and signed manifest.
+    /// </param>
+    /// <param name="currentRealm">
+    /// Realm recorded in the request and progression control.
+    /// </param>
+    /// <param name="additionalTrackedPaths">
+    /// Extra canonical paths to include in the rollback baseline.
+    /// </param>
+    /// <param name="preGeneratedDices1d20">
+    /// Signed D20 sequence, or <see langword="null"/> when no dice are supplied.
+    /// </param>
+    /// <param name="sessionId">
+    /// Session identity; the default preserves existing one-turn fixtures.
+    /// </param>
+    /// <param name="requestId">
+    /// Request identity; use a distinct value for a later-turn fixture.
+    /// </param>
+    /// <returns>
+    /// A task that completes after the signed test manifest and its authority are written.
+    /// </returns>
     internal async Task CaptureValidatedPendingSnapshotAsync(
         int turn = 42,
         string currentRealm = "Mortal World",
         IEnumerable<string>? additionalTrackedPaths = null,
-        int[]? preGeneratedDices1d20 = null)
+        int[]? preGeneratedDices1d20 = null,
+        string sessionId = "session_resource_materialization",
+        string requestId = "request_resource_materialization")
     {
-        const string sessionId = "session_resource_materialization";
-        const string requestId = "request_resource_materialization";
         const string playerAction = "Validate unified resource materialization.";
 
         var request = new JsonObject

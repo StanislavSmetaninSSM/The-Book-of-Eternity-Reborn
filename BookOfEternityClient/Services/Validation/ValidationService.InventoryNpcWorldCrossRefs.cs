@@ -371,6 +371,9 @@ public partial class ValidationService
 
     private string? TryReadCurrentFileSync(string relativePath)
     {
+        if (_sameTurnOwnerInputs is { } inputs)
+            return inputs.ReadText(relativePath);
+
         try
         {
             var path = _fs.ResolvePath(relativePath);

@@ -1,6 +1,7 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
@@ -78,7 +79,8 @@ public partial class CanonicalStateNormalizer
         MortalLocationAcceptedTurnPlan? mortalLocationPlan,
         AcceptedMechanicsNormalizationPreflight preflight,
         bool normalizedAcceptedCarrierBaselines,
-        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null)
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(preflight);
         if (preflight is AcceptedMechanicsNormalizationPreflight.NoPlan)
@@ -96,6 +98,16 @@ public partial class CanonicalStateNormalizer
         }
 
         var plan = validated.Plan;
+        if (spiritualPublicationReceipt is not null)
+        {
+            RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
+            await ValidateSpiritualRetainedPublicationInputsAsync(spiritualPublicationReceipt);
+        }
+        else if (plan.LiveWoundProofFingerprint is not null)
+        {
+            throw new InvalidOperationException(
+                "Live spiritual wound publication requires the C4 transaction writer.");
+        }
         var treatmentPublicationAuthority =
             plan.TreatmentResourcePublicationAuthority;
         if (treatmentPublicationAuthority is { RequiresCoordinatedSettlement: true } &&
@@ -127,7 +139,8 @@ public partial class CanonicalStateNormalizer
                     allowDirectWoundBootstrap:
                         plan.DirectWoundPublicationAuthority is not null,
                     resourcePublicationAuthority:
-                        plan.TreatmentResourcePublicationAuthority);
+                        plan.TreatmentResourcePublicationAuthority,
+                    spiritualPublicationReceipt: spiritualPublicationReceipt);
             }
 
             // Other normalizers may intentionally consume plan before-images. The exact
@@ -138,7 +151,7 @@ public partial class CanonicalStateNormalizer
         }
         catch
         {
-            if (treatmentPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
@@ -151,11 +164,11 @@ public partial class CanonicalStateNormalizer
             // A held publication was already taken by the top-level transaction.
             // Keep its exact handoffs intact so byte-exact compensation can rearm
             // this same plan. A non-held plan still owns its invalidation here.
-            if (treatmentPublicationReceipt is null)
+            if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null)
                 InvalidateAcceptedMechanicsHandoffs();
             throw;
         }
-        if (treatmentPublicationReceipt is null &&
+        if (treatmentPublicationReceipt is null && spiritualPublicationReceipt is null &&
             (!AcceptedMechanicsPlanAuthority.TryTakeValidated(
                  _fs,
                  _writeLease,
@@ -221,7 +234,7 @@ public partial class CanonicalStateNormalizer
                 writes[pair.Key] = pair.Value;
             foreach (var pair in plan.EffectCarrierAfterImages)
                 writes[pair.Key] = pair.Value;
-            AddWoundPublicationWrites(plan, writes);
+            AddWoundPublicationWrites(plan, writes, spiritualPublicationReceipt);
         }
         foreach (var pair in plan.PendingAfterImages)
         {
@@ -277,13 +290,18 @@ public partial class CanonicalStateNormalizer
             await ReadExactPublishedAfterImageAsync(
                 ResourcePendingResolutionState.PendingPath,
                 pending);
-            await ValidatePublishedWoundAfterImagesAsync(plan);
+            await ValidatePublishedWoundAfterImagesAsync(plan, spiritualPublicationReceipt);
         }
         else
         {
-            await ValidatePublishedWoundAfterImagesAsync(plan);
+            await ValidatePublishedWoundAfterImagesAsync(plan, spiritualPublicationReceipt);
             await ValidatePublishedOwnerTransitionsAsync(plan);
             await ValidatePublishedResourceAfterImagesAsync(plan);
+        }
+        if (spiritualPublicationReceipt is not null)
+        {
+            RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
+            await ValidatePublishedSpiritualReceiptAsync(plan);
         }
         return plan;
     }
@@ -514,6 +532,9 @@ public partial class CanonicalStateNormalizer
             throw new InvalidOperationException(
                 "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
         }
+        if (AcceptedMechanicsPlanAuthority.TryPeekSpiritualPublication(_fs, _writeLease, out _))
+            throw new InvalidOperationException(
+                "Spiritual publication requires the top-level accepted-turn transaction coordinator.");
     }
 
     private void EnsureNoPlanAcceptedMechanicsAuthorityStillAbsent()
@@ -768,7 +789,16 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static void ApplyOwnerTransition(
+    /// <summary>
+    /// Applies one validated typed owner transition to a caller-owned detached root.
+    /// </summary>
+    /// <param name="root">
+    /// Mutable detached original owner root; the caller remains responsible for its provenance.
+    /// </param>
+    /// <param name="transition">
+    /// Exact accepted transition to apply without filesystem access.
+    /// </param>
+    internal static void ApplyOwnerTransition(
         JsonObject root,
         AcceptedMechanicsOwnerTransition transition)
     {

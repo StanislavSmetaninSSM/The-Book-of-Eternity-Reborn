@@ -1,3 +1,5 @@
+using SpiritualC4PublicationAuthority = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationAuthority;
+using SpiritualC4PublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -16,7 +18,7 @@ internal sealed record MortalWoundTreatmentPublicationReservation(
     MortalWoundTreatmentPublicationReservationStatus Status,
     object? Authority);
 
-internal static class AcceptedTurnAuthorityRegistry
+internal static partial class AcceptedTurnAuthorityRegistry
 {
     private static readonly ConditionalWeakTable<
         CanonicalRootIdentity,
@@ -28,6 +30,7 @@ internal static class AcceptedTurnAuthorityRegistry
     private static readonly object TreatmentPublicationTransactionCapability = new();
     private static readonly object DeteriorationPolicyAuthorityCapability = new();
     private static readonly object MortalWoundRecoveryPlannerCapability = new();
+    private static readonly object MortalWoundRecoveryCompositionCapability = new();
 
     internal static bool IsProcedureDicePoolReadCapability(object capability) =>
         ReferenceEquals(capability, ProcedureDicePoolReadCapability) ||
@@ -52,6 +55,174 @@ internal static class AcceptedTurnAuthorityRegistry
 
     internal static bool IsMortalWoundRecoveryPlannerCapability(object capability) =>
         ReferenceEquals(capability, MortalWoundRecoveryPlannerCapability);
+
+    /// <summary>
+    /// Recognizes the registry's private capability for recovery composition.
+    /// </summary>
+    /// <param name="capability">
+    /// The candidate object; an independently created object grants no authority.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for the retained registry capability; otherwise,
+    /// <see langword="false"/>.
+    /// </returns>
+    internal static bool IsMortalWoundRecoveryCompositionCapability(object capability) =>
+        ReferenceEquals(capability, MortalWoundRecoveryCompositionCapability);
+
+    /// <summary>
+    /// Registers an exact completed spiritual plan without invoking the planner.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <returns>
+    /// True only when the owner-issued completed plan is registered.
+    /// </returns>
+    internal static bool RegisterSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority) =>
+        GetState(fileSystem, lease).RegisterSpiritualPublication(fileSystem, lease, authority);
+
+    /// <summary>
+    /// Reads the dedicated spiritual publication capability without consuming it.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <returns>
+    /// True only when a sealed untaken publication is available.
+    /// </returns>
+    internal static bool TryPeekSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, out SpiritualC4PublicationAuthority authority) =>
+        GetState(fileSystem, lease).TryPeekSpiritualPublication(fileSystem, lease, out authority);
+
+    /// <summary>
+    /// Takes one exact spiritual publication after checking current physical inputs.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="authority">
+    /// Exact owner-issued capability, returned on a successful peek.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only for the first valid take of the exact registered capability.
+    /// </returns>
+    internal static bool TryTakeSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority, out SpiritualC4PublicationReceipt receipt) =>
+        GetState(fileSystem, lease).TryTakeSpiritualPublication(fileSystem, lease, authority, out receipt);
+
+    /// <summary>
+    /// Checks the exact retained spiritual transaction receipt and invalidation fence.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only while the exact taken completion remains owned by the cache.
+    /// </returns>
+    internal static bool IsTakenSpiritualPublicationCurrent(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        GetState(fileSystem, lease).IsTakenSpiritualPublicationCurrent(fileSystem, lease, receipt);
+
+    /// <summary>
+    /// Closes a successful spiritual publication and revokes its capability.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only when the current publication attempt is settled.
+    /// </returns>
+    internal static bool CompleteSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        GetState(fileSystem, lease).CompleteSpiritualPublication(fileSystem, lease, receipt);
+
+    /// <summary>
+    /// Closes a failed spiritual publication after the common transaction restores state.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Owning filesystem instance.
+    /// </param>
+    /// <param name="lease">
+    /// Active canonical write lease for the owning filesystem.
+    /// </param>
+    /// <param name="receipt">
+    /// Exact fenced take receipt, returned on a successful take.
+    /// </param>
+    /// <returns>
+    /// True only when the current publication attempt is settled.
+    /// </returns>
+    internal static bool FailSpiritualPublication(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt) =>
+        GetState(fileSystem, lease).FailSpiritualPublication(fileSystem, lease, receipt);
+
+    /// <summary>
+    /// Extracts item normalization evidence only for its live original capture and exact scoped factory.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Exact filesystem retained by the original capture.
+    /// </param>
+    /// <param name="lease">
+    /// Current canonical write lease.
+    /// </param>
+    /// <param name="capture">
+    /// Live original owner authorizing extraction before its allocation journal is disposed.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact original session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Authenticated original snapshot token.
+    /// </param>
+    /// <param name="turn">
+    /// Original accepted turn number.
+    /// </param>
+    /// <param name="factory">
+    /// Exact allocation factory privately retained by the supplied original capture.
+    /// </param>
+    /// <param name="snapshot">
+    /// Detached genuine item cache snapshot on success; null otherwise.
+    /// </param>
+    /// <returns>
+    /// True only for the original owner, exact factory and matching healthy cache entry.
+    /// </returns>
+    internal static bool TryCaptureSpiritualMortalItemNormalizationSnapshot(
+        FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease lease,
+        ValidationService.SpiritualOriginalTurnCapture capture, string sessionId,
+        string snapshotToken, int turn, MortalItemIdentityFactory factory,
+        out MortalItemAcceptedTurnNormalizationSnapshot snapshot) =>
+        GetState(fileSystem, lease).TryCaptureSpiritualMortalItemNormalizationSnapshot(
+            fileSystem, lease, capture, sessionId, snapshotToken, turn, factory, out snapshot);
 
     internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(
         FileSystemManager fileSystem,
@@ -301,11 +472,29 @@ internal static class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease writeLease) =>
         GetState(fileSystem, writeLease).HasWoundRepairWave();
 
+    /// <summary>
+    /// Builds a validated effect stage with the selected allocation scope.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static EffectAcceptedTurnPlanningResult GetOrBuildEffectValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
-        EffectAcceptedTurnInput input) =>
-        GetState(fileSystem, writeLease).GetOrBuildEffectValidated(input);
+        EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null) =>
+        GetState(fileSystem, writeLease).GetOrBuildEffectValidated(input, identityFactory);
 
     internal static void InvalidateEffectValidated(
         FileSystemManager fileSystem,
@@ -327,15 +516,36 @@ internal static class AcceptedTurnAuthorityRegistry
         out EffectAcceptedTurnPlanningResult result) =>
         GetState(fileSystem, writeLease).TryPeekEffectValidated(out result);
 
+    /// <summary>
+    /// Builds a bound wound effect stage without bypassing prepared-stage ownership.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="prepared">
+    /// Current registry-owned prepared wound stage.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult
         GetOrBuildWoundEffectValidated(
             FileSystemManager fileSystem,
             FileSystemManager.CanonicalWriteLease writeLease,
             WoundPreparedAcceptedTurnPlan prepared,
-            EffectAcceptedTurnInput input) =>
+            EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null) =>
         GetState(fileSystem, writeLease).GetOrBuildWoundEffectValidated(
             prepared,
-            input);
+            input, identityFactory: identityFactory);
 
     internal static WoundAcceptedTurnPreparationResult
         GetOrBuildWoundPreparedValidated(
@@ -357,6 +567,33 @@ internal static class AcceptedTurnAuthorityRegistry
                 treatmentContinuationAuthority,
                 reservationAuthority);
 
+    /// <summary>
+    /// Builds the reserved treatment effect stage using the selected allocation scope.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="prepared">
+    /// Current registry-owned prepared wound stage.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="treatmentContinuationAuthority">
+    /// Exact private treatment continuation authority.
+    /// </param>
+    /// <param name="reservationAuthority">
+    /// Current private treatment publication reservation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult
         GetOrBuildWoundTreatmentContinuationEffectValidated(
             FileSystemManager fileSystem,
@@ -364,13 +601,13 @@ internal static class AcceptedTurnAuthorityRegistry
             WoundPreparedAcceptedTurnPlan prepared,
             EffectAcceptedTurnInput input,
             object treatmentContinuationAuthority,
-            object reservationAuthority) =>
+            object reservationAuthority, EffectIdentityFactory? identityFactory = null) =>
         GetState(fileSystem, writeLease)
             .GetOrBuildWoundEffectValidated(
                 prepared,
                 input,
                 treatmentContinuationAuthority,
-                reservationAuthority);
+                reservationAuthority, identityFactory);
 
     internal static WoundAcceptedTurnPlanningResult
         GetOrBuildWoundTreatmentContinuationFinalValidated(
@@ -463,6 +700,54 @@ internal static class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease writeLease) =>
         GetState(fileSystem, writeLease).InvalidateAll();
 
+    /// <summary>
+    /// Forwards validated item input and its optional scoped allocator to the root-owned cache.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="fingerprint">
+    /// Canonical candidate and governed-identity comparison fingerprint.
+    /// </param>
+    /// <param name="newCandidates">
+    /// Admitted candidates requiring permanent item identities.
+    /// </param>
+    /// <param name="stableCandidates">
+    /// Admitted items with already governed permanent identities.
+    /// </param>
+    /// <param name="governedItemIds">
+    /// Previously governed item identities that cannot be allocated again.
+    /// </param>
+    /// <param name="routesByCreationRef">
+    /// Validated route and source evidence keyed by exact creation reference.
+    /// </param>
+    /// <param name="transfers">
+    /// Accepted transfers, or <see langword="null"/> when the turn contains none.
+    /// </param>
+    /// <param name="currentProjectionRoots">
+    /// Detached current projection input roots.
+    /// </param>
+    /// <param name="backupProjectionRoots">
+    /// Detached authenticated original projection roots.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Optional allocation policy; <see langword="null"/> preserves ordinary allocation and cache reuse.
+    /// </param>
+    /// <param name="requestId">
+    /// Original request identity required for an attempt-scoped factory; ordinary calls may omit it.
+    /// </param>
+    /// <param name="turn">
+    /// Original turn number required for an attempt-scoped factory; ordinary calls may omit it.
+    /// </param>
     internal static void RegisterMortalItemsValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -475,7 +760,10 @@ internal static class AcceptedTurnAuthorityRegistry
         IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
         IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
         IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
-        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots) =>
+        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots,
+        MortalItemIdentityFactory? identityFactory = null,
+        string? requestId = null,
+        int? turn = null) =>
         GetState(fileSystem, writeLease).RegisterMortalItemsValidated(
             sessionId,
             snapshotToken,
@@ -486,7 +774,7 @@ internal static class AcceptedTurnAuthorityRegistry
             routesByCreationRef,
             transfers,
             currentProjectionRoots,
-            backupProjectionRoots);
+            backupProjectionRoots, identityFactory, requestId, turn);
 
     internal static IReadOnlyList<ValidationIssue>
         RegisterMortalTreatmentItemsValidated(
@@ -556,28 +844,85 @@ internal static class AcceptedTurnAuthorityRegistry
         FileSystemManager.CanonicalWriteLease writeLease) =>
         GetState(fileSystem, writeLease).HasMortalItemsValidated();
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlyList<EffectSourceExport> GetMortalItemEffectSources(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         GetState(fileSystem, writeLease).GetMortalItemEffectSources(
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
+    /// <summary>
+    /// Revokes the item handoff under the supplied root authority and optional factory match.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Restricts revocation to this exact factory; <see langword="null"/> revokes the current registration regardless of factory.
+    /// </param>
     internal static void InvalidateMortalItemsValidated(
         FileSystemManager fileSystem,
-        FileSystemManager.CanonicalWriteLease writeLease) =>
-        GetState(fileSystem, writeLease).InvalidateMortalItemsValidated();
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemIdentityFactory? expectedFactory = null) =>
+        GetState(fileSystem, writeLease).InvalidateMortalItemsValidated(expectedFactory);
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlySet<EffectSourceOwnerKey> GetMortalItemReplacedSourceOwners(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         GetState(fileSystem, writeLease).GetMortalItemReplacedSourceOwners(
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
     internal static bool TryGetMortalItemId(
         FileSystemManager fileSystem,
@@ -605,23 +950,67 @@ internal static class AcceptedTurnAuthorityRegistry
             turn,
             out snapshot);
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlyList<MortalItemAcceptedTurnOwner> GetMortalItemOwners(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         GetState(fileSystem, writeLease).GetMortalItemOwners(
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlySet<string> GetMissingGovernedMortalItemIds(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         GetState(fileSystem, writeLease).GetMissingGovernedMortalItemIds(
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
     internal static MortalWoundTreatmentAcceptedStateAuthorityResult
         BindMortalWoundTreatmentAcceptedState(
@@ -1224,12 +1613,74 @@ internal static class AcceptedTurnAuthorityRegistry
         return slot.GetForGeneration(generation, revision);
     }
 
+    /// <summary>
+    /// Checks existing physical generation and in-memory claims without creating an authority slot.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real current root whose session generation is inspected without creation.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for that root.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Private item factory for a staged admission; <see langword="null"/> during initial treatment-only preflight.
+    /// </param>
+    /// <param name="checkPlansAndItems">
+    /// Also excludes a validated common plan or foreign validated item registration when <see langword="true"/>.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only when the existing root state permits this private intake.
+    /// </returns>
+    internal static bool CanBeginSpiritualOriginalIntake(FileSystemManager fileSystem,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemIdentityFactory? expectedFactory, bool checkPlansAndItems)
+    {
+        ArgumentNullException.ThrowIfNull(fileSystem);
+        ArgumentNullException.ThrowIfNull(writeLease);
+        var physicalGeneration = fileSystem.ReadExistingSessionGeneration(writeLease);
+        if (physicalGeneration == null)
+            return false;
+        var identity = fileSystem.CanonicalRootAuthorityIdentity;
+        if (!RootSlots.TryGetValue(identity, out var slot))
+            return true;
+        return slot.CanBeginSpiritualOriginalIntake(physicalGeneration,
+            identity.SessionGenerationRevision, expectedFactory, checkPlansAndItems);
+    }
+
     private sealed class RootAuthoritySlot
     {
         private readonly object _gate = new();
         private string? _generation;
         private long _revision = -1;
         private AcceptedTurnAuthorityState? _state;
+
+        /// <summary>
+        /// Inspects the existing bound state without replacing a stale generation or slot.
+        /// </summary>
+        /// <param name="physicalGeneration">
+        /// Validated generation read from the physical root.
+        /// </param>
+        /// <param name="revision">
+        /// Current revision of that root's session generation.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Private item factory to preserve, or <see langword="null"/> for treatment-only preflight.
+        /// </param>
+        /// <param name="checkPlansAndItems">
+        /// Also rejects unrelated validated plan and item claims when <see langword="true"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only when this slot still belongs to the physical generation and its state permits intake.
+        /// </returns>
+        internal bool CanBeginSpiritualOriginalIntake(string physicalGeneration, long revision,
+            MortalItemIdentityFactory? expectedFactory, bool checkPlansAndItems)
+        {
+            lock (_gate)
+                return _state != null && _revision == revision &&
+                       string.Equals(_generation, physicalGeneration, StringComparison.Ordinal) &&
+                       _state.CanBeginSpiritualOriginalIntake(physicalGeneration, revision,
+                           expectedFactory, checkPlansAndItems);
+        }
 
         internal AcceptedTurnAuthorityState GetForGeneration(
             string sessionGeneration,
@@ -1260,7 +1711,7 @@ internal static class AcceptedTurnAuthorityRegistry
         }
     }
 
-    private sealed class AcceptedTurnAuthorityState
+    private sealed partial class AcceptedTurnAuthorityState
     {
         private const string WoundPlanPath =
             "game_state/wounds/accepted_turn_plan";
@@ -1365,6 +1816,49 @@ internal static class AcceptedTurnAuthorityRegistry
                 _sessionGeneration = sessionGeneration;
                 _sessionGenerationRevision = sessionGenerationRevision;
                 _rootGenerationBound = true;
+            }
+        }
+
+        /// <summary>
+        /// Excludes outstanding treatment and, for staged admission, unrelated validated owner claims.
+        /// </summary>
+        /// <param name="physicalGeneration">
+        /// Validated generation read from the physical root.
+        /// </param>
+        /// <param name="revision">
+        /// Current revision of that root's session generation.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Private item factory expected by staged intake, or <see langword="null"/> during initial preflight.
+        /// </param>
+        /// <param name="checkPlansAndItems">
+        /// Also checks common-plan and item registrations when <see langword="true"/>.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when no excluded treatment or unrelated validated claim is present;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanBeginSpiritualOriginalIntake(string physicalGeneration, long revision,
+            MortalItemIdentityFactory? expectedFactory, bool checkPlansAndItems)
+        {
+            lock (_gate)
+            {
+                if (!_rootGenerationBound || _sessionGenerationRevision != revision ||
+                    !string.Equals(_sessionGeneration, physicalGeneration, StringComparison.Ordinal) ||
+                    _mortalWoundTreatmentPublicationFingerprint != null ||
+                    _mortalWoundTreatmentPublicationReservation != null ||
+                    _mortalWoundTreatmentReservedFingerprint != null ||
+                    _validatedTreatmentPublicationHandoff != null ||
+                    _openTreatmentPublicationReceipt != null ||
+                    _treatmentPublicationRestartBlockerFingerprint != null ||
+                    _treatmentPublicationAcceptedStateLineage.Count != 0 ||
+                    !_procedureDice.IsEmpty || !_criticalReactions.IsEmpty ||
+                    !_treatmentResources.IsEmpty)
+                    return false;
+                return !checkPlansAndItems ||
+                       expectedFactory is { IsHealthy: true } &&
+                       !_commonPlan.HasValidated &&
+                       _mortalItems.CanBeginSpiritualOriginalIntake(expectedFactory);
             }
         }
 
@@ -2902,8 +3396,20 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Validates an effect stage and invalidates dependents when its cache scope changes.
+        /// </summary>
+        /// <param name="input">
+        /// Complete input passed through the existing owner validation.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+        /// </param>
+        /// <returns>
+        /// The validated result or owner diagnostics.
+        /// </returns>
         internal EffectAcceptedTurnPlanningResult GetOrBuildEffectValidated(
-            EffectAcceptedTurnInput input)
+            EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null)
         {
             lock (_gate)
             {
@@ -2911,7 +3417,7 @@ internal static class AcceptedTurnAuthorityRegistry
                 {
                     var result = _effectPlan.GetOrBuildValidated(
                         input,
-                        out var reused);
+                        out var reused, identityFactory);
                     if (!reused || !result.Success)
                     {
                         ClearWoundEffectCore();
@@ -2930,14 +3436,43 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Validates a prepared effect stage and binds rebuilt results to fresh authority.
+        /// </summary>
+        /// <param name="prepared">
+        /// Current registry-owned prepared wound stage.
+        /// </param>
+        /// <param name="input">
+        /// Complete input passed through the existing owner validation.
+        /// </param>
+        /// <param name="treatmentContinuationAuthority">
+        /// Private treatment authority, or <see langword="null"/> for ordinary wound stages.
+        /// </param>
+        /// <param name="reservationAuthority">
+        /// Private publication reservation, or <see langword="null"/> for ordinary wound stages.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+        /// </param>
+        /// <returns>
+        /// The validated result or owner diagnostics.
+        /// </returns>
         internal WoundEffectBatchPlanningResult GetOrBuildWoundEffectValidated(
             WoundPreparedAcceptedTurnPlan prepared,
             EffectAcceptedTurnInput input,
             object? treatmentContinuationAuthority = null,
-            object? reservationAuthority = null)
+            object? reservationAuthority = null,
+            EffectIdentityFactory? identityFactory = null)
         {
             lock (_gate)
             {
+                if (prepared.RecoveryContinuationAuthority is not null &&
+                    !WoundAcceptedTurnPlanner.RecoveryContinuationEffectInputAgrees(prepared, input))
+                {
+                    InvalidateWoundAndDependentCore();
+                    return FailedWoundEffect("wound_plan_recovery_continuation_invalid",
+                        "the independently derived private recovery effect input", "changed effect input");
+                }
                 if (!WoundStageReservationAgrees(
                         prepared,
                         treatmentContinuationAuthority,
@@ -2974,7 +3509,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     var ordinary = _effectPlan.GetOrBuildWoundValidated(
                         prepared,
                         input,
-                        out var reused);
+                        out var reused, identityFactory);
                     var accepted = WoundEffectBatchPlanner.AcceptEffectResult(
                         prepared,
                         input,
@@ -3965,6 +4500,166 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Registers an exact completed spiritual plan without invoking the planner.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="authority">
+        /// Exact owner-issued capability, returned on a successful peek.
+        /// </param>
+        /// <returns>
+        /// True only when the owner-issued completed plan is registered.
+        /// </returns>
+        internal bool RegisterSpiritualPublication(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority)
+        {
+            lock (_gate)
+                return _commonPlan.RegisterSpiritualPublication(fileSystem, lease, authority);
+        }
+
+        /// <summary>
+        /// Reads the dedicated spiritual publication capability without consuming it.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="authority">
+        /// Exact owner-issued capability, returned on a successful peek.
+        /// </param>
+        /// <returns>
+        /// True only when a sealed untaken publication is available.
+        /// </returns>
+        internal bool TryPeekSpiritualPublication(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, out SpiritualC4PublicationAuthority authority)
+        {
+            lock (_gate)
+                return _commonPlan.TryPeekSpiritualPublication(out authority) && authority.IsOwnedBy(fileSystem);
+        }
+
+        /// <summary>
+        /// Takes one exact spiritual publication after checking current physical inputs.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="authority">
+        /// Exact owner-issued capability, returned on a successful peek.
+        /// </param>
+        /// <param name="receipt">
+        /// Exact fenced take receipt, returned on a successful take.
+        /// </param>
+        /// <returns>
+        /// True only for the first valid take of the exact registered capability.
+        /// </returns>
+        internal bool TryTakeSpiritualPublication(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationAuthority authority, out SpiritualC4PublicationReceipt receipt)
+        {
+            lock (_gate)
+                return _commonPlan.TryTakeSpiritualPublication(fileSystem, lease, authority, out receipt);
+        }
+
+        /// <summary>
+        /// Checks the exact retained spiritual transaction receipt and invalidation fence.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="receipt">
+        /// Exact fenced take receipt, returned on a successful take.
+        /// </param>
+        /// <returns>
+        /// True only while the exact taken completion remains owned by the cache.
+        /// </returns>
+        internal bool IsTakenSpiritualPublicationCurrent(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt)
+        {
+            lock (_gate)
+                return receipt.Authority.IsOwnedBy(fileSystem) &&
+                    _commonPlan.IsTakenSpiritualPublicationCurrent(receipt);
+        }
+
+        /// <summary>
+        /// Closes a successful spiritual publication and revokes its capability.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="receipt">
+        /// Exact fenced take receipt, returned on a successful take.
+        /// </param>
+        /// <returns>
+        /// True only when the current publication attempt is settled.
+        /// </returns>
+        internal bool CompleteSpiritualPublication(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt)
+        {
+            lock (_gate)
+            {
+                if (!receipt.Authority.IsOwnedBy(fileSystem) ||
+                    !_commonPlan.SettleSpiritualPublication(receipt))
+                    return false;
+                ClearSpiritualPublicationDependenciesCore();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Closes a failed spiritual publication after the common transaction restores state.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Owning filesystem instance.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for the owning filesystem.
+        /// </param>
+        /// <param name="receipt">
+        /// Exact fenced take receipt, returned on a successful take.
+        /// </param>
+        /// <returns>
+        /// True only when the current publication attempt is settled.
+        /// </returns>
+        internal bool FailSpiritualPublication(FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease lease, SpiritualC4PublicationReceipt receipt)
+        {
+            lock (_gate)
+            {
+                if (!receipt.Authority.IsOwnedBy(fileSystem) ||
+                    !_commonPlan.FailSpiritualPublication(receipt))
+                    return false;
+                ClearSpiritualPublicationDependenciesCore();
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Clears dependent stage authorities only after the owning common transaction has settled.
+        /// </summary>
+        private void ClearSpiritualPublicationDependenciesCore()
+        {
+            ClearValidatedTreatmentPublicationCore();
+            _effectPlan.InvalidateAll();
+            ClearWoundEffectCore();
+            _woundPlan.InvalidateAll();
+            _mortalItems.InvalidateValidated();
+        }
+
         internal bool TryTakeCommonValidated(
             AcceptedMechanicsPlanBinding liveBinding,
             out AcceptedMechanicsPlanningResult result)
@@ -3985,6 +4680,48 @@ internal static class AcceptedTurnAuthorityRegistry
             }
         }
 
+        /// <summary>
+        /// Forwards validated item input and its optional scoped allocator to the root-owned cache.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="fingerprint">
+        /// Canonical candidate and governed-identity comparison fingerprint.
+        /// </param>
+        /// <param name="newCandidates">
+        /// Admitted candidates requiring permanent item identities.
+        /// </param>
+        /// <param name="stableCandidates">
+        /// Admitted items with already governed permanent identities.
+        /// </param>
+        /// <param name="governedItemIds">
+        /// Previously governed item identities that cannot be allocated again.
+        /// </param>
+        /// <param name="routesByCreationRef">
+        /// Validated route and source evidence keyed by exact creation reference.
+        /// </param>
+        /// <param name="transfers">
+        /// Accepted transfers, or <see langword="null"/> when the turn contains none.
+        /// </param>
+        /// <param name="currentProjectionRoots">
+        /// Detached current projection input roots.
+        /// </param>
+        /// <param name="backupProjectionRoots">
+        /// Detached authenticated original projection roots.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Optional allocation policy; <see langword="null"/> preserves ordinary allocation and cache reuse.
+        /// </param>
+        /// <param name="requestId">
+        /// Original request identity required for an attempt-scoped factory; ordinary calls may omit it.
+        /// </param>
+        /// <param name="turn">
+        /// Original turn number required for an attempt-scoped factory; ordinary calls may omit it.
+        /// </param>
         internal void RegisterMortalItemsValidated(
             string sessionId,
             string snapshotToken,
@@ -3995,7 +4732,10 @@ internal static class AcceptedTurnAuthorityRegistry
             IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
             IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
             IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
-            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
+            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots,
+            MortalItemIdentityFactory? identityFactory = null,
+            string? requestId = null,
+            int? turn = null)
         {
             lock (_gate)
                 _mortalItems.Register(
@@ -4008,7 +4748,7 @@ internal static class AcceptedTurnAuthorityRegistry
                     routesByCreationRef,
                     transfers,
                     currentProjectionRoots,
-                    backupProjectionRoots);
+                    backupProjectionRoots, identityFactory, requestId, turn);
         }
 
         internal IReadOnlyList<ValidationIssue>
@@ -4235,29 +4975,67 @@ internal static class AcceptedTurnAuthorityRegistry
                 return _mortalItems.HasValidated;
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlyList<EffectSourceExport> GetMortalItemEffectSources(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
-                return _mortalItems.GetSources(sessionId, snapshotToken);
+                return _mortalItems.GetSources(sessionId, snapshotToken, expectedFactory);
         }
 
-        internal void InvalidateMortalItemsValidated()
+        /// <summary>
+        /// Revokes the item handoff under the supplied root authority and optional factory match.
+        /// </summary>
+        /// <param name="expectedFactory">
+        /// Restricts revocation to this exact factory; <see langword="null"/> revokes the current registration regardless of factory.
+        /// </param>
+        internal void InvalidateMortalItemsValidated(MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
-                _mortalItems.InvalidateValidated();
+                _mortalItems.InvalidateValidated(expectedFactory);
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlySet<EffectSourceOwnerKey>
             GetMortalItemReplacedSourceOwners(
                 string sessionId,
-                string snapshotToken)
+                string snapshotToken,
+                MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
                 return _mortalItems.GetReplacedSourceOwners(
                     sessionId,
-                    snapshotToken);
+                    snapshotToken, expectedFactory);
         }
 
         internal bool TryGetMortalItemId(
@@ -4274,6 +5052,52 @@ internal static class AcceptedTurnAuthorityRegistry
                     out itemId);
         }
 
+        /// <summary>
+        /// Extracts item normalization evidence only for its live original capture and exact scoped factory.
+        /// </summary>
+        /// <param name="fileSystem">
+        /// Exact filesystem retained by the original capture.
+        /// </param>
+        /// <param name="lease">
+        /// Current canonical write lease.
+        /// </param>
+        /// <param name="capture">
+        /// Live original owner authorizing extraction before its allocation journal is disposed.
+        /// </param>
+        /// <param name="sessionId">
+        /// Exact original session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Authenticated original snapshot token.
+        /// </param>
+        /// <param name="turn">
+        /// Original accepted turn number.
+        /// </param>
+        /// <param name="factory">
+        /// Exact allocation factory privately retained by the supplied original capture.
+        /// </param>
+        /// <param name="snapshot">
+        /// Detached genuine item cache snapshot on success; null otherwise.
+        /// </param>
+        /// <returns>
+        /// True only for the original owner, exact factory and matching healthy cache entry.
+        /// </returns>
+        internal bool TryCaptureSpiritualMortalItemNormalizationSnapshot(
+            FileSystemManager fileSystem, FileSystemManager.CanonicalWriteLease lease,
+            ValidationService.SpiritualOriginalTurnCapture capture, string sessionId,
+            string snapshotToken, int turn, MortalItemIdentityFactory factory,
+            out MortalItemAcceptedTurnNormalizationSnapshot snapshot)
+        {
+            lock (_gate)
+            {
+                snapshot = null!;
+                return capture.AuthorizesC4ItemSnapshot(fileSystem, lease, sessionId,
+                           snapshotToken, turn, factory) &&
+                    _mortalItems.TryCaptureNormalizationSnapshot(sessionId, snapshotToken,
+                        turn, out snapshot, factory);
+            }
+        }
+
         internal bool TryCaptureMortalItemNormalizationSnapshot(
             string sessionId,
             string snapshotToken,
@@ -4288,22 +5112,54 @@ internal static class AcceptedTurnAuthorityRegistry
                     out snapshot);
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlyList<MortalItemAcceptedTurnOwner> GetMortalItemOwners(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
-                return _mortalItems.GetOwners(sessionId, snapshotToken);
+                return _mortalItems.GetOwners(sessionId, snapshotToken, expectedFactory);
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlySet<string> GetMissingGovernedMortalItemIds(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
                 return _mortalItems.GetMissingGovernedItemIds(
                     sessionId,
-                    snapshotToken);
+                    snapshotToken, expectedFactory);
         }
 
         internal void InvalidateAll()
@@ -4840,6 +5696,11 @@ internal static class AcceptedTurnAuthorityRegistry
             object? reservationAuthority)
         {
             var preparedAuthority = prepared.TreatmentContinuationAuthority;
+            if (prepared.RecoveryContinuationAuthority is not null)
+            {
+                return preparedAuthority is null && treatmentContinuationAuthority is null &&
+                       reservationAuthority is null && RecoveryContinuationRegistryAgrees(prepared);
+            }
             if (preparedAuthority is null)
             {
                 return treatmentContinuationAuthority is null &&
@@ -4914,6 +5775,15 @@ internal static class AcceptedTurnAuthorityRegistry
 
 internal static class AcceptedTurnPlanAuthority
 {
+    /// <summary>
+    /// Revokes validated accepted-turn publication authority under the active canonical lease.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
     internal static void InvalidateValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease)

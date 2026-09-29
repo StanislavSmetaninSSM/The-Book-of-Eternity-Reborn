@@ -12,6 +12,297 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeDocumentationCoverageTests
 {
+    /// <summary>
+    /// Keeps staged correction and preserved-choice rules visible in both detailed guidance and GM entrypoints.
+    /// </summary>
+    [Fact]
+    public void SpiritualDependentFrontiers_DocumentCurrentRequestBoundaries()
+    {
+        foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md",
+            "OtherGuides/Afterlife_Contract_Matrix.md", "OtherGuides/GM_Worker_Bridges.md",
+            "CLI_API_Specification.md", "CLI_Agent_Daemon_Specification.md",
+            "Examples/E_CLI_Afterlife_Turns.txt" })
+        {
+            var prose = Regex.Replace(ReadRepoFile(path.Split('/')), @"\s+", " ");
+            Assert.Contains("spiritual_wound_dependent_frontiers_v1", prose, StringComparison.Ordinal);
+            Assert.Contains("Ready completes only the issued frontier", prose, StringComparison.Ordinal);
+            Assert.Contains("continuationId", prose, StringComparison.Ordinal);
+            Assert.Contains("saved wound choice", prose, StringComparison.Ordinal);
+        }
+        foreach (var path in new[] { "OtherGuides/Wound_Materialization_Contract.md",
+            "OtherGuides/Afterlife_Contract_Matrix.md", "Examples/E_CLI_Afterlife_Turns.txt" })
+        {
+            var prose = Regex.Replace(ReadRepoFile(path.Split('/')), @"\s+", " ");
+            Assert.Contains("corrections are forbidden in A", prose, StringComparison.Ordinal);
+            Assert.Contains("public request files are not authority", prose, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Keeps dependent position repair bounded to current fields and the saved decision in GM guidance.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundPositionDependency_DocumentsExactArithmeticScope()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        })
+        {
+            var prose = Regex.Replace(text, @"\s+", " ");
+            Assert.Contains("spiritual_wound_position_dependency_v1", prose, StringComparison.Ordinal);
+            Assert.Contains("dependentDraftFields", prose, StringComparison.Ordinal);
+            Assert.Contains("saved wound choice", prose, StringComparison.Ordinal);
+            Assert.Contains("relative order", prose, StringComparison.Ordinal);
+            Assert.Contains("complete prescribed arithmetic group", prose, StringComparison.Ordinal);
+            Assert.Contains("position correction alone does not authorize", prose, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Keeps effective wound position discoverable in GM entrypoints while preserving canonical movement and closed history.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundPosition_DocumentsEffectiveRankWithoutCanonicalErosion()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+        })
+        {
+            var prose = Regex.Replace(text, @"\s+", " ");
+            Assert.Contains("spiritual_wound_position_v1", prose, StringComparison.Ordinal);
+            Assert.Contains("clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)",
+                prose, StringComparison.Ordinal);
+            Assert.Contains("canonical", prose, StringComparison.Ordinal);
+            Assert.Contains("binding", prose, StringComparison.Ordinal);
+            Assert.Contains("maneuver", prose, StringComparison.Ordinal);
+            Assert.Contains("later matching exchanges", prose, StringComparison.Ordinal);
+        }
+        var contract = Regex.Replace(ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"), @"\s+", " ");
+        Assert.Contains("Do not subtract the burden from either saved field", contract, StringComparison.Ordinal);
+        Assert.Contains("each accepted component once", contract, StringComparison.Ordinal);
+        Assert.Contains("equal burdens cancel", contract, StringComparison.Ordinal);
+        Assert.Contains("does not authorize a new exchange", contract, StringComparison.Ordinal);
+        Assert.Contains("`dicePreview` is null", contract, StringComparison.Ordinal);
+        Assert.Contains("infer a zero burden from that null", contract, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Keeps zero-ceiling authoring separate from client-owned publication and the limits of receipt-only recovery evidence.
+    /// </summary>
+    [Fact]
+    public void SpiritualSourceOnly_DocumentsNoDecisionAndOnePublisher()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        })
+        {
+            var section = text.Split("## spiritual_wound_source_only_publication_v1", StringSplitOptions.None)[1]
+                .Split("\n## ", StringSplitOptions.None)[0];
+            var prose = Regex.Replace(section, @"\s+", " ");
+            foreach (var token in new[]
+            {
+                "no_offer", "No fabricated none", "instance-only receipt", "Spend before Retire",
+                "GM must not write", "single common publisher", "Legal empty private roots",
+                "warm handoff", "live B3 routing", "restores the signed original turn",
+                "retains the complete accepted turn", "Receipt-only state does not prove whole-turn acceptance"
+            })
+                Assert.Contains(token, prose, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Keeps atomic cold recovery, current-request authoring and receipt limitations consistent across GM entrypoints.
+    /// </summary>
+    [Fact]
+    public void SpiritualColdRecovery_DocumentsAtomicOutcomeAndCurrentRequest()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+        })
+        {
+            var prose = Regex.Replace(text, @"\s+", " ");
+            foreach (var token in new[]
+            {
+                "restores the signed original turn or retains the complete accepted turn",
+                "GM waits for the current client request and must not resend a saved choice",
+                "Receipt-only state does not prove whole-turn acceptance",
+                "do not reconstruct private authority"
+            })
+                Assert.Contains(token, prose, StringComparison.Ordinal);
+            Assert.DoesNotContain("whole-turn cold finalization remains open", prose,
+                StringComparison.OrdinalIgnoreCase);
+        }
+    }
+
+    /// <summary>
+    /// Keeps private selected-decision recovery separate from new GM authoring and live dispatch.
+    /// </summary>
+    [Fact]
+    public void SpiritualPendingSubmission_DocumentsPreservedChoiceAndClientOwnership()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+        })
+        {
+            var prose = Regex.Replace(text, @"\s+", " ");
+            foreach (var token in new[]
+            {
+                "spiritual_wound_pending_submission_v1", "pendingSubmission",
+                "must not reoffer", "GM must not write", "C4-B",
+                "checkpoint-first recovery", "original turn and saved choice for cold recovery",
+                "original completion signal"
+            })
+                Assert.Contains(token, prose, StringComparison.Ordinal);
+        }
+    }
+
+    /// <summary>
+    /// Keeps the optional live continuation wire contract and its private authority boundary discoverable.
+    /// </summary>
+    [Fact]
+    public void SpiritualContinuationEnvelope_DocumentsExplicitResponseAndPrivateBoundary()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("BookOfEternityClient", "Launcher", "gm_worker_cli_runner.ps1")
+        })
+        foreach (var token in new[]
+        {
+            "spiritual_wound_continuation_envelope_v1", "spiritualWoundContinuation",
+            "continuationId", "woundDecisions", "dependent_draft",
+            "output/narrative_response.json.response"
+        })
+            Assert.Contains(token, text, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Keeps explicit helper responses and their publication boundary discoverable in the GM contract and worked commands.
+    /// </summary>
+    [Fact]
+    public void SpiritualContinuationFileHelper_DocumentsExplicitCommandsAndPublicationWitnesses()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("BookOfEternityClient", "Launcher", "CLI_Daemon_Window_Help.md")
+        })
+        {
+            foreach (var token in new[]
+            {
+                "Complete-BoeValidationRepair", "-SpiritualWoundContinuationJson",
+                "dependent_draft", "fullTurnResubmissionRequired", "GameEngine"
+            })
+                Assert.Contains(token, text, StringComparison.Ordinal);
+        }
+        var example = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+            .Split("## spiritual_wound_continuation_envelope_v1", StringSplitOptions.None)[1]
+            .Split("\n## ", StringSplitOptions.None)[0];
+        var prose = Regex.Replace(example, @"\s+", " ");
+        foreach (var token in new[]
+        {
+            "decision = 'none'", "decision = 'materialize'", "woundDecisions = @()",
+            "request and Ready", "for the same request", "not consume C2",
+            "already published continuation Ready",
+            "Ordinary repair", "forbids a continuation response", "GameEngine authenticates and resumes C2"
+        })
+            Assert.Contains(token, prose, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Keeps the internal common transaction and the live-dispatch boundary visible to GM authors.
+    /// </summary>
+    [Fact]
+    public void SpiritualCommonPublication_DocumentsOneShotRollbackAndLiveDispatch()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+        })
+        foreach (var token in new[]
+        {
+            "spiritual_wound_common_publication_v1", "one-shot", "replanning", "zero writes",
+            "signed absence", "both private roots", "wound_commands", "GM must not write",
+            "live GM dispatch uses C4-B"
+        })
+            Assert.Contains(token, text, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Keeps terminal resource ordering and private closure authority explicit across GM entrypoints.
+    /// </summary>
+    [Fact]
+    public void SpiritualTerminalClosure_DocumentsOrderingAndPrivatePublicationBoundary()
+    {
+        foreach (var text in new[]
+        {
+            ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+            ReadRepoFile("OtherGuides", "Wound_Materialization_Contract.md"),
+            ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt"),
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+        })
+        foreach (var token in new[]
+        {
+            "spiritual_wound_terminal_closure_v1", "terminalExchange", "Spend before Retire",
+            "immutable closure", "accepted prior closure", "distinct instance", "C4"
+        })
+            Assert.Contains(token, text, StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Keeps the private receipt's signed absence distinct from the later physical draft in GM guidance.
+    /// </summary>
+    [Fact]
+    public void SpiritualReceiptOrigin_DocumentsSignedPresenceAndLegacyBoundary()
+    {
+        foreach (var source in new[]
+                 {
+                     ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md"),
+                     ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt")
+                 })
+        foreach (var token in new[]
+                 {
+                     "originalPathPresenceV1", "19 observed paths", "signed absence",
+                     "16/18", "receipts", "ГМ", "spiritual_wound_conflict_side_receipt_missing"
+                 })
+            Assert.Contains(token, source, StringComparison.OrdinalIgnoreCase);
+    }
+
     [Fact]
     public void StandardWoundArt_CurrentScalarContractIsDocumentedForGmAuthors()
     {
@@ -2896,6 +3187,52 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         }
     }
 
+    /// <summary>
+    /// Keeps GM entrypoints and afterlife guides aligned on conditional wound costs,
+    /// reaction-relative recovery and immutable continuation evidence.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundSpecialActionCosts_AreDocumentedAcrossGmEntrypoints()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
+        foreach (var text in new[]
+        {
+            matrix, glossary,
+            ReadRepoFile("CLI_API_Specification.md"),
+            ReadRepoFile("CLI_Agent_Daemon_Specification.md"),
+            ReadRepoFile("TaskGuides", "CLI_Step_Main.txt")
+        })
+        {
+            Assert.Contains("spiritual_wound_special_action_costs_v1", text, StringComparison.Ordinal);
+            Assert.Contains("insufficient funds reject", text, StringComparison.Ordinal);
+            Assert.Contains("failure still pays", text, StringComparison.Ordinal);
+            Assert.Contains("original capped amount", text, StringComparison.Ordinal);
+            Assert.Contains("final ledger can differ", text, StringComparison.Ordinal);
+            Assert.Contains("baseCost=0, minCost=0, artTier=0", text, StringComparison.Ordinal);
+            Assert.Contains("No burden means no force audit", text, StringComparison.Ordinal);
+        }
+        foreach (var text in new[] { matrix, glossary })
+        {
+            Assert.Contains("unexecuted", text, StringComparison.Ordinal);
+            Assert.Contains("sibling audits", text, StringComparison.Ordinal);
+            Assert.Contains("completed prefix", text, StringComparison.Ordinal);
+            Assert.Contains("cold replay", text, StringComparison.Ordinal);
+            Assert.Contains("zero burden", text, StringComparison.Ordinal);
+            Assert.Contains("empty audit root", text, StringComparison.Ordinal);
+            Assert.Contains("fake zero audit", text, StringComparison.Ordinal);
+            Assert.Contains("non-force audits", text, StringComparison.Ordinal);
+        }
+        foreach (var file in new[] { "Wound_Materialization_Contract.md", "Effect_Materialization_Contract.md" })
+        {
+            Assert.Contains("spiritual_wound_special_action_costs_v1",
+                ReadRepoFile("OtherGuides", file), StringComparison.Ordinal);
+        }
+        var manifest = ReadRepoFile("Examples", "example_validation_manifest.json");
+        Assert.Contains("SpiritualWoundSpecialCostWorkedExamples_KeepClosedAuditsAndActionOnlyArithmetic",
+            manifest, StringComparison.Ordinal);
+    }
+
     [Fact]
     public void AfterlifeSpiritualConflictContractIsDocumentedForGm()
     {
@@ -4619,6 +4956,13 @@ public sealed partial class AfterlifeDocumentationCoverageTests
         var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
         var glossary = ReadRepoFile("OtherGuides", "Afterlife_Combat_Terminology_Glossary.md");
         var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+        foreach (var document in new[] { common, matrix, examples })
+        {
+            Assert.Contains("periodic_spend", document, StringComparison.Ordinal);
+            Assert.Contains("periodic_gain", document, StringComparison.Ordinal);
+            Assert.Contains("spiritual_action_points", document, StringComparison.Ordinal);
+        }
+        Assert.Contains("## afterlife_ap_effect_v1", examples, StringComparison.Ordinal);
         var api = ReadRepoFile("CLI_API_Specification.md");
         var daemonSpec = ReadRepoFile("CLI_Agent_Daemon_Specification.md");
         var taskGuide = ReadRepoFile("TaskGuides", "CLI_Step_Main.txt");
@@ -4663,6 +5007,29 @@ public sealed partial class AfterlifeDocumentationCoverageTests
             corpus,
             StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void BoundedReceiptExplicitZero_IsDocumentedAsTerminalWithoutProjection()
+    {
+        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
+        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
+
+        foreach (var document in new[] { matrix, examples })
+        {
+            var normalized = document.ReplaceLineEndings(" ");
+            Assert.Contains("explicit terminal zero", normalized, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resource_delta", normalized, StringComparison.Ordinal);
+            Assert.Contains("narrated_no_state_change", normalized, StringComparison.Ordinal);
+            Assert.Contains("resource transition", normalized, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("resource event", normalized, StringComparison.OrdinalIgnoreCase);
+            Assert.Contains("dependent effect activation", normalized, StringComparison.OrdinalIgnoreCase);
+        }
+
+        Assert.Contains(
+            "\"amount\": 0",
+            examples,
+            StringComparison.Ordinal);
     }
 
     private static string[] ShiningConstantValues(params string[] prefixes) =>

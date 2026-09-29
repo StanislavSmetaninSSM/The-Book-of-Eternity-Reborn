@@ -930,6 +930,48 @@ internal static class MortalItemAcceptedTurnAuthority
             writeLease);
     }
 
+    /// <summary>
+    /// Registers validated raw item owners with their optional original-attempt allocation policy.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="catalog">
+    /// Validated raw item occurrences, including their carrier coordinates.
+    /// </param>
+    /// <param name="knownItemIds">
+    /// Previously governed item identities that cannot be allocated again.
+    /// </param>
+    /// <param name="routeAuthorities">
+    /// Validated route and source authority for the admitted candidates.
+    /// </param>
+    /// <param name="transferCatalog">
+    /// Accepted transfer evidence, or <see langword="null"/> when there are no transfers.
+    /// </param>
+    /// <param name="currentProjectionRoots">
+    /// Detached current projection input roots.
+    /// </param>
+    /// <param name="backupProjectionRoots">
+    /// Detached authenticated original projection roots.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Optional allocation policy; <see langword="null"/> preserves ordinary allocation and cache reuse.
+    /// </param>
+    /// <param name="requestId">
+    /// Original request identity required for an attempt-scoped factory; ordinary calls may omit it.
+    /// </param>
+    /// <param name="turn">
+    /// Original turn number required for an attempt-scoped factory; ordinary calls may omit it.
+    /// </param>
     internal static void RegisterValidatedItems(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -940,7 +982,10 @@ internal static class MortalItemAcceptedTurnAuthority
         MortalItemRouteAuthorityCatalog routeAuthorities,
         MortalItemAcceptedTransferCatalog? transferCatalog,
         IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
-        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
+        IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots,
+        MortalItemIdentityFactory? identityFactory = null,
+        string? requestId = null,
+        int? turn = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -996,7 +1041,7 @@ internal static class MortalItemAcceptedTurnAuthority
             routeAuthorities.ByCreationRef,
             transferCatalog?.Transfers,
             currentProjectionRoots,
-            backupProjectionRoots);
+            backupProjectionRoots, identityFactory, requestId, turn);
     }
 
     internal static IReadOnlyList<ValidationIssue>
@@ -1131,38 +1176,95 @@ internal static class MortalItemAcceptedTurnAuthority
                 reservationAuthority);
     }
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlyList<EffectSourceExport> GetValidatedEffectSources(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         AcceptedTurnAuthorityRegistry.GetMortalItemEffectSources(
             fs,
             writeLease,
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
+    /// <summary>
+    /// Revokes validated item admission without resetting unrelated treatment reservations.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Restricts revocation to this exact factory; <see langword="null"/> revokes the current registration regardless of factory.
+    /// </param>
     internal static void InvalidateValidatedItems(
         FileSystemManager fs,
-        FileSystemManager.CanonicalWriteLease writeLease)
+        FileSystemManager.CanonicalWriteLease writeLease,
+        MortalItemIdentityFactory? expectedFactory = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(writeLease);
         AcceptedTurnAuthorityRegistry.InvalidateMortalItemsValidated(
             fs,
-            writeLease);
+            writeLease, expectedFactory);
     }
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlySet<EffectSourceOwnerKey> GetReplacedEffectSourceOwners(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         AcceptedTurnAuthorityRegistry.GetMortalItemReplacedSourceOwners(
             fs,
             writeLease,
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
     internal static bool TryGetAllocatedItemId(
         FileSystemManager fs,
@@ -1204,27 +1306,71 @@ internal static class MortalItemAcceptedTurnAuthority
             out snapshot);
     }
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlyList<MortalItemAcceptedTurnOwner> GetValidatedOwners(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         AcceptedTurnAuthorityRegistry.GetMortalItemOwners(
             fs,
             writeLease,
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
+    /// <summary>
+    /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem whose active canonical lease identifies the registry.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for the supplied filesystem.
+    /// </param>
+    /// <param name="sessionId">
+    /// Exact signed session identity.
+    /// </param>
+    /// <param name="snapshotToken">
+    /// Exact authenticated original snapshot token.
+    /// </param>
+    /// <param name="expectedFactory">
+    /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+    /// </param>
+    /// <returns>
+    /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+    /// </returns>
     internal static IReadOnlySet<string> GetMissingGovernedItemIds(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
         string sessionId,
-        string snapshotToken) =>
+        string snapshotToken,
+        MortalItemIdentityFactory? expectedFactory = null) =>
         AcceptedTurnAuthorityRegistry.GetMissingGovernedMortalItemIds(
             fs,
             writeLease,
             sessionId,
-            snapshotToken);
+            snapshotToken, expectedFactory);
 
     private static string CreateFingerprint(
         IEnumerable<NewCandidate> newCandidates,
@@ -1361,6 +1507,18 @@ internal static class MortalItemAcceptedTurnAuthority
         private string? _snapshotToken;
         private string? _fingerprint;
         private bool _validated;
+        private readonly MortalItemIdentityFactory _defaultIdentityFactory = new();
+        private MortalItemIdentityFactory? _identityFactory;
+        private string? _allocationFingerprint;
+        /// <summary>
+        /// Gets whether the registration belongs to healthy ordinary publication rather than private intake.
+        /// </summary>
+        private bool OrdinaryFactory => _identityFactory?.IsAttemptScoped != true &&
+            (_identityFactory?.IsHealthy ?? true);
+        /// <summary>
+        /// Gets whether ordinary publication can consume the currently validated item handoff.
+        /// </summary>
+        private bool OrdinaryValidated => _validated && OrdinaryFactory;
         private Dictionary<string, string> _itemIdsByCreationRef = new(StringComparer.Ordinal);
         private EffectSourceExport[] _sources = Array.Empty<EffectSourceExport>();
         private HashSet<EffectSourceOwnerKey> _replacedSourceOwners = new();
@@ -1382,15 +1540,79 @@ internal static class MortalItemAcceptedTurnAuthority
         private MortalItemAcceptedTurnNormalizationSnapshot?
             _treatmentPublicationBaselineSnapshot;
 
+        /// <summary>
+        /// Gets whether a healthy ordinary item handoff is validated; private intake is never exposed here.
+        /// </summary>
         internal bool HasValidated
         {
             get
             {
                 lock (_gate)
-                    return _validated;
+                    return OrdinaryValidated;
             }
         }
 
+        /// <summary>
+        /// Checks whether private original intake can proceed without replacing a live foreign item claim.
+        /// </summary>
+        /// <param name="expectedFactory">
+        /// Exact item factory for the candidate intake, or a fresh unregistered instance to probe vacancy.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when no validated registration exists, it belongs to this factory,
+        /// or its concrete spiritual factory has an irreversibly revoked journal;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool CanBeginSpiritualOriginalIntake(MortalItemIdentityFactory expectedFactory)
+        {
+            ArgumentNullException.ThrowIfNull(expectedFactory);
+            lock (_gate)
+                return !_validated || ReferenceEquals(_identityFactory, expectedFactory) ||
+                       _identityFactory is SpiritualWoundItemIdentityFactory { IsHealthy: false };
+        }
+
+        /// <summary>
+        /// Allocates or reuses admitted item identities within the selected factory and complete causal binding.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="fingerprint">
+        /// Canonical candidate and governed-identity comparison fingerprint.
+        /// </param>
+        /// <param name="newCandidates">
+        /// Admitted candidates requiring permanent item identities.
+        /// </param>
+        /// <param name="stableCandidates">
+        /// Admitted items with already governed permanent identities.
+        /// </param>
+        /// <param name="governedItemIds">
+        /// Previously governed item identities that cannot be allocated again.
+        /// </param>
+        /// <param name="routesByCreationRef">
+        /// Validated route and source evidence keyed by exact creation reference.
+        /// </param>
+        /// <param name="transfers">
+        /// Accepted transfers, or <see langword="null"/> when the turn contains none.
+        /// </param>
+        /// <param name="currentProjectionRoots">
+        /// Detached current projection input roots.
+        /// </param>
+        /// <param name="backupProjectionRoots">
+        /// Detached authenticated original projection roots.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Optional allocation policy; <see langword="null"/> preserves ordinary allocation and cache reuse.
+        /// </param>
+        /// <param name="requestId">
+        /// Original request identity required for an attempt-scoped factory; ordinary calls may omit it.
+        /// </param>
+        /// <param name="turn">
+        /// Original turn number required for an attempt-scoped factory; ordinary calls may omit it.
+        /// </param>
         internal void Register(
             string sessionId,
             string snapshotToken,
@@ -1401,7 +1623,10 @@ internal static class MortalItemAcceptedTurnAuthority
             IReadOnlyDictionary<string, MortalItemRouteAuthority> routesByCreationRef,
             IReadOnlyList<MortalItemAcceptedTransfer>? transfers,
             IReadOnlyDictionary<string, JsonNode?> currentProjectionRoots,
-            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots)
+            IReadOnlyDictionary<string, JsonNode?> backupProjectionRoots,
+            MortalItemIdentityFactory? identityFactory = null,
+            string? requestId = null,
+            int? turn = null)
         {
             ArgumentNullException.ThrowIfNull(routesByCreationRef);
             ArgumentNullException.ThrowIfNull(currentProjectionRoots);
@@ -1423,7 +1648,30 @@ internal static class MortalItemAcceptedTurnAuthority
             lock (_gate)
             {
                 _validatedFence = new object();
-                if (string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
+                _validated = false;
+                var selectedFactory = identityFactory ?? _defaultIdentityFactory;
+                if (!selectedFactory.IsHealthy)
+                    throw new InvalidOperationException("Item allocation attempt is faulted.");
+                var keys = selectedFactory.IsAttemptScoped
+                    ? newCandidates.Select(candidate => new MortalItemAllocationKey(
+                        sessionId, snapshotToken,
+                        requestId ?? throw new InvalidOperationException("Original request is required."),
+                        turn ?? throw new InvalidOperationException("Original turn is required."),
+                        candidate.CreationRef,
+                        candidate.Item["materialization"]!["sourceTurn"]!.GetValue<int>(),
+                        candidate.FilePath, candidate.JsonPath, CloneCarrier(candidate.Carrier),
+                        routesByCreationRef[candidate.CreationRef])).ToArray()
+                    : Array.Empty<MortalItemAllocationKey>();
+                var allocationFingerprint = selectedFactory.IsAttemptScoped
+                    ? SpiritualWoundStateJson.Hash(new JsonObject
+                    {
+                        ["request"] = requestId, ["turn"] = turn,
+                        ["keys"] = System.Text.Json.JsonSerializer.SerializeToNode(keys)
+                    }, "item_allocation_context")
+                    : null;
+                if (ReferenceEquals(_identityFactory, selectedFactory) &&
+                    string.Equals(_allocationFingerprint, allocationFingerprint, StringComparison.Ordinal) &&
+                    string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
                     string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal) &&
                     string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal))
                 {
@@ -1481,12 +1729,11 @@ internal static class MortalItemAcceptedTurnAuthority
                 }
                 foreach (var candidate in newCandidates)
                 {
-                    string itemId;
-                    do
-                    {
-                        itemId = "itm_" + Guid.NewGuid().ToString("N");
-                    }
-                    while (!known.Add(itemId));
+                    var key = selectedFactory.IsAttemptScoped
+                        ? keys[allocations.Count] : null;
+                    var itemId = selectedFactory.CreateItemId(key, known);
+                    if (!known.Add(itemId))
+                        throw new InvalidOperationException("Allocated item identity collides with accepted authority.");
 
                     allocations.Add(candidate.CreationRef, itemId);
                     owners.Add(new MortalItemAcceptedTurnOwner(
@@ -1514,6 +1761,8 @@ internal static class MortalItemAcceptedTurnAuthority
                             equipped: candidate.Equipped)));
                 }
 
+                _identityFactory = selectedFactory;
+                _allocationFingerprint = allocationFingerprint;
                 _sessionId = sessionId;
                 _snapshotToken = snapshotToken;
                 _fingerprint = fingerprint;
@@ -1552,15 +1801,38 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
-        internal void InvalidateValidated()
+        /// <summary>
+        /// Revokes the current item handoff, optionally restricted to one exact factory.
+        /// </summary>
+        /// <param name="expectedFactory">
+        /// Restricts revocation to this exact factory; <see langword="null"/> revokes the current registration regardless of factory.
+        /// </param>
+        internal void InvalidateValidated(MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
+                if (expectedFactory != null && !ReferenceEquals(_identityFactory, expectedFactory))
+                    return;
                 _validatedFence = new object();
                 _validated = false;
             }
         }
 
+        /// <summary>
+        /// Confirms an ordinary validated registration still matches the retained treatment roots.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="currentProjectionRoots">
+        /// Detached current projection input roots.
+        /// </param>
+        /// <returns>
+        /// True when the ordinary authority check succeeds; otherwise <see langword="false"/>.
+        /// </returns>
         internal bool ConfirmsTreatmentContinuation(
             string sessionId,
             string snapshotToken,
@@ -1569,7 +1841,7 @@ internal static class MortalItemAcceptedTurnAuthority
             ArgumentNullException.ThrowIfNull(currentProjectionRoots);
             lock (_gate)
             {
-                return _validated &&
+                return OrdinaryValidated &&
                        string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
                        string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal) &&
                        _currentProjectionRoots.Count ==
@@ -1591,6 +1863,18 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Seals an ordinary item registration against its complete treatment publication baseline.
+        /// </summary>
+        /// <param name="baseSnapshot">
+        /// Exact current normalization snapshot to seal.
+        /// </param>
+        /// <param name="sealedSnapshot">
+        /// Detached snapshot containing the complete final publication baseline.
+        /// </param>
+        /// <returns>
+        /// True when the ordinary authority check succeeds; otherwise <see langword="false"/>.
+        /// </returns>
         internal bool TrySealTreatmentPublicationBaseline(
             MortalItemAcceptedTurnNormalizationSnapshot baseSnapshot,
             MortalItemAcceptedTurnNormalizationSnapshot sealedSnapshot)
@@ -1599,7 +1883,7 @@ internal static class MortalItemAcceptedTurnAuthority
             ArgumentNullException.ThrowIfNull(sealedSnapshot);
             lock (_gate)
             {
-                if (!_validated ||
+                if (!OrdinaryValidated ||
                     _treatmentPublicationBaselineSnapshot is not null ||
                     baseSnapshot.HasFinalPublicationBaseline ||
                     !sealedSnapshot.HasFinalPublicationBaseline ||
@@ -1624,6 +1908,18 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Takes matching ordinary validated item publication authority exactly once.
+        /// </summary>
+        /// <param name="expected">
+        /// Expected complete item publication baseline.
+        /// </param>
+        /// <param name="snapshot">
+        /// Matching publication or normalization evidence; output values are absent when validation fails.
+        /// </param>
+        /// <returns>
+        /// True when the ordinary authority check succeeds; otherwise <see langword="false"/>.
+        /// </returns>
         internal bool TryTakeValidatedTreatmentPublication(
             MortalItemAcceptedTurnNormalizationSnapshot expected,
             out ValidatedPublicationTakeSnapshot snapshot)
@@ -1631,7 +1927,7 @@ internal static class MortalItemAcceptedTurnAuthority
             ArgumentNullException.ThrowIfNull(expected);
             lock (_gate)
             {
-                if (_validated &&
+                if (OrdinaryValidated &&
                     _fingerprint is not null &&
                     _treatmentPublicationBaselineSnapshot is not null &&
                     expected.MatchesFinalPublicationBaseline(
@@ -1657,6 +1953,18 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Takes ordinary validated authority only for terminal quarantine release.
+        /// </summary>
+        /// <param name="expected">
+        /// Expected complete item publication baseline.
+        /// </param>
+        /// <param name="snapshot">
+        /// Matching publication or normalization evidence; output values are absent when validation fails.
+        /// </param>
+        /// <returns>
+        /// True when the ordinary authority check succeeds; otherwise <see langword="false"/>.
+        /// </returns>
         internal bool TryTakeCurrentTreatmentPublicationForTerminalRelease(
             MortalItemAcceptedTurnNormalizationSnapshot expected,
             out ValidatedPublicationTakeSnapshot snapshot)
@@ -1664,7 +1972,7 @@ internal static class MortalItemAcceptedTurnAuthority
             ArgumentNullException.ThrowIfNull(expected);
             lock (_gate)
             {
-                if (_validated &&
+                if (OrdinaryValidated &&
                     _fingerprint is not null &&
                     _treatmentPublicationBaselineSnapshot is not null &&
                     expected.MatchesFinalPublicationBaseline(
@@ -1690,13 +1998,22 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Recovers an invalidated ordinary baseline solely for terminal quarantine release.
+        /// </summary>
+        /// <param name="snapshot">
+        /// Matching publication or normalization evidence; output values are absent when validation fails.
+        /// </param>
+        /// <returns>
+        /// True when the ordinary authority check succeeds; otherwise <see langword="false"/>.
+        /// </returns>
         internal bool TryTakeInvalidatedTreatmentPublicationForTerminalRelease(
             out ValidatedPublicationTakeSnapshot snapshot)
         {
             lock (_gate)
             {
                 var retainedBaseline = _treatmentPublicationBaselineSnapshot?.Clone();
-                if (_validated ||
+                if (!OrdinaryFactory || _validated ||
                     _fingerprint is null ||
                     retainedBaseline is null ||
                     !retainedBaseline.RecomputesFinalPublicationBaseline() ||
@@ -1767,13 +2084,29 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlyList<EffectSourceExport> GetSources(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
-                if (!Matches(sessionId, snapshotToken))
+                if (!Matches(sessionId, snapshotToken, expectedFactory))
                     return Array.Empty<EffectSourceExport>();
                 return _sources.Select(static source => source with
                 {
@@ -1806,15 +2139,37 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Captures immutable item normalization evidence for an ordinary or exact owner-scoped handoff.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact original session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Authenticated original snapshot token.
+        /// </param>
+        /// <param name="turn">
+        /// Original accepted turn number.
+        /// </param>
+        /// <param name="snapshot">
+        /// Detached genuine cache snapshot on success; null otherwise.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact original-capture factory checked by the registry; null retains ordinary visibility.
+        /// </param>
+        /// <returns>
+        /// True only for a healthy matching cache registration and requested factory.
+        /// </returns>
         internal bool TryCaptureNormalizationSnapshot(
             string sessionId,
             string snapshotToken,
             int turn,
-            out MortalItemAcceptedTurnNormalizationSnapshot snapshot)
+            out MortalItemAcceptedTurnNormalizationSnapshot snapshot,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
-                if (Matches(sessionId, snapshotToken))
+                if (Matches(sessionId, snapshotToken, expectedFactory))
                 {
                     if (_treatmentPublicationBaselineSnapshot is not null)
                     {
@@ -1848,25 +2203,57 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlySet<EffectSourceOwnerKey> GetReplacedSourceOwners(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
-                return Matches(sessionId, snapshotToken)
+                return Matches(sessionId, snapshotToken, expectedFactory)
                     ? new HashSet<EffectSourceOwnerKey>(_replacedSourceOwners)
                     : new HashSet<EffectSourceOwnerKey>();
             }
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlyList<MortalItemAcceptedTurnOwner> GetOwners(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
-                if (!Matches(sessionId, snapshotToken))
+                if (!Matches(sessionId, snapshotToken, expectedFactory))
                     return Array.Empty<MortalItemAcceptedTurnOwner>();
                 return _owners.Select(static owner => owner with
                 {
@@ -1876,26 +2263,69 @@ internal static class MortalItemAcceptedTurnAuthority
             }
         }
 
+        /// <summary>
+        /// Returns detached item evidence only when the tuple, attempt health and expected factory match.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// Detached matching evidence, or an empty collection when no visible validated handoff matches.
+        /// </returns>
         internal IReadOnlySet<string> GetMissingGovernedItemIds(
             string sessionId,
-            string snapshotToken)
+            string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null)
         {
             lock (_gate)
             {
-                return Matches(sessionId, snapshotToken)
+                return Matches(sessionId, snapshotToken, expectedFactory)
                     ? new HashSet<string>(_missingGovernedItemIds, StringComparer.Ordinal)
                     : new HashSet<string>(StringComparer.Ordinal);
             }
         }
 
-        private bool Matches(string sessionId, string snapshotToken) =>
-            _validated &&
+        /// <summary>
+        /// Checks tuple, attempt health and exact expected-factory visibility for an item handoff.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Exact signed session identity.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Exact authenticated original snapshot token.
+        /// </param>
+        /// <param name="expectedFactory">
+        /// Exact private attempt factory expected by the caller; <see langword="null"/> accepts only ordinary registrations.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> when the healthy registration matches the tuple and requested visibility; otherwise <see langword="false"/>.
+        /// </returns>
+        private bool Matches(string sessionId, string snapshotToken,
+            MortalItemIdentityFactory? expectedFactory = null) =>
+            _validated && (_identityFactory?.IsHealthy ?? true) &&
+            (expectedFactory == null ? _identityFactory?.IsAttemptScoped != true :
+                ReferenceEquals(_identityFactory, expectedFactory)) &&
             string.Equals(_sessionId, sessionId, StringComparison.Ordinal) &&
             string.Equals(_snapshotToken, snapshotToken, StringComparison.Ordinal);
 
+        /// <summary>
+        /// Checks that an ordinary publication receipt belongs to this exact item cache.
+        /// </summary>
+        /// <param name="snapshot">
+        /// Publication receipt whose cache identity and recomputed fingerprint are checked.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> for an ordinary cache with matching receipt identity and fingerprint; otherwise <see langword="false"/>.
+        /// </returns>
         private bool PublicationTakeSnapshotAgrees(
             ValidatedPublicationTakeSnapshot snapshot) =>
-            ReferenceEquals(snapshot.CacheAuthority, _cacheAuthority) &&
+            OrdinaryFactory && ReferenceEquals(snapshot.CacheAuthority, _cacheAuthority) &&
             string.Equals(
                 snapshot.PublicationFingerprint,
                 ValidatedPublicationTakeSnapshot.ComputePublicationTakeFingerprint(

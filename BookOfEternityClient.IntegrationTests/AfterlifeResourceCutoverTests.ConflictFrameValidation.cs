@@ -34,12 +34,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.NotNull(resultProperty);
         var frame = resultProperty!.GetValue(pending);
         Assert.NotNull(frame);
-        var evaluate = typeof(ValidationService).GetMethod(
-            "EvaluateSpiritualConflictValidationFrame",
-            BindingFlags.Instance | BindingFlags.NonPublic, null, [frame!.GetType()], null);
+        var evaluate = typeof(ValidationService).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+            .SingleOrDefault(method => method.Name == "EvaluateSpiritualConflictValidationFrame" &&
+                method.GetParameters() is { Length: 2 } parameters &&
+                parameters[0].ParameterType == frame!.GetType() &&
+                parameters[1].IsOptional && parameters[1].DefaultValue is null);
         Assert.NotNull(evaluate);
         var actual = Assert.IsAssignableFrom<IEnumerable<ValidationIssue>>(
-            evaluate!.Invoke(context.Validator, [frame]));
+            evaluate!.Invoke(context.Validator, [frame, null]));
         Assert.Equal(ConflictFrameIssueFingerprint.Create(expected),
             ConflictFrameIssueFingerprint.Create(actual));
         AssertNoConflictFrameErrors(actual);

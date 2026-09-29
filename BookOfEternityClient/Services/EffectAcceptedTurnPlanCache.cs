@@ -27,6 +27,7 @@ internal sealed class EffectAcceptedTurnPlanCache
     private readonly EffectAcceptedTurnPlanFactory _planner;
     private readonly WoundEffectAcceptedTurnPlanFactory _woundPlanner;
     private string? _fingerprint;
+    private EffectIdentityFactory? _cachedIdentityFactory;
     private EffectAcceptedTurnPlanningResult? _result;
     private EffectAcceptedTurnPlanBinding? _validatedBinding;
     private EffectAcceptedTurnPlanningResult? _validatedResult;
@@ -59,50 +60,109 @@ internal sealed class EffectAcceptedTurnPlanCache
         EffectAcceptedTurnInput input) =>
         GetOrBuild(input, out _);
 
+    /// <summary>
+    /// Builds an ordinary effect plan or reuses the exact input and allocation scope.
+    /// </summary>
+    /// <param name="input">
+    /// Complete non-null input checked by the ordinary planner.
+    /// </param>
+    /// <param name="reused">
+    /// Receives <see langword="true"/> only for a cached result from the same input and factory instance.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Capture-owned allocation policy; <see langword="null"/> selects the constructor policy.
+    /// </param>
+    /// <returns>
+    /// Actual planner result without adding factory identity to serialized fingerprints.
+    /// </returns>
     internal EffectAcceptedTurnPlanningResult GetOrBuild(
         EffectAcceptedTurnInput input,
-        out bool reused)
+        out bool reused,
+        EffectIdentityFactory? identityFactory = null)
     {
         ArgumentNullException.ThrowIfNull(input);
+        var selectedFactory = identityFactory ?? _identityFactory;
         var fingerprint = CreateFingerprint(input);
         return GetOrBuildCore(
             fingerprint,
+            selectedFactory,
             () => _planner(
                 input,
                 fingerprint,
-                _identityFactory),
+                selectedFactory),
             out reused);
     }
 
+    /// <summary>
+    /// Builds the prepared wound effect batch within one allocation scope and retains its validated handoff.
+    /// </summary>
+    /// <param name="prepared">
+    /// Non-null preparation whose existing fingerprint binds the wound batch.
+    /// </param>
+    /// <param name="input">
+    /// Complete non-null effect input for that preparation.
+    /// </param>
+    /// <param name="reused">
+    /// Receives <see langword="true"/> only when both input fingerprint and factory instance match.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Capture-owned allocation policy; <see langword="null"/> selects the constructor policy.
+    /// </param>
+    /// <returns>
+    /// The real wound planner result, also retained as the validated result on success.
+    /// </returns>
     internal EffectAcceptedTurnPlanningResult GetOrBuildWoundValidated(
         WoundPreparedAcceptedTurnPlan prepared,
         EffectAcceptedTurnInput input,
-        out bool reused)
+        out bool reused,
+        EffectIdentityFactory? identityFactory = null)
     {
         ArgumentNullException.ThrowIfNull(prepared);
         ArgumentNullException.ThrowIfNull(input);
+        var selectedFactory = identityFactory ?? _identityFactory;
         var fingerprint = WoundAcceptedTurnFingerprints.ComputeEffectInput(
             prepared,
             input);
         var result = GetOrBuildCore(
             fingerprint,
+            selectedFactory,
             () => _woundPlanner(
                 input,
                 prepared,
-                _identityFactory),
+                selectedFactory),
             out reused);
         return SetValidated(input, result);
     }
 
+    /// <summary>
+    /// Serializes cache access and binds a retained result to its actual allocation factory.
+    /// </summary>
+    /// <param name="fingerprint">
+    /// Existing complete planner-input fingerprint.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Non-null selected allocation factory, compared by reference only.
+    /// </param>
+    /// <param name="planner">
+    /// Actual construction callback invoked only on a cache miss.
+    /// </param>
+    /// <param name="reused">
+    /// Receives whether the retained input and allocation scope matched.
+    /// </param>
+    /// <returns>
+    /// Cached or newly constructed result, including planner validation failures.
+    /// </returns>
     private EffectAcceptedTurnPlanningResult GetOrBuildCore(
         string fingerprint,
+        EffectIdentityFactory identityFactory,
         Func<EffectAcceptedTurnPlanningResult> planner,
         out bool reused)
     {
         reused = false;
         lock (_gate)
         {
-            if (string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal) && _result != null)
+            if (string.Equals(_fingerprint, fingerprint, StringComparison.Ordinal) && _result != null &&
+                ReferenceEquals(_cachedIdentityFactory, identityFactory))
             {
                 reused = true;
                 return _result;
@@ -110,6 +170,7 @@ internal sealed class EffectAcceptedTurnPlanCache
             var result = planner() ?? throw new InvalidOperationException(
                 "Effect accepted-turn planner returned null.");
             _fingerprint = fingerprint;
+            _cachedIdentityFactory = identityFactory;
             _result = result;
             return result;
         }
@@ -119,11 +180,27 @@ internal sealed class EffectAcceptedTurnPlanCache
         EffectAcceptedTurnInput input) =>
         GetOrBuildValidated(input, out _);
 
+    /// <summary>
+    /// Builds an ordinary effect plan within the selected scope and retains its validated handoff.
+    /// </summary>
+    /// <param name="input">
+    /// Complete non-null effect input.
+    /// </param>
+    /// <param name="reused">
+    /// Receives whether the exact input and allocation factory reused the retained result.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Capture-owned allocation policy; <see langword="null"/> selects the constructor policy.
+    /// </param>
+    /// <returns>
+    /// The ordinary planner result; failure clears the validated handoff.
+    /// </returns>
     internal EffectAcceptedTurnPlanningResult GetOrBuildValidated(
         EffectAcceptedTurnInput input,
-        out bool reused)
+        out bool reused,
+        EffectIdentityFactory? identityFactory = null)
     {
-        var result = GetOrBuild(input, out reused);
+        var result = GetOrBuild(input, out reused, identityFactory);
         return SetValidated(input, result);
     }
 
@@ -159,11 +236,15 @@ internal sealed class EffectAcceptedTurnPlanCache
         }
     }
 
+    /// <summary>
+    /// Discards the cached input, allocation scope, result and validated handoff.
+    /// </summary>
     internal void InvalidateAll()
     {
         lock (_gate)
         {
             _fingerprint = null;
+            _cachedIdentityFactory = null;
             _result = null;
             _validatedBinding = null;
             _validatedResult = null;
@@ -234,10 +315,28 @@ internal sealed class EffectAcceptedTurnPlanCache
 
 internal static class EffectAcceptedTurnPlanAuthority
 {
+    /// <summary>
+    /// Builds a registry-owned effect stage under the active write lease.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static EffectAcceptedTurnPlanningResult GetOrBuildValidated(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
-        EffectAcceptedTurnInput input)
+        EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -245,7 +344,7 @@ internal static class EffectAcceptedTurnPlanAuthority
         return AcceptedTurnAuthorityRegistry.GetOrBuildEffectValidated(
             fileSystem,
             writeLease,
-            input);
+            input, identityFactory);
     }
 
     internal static void InvalidateValidated(

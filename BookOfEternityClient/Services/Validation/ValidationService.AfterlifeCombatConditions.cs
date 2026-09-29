@@ -518,11 +518,30 @@ public partial class ValidationService
         return values;
     }
 
+    /// <summary>
+    /// Checks combat-condition roll-mode reference shape and, by default, original identity membership.
+    /// </summary>
+    /// <param name="audit">
+    /// Dice audit containing optional roll-mode sources.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path.
+    /// </param>
+    /// <param name="issues">
+    /// Diagnostic destination; <see langword="null"/> skips this diagnostic-only check.
+    /// </param>
+    /// <param name="conditionIds">
+    /// Original condition identities; missing data cannot satisfy required membership.
+    /// </param>
+    /// <param name="requireResolvedReference">
+    /// Defaults to live membership validation; <see langword="false"/> checks historical reference shape only.
+    /// </param>
     private static void ValidateCombatConditionRollModeSources(
         JsonObject audit,
         string context,
         List<ValidationIssue>? issues,
-        IReadOnlySet<string>? conditionIds)
+        IReadOnlySet<string>? conditionIds,
+        bool requireResolvedReference = true)
     {
         if (issues == null ||
             audit["rollMode"] is not JsonObject rollMode)
@@ -537,12 +556,12 @@ public partial class ValidationService
                 sideMode["advantageSources"],
                 $"{context}.rollMode.{sideProperty.Key}.advantageSources",
                 issues,
-                conditionIds);
+                conditionIds, requireResolvedReference);
             ValidateCombatConditionRollModeSourceArray(
                 sideMode["disadvantageSources"],
                 $"{context}.rollMode.{sideProperty.Key}.disadvantageSources",
                 issues,
-                conditionIds);
+                conditionIds, requireResolvedReference);
         }
     }
 
@@ -560,11 +579,30 @@ public partial class ValidationService
         return merged;
     }
 
+    /// <summary>
+    /// Validates condition-backed source identifiers and optional original membership.
+    /// </summary>
+    /// <param name="node">
+    /// Optional source array; other shapes are handled by the owning roll-mode parser.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable diagnostic destination.
+    /// </param>
+    /// <param name="conditionIds">
+    /// Original condition identities, required when membership checking is enabled.
+    /// </param>
+    /// <param name="requireResolvedReference">
+    /// Whether original condition membership is required in addition to a nonempty identifier.
+    /// </param>
     private static void ValidateCombatConditionRollModeSourceArray(
         JsonNode? node,
         string context,
         List<ValidationIssue> issues,
-        IReadOnlySet<string>? conditionIds)
+        IReadOnlySet<string>? conditionIds,
+        bool requireResolvedReference)
     {
         if (node is not JsonArray sources)
             return;
@@ -588,8 +626,7 @@ public partial class ValidationService
             conditionId ??= AfterlifeSpiritualConflictState.GetNodeString(source["sourceId"]) ??
                             AfterlifeSpiritualConflictState.GetNodeString(source["id"]);
             if (string.IsNullOrWhiteSpace(conditionId) ||
-                conditionIds == null ||
-                !conditionIds.Contains(conditionId))
+                requireResolvedReference && (conditionIds == null || !conditionIds.Contains(conditionId)))
             {
                 AddCombatConditionIssue(
                     issues,

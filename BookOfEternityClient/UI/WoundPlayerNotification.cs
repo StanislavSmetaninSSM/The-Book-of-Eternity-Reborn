@@ -213,6 +213,61 @@ internal sealed record WoundPlayerNotification(
                     : issues);
     }
 
+    /// <summary>
+    /// Composes the completed spiritual insertions in their actual chronological order.
+    /// Each insertion keeps its own wound image, including earlier ranks of a later worsened wound.
+    /// </summary>
+    /// <param name="completion">
+    /// Immutable insertion evidence issued by the completed live owner; this method grants no publication authority.
+    /// </param>
+    /// <param name="finalSceneText">
+    /// Final accepted scene containing the exact narration of every insertion.
+    /// </param>
+    /// <returns>
+    /// Detached escaped notifications, or diagnostics with no notifications when any insertion cannot be bound.
+    /// </returns>
+    internal static WoundAcceptedTurnOutputBindingResult ComposeSpiritualAcceptedTurn(
+        SpiritualLiveWoundCompletion completion, string finalSceneText)
+    {
+        ArgumentNullException.ThrowIfNull(completion);
+        var notifications = new List<WoundPlayerNotification>();
+        var issues = new List<ValidationIssue>();
+        foreach (var insertion in completion.Insertions)
+        {
+            var input = insertion.Input;
+            var prepared = insertion.Prepared;
+            var wound = insertion.Wound;
+            if (input.Transitions.Count != 1 || prepared.EffectOperationBatches.Count != 1)
+            {
+                AddAcceptedTurnBindingIssue(issues, "one transition and batch per live insertion", insertion.SourceCoordinate);
+                continue;
+            }
+            var transition = input.Transitions[0];
+            var batch = prepared.EffectOperationBatches[0];
+            if (transition.Kind is not ("create" or "worsen") ||
+                transition.Kind != batch.TransitionAuthority.TransitionKind ||
+                transition.Kind != wound.LastTransition.Kind ||
+                transition.LocalWoundRef != batch.LocalWoundRef ||
+                wound.WoundId != batch.PreparedWoundId)
+            {
+                AddAcceptedTurnBindingIssue(issues, "exact ordered live transition", insertion.SourceCoordinate);
+                continue;
+            }
+            var claim = new WoundAcquisitionNarrationClaim(transition.LocalWoundRef,
+                batch.SourceExport.CausalEventRef, wound.Classification.Domain,
+                wound.Display.Name, wound.Severity.Rank, wound.Display.AcquisitionNarration);
+            var composed = transition.Kind == "worsen"
+                ? ComposeWorsening(new WoundWorseningOutputRequest(transition.LocalWoundRef,
+                    batch.SourceExport.CausalEventRef, wound, claim, finalSceneText))
+                : Compose(new WoundAcquisitionOutputRequest(transition.LocalWoundRef, wound, claim, finalSceneText));
+            issues.AddRange(composed.Issues);
+            if (composed.Notification is { } notification)
+                notifications.Add(notification);
+        }
+        return new WoundAcceptedTurnOutputBindingResult(
+            issues.Count == 0 ? notifications : Array.Empty<WoundPlayerNotification>(), issues);
+    }
+
     private static WoundAcceptedTurnOutputBindingResult
         ComposeAcceptedTreatmentContinuation(
             AcceptedMechanicsWoundStageBundle bundle,

@@ -680,6 +680,9 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertGovernedRootsMatchBeforeImages(beforeConflict);
     }
 
+    /// <summary>
+    /// Admits the original continuation and rejects an ordinary bundle or a different sealed request paired with it.
+    /// </summary>
     [Fact]
     public void PublicationAdmission_RejectsForeignOrdinaryBundleAndContinuationRequestMix()
     {
@@ -689,11 +692,23 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var first = ComposePublicationFlow(fixture);
         var changed = PreparePublicationAttempt(
             fixture,
-            CapabilityAuthorityFixture.OperationKey + "_foreign");
+            CapabilityAuthorityFixture.OperationKey + "_foreign",
+            acceptedBasis: Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(first.AcceptedState));
         var bundle = Assert.IsType<AcceptedMechanicsWoundStageBundle>(
             Assert.IsType<AcceptedMechanicsPlan>(first.Plan).WoundStageBundle);
         var continuationAuthority = Assert.IsAssignableFrom<object>(
             bundle.PreparedPlan.TreatmentContinuationAuthority);
+        var semanticFingerprint = Assert.IsType<string>(
+            ReadRequiredProperty(continuationAuthority, "SemanticFingerprint"));
+        var validIssues = MortalWoundTreatmentCapabilityAuthority
+            .CandidateAdmissionGate.Validate(
+                Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(first.AcceptedState),
+                Assert.IsType<MortalWoundTreatmentAttemptRequest>(first.Request),
+                Assert.IsType<MortalWoundTreatmentResolution>(first.Resolution),
+                Assert.IsType<AcceptedMechanicsPlan>(first.Plan),
+                semanticFingerprint,
+                continuationAuthority);
+        Assert.Empty(validIssues);
 
         var ordinaryInput = WoundAcceptedTurnTestFixture.CreateNoMechanicsInput();
         var ordinaryPrepared = WoundAcceptedTurnPlanner.Prepare(ordinaryInput);
@@ -733,7 +748,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
                 Assert.IsType<MortalWoundTreatmentAttemptRequest>(changed.Request),
                 Assert.IsType<MortalWoundTreatmentResolution>(changed.Resolution),
                 Assert.IsType<AcceptedMechanicsPlan>(first.Plan),
-                ComputePublicationSemanticFingerprint(changed),
+                semanticFingerprint,
                 continuationAuthority);
         Assert.Contains(mixedIssues, static issue =>
             issue.Code == "mortal_wound_treatment_publication_provenance_mismatch");
@@ -785,11 +800,18 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         fixture.AssertGovernedRootsMatchBeforeImages(before);
     }
 
+    /// <summary>
+    /// Holds publication after its reservation and rejects a concurrent request with different semantics.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the first plan remains cached and the competing request is rejected.
+    /// </returns>
     [Fact]
     public async Task PublicationPlan_ConcurrentDifferentSemanticsCannotPassOneInProgressReservation()
     {
         var armed = 0;
         var observed = 0;
+        var sourceReads = 0;
         using var entered = new ManualResetEventSlim();
         using var release = new ManualResetEventSlim();
         using var fixture = CapabilityAuthorityFixture.Create(
@@ -800,7 +822,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             {
                 BeforeCanonicalReadOpenAsync = path =>
                 {
+                    // The baseline reads this source before reserving publication.
+                    // Pause its next authority read so the competing request meets an existing reservation.
                     if (Volatile.Read(ref armed) == 1 &&
+                        string.Equals(path, "game_state/player/skills_active.json", StringComparison.Ordinal) &&
+                        Interlocked.Increment(ref sourceReads) == 2 &&
                         Interlocked.CompareExchange(ref observed, 1, 0) == 0)
                     {
                         entered.Set();
@@ -812,7 +838,8 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var first = PreparePublicationAttempt(fixture);
         var second = PreparePublicationAttempt(
             fixture,
-            CapabilityAuthorityFixture.OperationKey + "_concurrent");
+            CapabilityAuthorityFixture.OperationKey + "_concurrent",
+            acceptedBasis: Assert.IsType<MortalWoundTreatmentAcceptedStateAuthority>(first.AcceptedState));
         Volatile.Write(ref armed, 1);
 
         var firstTask = Task.Run(() => InvokeT070Publication(
@@ -1637,12 +1664,28 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             plan);
     }
 
+    /// <summary>
+    /// Prepares a genuine request and resolution from a fresh export or the exact accepted authority of an earlier attempt.
+    /// </summary>
+    /// <param name="fixture">
+    /// The fixture that owns the current canonical roots and write lease.
+    /// </param>
+    /// <param name="operationKey">
+    /// The operation key to seal; the default uses the fixture's original operation key.
+    /// </param>
+    /// <param name="acceptedBasis">
+    /// The exact sealed accepted authority to reuse; <see langword="null"/> exports it afresh.
+    /// </param>
+    /// <returns>
+    /// The sealed attempt and its exact accepted binding.
+    /// </returns>
     private static PreparedPublicationAttempt PreparePublicationAttempt(
         CapabilityAuthorityFixture fixture,
-        string operationKey = CapabilityAuthorityFixture.OperationKey)
+        string operationKey = CapabilityAuthorityFixture.OperationKey,
+        MortalWoundTreatmentAcceptedStateAuthority? acceptedBasis = null)
     {
-        var accepted = ExportAcceptedState(fixture);
-        var acceptedState = RequireAcceptedState(accepted);
+        var accepted = acceptedBasis is null ? ExportAcceptedState(fixture) : null;
+        var acceptedState = acceptedBasis ?? RequireAcceptedState(accepted!);
         var coordinates = CreateCoordinates(fixture, acceptedState, operationKey);
         var sealedCurrent = InvokeCapabilityExporter(
             "ExportCurrent",
@@ -1661,30 +1704,17 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         var request = PrepareSealedGuaranteedRequest(fixture, acceptedState, sealedCurrent, operationKey);
         var resolution = ResolveSealedGuaranteedAttempt(fixture, acceptedState, request);
         fixture.AssertPublicationFinalRootScenario();
-        Assert.NotNull(accepted.Binding);
+        var acceptedBinding = acceptedBasis is null
+            ? accepted!.Binding
+            : ReadAcceptedStateMember(acceptedState, "Binding");
+        Assert.NotNull(acceptedBinding);
         return new PreparedPublicationAttempt(
             acceptedState,
             coordinates,
             sealedCurrent,
             request,
             resolution,
-            accepted.Binding!);
-    }
-
-    private static string ComputePublicationSemanticFingerprint(
-        PreparedPublicationAttempt attempt)
-    {
-        var method = Assert.Single(
-            typeof(WoundAcceptedTurnPlanner).GetMethods(
-                BindingFlags.Static | BindingFlags.NonPublic),
-            static candidate =>
-                candidate.Name == "ComputeTreatmentPublicationFingerprint");
-        return Assert.IsType<string>(method.Invoke(null, new[]
-        {
-            attempt.AcceptedState,
-            attempt.Request,
-            attempt.Resolution
-        }));
+            acceptedBinding!);
     }
 
     private static MortalWoundTreatmentResolution RecreateResolution(
@@ -2728,6 +2758,27 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         AssertNoGuaranteeProofOrLimitSurface(authority);
     }
 
+    /// <summary>
+    /// Asserts that a guaranteed binding preserves the direct resolver's exact row and witness.
+    /// </summary>
+    /// <param name="binding">
+    /// The production binding exported by the guaranteed requirement bundle.
+    /// </param>
+    /// <param name="directRow">
+    /// The corresponding row returned directly by the unchanged requirement resolver.
+    /// </param>
+    /// <param name="fixture">
+    /// The accepted fixture supplying the expected canonical skill and treatment actors.
+    /// </param>
+    /// <param name="requirementIndex">
+    /// The expected zero-based requirement index.
+    /// </param>
+    /// <param name="kind">
+    /// The expected requirement kind; only a skill-tier row carries a skill identifier.
+    /// </param>
+    /// <param name="authorityRef">
+    /// The exact capability or skill reference requested by the requirement.
+    /// </param>
     private static void AssertGuaranteedBinding(
         object binding,
         object directRow,
@@ -2748,18 +2799,20 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "AuthorityFingerprint", "AuthorityRef", "CurrentState", "CurrentTier", "Kind", "LocationId",
             "MinimumTier", "OwnerId", "OwnerKind", "ProviderId", "ProviderKind", "Realm",
-            "RequestedQuantity", "RequirementIndex", "TargetId", "TargetKind"
+            "RequestedQuantity", "RequirementIndex", "SkillId", "TargetId", "TargetKind"
         });
         Assert.Equal(requirementIndex, Assert.IsType<int>(ReadRequiredProperty(row, "RequirementIndex")));
         Assert.Equal(kind, Assert.IsType<string>(ReadRequiredProperty(row, "Kind")));
         Assert.Equal(authorityRef, Assert.IsType<string>(ReadRequiredProperty(row, "AuthorityRef")));
         if (kind == "skill_tier")
         {
+            Assert.Equal(fixture.Scenario.SkillId, ReadNullableStringProperty(row, "SkillId"));
             Assert.Equal(3, Convert.ToInt32(ReadRequiredProperty(row, "CurrentTier")));
             Assert.Equal(2, Convert.ToInt32(ReadRequiredProperty(row, "MinimumTier")));
         }
         else
         {
+            Assert.Null(ReadPropertyAllowingNull(row, "SkillId"));
             Assert.Null(ReadPropertyAllowingNull(row, "CurrentTier"));
             Assert.Null(ReadPropertyAllowingNull(row, "MinimumTier"));
         }
@@ -2774,13 +2827,13 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
         {
             "AuthorityFingerprint", "AuthorityRef", "CurrentState", "CurrentTier", "Kind", "LocationId",
             "MinimumTier", "OwnerId", "OwnerKind", "ProviderId", "ProviderKind", "Realm",
-            "RequestedQuantity", "RequirementIndex", "TargetId", "TargetKind"
+            "RequestedQuantity", "RequirementIndex", "SkillId", "TargetId", "TargetKind"
         });
         foreach (var property in new[]
                  {
                      "AuthorityFingerprint", "AuthorityRef", "CurrentState", "CurrentTier", "Kind", "LocationId",
                      "MinimumTier", "OwnerId", "OwnerKind", "ProviderId", "ProviderKind", "Realm",
-                     "RequestedQuantity", "RequirementIndex", "TargetId", "TargetKind"
+                     "RequestedQuantity", "RequirementIndex", "SkillId", "TargetId", "TargetKind"
                  })
         {
             Assert.Equal(
@@ -3304,9 +3357,11 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/control/pending_effect_resolutions.json",
             "game_state/control/pending_mortal_wound_occurrences.json",
             "game_state/control/pending_npc_trade_inventory_requests.json",
+            "game_state/control/pending_spiritual_wound_decisions.json",
             "game_state/control/pending_wound_resolutions.json",
             "game_state/control/progression_report.json",
             "game_state/control/progression_schedule.json",
+            "game_state/control/spiritual_wound_capture_checkpoint.json",
             "game_state/effects/effect_commands.json",
             "game_state/effects/effect_identity_index.json",
             "game_state/factions/faction_chronicles.json",
@@ -3366,6 +3421,7 @@ public sealed class MortalWoundTreatmentCapabilityAuthorityTests
             "game_state/world/rival_soul_arcs.json",
             "game_state/world/world_events.json",
             "game_state/world/world_map.json",
+            "game_state/wounds/spiritual_wound_opportunity_receipts.json",
             "game_state/wounds/wound_commands.json",
             "game_state/wounds/wound_history.json",
             "game_state/wounds/wound_identity_index.json",

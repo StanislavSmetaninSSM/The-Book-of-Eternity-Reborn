@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
@@ -16,20 +17,26 @@ public partial class CanonicalStateNormalizer
 
     private static void AddWoundPublicationWrites(
         AcceptedMechanicsPlan plan,
-        Dictionary<string, JsonObject> writes)
+        Dictionary<string, JsonObject> writes,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
         ArgumentNullException.ThrowIfNull(writes);
-        foreach (var pair in ComposeWoundPublicationWrites(plan))
+        foreach (var pair in ComposeWoundPublicationWrites(plan, spiritualPublicationReceipt))
             AddWoundPublicationWrite(writes, pair.Key, pair.Value);
     }
 
     internal static IReadOnlyDictionary<string, JsonObject>
-        ComposeWoundPublicationWrites(AcceptedMechanicsPlan plan)
+        ComposeWoundPublicationWrites(AcceptedMechanicsPlan plan,
+            SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
         var result = new Dictionary<string, JsonObject>(StringComparer.Ordinal);
-        if (plan.WoundStageBundle is null || plan.AwaitsPendingResolution)
+        if (plan.LiveWoundProofFingerprint is not null &&
+            !ReferenceEquals(spiritualPublicationReceipt?.Plan, plan))
+            throw new InvalidOperationException(
+                "Live spiritual wound publication requires the C4 transaction writer.");
+        if (plan.WoundStageBundle is null && plan.LiveWoundProofFingerprint is null || plan.AwaitsPendingResolution)
             return result;
 
         foreach (var pair in plan.WoundCarrierAfterImages.OrderBy(
@@ -64,10 +71,17 @@ public partial class CanonicalStateNormalizer
     }
 
     private async Task ValidatePublishedWoundAfterImagesAsync(
-        AcceptedMechanicsPlan plan)
+        AcceptedMechanicsPlan plan,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(plan);
-        if (plan.WoundStageBundle is null)
+        if (plan.LiveWoundProofFingerprint is not null)
+        {
+            if (spiritualPublicationReceipt is null)
+                throw new InvalidOperationException("Live spiritual wound read-back requires its transaction receipt.");
+            RequireCurrentSpiritualPublication(spiritualPublicationReceipt, plan);
+        }
+        if (plan.WoundStageBundle is null && plan.LiveWoundProofFingerprint is null)
             return;
         var writeLease = _writeLease ?? throw new InvalidOperationException(
             "Accepted wound read-back requires the owning canonical write lease.");

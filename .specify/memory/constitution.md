@@ -1,21 +1,23 @@
 <!--
 Sync Impact Report
-Version change: 1.1.0 -> 1.2.0
-Source task: GitHub issue #1510 and direct user instruction on 2026-08-10
+Version change: 1.2.0 -> 2.0.0
+Source task: #1505 / #1536, CATEGORY-SELECTION-DECISION rev1 approved 2026-09-30
 Modified principles:
-- None
+- Development Workflow and Quality Gates: impact-selected categories replace broad verification.
 Added sections:
-- Pre-Release Save Compatibility Policy
+- Open category catalog and isolated fixture policy in verification requirements.
 Removed sections:
-- None
+- Unfiltered broad-C# and aggregate frontend verification examples.
 Templates requiring updates:
 - .specify/templates/plan-template.md: updated
 - .specify/templates/spec-template.md: updated
 - .specify/templates/tasks-template.md: updated
 - AGENTS.md: updated
+- docs/testing.md, docs/development-workflow.md and active feature quickstarts: updated
+- .specify/templates/commands/: absent; no command templates require migration
 Follow-up TODOs:
-- None. The active #1510 specification, plan, research, data model, contracts,
-  quickstart, tasks, and Superpowers design/plan were reconciled on 2026-08-10.
+- None. Major version records an incompatible verification policy; gameplay and
+  pre-release save compatibility principles are unchanged.
 -->
 
 # The Book of Eternity Reborn Constitution
@@ -204,19 +206,29 @@ During implementation:
 4. Maintain console/browser parity where the feature crosses both clients.
 5. Mark Spec Kit tasks complete only after code and verification evidence exist.
 
-Minimum verification examples:
+Verification requirements:
 
-- Documentation-sensitive GM/contract changes:
-  `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "ExampleDocumentationValidationTests|AfterlifeDocumentationCoverageTests"`
-- C# runtime changes:
-  `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "<focused-filter>"`
-- Broad C# changes:
-  `dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore`
-- Browser client changes:
-  run `npm run verify` from `BookOfEternityClient.WebFrontend/`.
-- Browser visual or interaction changes:
-  run the relevant local app/browser verification and capture evidence when the
-  UI surface can regress visually.
+- Select documented categories from changed contracts and affected consumers,
+  including relevant negative and end-to-end boundaries. Record reasons in the
+  plan and `tests/selection.json`; independent review MUST check sufficiency.
+- Use PowerShell 7 and `scripts/test-csharp.ps1 -Category <ids>` or the reviewed
+  selection file. `docs/testing.md` and `tests/categories.json` are the current
+  entrypoints. Do not hard-code category names in future plans as permanent lanes.
+- Executors MAY add, split or rename categories with documented responsibility,
+  exclusions, membership, conditional dependencies, environment and time budget.
+  Every discovered test MUST have an owner; discovery-only audit is allowed.
+- Full-suite controls, automatic Fast/PreMerge equivalents and sequentially
+  executing every category are prohibited during development, CI, merge, release
+  and scheduled verification. An empty or invalid selection MUST NOT run tests.
+- GM/docs/example changes select the applicable documentation and contract
+  categories. Browser changes select their frontend/host consumers; visual
+  changes additionally use relevant local visual verification with evidence.
+- Tests own their mutable state and runtime resources. Shared live state,
+  owners, transactions and ordering dependencies MUST NOT serve as caches.
+  Independently copied immutable templates require measured utility and proven
+  isolation; cache reuse is not mandatory.
+- Bounded selected verification MUST report completeness, skips/failures,
+  duration and owned cleanup; partial results are not successful acceptance.
 
 ## Governance
 
@@ -238,4 +250,4 @@ delegating to Codex, and before reporting completion. If a task conflicts with
 this constitution, the agent must report the conflict and either update the
 Spec Kit artifacts through the proper phase or ask the user for direction.
 
-**Version**: 1.2.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-08-10
+**Version**: 2.0.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-09-30

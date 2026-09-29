@@ -88,6 +88,85 @@ public sealed class GmWorkerProfileTemplateTests
             template.LaunchCommand.Contains("gemini", StringComparison.OrdinalIgnoreCase));
     }
 
+    /// <summary>
+    /// Makes the exact narrative repair path usable while keeping every other output outside the repair profile.
+    /// </summary>
+    /// <param name="fromDefaults">
+    /// <see langword="true"/> selects the default-list repair profile; <see langword="false"/> calls the dedicated repair factory.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void ValidationRepairTemplates_AllowExactNarrativeWithoutOtherOutputAccess(bool fromDefaults)
+    {
+        const string narrativePath = "output/narrative_response.json";
+        var profile = fromDefaults
+            ? Assert.Single(GmWorkerBridgeProfileTemplates.CreateDefaultTemplates(),
+                value => value.Permissions.TaskTypes.Contains(WorkerTaskType.ValidationRepair))
+            : GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();
+        var task = GmWorkerBridgeTestFixtures.ValidationRepairTask() with
+        {
+            AllowedProposalPaths = [narrativePath],
+            ContextFiles = [new WorkerFileReference { Path = narrativePath, Sha256 = new string('a', 64) }],
+            ValidationIssues =
+            [
+                new WorkerValidationIssue
+                {
+                    Code = "narrative_response_missing_timestamp",
+                    Path = narrativePath,
+                    Message = "The current narrative requires its ordinary timestamp."
+                }
+            ]
+        };
+
+        var validation = GmWorkerContractValidator.ValidateTaskPacket(task, profile);
+
+        Assert.True(validation.IsValid, string.Join(Environment.NewLine, validation.Errors));
+        Assert.Contains(profile.Permissions.ReadPaths,
+            pattern => GmWorkerContractValidator.PathMatches(pattern, narrativePath));
+        foreach (var forbidden in new[]
+                 {
+                     "output/interface_updates.json", "output/debug_logs.json", "output/another_response.json",
+                     "output/narrative_response.json/another.json"
+                 })
+        {
+            Assert.DoesNotContain(profile.Permissions.ReadPaths,
+                pattern => GmWorkerContractValidator.PathMatches(pattern, forbidden));
+            Assert.DoesNotContain(profile.Permissions.ProposalWritePaths,
+                pattern => GmWorkerContractValidator.PathMatches(pattern, forbidden));
+        }
+        Assert.Equal(new[] { "game_state/**", "lore/**", "input/**", "ready/**", narrativePath },
+            profile.Permissions.ReadPaths);
+        Assert.Equal(new[] { "game_state/**", "lore/**", "ready/**", narrativePath },
+            profile.Permissions.ProposalWritePaths);
+    }
+
+    /// <summary>
+    /// Keeps a saved repair profile's existing permissions unchanged when settings are loaded.
+    /// </summary>
+    [Fact]
+    public void SettingsWithExistingRepairProfile_DoesNotWidenSavedNarrativePermissions()
+    {
+        var template = GmWorkerBridgeProfileTemplates.CreateValidationRepairCodexTemplate();
+        var saved = template with
+        {
+            Enabled = true,
+            Permissions = template.Permissions with
+            {
+                ReadPaths = ["game_state/**", "lore/**", "input/**", "ready/**"],
+                ProposalWritePaths = ["game_state/**", "lore/**", "ready/**"]
+            }
+        };
+        var settings = new GameSettings();
+
+        settings.ApplyLoadedValues(new GameSettings { GmWorkerBridgeProfiles = [saved] });
+
+        var actual = Assert.Single(settings.GmWorkerBridgeProfiles);
+        Assert.Equal(saved.Permissions.ReadPaths, actual.Permissions.ReadPaths);
+        Assert.Equal(saved.Permissions.ProposalWritePaths, actual.Permissions.ProposalWritePaths);
+        Assert.True(actual.Enabled);
+    }
+
     [Fact]
     public void DefaultTemplates_IncludeCodexNarrativeDraftTemplate()
     {

@@ -671,6 +671,55 @@ internal static class WoundConsequenceEnvelopeCatalog
         SpiritualWoundEffectProfileCatalog.ArtOperations;
 
     /// <summary>
+    /// Checks spiritual severity bounds and unique mechanical coordinates across an owned definition graph.
+    /// Leaves marker binding, graph structure and declared slot ordering to the wound contract.
+    /// </summary>
+    /// <param name="severityRank">
+    /// Current wound rank from one through four; other values produce a validation issue.
+    /// </param>
+    /// <param name="definitions">
+    /// Complete detached definition graph whose component indices retain their authoring order.
+    /// </param>
+    /// <param name="path">
+    /// Diagnostic path of the owned source graph containing the definitions array.
+    /// </param>
+    /// <param name="issues">
+    /// Receives severity, profile, magnitude and duplicate-coordinate failures.
+    /// </param>
+    internal static void ValidateDetachedSpiritualGraph(int severityRank,
+        IReadOnlyList<JsonElement> definitions, string path, List<ValidationIssue> issues)
+    {
+        if (severityRank is < 1 or > 4)
+        {
+            Add(issues, path + ".severity", "wound_consequence_severity_invalid",
+                "rank 1 through 4", severityRank.ToString(CultureInfo.InvariantCulture));
+            return;
+        }
+        var candidates = new List<SlotCandidate>();
+        var coordinates = new HashSet<string>(StringComparer.Ordinal);
+        for (var definitionIndex = 0; definitionIndex < definitions.Count; definitionIndex++)
+        {
+            var definition = definitions[definitionIndex];
+            if (definition.ValueKind != JsonValueKind.Object ||
+                !definition.TryGetProperty("components", out var components) ||
+                components.ValueKind != JsonValueKind.Array)
+                continue; // Structural validation belongs to the enclosing graph contract.
+            var definitionPath = $"{path}.definitions[{definitionIndex}]";
+            var componentIndex = 0;
+            foreach (var component in components.EnumerateArray())
+            {
+                var index = componentIndex++;
+                if (component.ValueKind != JsonValueKind.Object)
+                    continue;
+                if (TryReadString(component, "profile", out var profile) && profile == "wound_consequence")
+                    continue; // The enclosing contract validates this zero-slot marker's wound binding.
+                ValidateSpiritualComponent(severityRank, definitionPath, index, component, definitionPath,
+                    candidates, coordinates, issues);
+            }
+        }
+    }
+
+    /// <summary>
     /// Validates local component shape and coordinates without a real wound rank.
     /// This does not establish severity, periodic, or canonical source authority.
     /// </summary>
@@ -2550,6 +2599,7 @@ internal static class WoundConsequenceEnvelopeCatalog
                 "payload") ||
             !TryReadString(component, "componentId", out var componentId) ||
             !component.TryGetProperty("priority", out var priority) ||
+            priority.ValueKind != JsonValueKind.Number ||
             !priority.TryGetInt32(out _) ||
             !component.TryGetProperty("payload", out var payload) ||
             payload.ValueKind != JsonValueKind.Object ||

@@ -14,7 +14,7 @@ public partial class ValidationService
         FileSystemManager.CanonicalWriteLease lease)
     {
         _fs.EnsureCanonicalWriteLeaseActive(lease);
-        _spiritualWoundSourceSession = null;
+        InvalidateSpiritualWoundSourceSession();
         var result = await SpiritualWoundSourceSession.AcquireAsync(this, lease);
         if (result.Session is not null)
             _spiritualWoundSourceSession = result.Session;
@@ -32,6 +32,7 @@ public partial class ValidationService
         TerminalExchangeAudit,
         TerminalExchangePrefix,
         TerminalClosure,
+        MissingActionCostAudit,
         AppliedSourceBinding
     }
 
@@ -40,7 +41,7 @@ public partial class ValidationService
         string Coordinate,
         string CandidateJson);
 
-    internal sealed class SpiritualWoundSourceSession
+    internal sealed partial class SpiritualWoundSourceSession
     {
         internal const string SoulPath = "game_state/meta/soul_state.json";
         private static readonly string[] RequiredPaths =
@@ -67,9 +68,37 @@ public partial class ValidationService
         ];
 
         private readonly ValidationService _validator;
+        private readonly AcceptedTurnProjectionClock? _projectionClock;
         private readonly PendingTurnSnapshotReadAuthority _original;
         private readonly Dictionary<string, string?> _before;
         private readonly Dictionary<string, string?> _candidate;
+        private SpiritualOriginalDraftInputs? _coldOriginalInputs;
+        /// <summary>
+        /// Gets the exact capture-bound cold layer currently retained by this source session.
+        /// </summary>
+        internal SpiritualOriginalDraftInputs? ColdOriginalInputs => _coldOriginalInputs;
+
+        /// <summary>
+        /// Binds the initial cold view through its exact capture owner under the real lease.
+        /// </summary>
+        /// <param name="lease">
+        /// Active canonical lease of the owner filesystem.
+        /// </param>
+        /// <param name="capture">
+        /// Exact cold original capture claiming this source session once.
+        /// </param>
+        internal void BindColdOriginalInputs(FileSystemManager.CanonicalWriteLease lease,
+            SpiritualOriginalTurnCapture capture)
+        {
+            ArgumentNullException.ThrowIfNull(capture);
+            _validator._fs.EnsureCanonicalWriteLeaseActive(lease);
+            if (_coldOriginalInputs != null || !IsCurrentOwner)
+                throw new InvalidOperationException("Cold source inputs are already bound or this source is not current.");
+            var inputs = capture.TakeInitialColdSourceInputs(lease, this);
+            if (!inputs.MatchesIdentity(SessionId, RequestId, SnapshotToken, TurnNumber))
+                throw new InvalidOperationException("Cold source inputs must match the signed original.");
+            _coldOriginalInputs = inputs;
+        }
         private readonly List<PreparedSpiritualSource> _sources = [];
         private readonly List<SpiritualSourcePendingRequirement> _pending = [];
         private readonly HashSet<int> _claimedDice = [];
@@ -83,17 +112,37 @@ public partial class ValidationService
         private JsonObject _profileRoot = new();
         private JsonObject _originalConflict = new();
         private JsonObject _candidateConflict = new();
+        private JsonObject _initialFullCandidateConflict = new();
 
+        /// <summary>
+        /// Retains signed original inputs and the projection clock shared by prospective source views.
+        /// </summary>
+        /// <param name="validator">
+        /// Validator owning this source session.
+        /// </param>
+        /// <param name="original">
+        /// Authenticated original snapshot authority.
+        /// </param>
+        /// <param name="before">
+        /// Original path texts, with absent paths represented by <see langword="null"/>.
+        /// </param>
+        /// <param name="candidate">
+        /// Observed candidate path texts, with absent paths represented by <see langword="null"/>.
+        /// </param>
+        /// <param name="projectionClock">
+        /// Shared projection clock, or <see langword="null"/> for ordinary time reads.
+        /// </param>
         private SpiritualWoundSourceSession(
             ValidationService validator,
             PendingTurnSnapshotReadAuthority original,
             Dictionary<string, string?> before,
-            Dictionary<string, string?> candidate)
+            Dictionary<string, string?> candidate, AcceptedTurnProjectionClock? projectionClock)
         {
             _validator = validator;
             _original = original;
             _before = before;
             _candidate = candidate;
+            _projectionClock = projectionClock;
         }
 
         internal string SessionId => _original.SessionId;
@@ -105,6 +154,7 @@ public partial class ValidationService
         internal IReadOnlyList<SpiritualSourcePendingRequirement> PendingRequirements => _pending.AsReadOnly();
         internal IReadOnlyList<string> CheckedExchanges => _checkedExchanges.AsReadOnly();
         internal bool Owns(PreparedSpiritualSource source) =>
+            IsCurrentOwner &&
             _sources.Any(value => ReferenceEquals(value, source));
         internal IReadOnlyList<int> ClaimedDice => Array.AsReadOnly(_claimedDice.Order().ToArray());
         internal IReadOnlyList<string> SelectedPaths => Array.AsReadOnly(
@@ -144,9 +194,37 @@ public partial class ValidationService
             };
         }
 
+        /// <summary>
+        /// Acquires the current signed snapshot and prepares its spiritual sources under the requested continuation mode.
+        /// </summary>
+        /// <param name="validator">
+        /// Validator providing the filesystem and signed snapshot reader.
+        /// </param>
+        /// <param name="lease">
+        /// Active canonical write lease for reading the current input.
+        /// </param>
+        /// <param name="allowMissingActionCostAudit">
+        /// Allows retained missing-side audit continuation when <see langword="true"/>; defaults to strict complete audits.
+        /// </param>
+        /// <param name="awaitOriginalPrefix">
+        /// Retains inputs without preparing source capabilities until exact prefix binding when <see langword="true"/>; defaults to immediate preparation.
+        /// </param>
+        /// <param name="projectionClock">
+        /// Shared projection clock, or <see langword="null"/> for ordinary time reads.
+        /// </param>
+        /// <param name="currentInputs">
+        /// Detached current images from the named original draft, or <see langword="null"/>
+        /// for physical current-file reads. The signed original remains physical.
+        /// </param>
+        /// <returns>
+        /// A source session or acquisition issues; outside afterlife, an empty result without issues. A deferred session has no prepared sources.
+        /// </returns>
         internal static async Task<SpiritualWoundSourcePreparation> AcquireAsync(
             ValidationService validator,
-            FileSystemManager.CanonicalWriteLease lease)
+            FileSystemManager.CanonicalWriteLease lease,
+            bool allowMissingActionCostAudit = false, bool awaitOriginalPrefix = false,
+            AcceptedTurnProjectionClock? projectionClock = null,
+            SpiritualOriginalDraftInputs? currentInputs = null)
         {
             validator._fs.EnsureCanonicalWriteLeaseActive(lease);
             var read = PendingTurnSnapshotReader.ReadCurrent(
@@ -157,32 +235,46 @@ public partial class ValidationService
             var original = read.Snapshot;
             if (original.Realm is not ("chaos_sea" or "shining_abode"))
                 return new(null, Array.Empty<ValidationIssue>());
+            if (currentInputs != null && !currentInputs.MatchesIdentity(original.SessionId,
+                    original.RequestId, original.SnapshotToken, original.TurnNumber))
+                return new(null, [SourceIssue(SoulPath,
+                    "spiritual_original_input_identity_mismatch",
+                    "the exact physical signed session, request, snapshot and positive turn")]);
 
             var before = new Dictionary<string, string?>(StringComparer.Ordinal);
             var candidate = new Dictionary<string, string?>(StringComparer.Ordinal);
-            var utf8 = new UTF8Encoding(false, true);
             var issues = new List<ValidationIssue>();
             try
             {
                 foreach (var path in RequiredPaths.Concat(OptionalPaths))
                 {
                     if (original.CoveredLogicalPaths.Contains(path, StringComparer.Ordinal))
-                        before[path] = utf8.GetString(original.ReadRequiredBytes(path));
+                        before[path] = DecodeSourceUtf8(original.ReadRequiredBytes(path));
                     else if (original.AbsentLogicalPaths.Contains(path, StringComparer.Ordinal))
                         before[path] = null;
                     else
                         throw new InvalidOperationException("original source path is neither covered nor signed-absent: " + path);
-                    var bytes = await validator._fs.ReadFileBytesAsync(lease, path);
-                    candidate[path] = bytes is null ? null : utf8.GetString(bytes);
+                    var bytes = currentInputs is null
+                        ? await validator._fs.ReadFileBytesAsync(lease, path)
+                        : currentInputs.ReadImage(path).Bytes;
+                    candidate[path] = bytes is null ? null : DecodeSourceUtf8(bytes);
                 }
-                var session = new SpiritualWoundSourceSession(validator, original, before, candidate);
-                session.Prepare(issues);
+                var session = new SpiritualWoundSourceSession(validator, original, before, candidate, projectionClock)
+                {
+                    _allowMissingActionCostAudit = allowMissingActionCostAudit,
+                    _awaitingOriginalPrefix = awaitOriginalPrefix
+                };
+                session._originalRequestBytes = await validator._fs.ReadFileBytesAsync(
+                    lease, "input/turn_request.json");
+                if (!awaitOriginalPrefix)
+                    session.Prepare(issues);
                 return issues.Any(issue => issue.Severity == IssueSeverity.Error)
                     ? new(null, issues.AsReadOnly())
                     : new(session, issues.AsReadOnly());
             }
             catch (Exception exception) when (exception is System.Text.Json.JsonException or
-                DecoderFallbackException or InvalidOperationException or ArgumentException or OverflowException)
+                DecoderFallbackException or InvalidOperationException or ArgumentException or
+                OverflowException or KeyNotFoundException)
             {
                 issues.Add(SourceIssue(AfterlifeSpiritualConflictState.StatePath,
                     "spiritual_source_input_invalid", exception.Message));
@@ -195,13 +287,9 @@ public partial class ValidationService
             _soul = Parse(SoulPath, original: true, required: true);
             _profileRoot = Parse(AfterlifeEntityProfileState.StatePath, original: true, required: false);
             _originalConflict = Parse(AfterlifeSpiritualConflictState.StatePath, original: true, required: false);
-            var rawConflict = Parse(AfterlifeSpiritualConflictState.StatePath, original: false, required: false);
-            _candidateConflict = rawConflict[AfterlifeSpiritualConflictState.ResponseField] is JsonObject update
-                ? AfterlifeSpiritualConflictState.ApplyUpdate(_originalConflict, update)
-                : rawConflict.DeepClone().AsObject();
-            _candidateConflict.Remove(AfterlifeSpiritualConflictState.ResponseField);
-            if (_candidateConflict.ContainsKey("lastInvalidUpdate"))
-                throw new InvalidOperationException("invalid source conflict update");
+            _initialFullCandidateConflict = ProjectFullCandidateConflict();
+            _candidateConflict = ProjectAcceptedExchangeFrontier(
+                _initialFullCandidateConflict.DeepClone().AsObject());
 
             var originalRealm = AfterlifeSpiritualConflictState.NormalizeAfterlifeRealmKey(
                 ExactString(_soul["currentRealm"]));
@@ -312,9 +400,16 @@ public partial class ValidationService
                         allowHistoricalSummaryDrift: HasPriorTurnMarker(exchange, historicalContext)))
                     continue;
                 CheckExchange(prior, exchange, previous, control,
-                    $"activeConflict.exchangeLog[{index}]", issues);
+                    $"activeConflict.exchangeLog[{index}]", issues,
+                    allowMissingAuditLeaf: index == log.Count - 1);
                 if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                     return;
+                if (_missingActionCostAudit is not null)
+                {
+                    ValidateIncompleteActiveProjection(active, exchange,
+                        _frontiers[ExactString(prior["conflictId"])!], issues);
+                    return;
+                }
                 previous = exchange["after"]!.AsObject();
                 control = ResolveNextPriorControlState(control, exchange);
             }
@@ -335,6 +430,8 @@ public partial class ValidationService
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 return;
             var terminalId = ExactString(exchange["exchangeId"]);
+            if (_acceptedExchangeLimit == 0 && TerminalPreparation != null)
+                return;
             if (terminalId is null ||
                 _coordinates.Contains(ExactString(prior["conflictId"]) + "/" + terminalId))
                 throw new InvalidOperationException("terminal source duplicates a retained or checked exchange");
@@ -382,20 +479,51 @@ public partial class ValidationService
         {
             var projection = AfterlifeConflictActionPointProjectionService.Resolve(
                 _before[ResourceMaterializationContract.DefinitionsPath],
-                _before[ResourceMaterializationContract.StatePath], prior);
+                SourceResourceBaselineJson, prior);
             if (projection.Projection is null ||
                 projection.Issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 throw new InvalidOperationException("original both-side action-point projection required");
             _expectedActionPoints["player"] = TryReadIntegralResourceValue(projection.Projection?.Player.Current);
             _expectedActionPoints["opposition"] = TryReadIntegralResourceValue(projection.Projection?.Opposition.Current);
+            CaptureInitialSourceFrontier(prior);
         }
 
+        /// <summary>
+        /// Validates the next original exchange and retains its sources, dice and causal mechanics only after admission succeeds.
+        /// </summary>
+        /// <param name="conflict">
+        /// Candidate conflict with authenticated original membership.
+        /// </param>
+        /// <param name="exchange">
+        /// Next exchange proposed at the current source frontier.
+        /// </param>
+        /// <param name="previous">
+        /// Expected before-state from the preceding accepted frontier.
+        /// </param>
+        /// <param name="control">
+        /// Prior control state, or <see langword="null"/> when no control state exists.
+        /// </param>
+        /// <param name="coordinate">
+        /// Diagnostic path identifying this exchange.
+        /// </param>
+        /// <param name="issues">
+        /// Receives admission failures without committing the proposed frontier.
+        /// </param>
+        /// <param name="allowMissingAuditLeaf">
+        /// Whether the final active exchange may retain a structurally absent audit as pending evidence.
+        /// </param>
         private void CheckExchange(
             JsonObject conflict, JsonObject exchange, JsonObject previous,
-            JsonNode? control, string coordinate, List<ValidationIssue> issues)
+            JsonNode? control, string coordinate, List<ValidationIssue> issues,
+            bool allowMissingAuditLeaf = false)
         {
+            var missingSides = _allowMissingActionCostAudit
+                ? ReadTrulyMissingAuditSides(exchange) : Array.Empty<string>();
+            if (missingSides.Length != 0 && !allowMissingAuditLeaf)
+                throw new InvalidOperationException("only the final active exchange may await missing action-cost audit");
+            var incomplete = missingSides.Length != 0;
             var id = ExactString(exchange["exchangeId"]);
-            if (id is null || !_coordinates.Add(ExactString(conflict["conflictId"]) + "/" + id))
+            if (id is null || _coordinates.Contains(ExactString(conflict["conflictId"]) + "/" + id))
                 throw new InvalidOperationException("exact unique source exchange identity");
             // Existing exchange turn markers remain optional. Newness is proved by exact
             // comparison with the signed original, never a caller's "current" flag.
@@ -421,7 +549,7 @@ public partial class ValidationService
                 throw new InvalidOperationException("both current action actors must resolve to their exact original side");
             var projection = AfterlifeConflictActionPointProjectionService.Resolve(
                 _before[ResourceMaterializationContract.DefinitionsPath],
-                _before[ResourceMaterializationContract.StatePath], conflict);
+                SourceResourceBaselineJson, conflict);
             var diceContext = new AfterlifeConflictDiceContext(
                 _original.AcceptedD20EventValues.ToArray(),
                 LightIncarnateGrantTurn: SourceOfLightCapstoneState.HasLightIncarnate(_soul)
@@ -436,33 +564,52 @@ public partial class ValidationService
                 HasValidatedTurnBaseline: true,
                 Difficulty: ReadOriginalDifficulty(),
                 CurrentTurn: TurnNumber);
-            var costContext = new AfterlifeActionCostAuthorityContext(
-                ReadAfterlifeCombatProfileArtTiers(_soul),
-                ReadPlayerSpecialArts(_profileRoot),
-                ReadSpecialArtsByOwner(_profileRoot),
-                ReadEntityStandardArtTiers(_profileRoot),
-                ReadConflictActorArtTierSnapshots(_originalConflict));
+            var costContext = CreateSpiritualCostAuthority(_mechanicsContext);
 
+            var exchangeIssues = new List<ValidationIssue>();
+            ValidateCurrentWoundContributions(conflict, exchange, previous, coordinate, exchangeIssues);
             _validator.ValidateConflictExchange(exchange, control, conflict,
-                coordinate, issues, diceContext, costContext, isPreTurnExchange: false,
+                coordinate, exchangeIssues, diceContext, costContext, isPreTurnExchange: false,
                 combatConditionIds: ValidateCombatConditions(conflict["combatConditions"],
-                    coordinate + ".combatConditions", issues));
-            if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                    coordinate + ".combatConditions", exchangeIssues));
+            // Only this precise diagnostic for a structurally absent expected side is
+            // pending evidence. Null/scalar/empty audits and unrelated failures survive.
+            issues.AddRange(exchangeIssues.Where(issue => !incomplete ||
+                !IsExpectedMissingAuditIssue(issue, coordinate, missingSides)));
+            if (issues.Any(issue => issue.Severity == IssueSeverity.Error) &&
+                (_mechanicsContext is null ||
+                 !SpiritualOriginalTurnCapture.IsCorrectableDependentConflictFailure(issues)))
                 return;
 
+            // Cost-formula failures must not mask the other side's owned chronological balance.
+            // Gather both sides without advancing expected balances until every check succeeds.
+            var nextActionPoints = new Dictionary<string, int>(StringComparer.Ordinal);
             foreach (var side in new[] { "player", "opposition" })
             {
-                if (side == "player" ? ExchangeExpectsPlayerActionCostAudit(exchange)
-                    : ExchangeExpectsOppositionActionCostAudit(exchange))
+                if (!missingSides.Contains(side, StringComparer.Ordinal) &&
+                    ((side == "player" ? ExchangeExpectsPlayerActionCostAudit(exchange)
+                    : ExchangeExpectsOppositionActionCostAudit(exchange)) || HasConditionalForceCostAudit(exchange, side)))
                 {
-                    ValidateCurrentActionCostSequence(exchange, side, _expectedActionPoints[side],
+                    var expectedBefore = _expectedActionPoints[side];
+                    if (_mechanicsContext != null)
+                    {
+                        var actualBefore = _mechanicsContext.ReadActionPointBefore(
+                            ExactString(conflict["conflictId"])!, _checkedExchanges.Count);
+                        expectedBefore = TryReadIntegralResourceValue(
+                            side == "player" ? actualBefore.Player.Current : actualBefore.Opposition.Current)
+                            ?? throw new InvalidOperationException("Integral actual action points are required.");
+                    }
+                    ValidateCurrentActionCostSequence(exchange, side, expectedBefore,
                         coordinate, issues, out var next);
-                    if (next.HasValue)
-                        _expectedActionPoints[side] = next.Value;
+                    if (next.HasValue && !incomplete)
+                        nextActionPoints[side] = next.Value;
                 }
             }
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
                 return;
+            foreach (var next in nextActionPoints)
+                _expectedActionPoints[next.Key] = next.Value;
+            var prospectiveDice = new HashSet<int>(_claimedDice);
             if (exchange["diceAudit"] is JsonObject audit)
             {
                 ValidateWideTotals(audit);
@@ -472,12 +619,11 @@ public partial class ValidationService
                         index < 0 || index >= _original.AcceptedD20EventValues.Count ||
                         !ExactInt(row["value"], out var value) ||
                         _original.AcceptedD20EventValues[index] != value ||
-                        !_claimedDice.Add(index))
+                        !prospectiveDice.Add(index))
                         throw new InvalidOperationException("original die used outside its unique turn-wide claim");
                 }
             }
 
-            _checkedExchanges.Add(exchange.ToJsonString());
             foreach (var side in new[] { "player", "opposition" })
             {
                 var key = side + "SideStrain";
@@ -485,8 +631,23 @@ public partial class ValidationService
                 var nextRank = SpiritualWoundOpportunityMath.StrainRank(ExactString(after[key]));
                 if (nextRank <= previousRank)
                     continue;
-                PrepareHarm(conflict, exchange, side, coordinate, costContext, issues);
+                PrepareHarm(conflict, exchange, side, coordinate, costContext, issues,
+                    prepareSource: !incomplete);
             }
+            if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
+                return;
+            if (incomplete)
+            {
+                RetainMissingActionCostAudit(conflict, exchange, coordinate, missingSides);
+                return;
+            }
+            _coordinates.Add(ExactString(conflict["conflictId"]) + "/" + id);
+            _claimedDice.UnionWith(prospectiveDice);
+            RetainAdmittedExchangeMechanics(conflict, exchange);
+            _checkedExchanges.Add(exchange.ToJsonString());
+            if (_mechanicsContext != null)
+                _exchangeMechanics.Add(ExactString(conflict["conflictId"]) + "/" + id, _mechanicsContext);
+            CaptureCheckedSourceFrontier(conflict, exchange, control);
         }
 
         private static void ValidateWideTotals(JsonObject audit)
@@ -511,7 +672,7 @@ public partial class ValidationService
         private void PrepareHarm(
             JsonObject conflict, JsonObject exchange, string affectedSide,
             string coordinate, AfterlifeActionCostAuthorityContext costContext,
-            List<ValidationIssue> issues)
+            List<ValidationIssue> issues, bool prepareSource = true)
         {
             var actingSide = affectedSide == "player" ? "opposition" : "player";
             var operation = actingSide == "player"
@@ -541,8 +702,9 @@ public partial class ValidationService
             {
                 // A passive/authority operation is not an invented standard art.
                 // C/D must bind the actual applied effect or operation source.
-                _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
-                    coordinate + "." + affectedSide, exchange.ToJsonString()));
+                if (prepareSource)
+                    _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
+                        coordinate + "." + affectedSide, exchange.ToJsonString()));
                 return;
             }
             var special = actingSide == "player"
@@ -569,8 +731,9 @@ public partial class ValidationService
             {
                 // The real checker has already accepted this explicit voluntary non-contest.
                 // Do not manufacture an opposed margin or exclude its lawful incoming harm.
-                _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
-                    coordinate + "." + affectedSide, exchange.ToJsonString()));
+                if (prepareSource)
+                    _pending.Add(new(SpiritualSourceRequirement.AppliedSourceBinding,
+                        coordinate + "." + affectedSide, exchange.ToJsonString()));
                 return;
             }
             if (!ExactInt(dice["playerTotal"], out var player) ||
@@ -586,13 +749,14 @@ public partial class ValidationService
             var calculation = SpiritualWoundOpportunityMath.Calculate(new(
                 margin, rawTier, resilience, beforeStrain, afterStrain, mode, envelope.MaximumSeverityRank))
                 ?? throw new InvalidOperationException("source opportunity arithmetic overflow/invalid input");
-            if (envelope.GuaranteedSeverityRank is int required && required > calculation.MaximumSeverityRank)
-                throw new InvalidOperationException("pre-existing guarantee exceeds harder source bounds");
+            var retrauma = ResolveRetrauma(explicitTarget, targetKey, out var retraumaWoundJson);
+            if (!prepareSource)
+                return;
             _sources.Add(new PreparedSpiritualSource(
                 coordinate, ExactString(conflict["conflictId"])!, ExactString(exchange["exchangeId"])!,
                 affectedSide, actorKey, targetKey, operation,
                 source?.ToJsonString(), exchange.ToJsonString(), calculation,
-                envelope.GuaranteedSeverityRank, ResolveRetrauma(explicitTarget, targetKey)));
+                envelope.GuaranteedSeverityRank, retrauma, retraumaWoundJson));
         }
 
         private void IndexProfiles(List<ValidationIssue> issues)
@@ -668,8 +832,24 @@ public partial class ValidationService
             }
         }
 
-        private string? ResolveRetrauma(JsonObject? target, string actor)
+        /// <summary>
+        /// Resolves an explicit re-trauma target against owned current state or the standalone signed baseline.
+        /// </summary>
+        /// <param name="target">
+        /// Optional source-action target; absence of a re-trauma reference produces no target.
+        /// </param>
+        /// <param name="actor">
+        /// Exact affected actor coordinate already resolved from signed membership.
+        /// </param>
+        /// <param name="woundJson">
+        /// Receives immutable canonical wound facts for the retained source, or null when no target is selected.
+        /// </param>
+        /// <returns>
+        /// The validated active wound identity, or null without a re-trauma reference.
+        /// </returns>
+        private string? ResolveRetrauma(JsonObject? target, string actor, out string? woundJson)
         {
+            woundJson = null;
             if (target is null)
                 return null;
             var allowed = new HashSet<string>(["actorType", "actorId", "retraumaWoundRef"], StringComparer.Ordinal);
@@ -679,7 +859,40 @@ public partial class ValidationService
                 return null;
             var woundId = ExactString(target["retraumaWoundRef"]) ??
                 throw new InvalidOperationException("explicit exact old woundId required");
-            var catalog = WoundCarrierCatalog.Build(new(
+            WoundOperationBeforeData? current = null;
+            if (_mechanicsContext != null)
+            {
+                var failures = new List<ValidationIssue>();
+                current = _mechanicsContext.ReadCurrentWoundView(failures);
+                if (current == null || failures.Count != 0)
+                    throw new InvalidOperationException("exact current owned re-trauma wound view required");
+            }
+            var wound = ReadRetraumaWound(woundId, actor, current);
+            woundJson = WoundMaterializationContract.SerializeCanonical(wound);
+            return woundId;
+        }
+
+        /// <summary>
+        /// Validates a re-trauma wound against complete carrier, identity and history agreement.
+        /// </summary>
+        /// <param name="woundId">
+        /// Exact requested wound identity.
+        /// </param>
+        /// <param name="actor">
+        /// Exact affected actor coordinate from signed membership.
+        /// </param>
+        /// <param name="current">
+        /// Owned current snapshots, or null to use the standalone signed originals.
+        /// </param>
+        /// <returns>
+        /// The matching active wound; invalid state or ownership throws.
+        /// </returns>
+        private WoundMaterializationEnvelope ReadRetraumaWound(string woundId, string actor,
+            WoundOperationBeforeData? current)
+        {
+            if (current != null && (current.WoundCarriers == null || current.WoundIdentity == null || current.WoundHistory == null))
+                throw new InvalidOperationException("complete current wound carrier, identity and history snapshots required");
+            var catalog = WoundCarrierCatalog.Build(current != null ? current.WoundCarriers! : new(
                 OptionalRoot(WoundCarrierCatalog.PlayerPath),
                 OptionalRoot(WoundCarrierCatalog.NpcPath),
                 OptionalRoot(WoundCarrierCatalog.EnemiesPath),
@@ -688,7 +901,7 @@ public partial class ValidationService
             if (catalog.Issues.Count != 0 || !catalog.TryResolveOne(woundId, out var occurrence) ||
                 occurrence.Wound.Lifecycle != "active" ||
                 occurrence.Coordinate.Realm != Realm)
-                throw new InvalidOperationException("exact active original re-trauma wound");
+                throw new InvalidOperationException("exact active re-trauma wound in the authoritative view");
             var ownerId = actor[(actor.IndexOf(':') + 1)..];
             var kind = actor[..actor.IndexOf(':')] switch
             {
@@ -704,7 +917,7 @@ public partial class ValidationService
                 occurrence.Coordinate.OwnerKind != kind ||
                 occurrence.Coordinate.CarrierPath != WoundCarrierCatalog.AfterlifeProfilesPath)
                 throw new InvalidOperationException("re-trauma target owner mismatch");
-            var identity = WoundIdentityState.Parse(_before[WoundIdentityState.StatePath],
+            var identity = WoundIdentityState.Parse(current != null ? current.WoundIdentity!.ToJsonString() : _before[WoundIdentityState.StatePath],
                 WoundIdentityState.StatePath);
             if (!identity.IsValid || !identity.State!.TryGetEntry(woundId, out var entry) ||
                 entry.Status != "active" || entry.OwnerId != occurrence.Coordinate.OwnerId ||
@@ -712,12 +925,83 @@ public partial class ValidationService
                 entry.CarrierPath != occurrence.Coordinate.CarrierPath || entry.Realm != Realm ||
                 entry.SemanticFingerprint != WoundIdentityState.ComputeSemanticFingerprint(occurrence.Wound))
                 throw new InvalidOperationException("original re-trauma identity/carrier agreement");
-            var history = WoundHistoryState.Parse(_before[WoundHistoryState.HistoryPath],
+            var history = WoundHistoryState.Parse(current != null ? current.WoundHistory!.ToJsonString() : _before[WoundHistoryState.HistoryPath],
                 WoundHistoryState.HistoryPath);
             if (!history.IsValid ||
                 history.State!.ValidateAgreement(identity.State!, catalog).Count != 0)
                 throw new InvalidOperationException("original re-trauma history/identity/carrier agreement");
-            return woundId;
+            return occurrence.Wound;
+        }
+
+        /// <summary>
+        /// Revalidates a retained source's historical target against a fresh owned wound view.
+        /// </summary>
+        /// <param name="source">
+        /// Exact source registered by this session, including its frozen target facts.
+        /// </param>
+        /// <param name="current">
+        /// Fresh owner-selected snapshots read under the original capture gate.
+        /// </param>
+        /// <param name="issues">
+        /// Receives unowned-source, malformed-state or changed-target issues.
+        /// </param>
+        /// <returns>
+        /// The unchanged active target, or null when validation fails.
+        /// </returns>
+        internal WoundMaterializationEnvelope? RevalidateRetraumaTarget(PreparedSpiritualSource source,
+            WoundOperationBeforeData current, List<ValidationIssue> issues)
+        {
+            try
+            {
+                if (!Owns(source) || source.RetraumaWoundId == null || source.RetraumaWoundJson == null)
+                    throw new InvalidOperationException("exact registered source with retained re-trauma facts required");
+                var wound = ReadRetraumaWound(source.RetraumaWoundId, source.AffectedActor, current);
+                if (WoundMaterializationContract.SerializeCanonical(wound) != source.RetraumaWoundJson)
+                    throw new InvalidOperationException("the retained re-trauma target changed after source acceptance");
+                return wound;
+            }
+            catch (InvalidOperationException)
+            {
+                issues.Add(SourceIssue(AfterlifeSpiritualConflictState.StatePath,
+                    "spiritual_wound_retrauma_target_stale", "the exact unchanged active target retained by this source"));
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Reads the exact active conflict wound from the current owned carrier, identity and history view.
+        /// </summary>
+        /// <param name="source">
+        /// Registered source whose affected actor owns the wound.
+        /// </param>
+        /// <param name="woundId">
+        /// Identity supplied by the capture's actual earlier conflict-wound insertion.
+        /// </param>
+        /// <param name="current">
+        /// Current owner-selected wound state after earlier source insertions.
+        /// </param>
+        /// <param name="issues">
+        /// Receives stale or inconsistent owner-view failures.
+        /// </param>
+        /// <returns>
+        /// The current active wound, or <see langword="null"/> when its owner view fails validation.
+        /// </returns>
+        internal WoundMaterializationEnvelope? RevalidateSameConflictTarget(PreparedSpiritualSource source,
+            string woundId, WoundOperationBeforeData current, List<ValidationIssue> issues)
+        {
+            try
+            {
+                if (!Owns(source) || source.RetraumaWoundId != null)
+                    throw new InvalidOperationException("exact same-conflict source without explicit older target required");
+                return ReadRetraumaWound(woundId, source.AffectedActor, current);
+            }
+            catch (InvalidOperationException)
+            {
+                issues.Add(SourceIssue(AfterlifeSpiritualConflictState.StatePath,
+                    "spiritual_wound_same_conflict_target_stale",
+                    "the exact active conflict wound in the current owned carrier, identity and history view"));
+                return null;
+            }
         }
 
         private JsonObject? OptionalRoot(string path) =>
@@ -742,6 +1026,21 @@ public partial class ValidationService
         private static int ReadTier(JsonNode? node) =>
             ExactInt(node, out var tier) && tier is >= 0 and <= 5
                 ? tier : throw new InvalidOperationException("raw spiritual tier integer 0..5 required");
+
+        /// <summary>
+        /// Decodes source JSON as strict UTF-8 while accepting one leading UTF-8 preamble from canonical text writers.
+        /// </summary>
+        /// <param name="bytes">
+        /// Exact signed or current bytes, retained unchanged by the caller.
+        /// </param>
+        /// <returns>
+        /// Decoded text without the optional leading preamble; malformed UTF-8 throws a decoder exception.
+        /// </returns>
+        private static string DecodeSourceUtf8(byte[] bytes)
+        {
+            var offset = bytes.AsSpan().StartsWith(Encoding.UTF8.GetPreamble()) ? 3 : 0;
+            return new UTF8Encoding(false, true).GetString(bytes, offset, bytes.Length - offset);
+        }
 
         private JsonObject Parse(string path, bool original, bool required)
         {
@@ -801,6 +1100,49 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Retains checked exchange facts, including an immutable historical re-trauma target when present.
+    /// Data equality does not substitute for the source session's exact object ownership.
+    /// </summary>
+    /// <param name="Coordinate">
+    /// Diagnostic coordinate of the checked exchange.
+    /// </param>
+    /// <param name="ConflictId">
+    /// Exact accepted conflict identity.
+    /// </param>
+    /// <param name="ExchangeId">
+    /// Exact accepted exchange identity.
+    /// </param>
+    /// <param name="AffectedSide">
+    /// Side whose strain increased.
+    /// </param>
+    /// <param name="ActingActor">
+    /// Signed actor coordinate responsible for the harmful action.
+    /// </param>
+    /// <param name="AffectedActor">
+    /// Signed persistent actor coordinate receiving the harm.
+    /// </param>
+    /// <param name="Operation">
+    /// Validated harmful operation.
+    /// </param>
+    /// <param name="OriginalSpecialArtJson">
+    /// Original special-art definition, or null for a standard art.
+    /// </param>
+    /// <param name="ExchangeJson">
+    /// Retained exchange evidence used for the source calculation.
+    /// </param>
+    /// <param name="Calculation">
+    /// Deterministic strain and severity calculation from the validated action.
+    /// </param>
+    /// <param name="GuaranteedSeverityRank">
+    /// Original source's guaranteed rank, or null without a declared guarantee.
+    /// </param>
+    /// <param name="RetraumaWoundId">
+    /// Explicit validated active wound identity, or null for a new-wound opportunity.
+    /// </param>
+    /// <param name="RetraumaWoundJson">
+    /// Canonical historical target facts, or null without re-trauma; these facts require fresh target validation before use.
+    /// </param>
     internal sealed record PreparedSpiritualSource(
         string Coordinate,
         string ConflictId,
@@ -813,7 +1155,8 @@ public partial class ValidationService
         string ExchangeJson,
         SpiritualWoundCalculation Calculation,
         int? GuaranteedSeverityRank,
-        string? RetraumaWoundId);
+        string? RetraumaWoundId,
+        string? RetraumaWoundJson = null);
 
     internal static void ValidateSpiritualWoundSourceActionShape(
         JsonObject exchange, string context, List<ValidationIssue> issues)

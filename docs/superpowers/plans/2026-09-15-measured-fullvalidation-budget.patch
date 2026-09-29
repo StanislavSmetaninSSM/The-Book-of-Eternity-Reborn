@@ -1,0 +1,88 @@
+--- a/scripts/test-csharp.ps1
++++ b/scripts/test-csharp.ps1
+@@ -163,7 +163,7 @@
+     FullValidation = @{
+         Project = "Integration"
+         Filter = "Category=FullValidation"
+-        TimeoutMinutes = 15
++        TimeoutMinutes = 30
+     }
+     RegressionIntegration = @{
+         Project = "Integration"
+--- a/docs/testing.md
++++ b/docs/testing.md
+@@ -40,7 +40,7 @@
+ |---|---|---:|---|
+ | `Fast` (default) | Entire `BookOfEternityClient.Tests` project, with no category filter | 5 min | Ordinary post-edit feedback |
+ | `Focused` | Caller-supplied VSTest filter in the selected fast or integration project | 5 min by default; explicit override up to 15 min | One class, method, or domain during implementation |
+-| `FullValidation` | Integration project, `Category=FullValidation` | 15 min | Diagnostic full-pipeline checks |
++| `FullValidation` | Integration project, `Category=FullValidation` | 30 min | Diagnostic full-pipeline checks |
+ | `RegressionIntegration` | Integration project, `Category=RegressionIntegration` | 15 min | Diagnostic file-backed workflow checks |
+ | `ProcessIntegration` | Integration project, `Category=ProcessIntegration` | 15 min | Diagnostic real-process checks |
+ | `E2E` | Integration project, `Category=E2E` | 15 min | Diagnostic end-to-end checks |
+@@ -89,6 +89,54 @@
+ incomplete evidence. Follow-up runs may cover exact unfinished selections rather
+ than repeat already verified cases, provided their coverage is reconciled and
+ reported separately from the original lane result.
++
++FullValidation's default and hard limit increased from 15 to 30 minutes on
++2026-09-15 under #1536 / T081-B2C-J2-C2-V2 as provisional diagnostic headroom.
++The official run stopped at 15:00.332 (exit 124), preserving 1,240 completed
++passing cases, zero failures/duplicates and successful owned-tree cleanup.
++The exact mixed09 selection separately stopped at 15:00.160 with exit 124,
++successful cleanup and no completed TRX. Neither timeout is a FullValidation
++pass, and extra time is not a performance-regression fix or a proven sufficient
++limit. Original evidence remains under
++`TestResults/test-lanes/20260915-171812-071-35328-221e0e3f5d374a72a7537a8f2fbb45a3-fullvalidation/`
++and
++`TestResults/test-lanes/20260915-173738-793-33304-7eb53c33b90643119c62f56d420c18bf-focused/`.
++
++Both the current discovery and the successful September 8 baseline display
++1,810 rows. Runtime theory expansion means discovery rows are not executed-case
++counts: that baseline completed 1,920 cases in 12:26.460, including 94
++ValidatorFixture cases from three displayed rows. Its source/binaries predate
++wider changes, so identical filters do not prove identical implementation or
++workload. The current timeout never started QTE descriptor 08 and left other
++started descriptors without completed TRX. Current executed coverage and
++unfinished selections must be reconciled independently; no missing-case total
++is inferred by subtracting completed cases from discovery rows.
++
++Five isolated groups (Example 46, Mechanical 24, ChaosPending 23, Realm 13,
++Quest 10) passed and have lower matched summed test durations than the baseline.
++GameEngine's eight cases passed in 6:53.751 lane wall time (397.978 summed test
++seconds versus 217.087 baseline test seconds). ValidatorFixture's separate
++current run passed all 94 cases in 11:39.568 lane wall time, with 683.216 summed
++test seconds, exit 0, zero failures/duplicates and successful cleanup:
++`TestResults/test-lanes/20260915-183050-879-24564-3966542d59364ac992b6ed56ee1c287d-focused/`.
++The exact mixed09 selection is now covered by 149 plus 227 separately executed
++passing cases, totaling 376; this reconciles runtime-expanded coverage without
++changing either timeout result. The scheduling audit identifies Full's raw
++case-count fallback, four mixed bins and GameEngine's nonparallel collection
++tail; it does not establish the cause of the current slowdown. Keep fixture,
++manifest-currentness and concurrency investigation tracked separately from the
++budget adjustment. Current isolated Fixture plus the exclusive GameEngine
++collection gives 683.216 + 397.978 = 1,081.194 seconds, about 18:01 before
++overhead, as an estimated serial critical path. This estimate objectively
++supports more than fifteen minutes of headroom; it is not a measured combined
++run and does not establish thirty minutes as sufficient.
++
++Thirty minutes is an explicitly bounded allowance for continued diagnostic
++work after repeated same-selection timeouts, without claiming successful
++completion under that cap. This change preserves all category filters,
++coverage, scheduling, parallelism and cleanup. Fast remains five minutes;
++Focused remains five by default, capped at fifteen. Revisit headroom after
++residual timings and the separately tracked performance investigation.
+ 
+ Treatment resolver tests that require accepted-state files, persistence,
+ leases, resource claims, publication, restart, or replay are
+--- a/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
++++ b/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+@@ -402,7 +402,7 @@
+         var diagnosticDefinitions = new[]
+         {
+             "FullValidation = @{ Project = \"Integration\" " +
+-            "Filter = \"Category=FullValidation\" TimeoutMinutes = 15 }",
++            "Filter = \"Category=FullValidation\" TimeoutMinutes = 30 }",
+             "RegressionIntegration = @{ Project = \"Integration\" " +
+             "Filter = \"Category=RegressionIntegration\" TimeoutMinutes = 15 }",
+             "DeepValidation = @{ Project = \"Integration\" " +

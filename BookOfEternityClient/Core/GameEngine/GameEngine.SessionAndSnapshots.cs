@@ -37,9 +37,25 @@ public partial class GameEngine
     private async Task<GameResponse> BuildGameResponseFromFiles()
     {
         var response = new GameResponse();
+        var spiritualOutput = Interlocked.Exchange(ref _acceptedTurnSpiritualOutput, null);
+        IReadOnlyDictionary<string, string?>? acceptedOutputs = null;
+        if (spiritualOutput is not null)
+        {
+            try
+            {
+                acceptedOutputs = await spiritualOutput.ReadCurrentTextsAsync(_fs);
+            }
+            catch
+            {
+                TakeAcceptedTurnWoundNotifications();
+                throw;
+            }
+        }
 
         // 1. Read narrative from output/narrative_response.json (primary source per API spec)
-        var narrativeJson = await _fs.ReadFileAsync("output/narrative_response.json");
+        var narrativeJson = acceptedOutputs is null
+            ? await _fs.ReadFileAsync("output/narrative_response.json")
+            : acceptedOutputs["output/narrative_response.json"];
         if (narrativeJson != null)
         {
             try
@@ -59,7 +75,9 @@ public partial class GameEngine
             response.Response = _stateManager.CurrentState.Narrative;
 
         // 2. Read dialogue options and image prompt from output/interface_updates.json
-        var uiJson = await _fs.ReadFileAsync("output/interface_updates.json");
+        var uiJson = acceptedOutputs is null
+            ? await _fs.ReadFileAsync("output/interface_updates.json")
+            : acceptedOutputs["output/interface_updates.json"];
         if (uiJson != null)
         {
             try
@@ -90,7 +108,9 @@ public partial class GameEngine
         }
 
         // 3. Read GM thoughts from output/debug_logs.json
-        var debugJson = await _fs.ReadFileAsync("output/debug_logs.json");
+        var debugJson = acceptedOutputs is null
+            ? await _fs.ReadFileAsync("output/debug_logs.json")
+            : acceptedOutputs["output/debug_logs.json"];
         if (debugJson != null)
         {
             try
@@ -165,6 +185,8 @@ public partial class GameEngine
     {
         _lastResponse = null;
         _acceptedTurnWoundNotifications = Array.Empty<WoundPlayerNotification>();
+        _acceptedTurnSpiritualOutput = null;
+        _acceptedTurnSpiritualConflictValidation = null;
         _pendingImagePrompt = null;
         _pendingMemoryLegacyAwaitingConsumption = false;
         _mainMenuSessionWarning = null;
@@ -1354,6 +1376,12 @@ public partial class GameEngine
         }
     }
 
+    /// <summary>
+    /// Normalizes startup UI and control artifacts while preserving usable pending turns and archiving eligible inactive snapshot evidence.
+    /// </summary>
+    /// <returns>
+    /// A task completing after startup normalization and any diagnostic evidence retirement attempt.
+    /// </returns>
     private async Task NormalizeRuntimeUiArtifactsAsync()
     {
         await _stateManager.RefreshGameStateAsync();
@@ -1417,6 +1445,7 @@ public partial class GameEngine
         }
 
         await RepairStalePreparedShiningPackageAfterMortalBootstrapAsync(pendingSnapshot, hasReadySignals);
+        await ArchiveInactivePendingSnapshotEvidenceAsync();
     }
 
     private bool HasTerminalReadySignal() =>
@@ -1668,6 +1697,49 @@ public partial class GameEngine
         return true;
     }
 
+    /// <summary>
+    /// Removes a rejected turn's remaining input only while its current identity still matches the validated original.
+    /// </summary>
+    /// <param name="snapshotContext">
+    /// Authenticated original context retained by the caller after successful rollback; a missing context preserves input.
+    /// </param>
+    /// <returns>
+    /// A task completing after the correlated input is deleted or an absent, malformed or foreign request is preserved.
+    /// </returns>
+    private async Task CleanupCorrelatedRejectedTurnRequestAsync(ValidatedPendingTurnSnapshotContext? snapshotContext)
+    {
+        if (snapshotContext is null || string.IsNullOrWhiteSpace(snapshotContext.SessionId) ||
+            string.IsNullOrWhiteSpace(snapshotContext.RequestId) || snapshotContext.TurnNumber <= 0)
+            return;
+
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        const string path = "input/turn_request.json";
+        var json = await _fs.ReadFileAsync(lease, path);
+        if (string.IsNullOrWhiteSpace(json))
+            return;
+
+        try
+        {
+            using var document = JsonDocument.Parse(json);
+            var root = document.RootElement;
+            if (root.ValueKind != JsonValueKind.Object ||
+                root.EnumerateObject().GroupBy(property => property.Name, StringComparer.OrdinalIgnoreCase).Any(group => group.Count() > 1) ||
+                !root.TryGetProperty("sessionId", out var session) || session.ValueKind != JsonValueKind.String ||
+                !string.Equals(session.GetString(), snapshotContext.SessionId, StringComparison.Ordinal) ||
+                !root.TryGetProperty("requestId", out var request) || request.ValueKind != JsonValueKind.String ||
+                !string.Equals(request.GetString(), snapshotContext.RequestId, StringComparison.Ordinal) ||
+                !root.TryGetProperty("turnNumber", out var turn) || turn.ValueKind != JsonValueKind.Number ||
+                !turn.TryGetInt32(out var number) || number != snapshotContext.TurnNumber)
+                return;
+
+            _fs.DeleteFile(lease, path);
+        }
+        catch (JsonException)
+        {
+            // An unreadable request cannot prove it belongs to the rejected turn.
+        }
+    }
+
     private void ClearReadySignals()
     {
         if (_fs.FileExists("ready/turn_complete.json"))
@@ -1917,7 +1989,29 @@ public partial class GameEngine
         return changed;
     }
 
+    /// <summary>
+    /// Excludes client mechanics evidence from GM repair resubmission obligations.
+    /// </summary>
+    /// <param name="path">
+    /// Repository-relative rollback path to classify.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a client-owned path that the GM must not resubmit;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool IsClientOwnedRepairResubmissionPath(string path) =>
+        string.Equals(
+            path,
+            SpiritualWoundCaptureCheckpointState.StatePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            SpiritualWoundDecisionPendingState.StatePath,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            path,
+            SpiritualWoundOpportunityReceiptState.StatePath,
+            StringComparison.OrdinalIgnoreCase) ||
         string.Equals(
             path,
             SystemModService.ManifestPath,

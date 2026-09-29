@@ -202,6 +202,22 @@ internal sealed class ResourceHistoryWorkingSet
             definitions);
     }
 
+    /// <summary>
+    /// Validates a detached current history without freezing this working set or changing its work counters.
+    /// </summary>
+    /// <param name="definitions">
+    /// Exact resource definitions governing the baseline and pending transitions.
+    /// </param>
+    /// <returns>
+    /// Current validated history or diagnostics, leaving later appends available.
+    /// </returns>
+    internal ResourceHistoryStateResult ReadValidatedSnapshot(ResourceDefinitionCatalog definitions)
+    {
+        ArgumentNullException.ThrowIfNull(definitions);
+        EnsureMutable();
+        return ResourceHistoryState.CreateValidated(_baseline.Transitions.Concat(_pending), definitions);
+    }
+
     private void Seed(ResourceTransition transition)
     {
         BaselineTransitionVisitCount++;

@@ -306,6 +306,12 @@ public sealed class ResourceItemOwnerTests
         await context.AssertExactBytesAsync(before);
     }
 
+    /// <summary>
+    /// Rejects replacement of the validated snapshot during item publication and restores every tracked before-image.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the exact authority rejection and rollback checks.
+    /// </returns>
     [Fact]
     public async Task AcceptedTurnRawItemManifestSwapAfterPreflight_FailsClosedAndRollsBack()
     {
@@ -386,10 +392,9 @@ public sealed class ResourceItemOwnerTests
                 backups));
 
         Assert.True(swapped);
-        Assert.Contains(
-            "exact validated common-plan session and snapshot binding",
-            exception.Message,
-            StringComparison.Ordinal);
+        Assert.Equal(
+            $"Accepted mechanics authority at '{SnapshotManifestPath}' changed after validation.",
+            exception.Message);
         await context.AssertExactBytesAsync(before);
     }
 

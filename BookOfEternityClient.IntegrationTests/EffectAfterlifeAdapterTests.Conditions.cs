@@ -271,6 +271,12 @@ public sealed partial class EffectAfterlifeAdapterTests
         Assert.Equal("combatConditions", entry["owner"]!["collection"]!.GetValue<string>());
     }
 
+    /// <summary>
+    /// Rejects only direct condition-carrier authoring after the otherwise valid declared-after wrapper passes raw validation.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the exact authored-field diagnostic and unchanged canonical, private and draft bytes are checked.
+    /// </returns>
     [Fact]
     public async Task SpiritualConditionDirectWrapperAuthoring_IsRejected()
     {
@@ -282,35 +288,100 @@ public sealed partial class EffectAfterlifeAdapterTests
             "art_direct_condition_guard");
         var raw = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
-        var submittedAfterImage = Assert.IsType<JsonObject>(raw["activeConflict"])
-            .DeepClone()
-            .AsObject();
-        submittedAfterImage["combatConditions"] = new JsonArray();
-        raw[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
+        Assert.IsType<JsonObject>(raw["activeConflict"])["playerSideStrain"] = "strained";
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.SpiritualConflictPath,
+            raw);
+        await context.CaptureValidatedPendingSnapshotAsync(
+            turn: 43,
+            currentRealm: "Shining Abode",
+            preGeneratedDices1d20: new[] { 15, 5 });
+
+        var exchange = await CreateSpiritualConditionExchangeAsync(
+            context, conflictId, "exchange_direct_condition", turn: 43);
+        exchange["outcome"] = "success";
+        exchange["after"]!["playerSideStrain"] = "clear";
+        exchange["diceAudit"] = new JsonObject
+        {
+            ["formulaVersion"] = "afterlife_spiritual_conflict_v1",
+            ["diceSource"] = "input/turn_request.json.preGeneratedDices1d20",
+            ["diceUsed"] = new JsonArray
+            {
+                new JsonObject { ["side"] = "player", ["sourceIndex"] = 0, ["sides"] = 20, ["value"] = 15 },
+                new JsonObject { ["side"] = "opposition", ["sourceIndex"] = 1, ["sides"] = 20, ["value"] = 5 }
+            },
+            ["playerTotal"] = 15,
+            ["oppositionTotal"] = 5,
+            ["margin"] = 10,
+            ["outcomeBand"] = "decisive_player_success",
+            ["modifierBreakdown"] = new JsonObject
+            {
+                ["player"] = new JsonArray(),
+                ["opposition"] = new JsonArray()
+            }
+        };
+        var update = new JsonObject
         {
             ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-            ["exchange"] = new JsonObject
-            {
-                ["exchangeId"] = "exchange_direct_condition",
-                ["conflictId"] = conflictId,
-                ["outcome"] = "success"
-            },
-            ["activeConflictAfter"] = submittedAfterImage
+            ["exchange"] = exchange
         };
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(raw, update);
+        Assert.False(projected.ContainsKey("lastInvalidUpdate"));
+        var submittedAfterImage = Assert.IsType<JsonObject>(projected["activeConflict"])
+            .DeepClone()
+            .AsObject();
+        submittedAfterImage.Remove("combatConditions");
+        update["activeConflictAfter"] = submittedAfterImage;
+        raw[AfterlifeSpiritualConflictState.ResponseField] = update;
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath,
             raw);
 
+        var validIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
+        Assert.True(
+            validIssues.All(issue => issue.Severity != IssueSeverity.Error),
+            DescribeIssues(validIssues));
+        Assert.NotNull(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(context.FileSystem));
+        await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 6m);
+
+        submittedAfterImage["combatConditions"] = new JsonArray();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.SpiritualConflictPath,
+            raw);
+        var pathsBefore = Directory.GetFiles(context.FileSystem.GameSessionPath, "*", SearchOption.AllDirectories)
+            .Select(path => Path.GetRelativePath(context.FileSystem.GameSessionPath, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
+        var bytesBefore = await context.CaptureBytesAsync(pathsBefore);
+
         var issues = await context.ValidateAcceptedTurnRawMechanicsAsync();
 
-        Assert.Contains(
-            issues,
-            issue => string.Equals(
-                issue.Code,
-                "afterlife_combat_condition_direct_authoring_forbidden",
-                StringComparison.Ordinal));
+        var forbiddenPath = EffectMaterializationTestContext.SpiritualConflictPath + "." +
+            AfterlifeSpiritualConflictState.ResponseField + ".activeConflictAfter.combatConditions";
+        Assert.True(
+            issues.Any(issue =>
+                issue.Severity == IssueSeverity.Error &&
+                issue.Code == "afterlife_combat_condition_direct_authoring_forbidden" &&
+                issue.FilePath == forbiddenPath &&
+                issue.Expected == "combatConditions absent from GM-authored conflict lifecycle updates" &&
+                issue.Actual == "direct combatConditions field present"),
+            DescribeIssues(issues));
+        var pathsAfter = Directory.GetFiles(context.FileSystem.GameSessionPath, "*", SearchOption.AllDirectories)
+            .Select(path => Path.GetRelativePath(context.FileSystem.GameSessionPath, path).Replace('\\', '/'))
+            .OrderBy(path => path, StringComparer.Ordinal)
+            .ToArray();
+        Assert.Equal(pathsBefore, pathsAfter);
+        var bytesAfter = await context.CaptureBytesAsync(pathsAfter);
+        foreach (var (path, content) in bytesBefore)
+            Assert.Equal(content, bytesAfter[path]);
     }
 
+    /// <summary>
+    /// Publishes a condition bound to the exact accepted neutral exchange in the current turn.
+    /// </summary>
+    /// <returns>
+    /// A task completing after effect identity, chronology, lifetime and lawful action-point publication checks.
+    /// </returns>
     [Fact]
     public async Task SpiritualConditionApply_UsesExactSameTurnExchangeAuthority()
     {
@@ -327,12 +398,8 @@ public sealed partial class EffectAfterlifeAdapterTests
         rawConflict[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
         {
             ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-            ["exchange"] = new JsonObject
-            {
-                ["exchangeId"] = exchangeId,
-                ["conflictId"] = conflictId,
-                ["outcome"] = "success"
-            }
+            ["exchange"] = await CreateSpiritualConditionExchangeAsync(
+                context, conflictId, exchangeId, turn: 43)
         };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath,
@@ -368,6 +435,7 @@ public sealed partial class EffectAfterlifeAdapterTests
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         Assert.NotNull(await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(
             backups));
+        await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 4m);
         var canonical = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
         var active = Assert.IsType<JsonObject>(canonical["activeConflict"]);
@@ -387,6 +455,15 @@ public sealed partial class EffectAfterlifeAdapterTests
                 StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// Rejects effect authority from a published historical exchange or a different current exchange ID.
+    /// </summary>
+    /// <param name="historical">
+    /// <see langword="true"/> publishes the exchange before the new snapshot; otherwise only a different current exchange is accepted.
+    /// </param>
+    /// <returns>
+    /// A task completing after the event-authority mismatch is observed.
+    /// </returns>
     [Theory]
     [InlineData(true)]
     [InlineData(false)]
@@ -406,18 +483,25 @@ public sealed partial class EffectAfterlifeAdapterTests
             EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
         if (historical)
         {
-            var active = Assert.IsType<JsonObject>(rawConflict["activeConflict"]);
-            active["exchangeLog"]!.AsArray().Add(new JsonObject
+            rawConflict[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
             {
-                ["exchangeId"] = acceptedExchangeId,
-                ["conflictId"] = conflictId,
-                ["outcome"] = "success"
-            });
+                ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
+                ["exchange"] = await CreateSpiritualConditionExchangeAsync(
+                    context, conflictId, acceptedExchangeId, turn: 43)
+            };
             await context.WriteJsonAsync(
                 EffectMaterializationTestContext.SpiritualConflictPath,
                 rawConflict);
+            var historicalIssues = await context.ValidateAcceptedTurnRawMechanicsAsync();
+            Assert.True(
+                historicalIssues.All(issue => issue.Severity != IssueSeverity.Error),
+                DescribeIssues(historicalIssues));
+            var historicalBackups = await context.ReadPendingSnapshotBackupsAsync();
+            Assert.NotNull(await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(
+                historicalBackups));
+            await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 4m);
             await context.CaptureValidatedPendingSnapshotAsync(
-                turn: 43,
+                turn: 44,
                 currentRealm: "Shining Abode");
         }
         else
@@ -425,12 +509,8 @@ public sealed partial class EffectAfterlifeAdapterTests
             rawConflict[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
             {
                 ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-                ["exchange"] = new JsonObject
-                {
-                    ["exchangeId"] = acceptedExchangeId,
-                    ["conflictId"] = conflictId,
-                    ["outcome"] = "success"
-                }
+                ["exchange"] = await CreateSpiritualConditionExchangeAsync(
+                    context, conflictId, acceptedExchangeId, turn: 43)
             };
             await context.WriteJsonAsync(
                 EffectMaterializationTestContext.SpiritualConflictPath,
@@ -490,6 +570,15 @@ public sealed partial class EffectAfterlifeAdapterTests
                 StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// Advances a finite condition over two complete neutral exchanges and publishes its expiration.
+    /// </summary>
+    /// <param name="lifetimeMode">
+    /// Finite turns or uses policy consumed at afterlife_exchange_end.
+    /// </param>
+    /// <returns>
+    /// A task completing after lifetime, identity transition and exact resource payment assertions.
+    /// </returns>
     [Theory]
     [InlineData("turns")]
     [InlineData("uses")]
@@ -548,12 +637,8 @@ public sealed partial class EffectAfterlifeAdapterTests
         rawConflict[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
         {
             ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-            ["exchange"] = new JsonObject
-            {
-                ["exchangeId"] = "exchange_lifetime_44",
-                ["conflictId"] = conflictId,
-                ["outcome"] = "success"
-            }
+            ["exchange"] = await CreateSpiritualConditionExchangeAsync(
+                context, conflictId, "exchange_lifetime_44", turn: 44)
         };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath,
@@ -570,6 +655,7 @@ public sealed partial class EffectAfterlifeAdapterTests
         Assert.NotNull(await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(
             exchangeBackups));
 
+        await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 4m);
         var condition = await ReadOnlySpiritualCondition(context, conflictId);
         Assert.Equal(
             1,
@@ -592,12 +678,8 @@ public sealed partial class EffectAfterlifeAdapterTests
         rawConflict[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
         {
             ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-            ["exchange"] = new JsonObject
-            {
-                ["exchangeId"] = "exchange_lifetime_45",
-                ["conflictId"] = conflictId,
-                ["outcome"] = "success"
-            }
+            ["exchange"] = await CreateSpiritualConditionExchangeAsync(
+                context, conflictId, "exchange_lifetime_45", turn: 45)
         };
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath,
@@ -613,6 +695,7 @@ public sealed partial class EffectAfterlifeAdapterTests
         Assert.NotNull(await context.NormalizeAccumulatedStateWithAcceptedMechanicsAsync(
             terminalBackups));
 
+        await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 2m);
         var terminalRoot = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
         var terminalConflict = Assert.IsType<JsonObject>(terminalRoot["activeConflict"]);
@@ -736,6 +819,27 @@ public sealed partial class EffectAfterlifeAdapterTests
             projectedActive["combatConditions"]));
     }
 
+    /// <summary>
+    /// Commits complete original participant profiles and conflict resource owners before signing condition authority.
+    /// </summary>
+    /// <param name="context">
+    /// Fresh context receiving the accepted bootstrap and real signed original snapshot.
+    /// </param>
+    /// <param name="conflictId">
+    /// Exact conflict ID retained by the condition target and exchange authority.
+    /// </param>
+    /// <param name="sourceArtId">
+    /// Exact original player special-art ID exporting the condition definition.
+    /// </param>
+    /// <param name="targetActorId">
+    /// Payload actor selector; defaults to the opposition guardian and may intentionally be invalid for rejection tests.
+    /// </param>
+    /// <param name="lifetime">
+    /// Optional finite or scene lifetime; <see langword="null"/> uses the two-use exchange policy.
+    /// </param>
+    /// <returns>
+    /// A task completing after lawful six-point owners and both original realm profiles are captured.
+    /// </returns>
     private static async Task BootstrapSpiritualConditionAuthorityAsync(
         EffectMaterializationTestContext context,
         string conflictId,
@@ -749,10 +853,18 @@ public sealed partial class EffectAfterlifeAdapterTests
             "Shining Abode",
             sourceArtId,
             CreateSpiritualConditionDefinition(targetActorId, lifetime));
+        var profiles = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.AfterlifeProfilesPath))!.AsObject();
+        var guardian = AfterlifeActorMaterializationTestFixture.CreateCompleteProfile(
+            "guardian", "guardian_condition_source", "Shining Abode", materializedAtTurn: 42);
+        guardian["standardArts"]!["pressure"] = 2;
+        guardian["activeEffects"] = new JsonArray();
+        profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().Add(guardian);
         var spiritualConflict = CreateCanonicalSpiritualConflict(conflictId);
         var conflictResourcePlan = await AfterlifeOwnerResourceStateService.BuildAsync(
             context.FileSystem,
             new AfterlifeOwnerResourceAcceptedState(
+                Profiles: profiles,
                 SpiritualConflict: spiritualConflict),
             turn: 42);
         Assert.True(
@@ -761,9 +873,117 @@ public sealed partial class EffectAfterlifeAdapterTests
         Assert.True(await AfterlifeOwnerResourceStateService.TryCommitAsync(
             context.FileSystem,
             conflictResourcePlan));
+        await AssertSpiritualConditionActionPointsAsync(context, playerCurrent: 6m);
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 43,
             currentRealm: "Shining Abode");
+    }
+
+    /// <summary>
+    /// Creates a non-harmful current guard exchange using the actual canonical player balance.
+    /// </summary>
+    /// <param name="context">
+    /// Context containing the signed original profiles and active resource owners.
+    /// </param>
+    /// <param name="conflictId">
+    /// Exact active conflict ID to retain in the exchange.
+    /// </param>
+    /// <param name="exchangeId">
+    /// Exact current exchange ID tested by the effect event authority.
+    /// </param>
+    /// <param name="turn">
+    /// Current turn signed by the owning snapshot.
+    /// </param>
+    /// <returns>
+    /// A complete guard/no_effect exchange costing two player action points and preserving tactical state.
+    /// </returns>
+    private static async Task<JsonObject> CreateSpiritualConditionExchangeAsync(
+        EffectMaterializationTestContext context,
+        string conflictId,
+        string exchangeId,
+        int turn)
+    {
+        var root = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        Assert.Equal(conflictId, active["conflictId"]!.GetValue<string>());
+        var projection = AfterlifeConflictActionPointProjectionService.Resolve(
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            active);
+        Assert.True(projection.IsValid, DescribeIssues(projection.Issues));
+        var player = projection.Projection!.Player;
+        Assert.True(player.Current >= 2m);
+        var before = new JsonObject
+        {
+            ["playerSideStrain"] = active["playerSideStrain"]!.DeepClone(),
+            ["oppositionSideStrain"] = active["oppositionSideStrain"]!.DeepClone(),
+            ["conflictPosition"] = active["conflictPosition"]!.DeepClone()
+        };
+        if (active.ContainsKey("controlState"))
+            before["controlState"] = active["controlState"]?.DeepClone();
+        return new JsonObject
+        {
+            ["exchangeId"] = exchangeId,
+            ["conflictId"] = conflictId,
+            ["turnNumber"] = turn,
+            ["operationType"] = "guard",
+            ["outcome"] = "no_effect",
+            ["before"] = before,
+            ["after"] = before.DeepClone(),
+            ["matchupAudit"] = new JsonObject
+            {
+                ["playerOperation"] = "guard",
+                ["oppositionOperation"] = "passive",
+                ["primaryResolutionLane"] = "guard",
+                ["matchupRationale"] = "Душа удерживает защиту; хранитель сохраняет состояние без действия.",
+                ["riskProfile"] = "safe_defense"
+            },
+            ["actionCostAudit"] = new JsonObject
+            {
+                ["player"] = new JsonObject
+                {
+                    ["operationType"] = "guard",
+                    ["baseCost"] = 2,
+                    ["minCost"] = 1,
+                    ["artTier"] = 0,
+                    ["effectiveCost"] = 2,
+                    ["before"] = player.Current,
+                    ["after"] = player.Current - 2m,
+                    ["max"] = player.Maximum
+                }
+            }
+        };
+    }
+
+    /// <summary>
+    /// Checks the canonical conflict action points after accepted publication or initial bootstrap.
+    /// </summary>
+    /// <param name="context">
+    /// Context whose real canonical resource ledger supplies both owner balances.
+    /// </param>
+    /// <param name="playerCurrent">
+    /// Exact expected player balance after the corresponding neutral guard payment.
+    /// </param>
+    /// <returns>
+    /// A task completing after exact current balances and unchanged six-point capacities are checked.
+    /// </returns>
+    private static async Task AssertSpiritualConditionActionPointsAsync(
+        EffectMaterializationTestContext context,
+        decimal playerCurrent)
+    {
+        var root = (await context.ReadJsonAsync(
+            EffectMaterializationTestContext.SpiritualConflictPath))!.AsObject();
+        var active = Assert.IsType<JsonObject>(root["activeConflict"]);
+        var projection = AfterlifeConflictActionPointProjectionService.Resolve(
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.DefinitionsPath),
+            await context.FileSystem.ReadFileAsync(ResourceMaterializationContract.StatePath),
+            active);
+        Assert.True(projection.IsValid, DescribeIssues(projection.Issues));
+        Assert.Equal(playerCurrent, projection.Projection!.Player.Current);
+        Assert.Equal(6m, projection.Projection.Player.Maximum);
+        Assert.Equal(6m, projection.Projection.Opposition.Current);
+        Assert.Equal(6m, projection.Projection.Opposition.Maximum);
     }
 
     private static JsonObject CreateSpiritualConditionApplyCommand(

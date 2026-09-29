@@ -6,6 +6,65 @@ namespace BookOfEternityClient.Tests;
 public sealed class AcceptedEffectUseArbiterTests
 {
     [Fact]
+    public void RegisterNewSeeds_PreservesExistingBudgetDuplicateHistoryAndOrdinal()
+    {
+        var arbiter = Initialize(new CanonicalEffectUseSeed("effect_old", 2));
+        var prior = Candidate("effect_old", "trigger_old", "event_old", 1, consumesUse: true);
+        Assert.True(arbiter.Arbitrate(new[] { prior }).IsValid);
+        Assert.Empty(RegisterNewSeeds(arbiter, new CanonicalEffectUseSeed("effect_new", 1)));
+        Assert.True(arbiter.TryGetRemainingUses("effect_old", out var remaining));
+        Assert.Equal(1, remaining);
+        Assert.Contains(arbiter.Arbitrate(new[] { prior }).Issues,
+            issue => issue.Code == AcceptedEffectUseArbiterIssueCodes.DuplicateActivation);
+        var next = arbiter.Arbitrate(new[] { Candidate("effect_new", "trigger_new", "event_new", 1, consumesUse: true) });
+        Assert.True(next.IsValid);
+        var accepted = Assert.Single(next.AcceptedActivations);
+        Assert.Equal(1, accepted.Stamp.ActivationOrdinal);
+        Assert.Equal(0, accepted.UsesAfter);
+        Assert.Equal(2, arbiter.AcceptedTranscript.Count);
+    }
+
+    [Fact]
+    public void RegisterNewSeeds_RejectsEntireBatchWithoutResettingTerminalEffect()
+    {
+        var arbiter = Initialize(new CanonicalEffectUseSeed("effect_old", 0));
+        var issues = RegisterNewSeeds(arbiter, new CanonicalEffectUseSeed("effect_new", 3),
+            new CanonicalEffectUseSeed("effect_old", 5));
+        Assert.Contains(issues, issue => issue.Code == AcceptedEffectUseArbiterIssueCodes.DuplicateUseSeed);
+        Assert.False(arbiter.TryGetRemainingUses("effect_new", out _));
+        Assert.True(arbiter.TryGetRemainingUses("effect_old", out var remaining));
+        Assert.Equal(0, remaining);
+        Assert.Empty(arbiter.AcceptedTranscript);
+    }
+
+    [Fact]
+    public void RegisterNewSeeds_RejectsBudgetForAlreadyActivatedUnmeteredEffect()
+    {
+        var arbiter = Initialize();
+        Assert.True(arbiter.Arbitrate(new[] { Candidate("effect_old", "trigger_old", "event_old", 1) }).IsValid);
+        Assert.Contains(RegisterNewSeeds(arbiter, new CanonicalEffectUseSeed("effect_old", 2)),
+            issue => issue.Code == AcceptedEffectUseArbiterIssueCodes.DuplicateUseSeed);
+        Assert.False(arbiter.TryGetRemainingUses("effect_old", out _));
+        Assert.Single(arbiter.AcceptedTranscript);
+    }
+
+    /// <summary>
+    /// Submits new instance budgets to the existing arbiter.
+    /// </summary>
+    /// <param name="arbiter">
+    /// Existing arbiter whose budgets and activation history must be preserved.
+    /// </param>
+    /// <param name="seeds">
+    /// New instance budgets submitted as one atomic batch.
+    /// </param>
+    /// <returns>
+    /// Registration validation issues returned by the arbiter.
+    /// </returns>
+    private static IReadOnlyList<AcceptedEffectUseArbiterIssue> RegisterNewSeeds(
+        AcceptedEffectUseArbiter arbiter, params CanonicalEffectUseSeed[] seeds)
+        => arbiter.RegisterNewSeeds(seeds);
+
+    [Fact]
     public void Arbitrate_OrdersCandidatesByPriorityTriggerIdAndEffectId()
     {
         var arbiter = Initialize();

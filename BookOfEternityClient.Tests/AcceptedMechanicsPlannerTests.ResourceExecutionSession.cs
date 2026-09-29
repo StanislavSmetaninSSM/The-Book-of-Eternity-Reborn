@@ -8,6 +8,35 @@ namespace BookOfEternityClient.Tests;
 public sealed partial class AcceptedMechanicsPlannerTests
 {
     [Fact]
+    public void ResourceSession_ClosedCheckpointOwnershipRequiresExactLatestUsableOwner()
+    {
+        var input = SessionOrdinaryInput();
+        using var owner = AcceptedMechanicsPlanner.BeginResourceExecution(input, new SessionAllocationCounter().Factory);
+        using var foreign = AcceptedMechanicsPlanner.BeginResourceExecution(input, new SessionAllocationCounter().Factory);
+        var first = Assert.IsType<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint>(owner.AdvanceToClosedBoundary().Checkpoint);
+        var other = Assert.IsType<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint>(foreign.AdvanceToClosedBoundary().Checkpoint);
+        Assert.Single(first.AppliedTransitions);
+        var method = owner.GetType().GetMethod("OwnsCurrentCheckpoint", BindingFlags.Instance | BindingFlags.NonPublic);
+        Assert.NotNull(method);
+        var owns = method!.CreateDelegate<Func<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint, bool>>(owner);
+        Assert.True(owns(first));
+        Assert.False(owns(other));
+        Assert.False(owns(null!));
+        var copied = Assert.IsType<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint>(
+            typeof(object).GetMethod("MemberwiseClone", BindingFlags.Instance | BindingFlags.NonPublic)!.Invoke(first, null));
+        Assert.False(owns(copied));
+        var second = Assert.IsType<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint>(owner.AdvanceToClosedBoundary().Checkpoint);
+        Assert.False(owns(first));
+        Assert.True(owns(second));
+        Assert.True(owner.Drain().IsValid);
+        Assert.False(owns(second));
+        var foreignOwns = method.CreateDelegate<Func<AcceptedMechanicsPlanner.ResourceClosedBoundaryCheckpoint, bool>>(foreign);
+        Assert.True(foreignOwns(other));
+        foreign.Dispose();
+        Assert.False(foreignOwns(other));
+    }
+
+    [Fact]
     public void ResourceSession_ClosedPrefixIsConsumedWithoutChangingFinalResultOrAllocations()
     {
         var input = SessionPeriodicInput(bounded: false);
@@ -334,6 +363,360 @@ public sealed partial class AcceptedMechanicsPlannerTests
         };
         Assert.True(active.Drain().IsValid);
         Assert.True(counter.Calls > 0);
+    }
+
+    private readonly Xunit.Abstractions.ITestOutputHelper _liveGoldenOutput;
+
+    public AcceptedMechanicsPlannerTests(Xunit.Abstractions.ITestOutputHelper liveGoldenOutput) =>
+        _liveGoldenOutput = liveGoldenOutput;
+
+    [Theory]
+    [InlineData("ordinary")]
+    [InlineData("periodic")]
+    [InlineData("pending")]
+    public void ResourceSession_FixedInputGoldenCapture(string contour)
+    {
+        var input = contour == "ordinary" ? SessionOrdinaryInput() :
+            SessionPeriodicInput(bounded: contour == "pending");
+        var counter = new SessionAllocationCounter();
+        var result = AcceptedMechanicsPlanner.BuildResources(input, counter.Factory);
+        Assert.True(result.IsValid, SessionIssues(result));
+        if (contour == "pending")
+        {
+            Assert.Empty(result.AppliedTransitions);
+            Assert.NotEmpty(result.AcceptedPendingResolutions);
+            Assert.False(result.EffectBoundaryTranscript!.IsComplete);
+        }
+        else
+            Assert.NotEmpty(result.AppliedTransitions);
+        _liveGoldenOutput.WriteLine("C1_FIXED_GOLDEN:" + contour + ":" +
+            Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(
+                SessionResultImage(result) + "\n" + JsonSerializer.Serialize(counter.Ids))));
+    }
+
+    /// <summary>
+    /// Preserves fixed execution while proving the live path allocates only the admitted exchange.
+    /// </summary>
+    [Fact]
+    public void ResourceSession_LiveContractRedHasOldProductionPositive()
+    {
+        var input = SessionOrdinaryInput();
+        var old = AcceptedMechanicsPlanner.BuildResources(input, new SessionAllocationCounter().Factory);
+        Assert.True(old.IsValid, SessionIssues(old));
+        Assert.Equal(2, old.AppliedTransitions.Count);
+        var counter = new SessionAllocationCounter();
+        var begin = typeof(AcceptedMechanicsPlanner).GetMethod(
+            "BeginLiveResourceExecution", BindingFlags.Static | BindingFlags.NonPublic);
+        if (begin == null)
+        {
+            using var oldSession = AcceptedMechanicsPlanner.BeginResourceExecution(input, counter.Factory);
+            var first = oldSession.AdvanceToClosedBoundary();
+            Assert.Single(first.Checkpoint!.AppliedTransitions);
+            Assert.Equal(2, counter.Calls); // OLD semantic RED: suffix already allocated, actual 4.
+            return;
+        }
+
+        const BindingFlags flags = BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;
+        var owner = typeof(AfterlifeSpiritualConflictResourceOutcome);
+        var sideType = owner.GetNestedType("SideEvaluation", BindingFlags.NonPublic)!;
+        var batchType = owner.GetNestedType("ExchangeBatch", BindingFlags.NonPublic)!;
+        var mutation = input.Mutations[0];
+        var expected = new[]
+        {
+            new AfterlifeSpiritualConflictResourceOutcome.ExpectedTransition(
+                mutation.EventRef, mutation.Source.SourceKind, mutation.Source.SourceId,
+                mutation.Coordinate, ResourceTransitionOperation.Spend, 10m, 9m, 1m)
+        };
+        var batch = Activator.CreateInstance(batchType, flags, null, new object[]
+        {
+            "live_conflict", "live_exchange_0", 0,
+            Enum.Parse(sideType, "EvaluatedMutation"), Enum.Parse(sideType, "EvaluatedZero"),
+            input.Sources.Exports, new[] { mutation }, expected
+        }, null);
+        var baseline = new AcceptedMechanicsResourceInput(input.Turn, input.Definitions,
+            input.State, input.History, input.Sources, Array.Empty<ResourceMutationIntent>());
+        using var live = Assert.IsAssignableFrom<IDisposable>(
+            begin.Invoke(null, new object?[] { baseline, counter.Factory, null }));
+        live.GetType().GetMethod("StageNextExchange", flags)!.Invoke(live, new[] { batch });
+        Assert.Equal(0, counter.Calls);
+        var step = live.GetType().GetMethod("AdvanceThroughExchange", flags)!.Invoke(live, null)!;
+        var interval = step.GetType().GetProperty("Interval", flags)!.GetValue(step);
+        Assert.NotNull(interval);
+        var transitions = Assert.IsAssignableFrom<IReadOnlyList<ResourceTransition>>(
+            interval!.GetType().GetProperty("AppliedTransitions", flags)!.GetValue(interval));
+        Assert.Single(transitions);
+        Assert.Equal(2, counter.Calls);
+    }
+
+    [Fact]
+    public void ResourceSession_LiveReplacementAllocatesOnlyTheAdmittedSuffix()
+    {
+        var input = SessionOrdinaryInput();
+        var counter = new SessionAllocationCounter();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        session.StageNextExchange(SessionLiveBatch(input, 0, 10m));
+        Assert.Equal(0, counter.Calls);
+        var first = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(
+            session.AdvanceThroughExchange().Interval);
+        Assert.Single(first.AppliedTransitions);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 1), first.AppliedRange);
+        var prefixId = first.AppliedTransitions[0].TransitionId;
+        var calls = counter.Calls;
+        var discarded = SessionOrdinaryInput(secondAmount: 3m);
+        session.StageNextExchange(SessionLiveBatch(discarded, 1, 9m));
+        var final = SessionOrdinaryInput(secondAmount: 2m);
+        session.StageNextExchange(SessionLiveBatch(final, 1, 9m));
+        Assert.Equal(calls, counter.Calls);
+        var second = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(
+            session.AdvanceThroughExchange().Interval);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(1, 2), second.AppliedRange);
+        Assert.Equal(2m, Assert.Single(second.AppliedTransitions).RequestedAmount);
+        var result = session.Drain();
+        Assert.True(result.IsValid, SessionIssues(result));
+        Assert.Equal(prefixId, first.AppliedTransitions[0].TransitionId);
+        Assert.Equal(prefixId, result.AppliedTransitions[0].TransitionId);
+        Assert.Equal(7m, Assert.Single(result.StateAfterImage!.Entries).Current);
+
+        var controlCounter = new SessionAllocationCounter();
+        using var control = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(final), controlCounter.Factory);
+        control.StageNextExchange(SessionLiveBatch(final, 0, 10m));
+        control.AdvanceThroughExchange();
+        control.StageNextExchange(SessionLiveBatch(final, 1, 9m));
+        control.AdvanceThroughExchange();
+        Assert.Equal(SessionResultImage(control.Drain()), SessionResultImage(result));
+        Assert.Equal(controlCounter.Ids, counter.Ids);
+    }
+
+    [Fact]
+    public void ResourceSession_LiveRejectsAcceptedOrForeignExchangeAndDetachesRanges()
+    {
+        var input = SessionOrdinaryInput();
+        var counter = new SessionAllocationCounter();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        var batch = SessionLiveBatch(input, 0, 10m);
+        session.StageNextExchange(batch);
+        Assert.Equal(0, counter.Calls);
+        Assert.Throws<InvalidOperationException>(() => session.StageNextExchange(
+            SessionLiveBatch(input, 0, 10m, conflictId: "foreign_conflict")));
+        Assert.Equal(0, counter.Calls);
+        var first = session.AdvanceThroughExchange().Interval!;
+        Assert.Equal(batch.ConflictId, first.ConflictId);
+        Assert.Equal(batch.ExchangeId, first.ExchangeId);
+        var fingerprint = first.EffectAfter.Fingerprint;
+        Assert.True(session.Owns(first));
+        var forged = new AcceptedMechanicsPlanner.SpiritualExchangeInterval(batch,
+            first.AppliedRange.Start, first.ReplayRange.Start, first.EventRange.Start,
+            first.AppliedTransitions, first.ReplayTransitions, first.Events,
+            first.EffectBefore, first.EffectAfter);
+        Assert.False(session.Owns(forged));
+        var calls = counter.Calls;
+        Assert.Throws<InvalidOperationException>(() => session.StageNextExchange(batch));
+        Assert.Throws<InvalidOperationException>(() => session.StageNextExchange(
+            SessionLiveBatch(input, 1, 9m, conflictId: "foreign_conflict")));
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<ResourceTransition>)first.AppliedTransitions).Clear());
+        Assert.Equal(calls, counter.Calls);
+        session.StageNextExchange(SessionLiveBatch(input, 1, 9m));
+        session.AdvanceThroughExchange();
+        Assert.True(session.Drain().IsValid);
+        Assert.Single(first.AppliedTransitions);
+        Assert.Equal(fingerprint, first.EffectAfter.Fingerprint);
+        Assert.Throws<InvalidOperationException>(() => session.StageNextExchange(batch));
+        Assert.Throws<InvalidOperationException>(() => session.AdvanceThroughExchange());
+    }
+
+    [Fact]
+    public void ResourceSession_LiveExpectedWitnessRejectsTamperedBeforeWithoutFinalImages()
+    {
+        var input = SessionOrdinaryInput();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), new SessionAllocationCounter().Factory);
+        session.StageNextExchange(SessionLiveBatch(input, 0, 9m));
+        var step = session.AdvanceThroughExchange();
+        Assert.Null(step.Interval);
+        Assert.False(step.Result!.IsValid);
+        Assert.Contains(step.Result.Issues, issue =>
+            issue.Code == "afterlife_conflict_resource_transition_mismatch");
+        Assert.Null(step.Result.StateAfterImage);
+        Assert.Null(step.Result.HistoryAfterImage);
+    }
+
+    [Fact]
+    public void ResourceSession_LiveZeroBatchHasExactEmptyRangesWithoutAllocation()
+    {
+        var input = SessionOrdinaryInput();
+        var counter = new SessionAllocationCounter();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        session.StageNextExchange(new AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch(
+            "live_conflict", "zero_exchange", 0,
+            AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedZero,
+            AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedZero,
+            Array.Empty<ResourceMutationSourceExport>(), Array.Empty<ResourceMutationIntent>(),
+            Array.Empty<AfterlifeSpiritualConflictResourceOutcome.ExpectedTransition>()));
+        var interval = session.AdvanceThroughExchange().Interval!;
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 0), interval.AppliedRange);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 0), interval.EventRange);
+        Assert.Empty(interval.AppliedTransitions);
+        Assert.Empty(interval.EffectAfter.Boundaries);
+        Assert.Equal(0, counter.Calls);
+        Assert.True(session.Drain().IsValid);
+        Assert.Equal(0, counter.Calls);
+    }
+
+    [Fact]
+    public void ResourceSession_LiveRejectsAcceptedZeroExchangeIdentityAtTheNextOrdinal()
+    {
+        var input = SessionOrdinaryInput();
+        var counter = new SessionAllocationCounter();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch Zero(string exchangeId, int ordinal) =>
+            new("live_conflict", exchangeId, ordinal,
+                AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedZero,
+                AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedZero,
+                Array.Empty<ResourceMutationSourceExport>(), Array.Empty<ResourceMutationIntent>(),
+                Array.Empty<AfterlifeSpiritualConflictResourceOutcome.ExpectedTransition>());
+
+        session.StageNextExchange(Zero("zero_exchange", 0));
+        session.StageNextExchange(Zero("zero_exchange", 0));
+        Assert.Equal(0, counter.Calls);
+        var first = session.AdvanceThroughExchange().Interval!;
+        Assert.True(session.Owns(first));
+        Assert.Equal(0, first.Ordinal);
+        Assert.Equal("zero_exchange", first.ExchangeId);
+        var fingerprint = first.EffectAfter.Fingerprint;
+        Assert.Throws<InvalidOperationException>(() =>
+            session.StageNextExchange(Zero("zero_exchange", 1)));
+        Assert.Throws<InvalidOperationException>(() => session.AdvanceThroughExchange());
+        Assert.Equal(0, counter.Calls);
+        Assert.True(session.Owns(first));
+        Assert.Equal(fingerprint, first.EffectAfter.Fingerprint);
+        Assert.Empty(first.AppliedTransitions);
+
+        session.StageNextExchange(Zero("next_zero_exchange", 1));
+        var second = session.AdvanceThroughExchange().Interval!;
+        Assert.True(session.Owns(second));
+        Assert.NotSame(first, second);
+        Assert.Equal(1, second.Ordinal);
+        Assert.Equal("next_zero_exchange", second.ExchangeId);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 0), second.AppliedRange);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 0), second.ReplayRange);
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 0), second.EventRange);
+        var result = session.Drain();
+        Assert.True(result.IsValid, SessionIssues(result));
+        Assert.Empty(result.AppliedTransitions);
+        Assert.Empty(result.ReplayTransitions);
+        Assert.Empty(result.Events);
+        Assert.Equal(0, counter.Calls);
+        Assert.Equal(fingerprint, first.EffectAfter.Fingerprint);
+        Assert.True(session.Owns(first));
+    }
+
+    [Fact]
+    public void ResourceSession_LiveMissingSideRemainsPendingNotEvaluatedEmpty()
+    {
+        var input = SessionOrdinaryInput();
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), new SessionAllocationCounter().Factory);
+        session.StageNextExchange(SessionLiveBatch(input, 0, 10m, missingOpposition: true));
+        var step = session.AdvanceThroughExchange();
+        Assert.Null(step.Interval);
+        Assert.Null(step.Result);
+        Assert.Equal(new[] { "opposition" }, step.PendingExchange!.MissingAuditSides);
+        Assert.Throws<InvalidOperationException>(() => session.Drain());
+        Assert.Throws<InvalidOperationException>(() =>
+            session.StageNextExchange(SessionLiveBatch(input, 1, 9m)));
+    }
+
+    [Fact]
+    public void ResourceSession_LiveDisposalFaultAndReentrancyRetainSingleOwner()
+    {
+        var input = SessionOrdinaryInput();
+        var counter = new SessionAllocationCounter();
+        var disposed = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        disposed.Dispose();
+        Assert.Throws<ObjectDisposedException>(() => disposed.StageNextExchange(SessionLiveBatch(input, 0, 10m)));
+        Assert.Equal(0, counter.Calls);
+        using var active = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), counter.Factory);
+        var batch = SessionLiveBatch(input, 0, 10m);
+        active.StageNextExchange(batch);
+        counter.OnAllocation = () =>
+        {
+            Assert.Throws<InvalidOperationException>(() => active.StageNextExchange(batch));
+            Assert.Throws<InvalidOperationException>(() => active.Dispose());
+        };
+        Assert.NotNull(active.AdvanceThroughExchange().Interval);
+        var faultCounter = new SessionAllocationCounter
+        {
+            OnAllocation = () => throw new InvalidOperationException("live allocation failure")
+        };
+        using var faulted = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            SessionLiveBaseline(input), faultCounter.Factory);
+        faulted.StageNextExchange(batch);
+        Assert.Throws<InvalidOperationException>(() => faulted.AdvanceThroughExchange());
+        var calls = faultCounter.Calls;
+        Assert.Throws<InvalidOperationException>(() => faulted.AdvanceThroughExchange());
+        Assert.Equal(calls, faultCounter.Calls);
+        Assert.Null(faulted.Result);
+    }
+
+    [Fact]
+    public void ResourceSession_LiveReplayHasSeparateExactRangeFromNewSuffix()
+    {
+        var input = SessionOrdinaryInput();
+        var seeded = AcceptedMechanicsPlanner.BuildResources(new AcceptedMechanicsResourceInput(
+            input.Turn, input.Definitions, input.State, input.History, input.Sources,
+            new[] { input.Mutations[0] }), new SessionAllocationCounter().Factory);
+        Assert.True(seeded.IsValid, SessionIssues(seeded));
+        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
+            new AcceptedMechanicsResourceInput(input.Turn, input.Definitions,
+                seeded.StateAfterImage!, seeded.HistoryAfterImage!, input.Sources,
+                Array.Empty<ResourceMutationIntent>()),
+            new SessionAllocationCounter(seed: 50).Factory);
+        session.StageNextExchange(SessionLiveBatch(input, 0, 10m));
+        var replay = session.AdvanceThroughExchange().Interval!;
+        Assert.Empty(replay.AppliedTransitions);
+        Assert.Empty(replay.Events);
+        Assert.Equal(Assert.Single(seeded.AppliedTransitions), Assert.Single(replay.ReplayTransitions));
+        Assert.Equal(new AcceptedMechanicsPlanner.ResourceOrdinalRange(0, 1), replay.ReplayRange);
+        session.StageNextExchange(SessionLiveBatch(input, 1, 9m));
+        var next = session.AdvanceThroughExchange().Interval!;
+        Assert.Single(next.AppliedTransitions);
+        Assert.Empty(next.ReplayTransitions);
+        var final = session.Drain();
+        Assert.True(final.IsValid, SessionIssues(final));
+        Assert.Single(final.AppliedTransitions);
+        Assert.Single(final.ReplayTransitions);
+    }
+
+    private static AcceptedMechanicsResourceInput SessionLiveBaseline(AcceptedMechanicsResourceInput input) =>
+        new(input.Turn, input.Definitions, input.State, input.History, input.Sources,
+            Array.Empty<ResourceMutationIntent>());
+
+    private static AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch SessionLiveBatch(
+        AcceptedMechanicsResourceInput input, int ordinal, decimal before,
+        string conflictId = "live_conflict", bool missingOpposition = false)
+    {
+        var mutation = input.Mutations[ordinal];
+        return new AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch(
+            conflictId, "live_exchange_" + ordinal, ordinal,
+            AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedMutation,
+            missingOpposition ? AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.MissingAudit :
+                AfterlifeSpiritualConflictResourceOutcome.SideEvaluation.EvaluatedZero,
+            input.Sources.Exports, new[] { mutation },
+            new[]
+            {
+                new AfterlifeSpiritualConflictResourceOutcome.ExpectedTransition(
+                    mutation.EventRef, mutation.Source.SourceKind, mutation.Source.SourceId,
+                    mutation.Coordinate, ResourceTransitionOperation.Spend,
+                    before, before - mutation.Amount, mutation.Amount)
+            });
     }
 
     private static AcceptedMechanicsResourceInput SessionOrdinaryInput(decimal secondAmount = 1m)

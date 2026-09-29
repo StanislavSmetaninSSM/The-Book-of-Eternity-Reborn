@@ -187,33 +187,26 @@ public partial class ValidationService
         return issues;
     }
 
+    /// <summary>
+    /// Applies the shared narrative projection and writes only a changed normalized image.
+    /// </summary>
+    /// <param name="narrativePath">
+    /// Exact output path whose current text was read by the ordinary validator.
+    /// </param>
+    /// <param name="json">
+    /// Decoded current narrative text to project.
+    /// </param>
+    /// <returns>
+    /// The normalized JSON when changed; otherwise the exact original text.
+    /// </returns>
     private async Task<string> NormalizeAcceptedTurnNarrativeLineBreakArtifactsAsync(
         string narrativePath,
         string json)
     {
-        try
-        {
-            if (JsonNode.Parse(json) is not JsonObject root ||
-                !root.TryGetPropertyValue("response", out var responseNode) ||
-                responseNode is not JsonValue responseValue ||
-                !responseValue.TryGetValue<string>(out var response))
-            {
-                return json;
-            }
-
-            var normalizedResponse = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(response);
-            if (string.Equals(response, normalizedResponse, StringComparison.Ordinal))
-                return json;
-
-            root["response"] = normalizedResponse;
-            var normalizedJson = SerializeAcceptedOutputPayload(root);
-            await _fs.WriteFileAtomicAsync(narrativePath, normalizedJson);
-            return normalizedJson;
-        }
-        catch (JsonException)
-        {
-            return json;
-        }
+        var projected = AcceptedTurnOutputProjector.ProjectNarrative(json);
+        if (projected.Changed)
+            await _fs.WriteFileAtomicAsync(narrativePath, projected.Json);
+        return projected.Json;
     }
 
     private static bool TryFindTechnicalRepairLeakInNarrative(string responseText, out string matchedText)
@@ -676,149 +669,26 @@ public partial class ValidationService
         return issues;
     }
 
+    /// <summary>
+    /// Applies the shared interface projection with ordinary UTC fallback time when required.
+    /// </summary>
+    /// <param name="interfacePath">
+    /// Exact output path whose current text was read by the ordinary validator.
+    /// </param>
+    /// <param name="json">
+    /// Decoded current interface text to project.
+    /// </param>
+    /// <returns>
+    /// The normalized JSON when changed; otherwise the exact original text.
+    /// </returns>
     private async Task<string> NormalizeAcceptedTurnInterfaceDialogueOptionsAsync(string interfacePath, string json)
     {
-        try
-        {
-            if (JsonNode.Parse(json) is not JsonObject root)
-                return json;
-
-            var changed = false;
-            var hasDialogueOptions = root.TryGetPropertyValue("dialogueOptions", out var dialogueOptionsNode);
-            var hasImagePrompt = root.TryGetPropertyValue("image_prompt", out _);
-
-            if (dialogueOptionsNode is JsonArray dialogueOptions)
-            {
-                var normalizedOptions = new JsonArray();
-                foreach (var option in dialogueOptions)
-                {
-                    if (option is JsonValue value && value.TryGetValue<string>(out var text))
-                    {
-                        text = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(text) ?? text;
-                        var normalizedOption = new JsonObject
-                        {
-                            ["text"] = text
-                        };
-                        if (DialogueOptionControlTagNormalizer.TrySplitLeadingHiddenControlTag(text, out var visibleText, out var inputValue))
-                        {
-                            normalizedOption["text"] = visibleText;
-                            normalizedOption["inputValue"] = inputValue;
-                        }
-
-                        normalizedOptions.Add(normalizedOption);
-                        changed = true;
-                        continue;
-                    }
-
-                    if (option is JsonObject optionObject)
-                    {
-                        var normalizedOption = optionObject.DeepClone().AsObject();
-                        if (TryNormalizeDialogueOptionLineBreakArtifacts(normalizedOption))
-                            changed = true;
-                        if (TryNormalizeDialogueOptionControlTag(normalizedOption))
-                            changed = true;
-
-                        normalizedOptions.Add(normalizedOption);
-                        continue;
-                    }
-
-                    normalizedOptions.Add(option?.DeepClone());
-                }
-
-                if (changed)
-                    root["dialogueOptions"] = normalizedOptions;
-            }
-
-            if ((hasDialogueOptions || hasImagePrompt) && MissingOrBlankTimestamp(root))
-            {
-                root["timestamp"] = DateTimeOffset.UtcNow.ToString("O");
-                changed = true;
-            }
-
-            if (!changed)
-                return json;
-
-            var normalizedJson = SerializeAcceptedOutputPayload(root);
-            await _fs.WriteFileAtomicAsync(interfacePath, normalizedJson);
-            return normalizedJson;
-        }
-        catch (JsonException)
-        {
-            return json;
-        }
-    }
-
-    private static string SerializeAcceptedOutputPayload(JsonObject root) =>
-        root.ToJsonString(new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            Encoder = System.Text.Encodings.Web.JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-        });
-
-    private static bool TryNormalizeDialogueOptionLineBreakArtifacts(JsonObject option)
-    {
-        var changed = false;
-        foreach (var propertyName in new[] { "text", "inputValue" })
-        {
-            if (!option.TryGetPropertyValue(propertyName, out var node) ||
-                node is not JsonValue value ||
-                !value.TryGetValue<string>(out var text))
-            {
-                continue;
-            }
-
-            var normalized = PlayerFacingTextNormalizer.NormalizeEscapedLineBreakArtifacts(text);
-            if (string.Equals(text, normalized, StringComparison.Ordinal))
-                continue;
-
-            option[propertyName] = normalized;
-            changed = true;
-        }
-
-        return changed;
-    }
-
-    private static bool TryGetString(JsonObject option, string propertyName, out string value)
-    {
-        value = string.Empty;
-        if (!option.TryGetPropertyValue(propertyName, out var node) ||
-            node is not JsonValue jsonValue ||
-            !jsonValue.TryGetValue<string>(out var text) ||
-            string.IsNullOrWhiteSpace(text))
-        {
-            return false;
-        }
-
-        value = text;
-        return true;
-    }
-
-    private static bool TryNormalizeDialogueOptionControlTag(JsonObject option)
-    {
-        if (!TryGetString(option, "text", out var text) ||
-            !DialogueOptionControlTagNormalizer.TrySplitLeadingHiddenControlTag(text, out var visibleText, out var inputValue))
-        {
-            return false;
-        }
-
-        option["text"] = visibleText;
-        if (!TryGetString(option, "inputValue", out var existingInputValue) ||
-            string.IsNullOrWhiteSpace(existingInputValue))
-        {
-            option["inputValue"] = inputValue;
-        }
-
-        return true;
-    }
-
-    private static bool MissingOrBlankTimestamp(JsonObject root)
-    {
-        if (!root.TryGetPropertyValue("timestamp", out var timestampNode) || timestampNode == null)
-            return true;
-
-        return timestampNode is JsonValue value &&
-               value.TryGetValue<string>(out var timestamp) &&
-               string.IsNullOrWhiteSpace(timestamp);
+        DateTimeOffset? fallback = AcceptedTurnOutputProjector.RequiresInterfaceTimestampFallback(json)
+            ? DateTimeOffset.UtcNow : null;
+        var projected = AcceptedTurnOutputProjector.ProjectInterface(json, fallback);
+        if (projected.Changed)
+            await _fs.WriteFileAtomicAsync(interfacePath, projected.Json);
+        return projected.Json;
     }
 
     private async Task<List<ValidationIssue>> ValidateAcceptedTurnMortalCombatMaterializationInternalAsync()
@@ -3391,6 +3261,14 @@ public partial class ValidationService
 
     private HashSet<string> ReadCurrentPlayerActiveSkillNamesSync()
     {
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+        {
+            var retainedJson = retainedInputs.ReadText("game_state/player/skills_active.json");
+            return string.IsNullOrWhiteSpace(retainedJson)
+                ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+                : ParsePlayerSkillNames(retainedJson, "activeSkillChanges");
+        }
+
         try
         {
             var json = _fs.ReadFileSync(
@@ -5351,6 +5229,10 @@ public partial class ValidationService
 
     private string? ReadCurrentTrackedFileSync(string relativePath)
     {
+        if (_sameTurnOwnerInputs is { } retainedInputs &&
+            SpiritualOriginalDraftInputs.IsDraftPath(relativePath))
+            return retainedInputs.ReadText(relativePath);
+
         return ReadCanonicalFileSync(relativePath);
     }
 

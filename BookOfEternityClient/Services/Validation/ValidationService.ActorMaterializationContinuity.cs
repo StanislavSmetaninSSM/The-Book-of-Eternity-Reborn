@@ -205,7 +205,7 @@ public partial class ValidationService
     private async Task ValidateAcceptedTurnMortalActorMaterializationCompletenessAsync(List<ValidationIssue> issues)
     {
         var snapshotLookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
-        var currentJson = await _fs.ReadFileAsync(MortalActorMaterializationStatePath);
+        var currentJson = await ReadSameTurnOwnerCurrentTextAsync(MortalActorMaterializationStatePath);
         if (string.IsNullOrWhiteSpace(currentJson))
         {
             if (snapshotLookup.Status == ValidatedPendingTurnSnapshotStatus.Usable &&

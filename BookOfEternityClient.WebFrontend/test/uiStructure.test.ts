@@ -3,8 +3,11 @@ export {};
 const fsSpecifier = 'node:fs';
 const pathSpecifier = 'node:path';
 const { readFileSync } = await import(fsSpecifier);
-const { join } = await import(pathSpecifier);
-const frontendDir = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+const { basename, join } = await import(pathSpecifier);
+const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+const frontendDir = basename(cwd) === 'BookOfEternityClient.WebFrontend'
+  ? cwd
+  : join(cwd, 'BookOfEternityClient.WebFrontend');
 
 function readSource(...relativePath: string[]): string {
   return readFileSync(join(frontendDir, 'src', ...relativePath), 'utf-8');

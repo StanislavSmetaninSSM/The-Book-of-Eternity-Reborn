@@ -550,10 +550,38 @@ public partial class ValidationService
         public Dictionary<string, HashSet<string>> CustomStateIdsByFactionKey { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Creates a validator that reads the current game session from the physical filesystem.
+    /// </summary>
+    /// <param name="fs">
+    /// Filesystem owning the canonical game session.
+    /// </param>
+    /// <param name="logger">
+    /// Logger receiving validation diagnostics.
+    /// </param>
     public ValidationService(FileSystemManager fs, ILogger<ValidationService> logger)
+        : this(fs, logger, null)
+    {
+    }
+
+    /// <summary>
+    /// Creates an isolated validator whose current same-turn owner reads use one retained draft.
+    /// </summary>
+    /// <param name="fs">
+    /// Physical filesystem retained for signed pre-turn and control authority.
+    /// </param>
+    /// <param name="logger">
+    /// Logger receiving validation diagnostics.
+    /// </param>
+    /// <param name="sameTurnOwnerInputs">
+    /// Retained current draft, or <see langword="null"/> for physical current reads.
+    /// </param>
+    private ValidationService(FileSystemManager fs, ILogger<ValidationService> logger,
+        SpiritualOriginalDraftInputs? sameTurnOwnerInputs)
     {
         _fs = fs;
         _logger = logger;
+        _sameTurnOwnerInputs = sameTurnOwnerInputs;
     }
 
     /// <summary>

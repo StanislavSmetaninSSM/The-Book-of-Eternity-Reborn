@@ -191,32 +191,53 @@ There is no wound barrier, so the old complete schedule runs unchanged.
 
 No new winding of the preflight catalog, allocator or use arbiter is allowed in this case.
 
-## Worked execution B: new wound, then suffix replacement and legitimate expiry
+## Worked execution B: spiritual insertion and legal physical reaction control
+
+Owner-approved option A, 2026-09-19 (#1536): spiritual wounds retain their eight
+profiles plus `wound_consequence`. Their definitions cannot contain reactions or
+reaction expansions. The spiritual execution below ends with its real root's
+next-exchange contribution and common finalization. The subsequent R→S reaction,
+anchored consumption and child-expiry assertions are a separate supported physical
+wound/general-effect control through the same journal engine. That control must
+use its own valid physical source/target/event fixture; it cannot substitute a
+generic effect as a spiritual wound's child. This explicitly supersedes the earlier
+impossible requirement that one spiritual wound execute the entire reaction chain.
+
+Any assertion about a newly inserted wound root, its source epoch, wound bindings,
+descendants or retirement requires a real physical wound inserted through this
+same draft path. General-effect controls supplement those assertions and cannot
+replace them with a preexisting generic R→S fixture.
 
 After exchange 1 both side branches and causal effects close. The source owner admits one wound opportunity; GM's valid materialize decision chooses an existing supported source-owned wound definition and profile. This is not a new injury roll.
 
 - The new wound's exact source/stack coordinate has no prior occupant. Its dependency closure is empty unless the proposed coordinate genuinely reads an earlier accepted operation.
 - Prepare/apply new root R with real wound ID, real effect ID/create transition, direct provenance, exact source/target/skill/materialization evidence. Journal WoundRootApplication at barrier B1.
 - R's modifier enters exchange 2 only where the approved profile evaluator says it is eligible. The resource trigger registry adds R's exact use seed once if applicable. No initial-bound lifecycle pass is rerun.
-- Exchange 2 legitimately accepts a consuming reaction from R with replace source policy. Its frozen target is typed R, not an original pre-turn placeholder. Preflight uses the new epoch's actual R source/lineage image.
+- In the separate legal physical/general-effect reaction control, a later accepted event accepts a consuming reaction from R with replace source policy. Its frozen target is typed R, not an original pre-turn placeholder. Preflight uses the new epoch's actual R source/lineage image.
 - Reaction materialization creates S, records replace R→S and S's create with reaction-parent provenance. Consumption is inserted before the exact R replacement, using R's accepted uses-before.
 - R canonical history: create R; consume; replace R→S. S's create retains R as producer. No wound-binding pointer is silently rewritten to treat S as the original root: first-create lineage follows the real descendant.
 - S is not automatically admitted as a same-turn trigger. Preserve current reaction-created routing deferral. Its real state nevertheless exists for lineage and future authorized teardown.
 - At final lifetime pass, if S's actual supported lifetime and an existing due lifecycle event legitimately expire it (including the same-causal-event exclusion), append S expiry once. If not due, it remains; this case does not manufacture an expiry merely to exercise the journal.
-- One final wound/effect/resource/common image contains the exact R/S identities and resulting lineage. Neither exchange is rerolled and no early carrier is published.
+- Each fixture produces one final wound/effect/resource/common image: the spiritual fixture contains its actual R, and the reaction control its actual R/S lineage. Accepted events are not replayed and no early carrier is published.
 
 The acceptance fixture must use an existing source definition/profile and an explicit legal due event; arbitrary caller 'eligible' or 'expired' fields are not proof.
 
 ## Worked execution C: lawful worsening/re-trauma between exchanges
 
-Let existing wound W own generation root O (and possibly already materialized descendants). Exchange 1 accepts consumption and a lawful downstream reaction that may create/replace a descendant D. The GM selects valid worsening of W after its admitted source.
+For the real spiritual case, existing wound W owns generation root O. After an
+admitted exchange the GM selects valid worsening; the new root N affects the next
+exchange and a second lawful worsening uses N as its exact predecessor. No
+spiritual reaction descendant is introduced. The descendant/replacement branches
+below apply only to a separate legal physical-wound control: there W may also own
+already materialized descendants, and accepted consumption/reaction may create or
+replace D. Both cases use the same journal, generation and teardown reducers.
 
 - Worsening selection names exact W and the admitted source. It does not claim that the mutable current carrier is signed pre-turn authority.
 - The dependency closure includes O's relevant accepted trigger/reaction batch, complete replacement-coordinate siblings, accepted uses and lineage-producing results. Execute N/R/agreement/U once. If O was replaced, retain its exact retired identity and include the actual descendant D in the current first-create lineage.
 - Build draft-before authority after this real advancement. Validate ordered active/suspended lineage against that image. Existing retired ancestors stay historical; active/suspended descendants selected by the real lineage planner are terminalized in exact operation order.
 - Apply W's expire terminal operations, then create stronger generation root N using SeverityGeneration(exact prior root). Validate new root disposition is created_new_identity and its severity-bound component materialization matches the accepted prepared wound. It is not a refresh of O with its ID retained.
 - W's before/after wound fingerprints and root bindings become a new authenticated insertion link. Root O's canonical history contains its accepted prefix use/replacement, then a wound expiry only if it was still an active/suspended selected occurrence. D's history includes real reaction create followed by its actual teardown expiry where selected.
-- Exchange 2 sees N's actual profile-bound contribution and exact new instance budget. Retired O/D do not remain eligible. A lawful later reaction can replace N with Q in the new epoch; preflight expects typed N. Consumption appears before N→Q replacement. Q may expire at the one final due-lifetime pass if its real contract requires.
+- The next eligible exchange/event sees N's actual profile-bound contribution and exact new instance budget. Retired O/D do not remain eligible. Only in the physical reaction control may a lawful later reaction replace N with Q; preflight expects typed N, consumption precedes N→Q and Q may expire in the one final due-lifetime pass if its real contract requires.
 - If exchange 2 produces another lawful worsening source for W, the next insertion uses the current N/Q lineage and a new draft-before version. It does not require W to have existed unchanged in the original snapshot, does not use stale O as the predecessor, and does not reject re-trauma because the old signed-only planner cannot yet express this chain.
 
 Queued terminal remove/suspend on an earlier O activation stays in the global fold. Its activation event was already processed by the pre-wound closure. If O is already expired/replaced, the exact existing earlier-terminal branch applies once: remove appended, or suspend inserted before its earlier terminal. That is why this design does not flush terminal winners at a wound barrier.
@@ -253,13 +274,13 @@ The following are concrete executable test requirements, not claims of completed
 2. Ordinary event-outcome, after-component release, remove-over-suspend, replacement-target drift and replacement self-cascade conflict: same finalizer diagnostics and allocation point as current owner tests. No journal entry exported for failed application. Exact zero new allocation on preflight-invalid batches.
 3. Ordinary no-insertion with many prefix captures/declines: one global schedule, no forced materialization, identical final result and allocation stream. Decline is not a semantic barrier.
 4. New wound after exchange 1: real signed source/decision fixture, real root ID/source/target/skill provenance, next-exchange modifier/resource evaluator observes its allowed contribution. Assert same original turn/dice/OD and retained accepted resource prefix.
-5. New wound root consuming replacement: source-owned real profile, exact R→S result identity, consume-before-replace anchor, one create per child and one consumption allocation. Complete twice/attempt duplicate activation must not reapply or allocate.
-6. New reaction child due expiry: legal existing lifecycle event distinct where required; verify created/expired identity history once, no same-event trigger, no rerun bound-continuation phase.
-7. Worsening with accepted prefix reaction descendant: prove the descendant is genuinely materialized before teardown selection, then retired; new root uses exact severity-generation parent and changed bound components. Confirm the old signed-only entry still rejects an unsigned mutable before image.
+5. Newly inserted physical-wound root consuming replacement through the same draft path: source-owned real profile, exact current source epoch/root binding, exact R→S result identity, consume-before-replace anchor, one create per child and one consumption allocation. Complete twice/attempt duplicate activation must not reapply or allocate. General-effect controls are additional; spiritual reaction graphs remain explicit rejection cases.
+6. Physical-wound/general-effect reaction child due expiry: legal existing lifecycle event distinct where required; verify created/expired identity history once, no same-event trigger, no rerun bound-continuation phase. This does not permit spiritual reaction descendants.
+7. Real spiritual worsening: exact severity-generation predecessor, changed bound components and next-exchange contribution. Separately, physical-wound worsening with accepted prefix reaction descendant must genuinely materialize that descendant before teardown, then retire it. In both contours confirm the old signed-only entry still rejects an unsigned mutable before image.
 8. Re-trauma twice in one logical turn: second draft-before links first insertion and current lineage; before fingerprint/selected root tampering fails; exact new generations rather than resetting one ID. A lawful source is not converted to none/repair because it is the second wound transition.
-9. Previously accepted terminal suspend/remove plus later worsening: full terminal fold still occurs once at final completion; suspend-before-earlier-terminal or remove-after-earlier-terminal follows current owner behavior and keeps source transition evidence.
+9. Supported physical-wound/general-effect terminal suspend/remove plus later wound worsening: full terminal fold still occurs once at final completion; suspend-before-earlier-terminal or remove-after-earlier-terminal follows current owner behavior and keeps source transition evidence. Do not author forbidden spiritual wound reactions to construct this case.
 10. Unrelated reaction lifetime/refresh effects: wound insertion does not force their materialization or make newly materialized reaction shapes eligible during this turn. Exact per-effect history remains the ordinary global phase history.
-11. Dependency closure contains two same-boundary replacements: cannot cut between them; all accepted uses are recorded before selected lineage retirement. Frozen target/provenance remains exact across cascade.
+11. Legal physical-wound/general-effect dependency closure contains two same-boundary replacements: cannot cut between them; all accepted uses are recorded before selected lineage retirement. Frozen target/provenance remains exact across cascade.
 12. Composite authority negatives: wrong original stamp, foreign draft owner/version, changed candidate source definition/target/skill scope, reused prior-generation source binding, reordered insertions or omitted journal operation all fail before a completed plan. Caller hash equality cannot mint ownership.
 13. Aliases/lifetime: mutating returned JSON cannot change draft receipts/source images; dispose/failed operation/repeated Complete are rejected; reading/capturing does not allocate. Final full validator still requires one complete matching transcript plus the owned insertion chain.
 

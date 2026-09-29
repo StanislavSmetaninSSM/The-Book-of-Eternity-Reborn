@@ -558,6 +558,37 @@ internal static class MortalWoundOpportunityAdapter
         }
     }
 
+    /// <summary>
+    /// Reads the live pending partition and verifies its signed receipt and history prefixes.
+    /// </summary>
+    /// <param name="fs">
+    /// The file system containing the current occurrence, receipt and history state.
+    /// </param>
+    /// <param name="snapshot">
+    /// The signed snapshot whose occurrences may have been consumed by appended receipts.
+    /// </param>
+    /// <param name="signedOccurrences">
+    /// The occurrences retained by <paramref name="snapshot"/>.
+    /// </param>
+    /// <param name="signedReceipts">
+    /// The immutable receipt prefix retained by <paramref name="snapshot"/>.
+    /// </param>
+    /// <param name="signedHistory">
+    /// The complete history prefix retained by <paramref name="snapshot"/>.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving parse and partition conflicts.
+    /// </param>
+    /// <param name="currentReceipts">
+    /// The parsed live receipts, or <see langword="null"/> when parsing fails.
+    /// </param>
+    /// <param name="currentHistory">
+    /// The parsed live history, or <see langword="null"/> when parsing fails.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the live state preserves the signed prefixes and exact remaining partition;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool TryReadCurrentPartition(
         FileSystemManager fs,
         PendingTurnSnapshotReadAuthority snapshot,
@@ -611,8 +642,9 @@ internal static class MortalWoundOpportunityAdapter
         }
 
         if (currentHistory.Transitions.Count < signedHistory.Transitions.Count ||
-            !signedHistory.Transitions.SequenceEqual(
-                currentHistory.Transitions.Take(signedHistory.Transitions.Count)))
+            !signedHistory.Transitions.Zip(
+                    currentHistory.Transitions, HistoryTransitionsEqual)
+                .All(static equal => equal))
         {
             CurrentStateConflict(issues, "the signed wound-history prefix was replaced");
             return false;
@@ -675,6 +707,39 @@ internal static class MortalWoundOpportunityAdapter
         }
 
         return true;
+    }
+
+    /// <summary>
+    /// Compares every transition coordinate and the complete canonical result by value.
+    /// </summary>
+    /// <param name="first">
+    /// The transition from the signed history prefix.
+    /// </param>
+    /// <param name="second">
+    /// The corresponding transition parsed from live history.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when all coordinates and result fields agree;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    private static bool HistoryTransitionsEqual(
+        WoundHistoryTransition first,
+        WoundHistoryTransition second)
+    {
+        if ((first with { TransitionResult = null }) !=
+            (second with { TransitionResult = null }))
+        {
+            return false;
+        }
+
+        return first.TransitionResult is null
+            ? second.TransitionResult is null
+            : second.TransitionResult is not null && string.Equals(
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                    first.TransitionResult.ToCanonicalJson()),
+                WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                    second.TransitionResult.ToCanonicalJson()),
+                StringComparison.Ordinal);
     }
 
     private static bool HistoryTransitionMatchesReceipt(

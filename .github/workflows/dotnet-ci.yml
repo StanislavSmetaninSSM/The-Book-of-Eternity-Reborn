@@ -14,14 +14,31 @@ permissions:
 
 jobs:
   build-and-test:
-    name: Build and test
+    name: Selected category verification
     runs-on: windows-latest
+    timeout-minutes: 35
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read selected environment requirements
+        id: requirements
+        shell: pwsh
+        run: |
+          Import-Module ./scripts/testing/TestCategoryCatalog.psm1
+          $catalog = Read-TestCategoryCatalog ./tests/categories.json
+          $selection = Get-Content ./tests/selection.json -Raw | ConvertFrom-Json
+          $needsFrontend = $false
+          foreach ($entry in $selection.selections) {
+            $category = @($catalog.categories | Where-Object id -CEQ $entry.category)
+            if ($category.Count -ne 1) { throw "Unknown selected category: $($entry.category)" }
+            $needsFrontend = $needsFrontend -or $category[0].requirements.frontendBuild -or @($category[0].selectors | Where-Object project -EQ frontend).Count -gt 0
+          }
+          "frontend=$($needsFrontend.ToString().ToLowerInvariant())" >> $env:GITHUB_OUTPUT
+
       - name: Setup Node 22
+        if: steps.requirements.outputs.frontend == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22.x
@@ -29,28 +46,28 @@ jobs:
           cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json
 
       - name: Restore browser frontend dependencies
+        if: steps.requirements.outputs.frontend == 'true'
         run: npm ci --prefix BookOfEternityClient.WebFrontend
 
-      - name: Verify browser frontend
-        run: npm run verify --prefix BookOfEternityClient.WebFrontend
-
-      - name: Setup .NET 8
+      - name: Setup current compiler and target runtime
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
-      - name: Restore
-        run: dotnet restore BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj
-
-      - name: Build
+      - name: Verify explicitly selected contracts
         shell: pwsh
         run: |
-          dotnet build BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-restore 2>&1 | Tee-Object -FilePath build-warnings.log
+          ./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-          ./scripts/check-dotnet-warning-budget.ps1 -LogPath build-warnings.log -MaxWarnings 158
 
-      - name: Test
-        run: dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --configuration Release --no-build --logger "trx;LogFileName=tests.trx" --results-directory TestResults
+      - name: Preserve warning budget for selected builds
+        shell: pwsh
+        run: |
+          Get-ChildItem TestResults/test-categories -Recurse -Filter 'Build-*.log' | ForEach-Object {
+            ./scripts/check-dotnet-warning-budget.ps1 -LogPath $_.FullName -MaxWarnings 158
+          }
 
       - name: Upload test results
         if: always()

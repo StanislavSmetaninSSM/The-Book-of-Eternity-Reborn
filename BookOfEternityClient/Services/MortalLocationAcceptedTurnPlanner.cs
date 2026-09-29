@@ -310,6 +310,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             governedCommands.ThreatAdds,
             preTurnLocations,
             locationCandidates,
+            input.Turn,
             identityFactory,
             issues);
         if (issues.Count != 0)
@@ -320,9 +321,10 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         foreach (var candidate in locationCandidates)
         {
             var initialId = ReadExactString(candidate.Raw, "initialId")!;
+            var allocation = CreateLocationAllocation(candidate.Raw, candidate.Context);
             var locationId = bootstrap?.ReservedLocationIdsByInitialId.TryGetValue(initialId, out var reservedId) == true
                 ? reservedId
-                : identityFactory.CreateLocationId();
+                : identityFactory.CreateLocationId(allocation);
             if (preTurnLocationsById.ContainsKey(locationId) ||
                 locationIdsByInitialId.Values.Contains(locationId, StringComparer.Ordinal))
             {
@@ -335,7 +337,7 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 continue;
             }
             locationIdsByInitialId.Add(initialId, locationId);
-            locationReceiptIdsByInitialId.Add(initialId, identityFactory.CreateLocationReceiptId());
+            locationReceiptIdsByInitialId.Add(initialId, identityFactory.CreateLocationReceiptId(allocation));
         }
 
         if (issues.Count != 0)
@@ -378,10 +380,11 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         foreach (var candidate in linkCandidates)
         {
             var initialId = ReadExactString(candidate.Raw, "initialId")!;
+            var allocation = CreateLocationAllocation(candidate.Raw, candidate.Context, isLink: true);
             var linkId = bootstrap?.ReservedLinkIdsByInitialId.TryGetValue(initialId, out var reservedId) == true
                 ? reservedId
-                : identityFactory.CreateLinkId();
-            var receiptId = identityFactory.CreateLinkReceiptId();
+                : identityFactory.CreateLinkId(allocation);
+            var receiptId = identityFactory.CreateLinkReceiptId(allocation);
             linkIdsByInitialId.Add(initialId, linkId);
             var canonical = CreateCanonicalLink(
                 candidate.Raw,
@@ -2937,6 +2940,42 @@ internal static partial class MortalLocationAcceptedTurnPlanner
                 "currentLocationData"));
     }
 
+    /// <summary>
+    /// Creates transition evidence and allocates its identity from the complete causal operation.
+    /// </summary>
+    /// <param name="identityFactory">
+    /// Factory selected for this accepted-turn attempt.
+    /// </param>
+    /// <param name="kind">
+    /// Admitted lifecycle operation kind.
+    /// </param>
+    /// <param name="turn">
+    /// Accepted source turn.
+    /// </param>
+    /// <param name="entityId">
+    /// Permanent identity of the transitioned entity.
+    /// </param>
+    /// <param name="beforeState">
+    /// Detached state before the operation.
+    /// </param>
+    /// <param name="afterState">
+    /// Detached state after the operation.
+    /// </param>
+    /// <param name="operationRef">
+    /// Admitted source input path for the operation.
+    /// </param>
+    /// <param name="sourceLocationId">
+    /// Optional source location reference.
+    /// </param>
+    /// <param name="targetLocationId">
+    /// Optional target location reference.
+    /// </param>
+    /// <param name="childId">
+    /// Governed child identity for a child transition, or <see langword="null"/> otherwise.
+    /// </param>
+    /// <returns>
+    /// Detached transition evidence with the selected permanent identity.
+    /// </returns>
     private static JsonObject CreateLifecycleTransition(
         MortalLocationIdentityFactory identityFactory,
         string kind,
@@ -2946,10 +2985,14 @@ internal static partial class MortalLocationAcceptedTurnPlanner
         JsonObject afterState,
         string operationRef,
         string? sourceLocationId = null,
-        string? targetLocationId = null) =>
+        string? targetLocationId = null,
+        string? childId = null) =>
         new()
         {
-            ["transitionId"] = identityFactory.CreateTransitionId(),
+            ["transitionId"] = identityFactory.CreateTransitionId(
+                new MortalLocationTransitionAllocation(
+                    kind, turn, entityId, operationRef,
+                    sourceLocationId, targetLocationId, childId)),
             ["kind"] = kind,
             ["turn"] = turn,
             ["entityId"] = entityId,
@@ -2961,6 +3004,42 @@ internal static partial class MortalLocationAcceptedTurnPlanner
             ["sourceLocationId"] = sourceLocationId,
             ["targetLocationId"] = targetLocationId
         };
+
+    /// <summary>
+    /// Reads the admitted creation source and raw link endpoints before identity allocation.
+    /// </summary>
+    /// <param name="raw">
+    /// Validated raw location or link creation.
+    /// </param>
+    /// <param name="inputPath">
+    /// Exact accepted-turn input path for the creation.
+    /// </param>
+    /// <param name="isLink">
+    /// Whether source and target link references are included.
+    /// </param>
+    /// <returns>
+    /// Complete typed creation coordinate for the identity family.
+    /// </returns>
+    private static MortalLocationCreationAllocation CreateLocationAllocation(
+        JsonObject raw,
+        string inputPath,
+        bool isLink = false)
+    {
+        var envelope = raw["materialization"]!.AsObject();
+        var sourceAuthority = envelope["sourceAuthority"]!.AsObject();
+        return new MortalLocationCreationAllocation(
+            ReadExactString(raw, "initialId")!,
+            ReadExactString(envelope, "materializationId")!,
+            ReadInt(envelope, "sourceTurn")!.Value,
+            ReadExactString(envelope, "route")!,
+            ReadExactString(sourceAuthority, "kind")!,
+            ReadExactString(sourceAuthority, "authorityId")!,
+            inputPath,
+            isLink ? ReadExactString(raw, "sourceLocationId") : null,
+            isLink ? ReadExactString(raw, "sourceInitialId") : null,
+            isLink ? ReadExactString(raw, "targetLocationId") : null,
+            isLink ? ReadExactString(raw, "targetInitialId") : null);
+    }
 
     private static void AppendLifecycleTransition(
         JsonArray indexEntries,

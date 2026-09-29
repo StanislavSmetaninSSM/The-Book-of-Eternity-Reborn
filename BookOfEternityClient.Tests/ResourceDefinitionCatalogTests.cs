@@ -5,7 +5,10 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class ResourceDefinitionCatalogTests
+/// <summary>
+/// Verifies resource definition admission and client-owned materialization identities.
+/// </summary>
+public sealed partial class ResourceDefinitionCatalogTests
 {
     [Fact]
     public void BuiltIns_AreCompleteSealedVersionOneAndCanonicallyOrdered()

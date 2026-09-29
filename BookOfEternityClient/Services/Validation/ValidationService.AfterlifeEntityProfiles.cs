@@ -2375,7 +2375,31 @@ public partial class ValidationService
     private static string BuildAfterlifeActorQuestLink(string goalId, string questId) =>
         $"{goalId.Trim()}::{questId.Trim()}";
 
-    private void ValidateAfterlifeProfileSpecialArts(
+    /// <summary>
+    /// Validates special-art payloads against their containing owner and the selected original/current policy.
+    /// </summary>
+    /// <param name="profile">
+    /// Profile projection containing the required specialArts array.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path for the containing profile.
+    /// </param>
+    /// <param name="profileActorType">
+    /// Expected owner type; a missing value cannot match a populated art owner.
+    /// </param>
+    /// <param name="profileActorId">
+    /// Expected owner identifier; a missing value cannot match a populated art owner.
+    /// </param>
+    /// <param name="effectRealm">
+    /// Realm used to validate embedded active-effect definitions.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable destination for validation diagnostics.
+    /// </param>
+    /// <param name="requireCurrentSpecialArtCombatEffect">
+    /// Whether teachable arts require the current combat-effect field; defaults to original-art rules.
+    /// </param>
+    private static void ValidateAfterlifeProfileSpecialArts(
         JsonElement profile,
         string context,
         string? profileActorType,
@@ -3227,7 +3251,31 @@ public partial class ValidationService
         return false;
     }
 
-    private bool TryRequireProfileArray(
+    /// <summary>
+    /// Reads a required array property and reports missing or nonarray values.
+    /// </summary>
+    /// <param name="root">
+    /// Containing profile object.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path for the containing object.
+    /// </param>
+    /// <param name="propertyName">
+    /// Exact required array property name.
+    /// </param>
+    /// <param name="code">
+    /// Diagnostic code used for missing or incorrectly typed values.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable diagnostic destination.
+    /// </param>
+    /// <param name="value">
+    /// Array on success; the default element when the property is absent or not an array.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the property is an array; otherwise <see langword="false"/>.
+    /// </returns>
+    private static bool TryRequireProfileArray(
         JsonElement root,
         string context,
         string propertyName,

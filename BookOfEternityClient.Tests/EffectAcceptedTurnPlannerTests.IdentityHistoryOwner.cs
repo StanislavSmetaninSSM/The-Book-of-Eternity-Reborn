@@ -213,9 +213,34 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, result.Factory.Kinds);
     }
 
+    /// <summary>
+    /// Executes the real reaction replacement path with optional allocation instrumentation.
+    /// </summary>
+    /// <param name="consumes">
+    /// Whether the originating trigger consumes a retained use.
+    /// </param>
+    /// <param name="uses">
+    /// Initial uses retained by the consuming effect.
+    /// </param>
+    /// <param name="collideTransitions">
+    /// Whether the default test factory generates colliding transition identities.
+    /// </param>
+    /// <param name="malformedReplacementTransition">
+    /// Whether the default test factory corrupts replacement history.
+    /// </param>
+    /// <param name="replacementTransitionId">
+    /// Optional explicit replacement identity for the default test factory.
+    /// </param>
+    /// <param name="allocationFactory">
+    /// Optional real allocation adapter; <see langword="null"/> uses the existing test factory.
+    /// </param>
+    /// <returns>
+    /// Production planning result, default instrumentation factory and original effect identity.
+    /// </returns>
     private static (EffectAcceptedTurnPlanningResult Result, IdentityOwnerFactory Factory, string OldId)
         IdentityOwnerReplacement(bool consumes = true, int uses = 2, bool collideTransitions = false,
-            bool malformedReplacementTransition = false, string? replacementTransitionId = null)
+            bool malformedReplacementTransition = false, string? replacementTransitionId = null,
+            EffectIdentityFactory? allocationFactory = null)
     {
         const string rootKey = "identity_owner_reaction_root";
         const string childKey = "identity_owner_replacement";
@@ -256,7 +281,8 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         var input = CreateReactionInput(effect, root, child);
         var factory = new IdentityOwnerFactory(
             collideTransitions, malformedReplacementTransition, replacementTransitionId);
-        var built = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
+        var effectiveFactory = allocationFactory ?? factory;
+        var built = new EffectAcceptedTurnPlanCache(effectiveFactory).GetOrBuild(input);
         Assert.True(built.Success, IdentityOwnerIssues(built));
         var plan = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
         Assert.Empty(factory.Ids);
@@ -278,7 +304,7 @@ public sealed partial class EffectAcceptedTurnPlannerTests
         Assert.Single(resources.EffectBoundaryTranscript.AcceptedActivations);
         Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions);
         return (EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
-            plan, resources.EffectBoundaryTranscript, factory), factory, effect["effectId"]!.GetValue<string>());
+            plan, resources.EffectBoundaryTranscript, effectiveFactory), factory, effect["effectId"]!.GetValue<string>());
     }
 
     private static JsonObject IdentityOwnerTransition(

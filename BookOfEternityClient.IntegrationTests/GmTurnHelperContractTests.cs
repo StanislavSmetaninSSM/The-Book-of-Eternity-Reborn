@@ -585,8 +585,18 @@ public sealed class GmTurnHelperContractTests
         }
     }
 
-    [Fact]
-    public void Helper_CompleteBoeTurnRejectsClientOwnedFilesModifiedEntries()
+    /// <summary>
+    /// Rejects completion metadata that claims a GM modification of client-owned runtime evidence.
+    /// </summary>
+    /// <param name="clientOwnedPath">
+    /// Client-owned root included in the proposed modified-file list.
+    /// </param>
+    [Theory]
+    [InlineData("game_state/history/chat_log.json")]
+    [InlineData("game_state/control/spiritual_wound_capture_checkpoint.json")]
+    [InlineData("game_state/control/pending_spiritual_wound_decisions.json")]
+    [InlineData("game_state/wounds/spiritual_wound_opportunity_receipts.json")]
+    public void Helper_CompleteBoeTurnRejectsClientOwnedFilesModifiedEntries(string clientOwnedPath)
     {
         var root = Path.Combine(Path.GetTempPath(), "boe-gm-turn-helper-client-owned-" + Guid.NewGuid().ToString("N"));
         var session = Path.Combine(root, "game_session");
@@ -612,7 +622,7 @@ public sealed class GmTurnHelperContractTests
             {
                 ". " + QuotePowerShell(helperPath),
                 "Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session),
-                "Complete-BoeTurn -FilesModified @('output/narrative_response.json', 'game_state/history/chat_log.json')"
+                "Complete-BoeTurn -FilesModified @('output/narrative_response.json', " + QuotePowerShell(clientOwnedPath) + ")"
             });
 
             var result = RunPowerShell(command);
@@ -911,7 +921,16 @@ public sealed class GmTurnHelperContractTests
         }
     }
 
+    /// <summary>
+    /// Rejects direct GM helper writes to accepted-mechanics authority roots before creating a file.
+    /// </summary>
+    /// <param name="clientOwnedPath">
+    /// Client-owned root to attempt writing through the GM helper.
+    /// </param>
     [Theory]
+    [InlineData("game_state/control/spiritual_wound_capture_checkpoint.json")]
+    [InlineData("game_state/control/pending_spiritual_wound_decisions.json")]
+    [InlineData("game_state/wounds/spiritual_wound_opportunity_receipts.json")]
     [InlineData("game_state/core/system_mods.json")]
     [InlineData("game_state/control/progression_schedule.json")]
     [InlineData("game_state/resources/resource_definitions.json")]
@@ -1485,6 +1504,337 @@ public sealed class GmTurnHelperContractTests
             Assert.Equal("test-session", rootElement.GetProperty("sessionId").GetString());
             Assert.Equal("request-repair-ready", rootElement.GetProperty("requestId").GetString());
             Assert.Equal(48, rootElement.GetProperty("turnNumber").GetInt32());
+        }
+        finally
+        {
+            try { Directory.Delete(root, recursive: true); } catch { /* ignored */ }
+        }
+    }
+
+    /// <summary>
+    /// Copies explicit continuation responses into Ready while leaving ordinary repair and turn inputs intact.
+    /// </summary>
+    [Fact]
+    public void Helper_SpiritualContinuationCopiesExplicitNoneMaterializeAndDependentResponses()
+    {
+        AssertSpiritualHelperCases(
+        [
+            new("none", SpiritualHelperRequest(SpiritualHelperDecisionRequest), SpiritualHelperNoneResponse, true),
+            new("materialize", SpiritualHelperRequest(SpiritualHelperDecisionRequest), SpiritualHelperMaterializeResponse, true),
+            new("guaranteed-materialize", SpiritualHelperRequest(SpiritualHelperDecisionRequest
+                .Replace("\"requiredSeverityRank\":null", "\"requiredSeverityRank\":1")
+                .Replace("[\"none\",\"materialize\"]", "[\"materialize\"]")), SpiritualHelperMaterializeResponse, true),
+            new("none-only", SpiritualHelperRequest(SpiritualHelperDecisionRequest
+                .Replace("\"minimumSeverityRank\":1", "\"minimumSeverityRank\":5")
+                .Replace("\"maximumSeverityRank\":2", "\"maximumSeverityRank\":4")
+                .Replace("[\"none\",\"materialize\"]", "[\"none\"]")), SpiritualHelperNoneResponse, true),
+            new("dependent", SpiritualHelperRequest(SpiritualHelperDependentRequest), SpiritualHelperDependentResponse, true),
+            new("ordinary", SpiritualHelperRequest(null), null, true)
+        ]);
+    }
+
+    /// <summary>
+    /// Rejects absent, malformed or mismatched raw envelopes before lossy JSON conversion or Ready publication.
+    /// </summary>
+    [Fact]
+    public void Helper_SpiritualContinuationRejectsMalformedAndUncorrelatedRawEnvelopes()
+    {
+        var request = SpiritualHelperRequest(SpiritualHelperDecisionRequest);
+        AssertSpiritualHelperCases(
+        [
+            new("missing-response", request, null, false),
+            new("ordinary-response", SpiritualHelperRequest(null), SpiritualHelperNoneResponse, false),
+            new("stale-response", request, SpiritualHelperNoneResponse.Replace("swc_current", "swc_previous"), false),
+            new("other-offer", request, SpiritualHelperNoneResponse.Replace("current_offer", "other_offer"), false),
+            new("decision-empty", request, SpiritualHelperDependentResponse, false),
+            new("dependent-new-decision", SpiritualHelperRequest(SpiritualHelperDependentRequest), SpiritualHelperNoneResponse, false),
+            new("request-unknown", SpiritualHelperRequest(SpiritualHelperDecisionRequest.Replace(
+                "\"cause\":\"Pressure\"", "\"cause\":\"Pressure\",\"privateSource\":{}")), SpiritualHelperNoneResponse, false),
+            new("request-duplicate-nested", SpiritualHelperRequest(SpiritualHelperDecisionRequest.Replace(
+                "\"field\":\"response\"", "\"field\":\"response\",\"field\":\"response\"")), SpiritualHelperNoneResponse, false),
+            new("request-case-alias", request.Replace("\"spiritualWoundContinuation\"", "\"SpiritualWoundContinuation\""), SpiritualHelperNoneResponse, false),
+            new("request-duplicate-envelope", request[..^1] + ",\"spiritualWoundContinuation\":" + SpiritualHelperDecisionRequest + "}", SpiritualHelperNoneResponse, false),
+            new("request-wrong-type", request.Replace("\"schemaVersion\":1", "\"schemaVersion\":\"1\""), SpiritualHelperNoneResponse, false),
+            new("request-scene-alias", request.Replace("\"field\":\"response\"", "\"Field\":\"response\""), SpiritualHelperNoneResponse, false),
+            new("response-unknown", request, SpiritualHelperNoneResponse.Replace(
+                "\"decision\":\"none\"", "\"decision\":\"none\",\"proposal\":{}"), false),
+            new("response-duplicate", request, SpiritualHelperNoneResponse.Replace(
+                "\"decision\":\"none\"", "\"decision\":\"none\",\"decision\":\"none\""), false),
+            new("response-escaped-duplicate", request, SpiritualHelperNoneResponse.Replace(
+                "\"decision\":\"none\"", "\"decision\":\"none\",\"decis\\u0069on\":\"none\""), false),
+            new("response-case-alias", request, SpiritualHelperNoneResponse.Replace("\"decision\"", "\"Decision\""), false),
+            new("materialize-deep-duplicate", request, SpiritualHelperMaterializeResponse.Replace(
+                "\"woundType\":\"Fractured will\"", "\"woundType\":\"Fractured will\",\"woundType\":\"Fractured will\""), false),
+            new("materialize-proposal-unknown", request, SpiritualHelperMaterializeResponse.Replace(
+                "\"severity\":\"I\"", "\"severity\":\"I\",\"owner\":{}"), false),
+            new("dependent-field-unknown", SpiritualHelperRequest(SpiritualHelperDependentRequest.Replace(
+                "\"jsonPointer\":", "\"owner\":{},\"jsonPointer\":")), SpiritualHelperDependentResponse, false),
+            new("dependent-field-duplicate", SpiritualHelperRequest(SpiritualHelperDependentRequest.Replace(
+                "\"jsonPointer\":", "\"path\":\"game_state/meta/afterlife_spiritual_conflict_state.json\",\"jsonPointer\":")), SpiritualHelperDependentResponse, false)
+        ]);
+    }
+
+    /// <summary>
+    /// Rechecks both publication witnesses under the real write lock, including Ready changes for the same request.
+    /// </summary>
+    /// <param name="replaceRequest">
+    /// Whether the competing writer advances the continuation correlation before lock acquisition.
+    /// </param>
+    /// <param name="publishNewerReady">
+    /// Whether the competing writer also publishes the successor response before the helper acquires its lock.
+    /// </param>
+    [Theory]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    [InlineData(false, true)]
+    public void Helper_SpiritualContinuationRejectsPublicationRaceWithoutOverwritingNewerReady(
+        bool replaceRequest, bool publishNewerReady)
+    {
+        AssertSpiritualHelperCases(
+        [
+            new("request-race", SpiritualHelperRequest(SpiritualHelperDecisionRequest), SpiritualHelperNoneResponse,
+                false, ReplaceRequestAtLock: replaceRequest, PublishNewerReady: publishNewerReady)
+        ]);
+    }
+
+    /// <summary>
+    /// Preserves a competing continuation response published before this invocation captures its Ready witness.
+    /// </summary>
+    [Fact]
+    public void Helper_SpiritualContinuationDoesNotAdoptCompetingReadyAsOverwriteBaseline()
+    {
+        var request = SpiritualHelperRequest(SpiritualHelperDecisionRequest);
+        AssertSpiritualHelperCases([
+            new("ready-already-present", request, SpiritualHelperNoneResponse, false, ReadyBeforeInvocation: true),
+            new("ready-between-reads", request, SpiritualHelperNoneResponse, false, ReadyDuringRequestHash: true)
+        ]);
+    }
+
+    private const string SpiritualHelperDecisionRequest = """
+        {"schemaVersion":1,"continuationId":"swc_current","phase":"decision",
+         "offer":{"opportunityRef":"current_offer","minimumSeverityRank":1,"requiredSeverityRank":null,
+          "maximumSeverityRank":2,"target":"Guardian","cause":"Pressure",
+          "allowedLocationKinds":["mental"],"allowedDecisions":["none","materialize"]},
+         "sceneTextSource":{"path":"output/narrative_response.json","field":"response"},"dependentDraftFields":[]}
+        """;
+
+    private const string SpiritualHelperDependentRequest = """
+        {"schemaVersion":1,"continuationId":"swc_current","phase":"dependent_draft","offer":null,
+         "sceneTextSource":{"path":"output/narrative_response.json","field":"response"},
+         "dependentDraftFields":[{"path":"game_state/meta/afterlife_spiritual_conflict_state.json",
+          "jsonPointer":"/activeConflict/exchangeLog/1/actionCostAudit/opposition/effectiveCost"}]}
+        """;
+
+    private const string SpiritualHelperNoneResponse = """
+        {"schemaVersion":1,"continuationId":"swc_current","woundDecisions":[{"opportunityRef":"current_offer","decision":"none"}]}
+        """;
+
+    private const string SpiritualHelperDependentResponse = """
+        {"schemaVersion":1,"continuationId":"swc_current","woundDecisions":[]}
+        """;
+
+    private const string SpiritualHelperMaterializeResponse = """
+        {"schemaVersion":1,"continuationId":"swc_current","woundDecisions":[{
+         "opportunityRef":"current_offer","decision":"materialize","woundRef":"will_fracture",
+         "proposal":{"classification":{"woundType":"Fractured will","locationProfile":{"kind":"mental","readableLocus":"will"}},
+          "display":{"name":"Fractured will","description":"Pressure disrupted concentration.","visibleSymptoms":["uncertainty"],
+           "prognosis":"Healing restores the will.","visibility":"known_to_player","acquisitionNarration":"The guardian's will fractured."},
+          "severity":"I","complications":[],"consequenceDefinitions":[],
+          "treatment":{"diagnosisPaths":[],"routes":[],"knownRouteIds":[],"completedRouteIds":[]},
+          "recovery":{"mode":"requires_stabilization","clockKind":"afterlife_safe_cycle","cadence":1,
+           "currentStepProgress":0,"currentStepThreshold":3,"lastTickKey":null,"blockers":["not_stabilized"],
+           "carryOverflow":true,"deteriorationPolicy":null}}}]}
+        """;
+
+    /// <summary>
+    /// Wraps public transport data in existing repair metadata without manufacturing private C2 authority.
+    /// </summary>
+    /// <param name="envelope">
+    /// Raw continuation request, or <see langword="null"/> for an ordinary repair control.
+    /// </param>
+    /// <returns>
+    /// A request for the same accepted turn, permitting an empty error list during continuation.
+    /// </returns>
+    private static string SpiritualHelperRequest(string? envelope) =>
+        "{\"sessionId\":\"test-session\",\"requestId\":\"request-spiritual\",\"turnNumber\":48," +
+        "\"metadataDiagnosticOnly\":false,\"fullTurnResubmissionRequired\":false,\"errors\":" +
+        (envelope is null
+            ? "[{\"file\":\"output/narrative_response.json\",\"message\":\"A narrative response is required.\"}]}"
+            : "[],\"spiritualWoundContinuation\":" + envelope + "}");
+
+    /// <summary>
+    /// Describes one file-helper transport case, including an optional competing writer at lock acquisition.
+    /// </summary>
+    /// <param name="Name">
+    /// Unique case name used for its isolated temporary session and assertion diagnostics.
+    /// </param>
+    /// <param name="RequestJson">
+    /// Exact raw repair request, retaining malformed duplicate keys when supplied.
+    /// </param>
+    /// <param name="ResponseJson">
+    /// Exact raw response argument, or <see langword="null"/> to omit the argument.
+    /// </param>
+    /// <param name="Accepted">
+    /// Whether the helper must publish a correlated Ready without changing turn inputs.
+    /// </param>
+    /// <param name="ReplaceRequestAtLock">
+    /// Whether a competing writer replaces the request immediately before the real write lock is acquired.
+    /// </param>
+    /// <param name="PublishNewerReady">
+    /// Whether the competing writer also publishes a Ready that the stale helper must preserve.
+    /// </param>
+    /// <param name="ReadyBeforeInvocation">
+    /// Whether a competing Ready is already present when the helper is invoked.
+    /// </param>
+    /// <param name="ReadyDuringRequestHash">
+    /// Whether a competing Ready appears after the request read but before the Ready witness read.
+    /// </param>
+    private sealed record SpiritualHelperCase(string Name, string RequestJson, string? ResponseJson,
+        bool Accepted, bool ReplaceRequestAtLock = false, bool PublishNewerReady = false,
+        bool ReadyBeforeInvocation = false, bool ReadyDuringRequestHash = false);
+
+    /// <summary>
+    /// Runs a bounded group through the real PowerShell helper and checks both transport results and retained physical files.
+    /// </summary>
+    /// <param name="cases">
+    /// Independent public transport cases sharing one PowerShell process without sharing session state.
+    /// </param>
+    private static void AssertSpiritualHelperCases(IReadOnlyList<SpiritualHelperCase> cases)
+    {
+        var root = Path.Combine(Path.GetTempPath(), "boe-spiritual-helper-" + Guid.NewGuid().ToString("N"));
+        Directory.CreateDirectory(root);
+        const string requestRelative = "game_state/control/validation_repair_request.json";
+        const string readyRelative = "game_state/control/validation_repair_ready.json";
+        var retained = new Dictionary<string, Dictionary<string, byte[]>>(StringComparer.Ordinal);
+        var expectedReady = new Dictionary<string, string>(StringComparer.Ordinal);
+        var script = new StringBuilder("$ErrorActionPreference = 'Stop'\n");
+        var helper = Path.Combine(LocateRepoRoot(), "BookOfEternityClient", "Launcher", "GM_Turn_Helper.ps1");
+        try
+        {
+            foreach (var item in cases)
+            {
+                if (item.Accepted || item.ReplaceRequestAtLock || item.PublishNewerReady ||
+                    item.ReadyBeforeInvocation || item.ReadyDuringRequestHash)
+                {
+                    using var requestDocument = JsonDocument.Parse(item.RequestJson);
+                    var expectedRequest = requestDocument.RootElement.TryGetProperty("spiritualWoundContinuation", out var envelope)
+                        ? SpiritualWoundContinuationProtocol.ReadRequest(envelope)
+                        : null;
+                    using var responseDocument = item.ResponseJson is null ? null : JsonDocument.Parse(item.ResponseJson);
+                    var response = responseDocument is null ? null :
+                        SpiritualWoundContinuationProtocol.ReadResponse(responseDocument.RootElement);
+                    Assert.Empty(SpiritualWoundContinuationProtocol.ValidateResponse(expectedRequest, response));
+                }
+                var session = Path.Combine(root, item.Name, "game_session");
+                var inputs = new Dictionary<string, string>
+                {
+                    [requestRelative] = item.RequestJson,
+                    ["input/turn_request.json"] = "{\"sessionId\":\"test-session\",\"requestId\":\"request-spiritual\",\"turnNumber\":48,\"playerAction\":\"Hold firm\"}",
+                    ["ready/turn_complete.json"] = "{\"sessionId\":\"test-session\",\"requestId\":\"request-spiritual\",\"turnNumber\":48,\"status\":\"success\"}",
+                    ["output/narrative_response.json"] = "{\"response\":\"The guardian's will fractured.\",\"timestamp\":\"2026-09-27T08:00:00Z\",\"_scene\":\"retained\"}",
+                    [AfterlifeSpiritualConflictState.StatePath] = "{\"retained\":\"helper must not execute gameplay\"}"
+                };
+                foreach (var input in inputs)
+                {
+                    var path = Path.Combine(session, input.Key);
+                    Directory.CreateDirectory(Path.GetDirectoryName(path)!);
+                    File.WriteAllText(path, input.Value, new UTF8Encoding(false));
+                }
+                retained[item.Name] = inputs.ToDictionary(pair => pair.Key,
+                    pair => File.ReadAllBytes(Path.Combine(session, pair.Key)), StringComparer.Ordinal);
+                script.AppendLine(". " + QuotePowerShell(helper));
+                script.AppendLine("Initialize-BoeGmTurnHelper -GameSessionPath " + QuotePowerShell(session));
+                if (item.ReplaceRequestAtLock || item.PublishNewerReady ||
+                    item.ReadyBeforeInvocation || item.ReadyDuringRequestHash)
+                {
+                    var nextId = item.ReplaceRequestAtLock ? "swc_next" : "swc_current";
+                    var successor = item.RequestJson.Replace("swc_current", nextId, StringComparison.Ordinal);
+                    retained[item.Name][requestRelative] = Encoding.UTF8.GetBytes(successor);
+                    var successorReady = "{\"sessionId\":\"test-session\",\"requestId\":\"request-spiritual\",\"turnNumber\":48," +
+                        "\"status\":\"success\",\"timestamp\":\"2026-09-27T08:01:00Z\",\"spiritualWoundContinuation\":" +
+                        SpiritualHelperNoneResponse.Replace("swc_current", nextId, StringComparison.Ordinal) + "}";
+                    if (item.PublishNewerReady || item.ReadyBeforeInvocation || item.ReadyDuringRequestHash)
+                        expectedReady[item.Name] = successorReady;
+                    if (item.ReadyBeforeInvocation)
+                        File.WriteAllText(Path.Combine(session, readyRelative), successorReady, new UTF8Encoding(false));
+                    if (item.ReadyDuringRequestHash)
+                    {
+                        script.AppendLine("$script:actualSpiritualHash = ${function:Get-BoeSha256Hex}");
+                        script.AppendLine("$script:spiritualHashRaceInjected = $false");
+                        script.AppendLine("function Get-BoeSha256Hex { param([byte[]]$Bytes)");
+                        script.AppendLine("if (!$script:spiritualHashRaceInjected) { $script:spiritualHashRaceInjected = $true");
+                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, readyRelative)) + ", " +
+                            QuotePowerShell(successorReady) + ", [Text.UTF8Encoding]::new($false))");
+                        script.AppendLine("}; & $script:actualSpiritualHash -Bytes $Bytes }");
+                    }
+                    script.AppendLine("$script:actualSpiritualLock = ${function:Acquire-BoeCanonicalWriteLock}");
+                    script.AppendLine("$script:spiritualRaceInjected = $false");
+                    script.AppendLine("function Acquire-BoeCanonicalWriteLock {");
+                    script.AppendLine("if (!$script:spiritualRaceInjected) { $script:spiritualRaceInjected = $true");
+                    if (item.ReplaceRequestAtLock)
+                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, requestRelative)) + ", " +
+                            QuotePowerShell(successor) + ", [Text.UTF8Encoding]::new($false))");
+                    if (item.PublishNewerReady)
+                        script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(session, readyRelative)) + ", " +
+                            QuotePowerShell(successorReady) + ", [Text.UTF8Encoding]::new($false))");
+                    script.AppendLine("}; & $script:actualSpiritualLock }");
+                }
+                var invocation = "Complete-BoeValidationRepair" + (item.ResponseJson is null ? "" :
+                    " -SpiritualWoundContinuationJson " + QuotePowerShell(item.ResponseJson));
+                script.AppendLine("$failure = ''; try { " + invocation + " } catch { $failure = $_.Exception.Message }");
+                script.AppendLine("[IO.File]::WriteAllText(" + QuotePowerShell(Path.Combine(root, item.Name, "result.json")) +
+                    ", (ConvertTo-Json -InputObject @{ failure = $failure }), [Text.UTF8Encoding]::new($false))");
+            }
+            var result = RunPowerShell(script.ToString());
+            Assert.True(result.ExitCode == 0, result.StdErr + result.StdOut);
+            var failures = new List<string>();
+            foreach (var item in cases)
+            {
+                var session = Path.Combine(root, item.Name, "game_session");
+                using var outcome = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, item.Name, "result.json")));
+                var error = outcome.RootElement.GetProperty("failure").GetString();
+                var readyPath = Path.Combine(session, readyRelative);
+                if (item.Accepted)
+                {
+                    if (!string.IsNullOrEmpty(error) || !File.Exists(readyPath))
+                        failures.Add(item.Name + ": expected Ready, received " + error);
+                    else
+                    {
+                        using var ready = JsonDocument.Parse(File.ReadAllText(readyPath));
+                        var value = ready.RootElement;
+                        Assert.Equal("test-session", value.GetProperty("sessionId").GetString());
+                        Assert.Equal("request-spiritual", value.GetProperty("requestId").GetString());
+                        Assert.Equal(48, value.GetProperty("turnNumber").GetInt32());
+                        var hasResponse = value.TryGetProperty("spiritualWoundContinuation", out var response);
+                        if (item.ResponseJson is null)
+                            Assert.False(hasResponse);
+                        else if (!hasResponse)
+                            failures.Add(item.Name + ": Ready discarded the explicit continuation response");
+                        else
+                            Assert.True(System.Text.Json.Nodes.JsonNode.DeepEquals(
+                                System.Text.Json.Nodes.JsonNode.Parse(item.ResponseJson),
+                                System.Text.Json.Nodes.JsonNode.Parse(response.GetRawText())), item.Name + ": response changed");
+                    }
+                }
+                else
+                {
+                    if (string.IsNullOrEmpty(error))
+                        failures.Add(item.Name + ": helper accepted an invalid or stale continuation");
+                    if (expectedReady.TryGetValue(item.Name, out var newer))
+                    {
+                        if (!File.Exists(readyPath) || !File.ReadAllBytes(readyPath).SequenceEqual(Encoding.UTF8.GetBytes(newer)))
+                            failures.Add(item.Name + ": successor Ready was overwritten or deleted");
+                    }
+                    else if (File.Exists(readyPath))
+                        failures.Add(item.Name + ": rejected response published Ready");
+                }
+                foreach (var before in retained[item.Name])
+                    Assert.Equal(before.Value, File.ReadAllBytes(Path.Combine(session, before.Key)));
+                var allowed = retained[item.Name].Keys.Append(readyRelative).ToHashSet(StringComparer.Ordinal);
+                Assert.All(Directory.GetFiles(session, "*.json", SearchOption.AllDirectories), path =>
+                    Assert.Contains(Path.GetRelativePath(session, path).Replace('\\', '/'), allowed));
+            }
+            Assert.True(failures.Count == 0, string.Join(Environment.NewLine, failures));
         }
         finally
         {

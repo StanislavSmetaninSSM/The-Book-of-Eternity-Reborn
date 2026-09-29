@@ -100,6 +100,8 @@ public sealed class EffectPlayerProjectionTests
     [InlineData("resistance_modifier")]
     [InlineData("periodic_damage")]
     [InlineData("periodic_restore")]
+    [InlineData("periodic_spend")]
+    [InlineData("periodic_gain")]
     [InlineData("action_control")]
     [InlineData("event_reaction")]
     [InlineData("wound_consequence")]

@@ -87,6 +87,9 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("#738 player-copy boundary", readme, StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Verifies that browser smoke guidance selects the host and command parity contracts explicitly.
+    /// </summary>
     [Fact]
     [Trait("Category", "BrowserWebUiSmoke")]
     public void LocalWebHostDocs_DocumentBrowserSmokeAndGameScreenState()
@@ -95,13 +98,14 @@ public sealed class LocalWebUiDocumentationTests
         var checklist = File.ReadAllText(Path.Combine(TestRepoPaths.RepoRoot, "docs", "web-ui", "browser-parity-checklist.md"));
 
         Assert.Contains("GET /api/game-screen", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("Category=BrowserWebUiSmoke|Category=BrowserWebUiParity", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -Category browser-api-host", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -Category browser-command-parity", hostDoc, StringComparison.Ordinal);
         Assert.Contains("game-screen state", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("player-facing game screen", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("primary prose action composer", hostDoc, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("read-only game-screen", hostDoc, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("BrowserWebUiSmoke", checklist, StringComparison.Ordinal);
-        Assert.Contains("BrowserWebUiParity", checklist, StringComparison.Ordinal);
+        Assert.Contains("`browser-api-host`", checklist, StringComparison.Ordinal);
+        Assert.Contains("`browser-command-parity`", checklist, StringComparison.Ordinal);
         Assert.Contains("primary prose action composer", checklist, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -142,6 +146,9 @@ public sealed class LocalWebUiDocumentationTests
         }
     }
 
+    /// <summary>
+    /// Verifies that frontend setup and built-host smoke guidance use the category runner.
+    /// </summary>
     [Fact]
     public void LocalWebHostDocs_DocumentFrontendVerificationPipeline()
     {
@@ -150,8 +157,9 @@ public sealed class LocalWebUiDocumentationTests
 
         Assert.Contains("#705", hostDoc, StringComparison.Ordinal);
         Assert.Contains("npm ci --prefix BookOfEternityClient.WebFrontend", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("npm run verify --prefix BookOfEternityClient.WebFrontend", hostDoc, StringComparison.Ordinal);
-        Assert.Contains("Category=BrowserWebUiBuiltFrontend", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -Category browser-api-host", hostDoc, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -ListCategories", hostDoc, StringComparison.Ordinal);
+        Assert.DoesNotContain("npm run verify", hostDoc, StringComparison.Ordinal);
         Assert.Contains("TestResults/browser-smoke", hostDoc, StringComparison.Ordinal);
         Assert.Contains("browser-smoke-artifacts", hostDoc, StringComparison.Ordinal);
         Assert.Contains("HTML/network/navigation diagnostics", hostDoc, StringComparison.OrdinalIgnoreCase);
@@ -159,8 +167,9 @@ public sealed class LocalWebUiDocumentationTests
         Assert.Contains("screenshots", hostDoc, StringComparison.OrdinalIgnoreCase);
 
         Assert.Contains("#705", readme, StringComparison.Ordinal);
-        Assert.Contains("npm run verify", readme, StringComparison.Ordinal);
-        Assert.Contains("Category=BrowserWebUiBuiltFrontend", readme, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -Category browser-api-host", readme, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -ListCategories", readme, StringComparison.Ordinal);
+        Assert.DoesNotContain("npm run verify", readme, StringComparison.Ordinal);
         Assert.Contains("TestResults/browser-smoke", readme, StringComparison.Ordinal);
         Assert.Contains("navigation-ia.html", readme, StringComparison.Ordinal);
     }

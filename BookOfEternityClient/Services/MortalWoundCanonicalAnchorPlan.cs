@@ -22,10 +22,26 @@ internal sealed class MortalWoundCanonicalAnchorPlan
 {
     private readonly MortalWoundCanonicalAnchorAllocation[] _allocations;
 
+    /// <summary>
+    /// Seals a canonical anchor allocation phase for one exact wound stage bundle.
+    /// </summary>
+    /// <param name="woundStageBundleFingerprint">
+    /// The fingerprint of the validated wound stage bundle.
+    /// </param>
+    /// <param name="currentTimeInMinutes">
+    /// The non-negative current canonical minute used for newly allocated anchors.
+    /// </param>
+    /// <param name="allocations">
+    /// The non-empty exact wound and transition allocations.
+    /// </param>
+    /// <param name="preservesRecoveryAnchor">
+    /// Whether this is a condition-reentry phase retaining the existing recovery anchors.
+    /// </param>
     private MortalWoundCanonicalAnchorPlan(
         string woundStageBundleFingerprint,
         long currentTimeInMinutes,
-        IReadOnlyList<MortalWoundCanonicalAnchorAllocation> allocations)
+        IReadOnlyList<MortalWoundCanonicalAnchorAllocation> allocations,
+        bool preservesRecoveryAnchor = false)
     {
         if (!ResourceMaterializationContract.IsAuthorityFingerprint(
                 woundStageBundleFingerprint))
@@ -40,7 +56,7 @@ internal sealed class MortalWoundCanonicalAnchorPlan
         if (allocations.Count == 0)
         {
             throw new ArgumentException(
-                "A canonical anchor plan requires at least one accepted Mortal create.",
+                "A canonical anchor plan requires at least one accepted Mortal anchor allocation.",
                 nameof(allocations));
         }
 
@@ -53,11 +69,12 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                 !ResourceMaterializationContract.IsExactIdentifier(value.TransitionId) ||
                 !woundIds.Add(value.WoundId) ||
                 !transitionIds.Add(value.TransitionId) ||
-                value.RecoveryAnchor.AnchorMinute != currentTimeInMinutes ||
-                !string.Equals(
-                    value.RecoveryAnchor.AnchorTransitionId,
-                    value.TransitionId,
-                    StringComparison.Ordinal) ||
+                (preservesRecoveryAnchor
+                    ? value.RecoveryAnchor.AnchorMinute > currentTimeInMinutes ||
+                      value.DeteriorationAnchor is null
+                    : value.RecoveryAnchor.AnchorMinute != currentTimeInMinutes ||
+                      !string.Equals(value.RecoveryAnchor.AnchorTransitionId,
+                          value.TransitionId, StringComparison.Ordinal)) ||
                 value.DeteriorationAnchor is { } deterioration &&
                 (deterioration.AnchorMinute != currentTimeInMinutes ||
                  !string.Equals(
@@ -79,10 +96,12 @@ internal sealed class MortalWoundCanonicalAnchorPlan
         }).ToArray();
         WoundStageBundleFingerprint = woundStageBundleFingerprint;
         CurrentTimeInMinutes = currentTimeInMinutes;
+        PreservesRecoveryAnchor = preservesRecoveryAnchor;
         Fingerprint = ComputeFingerprint(
             woundStageBundleFingerprint,
             currentTimeInMinutes,
-            _allocations);
+            _allocations,
+            preservesRecoveryAnchor);
     }
 
     internal string WoundStageBundleFingerprint { get; }
@@ -90,6 +109,11 @@ internal sealed class MortalWoundCanonicalAnchorPlan
     internal long CurrentTimeInMinutes { get; }
 
     internal string Fingerprint { get; }
+
+    /// <summary>
+    /// Indicates that the sealed phase retains recovery anchors while allocating reentered condition anchors.
+    /// </summary>
+    internal bool PreservesRecoveryAnchor { get; }
 
     internal IReadOnlyList<MortalWoundCanonicalAnchorAllocation> Allocations =>
         Array.AsReadOnly(_allocations.Select(Clone).ToArray());
@@ -110,6 +134,39 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                     StringComparison.Ordinal));
     }
 
+    /// <summary>
+    /// Detects a physical worsening that reenters an inactive deterioration condition.
+    /// </summary>
+    /// <param name="bundle">
+    /// The sealed wound stage bundle containing validated carrier mutations.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when a worsening needs a new condition anchor;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    internal static bool RequiresConditionReentryAnchors(AcceptedMechanicsWoundStageBundle bundle)
+    {
+        ArgumentNullException.ThrowIfNull(bundle);
+        return bundle.FinalPlan.CarrierContributions
+            .SelectMany(static contribution => contribution.Mutations)
+            .Any(IsConditionReentry);
+    }
+
+    /// <summary>
+    /// Derives a pure create or condition-reentry anchor phase from the canonical clock and sealed mutations.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The file system supplying the canonical world-time root.
+    /// </param>
+    /// <param name="writeLease">
+    /// The active canonical lease protecting the clock and accepted state.
+    /// </param>
+    /// <param name="bundle">
+    /// The exact validated wound stage bundle whose allocated transition identities are retained.
+    /// </param>
+    /// <returns>
+    /// The sealed anchor plan, or issues when the clock or mutation phase is invalid.
+    /// </returns>
     internal static MortalWoundCanonicalAnchorPlanResult Create(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -138,6 +195,8 @@ internal sealed class MortalWoundCanonicalAnchorPlan
 
         try
         {
+            if (!RequiresInitialCreateAnchors(bundle) && RequiresConditionReentryAnchors(bundle))
+                return CreateConditionReentry(bundle, currentTime.Value);
             var final = bundle.FinalPlan;
             var allocations = new List<MortalWoundCanonicalAnchorAllocation>();
             foreach (var mutation in final.CarrierContributions
@@ -227,6 +286,16 @@ internal sealed class MortalWoundCanonicalAnchorPlan
         }
     }
 
+    /// <summary>
+    /// Checks the anchor seal against its exact wound stage bundle.
+    /// </summary>
+    /// <param name="bundle">
+    /// The wound stage bundle to compare. A <see langword="null"/> value does not agree.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the bundle fingerprint and recomputed anchor seal agree;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
     internal bool AgreesWith(AcceptedMechanicsWoundStageBundle bundle) =>
         bundle is not null &&
         string.Equals(
@@ -238,7 +307,8 @@ internal sealed class MortalWoundCanonicalAnchorPlan
             ComputeFingerprint(
                 WoundStageBundleFingerprint,
                 CurrentTimeInMinutes,
-                _allocations),
+                _allocations,
+                PreservesRecoveryAnchor),
             StringComparison.Ordinal);
 
     internal bool TryGetAllocation(
@@ -258,8 +328,85 @@ internal sealed class MortalWoundCanonicalAnchorPlan
         return false;
     }
 
+    /// <summary>
+    /// Copies the sealed allocations while retaining the anchor phase and fingerprint inputs.
+    /// </summary>
+    /// <returns>
+    /// A detached plan with the same allocation authority.
+    /// </returns>
     internal MortalWoundCanonicalAnchorPlan DetachedCopy() =>
-        new(WoundStageBundleFingerprint, CurrentTimeInMinutes, _allocations);
+        new(WoundStageBundleFingerprint, CurrentTimeInMinutes, _allocations, PreservesRecoveryAnchor);
+
+    /// <summary>
+    /// Derives condition anchors for a pure physical worsening phase.
+    /// </summary>
+    /// <param name="bundle">
+    /// The sealed bundle supplying original wound images and allocated worsening identities.
+    /// </param>
+    /// <param name="currentTimeInMinutes">
+    /// The canonical minute for each reentered deterioration condition.
+    /// </param>
+    /// <returns>
+    /// The sealed reentry plan, or a phase conflict without an allocation.
+    /// </returns>
+    private static MortalWoundCanonicalAnchorPlanResult CreateConditionReentry(
+        AcceptedMechanicsWoundStageBundle bundle,
+        long currentTimeInMinutes)
+    {
+        var final = bundle.FinalPlan;
+        var allocations = new List<MortalWoundCanonicalAnchorAllocation>();
+        foreach (var mutation in final.CarrierContributions
+                     .SelectMany(static contribution => contribution.Mutations)
+                     .OrderBy(static mutation => mutation.WoundId, StringComparer.Ordinal))
+        {
+            if (mutation.Operation != "update" || mutation.BeforeWound is not { } before ||
+                mutation.AfterWound is not { } after || after.Classification.Domain != "physical" ||
+                after.LastTransition.Kind != "worsen" || before.WoundId != after.WoundId ||
+                !final.AllocatedTransitionIds.Contains(after.LastTransition.TransitionId, StringComparer.Ordinal))
+            {
+                return Failed(WoundIdentityState.StatePath, "accepted_mechanics_wound_anchor_phase_mixed",
+                    "only accepted physical worsening updates in the condition-reentry phase", mutation.Operation);
+            }
+            if (!IsConditionReentry(mutation))
+                continue;
+            if (before.Recovery.RecoveryAnchor is not { } recoveryAnchor ||
+                before.Recovery.DeteriorationAnchor is not null ||
+                after.Recovery.RecoveryAnchor != recoveryAnchor ||
+                after.Recovery.DeteriorationAnchor is not null ||
+                after.Care != WoundTransitionReducer.DeriveWorseningCare(before) ||
+                !after.Recovery.Blockers.SequenceEqual(
+                    WoundTransitionReducer.DeriveWorseningBlockers(before), StringComparer.Ordinal))
+            {
+                return Failed(after.Owner.CarrierPath, "accepted_mechanics_wound_anchor_reentry_invalid",
+                    "exact worsening care reset with retained recovery anchor and absent condition anchor", after.WoundId);
+            }
+            allocations.Add(new MortalWoundCanonicalAnchorAllocation(after.WoundId,
+                after.LastTransition.TransitionId, recoveryAnchor with { },
+                new WoundDeteriorationAnchor("not_stabilized", currentTimeInMinutes,
+                    after.LastTransition.TransitionId)));
+        }
+        return new MortalWoundCanonicalAnchorPlanResult(
+            new MortalWoundCanonicalAnchorPlan(bundle.BundleFingerprint, currentTimeInMinutes,
+                allocations, preservesRecoveryAnchor: true), Array.Empty<ValidationIssue>());
+    }
+
+    /// <summary>
+    /// Identifies the exact transition from stabilized care into an active stabilization deterioration condition.
+    /// </summary>
+    /// <param name="mutation">
+    /// The validated carrier mutation to inspect.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a physical worsening that reenters the condition;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    private static bool IsConditionReentry(WoundCarrierMutation mutation) =>
+        mutation.Operation == "update" && mutation.BeforeWound is { } before &&
+        mutation.AfterWound is { } after && after.Classification.Domain == "physical" &&
+        after.LastTransition.Kind == "worsen" && before.Care.State == "stabilized" &&
+        after.Care.State == "untreated" &&
+        ReadActiveDeteriorationCondition(before.Recovery) is null &&
+        ReadActiveDeteriorationCondition(after.Recovery) == "not_stabilized";
 
     private static string? ReadActiveDeteriorationCondition(WoundRecovery recovery)
     {
@@ -290,10 +437,29 @@ internal sealed class MortalWoundCanonicalAnchorPlan
                 : null
         };
 
+    /// <summary>
+    /// Computes the private anchor allocation seal, retaining the existing create-phase formula.
+    /// </summary>
+    /// <param name="bundleFingerprint">
+    /// The exact validated wound stage-bundle fingerprint.
+    /// </param>
+    /// <param name="currentTimeInMinutes">
+    /// The canonical minute used for new anchor allocations.
+    /// </param>
+    /// <param name="allocations">
+    /// The wound and transition allocations included in ordinal wound order.
+    /// </param>
+    /// <param name="preservesRecoveryAnchor">
+    /// Whether to bind the separate condition-reentry phase marker into the seal.
+    /// </param>
+    /// <returns>
+    /// The semantic allocation fingerprint.
+    /// </returns>
     private static string ComputeFingerprint(
         string bundleFingerprint,
         long currentTimeInMinutes,
-        IReadOnlyList<MortalWoundCanonicalAnchorAllocation> allocations)
+        IReadOnlyList<MortalWoundCanonicalAnchorAllocation> allocations,
+        bool preservesRecoveryAnchor)
     {
         var fields = new List<string?>
         {
@@ -303,6 +469,8 @@ internal sealed class MortalWoundCanonicalAnchorPlan
             currentTimeInMinutes.ToString(CultureInfo.InvariantCulture),
             allocations.Count.ToString(CultureInfo.InvariantCulture)
         };
+        if (preservesRecoveryAnchor)
+            fields.Add("condition_reentry");
         foreach (var allocation in allocations.OrderBy(
                      static value => value.WoundId,
                      StringComparer.Ordinal))

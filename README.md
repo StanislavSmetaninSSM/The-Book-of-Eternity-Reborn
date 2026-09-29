@@ -87,12 +87,12 @@ npm run dev:local --prefix BookOfEternityClient.WebFrontend
 
 ## Ограниченная проверка
 
-Используйте ограниченный тестовый runner проекта, а не неограниченный запуск
-всего решения:
+Выберите категории по затронутым контрактам из [руководства по тестам](docs/testing.md).
+Полные прогоны и прежние Fast/PreMerge не используются:
 
 ```powershell
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~RepositoryPublicationDocumentationTests"
-pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Lane Fast
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -ListCategories
+pwsh -NoProfile -File .\scripts\test-csharp.ps1 -Category test-selection-contracts -PlanOnly
 ```
 
 ## Вклад в проект

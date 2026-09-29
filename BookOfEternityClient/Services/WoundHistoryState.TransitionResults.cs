@@ -59,6 +59,24 @@ internal sealed partial class WoundHistoryState
         return CreateValidated(NextOrdinal + 1, _transitions.Append(row));
     }
 
+    /// <summary>
+    /// Parses only the closed result codec registered for the outer transition kind.
+    /// </summary>
+    /// <param name="element">
+    /// The supplied result value; omission retains the existing optional-result behavior.
+    /// </param>
+    /// <param name="kind">
+    /// The exact outer transition kind selecting the codec.
+    /// </param>
+    /// <param name="path">
+    /// The diagnostic path of the result.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving structural or semantic result failures.
+    /// </param>
+    /// <returns>
+    /// The detached typed result, or null for an omitted optional result or rejected value.
+    /// </returns>
     private static WoundTransitionResult? ParseTransitionResult(JsonElement element,
         string kind, string path, ICollection<ValidationIssue> issues)
     {
@@ -67,6 +85,8 @@ internal sealed partial class WoundHistoryState
         // the original strict treatment codec. Only omission keeps its old meaning.
         if (kind == "treat" && element.ValueKind != JsonValueKind.Undefined)
             return MortalWoundTreatmentPersistedResult.Parse(element, path, issues);
+        if (kind == "recover" && element.ValueKind != JsonValueKind.Undefined)
+            return MortalWoundRecoveryPersistedResult.Parse(element, path, issues);
         if (element.ValueKind is JsonValueKind.Undefined or JsonValueKind.Null)
         {
             if (required)
@@ -166,9 +186,28 @@ internal sealed partial class WoundHistoryState
         string.Equals(WoundAcceptedTurnFingerprintWriter.CanonicalJson(first.ToCanonicalJson()),
             WoundAcceptedTurnFingerprintWriter.CanonicalJson(second.ToCanonicalJson()), StringComparison.Ordinal);
 
+    /// <summary>
+    /// Checks the complete result and its outer-row coordinates using the owning codec.
+    /// </summary>
+    /// <param name="transition">
+    /// The typed history row whose result and coordinates must agree.
+    /// </param>
+    /// <param name="path">
+    /// The diagnostic path of the outer history row.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving codec or coordinate failures.
+    /// </param>
     private static void ValidateTransitionResult(WoundHistoryTransition transition,
         string path, ICollection<ValidationIssue> issues)
     {
+        if (transition.TransitionResult is MortalWoundRecoveryPersistedResult)
+        {
+            ParseTransitionResult(JsonSerializer.SerializeToElement(transition.TransitionResult.ToCanonicalJson()),
+                transition.Kind, path + ".transitionResult", issues);
+            ValidateRecoveryPrimaryRow(transition, path, issues);
+            return;
+        }
         // Keep the treatment coordinate validator and its diagnostics intact.
         if (transition.TransitionResult is MortalWoundTreatmentPersistedResult)
         {

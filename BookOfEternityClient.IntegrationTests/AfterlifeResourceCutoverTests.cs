@@ -6,41 +6,15 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeResourceCutoverTests
 {
+    /// <summary>
+    /// Publishes the signed player's action payment without retaining legacy action economy fields.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_ActionCostSpendsLedgerWithoutLegacyActionEconomy()
     {
-        await using var context = await CreateActionPointContextAsync(
-            playerCurrent: 6m,
-            oppositionCurrent: 6m);
-        var conflict = ActiveConflict("conflict_resource_cost");
-
-        var raw = new JsonObject { ["activeConflict"] = conflict.DeepClone() };
-        raw[AfterlifeSpiritualConflictState.ResponseField] = new JsonObject
-        {
-            ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
-            ["exchange"] = new JsonObject
-            {
-                ["exchangeId"] = "exchange_resource_cost_42",
-                ["operationType"] = "pressure",
-                ["outcome"] = "success",
-                ["actionCostAudit"] = new JsonObject
-                {
-                    ["player"] = new JsonObject
-                    {
-                        ["operationType"] = "pressure",
-                        ["baseCost"] = 3,
-                        ["minCost"] = 1,
-                        ["artTier"] = 0,
-                        ["effectiveCost"] = 3,
-                        ["before"] = 6,
-                        ["after"] = 3
-                    }
-                }
-            }
-        };
-        await context.WriteExactJsonAsync(
-            AfterlifeSpiritualConflictState.StatePath,
-            raw.ToJsonString());
+        await using var context = await CreateCompleteConflictFrameContextAsync(signedDice: [10, 10, 10, 10]);
+        await WriteCompleteResourceExchangeSequenceAsync(context,
+            Exchange("exchange_resource_cost_42", PlayerAudit("pressure", 3m, 6m, 3m)));
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
@@ -71,13 +45,14 @@ public sealed partial class AfterlifeResourceCutoverTests
             AfterlifeSpiritualConflictState.ResponseField));
     }
 
+    /// <summary>
+    /// Keeps a published signed action payment consistent with subsequent conflict resource validation.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_PublishedSpendSatisfiesConflictResourceValidation()
     {
-        await using var context = await CreateActionPointContextAsync(
-            playerCurrent: 6m,
-            oppositionCurrent: 6m);
-        await WriteExchangeAsync(
+        await using var context = await CreateCompleteConflictFrameContextAsync(signedDice: [10, 10, 10, 10]);
+        await WriteCompleteResourceExchangeSequenceAsync(
             context,
             Exchange(
                 "exchange_resource_validator_42",
@@ -85,9 +60,7 @@ public sealed partial class AfterlifeResourceCutoverTests
 
         var rawIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
-        Assert.DoesNotContain(
-            rawIssues,
-            issue => issue.Severity == IssueSeverity.Error);
+        AssertNoConflictFrameErrors(rawIssues);
 
         await using (var writeLease = await context.FileSystem
                          .AcquireCanonicalWriteLeaseAsync())
@@ -152,26 +125,45 @@ public sealed partial class AfterlifeResourceCutoverTests
             issue => issue.Code == "afterlife_conflict_action_recovery_exceeds_max");
     }
 
+    /// <summary>
+    /// Preserves unburdened recovery as one ledger gain through a complete signed conflict source.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_RecoveryGainsLedgerPointsWithoutLegacyPool()
     {
-        await using var context = await CreateActionPointContextAsync(
+        await using var context = await CreateCompleteConflictFrameContextAsync(
             playerCurrent: 2m,
             oppositionCurrent: 6m);
-        await WriteExchangeAsync(
-            context,
-            Exchange(
-                "exchange_resource_recovery_42",
-                PlayerAudit(
-                    "recover_spiritual_power",
-                    effectiveCost: 0m,
-                    before: 2m,
-                    after: 5m)));
+        await WriteCompleteConflictFrameExchangeAsync(context);
+        var root = Assert.IsType<JsonObject>(await context.ReadJsonAsync(
+            AfterlifeSpiritualConflictState.StatePath));
+        var update = root[AfterlifeSpiritualConflictState.ResponseField]!.AsObject();
+        var exchange = update["exchange"]!.AsObject();
+        exchange["exchangeId"] = "exchange_resource_recovery_42";
+        exchange["operationType"] = "recover_spiritual_power";
+        exchange["after"] = exchange["before"]!.DeepClone();
+        exchange["matchupAudit"]!["playerOperation"] = "recover_spiritual_power";
+        exchange["matchupAudit"]!["oppositionOperation"] = "recover_spiritual_power";
+        exchange["matchupAudit"]!["primaryResolutionLane"] = "recover_spiritual_power";
+        exchange["matchupAudit"]!["riskProfile"] = "recovery_timing";
+        exchange["actionCostAudit"] = new JsonObject
+        {
+            ["player"] = CostAudit("recover_spiritual_power", 0m, 2m, 5m),
+            ["opposition"] = CostAudit("recover_spiritual_power", 0m, 6m, 6m)
+        };
+        update.Remove("activeConflictAfter");
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(root, update);
+        var activeAfter = projected["activeConflict"]!.DeepClone().AsObject();
+        activeAfter.Remove("combatConditions");
+        update["activeConflictAfter"] = activeAfter;
+        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: {issue}; expected={issue.Expected}; actual={issue.Actual}")));
         var plan = await PeekPlanAsync(context);
         var player = ResolvePlannedActionPoints(
             plan,
@@ -185,13 +177,14 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(3m, gain["appliedAmount"]!.GetValue<decimal>());
     }
 
+    /// <summary>
+    /// Sequences both sides' signed action payments through one ledger plan and retains every event reference.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_SequencesBothSidesThroughOneLedgerPlan()
     {
-        await using var context = await CreateActionPointContextAsync(
-            playerCurrent: 6m,
-            oppositionCurrent: 6m);
-        await WriteExchangesAsync(
+        await using var context = await CreateCompleteConflictFrameContextAsync(signedDice: [10, 10, 10, 10]);
+        await WriteCompleteResourceExchangeSequenceAsync(
             context,
             Exchange(
                 "exchange_resource_sequence_1",
@@ -204,7 +197,7 @@ public sealed partial class AfterlifeResourceCutoverTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        AssertNoConflictFrameErrors(issues);
         var plan = await PeekPlanAsync(context);
         Assert.Equal(
             1m,
@@ -227,26 +220,40 @@ public sealed partial class AfterlifeResourceCutoverTests
             eventRefs);
     }
 
+    /// <summary>
+    /// Rejects a forged action balance at the signed original source's sequence boundary without creating a plan or writing resources.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_ForgedActionAuditFailsClosedWithoutValidatedPlan()
     {
-        await using var context = await CreateActionPointContextAsync(
-            playerCurrent: 6m,
-            oppositionCurrent: 6m);
-        await WriteExchangeAsync(
+        await using var context = await CreateCompleteConflictFrameContextAsync(signedDice: [10, 10, 10, 10]);
+        await WriteCompleteResourceExchangeSequenceAsync(
             context,
             Exchange(
                 "exchange_resource_forged_42",
                 PlayerAudit("pressure", 3m, 5m, 2m)));
+        var before = await context.CaptureAsync(
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath);
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.Contains(
+        var mismatch = Assert.Single(
             issues,
-            issue => issue.Code == "afterlife_conflict_resource_audit_state_mismatch");
+            issue => issue.Code == "afterlife_conflict_action_cost_sequence_mismatch");
+        Assert.Equal("6", mismatch.Expected);
+        Assert.Equal("5", mismatch.Actual);
+        // A rejected source also has no matching source session; no other acquisition failure is allowed.
+        Assert.All(issues.Where(issue => issue.Severity == IssueSeverity.Error), issue =>
+            Assert.Contains(issue.Code, new[]
+            {
+                "afterlife_conflict_action_cost_sequence_mismatch",
+                "spiritual_source_snapshot_binding_mismatch"
+            }));
         Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
             context.FileSystem));
+        await context.AssertUnchangedAsync(before);
     }
 
     [Fact]
@@ -1538,6 +1545,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(1m, spends[1]["afterState"]?["current"]!.GetValue<decimal>());
     }
 
+    /// <summary>
+    /// Rejects Shining Abode attempt overdraw without accepting a plan or changing the canonical resource ledger and history.
+    /// </summary>
     [Fact]
     public async Task AcceptedTurn_ShiningGachaRejectsAtomicOverdraw()
     {
@@ -1568,9 +1578,9 @@ public sealed partial class AfterlifeResourceCutoverTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.Contains(
-            issues,
-            issue => issue.Code == "afterlife_shining_gacha_resource_exhausted");
+        Assert.True(issues.Any(issue => issue.Code == "afterlife_shining_gacha_resource_exhausted"),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: {issue}; expected={issue.Expected}; actual={issue.Actual}")));
         Assert.Null(await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
             context.FileSystem));
         Assert.Equal(
@@ -2646,6 +2656,18 @@ public sealed partial class AfterlifeResourceCutoverTests
         };
     }
 
+    /// <summary>
+    /// Seeds and signs a Shining Abode return with a player profile that declares no special arts.
+    /// </summary>
+    /// <param name="radianceTier">
+    /// Radiance tier used by the real owner-resource bootstrap to determine the return's attempt capacity.
+    /// </param>
+    /// <param name="turn">
+    /// Positive turn and incarnation recorded in the signed Shining Abode snapshot.
+    /// </param>
+    /// <returns>
+    /// A fresh context retaining the initialized canonical owners and authenticated pending snapshot.
+    /// </returns>
     private static async Task<ResourceMaterializationTestContext>
         CreateShiningGachaContextAsync(int radianceTier, int turn)
     {
@@ -2656,6 +2678,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             ["actorId"] = "player_soul",
             ["displayName"] = "Душа игрока",
             ["realm"] = "Shining Abode",
+            ["specialArts"] = new JsonArray(),
             ["resourceOwnerBindings"] = new JsonArray
             {
                 new JsonObject
@@ -2689,6 +2712,18 @@ public sealed partial class AfterlifeResourceCutoverTests
         return context;
     }
 
+    /// <summary>
+    /// Publishes a guardian return through the real resource owner pipeline before the later gacha action is signed.
+    /// </summary>
+    /// <param name="initialTurn">
+    /// Positive return turn recorded in the authenticated initial pending snapshot.
+    /// </param>
+    /// <param name="returnCycleId">
+    /// Exact return cycle identifier used to initialize the guardian's persistent attempt ledger.
+    /// </param>
+    /// <returns>
+    /// A fresh context whose initial guardian return and resource history have been published together.
+    /// </returns>
     private static async Task<ResourceMaterializationTestContext>
         CreateInitializedGuardianGachaContextAsync(
             int initialTurn,
@@ -2708,7 +2743,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 abodePower: 0).ToJsonString());
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        AssertNoConflictFrameErrors(issues);
         await PublishAsync(context);
         return context;
     }
@@ -2794,6 +2829,66 @@ public sealed partial class AfterlifeResourceCutoverTests
                 ["rarity"] = "Common"
             }
         };
+
+    /// <summary>
+    /// Adds one or two cost-only exchanges to a complete signed frame using distinct original dice and unchanged strain.
+    /// The submitted audit amounts remain unchanged, including an intentional balance mismatch in a negative test.
+    /// </summary>
+    /// <param name="context">
+    /// Context created by <see cref="CreateCompleteConflictFrameContextAsync"/> with four signed dice equal to ten.
+    /// </param>
+    /// <param name="exchanges">
+    /// One or two detached exchange rows containing the exact identifiers, operations and action-cost audits to test.
+    /// </param>
+    /// <returns>
+    /// Completion after the full candidate sequence is written without changing its signed original snapshot.
+    /// </returns>
+    private static async Task WriteCompleteResourceExchangeSequenceAsync(
+        ResourceMaterializationTestContext context, params JsonObject[] exchanges)
+    {
+        Assert.InRange(exchanges.Length, 1, 2);
+        await WriteCompleteConflictFrameExchangeAsync(context);
+        var root = Assert.IsType<JsonObject>(await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath));
+        var update = root[AfterlifeSpiritualConflictState.ResponseField]!.AsObject();
+        var template = update["exchange"]!.DeepClone().AsObject();
+        root.Remove(AfterlifeSpiritualConflictState.ResponseField);
+        var diceValues = new[] { 10, 10, 10, 10 };
+        for (var index = 0; index < exchanges.Length; index++)
+        {
+            var submitted = exchanges[index];
+            var exchange = template.DeepClone().AsObject();
+            var operation = submitted["operationType"]!.GetValue<string>();
+            var oppositionOperation = submitted["actionCostAudit"]?["opposition"]?["operationType"]?.GetValue<string>()
+                ?? "passive";
+            exchange["exchangeId"] = submitted["exchangeId"]!.DeepClone();
+            exchange["operationType"] = operation;
+            exchange["outcome"] = "no_effect";
+            exchange["after"] = exchange["before"]!.DeepClone();
+            exchange["actionCostAudit"] = submitted["actionCostAudit"]!.DeepClone();
+            exchange["matchupAudit"]!["playerOperation"] = operation;
+            exchange["matchupAudit"]!["oppositionOperation"] = oppositionOperation;
+            exchange["matchupAudit"]!["primaryResolutionLane"] = operation;
+            exchange["matchupAudit"]!["riskProfile"] = operation == "guard" ? "safe_defense" : "offensive_pressure";
+            exchange["matchupAudit"]!["matchupRationale"] = "Оплачиваются только заявленные активные приёмы; равные итоги не меняют напряжение.";
+            var dice = exchange["diceAudit"]!;
+            for (var side = 0; side < 2; side++)
+            {
+                dice["diceUsed"]![side]!["sourceIndex"] = index * 2 + side;
+                dice["diceUsed"]![side]!["value"] = diceValues[index * 2 + side];
+            }
+            dice["playerTotal"] = diceValues[index * 2];
+            dice["oppositionTotal"] = diceValues[index * 2 + 1];
+            dice["margin"] = diceValues[index * 2] - diceValues[index * 2 + 1];
+            dice["outcomeBand"] = "mixed_or_no_effect";
+            root = AfterlifeSpiritualConflictState.ApplyUpdate(root, new JsonObject
+            {
+                ["mode"] = AfterlifeSpiritualConflictState.ModeExchange,
+                ["exchange"] = exchange
+            });
+            Assert.False(root.ContainsKey("lastInvalidUpdate"), root["lastInvalidUpdateReason"]?.ToJsonString());
+        }
+        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, root.ToJsonString());
+    }
 
     private static async Task WriteExchangeAsync(
         ResourceMaterializationTestContext context,
@@ -3273,6 +3368,12 @@ public sealed partial class AfterlifeResourceCutoverTests
                 new JsonArray(profiles.Select(static profile => (JsonNode)profile).ToArray())
         };
 
+    /// <summary>
+    /// Creates the Chaos Sea player profile with its persistent resource binding and no special arts.
+    /// </summary>
+    /// <returns>
+    /// A detached profile whose identity and empty special-art catalog can be signed as original source data.
+    /// </returns>
     private static JsonObject PlayerSoulProfile() =>
         new()
         {
@@ -3280,6 +3381,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             ["actorId"] = "player_soul",
             ["displayName"] = "Душа игрока",
             ["realm"] = "Chaos Sea",
+            ["specialArts"] = new JsonArray(),
             ["resourceOwnerBindings"] = new JsonArray
             {
                 new JsonObject
@@ -3291,6 +3393,15 @@ public sealed partial class AfterlifeResourceCutoverTests
             }
         };
 
+    /// <summary>
+    /// Creates a Chaos Sea guardian profile with its persistent resource binding and no special arts.
+    /// </summary>
+    /// <param name="guardianId">
+    /// Exact guardian identifier used for the actor, display name and resource owner binding.
+    /// </param>
+    /// <returns>
+    /// A detached profile whose identity and empty special-art catalog can be signed as original source data.
+    /// </returns>
     private static JsonObject GuardianProfile(string guardianId) =>
         new()
         {
@@ -3298,6 +3409,7 @@ public sealed partial class AfterlifeResourceCutoverTests
             ["actorId"] = guardianId,
             ["displayName"] = guardianId,
             ["realm"] = "Chaos Sea",
+            ["specialArts"] = new JsonArray(),
             ["resourceOwnerBindings"] = new JsonArray
             {
                 new JsonObject

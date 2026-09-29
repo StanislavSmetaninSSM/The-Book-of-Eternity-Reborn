@@ -38,7 +38,7 @@ internal static class AfterlifeGuardianGachaResourceOutcome
         JsonNode? GachaBonusAudit,
         JsonArray ExpectedHistoryPrefix);
 
-    private sealed class Draft : IResourceRegisteredSystemOutcomeDraft
+    private sealed class Draft : IOriginalSpiritualPrefixOutcomeDraft
     {
         private readonly ResourceMutationSourceExport[] _sources;
         private readonly ResourceMutationIntent[] _mutations;

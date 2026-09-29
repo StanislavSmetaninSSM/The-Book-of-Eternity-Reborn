@@ -2311,11 +2311,23 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 "GetOrBuildCommonValidated",
                 input);
 
+        /// <summary>
+        /// Builds the registry-owned effect stage with an optional allocation scope.
+        /// </summary>
+        /// <param name="input">
+        /// Complete effect input validated by the registry.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Allocation scope, or <see langword="null"/> for the ordinary cache policy.
+        /// </param>
+        /// <returns>
+        /// The validated effect result or its diagnostics.
+        /// </returns>
         internal EffectAcceptedTurnPlanningResult GetOrBuildEffectValidated(
-            EffectAcceptedTurnInput input) =>
+            EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null) =>
             Invoke<EffectAcceptedTurnPlanningResult>(
                 "GetOrBuildEffectValidated",
-                input);
+                input, identityFactory);
 
         internal WoundAcceptedTurnPreparationResult GetOrBuildWoundPrepared(
             WoundAcceptedTurnInput input) =>
@@ -2323,16 +2335,31 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 "GetOrBuildWoundPrepared",
                 input);
 
-        // Reflection needs explicit defaults; ordinary stages carry neither authority.
+        /// <summary>
+        /// Builds an ordinary prepared wound stage with explicit reflection defaults.
+        /// </summary>
+        /// <param name="prepared">
+        /// Current registry-owned prepared stage.
+        /// </param>
+        /// <param name="input">
+        /// Complete effect input for the prepared stage.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Allocation scope, or <see langword="null"/> for the ordinary cache policy.
+        /// </param>
+        /// <returns>
+        /// The bound wound effect result or its diagnostics.
+        /// </returns>
         internal WoundEffectBatchPlanningResult GetOrBuildWoundEffectValidated(
             WoundPreparedAcceptedTurnPlan prepared,
-            EffectAcceptedTurnInput input) =>
+            EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null) =>
             Invoke<WoundEffectBatchPlanningResult>(
                 "GetOrBuildWoundEffectValidated",
                 prepared,
                 input,
                 null,
-                null);
+                null,
+                identityFactory);
 
         internal WoundAcceptedTurnPlanningResult GetOrBuildWoundFinal(
             WoundPreparedAcceptedTurnPlan prepared,
@@ -2344,6 +2371,15 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 null,
                 null);
 
+        /// <summary>
+        /// Registers an empty ordinary item handoff for dependent-authority invalidation checks.
+        /// </summary>
+        /// <param name="sessionId">
+        /// Session identity shared with the prepared test plans.
+        /// </param>
+        /// <param name="snapshotToken">
+        /// Snapshot identity shared with the prepared test plans.
+        /// </param>
         internal void RegisterEmptyMortalItems(
             string sessionId,
             string snapshotToken)
@@ -2364,7 +2400,10 @@ public sealed partial class AcceptedMechanicsPlanCacheTests
                 new Dictionary<string, MortalItemRouteAuthority>(StringComparer.Ordinal),
                 Array.Empty<MortalItemAcceptedTransfer>(),
                 emptyProjectionRoots,
-                emptyProjectionRoots);
+                emptyProjectionRoots,
+                null, // Ordinary factory; reflection requires explicit optional arguments.
+                null, // No original-intake request identity.
+                null); // No original-intake turn.
         }
 
         internal bool HasMortalItemsValidated() =>

@@ -36,8 +36,21 @@ public sealed class PendingTurnSnapshotPresenceContractTests
         "game_state/combat/allies.json"
     ];
 
+    private static readonly string[] PreviousExpectedPaths =
+    [
+        .. ExpectedPaths,
+        "game_state/control/spiritual_wound_capture_checkpoint.json",
+        "game_state/control/pending_spiritual_wound_decisions.json"
+    ];
+
+    private static readonly string[] CurrentExpectedPaths =
+    [
+        .. PreviousExpectedPaths,
+        "game_state/wounds/spiritual_wound_opportunity_receipts.json"
+    ];
+
     [Fact]
-    public void ClosedObservationContract_HasExactImmutableSixteenPaths()
+    public void ClosedObservationContract_PreservesLegacySetsAndEmitsCurrentNineteenPaths()
     {
         var helper = ClientAssembly.GetType(
             "BookOfEternityClient.Services.PendingTurnSnapshotPathPresenceV1");
@@ -47,9 +60,24 @@ public sealed class PendingTurnSnapshotPresenceContractTests
                 "LogicalPaths",
                 BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
 
-        Assert.Equal(ExpectedPaths, logicalPaths);
+        var legacyLogicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
+            helper.GetProperty(
+                "LegacyLogicalPaths",
+                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
+        var previousLogicalPaths = Assert.IsAssignableFrom<IReadOnlyList<string>>(
+            helper.GetProperty(
+                "PreviousLogicalPaths",
+                BindingFlags.Static | BindingFlags.NonPublic)!.GetValue(null));
+
+        Assert.Equal(CurrentExpectedPaths, logicalPaths);
+        Assert.Equal(ExpectedPaths, legacyLogicalPaths);
+        Assert.Equal(PreviousExpectedPaths, previousLogicalPaths);
         Assert.Throws<NotSupportedException>(
             () => ((IList)logicalPaths).Add("game_state/forged.json"));
+        Assert.Throws<NotSupportedException>(
+            () => ((IList)legacyLogicalPaths).Add("game_state/forged.json"));
+        Assert.Throws<NotSupportedException>(
+            () => ((IList)previousLogicalPaths).Add("game_state/forged.json"));
     }
 
     [Fact]
@@ -113,9 +141,9 @@ public sealed class PendingTurnSnapshotPresenceContractTests
         var map = Assert.IsType<Dictionary<string, bool>>(
             create.Invoke(null, [files, hashes]));
 
-        Assert.Equal(ExpectedPaths, map.Keys);
+        Assert.Equal(CurrentExpectedPaths, map.Keys);
         Assert.True(map[ExpectedPaths[0]]);
-        Assert.All(ExpectedPaths.Skip(1), path => Assert.False(map[path]));
+        Assert.All(CurrentExpectedPaths.Skip(1), path => Assert.False(map[path]));
 
         hashes.Clear();
         var asymmetric = Assert.Throws<TargetInvocationException>(

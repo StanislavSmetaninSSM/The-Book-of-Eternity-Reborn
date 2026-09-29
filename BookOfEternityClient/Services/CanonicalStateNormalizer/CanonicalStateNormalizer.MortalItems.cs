@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
@@ -1462,11 +1463,32 @@ public partial class CanonicalStateNormalizer
 
 internal static class AcceptedTurnCanonicalStateRefresh
 {
+    /// <summary>
+    /// Reports canonical refresh diagnostics and the completed publication's detached handoffs.
+    /// </summary>
+    /// <param name="Issues">
+    /// Validation diagnostics collected during canonical refresh and publication read-back.
+    /// </param>
+    /// <param name="MechanicsPlan">
+    /// Accepted plan, or <see langword="null"/> when no plan was accepted.
+    /// </param>
+    /// <param name="TreatmentResourcePublicationTransaction">
+    /// Treatment transaction requiring caller settlement, or <see langword="null"/> for other paths.
+    /// </param>
+    /// <param name="SpiritualWoundOutput">
+    /// Detached spiritual presentation and exact output witnesses; <see langword="null"/> for ordinary or failed publication.
+    /// </param>
+    /// <param name="SpiritualConflictValidation">
+    /// Published-only causal comparisons, or <see langword="null"/> without a successful spiritual publication.
+    /// </param>
     internal sealed record Result(
         IReadOnlyList<ValidationIssue> Issues,
         AcceptedMechanicsPlan? MechanicsPlan,
         MortalWoundTreatmentResourcePublicationTransaction?
-            TreatmentResourcePublicationTransaction = null);
+            TreatmentResourcePublicationTransaction = null,
+        SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
+        ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
+            SpiritualConflictValidation = null);
 
     private static Task<MortalWoundTreatmentPublicationProbeResult>
         ProbeTreatmentResourcePublicationTransactionAsync(
@@ -1703,15 +1725,43 @@ internal static class AcceptedTurnCanonicalStateRefresh
         ArgumentNullException.ThrowIfNull(backups);
 
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        var boundNormalizer = normalizer.BindTo(writeLease);
+        var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
         var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+        if (spiritualPreflight is not null)
+        {
+            var signed = spiritualPreflight.Authority.SignedRollbackImages;
+            foreach (var image in beforeImages)
+            {
+                if (!signed.ContainsKey(image.Path))
+                    throw new InvalidDataException($"Spiritual publication lacks signed rollback coverage for '{image.Path}'.");
+            }
+            beforeImages = signed.Select(pair => new MortalWoundTreatmentPublicationBeforeImage(
+                pair.Key, pair.Value.Bytes)).ToArray();
+        }
+        SpiritualPublicationReceipt? spiritualReceipt = null;
+        var spiritualWritesStarted = false;
         MortalWoundTreatmentResourcePublicationTransaction? treatmentTransaction = null;
         try
         {
-            var boundNormalizer = normalizer.BindTo(writeLease);
-            var treatmentPreflight = await boundNormalizer
-                .PrevalidateTreatmentResourcePublicationTransactionAsync();
+            var treatmentPreflight = spiritualPreflight is null
+                ? await boundNormalizer.PrevalidateTreatmentResourcePublicationTransactionAsync()
+                : null;
             AcceptedMechanicsPlan? mechanicsPlan;
-            if (treatmentPreflight is null)
+            if (spiritualPreflight is not null)
+            {
+                var inputIssues = await spiritualPreflight.Authority.ValidateCurrentInputsAsync(fs, writeLease);
+                if (inputIssues.Count != 0)
+                    throw new InvalidDataException(string.Join("; ", inputIssues.Select(issue =>
+                        $"{issue.Code}: {issue.FilePath}")));
+                if (!AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(
+                        fs, writeLease, spiritualPreflight.Authority, out spiritualReceipt))
+                    throw new InvalidDataException("The completed spiritual publication could not take its exact handoff.");
+                spiritualWritesStarted = true;
+                mechanicsPlan = await boundNormalizer.NormalizeAccumulatedStateWithSpiritualPublicationTransactionAsync(
+                    backups, spiritualPreflight, spiritualReceipt);
+            }
+            else if (treatmentPreflight is null)
             {
                 mechanicsPlan = await boundNormalizer
                     .NormalizeAccumulatedStateWithPlanAsync(backups);
@@ -1761,17 +1811,21 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     .ValidatePublishedOutputAuthorityAsync(
                         mechanicsPlan,
                         path => fs.ReadFileBytesAsync(writeLease, path)));
-                if (!mechanicsPlan.AwaitsPendingResolution)
-                {
-                    issues.AddRange(await validator
-                        .ValidateAcceptedTurnCanonicalWoundMaterializationAsync(
-                            writeLease));
-                }
             }
+            if (mechanicsPlan is { AwaitsPendingResolution: false } &&
+                (mechanicsPlan.WoundStageBundle is not null || mechanicsPlan.LiveWoundProofFingerprint is not null))
+                issues.AddRange(await validator.ValidateAcceptedTurnCanonicalWoundMaterializationAsync(writeLease));
+            var spiritualOutput = spiritualReceipt is null ? null :
+                await SpiritualWoundPublishedOutput.BindAsync(fs, writeLease, spiritualReceipt);
+            if (spiritualOutput is not null)
+                issues.AddRange(spiritualOutput.Issues);
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
+                if (spiritualReceipt is not null)
+                    AcceptedMechanicsPlanAuthority.FailSpiritualPublication(fs, writeLease, spiritualReceipt);
                 mechanicsPlan = null;
+                spiritualOutput = null;
             }
             else if (treatmentTransaction is not null)
             {
@@ -1779,19 +1833,26 @@ internal static class AcceptedTurnCanonicalStateRefresh
                     fs,
                     writeLease);
             }
-            return new Result(issues, mechanicsPlan, treatmentTransaction);
+            if (mechanicsPlan is not null && spiritualReceipt is not null &&
+                !AcceptedMechanicsPlanAuthority.CompleteSpiritualPublication(fs, writeLease, spiritualReceipt))
+                throw new InvalidDataException("Spiritual transaction ownership changed before acceptance.");
+            return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
+                mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation);
         }
         catch (Exception exception)
         {
             var rollbackFailures = new List<Exception>();
             try
             {
-                await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
+                if (spiritualPreflight is null || spiritualWritesStarted)
+                    await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             }
             catch (Exception rollbackException)
             {
                 rollbackFailures.Add(rollbackException);
             }
+            if (spiritualReceipt is not null)
+                AcceptedMechanicsPlanAuthority.FailSpiritualPublication(fs, writeLease, spiritualReceipt);
 
             if (treatmentTransaction is not null)
             {

@@ -18,6 +18,8 @@ internal sealed class WoundAcceptedTurnPlanCache
     private string? _preparedInputFingerprint;
     private string? _preparedTreatmentContinuationFingerprint;
     private object? _preparedTreatmentContinuationAuthority;
+    private string? _preparedRecoveryContinuationFingerprint;
+    private object? _preparedRecoveryContinuationAuthority;
     private string? _preparedFingerprint;
     private object? _preparedStageToken;
     private WoundAcceptedTurnPreparationResult? _preparedResult;
@@ -76,10 +78,32 @@ internal sealed class WoundAcceptedTurnPlanCache
                 treatmentContinuationAuthority,
                 out reused);
 
+    /// <summary>
+    /// Prepares a recovery stage while keeping its separate private companion in cache ownership.
+    /// </summary>
+    /// <param name="input">
+    /// Complete original wound and effect baselines.
+    /// </param>
+    /// <param name="recoveryContinuationAuthority">
+    /// The privately minted registry continuation.
+    /// </param>
+    /// <param name="reused">
+    /// Receives whether the exact current prepared stage was reused.
+    /// </param>
+    /// <returns>
+    /// The validated prepared stage or diagnostics without a cached result.
+    /// </returns>
+    internal WoundAcceptedTurnPreparationResult GetOrBuildRecoveryContinuationPrepared(
+        WoundAcceptedTurnInput input,
+        object recoveryContinuationAuthority,
+        out bool reused) => GetOrBuildPrepared(input,
+            treatmentContinuationAuthority: null, out reused, recoveryContinuationAuthority);
+
     private WoundAcceptedTurnPreparationResult GetOrBuildPrepared(
         WoundAcceptedTurnInput input,
         object? treatmentContinuationAuthority,
-        out bool reused)
+        out bool reused,
+        object? recoveryContinuationAuthority = null)
     {
         ArgumentNullException.ThrowIfNull(input);
         reused = false;
@@ -88,6 +112,7 @@ internal sealed class WoundAcceptedTurnPlanCache
             WoundAcceptedTurnPlannerCore.ValidatedInput validation;
             string inputFingerprint;
             string? treatmentContinuationFingerprint;
+            string? recoveryContinuationFingerprint;
             try
             {
                 validation = WoundAcceptedTurnPlannerCore.ValidateInput(input);
@@ -99,10 +124,14 @@ internal sealed class WoundAcceptedTurnPlanCache
                         validation.Issues);
                 }
                 inputFingerprint = WoundAcceptedTurnFingerprints.ComputeInput(input);
+                if (treatmentContinuationAuthority is not null && recoveryContinuationAuthority is not null)
+                    throw new ArgumentException("A prepared stage cannot combine treatment and recovery authority.");
                 treatmentContinuationFingerprint = treatmentContinuationAuthority is null
                     ? null
                     : WoundAcceptedTurnPlanner.GetTreatmentContinuationFingerprint(
                         treatmentContinuationAuthority);
+                recoveryContinuationFingerprint = recoveryContinuationAuthority is null ? null :
+                    WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(recoveryContinuationAuthority);
             }
             catch (Exception exception) when (IsMalformedBoundary(exception))
             {
@@ -124,7 +153,9 @@ internal sealed class WoundAcceptedTurnPlanCache
                     StringComparison.Ordinal) &&
                 ReferenceEquals(
                     _preparedTreatmentContinuationAuthority,
-                    treatmentContinuationAuthority))
+                    treatmentContinuationAuthority) &&
+                string.Equals(_preparedRecoveryContinuationFingerprint, recoveryContinuationFingerprint, StringComparison.Ordinal) &&
+                ReferenceEquals(_preparedRecoveryContinuationAuthority, recoveryContinuationAuthority))
             {
                 var validatedReplay = ValidatePreparedResult(
                     input,
@@ -144,7 +175,10 @@ internal sealed class WoundAcceptedTurnPlanCache
             WoundAcceptedTurnPreparationResult result;
             try
             {
-                result = (treatmentContinuationAuthority is null
+                result = (recoveryContinuationAuthority is not null
+                    ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
+                        WoundAcceptedTurnData.CloneInput(input)!, recoveryContinuationAuthority)
+                    : treatmentContinuationAuthority is null
                     ? _preparer(WoundAcceptedTurnData.CloneInput(input)!)
                     : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
                         WoundAcceptedTurnData.CloneInput(input)!,
@@ -177,6 +211,8 @@ internal sealed class WoundAcceptedTurnPlanCache
                 treatmentContinuationFingerprint;
             _preparedTreatmentContinuationAuthority =
                 treatmentContinuationAuthority;
+            _preparedRecoveryContinuationFingerprint = recoveryContinuationFingerprint;
+            _preparedRecoveryContinuationAuthority = recoveryContinuationAuthority;
             _preparedFingerprint = plan.WoundPreparationFingerprint;
             _preparedStageToken = stageToken;
             _preparedResult = Detach(validated);
@@ -577,6 +613,16 @@ internal sealed class WoundAcceptedTurnPlanCache
 
         var transitions = input.Transitions;
         var batches = plan.EffectOperationBatches;
+        if (plan.RecoveryContinuationAuthority is not null)
+        {
+            if (transitions.Count != 0 || input.Opportunities.Count != 0 ||
+                !WoundAcceptedTurnPlanner.RecoveryContinuationPreparedAgrees(plan))
+            {
+                mismatch = "recovery continuation authority";
+                return false;
+            }
+            return true;
+        }
         if (plan.TreatmentContinuationAuthority is not null)
         {
             if (transitions.Count != 0 ||
@@ -694,7 +740,10 @@ internal sealed class WoundAcceptedTurnPlanCache
         WoundAcceptedTurnInput input,
         WoundPreparedAcceptedTurnPlan plan)
     {
-        var replay = plan.TreatmentContinuationAuthority is null
+        var replay = plan.RecoveryContinuationAuthority is not null
+            ? WoundAcceptedTurnPlanner.PrepareRecoveryContinuationCandidate(
+                WoundAcceptedTurnData.CloneInput(input)!, plan.RecoveryContinuationAuthority)
+            : plan.TreatmentContinuationAuthority is null
             ? WoundAcceptedTurnPlanner.Prepare(
                 WoundAcceptedTurnData.CloneInput(input)!)
             : WoundAcceptedTurnPlanner.PrepareTreatmentContinuationCandidate(
@@ -859,6 +908,8 @@ internal sealed class WoundAcceptedTurnPlanCache
         _preparedInputFingerprint = null;
         _preparedTreatmentContinuationFingerprint = null;
         _preparedTreatmentContinuationAuthority = null;
+        _preparedRecoveryContinuationFingerprint = null;
+        _preparedRecoveryContinuationAuthority = null;
         _preparedFingerprint = null;
         _preparedStageToken = null;
         _preparedResult = null;
@@ -958,6 +1009,33 @@ internal static class WoundAcceptedTurnPlanAuthority
                 reservationAuthority);
     }
 
+    /// <summary>
+    /// Builds the reserved treatment effect stage under the active write lease.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="prepared">
+    /// Current registry-owned prepared wound stage.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="treatmentContinuationAuthority">
+    /// Exact private treatment continuation authority.
+    /// </param>
+    /// <param name="reservationAuthority">
+    /// Current private treatment publication reservation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult
         GetOrBuildTreatmentContinuationEffectValidated(
             BookOfEternityClient.Core.FileSystemManager fileSystem,
@@ -965,7 +1043,7 @@ internal static class WoundAcceptedTurnPlanAuthority
             WoundPreparedAcceptedTurnPlan prepared,
             EffectAcceptedTurnInput input,
             object treatmentContinuationAuthority,
-            object reservationAuthority)
+            object reservationAuthority, EffectIdentityFactory? identityFactory = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -981,7 +1059,7 @@ internal static class WoundAcceptedTurnPlanAuthority
                 prepared,
                 input,
                 treatmentContinuationAuthority,
-                reservationAuthority);
+                reservationAuthority, identityFactory);
     }
 
     internal static WoundAcceptedTurnPlanningResult
@@ -1043,11 +1121,32 @@ internal static class WoundAcceptedTurnPlanAuthority
             effectResult);
     }
 
+    /// <summary>
+    /// Builds a registry-owned wound effect stage under the active write lease.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// Filesystem whose private registry owns the plan.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical write lease for registry access.
+    /// </param>
+    /// <param name="prepared">
+    /// Current registry-owned prepared wound stage.
+    /// </param>
+    /// <param name="input">
+    /// Complete input passed through the existing owner validation.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy for this attempt, or <see langword="null"/> to retain the ordinary cache policy.
+    /// </param>
+    /// <returns>
+    /// The validated result or owner diagnostics.
+    /// </returns>
     internal static WoundEffectBatchPlanningResult GetOrBuildEffectValidated(
         BookOfEternityClient.Core.FileSystemManager fileSystem,
         BookOfEternityClient.Core.FileSystemManager.CanonicalWriteLease writeLease,
         WoundPreparedAcceptedTurnPlan prepared,
-        EffectAcceptedTurnInput input)
+        EffectAcceptedTurnInput input, EffectIdentityFactory? identityFactory = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -1058,7 +1157,7 @@ internal static class WoundAcceptedTurnPlanAuthority
             fileSystem,
             writeLease,
             prepared,
-            input);
+            input, identityFactory);
     }
 
     internal static bool TryPeekPrepared(

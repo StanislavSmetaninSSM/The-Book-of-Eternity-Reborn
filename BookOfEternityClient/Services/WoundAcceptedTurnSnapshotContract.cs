@@ -65,6 +65,9 @@ internal static class WoundAcceptedTurnSnapshotContract
             WoundHistoryState.HistoryPath,
             MortalWoundOccurrenceState.StatePath,
             MortalWoundOpportunityReceiptState.StatePath,
+            SpiritualWoundCaptureCheckpointState.StatePath,
+            SpiritualWoundDecisionPendingState.StatePath,
+            SpiritualWoundOpportunityReceiptState.StatePath,
             AcceptedMechanicsPlan.WoundCommandPath,
             PendingResolutionPath
         ])

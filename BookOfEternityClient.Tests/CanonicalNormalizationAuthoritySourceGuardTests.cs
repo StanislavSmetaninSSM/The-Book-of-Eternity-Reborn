@@ -62,14 +62,21 @@ public sealed class CanonicalNormalizationAuthoritySourceGuardTests
         Assert.Equal(0, externalProductionOccurrences);
     }
 
+    /// <summary>
+    /// Checks every registry partial for cache exposure and retains the private
+    /// root-state and active canonical-lease requirements.
+    /// </summary>
     [Fact]
     public void AcceptedTurnAuthorityRegistry_NeverExposesRootOwnedCaches()
     {
-        var registrySource = File.ReadAllText(Path.Combine(
+        var servicesPath = Path.Combine(
             TestRepoPaths.RepoRoot,
             "BookOfEternityClient",
-            "Services",
-            "AcceptedTurnAuthorityRegistry.cs"));
+            "Services");
+        var registrySource = string.Join(Environment.NewLine,
+            Directory.EnumerateFiles(servicesPath, "AcceptedTurnAuthorityRegistry*.cs")
+                .Order(StringComparer.Ordinal)
+                .Select(File.ReadAllText));
 
         Assert.DoesNotContain(
             "internal static AcceptedMechanicsPlanCache",
@@ -92,7 +99,7 @@ public sealed class CanonicalNormalizationAuthoritySourceGuardTests
             registrySource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "private sealed class AcceptedTurnAuthorityState",
+            "private sealed partial class AcceptedTurnAuthorityState",
             registrySource,
             StringComparison.Ordinal);
         Assert.Contains(

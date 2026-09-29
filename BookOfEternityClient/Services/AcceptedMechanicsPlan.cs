@@ -319,6 +319,32 @@ internal sealed class AcceptedMechanicsInput
             WoundInput);
     }
 
+    /// <summary>
+    /// Extends an unpublished input with one independently authenticated canonical before-image.
+    /// </summary>
+    /// <param name="path">
+    /// Previously unregistered canonical path.
+    /// </param>
+    /// <param name="image">
+    /// Exact original bytes or proved absence for <paramref name="path"/>.
+    /// </param>
+    /// <returns>
+    /// Detached input whose binding includes the additional before-image.
+    /// </returns>
+    internal AcceptedMechanicsInput WithBeforeImage(string path, CanonicalBeforeImage image)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentNullException.ThrowIfNull(image);
+        var before = BeforeImages.ToDictionary(static pair => pair.Key,
+            static pair => pair.Value, StringComparer.Ordinal);
+        if (!before.TryAdd(path, image))
+            throw new InvalidOperationException("The canonical before-image path is already registered.");
+        return new AcceptedMechanicsInput(SessionId, RequestId, SnapshotToken, Realm, Turn,
+            AcceptedEvents, ResourceCommands, EffectCommands, PendingInput, InternalInputs,
+            AuthorityFingerprints, before, ValidationIssues, PlanningContext,
+            WoundCommands, WoundInput);
+    }
+
     internal AcceptedMechanicsPlanBinding CreateBinding() => new(
         SessionId,
         RequestId,
@@ -883,6 +909,11 @@ internal sealed class AcceptedMechanicsPlanningContext
                 "A completed treatment continuation plan requires resource publication authority, including not-required finalization.",
                 nameof(treatmentResourcePublicationAuthority));
         }
+        if (_woundStageBundle?.PreparedPlan.RecoveryContinuationAuthority is { } recoveryAuthority &&
+            (_woundAnchorPlan is not null || _directWoundPublicationAuthority is not null ||
+             _treatmentResourcePublicationAuthority is not null ||
+             !WoundAcceptedTurnPlanner.RecoveryContinuationFinalPlanAgrees(recoveryAuthority, _woundStageBundle)))
+            throw new ArgumentException("Recovery context requires its exact private recovery stages.", nameof(woundStageBundle));
         if (executionSequenceOffset < 0)
             throw new ArgumentOutOfRangeException(nameof(executionSequenceOffset));
         ExecutionSequenceOffset = executionSequenceOffset;
@@ -1027,17 +1058,21 @@ internal sealed class AcceptedMechanicsWoundPublication
         IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
         JsonObject identityAfterImage,
         JsonObject historyAfterImage,
-        string woundStageBundleFingerprint,
+        string? woundStageBundleFingerprint,
         string finalEffectPlanFingerprint,
-        string? woundAnchorPlanFingerprint)
+        string? woundAnchorPlanFingerprint,
+        string? liveWoundProofFingerprint)
     {
         ArgumentNullException.ThrowIfNull(carrierAfterImages);
         ArgumentNullException.ThrowIfNull(identityAfterImage);
         ArgumentNullException.ThrowIfNull(historyAfterImage);
-        if (string.IsNullOrWhiteSpace(woundStageBundleFingerprint))
+        if ((string.IsNullOrWhiteSpace(woundStageBundleFingerprint) &&
+             string.IsNullOrWhiteSpace(liveWoundProofFingerprint)) ||
+            (!string.IsNullOrWhiteSpace(woundStageBundleFingerprint) &&
+             !string.IsNullOrWhiteSpace(liveWoundProofFingerprint)))
         {
             throw new ArgumentException(
-                "Expected the exact wound stage-bundle fingerprint.",
+                "Expected exactly one wound stage or live proof fingerprint.",
                 nameof(woundStageBundleFingerprint));
         }
         if (string.IsNullOrWhiteSpace(finalEffectPlanFingerprint))
@@ -1071,6 +1106,7 @@ internal sealed class AcceptedMechanicsWoundPublication
         WoundStageBundleFingerprint = woundStageBundleFingerprint;
         FinalEffectPlanFingerprint = finalEffectPlanFingerprint;
         WoundAnchorPlanFingerprint = woundAnchorPlanFingerprint;
+        LiveWoundProofFingerprint = liveWoundProofFingerprint;
     }
 
     internal static AcceptedMechanicsWoundPublication CreateValidated(
@@ -1094,7 +1130,49 @@ internal sealed class AcceptedMechanicsWoundPublication
             historyAfterImage,
             woundStageBundleFingerprint,
             finalEffectPlanFingerprint,
-            woundAnchorPlanFingerprint);
+            woundAnchorPlanFingerprint,
+            null);
+    }
+
+    /// <summary>
+    /// Creates a live wound publication only through the common validated carrier assembler.
+    /// </summary>
+    /// <param name="carrierAfterImages">
+    /// Final composed wound carrier roots.
+    /// </param>
+    /// <param name="identityAfterImage">
+    /// Final wound identity index from the actual reducer chain.
+    /// </param>
+    /// <param name="historyAfterImage">
+    /// Final wound history from the actual reducer chain.
+    /// </param>
+    /// <param name="liveWoundProofFingerprint">
+    /// Exact ordered owner-sealed live insertion proof fingerprint.
+    /// </param>
+    /// <param name="finalEffectPlanFingerprint">
+    /// Final completed effect plan fingerprint.
+    /// </param>
+    /// <param name="proof">
+    /// Private validation proof issued only by the common carrier assembler.
+    /// </param>
+    /// <returns>
+    /// Detached typed wound publication bound to the live insertion proof.
+    /// </returns>
+    internal static AcceptedMechanicsWoundPublication CreateValidatedLive(
+        IReadOnlyDictionary<string, JsonObject> carrierAfterImages,
+        JsonObject identityAfterImage,
+        JsonObject historyAfterImage,
+        string liveWoundProofFingerprint,
+        string finalEffectPlanFingerprint,
+        AcceptedMechanicsCarrierAssembler.ValidatedPublicationProof proof)
+    {
+        if (!AcceptedMechanicsCarrierAssembler.IsPublicationProof(proof))
+            throw new ArgumentException(
+                "Only the typed accepted-mechanics carrier assembler may publish wound roots.",
+                nameof(proof));
+        return new AcceptedMechanicsWoundPublication(
+            carrierAfterImages, identityAfterImage, historyAfterImage,
+            null, finalEffectPlanFingerprint, null, liveWoundProofFingerprint);
     }
 
     internal IReadOnlyDictionary<string, JsonObject> CarrierAfterImages =>
@@ -1110,7 +1188,12 @@ internal sealed class AcceptedMechanicsWoundPublication
     internal JsonObject HistoryAfterImage =>
         _historyAfterImage.DeepClone().AsObject();
 
-    internal string WoundStageBundleFingerprint { get; }
+    internal string? WoundStageBundleFingerprint { get; }
+
+    /// <summary>
+    /// Gets the private owner-sealed live wound proof fingerprint when no ordinary stage is the final wound publisher.
+    /// </summary>
+    internal string? LiveWoundProofFingerprint { get; }
 
     internal string FinalEffectPlanFingerprint { get; }
 
@@ -1123,7 +1206,8 @@ internal sealed class AcceptedMechanicsWoundPublication
             _historyAfterImage,
             WoundStageBundleFingerprint,
             FinalEffectPlanFingerprint,
-            WoundAnchorPlanFingerprint);
+            WoundAnchorPlanFingerprint,
+            LiveWoundProofFingerprint);
 }
 
 internal sealed class AcceptedMechanicsPendingPublicationAuthority
@@ -1242,6 +1326,7 @@ internal sealed class AcceptedMechanicsPlan
         AcceptedMechanicsPendingPublicationAuthority? pendingPublicationAuthority = null,
         AcceptedMechanicsWoundStageBundle? woundStageBundle = null,
         AcceptedMechanicsCarrierCompositionResult? carrierComposition = null,
+        SpiritualLiveWoundCompletion? liveWoundCompletion = null,
         AcceptedMechanicsDirectWoundPublicationAuthority?
             directWoundPublicationAuthority = null,
         MortalWoundTreatmentResourcePublicationAuthority?
@@ -1277,6 +1362,7 @@ internal sealed class AcceptedMechanicsPlan
         OwnerAuthority = ownerAuthority ?? throw new ArgumentNullException(nameof(ownerAuthority));
         EffectPlan = effectPlan;
         _woundStageBundle = woundStageBundle?.DetachedCopy();
+        LiveWoundProofFingerprint = liveWoundCompletion?.ProofFingerprint;
         if (carrierComposition is { Success: false })
         {
             throw new ArgumentException(
@@ -1284,11 +1370,17 @@ internal sealed class AcceptedMechanicsPlan
                 nameof(carrierComposition));
         }
         var woundPublication = carrierComposition?.WoundPublication;
-        if ((_woundStageBundle is null && carrierComposition is not null) ||
-            (_woundStageBundle is not null && carrierComposition is null &&
+        if ((_woundStageBundle is null && liveWoundCompletion is null &&
+             carrierComposition is not null) ||
+            ((_woundStageBundle is not null || liveWoundCompletion is not null) &&
+             carrierComposition is null &&
              _pendingGmPacket is null) ||
             (_pendingGmPacket is not null && carrierComposition is not null) ||
-            (carrierComposition is not null && woundPublication is null))
+            (_pendingGmPacket is not null && liveWoundCompletion is not null) ||
+            (carrierComposition is not null && woundPublication is null) ||
+            (liveWoundCompletion is not null &&
+             woundPublication?.LiveWoundProofFingerprint !=
+                 liveWoundCompletion.ProofFingerprint))
         {
             throw new ArgumentException(
                 "A complete wound plan requires one successful typed carrier composition; a pending-only plan may retain stages but cannot expose one.",
@@ -1332,7 +1424,13 @@ internal sealed class AcceptedMechanicsPlan
                 "A completed treatment continuation plan requires resource publication authority, including not-required finalization.",
                 nameof(treatmentResourcePublicationAuthority));
         }
-        if (_woundStageBundle is not null &&
+        if (_woundStageBundle?.PreparedPlan.RecoveryContinuationAuthority is { } recoveryAuthority &&
+            (_pendingGmPacket is not null || _directWoundPublicationAuthority is not null ||
+             _treatmentResourcePublicationAuthority is not null ||
+             _woundPublication?.WoundAnchorPlanFingerprint is not null ||
+             !WoundAcceptedTurnPlanner.RecoveryContinuationFinalPlanAgrees(recoveryAuthority, _woundStageBundle)))
+            throw new ArgumentException("Recovery publication requires its exact completed recovery stages.", nameof(woundStageBundle));
+        if (_woundStageBundle is not null && liveWoundCompletion is null &&
             _woundPublication is not null &&
             carrierComposition is not null)
         {
@@ -1366,6 +1464,26 @@ internal sealed class AcceptedMechanicsPlan
                     nameof(woundStageBundle));
             }
         }
+        if (liveWoundCompletion is not null &&
+            (carrierComposition is null || _woundPublication is null ||
+             !ObjectMapsEqual(_effectCarrierAfterImages,
+                 carrierComposition.EffectCarrierAfterImages) ||
+             !ObjectMapsEqual(_ownerCompanionAfterImages,
+                 carrierComposition.OwnerCompanionAfterImages) ||
+             EffectPlan is null ||
+             !liveWoundCompletion.MatchesEffects(EffectPlan) ||
+             WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                 EffectPlan) != liveWoundCompletion.FinalEffectFingerprint ||
+             _woundPublication.FinalEffectPlanFingerprint !=
+                 liveWoundCompletion.FinalEffectFingerprint ||
+             _woundPublication.WoundAnchorPlanFingerprint is not null ||
+             !JsonNode.DeepEquals(liveWoundCompletion.FinalState.Identity,
+                 _woundPublication.IdentityAfterImage) ||
+             !JsonNode.DeepEquals(liveWoundCompletion.FinalState.History,
+                 _woundPublication.HistoryAfterImage)))
+            throw new ArgumentException(
+                "Live wound publication must equal one owner-sealed chain and its typed common composition.",
+                nameof(liveWoundCompletion));
         TouchedPaths = NormalizePaths(touchedPaths, nameof(touchedPaths));
         ConsumedPaths = NormalizePaths(consumedPaths, nameof(consumedPaths));
         ValidatePendingResolutionPublication();
@@ -1424,6 +1542,11 @@ internal sealed class AcceptedMechanicsPlan
 
     internal AcceptedMechanicsWoundStageBundle? WoundStageBundle =>
         _woundStageBundle?.DetachedCopy();
+
+    /// <summary>
+    /// Gets the ordered owner-sealed live wound proof fingerprint, when present.
+    /// </summary>
+    internal string? LiveWoundProofFingerprint { get; }
 
     internal IReadOnlyDictionary<string, JsonObject> WoundCarrierAfterImages =>
         _woundPublication?.CarrierAfterImages ??
@@ -1837,6 +1960,7 @@ internal static class AcceptedMechanicsPlanFingerprints
         fields.Add(plan.OwnerAuthority.Fingerprint);
         AppendEffectPlan(fields, plan.EffectPlan);
         AppendWoundStages(fields, plan.WoundStageBundle);
+        fields.Add(plan.LiveWoundProofFingerprint);
         fields.Add(plan.WoundAnchorPlanFingerprint);
         fields.Add(plan.DirectWoundPublicationAuthority?.Fingerprint);
         fields.Add(plan.TreatmentResourcePublicationAuthority?.AuthorityFingerprint);

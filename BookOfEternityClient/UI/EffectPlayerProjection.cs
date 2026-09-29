@@ -290,6 +290,14 @@ internal static class EffectPlayerProjection
                 profile,
                 "Периодическое восстановление",
                 $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "capPolicy"))}"),
+            "periodic_spend" => new(
+                profile,
+                "Периодический расход",
+                $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "floorPolicy"))}"),
+            "periodic_gain" => new(
+                profile,
+                "Периодическое получение",
+                $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "capPolicy"))}"),
             "action_control" => new(
                 profile,
                 "Действие",

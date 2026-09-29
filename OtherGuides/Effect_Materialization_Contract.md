@@ -42,7 +42,7 @@ The exact source ID must resolve in the accepted composed state. Display names, 
 
 ## 3. Registered component profiles
 
-The nine general profiles are listed here. Wound Materialization adds the exact eight
+The eleven general profiles are listed here. Wound Materialization adds the exact eight
 spiritual-wound profiles in section 7.1; they are first-class registered profiles, not
 aliases of the general afterlife condition profile.
 
@@ -55,6 +55,25 @@ aliases of the general afterlife condition profile.
 7. `event_reaction`
 8. `wound_consequence`
 9. `afterlife_combat_condition`
+10. `periodic_spend`
+11. `periodic_gain`
+
+`periodic_spend` has the closed payload `resource`, positive `amount`, and
+`floorPolicy`; `periodic_gain` has `resource`, positive `amount`, and `capPolicy`.
+They produce Spend/Gain, so they can affect `energy` or `spiritual_action_points`
+only when the exact target owns that resource and the accepted source authorizes
+the component. They do not accept `damageType`. Damage/Restore profiles remain
+unchanged and cannot substitute for AP spending/recovery. Use the existing floor
+and cap vocabulary; registered resource bounds remain authoritative. In particular,
+`cannot_reduce_below_one` rejects an effect spend that would leave less than one.
+
+Both profiles support deterministic triggers and bounded `resource_delta` receipts
+through the normal pending-effect protocol. Events are `resource_spent` and
+`resource_gained`; a reaction to its own event still obeys use budgets and causal
+closure. A one-use recovery on `resource_spent` can restore one AP after an
+ordinary two-AP cost: 6 -> 4 -> 5. The GM must author the source definition and
+trigger, not write 5 into the canonical ledger or fabricate the client receipt.
+These generic profiles do not expand any wound-specific consequence allowlist.
 
 Each component has an exact unique `componentId`, registered `profile`, integer `priority`, and the closed payload required by that profile. Numeric values must be finite and inside source-owned `parameterBounds`. Narrative `name`, `description`, `reason`, `effectSummary`, or custom JSON never creates mechanics.
 
@@ -340,6 +359,15 @@ state, or wound identity. Healing retires the exact wound-owned root/descendant 
 but preserves unrelated effects and global terminal provenance.
 
 ## 7.1 wound_spiritual_profiles_v1
+
+For `spiritual_action_cost_burden`, the exact owner's applicable burden is paid
+before `recover_spiritual_power`, including failure; insufficient funds reject.
+`force_incarnation` has no base cost and requires only the positive wound burden
+in its seven-field 0/0/0 audit; without burden it remains free without audit.
+The action-only recovery audit and ordered Spend/reactions/Gain rule are documented
+under `spiritual_wound_special_action_costs_v1` in
+`OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
+in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
 
 Wound Materialization v1 extends the common component registry with exactly eight
 deterministic spiritual-wound profiles:

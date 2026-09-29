@@ -5,6 +5,14 @@
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts/`, `quickstart.md`  
 **Method**: Test-driven development; every behavior test is written and observed RED before its implementation task.
 
+## Current execution boundary — 2026-09-30
+
+Gameplay tasks remain paused. Testing-only T066–T071 are complete in
+[feature 1505](../1505-test-suite-performance/tasks.md) under the approved
+CATEGORY-SELECTION-DECISION rev1. Historical Fast/PreMerge/full-suite requirements
+below are superseded; select only affected categories. Migration verification and
+independent review passed. Stop for owner inspection before any gameplay work.
+
 ## Format: `[ID] [P?] [Story] Description`
 
 - **[P]**: Can run in parallel after prior dependencies are complete because it owns different files.
@@ -2324,7 +2332,7 @@ hand-written history/after-images, or a raw mutation fallback.
             FullValidation1920/1920 in12:26.460/default15m pass; parent inspected
             actual logs/summaries/all40TRXs and exact discovery/theory membership.
             This does not close parent B, T081, C1/C2/D/E, T177 or full #1536.
-        - [ ] T081-B2C-J2-C1 [US3] After the B0/B1/GM checkpoint, implement the
+        - [x] T081-B2C-J2-C1 [US3] After the B0/B1/GM checkpoint, implement the
           shared retained resource execution core and next-whole-exchange staging
           from `docs/superpowers/plans/2026-09-08-spiritual-journal-c1-implementation.md`
           and its complete nine-file companion. Preserve fixed-input goldens,
@@ -2334,6 +2342,57 @@ hand-written history/after-images, or a raw mutation fallback.
           three OLD/GREEN payloads precede independent review and one parent Fast.
           Internal client-only data: no new GM-authored/publication contract and
           no C1 FullValidation. This is not source admission or complete Unit C.
+          Initial OLD artifact20260909-001823-083-38640-deddf28fd3004abd8a095ec81408dd03-focused
+          is preserved as12/14 (expected allocator RED plus invalid golden
+          precondition). Actual failure is AppliedTransitions NotEmpty at line355,
+          not missing AcceptedPendingResolutions: the unchanged receipt-wait
+          control passes. Correct only the new golden test and all literal plan/
+          companion copies: pending requires empty applied transitions, nonempty
+          accepted pending resolutions and incomplete transcript; other contours
+          retain nonempty applied transitions. No runtime/fixture/input change.
+          Preserve the initial OLD pin untouched; select a distinct explicitly
+          pinned corrected OLD run before any production refactor and compare
+          its three full goldens with GREEN. No completion claim yet.
+          Resumed2026-09-13 after Windows reinstall: native git worktree repair
+          restored this worktree at D:/Games/worktrees/boe-1536-wound-materialization.
+          Durable current execution ledger: .superpowers/sdd/2026-09-08-spiritual-journal-c1-implementation/progress.md.
+          Restore the missing .NET8 toolchain before the corrected OLD run;
+          preserve original artifacts and translate only active execution paths.
+          Corrected OLD20260913-005724-621-24132-7177304af20d4d5b9f92e1a109925d41-focused
+          is13/14 with only the intended allocator2-versus4 RED, all three full
+          goldens captured, no timeout/skips/duplicates and complete cleanup.
+          Its distinct corrected-golden metadata receipt pins summary SHA256
+          8B04F8E3096851B3869985C106D3CC64EE1BE07CBEEF5915216A2CE86E8682FA.
+          Static correction review is Spec PASS/Quality PASS,0C/I/M. Cold rebuild
+          exposes11 existing CS1998 warnings; all affected files equal HEAD.
+          OLD Integration11 passed; C1 production and corrected GREEN22/Integration20
+          now pass with exact OLD/GREEN goldens and independent static PASS/PASS.
+          Parent Fast20260913-020621-837-26732-a5004cf3b74f43dca464405178624e3d-fast
+          stopped at5667/5669 with two verification defects tracked below; this
+          is not a complete Fast pass or C1 acceptance.
+          Parent accepted bounded C1 on2026-09-13 after the corrected Fast
+          20260913-022031-360-25788-7b45153e40764e18b9d0ef56d558d744-fast:
+          7882/7882 in3:18.867/default5m, exit0, no timeout or skipped rows,
+          complete cleanup, no cross-TRX duplicate IDs, zero build warnings/errors.
+          Actual30TRXs contain7882 unique executions. Final focused22/22 and
+          Integration20/20, unchanged three pinned OLD/GREEN goldens and both
+          independent Spec/Quality PASS reviews were inspected by the parent.
+          C2/D/E, parent Unit C and full #1536 remain open; no runtime cutover.
+        - [x] T081-B2C-J2-C1-V1 [US3] Resolve the two observed C1 Fast gate
+          failures without changing production or weakening runner boundaries:
+          update the accepted-mechanics ownership inventory anchor for the actual
+          partial class declaration, and make the invalid parameter-set test use
+          PowerShell's stable structured error identity across Windows UI locales.
+          Preserve the failing Fast artifact, exact rejected CLI combinations,
+          nonzero exit/no-lane-start assertions, and the bounded runner. Verify
+          both focused regressions and obtain independent review before one
+          corrected Fast control. This verification-only follow-up belongs to
+          #1536; no GM-authored/runtime contract or FullValidation change.
+          Completed: actual exact partial anchor plus structured CLIXML error
+          identity alongside the original plain CLI exit/no-lane assertions.
+          Parent Focused20260913-021849-370-28256-7730cf11f9aa40dc936651f6a5259b99-focused
+          passes2/2; independent Spec PASS/Quality PASS,0openC/I/M; corrected
+          Fast above passes7882/7882. Runner behavior/deadlines remain unchanged.
         - [ ] T081-B2C-J2-C2 [US3] Bind C1 intervals to actual B1 source references
           and the current original-turn effect generation; register/retire new
           instances without resetting the shared arbiter. Implement owner-bound
@@ -2341,6 +2400,82 @@ hand-written history/after-images, or a raw mutation fallback.
           lawful start/terminal/passive/champion/dice-free contours. A pending guard
           or reconstructed DTO is not continuation. D actual wound insertion/eight
           consumers and E cold single publication remain mandatory before cutover.
+          Parent boundary audit started2026-09-13 after accepted C1/V1:
+          `docs/superpowers/plans/2026-09-13-spiritual-journal-c2-boundary-audit.md`.
+          It records actual B1/C1/draft/arbiter/pending producer dependencies;
+          it is not an executable plan or completed implementation. C2 remains open.
+          Execution resumed2026-09-15 with complete companions:
+          `docs/superpowers/plans/2026-09-15-spiritual-retained-resource-continuation.md`,
+          `docs/superpowers/plans/2026-09-15-spiritual-source-continuation.md`, and
+          `docs/superpowers/plans/2026-09-15-spiritual-original-capture.md`.
+          Retained receipt implementation has semantic RED, Focused9/9, independent
+          scoped review PASS and Fast7882/7882. Additional narrated/zero coverage
+          exposed advertised `resource_delta: 0` projecting an illegal zero-request
+          mutation; Z0 now fixes and verifies this mismatch with independent review.
+          Signed source continuation is implemented with final focused families
+          10+28+16 and independent bounded PASS. Missing-side continuation is
+          applied: semantic RED, Focused13+9 PASS and independent XHigh PASS.
+          Original capture is applied and independently accepted: read-set defect fixed
+          (RED5/GREEN12, independent recheck PASS); chronology clarified by owner
+          and verified14+9+12 with independent XHigh PASS; C2-PREFIX was still open at that checkpoint.
+          Common original-capture continuation accepted: signed OLD controls, Focused9/9, independent XHigh PASS and Fast7872/7872 (4:48.949). These internal units do not complete source admission, generation/D or E.
+        - [x] T081-B2C-J2-C2-ORDER [US3] Resolve original resource ordering before
+          accepting capture or connecting common pending continuation. Owner
+          chose chronological exchanges2026-09-16: ordinary/lifecycle prefix once,
+          then complete each exchange and causal closure in journal order.
+          Contract/spec/plan record the deliberate difference from fixed global
+          phases. Experimental phase gate removed. Verified completed-parent
+          recovery-to-cost graph append without relaxing in-flight dependency
+          rules; fourteen capture, nine receipt and twelve graph cases passed with independent XHigh acceptance.
+        - [x] T081-B2C-J2-C2-PREFIX [US3] Bind the first exchange audit to the
+          actual accepted ordinary resource/effect prefix when its net resource
+          state differs from the signed original ledger (for example6->5 ordinary
+          spend then exchange5->2). Existing source/outcome acquisition currently
+          rejects this before execution; do not weaken signed-source checks or
+          claim general chronological runtime support from the capture helper.
+          Feed genuine owned prefix evidence through source validation; cover
+          direct mutations and triggered changes. Required before C2/D/E cutover.
+        - [x] T081-B2C-J2-C2-Z0 [US3] Reconcile the advertised inclusive zero
+          bound with the ordinary positive resource-mutation contract. Preserve
+          an accepted `resource_delta` amount `0` as terminal receipt/use evidence
+          while projecting no mutation, resource event, after-component work, or
+          descendant activation; keep positive-request/clamped-zero transitions
+          unchanged. Add pending-resolver, fixed-path and retained-session
+          RED/GREEN coverage, then synchronize the Mortal and afterlife worked
+          examples, afterlife matrix, manifest and source guards before integrated
+          C2 acceptance. This does not complete C2, D, E, T177, or issue #1536.
+        - [x] T081-B2C-J2-C2-V2 [US3] Apply the owner's 2026-09-15 clarification
+          that test-lane budgets may evolve with measured workload. Document the
+          policy in `docs/testing.md`; preserve honest group boundaries and keep
+          Fast quick by optimizing or relocating measured heavy coverage without
+          dropping assertions. Reconcile FullValidation discovery and runtime-expanded theory cases
+          with completed and residual results, then adjust a lane budget only if
+          timings and group composition justify it. Record the evidence and any
+          runner/guard changes; an increased limit does not erase prior timeout
+          evidence. This verification follow-up remains under GitHub issue #1536.
+          Verified 2026-09-15: all 43 original methods/66 cases preserved as
+          50 Fast + 16 Regression; focused 50/19 and independent review PASS.
+          FullValidation default/cap 30 is documented from measured workload;
+          guard RED/GREEN and six configuration bounds verified. Parent Fast
+          20260915-190624-905-3964-1fe8a87bc8ce4235bddf9af2485c2779-fast
+          passed 7868/7868 in 4:42.514, no timeout/duplicates, cleanup complete.
+          Z0's separate Full coverage reconciles 1240 + 680 = 1920 passing executions
+          with no cross-run overlap; the original 15m timeout remains unchanged.
+        - [x] T081-B2C-J2-C2-V2-F [US3] Apply the owner's explicit follow-up
+          to raise Fast's default and hard limit from 5 to 7 minutes after the
+          verified 7868-case run took 4:42.514. Update runner, existing boundary
+          guard and current documentation; preserve project/category boundaries,
+          two-host ceiling, FullValidation 30 and Focused default 5/cap 15. Verify the
+          affected guard and accepted/rejected configuration bounds without
+          repeating the unchanged full Fast suite solely for the new deadline.
+        - [ ] T081-B2C-J2-C2-V2-P [US3] At the next relevant FullValidation
+          checkpoint, investigate measured fixture/manifest-check cost and the
+          mixed-bin schedule based on discovery counts on one fixed checkout. Preserve
+          collection isolation, exact coverage and Fast's quick feedback role;
+          do not treat the 30-minute headroom as a performance fix. Evidence:
+          `docs/testing.md` and
+          `docs/superpowers/plans/2026-09-15-measured-fullvalidation-budget.md`.
+          This follow-up does not block the next retained C2 implementation unit.
   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
     pending/receipt roots, exact cold reconstruction and narrow decision intake
     through `ValidationService.WoundMaterialization.cs`,
@@ -2364,6 +2499,99 @@ hand-written history/after-images, or a raw mutation fallback.
     `SpiritualWoundConflictContributionProjector.cs` and the lifecycle/seal tests.
     Include two current exchanges where the first wound changes applicable later
     mechanics, both simultaneous sides, exact replay and recent-history pruning.
+    Approved FR-035A (2026-09-24): when the already-owned conflict wound is
+    below a later guaranteed rank, worsen exactly to that rank within the hard
+    maximum; when it already meets/exceeds the guarantee, derive client-owned
+    `guarantee_satisfied` with exact `woundId`/`satisfiedSeverityRank`, null
+    selected rank/transition ID, no GM decline and no duplicate transition.
+    Extend the closed receipt parser, C2/C3 and cold replay with negative
+    changed-source/wound/rank/instance controls and GM docs/examples/guards.
+    Checkpoint 2026-09-25: bounded same-original-turn higher-cap `create` ->
+    `worsen` path and owner duplicate-create guard are implemented and reviewed;
+    signed C2/C3/common-plan, Focused, Fast and FullValidation evidence is in
+    `plan.md`. Signed next-turn origin and exact worsening of the prior conflict
+    wound are now implemented and independently reviewed (Focused 1/1;
+    `plan.md` checkpoint 2026-09-25). T081-D remains open for negative
+    signed-origin controls, FR-035A satisfaction and the
+    remaining multi-source coverage.
+    Optional capped `none` now has bounded code, signed C2/C3 integration,
+    GM guidance/example/guard and independent XHigh review; see the
+    2026-09-25 checkpoint in `plan.md`. Final post-correction controls are
+    pending before this bounded slice is fully accepted.
+    FR-035A has a bounded owner/C2/C3 implementation and worked GM example.
+    Signed next-turn zero-calculated-maximum satisfaction, direct GM-decision
+    rejection, mandatory C3 receipt with no insertion, positive common assembly
+    and foreign-proof rejection passed Focused integration (6/6 C3 family,
+    20260925-031036; details in `plan.md`). Five changed-source/wound/rank/side/
+    instance negatives mutate saved original-draft images after a clean cold
+    replay baseline; structurally valid changed checkpoints fail semantic replay
+    (Focused 1/1, 20260925-034806). Current physical GM draft binding is C4's
+    publication contract, not cold-replay authority. Documentation Focused
+    132/132, Fast 8348/8348 and FullValidation 1923/1923 passed (details in
+    `plan.md`). Keep T081-D open for final controls, historical rank
+    across later worsening, dependent continuation and remaining source families.
+    Both-side same-exchange checkpoint 2026-09-25: signed integration RED found
+    the shared-coordinate uniqueness error in the live wound seal; the seal now
+    keys by coordinate plus affected side. Focused GREEN 1/1, distinct per-side
+    wound/transition IDs and common carrier agreement are recorded in `plan.md`.
+    GM matrix/guide/worked example and guard were updated. Final owning Focused
+    1/1, C3 family 3/3, docs 132/132, Fast 8348/8348, FullValidation
+    1923/1923 and XML build passed. Independent Astra XHigh P2 corrected and
+    confirmed closed: create/create example applies only before either side's
+    first conflict wound. This bounded block is accepted; T081-D stays open.
+    FR-035A stronger-wound checkpoint: same-turn automatic satisfaction now
+    covers current II > guarantee I/source maximum I as well as equality;
+    final witness assertions passed Focused 2/2 (20260925-043943), XML-enabled
+    integration build exited 0 and independent Astra XHigh found no P1/P2.
+    This test-only block is accepted. Historical rank after a subsequent
+    worsening is covered by a signed three-exchange C2/C3 integration test:
+    create I, automatic guaranteed-I satisfaction, worsen II. The middle
+    receipt retains historical rank I, null transition/selection and the I/I
+    source witness; the final plan seals. Focused Integration 1/1
+    (20260925-044808), XML-enabled Integration build exit 0 with no changed-file
+    warnings, and independent Astra XHigh review without P1/P2 or false-positive
+    findings. This test-only block is accepted; T081-D remains open for
+    dependent continuation and source families.
+    Dependent-continuation C3 checkpoint: the existing signed private C2
+    correction scenario now asserts the wound-induced guard cost of 3 on the
+    later exchange, its exact resource transition, one same-ID wound receipt,
+    and successful common plan. All seven variants passed Focused Integration
+    (20260925-045231). Independent Astra XHigh review found that the common
+    plan needed exact resource state/history assertions; these and receipt
+    transition identity were added. Affected-row Focused 1/1 (20260925-045815),
+    final XML-enabled Integration build exit 0 with no changed-file warning,
+    and targeted reviewer confirmation closed the finding. This test-only
+    block is accepted; T081-D remains open for mechanical consumers, negative
+    origin and pruning controls; source-family breadth belongs to T081-E.
+    Below-guarantee checkpoint 2026-09-26: signed create I then guaranteed II
+    (maximum III) exposed and fixed original-source guarantee transport in the
+    closed command parser. Only an exact, live owner-issued opportunity admits
+    the serialized proof; unowned and altered claims reject. Final Focused 2/2
+    (20260926-062036), companion owner controls 3/3 (20260926-061322), Fast
+    8348/8348 (20260926-061527), XML-enabled build and independent Astra XHigh
+    review passed. The test rejects none/I/III before valid II and verifies the
+    same wound and final carrier/index/history. See `plan.md` for evidence and
+    the internal-transport no-GM-documentation-update rationale. T081-D stays open.
+    Foreign-origin controls 2026-09-26: the signed next-turn fixture rejects a
+    structurally valid receipt naming a foreign wound or creation transition,
+    with no offer or canonical carrier/index/history writes. Positive baseline
+    plus both negatives passed Focused 3/3 (20260926-153538); XML build passed.
+    Independent Astra XHigh review found no actionable issue. This bounded block
+    is accepted; details and remaining origin controls are in `plan.md`.
+    Missing registration/history now returns structured blocked results before
+    private transport writes (Focused 5/5 split, C1/checkpoint 5/5, XML build,
+    independent Astra XHigh). Fast was incomplete at 8216 passing results of
+    8348 before its seven-minute bound; do not treat that run as green.
+    The next bounded correction rejects lost/empty/relocated creation receipts
+    using signed pre-turn wound evidence before C1 and normal/retrauma offers.
+    RED/GREEN, remaining controls and independent review are recorded in
+    `plan.md`. The shared Fast checkpoint passed 8348/8348; final terminal and
+    malformed-UTF8 refinements passed their owning Focused selections, final
+    XML build and FullValidation 1923/1923 (20260926-165803, 25:12 under 30m).
+    Independent Astra XHigh has no remaining finding. These bounded corrections
+    are accepted; the older incomplete Fast remains recorded as incomplete.
+    T081-D is still open for the remaining mechanical, negative-origin and
+    pruning controls; source-family breadth remains with T081-E.
   - [ ] T081-E [US3] Cover every required ordinary/special/guaranteed/start/terminal
     source family, danger/defeat/optional-dissipation behavior and truthful final
     preview through the existing T077-T092 owners and their worked GM examples.
@@ -2629,6 +2857,9 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T132 [P] [US6] Add RED capability-vs-service, visibility, realm/location, access condition, compensation kind, stale provider, and service-profile bounds tests in `BookOfEternityClient.Tests/AfterlifeHealingServiceContractTests.cs`
 - [ ] T133 [P] [US6] Add RED accepted success/partial/failure charge-once, cancel/validation/rollback refund, and favor/debt/quest/allegiance/free-aid same-handler tests in `BookOfEternityClient.IntegrationTests/AfterlifeHealingPaymentLifecycleTests.cs`
 - [ ] T134 [P] [US6] Add RED first-entry discoverability, tier-V downgrade protection, Lazaret/public-100%, non-active-Guardian availability, and negotiated Elyara tests in `BookOfEternityClient.Tests/ElyaraHealingServiceTests.cs`
+  Include the universal command after accompanying the player to the Shining Abode,
+  death removing its availability, stale death/relocation offers rejecting before payment,
+  travel or treatment, and bootstrap/normalization preserving accepted life/location state.
 - [ ] T135 [P] [US6] Add RED every-faction visible primary `healing_support`, exact actor profile tier I-V, multiple healer, non-public visibility, and access requirement tests in `BookOfEternityClient.IntegrationTests/ShiningFactionHealingSupportTests.cs`
 - [ ] T136 [US6] Add RED paid/negotiated Elyara and accessible/inaccessible Shining provider end-to-end command/world-cycle/rollback journeys in `BookOfEternityClient.IntegrationTests/AfterlifeHealingProviderLifecycleTests.cs`
 
@@ -2637,16 +2868,21 @@ close full source-action/terminal/pending contracts or any top-level story task.
 - [ ] T137 [US6] Implement strict healing service profiles, capability separation, quote/rounding, access, and compensation contracts in `BookOfEternityClient/Services/AfterlifeHealingServiceContract.cs`
 - [ ] T138 [US6] Compose Ink Feather reservation/charge/receipt through its existing specialized currency/accounting authority, and accepted non-currency agreements through the same wound attempt, without admitting Ink Feathers to the unified resource ledger, in `BookOfEternityClient/Services/AfterlifeHealingServicePlanner.cs` and `BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs`
 - [ ] T139 [US6] Add fixed tier-V healing capability, Lazaret location, public 100% service, and negotiated compensation metadata to `BookOfEternityClient/system_guardians/built_in/elyara/manifest.json` and `BookOfEternityClient/system_guardians/built_in/elyara/dossier.md`
+  Treat the Lazaret as the initial location; metadata must not imply permanent presence or immortality.
 - [ ] T140 [US6] Enforce Elyara discoverability/profile/service invariants during fresh game and subsequent validation/normalization in `BookOfEternityClient/Services/SystemGuardianLibraryService.cs` and `BookOfEternityClient/Services/Validation/ValidationService.GuardiansAndAfterlife.cs`
+  Preserve canonical relocation and death; never respawn or duplicate her to satisfy service invariants.
 - [ ] T141 [US6] Add visible primary `healing_support` to Shining resident role materialization and Russian display in `BookOfEternityClient/Services/ShiningAbodeState.cs`, `BookOfEternityClient/Services/GuardianAbodeResidentState.cs`, and `BookOfEternityClient/UI/ExplorerMode/ExplorerMode.Afterlife.ShiningAbode.cs`
 - [ ] T142 [US6] Validate every faction has at least one exact roster healer whose afterlife profile proves tier I-V while public access requires a separate service profile in `BookOfEternityClient/Services/Validation/ValidationService.ShiningAbode.cs` and `BookOfEternityClient/Services/Validation/ValidationService.AfterlifeEntityProfiles.cs`
 - [ ] T143 [US6] Add access-aware self/helper/Elyara/Shining provider offers and sealed confirmation to the common player flow in `BookOfEternityClient/Services/WoundApplicationService.cs` and `BookOfEternityClient/Services/WoundPlayerProjection.cs`
+  Resolve «Пойти к Элиаре за лечением» universally from her current canonical location and
+  life state; omit it after death and revalidate stale offers before side effects in both UIs.
 
 ### GM contract synchronization
 
 - [ ] T144 [P] [US6] Add RED Elyara/service price/compensation/Shining role/access contract, registry, manifest, and Russian terminology guards in `BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.HealingProviders.cs` and `BookOfEternityClient.Tests/AfterlifeContractRegistryTests.cs`
 - [ ] T145 [US6] Register/document the pending/service/profile/role authority in `BookOfEternityClient/Services/AfterlifeContractRegistry.cs`, `OtherGuides/Afterlife_Contract_Matrix.md`, `Rules/Block_32_Guardians.txt`, and `TaskGuides/CLI_Step_Main.txt`
 - [ ] T146 [US6] Add paid Elyara, failed charged attempt, rolled-back no-charge, negotiated compensation, visible inaccessible Shining healer, and accessible faction healer examples in `Examples/E_CLI_Afterlife_Turns.txt` and `Examples/example_validation_manifest.json`
+  Include relocated Elyara in the Shining Abode and unavailable treatment after her death.
 - [ ] T147 [US6] Run focused quote/service/payment/Elyara/Shining/provider/docs filters through `scripts/test-csharp.ps1` and record GREEN evidence in `specs/1536-complete-wound-materialization/tasks.md`
 
 **Checkpoint**: Afterlife help is discoverable and mechanically complete without conflating ability, visible role, public service, or one mandatory Shining clinic.
@@ -2936,3 +3172,2400 @@ retaining this task/spec authority.
 - Historical #1535 tasks remain complete; the dependent global-contract extension and every new unchecked implementation task are owned by #1536 T167–T177.
 - Every dynamic wound/provider text surface is untrusted and must be escaped/sanitized.
 - Update task checkboxes only after inspecting implementation and verification evidence.
+
+### C2-PREFIX implementation slices — approved spec 2026-09-19 (#1536)
+
+- [ ] T081-B2C-J2-C2-GEN [US3] Continue original C2/D against plan.md current-generation execution section: bind real retained sources/intervals to the owned effect draft, execute dependency-local wound barriers, prepare against distinct owned draft-before authority, apply real roots/lineage, register/retire instances on the same routing/use owner and consume the new generation in the next exchange. Source/frontier guards are internal steps only; completion requires real spiritual insertion/worsening/re-trauma and the architecture's thirteen domain-qualified scenarios plus eight-profile consumers, relevant focused controls, independent XHigh review and Fast. Under owner-approved option A (2026-09-19), reaction descendants/replacements/anchored consumption use supported physical wounds or general effects in the same engine; spiritual reaction graphs remain rejected. New wound root/source-epoch/descendant/retirement assertions require actual physical wounds inserted through the same draft path; generic effects cannot substitute. E cold reconstruction/common publication remains separate and mandatory before cutover (#1536).
+
+- [x] T081-B2C-J2-C2-GEN-R-CUT [US3] Materialize the accepted physical-wound
+  `apply_definition` replacement closure at the local worsening barrier in exact
+  N/R/U order. Authenticate the current routing epoch and actual writer receipts,
+  support consuming replacement targets through anchored insertion, retain unrelated
+  reactions for the ordinary finalizer, route reaction-created descendants into a
+  later worsening, and keep spiritual reaction graphs rejected. Accepted 2026-09-21:
+  RED `002051` and `004315`; final Focused `010328` 4/4 plus regression `005953`
+  10/10; Fast `070950` 7902/7902 in 3:47.236; independent XHigh review found no
+  P1-P3. This closes only the bounded R-cut checkpoint; lifecycle frontier, remaining
+  thirteen-scenario coverage, common completion/publication and E remain open.
+
+- [x] T081-B2C-J2-C2-GEN-R-CASCADE [US3] Reconcile acceptance scenario 11 with
+  the legal domain split approved under option A. The existing general-effect
+  same-boundary golden proves two consuming activations, uses 2→1→0 and both
+  replacements. The physical wound theory separately proves the permitted one-edge
+  reaction, anchored consumption, teardown, retry and unrelated-work behavior. Do
+  not construct the rejected physical same-boundary two-trigger replacement cascade:
+  the wound contract requires at most one owned `apply_definition` edge and exactly
+  one owning trigger per wound reaction component. Evidence: combined Focused
+  `20260921-072414-304-13676-ab06d53e14064541bc73e1ac7a2e5b5f`
+  passed 4/4; contract guard Focused `20260921-072618-572-22984-fe9b4b2903584ad0bcf88c18854df1d3`
+  passed 1/1; independent XHigh review found no P1-P3 in this domain-qualified
+  reconciliation.
+
+- [x] T081-B2C-J2-C2-GEN-R-ANCHOR-RECEIPT [US3] Prove that the retained physical
+  replacement and anchored-consumption receipts reject a detached identity image whose
+  exact replace anchor changed. The real owner remains healthy: exact public retry,
+  writer/allocation counts and all seven canonical roots stay unchanged. Focused
+  `20260921-073751-298-24064-d0437d75d3db4b0b91a0aafc5f8f9fc3` passed 3/3 with
+  a clean build; independent XHigh review found no P1-P3. This is receipt validation,
+  not an outer-preflight corruption test.
+
+- [x] T081-B2C-J2-C2-GEN-R-ANCHOR-PREFLIGHT [US3] During common completion/cold
+  reconstruction, prove outer preflight rejects a changed owned replacement anchor
+  atomically before new writes or allocations. Preserve unrelated work and do not
+  broaden the one-edge wound graph or spiritual reactions. Accepted 2026-09-21:
+  changed live replacement history is rejected before completion writes/allocations,
+  revokes the unpublished capture and leaves all seven canonical roots unchanged.
+  Focused `20260921-080922-029-19480-9a38f2238a8e4bdd92bb6404140c8da4`
+  passed 3/3 with a clean build; the final common-completion controls and XHigh
+  re-review below also cover the strengthened insertion-history preflight.
+
+- [x] T081-B2C-J2-C2-GEN-COMPLETE-EFFECT [US3] Reconcile the complete accepted
+  transcript with the retained trigger/reaction/insertion journal, execute only deferred
+  ordinary operations, and run the global due-lifecycle and terminal folds exactly once.
+  Produce one completed effect plan with current carrier, identity, source/root epoch and
+  insertion-chain agreement; do not replay a journaled event or publish canonical files.
+  Accepted 2026-09-21: completion revalidates the live insertion writer history and
+  current carrier image, rebuilds current lineage, preserves canonical source-fingerprint
+  semantics, skips journaled N/R work, executes deferred foreign terminal work and one
+  due-lifecycle phase, and returns an exact-retry result without canonical publication.
+  TDD REDs: missing completion `20260921-074344-114-20040-e047475928524c6bafebf2f905d7baf8`,
+  wrong canonical fingerprint plus changed retirement `20260921-082252-846-29884-3ec170dd77f54204bb219d34a9e5fd00`,
+  and changed create/carrier receipts `20260921-084308-418-32552-4d251d9559c94131becb2d3c4eb59f77`.
+  Final Focused `20260921-085021-518-27820-7fc7d9ee6600478c85817958e20a990d`
+  passed 11/11; ordinary draft regression `20260921-083719-394-22564-207d2e52f62b4a51bd9bbcb04a4cfdd1`
+  passed 23/23; Fast `20260921-085419-103-33512-9c1af8dee9bb48d0805ab14246fc3190`
+  passed 7902/7902 in 4:19.527 under the seven-minute limit. Independent XHigh review
+  found four P2 and one P3 across two correction rounds; final re-review found no P1-P3.
+  This is an unpublished internal completion surface, so no GM prompt, example, manifest
+  or public contract update applies. Common canonical publication and E remain open.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-9 [US3] Close the remaining terminal-lifecycle
+  half of architecture acceptance scenario 9 without inventing a spiritual reaction:
+  prove an unrelated legal general-effect `suspend` survives the physical-wound local
+  cut, is folded exactly once only at common completion, and keeps its accepted consume
+  and terminal source events while the wound generation is worsened and the old wound
+  generation is retired. Exercise both a retained two-use observer and a last-use observer;
+  for the latter prove the exact `suspend -> expire` and `expire -> remove` identity order
+  with accepted event references. Reconcile these integration rows with the existing
+  ordinary terminal-sibling matrix; preserve exact retry, zero canonical publication,
+  and unchanged allocation/write counts on retry. Run the smallest owning Focused
+  selection and independent XHigh review before acceptance.
+  Accepted 2026-09-21: the retained two-use rows preserve ordinary consume plus
+  remove/suspend reaction evidence, while the last-use rows prove exact
+  `suspend -> expire` and `expire -> remove` transition order with the activation
+  event on expiry and reaction event on the terminal operation. Completion retry
+  returns the same result without new identity writes or allocations. Initial
+  coverage passed 4/4 in `20260921-091213-634-30368-67484477c52e427aaade147ad92ba660-focused`;
+  the ordinary sibling matrix passed 3/3 in
+  `20260921-091443-394-25480-abfd2e2b77e24f728cfd080269a403e0-focused`.
+  XHigh review found the missing earlier-terminal branch and two assertion/doc gaps;
+  the strengthened rows first failed 4/6 in
+  `20260921-091919-498-34752-8fb4b12ec69e401b91892445e901ddbf-focused`,
+  then passed 6/6 with a clean build in
+  `20260921-092216-818-8656-7bd714aa63f345fda22464036f9cd909-focused`.
+  Independent XHigh re-review found no remaining P1-P3. This adds only integration
+  coverage for existing unpublished behavior; parent GEN/publication/E remain open.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-3 [US3] Close architecture acceptance scenario 3
+  through the real spiritual original-turn owner: capture and execute multiple signed
+  harmful exchange prefixes, explicitly decline every offered wound, and prove each
+  unchanged decline is idempotent without initializing the effect draft or allocating
+  identity state. Drain the one retained resource schedule and compare common draft
+  completion with the unchanged ordinary finalizer for the exact final effect result
+  and allocation stream. Preserve claimed-die/source chronology, zero forced wound
+  materialization, zero canonical publication and unchanged canonical files. Run the
+  smallest owning Focused selection and independent XHigh review before acceptance.
+  Accepted 2026-09-21: two signed harmful exchanges produce two real opportunities;
+  both declines are exact-retry idempotent and leave the draft uninitialized until
+  the one common completion. A signed one-use general effect activates before the
+  first decline and expires only in the global schedule. Paired deterministic
+  factories prove the retained and ordinary finalizers have the same nonempty
+  allocation order, IDs and final fingerprint; the owned history records exact
+  `create -> expire` with the accepted activation event. The first empty-effect
+  control passed 1/1 in
+  `20260921-093242-833-35180-fb4c59f17e754b61bf876dc3c3aed2a3-focused`;
+  XHigh review required a nonempty stream and XML documentation. The strengthened
+  control passed 1/1 in
+  `20260921-093902-840-7480-93cbd58ebe0d4e8fa5a7d1a63b36741a-focused`,
+  and the related source/frontier/prefix family passed 8/8 in
+  `20260921-094015-521-15544-4e8edd4617c1491db93fae04c4da499e-focused`.
+  Independent XHigh re-review found no remaining P1-P3. No production or public
+  contract changed; parent GEN/publication/E remain open.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-10 [US3] Reconcile architecture acceptance
+  scenario 10 across its legal domains. In the physical-wound insertion fixture, retain
+  the existing unrelated two-use lifetime control and add a real skill-owned reaction
+  that releases both an incumbent refresh and a new reaction definition at the first
+  resource event. Insert the wound before a later matching resource event in the same
+  turn; prove the wound root reacts while the not-yet-materialized reaction shape does
+  not enter current routing. Before common completion, preserve the producer lifetime,
+  incumbent lifetime/history and absence of the new shape. During the one common global
+  schedule, require the ordinary exact producer, refresh and newly-created child histories,
+  including lifecycle consumption and event references. Reconcile with the ordinary draft
+  refresh golden rather than inventing a spiritual reaction. Verify exact retry, zero
+  canonical publication and no extra allocations or writes. Run the smallest owning
+  Focused selections and independent XHigh review.
+  Accepted 2026-09-21: a real skill-owned producer releases two deferred
+  `apply_definition` reactions on the first spend. A physical wound is then inserted,
+  and a later gain in the same turn activates the wound root without activating the
+  newly defined reaction shape. Before completion, the producer and incumbent retain
+  their original lifetimes and histories and the child remains absent. The common
+  schedule records exact `create -> consume`, `create -> refresh -> consume` and
+  `create -> consume` histories for the producer, incumbent and child, with the
+  accepted reaction and lifecycle event references. Exact retry adds no allocations
+  or writes and all canonical files remain byte-identical. The completed method matrix
+  passed 6/6 with a clean XML build after the wording correction in
+  `20260921-102256-605-4768-2d6a9c9a0bb243d19844e753493e792d-focused`;
+  the ordinary refresh golden passed 4/4 in
+  `20260921-101842-772-27224-a4a7ebdda14e431eb8eaa1c994ab7b63-focused`.
+  Independent XHigh review found one causal P2 and two wording P3 across the review
+  rounds; final re-review found no remaining P1-P3. This changes only integration
+  coverage for existing unpublished behavior; parent GEN/publication/E remain open.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-6 [US3] Close architecture acceptance scenario 6
+  with a real reaction-created child that becomes due in the ordinary global lifecycle
+  phase. Extend the lawful `foreign_refresh` chain so the first spend releases the child
+  definition, a physical wound is inserted, and the later gain activates the wound root
+  without activating the absent child. Materialize that child only during common completion
+  with one remaining owner turn, then require exact `create -> expire` history with distinct
+  reaction-create and deterministic lifecycle-expiry event references, no surviving carrier,
+  no same-event activation and no repeated bound-continuation or allocation/write on retry.
+  Preserve the existing three-turn refresh row, zero canonical publication and byte-identical
+  canonical files. Run the smallest owning Focused selection and independent XHigh review.
+  This is integration evidence for existing unpublished behavior; it does not change a GM or
+  public contract and does not close parent GEN, common publication, E or the cost decision.
+  Accepted 2026-09-21 in the legal general-effect domain: the real deferred reaction child
+  is absent through the later gain, is created only by common completion with one remaining
+  owner turn, and expires in the single final-lifetime phase. Its exact identity history is
+  `create -> expire`; the create transition uses the released reaction event and the expiry
+  uses the distinct deterministic lifecycle event. It leaves no carrier, receives no
+  same-turn activation, and exact retry preserves phase, allocation and write counts. The
+  original three-turn row remains nonterminal. Final Focused
+  `20260921-103802-170-30800-f649f006857f4828ac41cd1909708a7f-focused`
+  passed 7/7 with a clean XML build, no timeout or duplicate IDs and complete cleanup.
+  Independent XHigh review found one P3 in optional-parameter documentation; the corrected
+  XML was re-reviewed clean. No production, GM-authored or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-5 [US3] Close the remaining causal gap in
+  architecture acceptance scenario 5. In one original Mortal draft, insert a physical
+  generation whose legal `apply_definition` reaction owns a consuming replace target,
+  route both through a later accepted resource event, and materialize the replacement at
+  the following worsening barrier. Prove the current wound source/producer/target binding,
+  exact replaced and result identities, consume-before-replace anchor, one result create and
+  one consumption allocation. Require successful common completion, exact materialization
+  and completion retries without new allocations or writes, and byte-identical canonical
+  roots. Reconcile with the already accepted published-prior-generation consuming control;
+  do not broaden the one-edge physical reaction contract. Run the smallest owning Focused
+  selection and independent XHigh review. This internal test slice does not change a GM or
+  public contract and does not close parent GEN, common publication, E or the cost decision.
+  Accepted 2026-09-21: a rank-III generation inserted in the active draft owns the legal
+  reaction root and its two-use replacement target. The later gain accepts both activations,
+  consumes the target from 2 to 1, and the rank-IV cut records the exact current wound source,
+  producer, replaced and result identities. The trigger receipt inserts one consume before
+  the retained replace anchor; the reaction receipt creates one result identity. Histories
+  are exactly `create -> consume -> replace` and `create -> expire`. First common completion
+  preserves both journaled images and their unique IDs, while materialization and completion
+  retries add no writes or allocations. Final Focused
+  `20260921-105358-464-36584-e9b909168ee742559fc33cb4269810d6-focused`
+  passed 1/1 with a clean XML build; the published-prior-generation matrix
+  `20260921-104937-655-35104-adc3bfe1d0944064be8d6759c81ccfc9-focused`
+  passed 6/6. Three intermediate REDs corrected test assumptions about receipt ownership,
+  replacement anchors and created-event identity. Independent XHigh review then found one
+  P2 missing first-completion replay evidence; the strengthened re-review found no P1-P3.
+  No production, GM-authored or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-OMITTED-JOURNAL [US3] Close the omitted-
+  journal subcase of architecture acceptance scenario 12 on the accepted scenario-5
+  contour. Run the same real rank-I publication, rank-II/rank-III insertion, later
+  gain and consuming replacement at the rank-IV cut, then remove only the retained
+  target-consumption receipt before common completion. Require deterministic rejection
+  without a completed plan, no additional identity allocation or write, revoked capture,
+  byte-identical canonical roots and a non-resumable repeated call. Preserve the positive
+  row unchanged. Run the smallest owning Focused selection and independent XHigh review.
+  This negative integration slice does not close the remaining scenario-12 tamper cases,
+  parent GEN, common publication, E or the cost decision, and changes no GM/public contract.
+  Accepted 2026-09-21: completion now distinguishes a genuinely deferred trigger from an
+  already applied event whose retained cut receipt is missing, and rejects the latter during
+  journal reconciliation before `RunCore`. The real consuming-replacement theory removes
+  exactly the target receipt, receives `spiritual_wound_cut_agreement_mismatch`, produces no
+  plan or new identity allocation/write, revokes the capture, rejects a repeated call and
+  preserves all seven canonical roots byte-for-byte. The positive row remains successful.
+  Test-only enumeration RED `20260921-110035-037-28864-a30d746491864b63a2a4fdeddeaa5bbc-focused`
+  was corrected; behavior RED `20260921-110223-706-28328-c0863661a2994ef4a7e2b941cfea073f-focused`
+  proved the old late after-image diagnostic but did not measure mutation counters. Final
+  Focused `20260921-110518-955-31220-5c21db7f7d544055897a7fa7149981b4-focused`
+  passed 2/2 with a clean XML build. The combined 23-row filter exceeded its five-minute
+  boundary, so the unchanged scenario groups were rerun separately and passed 8/8, 6/6 and
+  7/7 in `20260921-111254-028-14868-08d84103b0864e569619a46b0d6fcff7-focused`,
+  `20260921-111556-017-31220-9931b8260d164d6496c717d27db8b226-focused` and
+  `20260921-111804-210-6040-f71000aed32b4e849a04c623fbeecc4b-focused`.
+  Fast `20260921-112002-022-25796-64b1dbab6cda42f5bd6b1739f467f23c-fast`
+  passed 7902/7902 in 3:45.716 under the seven-minute limit. Independent XHigh review found
+  no P1-P3. No prompt, example, manifest or public contract update applies to this internal
+  unpublished guard; the other scenario-12 negatives remain open.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-7-SIGNED-ONLY [US3] Close the remaining
+  negative half of architecture acceptance scenario 7. On both the real spiritual
+  current-generation worsening contour and the physical current-generation consuming-
+  replacement contour, pass the exact recomposed live selection back to the old ordinary
+  `WoundAcceptedTurnPlanner.Prepare` entrypoint. Require rejection because its signed
+  original wound/effect baselines cannot authenticate the newly inserted mutable current
+  generation, while the owned draft-before path succeeds unchanged. Prove the probe does
+  not mutate shared draft allocation/write counts or canonical roots. Run the smallest
+  owning Focused selections and independent XHigh review. This is internal integration
+  coverage; it changes no GM/public contract and does not close parent GEN, publication,
+  E or the separate cost decision.
+  Accepted 2026-09-21: the actual spiritual rank-I-to-II selection and the physical
+  current-generation consuming-replacement rank-III-to-IV selection are each replayed
+  through the old ordinary preparation entrypoint. Their signed original baselines cannot
+  authenticate the recomposed current target, so both return no plan with
+  `wound_plan_worsening_target_stale`; the shared draft allocation/write counts do not move.
+  The owned draft-before route still materializes and routes each generation, and the
+  owning contours preserve their existing canonical no-publication assertions. Physical
+  Focused `20260921-112809-069-34824-2db2397dc2b74699a159f4b1b2b42740-focused`
+  passed 2/2. Final spiritual Focused
+  `20260921-113539-977-37004-f712b4d72b5942e09f2f4cc07eddae08-focused`
+  passed 5/5 with a clean XML build. Independent XHigh review found no P1/P2 and two
+  rounds of P3 XML precision issues; final re-review found no remaining P1-P3. Production
+  did not change, so the immediately preceding 7902/7902 Fast checkpoint was not duplicated.
+  No GM-facing prompt, example, manifest or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-8-TAMPER [US3] Close the two remaining
+  adversarial assertions in architecture acceptance scenario 8 on the real spiritual
+  same-turn re-trauma contour. After the rank-I insertion, retain the rank-II owned
+  draft-before preparation and separately tamper its bound before fingerprint and its
+  selected severity-generation predecessor root. Require both variants to fail before
+  any shared carrier, identity, allocation or write mutation, while the existing lawful
+  rank-II and rank-III generations keep distinct effect identities and current lineage.
+  Preserve the existing positive rows and canonical no-publication assertions. Run the
+  smallest owning Focused selection and independent XHigh review. This is internal
+  integration coverage for the existing unpublished authority contract; it changes no
+  GM/public contract and does not close parent GEN, common publication, E, the remaining
+  scenario-12 negatives or the separate cost decision.
+  Accepted 2026-09-21: two additional rows retain the actual rank-II draft-before and
+  its successful preparation. One changes the registered before's fingerprint after
+  preparation; the other changes the one non-null selected severity-generation
+  `PriorRootEffectId` in a detached preparation while retaining the original claimed
+  seal. Both reach owner application and reject with `wound_plan_prepared_seal_mismatch`
+  before any shared allocation or identity write. The complete current wound carriers,
+  wound identity/history, effect carriers and effect identity images remain unchanged,
+  as do the canonical profile root and absent accepted publication. The five lawful
+  rows remain green, including the existing rank-II/rank-III lineage controls. The first
+  command selected the wrong Focused project and discovered no tests; the next compile
+  RED corrected carrier comparison types. Final Focused
+  `20260921-114647-614-23404-8f46b9af032a4767b4e9012a679bbe69-focused`
+  passed 7/7 with a clean build, no timeout, duplicate IDs or cleanup failure.
+  Independent XHigh review found no P1-P3. Production did not change, so the prior
+  7902/7902 Fast checkpoint was not duplicated. No GM-facing artifact changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-1-LEGACY-GOLDEN [US3] Close the remaining
+  equivalence evidence in architecture acceptance scenario 1 with the existing real
+  `EffectResourceTriggerRoutingScaleTests` two-consuming same-boundary replacement
+  fixture. Capture an independent OLD golden from historical commit
+  `6837eab670d785019812481d289f8ff7d694c817`, before the draft-owner finalizer,
+  using deterministic resource and effect identity factories. Bind complete canonical
+  resource state/history, the complete accepted effect payload fingerprint, exact
+  resource/effect allocation streams and factory call order. Compare the current
+  ordinary adapter against that frozen golden while retaining the existing explicit
+  O `consume -> consume -> replace`, replaced A and active B assertions. Preserve the
+  fixture's exact null skill authority; do not invent another capability contour or
+  compare two current adapter paths. Run the smallest owning Focused selection and
+  independent XHigh review. Production and GM/public contracts must remain unchanged.
+  Accepted 2026-09-21: the real historical fixture at commit
+  `6837eab670d785019812481d289f8ff7d694c817` produced an independently captured
+  4,447-byte OLD golden with SHA-256
+  `0FCC418149BEEAD94B03EBF3C26213BD686CC8321C2A5ED9F15B386F816232D4`.
+  Its complete canonical resource state/history, accepted effect payload and final-plan
+  fingerprints, allocated effect/transition IDs, resource/effect factory call order,
+  source/target authorities and exact null skill authority are frozen in the current
+  ordinary-adapter test. The original O `consume -> consume -> replace`, replaced A and
+  active B assertions remain explicit. Historical Focused
+  `20260921-120257-033-32992-ce598f5a4dfc499280ebc4cb3dbd6682-focused`
+  and final current Focused
+  `20260921-121034-485-18448-e80ca73ee4644ddcbd16b3fc348657d1-focused`
+  each passed 1/1; the current build was clean with no timeout, duplicate IDs or cleanup
+  failure. Independent XHigh review verified the historical instrumentation and every
+  frozen value, found one P3 unsupported `inheritdoc` use, and passed the corrected
+  multiline XML with no remaining P1-P3. Production did not change, so the preceding
+  7902/7902 Fast checkpoint was not duplicated. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-WRONG-STAMP [US3] Close the wrong-original-
+  stamp subcase of architecture acceptance scenario 12 on the real Mortal sequential
+  same-turn worsening contour. After two accepted signed insertions, retain the complete
+  resource transcript and replace only its private plan-authority stamp with an otherwise
+  valid stamp carrying a different input fingerprint. Invoke the public retained capture
+  completion path and require `effect_boundary_transcript_plan_mismatch`, no completed
+  plan, unchanged effect allocations/writes/carrier edits/phases and current wound/effect
+  images, revoked non-resumable capture, byte-identical seven canonical roots and no
+  accepted publication. Preserve the positive row unchanged. Run the smallest owning
+  Focused selection and independent XHigh review. This is internal coverage for existing
+  authority behavior; it does not change a GM/public contract or close the other scenario-
+  12 negatives, parent GEN, common publication, E or the separate cost decision.
+  Accepted 2026-09-21: the additional mode executes the real original I->II->III
+  signed contour, drains the capture-owned resource transcript and changes only the
+  retained private authority stamp's valid-shaped input fingerprint. The other four
+  authority fields and transcript fingerprint remain exact. Public capture completion
+  rejects with `effect_boundary_transcript_plan_mismatch`, exports no plan, performs no
+  allocation, identity write, carrier edit or phase, and preserves complete detached
+  wound/effect images. It revokes the capture, rejects retry, preserves all seven canonical
+  roots byte-for-byte and publishes no accepted plan. The positive rows remain green.
+  Focused `20260921-122059-806-24328-1f66fb10d0ef44fd997cd44ea95aae4f-focused`
+  passed 9/9 with a clean build, no timeout, duplicate IDs or cleanup failure. Independent
+  XHigh review found no P1-P3. Production did not change, so the prior 7902/7902 Fast
+  checkpoint was not duplicated. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-CANDIDATE-TARGET [US3] Close the changed-
+  candidate-target subcase of architecture acceptance scenario 12 on the accepted
+  scenario-5 physical-reaction contour. After real I->II->III insertion and the third
+  resource boundary, change only the target ID of the retained released reaction inside
+  the actual closed-prefix image before the rank-IV cut. Preserve its activation, source,
+  replacement target, event refs, original authority stamp and claimed prefix fingerprint.
+  Require public rank-IV materialization to reject with the exact lineage diagnostic before
+  allocations, identity writes, carrier edits, phases, wound/cut versions, journals or full
+  current wound/effect images change; revoke capture, reject retry/completion, preserve all
+  seven canonical roots and publish no plan. Keep positive and omitted-receipt rows. Run the
+  smallest owning Focused selection and independent XHigh review. Production changes only
+  if the test reproduces a defect. This does not close source-definition or skill-scope
+  tampering, other scenario-12 negatives, parent GEN, common publication, E or cost rules.
+  Accepted 2026-09-21: the three-row scenario-5 theory retains both existing positive and
+  omitted-receipt contours and adds an actual closed-prefix target-only mutation. Public
+  rank-IV materialization rejects with both required diagnostics before any mutable draft
+  counter, version, journal or complete wound/effect image changes; the capture is revoked,
+  retries and completion throw, all canonical roots remain byte-identical and no plan is
+  published. Focused
+  `20260921-124243-320-17556-49091e7b83b74a2897a3c2cc0e1179eb-focused` passed 3/3
+  with a clean XML build and independent XHigh re-review PASS after its sole P3 documentation
+  wording correction. Production, public and GM-facing contracts did not change; Fast was
+  not repeated after the accepted 7902/7902 production checkpoint.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-CANDIDATE-SOURCE [US3] Close the changed-
+  candidate-source-definition subcase of architecture acceptance scenario 12 on the same
+  accepted scenario-5 physical-reaction contour. After real I->II->III insertion and the
+  third resource boundary, change only the valid `resistance_modifier` value in the actual
+  current source catalog entry for the released wound child, while preserving its source
+  key, status, target, sealed wound-group definition, cached source fingerprint, original
+  transcript authority and claimed prefix fingerprint. Require public rank-IV materialization
+  to reject with exact wound-lineage source authority before allocations, writes, carrier
+  edits, phases, wound/cut versions, journals or complete current images change; revoke the
+  capture, reject retry/completion, preserve all canonical roots and publish no plan. Keep
+  the positive, omitted-receipt and changed-target rows. Add a production integrity check
+  only if the RED proves the current catalog can drift from its sealed group. Run the smallest
+  owning Focused selection, Fast after any production correction, and independent XHigh
+  review. This does not close skill-scope tampering, other scenario-12 negatives, parent GEN,
+  common publication, E or cost rules.
+  Accepted 2026-09-21: RED
+  `20260921-125059-341-6784-ef904c76f99d4a32baea5611b45426b9-focused` proved that
+  the changed actual current catalog entry was accepted and rank IV materialized. The
+  lineage resolver now requires that resolved definition to equal its sealed group snapshot.
+  Integration Focused
+  `20260921-125331-908-33588-4ef644640a334928b0cbe9daec8d8290-focused` passed 4/4;
+  final direct authority Focused
+  `20260921-130118-329-10440-09137422960a42f1afcf90374e5feda1-focused` passed 13/13;
+  Fast `20260921-125716-969-30572-15b5d899dc814a8f9df68e0a9e206637-fast` passed
+  7903/7903 in 3:39.320. Independent XHigh review found one P3 missing XML contract;
+  after the multiline API documentation correction re-review passed with no P1-P3. No GM-
+  facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-PRIOR-SOURCE-BINDING [US3] Close the
+  reused-prior-generation-source-binding subcase of architecture acceptance scenario 12
+  on the accepted scenario-5 physical-reaction contour. In a dedicated positive/negative
+  pair, give generations II and III the same legal `wound_reaction_child` canonical key
+  and definition while retaining different real root identities and source-group epochs.
+  After the accepted generation-III gain, inject only the genuine generation-II source
+  catalog into the current lineage resolver. Require public rank-IV materialization to
+  reject with `effect_reaction_wound_lineage_source_invalid` and
+  `spiritual_wound_generation_required` before allocations, writes, carrier edits,
+  phases, wound/cut versions, journals or complete current images change; revoke capture,
+  reject retry/completion, preserve all seven canonical roots and publish no plan. Preserve
+  the current catalog, routing preparation, insertion, candidate, definition JSON, stamps
+  and fingerprints. Write the integration RED first, add only an exact source-group epoch
+  agreement guard if the defect reproduces, run the smallest owning Focused selection,
+  Fast after production correction, and independent XHigh review. This internal authority
+  check changes no GM-facing or public contract and does not close the remaining skill-
+  scope, ordering/composite epoch, broader omitted-journal, parent GEN, publication, E or
+  cost work.
+  Accepted 2026-09-21: the shared-key pair installs genuine generations II and III with
+  deeply equal child definitions but distinct effect roots, application refs, source
+  catalogs and source-group fingerprints. RED
+  `20260921-131145-149-29428-ec1c3bbb69af416f899545b84e89446c-focused` proved the
+  old resolver accepted the genuine generation-II catalog and materialized rank IV; its
+  other failure was only the new positive fixture's expected dependency-cut count. The
+  resolver now requires the selected catalog's source-group fingerprint to equal the group
+  epoch sealed by the current producer lineage before resolving the downstream entry.
+  Direct authority Focused
+  `20260921-131925-782-29516-94c271863d6f450c91dbc42ab5a1a480-focused` passed 14/14;
+  final integration Focused
+  `20260921-132003-372-20424-3e8bf445749b437baaa555ccada86f72-focused` passed 6/6;
+  Fast `20260921-132321-174-27000-7694bab838ff401db60db43522c5e967-fast` passed
+  7904/7904 in 3:46.228 under the seven-minute limit. All builds were clean, with no
+  timeout, duplicate IDs or cleanup failure. Independent XHigh review passed with no
+  P1-P3 and confirmed the fingerprint is only an agreement check inside owner-held
+  authority. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-SKILL-SCOPE [US3] Close the changed-
+  candidate-skill-scope subcase of architecture acceptance scenario 12 on the accepted
+  scenario-5 physical-reaction contour. Add a real player skill and a legal generation-III
+  skill-scoped `roll_modifier` replacement child, then prove its actual accepted release and
+  consuming target before the rank-IV cut. In the negative row, change only that exact
+  skill's current availability inside the actual retained plan authority while preserving
+  authority identity, offered catalog, target, selector, source definition, candidate,
+  cached fingerprint, original plan stamp and claimed prefix fingerprint. Require public
+  rank-IV materialization to reject with `effect_roll_skill_scope_unavailable` at the exact
+  reaction selector path plus `spiritual_wound_generation_required`, before allocations,
+  writes, carrier edits, phases, wound/cut versions, journals or complete current images
+  change; revoke capture, reject retry/completion, preserve all canonical roots including
+  skills and publish no plan. Keep a paired scoped positive completion/retry row. Write the
+  integration test first, change production only if the defect reproduces, run the owning
+  Focused theory and independent XHigh review, and repeat Fast only if production changes or
+  focused evidence warrants it. This internal test changes no GM-facing or public contract
+  and does not close ordering/composite epoch, broader omitted-journal, parent GEN,
+  publication, E or cost work.
+  Accepted 2026-09-21: a paired real generation-III physical-wound reaction uses a full
+  canonical player skill and a consuming focused `roll_modifier` child. The negative row
+  changes only the exact retained current skill row from active to inactive after the actual
+  release, preserving the authority object, offered catalog, source/target/selector,
+  candidate, cached fingerprint and transcript stamp. Rank IV rejects with the exact scope
+  and enclosing generation diagnostics before any mutable draft evidence changes, revokes
+  the capture, rejects retries, preserves canonical files including skills and publishes no
+  plan; the positive row completes and retries. An initial fixture-only failure in
+  `20260921-133740-355-33404-37fcdc86aa7d41bdb85825078040c596-focused` corrected source
+  inspection to the real key-resolved owner catalog. Focused
+  `20260921-134207-539-27324-f0d4910d422a4384a62d59e300bd1919-focused` passed 8/8; XHigh
+  review then identified the shortened skill fixture as noncanonical. After installing the
+  complete lawful Active Skill Object without an observer/effect source, final Focused
+  `20260921-134800-289-23932-c8a57ff4b89e4eecb0484dcc0aeb23da-focused` passed 8/8 in
+  2:31 with a clean build and no timeout, duplicate IDs or cleanup failure. Independent
+  XHigh re-review passed with no P1-P3. Production did not change, so the accepted 7904/7904
+  Fast checkpoint was not duplicated. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-ROUTING-EPOCH [US3] Close the mixed-head
+  composite-routing-epoch subcase of architecture acceptance scenario 12 on the real
+  sequential Mortal I->II->III worsening contour. Retain the genuine generation-II and
+  generation-III insertion receipts, then inject the older receipt only into the draft and
+  routing current-insertion pointers while preserving the genuine generation-III routing
+  preparation, insertion dictionary, preparation cache, resource registrations, images,
+  identities, journals, transcript and original plan authority. Require common completion
+  to reject with `spiritual_wound_routing_required` before any plan, allocation, write,
+  carrier edit, phase, journal or canonical-file change; revoke capture and reject retry.
+  Bind a retained routing preparation to its exact insertion if the integration RED proves
+  the mixed epoch passes the routing check, including when a later generic guard still
+  rejects publication. Run the owning Focused theory, Fast after production correction, and
+  independent XHigh review. This internal check changes no GM-facing or public contract and
+  does not close arbitrary insertion-chain reordering, foreign-owner/version, broader
+  omitted-journal, parent GEN, publication, E or cost work.
+  Accepted 2026-09-21: the injected older draft/routing head preserved the genuine newer
+  routing preparation. RED
+  `20260921-135806-864-36324-9d5ed05f6c2d4e3cb1c98bc5a9f4d0f2-focused` passed 9/10:
+  it returned no plan, but the diagnostic assertion stopped that run before the mutation
+  checks; the mixed epoch passed routing ownership and failed only at the later generic
+  after-image agreement. Routing preparations now retain and compare their exact insertion
+  identity. Final Focused
+  `20260921-140312-904-21992-6deef1c6544342258b403096b4d4ad3c-focused` passed 10/10
+  in 4:37 and Fast `20260921-140805-629-5256-ceb4fc27ea7b405188715e04ce1ed968-fast`
+  passed 7904/7904 in 3:52.118, with clean builds, no timeout, duplicate IDs or cleanup
+  failure. The negative now fails early with `spiritual_wound_routing_required`, leaves all
+  draft/canonical evidence unchanged, revokes capture and rejects retry. Independent XHigh
+  review passed code/test with no P1-P3; its sole P3 documentation correction is reflected
+  here. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-INSERTION-ORDER [US3] Close the arbitrary
+  insertion-chain reordering subcase of architecture acceptance scenario 12 on the real
+  sequential Mortal I->II->III worsening contour. Preserve the genuine generation-III head
+  and routing preparation, then change only generation II's predecessor from null to the
+  generation-III insertion, forming a reversed cycle while every receipt, version, registry,
+  preparation, image, journal, transcript and plan authority remains unchanged. Require
+  common completion to reject with `spiritual_wound_insertion_agreement_mismatch` before any
+  plan, allocation, write, carrier edit, phase, journal or canonical-file change; revoke
+  capture and reject retry. Add an exact retained predecessor/version agreement only if RED
+  proves the reordered chain completes. Use a seven-minute Focused override if the coherent
+  eleven-row selection needs headroom beyond its measured 4:37 ten-row runtime, then run
+  Fast after production correction and independent XHigh review. This internal check changes
+  no GM-facing or public contract and does not close foreign-owner/version, broader omitted-
+  journal, parent GEN, publication, E or cost work.
+  Accepted 2026-09-21: the negative changes only the first real insertion's null predecessor
+  to the later real insertion while preserving the genuine latest head/routing, creating a
+  III->II->III cycle. RED
+  `20260921-141740-150-35660-87e95c0393554db29e5e35b9dbfd7e69-focused` passed 10/11
+  because common completion returned success. Completion agreement now requires adjacent
+  before/insertion versions and the exact same-owner retained predecessor object, with only
+  version zero allowed to omit it. Final Focused
+  `20260921-142236-794-37144-eeec34e15caa4262a8a317cd35ddbbdf-focused` passed 11/11
+  in 5:01.987 under the measured seven-minute override; Fast
+  `20260921-142744-617-25412-c0236a03a96e43aa9e83b87b1ffeae30-fast` passed 7904/7904
+  in 3:56.061. Builds were clean, with no timeout, duplicate IDs or cleanup failure. The
+  negative now rejects with exact insertion agreement before any draft/canonical mutation,
+  revokes capture and rejects retry. Independent XHigh review passed with no P1-P3. No GM-
+  facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-FOREIGN-DRAFT [US3] Close the foreign draft
+  owner/version subcase of architecture acceptance scenario 12 on the real sequential
+  Mortal I->II->III contour. Create a foreign draft over the exact same accepted plan object,
+  set only its wound-version scalar equal to generation III and prove its insertion registry
+  is empty; then change only the genuine latest insertion receipt's owner to that foreign
+  draft while preserving its before proof, predecessor, versions, original registry,
+  routing/preparations, images, identities, journals and transcript. Require completion to
+  reject with `spiritual_wound_insertion_agreement_mismatch` before any plan, draft mutation,
+  canonical-file change or publication; revoke capture and reject retry. Change production
+  only if exact plan/version equality bypasses current registry ownership. Run the owning
+  Focused theory under the measured seven-minute budget, repeat Fast only after production
+  changes, and obtain independent XHigh review. This internal check changes no GM-facing or
+  public contract and does not close broader omitted-journal, parent GEN, publication, E or
+  cost work.
+  Accepted 2026-09-21: a second draft receives the exact same plan object and generation-III
+  version but keeps an empty insertion registry; only the genuine latest insertion's owner
+  is changed to it. Existing completion agreement rejects with exact insertion mismatch and
+  preserves every draft/canonical counter and image, revokes capture and rejects retry.
+  Focused `20260921-143541-957-27280-d36433ea2ed847babfab5985298f29eb-focused` passed
+  12/12 in 4:49.518 under the measured seven-minute budget, with a clean build, no timeout,
+  duplicate IDs or cleanup failure. Independent XHigh review passed with no P1-P3 and
+  confirmed plan/version equality cannot mint registry ownership. No production changed;
+  the immediately preceding Fast `20260921-142744-617-25412-c0236a03a96e43aa9e83b87b1ffeae30-fast`
+  remains current at 7904/7904. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIO-12-OMITTED-REACTION-JOURNAL [US3] Complete the
+  remaining omitted-journal audit on the real scenario-5 consuming-replacement contour.
+  Remove only the retained reaction-application receipt after the rank-IV local cut while
+  preserving the transcript release, target-consumption trigger receipt, replacement
+  anchors, images, insertion chain, routing and plan authority. Require completion to reject
+  with `spiritual_wound_cut_agreement_mismatch` before a plan or any additional draft/
+  canonical mutation, revoke capture and reject retry. Preserve the existing positive and
+  omitted-trigger rows. Change production only if the already applied release is mistaken
+  for pending work; run the owning Focused theory, independent XHigh review and Fast only
+  after production changes. This internal check changes no GM-facing or public contract and
+  does not close parent GEN, publication, E or cost work.
+  Accepted 2026-09-21: the ninth scenario-5 row removes only the retained reaction-
+  application receipt after the real generation-III release and rank-IV local cut while
+  preserving the transcript release, target-consumption trigger receipt and its replacement
+  anchors. Completion rejects with `spiritual_wound_cut_agreement_mismatch`, returns no plan,
+  changes no allocation, write, workspace edit, phase, wound/cut version, remaining journal,
+  complete draft image or canonical file, revokes capture and rejects retry. Focused
+  `20260921-144446-880-35912-92a6f4490bed4a06825c3aa76b9c4efc-focused` passed 9/9
+  in 3:41.645 with a clean build, no timeout, duplicate IDs or cleanup failure. Independent
+  XHigh review passed with no P1-P3. Production did not change, so Fast was not repeated
+  after the current 7904/7904 checkpoint
+  `20260921-142744-617-25412-c0236a03a96e43aa9e83b87b1ffeae30-fast`. Together with
+  the accepted omitted target-trigger receipt row, this closes the remaining scenario-12
+  journal-omission audit. No GM-facing or public contract changed.
+
+- [x] T081-B2C-J2-C2-GEN-SCENARIOS-2-4-13-AUDIT [US3] Audit the three remaining
+  architecture acceptance scenarios that do not yet have an explicit GEN checkpoint.
+  For scenario 2, map the ordinary event-outcome, after-component, remove-over-suspend,
+  replacement-target drift and self-cascade failures to the draft owner, prove preflight-
+  invalid batches allocate nothing, and prove an allocator exception leaves only an empty
+  phase shell with no exported operation journal entry. For scenario 4, bind
+  the real signed first spiritual insertion to its root/source/target provenance and actual
+  next-exchange contribution while preserving the original turn, dice, ordinary-decision
+  authority and accepted resource prefix. For scenario 13, prove detached receipt/source
+  reads, no allocation from read/capture, once-only completion, dispose/failure rejection
+  and final transcript plus insertion-chain agreement. Reuse existing executable tests where
+  they already prove the exact claim; add only missing assertions or a narrow test row. Run
+  separate owning Focused selections, obtain independent XHigh review, and repeat Fast only
+  after production changes. This internal audit changes no GM-facing or public contract and
+  does not resolve the four ambiguous profile consumers, cost decision, common publication
+  or E cold reconstruction.
+  Accepted 2026-09-21: the existing ordinary owner matrix passed 29/29 and retains the five
+  required scenario-2 diagnostics; the draft failure controls prove zero allocations for
+  preflight rejection and an empty exported operation journal after an allocator exception.
+  The signed first-insertion controls passed 10/10, and the strengthened next-exchange
+  hindrance provenance rows passed 2/2. The final draft alias/lifetime selection passed 3/3
+  in `20260921-150749-485-1780-4ee6ce4e9dd44b52bc08d479690b4cf6-focused`,
+  including allocation-free reads, detached receipt images and once-only completion.
+  Independent XHigh re-review found no P1-P3. Together with the earlier accepted checkpoints,
+  all thirteen domain-qualified architecture scenarios now have explicit executable evidence.
+  Production did not change, so Fast `20260921-142744-617-25412-c0236a03a96e43aa9e83b87b1ffeae30-fast`
+  remains the current 7904/7904 control. Parent GEN, profile consumers, cost decision, common
+  publication and E remain open.
+
+- [x] T081-C0-SPIRITUAL-EFFECT-COMPLETE [US3] Add the original spiritual capture's
+  once-only unpublished completion boundary before durable finalization. Under the retained
+  canonical lease, revalidate every original input; require a begun resource/effect owner,
+  no unresolved resource or missing-side wait, all checked exchanges advanced, no pending
+  source requirement or wound-routing integration, and one exact decline or materialization
+  decision for every positive-ceiling source. Prepare one fresh uncommitted source continuation
+  before first completion and cached retry; require the complete candidate to end at the exact
+  closed exchange frontier with no prospective requirement or incomplete audit. Drain the owned
+  resource schedule once and complete the same effect draft ordinarily when no insertion exists,
+  or through its installed base-plus-insertion routing when one does. Exact
+  retry returns the retained result; failed mutation revokes the capture. Prove the existing
+  two-decline ordinary-equivalence row through this production entrypoint, add incomplete-
+  decision and real inserted-root completion controls, and preserve zero canonical writes and
+  absent accepted-plan authority. This internal prerequisite defines no pending/receipt schema,
+  common publication or GM-facing surface; T081-C cold reconstruction/finalization remains open.
+  Run separate owning Focused selections, one Fast because production changes, and independent
+  XHigh review before acceptance.
+  Accepted 2026-09-21: `CompleteEffectsAsync` now prepares a fresh owner/lease/revision-bound
+  source ticket before both first completion and cached retry, rejects an unbound prefix,
+  unexecuted full-candidate suffix, prospective requirement or incomplete audit, and drains only
+  after every positive-ceiling source has its retained decision. No-insertion turns use ordinary
+  draft completion; inserted wounds require the exact retained routing owner. RED
+  `20260921-153440-170-25644-e9bcc2ea4827464e9daedf3ea74cba14-focused` proved prefix,
+  suffix and cached-freshness bypasses, and RED
+  `20260921-154746-235-34944-3d3bc4a09cf949fe922f325317e0f03e-focused` proved the first
+  nullable-limit correction rejected the supported legacy capture. Final Integration Focused
+  `20260921-155101-758-32304-885e00f5f49949ee8f3f94b75ce9f688-focused` passed 25/25;
+  draft Focused `20260921-154515-022-26356-32909fc0a0274e46b59ddc5ded9daf1c-focused`
+  passed 3/3; Fast `20260921-155354-934-34144-e4f3915f6ed44269bf0cf2d02e1b5f78-fast`
+  passed 7904/7904 in 3:38.027 under the seven-minute limit. Builds were clean, with no timeout,
+  duplicate IDs or cleanup failure. Independent XHigh re-review passed with no P1-P3 after the
+  legacy and XML corrections. This is an internal unpublished boundary; no Mortal World or
+  afterlife prompt, documentation, example, manifest or public contract changed. Durable pending
+  state, cold reconstruction and common publication remain open under T081-C.
+
+- [x] T081-C0-SPIRITUAL-ORDINARY-REDUCTION [US3] Seal the completed original
+  spiritual resource/effect execution as the same non-publishable ordinary reduction
+  consumed by common accepted-mechanics assembly. The retained resource owner must prove
+  the exact captured input, successful terminal resource result, completed effect plan and
+  final live pending-resource state; project every registered system outcome against that
+  exact resource result, preserve owner companion after-images/transitions and same-turn
+  definitions, and cache one immutable reduction after a fresh source-completion check.
+  Do not call final plan assembly, register accepted-plan authority, define spiritual
+  pending/receipt JSON, or write canonical state. Prove real explicit decline and one real
+  materialized insertion both reach the reduction with exact resource/effect/conflict
+  projections while canonical files and accepted-plan authority remain unchanged. Run the
+  smallest owning Focused selection, one Fast because production changes, and independent
+  XHigh review before acceptance. T081-C still owns durable decision evidence, live wound
+  carrier assembly, cold reconstruction and the sole common publication.
+  Accepted 2026-09-21: the resource session binds the exact original effect draft and source
+  owner before execution; successful effect completion retains the exact final resource
+  transcript. A fresh owner/lease/revision/frontier/resource/effect projection must be consumed
+  once against that exact completed plan before sealing, so neither a foreign same-base draft and
+  plan nor a stale genuine source projection can authorize the reduction. The reduction preserves
+  final resource/effect/pending/definition/system-outcome and source-conflict projections, caches
+  exact retry, and publishes no plan or canonical file. RED
+  `20260921-164427-425-27268-cae1a351957748a5b154aacffa3dc804-focused` and
+  `20260921-170119-806-37348-3830b851ddc04d8faed42c57f03bdccc-focused` proved the reviewed
+  ownership and freshness holes. Final Focused passed 2/2
+  (`20260921-171037-378-32648-042851d496a5470388bc8fd3bdb5a943-focused`), 3/3
+  (`20260921-171243-653-36496-2b7113bd28c34122bab01c0be8fce879-focused`), unit 6/6
+  (`20260921-171432-228-36844-97296c65c68c4f03aae618932ca3c825-focused`), completion 7/7
+  (`20260921-171513-502-20476-b5887359e4d04ea08fe420c0d2015d61-focused`) and neighboring
+  integration 26/26
+  (`20260921-171619-083-31248-7959ae04abc644078d88dd0baa2d1cb6-focused`). Fast
+  `20260921-172444-062-30508-15c4a12bc5db4728993f061169e741fb-fast` passed 7904/7904 in
+  4:30.756 under the seven-minute limit, with clean build, no timeout, duplicate IDs or cleanup
+  failure. Independent XHigh re-review passed with no P1-P3 after the two substantive corrections
+  and XML correction. No GM-facing/public contract changed; durable decision evidence, cold
+  reconstruction, final assembly and common publication remain open under T081-C.
+
+- [x] T081-C1-DURABLE-STATE-KERNELS [US3] Implement the approved strict version-1
+  `SpiritualWoundDecisionPendingState` and `SpiritualWoundOpportunityReceiptState` pure state
+  kernels from `data-model.md` section 22. Require closed shapes, duplicate-property rejection,
+  detached values, checked limits, canonical serialization, domain-separated recomputable
+  fingerprints, monotonic pending cursor/staged decisions and append-only contiguous
+  instance/closure/source/decision rows; terminal closure appends instead of mutating an instance.
+  A receipt append must contain one source and one agreeing explicit `none|materialize` decision;
+  decline has no wound/transition identity and materialize requires both. Register both paths in
+  `AfterlifeContractRegistry` and
+  `WoundAcceptedTurnSnapshotContract`; update bootstrap/path guards only where the existing
+  topology owns client roots. In the same unit, register both client-owned paths in the afterlife
+  contract matrix, `OtherGuides/Afterlife_Pending_Control_Surface_Inventory.json`, validation
+  manifest and documentation/source guards. Write failing contract
+  tests first, then owning Focused tests, the required documentation Focused control,
+  FullValidation, Fast, `git diff --check` and independent XHigh review. This unit writes no files
+  and creates no GM continuation, wound command or accepted plan.
+  Accepted 2026-09-22: strict kernels and private-root topology passed independent XHigh
+  review (`t081c_plan_review`); final XML-enabled Fast8140/8140 in3:43.925
+  (`20260922-175230-872-5748-c4520a8b1e3c4c0fad8da40a4613616f-fast`) and
+  FullValidation1923/1923 in17:23.542, with owning Focused controls and clean diff check.
+  Exact run evidence and resolved guard findings are recorded in plan.md. C2-C5 remain open.
+
+- [ ] T081-C2-PENDING-RECONSTRUCTION [US3] Bind the live retained original-turn capture to one
+  immutable pending spiritual packet, visibility-safe GM decision projection and bounded decision
+  intake. Persist the original snapshot identity, retained source prefix, current cursor, exact
+  staged decisions, dice/resource/effect/source evidence, registered before/candidate images and
+  preserved draft without creating an accepted receipt. Under the same active canonical lease,
+  this retained capture is the only unfinished-packet writer and may atomically replace only its
+  own packet to advance generation/cursor, append decisions and validated sources, and update
+  owner-validated candidate images, prefix fingerprints and permitted dependent draft fields.
+  Preserve original before-images/dice and frozen sources/prior decisions. Only the common plan
+  may consume the packet. Reconstruct from JSON in a fresh service
+  instance by reopening the original pending snapshot and rerunning production origin validation;
+  hashes remain comparisons only. Reject changed source, image, decision, snapshot, cursor or
+  caller alias before any spend/write/notification/accepted-plan authority. Prove restart before a
+  decision and after a staged decision, originally absent roots, exact replay and zero accepted
+  side effects with TDD, owning Focused plus targeted RegressionIntegration, Fast and independent
+  XHigh review. Update the afterlife turn guidance, daemon/launcher dispatch, a worked bounded
+  continuation example, manifest and guards in this same unit without exposing private packet
+  authority. Run the required focused documentation control and FullValidation before acceptance.
+  Planning finding 2026-09-22: spec.md proposal C2-R1 addresses missing immutable original-draft
+  retention and cold replay of ordinary random allocations/request timestamps. The proposed
+  private capture checkpoint was approved by the user on 2026-09-22 and is not yet implemented.
+  Synchronize its schema and persistence plan before dependent implementation. Current C1 schema
+  remains unchanged.
+
+- [x] T081-C2-R1-CHECKPOINT-SCHEMA [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Specify the closed client-owned capture-checkpoint schema and its checkpoint-first write,
+  read-back, ambiguous-result and cold-recovery protocol in data-model.md, the live-turn
+  contract and plan.md before implementing persistence. Define exact original draft images,
+  separate excluded physical witnesses, ordered continuation input deltas, causal allocation
+  journal boundaries, derived pending comparison and original before-image ownership. Keep C1
+  pending schema and the approved C2-R1 game contract unchanged. Run a scoped Spec Kit
+  consistency analysis and independent Astra XHigh design review; accept the documentation
+  block only after findings and diff verification. Bound immutable physical witnesses to
+  original snapshot manifest/authority/request; route signed service absence through observed
+  optional selection and discard speculative owners after an uncommitted write. This task
+  grants no runtime persistence.
+  Accepted 2026-09-23: scoped Spec Kit consistency pass against the approved C2-R1 spec,
+  C1 pending model, constitution and parent C2 task found no unresolved contract gap;
+  scoped diff check clean. Independent Astra XHigh design review PASS after concrete
+  recovery, mutable-control, per-step comparison and first-write findings were resolved.
+  No runtime behavior or GM-authored contract changed; parent C2 remains open.
+
+- [x] T081-C2-R1-CHECKPOINT-TOPOLOGY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Register the private checkpoint path in afterlife contract ownership, snapshot presence
+  observation and common wound before-image/publication agreement inventory. Keep exact signed
+  present/absent optional selection under the existing reader limit; never expose this path in
+  player status or GM repair. Update afterlife contract matrix, pending/control inventory,
+  validation manifest and source/documentation guards with an honest reserved-path boundary.
+  TDD for privacy, original signed absence/presence and rollback path coverage; owning Focused,
+  required afterlife documentation Focused and FullValidation, XML build, scoped diff, then
+  independent Astra XHigh review of the completed topology block. This registration alone
+  creates no checkpoint file, parser, GM decision flow or accepted publication.
+  Accepted 2026-09-23: path ownership, 18-row signed presence with 16-row legacy reads,
+  observed optional service selection, accepted-plan path agreement, repair/status privacy,
+  afterlife matrix/inventory/example/manifest and source guards are registered. TDD RED/GREEN
+  covers exact signed absence/presence, legacy-map ordinary read, private status, rollback
+  inventory and repair exclusions. Owning Focused 142/142 and integration Focused 20/20;
+  additional focused presence and source-guard corrections 5/5 each. Required documentation
+  Focused 131/131 (`20260923-201919-196-2692-e4a3cdec7d3245b987d2f4365d273d75-focused`),
+  FullValidation 1923/1923 (`20260923-200057-632-2680-c44037e5bd17403d9e042768c44524db-fullvalidation`),
+  XML-enabled integration build exit 0 with three pre-existing unrelated CS1587 warnings,
+  and final Fast 8295/8295 in 4:01 under the seven-minute limit
+  (`20260923-202805-100-33368-95bc9e31ee834e0e995dc6e5b58013d9-fast`).
+  Scoped diff check clean. Independent Astra XHigh topology review PASS after findings,
+  including a narrow follow-up on the two corrected guard tests. This task does not claim
+  checkpoint persistence or completed parent C2 reconstruction.
+
+- [x] T081-C2-R1-CHECKPOINT-CODEC [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Implement the closed version-1 private capture-checkpoint parser and canonical serializer
+  from data-model.md section 23.2 as detached shape/comparison evidence only. Validate exact
+  root/row fields, sorted complete original draft and immutable witness inventories, exact
+  existed/absent byte images, safe canonical paths without case aliases, ordered advances,
+  allocation boundaries and all domain fingerprints. Add a pure monotonic prefix-advance
+  comparison that rejects changed frozen origin, prior decisions or journal prefix, rather
+  than granting candidate authority. TDD malformed/duplicate/extra/aliased fields,
+  missing and present-empty byte images, broken counts, reordered advances, changed suffix,
+  alias mutation and digest mismatch. Use owning Focused, one Fast checkpoint, XML-enabled
+  build, scoped diff check and independent Astra XHigh review. This task must not write the
+  checkpoint file, reconstruct game owners or publish a pending/accepted packet.
+  Accepted 2026-09-23 for the structural phase: exact closed wrapper/rows, complete
+  registered image inventory, three immutable witness rows, byte/absence fingerprints,
+  journal structure and internal step/count/digest agreement are checked. The detached
+  serializer and one-step prefix comparison retain no caller alias. Owning Focused 26/26
+  (`20260923-205103-209-2448-8c9d6907e6374aeb9d12f4ed676f6d53-focused`), XML-enabled
+  integration build exit 0 with only three pre-existing unrelated CS1587 warnings, and
+  Fast 8321/8321 in 4:33 under the seven-minute limit
+  (`20260923-205216-475-27220-64d671d29b4a4640a127758950f9c850-fast`).
+  Independent Astra XHigh review found one phase-boundary gap: the signed pre-turn snapshot
+  cannot itself supply later GM draft exchange/source or owner-allocation bounds. The
+  approved contract is unchanged; data-model section 23.2 and plan step 3 explicitly
+  require real-owner bounds and exact per-step journal replay before any recovery, repair
+  or advancement. T081-C2-R1-COLD-OWNER-BOUNDS tracks that deferred acceptance gate.
+  Independent Astra XHigh follow-up PASS for this explicit phase split; scoped diff check
+  clean, including manual trailing-whitespace inspection of the two untracked new files.
+  No checkpoint persistence, cold recovery or accepted publication is claimed.
+
+- [x] T081-C2-R1-COLD-OWNER-BOUNDS [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  In the C2 cold replayer, after structural checkpoint parsing but before recovery,
+  repair or advancement, rederive original accepted exchange/source and ordinary input
+  bounds from the real origin owners. Reject excess committed advances and decision
+  suffixes, replay every real allocation request without a new fixed cap, and require
+  the exact saved allocation cursor and rederived C1 packet at every step. Prove a
+  self-consistently rehashed oversized checkpoint cannot mint authority. This is an
+  explicit dependency of parent T081-C2-PENDING-RECONSTRUCTION, not a standalone
+  authorization to recover or publish.
+  Completed 2026-09-24 by auditing the already implemented owner replay and
+  adding three structurally valid, self-rehashed adversarial controls. The
+  first extra advance is rejected specifically at the real source frontier
+  (`spiritual_c2_next_source_missing`) before repair writes; an extra decision
+  fingerprint and an extra saved allocation tail also reject after full
+  owner/prefix/cursor comparison. Focused passed 3/3
+  (`20260924-081605-681-5484-2969f668880842ac8a284883aa2574a3-focused`);
+  XML-enabled integration build exited 0 with three unrelated existing CS1587
+  warnings; Fast passed 8337/8337 in 4:14
+  (`20260924-081828-444-23544-7ce45cc5145c4ee7873be052812c2d64-fast`).
+  Independent Astra XHigh audit found no missing production boundary: the real
+  exchange inventory, one owner-produced decision per step, exact derived
+  packet prefix and allocation cursor already enforce this limit without an
+  arbitrary fixed cap. This test-only block changes no GM contract or example.
+
+- [x] T081-C2-R1-JOURNAL-CURSOR [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to owner-bounded replay: expose the exact committed allocation cursor
+  from the retained journal and current capture even while the full saved journal
+  has unconsumed future rows. A read rejects an active speculation, faulted journal,
+  stale capture or lease, and grants no checkpoint or gameplay authority. TDD a
+  partial cold replay, failed speculative attempt and ordinary completed export;
+  owning Focused, XML-enabled build, scoped diff and independent Astra XHigh review.
+  Integrate this cursor into per-step checkpoint comparison under COLD-OWNER-BOUNDS;
+  a cursor read alone does not authorize reconstruction, persistence or publication.
+  Accepted 2026-09-23: healthy journal cursor rejects active speculation and faults,
+  reports only committed replay requests with retained future rows, and leaves the
+  full-prefix `Export()` gate intact. Capture exposes it through its current-owner,
+  lease and gate checks; integration covers partial cold replay, busy and disposed
+  capture. TDD RED missing API (`20260923-224553-607-19844-81edd7cf97b44b2b84f5bbe677924f17-focused`),
+  unit GREEN 1/1 (`20260923-224622-241-29188-744a25d900ff48ecae4614743da46c43-focused`),
+  final integration Focused 1/1 (`20260923-224826-513-32540-adb969b14da647089706e279a08344bb-focused`),
+  XML-enabled integration build exit 0 with three pre-existing unrelated CS1587
+  warnings, and Fast 8327/8327 in 4:03 under the seven-minute limit
+  (`20260923-225001-501-30040-ab8fde0faa5043508227009a99e39004-fast`). Scoped
+  diff and untracked trailing-whitespace checks clean; independent Astra XHigh review
+  PASS. This private comparison API changes no GM-authored contract or example.
+
+- [x] T081-C2-R1-C1-ORIGIN-INVENTORY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to C1 first-offer production: expose from the exact named original
+  capture a detached, immutable inventory of all originally admitted new exchange
+  coordinates and the signed D20 pool, including unexecuted, harmless and zero-ceiling
+  exchanges. First support the current same-active-conflict resource contour with an
+  exact signed historical prefix; return an explicit unsupported/pending result for
+  start, terminal and replacement contours rather than a guessed zero. Retain the
+  full original A projection across source continuations and cold replay, without
+  reading changed physical B or changing ordinary warm source append behavior.
+  TDD original future bound, warm/cold parity, alias isolation and unsupported
+  contours; owning Focused, XML build, one Fast checkpoint, scoped diff and independent
+  Astra XHigh review. This evidence alone neither freezes warm C1 decisions nor
+  produces a packet, checkpoint, recovery or accepted publication.
+  Accepted 2026-09-23: the current source owner retains the initial full conflict
+  projection across warm/cold continuation; its exact same-active historical prefix
+  yields detached original new exchange IDs and signed D20 values under the current
+  capture gate. Start, terminal and replacement contours return explicit pending,
+  and malformed/duplicate rows fail closed. TDD RED missing projection API
+  (`20260923-232601-431-36836-49cddc1763d747158308cf5c0cca14e8-focused`),
+  final owning Focused 7/7
+  (`20260923-232920-589-7472-8a3df07e38d14334962848bc06ce77c8-focused`),
+  XML-enabled integration build exit 0 with three pre-existing unrelated CS1587
+  warnings, and Fast 8327/8327 in 4:11 under the seven-minute limit
+  (`20260923-233145-512-35624-fdffab8fb5324db48e64b6fd21f1d095-fast`).
+  Scoped diff and trailing-whitespace checks clean; independent Astra XHigh
+  review PASS after malformed-row and historical-ID findings were corrected.
+  This private evidence API changes no GM-authored contract or example.
+
+- [x] T081-C2-R1-C1-CLOSED-EXCHANGE-EVIDENCE [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to first-offer packet production: retain or export under the exact
+  named capture a contiguous immutable ledger of every successfully closed
+  source-owner accepted exchange. Join each owned resource/effect interval to its same-index
+  validated source exchange JSON and all same-exchange source objects, including
+  zero-ceiling sources and source-free exchanges. Derive exact original signed
+  D20 claim coordinates from every executed exchange, not the undifferentiated
+  claimed-die set. A wait creates no ledger row; both direct and resumed close
+  paths append once. Reject stale owner, mismatched interval/order/ID, malformed
+  claims and duplicate original die indices without guessing empty evidence.
+  Preserve the latest-frontier requirement on actionable wound admissions.
+  Keep ordinary warm append and legacy full-suffix capture valid; enforce the
+  frozen original exchange bound only in the dependent C1 packet producer.
+  TDD source-free/zero/eligible sequence, direct/resumed parity, one-use dice,
+  alias isolation and owner rejection; owning Focused, one Fast, XML build,
+  scoped diff and independent Astra XHigh review. This ledger neither produces
+  a C1 packet nor publishes or writes any state.
+  Evidence: source-owner indexed checked exchange and owned resource interval
+  are retained after direct or resumed acceptance; read returns detached sources,
+  signed per-exchange claims, and effect fingerprints. Warm append and legacy
+  prevalidated suffix remain valid. Owning Focused 8/8
+  (`20260924-001659-038-34060-e30e594c31944846a9389e5501fbe16d-focused`),
+  warm/receipt regressions 9/9 plus corrected legacy 1/1; XML-enabled integration
+  build exit 0 (three pre-existing CS1587 warnings), Fast 8327/8327 in 4:08
+  (`20260924-001839-086-36708-1f37cc651566438087ecd004fafee26a-fast`),
+  scoped whitespace checks clean; independent Astra XHigh correction review PASS.
+  This private evidence surface changes no GM-authored prompt or example.
+
+- [x] T081-C2-R1-C1-IMAGE-INVENTORY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to first-offer production: retain an exact capture-owned registered
+  path inventory and detached publication rollback images. Combine the frozen
+  distributed draft inventory, real resource/effect/publication owner paths and
+  required private C1/C2 roots; preserve owner-provided `_input.BeforeImages`
+  rather than reconstructing them from disk or assuming they are signed pre-turn
+  bytes. Fill missing required draft rollback paths from the frozen original draft and
+  bind both private C1/C2 service roots to selected signed snapshot bytes or
+  absence, including cold replay. Other missing physical private paths remain
+  for the first-offer producer's full coverage check. Keep physical
+  freshness witnesses separate from candidate output. Reject unregistered,
+  case-confusable or unsupported paths and changed ownership. TDD with present,
+  absent, dynamic, owner-override and alias cases; owning Focused, one Fast,
+  XML build, scoped diff and independent Astra XHigh review. No packet or write.
+  Evidence: named capture exports frozen draft/required paths with owner-provided
+  publication images, required draft fallbacks and signed C1/C2 bytes or absence.
+  Legacy capture lacks signed C1 service authority and fails only at this export.
+  A cold checkpoint already present on disk does not become original rollback
+  evidence. Focused 3/3 (`20260924-004353-424-18516-3953eb12f88a43038e735d47af7f3aa3-focused`),
+  XML-enabled integration build exit 0 (three existing unrelated CS1587 warnings),
+  Fast 8327/8327 in 4:05 (`20260924-004534-143-14024-69453a90c59a439984ee41b9fad443c2-fast`),
+  scoped whitespace checks clean and independent Astra XHigh review PASS. The
+  private evidence API changes no GM-authored prompt or example.
+
+- [x] T081-C2-R1-C1-RESOURCE-PREFIX-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to first-offer candidate images: expose a read-only snapshot of
+  the exact latest accepted closed spiritual resource prefix's current state
+  and history from its owning live executor. Never call the destructive final
+  `ResourceHistoryWorkingSet.Freeze` on an unfinished turn; use a pure validated
+  snapshot over baseline plus pending transitions. Require exact current
+  interval identity, no pending resource/missing-side wait, current capture and
+  lease; return detached canonical images without spending, advancing, closing
+  effect phases or changing work counters. TDD one accepted prefix and later
+  accepted continuation, stale interval, wait, alias isolation and unchanged
+  ability to continue; owning Focused, one Fast, XML build, scoped diff and
+  independent Astra XHigh review. No packet, pending write or GM contract change.
+  Evidence: current capture and exact latest interval export detached canonical
+  resource state/history; an in-progress missing-side wait, prior interval and
+  disposed capture are rejected. Repeated reads leave final-freeze and rebuild
+  counters unchanged and a second exchange still executes. Owning Focused 2/2
+  (`20260924-005549-315-7844-6f0854733b8f42579112926cdbb0f92b-focused`),
+  XML-enabled integration build exit 0, Fast 8327/8327 in 4:23
+  (`20260924-005846-824-34832-996de1e4681f4d2aac958fcf18d46f96-fast`),
+  scoped whitespace checks clean and independent Astra XHigh review PASS.
+  This private read API changes no GM-authored prompt or example.
+
+- [x] T081-C2-R1-C1-CANDIDATE-OWNER-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to the first offer: compose a read-only detached candidate view
+  from the exact latest closed source/resource/effect owners under one capture
+  gate. The conflict must contain only executed exchanges; merge only the
+  effect-owned combat conditions into its active conflict. Export effective
+  resource definitions, state/history and transition evidence so registered
+  companion outcomes and typed owner transitions can project against the same
+  prefix. Compose shared wound/effect carriers using their established ownership
+  rules. Reject duplicate or incompatible path writers and any incomplete
+  projection without advancing or completing an owner. TDD executed-prefix,
+  shared-carrier, companion/transition and rejection cases; owning Focused,
+  one Fast, XML build, scoped diff and independent Astra XHigh review. This is
+  a private producer dependency, not a GM-facing behavior change.
+  Evidence: one current capture gate reads the latest executed source conflict,
+  closed resource definitions/state/history/authority and transition evidence,
+  ordinary companion outcomes, typed owner transitions, current effect/wound
+  carriers and original output projections. Future exchange suffixes remain
+  excluded; stale intervals and incompatible shared writers reject. A real
+  wrapper companion regression failed before correction and passed after
+  comparing the source-owned full original projection. Owning Focused executed
+  prefix 1/1 (`20260924-011415-088-24448-02423a09f8454cb9b5bc27f3fe97774d-focused`),
+  candidate integration 3/3 (`20260924-014744-652-15468-287dfec346b4413988338ccee95d51ca-focused`)
+  and composer unit 5/5 (`20260924-014659-153-21896-935f69c324a84af3811d867fd32d7297-focused`)
+  passed. XML-enabled integration build passed with three pre-existing CS1587
+  warnings outside this block; Fast passed 8332/8332 in 4:03
+  (`20260924-014948-716-6096-b297b1901be8401c954599abe2d9fef8-fast`).
+  Scoped whitespace checks clean; independent Astra XHigh review PASS. This
+  private view does not change GM prompts, examples or gameplay contracts.
+
+- [x] T081-C2-R1-C1-SIGNED-RECEIPT-ORIGIN [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to first-offer instance binding: extend closed pending-snapshot
+  presence to observe the spiritual opportunity receipt root, preserving exact
+  legacy 16/18-key manifest reads and emitting a 19-key presence map for new
+  snapshots. A named capture must retain exact signed receipt A bytes or signed
+  absence separately from candidate/rollback B and reject unproved absence.
+  Before offering, re-read the selected signed snapshot and compare retained A
+  identity and bytes; never infer an empty ledger from uncovered B. TDD
+  old/new manifest compatibility, covered and signed-absent receipt, A/B
+  distinction, alias/tamper rejection and stale capture. Synchronize afterlife
+  matrix, worked example/manifest and source guards for the signed presence
+  contract. Owning Focused, required afterlife documentation Focused and
+  conditional FullValidation, XML build, scoped diff and independent Astra
+  XHigh review. This prerequisite grants no receipt publication authority.
+  Accepted 2026-09-24: new signed snapshots emit 19 exact presence keys;
+  strict reader retains 16/18-key compatibility and rejects unproved receipt
+  absence. Named C1 capture retains and rechecks signed A receipt/conflict bytes
+  and identity independently of physical B candidate/rollback bytes. Focused
+  presence unit 5/5 (`20260924-020241-826-34788-99d0a1dca4ca4a60990945c81525a75c-focused`),
+  presence integration 9/9 (`20260924-020328-897-36412-5862913c7e6a4e7e9ead62672670ffd7-focused`),
+  signed-origin integration 2/2 (`20260924-021002-665-35872-521fd6c40f5745e9b339c15210d7d720-focused`),
+  afterlife documentation guard 132/132 (`20260924-021155-510-21444-4ce001991d0d42dfbb56385745847419-focused`)
+  and worked-example parse 1/1 (`20260924-021225-747-27728-3e1ab3538e484553a1897a438c3d43df-focused`) passed.
+  Fast 8333/8333 in 4:02 (`20260924-021302-259-30356-956c7fc461fc442f8b2d17d39012c18d-fast`),
+  required FullValidation 1923/1923 in 17:51
+  (`20260924-021755-022-31240-8fe77afa523644a5bc03a8af51885bf3-fullvalidation`),
+  XML-enabled integration build exit 0 and scoped whitespace/JSON checks passed.
+  Independent Astra XHigh review PASS with no actionable defects. This private
+  origin read does not publish receipts or alter GM commands; matrix, worked
+  example, manifest, inventory and guard were synchronized.
+
+- [x] T081-C2-R1-C1-FIRST-OFFER-PRODUCER [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Compose a detached, strictly parseable generation-1 C1 pending packet from the
+  current named capture after an eligible executed same-active exchange. Freeze the
+  original exchange/die/path inventory at the first offer; derive source and die
+  witnesses, source/resource/effect fingerprints, exact registered rollback and
+  candidate images, preserved response bytes, and the current source cursor from
+  actual capture owners. Retain zero-ceiling evidence without a decision slot;
+  return no packet when no eligible source exists. Reject stale/foreign source,
+  changed A/B, duplicate claim, out-of-original exchange, alias mutation and
+  unsupported start/terminal/replacement contour before any write or spend.
+  Leave staged decision intake, checkpoint/pending persistence, cold replay and
+  common accepted publication for later tasks. TDD a real eligible first offer,
+  zero-ceiling/no-offer and negative ownership paths; owning Focused, one Fast,
+  XML build, scoped diff and independent Astra XHigh review. This private
+  producer changes no GM-facing contract until it is connected to the live wave.
+  Accepted 2026-09-24: the named capture builds a detached strict generation-1 packet
+  from source-owned closed exchange/die facts, signed receipt/conflict A, complete
+  registered rollback/candidate B images and exact original response bytes. A
+  zero-ceiling exchange yields no packet. Duplicate accepted request, confusable or
+  invalid proposed instance history, already selected/declined source, changed
+  signed manifest, changed registered warm B input and stale source frontier fail
+  before publication. Focused unit 3/3
+  (`20260924-032210-568-14784-21cae02863d94684bf8319eb2e6f480d-focused`),
+  focused integration 4/4
+  (`20260924-032426-759-37120-7b63b959b67c4e029280019e9ce6710a-focused`),
+  neighboring integration 13/13
+  (`20260924-031033-353-18348-bd40358944724c669ba4fff28283ccca-focused`),
+  final Fast 8336/8336 in 4:36 under the seven-minute limit
+  (`20260924-032723-377-26836-3571038c28e3493ba1c34aeeeaef2786-fast`).
+  XML-enabled unit and integration builds passed; integration reported only three
+  unrelated existing CS1587 warnings. Scoped whitespace checks passed. Independent
+  Astra XHigh review found two substantive defects, both corrected; narrow rereview
+  PASS. This private packet producer does not yet change a GM-authored command or
+  afterlife runtime contract, so no prompt/example update is required in this block.
+
+- [x] T081-C2-R1-CHECKPOINT-FIRST-DRAFT [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  From one current named capture and its exact first strict C1 packet, build a
+  detached, strictly parseable initial C2-R1 checkpoint (`committedAdvance=0`).
+  Retain every original draft image with exact absence/bytes, the three immutable
+  physical authority witnesses, complete healthy original allocation journal,
+  original request identity and derived packet fingerprint from actual owners.
+  Reject a foreign/stale or changed packet, incomplete replay, changed A/B,
+  unsafe/aliased inventory and a no-offer exchange. This is write-free comparison
+  evidence only: no checkpoint/pending file, decision, recovery or accepted
+  publication. TDD owning Focused and negative owner paths, XML build, one Fast
+  checkpoint, scoped diff and independent Astra XHigh review. The private draft
+  changes no GM-facing command or example.
+  Evidence: real named-capture checkpoint and C1 packet round-trip, exact dynamic
+  origin bytes and absence, zero advances, physical witness and journal counts;
+  rejection of changed B, changed conflict bytes, zero-ceiling offer and a
+  previously consumed missing-side continuation. The continuation defect was
+  reproduced RED (`20260924-034634-998-36256-06cc037fe77d46b88f858f5b8b422487-focused`)
+  and corrected GREEN (`20260924-034827-956-41596-bfceb026285946528a784ff616f421f7-focused`).
+  Owning C1/C2 Focused passed 6/6 (`20260924-034945-368-40388-a4f19511dca34f46ae86ae0b6bbf4b26-focused`);
+  Fast passed 8336/8336 in 4:21 under its seven-minute limit
+  (`20260924-035205-852-33708-c43c3aa188f748008b63d4d13add46f2-fast`).
+  XML-enabled integration build passed with 0 errors; it reported existing
+  undocumented-public-member warnings outside this block. Independent Astra
+  XHigh review found the prior-continuation defect; narrow rereview PASS after
+  its correction. This detached draft does not yet alter a GM-facing command
+  or active afterlife runtime contract, so no prompt/example update is needed.
+
+- [x] T081-C2-R1-COLD-FIRST-PACKET [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Begin the existing COLD-OWNER-BOUNDS parent with write-free initial-packet
+  replay. On a fresh validator and active lease, reopen a strictly parsed
+  `committedAdvance=0` checkpoint through actual signed-origin and original
+  location/item, resource, effect and source owners; advance only its frozen
+  original exchanges to the first positive offer. Derive a new strict C1 packet
+  from those owners and compare its packet fingerprint and exact initial journal
+  cursor/count with checkpoint markers. Reject mismatched origin, extra or
+  missing allocation, no offer, changed exchange/source bounds and a forged
+  self-consistent packet marker. Do not read physical pending as input or write
+  either private file. Cover real warm-to-cold positive and negative cases with
+  owning Focused, XML build, one Fast control and independent Astra XHigh review.
+  Later committed advances, pending repair and publication remain parent C2 work.
+  Evidence: fresh named cold capture replays actual initial owners from checkpoint
+  A, derives byte-identical strict C1 packet with changed physical conflict,
+  matches initial allocation cursor/count, and writes neither private root.
+  Self-consistently rehashed forged packet marker, extra saved allocation and
+  missing saved allocation reject. The last case reproduced an uncaught journal
+  exhaustion exception RED (`20260924-040741-500-36928-aae52cc127a94e4d85809c49fbfcc16e-focused`),
+  then returned a fail-closed issue GREEN (`20260924-040852-078-30924-38c3becb84a941c88cefc79b14738659-focused`).
+  Owning C1/C2 Focused passed 10/10 (`20260924-040950-640-25596-dbdb692a3c204f369db11ff30c51b068-focused`);
+  final Fast passed 8336/8336 in 4:05 under seven minutes
+  (`20260924-041255-493-44512-011c3707aca1491bb0c85f605a185421-fast`).
+  XML-enabled integration build passed with only three unrelated existing
+  CS1587 warnings; scoped whitespace checks passed. Independent Astra XHigh
+  review found the exception gap and accepted the correction on narrow rereview.
+  This private, write-free replay changes no GM-authored command or active
+  afterlife contract, so no prompt/example update is needed in this block.
+
+- [x] T081-C2-R1-INITIAL-TRANSPORT [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Give the current named capture the only initial unfinished transport writer.
+  Under one gate and canonical lease, derive the same strict first C1 packet and
+  initial checkpoint from real owners, require exact signed before-images for
+  both private service paths (absence or empty root), and refuse a foreign,
+  stale or already-active root. Atomically write checkpoint first; classify
+  read-back as exact old, exact new or third image even if the write throws.
+  Only exact new permits a derived pending write and exact read-back. Exact old
+  discards this attempt; third image blocks it. If pending fails after checkpoint
+  commit, retain the checkpoint and require replay repair before new decisions.
+  This private writer is not yet bound to GM dispatch or accepted publication.
+  Cover success, initial absence/present-empty, prewrite failure, ambiguous
+  write outcomes, pending failure, mismatched baselines and no duplicate owner
+  allocations with injected transport failures. Use owning Focused, one Fast,
+  XML build, scoped diff and independent Astra XHigh review. Full cold repair,
+  committed advances and GM-facing docs/examples remain parent C2 work.
+  Evidence: current named capture writes exact owner-derived initial checkpoint
+  then pending under one gate/lease, with signed absent or present-empty
+  before-images and byte-exact read-back. Fault injection proves old/new/third
+  checkpoint outcomes, pending failure, write-then-throw and revocation after
+  checkpoint commit; repair-required cases replay the same packet and allocation
+  cursor from committed checkpoint. Changed private baseline and zero-ceiling
+  offer write nothing. Independent Astra XHigh review found two P2 gaps:
+  revocation during the final awaited baseline read could still commit both
+  roots (RED `20260924-043358-690-17004-05a03b730164418ea947b8d4ecedd76d-focused`)
+  and ordinary BOM-bearing signed empty roots were rejected (RED
+  `20260924-043507-888-29008-30d440ea99214a58924d9b7d1222a2a8-focused`).
+  Both corrected and narrow rereview PASS; focused regressions 2/2 GREEN
+  (`20260924-043630-461-45048-c0ddd61764b64d3b8156a74d1c923b94-focused`).
+  Owning C1/C2 Focused passed 21/21
+  (`20260924-044130-379-44388-a3b229103af147269227d1cea766416f-focused`);
+  Fast passed 8336/8336 in 4:43 under seven minutes
+  (`20260924-044552-626-42780-457ed7cf7d2846f9a6dbacf1f7ef937c-fast`).
+  XML-enabled integration build passed with three unrelated existing CS1587
+  warnings; scoped whitespace checks passed. The reserved private path and
+  example were already documented; this unbound writer adds no GM command or
+  visible afterlife lifecycle, so live GM guidance awaits runtime integration.
+
+- [x] T081-C2-R1-INITIAL-PENDING-CLASSIFIER [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Under one canonical lease, read the physical first checkpoint and pending.
+  The checkpoint supplies replay inputs but no independent authority; pending
+  is comparison-only. Parse the checkpoint with its
+  duplicate-safe frozen draft inventory, reopen signed A and immutable
+  witnesses, replay actual original owners to the first C1 packet and exact
+  allocation cursor, then classify physical pending as structural match,
+  missing/stale projection requiring repair, or blocked corruption. A pending
+  without a checkpoint cannot create an origin. Expose no GM decision or
+  accepted publication authority; this is read-only recovery evidence.
+  Cover real restart after both writes and the checkpoint-only gap, forged
+  self-consistent pending, missing checkpoint, changed signed origin and
+  malformed/aliased inventory with owning Focused, one Fast checkpoint,
+  XML build, scoped diff and independent Astra XHigh review. Actual pending
+  repair write and saved decision advances remain separate parent C2 work.
+  RED build failed for the missing classifier API (`20260924-045422`); final owning
+  Focused passed 7/7 (`20260924-050518-248-36224-4718ff9fc2fc475ba87c6ec3bb96664b-focused`).
+  Independent Astra XHigh review caught present-empty pending and replay I/O
+  failure handling; both were corrected and the reviewer rechecked PASS.
+  Final Fast passed 8336/8336 in 4:17
+  (`20260924-050832-573-33832-087204447bf44eab84b2d75090c9d7a3-fast`).
+  XML-enabled integration build exited 0. The private read-only classifier
+  changes no GM-visible contract, command, example or accepted publication.
+
+- [x] T081-C2-R1-INITIAL-PENDING-REPAIR [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Under one canonical lease, classify the physical first checkpoint and pending
+  through the cold original owners. Only a repair_required classification may
+  atomically replace pending with the exact rederived packet. Recheck the exact
+  checkpoint and pending before write, read back the pending after every write
+  outcome, and never rewrite the checkpoint or replay allocations as fresh
+  issuance. Preserve present-empty and absent baseline distinctions. A changed
+  authority root, revoked owner, unknown write outcome, or readback mismatch
+  blocks further decisions. Exact replay of an already matched pair is a
+  no-write success. Cover missing, malformed and stale pending, old/new/third
+  atomic write outcomes, concurrent physical change and revocation with RED/GREEN
+  integration tests, Focused/Fast/XML controls and independent Astra XHigh review.
+  Runtime GM dispatch and saved decision advances remain separate C2 tasks.
+  RED missing API (`20260924-051400`), signed request mutation
+  (`20260924-052020`), unusable stale returned owner (`20260924-052202`),
+  and post-readback changed replay baseline (`20260924-053646`) were reproduced.
+  Final combined C2 pending Focused passed 17/17
+  (`20260924-053858-618-14908-f059ceecfdb34e61ad83060ab1b36da6-focused`);
+  Fast passed 8336/8336 in 4:14
+  (`20260924-054358-455-40428-b097d4990f9b4325a13bfa5d9a328a68-fast`).
+  XML-enabled integration build exited 0 with three unrelated existing CS1587
+  warnings. Independent Astra XHigh code review rechecked all corrections PASS.
+  Private repair changes no GM-visible command or accepted contract, so the
+  already documented private path needs no further GM-facing update here.
+
+- [x] T081-C2-R1-SAVED-DECISION-REPLAY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  From an exact committed C2 checkpoint/pending pair, accept one actual next
+  positive-source `none` or `materialize` decision through the retained source,
+  wound, resource and effect owners. Freeze and validate only permitted dependent
+  decision/prose and conflict input changes against immutable original actions,
+  actors, dice, sibling draft paths, earlier sources/decisions and before-images.
+  Derive the successor C1 packet and one appended checkpoint advance in memory,
+  including exact new decision fingerprints and allocation count. Reopen the
+  original signed snapshot on a fresh service, strictly replay the initial and
+  saved step through actual owners and prove the same packet, images, decisions,
+  ID/time journal cursor and bounded pending fingerprint. Keep replay-only
+  allocations closed until every retained boundary is proved. Cover both
+  decision kinds, same-exchange second source, dependent next exchange, changed
+  original action/actor/die, altered saved input/decision/allocation rows and
+  later uncommitted physical GM edits with RED/GREEN focused integration tests,
+  one Fast control, XML build and independent Astra XHigh review. No filesystem
+  writes, GM dispatch or accepted publication in this block; those follow only
+  after the owner-derived and replayed transition is established.
+  Completed 2026-09-24: an exact matched pair stages owner-derived `none` and
+  `materialize` decisions, retains the second positive source of the same
+  exchange, and validates dependent next-exchange resource corrections after
+  wound routing. A fresh service replays two saved decisions in order against
+  the signed origin even when physical GM inputs changed later or pending is
+  missing. Rehashed input/decision/allocation evidence, invalid UTF-8/prose,
+  original action/actor/die/sibling edits, and changed classifier-origin bytes
+  reject. The owner-composed conflict candidate remains separate from raw
+  correction input. Focused controls passed for saved decisions/cold replay
+  (13/13), independent input mutations (4/4), dependent exchange (1/1),
+  two-source staging (1/1), two-step replay (1/1), advanced classification
+  (3/3), initial classification (7/7), and ABA-review corrections (5/5).
+  XML-enabled integration build exited 0 with three pre-existing unrelated
+  CS1587 warnings. Fast passed 8337/8337 in 4:13 under its 7-minute limit
+  (`20260924-073104-338-28028-b259a1caf62543e189c4a9d3f784ed65-fast`).
+  Independent Astra XHigh reviewers found and rechecked corrections for saved
+  input/encoding validation, two candidate-image dataflow defects, and a
+  classifier-origin race. Generalized classification is read-only here;
+  transport, repair, GM dispatch and common publication remain separate work.
+  No GM-visible command or accepted contract changed in this write-free block,
+  so no prompt/example/manifest update is required yet.
+
+- [x] T081-C2-R1-SAVED-TRANSPORT-REPAIR [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Persist one owner-derived saved decision under the canonical lease and capture
+  gate. Freeze the exact matched checkpoint/pending generation and proposed GM
+  inputs; derive and validate the successor in memory, then atomically replace
+  checkpoint and verify exact read-back before writing the derived pending.
+  Reconcile ambiguous first-write outcomes only as exact old/new bytes, reject
+  any other state, and repair missing/stale pending solely from strict cold
+  replay of the latest committed checkpoint. Do not issue another decision or
+  publish canonical state while projection repair is required. Cover write
+  failures, changed roots and restart classification with focused RED/GREEN
+  tests, XML build, one Fast control and independent Astra XHigh review.
+  Completed 2026-09-24: a retained matched owner derives and saves the next
+  decision under one gate and lease. Exact old/new/third checkpoint outcomes
+  determine whether the step committed; pending replacement follows only a
+  confirmed checkpoint and can be repaired from full signed-origin replay.
+  The postflight probe checks all immutable witnesses, the owner-backed source
+  continuation and the exact new pair. The prior first-pending repair API
+  remains initial-only; the generalized API also handles saved checkpoints.
+  RED reproduced missing APIs and an independent-review P1 where a changed
+  turn request still yielded `committed`; the overbroad first correction also
+  failed the happy path because it expected the old private-root bytes. Both
+  were corrected with exact successor overrides for only the two service roots.
+  Focused saved transport/repair passed 9/9
+  (`20260924-080312-951-22724-128b3b16077241e5a97a817112a2e571-focused`);
+  actual dependent materialization/next-exchange transport and second-source
+  saved transport/cold replay passed 1/1 each (`20260924-080056-010-44028-2c8cef5c7b58490691873e5ecacfff54-focused`,
+  `20260924-080207-432-35488-1c0a630791de4d1bbab772defa5e2ba2-focused`).
+  Combined regression passed 17/17 with new generalized code (10 initial
+  repair and 7 saved transport/repair controls)
+  (`20260924-074748-302-42972-7c5cc309ff2040df89826b9e60f90a46-focused`).
+  XML-enabled integration build exited 0 with three pre-existing unrelated
+  CS1587 warnings; Fast passed 8337/8337 in 4:26 under its 7-minute limit
+  (`20260924-080708-079-27996-0605a8ead46e4b78bbac3fb91550b70a-fast`).
+  Independent Astra XHigh review rechecked the P1 and affected dependencies
+  PASS. This is private transport/recovery only; no GM command, visible flow,
+  example or accepted contract changed. Parent C2 dispatch, GM synchronization,
+  cold-owner bounds and common publication remain open.
+
+- [x] T081-C2-R1-DECISION-CONTINUATION [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Before saving the final positive decision of a closed exchange, use the retained
+  owners to advance the original exchange suffix until the next positive offer or
+  verified complete frontier. Apply at most the current bounded dependent conflict
+  correction; traverse zero-ceiling exchanges without committing a stranded cursor.
+  Reject missing or invalid dependent work before checkpoint transport so the same
+  decision can be retried from the prior matching pair. Cover unchanged, corrected,
+  zero-ceiling and terminal continuations, cold replay and transport recovery with
+  signed Focused tests, one Fast checkpoint, XML build and independent Astra XHigh
+  review. This remains an unpublished private C2 operation.
+  Accepted 2026-09-24: the final current-exchange decision now executes the
+  owner-checked original suffix to the next positive source or a checked complete
+  frontier before saving. One optional dependent correction applies to the first
+  continued exchange; zero-ceiling middle exchanges are drained without requiring
+  an impossible correction-only checkpoint advance. A missing correction rejects
+  the in-memory attempt while retaining the old physical pair for fresh-owner
+  retry. Signed dependent Focused cases passed 2/2, the zero-ceiling/positive
+  cold-classifier case passed 1/1, and neighboring same-exchange/replay controls
+  passed 4/4. XML-enabled integration build exited 0 with three pre-existing
+  unrelated CS1587 warnings; Fast passed 8337/8337 in 4:21 under seven minutes
+  (`20260924-090256-366-18348-b82c597ebd394fa4a3619312e9ab5b8d-fast`).
+  Independent Astra XHigh review: PASS, no actionable findings. This private
+  path is not yet wired to live GM dispatch, so GM-facing synchronization stays
+  with C4; parent C2 and C3/C4 remain open.
+
+- [x] T081-C2-R1-PRIVATE-GM-ADAPTER [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Build the private owner-bound offer and decision adapter without activating
+  GameEngine or daemon dispatch. After checkpoint-first classification/repair,
+  project only the current visibility-safe opportunity and allowed response
+  shape from a matched replay owner; never expose checkpoint, pending packet,
+  source witnesses, allocation journal, before/candidate images or authority
+  fingerprints. Bind one GM response to that exact current offer and physical
+  pair, reuse the ordinary wound command/composition owner and saved transport,
+  and distinguish next offer, dependent exchange continuation, completed but
+  unpublished capture, repair required and blocked. Exhausting a local source
+  list must not imply the whole original turn is complete. Cover forged/stale,
+  unoffered and duplicate responses, missing pending repair, same-exchange
+  second source, zero-ceiling source skip, dependent next exchange and completed
+  capture through signed Focused integration tests, one Fast checkpoint, XML
+  build and independent Astra XHigh review. This adapter remains client-owned
+  and uninvoked by live GM entrypoints; GM guidance and a worked example are
+  synchronized when C4 activates the full publishable workflow.
+  Accepted 2026-09-24: checkpoint-first repair and owner-bound safe offer are
+  internal only. The adapter serializes a session's submissions, binds the
+  submitted command bytes to the saved input layer, reports correctable
+  dependent exchange failures separately, and exposes exact guarantee and
+  worsening bounds without private provenance. Signed Focused adapter 6/6,
+  dependent exchange 7/7, guarantee/retrauma 10/10; XML-enabled rebuild exited
+  0 with three unrelated existing CS1587 warnings. Fast passed 8337/8337 in
+  4:24 under the seven-minute limit
+  (`20260924-095550-435-38228-11b66af5f3f045a5bf746951b17f46b5-fast`).
+  Independent Astra XHigh review found and verified fixes for submission,
+  command substitution, disposition and offer bounds, then passed the final
+  correction with no remaining findings. GM-facing prompts/examples remain
+  unchanged because no live GM entrypoint invokes this private seam; C4 owns
+  their synchronization on activation. Parent C2 and C3/C4/C5 stay open.
+
+- [x] T081-C2-R1-COLD-CONTINUATION-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Prerequisite to owner-bounded replay: let the exact cold capture prepare one detached
+  dependent conflict-draft correction against immutable A, using the existing source
+  permitted-edit validator and a capture-owned resource/source transaction. Bind any
+  prepared ticket to the selected view revision; commit the new layer only when the
+  actual source/resource step succeeds. Freeze the original exchange/action/dice
+  inventory, reject foreign, stale, non-conflict and overlong changes, and preserve
+  failed-attempt source, allocation and physical-file state. TDD against the signed
+  cold-origin fixture and existing future-exchange contour; Focused, Fast checkpoint,
+  XML build, scoped diff and independent Astra XHigh review. This unit does not claim
+  general saved inputChanges, C1 packet production, recovery, persistence or publication.
+  Accepted 2026-09-23: exact capture-owned cold layer and revision are selected inside
+  the source/resource transaction; the immutable original A, physical later draft and
+  unrelated path inventory remain unchanged. Ordinary source continuation cannot read
+  or commit a speculative layer. Early calls, changed action/die, overlong exchange,
+  appended recent conflict, malformed/foreign changes, concurrent ordinary continuation
+  and stale prepared tickets reject without advancing the accepted owner state. Focused
+  integration 1/1 (`20260923-223505-063-7196-c652eae9f0a449a999b42d6b6536da5c-focused`),
+  neighboring integration 12/12 (`20260923-224210-483-29192-fa5d1ee1cbd746ce9e303cb793bed8c2-focused`),
+  unit 6/6 (`20260923-222413-803-19996-60505331c93c4805a63e2f95cc5db3c1-focused`),
+  XML-enabled integration build exit 0 with only three pre-existing unrelated CS1587
+  warnings, and Fast 8326/8326 in 4:08 under the seven-minute limit
+  (`20260923-223754-768-23228-7273ac766f1044b594940f0093fef349-fast`). Scoped diff
+  and untracked-file trailing-whitespace checks clean; independent Astra XHigh review PASS
+  after three substantive boundary corrections. This private view changes no GM-authored
+  command or contract, so prompts/examples do not change here. COLD-OWNER-BOUNDS remains open.
+
+- [x] T081-C2-R1-COLD-ORIGIN-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Expose only detached original draft images and immutable physical witness fingerprints
+  from the structurally parsed checkpoint, then let a fresh named original capture under
+  one canonical lease reopen the signed snapshot, compare original identity, declared
+  paths and the three real immutable witnesses, and rerun existing location/item,
+  resource/effect and spiritual source/wound owners against checkpoint A rather than current
+  physical GM draft B. Retain current physical mutable controls under their transport
+  owner; reject any origin disagreement before allocation, write or accepted authority.
+  TDD a fresh service with changed current dependent draft and with a changed immutable
+  witness, including originally absent versus present-empty paths. Use owning Focused
+  integration, one Fast checkpoint, XML-enabled build, scoped diff and independent Astra
+  XHigh review. This unit stops before applying saved advances, pending repair or writes.
+  Evidence 2026-09-23: cold-origin Focused integration 4/4
+  (`20260923-214645-799-20092-aa484b67867a4b2f84b00555bb7ccd17-focused`),
+  warm-owner control 4/4 (`20260923-214809-415-16744-7a11c70ead1843c5b97721e7822f5943-focused`),
+  codec Focused 30/30 (`20260923-214952-818-36408-621f6123777244a18c7f4f2237cf94c1-focused`),
+  XML-enabled integration build exit 0 with zero warnings/errors (`NoWarn=1591` for
+  existing unrelated missing-comment warnings), scoped diff/trailing-whitespace check
+  clean, Fast 8325/8325 in 4:06 (`20260923-215217-637-33452-85e5a2d2bec5433f8eef1fead48330c4-fast`),
+  and independent Astra XHigh review PASS after corrections. This establishes only
+  write-free original A owner replay with changed physical B and immutable witness
+  rejection; COLD-OWNER-BOUNDS, saved advances, pending repair and publication remain open.
+
+- [x] T081-C2-R1-JOURNAL [US3] Implement the approved C2-R1 closed allocation/time replay journal
+  as a pure prerequisite to capture persistence. Retain typed owner/causal coordinates and exact
+  ordinary generated values; replay rejects reordered, extra, missing or differently typed calls
+  without invoking allocation callbacks. Appending replays the retained prefix before generating
+  new values. Faulted attempts cannot export a commit candidate. Prove detached input/output,
+  strict shapes, ID/time validation, exact retry and prefix mismatch with TDD and Focused controls;
+  independent XHigh review before acceptance. This prerequisite grants no persistence or gameplay
+  authority and leaves parent C2 open for production owner hooks, checkpoint and cold recovery.
+  Accepted 2026-09-22: XML Focused26/26, Fast8166/8166 in4:44.872 (182900), clean diff check,
+  independent XHigh review PASS after the XML correction. Exact run evidence is in plan.md.
+
+- [x] T081-C2-R1-RESOURCE-IDENTITIES [US3] Bind the journal to existing typed resource mutation
+  and capacity allocation callbacks through an opt-in factory. Derive comparison coordinates from
+  the complete typed operation key, preserving distinct mutation/capacity domains and ordinary
+  random allocation. Reject unbound calls without an unjournaled fallback. Prove exact real-owner
+  cold replay and causal mismatch rejection; XML Focused and independent XHigh review. This unit
+  is not the full definition/pending/time or effect hook integration and does not create a capture
+  checkpoint or authorize publication. Keep parent C2 open until all those paths are covered.
+  Accepted 2026-09-22: XML Focused34/34 (183732), including actual resource execution on all
+  three contours and causal mismatch controls; independent XHigh actual-code review PASS.
+  Combined owner-hook Fast remains the next checkpoint, not a claim of parent C2 completion.
+
+- [x] T081-C2-R1-EFFECT-IDENTITIES [US3] Thread immutable causal allocation keys through actual
+  effect and combatant/member allocation sites, retaining parameterless compatibility for ordinary
+  factories. Forward typed overloads through the real identity-history owner without losing its
+  receipts. Add an opt-in journal adapter that forbids unbound allocation. Prove real base creation
+  and consuming/non-consuming replacement cold replay, distinct semantic replacement slots,
+  wrapper forwarding and stable identity history; owning XML Focused, combined Fast and independent
+  XHigh review. This prerequisite does not install live capture persistence or authorize publication.
+  Accepted 2026-09-22: XML Focused203/203 and Fast8186/8186 in3:39.980 (191020), independent
+  XHigh final PASS, clean targeted diff check. Ordinary factory overrides remain compatible.
+
+- [x] T081-C2-R1-RESOURCE-CREATION [US3] Route both actual definition/seal allocation sites and
+  bounded pending request/time creation through typed ordinary factory hooks and the journal.
+  Preserve legacy callback callers; freeze pending draft JSON before validation and detach each
+  allocator callback argument. Prove actual catalog/pending replay and adversarial callback alias
+  isolation, plus owning planner/source integration controls. Run XML Focused, appropriate
+  integration selection, combined Fast and independent XHigh review. No checkpoint/publication
+  authority or new GM capability is granted by these internal allocation hooks.
+  Accepted2026-09-22: XML Focused281/281, signed integration3/3, Fast8194/8194 in4:24.328
+  (193404), independent XHigh review PASS after generic XML and baseline-fixture corrections.
+
+- [x] T081-C2-R1-CAPTURE-ALLOCATION-AUDIT [US3] Complete the actual original-capture allocation
+  and clock inventory before live binding. Trace initial owner composition, cached effect base,
+  registered outcomes and continuation factories. Record cache lifetime requirements and every
+  additional reachable random/time producer in plan/data-model. Preserve ordinary behavior and
+  registered authority invalidation; distinguish verified reachability from pending hypotheses.
+  Independent XHigh review and Spec Kit consistency check precede dependent implementation.
+
+- [x] T081-C2-R1-ORIGINAL-DRAFT-INPUTS [US3] Retain exact complete distributed input bytes before
+  original capture composition. Add a detached original-input view with an owner-derived frozen
+  inventory, explicit absence and original session/request/turn/snapshot binding. Preserve dynamic
+  draft paths and independent siblings beyond the existing mechanics _observed subset. Reuse the
+  physical snapshot reader's validated inventory without treating unselected snapshot files as read
+  authority. Keep snapshot/authority/rollback artifacts and active checkpoint/pending content out of
+  recursive input payloads; their original before-images remain separately required. Bind the view
+  only to a successful original capture with the same original identity and unchanged observed
+  inputs. Unknown reads fail closed. Prove real capture exact bytes, empty versus absent files,
+  dynamic/unexecuted siblings, detached aliases, stale original identity and zero file writes.
+  Use pure Focused tests plus signed integration, one Fast checkpoint and independent Astra XHigh
+  review. This unit retains data only; candidate-read routing, pure narrative/interface admission,
+  checkpoint persistence, continuation replay and GM dispatch remain explicit parent C2 work.
+  Accepted2026-09-23: signed owning21/21 (081017), post-review pure3/3 (082112) and signed2/2
+  (082227), XML Fast8240/8240 in4:52.415 of7min (082353). Independent Astra XHigh final review
+  PASS after rollback-subtree exclusion and explicit prefilter root-case rejection. Exact run IDs,
+  baseline XML warnings and the unnecessary earlier Focused timeout override are recorded in plan.md.
+
+- [x] T081-C2-R1-COLD-INTAKE-ALLOCATIONS [US3] Before fresh candidate-input reconstruction,
+  bind actual upstream raw item/location identity producers to the retained journal and isolate
+  their caches by capture attempt/factory. Prove actual admitted new-item/location/link/transition
+  and governed threat creation; preserve ordinary random ID forms and default callers. Item
+  validation invalidation alone retains the old same-fingerprint allocation cache, and location
+  cache hits likewise skip factory calls: neither may bypass the replay stream. Preserve owner
+  fences, original snapshot identity, current canonical-root lifetime and missing-governed-item
+  checks. Record the concrete typed hook/causal coordinate design before implementation; no
+  normalization-only producer is added without actual raw-intake reachability. Run TDD, owning
+  Focused, signed cold-intake integration, combined Fast and independent Astra XHigh review.
+  This extends the producer inventory only when upstream intake is actually re-executed; the
+  completed resource-capture allocation audit remains valid for its original narrower contour.
+  Accepted2026-09-23: XML pure45/45, signed3/3, ordinary/rejection8/8 and compatibility2/2;
+  independent Astra XHigh code and correction review PASS. Fast8258/8258 in3:59.667 of7min
+  (094005) passed after fixing a reflection helper exposed by failed Fast093409; targeted2/2
+  (093900) preserved both planner-exception authority-cleanup checks. Exact artifacts and process
+  assessment are in plan.md. This remains private intake, not full cold reconstruction.
+
+- [x] T081-C2-R1-OUTPUT-PROJECTION [US3] Before write-free candidate admission, extract shared
+  in-memory narrative/interface normalization while preserving ordinary validation and its current
+  write-on-change wrapper. Retain exact original raw bytes separately. Preserve malformed/no-change
+  inputs, escaped line-break and hidden-control-tag behavior, exact serializer, timestamp fallback
+  conditions and existing validation severity. Supply actual fallback time through a typed attempt
+  clock when replay reaches this projection; existing timestamps must not allocate. Keep projection
+  data separate from authority and do not use the side-effecting GameEngine response builder.
+  Record the concrete API/reader boundary and run consistency review before implementation.
+  TDD, pure normalization controls, relevant signed write-free/ordinary wrapper integration and
+  independent Astra XHigh review are required; combine Fast with the candidate-admission checkpoint.
+  This prerequisite does not complete dependent achievement/prose checks, full candidate-reader
+  routing, original continuation replay or checkpoint persistence. Source issue remains #1536/C2-R1.
+  Accepted2026-09-23: XML Focused pure/ordinary39/39 (101255), signed/ordinary Integration22/22
+  (101431), and final absence/present-empty5/5 (101729), all exit0/no timeout/no duplicates/clean
+  owned-tree cleanup. Hook-controlled revocation test was RED0/1 (101044) and GREEN in22/22 after
+  a post-read owner/lease check. Parent inspected the baseline-three source diff/new files and
+  evidence; independent actual Astra XHigh final code review PASS after the race and XML fixes.
+  Fast remains combined with candidate admission by plan. This private projection changes no
+  GM-authored output schema/command; full GM documentation will accompany later admission.
+
+- [x] T081-C2-R1-CAPTURE-ALLOCATION-BINDING [US3] After the allocation audit, bind one journal
+  and typed factories to the original capture from initial owner/base construction through all
+  accepted continuations. A fresh capture must not reuse a cached result from a different factory
+  scope. Preserve history receipts, registry invalidation and exact retained before/current images.
+  Rejection/revocation invalidates the attempt. Prove fresh-owner replay, cache scope separation,
+  changed causal inputs and zero accepted publication through owning Focused and signed integration
+  controls, combined Fast and independent XHigh review. Full checkpoint schema, durable commit,
+  draft restoration and GM dispatch remain parent C2 work.
+  Accepted2026-09-23: XML capture/completion integration25/25 (025035), prefix/receipt28/28
+  (024459), Fast8237/8237 in3:57.083 (074019), independent Astra XHigh binding/inventory review
+  PASS after source-ticket and consumed-completion revocation fixes. The interrupted Fast073248
+  is not acceptance evidence; the successful replacement is recorded in plan.md.
+
+- [x] T081-WORKFLOW-SOL-PRIMARY [#1552](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1552)
+  Apply user-approved 2026-09-23 routing revision to global AGENTS.md and this worktree's existing
+  development-workflow.md: Sol High owns routine end-to-end development; independent Astra XHigh
+  reviews completed coherent blocks; Astra High is reserved for concrete unresolved problems.
+  Remove duplicated parent/implementer analysis and automatic intermediate-document reviews while
+  preserving Spec Kit approvals, verification and mandatory independent review of final changes.
+  Verify exact documentation diff and obtain bounded independent review; no C# rerun for policy alone.
+  Accepted2026-09-23: parent inspected exact two-file baseline diff and whitespace; independent
+  actual Astra XHigh review PASS. Global changes are confined to routing/workflow policy; approvals,
+  verification and independent review remain intact. No C# tests needed for this documentation edit.
+
+- [x] T081-C2-R1-CANDIDATE-READ-VIEW-INTAKE [US3] After output projection, introduce an explicit
+  immutable current-input view for location/item owner intake, including route/transfer catalogs
+  and nested location calls. Before implementation, record exact APIs, original identity checks,
+  every read's candidate/pre-turn/physical role and a bounded private intake entry with Spec Kit
+  consistency and independent Astra XHigh design review. Preserve each existing consumer decoder,
+  ordinary callers, signed snapshot authority, real lease/request/freshness checks and attempt-owned
+  allocation/fence semantics. Unknown registered draft reads fail closed; never fall back to disk,
+  redirect physical signing authority, use an ambient override or create a scratch filesystem.
+  Test actual owner plans against retained input while physical draft roots differ; keep the
+  existing full capture's mismatching original-image rejection intact. That private intake test
+  cannot authorize attaching a complete capture without later full reader/checkpoint validation.
+  Read-only preflight must preserve existing treatment receipts/holds even after common validation
+  was consumed, and reject foreign validated item factories before any cache/fence mutation. It
+  must not create a missing session-generation file. Follow the exact root guard in plan.md;
+  never restore old authority as valid or clear reservations to admit a staged original view.
+  TDD, owning Focused, signed intake/ordinary compatibility controls and independent Astra XHigh
+  review; combine Fast with the stable candidate-admission checkpoint. Resource/effect/source,
+  same-turn actor/faction/wound validation, durable checkpoint and GM dispatch remain parent C2 work.
+  Progress2026-09-23: source routing and noncreating guard implemented. XML Focused pure guard4/4
+  (114952), signed/ordinary intake11/11 (115103) and Fast8290/8290 (105809) passed without timeout,
+  duplicate IDs or cleanup failure. A/B tests inspect actual location/item plans, quest reward route,
+  same-turn source export, missing governed item, player-to-NPC transfer, text companion, projection
+  roots and foreign-factory invisibility while physical current files differ. Live resource-only,
+  open held-treatment and finalized claims reject named intake without losing publication authority;
+  downstream failure revokes a raw private item registration. The noncreating/stale-generation,
+  identity, scope, override, factory, lease, foreign-fence and mid-capture-change controls pass.
+  Independent actual Astra XHigh final re-review PASS after inspecting source, diffs and executed
+  Focused/Fast artifacts. This accepts only the private prerequisite; complete C2 remains open.
+
+- [x] T081-C2-R1-SOURCE-CURRENT-READ-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Bind the initial live spiritual source session's
+  candidate dictionary to the exact retained current draft when the named original capture supplies
+  it. Keep `PendingTurnSnapshotReader` and the physical request read authoritative; compare all four
+  original identity coordinates before consuming candidate images. Preserve the source owner's
+  strict UTF8 decoder, signed-before paths, ordinary source entry and existing continuation rules.
+  Reject an unregistered selected path and invalid UTF8 without falling back to physical files.
+  Prove signed A versus changed physical B through the actual source session's candidate dictionary,
+  exact absent/present and malformed-input cases, and ordinary compatibility. This is an initial
+  source acquisition prerequisite; effect/resource readers, source continuation and cold recovery
+  remain parent C2 work. TDD, owning XML Focused, relevant signed controls, scoped diff and one
+  independent Astra XHigh review; combine Fast at the next stable reader checkpoint.
+  Accepted 2026-09-23: named original intake passes its detached current images to initial source
+  acquisition only; signed before-images and physical request remain authoritative, and the
+  ordinary source path stays physical. Genuine signed A/B integration plus two existing controls
+  passed XML Focused 3/3 (171817), zero warnings/timeouts/duplicate IDs, clean owned-tree cleanup.
+  The A/B test checks all selected paths, both absence directions, four tuple mismatches,
+  unregistered selected path, malformed strict UTF8 and unchanged request. A later XML-only
+  documentation correction compiled without new warnings; three unrelated CS1587 warnings remain
+  in untouched files. Independent actual Astra XHigh review PASS after that correction. No
+  GM-authored contract changed; initial source continuation and full C2 recovery remain open.
+
+- [x] T081-C2-R1-EFFECT-CURRENT-READ-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Route the initial effect owner's current command, carrier, identity, source-authority and world-
+  time reads through the named original draft, including its nested location plan; preserve
+  physical signed before-images, manifest and request, and ordinary/mortal entrypoints. Route the
+  corresponding effect command and identity reads in the surrounding resource input composer.
+  Check the exact four-coordinate manifest identity before consuming a view; reject unregistered
+  paths without physical fallback. Prove a real named A/B capture reaches final stale-input
+  rejection instead of adopting physical B, and an ordinary read still sees B. Track remaining
+  wound-draft and changed same-turn owner validators separately. TDD, owning XML Focused,
+  relevant signed controls, scoped diff and independent Astra XHigh review; combine Fast with the
+  next stable reader checkpoint.
+  Accepted 2026-09-23: initial named effect current command/carrier/index/source/world-time and
+  nested location reads use the retained original draft after exact manifest identity checking;
+  physical signed pre-turn and request reads, ordinary/Mortal paths and later continuation stay
+  unchanged. Real A/B signed tests cover both presence directions and final stale-input rejection;
+  direct controls cover four tuple mismatches, missing selected path and revocation of a real prior
+  effect handoff. XML Focused new/related controls 7/7 (174410), final XML build zero warnings.
+  Independent actual Astra XHigh PASS after XML and handoff-revocation corrections. Fast first
+  exposed a missing explicit family-inventory entry for the earlier treatment guard test; one
+  line in FastTestBoundaryTests was independently reviewed PASS and exact Focused 1/1 (174912).
+  Repeat Fast 8291/8291 in 4:02 (174945), no timeout/duplicates and clean cleanup. Full resource,
+  wound-draft, changed same-turn owner, source continuation and C2 recovery remain open; no
+  GM-authored contract changed.
+
+- [x] T081-C2-R1-RESOURCE-CURRENT-READ-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Bind the initial resource owner's selected current command and canonical roots, continuity
+  checks, resource-owner roots, system-outcome inputs and draft before-images to the exact retained
+  original view in named spiritual intake. Keep validated manifest, signed pre-turn roots, physical
+  turn request and excluded control-file witnesses physical; ordinary and Mortal paths remain
+  unchanged. Reject identity mismatch and unregistered draft inputs before plan authority can be
+  retained, without treating a current B image as the original A. Prove signed mid-capture A/B
+  changes across an unchanged canonical root and an afterlife owner root reach the final freshness
+  guard, while ordinary validation still observes B. Wound-draft and changed same-turn owner
+  validators remain separate. TDD, owning XML Focused, relevant signed controls, scoped diff and
+  independent Astra XHigh review; run Fast at the next meaningful checkpoint.
+  Accepted2026-09-23: genuine signed A/B RED then owning Focused4/4 (181623), related
+  source/effect/resource Focused7/7 (180816), XML-enabled build exit0 with three pre-existing
+  unrelated CS1587 warnings; scoped whitespace clean. Independent actual Astra XHigh PASS.
+  Subsequent Fast8291/8291 in4:20 (181930), under the7-minute lane cap, with no
+  timeout/duplicates and clean cleanup.
+  No GM-authored contract changed; wound-draft, changed same-turn owners, source continuation
+  and durable recovery remain open.
+
+- [x] T081-C2-R1-WOUND-DRAFT-APPLICABILITY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Investigate whether the raw `wound_commands.json` loader needs a retained-current reader in
+  initial named spiritual intake under the existing accepted-command contract. A genuine signed
+  Chaos Sea fixture with an empty bound wound command reached the loader but failed in the
+  downstream Mortal-only opportunity authority. Independent Astra XHigh audit checked every
+  command family: empty/opportunity commands require `mortal_world`; treatment detached coordinates
+  require Mortal realm and binding equality; accepted transitions have no adapter. Thus no
+  presently valid spiritual original capture can pass with a present wound command. The separate
+  spiritual source-bound wound selection remains in scope for C2/C3/C4. Trial production routing,
+  fixture extension and failing test were removed; no production behavior was changed by this
+  investigation. Revisit this seam only if a tracked task later adds a valid spiritual wound-command
+  adapter; preserve existing realm authority meanwhile. Evidence and ruling in plan.md.
+
+- [x] T081-C2-R1-SAME-TURN-OWNER-READ-VIEW [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Close the changed effect-source owner validator's transitive current-read boundary under named
+  original intake. It currently calls generic selected state validation, NPC actor completeness
+  and both Mortal/Shining raw faction families against physical B even though accepted source
+  roots came from retained A. Reuse the real validators through a private A-bound validation
+  context with the original physical filesystem for signed pre-turn/controls; keep ordinary and
+  Mortal calls physical and avoid a mutable process-wide or leaked override. Fail closed on every
+  unregistered transitive current dependency. Prove signed valid-A/invalid-B and invalid-A/valid-B
+  cases for changed skill, NPC and faction owners, absent/present distinctions, non-leaking
+  ordinary control, and physical signed authority. Split generic/NPC and full faction closures
+  into separately verified subblocks if needed; both are required before acceptance. TDD,
+  owning Focused, relevant signed controls, XML comments, scoped diff, Fast at a meaningful
+  checkpoint and independent Astra XHigh review of the completed coherent block.
+  Accepted 2026-09-23: signed A/B and current-read controls Focused20/20
+  (`20260923-191556-128-21640-6bcf9d32c1fd4cd19de8afe1497daf1b-focused`),
+  XML-enabled integration build exit 0 with three pre-existing CS1587 warnings outside this
+  block, Fast8291/8291 in4:14.109 with the 7-minute limit
+  (`20260923-192005-965-25740-5d045849b8f049f3a1b89e518d3a4304-fast`),
+  scoped diff check clean, and independent Astra XHigh review PASS after its NPC-scene
+  synchronous-read finding was reproduced RED and corrected GREEN. Parent C2 remains open.
+
+- [x] T081-C2-R1-EFFECT-CACHE-SCOPE [US3] Prerequisite to capture binding: allow an explicit
+  effect factory on ordinary and wound-prepared cache builds. Reuse requires the same factory
+  reference and existing complete input fingerprint; factory identity never enters serialized
+  fingerprints. Preserve constructor defaults, validated handoff and invalidation. Test real
+  ordinary/wound cache paths and fresh strict-replay factories, with Focused and XHigh review;
+  combined Fast at the live-binding checkpoint. This unit alone does not bind the registry/capture.
+  Accepted2026-09-22: owning XML Focused277/277, Fast8200/8200 in3:42.899 (195201),
+  independent XHigh actual-code review PASS. Registry/capture forwarding remains open.
+
+- [x] T081-C2-R1-VEHICLE-IDENTITY [US3] Preserve ordinary vehicle creation during original
+  spiritual replay, whose actual reachability is proven by the signed allocation inventory test.
+  Add the typed admitted-ref allocation hook, retain existing override compatibility, route the
+  actual composer and implement an opt-in journal adapter. Test real owner exact replay, changed
+  ref rejection and unbound-call failure; owning Focused, XHigh review and combined Fast.
+  Accepted2026-09-22: XML Focused277/277, legacy/signed integration12/12, Fast8200/8200
+  in3:42.899 (195201), independent XHigh actual-code review PASS.
+
+- [x] T081-C2-R1-PROJECTION-CLOCKS [US3] Retain actual times for repeated pure projections:
+  memory grant, archive receipt, spiritual conflict closure and survival consumption. Use one
+  attempt-owned memoizing journal clock with detached causal keys, never an ambient global clock.
+  Preserve owner admission, optional timestamp fallback semantics and output formatting. Prove
+  real projection equality, no extra clock calls, invalidation and mismatch rejection with TDD,
+  owning Focused, XHigh review and combined Fast. Initial/live capture routing remains a separate
+  binding step; no memory ID generator is reachable through admitted legacy grants.
+  Accepted2026-09-22: XML Focused126/126 plus unrelated-root1/1, integration3/3,
+  Fast8212/8212 in3:45.270 (201110), independent XHigh owner/survival review PASS.
+
+- [x] T081-C2-R1-SPECULATIVE-ALLOCATIONS [US3] Before live allocation binding, preserve rejected
+  continuation retries through a private serialized speculation boundary over journal cursor,
+  appended rows, key/identity indexes and projection-clock memo together. Commit only for accepted
+  owner transitions; ordinary rejection restores both, while callback/mismatch failures remain
+  permanently faulted. No public/durable rollback authority; no rollback of already advanced
+  resource/effect state. Prove rejected A then accepted B cold replay, same-key retry, retained
+  prefix rollback, identity index restoration, permanent faults and scope ownership/lifetime.
+  TDD, owning Focused, independent XHigh and combined Fast before live binding acceptance.
+  Accepted2026-09-23: XML47/47, independent XHigh fix review PASS, combined Fast8222/8222
+  in5:15.806 (014122). Validation-only probes during strict replay remain a live-binding design
+  dependency: rolling back a speculative scope does not undo a replay mismatch fault.
+
+- [x] T081-C2-R1-CLOSURE-PROBES [US3] Preserve closure time when the admitted missing
+  terminalExchange witness is completed; exclude only that mutable witness from its clock key,
+  retaining all other effective resolution fields and ordinary source validation. Add a private
+  non-committable conflict validation probe for previously unseen clock keys during strict replay:
+  reuse accepted memo times, otherwise use a valid UTC value absent from retained source timestamp
+  evidence, with no journal request or underlying clock read. Restore memo on every exit; no probe
+  ticket/projection may escape into accepted consumption. Cover retained-time collision, witness
+  completion, rejected altered immutable evidence, strict replay ordering and scope lifetime.
+  TDD, owning Focused and independent XHigh before live binding; combined Fast at its checkpoint.
+
+- [x] T081-C2-R1-ALLOCATION-SCOPE-GUARD [US3] Before capture binding, require an active
+  allocation scope for opt-in capture journals, including strict replay cursor consumption.
+  Preserve ordinary standalone journal behavior and memo-only reads of accepted projection time.
+  Reject nested requests and scope closure during allocation callbacks; recheck journal usability
+  and exact scope after callbacks. Faults remain permanent. Cover append/replay outside scopes,
+  callback reentry/closure, combined-clock rollback and accepted memo reads with Focused and XHigh.
+  Capture gate, exact source authority and fresh factory ownership remain separate obligations.
+
+- [ ] T081-C3-SPIRITUAL-RECEIPT-REDUCTION [US3] Reduce a completed exact ordinary-mechanics
+  capture plus every explicit staged decision into append-only spiritual instance/closure/source/decision
+  after-images and common wound-command inputs. First prove a production-valid signed explicit
+  decline appends a durable `none` receipt as real common-plan work without a fabricated wound
+  transition. Then prove materialize agrees with exactly one existing common wound command,
+  carrier/index update and history transition. Preserve the full independently reconstructable
+  source witness, causal source order, receipt-side consumption state and exact replay/conflict
+  semantics. Cover decline, one production-created materialize result and terminal/reused display
+  IDs with RED/GREEN unit and signed integration tests, owning Focused, the required documentation
+  Focused control, FullValidation, Fast and independent XHigh review of
+  source/receipt/history/carrier/fingerprint agreement. T081-D continues to own the full
+  lower/create/worsen/explicit older re-trauma, simultaneous-side and dependent-exchange behavior;
+  T081-E continues to own complete source families and danger/defeat/dissipation behavior, and both
+  must use this boundary before parent T081 can complete. Update the afterlife matrix, wound/output
+  guidance, worked example, manifest and guards with the accepted receipt semantics in this same
+  unit; leave the closed Mortal receipt contract unchanged.
+
+- [x] T081-C3-R1-EXPLICIT-DECLINE [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  First bounded C3 reduction block: from a cold-replayed, completed C2 owner
+  and its exact signed receipt/conflict A, append each positive source's full
+  witness and explicit `none` decision to the spiritual instance ledger.
+  Derive instance identity through the existing signed-origin resolver and
+  preserve lifetime/global ordinals and causal decision bindings; reject a
+  guarantee, stale/forged pair, duplicate accepted request or changed signed
+  history. Attach the validated receipt after-image to the completed ordinary
+  mechanics reduction so `CompleteAcceptedReduction` exposes real touched
+  common-plan work, while producing no wound materialization stage or carrier/index/history
+  transition or accepted publication. Test RED then GREEN with one signed
+  single-source decline and an existing-history/second-source case; inspect
+  packet-to-receipt witness agreement, replay/conflict, untouched wound roots
+  and zero physical writes. Update the afterlife receipt matrix, guide,
+  worked example, manifest and guards for this reducer contract; do not
+  activate GameEngine/daemon dispatch. Run owning Focused, required
+  documentation Focused, FullValidation for the affected afterlife docs,
+  one Fast control, XML build and independent Astra XHigh review. Parent C3
+  remains open for materialize, closure and final C4 handoff.
+
+- [x] T081-C3-R2A-LIVE-WOUND-PROOF [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Retain each production-created spiritual wound insertion's actual prepared
+  authority, operation-before state, reduced wound state, typed effect results
+  and writer receipts. At successful completion of the exact resource/effect/source
+  owner tuple, export one immutable ordered proof of every registered insertion;
+  reject foreign, missing, duplicated or reordered selections and a mismatch
+  with the completed effect plan/transcript. Prove the final wound carriers,
+  identity and history are the real reducer outputs, including a second
+  sequential insertion. This proof is private, detached and write-free; it
+  grants no accepted-plan or publication authority. Use RED/GREEN owning
+  tests, Focused and one meaningful Fast checkpoint, XML build and independent
+  Astra XHigh review. C3-R2B will bind the proof to receipt decisions and the
+  common assembler; C4 retains live publication and transaction controls.
+
+  Accepted 2026-09-24: the actual owner-created single insertion and sequential
+  create/worsen chain retain exact prepared/reduced state, typed effect results,
+  writer receipts, source selections and completed resource/effect identity.
+  Missing, foreign, reordered, mispaired and divergent-list evidence fails
+  before common assembly; a raw live-wound reduction without the proof also
+  fails closed. RED failed at the absent proof API. Final owning Focused passed
+  8/8 in `20260924-212157-247-33380-623eca7b14aa4346a44d2bc539dc24e7-focused`;
+  Fast passed 8338/8338 in 5:15 under its seven-minute limit in
+  `20260924-212444-180-35080-b0aa1f9c02284a58a732097e3674d143-fast`.
+  XML-enabled solution build exited 0 with no changed-file warnings, and
+  `git diff --check` exited 0. Independent Astra XHigh review found three
+  authority-boundary issues, all corrected, and its targeted final review
+  reported PASS. This private proof adds no GM-authored or published afterlife
+  contract; C3-R2B and C4 remain open.
+
+- [ ] T081-C3-R2B-RECEIPT-COMMON-ASSEMBLY [US3] [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+  Reduce the completed C2 packet's ordered explicit `none` and `materialize`
+  decisions against the exact R2A owner-sealed insertion proof. Preserve full
+  source witnesses and append-only receipt order; derive materialized wound and
+  transition IDs only from real reducer outputs. Require a bijection between
+  staged materializations, selections, insertions and wound history transitions,
+  including same-wound create/worsen and mixed declines; reject missing,
+  stale, foreign, duplicated or reordered evidence before accepted assembly.
+  Extend the existing common accepted reducer and carrier assembler with a
+  typed live-wound path that folds each actual insertion against its immediate
+  predecessor and publishes only the last validated carrier/index/history
+  image alongside the completed effect/resource/receipt images. Preserve the
+  ordinary `WoundStageBundle` contract, original before-images, touched and
+  consumed paths, exact fingerprints and one common-plan publication proof.
+  Keep this block write-free: no GameEngine or daemon activation. Add RED/GREEN
+  unit and signed integration controls for single materialize, create/worsen,
+  mixed decisions, negative pairings and no physical writes; update the
+  afterlife receipt matrix/guide, worked example, manifest and guards for the
+  newly representable materialized receipt. Run owning Focused, documentation
+  Focused, FullValidation, one Fast checkpoint, XML build, `git diff --check`
+  and independent Astra XHigh review. Parent C3 still owns closure/reused
+  display identity and final replay checks; C4 owns live publication.
+  Investigation checkpoint 2026-09-24: C2 freezes action target evidence
+  before the first inserted wound ID exists, so full C2→C3 create→worsen
+  proof remains open; predicted IDs are not acceptable evidence. Current
+  packet duplicate-create rejection covers only the local FR-034 boundary.
+  C4 must bind the present C2 command candidate separately from the original
+  draft B before-image retained by this reduction; signed A is separate
+  receipt/conflict authority.
+  Partial implementation checkpoint 2026-09-24: full-packet capture binding,
+  exact owner receipt proof, live common carrier/index/history composition,
+  initial-stage contribution overlay, duplicate-create rejection and C4
+  fail-closed writer guard are present but unpublished. Independent targeted
+  review found authority bypasses; corrected the proof issuer, full-witness
+  binding, exact effect instance checks and completed-reduction constructor,
+  then review reported no remaining P1/P2 in this bounded code scope.
+  Owning Focused integration 4/4, documentation Focused 132/132,
+  FullValidation 1923/1923 in 19:16 of 30:00, Fast 8338/8338 in 4:28
+  of 7:00, XML-enabled solution build exit 0 (4016 documentation warnings
+  across the solution; none reported in the changed R2B API files), and
+  `git diff --check` exit 0. Do not mark this
+  task complete: full C2→C3 same-wound create→worsen, initial-stage plus
+  live-insertion integration, and cross-packet side seal remain open.
+  Reachability investigation 2026-09-26: genuine spiritual intake currently
+  cannot produce an ordinary initial WoundStageBundle. Its only upstream
+  handoff uses Mortal occurrence or Mortal treatment authority, both requiring
+  mortal_world; the signed spiritual source requires chaos_sea/shining_abode.
+  The positive initial-stage-plus-live criterion stays open and depends on a
+  lawful afterlife healing/recovery producer from T099/T101-T107, especially
+  T107. Do not substitute a pre-existing wound or fabricated stage, or weaken
+  realm checks to close it. The older same-wound/cross-packet gap is now covered
+  by the accepted T081-D controls: NextSameSideOfferTargetsRegisteredConflictWound
+  proves actual create→worsen insertions, same ID, distinct transitions and
+  final common carrier/index/history; NextTurnTargetsSignedConflictWound(null)
+  authenticates the prior receipt from the next signed snapshot and worsens the
+  same conflict wound through C3/common assembly. Negative origin controls are
+  recorded under T081-D. These satisfy those bounded R2B integration checks;
+  initial-stage coexistence and parent C3 terminal/reused-display-ID work stay open.
+  Next bounded verification extends the actual both-side materialization case
+  with cold common-plan equality, genuine owner rejoin, foreign receipt-proof
+  and reordered receipt rejection, and unchanged canonical bytes. This adds
+  evidence for current C3 behavior, not a new game capability or C4 publisher.
+  Accepted2026-09-26: actual both-side cold owner/common-plan replay and negative
+  foreign/reordered receipt controls passed Focused1/1 (191355,1:04), XML build
+  succeeded with only known unrelated warnings, and independent Astra XHigh
+  found no actionable issue. Parent inspected the test and evidence. R2B remains
+  open only for its lawful initial-stage coexistence integration dependency;
+  parent C3 retains terminal/reused-display-ID work.
+
+- [x] T081-C3-R3-TERMINAL-PRODUCER [US3] Implement the approved terminal receipt
+  prerequisite for C3: begin with one genuine terminal exchange directly after
+  signed A under existing resolve/reward rules. First settle actual retained
+  resource-owner ordering so both-side costs precede opposition retirement;
+  preserve one executor/transcript and derive an owner-bound closure proof.
+  Extend the precise C1/C2 terminal inventory and C3 immutable closure append,
+  then prove cold replay/no duplicate cost or closure, no physical publication,
+  changed terminal witness/missing prefix rejection, and later same-display
+  distinct-instance admission from an actual accepted closure. Keep broader
+  source families under T081-E and initial-stage producer under T107. Follow
+  plan.md's terminal block, TDD, GM docs/examples/guards, owning Focused, XML,
+  Fast, conditional FullValidation and independent Astra XHigh before acceptance.
+  Preserve full effect-identity cold equality by completing the retained ordinary
+  reduction at the exhausted final C2 step before its allocation-journal export;
+  C3 consumes that cached result without new allocations. Cover both continuing
+  and terminal completion routes and final-write recovery as detailed in plan.md.
+  Accepted2026-09-26: owning terminal/pruning6/6, full-plan positive5 cases and
+  final completion/dependency/failure16/16, XML, docs134/134, example2/2,
+  Fast8356/8356 and FullValidation1925/1925 passed. Independent Astra XHigh found
+  no actionable issue; parent inspected actual diff/evidence and rechecked28
+  frozen hashes. The completion-boundary replay defect is fixed. Exact evidence
+  is in plan.md; C3-R2B/T107, broader T081-E, C4 and #1536 remain open.
+
+- [x] T081-C4-COMMON-PUBLICATION [US3] Consume C3's exact reduction once through the existing
+  `CompletedOrdinaryMechanicsReduction` and `AcceptedMechanicsPlanner.CompleteAcceptedReduction`.
+  Include pending consumption and spiritual receipt, command, carrier, effect, conflict, history,
+  narrative and notification images in one publishable accepted plan; decline must bypass no-work
+  early returns. Use the existing GameEngine write/read-back/rollback transaction as the sole
+  publisher, with no temporary source-only accepted plan or post-publication seal writer. Prove
+  live decline and materialize, unchanged dice/resource/progression identities, exact replay,
+  initially absent roots, write/read-back failure, cold start after success and unchanged nonempty
+  combat-condition siblings. Run owning Focused, targeted RegressionIntegration and
+  LifecycleIntegration controls, the required documentation Focused control, FullValidation, Fast
+  and independent XHigh review covering writer receipts, live identity/history, current carrier
+  image and canonical/full fingerprint semantics. Update the
+  afterlife lifecycle guidance, daemon/launcher prompts, worked example, manifest and guards with
+  sole publication/read-back/rollback/final notification behavior in this same unit, and record why
+  no new console/browser command or Mortal contract change is required.
+
+- [x] T081-C4-A-COMMON-HANDOFF [US3] First bounded C4 milestone: bind a genuine
+  completed C3 plan to the registry/cache and existing common publication
+  transaction without replanning. Preserve separate signed rollback, original
+  provenance and current committed publication images; reject uncommitted drift
+  and foreign/missing handoffs. Consume both spiritual private roots and wound
+  commands even for none, and verify live wound/effect/receipt/history read-back,
+  write failures, original absence restoration and unchanged combat conditions.
+  Follow plan.md's concrete C4 integration map, required GM synchronization,
+  owning/conditional broad controls and independent Astra XHigh review. Actual
+  GM continuation dispatch, final output/notifications and cold-after-success
+  lifecycle remain mandatory under parent C4; this milestone cannot close C4.
+  Accepted2026-09-26: genuine publication4/4, drift/ownership4/4, write/read-back
+  rollback2 and strengthened owner1, chronicle/ordinary compatibility3/3,
+  docs/source guards141/141 and example/manifest/C3 regression3/3 passed; XML
+  build exit0 with only3known unrelated warnings, Fast8357/8357 in3:52 and
+  FullValidation1926/1926 in14:57 passed. Exact failed-versus-passing run history
+  remains in plan.md; the invalid zero-slot fixture was removed, not waived.
+  Independent Astra XHigh found no actionable C4-A defects; parent checked the
+  actual evidence and frozen27-file hashes. Parent C4 and #1536 stay open.
+
+- [x] T081-C4-B-GM-TRANSPORT [US3] Connect the production original spiritual
+  turn to C2 and the common C4 publisher through a correlated bounded GM reply.
+  The precise C4-GM-TRANSPORT revision2 at spec.md:1017 was explicitly approved
+  by the user on2026-09-26. Expand the existing
+  C4 plan with the actual file/helper and worker/proposal/ready routes and run
+  Spec Kit consistency analysis. Preserve source/snapshot/dice/progression and
+  already selected decisions, reject stale/foreign/overbroad changes before
+  advancement, and prove both decision and dependent-draft phases. Keep final
+  narrative, notifications and cold-after-success under parent C4, including
+  their actual GameEngine lifecycle integration. No new HTTP/player command.
+
+- [x] T081-C4-B1-PENDING-SUBMISSION [US3] Under approved C4-GM-TRANSPORT revision2,
+  extend SpiritualWoundCaptureCheckpointState and the existing C2 saved-decision/
+  replay/transport/private adapter partials with the exact outstanding choice and
+  selection-only allocation prefix. Preserve committed frontier/pending, rederive
+  owners on restart, atomically advance+clear, and cover guarantee_satisfied and
+  tampered/failed-write cases in SpiritualC2PendingSubmission integration tests.
+  Follow the B1 plan/data-model, TDD, relevant docs and independent Astra XHigh.
+
+- [x] T081-C4-B2-STRICT-ENVELOPE [P] [US3] Implement the approved comparison-only
+  request/response protocol in Services/SpiritualWoundContinuationProtocol.cs,
+  typed optional GmWorkerModels envelopes, strict GmWorkerJson parsing and narrow
+  GmWorkerContractValidator checks. First prove real roundtrip currently drops
+  the envelope; test closed/case/duplicate/cardinality/correlation rules in
+  SpiritualWoundContinuationProtocolTests and ordinary worker compatibility.
+  No protocol DTO grants C2 or filesystem authority; production apply remains B3.
+
+- [x] T081-C4-B3-LIVE-DISPATCH [US3] After B1+B2, wire a focused GameEngine
+  spiritual continuation partial, existing validation repair/helper/worker and
+  apply/ready boundaries to real signed original intake and C2 methods. Preserve
+  snapshot/dice/progression/frozen fields, release lease during GM wait, and
+  recheck exact continuation before apply and ready. Prove both file/worker
+  none/materialize, sequential and dependent/restart flows, stale/race negatives
+  and ordinary repair regressions; synchronize GM docs/examples/guards and run
+  the B3 plan controls plus independent Astra XHigh before marking parent B done.
+
+- [x] T081-C4-B3-SOURCE-ONLY [US3] Resolve the preexisting completion gap found
+  by the bounded 2026-09-27 entry-routing consultation: an original spiritual
+  turn with no positive wound offer cannot produce its first C2 checkpoint.
+  Prove ordinary same-active zero-offer compatibility and an owner-authenticated
+  zero-offer terminal completion through the single publisher. Track investigation
+  and the minimal implementation in the existing C4 plan; never fabricate a none
+  decision, treat no_offer as completed_unpublished, or silently bypass terminal
+  source/closure authority. Keep the unsupported route blocked until proven.
+
+- [x] T081-C4-B3-DEPENDENT-CLOSURE [US3] Refine LIVE-DISPATCH's comparison-only
+  dependent context through disposable genuine cold replay of the saved choice.
+  Derive the complete uniquely determined cost correction closure across later
+  zero-offer exchanges, executing real resource/effect owners in diagnostic memory;
+  stop at a positive offer or the original inventory boundary. Separately walk
+  actual corrections to report the first remaining issue. Preserve stable fields
+  and correlation, all physical/private bytes, and the approved checkpoint schema.
+  Prove two correction rounds for force-payment addition followed by expired-audit
+  removal, sibling/prefix rejection, cold reopening and one actual saved resume.
+  Never infer ambiguous recovery outcomes or parse diagnostic prose as authority.
+  Migrate adjacent recovery/force tests only after observed compatibility RED,
+  preserving their gameplay assertions. Relevant Focused controls and independent
+  Astra XHigh review are required; this does not complete LIVE-DISPATCH.
+
+- [x] T081-C4-LIVE-OUTPUT [US3] Complete the already approved parent C4 player-output
+  boundary for live spiritual insertions. Bind each ordered create/worsen to its
+  own immutable insertion and exact final narrative under the existing common
+  publication transaction; return detached presentation to the existing GameEngine
+  take-once notification path. Preserve same-wound chronological transitions,
+  escaping, guarantee_satisfied silence, signed rollback and disposed-owner
+  boundaries. Do not fabricate a batch stage bundle or add durable authority.
+  Prove the actual dependent file/worker and automatic cold lifecycle assertions,
+  ordered create-to-worsen output and missing-narration refusal; run relevant
+  controls and independent Astra XHigh review. Follow the bounded map in plan.md.
+
+- [x] T081-C4-INTERRUPTION-PROBE [US3] Verify the existing all-restored-or-all-committed
+  acceptance at actual post-publication/pre-story and post-story/pre-cleanup cuts.
+  Use genuine GameEngine publication, deterministic interruption with no implicit
+  rollback, new filesystem/engine and real startup/late handling. Prove either
+  complete signed-original restoration or complete accepted state/history/cleanup,
+  with no duplicate charge, wound transition, decision, story or ordinary GM repair.
+  Do not require seamless rollforward or invent persistent delivery authority.
+  Record actual boundaries and failures; production finalization changes that
+  introduce a new durable contract remain subject to written specification approval.
+
+- [x] T081-C4-REJECTED-TERMINAL-CLEANUP [US3] Fix the observed retained original
+  input after a completed late-response rollback (probe run3de12828). Remove only
+  the still-correlated session/request/turn input under one canonical lease,
+  after proven successful rollback and before snapshot cleanup. Cover both late
+  rejection branches; preserve treatment-publication retry and foreign/newer input.
+  Retain evidence if rollback fails. This repairs existing terminal cleanup without
+  introducing durable publication authority, replay or a new GM contract. Run the
+  owning interruption and correlation controls, XML build and independent review.
+  Accepted2026-09-27: actual pre-story cold rollback1/1 (f469c3bd,3:27.645),
+  exact input-correlation11/11 (d5e483,1:52.939), failed rollback evidence2/2
+  (9548a16c,34.061s), XML build15.33s0warnings/errors and independent Astra XHigh
+  source/evidence approval. Four-file as-built manifest37EB1FF1 is in plan.md;
+  integrated docs139/Fast8438 and separate orphan cleanup have since passed; FullValidation and startup compatibility remain pending.
+
+- [x] T081-C4-ORPHAN-SNAPSHOT-EVIDENCE [US3] Finish the already required terminal
+  cleanup after the actual post-story interruption (run7f3b951a). Preserve the exact
+  inactive original snapshot evidence in client-only diagnostic storage before
+  removing its active copies. Do not infer commit, replay authority or recovery
+  from story/C3/unusable status. Leave active, foreign, malformed or ambiguous
+  correlation untouched; validate complete copies and unchanged originals under
+  canonical lease/session fencing before narrowly scoped removal. Never call the
+  broad rollback-file cleanup for this case. Prove evidence preservation, failure
+  refusal, idempotence and unchanged world/output/story plus the existing owning
+  cold all-committed scenario. No new gameplay/GM or durable publication contract.
+  Accepted2026-09-27: copy/failure6/6, refusal18/18, actual post-story cold1/1
+  (9115043e,4:20.221), clean XML build and independent Astra XHigh source review;
+  exact layered71-file hashes reconciled. Evidence in plan.md. This acceptance
+  does not establish recovery from a crash inside the publisher; the separate probe below owns that remaining verification.
+
+- [x] T081-C4-MID-PUBLICATION-COLD-PROBE [US3] Verify spec.md US7 acceptance4
+  at a genuine partial common-publisher cut, before all after-images/deletions finish.
+  Capture the exact durable physical tree under the current writer lease, then
+  recover that unchanged cut with a fresh filesystem/engine at a different test
+  root through ordinary startup/late handling. Warm exception compensation is not
+  cold recovery evidence. Prove a real mixed publication cut and either complete
+  signed-original restoration or complete accepted state/history/cleanup, without
+  new GM decisions, charges, wounds, effects or story duplicates. Use the existing
+  signed rollback contract; initially test-only, with no new durable authority.
+  Record deterministic copied-cut versus OS-kill scope, bounded owning controls,
+  XML build and independent Astra XHigh review. Follow the concrete plan below the
+  inactive-evidence block; do not weaken the oracle after an observed failure.
+  Accepted2026-09-27: genuine mixed-cut cold probe1/1 in5:06.732 (d41a8b56),
+  XML1:10.49 with only3known unrelated warnings, unchanged all-restored OR
+  all-committed oracle, independent Astra XHigh source/evidence approval and
+  parent diff/TRX checks. No production change was necessary. The deterministic
+  copied cut transfers no live owner and does not claim an OS-process kill.
+- [x] T081-C5-COLD-RECOVERY-DOCS [US3] Reconcile the C4 runtime acceptance with
+  GM guidance: replace obsolete blanket cold-finalization-open claims by the
+  existing signed-original-or-complete-accepted recovery contract and current-request
+  workflow. Synchronize matrix, wound guide, CLI/daemon/step entrypoints, worked
+  example, manifest and documentation guards; describe the three actual deterministic
+  cut boundaries in the internal contract without claiming OS-kill coverage, forced
+  rollforward or physical exactly-once notification delivery. Preserve authoring
+  fields/IDs, source-only receipt limitations and C3-R2B/T107 plus T081-D/E gaps.
+  Follow the bounded plan, source/manifest Focused, XML, Fast, conditional
+  FullValidation and independent Astra XHigh review. No new gameplay contract.
+  Accepted2026-09-27: XML19.02s clean; docs140/140, examples/manifest5/5,
+  Fast8439/8439 in3:39.718 (8a506079), FullValidation1929/1929 in15:09.760
+  (f5f1f945), clean runners/cleanup. Parent and independent Astra XHigh checked
+  exact9-file application494E6440 and all final TRX; no open findings.
+- [x] T081-D-POSITION-DECISION [US3] Resolve the approved position profile's
+  starting/allowed-position ambiguity against actual dice, binding and maneuver
+  consumers. Record a precise proposal and gameplay examples in spec.md, present
+  that exact version for owner approval, then align plan/contracts/tasks before
+  dependent implementation. Preserve canonical frontier, actor/operation scope,
+  current-generation authority, closed exchanges and existing maneuver restrictions.
+  Accepted2026-09-27: exact spec revision1 at1189 independently reviewed by Astra
+  XHigh; owner explicitly replied «Утвердить редакцию 1 (рекомендуется)».
+  Implementation and its verification remain separate open work.
+- [x] T081-D-POSITION-CONSUMER [US3] Implement approved POSITION-DECISION revision1
+  through current exact-actor/operation mechanics, position dice and binding
+  prerequisites, preserving canonical maneuver and all unrelated operation rules.
+  Cover both sides, aggregation/saturation, insertion/expiry, no repeated erosion,
+  immutable completed comparison and original signed historical/retained evidence.
+  Follow the approved-position plan; RED, XML, owning Focused and independent review.
+- [ ] T081-C4-NEXT-TURN-ITEM-LOCATION-COMPATIBILITY [US3] Investigate the next-turn
+  strict-validation incompatibility exposed by the position publication fixture:
+  `SpiritualIntakeAllocations.WriteOriginalIntakeDraftAsync` authors unrelated
+  item/location allocation drafts; `MortalItemTestFixture.cs:39,70` supplies a
+  Common item with empty `fateCards`, required by
+  `MortalItemMaterializationContract.cs:824` but rejected by
+  `ValidationService.PlayerAndInventory.cs:5113–5122`;
+  `MortalLocationAcceptedTurnPlanner.cs:457,3115–3116` rebuilds `knownExits` and
+  `adjacencyMap` on the linked current location, rejected as unknown properties
+  by the strict current-location schema. Reproduce through actual publication
+  and the next pre-send check, then resolve the existing contract mismatch under
+  #1536. The position fixture omits only these unrelated drafts before capture;
+  no production fix or acceptance of the item/location path is claimed.
+- [x] T081-D-POSITION-TERMINAL-COMPARISON [US3] Resolve the real C4 terminal
+  publication failure exposed by the prior-conflict aggregation fixture. Trace
+  the exact failure before changing production. Preserve ordinary resolved
+  `terminalExchange` envelopes and permitted reuse of display conflict IDs;
+  do not fabricate full canonical `exchangeLog` or participant rosters. Bind the
+  comparison-only completed packet to the genuine planned active/terminal output,
+  rejecting removed/changed/forged current evidence and stale packet reuse without
+  creating execution authority. Prove actual terminal publication, later-conflict
+  wound aggregation, and adversarial completed-packet comparisons; re-review the
+  affected C4 boundary independently. This restores existing #1536 lifecycle
+  requirements and does not add a new GM-authored field or game rule.
+- [x] T081-D-POSITION-PREVIEW [US3] Keep the existing pre-turn dice preview truthful
+  when accepted wounds make position operation-dependent. The current preview has
+  no selected-operation input and labels canonical-position rows as mandatory.
+  Add a regression through the accepted effect snapshot, then avoid publishing an
+  unconditional result that conflicts with the approved effective-position rule.
+  Reuse existing preview/reminder surfaces; do not invent new gameplay fields or
+  grant execution authority. Preserve unaffected previews, exact participant scope,
+  independent modifiers and signed dice. This is required consumer integration,
+  not a new game capability; verify and independently review with the position block.
+- [ ] T081-D-POSITION-DEPENDENCY [US3] Add narrowly owner-derived position modifier,
+  total/margin/band correction, preserving independent modifier rows, all dice and
+  closed source identity. Compose only proved cost permissions. Cover real C2 saved
+  choice, cold replay, forbidden sibling changes and GameEngine final publication;
+  synchronize GM docs/example/manifest and run required Fast/FullValidation/review.
+  Independent review P2 is reproduced by genuine cold critical-narration RED
+  e7a54dce (0/1). Approved staged issued-frontier protocol is recorded in spec.md
+  DEPENDENT-FRONTIER-DECISION revision1; owner explicitly approved2026-09-28.
+  Execute the following bounded subtask and plan's staged-frontier section;
+  parent dependency remains incomplete until all verification/review passes.
+- [ ] T081-D-POSITION-DEPENDENCY-FRONTIER [US3] Implement approved
+  DEPENDENT-FRONTIER-DECISION revisions1+2 (#1536) through plan.md's six ordered
+  steps. Preserve critical RED; cover public strict issued A before successor B,
+  actual valid critical narration, forbidden future edits, exact stale/cold/pair
+  handling, worker rollback and real file/worker final publication. Update the
+  named validation/walk/policy, GameEngine and worker files, GM guides/example/
+  manifest/guards in the same block. Require XML build, owning Focused, Fast,
+  FullValidation and independent Astra XHigh correction/dependency review.
+  No new JSON authority, changed correlation formula, invented consequences,
+  or RESULT-CLOSURE implementation is authorized by this subtask.
+  Revision2 explicitly APPROVED2026-09-28: revision1 cannot prove historical A acceptance or freeze its
+  texts during cold B recovery without durable private evidence. Approved spec
+  revision2 permits a replay-checked dependentDraftProgress inside the existing
+  pendingSubmission. Include exact schema/chain, owner-controlled checkpoint commit
+  activating B, cold obsolete-A cleanup, full prior-image retention, final normal
+  advancement and all added negative cases from the updated six-step plan.
+  New public preflight RED26fd0499 confirmed blocked issuance. Revision2 runtime
+  and tests are now applied; typed/private/public, journal/history/fault and
+  worker-before-Ready controls passed as recorded in plan.md. Full current cold/worker, compatibility,
+  Fast/FullValidation and final independent acceptance remain open. Existing
+  arithmetic/cost controls remain recorded.
+  Warm file control65def75e reached confirmed A and exact transport cleanup but
+  exhausted its internal540-second bound before B. Remove only the redundant
+  outer-loop B projection after commit: keep detached committed request/issues,
+  release the lease and freshly prove B at ordinary request publication. Preserve
+  the unchanged cold route and all owner/transport checks. Measure full file and
+  stale-A controls separately in LifecycleIntegration rather than expanding Fast.
+  Independent review found that this shortcut also skipped the caller's orphan
+  Ready rejection. Prove that real warm A commit+cleanup followed by an injected
+  orphan Ready blocks B and preserves all files; then restore this guard at the
+  first successor publication lease. Preserve current-request retry semantics.
+  Reuse the whole existing reconciliation block, including exact obsolete A
+  cleanup and existing B whole-draft validation, with no extra replay when both
+  transport files are absent. Normalize physical test-hook paths and interrupt B
+  only after publication confirmation; a rolled-back callback is not a cold cut.
+- [ ] T081-D-POSITION-DEPENDENCY-FRONTIER-RUNNER [US3] After measured worker
+  da50f085 internal660 failure with A accepted/B not yet published, capture real
+  PlanOnly runner RED for a selected ProcessIntegration30 control. Add a caller
+  filter intersected with the Process category and an explicit selected maximum30;
+  keep unfiltered/default Process15, Focused max15, Fast7 and other lanes unchanged.
+  Prove group intersection/default budgets and rejection of unfiltered Process30,
+  selected Process31, Focused16 and unsupported lane filters. Document measured
+  justification and provisional worker warm1500/selected Process30; retain its
+  ProcessIntegration trait and all assertions. Build, targeted runner GREEN,
+  owning worker evidence and independent review precede acceptance. Record its
+  measured duration and explicitly resolve aggregate Process/PreMerge viability
+  through C5 before final integration; selected success proves neither aggregate.
+- [ ] T081-D-POSITION-DEPENDENCY-FRONTIER-CAPACITY [US3] Preserve aggregate test
+  **WITHDRAWN2026-09-29 at owner direction**: the proposed60/90-minute limits
+  are rejected; no aggregate control was run or accepted. Restore the prior
+  bounded configuration and follow FRONTIER-PERFORMANCE below. Historical
+  proposal/evidence remain for traceability, not execution authorization.
+  coverage after the actual staged worker67fbcd35 passed21:20.645 wall. Retained
+  same-class worker controls7:51.902 and7:56.348 make a planning floor37:08.895
+  before three simpler rows/other process classes; Process30 is insufficient.
+  Capture real runner-options RED, then provisionally raise Process default and
+  ceiling to60 and PreMerge to90. Preserve category filters, phase order,
+  concurrency, assertions, cleanup, Focused15/Fast7 and the selected owning
+  worker's explicit30. Update behavioral/source guards and docs/testing.md.
+  Require XML build, runner GREEN, affected Astra XHigh review and one complete
+  unchanged-selection PreMerge diagnostic. Inspect exact expected Process cases
+  across process/E2E phases, duration/headroom, total results, duplicates, timeout
+  and owned cleanup; do not infer a standalone Process pass. Keep the new limits
+  provisional until that evidence; no silent recategorization or exclusion.
+- [ ] T081-D-POSITION-DEPENDENCY-FRONTIER-PERFORMANCE [US3] Enforce the owner's
+  **ONLY TEST WORK2026-09-29**: all wound-feature implementation and production
+  gameplay changes are suspended. Deliver cached prepared fixtures reused by
+  other tests, consolidated important scenarios and removal of verified low-value
+  duplicates with measured acceptable complete-run times. After verification,
+  report actual times and stop until the owner's inspection/resume; do not
+  automatically continue materialization. Thirty minutes is an upper bound,
+  not the desired ordinary feedback duration.
+  2026-09-29 upper bound30 minutes for every complete verification control;
+  Fast remains7. Restore rejected Process60/PreMerge90 amendments before work.
+  Diagnose the21-minute three-exchange worker with a bounded profile and phase
+  timings, then remove verified redundant test preparation and low-value duplicate
+  heavyweight tests. Map every removed case to preserved important coverage;
+  combine related assertions around one expensive preparation and cache immutable
+  fixture/catalog inputs where useful, as explicitly authorized by the owner.
+  Copy/reset mutable state and retain fresh-engine cold recovery and owner proof.
+  retain original-owner authority, saved choice/history, separate GM responses,
+  cold recovery and single final publication. Do not substitute hidden suites
+  or weaker acceptance criteria for the runtime problem. Use one relevant owning
+  case per verified change, require measured improvement, Fast7 and one final
+  PreMerge≤30 when the coherent block is ready. Independent Astra XHigh reviews
+  correctness and coverage loss; document actual results and remaining risks.
+  Full PreMerge exposed stale test authorities beyond the initial caches. Correct
+  only invalid fixture inputs, exact governed-root expectations and central roll
+  fixture writers against preserved current contracts; keep important checks,
+  record failed controls honestly and use relevant bounded Focused gates before
+  retrying the aggregate. A faster failed run is not performance acceptance.
+  Preserve production game behavior; any runtime bottleneck found is evidence,
+  not authorization for unrelated gameplay implementation.
+- [ ] T081-D-PERFORMANCE-SEEDED-FRAME-CACHE [US3] Under ONLY TEST WORK,
+  cache only the exact named default OriginalIntake frame, retaining custom hooks,
+  dice and genuine GameEngine signers. Each copy has a fresh runtime generation,
+  lease and authenticated C2 owner; no live authority is cached. Repair the stale
+  test-context omission of genuine session generation, evidenced by Focused
+  b16a9d62 failing both original output projection cases. Prove one preparation,
+  independent roots/generations, tamper isolation, cross-owner rejection and
+  disposal with a later clean copy. Measure relevant retained owning cases,
+  review the coherent block independently, then include it in complete control.
+  No production gameplay or admission guard changes; parent acceptance stays open.
+- [ ] T081-D-PERFORMANCE-RECOVERY-SOURCE-CACHE [US2] Optimize only the genuine
+  upstream recovery fixture preparation shared across evaluation clocks. Keep
+  the existing complete signed-tree cache key, including evaluationMinute,
+  unchanged. Cache an earlier detached source tree after real creation and
+  optional stabilization, before writing the evaluation clock and signing turn44.
+  Preserve complete initial-world-time, wound, creation/stabilization-minute,
+  source-profile/root-count keys and every source-history/anchor assertion.
+  Fresh roots, generations, final signed clock snapshots and ExportRecoveryBinding
+  remain genuine. Prove source preparation reuse across clocks without mutable
+  owner reuse, exact signed clocks/anchors, local tamper isolation and cold replay;
+  measure phase costs, perform independent review and retain parent acceptance open.
+- [ ] T081-D-PERFORMANCE-TRUSTED-FRAME-VARIANTS [US3] Extend only known,
+  hookless test-frame preparations with complete immutable profile keys: exact
+  named seed/version, ordered signed dice, both decimal balances and the fixed
+  signing tuple. Canonicalize the explicit default pool to its existing template.
+  Cover repeated force/special-cost, position and named intake+tier-two original
+  baselines. Hooks, initializers, arbitrary callbacks and custom signers retain
+  their genuine uncached path. Cache session bytes only, retaining fresh roots,
+  actual generations, leases and C2 execution/cold replay. Preserve per-key
+  preparation counters and original custom-input/isolation guards. Never share
+  a private staged checkpoint as a foreign fresh fixture. Prove reuse, key
+  separation, tamper isolation and owner rejection, measure actual preparation
+  and owning controls, review independently and retain parent acceptance open.
+- [ ] T081-D-PERFORMANCE-STAGED-TEMPLATE-AFFINITY [US3] Keep the selected
+  prepared-staged-fixture consumers in one process-local balancing item so their
+  genuine accepted-A preparation is not repeated across test hosts. Replace the
+  GM/worker private-journal test's redundant source creation and A commit with
+  the existing detached accepted-A template, while retaining its lawful B
+  positive control, forbidden GM proposal, reserved worker rejection, zero
+  applied files and exact unchanged transport tree. Preserve all selected cases,
+  assertion axes, category filters, phase ordering, deadlines and concurrency
+  ceilings. The foreign-owner negative must still create a distinct genuine
+  source. Guard the five named template consumers' single-descriptor affinity,
+  four cutover descriptors and704 selected cases; compare the entire actual
+  discovery set against the emitted method selectors during review. The observed six cutover descriptors for704 cases exceed
+  the four concurrent slots and left one descriptor unstarted in fad1db75;
+  coalesce this class only into four balanced descriptors while retaining all704
+  selected cases and the common lane bound. Verify owning tests, measure process preparation and review
+  the coherent test/runner/documentation block independently before acceptance.
+- [ ] T081-D-PERFORMANCE-RUNTIME-UNBLOCK [US2] Owner-approved2026-09-29 exception
+  to ONLY TEST WORK, limited to the three presented PreMerge blockers (#1536).
+  Correct signed/live treatment-history equality by actual semantic value while
+  preserving every prefix coordinate/result and rejecting changed history.
+  The now-unblocked genuine reentry also exposes the already approved FR-065
+  reset/allocation gap: derive untreated care and the exact not_stabilized reentry
+  from the signed before-image; preserve the recovery anchor and unrelated state,
+  and allocate only the new deterioration anchor from the accepted worsen ID/minute.
+  Correct that same existing recovery boundary without weakening the retained test.
+  Preserve the actual skill active flag through accepted treatment projection so
+  procedure admission rejects the existing exact inactive-skill negative without
+  claims, plans or writes. Implement only the already specified T069-C/T070 Mortal
+  recovery composer and durable replay boundary required by the retained recovery
+  tests: genuine registry binding/resolution, common accepted-plan authority,
+  sole coordinated normalizer publication, complete immutable sealed history/
+  receipts/anchors/effect lifecycle and invalid-history-first replay. Do not
+  exceed MORTAL-RECOVERY-PUBLICATION revision1, whose exact written version the owner
+  approved2026-09-29 after scoped analysis identified the contract gap. Do not
+  complete all T070 or resume RESULT-CLOSURE. Use existing actual RED evidence,
+  smallest owning Focused controls, XML-enabled build, relevant GM guidance/example
+  guards when their contract is affected, and one independent Astra XHigh review
+  of the coherent completed block. Then run the complete PreMerge within30minutes;
+  retain Fast7, original test selection and important assertions. Record actual
+  timing and stop for owner inspection. Acceptance of the parent performance task
+  remains open until successful complete verification; no commit/push/merge/closure.
+- [ ] T081-D-PERFORMANCE-RECOVERY-R1 [US2] Implement approved revision1 durable
+  recovery codec, exact epoch consumption and invalid-history-first replay in
+  Services/MortalWoundRecoveryPersistence.cs, MortalWoundRecoveryPlanner.cs and
+  WoundHistoryState.RecoveryReplay.cs; preserve closed source/receipt grammar and
+  prove pure tamper/arithmetic plus retained owning replay cases. Plan R1.
+- [ ] T081-D-PERFORMANCE-RECOVERY-R2 [US2] After R1 interfaces are fixed and FR-065
+  shared hooks are handed off, implement private recovery continuation and genuine
+  common publication in Services/MortalWoundRecoveryAcceptedPlanComposer.cs and
+  WoundAcceptedTurnPlanner.MortalRecoveryPublication.cs with targeted existing
+  registry/cache/common hooks. Preserve actual effects, bounded threshold/full
+  healing, no-op/death handoff, owner/binding and atomic rejection. Plan R2.
+- [ ] T081-D-PERFORMANCE-RECOVERY-R3 [US2] After R1/R2, strengthen owning
+  IntegrationTests/MortalWoundRecoveryTests*.cs without dropping important cases,
+  synchronize the existing Mortal GM guide/example/guards and inspect XML/Focused
+  results; complete independent Astra XHigh review, successful full PreMerge≤30
+  and STOP for owner inspection. Plan R3; parent performance task remains open.
+  Initial actual independent Astra XHigh review2026-09-29 identified a genuine
+  same-minute treatment/replay defect and missing one-turn intermediate-generation
+  owning coverage. Original owning control12/20 in5:25.247 also exposed a blocked
+  due-minute regression and two test defects. Preserve the original blocked110
+  deadline; do not redefine expectations to match skipped unconsumed intervals.
+  Same-minute real-treatment RED and subsequent positive/cold-replay/tamper paths
+  are recorded in plan.md. Targeted review corrections and complete successful
+  timing control remain open. Owner's later timing clarification allows a modest
+  evidence-backed bound adjustment after optimization, while rejecting hour-long
+  runs; runner30/Fast7 currently remain unchanged.
+- [ ] T081-D-POSITION-RESULT-CLOSURE [US3] Design and implement exact operation-specific
+  result dependencies when an approved position correction changes legal consequences.
+  Do not guess an after-image in diagnostic replay or expose unrestricted after/dice.
+  Recompute frontier permissions/correlation only after actual predecessor validation;
+  retain original choice, dice, actors and closed prefix. Remains required for full
+  POSITION-DECISION acceptance; arithmetic-only closure does not complete this task.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B0 [US3] Align research/data-model, live-turn
+  contract and quickstart with approved RESULT-CLOSURE-BINDING revision1 (#1536,
+  reviewed spec65BDA9AB), then run scoped Spec Kit analysis. Follow plan.md B0–B5;
+  wait for current FRONTIER acceptance before changing its frozen47-file packet.
+  No new journal schema, correlation formula, exchange or authority.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B1 [US3] After B0 and FRONTIER acceptance,
+  capture genuine saved-choice RED: lawful binding13/10 after pressure5/15 loses
+  leverage but remains in player_success dice band. Add force_binding +2→+1 with
+  only setup:true, sufficient strong setup/decisive and nonmatching controls.
+  Preserve signed dice, actors, prefix, choice, costs/resources and unpublished state.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B2 [US3] After B1, derive only owner-proved
+  current arithmetic plus outcome/after.controlState; admit ordinary-valid
+  no_effect/blocked with exact before control/value/presence. Retain independently
+  proved cost permissions and mixed-cost regression. Reject setup/operation/dice/
+  actor/prefix changes, successful control, unrelated after fields and premature
+  final echo. Legal alternatives expose no result fields; strong binding remains distinct.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B3 [US3] After B2, validate actual A with only
+  an independently proved exact final-control mismatch projected in a detached
+  view; never suppress another ordinary error. Derive separate B for the unique
+  effective raw activeConflict.controlState carrier/value/presence, keeping the
+  existing dependent_draft phase and conflict lifecycle. Reject ignored wrappers and whole
+  containers. Require full ordinary raw validation without temporary replacement after B.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B4 [US3] After B3, persist/replay genuinely
+  closed last-exchange A and derive B with zero exchanges remaining. Preserve
+  journal shape/hashes; invent no B row/source/opportunity. Prove real warm replies,
+  cold accepted-A-before-B recovery, distinct Ready/correlation, cumulative A+B,
+  exact cleanup and once-only publication; reject forged B and altered accepted A.
+- [ ] T081-D-POSITION-RESULT-CLOSURE-B5 [US3] After B4, synchronize afterlife GM
+  guides/live contract/CLI-worker instructions/example/manifest/guards and record
+  prompt/Mortal decisions. Inspect XML build, Focused/owning lifecycle/process,
+  required docs guard, Fast7 and conditional FullValidation30 evidence. Complete
+  independent Astra XHigh review and corrections before child acceptance. Parent
+  RESULT-CLOSURE/#1536 remain open with all other operation/result chains unchanged.
+- [x] T081-E-SOURCE-CEILINGS-LIFECYCLE [US3] Prove approved acceptance8–9 and
+  FR-032 through three genuine file-transport GameEngine facts: ordinary and
+  unrestricted special sources allow IV, originally capped special source allows
+  only II despite formula/destination/danger IV. Sign original art before admission;
+  decline the first opportunity and materialize legal rankII at the second. Check
+  exact source/decision rows, full effect group, resources/history/output and cleanup.
+  Use the bounded plan, new test partials only while C5 inputs remain frozen;
+  parent serial XML build, separately selected bounded owning tests, Fast and
+  independent Astra XHigh review. Accepted2026-09-27: three owning Facts1/1 each (93634b77, 098bc3b9, 565b64b8); XML build40.88s with0warnings/errors; Fast8439/8439 in3:40.593 (77d2db3b), all30TRX verified. Parent and independent Astra XHigh confirmed exact manifest20AC2E61 and final evidence with no findings. Test-only source-ceiling coverage; no GM gameplay contract changed and no FullValidation repeat needed. T081-E stays open.
+- [ ] T081-C5-DOCS-AND-FINAL-CONTROLS [US3] Reconcile the C1-C4 documentation updates across the
+  afterlife contract matrix, turn/rules/glossary and wound/output guides, daemon/launcher prompts,
+  worked CLI example, validation manifest, documentation coverage, example validation and source
+  guards. The complete example must show same-turn continuation, explicit decline receipt and
+  materialized decision without exposing private authority or advertising a player command. Record
+  the no-update rationale for inspected Mortal World surfaces. Run the required documentation
+  Focused control, FullValidation for the afterlife contract boundary, signed runtime selections, Fast and final
+  PreMerge when integration-ready; complete an independent XHigh final review and reconcile every
+  approved T081-C durable-boundary scenario before marking T081-C complete. T081-D and T081-E still
+  block parent T081 and overall US3 completion. Do not commit, stage, push, merge, close #1536 or
+  implement the separately approved GEN-COST-DECISION work in this C5 task.
+
+- [x] T081-B2C-J2-C2-PREFIX-P1 [US3] Add opt-in resource-owned original prefix boundary in AcceptedMechanicsPlanner.OriginalPrefix.cs and existing live iterator/session; verify no replay, real effect closure, waits, exact ownership and fixed/legacy behavior in ResourceExecutionSession tests. Prerequisite for acceptance1-6, not signed source admission.
+- [x] T081-B2C-J2-C2-PREFIX-P2 [US3] After P1, finish source check/API design in plan.md and bind the actual retained prefix through SpiritualOriginalTurnCapture and signed source preparation/continuation. Preserve original snapshots and all immutable checks. Implements acceptance1-5; no caller-provided ledger authority. Accepted2026-09-19: consolidated signed Focused51/51 (075808), independent prefix_source_review XHigh PASS; P3/EFFECT controls were still open at that checkpoint and subsequently passed as recorded in plan.md.
+- [x] T081-B2C-J2-C2-PREFIX-P3 [US3] Add real signed integration controls in AfterlifeResourceCutoverTests.SpiritualOriginalPrefix.cs for acceptance1-6, targeted source rejection controls and Fast; independent XHigh review and actual evidence before parent C2-PREFIX completion.
+- [x] T081-B2C-J2-C2-PREFIX-EFFECT [US3] Implement owner-approved periodic_spend/periodic_gain profiles through existing generic effect parsing, deterministic and bounded receipt dispatch, reaction routing and allowed-operation authority. Preserve Damage/Restore semantics, wound-specific allowlists and use budgets. Prove actual AP prefix spending/recovery in signed integration; synchronize GM contract, worked examples, manifest and guards; Focused, conditional FullValidation and independent XHigh review before completion (#1536, approval2026-09-19).
+
+- [x] T081-B2C-J2-C2-GEN-COST-DECISION [US3] Owner approved the exact two cost rules in spec.md on 2026-09-26 (#1536). Recovery/force-incarnation consumers, retained evidence, dependent correction and GM documentation are implemented and accepted. Owning Focused, Fast8355/8355, FullValidation1924/1924, final existing compatibility controls, XML builds and independent Astra XHigh review passed; exact evidence and resolved expiry finding are in plan.md's current special-cost checkpoint. C3/C4/T081-D and other unresolved profiles remain open.
+  Execution order: follow plan.md "Approved action-cost execution plan" and
+  contracts/wound-effects-and-atomicity.md special-cost section. First TDD the
+  owned both-side recovery payment and conditional force-incarnation audits in
+  `AfterlifeResourceCutoverTests.SpiritualWoundSpecialCosts.cs`, then update
+  `ValidationService.AfterlifeSpiritualConflict.cs`, retained witness checks,
+  `AfterlifeSpiritualConflictResourceOutcome.cs` and the current-generation
+  consumer gate. Require actual Spend-before-Gain history, original no-burden
+  compatibility, insufficient-funds rejection, failed/opposed/capped recovery,
+  trigger closure, closed-prefix preservation and replay without duplicate cost.
+  GM matrix/guide/worked examples/manifest/guards, owning Focused, XML build,
+  Fast, relevant FullValidation and independent Astra XHigh are part of this
+  same coherent block. This work does not close C4 or other unresolved profiles.
+  Include the bounded absent-audit addition for an unchanged future force action
+  in the live-turn contract: structural eligibility first, actual owner-derived
+  positive burden on reconstruction; preserve sibling and completed-prefix
+  evidence. Cover effective opposition operation precedence, whole audit-root
+  creation, rejection without burden and cold replay. Do not globally classify
+  force-incarnation as a mandatory-cost operation or suppress its required
+  dependent correction into the unrelated missing-audit leaf flow.
+  Resolve reviewed P2 finite-use expiry: a prescribed future force audit may be
+  removed (including its otherwise empty root) only for the unchanged unexecuted
+  action with actual owner reconstruction proving zero burden. A positive burden
+  still requires payment. Cover expiry/removal, rejection while burden remains,
+  unrelated sibling preservation and cold replay; classify obsolete valid audits
+  as dependent repair without accepting a fabricated payment or zero audit.
+
+- [x] T081-D-PERFORMANCE-LANE-SPLIT-SPEC [US3] Reconcile owner-approved #1536
+  TEST-LANE-BOUNDARY-DECISION revision1 with #1505 FR-014/SC-013 in
+  `specs/1536-complete-wound-materialization/spec.md`,
+  `specs/1505-test-suite-performance/spec.md`, this plan and tasks. Run a
+  non-destructive Spec Kit consistency check before runner implementation;
+  preserve the existing30-minute PreMerge bound and Process/E2E membership.
+- [x] T081-D-PERFORMANCE-LANE-SPLIT-RED [US3] In
+  `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.ProcessSelection.cs`,
+  add a failing PlanOnly guard that demands the new `SpiritualCutoverIntegration`
+  lane's exact704 ordinary cases, four descriptors, five existing process cases,
+  eight exact PreMerge sentinels, disjoint PreMerge filters and visible planned
+  versus completed counts. Keep the guard itself in ProcessIntegration.
+- [x] T081-D-PERFORMANCE-LANE-SPLIT-RUNNER [US3] In `scripts/test-csharp.ps1`,
+  preserve the old category boundary and add the separate 30-minute cutover lane
+  plus the exact eight-method PreMerge selection from plan.md. Keep the four
+  balanced cutover shards, five prepared-staged consumers in one shard, full
+  Fast, ExplorerWeb startup wave, four-host/two-Fast caps and exclusive
+  ProcessIntegration/E2E. Reject missing planned TRX/cases as incomplete;
+  produce explicit planned/completed counts in summary.json. Make RED guard green.
+- [ ] T081-D-PERFORMANCE-LANE-SPLIT-VERIFY [US3]
+  **SUSPENDED by owner on 2026-09-30; do not run the broad controls below.**
+  Category-strategy replacement is tracked in #1505 tasks.md under
+  `T065-CATEGORY-STRATEGY-SPEC`; unfinished old controls are not passes.
+  Historical requirement: update `docs/testing.md` with the two groups,
+  trigger policy and actual evidence. Confirm the
+  compatibility-corrected owner/reflection tests remain green, XML-doc build
+  has zero warnings/errors, exact PlanOnly discovery has no lost/duplicated
+  ordinary or process cutover cases, and the new full cutover lane passes
+  <=30 minutes. Run one complete PreMerge <=30 including frontend, Fast,
+  Integration, ProcessIntegration, E2E and cleanup; report true planned and
+  executed counts. Optimize or further split on an actual timeout, without
+  hiding a partial run as completion.
+- [ ] T081-D-PERFORMANCE-LANE-SPLIT-REVIEW [US3]
+  **SUSPENDED with the old lane strategy on 2026-09-30.** Review the completed
+  category migration under its new tracked tasks instead; independent review
+  remains mandatory and no old verification task is marked complete.
+  Historical requirement: have independent Astra XHigh inspect the exact
+  runner, guard, documentation and test-fix diff against the
+  approved #1536/#1505 requirements and verification evidence. Address valid
+  findings, rerun affected checks, update the existing checkpoint once, then
+  report measured times and stop for owner inspection. Do not resume gameplay
+  implementation, stage, commit, push, merge or close either issue.

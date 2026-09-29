@@ -32,7 +32,7 @@ const app = readSource('App.tsx');
 assertIncludes(app, "import { ConnectionBanner } from './components/ConnectionBanner';", 'App should import ConnectionBanner.');
 const bannerIndex = app.indexOf('<ConnectionBanner />');
 const tabBarIndex = app.indexOf('<TabBar />');
-const contentIndex = app.indexOf('<section className="content-area"');
+const contentIndex = app.search(/<section\s+className=(?:"content-area[\s"]|\{`content-area[\s$`])/);
 if (bannerIndex === -1 || tabBarIndex === -1 || contentIndex === -1 || bannerIndex > tabBarIndex || tabBarIndex > contentIndex) {
   throw new Error('App should render ConnectionBanner before TabBar and the content area.');
 }

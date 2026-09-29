@@ -162,7 +162,19 @@ internal sealed class MortalWoundDeteriorationPolicyAuthority
         "one registry-current accepted-state authority for the exact wound and policy",
         actual));
 
-    private static bool IsApplicableStrictWorseningPolicy(
+    /// <summary>
+    /// Checks the existing strict adverse policy against a complete canonical source wound.
+    /// </summary>
+    /// <param name="wound">
+    /// The source whose severity and owned graph must admit the declared adverse boundary.
+    /// </param>
+    /// <param name="policy">
+    /// The closed parsed policy; neutral, beneficial and inapplicable adverse results fail.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a strictly adverse applicable boundary; otherwise, <see langword="false"/>.
+    /// </returns>
+    internal static bool IsApplicableStrictWorseningPolicy(
         WoundMaterializationEnvelope wound,
         MortalWoundDeteriorationPolicyDefinition policy)
     {
@@ -350,6 +362,30 @@ internal static class MortalWoundRecoveryPlanner
             woundId);
     }
 
+    /// <summary>
+    /// Plans recovery only after registry admission and complete signed-history agreement, resolving durable replay before fresh math.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The owning canonical filesystem.
+    /// </param>
+    /// <param name="writeLease">
+    /// Its active canonical write lease.
+    /// </param>
+    /// <param name="acceptedState">
+    /// The exact registry-owned accepted source authority.
+    /// </param>
+    /// <param name="binding">
+    /// The current accepted binding for the selected source.
+    /// </param>
+    /// <param name="woundId">
+    /// The exact selected wound identity.
+    /// </param>
+    /// <param name="capability">
+    /// The private registry planner capability; detached caller objects fail.
+    /// </param>
+    /// <returns>
+    /// The original receipt on exact replay, a fresh deterministic resolution, or rejected/invalid-history issues without intents or writes.
+    /// </returns>
     internal static MortalWoundRecoveryPlanningResult PlanRegistered(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -374,11 +410,20 @@ internal static class MortalWoundRecoveryPlanner
                 "detached planner capability or mismatched accepted-state authority");
         }
 
-        var historyFailure = ValidateCurrentHistory(fileSystem, writeLease, acceptedState);
+        var historyFailure = ValidateCurrentHistory(fileSystem, writeLease, acceptedState, out var history);
         if (historyFailure is not null)
             return historyFailure;
 
         var wound = acceptedState.CurrentWound;
+        if (history!.TryResolveRecoveryReplay(wound, acceptedState.CurrentGameMinute,
+                out var replayReceipt, out var replayIssues))
+        {
+            return new(MortalWoundRecoveryPlanningDisposition.ExactReplay,
+                Array.Empty<ValidationIssue>(), replayReceipt, null);
+        }
+        if (replayIssues.Count != 0)
+            return InvalidHistory(replayIssues);
+        var consumed = history.GetRecoveryConsumption(wound);
         var sourcePath = acceptedState.WoundSourcePath;
         if (!string.Equals(wound.WoundId, woundId, StringComparison.Ordinal) ||
             !string.Equals(wound.Lifecycle, "active", StringComparison.Ordinal) ||
@@ -409,7 +454,7 @@ internal static class MortalWoundRecoveryPlanner
                 binding,
                 wound,
                 sourcePath,
-                recoveryAnchor);
+                recoveryAnchor, consumed.Recovery, consumed.Deterioration);
         }
         catch (OverflowException)
         {
@@ -418,6 +463,11 @@ internal static class MortalWoundRecoveryPlanner
                 "mortal_wound_recovery_checked_time_overflow",
                 "canonical cadence, deadline, elapsed, and next-anchor arithmetic inside Int64",
                 "checked time overflow");
+        }
+        catch (InvalidDataException exception)
+        {
+            return HistoryFailure("wound_history_recovery_consumption_invalid",
+                "elapsed consumption belonging to the exact signed epochs", exception.Message);
         }
     }
 
@@ -428,11 +478,31 @@ internal static class MortalWoundRecoveryPlanner
             "one registry-current accepted-state authority for the exact binding and wound",
             actual);
 
+    /// <summary>
+    /// Parses the complete current history and checks its semantic agreement with the signed accepted source.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The owning canonical filesystem.
+    /// </param>
+    /// <param name="writeLease">
+    /// The active lease authorizing the complete safe history read.
+    /// </param>
+    /// <param name="acceptedState">
+    /// The signed accepted source whose complete history seal must agree.
+    /// </param>
+    /// <param name="state">
+    /// Receives the strictly parsed complete history only on success; otherwise null.
+    /// </param>
+    /// <returns>
+    /// Null on complete agreement, otherwise a closed invalid-history planning result.
+    /// </returns>
     private static MortalWoundRecoveryPlanningResult? ValidateCurrentHistory(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
-        MortalWoundTreatmentAcceptedStateAuthority acceptedState)
+        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        out WoundHistoryState? state)
     {
+        state = null;
         WoundHistoryParseResult history;
         try
         {
@@ -459,6 +529,7 @@ internal static class MortalWoundRecoveryPlanner
                 "complete current history matching the accepted snapshot's semantic history seal",
                 "current history differs from the accepted snapshot");
         }
+        state = history.State;
         return null;
     }
 
@@ -485,6 +556,39 @@ internal static class MortalWoundRecoveryPlanner
         MortalWoundRecoveryPlanningDisposition.InvalidHistory,
         new ReadOnlyCollection<ValidationIssue>(issues.ToArray()), null, null);
 
+    /// <summary>
+    /// Validates live adverse policy authority before reconstructing fresh recovery math from signed evidence.
+    /// </summary>
+    /// <param name="fileSystem">
+    /// The owning canonical filesystem.
+    /// </param>
+    /// <param name="writeLease">
+    /// Its active canonical write lease.
+    /// </param>
+    /// <param name="acceptedState">
+    /// The admitted original accepted source authority.
+    /// </param>
+    /// <param name="binding">
+    /// The exact original accepted binding.
+    /// </param>
+    /// <param name="wound">
+    /// The complete current selected wound.
+    /// </param>
+    /// <param name="sourcePath">
+    /// The original canonical wound diagnostic path.
+    /// </param>
+    /// <param name="recoveryAnchor">
+    /// The canonical recovery anchor already validated by admission.
+    /// </param>
+    /// <param name="consumedRecovery">
+    /// The previously consumed ordinal in the exact recovery epoch.
+    /// </param>
+    /// <param name="consumedDeterioration">
+    /// The previously consumed ordinal in the exact condition epoch.
+    /// </param>
+    /// <returns>
+    /// A fresh deterministic resolution, or policy admission issues without publication authority or writes.
+    /// </returns>
     private static MortalWoundRecoveryPlanningResult ComposeResolution(
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
@@ -492,8 +596,59 @@ internal static class MortalWoundRecoveryPlanner
         WoundAcceptedTurnBinding binding,
         WoundMaterializationEnvelope wound,
         string sourcePath,
-        WoundRecoveryAnchor recoveryAnchor)
+        WoundRecoveryAnchor recoveryAnchor,
+        long consumedRecovery,
+        long consumedDeterioration)
     {
+        if (wound.Recovery.DeteriorationPolicy is { } policyElement)
+        {
+            var parsed = MortalWoundDeteriorationPolicyContract.Parse(policyElement,
+                sourcePath + ".recovery.deteriorationPolicy", wound.Owner.Realm,
+                WoundMaterializationContract.ResolveEffectTargetKind(wound.Owner.OwnerKind),
+                wound.Severity.Rank);
+            if (!parsed.IsValid || parsed.Policy is null)
+                return new(MortalWoundRecoveryPlanningDisposition.Rejected, parsed.Issues, null, null);
+            var authority = MortalWoundDeteriorationPolicyAuthority.Create(
+                fileSystem, writeLease, binding, wound.WoundId, parsed.Policy.PolicyRef);
+            if (!authority.IsValid)
+                return new(MortalWoundRecoveryPlanningDisposition.Rejected, authority.Issues, null, null);
+        }
+        return ReconstructResolution(MortalWoundRecoverySourceEvidence.FromAcceptedState(acceptedState),
+            binding, wound, consumedRecovery, consumedDeterioration);
+    }
+
+    /// <summary>
+    /// Reconstructs comparison evidence using the original signed coordinates and exact epoch consumption.
+    /// Blocked natural recovery retains its first unconsumed due minute.
+    /// </summary>
+    /// <param name="acceptedState">
+    /// Detached original source coordinates; they confer no live publication authority.
+    /// </param>
+    /// <param name="binding">
+    /// The original accepted binding retained by the persisted evaluation.
+    /// </param>
+    /// <param name="wound">
+    /// The complete canonical wound before the evaluation.
+    /// </param>
+    /// <param name="consumedRecovery">
+    /// The previously consumed ordinal in the wound's exact recovery epoch.
+    /// </param>
+    /// <param name="consumedDeterioration">
+    /// The previously consumed ordinal in its exact condition epoch, or zero without one.
+    /// </param>
+    /// <returns>
+    /// The deterministic original resolution or a structural failure, without a registry capability or writes.
+    /// </returns>
+    internal static MortalWoundRecoveryPlanningResult ReconstructResolution(
+        MortalWoundRecoverySourceEvidence acceptedState,
+        WoundAcceptedTurnBinding binding,
+        WoundMaterializationEnvelope wound,
+        long consumedRecovery,
+        long consumedDeterioration)
+    {
+        var sourcePath = acceptedState.WoundSourcePath;
+        var recoveryAnchor = wound.Recovery.RecoveryAnchor
+            ?? throw new InvalidDataException("Recovery evidence has no canonical epoch.");
         var recovery = wound.Recovery;
         var currentMinute = acceptedState.CurrentGameMinute;
         var noNaturalRecovery = string.Equals(
@@ -513,23 +668,18 @@ internal static class MortalWoundRecoveryPlanner
         if (!noNaturalRecovery)
         {
             cadenceDueMinute = checked(recoveryAnchor.AnchorMinute + recovery.Cadence);
-            if (!recoveryBlocked && currentMinute >= cadenceDueMinute.Value)
+            var schedule = MortalWoundRecoveryCadence.Evaluate(
+                recoveryAnchor.AnchorMinute, recovery.Cadence, currentMinute, consumedRecovery, false,
+                advancePastElapsed: !recoveryBlocked);
+            nextRecoveryAnchorMinute = schedule.NextDueMinute;
+            if (!recoveryBlocked)
             {
-                elapsedCadences = checked(
-                    (currentMinute - recoveryAnchor.AnchorMinute) / recovery.Cadence);
-                var nextOrdinal = checked(elapsedCadences + 1);
-                nextRecoveryAnchorMinute = checked(
-                    recoveryAnchor.AnchorMinute +
-                    checked(nextOrdinal * recovery.Cadence));
+                elapsedCadences = schedule.NewIntervals;
                 recoveryDue = elapsedCadences > 0;
-            }
-            else
-            {
-                nextRecoveryAnchorMinute = cadenceDueMinute;
             }
         }
 
-        MortalWoundDeteriorationPolicyAuthority? deteriorationAuthority = null;
+        string? deteriorationAuthorityFingerprint = null;
         MortalWoundDeteriorationPolicyDefinition? deteriorationPolicy = null;
         long? deteriorationAnchorMinute = null;
         long? deteriorationGraceDeadlineMinute = null;
@@ -556,24 +706,19 @@ internal static class MortalWoundRecoveryPlanner
                     null);
             }
 
-            var policyAuthority =
-                MortalWoundDeteriorationPolicyAuthority.Create(
-                    fileSystem,
-                    writeLease,
-                    binding,
-                    wound.WoundId,
-                    parsedPolicy.PolicyRef);
-            if (!policyAuthority.IsValid || policyAuthority.Authority is null)
-            {
-                return new MortalWoundRecoveryPlanningResult(
-                    MortalWoundRecoveryPlanningDisposition.Rejected,
-                    Array.AsReadOnly(policyAuthority.Issues.ToArray()),
-                    null,
-                    null);
-            }
+            if (!MortalWoundDeteriorationPolicyAuthority.IsApplicableStrictWorseningPolicy(wound, parsedPolicy))
+                return Failure(policyPath, "mortal_wound_deterioration_policy_authority_invalid",
+                    "one applicable strictly adverse source policy", parsedPolicy.ResultKind.ToString());
 
-            deteriorationAuthority = policyAuthority.Authority;
-            deteriorationPolicy = deteriorationAuthority.Policy;
+            deteriorationPolicy = parsedPolicy;
+            deteriorationAuthorityFingerprint = WoundAcceptedTurnFingerprintWriter.Compute(new string?[]
+            {
+                "book_of_eternity.mortal_wound.deterioration_policy_authority", "1", "recovery",
+                acceptedState.SessionGeneration, acceptedState.AcceptedStateFingerprint,
+                acceptedState.BindingFingerprint, acceptedState.WoundFingerprint,
+                acceptedState.WoundSourcePath, parsedPolicy.CanonicalProjection,
+                parsedPolicy.PolicyRef, parsedPolicy.Classification.ToString(), null
+            });
             var conditionActive = recovery.Blockers.Contains(
                 deteriorationPolicy.ConditionKey,
                 StringComparer.Ordinal);
@@ -595,23 +740,12 @@ internal static class MortalWoundRecoveryPlanner
                 deteriorationAnchorMinute = conditionAnchor.AnchorMinute;
                 deteriorationGraceDeadlineMinute = checked(
                     conditionAnchor.AnchorMinute + deteriorationPolicy.GraceMinutes);
-                if (currentMinute >= deteriorationGraceDeadlineMinute.Value)
-                {
-                    elapsedDeteriorationCadences = checked(
-                        (currentMinute - deteriorationGraceDeadlineMinute.Value) /
-                        deteriorationPolicy.CadenceMinutes + 1);
-                    nextDeteriorationAnchorMinute = checked(
-                        deteriorationGraceDeadlineMinute.Value +
-                        checked(
-                            elapsedDeteriorationCadences *
-                            deteriorationPolicy.CadenceMinutes));
-                    deteriorationDue = true;
-                }
-                else
-                {
-                    nextDeteriorationAnchorMinute =
-                        deteriorationGraceDeadlineMinute;
-                }
+                var schedule = MortalWoundRecoveryCadence.Evaluate(
+                    deteriorationGraceDeadlineMinute.Value, deteriorationPolicy.CadenceMinutes,
+                    currentMinute, consumedDeterioration, true);
+                elapsedDeteriorationCadences = schedule.NewIntervals;
+                nextDeteriorationAnchorMinute = schedule.NextDueMinute;
+                deteriorationDue = elapsedDeteriorationCadences > 0;
             }
             else if (recovery.DeteriorationAnchor is not null)
             {
@@ -657,7 +791,7 @@ internal static class MortalWoundRecoveryPlanner
             currentMinute,
             recoveryAnchor,
             cadenceDueMinute,
-            deteriorationAuthority,
+            deteriorationAuthorityFingerprint,
             deteriorationAnchorMinute,
             deteriorationGraceDeadlineMinute,
             elapsedCadences,
@@ -728,8 +862,32 @@ internal static class MortalWoundRecoveryPlanner
                 Array.AsReadOnly(intents.ToArray())));
     }
 
+    /// <summary>
+    /// Derives the original logical tick from signed source and epoch coordinates.
+    /// </summary>
+    /// <param name="acceptedState">
+    /// The detached original accepted scalar evidence.
+    /// </param>
+    /// <param name="wound">
+    /// The complete original selected wound.
+    /// </param>
+    /// <param name="currentMinute">
+    /// The signed original evaluation minute.
+    /// </param>
+    /// <param name="recoveryAnchor">
+    /// The original canonical recovery epoch.
+    /// </param>
+    /// <param name="deteriorationAnchorMinute">
+    /// The original active condition minute, or null when no condition is active.
+    /// </param>
+    /// <param name="disposition">
+    /// The reconstructed evaluation outcome.
+    /// </param>
+    /// <returns>
+    /// The original deterministic logical recovery tick identifier.
+    /// </returns>
     private static string CreateTickKey(
-        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundRecoverySourceEvidence acceptedState,
         WoundMaterializationEnvelope wound,
         long currentMinute,
         WoundRecoveryAnchor recoveryAnchor,
@@ -754,13 +912,61 @@ internal static class MortalWoundRecoveryPlanner
         return "wound_recovery_tick_" + hash[..32];
     }
 
+    /// <summary>
+    /// Seals every original signed source, cadence and outcome coordinate of a reconstructed resolution.
+    /// </summary>
+    /// <param name="acceptedState">
+    /// The detached original accepted scalar evidence.
+    /// </param>
+    /// <param name="wound">
+    /// The complete original selected wound.
+    /// </param>
+    /// <param name="currentMinute">
+    /// The original signed evaluation minute.
+    /// </param>
+    /// <param name="recoveryAnchor">
+    /// The canonical recovery epoch retained by the source.
+    /// </param>
+    /// <param name="cadenceDueMinute">
+    /// The first recovery due minute, or null without natural recovery.
+    /// </param>
+    /// <param name="deteriorationAuthorityFingerprint">
+    /// The reconstructed strict policy authority seal, or null without a policy.
+    /// </param>
+    /// <param name="deteriorationAnchorMinute">
+    /// The original active condition minute, or null when inactive.
+    /// </param>
+    /// <param name="deteriorationGraceDeadlineMinute">
+    /// The first condition due minute, or null when inactive.
+    /// </param>
+    /// <param name="elapsedCadences">
+    /// Newly elapsed unconsumed natural intervals.
+    /// </param>
+    /// <param name="elapsedDeteriorationCadences">
+    /// Newly elapsed unconsumed condition intervals.
+    /// </param>
+    /// <param name="nextRecoveryAnchorMinute">
+    /// The next due minute on the unchanged recovery schedule, or null without natural recovery.
+    /// </param>
+    /// <param name="nextDeteriorationAnchorMinute">
+    /// The next due minute on the unchanged condition schedule, or null when inactive.
+    /// </param>
+    /// <param name="disposition">
+    /// The reconstructed evaluation outcome.
+    /// </param>
+    /// <param name="tickKey">
+    /// The original deterministic logical evaluation tick.
+    /// </param>
+    /// <returns>
+    /// The complete deterministic original recovery resolution authority fingerprint.
+    /// </returns>
     private static string CreateAuthorityFingerprint(
-        MortalWoundTreatmentAcceptedStateAuthority acceptedState,
+        MortalWoundRecoverySourceEvidence acceptedState,
         WoundMaterializationEnvelope wound,
         long currentMinute,
         WoundRecoveryAnchor recoveryAnchor,
         long? cadenceDueMinute,
-        MortalWoundDeteriorationPolicyAuthority? deteriorationAuthority,
+        string? deteriorationAuthorityFingerprint,
         long? deteriorationAnchorMinute,
         long? deteriorationGraceDeadlineMinute,
         long elapsedCadences,
@@ -787,7 +993,7 @@ internal static class MortalWoundRecoveryPlanner
             recoveryAnchor.AnchorMinute.ToString(CultureInfo.InvariantCulture),
             recoveryAnchor.AnchorTransitionId,
             cadenceDueMinute?.ToString(CultureInfo.InvariantCulture),
-            deteriorationAuthority?.AuthorityFingerprint,
+            deteriorationAuthorityFingerprint,
             deteriorationAnchorMinute?.ToString(CultureInfo.InvariantCulture),
             deteriorationGraceDeadlineMinute?.ToString(CultureInfo.InvariantCulture),
             elapsedCadences.ToString(CultureInfo.InvariantCulture),

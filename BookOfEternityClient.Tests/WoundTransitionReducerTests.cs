@@ -2805,6 +2805,30 @@ public sealed class WoundTransitionReducerTests
                 worseAfter,
                 RecoverEvidence(before, worseAfter, Outcome(worseAfter)))),
             "wound_transition_recovery_worsening_forbidden");
+
+        var healingBefore = WithSeverity(before, "I", 1) with
+        {
+            Recovery = before.Recovery with { CurrentStepThreshold = 2 }
+        };
+        var healingAfter = NewTransition(healingBefore with
+        {
+            Recovery = healingBefore.Recovery with
+            {
+                CurrentStepProgress = 0,
+                LastTickKey = "tick_fresh"
+            }
+        }, "recover");
+        var foreignHealingClaim = RecoverEvidence(
+            healingBefore, healingAfter, Outcome(healingAfter, heals: true)) with
+        {
+            MortalContinuationAuthority = new object()
+        };
+        AssertInvalid(
+            WoundTransitionReducer.Reduce(Request(
+                "recover", healingBefore, healingAfter, foreignHealingClaim)),
+            "wound_transition_recovery_regression");
+        Assert.DoesNotContain(
+            "MortalContinuationAuthority", JsonSerializer.Serialize(foreignHealingClaim));
     }
 
     [Fact]

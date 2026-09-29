@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private const string LegacyItemResourcePath = "game_state/inventory/item_resources.json";
+
     private static readonly Regex InventoryMechanicalSummaryNumericRegex = new(
         @"[+\-]\s*\d+|\d+\s*%",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -87,17 +89,16 @@ public partial class ValidationService
                 "UpdateInventory", "items", "equipmentChanges", "equipment", "equippedItems", "money", "resources",
                 "totalWeight", "maxWeight", "isOverloaded"
             }, issues);
-        const string legacyItemResourcePath = "game_state/inventory/item_resources.json";
-        if (_fs.FileExists(legacyItemResourcePath))
+        if (SameTurnOwnerCurrentFileExists(LegacyItemResourcePath))
         {
             issues.Add(new ValidationIssue(
-                legacyItemResourcePath,
+                LegacyItemResourcePath,
                 IssueSeverity.Error,
                 "Legacy item resource sidecar запрещён; все ресурсы предметов принадлежат единому resource ledger.",
                 code: "resource_legacy_item_authority_forbidden",
                 section: "ResourceMaterialization",
                 expected: $"{ResourceMaterializationContract.DefinitionsPath} + {ResourceMaterializationContract.StatePath} + {ResourceMaterializationContract.HistoryPath}",
-                actual: legacyItemResourcePath,
+                actual: LegacyItemResourcePath,
                 repairHint: "Удаление или миграция старого sidecar автоматически не выполняется. Начни новую техническую сессию с unified resource roots."));
         }
         await ValidateFlexibleStateFile("game_state/inventory/item_text_updates.json",
@@ -146,8 +147,8 @@ public partial class ValidationService
 
         try
         {
-            var active = JsonNode.Parse(await _fs.ReadFileAsync(activePath) ?? string.Empty) as JsonObject;
-            var passive = JsonNode.Parse(await _fs.ReadFileAsync(passivePath) ?? string.Empty) as JsonObject;
+            var active = JsonNode.Parse(await ReadSameTurnOwnerCurrentTextAsync(activePath) ?? string.Empty) as JsonObject;
+            var passive = JsonNode.Parse(await ReadSameTurnOwnerCurrentTextAsync(passivePath) ?? string.Empty) as JsonObject;
             if (active is null || passive is null)
                 return;
 
@@ -165,7 +166,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -3579,7 +3580,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -5215,6 +5216,13 @@ public partial class ValidationService
         if (!string.IsNullOrWhiteSpace(preTurnQuality) || preTurnInventoryItemIds.Contains(itemId))
             return preTurnQuality;
 
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryResolveInventoryItemQualityFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath),
+                itemId,
+                preTurnInventoryItemIds,
+                currentStateNewItemsOnly: true);
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");
@@ -5309,6 +5317,13 @@ public partial class ValidationService
             currentStateNewItemsOnly: false);
         if (preTurnProfile != null || preTurnInventoryItemIds.Contains(itemId))
             return preTurnProfile;
+
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryResolveInventoryItemEquipProfileFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath),
+                itemId,
+                preTurnInventoryItemIds,
+                currentStateNewItemsOnly: true);
 
         try
         {
@@ -6476,6 +6491,10 @@ public partial class ValidationService
 
     private Dictionary<string, string?>? TryResolveCurrentPlayerEquippedItemsSync()
     {
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryReadPlayerEquippedItemsStateFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath));
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");

@@ -6,6 +6,42 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ResourceTriggerGraphTests
 {
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public void Build_ChronologicalPhaseCrossingRequiresTheCompletedParent(bool completedParent, bool eventDependency)
+    {
+        var parent = Node("node_recovery", operationId: "operation_recovery");
+        var child = Node("node_cost", phase: ResourceMutationPhase.DirectCost,
+            operationId: "operation_cost",
+            dependencies: eventDependency ? null : new[] { parent.NodeId },
+            eventRequirements: eventDependency
+                ? new[] { new ResourceEventRequirement(parent.NodeId, "resource_filled") } : null);
+        var completed = new HashSet<string>(StringComparer.Ordinal)
+        {
+            completedParent ? parent.OperationId : "operation_unrelated"
+        };
+        var result = ResourceTriggerGraph.Build(new[] { parent, child }, completed);
+        if (!completedParent)
+        {
+            Assert.Contains(result.Issues, issue => issue.Code == "resource_graph_phase_inversion");
+            Assert.Null(result.Graph);
+            return;
+        }
+        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
+        // The edge and parent remain in the graph; the resumed scheduler alone
+        // skips the exact completed operation and executes the new child once.
+        Assert.Equal(new[] { parent.NodeId, child.NodeId }, result.Graph!.OrderedNodes.Select(node => node.NodeId));
+        var scheduler = result.Graph.CreateExecutionScheduler(_ => true, completed);
+        Assert.True(scheduler.TryTakeNext(out var next, out var execute));
+        Assert.Equal(child.NodeId, next.NodeId);
+        Assert.True(execute);
+        scheduler.Complete(next);
+        Assert.False(scheduler.HasPendingNodes);
+    }
+
     [Fact]
     public void Build_RejectsDuplicateConfusableMissingDependencyAndCycle()
     {

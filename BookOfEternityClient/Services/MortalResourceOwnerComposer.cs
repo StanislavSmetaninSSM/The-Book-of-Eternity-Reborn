@@ -404,6 +404,39 @@ internal static class MortalResourceOwnerComposer
         }
     }
 
+    /// <summary>
+    /// Validates vehicle continuity and creates ordinary owners from admitted same-turn references.
+    /// </summary>
+    /// <param name="preTurnRoot">
+    /// Original canonical vehicle collection.
+    /// </param>
+    /// <param name="root">
+    /// Current vehicle collection and transient update commands.
+    /// </param>
+    /// <param name="definitions">
+    /// Resource definitions used for owner and materialization validation.
+    /// </param>
+    /// <param name="preTurnExports">
+    /// Destination for existing owner exports.
+    /// </param>
+    /// <param name="sameTurnExports">
+    /// Destination for admitted new owner exports.
+    /// </param>
+    /// <param name="historicalOwners">
+    /// Destination for owners removed by validated lifecycle commands.
+    /// </param>
+    /// <param name="companionAfterImages">
+    /// Destination for the projected canonical vehicle root.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy receiving each admitted exact vehicle reference.
+    /// </param>
+    /// <param name="materializationCandidates">
+    /// Destination for new owners' resource initialization proposals.
+    /// </param>
+    /// <param name="issues">
+    /// Shared diagnostics; detected errors stop this composition path.
+    /// </param>
     private static void ComposeVehicleOwners(
         JsonObject preTurnRoot,
         JsonObject root,
@@ -617,7 +650,7 @@ internal static class MortalResourceOwnerComposer
                     continue;
                 }
 
-                var vehicleId = identityFactory.CreateVehicleId();
+                var vehicleId = identityFactory.CreateVehicleId(vehicleRef);
                 if (!ResourceMaterializationContract.IsExactIdentifier(vehicleId) ||
                     !exact.Add(vehicleId) ||
                     !confusable.Add(ResourceMaterializationContract.BuildConfusableKey(vehicleId)))

@@ -8,7 +8,7 @@ internal static partial class EffectAcceptedTurnPlanner
     // Begin captures the immutable base reference without reading/allocating its
     // materialized state, preserving the old transcript-rejection ordering.
     // No source admission, insertion or resumed-prefix API is exposed by Unit A.
-    internal sealed class EffectAcceptedDraft : IDisposable
+    internal sealed partial class EffectAcceptedDraft : IDisposable
     {
         private readonly EffectAcceptedTurnPlan plan;
         private EffectIdentityFactory identityFactory;
@@ -47,9 +47,12 @@ internal static partial class EffectAcceptedTurnPlanner
         private int _targetStart;
         private HashSet<string> _processedBefore = null!;
         private int _busy;
+        private bool _initializationAttempted;
         private bool _completed;
         private bool _faulted;
         private bool _disposed;
+        private EffectAcceptedTurnPlan? _completedPlan;
+        private AcceptedEffectBoundaryTranscript? _completionTranscript;
 
         private EffectAcceptedDraft(EffectAcceptedTurnPlan acceptedBase, EffectIdentityFactory factory)
         {
@@ -63,7 +66,57 @@ internal static partial class EffectAcceptedTurnPlanner
 
         internal IReadOnlyList<EffectDraftPhaseReceipt> Phases => Array.AsReadOnly(_phases.ToArray());
 
+        /// <summary>
+        /// Reads the accepted base effect plan's semantic payload fingerprint without completing the draft.
+        /// </summary>
+        /// <returns>
+        /// The plan fingerprint that anchors this draft's later closed effect prefixes.
+        /// </returns>
+        internal string ReadBasePlanPayloadFingerprint()
+        {
+            if (_disposed)
+                throw new ObjectDisposedException(nameof(EffectAcceptedDraft));
+            return WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(plan);
+        }
+
         internal EffectAcceptedTurnPlanningResult Complete(AcceptedEffectBoundaryTranscript transcript)
+            => CompleteOwned(transcript, routing: null);
+
+        /// <summary>
+        /// Completes this draft from the retained resource owner's final transcript and installed wound routing epoch.
+        /// </summary>
+        /// <param name="transcript">
+        /// Complete transcript produced by the resource execution that owns this draft's accepted base.
+        /// </param>
+        /// <param name="routing">
+        /// Exact base routing owner holding the latest inserted wound generation.
+        /// </param>
+        /// <returns>
+        /// A completed unpublished effect plan, or validation diagnostics when the transcript or retained receipts disagree.
+        /// </returns>
+        internal EffectAcceptedTurnPlanningResult CompleteWithWoundRouting(
+            AcceptedEffectBoundaryTranscript transcript,
+            BaseResourceRouting routing)
+        {
+            ArgumentNullException.ThrowIfNull(routing);
+            return CompleteOwned(transcript, routing);
+        }
+
+        /// <summary>
+        /// Serializes one completion attempt and applies either the original authority or the installed wound routing epoch.
+        /// </summary>
+        /// <param name="transcript">
+        /// Complete retained resource transcript for this draft's accepted base plan.
+        /// </param>
+        /// <param name="routing">
+        /// Installed wound routing owner when the draft contains wound insertions; otherwise, <see langword="null"/>.
+        /// </param>
+        /// <returns>
+        /// A completed unpublished plan, or validation diagnostics that permanently fault this completion attempt.
+        /// </returns>
+        private EffectAcceptedTurnPlanningResult CompleteOwned(
+            AcceptedEffectBoundaryTranscript transcript,
+            BaseResourceRouting? routing)
         {
             if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
                 throw new InvalidOperationException("Effect draft completion cannot be re-entered.");
@@ -74,9 +127,11 @@ internal static partial class EffectAcceptedTurnPlanner
                     throw new InvalidOperationException("The effect draft is no longer writable.");
                 try
                 {
-                    var result = CompleteCore(transcript);
+                    var result = CompleteCore(transcript, routing);
                     _completed = result.Success;
                     _faulted = !result.Success;
+                    _completedPlan = result.Success ? result.Plan : null;
+                    _completionTranscript = result.Success ? transcript : null;
                     return result;
                 }
                 catch
@@ -89,6 +144,56 @@ internal static partial class EffectAcceptedTurnPlanner
             {
                 System.Threading.Volatile.Write(ref _busy, 0);
             }
+        }
+
+        /// <summary>
+        /// Checks whether this draft owns the exact accepted base plan.
+        /// </summary>
+        /// <param name="acceptedBase">
+        /// Candidate accepted base plan.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only when this live draft was created for
+        /// <paramref name="acceptedBase"/>; otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool OwnsBase(EffectAcceptedTurnPlan acceptedBase)
+        {
+            ArgumentNullException.ThrowIfNull(acceptedBase);
+            return !_disposed && ReferenceEquals(plan, acceptedBase);
+        }
+
+        /// <summary>
+        /// Checks whether this exact draft issued a completed plan through the expected routing epoch
+        /// from the exact retained resource transcript.
+        /// </summary>
+        /// <param name="completedPlan">
+        /// Candidate completed plan, which must be the exact object returned by this draft.
+        /// </param>
+        /// <param name="routing">
+        /// Exact installed wound routing for an inserted draft, or <see langword="null"/> for an ordinary draft.
+        /// </param>
+        /// <param name="transcript">
+        /// Exact resource transcript supplied to this draft's successful completion.
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> only for this draft's successful completion and matching routing ownership;
+        /// otherwise, <see langword="false"/>.
+        /// </returns>
+        internal bool OwnsCompletion(
+            EffectAcceptedTurnPlan completedPlan,
+            BaseResourceRouting? routing,
+            AcceptedEffectBoundaryTranscript transcript)
+        {
+            ArgumentNullException.ThrowIfNull(completedPlan);
+            ArgumentNullException.ThrowIfNull(transcript);
+            if (_disposed || _faulted || !_completed ||
+                !ReferenceEquals(_completedPlan, completedPlan) ||
+                !ReferenceEquals(_completionTranscript, transcript))
+                return false;
+            if (_woundInsertions.Count == 0)
+                return routing is null;
+            return routing is not null && _lastWoundInsertion is not null &&
+                routing.HasInstalled(_lastWoundInsertion);
         }
 
         internal JsonObject ReadIdentityIndex()
@@ -167,8 +272,21 @@ internal static partial class EffectAcceptedTurnPlanner
             }
         }
 
+        /// <summary>
+        /// Reconciles the complete transcript with retained insertion, trigger, and reaction receipts before final phases run.
+        /// </summary>
+        /// <param name="transcript">
+        /// Complete authoritative transcript, including operations already materialized by local wound cuts.
+        /// </param>
+        /// <param name="routing">
+        /// Exact installed routing epoch for an inserted draft, or <see langword="null"/> for an ordinary draft.
+        /// </param>
+        /// <returns>
+        /// A completed unpublished plan, or deterministic validation diagnostics without publishing canonical files.
+        /// </returns>
         private EffectAcceptedTurnPlanningResult CompleteCore(
-            AcceptedEffectBoundaryTranscript transcript)
+            AcceptedEffectBoundaryTranscript transcript,
+            BaseResourceRouting? routing)
         {
             if (plan == null || transcript == null || identityFactory == null)
             {
@@ -208,48 +326,141 @@ internal static partial class EffectAcceptedTurnPlanner
                         : "pending-frontier");
                 return Failed(mismatchIssues);
             }
-            var appliedByActivation = transcript.AppliedComponentEvidence
-                .GroupBy(static evidence => evidence.Activation)
-                .ToDictionary(static group => group.Key, static group => group.ToArray());
-            var executions = transcript.AcceptedActivations
-                .OrderBy(static accepted =>
-                    accepted.Activation.Stamp.ActivationOrdinal)
-                .Select(accepted =>
+            EffectSourceAuthority completionSources;
+            IReadOnlyList<WoundApplicationRootEffectBinding> completionRoots;
+            WoundReactionLineageAuthority? completionLineage;
+            if (_woundInsertions.Count == 0)
+            {
+                if (routing != null)
                 {
-                    appliedByActivation.TryGetValue(
-                        accepted.Activation.Stamp.Identity,
-                        out var evidence);
-                    evidence ??= Array.Empty<AppliedEffectComponentEvidence>();
-                    var componentMap = evidence.ToDictionary(
-                        static value => value.Mutation,
-                        static value => value.ComponentId);
-                    return new EffectResourceTriggerExecution(
-                        accepted.Activation.Stamp.Identity.EffectId,
-                        accepted.Activation.Stamp.Identity.TriggerId,
-                        accepted.Activation.Stamp.Identity.EventKind,
-                        accepted.Activation.Stamp.Identity.EventRef,
-                        componentMap.Keys.ToArray(),
-                        accepted.Activation.Stamp.UsesBefore,
-                        componentMap.Values
-                            .Distinct(StringComparer.Ordinal)
-                            .OrderBy(static value => value, StringComparer.Ordinal)
-                            .ToArray(),
-                        accepted.Activation.Stamp.Identity.TriggerEventRef,
-                        componentMap);
-                })
-                .ToArray();
-            return RunCore(executions, transcript);
+                    var unexpectedRouting = new List<ValidationIssue>();
+                    Add(unexpectedRouting, "acceptedTurn.wounds", "spiritual_wound_routing_owner_mismatch",
+                        "no wound routing for a draft without insertions", "routing supplied");
+                    return Failed(unexpectedRouting);
+                }
+                completionSources = plan.SourceAuthority;
+                completionRoots = plan.WoundApplicationRootEffectBindings;
+                completionLineage = null;
+            }
+            else
+            {
+                if (routing == null || _lastWoundInsertion == null ||
+                    !routing.HasInstalled(_lastWoundInsertion) ||
+                    !routing.TryReadCurrentWoundReactionView(
+                        out completionSources,
+                        out completionRoots,
+                        out completionLineage))
+                {
+                    var pendingIssues = new List<ValidationIssue>();
+                    Add(pendingIssues, "acceptedTurn.wounds", "spiritual_wound_routing_required",
+                        "the exact latest installed wound routing epoch", "missing, foreign or stale");
+                    return Failed(pendingIssues);
+                }
+            }
+
+            if (!InitializeState() || identityState.State == null)
+                return Failed(issues);
+            identityState = ParseIdentity(identityRoot.ReadSnapshot());
+            issues.AddRange(identityState.Issues);
+            if (identityState.State == null || issues.Count != 0)
+                return Failed(issues);
+            var completionCarriers = EffectCarrierCatalog.Build(workspace.ToInput());
+            issues.AddRange(completionCarriers.Issues);
+            if (issues.Count != 0)
+                return Failed(issues);
+            foreach (var insertion in _woundInsertions.Values)
+            {
+                if (insertion.ValidatesCompletionState(identityState.State, completionCarriers))
+                    continue;
+                Add(issues, "acceptedTurn.wounds", "spiritual_wound_insertion_agreement_mismatch",
+                    "every retained wound insertion writer receipt and identity-history anchor",
+                    insertion.Wound.WoundId);
+            }
+            if (issues.Count != 0)
+                return Failed(issues);
+
+            var pendingExecutions = new List<EffectResourceTriggerExecution>();
+            var completeTriggerKeys = new HashSet<
+                (EffectEventBoundaryStamp, EffectActivationCandidateIdentity)>();
+            foreach (var accepted in transcript.AcceptedActivations
+                         .OrderBy(static value => value.Activation.Stamp.ActivationOrdinal))
+            {
+                var key = (accepted.Boundary, accepted.Activation.Stamp.Identity);
+                if (!completeTriggerKeys.Add(key))
+                {
+                    Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                        "one complete-transcript activation per journal key", accepted.Activation.Stamp.Identity.EventRef);
+                    continue;
+                }
+                if (_woundTriggerJournal.TryGetValue(key, out var receipt))
+                {
+                    if (!receipt.Matches(accepted, transcript.AppliedComponentEvidence,
+                            identityState.State, _lastWoundInsertion, _woundReactionJournal))
+                        Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                            "the exact journaled trigger and surviving identity history",
+                            accepted.Activation.Stamp.Identity.EventRef);
+                    continue;
+                }
+                if (processedEventRefs.Contains(accepted.Activation.Stamp.Identity.EventRef))
+                {
+                    Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                        "one retained journal receipt for every trigger already applied by a wound cut",
+                        accepted.Activation.Stamp.Identity.EventRef);
+                    continue;
+                }
+                var evidence = transcript.AppliedComponentEvidence.Where(value =>
+                    value.Boundary == accepted.Boundary &&
+                    value.Activation == accepted.Activation.Stamp.Identity);
+                pendingExecutions.Add(ProjectAcceptedTrigger(accepted, evidence));
+            }
+            foreach (var key in _woundTriggerJournal.Keys)
+                if (!completeTriggerKeys.Contains(key))
+                    Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                        "every journaled trigger retained in the complete transcript", key.Item2.EventRef);
+
+            var pendingReleases = new List<ReleasedEffectReaction>();
+            var completeReactionEvents = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var released in transcript.ReleasedReactions.OrderBy(static value => value.MechanicsOrdinal))
+            {
+                var eventRef = released.Reaction.EventRef;
+                if (!completeReactionEvents.Add(eventRef))
+                {
+                    Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                        "one complete-transcript release per reaction event", eventRef);
+                    continue;
+                }
+                if (_woundReactionJournal.TryGetValue(eventRef, out var receipt))
+                {
+                    if (!receipt.Matches(released, identityState.State))
+                        Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                            "the exact journaled reaction and surviving replacement anchors", eventRef);
+                    continue;
+                }
+                pendingReleases.Add(released);
+            }
+            foreach (var eventRef in _woundReactionJournal.Keys)
+                if (!completeReactionEvents.Contains(eventRef))
+                    Add(issues, "acceptedTurn.wounds", "spiritual_wound_cut_agreement_mismatch",
+                        "every journaled reaction retained in the complete transcript", eventRef);
+            if (issues.Count != 0)
+                return Failed(issues);
+
+            return RunCore(pendingExecutions, transcript, pendingReleases,
+                completionSources, completionRoots, completionLineage);
         }
 
-        private EffectAcceptedTurnPlanningResult RunCore(
-            IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
-            AcceptedEffectBoundaryTranscript authoritativeTranscript)
+        /// <summary>
+        /// Initializes the retained mutable state once, without advancing any effect phase.
+        /// Failed initialization remains a failure and never replaces an existing state owner.
+        /// </summary>
+        /// <returns>
+        /// <see langword="true"/> when the state is initialized and has no issues; otherwise, <see langword="false"/>.
+        /// </returns>
+        private bool InitializeState()
         {
-            ArgumentNullException.ThrowIfNull(plan);
-            ArgumentNullException.ThrowIfNull(executedTriggers);
-            ArgumentNullException.ThrowIfNull(identityFactory);
-            ArgumentNullException.ThrowIfNull(authoritativeTranscript);
-
+            if (_initializationAttempted)
+                return identityState?.State != null && issues.Count == 0;
+            _initializationAttempted = true;
             eventInput = plan.EventInput;
             if (!TryReadPositiveInt(eventInput["turn"], out turn))
             {
@@ -259,7 +470,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     "effect_plan_event_authority_invalid",
                     "positive accepted turn",
                     Describe(eventInput["turn"]));
-                return Failed(issues);
+                return false;
             }
 
             workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
@@ -270,7 +481,7 @@ internal static partial class EffectAcceptedTurnPlanner
             identityState = ParseIdentity(identityRoot.ReadSnapshot());
             issues.AddRange(identityState.Issues);
             if (identityState.State == null || issues.Count != 0)
-                return Failed(issues);
+                return false;
             processedEventRefs = identityState.State.Entries
                 .SelectMany(static entry => entry.Transitions)
                 .Select(static transition => transition.EventRef)
@@ -289,6 +500,51 @@ internal static partial class EffectAcceptedTurnPlanner
             reactionSourceBindings = new Dictionary<
                 EffectSourceKey,
                 EffectSourceAuthorityEntry>();
+            return true;
+        }
+
+        /// <summary>
+        /// Executes only transcript operations not already journaled by wound cuts, then performs the final lifecycle and terminal folds once.
+        /// </summary>
+        /// <param name="executedTriggers">
+        /// Accepted trigger executions that remain pending after journal reconciliation.
+        /// </param>
+        /// <param name="authoritativeTranscript">
+        /// Complete transcript used for release validation, expansion accounting, and the terminal fold.
+        /// </param>
+        /// <param name="releasedReactionsToApply">
+        /// Released reactions that remain pending after journal reconciliation.
+        /// </param>
+        /// <param name="completionSources">
+        /// Current source authority from the original base or latest installed wound routing epoch.
+        /// </param>
+        /// <param name="completionRoots">
+        /// Current application-to-root bindings from the same completion authority epoch.
+        /// </param>
+        /// <param name="completionLineage">
+        /// Prior validated routing lineage used only to retain historical definition epochs while rebuilding current lineage.
+        /// </param>
+        /// <returns>
+        /// A completed unpublished effect plan, or validation diagnostics for the first invalid completion boundary.
+        /// </returns>
+        private EffectAcceptedTurnPlanningResult RunCore(
+            IReadOnlyList<EffectResourceTriggerExecution> executedTriggers,
+            AcceptedEffectBoundaryTranscript authoritativeTranscript,
+            IReadOnlyList<ReleasedEffectReaction> releasedReactionsToApply,
+            EffectSourceAuthority completionSources,
+            IReadOnlyList<WoundApplicationRootEffectBinding> completionRoots,
+            WoundReactionLineageAuthority? completionLineage)
+        {
+            ArgumentNullException.ThrowIfNull(plan);
+            ArgumentNullException.ThrowIfNull(executedTriggers);
+            ArgumentNullException.ThrowIfNull(identityFactory);
+            ArgumentNullException.ThrowIfNull(authoritativeTranscript);
+            ArgumentNullException.ThrowIfNull(releasedReactionsToApply);
+            ArgumentNullException.ThrowIfNull(completionSources);
+            ArgumentNullException.ThrowIfNull(completionRoots);
+
+            if (!InitializeState() || identityState.State is null)
+                return Failed(issues);
             authoritativeReleasedReactions = authoritativeTranscript
                 .ReleasedReactions
                 .OrderBy(static value => value.MechanicsOrdinal)
@@ -425,16 +681,18 @@ internal static partial class EffectAcceptedTurnPlanner
                 workspace.ToInput());
             issues.AddRange(preMutationCatalog.Issues);
             woundLineageAuthority = WoundReactionLineageAuthority.Build(
-                plan.SourceAuthority,
+                completionSources,
                 identityState.State,
                 preMutationCatalog,
-                plan.WoundApplicationRootEffectBindings);
+                completionRoots,
+                completionLineage,
+                _lastWoundInsertion);
             issues.AddRange(woundLineageAuthority.Issues);
             reactionApplicationPlans =
                 PrepareReleasedReactionApplicationPlans(
-                    authoritativeReleasedReactions,
+                    releasedReactionsToApply,
                     preMutationCatalog,
-                    plan.SourceAuthority,
+                    completionSources,
                     woundLineageAuthority,
                     plan.SkillScopeAuthority,
                     issues);
@@ -485,7 +743,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 return Failed(issues);
 
             BeginPhase(EffectDraftPhase.NonterminalReaction);
-            var reactionsToApplyBeforeProjection = authoritativeReleasedReactions
+            var reactionsToApplyBeforeProjection = releasedReactionsToApply
                 .Where(static released =>
                     !IsTerminalAvailabilityReaction(released.Reaction))
                 .Select(static released => released.Reaction)
@@ -506,7 +764,7 @@ internal static partial class EffectAcceptedTurnPlanner
                     usedTargets,
                     processedEventRefs,
                     issues,
-                    plan.SourceAuthority,
+                    completionSources,
                     reactionSourceBindings,
                     reactionApplicationPlans,
                     reactionApplicationResults,
@@ -517,7 +775,7 @@ internal static partial class EffectAcceptedTurnPlanner
             EndPhase();
             BeginPhase(EffectDraftPhase.ReplacementAgreement);
             ValidateReleasedReplacementAuthority(
-                authoritativeReleasedReactions,
+                releasedReactionsToApply,
                 reactionApplicationPlans,
                 reactionApplicationResults,
                 identityRoot,
@@ -540,7 +798,7 @@ internal static partial class EffectAcceptedTurnPlanner
                             execution,
                             turn,
                             preReactionEffects,
-                            authoritativeReleasedReactions,
+                            releasedReactionsToApply,
                             identityRoot,
                             identityFactory,
                             transitionIds,
@@ -628,7 +886,7 @@ internal static partial class EffectAcceptedTurnPlanner
                 usedTargets,
                 processedEventRefs,
                 issues,
-                plan.SourceAuthority,
+                completionSources,
                 reactionSourceBindings);
             if (issues.Count != 0)
                 return Failed(issues);
@@ -651,32 +909,40 @@ internal static partial class EffectAcceptedTurnPlanner
                 .Distinct(StringComparer.Ordinal)
                 .OrderBy(static path => path, StringComparer.Ordinal)
                 .ToArray();
+            var completionSourceBindings = _woundInsertions.Count == 0
+                ? usedSources.DistinctBy(static entry => entry.Key).ToArray()
+                : usedSources
+                    .Where(static entry => !(entry.SameTurn &&
+                        string.Equals(entry.Key.Kind, "wound", StringComparison.Ordinal)))
+                    .Concat(completionSources.SnapshotSameTurnWoundEntries())
+                    .DistinctBy(static entry => entry.Key)
+                    .ToArray();
 
             return new EffectAcceptedTurnPlanningResult(
                 new EffectAcceptedTurnPlan(
                     plan.InputFingerprint,
                     plan.CarrierAuthorityFingerprint,
-                    plan.SourceAuthorityFingerprint,
+                    _woundInsertions.Count == 0
+                        ? plan.SourceAuthorityFingerprint
+                        : completionSources.CanonicalFingerprint,
                     plan.TargetAuthorityFingerprint,
                     plan.AllocatedCombatantIds,
                     identityRoot.AllocatedEffectIds,
                     identityRoot.AllocatedTransitionIds,
-                    usedSources
+                    completionSourceBindings
                         .Select(static entry => entry.Key)
                         .Distinct()
                         .ToArray(),
                     usedTargets
                         .Distinct()
                         .ToArray(),
-                    usedSources
-                        .DistinctBy(static entry => entry.Key)
-                        .ToArray(),
+                    completionSourceBindings,
                     Array.Empty<EffectReactionExecution>(),
                     checked((int)totalReactionExpansion),
                     reactionExpansionUsage,
                     activeEffects,
                     workspace.ToInput(),
-                    plan.SourceAuthority,
+                    completionSources,
                     plan.TargetAuthority,
                     eventInput,
                     plan.CarrierBeforeImages,
@@ -692,7 +958,7 @@ internal static partial class EffectAcceptedTurnPlanner
                         WoundAcceptedTurnFingerprints
                             .ComputeAcceptedEffectPlanPayload(plan),
                     woundApplicationRootEffectBindings:
-                        plan.WoundApplicationRootEffectBindings,
+                        completionRoots,
                     skillScopeAuthority: plan.SkillScopeAuthority),
                 Array.Empty<ValidationIssue>());
         }

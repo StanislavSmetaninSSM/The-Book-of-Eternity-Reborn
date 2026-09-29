@@ -810,9 +810,56 @@ internal sealed class WoundPreparedAcceptedTurnPlan
     private readonly WoundEffectOperationBatch[]? _effectOperationBatches;
     private readonly WoundPreparedBaselineAuthority? _baselineAuthority;
     private readonly object? _treatmentContinuationAuthority;
+    private readonly object? _recoveryContinuationAuthority;
     private readonly object? _cacheAuthorityStateToken;
     private readonly object? _cachePreparedStageToken;
 
+    /// <summary>
+    /// Copies prepared operations while preserving their actual cache and live-owner companions.
+    /// Construction alone does not validate or grant those companions.
+    /// </summary>
+    /// <param name="binding">
+    /// Original accepted response and event binding to copy.
+    /// </param>
+    /// <param name="bindingFingerprint">
+    /// Fingerprint of the accepted binding.
+    /// </param>
+    /// <param name="inputFingerprint">
+    /// Fingerprint of the original preparation input, including its original snapshots.
+    /// </param>
+    /// <param name="woundPreparationFingerprint">
+    /// Fingerprint of all prepared operations and any live before-state companion.
+    /// </param>
+    /// <param name="allocatedWoundIds">
+    /// Allocated wound identities in prepared transition order.
+    /// </param>
+    /// <param name="allocatedTransitionIds">
+    /// Allocated wound transition identities in prepared transition order.
+    /// </param>
+    /// <param name="preparedWounds">
+    /// Wound envelopes awaiting their actual effect application results.
+    /// </param>
+    /// <param name="effectOperationBatches">
+    /// Ordered source exports, terminal operations and root applications for those wounds.
+    /// </param>
+    /// <param name="baselineAuthority">
+    /// Original wound baseline authority; live current state is supplied separately.
+    /// </param>
+    /// <param name="treatmentContinuationAuthority">
+    /// Retained treatment continuation companion, or <see langword="null"/> for other paths.
+    /// </param>
+    /// <param name="cacheAuthorityStateToken">
+    /// Actual cache owner token, or <see langword="null"/> for an uncached result.
+    /// </param>
+    /// <param name="cachePreparedStageToken">
+    /// Actual cached stage token, or <see langword="null"/> for an uncached result.
+    /// </param>
+    /// <param name="draftBefore">
+    /// Actual registered live operation-before proof, or <see langword="null"/> for ordinary original preparation.
+    /// </param>
+    /// <param name="recoveryContinuationAuthority">
+    /// Private recovery continuation companion, or <see langword="null"/> for other paths.
+    /// </param>
     internal WoundPreparedAcceptedTurnPlan(
         WoundAcceptedTurnBinding binding,
         string bindingFingerprint,
@@ -825,7 +872,9 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         WoundPreparedBaselineAuthority baselineAuthority,
         object? treatmentContinuationAuthority = null,
         object? cacheAuthorityStateToken = null,
-        object? cachePreparedStageToken = null)
+        object? cachePreparedStageToken = null,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null,
+        object? recoveryContinuationAuthority = null)
     {
         _binding = WoundAcceptedTurnData.CloneBinding(binding);
         BindingFingerprint = bindingFingerprint;
@@ -843,9 +892,16 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         _baselineAuthority =
             WoundAcceptedTurnData.CloneBaselineAuthority(baselineAuthority);
         _treatmentContinuationAuthority = treatmentContinuationAuthority;
+        _recoveryContinuationAuthority = recoveryContinuationAuthority;
         _cacheAuthorityStateToken = cacheAuthorityStateToken;
         _cachePreparedStageToken = cachePreparedStageToken;
+        DraftBefore = draftBefore;
     }
+
+    /// <summary>
+    /// Gets the actual retained live operation-before proof, or <see langword="null"/> for ordinary original preparation.
+    /// </summary>
+    internal EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? DraftBefore { get; }
 
     internal WoundAcceptedTurnBinding Binding =>
         WoundAcceptedTurnData.CloneBinding(_binding)!;
@@ -868,6 +924,8 @@ internal sealed class WoundPreparedAcceptedTurnPlan
         WoundAcceptedTurnData.CloneBaselineAuthority(_baselineAuthority)!;
     internal object? TreatmentContinuationAuthority =>
         _treatmentContinuationAuthority;
+    internal object? RecoveryContinuationAuthority =>
+        _recoveryContinuationAuthority;
 
     internal WoundPreparedAcceptedTurnPlan BindToCacheAuthority(
         object authorityStateToken,
@@ -887,7 +945,9 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             BaselineAuthority,
             _treatmentContinuationAuthority,
             authorityStateToken,
-            preparedStageToken);
+            preparedStageToken,
+            DraftBefore,
+            _recoveryContinuationAuthority);
     }
 
     internal WoundPreparedAcceptedTurnPlan ClonePreservingCacheAuthority() =>
@@ -903,7 +963,9 @@ internal sealed class WoundPreparedAcceptedTurnPlan
             BaselineAuthority,
             _treatmentContinuationAuthority,
             _cacheAuthorityStateToken,
-            _cachePreparedStageToken);
+            _cachePreparedStageToken,
+            DraftBefore,
+            _recoveryContinuationAuthority);
 
     internal bool HasCacheAuthorityState => _cacheAuthorityStateToken is not null;
 
@@ -1500,7 +1562,8 @@ internal static class WoundAcceptedTurnData
             value.AuthorityFingerprint)
         {
             WorseningTarget = WoundOpportunityAuthority.CloneWorseningTarget(
-                value.WorseningTarget)
+                value.WorseningTarget),
+            OriginalSourceGuarantee = value.OriginalSourceGuarantee
         };
 
     internal static WoundAcceptedEffectDefinitionDraft CloneDefinitionDraft(
@@ -2164,6 +2227,26 @@ internal static class WoundAcceptedTurnFingerprints
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
 
+    /// <summary>
+    /// Fingerprints detached operation-before images without granting ownership of those images.
+    /// </summary>
+    /// <param name="before">
+    /// Wound and effect snapshots selected by the actual operation owner.
+    /// </param>
+    /// <returns>
+    /// A deterministic image fingerprint; ownership still requires the registered draft capability.
+    /// </returns>
+    internal static string ComputeOperationBefore(WoundOperationBeforeData before)
+    {
+        var fields = new List<string?> { "book_of_eternity.wound.operation_before", "1" };
+        AppendWoundCarriers(fields, before.WoundCarriers);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(before.WoundIdentity));
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(before.WoundHistory));
+        AppendEffectCarriers(fields, before.EffectCarriers);
+        fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(before.EffectIdentity));
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
     internal static string ComputePreparation(WoundPreparedAcceptedTurnPlan plan)
     {
         ArgumentNullException.ThrowIfNull(plan);
@@ -2249,6 +2332,17 @@ internal static class WoundAcceptedTurnFingerprints
             fields.Add(WoundAcceptedTurnPlanner
                 .GetTreatmentContinuationFingerprint(
                     plan.TreatmentContinuationAuthority));
+        }
+        if (plan.RecoveryContinuationAuthority is not null)
+        {
+            fields.Add("mortal_recovery_continuation");
+            fields.Add(WoundAcceptedTurnPlanner.GetRecoveryContinuationFingerprint(
+                plan.RecoveryContinuationAuthority));
+        }
+        if (plan.DraftBefore is { } draftBefore)
+        {
+            fields.Add("live_draft_before");
+            fields.Add(draftBefore.Fingerprint);
         }
         return WoundAcceptedTurnFingerprintWriter.Compute(fields);
     }
@@ -2465,6 +2559,11 @@ internal static class WoundAcceptedTurnFingerprints
             plan.TargetAuthorityFingerprint,
             plan.SkillScopeAuthority?.Fingerprint ?? "none"
         };
+        if (EffectAcceptedTurnPlanner.GetMortalRecoveryExecutionFingerprint(plan) is { } recoveryExecution)
+        {
+            fields.Add("mortal_recovery_execution");
+            fields.Add(recoveryExecution);
+        }
         AppendOrdered(fields, plan.AllocatedCombatantIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedEffectIds, includeCount: true);
         AppendOrdered(fields, plan.AllocatedTransitionIds, includeCount: true);
@@ -2675,6 +2774,11 @@ internal static class WoundAcceptedTurnFingerprints
             : WoundMaterializationContract.SerializeCanonical(
                 worseningTarget.Wound));
         fields.Add(value?.AuthorityFingerprint);
+        if (value?.OriginalSourceGuarantee is { } originalGuarantee)
+        {
+            fields.Add("original_source_guarantee");
+            fields.Add(originalGuarantee.AuthorityFingerprint);
+        }
     }
 
     private static void AppendTransitionDraft(

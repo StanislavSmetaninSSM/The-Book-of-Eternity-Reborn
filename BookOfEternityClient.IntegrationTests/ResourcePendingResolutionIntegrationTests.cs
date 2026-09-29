@@ -14,6 +14,51 @@ public sealed class ResourcePendingResolutionIntegrationTests
         EffectMaterializationTestContext.IdentityIndexPath
     };
 
+    [Theory]
+    [InlineData("pending")]
+    [InlineData("terminal")]
+    [InlineData("unknown")]
+    public async Task OriginalMortalCapturePipeline_RejectsActualPendingAndTerminalReceiptReplay(string mode)
+    {
+        var terminalReplay = mode != "pending";
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedBoundedTurnEndAsync(context);
+        await PublishPendingAsync(context);
+        var definitions = ParseDefinitions(await context.ReadJsonAsync(ResourceMaterializationContract.DefinitionsPath));
+        var pending = ParsePending(await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath), definitions);
+        var request = Assert.Single(pending.Requests);
+        if (terminalReplay)
+        {
+            await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+            await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath, ReceiptCommand(request.RequestId, 2m));
+            await PublishPendingAsync(context);
+            var terminal = ParsePending(await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath), definitions);
+            Assert.Empty(terminal.Requests);
+            Assert.Single(terminal.TerminalReceipts);
+        }
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        if (terminalReplay)
+            await context.WriteJsonAsync(EffectMaterializationTestContext.CommandPath,
+                ReceiptCommand(mode == "unknown" ? "effect_resolution_unknown" : request.RequestId, 2m));
+        var before = await context.CaptureBytesAsync(MechanicalPaths.Append(ResourcePendingResolutionState.PendingPath).ToArray());
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        AcceptedMechanicsPlanAuthority.InvalidateValidated(context.FileSystem, lease);
+        EffectAcceptedTurnPlanAuthority.InvalidateValidated(context.FileSystem, lease);
+        // Exercise the real capture pipeline's early unsupported boundary with authentic pending authority.
+        // No wound selection is fabricated: rejection must precede deferred wound preparation.
+        var sinkType = typeof(ValidationService).GetNestedType("MortalOriginalInputSink",
+            System.Reflection.BindingFlags.NonPublic)!;
+        var sink = Activator.CreateInstance(sinkType, nonPublic: true);
+        var method = typeof(ValidationService).GetMethod("ValidateAcceptedTurnRawResourceMaterializationCoreAsync",
+            System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)!;
+        var issues = await Assert.IsAssignableFrom<Task<IReadOnlyList<ValidationIssue>>>(
+            method.Invoke(context.Validator, new object?[] { lease, null, sink }));
+        Assert.Contains(issues, issue => issue.Code == "mortal_original_pending_replay_unsupported");
+        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+        Assert.Equal(before, await context.CaptureBytesAsync(MechanicalPaths.Append(ResourcePendingResolutionState.PendingPath).ToArray()));
+    }
+
     [Fact]
     public async Task BoundedTurnEnd_BeforeReceiptPublishesOnlyPendingTechnicalState()
     {
@@ -210,6 +255,62 @@ public sealed class ResourcePendingResolutionIntegrationTests
         Assert.Empty(history.Issues);
         Assert.DoesNotContain(history.History!.Transitions, transition =>
             transition.Phase == ResourceMutationPhase.EffectTrigger);
+    }
+
+    [Fact]
+    public async Task BoundedAfterComponent_ZeroDeltaConsumesTerminalWithoutMutationOrDependentRequest()
+    {
+        await using var context = await EffectMaterializationTestContext.CreateAsync();
+        await SeedBoundedAfterComponentAsync(context);
+        await PublishPendingAsync(context);
+        var definitions = ParseDefinitions(await context.ReadJsonAsync(
+            ResourceMaterializationContract.DefinitionsPath));
+        var pending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        var predecessor = Assert.Single(pending.Requests);
+        Assert.Equal(0m, predecessor.MinimumAmount);
+        Assert.Equal(1m, predecessor.MaximumAmount);
+
+        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
+        var backups = await context.ReadPendingSnapshotBackupsAsync();
+        await context.WriteJsonAsync(
+            EffectMaterializationTestContext.CommandPath,
+            ReceiptCommand(predecessor.RequestId, amount: 0m));
+
+        var issues = await context.Validator
+            .ValidateAcceptedTurnRawResourceMaterializationAsync();
+        AssertNoErrors(issues);
+        await using (var writeLease = await context.FileSystem
+                         .AcquireCanonicalWriteLeaseAsync())
+        {
+            var plan = await context.Normalizer.BindTo(writeLease)
+                .NormalizeAcceptedMechanicsAsync(backups);
+            Assert.NotNull(plan);
+            Assert.False(plan!.AwaitsPendingResolution);
+        }
+
+        var terminalPending = ParsePending(
+            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
+            definitions);
+        Assert.Empty(terminalPending.Requests);
+        var terminal = Assert.Single(terminalPending.TerminalReceipts);
+        Assert.Equal(predecessor.RequestId, terminal.RequestId);
+        Assert.Equal("resource_delta", terminal.ResultKind);
+        Assert.Equal(0m, terminal.Amount);
+        Assert.Equal("resolved_and_consumed", terminal.State);
+
+        var history = ResourceHistoryState.ParseCanonical(
+            (await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath))!
+                .ToJsonString(),
+            definitions,
+            allowMissingPristine: false);
+        Assert.NotNull(history.History);
+        Assert.Empty(history.Issues);
+        Assert.DoesNotContain(history.History!.Transitions, transition =>
+            transition.Phase == ResourceMutationPhase.EffectTrigger);
+        Assert.False(context.FileSystem.FileExists(
+            EffectMaterializationTestContext.CommandPath));
     }
 
     [Fact]

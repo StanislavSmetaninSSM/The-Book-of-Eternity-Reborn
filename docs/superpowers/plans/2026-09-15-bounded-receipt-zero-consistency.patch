@@ -1,0 +1,596 @@
+diff --git a/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+index 2ba5f26f..78a9930d 100644
+--- a/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
++++ b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+@@ -4692,6 +4692,15 @@ internal static partial class AcceptedMechanicsPlanner
+                 terminalWithoutProjection.Add(componentId);
+                 continue;
+             }
++            if (string.Equals(
++                    binding.ResultKind,
++                    "resource_delta",
++                    StringComparison.Ordinal) &&
++                binding.Amount == 0m)
++            {
++                terminalWithoutProjection.Add(componentId);
++                continue;
++            }
+             if (!string.Equals(
+                     binding.ResultKind,
+                     "resource_delta",
+diff --git a/BookOfEternityClient/Services/ResourcePendingResolutionState.cs b/BookOfEternityClient/Services/ResourcePendingResolutionState.cs
+index c0ef1c2b..d9993dcf 100644
+--- a/BookOfEternityClient/Services/ResourcePendingResolutionState.cs
++++ b/BookOfEternityClient/Services/ResourcePendingResolutionState.cs
+@@ -2444,7 +2444,9 @@ internal sealed class ResourcePendingResolutionState
+         if (!string.Equals(
+                 binding.ResultKind,
+                 "resource_delta",
+-                StringComparison.Ordinal))
++                StringComparison.Ordinal) ||
++            !binding.Amount.HasValue ||
++            binding.Amount.Value <= 0m)
+         {
+             sourceExport = null;
+             return false;
+diff --git a/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs b/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs
+index 3cda8f61..4c5b1041 100644
+--- a/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs
++++ b/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs
+@@ -128,20 +128,7 @@ public sealed partial class EffectResourceTriggerRoutingScaleTests
+         Assert.Equal(1m, firstTransition.AppliedAmount);
+         Assert.Equal(5m, firstTransition.BeforeState!.Current);
+         Assert.Equal(4m, firstTransition.AfterState!.Current);
+-        if (string.Equals(resultKind, "resource_delta", StringComparison.Ordinal))
+-        {
+-            var zero = Assert.Single(interval.AppliedTransitions.Skip(1));
+-            Assert.Equal(ResourceTransitionOperation.Restore, zero.Operation);
+-            Assert.Equal(0m, zero.RequestedAmount);
+-            Assert.Equal(0m, zero.AppliedAmount);
+-            Assert.Equal(4m, zero.BeforeState!.Current);
+-            Assert.Equal(4m, zero.AfterState!.Current);
+-            Assert.Equal(requestId, zero.ReceiptId);
+-        }
+-        else
+-        {
+-            Assert.Single(interval.AppliedTransitions);
+-        }
++        Assert.Single(interval.AppliedTransitions);
+         var accepted = Assert.Single(interval.EffectAfter.AcceptedActivations);
+         Assert.Equal("pending_damage", accepted.Activation.Stamp.Identity.TriggerId);
+         Assert.Equal(2, accepted.Activation.Stamp.UsesBefore);
+@@ -155,12 +142,82 @@ public sealed partial class EffectResourceTriggerRoutingScaleTests
+         Assert.True(result.IsValid, Format(result.Issues));
+         Assert.Equal(firstTransition.TransitionId,
+             result.AppliedTransitions[0].TransitionId);
++        Assert.Equal(new[] { requestId }, result.AcceptedResolvedPendingRequestIds);
+         Assert.Single(result.EffectBoundaryTranscript!.AcceptedActivations);
+         Assert.Equal(4m, result.StateAfterImage!.Entries.Single(value =>
+             value.Coordinate == fixture.Coordinate).Current);
+         Assert.Equal(1, result.Statistics.HistoryFreezeCount);
+     }
+ 
++    [Fact]
++    public void LivePendingContinuation_ZeroDeltaCompletesAfterComponentWithoutPhantomReaction()
++    {
++        var fixture = CreateAcceptedEventBudgetFixture(
++            remainingUses: 1,
++            current: 5m,
++            reactionResultKind: "bounded_receipt",
++            reactionDependency: "after_component",
++            reactionAfterComponentId: "component_budget_periodic",
++            triggerSpecs: new[]
++            {
++                new BudgetTriggerSpec(
++                    "pending_after_component",
++                    "resource_damaged",
++                    Priority: 10,
++                    IncludePeriodic: true,
++                    IncludeReaction: true,
++                    ResolutionMode: "bounded_receipt")
++            });
++        var route = EffectAcceptedTurnPlanner.BaseResourceRouting.Capture(
++            fixture.Plan, fixture.Owners, fixture.Definitions);
++        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
++            LiveBudgetBaseline(fixture), new LiveIntervalIdentityCounter().Factory, route);
++        InvokePendingOwner(session, "BindOriginalPendingContext", PendingContinuationInput(fixture));
++        session.StageNextExchange(LiveBudgetBatch(fixture,
++            CreateBudgetMutation(fixture.Coordinate,
++                "turn_43:zero_after_component:1",
++                ResourceOperation.Damage,
++                1m),
++            0,
++            5m));
++        var wait = session.AdvanceThroughExchange().PendingResource!;
++        var packet = PendingPacket(session, wait);
++        var request = Assert.Single(packet["requests"]!.AsArray())!.AsObject();
++        var requestId = request["requestId"]!.GetValue<string>();
++
++        var resumed = ResumePendingOwner(session, wait, new JsonArray(new JsonObject
++        {
++            ["requestId"] = requestId,
++            ["resultKind"] = "resource_delta",
++            ["amount"] = 0m,
++            ["reason"] = "Accepted explicit zero continuation"
++        }));
++
++        Assert.Null(resumed.PendingResource);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(
++            resumed.Interval);
++        var transition = Assert.Single(interval.AppliedTransitions);
++        Assert.Equal(ResourceTransitionOperation.Damage, transition.Operation);
++        Assert.Equal(4m, transition.AfterState!.Current);
++        var activation = Assert.Single(interval.EffectAfter.AcceptedActivations);
++        Assert.Equal("pending_after_component", activation.Activation.Stamp.Identity.TriggerId);
++        Assert.Equal(1, activation.Activation.Stamp.UsesBefore);
++        Assert.Empty(interval.EffectAfter.AppliedComponentEvidence);
++        Assert.Empty(interval.EffectAfter.ReleasedReactions);
++        Assert.DoesNotContain(interval.Events, resourceEvent =>
++            string.Equals(resourceEvent.EventKind, "resource_restored", StringComparison.Ordinal));
++
++        var result = session.Drain();
++        Assert.True(result.IsValid, Format(result.Issues));
++        Assert.Equal(new[] { requestId }, result.AcceptedResolvedPendingRequestIds);
++        Assert.Single(result.AppliedTransitions);
++        Assert.Empty(result.AcceptedReactionExecutions);
++        Assert.Empty(result.EffectBoundaryTranscript!.ReleasedReactions);
++        Assert.Equal(4m, result.StateAfterImage!.Entries.Single(value =>
++            value.Coordinate == fixture.Coordinate).Current);
++        Assert.Equal(1, result.Statistics.HistoryFreezeCount);
++    }
++
+     [Theory]
+     [InlineData("amount")]
+     [InlineData("request")]
+diff --git a/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs b/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
+index ef15b540..0af2ef6d 100644
+--- a/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
++++ b/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
+@@ -2447,6 +2447,61 @@ public sealed partial class EffectResourceTriggerRoutingScaleTests
+             StringComparison.Ordinal);
+     }
+ 
++    [Fact]
++    public void AcceptedEventArbiterBoundary_ZeroAppliedChildDoesNotSatisfyAfterComponentReaction()
++    {
++        var fixture = CreateAcceptedEventBudgetFixture(
++            remainingUses: 1,
++            current: 10m,
++            reactionDependency: "after_component",
++            reactionAfterComponentId: "component_budget_periodic",
++            triggerSpecs: new[]
++            {
++                new BudgetTriggerSpec(
++                    "trigger_budget_zero_applied_after_component",
++                    "resource_spent",
++                    Priority: 10,
++                    IncludePeriodic: true,
++                    IncludeReaction: true)
++            });
++        var producerBaseline = AddBudgetProducerResource(fixture);
++        fixture = producerBaseline.Fixture;
++        var rootSpend = CreateBudgetMutation(
++            producerBaseline.Coordinate,
++            "turn_43:budget:zero_applied_after_component",
++            ResourceOperation.Spend,
++            amount: 2m);
++
++        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { rootSpend });
++
++        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
++        Assert.Single(
++            result.Resources.AppliedTransitions,
++            static transition =>
++                transition.Phase == ResourceMutationPhase.EffectTrigger &&
++                transition.RequestedAmount > 0m &&
++                transition.AppliedAmount == 0m);
++        Assert.Contains(
++            result.Resources.Events,
++            static resourceEvent =>
++                string.Equals(
++                    resourceEvent.EventKind,
++                    "resource_restored",
++                    StringComparison.Ordinal) &&
++                resourceEvent.AppliedAmount == 0m);
++        var execution = Assert.Single(result.Resources.ResourceTriggerExecutions);
++        Assert.Empty(execution.MutationKeys);
++        Assert.Empty(execution.ComponentIds ?? Array.Empty<string>());
++        Assert.Empty(result.Resources.EffectBoundaryTranscript.ReleasedReactions);
++        Assert.Empty(result.Resources.AcceptedReactionExecutions);
++        Assert.Empty(result.Resources.AcceptedPendingResolutions);
++
++        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(
++            result.Finalized);
++        Assert.True(finalized.Success, Format(finalized.Issues));
++        Assert.Equal(0, finalized.Plan!.ReactionExpansionCount);
++    }
++
+     [Fact]
+     public void AcceptedEventArbiterBoundary_DueLifecycleReactionOnlyConsumesUseOnceAcrossFinalize()
+     {
+@@ -4152,10 +4207,8 @@ public sealed partial class EffectResourceTriggerRoutingScaleTests
+         var periodic = effect["components"]![0]!.DeepClone().AsObject();
+         periodic["componentId"] = periodicComponentId;
+         periodic["payload"]!["amount"] = 3;
+-        var dependentPeriodic = string.Equals(
+-                reactionResultKind,
+-                "trigger_component",
+-                StringComparison.Ordinal)
++        var dependentPeriodic = reactionResultKind is
++                "trigger_component" or "bounded_receipt"
+             ? EffectMaterializationTestFixture
+                 .CreateDefinition("periodic_damage")["components"]![0]!
+                 .DeepClone()
+@@ -4193,10 +4246,7 @@ public sealed partial class EffectResourceTriggerRoutingScaleTests
+             };
+             if (reactionAfterComponentId != null)
+                 payload["afterComponentId"] = reactionAfterComponentId;
+-            if (string.Equals(
+-                    resultKind,
+-                    "trigger_component",
+-                    StringComparison.Ordinal))
++            if (resultKind is "trigger_component" or "bounded_receipt")
+             {
+                 Assert.NotNull(dependentPeriodic);
+                 payload["componentId"] = dependentPeriodicComponentId;
+diff --git a/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs b/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
+index db8d1e6d..8ea3eb99 100644
+--- a/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
++++ b/BookOfEternityClient.IntegrationTests/ExampleDocumentationValidationTests.cs
+@@ -626,6 +626,38 @@ public sealed partial class ExampleDocumentationValidationTests
+                     $"{entry.ContractId}.requiredText must require '{stablePhrase}'.");
+             }
+         }
++
++        foreach (var entry in entries)
++        {
++            foreach (var stablePhrase in new[]
++                     {
++                         "explicit terminal zero",
++                         "resource event",
++                         "dependent effect activation"
++                     })
++            {
++                Assert.True(
++                    entry.RequiredText.Any(token => string.Equals(
++                        token,
++                        stablePhrase,
++                        StringComparison.OrdinalIgnoreCase)),
++                    $"{entry.ContractId}.requiredText must require '{stablePhrase}'.");
++            }
++        }
++
++        foreach (var (entry, requestId) in new[]
++                 {
++                     (entries[0], "resource_resolution_example_zero_002"),
++                     (entries[1], "resource_resolution_afterlife_zero_003")
++                 })
++        {
++            Assert.True(
++                entry.RequiredText.Any(token => string.Equals(
++                    token,
++                    requestId,
++                    StringComparison.OrdinalIgnoreCase)),
++                $"{entry.ContractId}.requiredText must require '{requestId}'.");
++        }
+     }
+ 
+     [Fact]
+diff --git a/BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs b/BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs
+index f568aa80..d81d3300 100644
+--- a/BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs
++++ b/BookOfEternityClient.IntegrationTests/ResourcePendingResolutionIntegrationTests.cs
+@@ -212,6 +212,62 @@ public sealed class ResourcePendingResolutionIntegrationTests
+             transition.Phase == ResourceMutationPhase.EffectTrigger);
+     }
+ 
++    [Fact]
++    public async Task BoundedAfterComponent_ZeroDeltaConsumesTerminalWithoutMutationOrDependentRequest()
++    {
++        await using var context = await EffectMaterializationTestContext.CreateAsync();
++        await SeedBoundedAfterComponentAsync(context);
++        await PublishPendingAsync(context);
++        var definitions = ParseDefinitions(await context.ReadJsonAsync(
++            ResourceMaterializationContract.DefinitionsPath));
++        var pending = ParsePending(
++            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
++            definitions);
++        var predecessor = Assert.Single(pending.Requests);
++        Assert.Equal(0m, predecessor.MinimumAmount);
++        Assert.Equal(1m, predecessor.MaximumAmount);
++
++        await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
++        var backups = await context.ReadPendingSnapshotBackupsAsync();
++        await context.WriteJsonAsync(
++            EffectMaterializationTestContext.CommandPath,
++            ReceiptCommand(predecessor.RequestId, amount: 0m));
++
++        var issues = await context.Validator
++            .ValidateAcceptedTurnRawResourceMaterializationAsync();
++        AssertNoErrors(issues);
++        await using (var writeLease = await context.FileSystem
++                         .AcquireCanonicalWriteLeaseAsync())
++        {
++            var plan = await context.Normalizer.BindTo(writeLease)
++                .NormalizeAcceptedMechanicsAsync(backups);
++            Assert.NotNull(plan);
++            Assert.False(plan!.AwaitsPendingResolution);
++        }
++
++        var terminalPending = ParsePending(
++            await context.ReadJsonAsync(ResourcePendingResolutionState.PendingPath),
++            definitions);
++        Assert.Empty(terminalPending.Requests);
++        var terminal = Assert.Single(terminalPending.TerminalReceipts);
++        Assert.Equal(predecessor.RequestId, terminal.RequestId);
++        Assert.Equal("resource_delta", terminal.ResultKind);
++        Assert.Equal(0m, terminal.Amount);
++        Assert.Equal("resolved_and_consumed", terminal.State);
++
++        var history = ResourceHistoryState.ParseCanonical(
++            (await context.ReadJsonAsync(ResourceMaterializationContract.HistoryPath))!
++                .ToJsonString(),
++            definitions,
++            allowMissingPristine: false);
++        Assert.NotNull(history.History);
++        Assert.Empty(history.Issues);
++        Assert.DoesNotContain(history.History!.Transitions, transition =>
++            transition.Phase == ResourceMutationPhase.EffectTrigger);
++        Assert.False(context.FileSystem.FileExists(
++            EffectMaterializationTestContext.CommandPath));
++    }
++
+     [Fact]
+     public async Task BoundedAfterComponent_AppliesDependentReceiptAfterExactPredecessor()
+     {
+diff --git a/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs b/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs
+index 027f99b0..a970c00a 100644
+--- a/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs
++++ b/BookOfEternityClient.Tests/AfterlifeDocumentationCoverageTests.cs
+@@ -4665,6 +4665,29 @@ public sealed partial class AfterlifeDocumentationCoverageTests
+         Assert.DoesNotContain("\"combatConditions\":", examples, StringComparison.Ordinal);
+     }
+ 
++    [Fact]
++    public void BoundedReceiptExplicitZero_IsDocumentedAsTerminalWithoutProjection()
++    {
++        var matrix = ReadRepoFile("OtherGuides", "Afterlife_Contract_Matrix.md");
++        var examples = ReadRepoFile("Examples", "E_CLI_Afterlife_Turns.txt");
++
++        foreach (var document in new[] { matrix, examples })
++        {
++            var normalized = document.ReplaceLineEndings(" ");
++            Assert.Contains("explicit terminal zero", normalized, StringComparison.OrdinalIgnoreCase);
++            Assert.Contains("resource_delta", normalized, StringComparison.Ordinal);
++            Assert.Contains("narrated_no_state_change", normalized, StringComparison.Ordinal);
++            Assert.Contains("resource transition", normalized, StringComparison.OrdinalIgnoreCase);
++            Assert.Contains("resource event", normalized, StringComparison.OrdinalIgnoreCase);
++            Assert.Contains("dependent effect activation", normalized, StringComparison.OrdinalIgnoreCase);
++        }
++
++        Assert.Contains(
++            "\"amount\": 0",
++            examples,
++            StringComparison.Ordinal);
++    }
++
+     private static string[] ShiningConstantValues(params string[] prefixes) =>
+         typeof(ShiningAbodeState)
+             .GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+diff --git a/BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs b/BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs
+index 7591d47b..6c194dcc 100644
+--- a/BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs
++++ b/BookOfEternityClient.Tests/PromptDocumentationCoverageTests.cs
+@@ -1610,6 +1610,10 @@ public sealed partial class PromptDocumentationCoverageTests
+ 
+         Assert.Contains("full-turn resubmission", workedExample, StringComparison.OrdinalIgnoreCase);
+         Assert.Contains("client-owned publication", workedExample, StringComparison.OrdinalIgnoreCase);
++        Assert.Contains("explicit terminal zero", workedExample, StringComparison.OrdinalIgnoreCase);
++        Assert.Contains("\"amount\": 0", workedExample, StringComparison.Ordinal);
++        Assert.Contains("resource event", workedExample, StringComparison.OrdinalIgnoreCase);
++        Assert.Contains("dependent effect activation", workedExample, StringComparison.OrdinalIgnoreCase);
+         Assert.DoesNotContain("\"currentHealth\":", workedExample, StringComparison.Ordinal);
+         Assert.DoesNotContain("\"healthPercentage\":", workedExample, StringComparison.Ordinal);
+         Assert.DoesNotContain("\"maxDurability\":", workedExample, StringComparison.Ordinal);
+diff --git a/BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs b/BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs
+index 12670d7a..94c36760 100644
+--- a/BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs
++++ b/BookOfEternityClient.Tests/ResourcePendingResolutionTests.cs
+@@ -294,6 +294,33 @@ public sealed class ResourcePendingResolutionTests
+         Assert.Equal("resolved_and_consumed", terminal.State);
+     }
+ 
++    [Fact]
++    public void Resolve_ZeroDeltaConsumesRequestWithoutMutationProjection()
++    {
++        var state = CreatePending(Draft()).State!;
++
++        var result = state.Resolve(
++            new JsonArray(Receipt("resource_delta", amount: 0)),
++            Context(),
++            ResourceDefinitionCatalog.CreateBuiltIn());
++
++        Assert.True(result.IsValid, Format(result.Issues));
++        Assert.Empty(result.Mutations);
++        Assert.Empty(result.SourceExports);
++        Assert.Empty(result.StateAfterImage!.Requests);
++        var terminal = Assert.Single(result.StateAfterImage.TerminalReceipts);
++        Assert.Equal("resource_resolution_test", terminal.RequestId);
++        Assert.Equal("resource_delta", terminal.ResultKind);
++        Assert.Equal(0m, terminal.Amount);
++        Assert.Equal("resolved_and_consumed", terminal.State);
++        var binding = Assert.Single(result.ResolvedPendingBindings);
++        Assert.Equal(0m, binding.Amount);
++        Assert.False(ResourcePendingResolutionState.TryProjectMutationSourceExport(
++            binding,
++            out var source));
++        Assert.Null(source);
++    }
++
+     [Fact]
+     public void Resolve_InBoundDeltaRestoresProtectedMutationAuthority()
+     {
+diff --git a/Examples/E_CLI_Afterlife_Turns.txt b/Examples/E_CLI_Afterlife_Turns.txt
+index 8566a549..988b282b 100644
+--- a/Examples/E_CLI_Afterlife_Turns.txt
++++ b/Examples/E_CLI_Afterlife_Turns.txt
+@@ -7822,6 +7822,29 @@ resource, operation, path, authority, or fingerprint, or change the original
+ resource/effect commands between waves. An exact terminal retry with the same
+ semantic command envelope is a no-op; a changed envelope fails closed.
+ 
++If a current safe packet advertises an inclusive minimum of `0`, the GM may
++return an explicit terminal zero without pretending that a resource changed:
++
++```json
++{
++  "effectResolutionReceipts": [
++    {
++      "requestId": "resource_resolution_afterlife_zero_003",
++      "resultKind": "resource_delta",
++      "amount": 0,
++      "reason": "Клятва отозвалась, но запас духовного действия не изменился."
++    }
++  ]
++}
++```
++
++The client consumes that accepted receipt and use without emitting a resource
++transition, resource event, or dependent effect activation. This explicit zero
++remains distinct from `narrated_no_state_change`, which omits `amount`. A
++positive request that reaches a resource bound may still have an ordinary
++transition with zero applied amount; the GM never infers or authors either
++transition form.
++
+ ## afterlife_effect_conditions_five_kinds_v1 — all five spiritual conditions
+ 
+ The five supported `afterlife_combat_condition` kinds are `mark`, `ward`, `burden`, `opening`, and `vow`. Each complete source definition targets only `spiritual_conflict_side`, uses only Chaos Sea/Shining Abode realm authority, and has bounded `turns`, `uses`, or `scene` lifetime. The fragments below show the profile-owned payload difference; the surrounding definition still supplies display, stacking, lifetime, triggers, removal, and links.
+diff --git a/Examples/E_CLI_Mortal_Resources.txt b/Examples/E_CLI_Mortal_Resources.txt
+index ed9e104d..a054c8c8 100644
+--- a/Examples/E_CLI_Mortal_Resources.txt
++++ b/Examples/E_CLI_Mortal_Resources.txt
+@@ -242,6 +242,29 @@ publishes the whole resource/effect result atomically. Reusing an exact terminal
+ receipt with the unchanged command envelope is a no-op; changing the original
+ resource/effect commands makes it a conflicting replay.
+ 
++When the current safe packet advertises an inclusive minimum of `0`, an
++explicit terminal zero keeps the choice mechanical without inventing a state
++change:
++
++```json
++{
++  "effectResolutionReceipts": [
++    {
++      "requestId": "resource_resolution_example_zero_002",
++      "resultKind": "resource_delta",
++      "amount": 0,
++      "reason": "Яд отступил на миг, не изменив запас здоровья."
++    }
++  ]
++}
++```
++
++The client consumes the accepted receipt and use without emitting a resource
++transition, resource event, or dependent effect activation. This remains
++distinct from `narrated_no_state_change`, which omits `amount`. A positive
++request that reaches a resource bound may still record an ordinary transition
++with zero applied amount; the GM never authors either transition form.
++
+ ### mortal_resource_bounded_repair_v1
+ 
+ If one exact ordinary resource command omitted only its required narrative
+diff --git a/Examples/example_validation_manifest.json b/Examples/example_validation_manifest.json
+index 2ea08774..197d630d 100644
+--- a/Examples/example_validation_manifest.json
++++ b/Examples/example_validation_manifest.json
+@@ -286,8 +286,8 @@
+       "description": "Two safe-packet fragments prove that bounded afterlife resource outputs remain atomic across causal waves while immutable client-owned origin authority survives every replay.",
+       "validationKind": "focused-fragment",
+       "focusedFragmentReason": "The protected request authority and rejected full-turn package are client/session-specific; the examples intentionally expose only the safe GM receipt shape.",
+-      "coverageLimit": "Current-wave receipt fields, immutable origin/source authority, prior-wave client ownership, unchanged semantic command envelope, terminal atomic publication, and no-op/conflicting replay rules; executable causal replay is covered by pending-wave integration tests.",
+-      "requiredText": ["afterlife_resource_bounded_receipt_waves_v1", "resource_resolution_afterlife_wave_001", "resource_resolution_afterlife_wave_002", "current safe packet only", "same complete semantic turn", "client carries earlier-wave terminal bindings", "original candidate, mutation authority, and source authority remain immutable/client-owned", "publishes the complete accepted mechanics atomically"]
++      "coverageLimit": "Current-wave receipt fields, immutable origin/source authority, prior-wave client ownership, unchanged semantic command envelope, explicit terminal zero behavior, terminal atomic publication, and no-op/conflicting replay rules; executable causal replay is covered by pending-wave integration tests.",
++      "requiredText": ["afterlife_resource_bounded_receipt_waves_v1", "resource_resolution_afterlife_wave_001", "resource_resolution_afterlife_wave_002", "resource_resolution_afterlife_zero_003", "current safe packet only", "same complete semantic turn", "client carries earlier-wave terminal bindings", "original candidate, mutation authority, and source authority remain immutable/client-owned", "publishes the complete accepted mechanics atomically", "explicit terminal zero", "resource event", "dependent effect activation"]
+     },
+     {
+       "contractId": "mortal_qte_deferred_effect_receipt_waves_v1",
+@@ -1052,10 +1052,14 @@
+       "description": "A bounded story receipt supplies only request identity, allowed result, amount, and reason while immutable client-owned origin authority survives sequential replay.",
+       "validationKind": "focused-fragment",
+       "focusedFragmentReason": "The worked fence is the GM receipt fragment; the originating protected pending request and coherent rejected-turn package are necessarily session-specific.",
+-      "coverageLimit": "Closed receipt fields, bounded delta shape, current-packet-only resubmission, immutable origin/source authority, prior-wave bindings, and client-owned one-time publication; pending binding and replay are executable-test-owned.",
++      "coverageLimit": "Closed receipt fields, bounded delta and explicit terminal zero shapes, current-packet-only resubmission, immutable origin/source authority, prior-wave bindings, and client-owned one-time publication; pending binding and replay are executable-test-owned.",
+       "requiredText": [
+         "mortal_resource_bounded_receipt_v1",
+         "\"resultKind\": \"resource_delta\"",
++        "resource_resolution_example_zero_002",
++        "explicit terminal zero",
++        "resource event",
++        "dependent effect activation",
+         "current safe packet only",
+         "same complete semantic turn",
+         "client carries earlier-wave terminal bindings",
+diff --git a/OtherGuides/Afterlife_Contract_Matrix.md b/OtherGuides/Afterlife_Contract_Matrix.md
+index 75eead82..26477322 100644
+--- a/OtherGuides/Afterlife_Contract_Matrix.md
++++ b/OtherGuides/Afterlife_Contract_Matrix.md
+@@ -44,6 +44,12 @@ in a later wave or reconstruct, retarget, merge, or alter their protected origin
+ No resource, effect, use, or lifetime after-image publishes until the final
+ wave. Changed original commands, retargeted/extra fields, empty terminal replay,
+ or receipt internals copied into player text fail closed.
++When the current safe packet advertises an inclusive minimum of `0`, a
++`resource_delta` amount `0` is an explicit terminal zero result. The client
++consumes its accepted use and receipt but emits no resource transition,
++resource event, or dependent effect activation. This remains distinct from
++`narrated_no_state_change`, which omits `amount`. Answer only the result that
++matches the fiction in the current packet.
+ 
+ - When an afterlife item, relic, or inherited skill surface embeds a shared Block 5 Combat Action effect, that effect keeps the ordinary canonical fields: non-empty `effectType`, required percentage-string `value`, non-empty `targetType`, non-empty `effectDescription`, and the type-specific duration/poise fields. This does not change the separate `specialArts[].combatEffect` spiritual-conflict schema.
+ - Always run realm gate first: ordinary `Chaos Sea`, ordinary active `Shining Abode`, or `Shining Abode pending-bootstrap handoff`.
+diff --git a/docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md b/docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md
+index e2e59a53..e6306491 100644
+--- a/docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md
++++ b/docs/superpowers/specs/2026-08-15-unified-resource-authority-design.md
+@@ -359,7 +359,7 @@ narrative reason
+ 
+ The client resolves all protected binding through the pending request. Initially registered bounded result kinds are `narrated_no_state_change` and a bounded `resource_delta` whose coordinate and operation were fixed by the request. Extra, missing, stale, partial, cross-target, wrong-operation, or out-of-bound data fails closed.
+ 
+-Canonical resource/effect state does not change while the request is pending. A valid receipt requires one coherent full-turn resubmission, becomes an ordinary `ResourceMutation`, and is consumed exactly once with terminal replay evidence.
++Canonical resource/effect state does not change while the request is pending. A valid receipt requires one coherent full-turn resubmission and is consumed exactly once with terminal replay evidence. A positive `resource_delta` becomes an ordinary `ResourceMutation`. When the request's inclusive bound permits zero, an exact zero `resource_delta` is consumed as explicit terminal evidence without a mutation, resource event, or dependent activation; `narrated_no_state_change` remains the separate amount-free result.
+ 
+ ## 14. Domain Cutover
+ 
+diff --git a/specs/1536-complete-wound-materialization/tasks.md b/specs/1536-complete-wound-materialization/tasks.md
+index 5d9e04d2..17fc6005 100644
+--- a/specs/1536-complete-wound-materialization/tasks.md
++++ b/specs/1536-complete-wound-materialization/tasks.md
+@@ -2404,9 +2404,28 @@ hand-written history/after-images, or a raw mutation fallback.
+           scoped review PASS and Fast7882/7882. Additional narrated/zero coverage
+           exposed advertised `resource_delta: 0` projecting an illegal zero-request
+           mutation; fix and verify this mismatch before accepting the receipt unit.
+-          Signed source continuation is in phased RED/GREEN execution; original
+-          capture and corrected missing-side integration remain unapplied proposals.
++          Signed source continuation is implemented with final focused families
++          10+28+16 and independent bounded PASS; original capture and corrected
++          missing-side integration remain unapplied proposals.
+           These internal units do not complete source admission, generation/D or E.
++        - [ ] T081-B2C-J2-C2-Z0 [US3] Reconcile the advertised inclusive zero
++          bound with the ordinary positive resource-mutation contract. Preserve
++          an accepted `resource_delta` amount `0` as terminal receipt/use evidence
++          while projecting no mutation, resource event, after-component work, or
++          descendant activation; keep positive-request/clamped-zero transitions
++          unchanged. Add pending-resolver, fixed-path and retained-session
++          RED/GREEN coverage, then synchronize the Mortal and afterlife worked
++          examples, afterlife matrix, manifest and source guards before integrated
++          C2 acceptance. This does not complete C2, D, E, T177, or issue #1536.
++        - [ ] T081-B2C-J2-C2-V2 [US3] Apply the owner's 2026-09-15 clarification
++          that test-lane budgets may evolve with measured workload. Document the
++          policy in `docs/testing.md`; preserve honest group boundaries and keep
++          Fast quick by optimizing or relocating measured heavy coverage without
++          dropping assertions. Reconcile FullValidation discovery and runtime-expanded theory cases
++          with completed and residual results, then adjust a lane budget only if
++          timings and group composition justify it. Record the evidence and any
++          runner/guard changes; an increased limit does not erase prior timeout
++          evidence. This verification follow-up remains under GitHub issue #1536.
+   - [ ] T081-C [US3] Implement strict source finalization, separate spiritual
+     pending/receipt roots, exact cold reconstruction and narrow decision intake
+     through `ValidationService.WoundMaterialization.cs`,

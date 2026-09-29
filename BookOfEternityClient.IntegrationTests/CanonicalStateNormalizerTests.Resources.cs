@@ -9,6 +9,55 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class CanonicalStateNormalizerResourceTests
 {
+    /// <summary>
+    /// Verifies both leased authority wrappers forward fresh allocation scopes to their real planners.
+    /// </summary>
+    /// <param name="woundStage">
+    /// <see langword="true"/> selects a prepared wound; <see langword="false"/> selects ordinary effects.
+    /// </param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task SpiritualScope_LeasedAuthorityWrappersReplayAllocations(bool woundStage)
+    {
+        await using var context = await ResourceMaterializationTestContext.CreateAsync();
+        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
+        WoundPreparedAcceptedTurnPlan? prepared = null;
+        if (woundStage)
+        {
+            var preparation = WoundAcceptedTurnPlanAuthority.GetOrBuildPreparedValidated(
+                context.FileSystem, lease, WoundAcceptedTurnTestFixture.CreateDefaultInput());
+            Assert.True(preparation.Success, string.Join(Environment.NewLine, preparation.Issues));
+            prepared = preparation.Plan!;
+        }
+        var input = prepared is null ? CreateIndependentEffectInput()
+            : WoundAcceptedTurnTestFixture.CreateEffectInput(prepared);
+        var journal = SpiritualWoundReplayJournal.CreateAppend("[]");
+        var first = Build(new SpiritualWoundEffectIdentityFactory(journal, new EffectIdentityFactory()));
+        var rows = journal.Export().ToJsonString();
+        Assert.NotEqual("[]", rows);
+        var replay = SpiritualWoundReplayJournal.CreateReplay(rows);
+        var second = Build(new SpiritualWoundEffectIdentityFactory(replay, new EffectIdentityFactory()));
+        Assert.Equal(rows, replay.Export().ToJsonString());
+        Assert.Equal(first.InputFingerprint, second.InputFingerprint);
+        Assert.Equal(first.IdentityIndexAfterImage.ToJsonString(), second.IdentityIndexAfterImage.ToJsonString());
+        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
+
+        EffectAcceptedTurnPlan Build(EffectIdentityFactory factory)
+        {
+            if (prepared is null)
+            {
+                var result = EffectAcceptedTurnPlanAuthority.GetOrBuildValidated(context.FileSystem, lease, input, factory);
+                Assert.True(result.Success, string.Join(Environment.NewLine, result.Issues));
+                return result.Plan!;
+            }
+            var wound = WoundAcceptedTurnPlanAuthority.GetOrBuildEffectValidated(context.FileSystem, lease, prepared, input, factory);
+            Assert.True(wound.Success, string.Join(Environment.NewLine, wound.Issues));
+            Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out var retained));
+            return retained.Plan!;
+        }
+    }
+
     [Fact]
     public void ResourceAuthorityPathsAreTrackedForSnapshotPublicationAndRollback()
     {
@@ -83,11 +132,23 @@ public sealed class CanonicalStateNormalizerResourceTests
         await context.AssertUnchangedAsync(before);
     }
 
+    /// <summary>
+    /// Rejects each changed current authority before publishing an ordinary skill-sourced effect.
+    /// </summary>
+    /// <param name="authorityKind">
+    /// Named publication authority whose validated baseline is changed.
+    /// </param>
+    /// <param name="changedPath">
+    /// Exact current canonical path corresponding to that authority.
+    /// </param>
+    /// <returns>
+    /// A task completing after rejection, byte preservation and common-handoff invalidation are confirmed.
+    /// </returns>
     [Theory]
     [InlineData("definition", ResourceMaterializationContract.DefinitionsPath)]
     [InlineData("state", ResourceMaterializationContract.StatePath)]
     [InlineData("history", ResourceMaterializationContract.HistoryPath)]
-    [InlineData("source", EffectMaterializationTestContext.PlayerWoundsPath)]
+    [InlineData("source", EffectMaterializationTestContext.MaterializableSkillPath)]
     [InlineData("owner", "game_state/npcs/npc_core.json")]
     [InlineData("target", "game_state/npcs/npc_core.json")]
     [InlineData("carrier", EffectMaterializationTestContext.PlayerEffectsPath)]
@@ -102,13 +163,13 @@ public sealed class CanonicalStateNormalizerResourceTests
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         var usesNpcAuthority = authorityKind is "owner" or "target";
         if (usesNpcAuthority)
             await MaterializeNpcHealthAsync(context, "npc_resource_toctou_target", 60m);
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = EffectMaterializationTestContext.CreateSkillApplyCommand();
         if (usesNpcAuthority)
         {
             command["target"] = new JsonObject
@@ -159,6 +220,12 @@ public sealed class CanonicalStateNormalizerResourceTests
             writeLease));
     }
 
+    /// <summary>
+    /// Rejects an authenticated snapshot swap at the publication authority gate before any write.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the swap is rejected, resources remain unchanged and the handoff is invalidated.
+    /// </returns>
     [Fact]
     public async Task CommonPlan_SnapshotAuthoritySwapAfterPreflight_FailsBeforeEveryPublicationWrite()
     {
@@ -234,7 +301,10 @@ public sealed class CanonicalStateNormalizerResourceTests
             .NormalizeAcceptedMechanicsAsync(backups: null));
 
         Assert.True(swapped);
-        Assert.Contains("snapshot", exception.Message, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains(
+            "publication authority changed after preflight",
+            exception.Message,
+            StringComparison.OrdinalIgnoreCase);
         await context.AssertUnchangedAsync(before);
         Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(
             fileSystem,
@@ -925,18 +995,24 @@ public sealed class CanonicalStateNormalizerResourceTests
         await context.AssertUnchangedAsync(before);
     }
 
+    /// <summary>
+    /// Publishes one ordinary skill-sourced effect through the common accepted-mechanics plan.
+    /// </summary>
+    /// <returns>
+    /// A task completing after one effect is published and its command and common handoff are consumed.
+    /// </returns>
     [Fact]
     public async Task EffectOnlyTurn_PublishesThroughOneAcceptedMechanicsPlan()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                EffectMaterializationTestContext.CreateSkillApplyCommand()));
 
         var itemIssues = await context.Validator
             .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
@@ -963,18 +1039,24 @@ public sealed class CanonicalStateNormalizerResourceTests
             writeLease));
     }
 
+    /// <summary>
+    /// Invalidates the common handoff when its registered skill definition changes before publication.
+    /// </summary>
+    /// <returns>
+    /// A task completing after publication rejection and common-handoff invalidation are confirmed.
+    /// </returns>
     [Fact]
     public async Task EffectOnlyTurn_EffectPreflightFailureInvalidatesCommonHandoff()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await SeedEmptyMortalItemIdentityAsync(context.FileSystem);
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                EffectMaterializationTestContext.CreateSkillApplyCommand()));
 
         var itemIssues = await context.Validator
             .ValidateAcceptedTurnRawMortalItemMaterializationAsync();
@@ -989,7 +1071,7 @@ public sealed class CanonicalStateNormalizerResourceTests
 
         var changedDefinition = EffectMaterializationTestFixture.CreateDefinition();
         changedDefinition["display"]!["name"] = "Подменённый источник";
-        await context.SeedPlayerWoundSourceAsync(changedDefinition);
+        await context.SeedPlayerSkillSourceAsync(changedDefinition);
         await using var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
 
         await Assert.ThrowsAsync<InvalidDataException>(() => context.Normalizer
@@ -1001,17 +1083,35 @@ public sealed class CanonicalStateNormalizerResourceTests
             writeLease));
     }
 
+    /// <summary>
+    /// Mutates the selected current authority after its common plan has been validated.
+    /// </summary>
+    /// <param name="context">
+    /// Isolated effect fixture whose physical authority is changed.
+    /// </param>
+    /// <param name="path">
+    /// Exact canonical path selected by the mutation row.
+    /// </param>
+    /// <param name="authorityKind">
+    /// Named source, owner, target or other authority boundary to mutate.
+    /// </param>
+    /// <returns>
+    /// A task completing after the selected changed authority has been written.
+    /// </returns>
     private static async Task ApplyLateMutationAsync(
         EffectMaterializationTestContext context,
         string path,
         string authorityKind)
     {
         var root = await context.ReadJsonAsync(path);
-        if (authorityKind == "source" && root is JsonArray wounds)
+        if (authorityKind == "source" && root is JsonObject skillRoot)
         {
-            wounds[0]!["activeEffectDefinitions"]![0]!["display"]!["name"] =
+            var skill = FindFirstObjectWithProperty(skillRoot, "activeEffectDefinitions")
+                ?? throw new InvalidOperationException(
+                    "Materializable skill source is missing from its registered source root.");
+            skill["activeEffectDefinitions"]![0]!["display"]!["name"] =
                 "Поздно изменённый источник";
-            await context.WriteJsonAsync(path, wounds);
+            await context.WriteJsonAsync(path, skillRoot);
             return;
         }
         if (authorityKind is "owner" or "target" && root is JsonObject npcRoot)
@@ -1079,6 +1179,12 @@ public sealed class CanonicalStateNormalizerResourceTests
         }
     }
 
+    /// <summary>
+    /// Creates an independent ordinary skill-effect input without a common publication handoff.
+    /// </summary>
+    /// <returns>
+    /// A complete deterministic source, target and command input for independent effect-cache checks.
+    /// </returns>
     private static EffectAcceptedTurnInput CreateIndependentEffectInput()
     {
         var source = EffectSourceAuthority.Build(new EffectSourceAuthorityInput(
@@ -1086,8 +1192,8 @@ public sealed class CanonicalStateNormalizerResourceTests
             {
                 new EffectSourceExport(
                     "mortal_world",
-                    "wound",
-                    "wound_test_torn_side",
+                    "skill",
+                    EffectMaterializationTestContext.MaterializableSkillId,
                     new JsonArray(EffectMaterializationTestFixture.CreateDefinition()),
                     Materializable: true,
                     Active: true,
@@ -1111,7 +1217,7 @@ public sealed class CanonicalStateNormalizerResourceTests
             "session_independent_effect_cache",
             "snapshot_independent_effect_cache",
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()),
+                EffectMaterializationTestContext.CreateSkillApplyCommand()),
             source,
             target,
             new JsonObject

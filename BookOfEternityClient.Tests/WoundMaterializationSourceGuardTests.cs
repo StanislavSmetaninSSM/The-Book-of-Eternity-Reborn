@@ -198,7 +198,7 @@ public sealed class WoundMaterializationSourceGuardTests
             "accepted-turn-authority-registry",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/AcceptedTurnAuthorityRegistry.cs",
-            "internal static class AcceptedTurnAuthorityRegistry",
+            "internal static partial class AcceptedTurnAuthorityRegistry",
             "internal static AcceptedMechanicsPlanningResult GetOrBuildCommonValidated(",
             "internal static bool TryTakeCommonValidated("),
         new(
@@ -229,7 +229,7 @@ public sealed class WoundMaterializationSourceGuardTests
             "accepted-mechanics-planner",
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs",
-            "internal static class AcceptedMechanicsPlanner",
+            "internal static partial class AcceptedMechanicsPlanner",
             "internal static AcceptedMechanicsPlanningResult BuildAcceptedPlan(",
             "internal static AcceptedMechanicsResourcePlanningResult BuildResources("),
         new(
@@ -303,7 +303,7 @@ public sealed class WoundMaterializationSourceGuardTests
             InventoryCategory.AcceptedMechanicsIntegrationSeam,
             "BookOfEternityClient/Services/PendingTurnSnapshotReader.cs",
             "internal static class PendingTurnSnapshotPathPresenceV1",
-            "private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =",
+            "private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =",
             "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
         new(
             "accepted-mortal-wound-source-adapter",
@@ -410,9 +410,13 @@ public sealed class WoundMaterializationSourceGuardTests
 
         Scope("accepted-npc-effect-carrier-path", "accepted-effect-carrier-catalog", "game_state/npcs/npc_effects.json", "internal const string NpcPath", "internal const string EnemiesPath"),
         Scope("accepted-player-wound-carrier-path", "accepted-wound-carrier-catalog", "game_state/player/wounds.json", "internal const string PlayerPath", "internal const string NpcPath"),
-        Scope("accepted-snapshot-player-wound-path", "accepted-wound-snapshot-original-path-presence", "game_state/player/wounds.json", "private static readonly ReadOnlyCollection<string> ClosedLogicalPaths =", "internal static IReadOnlyList<string> LogicalPaths => ClosedLogicalPaths;"),
+        Scope("accepted-snapshot-player-wound-path", "accepted-wound-snapshot-original-path-presence", "game_state/player/wounds.json", "private static readonly ReadOnlyCollection<string> LegacyClosedLogicalPaths =", "private static readonly ReadOnlyCollection<string> ClosedLogicalPaths ="),
     };
 
+    /// <summary>
+    /// Resolves every owned file and its required semantic anchors before checking
+    /// the discovery allowances against that same ownership inventory.
+    /// </summary>
     [Fact]
     public void WoundOwnershipInventory_ResolvesEveryDeclaredFileAndSemanticAnchor()
     {

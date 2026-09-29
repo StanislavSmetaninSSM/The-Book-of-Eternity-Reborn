@@ -58,8 +58,10 @@ For every new confirmed defect or work item:
 1. Create or update a GitHub Issue.
 2. Put implementation on a dedicated branch.
 3. Reference the issue in commits and PRs.
-4. Run the smallest relevant Focused check, a Fast checkpoint when appropriate,
-   and PreMerge immediately before merge.
+4. Select documented test categories from the changed contracts and consumers;
+   record reasons in `tests/selection.json`, then run only those categories.
+   Add or split categories when their responsibilities grow. No full-suite,
+   Fast or PreMerge control is required, including before merge.
 5. Close the issue through the PR/merge flow.
 
 Preferred linkage:

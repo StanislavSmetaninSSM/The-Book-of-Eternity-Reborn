@@ -7,6 +7,36 @@ namespace BookOfEternityClient.Services;
 
 internal class CombatantIdentityFactory
 {
+    /// <summary>
+    /// Allocates an ordinary combatant identity with its exact admitted same-turn reference.
+    /// </summary>
+    /// <param name="combatantRef">
+    /// Nonempty same-turn reference supplied by the validated combatant owner.
+    /// </param>
+    /// <returns>
+    /// The identity returned by the existing allocation policy.
+    /// </returns>
+    internal virtual string CreateCombatantId(string combatantRef)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(combatantRef);
+        return CreateCombatantId();
+    }
+
+    /// <summary>
+    /// Allocates an ordinary member identity with its exact admitted same-turn reference.
+    /// </summary>
+    /// <param name="memberRef">
+    /// Nonempty same-turn reference supplied by the validated combatant owner.
+    /// </param>
+    /// <returns>
+    /// The identity returned by the existing allocation policy.
+    /// </returns>
+    internal virtual string CreateMemberId(string memberRef)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(memberRef);
+        return CreateMemberId();
+    }
+
     internal virtual string CreateCombatantId() =>
         "combatant_" + Guid.NewGuid().ToString("N");
 
@@ -206,7 +236,7 @@ internal sealed class CombatantIdentityState
         var npcByRef = new Dictionary<string, string>(StringComparer.Ordinal);
         foreach (var candidate in combatantCandidates)
         {
-            var id = identityFactory.CreateCombatantId();
+            var id = identityFactory.CreateCombatantId(candidate.Ref);
             if (!TryReadExact(JsonValue.Create(id), out id))
             {
                 Add(issues, $"combatants[{candidate.Index}].combatantId", "mechanics_combatant_id_invalid", "exact generated combatantId", id);
@@ -219,7 +249,7 @@ internal sealed class CombatantIdentityState
         }
         foreach (var candidate in memberCandidates)
         {
-            var id = identityFactory.CreateMemberId();
+            var id = identityFactory.CreateMemberId(candidate.Ref);
             if (!TryReadExact(JsonValue.Create(id), out id))
             {
                 Add(issues, $"members[{candidate.Index}].memberId", "mechanics_member_id_invalid", "exact generated memberId", id);

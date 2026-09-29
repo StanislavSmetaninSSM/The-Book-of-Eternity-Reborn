@@ -272,6 +272,51 @@ public sealed class WoundOpportunityAuthorityTests
         Assert.False(WoundOpportunityAuthority.HasCompleteShape(tampered));
     }
 
+    /// <summary>
+    /// Retains an exhausted afterlife conflict target for decline while keeping the Mortal boundary strict.
+    /// </summary>
+    [Fact]
+    public void Compose_ExhaustedSameConflictTargetIsAfterlifeSpiritualOnly()
+    {
+        var spiritual = ParseWound(WoundContractTestData.CreateActiveWound(
+            realm: "chaos_sea", ownerKind: "guardian", ownerId: "guardian_test",
+            carrierPath: "game_state/meta/afterlife_entity_profiles.json",
+            domain: "spiritual"));
+        var baseRequest = BuildRequest(maximumSeverityRank: 1);
+        var afterlife = baseRequest with
+        {
+            Binding = baseRequest.Binding with { Realm = "chaos_sea" },
+            Owner = spiritual.Owner,
+            Domain = "spiritual",
+            ProfileKey = "afterlife_strain_transition_v1",
+            SourceKind = "spiritual_standard_art",
+            WorseningTarget = new WoundOpportunityWorseningTargetEvidence(
+                spiritual, "same_conflict")
+        };
+
+        var accepted = WoundOpportunityAuthority.Compose(afterlife);
+
+        Assert.True(accepted.Success, string.Join(Environment.NewLine, accepted.Issues));
+        Assert.True(WoundOpportunityAuthority.HasCompleteShape(accepted.Opportunity!));
+        Assert.Equal(2, accepted.Opportunity!.WorseningTarget!.Wound.Severity.Rank);
+        var mortal = ParseWound(WoundContractTestData.CreateActiveWound());
+        var rejected = WoundOpportunityAuthority.Compose(BuildRequest(
+            maximumSeverityRank: 1,
+            worseningTarget: new WoundOpportunityWorseningTargetEvidence(
+                mortal, "same_conflict")));
+        Assert.False(rejected.Success);
+        Assert.Contains(rejected.Issues, issue =>
+            issue.Code == "wound_worsening_target_binding_invalid");
+        var olderWound = WoundOpportunityAuthority.Compose(afterlife with
+        {
+            WorseningTarget = new WoundOpportunityWorseningTargetEvidence(
+                spiritual, "retrauma")
+        });
+        Assert.False(olderWound.Success);
+        Assert.Contains(olderWound.Issues, issue =>
+            issue.Code == "wound_worsening_target_binding_invalid");
+    }
+
     [Theory]
     [InlineData(1, "I")]
     [InlineData(2, "II")]

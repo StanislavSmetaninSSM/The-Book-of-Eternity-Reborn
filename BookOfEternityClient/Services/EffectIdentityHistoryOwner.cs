@@ -288,6 +288,29 @@ internal sealed class EffectIdentityHistoryOwner : IDisposable
             throw new ObjectDisposedException(nameof(EffectIdentityHistoryOwner));
     }
 
+    /// <summary>
+    /// Guards reference allocation with this owner's lifetime without adding an effect-history receipt.
+    /// </summary>
+    /// <param name="allocate">
+    /// Underlying combatant or member callback; a failure faults this owner.
+    /// </param>
+    /// <returns>
+    /// The underlying owner-generated reference identity.
+    /// </returns>
+    private string AllocateReference(Func<string> allocate)
+    {
+        EnsureMutable();
+        try
+        {
+            return allocate();
+        }
+        catch
+        {
+            _faulted = true;
+            throw;
+        }
+    }
+
     private void EnsureMutable()
     {
         EnsureNotDisposed();
@@ -299,6 +322,42 @@ internal sealed class EffectIdentityHistoryOwner : IDisposable
         EffectIdentityHistoryOwner owner,
         EffectIdentityFactory underlying) : EffectIdentityFactory
     {
+        /// <inheritdoc/>
+        internal override string CreateEffectId(EffectIdentityAllocationKey key) =>
+            owner.Allocate(EffectIdentityAllocationKind.Effect, () => underlying.CreateEffectId(key));
+
+        /// <inheritdoc/>
+        internal override string CreateTransitionId(EffectIdentityAllocationKey key) =>
+            owner.Allocate(EffectIdentityAllocationKind.Transition, () => underlying.CreateTransitionId(key));
+
+        /// <inheritdoc/>
+        internal override string CreateResolutionId(EffectIdentityAllocationKey key) =>
+            owner.Allocate(EffectIdentityAllocationKind.Resolution, () => underlying.CreateResolutionId(key));
+
+        /// <inheritdoc/>
+        internal override string CreateCombatantId(string combatantRef) =>
+            owner.AllocateReference(() => underlying.CreateCombatantId(combatantRef));
+
+        /// <inheritdoc/>
+        internal override string CreateMemberId(string memberRef) =>
+            owner.AllocateReference(() => underlying.CreateMemberId(memberRef));
+
+        /// <summary>
+        /// Preserves the underlying combatant allocation policy and this owner's lifetime guard.
+        /// </summary>
+        /// <returns>
+        /// Underlying identity, or rejection when that policy requires a typed reference.
+        /// </returns>
+        internal override string CreateCombatantId() => owner.AllocateReference(underlying.CreateCombatantId);
+
+        /// <summary>
+        /// Preserves the underlying member allocation policy and this owner's lifetime guard.
+        /// </summary>
+        /// <returns>
+        /// Underlying identity, or rejection when that policy requires a typed reference.
+        /// </returns>
+        internal override string CreateMemberId() => owner.AllocateReference(underlying.CreateMemberId);
+
         internal override string CreateEffectId() =>
             owner.Allocate(EffectIdentityAllocationKind.Effect, underlying.CreateEffectId);
         internal override string CreateTransitionId() =>

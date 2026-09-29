@@ -358,6 +358,74 @@ internal sealed class AcceptedMechanicsResourcePlanningResult
 
 internal class AcceptedMechanicsIdentityFactory
 {
+
+    /// <summary>
+    /// Allocates one ordinary random value for an admitted same-turn resource definition.
+    /// </summary>
+    /// <param name="creation">
+    /// Non-null admitted definition command.
+    /// </param>
+    /// <param name="turn">
+    /// Positive original turn of the definition materialization.
+    /// </param>
+    /// <returns>
+    /// A fresh opaque identity or seal under the existing ordinary policy.
+    /// </returns>
+    internal virtual string CreateDefinitionId(ResourceDefinitionCreationCommand creation, int turn)
+    {
+        ArgumentNullException.ThrowIfNull(creation);
+        ArgumentOutOfRangeException.ThrowIfLessThan(turn, 1);
+        return "resource_definition_" + Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
+    /// Allocates one ordinary random value for an admitted same-turn resource definition.
+    /// </summary>
+    /// <param name="creation">
+    /// Non-null admitted definition command.
+    /// </param>
+    /// <param name="turn">
+    /// Positive original turn of the definition materialization.
+    /// </param>
+    /// <returns>
+    /// A fresh opaque identity or seal under the existing ordinary policy.
+    /// </returns>
+    internal virtual string CreateDefinitionSeal(ResourceDefinitionCreationCommand creation, int turn)
+    {
+        ArgumentNullException.ThrowIfNull(creation);
+        ArgumentOutOfRangeException.ThrowIfLessThan(turn, 1);
+        return "resource_definition_seal_" + Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
+    /// Allocates an ordinary random request identity for a validated bounded resource draft.
+    /// </summary>
+    /// <param name="draft">
+    /// Non-null detached draft at its owning post-validation allocation boundary.
+    /// </param>
+    /// <returns>
+    /// A fresh opaque resource request identity.
+    /// </returns>
+    internal virtual string CreatePendingRequestId(ResourcePendingResolutionDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+        return "resource_resolution_" + Guid.NewGuid().ToString("N");
+    }
+
+    /// <summary>
+    /// Reads the ordinary creation time for one pending resource batch.
+    /// </summary>
+    /// <param name="drafts">
+    /// Non-null ordered batch whose creation time can be retained by a capture adapter.
+    /// </param>
+    /// <returns>
+    /// The current UTC time under the ordinary clock policy.
+    /// </returns>
+    internal virtual DateTimeOffset GetPendingCreatedAtUtc(IReadOnlyList<ResourcePendingResolutionDraft> drafts)
+    {
+        ArgumentNullException.ThrowIfNull(drafts);
+        return DateTimeOffset.UtcNow;
+    }
     private readonly Func<Guid> _guidFactory;
 
     internal AcceptedMechanicsIdentityFactory(Func<Guid>? guidFactory = null) =>
@@ -469,7 +537,7 @@ internal sealed class AcceptedMechanicsCarrierCompositionResult
             StringComparer.Ordinal);
 }
 
-internal static class AcceptedMechanicsCarrierAssembler
+internal static partial class AcceptedMechanicsCarrierAssembler
 {
     internal sealed class ValidatedPublicationProof
     {
@@ -532,6 +600,24 @@ internal static class AcceptedMechanicsCarrierAssembler
         };
     }
 
+    /// <summary>
+    /// Assembles accepted effect, owner and wound roots with any sealed canonical anchor projection.
+    /// </summary>
+    /// <param name="effectPlan">
+    /// The accepted effect plan, or <see langword="null"/> when no effect composition is available.
+    /// </param>
+    /// <param name="ownerCompanionAfterImages">
+    /// The detached whole-root after-images produced by resource owners.
+    /// </param>
+    /// <param name="woundStages">
+    /// The exact wound stage bundle, or <see langword="null"/> for composition without wound mutations.
+    /// </param>
+    /// <param name="woundAnchorPlan">
+    /// The sealed create or condition-reentry anchor phase, or <see langword="null"/> when none is needed.
+    /// </param>
+    /// <returns>
+    /// The coordinated detached roots, or validation conflicts without a publication result.
+    /// </returns>
     internal static AcceptedMechanicsCarrierCompositionResult Compose(
         EffectAcceptedTurnPlan? effectPlan,
         IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
@@ -772,30 +858,31 @@ internal static class AcceptedMechanicsCarrierAssembler
                                 mutation.WoundId,
                                 out var allocation))
                         {
-                            if (!string.Equals(
-                                    mutation.Operation,
-                                    "add",
-                                    StringComparison.Ordinal) ||
-                                mutation.BeforeWound is not null ||
-                                mutation.AfterWound is not { } unanchored ||
+                            var unanchored = mutation.AfterWound;
+                            var originalBefore = mutation.BeforeWound;
+                            if (unanchored is null ||
+                                (woundAnchorPlan.PreservesRecoveryAnchor
+                                    ? mutation.Operation != "update" || originalBefore is null ||
+                                      unanchored.LastTransition.Kind != "worsen" ||
+                                      originalBefore.Recovery.RecoveryAnchor != allocation.RecoveryAnchor ||
+                                      unanchored.Recovery.RecoveryAnchor != originalBefore.Recovery.RecoveryAnchor ||
+                                      originalBefore.Recovery.DeteriorationAnchor is not null
+                                    : mutation.Operation != "add" || originalBefore is not null ||
+                                      unanchored.LastTransition.Kind != "create" ||
+                                      unanchored.Recovery.RecoveryAnchor is not null) ||
                                 !string.Equals(
                                     unanchored.LastTransition.TransitionId,
                                     allocation.TransitionId,
                                     StringComparison.Ordinal) ||
                                 !string.Equals(
-                                    unanchored.LastTransition.Kind,
-                                    "create",
-                                    StringComparison.Ordinal) ||
-                                !string.Equals(
                                     unanchored.Classification.Domain,
                                     "physical",
                                     StringComparison.Ordinal) ||
-                                unanchored.Recovery.RecoveryAnchor is not null ||
                                 unanchored.Recovery.DeteriorationAnchor is not null)
                             {
                                 return Failed(
                                     "accepted_mechanics_wound_anchor_projection_invalid",
-                                    "A canonical anchor allocation does not select one unanchored physical create.",
+                                    "A canonical anchor allocation does not select its exact physical create or condition reentry.",
                                     allocation.WoundId + "/" + allocation.TransitionId,
                                     mutation.Operation + "/" + mutation.WoundId);
                             }
@@ -817,13 +904,13 @@ internal static class AcceptedMechanicsCarrierAssembler
                                 return Failed(
                                     "accepted_mechanics_wound_anchor_projection_duplicate",
                                     "A canonical anchor plan selected one wound more than once.",
-                                    "one allocation per newly created physical wound",
+                                    "one allocation per selected physical wound",
                                     mutation.WoundId);
                             }
                             effectiveMutation = new WoundCarrierMutation(
                                 mutation.Operation,
                                 mutation.WoundId,
-                                beforeWound: null,
+                                originalBefore,
                                 anchored);
                         }
                         var mutationFailure = ApplyMutation(
@@ -936,6 +1023,21 @@ internal static class AcceptedMechanicsCarrierAssembler
         }
     }
 
+    /// <summary>
+    /// Rebinds current identity and the exact newly allocated history row to the anchored wound image.
+    /// </summary>
+    /// <param name="identityAfterImage">
+    /// The detached canonical identity after-image containing each selected wound exactly once.
+    /// </param>
+    /// <param name="historyAfterImage">
+    /// The detached append-only history after-image containing each selected transition exactly once.
+    /// </param>
+    /// <param name="projectedWounds">
+    /// The exact unanchored and anchored wound images for the sealed allocation phase.
+    /// </param>
+    /// <returns>
+    /// A conflict when the sealed result is not retained, or <see langword="null"/> after exact projection.
+    /// </returns>
     private static ValidationIssue? ProjectAnchorAgreementRoots(
         JsonObject identityAfterImage,
         JsonObject historyAfterImage,
@@ -988,7 +1090,7 @@ internal static class AcceptedMechanicsCarrierAssembler
                         StringComparison.Ordinal) &&
                     string.Equals(
                         transition["kind"]?.GetValue<string>(),
-                        "create",
+                        projection.Value.After.LastTransition.Kind,
                         StringComparison.Ordinal))
                 .ToArray();
             if (identityMatches.Length != 1 ||
@@ -1017,7 +1119,23 @@ internal static class AcceptedMechanicsCarrierAssembler
         return null;
     }
 
-    private static ValidationIssue? ApplyMutation(
+    /// <summary>
+    /// Applies one typed wound mutation to a detached collection after checking its exact before-image.
+    /// This operation grants no publication or source authority.
+    /// </summary>
+    /// <param name="collection">
+    /// Detached owner collection to update only when the mutation matches.
+    /// </param>
+    /// <param name="owner">
+    /// Exact owner coordinate required for both wound images.
+    /// </param>
+    /// <param name="mutation">
+    /// Ordered add, update or delete with its expected before-image and resulting after-image.
+    /// </param>
+    /// <returns>
+    /// A conflict issue without applying the mutation, or <see langword="null"/> after successful application.
+    /// </returns>
+    internal static ValidationIssue? ApplyMutation(
         JsonArray collection,
         WoundOwnerCoordinate owner,
         WoundCarrierMutation mutation)
@@ -1111,7 +1229,8 @@ internal static class AcceptedMechanicsCarrierAssembler
             CreateEffectCarrierInput(finalEffectPlan.CarrierAfterImages));
         EffectIdentityParseResult? stagedIdentityParse = null;
         EffectIdentityParseResult? identityParse = null;
-        if (woundStages.EffectBatchPlan.ApplicationResults.Count != 0 ||
+        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null ||
+            woundStages.EffectBatchPlan.ApplicationResults.Count != 0 ||
             woundStages.EffectBatchPlan.TerminationResults.Count != 0)
         {
             using var stagedDocument = JsonDocument.Parse(
@@ -1149,6 +1268,11 @@ internal static class AcceptedMechanicsCarrierAssembler
                             Array.Empty<ValidationIssue>())
                         .Select(static issue => issue.Code ?? issue.FilePath)));
         }
+
+        if (woundStages.PreparedPlan.RecoveryContinuationAuthority is not null)
+            return ValidateMortalRecoveryEffectMembership(finalEffectPlan, woundStages,
+                stagedCatalog, finalRuntimeCatalog, finalPublicationCatalog,
+                stagedIdentityParse!.State!, identityParse!.State!);
 
         foreach (var result in woundStages.EffectBatchPlan.ApplicationResults)
         {
@@ -1570,7 +1694,22 @@ internal static class AcceptedMechanicsCarrierAssembler
             Read(EffectCarrierCatalog.SpiritualConflictPath));
     }
 
-    private static bool NonEffectFieldsAgree(
+    /// <summary>
+    /// Checks that an effect carrier changed only its registered effect collections from an owner baseline.
+    /// </summary>
+    /// <param name="path">
+    /// Registered shared carrier path.
+    /// </param>
+    /// <param name="baseline">
+    /// Accepted owner root before effect collection changes.
+    /// </param>
+    /// <param name="afterImage">
+    /// Current effect-owned root to compare.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when all non-effect fields agree; otherwise, <see langword="false"/>.
+    /// </returns>
+    internal static bool NonEffectFieldsAgree(
         string path,
         JsonObject baseline,
         JsonObject afterImage)
@@ -1867,13 +2006,35 @@ internal sealed class WoundRootGenerationAuthority
     private readonly EffectCarrierCatalog _catalog;
     private readonly EffectIdentityState _identities;
     private readonly IReadOnlyDictionary<string, (string DefinitionKey, WoundRootOwnershipDomain Domain)> _roots;
+    private readonly EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? _draftBefore;
+    /// <summary>
+    /// Validates predecessor ownership against the selected before-state and its authenticated retired history.
+    /// </summary>
+    /// <param name="before">
+    /// Wound whose bound roots define possible generation predecessors.
+    /// </param>
+    /// <param name="catalog">
+    /// Effect occurrences from the same selected before-state.
+    /// </param>
+    /// <param name="identities">
+    /// Parsed identity state for those occurrences.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving earlier completed terminal identities; null preserves original-baseline validation.
+    /// </param>
+    /// <param name="draftBefore">
+    /// Exact live operation-before proof for current cut retirements; null preserves signed-baseline predecessor rules.
+    /// </param>
     internal WoundRootGenerationAuthority(WoundMaterializationEnvelope before,
-        EffectCarrierCatalog catalog, EffectIdentityState identities)
+        EffectCarrierCatalog catalog, EffectIdentityState identities,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundBeforeAuthority? draftBefore = null)
     {
         _before = before;
         _catalog = catalog;
         _identities = identities;
-        var lineage = WoundEffectLineagePlanner.Plan(before, identities);
+        _draftBefore = draftBefore;
+        var lineage = WoundEffectLineagePlanner.Plan(before, identities, retirementHistory: retirementHistory);
         Issues = catalog.Issues.Concat(lineage.Issues).ToArray();
         var ownership = lineage.OwnershipByEffectId;
         _roots = before.Consequences.OwnedEffectSources.RootBindings
@@ -1886,6 +2047,51 @@ internal sealed class WoundRootGenerationAuthority
     internal bool IsTerminalRoot(string effectId) => _roots.ContainsKey(effectId) &&
         _identities.TryGetEntry(effectId, out var identity) &&
         identity.State is "expired" or "dispelled" or "removed" or "replaced";
+
+    /// <summary>
+    /// Allows a parentless new coordinate only after authenticating the old terminal root against its own definition and real cut.
+    /// </summary>
+    /// <param name="effectId">
+    /// Exact current root proposed as the predecessor.
+    /// </param>
+    /// <param name="expectedSource">
+    /// New source key, which must retain this wound and root definition identity.
+    /// </param>
+    /// <param name="expectedTarget">
+    /// New target, which must still be this wound's exact owner.
+    /// </param>
+    /// <param name="expectedCarrier">
+    /// New carrier derived from the validated new definition and wound owner.
+    /// </param>
+    /// <param name="definition">
+    /// New validated root definition whose complete stack coordinate must differ from the old root's.
+    /// </param>
+    /// <param name="domain">
+    /// Current root ownership domain, preserved across the generation change.
+    /// </param>
+    /// <returns>
+    /// True only for an owned terminal cut with an actually different new coordinate; unchanged and unowned roots return false.
+    /// </returns>
+    internal bool CanOmitCutTerminalPredecessor(string effectId, EffectSourceKey expectedSource,
+        EffectTargetKey expectedTarget, EffectCarrierCoordinate expectedCarrier, JsonObject definition,
+        WoundRootOwnershipDomain domain)
+    {
+        if (Issues.Count != 0 || !IsTerminalRoot(effectId) || !_roots.TryGetValue(effectId, out var root) ||
+            root.Domain != domain || expectedSource != new EffectSourceKey(_before.Owner.Realm, "wound", _before.WoundId, root.DefinitionKey) ||
+            !_identities.TryGetEntry(effectId, out var identity) ||
+            _catalog.Occurrences.Any(value => value.EffectId == effectId) ||
+            _draftBefore?.AuthenticatesTerminalCut(_before, identity) != true ||
+            !WoundEffectCarrierAdapter.TryCreateTargetKey(_before.Owner, out var target) || target != expectedTarget ||
+            !WoundEffectCarrierAdapter.TryCreateCarrierCoordinate(_before.Owner, target, definition, out var carrier) || carrier != expectedCarrier ||
+            definition["stacking"]?["stackKey"] is not JsonValue keyNode || !keyNode.TryGetValue<string>(out var stackKey))
+            return false;
+        var oldDefinition = _before.Consequences.OwnedEffectSources.DefinitionFacts.Single(value => value.DefinitionKey == root.DefinitionKey);
+        if (JsonNode.Parse(oldDefinition.CanonicalJson) is not JsonObject oldJson ||
+            !WoundEffectLineagePlanner.IdentityAuthorityAgrees(_before, identity, oldJson))
+            return false;
+        return identity.StackCoordinate != new EffectStackCoordinate(expectedTarget.Realm, expectedTarget.Kind,
+            expectedTarget.TargetId, expectedSource.Kind, expectedSource.SourceId, stackKey);
+    }
 
     internal bool Agrees(string effectId, EffectSourceKey expectedSource,
         EffectTargetKey expectedTarget, EffectCarrierCoordinate expectedCarrier,
@@ -1910,10 +2116,29 @@ internal static class WoundEffectLineagePlanner
 {
     private const int MaxIssues = 20;
 
+    /// <summary>
+    /// Resolves current wound lineage and validates terminal history without restoring retired effects to current ownership.
+    /// </summary>
+    /// <param name="wound">
+    /// Current wound definitions, owner and root bindings.
+    /// </param>
+    /// <param name="identities">
+    /// Complete parsed identity state for the selected before-state.
+    /// </param>
+    /// <param name="selectedRootEffectIds">
+    /// Root subset to resolve; null selects every current wound root.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving earlier completed terminal identities; null preserves original-baseline validation.
+    /// </param>
+    /// <returns>
+    /// Validated ownership, selected closure and diagnostics.
+    /// </returns>
     internal static WoundEffectLineagePlanningResult Plan(
         WoundMaterializationEnvelope wound,
         EffectIdentityState identities,
-        IReadOnlyList<string>? selectedRootEffectIds = null)
+        IReadOnlyList<string>? selectedRootEffectIds = null,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         ArgumentNullException.ThrowIfNull(wound);
         ArgumentNullException.ThrowIfNull(identities);
@@ -1965,12 +2190,15 @@ internal static class WoundEffectLineagePlanner
             identities,
             analyzerRoots,
             analyzerDefinitions,
-            WoundEffectLineageDiagnosticProfile.AcceptedMechanics);
+            WoundEffectLineageDiagnosticProfile.AcceptedMechanics, retirementHistory);
         issues.AddRange(analysis.Issues);
 
         foreach (var entry in analysis.CurrentEntries.Concat(
                      analysis.RetiredEntries))
         {
+            if (entry.State is not ("active" or "suspended") &&
+                retirementHistory?.AuthenticatesRetiredIdentity(sourceGroup, entry, out _) == true)
+                continue;
             var definitionKey = ReadDefinitionKey(entry);
             if (!definitionsByKey.TryGetValue(definitionKey, out var definition) ||
                 IdentityAuthorityAgrees(wound, entry, definition))
@@ -2489,6 +2717,39 @@ internal static class WoundEffectTerminalOperationPlanner
     private const int MaxIssues = 20;
     private const string FingerprintVersion = "1";
 
+    /// <summary>
+    /// Prepares ordered terminal operations for the selected live wound lineage.
+    /// </summary>
+    /// <param name="wound">
+    /// Current wound and its owned effect definitions.
+    /// </param>
+    /// <param name="carriers">
+    /// Current effect occurrences to terminate.
+    /// </param>
+    /// <param name="identities">
+    /// Current parsed effect identities.
+    /// </param>
+    /// <param name="selectedRootEffectIds">
+    /// Exact bound roots whose current descendants are selected.
+    /// </param>
+    /// <param name="causalEventRef">
+    /// Exact event authorizing the terminal operations.
+    /// </param>
+    /// <param name="mechanicsOrdinal">
+    /// Positive accepted mechanics ordinal.
+    /// </param>
+    /// <param name="operationOrdinalOffset">
+    /// Nonnegative number of preceding operations in the batch.
+    /// </param>
+    /// <param name="operationKey">
+    /// Exact local operation identity.
+    /// </param>
+    /// <param name="retirementHistory">
+    /// Registered insertion proving earlier completed terminal identities; null preserves original-baseline validation.
+    /// </param>
+    /// <returns>
+    /// Prepared terminal operations and diagnostics; no state is mutated.
+    /// </returns>
     internal static WoundEffectTerminalOperationPlanningResult Plan(
         WoundMaterializationEnvelope wound,
         EffectCarrierCatalogInput carriers,
@@ -2497,7 +2758,8 @@ internal static class WoundEffectTerminalOperationPlanner
         string causalEventRef,
         int mechanicsOrdinal,
         int operationOrdinalOffset,
-        string operationKey)
+        string operationKey,
+        EffectAcceptedTurnPlanner.EffectAcceptedDraft.EffectDraftWoundInsertion? retirementHistory = null)
     {
         ArgumentNullException.ThrowIfNull(wound);
         ArgumentNullException.ThrowIfNull(carriers);
@@ -2507,7 +2769,7 @@ internal static class WoundEffectTerminalOperationPlanner
         var lineage = WoundEffectLineagePlanner.Plan(
             wound,
             identities,
-            selectedRootEffectIds);
+            selectedRootEffectIds, retirementHistory);
         var issues = lineage.Issues.ToList();
         if (!ResourceMaterializationContract.IsExactIdentifier(causalEventRef) ||
             mechanicsOrdinal <= 0 ||
@@ -2986,8 +3248,10 @@ internal static class WoundEffectTerminalOperationPlanner
     }
 }
 
-internal static class AcceptedMechanicsPlanner
+internal static partial class AcceptedMechanicsPlanner
 {
+    private static readonly object CompletedOrdinaryIssuanceKey = new();
+
     internal sealed class PendingPublicationProof
     {
         internal PendingPublicationProof()
@@ -3481,12 +3745,58 @@ internal static class AcceptedMechanicsPlanner
                 () => AssembleCompletedAcceptedReduction(completed));
     }
 
+    /// <summary>
+    /// Retains one completed unpublished ordinary resource and effect reduction for final assembly.
+    /// </summary>
     internal sealed class CompletedOrdinaryMechanicsReduction
     {
         private readonly Dictionary<string, JsonObject> _ownerCompanionAfterImages;
         private readonly AcceptedMechanicsOwnerTransition[] _ownerTransitions;
         private readonly JsonObject? _pendingAfterImage;
+        private readonly SpiritualLiveWoundCompletion? _liveWoundCompletion;
+        private readonly bool _hasLiveWoundWork;
+        private readonly object? _satisfactionReceiptIdentity;
+        private readonly bool _hasLiveDecisionReceipt;
 
+        /// <summary>
+        /// Captures the exact completed ordinary results and owner-produced companion images.
+        /// </summary>
+        /// <param name="input">
+        /// Accepted original-turn input whose before-images bind final assembly.
+        /// </param>
+        /// <param name="inputFingerprint">
+        /// Fingerprint of <paramref name="input"/>'s accepted binding.
+        /// </param>
+        /// <param name="context">
+        /// Typed planning context captured without live identity factories.
+        /// </param>
+        /// <param name="definitions">
+        /// Final resource definition catalog.
+        /// </param>
+        /// <param name="resources">
+        /// Completed resource result from the retained owner.
+        /// </param>
+        /// <param name="effects">
+        /// Completed effect result, or <see langword="null"/> when no effect plan applies.
+        /// </param>
+        /// <param name="pendingAfterImage">
+        /// Resource pending state to retain, or <see langword="null"/> when none remains.
+        /// </param>
+        /// <param name="ownerCompanionAfterImages">
+        /// Whole-root companion results issued by typed owners.
+        /// </param>
+        /// <param name="ownerTransitions">
+        /// Typed owner transitions to include in final assembly.
+        /// </param>
+        /// <param name="hasLiveWoundWork">
+        /// Whether the resource owner registered live wound insertions that require typed assembly.
+        /// </param>
+        /// <param name="issuanceKey">
+        /// Private key held by this planner's authenticated ordinary reduction paths.
+        /// </param>
+        /// <param name="satisfactionReceiptIdentity">
+        /// Capture-owned identity of a guarantee result or terminal closure requiring an authenticated C3 receipt join.
+        /// </param>
         internal CompletedOrdinaryMechanicsReduction(
             AcceptedMechanicsInput input,
             string inputFingerprint,
@@ -3496,8 +3806,13 @@ internal static class AcceptedMechanicsPlanner
             EffectAcceptedTurnPlan? effects,
             ResourcePendingResolutionState? pendingAfterImage,
             IReadOnlyDictionary<string, JsonObject> ownerCompanionAfterImages,
-            IReadOnlyList<AcceptedMechanicsOwnerTransition> ownerTransitions)
+            IReadOnlyList<AcceptedMechanicsOwnerTransition> ownerTransitions,
+            bool hasLiveWoundWork, object issuanceKey,
+            object? satisfactionReceiptIdentity = null)
         {
+            if (!ReferenceEquals(issuanceKey, CompletedOrdinaryIssuanceKey))
+                throw new InvalidOperationException(
+                    "Only the completed ordinary owner can issue this reduction.");
             Input = CaptureAssemblyInput(input, context);
             InputFingerprint = inputFingerprint;
             Definitions = definitions;
@@ -3508,6 +3823,197 @@ internal static class AcceptedMechanicsPlanner
                 static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
                 StringComparer.Ordinal);
             _ownerTransitions = ownerTransitions.Select(static value => value.Clone()).ToArray();
+            _hasLiveWoundWork = hasLiveWoundWork;
+            _satisfactionReceiptIdentity = satisfactionReceiptIdentity;
+        }
+
+        /// <summary>
+        /// Copies a sealed ordinary reduction while adding one validated owner after-image.
+        /// </summary>
+        /// <param name="original">
+        /// Completed unpublished reduction whose resource and effect results remain unchanged.
+        /// </param>
+        /// <param name="path">
+        /// Canonical path owned by the additional reduction.
+        /// </param>
+        /// <param name="beforeImage">
+        /// Exact original image bound to the additional path.
+        /// </param>
+        /// <param name="afterImage">
+        /// Detached validated whole-root image for <paramref name="path"/>.
+        /// </param>
+        /// <param name="receiptProof">
+        /// Exact validated join proof for a live wound or satisfied guarantee receipt;
+        /// <see langword="null"/> for ordinary companion images.
+        /// </param>
+        private CompletedOrdinaryMechanicsReduction(
+            CompletedOrdinaryMechanicsReduction original, string path,
+            CanonicalBeforeImage beforeImage, JsonObject afterImage,
+            SpiritualWoundDeclineReceiptReducer.ValidatedReceiptProof? receiptProof)
+        {
+            if (original._ownerCompanionAfterImages.ContainsKey(path))
+                throw new InvalidOperationException("The companion path is already claimed.");
+            if ((original._liveWoundCompletion is not null || original._satisfactionReceiptIdentity is not null) &&
+                (path != SpiritualWoundOpportunityReceiptState.StatePath ||
+                 receiptProof is null ||
+                 !receiptProof.Matches(original._liveWoundCompletion,
+                     original._satisfactionReceiptIdentity, beforeImage, afterImage)) ||
+                original._liveWoundCompletion is null && original._satisfactionReceiptIdentity is null &&
+                receiptProof is not null)
+                throw new InvalidOperationException("The live wound receipt does not bind this owner result.");
+            Input = original.Input.WithBeforeImage(path, beforeImage);
+            InputFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(Input.CreateBinding());
+            Definitions = original.Definitions;
+            Resources = original.Resources;
+            Effects = original.Effects;
+            _pendingAfterImage = original._pendingAfterImage?.DeepClone().AsObject();
+            _ownerCompanionAfterImages = original._ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            _ownerCompanionAfterImages.Add(path, afterImage.DeepClone().AsObject());
+            _ownerTransitions = original._ownerTransitions.Select(static value => value.Clone()).ToArray();
+            _liveWoundCompletion = original._liveWoundCompletion;
+            _hasLiveWoundWork = original._hasLiveWoundWork;
+            _satisfactionReceiptIdentity = original._satisfactionReceiptIdentity;
+            _hasLiveDecisionReceipt = receiptProof is not null;
+        }
+
+        /// <summary>
+        /// Copies a completed reduction with one retained original input image.
+        /// </summary>
+        /// <param name="original">
+        /// Completed reduction whose owner results remain unchanged.
+        /// </param>
+        /// <param name="path">
+        /// Exact original draft path newly required by final assembly.
+        /// </param>
+        /// <param name="beforeImage">
+        /// Retained image from the original draft before any C2 continuation.
+        /// </param>
+        private CompletedOrdinaryMechanicsReduction(
+            CompletedOrdinaryMechanicsReduction original, string path,
+            CanonicalBeforeImage beforeImage)
+        {
+            if (original.Input.BeforeImages.ContainsKey(path))
+                throw new InvalidOperationException("The original input image is already bound.");
+            Input = original.Input.WithBeforeImage(path, beforeImage);
+            InputFingerprint = AcceptedMechanicsPlanFingerprints.ComputeInput(Input.CreateBinding());
+            Definitions = original.Definitions;
+            Resources = original.Resources;
+            Effects = original.Effects;
+            _pendingAfterImage = original._pendingAfterImage?.DeepClone().AsObject();
+            _ownerCompanionAfterImages = original._ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            _ownerTransitions = original._ownerTransitions.Select(static value => value.Clone()).ToArray();
+            _liveWoundCompletion = original._liveWoundCompletion;
+            _hasLiveWoundWork = original._hasLiveWoundWork;
+            _satisfactionReceiptIdentity = original._satisfactionReceiptIdentity;
+            _hasLiveDecisionReceipt = original._hasLiveDecisionReceipt;
+        }
+
+        /// <summary>
+        /// Copies a completed ordinary reduction with the exact owner-sealed live wound chain.
+        /// </summary>
+        /// <param name="original">
+        /// Completed unpublished ordinary resource and effect reduction.
+        /// </param>
+        /// <param name="liveWounds">
+        /// Chronological owner-sealed wound evidence from the same completed effect draft.
+        /// </param>
+        private CompletedOrdinaryMechanicsReduction(
+            CompletedOrdinaryMechanicsReduction original,
+            SpiritualLiveWoundCompletion liveWounds)
+        {
+            if (!original._hasLiveWoundWork ||
+                original._liveWoundCompletion is not null ||
+                original.Effects is null ||
+                !liveWounds.Matches(original.Effects, original.Resources) ||
+                original.Effects.AcceptedBoundaryBasePlanFingerprint !=
+                    liveWounds.BaseEffectFingerprint ||
+                WoundAcceptedTurnFingerprints.ComputeAcceptedEffectPlanPayload(
+                    original.Effects) != liveWounds.FinalEffectFingerprint)
+                throw new InvalidOperationException(
+                    "Live wound completion must match the exact completed ordinary effect reduction.");
+            Input = original.Input;
+            InputFingerprint = original.InputFingerprint;
+            Definitions = original.Definitions;
+            Resources = original.Resources;
+            Effects = original.Effects;
+            _pendingAfterImage = original._pendingAfterImage?.DeepClone().AsObject();
+            _ownerCompanionAfterImages = original._ownerCompanionAfterImages.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(),
+                StringComparer.Ordinal);
+            _ownerTransitions = original._ownerTransitions.Select(static value => value.Clone()).ToArray();
+            _liveWoundCompletion = liveWounds;
+            _hasLiveWoundWork = true;
+            _satisfactionReceiptIdentity = original._satisfactionReceiptIdentity;
+            _hasLiveDecisionReceipt = false;
+        }
+
+        /// <summary>
+        /// Binds the owner-sealed wound chain to the exact completed ordinary reduction.
+        /// </summary>
+        /// <param name="liveWounds">
+        /// Real chronological wound outputs from this reduction's completed draft.
+        /// </param>
+        /// <returns>
+        /// A new unpublished reduction retaining the wound proof.
+        /// </returns>
+        internal CompletedOrdinaryMechanicsReduction WithLiveWoundCompletion(
+            SpiritualLiveWoundCompletion liveWounds)
+        {
+            ArgumentNullException.ThrowIfNull(liveWounds);
+            return new(this, liveWounds);
+        }
+
+        /// <summary>
+        /// Adds one detached companion image without altering a sealed ordinary reduction.
+        /// </summary>
+        /// <param name="path">
+        /// Previously unclaimed canonical path.
+        /// </param>
+        /// <param name="beforeImage">
+        /// Exact signed and physical canonical image before this reduction.
+        /// </param>
+        /// <param name="afterImage">
+        /// Validated whole-root owner result.
+        /// </param>
+        /// <param name="receiptProof">
+        /// Exact C3 receipt join proof for live wounds or a satisfied guarantee;
+        /// <see langword="null"/> for ordinary companions.
+        /// </param>
+        /// <returns>
+        /// New completed reduction with the additional after-image.
+        /// </returns>
+        internal CompletedOrdinaryMechanicsReduction WithOwnerCompanionAfterImage(
+            string path, CanonicalBeforeImage beforeImage, JsonObject afterImage,
+            SpiritualWoundDeclineReceiptReducer.ValidatedReceiptProof? receiptProof = null)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(path);
+            ArgumentNullException.ThrowIfNull(beforeImage);
+            ArgumentNullException.ThrowIfNull(afterImage);
+            return new(this, path, beforeImage, afterImage, receiptProof);
+        }
+
+        /// <summary>
+        /// Binds an additional original draft image required by the completed wound plan.
+        /// </summary>
+        /// <param name="path">
+        /// Registered original draft path absent from the ordinary input binding.
+        /// </param>
+        /// <param name="beforeImage">
+        /// Exact image retained by the original capture.
+        /// </param>
+        /// <returns>
+        /// A detached reduction with the expanded input binding.
+        /// </returns>
+        internal CompletedOrdinaryMechanicsReduction WithBeforeImage(
+            string path, CanonicalBeforeImage beforeImage)
+        {
+            ArgumentException.ThrowIfNullOrWhiteSpace(path);
+            ArgumentNullException.ThrowIfNull(beforeImage);
+            return new(this, path, beforeImage);
         }
 
         internal AcceptedMechanicsInput Input { get; }
@@ -3515,6 +4021,22 @@ internal static class AcceptedMechanicsPlanner
         internal ResourceDefinitionCatalog Definitions { get; }
         internal AcceptedMechanicsResourcePlanningResult Resources { get; }
         internal EffectAcceptedTurnPlan? Effects { get; }
+        /// <summary>
+        /// Gets whether the completed resource owner registered live wounds that require typed assembly.
+        /// </summary>
+        internal bool HasLiveWoundWork => _hasLiveWoundWork;
+        /// <summary>
+        /// Gets whether a client-owned satisfied guarantee or terminal closure requires its authenticated decision receipt.
+        /// </summary>
+        internal bool RequiresSatisfactionReceipt => _satisfactionReceiptIdentity is not null;
+        /// <summary>
+        /// Gets the exact owner-sealed live wound evidence, if the capture has attached it.
+        /// </summary>
+        internal SpiritualLiveWoundCompletion? LiveWoundCompletion => _liveWoundCompletion;
+        /// <summary>
+        /// Gets whether C3 joined live insertions, satisfied guarantees or terminal closure to the validated receipt.
+        /// </summary>
+        internal bool HasLiveDecisionReceipt => _hasLiveDecisionReceipt;
         internal JsonObject? PendingAfterImage => _pendingAfterImage?.DeepClone().AsObject();
         internal IReadOnlyDictionary<string, JsonObject> OwnerCompanionAfterImages =>
             new ReadOnlyDictionary<string, JsonObject>(_ownerCompanionAfterImages.ToDictionary(
@@ -3590,6 +4112,8 @@ internal static class AcceptedMechanicsPlanner
             var definitionBatch =
                 ResourceDefinitionCatalog.BeginMaterializationBatch(
                     definitions);
+            var definitionIdentityFactory = context.ResourceIdentityFactory
+                ?? new AcceptedMechanicsIdentityFactory();
             foreach (var creation in context.Commands.DefinitionCreations
                          .OrderBy(static value => value.CommandOrdinal))
             {
@@ -3599,9 +4123,9 @@ internal static class AcceptedMechanicsPlanner
                     proposal.RootElement,
                     input.Turn,
                     creation.EventRef,
-                    static () => new ResourceDefinitionIdentity(
-                        "resource_definition_" + Guid.NewGuid().ToString("N"),
-                        "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
+                    () => new ResourceDefinitionIdentity(
+                        definitionIdentityFactory.CreateDefinitionId(creation, input.Turn),
+                        definitionIdentityFactory.CreateDefinitionSeal(creation, input.Turn)));
                 issues.AddRange(materialized.Issues);
                 if (!materialized.IsValid || materialized.Definition == null)
                     continue;
@@ -3844,6 +4368,42 @@ internal static class AcceptedMechanicsPlanner
         if (ownerAgreementIssues.Count != 0)
             return AcceptedMechanicsReduction.Rejected(ownerAgreementIssues);
 
+        var projectedOwners = ProjectRegisteredSystemOutcomes(context, resourceResult);
+        issues.AddRange(projectedOwners.Issues);
+        if (issues.Count != 0)
+            return AcceptedMechanicsReduction.Rejected(issues);
+        return AcceptedMechanicsReduction.CompletedOrdinary(
+            new CompletedOrdinaryMechanicsReduction(
+                input, inputFingerprint, context, definitions, resourceResult, effectPlan,
+                pendingDecision.StateAfterImage, projectedOwners.CompanionAfterImages,
+                projectedOwners.OwnerTransitions, false, CompletedOrdinaryIssuanceKey),
+            discoveryResourceResult);
+    }
+
+    /// <summary>
+    /// Projects registered system outcomes over a completed resource result or a permitted closed spiritual prefix.
+    /// </summary>
+    /// <param name="context">
+    /// Accepted planning context supplying the initial companion roots, transitions and registered outcomes.
+    /// </param>
+    /// <param name="resourceResult">
+    /// Resource result containing the exact completed turn or closed spiritual prefix through the current exchange.
+    /// </param>
+    /// <param name="originalSpiritualPrefix">
+    /// Projects only the read-only ordinary outcomes of a closed named spiritual prefix when
+    /// <see langword="true"/>; the ordinary completed path projects every outcome.
+    /// </param>
+    /// <returns>
+    /// Detached companion after-images, owner transitions and any projection or duplicate-producer diagnostics.
+    /// </returns>
+    private static ResourceRegisteredSystemOutcomeProjectionResult ProjectRegisteredSystemOutcomes(
+        AcceptedMechanicsPlanningContext context,
+        AcceptedMechanicsResourcePlanningResult resourceResult,
+        bool originalSpiritualPrefix = false)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        ArgumentNullException.ThrowIfNull(resourceResult);
+        var issues = new List<ValidationIssue>();
         var ownerCompanionAfterImages = context.OwnerCompanionAfterImages
             .ToDictionary(
                 static pair => pair.Key,
@@ -3854,6 +4414,12 @@ internal static class AcceptedMechanicsPlanner
             .ToList();
         foreach (var outcome in context.RegisteredSystemOutcomes)
         {
+            if (originalSpiritualPrefix &&
+                AfterlifeSpiritualConflictResourceOutcome.IsConflictOutcome(outcome))
+                continue;
+            if (originalSpiritualPrefix && outcome is not IOriginalSpiritualPrefixOutcomeDraft)
+                throw new InvalidOperationException(
+                    "An outcome cannot project from an unfinished spiritual resource prefix.");
             var projected = outcome.Project(resourceResult);
             issues.AddRange(projected.Issues);
             foreach (var pair in projected.CompanionAfterImages)
@@ -3871,24 +4437,41 @@ internal static class AcceptedMechanicsPlanner
             ownerTransitions.AddRange(projected.OwnerTransitions.Select(
                 static value => value.Clone()));
         }
-        if (issues.Count != 0)
-            return AcceptedMechanicsReduction.Rejected(issues);
-        return AcceptedMechanicsReduction.CompletedOrdinary(
-            new CompletedOrdinaryMechanicsReduction(
-                input, inputFingerprint, context, definitions, resourceResult, effectPlan,
-                pendingDecision.StateAfterImage, ownerCompanionAfterImages, ownerTransitions),
-            discoveryResourceResult);
+        return new ResourceRegisteredSystemOutcomeProjectionResult(
+            ownerCompanionAfterImages,
+            ownerTransitions,
+            issues);
     }
 
     private static AcceptedMechanicsPlanningResult AssembleCompletedAcceptedReduction(
         CompletedOrdinaryMechanicsReduction completed)
     {
+        if (completed.HasLiveWoundWork && completed.LiveWoundCompletion is null)
+            return new AcceptedMechanicsPlanningResult(null,
+            [
+                new ValidationIssue(AcceptedMechanicsPlan.WoundCommandPath,
+                    IssueSeverity.Error,
+                    "Owner-sealed live wounds require the spiritual common wound assembler.",
+                    code: "spiritual_live_wound_common_assembly_required",
+                    section: "AcceptedTurnWoundMaterialization")
+            ]);
+        if ((completed.LiveWoundCompletion is not null || completed.RequiresSatisfactionReceipt) &&
+            !completed.HasLiveDecisionReceipt)
+            return new AcceptedMechanicsPlanningResult(null,
+            [
+                new ValidationIssue(SpiritualWoundOpportunityReceiptState.StatePath,
+                    IssueSeverity.Error,
+                    "Live wounds and terminal closure require the exact completed C3 decision receipt before common assembly.",
+                    code: "spiritual_live_wound_receipt_join_required",
+                    section: "AcceptedTurnWoundMaterialization")
+            ]);
         var input = completed.Input;
         var inputFingerprint = completed.InputFingerprint;
         var context = input.PlanningContext!;
         var resourceResult = completed.Resources;
         var effectPlan = completed.Effects;
         var woundStages = context.WoundStageBundle;
+        var liveWounds = completed.LiveWoundCompletion;
         var definitionAfterImage = completed.Definitions.ToCanonicalRoot();
         var stateAfterImage = JsonNode.Parse(resourceResult.StateAfterImage!.ToCanonicalJson())!.AsObject();
         var historyAfterImage = JsonNode.Parse(resourceResult.HistoryAfterImage!.ToCanonicalJson())!.AsObject();
@@ -3897,11 +4480,12 @@ internal static class AcceptedMechanicsPlanner
             static pair => pair.Key, static pair => pair.Value.DeepClone().AsObject(), StringComparer.Ordinal);
         var ownerTransitions = completed.OwnerTransitions.Select(static value => value.Clone()).ToList();
         var issues = new List<ValidationIssue>();
-        var carrierComposition = AcceptedMechanicsCarrierAssembler.Compose(
-            effectPlan,
-            ownerCompanionAfterImages,
-            woundStages,
-            context.WoundAnchorPlan);
+        var carrierComposition = liveWounds is null
+            ? AcceptedMechanicsCarrierAssembler.Compose(
+                effectPlan, ownerCompanionAfterImages, woundStages,
+                context.WoundAnchorPlan)
+            : AcceptedMechanicsCarrierAssembler.ComposeLive(
+                effectPlan, ownerCompanionAfterImages, liveWounds, woundStages);
         if (!carrierComposition.Success)
         {
             return new AcceptedMechanicsPlanningResult(
@@ -3970,6 +4554,13 @@ internal static class AcceptedMechanicsPlanner
             consumed.UnionWith(effectPlan.DeletedPaths);
         if (woundPublication is not null)
             consumed.Add(AcceptedMechanicsPlan.WoundCommandPath);
+        if (ownerCompanionAfterImages.ContainsKey(SpiritualWoundOpportunityReceiptState.StatePath))
+        {
+            var spiritualControls = new[] { SpiritualWoundCaptureCheckpointState.StatePath,
+                SpiritualWoundDecisionPendingState.StatePath, AcceptedMechanicsPlan.WoundCommandPath };
+            touched.UnionWith(spiritualControls);
+            consumed.UnionWith(spiritualControls);
+        }
 
         return new AcceptedMechanicsPlanningResult(
             new AcceptedMechanicsPlan(
@@ -4001,9 +4592,10 @@ internal static class AcceptedMechanicsPlanner
                 effectPlan,
                 ownerTransitions: ownerTransitions,
                 woundStageBundle: woundStages,
-                carrierComposition: woundStages is null
+                carrierComposition: woundStages is null && liveWounds is null
                     ? null
                     : carrierComposition,
+                liveWoundCompletion: liveWounds,
                 directWoundPublicationAuthority:
                     context.DirectWoundPublicationAuthority,
                 treatmentResourcePublicationAuthority:
@@ -4259,12 +4851,17 @@ internal static class AcceptedMechanicsPlanner
                 candidate.SafeOperationLabel,
                 acceptedCandidatesByKey[PendingCandidateKey(candidate)]
                     .CausalAuthority)).ToArray();
+        var identityFactory = context.ResourceIdentityFactory
+            ?? new AcceptedMechanicsIdentityFactory();
+        var creationDrafts = drafts.Select(ResourcePendingResolutionState.DetachDraft).ToArray();
+        var createdAt = identityFactory.GetPendingCreatedAtUtc(
+            creationDrafts.Select(ResourcePendingResolutionState.DetachDraft).ToArray());
         var created = ResourcePendingResolutionState.CreatePending(
             pendingState?.ToCanonicalJson(),
-            drafts,
+            creationDrafts,
             definitions,
-            static () => "resource_resolution_" + Guid.NewGuid().ToString("N"),
-            DateTimeOffset.UtcNow);
+            identityFactory.CreatePendingRequestId,
+            createdAt);
         if (!created.IsValid || created.State == null || created.SafeGmPacket == null)
             return FailedPendingDecision(created.Issues);
         planningIssues.AddRange(created.Issues);
@@ -4688,6 +5285,15 @@ internal static class AcceptedMechanicsPlanner
                     binding.ResultKind,
                     "narrated_no_state_change",
                     StringComparison.Ordinal))
+            {
+                terminalWithoutProjection.Add(componentId);
+                continue;
+            }
+            if (string.Equals(
+                    binding.ResultKind,
+                    "resource_delta",
+                    StringComparison.Ordinal) &&
+                binding.Amount == 0m)
             {
                 terminalWithoutProjection.Add(componentId);
                 continue;
@@ -5677,80 +6283,211 @@ internal static class AcceptedMechanicsPlanner
             SHA256.HashData(Encoding.UTF8.GetBytes(text))).ToLowerInvariant();
     }
 
-    // Owns one prepared graph execution. Checkpoints are observations, not source authority.
-    internal sealed class ResourceExecutionSession : IDisposable
+    // One state owner for eager fixed input and staged resource-local exchange work.
+    internal sealed partial class ResourceExecutionSession : IDisposable
     {
         private IEnumerator<ResourceExecutionStep>? _execution;
+        private readonly ResourceExecutionState _state = new();
+        private readonly HashSet<string> _acceptedExchangeIds = new(StringComparer.Ordinal);
+        private readonly bool _live;
+        private readonly EffectAcceptedTurnPlanner.BaseResourceRouting? _routing;
+        private AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch? _staged;
+        private AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch? _active;
+        private string? _conflictId;
+        private int _nextOrdinal;
         private int _busy;
         private bool _disposed;
         private bool _faulted;
         private bool _stopAtClosedBoundary;
+        private bool _stopAtExchange;
+        private bool _pendingExchange;
+        private ResourceClosedBoundaryCheckpoint? _currentCheckpoint;
+        private readonly AcceptedMechanicsIdentityFactory _identityFactory;
 
+        /// <summary>
+        /// Checks exact ownership of the latest closed ordinary resource checkpoint.
+        /// Advancing, waiting, completion, failure or disposal revokes the previous checkpoint.
+        /// </summary>
+        /// <param name="checkpoint">
+        /// Actual checkpoint returned by this session; null, copied and foreign objects are rejected.
+        /// </param>
+        /// <returns>
+        /// True only while this usable executor remains paused at that exact checkpoint; otherwise false.
+        /// </returns>
+        internal bool OwnsCurrentCheckpoint(ResourceClosedBoundaryCheckpoint? checkpoint) =>
+            checkpoint != null && !_disposed && !_faulted && Result == null && !_pendingExchange &&
+            ReferenceEquals(_currentCheckpoint, checkpoint);
+
+        /// <summary>
+        /// Retains one resource execution with optional owned effect routing for fixed commands or live exchange batches.
+        /// </summary>
+        /// <param name="input">
+        /// Original resource mutations and authority inputs; owned routing excludes caller-provided event resolvers and candidates.
+        /// </param>
+        /// <param name="identityFactory">
+        /// Allocator retained for both initial preparation and subsequent owned graph extensions.
+        /// </param>
+        /// <param name="live">
+        /// True permits subsequent spiritual exchange batches; false retains a fixed ordinary command sequence.
+        /// </param>
+        /// <param name="routing">
+        /// Actual base effect route owning the same definitions, or null for resource-only execution.
+        /// </param>
+        /// <param name="terminal">
+        /// Capture-issued terminal preparation, or <see langword="null"/> for ordinary execution.
+        /// The executor verifies current capture ownership before deferring retirement.
+        /// </param>
         internal ResourceExecutionSession(
             AcceptedMechanicsResourceInput input,
-            AcceptedMechanicsIdentityFactory identityFactory)
+            AcceptedMechanicsIdentityFactory identityFactory,
+            bool live = false,
+            EffectAcceptedTurnPlanner.BaseResourceRouting? routing = null,
+            ValidationService.SpiritualOriginalTurnCapture.PreparedTerminal? terminal = null)
         {
-            _execution = ExecuteResourceSession(input, identityFactory, this).GetEnumerator();
+            TerminalPreparation = terminal;
+            _live = live;
+            _routing = routing;
+            _identityFactory = identityFactory;
+            if (live || routing != null)
+            {
+                if (input.EventMutationResolver != null || input.InitialTriggerCandidates.Count != 0)
+                    throw new ArgumentException("Live input routing must come from its retained base route.", nameof(input));
+                if (routing != null && !routing.OwnsDefinitions(input.Definitions))
+                    throw new ArgumentException("Live routing must own these exact definitions.", nameof(routing));
+                var initial = routing?.ResolveInitial();
+                if (initial != null && !initial.IsValid)
+                    throw new ArgumentException("Live base lifecycle resolution must be valid.", nameof(routing));
+                var sources = initial == null ? input.Sources :
+                    ResourceMutationSourceCatalog.Create(input.Sources.Exports.Concat(initial.SourceExports)).Catalog
+                    ?? throw new ArgumentException("Live base lifecycle sources must agree.", nameof(routing));
+                input = new AcceptedMechanicsResourceInput(input.Turn, input.Definitions,
+                    input.State, input.History, sources,
+                    input.Mutations.Concat(initial?.Mutations ?? Array.Empty<ResourceMutationIntent>()).ToArray(),
+                    input.CapacityTransitions, input.ExecutionSequenceOffset,
+                    routing == null ? null : routing.Resolve,
+                    initial?.TriggerCandidates, initial?.Work, routing?.PlanAuthority);
+            }
+            _originalResourceInput = input;
+            _execution = _state.Run(input, identityFactory, this).GetEnumerator();
         }
 
         internal AcceptedMechanicsResourcePlanningResult? Result { get; private set; }
         internal bool StopAtClosedBoundary => _stopAtClosedBoundary;
         internal int CheckpointCount { get; private set; }
+        internal bool IsLive => _live;
+        internal bool Owns(SpiritualExchangeInterval interval) =>
+            !_disposed && !_faulted && _state.Owns(interval);
+        internal EffectAcceptedTurnPlanner.BaseResourceRouting? Routing => _routing;
 
-        internal ResourceExecutionStep AdvanceToClosedBoundary() => Advance(stopAtClosedBoundary: true);
+        internal void StageNextExchange(AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch batch)
+        {
+            ArgumentNullException.ThrowIfNull(batch);
+            Enter();
+            try
+            {
+                EnsureUsable();
+                if (!_live || _active != null || _pendingExchange ||
+                    string.IsNullOrWhiteSpace(batch.ConflictId) ||
+                    string.IsNullOrWhiteSpace(batch.ExchangeId) ||
+                    !ResourceMaterializationContract.IsExactIdentifier(batch.ConflictId) ||
+                    !ResourceMaterializationContract.IsExactIdentifier(batch.ExchangeId) ||
+                    batch.Ordinal != _nextOrdinal ||
+                    _acceptedExchangeIds.Contains(batch.ExchangeId) ||
+                    _conflictId != null && !string.Equals(_conflictId, batch.ConflictId, StringComparison.Ordinal))
+                    throw new InvalidOperationException("Only the next wholly unaccepted exchange can be staged.");
+                if (_staged != null &&
+                    (!string.Equals(_staged.ConflictId, batch.ConflictId, StringComparison.Ordinal) ||
+                     !string.Equals(_staged.ExchangeId, batch.ExchangeId, StringComparison.Ordinal) ||
+                     _staged.Ordinal != batch.Ordinal))
+                    throw new InvalidOperationException("Replacement must preserve the next exchange coordinate.");
+                var executionBatch = batch.RemapDependencies(_missingSideAliases);
+                _stagedRawProducerBatch = batch.IsRawProducerBatch ? batch : null;
+                _staged = executionBatch;
+            }
+            finally { Exit(); }
+        }
+
+        internal ResourceExecutionStep AdvanceThroughExchange()
+        {
+            if (!_live)
+                throw new InvalidOperationException("Fixed-input execution has no exchange admission boundary.");
+            return Advance(stopAtClosedBoundary: false, stopAtExchange: true);
+        }
+
+        internal ResourceExecutionStep AdvanceToClosedBoundary() =>
+            Advance(stopAtClosedBoundary: true, stopAtExchange: false);
 
         internal AcceptedMechanicsResourcePlanningResult Drain()
         {
-            var step = Advance(stopAtClosedBoundary: false);
+            var step = Advance(stopAtClosedBoundary: false, stopAtExchange: false);
             return step.Result ?? throw new InvalidOperationException(
                 "An uninterrupted resource drain must terminate with a result.");
         }
 
-        private ResourceExecutionStep Advance(bool stopAtClosedBoundary)
+        private ResourceExecutionStep Advance(bool stopAtClosedBoundary, bool stopAtExchange)
+        {
+            Enter();
+            try
+            {
+                EnsureUsable();
+                if (_live && stopAtClosedBoundary)
+                    throw new InvalidOperationException("Live execution advances whole exchanges only.");
+                if (_pendingExchange)
+                    throw new InvalidOperationException("Unresolved exchange evidence requires its source owner.");
+                if (stopAtExchange && _staged == null)
+                    throw new InvalidOperationException("Stage the next exchange before advancing.");
+                _stopAtClosedBoundary = stopAtClosedBoundary;
+                _stopAtExchange = stopAtExchange;
+                return MoveNextOwned();
+            }
+            finally { Exit(); }
+        }
+
+        private void Enter()
         {
             if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
                 throw new InvalidOperationException("Resource execution cannot be re-entered.");
-            try
-            {
-                ObjectDisposedException.ThrowIf(_disposed, this);
-                if (_faulted)
-                    throw new InvalidOperationException("Faulted resource execution cannot resume.");
-                if (Result != null)
-                    throw new InvalidOperationException("Completed resource execution cannot resume.");
-                _stopAtClosedBoundary = stopAtClosedBoundary;
-                try
-                {
-                    if (_execution == null || !_execution.MoveNext())
-                        throw new InvalidOperationException("Resource execution ended without a result.");
-                    var step = _execution.Current;
-                    if (step.Checkpoint != null)
-                        CheckpointCount++;
-                    if (step.Result != null)
-                    {
-                        Result = step.Result;
-                        _execution.Dispose();
-                        _execution = null;
-                    }
-                    return step;
-                }
-                catch
-                {
-                    _faulted = true;
-                    _execution?.Dispose();
-                    _execution = null;
-                    throw;
-                }
-            }
-            finally
-            {
-                System.Threading.Volatile.Write(ref _busy, 0);
-            }
         }
+
+        private void Exit() => System.Threading.Volatile.Write(ref _busy, 0);
+
+        private void EnsureUsable()
+        {
+            ObjectDisposedException.ThrowIf(_disposed, this);
+            if (_faulted)
+                throw new InvalidOperationException("Faulted resource execution cannot resume.");
+            if (Result != null)
+                throw new InvalidOperationException("Completed resource execution cannot resume.");
+        }
+
+        internal AfterlifeSpiritualConflictResourceOutcome.ExchangeBatch? TakeStaged()
+        {
+            var batch = _staged;
+            _staged = null;
+            _active = batch;
+            _activeRawProducerBatch = _stagedRawProducerBatch;
+            _stagedRawProducerBatch = null;
+            if (batch != null)
+                _conflictId ??= batch.ConflictId;
+            return batch;
+        }
+
+        internal void CloseExchange()
+        {
+            if (_active == null)
+                throw new InvalidOperationException("No active exchange exists.");
+            if (!_acceptedExchangeIds.Add(_active.ExchangeId))
+                throw new InvalidOperationException("An accepted exchange identity cannot close twice.");
+            _active = null;
+            _activeRawProducerBatch = null;
+            _nextOrdinal++;
+        }
+
+        internal bool StopAtExchange => _stopAtExchange;
 
         public void Dispose()
         {
-            if (System.Threading.Interlocked.CompareExchange(ref _busy, 1, 0) != 0)
-                throw new InvalidOperationException("Active resource execution cannot be disposed.");
+            Enter();
             try
             {
                 if (_disposed)
@@ -5758,11 +6495,20 @@ internal static class AcceptedMechanicsPlanner
                 _disposed = true;
                 _execution?.Dispose();
                 _execution = null;
+                _staged = null;
+                _active = null;
+                _stagedRawProducerBatch = null;
+                _activeRawProducerBatch = null;
+                _missingAuditObservation = null;
+                _missingAuditExtension = null;
+                _preparedMissingSide = null;
+                _missingSideAliases.Clear();
+                _pendingInput = null;
+                _livePendingState = null;
+                _pendingResourceObservation = null;
+                _pendingPacket = null;
             }
-            finally
-            {
-                System.Threading.Volatile.Write(ref _busy, 0);
-            }
+            finally { Exit(); }
         }
     }
 
@@ -5770,14 +6516,34 @@ internal static class AcceptedMechanicsPlanner
     {
         private ResourceExecutionStep(
             ResourceClosedBoundaryCheckpoint? checkpoint,
-            AcceptedMechanicsResourcePlanningResult? result)
+            AcceptedMechanicsResourcePlanningResult? result,
+            SpiritualExchangeInterval? interval = null,
+            PendingSpiritualExchange? pendingExchange = null,
+            PendingSpiritualResourceExchange? pendingResource = null,
+            OriginalResourcePrefix? originalPrefix = null)
         {
             Checkpoint = checkpoint;
             Result = result;
+            Interval = interval;
+            PendingExchange = pendingExchange;
+            PendingResource = pendingResource;
+            OriginalPrefix = originalPrefix;
         }
 
         internal ResourceClosedBoundaryCheckpoint? Checkpoint { get; }
+        internal OriginalResourcePrefix? OriginalPrefix { get; }
+        internal static ResourceExecutionStep OriginalPrefixClosed(OriginalResourcePrefix prefix) =>
+            new(null, null, originalPrefix: prefix ?? throw new ArgumentNullException(nameof(prefix)));
+        internal SpiritualExchangeInterval? Interval { get; }
+        internal PendingSpiritualExchange? PendingExchange { get; }
+        internal PendingSpiritualResourceExchange? PendingResource { get; }
         internal AcceptedMechanicsResourcePlanningResult? Result { get; }
+        internal static ResourceExecutionStep WaitingForResource(PendingSpiritualResourceExchange pending) =>
+            new(null, null, null, null, pending ?? throw new ArgumentNullException(nameof(pending)));
+        internal static ResourceExecutionStep ExchangeClosed(SpiritualExchangeInterval interval) =>
+            new(null, null, interval ?? throw new ArgumentNullException(nameof(interval)));
+        internal static ResourceExecutionStep WaitingForExchange(PendingSpiritualExchange pending) =>
+            new(null, null, null, pending ?? throw new ArgumentNullException(nameof(pending)));
         internal static ResourceExecutionStep Paused(ResourceClosedBoundaryCheckpoint checkpoint) =>
             new(checkpoint ?? throw new ArgumentNullException(nameof(checkpoint)), null);
         internal static ResourceExecutionStep Finished(AcceptedMechanicsResourcePlanningResult result) =>
@@ -5857,1345 +6623,43 @@ internal static class AcceptedMechanicsPlanner
         return session.Drain();
     }
 
-    private static IEnumerable<ResourceExecutionStep> ExecuteResourceSession(
-        AcceptedMechanicsResourceInput input,
-        AcceptedMechanicsIdentityFactory identityFactory,
-        ResourceExecutionSession session)
-    {
-        ArgumentNullException.ThrowIfNull(input);
-        ArgumentNullException.ThrowIfNull(identityFactory);
-        var metrics = new PlannerWorkMetrics
-        {
-            CapacityDescriptorCount = input.CapacityTransitions.Count,
-            MutationDescriptorCount = input.Mutations.Count,
-            EffectTriggerIndexLookupCount =
-                input.InitialEffectResolutionWork.IndexLookupCount,
-            EffectTriggerCandidateVisitCount =
-                input.InitialEffectResolutionWork.CandidateVisitCount,
-            EffectSourceBindingIndexLookupCount =
-                input.InitialEffectResolutionWork.SourceBindingIndexLookupCount,
-            EffectSourceBindingCandidateVisitCount =
-                input.InitialEffectResolutionWork.SourceBindingCandidateVisitCount,
-            EffectRoutingDescriptorAccessCount =
-                input.InitialEffectResolutionWork.RoutingDescriptorAccessCount,
-            EffectOccurrenceCloneCount =
-                input.InitialEffectResolutionWork.OccurrenceCloneCount,
-            EffectFullValidationPassCount =
-                input.InitialEffectResolutionWork.FullEffectValidationPassCount,
-            EffectTriggerArrayVisitCount =
-                input.InitialEffectResolutionWork.TriggerArrayVisitCount,
-            EffectComponentIndexLookupCount =
-                input.InitialEffectResolutionWork.ComponentIndexLookupCount,
-            EffectSelectedComponentVisitCount =
-                input.InitialEffectResolutionWork.SelectedComponentVisitCount,
-            PendingCandidateFingerprintOutputVisitCount =
-                input.InitialEffectResolutionWork
-                    .PendingCandidateFingerprintOutputVisitCount,
-            PendingProjectionDependencyVisitCount =
-                input.InitialEffectResolutionWork
-                    .PendingProjectionDependencyVisitCount
-        };
-        var agreementIssues = input.History.ValidateStateAgreement(input.State);
-        if (agreementIssues.Count != 0)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(agreementIssues, Statistics(metrics: metrics)));
-            yield break;
-        }
-        if (input.CapacityTransitions.Count >
-            ResourceMaterializationContract.MaxCapacityTransitionsPerTurn)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                Issue(
-                    "resource_planner_capacity_limit_exceeded",
-                    $"at most {ResourceMaterializationContract.MaxCapacityTransitionsPerTurn} capacity transitions",
-                    input.CapacityTransitions.Count.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(metrics: metrics)));
-            yield break;
-        }
-
-        var identityRegistry = new AllocatedIdentityRegistry();
-        var capacityPreparation = PrepareCapacityTransitions(
-            input.CapacityTransitions,
-            identityFactory,
-            identityRegistry);
-        if (capacityPreparation.Issues.Count != 0)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                capacityPreparation.Issues,
-                Statistics(metrics: metrics)));
-            yield break;
-        }
-        var preparation = PrepareMutations(
-            input,
-            identityFactory,
-            identityRegistry);
-        if (preparation.Issues.Count != 0)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(preparation.Issues, Statistics(metrics: metrics)));
-            yield break;
-        }
-        var preparedMutations = preparation.Mutations;
-        if (preparedMutations.Count(static value =>
-                value.Route.Phase != ResourceMutationPhase.EffectTrigger) >
-            ResourceMaterializationContract.MaxMutationsBeforeTriggers)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                Issue(
-                    "resource_planner_mutation_limit_exceeded",
-                    $"at most {ResourceMaterializationContract.MaxMutationsBeforeTriggers} pre-trigger mutations",
-                    preparedMutations.Count(static value =>
-                        value.Route.Phase != ResourceMutationPhase.EffectTrigger).ToString(
-                            System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(metrics: metrics)));
-            yield break;
-        }
-
-        var graphPreparation = PrepareCompleteResourceGraph(
-            input,
-            preparedMutations,
-            identityFactory,
-            identityRegistry);
-        metrics.EffectTriggerIndexLookupCount +=
-            graphPreparation.Work.EffectTriggerIndexLookupCount;
-        metrics.EffectTriggerCandidateVisitCount +=
-            graphPreparation.Work.EffectTriggerCandidateVisitCount;
-        metrics.EffectSourceBindingIndexLookupCount +=
-            graphPreparation.Work.EffectSourceBindingIndexLookupCount;
-        metrics.EffectSourceBindingCandidateVisitCount +=
-            graphPreparation.Work.EffectSourceBindingCandidateVisitCount;
-        metrics.EffectRoutingDescriptorAccessCount +=
-            graphPreparation.Work.EffectRoutingDescriptorAccessCount;
-        metrics.EffectOccurrenceCloneCount +=
-            graphPreparation.Work.EffectOccurrenceCloneCount;
-        metrics.EffectFullValidationPassCount +=
-            graphPreparation.Work.EffectFullValidationPassCount;
-        metrics.EffectTriggerArrayVisitCount +=
-            graphPreparation.Work.EffectTriggerArrayVisitCount;
-        metrics.EffectComponentIndexLookupCount +=
-            graphPreparation.Work.EffectComponentIndexLookupCount;
-        metrics.EffectSelectedComponentVisitCount +=
-            graphPreparation.Work.EffectSelectedComponentVisitCount;
-        metrics.PendingCandidateFingerprintOutputVisitCount +=
-            graphPreparation.Work.PendingCandidateFingerprintOutputVisitCount;
-        metrics.PendingProjectionDependencyVisitCount +=
-            graphPreparation.Work.PendingProjectionDependencyVisitCount;
-        metrics.SourceAuthoritySeedCount =
-            graphPreparation.Work.SourceAuthoritySeedCount;
-        metrics.SourceAuthorityAddVisitCount =
-            graphPreparation.Work.SourceAuthorityAddVisitCount;
-        metrics.SourceAuthorityResolveLookupCount =
-            graphPreparation.Work.SourceAuthorityResolveLookupCount;
-        metrics.SourceAuthorityFreezeCount =
-            graphPreparation.Work.SourceAuthorityFreezeCount;
-        if (!graphPreparation.IsValid)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                graphPreparation.Issues,
-                Statistics(metrics: metrics)));
-            yield break;
-        }
-        preparedMutations = graphPreparation.Mutations;
-        metrics.MutationDescriptorCount = preparedMutations.Count;
-        metrics.GraphNodeDescriptorCount = graphPreparation.Graph!.OrderedNodes.Count;
-        metrics.MaximumTriggerDepth = graphPreparation.Graph.MaximumDepth;
-        var candidateAuthorities = ValidatePendingCandidateAuthorities(
-            graphPreparation.TriggerCandidates,
-            preparedMutations,
-            graphPreparation.SourceExports,
-            metrics);
-        if (!candidateAuthorities.IsValid)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                candidateAuthorities.Issues,
-                Statistics(metrics: metrics)));
-            yield break;
-        }
-        var workingLedger = new ResourceWorkingLedger(input.State.Entries);
-        var workingHistory = new ResourceHistoryWorkingSet(input.History);
-        var events = new List<ResourceAppliedEvent>();
-        var appliedTransitions = new List<ResourceTransition>();
-        var replayTransitions = new List<ResourceTransition>();
-        var executionSequence = input.ExecutionSequenceOffset;
-
-        foreach (var capacity in capacityPreparation.Transitions)
-        {
-            var result = ResourceMutationReducer.ApplyCapacityTransition(
-                workingLedger,
-                workingHistory,
-                new AuthorizedResourceCapacityTransition(
-                    capacity.TransitionId,
-                    capacity.OperationId,
-                    capacity.Intent.EventRef,
-                    capacity.Intent.OriginKind,
-                    capacity.Intent.OriginId,
-                    capacity.Intent.Coordinate,
-                    capacity.Intent.Operation,
-                    capacity.Intent.ResolvedCapacity,
-                    capacity.Intent.CurrentDisposition,
-                    capacity.Intent.Phase,
-                    capacity.Intent.Priority,
-                    executionSequence++,
-                    capacity.Intent.SourceEvidence,
-                    capacity.Intent.PolicyFingerprint,
-                    capacity.Intent.ReceiptId,
-                    input.Turn),
-                input.Definitions);
-            if (!result.IsValid)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    result.Issues,
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            workingLedger = result.WorkingLedger!;
-            if (result.Transition != null)
-                appliedTransitions.Add(result.Transition);
-            else
-                replayTransitions.Add(result.ReplayTransition!);
-        }
-
-        if (workingLedger.Count > ResourceMaterializationContract.MaxLiveEntries)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                Issue(
-                    "resource_state_limit_exceeded",
-                    $"at most {ResourceMaterializationContract.MaxLiveEntries} live entries",
-                    workingLedger.Count.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture)),
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-
-        var directBaselineState = workingLedger.Freeze();
-        ResourceStateLedger? postDirectState = null;
-
-        var byOperationId = preparedMutations.ToDictionary(
-            static value => value.OperationId,
-            StringComparer.Ordinal);
-        var operationIdByKey = preparedMutations.ToDictionary(
-            static value => value.Intent.Key,
-            static value => value.OperationId);
-        var effectTranscriptBuilder =
-            new AcceptedEffectBoundaryTranscript.Builder(
-                input.EffectPlanAuthority);
-        var producedEvents = new Dictionary<string, HashSet<string>>(StringComparer.Ordinal);
-        var appliedTriggerMutationKeys = new Dictionary<
-            EffectActivationCandidateIdentity,
-            HashSet<ResourceOperationKey>>();
-        var acceptedCandidates = new List<(
-            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
-            AcceptedEffectActivation Activation)>();
-        var acceptedCandidateIdentities = new HashSet<
-            EffectActivationCandidateIdentity>();
-        var acceptedBoundaryByIdentity = new Dictionary<
-            EffectActivationCandidateIdentity,
-            EffectEventBoundaryStamp>();
-        var acceptedActivationByIdentity = new Dictionary<
-            EffectActivationCandidateIdentity,
-            AcceptedEffectActivation>();
-        var acceptedByBoundary = new Dictionary<
-            long,
-            List<(
-                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
-                AcceptedEffectActivation Activation,
-                EffectEventBoundaryStamp Boundary)>>();
-        var remainingOperationsByBoundary = new Dictionary<
-            long,
-            HashSet<string>>();
-        var completedOperationIds = new HashSet<string>(StringComparer.Ordinal);
-        var parentBoundaryByOrdinal = new Dictionary<long, long?>();
-        var closedBoundaries = new HashSet<long>();
-        var unresolvedPendingBoundaries = new HashSet<long>();
-        var useSeeds = new Dictionary<string, CanonicalEffectUseSeed>(StringComparer.Ordinal);
-        foreach (var candidate in graphPreparation.TriggerCandidates)
-        {
-            if (candidate.UseSeed == null)
-                continue;
-            if (!string.Equals(
-                    candidate.UseSeed.EffectId,
-                    candidate.Activation.Identity.EffectId,
-                    StringComparison.Ordinal) ||
-                useSeeds.TryGetValue(candidate.UseSeed.EffectId, out var existingSeed) &&
-                existingSeed.RemainingUses != candidate.UseSeed.RemainingUses)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    Issue(
-                        "effect_use_seed_conflict",
-                        "one exact canonical remaining-use seed per effect",
-                        DescribeActivation(candidate.Activation.Identity)),
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            useSeeds.TryAdd(candidate.UseSeed.EffectId, candidate.UseSeed);
-        }
-        var initializedArbiter = AcceptedEffectUseArbiter.Initialize(
-            useSeeds.Values
-                .OrderBy(static seed => seed.EffectId, StringComparer.Ordinal)
-                .ToArray());
-        if (!initializedArbiter.IsValid || initializedArbiter.Arbiter == null)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                ArbiterIssues(initializedArbiter.Issues),
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-        var arbiter = initializedArbiter.Arbiter;
-        var candidatesByProducerEvent = graphPreparation.TriggerCandidates
-            .Where(static candidate => candidate.Producer != null)
-            .GroupBy(candidate => (
-                Producer: candidate.Producer!,
-                candidate.Activation.Identity.EventKind))
-            .ToDictionary(
-                static group => group.Key,
-                static group => (IReadOnlyList<
-                    EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>)
-                    group.ToArray());
-
-        bool HasOpenChildBoundary(long boundaryOrdinal) =>
-            parentBoundaryByOrdinal.Any(pair =>
-                pair.Value == boundaryOrdinal &&
-                !closedBoundaries.Contains(pair.Key));
-
-        IReadOnlyList<ValidationIssue> CloseReadyBoundaries()
-        {
-            var issues = new List<ValidationIssue>();
-            while (true)
-            {
-                var boundaryOrdinal = remainingOperationsByBoundary
-                    .Where(pair => pair.Value.Count == 0 &&
-                                   !closedBoundaries.Contains(pair.Key) &&
-                                   !unresolvedPendingBoundaries.Contains(
-                                       pair.Key) &&
-                                   !HasOpenChildBoundary(pair.Key))
-                    .Select(static pair => pair.Key)
-                    .OrderByDescending(static value => value)
-                    .Cast<long?>()
-                    .FirstOrDefault();
-                if (!boundaryOrdinal.HasValue)
-                    break;
-                var boundaryToClose = effectTranscriptBuilder
-                    .FindBoundary(boundaryOrdinal.Value);
-                if (boundaryToClose == null)
-                {
-                    issues.AddRange(Issue(
-                        "effect_boundary_close_invalid",
-                        "one exact open boundary",
-                        boundaryOrdinal.Value.ToString(
-                            System.Globalization.CultureInfo.InvariantCulture)));
-                    break;
-                }
-                if (!acceptedByBoundary.TryGetValue(
-                        boundaryOrdinal.Value,
-                        out var acceptedForBoundary))
-                {
-                    var emptyCloseIssue =
-                        effectTranscriptBuilder.CloseBoundary(boundaryToClose);
-                    if (emptyCloseIssue != null)
-                    {
-                        issues.AddRange(Issue(
-                            emptyCloseIssue.Code,
-                            emptyCloseIssue.Expected,
-                            emptyCloseIssue.Actual));
-                        break;
-                    }
-                    closedBoundaries.Add(boundaryOrdinal.Value);
-                    continue;
-                }
-                foreach (var accepted in acceptedForBoundary
-                             .OrderBy(static value =>
-                                  value.Activation.Stamp.ActivationOrdinal))
-                {
-                    foreach (var reaction in accepted.Candidate.ReactionOutputs
-                                 .Where(static reaction => string.Equals(
-                                     reaction.Dependency,
-                                     "after_current_event",
-                                     StringComparison.Ordinal))
-                                 .OrderBy(static reaction =>
-                                     reaction.ComponentPriority)
-                                 .ThenBy(
-                                     static reaction => reaction.ComponentId,
-                                     StringComparer.Ordinal)
-                                 .ThenBy(
-                                     static reaction => reaction.EventRef,
-                                     StringComparer.Ordinal))
-                    {
-                        var releaseIssue = effectTranscriptBuilder.TryRelease(
-                            accepted.Boundary,
-                            accepted.Activation,
-                            reaction,
-                            EffectReactionReleaseStage.AfterCurrentEvent);
-                        if (releaseIssue != null)
-                        {
-                            issues.AddRange(Issue(
-                                releaseIssue.Code,
-                                releaseIssue.Expected,
-                                releaseIssue.Actual));
-                        }
-                    }
-                }
-                var closeIssue =
-                    effectTranscriptBuilder.CloseBoundary(boundaryToClose);
-                if (closeIssue != null)
-                {
-                    issues.AddRange(Issue(
-                        closeIssue.Code,
-                        closeIssue.Expected,
-                        closeIssue.Actual));
-                    break;
-                }
-                closedBoundaries.Add(boundaryOrdinal.Value);
-            }
-            return issues;
-        }
-
-        IReadOnlyList<ValidationIssue> CompleteCausalOperation(string operationId)
-        {
-            if (!completedOperationIds.Add(operationId))
-            {
-                return Issue(
-                    "effect_boundary_causal_operation_invalid",
-                    "each causal operation completes exactly once",
-                    operationId);
-            }
-            effectTranscriptBuilder.CompleteCausalOperation(operationId);
-            foreach (var remaining in remainingOperationsByBoundary.Values)
-                remaining.Remove(operationId);
-            return CloseReadyBoundaries();
-        }
-
-        long[] ReadyPendingFrontiers() =>
-            unresolvedPendingBoundaries
-                .Where(boundaryOrdinal =>
-                    !closedBoundaries.Contains(boundaryOrdinal) &&
-                    remainingOperationsByBoundary.TryGetValue(
-                        boundaryOrdinal,
-                        out var remaining) &&
-                    remaining.Count == 0 &&
-                    !HasOpenChildBoundary(boundaryOrdinal))
-                .OrderByDescending(BoundaryDepth)
-                .ThenByDescending(static value => value)
-                .ToArray();
-
-        IReadOnlyList<ValidationIssue> ArbitrateBoundary(
-            IReadOnlyList<EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
-                candidates,
-            long? parentBoundaryOrdinal,
-            ResourceOperationKey? producer,
-            string eventKind,
-            string producerEventRef,
-            string? producerTransitionId,
-            int? producerExecutionSequence,
-            long producerMechanicsOrdinal)
-        {
-            if (parentBoundaryOrdinal is { } parentOrdinal &&
-                (producer == null ||
-                 !operationIdByKey.TryGetValue(
-                     producer,
-                     out var producerOperationId) ||
-                 !remainingOperationsByBoundary.TryGetValue(
-                     parentOrdinal,
-                     out var parentRemaining) ||
-                 closedBoundaries.Contains(parentOrdinal) ||
-                 !parentRemaining.Contains(producerOperationId)))
-            {
-                return Issue(
-                    "effect_boundary_parent_causality_invalid",
-                    "the selected open causal lane contains the exact producer operation",
-                    parentOrdinal.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture));
-            }
-            var boundary = effectTranscriptBuilder.OpenBoundary(
-                parentBoundaryOrdinal,
-                producer,
-                eventKind,
-                producerEventRef,
-                producerTransitionId,
-                producerExecutionSequence,
-                producerMechanicsOrdinal,
-                candidates);
-            parentBoundaryByOrdinal.Add(
-                boundary.BoundaryOrdinal,
-                parentBoundaryOrdinal);
-            var partitionIssues = new List<ValidationIssue>();
-            var eligibleCandidates = new List<
-                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
-            foreach (var candidate in candidates)
-            {
-                if (!effectTranscriptBuilder.TryResolveUnavailableEffectId(
-                        candidate,
-                        out var blockedAvailabilityEffectId))
-                {
-                    eligibleCandidates.Add(candidate);
-                    continue;
-                }
-                var rejectedIssue = effectTranscriptBuilder.RecordRejected(
-                    boundary,
-                    candidate,
-                    EffectActivationRejectionReason.EffectTerminal,
-                    blockedAvailabilityEffectId);
-                if (rejectedIssue != null)
-                {
-                    partitionIssues.AddRange(Issue(
-                        rejectedIssue.Code,
-                        rejectedIssue.Expected,
-                        rejectedIssue.Actual));
-                }
-            }
-            var eligible = eligibleCandidates.ToArray();
-            if (eligible.Length == 0)
-            {
-                var bindIssue = effectTranscriptBuilder.BindCausalClosure(
-                    boundary,
-                    Array.Empty<string>(),
-                    new Dictionary<string, string>(StringComparer.Ordinal));
-                if (bindIssue != null)
-                {
-                    partitionIssues.AddRange(Issue(
-                        bindIssue.Code,
-                        bindIssue.Expected,
-                        bindIssue.Actual));
-                }
-                var closeIssue = effectTranscriptBuilder.CloseBoundary(boundary);
-                if (closeIssue != null)
-                {
-                    partitionIssues.AddRange(Issue(
-                        closeIssue.Code,
-                        closeIssue.Expected,
-                        closeIssue.Actual));
-                }
-                else
-                {
-                    closedBoundaries.Add(boundary.BoundaryOrdinal);
-                }
-                return partitionIssues;
-            }
-            var byIdentity = eligible.ToDictionary(
-                static candidate => candidate.Activation.Identity);
-            var result = arbiter.Arbitrate(
-                eligible.Select(static candidate => candidate.Activation).ToArray());
-            if (!result.IsValid)
-                return ArbiterIssues(result.Issues);
-            foreach (var rejected in result.RejectedEvidence)
-            {
-                var rejectedIssue = effectTranscriptBuilder.RecordRejected(
-                    boundary,
-                    byIdentity[rejected.Identity],
-                    rejected.Reason,
-                    rejected.Reason ==
-                        EffectActivationRejectionReason.EffectTerminal
-                        ? rejected.Identity.EffectId
-                        : null);
-                if (rejectedIssue != null)
-                {
-                    partitionIssues.AddRange(Issue(
-                        rejectedIssue.Code,
-                        rejectedIssue.Expected,
-                        rejectedIssue.Actual));
-                }
-            }
-            var acceptedForBoundary = new List<(
-                EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
-                AcceptedEffectActivation Activation,
-                EffectEventBoundaryStamp Boundary)>();
-            foreach (var activation in result.AcceptedActivations)
-            {
-                var candidate = byIdentity[activation.Stamp.Identity];
-                acceptedCandidateIdentities.Add(activation.Stamp.Identity);
-                acceptedCandidates.Add((candidate, activation));
-                acceptedBoundaryByIdentity.Add(activation.Stamp.Identity, boundary);
-                acceptedActivationByIdentity.Add(activation.Stamp.Identity, activation);
-                effectTranscriptBuilder.RecordAccepted(
-                    boundary,
-                    activation,
-                    candidate);
-                acceptedForBoundary.Add((candidate, activation, boundary));
-            }
-            acceptedByBoundary.Add(boundary.BoundaryOrdinal, acceptedForBoundary);
-            var causalRootOperationIds = new List<string>();
-            foreach (var accepted in acceptedForBoundary)
-            {
-                if (accepted.Candidate.PendingOutputs.Any(output =>
-                        output.AfterComponentId == null &&
-                        !accepted.Candidate.TryResolvePendingBinding(
-                            output.ComponentId,
-                            out _)))
-                {
-                    unresolvedPendingBoundaries.Add(
-                        boundary.BoundaryOrdinal);
-                }
-                foreach (var mutationKey in accepted.Candidate.PlannedMutationKeys)
-                {
-                    if (!operationIdByKey.TryGetValue(
-                            mutationKey,
-                            out var operationId))
-                    {
-                        return Issue(
-                            "effect_boundary_causal_operation_unresolved",
-                            "every accepted candidate mutation in the prepared graph",
-                            Describe(mutationKey));
-                    }
-                    causalRootOperationIds.Add(operationId);
-                }
-            }
-            var causalClosure = graphPreparation.Graph!
-                .ExpandCausalOperationClosure(causalRootOperationIds)
-                .ToHashSet(StringComparer.Ordinal);
-            var replayStableCausalOperationKeys = causalClosure.ToDictionary(
-                static operationId => operationId,
-                operationId => CreateStableProducerOperationKey(
-                    byOperationId[operationId].Intent.Key),
-                StringComparer.Ordinal);
-            remainingOperationsByBoundary.Add(
-                boundary.BoundaryOrdinal,
-                causalClosure
-                    .Where(operationId =>
-                        !completedOperationIds.Contains(operationId))
-                    .ToHashSet(StringComparer.Ordinal));
-            var causalBindIssue = effectTranscriptBuilder.BindCausalClosure(
-                boundary,
-                causalClosure,
-                replayStableCausalOperationKeys);
-            if (causalBindIssue != null)
-            {
-                partitionIssues.AddRange(Issue(
-                    causalBindIssue.Code,
-                    causalBindIssue.Expected,
-                    causalBindIssue.Actual));
-            }
-
-            var releaseIssues = new List<ValidationIssue>(partitionIssues);
-            foreach (var activation in result.AcceptedActivations
-                         .OrderBy(static value => value.Stamp.ActivationOrdinal))
-            {
-                var candidate = byIdentity[activation.Stamp.Identity];
-                foreach (var reaction in candidate.ReactionOutputs
-                             .Where(static reaction => string.Equals(
-                                 reaction.Dependency,
-                                 "before_current_event",
-                                 StringComparison.Ordinal))
-                             .OrderBy(static reaction => reaction.ComponentPriority)
-                             .ThenBy(
-                                 static reaction => reaction.ComponentId,
-                                 StringComparer.Ordinal)
-                             .ThenBy(
-                                 static reaction => reaction.EventRef,
-                                 StringComparer.Ordinal))
-                {
-                    var releaseIssue = effectTranscriptBuilder.TryRelease(
-                        boundary,
-                        activation,
-                        reaction,
-                        EffectReactionReleaseStage.BeforeCurrentEvent);
-                    if (releaseIssue != null)
-                    {
-                        releaseIssues.AddRange(Issue(
-                            releaseIssue.Code,
-                            releaseIssue.Expected,
-                            releaseIssue.Actual));
-                    }
-                }
-            }
-            foreach (var accepted in acceptedForBoundary.Where(static value =>
-                         value.Activation.EffectTerminal ||
-                         value.Candidate.ReactionOutputs.Any(
-                             ReservesTerminalAvailabilityAtAcceptance)))
-            {
-                var reservationIssue =
-                    effectTranscriptBuilder.ReserveTerminalAvailability(
-                        accepted.Boundary,
-                        accepted.Activation,
-                        accepted.Candidate);
-                if (reservationIssue != null)
-                {
-                    releaseIssues.AddRange(Issue(
-                        reservationIssue.Code,
-                        reservationIssue.Expected,
-                        reservationIssue.Actual));
-                }
-            }
-            releaseIssues.AddRange(CloseReadyBoundaries());
-            return releaseIssues;
-        }
-
-        foreach (var boundary in graphPreparation.TriggerCandidates
-                     .Where(static candidate => candidate.Producer == null)
-                     .GroupBy(candidate => (
-                         candidate.Activation.Identity.TriggerEventRef,
-                         candidate.Activation.Identity.EventKind))
-                     .OrderBy(
-                         static group => group.Key.TriggerEventRef,
-                         StringComparer.Ordinal)
-                     .ThenBy(
-                         static group => group.Key.EventKind,
-                         StringComparer.Ordinal))
-        {
-            var pendingBoundaryCount = unresolvedPendingBoundaries.Count;
-            var initialIssues = ArbitrateBoundary(
-                boundary.ToArray(),
-                parentBoundaryOrdinal: null,
-                producer: null,
-                boundary.Key.EventKind,
-                boundary.Key.TriggerEventRef,
-                producerTransitionId: null,
-                producerExecutionSequence: null,
-                producerMechanicsOrdinal: -1);
-            if (initialIssues.Count != 0)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(initialIssues, Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            if (unresolvedPendingBoundaries.Count != pendingBoundaryCount)
-                break;
-        }
-
-        int BoundaryDepth(long boundaryOrdinal)
-        {
-            var depth = 0;
-            var cursor = boundaryOrdinal;
-            while (parentBoundaryByOrdinal.TryGetValue(cursor, out var parent) &&
-                   parent is { } parentOrdinal)
-            {
-                depth++;
-                cursor = parentOrdinal;
-            }
-            return depth;
-        }
-
-        HashSet<long> BoundaryAncestorChain(long boundaryOrdinal)
-        {
-            var chain = new HashSet<long>();
-            var cursor = (long?)boundaryOrdinal;
-            while (cursor is { } current && chain.Add(current))
-            {
-                cursor = parentBoundaryByOrdinal.TryGetValue(
-                    current,
-                    out var parent)
-                    ? parent
-                    : null;
-            }
-            return chain;
-        }
-
-        IReadOnlyList<(long BoundaryOrdinal, IReadOnlySet<string> OperationIds)>
-            CurrentCausalLanes(IReadOnlySet<long>? suspendedBoundaries = null) =>
-            remainingOperationsByBoundary
-                .Where(pair => pair.Value.Count != 0 &&
-                               !closedBoundaries.Contains(pair.Key) &&
-                               (suspendedBoundaries == null ||
-                                !suspendedBoundaries.Contains(pair.Key)) &&
-                               !HasOpenChildBoundary(pair.Key))
-                .OrderByDescending(pair => BoundaryDepth(pair.Key))
-                .ThenByDescending(static pair => pair.Key)
-                .Select(static pair =>
-                    (pair.Key, (IReadOnlySet<string>)pair.Value))
-                .ToArray();
-
-        var scheduler = graphPreparation.Graph!.CreateExecutionScheduler(node =>
-            RequirementsSatisfied(byOperationId[node.OperationId], producedEvents));
-
-        bool TryTakeNextCausal(
-            IReadOnlySet<long>? suspendedBoundaries,
-            out ResourceTriggerGraphNode node,
-            out bool shouldExecute,
-            out long? boundaryOrdinal)
-        {
-            var lanes = CurrentCausalLanes(suspendedBoundaries);
-            if (lanes.Count == 0)
-            {
-                if (suspendedBoundaries is { Count: > 0 })
-                {
-                    node = null!;
-                    shouldExecute = false;
-                    boundaryOrdinal = null;
-                    return false;
-                }
-                boundaryOrdinal = null;
-                return scheduler.TryTakeNext(out node, out shouldExecute);
-            }
-            foreach (var lane in lanes)
-            {
-                if (!scheduler.TryTakeNext(
-                        lane.OperationIds,
-                        out node,
-                        out shouldExecute))
-                {
-                    continue;
-                }
-                boundaryOrdinal = lane.BoundaryOrdinal;
-                return true;
-            }
-            node = null!;
-            shouldExecute = false;
-            boundaryOrdinal = null;
-            return false;
-        }
-
-        long? pendingFrontier;
-        ResourceOperationKey? completedAtBoundary = null;
-        while (true)
-        {
-            if (session.StopAtClosedBoundary &&
-                completedAtBoundary != null &&
-                unresolvedPendingBoundaries.Count == 0 &&
-                parentBoundaryByOrdinal.Keys.All(closedBoundaries.Contains))
-            {
-                var prefix = effectTranscriptBuilder.CaptureClosedPrefix();
-                if (!prefix.IsValid || prefix.Prefix == null)
-                {
-                    yield return ResourceExecutionStep.Finished(Failure(
-                        prefix.Issues.SelectMany(issue => Issue(
-                            issue.Code, issue.Expected, issue.Actual)).ToArray(),
-                        Statistics(workingHistory, metrics)));
-                    yield break;
-                }
-                var checkpoint = new ResourceClosedBoundaryCheckpoint(
-                    completedAtBoundary, executionSequence, input.Definitions,
-                    workingLedger.Freeze(), input.History, workingHistory.PendingTransitions,
-                    appliedTransitions, replayTransitions, events, closedBoundaries,
-                    Statistics(workingHistory, metrics), prefix.Prefix);
-                completedAtBoundary = null;
-                yield return ResourceExecutionStep.Paused(checkpoint);
-            }
-            var readyPendingFrontiers = ReadyPendingFrontiers();
-            if (readyPendingFrontiers.Length > 1)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    Issue(
-                        "effect_boundary_pending_frontier_ambiguous",
-                        "one exact ready pending leaf",
-                        string.Join(",", readyPendingFrontiers)),
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            pendingFrontier = readyPendingFrontiers
-                .Select(static value => (long?)value)
-                .SingleOrDefault();
-            var suspendedBoundaries = pendingFrontier is { } frontierOrdinal
-                ? BoundaryAncestorChain(frontierOrdinal)
-                : null;
-            if (!TryTakeNextCausal(
-                    suspendedBoundaries,
-                   out var node,
-                   out var shouldExecute,
-                   out var selectedBoundaryOrdinal))
-            {
-                break;
-            }
-            metrics.SchedulingDescriptorVisitCount++;
-            var prepared = byOperationId[node.OperationId];
-            if (!shouldExecute)
-            {
-                producedEvents[prepared.OperationId] = new HashSet<string>(
-                    StringComparer.Ordinal);
-                var closeIssues = CompleteCausalOperation(prepared.OperationId);
-                if (closeIssues.Count != 0)
-                {
-                    yield return ResourceExecutionStep.Finished(Failure(
-                        closeIssues,
-                        Statistics(workingHistory, metrics)));
-                    yield break;
-                }
-                scheduler.Complete(node);
-                completedAtBoundary = prepared.Intent.Key;
-                continue;
-            }
-
-            EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate? triggerCandidate = null;
-            if (graphPreparation.TriggerCandidatesByMutation.TryGetValue(
-                    prepared.Intent.Key,
-                    out triggerCandidate) &&
-                !acceptedCandidateIdentities.Contains(
-                    triggerCandidate.Activation.Identity))
-            {
-                producedEvents[prepared.OperationId] = new HashSet<string>(
-                    StringComparer.Ordinal);
-                var closeIssues = CompleteCausalOperation(prepared.OperationId);
-                if (closeIssues.Count != 0)
-                {
-                    yield return ResourceExecutionStep.Finished(Failure(
-                        closeIssues,
-                        Statistics(workingHistory, metrics)));
-                    yield break;
-                }
-                scheduler.Complete(node);
-                completedAtBoundary = prepared.Intent.Key;
-                continue;
-            }
-
-            var mutation = prepared.Intent;
-            if (prepared.Route.Phase >= ResourceMutationPhase.RegisteredSystemOutcome &&
-                postDirectState == null)
-            {
-                postDirectState = workingLedger.Freeze();
-            }
-            var amountResult = ResolveMutationAmount(
-                workingHistory,
-                input.Definitions,
-                directBaselineState,
-                postDirectState,
-                prepared);
-            if (amountResult.Issues.Count != 0)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    amountResult.Issues,
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            if (!amountResult.ShouldApply)
-            {
-                producedEvents[prepared.OperationId] = new HashSet<string>(
-                    StringComparer.Ordinal);
-                var closeIssues = CompleteCausalOperation(prepared.OperationId);
-                if (closeIssues.Count != 0)
-                {
-                    yield return ResourceExecutionStep.Finished(Failure(
-                        closeIssues,
-                        Statistics(workingHistory, metrics)));
-                    yield break;
-                }
-                scheduler.Complete(node);
-                completedAtBoundary = prepared.Intent.Key;
-                continue;
-            }
-
-            var result = ResourceMutationReducer.Reduce(
-                workingLedger,
-                workingHistory,
-                new AuthorizedResourceMutation(
-                    prepared.TransitionId,
-                    prepared.OperationId,
-                    mutation.EventRef,
-                    mutation.Source.SourceKind,
-                    mutation.Source.SourceId,
-                    mutation.Coordinate,
-                    mutation.Source.Operation,
-                    amountResult.Amount,
-                    prepared.Route.Phase,
-                    prepared.Route.Priority,
-                    executionSequence++,
-                    prepared.Route.PolicyBinding,
-                    mutation.Dependencies,
-                    prepared.Route.SourceEvidence,
-                    mutation.ReceiptId,
-                    input.Turn,
-                    mutation.ResultConstraint),
-                input.Definitions);
-            if (!result.IsValid)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    result.Issues,
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            workingLedger = result.WorkingLedger!;
-            if (result.Transition != null)
-            {
-                EffectEventBoundaryStamp? acceptedBoundary = null;
-                AcceptedEffectActivation? acceptedActivation = null;
-                string? appliedComponentId = null;
-                var hasAppliedTriggerOutput = triggerCandidate != null &&
-                    result.Transition.AppliedAmount != 0m;
-                if (hasAppliedTriggerOutput)
-                {
-                    if (!acceptedBoundaryByIdentity.TryGetValue(
-                            triggerCandidate!.Activation.Identity,
-                            out acceptedBoundary) ||
-                        !acceptedActivationByIdentity.TryGetValue(
-                            triggerCandidate.Activation.Identity,
-                            out acceptedActivation) ||
-                        !triggerCandidate.PlannedComponentIdsByMutation.TryGetValue(
-                            prepared.Intent.Key,
-                            out appliedComponentId))
-                    {
-                        yield return ResourceExecutionStep.Finished(Failure(
-                            Issue(
-                                "effect_boundary_component_evidence_invalid",
-                                "one accepted boundary and component for every nonzero trigger mutation",
-                                DescribeActivation(
-                                    triggerCandidate.Activation.Identity)),
-                            Statistics(workingHistory, metrics)));
-                        yield break;
-                    }
-                }
-                var mutationMechanicsOrdinal =
-                    effectTranscriptBuilder.RecordMutationExecution();
-                appliedTransitions.Add(result.Transition);
-                effectTranscriptBuilder.RecordResourceMutation(
-                    prepared.Intent.Key,
-                    result.Transition,
-                    ResourceMutationExecutionKind.Applied,
-                    mutationMechanicsOrdinal);
-                if (hasAppliedTriggerOutput)
-                {
-                    if (!appliedTriggerMutationKeys.TryGetValue(
-                            triggerCandidate!.Activation.Identity,
-                            out var appliedKeys))
-                    {
-                        appliedKeys = new HashSet<ResourceOperationKey>();
-                        appliedTriggerMutationKeys.Add(
-                            triggerCandidate.Activation.Identity,
-                            appliedKeys);
-                    }
-                    appliedKeys.Add(prepared.Intent.Key);
-                    effectTranscriptBuilder.RecordAppliedComponent(
-                        acceptedBoundary!,
-                        acceptedActivation!,
-                        prepared.Intent.Key,
-                        appliedComponentId!,
-                        result.Transition,
-                        mutationMechanicsOrdinal);
-                    if (triggerCandidate.PendingOutputs.Any(output =>
-                            string.Equals(
-                                output.AfterComponentId,
-                                appliedComponentId,
-                                StringComparison.Ordinal) &&
-                            !triggerCandidate.TryResolvePendingBinding(
-                                output.ComponentId,
-                                out _)))
-                    {
-                        unresolvedPendingBoundaries.Add(
-                            acceptedBoundary!.BoundaryOrdinal);
-                    }
-                    foreach (var reaction in triggerCandidate.ReactionOutputs
-                                 .Where(reaction => string.Equals(
-                                     reaction.Dependency,
-                                     "after_component",
-                                     StringComparison.Ordinal) &&
-                                     string.Equals(
-                                         reaction.AfterComponentId,
-                                         appliedComponentId,
-                                         StringComparison.Ordinal))
-                                 .OrderBy(static reaction =>
-                                     reaction.ComponentPriority)
-                                 .ThenBy(
-                                     static reaction => reaction.ComponentId,
-                                     StringComparer.Ordinal)
-                                 .ThenBy(
-                                     static reaction => reaction.EventRef,
-                                     StringComparer.Ordinal))
-                    {
-                        var releaseIssue = effectTranscriptBuilder.TryRelease(
-                            acceptedBoundary!,
-                            acceptedActivation!,
-                            reaction,
-                            EffectReactionReleaseStage.AfterComponent);
-                        if (releaseIssue != null)
-                        {
-                            yield return ResourceExecutionStep.Finished(Failure(
-                                Issue(
-                                    releaseIssue.Code,
-                                    releaseIssue.Expected,
-                                    releaseIssue.Actual),
-                                Statistics(workingHistory, metrics)));
-                            yield break;
-                        }
-                    }
-                }
-                events.AddRange(result.Events);
-                producedEvents[prepared.OperationId] = result.Events
-                    .Select(static value => value.EventKind)
-                    .ToHashSet(StringComparer.Ordinal);
-                foreach (var resourceEvent in result.Events)
-                {
-                    if (!candidatesByProducerEvent.TryGetValue(
-                            (prepared.Intent.Key, resourceEvent.EventKind),
-                            out var boundaryCandidates))
-                    {
-                        continue;
-                    }
-                    var boundaryIssues = ArbitrateBoundary(
-                        boundaryCandidates,
-                        selectedBoundaryOrdinal,
-                        prepared.Intent.Key,
-                        resourceEvent.EventKind,
-                        resourceEvent.EventRef,
-                        result.Transition.TransitionId,
-                        result.Transition.ExecutionSequence,
-                        mutationMechanicsOrdinal);
-                    if (boundaryIssues.Count != 0)
-                    {
-                        yield return ResourceExecutionStep.Finished(Failure(
-                            boundaryIssues,
-                            Statistics(workingHistory, metrics)));
-                        yield break;
-                    }
-                }
-            }
-            else
-            {
-                var replayMechanicsOrdinal =
-                    effectTranscriptBuilder.RecordMutationExecution();
-                var replayTransition = result.ReplayTransition!;
-                replayTransitions.Add(replayTransition);
-                effectTranscriptBuilder.RecordResourceMutation(
-                    prepared.Intent.Key,
-                    replayTransition,
-                    ResourceMutationExecutionKind.Replay,
-                    replayMechanicsOrdinal);
-                producedEvents[prepared.OperationId] = new HashSet<string>(StringComparer.Ordinal);
-            }
-            var completionIssues = CompleteCausalOperation(prepared.OperationId);
-            if (completionIssues.Count != 0)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    completionIssues,
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-            scheduler.Complete(node);
-            completedAtBoundary = prepared.Intent.Key;
-        }
-        if (scheduler.HasPendingNodes && pendingFrontier == null)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                Issue(
-                    "effect_boundary_causal_scheduler_blocked",
-                    "one ready operation inside the innermost open causal boundary",
-                    string.Join(
-                        ",",
-                        CurrentCausalLanes()
-                            .SelectMany(static lane => lane.OperationIds)
-                            .Distinct(StringComparer.Ordinal)
-                            .OrderBy(static operationId =>
-                                operationId,
-                                StringComparer.Ordinal))),
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-        if (pendingFrontier is { } pendingBoundaryOrdinal)
-        {
-            var pendingBoundary = effectTranscriptBuilder.FindBoundary(
-                pendingBoundaryOrdinal);
-            var frontierIssue = pendingBoundary == null
-                ? new EffectBoundaryTranscriptIssue(
-                    "effect_boundary_pending_frontier_invalid",
-                    "one exact open pending boundary",
-                    pendingBoundaryOrdinal.ToString(
-                        System.Globalization.CultureInfo.InvariantCulture))
-                : effectTranscriptBuilder.SealPendingFrontier(pendingBoundary);
-            if (frontierIssue != null)
-            {
-                yield return ResourceExecutionStep.Finished(Failure(
-                    Issue(
-                        frontierIssue.Code,
-                        frontierIssue.Expected,
-                        frontierIssue.Actual),
-                    Statistics(workingHistory, metrics)));
-                yield break;
-            }
-        }
-        else
-        {
-            effectTranscriptBuilder.SealUseProjection();
-        }
-        var effectBoundaryTranscriptResult = effectTranscriptBuilder.Freeze();
-        if (!effectBoundaryTranscriptResult.IsValid ||
-            effectBoundaryTranscriptResult.Transcript == null)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                effectBoundaryTranscriptResult.Issues.SelectMany(issue => Issue(
-                    issue.Code,
-                    issue.Expected,
-                    issue.Actual)),
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-        var effectBoundaryTranscript =
-            effectBoundaryTranscriptResult.Transcript;
-
-        var stateAfterImage = workingLedger.Freeze();
-        var frozen = workingHistory.Freeze(input.Definitions);
-        if (!frozen.IsValid || frozen.History == null)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                frozen.Issues,
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-        var finalAgreement = frozen.History.ValidateStateAgreement(stateAfterImage);
-        if (finalAgreement.Count != 0)
-        {
-            yield return ResourceExecutionStep.Finished(Failure(
-                finalAgreement,
-                Statistics(workingHistory, metrics)));
-            yield break;
-        }
-
-        var resourceTriggerExecutions = acceptedCandidates
-            .OrderBy(static accepted =>
-                accepted.Activation.Stamp.ActivationOrdinal)
-            .Select(accepted =>
-            {
-                var candidate = accepted.Candidate;
-                var stamp = accepted.Activation.Stamp;
-                var appliedKeys = appliedTriggerMutationKeys.TryGetValue(
-                    stamp.Identity,
-                    out var storedKeys)
-                    ? storedKeys
-                    : new HashSet<ResourceOperationKey>();
-                var componentMap = candidate.PlannedComponentIdsByMutation
-                    .Where(component => appliedKeys.Contains(component.Key))
-                    .ToDictionary(
-                        static component => component.Key,
-                        static component => component.Value);
-                var componentIds = componentMap.Values
-                    .Distinct(StringComparer.Ordinal)
-                    .OrderBy(static value => value, StringComparer.Ordinal)
-                    .ToArray();
-                return new EffectAcceptedTurnPlanner.EffectResourceTriggerExecution(
-                    stamp.Identity.EffectId,
-                    stamp.Identity.TriggerId,
-                    stamp.Identity.EventKind,
-                    stamp.Identity.EventRef,
-                    appliedKeys
-                        .OrderBy(static key => key.EventRef, StringComparer.Ordinal)
-                        .ThenBy(static key => key.OriginKind, StringComparer.Ordinal)
-                        .ThenBy(static key => key.OriginId, StringComparer.Ordinal)
-                        .ToArray(),
-                    stamp.UsesBefore,
-                    componentIds,
-                    stamp.Identity.TriggerEventRef,
-                    componentMap);
-            })
-            .ToArray();
-        var appliedComponentsByIdentity = resourceTriggerExecutions.ToDictionary(
-            static execution => new EffectActivationCandidateIdentity(
-                execution.EffectId,
-                execution.TriggerId,
-                execution.EventKind,
-                execution.EventRef,
-                execution.TriggerEventRef!),
-            static execution => (execution.ComponentIds ?? Array.Empty<string>())
-                .ToHashSet(StringComparer.Ordinal));
-        var acceptedPendingResolutions = new List<
-            AcceptedEffectBoundedResourceResolution>();
-        var acceptedReactionExecutions = effectBoundaryTranscript
-            .ReleasedReactions
-            .OrderBy(static released => released.MechanicsOrdinal)
-            .Select(static released => released.Reaction)
-            .ToList();
-        var acceptedResolvedPendingRequestIds = new HashSet<string>(
-            StringComparer.Ordinal);
-        var orderedAcceptedCandidates = acceptedCandidates
-            .OrderBy(static accepted =>
-                accepted.Activation.Stamp.ActivationOrdinal)
-            .ToArray();
-        var transcriptPrefixFingerprints =
-            effectBoundaryTranscript.CreateActivationPrefixFingerprints();
-        metrics.PendingTranscriptPrefixStampVisitCount +=
-            transcriptPrefixFingerprints.Count;
-        foreach (var accepted in orderedAcceptedCandidates)
-        {
-            var stamp = accepted.Activation.Stamp;
-            var candidate = accepted.Candidate;
-            var appliedComponents = appliedComponentsByIdentity[stamp.Identity];
-            var pendingOutputs = candidate.PendingOutputs;
-            var publishesUnresolvedPending = effectBoundaryTranscript
-                    .PendingFrontierBoundaryOrdinal is not { } frontierOrdinal ||
-                acceptedBoundaryByIdentity[stamp.Identity].BoundaryOrdinal ==
-                    frontierOrdinal;
-            string? candidateFingerprint = null;
-            if (pendingOutputs.Count != 0)
-            {
-                if (!candidateAuthorities.Authorities.TryGetValue(
-                        stamp.Identity,
-                        out var candidateAuthority))
-                {
-                    yield return ResourceExecutionStep.Finished(Failure(
-                        Issue(
-                            "resource_pending_candidate_authority_missing",
-                            "one prevalidated immutable authority for every pending candidate",
-                            DescribeActivation(candidate.Activation.Identity)),
-                        Statistics(workingHistory, metrics)));
-                    yield break;
-                }
-                candidateFingerprint = candidateAuthority.CandidateFingerprint;
-            }
-            var transcriptPrefixFingerprint =
-                transcriptPrefixFingerprints[stamp.ActivationOrdinal];
-            foreach (var pending in pendingOutputs)
-            {
-                var hasResolvedBinding =
-                    candidate.TryResolvePendingBinding(
-                        pending.ComponentId,
-                        out var resolvedBinding);
-                var causalAuthority = CreatePendingCausalAuthority(
-                    candidate,
-                    stamp,
-                    pending,
-                    candidateFingerprint!,
-                    transcriptPrefixFingerprint,
-                    hasResolvedBinding
-                        ? resolvedBinding.RequestAuthority.CausalAuthority
-                            .WaveOrdinal
-                        : candidate.PendingWaveOrdinal);
-                if (hasResolvedBinding)
-                {
-                    if (!PendingCausalAuthorityMatches(
-                            resolvedBinding.RequestAuthority.CausalAuthority,
-                            causalAuthority,
-                            pending.EffectAuthority))
-                    {
-                        yield return ResourceExecutionStep.Finished(Failure(
-                            Issue(
-                                "resource_pending_causal_replay_mismatch",
-                                "the exact accepted activation transcript stamp for the terminal binding",
-                                resolvedBinding.RequestId),
-                            Statistics(workingHistory, metrics)));
-                        yield break;
-                    }
-                    if (!acceptedResolvedPendingRequestIds.Add(
-                            resolvedBinding.RequestId))
-                    {
-                        yield return ResourceExecutionStep.Finished(Failure(
-                            Issue(
-                                "resource_pending_causal_replay_duplicate",
-                                "one causal acceptance per terminal binding",
-                                resolvedBinding.RequestId),
-                            Statistics(workingHistory, metrics)));
-                        yield break;
-                    }
-                }
-                if (pending.AfterComponentId is { } predecessorId &&
-                    !appliedComponents.Contains(predecessorId))
-                {
-                    continue;
-                }
-                if (hasResolvedBinding)
-                    continue;
-                if (!publishesUnresolvedPending)
-                    continue;
-                acceptedPendingResolutions.Add(
-                    new AcceptedEffectBoundedResourceResolution(
-                        pending,
-                        causalAuthority));
-            }
-        }
-
-        yield return ResourceExecutionStep.Finished(new AcceptedMechanicsResourcePlanningResult(
-            stateAfterImage,
-            frozen.History,
-            events,
-            appliedTransitions,
-            replayTransitions,
-            Array.Empty<ValidationIssue>(),
-            Statistics(workingHistory, metrics),
-            resourceTriggerExecutions,
-            acceptedPendingResolutions,
-            acceptedReactionExecutions,
-            acceptedResolvedPendingRequestIds.ToArray(),
-            effectBoundaryTranscript));
-        yield break;
-    }
-
+    /// <summary>
+    /// Expands the prepared causal resource graph while retaining existing operation identities and candidate authority.
+    /// </summary>
+    /// <param name="input">
+    /// Resource definitions, sources and event resolver for newly visited producers.
+    /// </param>
+    /// <param name="initialMutations">
+    /// Already prepared operations whose identities must remain unchanged.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocator used only for newly discovered resource operations.
+    /// </param>
+    /// <param name="identityRegistry">
+    /// Shared registry preventing allocation collisions across graph extensions.
+    /// </param>
+    /// <param name="retained">
+    /// Previous complete graph and candidates, or null for initial preparation.
+    /// </param>
+    /// <param name="completedOperationIds">
+    /// Operations already executed or skipped by the same owner; null denotes initial preparation.
+    /// </param>
+    /// <param name="revisitOperationIds">
+    /// Explicit unfinished retained producers to revisit with an additive resolver; null keeps ordinary append behavior.
+    /// </param>
+    /// <returns>
+    /// The validated expanded graph or diagnostics with work statistics.
+    /// </returns>
     private static CompleteResourceGraphPreparation PrepareCompleteResourceGraph(
         AcceptedMechanicsResourceInput input,
         IReadOnlyList<PreparedMutation> initialMutations,
         AcceptedMechanicsIdentityFactory identityFactory,
-        AllocatedIdentityRegistry identityRegistry)
+        AllocatedIdentityRegistry identityRegistry,
+        CompleteResourceGraphPreparation? retained = null,
+        IReadOnlySet<string>? completedOperationIds = null,
+        IReadOnlySet<string>? revisitOperationIds = null)
     {
-        var initialGraph = BuildGraph(initialMutations);
+        var initialGraph = BuildGraph(initialMutations, completedOperationIds);
         if (!initialGraph.IsValid)
             return CompleteGraphFailure(initialGraph.Issues);
 
@@ -7204,16 +6668,16 @@ internal static class AcceptedMechanicsPlanner
         var preparedByOperationId = prepared.ToDictionary(
             static value => value.OperationId,
             StringComparer.Ordinal);
-        var triggerCandidates = input.InitialTriggerCandidates.ToList();
+        var triggerCandidates = retained?.TriggerCandidates.ToList() ?? input.InitialTriggerCandidates.ToList();
         var triggerCandidatesByIdentity = new Dictionary<
             EffectActivationCandidateIdentity,
             EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
         var triggerCandidatesByMutation = new Dictionary<
             ResourceOperationKey,
             EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>();
-        foreach (var candidate in input.InitialTriggerCandidates)
+        foreach (var candidate in triggerCandidates)
         {
-            if (candidate.Producer != null ||
+            if (retained == null && candidate.Producer != null ||
                 !triggerCandidatesByIdentity.TryAdd(
                     candidate.Activation.Identity,
                     candidate))
@@ -7330,9 +6794,13 @@ internal static class AcceptedMechanicsPlanner
                 source);
         }
 
+        var retainedOperationIds = retained?.Mutations.Select(value => value.OperationId)
+            .ToHashSet(StringComparer.Ordinal);
         var frontier = new Queue<PreparedMutation>(
-            initialGraph.Graph.OrderedNodes.Select(node =>
-                preparedByOperationId[node.OperationId]));
+            initialGraph.Graph.OrderedNodes
+                .Where(node => retainedOperationIds == null || !retainedOperationIds.Contains(node.OperationId) ||
+                    revisitOperationIds?.Contains(node.OperationId) == true && completedOperationIds?.Contains(node.OperationId) != true)
+                .Select(node => preparedByOperationId[node.OperationId]));
         while (frontier.Count != 0)
         {
             var producer = frontier.Dequeue();
@@ -7551,7 +7019,7 @@ internal static class AcceptedMechanicsPlanner
         if (!frozenSources.IsValid || frozenSources.Catalog == null)
             return FailureWithWork(frozenSources.Issues);
 
-        var graph = BuildGraph(prepared);
+        var graph = BuildGraph(prepared, completedOperationIds);
         var work = SnapshotWork();
         return graph.IsValid
             ? new CompleteResourceGraphPreparation(
@@ -8943,7 +8411,8 @@ internal static class AcceptedMechanicsPlanner
     }
 
     private static ResourceTriggerGraphResult BuildGraph(
-        IReadOnlyList<PreparedMutation> mutations)
+        IReadOnlyList<PreparedMutation> mutations,
+        IReadOnlySet<string>? completedOperationIds = null)
     {
         var issues = new List<ValidationIssue>();
         var byKey = mutations.ToDictionary(static value => value.Intent.Key);
@@ -8996,7 +8465,7 @@ internal static class AcceptedMechanicsPlanner
         }
 
         return issues.Count == 0
-            ? ResourceTriggerGraph.Build(nodes)
+            ? ResourceTriggerGraph.Build(nodes, completedOperationIds)
             : new ResourceTriggerGraphResult(null, issues);
     }
 
@@ -9450,13 +8919,15 @@ internal sealed class ResourceTriggerGraph
     internal int MaximumDepth { get; }
 
     internal ResourceTriggerGraphExecutionScheduler CreateExecutionScheduler(
-        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied) =>
+        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied,
+        IReadOnlySet<string>? completedOperationIds = null) =>
         new(
             _byId,
             _children,
             _initialIndegrees,
             ReadyComparer,
-            requirementsSatisfied);
+            requirementsSatisfied,
+            completedOperationIds);
 
     internal IReadOnlySet<string> ExpandCausalOperationClosure(
         IEnumerable<string> rootOperationIds)
@@ -9503,7 +8974,8 @@ internal sealed class ResourceTriggerGraph
     }
 
     internal static ResourceTriggerGraphResult Build(
-        IEnumerable<ResourceTriggerGraphNode> nodes)
+        IEnumerable<ResourceTriggerGraphNode> nodes,
+        IReadOnlySet<string>? completedOperationIds = null)
     {
         ArgumentNullException.ThrowIfNull(nodes);
         var candidates = nodes.ToArray();
@@ -9558,7 +9030,8 @@ internal sealed class ResourceTriggerGraph
                     byId,
                     parents,
                     children,
-                    issues);
+                    issues,
+                    completedOperationIds);
             }
 
             foreach (var requirement in candidate.EventRequirements)
@@ -9579,7 +9052,8 @@ internal sealed class ResourceTriggerGraph
                     byId,
                     parents,
                     children,
-                    issues);
+                    issues,
+                    completedOperationIds);
             }
         }
 
@@ -9737,7 +9211,8 @@ internal sealed class ResourceTriggerGraph
         IReadOnlyDictionary<string, ResourceTriggerGraphNode> byId,
         IReadOnlyDictionary<string, HashSet<string>> parents,
         IReadOnlyDictionary<string, HashSet<string>> children,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        IReadOnlySet<string>? completedOperationIds)
     {
         if (!byId.TryGetValue(dependencyId, out var dependency))
         {
@@ -9749,7 +9224,11 @@ internal sealed class ResourceTriggerGraph
             return;
         }
 
-        if (candidate.Phase < dependency.Phase)
+        // A later chronological exchange may depend on a completed recovery.
+        // Its parent remains in the graph; only the in-flight phase constraint
+        // is inapplicable. Fixed builds supply no completed execution history.
+        if (candidate.Phase < dependency.Phase &&
+            completedOperationIds?.Contains(dependency.OperationId) != true)
         {
             AddIssue(
                 issues,
@@ -9795,7 +9274,8 @@ internal sealed class ResourceTriggerGraphExecutionScheduler
         IReadOnlyDictionary<string, HashSet<string>> children,
         IReadOnlyDictionary<string, int> initialIndegrees,
         IComparer<ResourceTriggerGraphNode> readyComparer,
-        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied)
+        Func<ResourceTriggerGraphNode, bool> requirementsSatisfied,
+        IReadOnlySet<string>? completedOperationIds = null)
     {
         _byId = byId ?? throw new ArgumentNullException(nameof(byId));
         _children = children ?? throw new ArgumentNullException(nameof(children));
@@ -9809,9 +9289,20 @@ internal sealed class ResourceTriggerGraphExecutionScheduler
             StringComparer.Ordinal);
         _skipped = new SortedSet<ResourceTriggerGraphNode>(readyComparer);
         _runnable = new SortedSet<ResourceTriggerGraphNode>(readyComparer);
+        if (completedOperationIds != null)
+        {
+            foreach (var node in _byId.Values)
+            {
+                if (!completedOperationIds.Contains(node.OperationId))
+                    continue;
+                foreach (var childId in _children[node.NodeId])
+                    _indegrees[childId]--;
+            }
+        }
         foreach (var pair in _indegrees)
         {
-            if (pair.Value == 0)
+            if (pair.Value == 0 &&
+                (completedOperationIds == null || !completedOperationIds.Contains(_byId[pair.Key].OperationId)))
                 AddReady(_byId[pair.Key]);
         }
     }

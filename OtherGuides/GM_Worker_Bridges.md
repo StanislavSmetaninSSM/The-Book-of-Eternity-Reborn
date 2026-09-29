@@ -295,6 +295,14 @@ agents. They are safe to keep because `enabled` is `false`; the main GM cannot
 route work to them until the user decides to enable one template explicitly and
 confirms the local agent command works.
 
+The default validation-repair profile includes the exact
+`output/narrative_response.json` path in its read and proposal-write scopes so
+spiritual wound continuations can preserve or correct the existing scene text.
+This adds no general `output/**` permission: interface updates and debug logs
+remain outside that profile's output scope. Each task and the apply gate still
+restrict which changes are permitted. Loading an existing saved profile preserves
+its configured scopes; it does not add this permission automatically.
+
 Runner path:
 
 ```text
@@ -662,6 +670,14 @@ When proposal-only entries exist in the inbox, diagnostics mark them as
 canonical files.
 
 ## Main GM Checklist
+
+For a client-issued spiritual continuation, follow
+`spiritual_wound_dependent_frontiers_v1` in the wound materialization guide and
+afterlife example. Ready completes only the issued frontier. A newly proved
+dependent request B needs its own proposal/response and continuationId; future
+corrections are forbidden in the earlier A proposal. Preserve the saved wound
+choice. Apply, post-apply and pre-Ready ownership checks and rollback remain
+mandatory; do not copy a stale response or private checkpoint into the new task.
 
 1. Decide whether a worker is useful; do not delegate trivial work.
 2. Pick an enabled worker profile whose `permissions.taskTypes` include the

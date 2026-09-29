@@ -4,7 +4,7 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-public static class AfterlifeSpiritualConflictState
+public static partial class AfterlifeSpiritualConflictState
 {
     public const string StatePath = "game_state/meta/afterlife_spiritual_conflict_state.json";
     public const string ResponseField = "afterlifeSpiritualConflictUpdate";
@@ -336,7 +336,38 @@ public static class AfterlifeSpiritualConflictState
         return normalized;
     }
 
-    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update)
+    /// <summary>
+    /// Projects an ordinary conflict update with the existing client clock policy.
+    /// </summary>
+    /// <param name="existingRoot">
+    /// Original conflict root, or <see langword="null"/> for a default root.
+    /// </param>
+    /// <param name="update">
+    /// Update whose mode and lifecycle evidence are checked by the owning projection.
+    /// </param>
+    /// <returns>
+    /// Detached projected root, including invalid-update diagnostics when admission fails.
+    /// </returns>
+    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update) =>
+        ApplyUpdate(existingRoot, update, null);
+
+    /// <summary>
+    /// Projects a conflict update with an explicit capture-owned closure clock.
+    /// </summary>
+    /// <param name="existingRoot">
+    /// Original conflict root, or <see langword="null"/> for a default root.
+    /// </param>
+    /// <param name="update">
+    /// Update checked by the unchanged mode and lifecycle admission rules.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional closure clock; <see langword="null"/> preserves ordinary UTC reads.
+    /// </param>
+    /// <returns>
+    /// Detached projected root; clock injection does not grant conflict authority.
+    /// </returns>
+    internal static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update,
+        AcceptedTurnProjectionClock? projectionClock)
     {
         var root = NormalizeRoot(existingRoot);
         var mode = GetNodeString(update["mode"]);
@@ -350,9 +381,9 @@ public static class AfterlifeSpiritualConflictState
             case ModeExchange:
                 return ApplyExchange(root, update);
             case ModeResolve:
-                return ApplyResolve(root, update, repairCancel: false);
+                return ApplyResolve(root, update, repairCancel: false, projectionClock);
             case ModeRepairCancel:
-                return ApplyResolve(root, update, repairCancel: true);
+                return ApplyResolve(root, update, repairCancel: true, projectionClock);
             default:
                 return MarkInvalidUpdate(root, update, "missing_or_invalid_mode");
         }
@@ -857,7 +888,26 @@ public static class AfterlifeSpiritualConflictState
             : GetNodeString(exchange["id"]);
     }
 
-    private static JsonObject ApplyResolve(JsonObject root, JsonObject update, bool repairCancel)
+    /// <summary>
+    /// Checks and projects terminal conflict evidence while retaining the existing closure semantics.
+    /// </summary>
+    /// <param name="root">
+    /// Detached normalized root modified by a successful closure.
+    /// </param>
+    /// <param name="update">
+    /// Terminal update with an optional explicit resolution.
+    /// </param>
+    /// <param name="repairCancel">
+    /// Whether this is repair cancellation rather than ordinary resolution.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional clock used only when a valid closure lacks its timestamp.
+    /// </param>
+    /// <returns>
+    /// Root with the closed conflict, or existing invalid-update diagnostics.
+    /// </returns>
+    private static JsonObject ApplyResolve(JsonObject root, JsonObject update, bool repairCancel,
+        AcceptedTurnProjectionClock? projectionClock)
     {
         var active = root["activeConflict"] as JsonObject;
         if (active == null)
@@ -917,7 +967,7 @@ public static class AfterlifeSpiritualConflictState
         resolution["sideModel"] ??= active["sideModel"]?.DeepClone();
 
         resolution["resolutionState"] = repairCancel ? "repair_cancelled" : "resolved";
-        resolution["resolvedAtUtc"] ??= DateTime.UtcNow.ToString("o");
+        resolution["resolvedAtUtc"] ??= ReadResolutionTime(resolution, repairCancel, projectionClock);
         resolution["mode"] = repairCancel ? ModeRepairCancel : ModeResolve;
 
         var recent = root["recentConflicts"] as JsonArray ?? new JsonArray();
@@ -929,6 +979,34 @@ public static class AfterlifeSpiritualConflictState
         root["activeConflict"] = null;
         ClearInvalidUpdateMarkers(root);
         return root;
+    }
+
+    /// <summary>
+    /// Reads closure time using stable terminal evidence, excluding the separately completed terminal witness
+    /// and unrelated carrier-root fields.
+    /// </summary>
+    /// <param name="resolution">
+    /// Validated resolution after inherited conflict identity and lifecycle defaults.
+    /// </param>
+    /// <param name="repairCancel">
+    /// Whether the effective mode is repair cancellation.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional capture clock; <see langword="null"/> uses ordinary UTC time.
+    /// </param>
+    /// <returns>
+    /// UTC DateTime round-trip text, preserving the original output representation.
+    /// </returns>
+    private static string ReadResolutionTime(JsonObject resolution, bool repairCancel,
+        AcceptedTurnProjectionClock? projectionClock)
+    {
+        if (projectionClock == null) return DateTime.UtcNow.ToString("o");
+        var evidence = resolution.DeepClone().AsObject();
+        evidence.Remove("resolvedAtUtc");
+        evidence.Remove("terminalExchange");
+        evidence["mode"] = repairCancel ? ModeRepairCancel : ModeResolve;
+        return projectionClock.GetUtcNow(AcceptedTurnProjectionTimeKind.ConflictResolution, evidence)
+            .UtcDateTime.ToString("o");
     }
 
     private static bool HasCompleteResolveResolution(JsonObject resolution, JsonObject activeConflict)
@@ -1083,18 +1161,8 @@ public static class AfterlifeSpiritualConflictState
 
     private static void AddExchangeLogItems(JsonArray? source, JsonArray target, HashSet<string> seen)
     {
-        if (source == null)
-            return;
-
-        foreach (var item in source)
-        {
-            if (item == null)
-                continue;
-
-            var identity = GetExchangeLogItemIdentity(item);
-            if (seen.Add(identity))
-                target.Add(item.DeepClone());
-        }
+        foreach (var (item, _) in EnumerateNewExchangeLogItems(source, seen))
+            target.Add(item.DeepClone());
     }
 
     private static string GetExchangeLogItemIdentity(JsonNode item)

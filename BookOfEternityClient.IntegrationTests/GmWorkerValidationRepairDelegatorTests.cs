@@ -103,7 +103,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
 
             Assert.True(
                 result.Outcome == GmWorkerValidationRepairOutcome.Applied,
-                $"Expected Applied, got {result.Outcome}: " +
+                $"Expected Applied, got {result.Outcome}: {result.FallbackReason}; {result.RunResult?.StandardError}; " +
                 string.Join(" | ", result.ApplyDecision?.RejectionReasons ?? []));
             Assert.Equal(ApplyGateResult.Accepted, result.ApplyDecision?.Result);
             Assert.True(result.ReadySignalCreated);
@@ -1146,7 +1146,7 @@ public sealed class GmWorkerValidationRepairDelegatorTests
         File.WriteAllText(scriptPath, script);
         return GmWorkerBridgeTestFixtures.ValidationRepairCodexProfile() with
         {
-            LaunchCommand = $"powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
+            LaunchCommand = $"pwsh.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File \"{scriptPath}\"",
             TimeoutSeconds = 10
         };
     }

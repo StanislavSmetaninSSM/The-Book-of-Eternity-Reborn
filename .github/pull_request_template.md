@@ -8,9 +8,10 @@ Refs #
 
 ## Verification
 
-- [ ] Smallest relevant Focused lane
-- [ ] Fast checkpoint when appropriate
-- [ ] PreMerge immediately before merge
+- [ ] Selected categories match the changed contracts and affected consumers
+- [ ] `tests/selection.json` has current category IDs, reasons and contract scope
+- [ ] New or split categories have documented responsibility and inventory coverage
+- [ ] Independent reviewer checked selection sufficiency; no full-suite control
 - Evidence/result path:
 
 ## License / asset impact

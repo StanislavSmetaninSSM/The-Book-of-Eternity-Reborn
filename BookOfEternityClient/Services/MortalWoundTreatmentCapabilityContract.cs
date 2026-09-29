@@ -231,6 +231,37 @@ internal static class MortalWoundTreatmentCapabilityContract
         return issues;
     }
 
+    /// <summary>
+    /// Parses canonical skill capability sources while retaining their active flags.
+    /// </summary>
+    /// <param name="ownerKind">
+    /// The actor kind owning the skill rows.
+    /// </param>
+    /// <param name="ownerId">
+    /// The exact actor identity owning the skill rows.
+    /// </param>
+    /// <param name="skillKind">
+    /// The active or passive catalog kind.
+    /// </param>
+    /// <param name="root">
+    /// The canonical skill container.
+    /// </param>
+    /// <param name="sourcePath">
+    /// The source file path used to retain each row's coordinates.
+    /// </param>
+    /// <param name="preferredArrayName">
+    /// The skill array field selected when it contains an array.
+    /// </param>
+    /// <param name="alternateArrayName">
+    /// The skill array field considered when the preferred field is not an array.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving invalid capability and permanent skill identity issues.
+    /// </param>
+    /// <returns>
+    /// The parsed sources. An absent active field defaults to <see langword="true"/>;
+    /// a present non-boolean or <see langword="null"/> field yields <see langword="false"/>.
+    /// </returns>
     private static IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> ParseSkillSources(
         string ownerKind,
         string ownerId,
@@ -267,6 +298,10 @@ internal static class MortalWoundTreatmentCapabilityContract
                     "An extension-bearing skill requires one exact permanent skillId.");
             }
 
+            var active = skill["active"] is JsonValue activeValue &&
+                         activeValue.TryGetValue<bool>(out var activeFlag)
+                ? activeFlag
+                : !skill.ContainsKey("active");
             sources.Add(new MortalWoundTreatmentCapabilitySkillSource(
                 ownerKind,
                 ownerId,
@@ -274,7 +309,7 @@ internal static class MortalWoundTreatmentCapabilityContract
                 skillId,
                 displayName,
                 "active",
-                true,
+                active,
                 path,
                 capabilities));
         }

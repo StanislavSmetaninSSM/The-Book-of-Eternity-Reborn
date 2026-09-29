@@ -365,6 +365,10 @@ internal static class EffectComponentProfiles
                 "periodic_damage", "periodic damage", "sum", "minimum", "maximum"),
             ["periodic_restore"] = Descriptor(
                 "periodic_restore", "periodic restoration", "sum", "minimum", "maximum"),
+            ["periodic_spend"] = Descriptor(
+                "periodic_spend", "periodic spending", "sum", "minimum", "maximum"),
+            ["periodic_gain"] = Descriptor(
+                "periodic_gain", "periodic gain", "sum", "minimum", "maximum"),
             ["action_control"] = Descriptor(
                 "action_control", "action control", "minimum", "maximum"),
             ["event_reaction"] = new(
@@ -409,13 +413,13 @@ internal static class EffectComponentProfiles
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
 
         var profile = component.GetProperty("profile").GetString()!;
-        if (profile is not ("periodic_damage" or "periodic_restore"))
+        if (!IsPeriodicResourceProfile(profile))
         {
             Add(
                 issues,
                 path + ".profile",
                 "effect_resource_profile_unsupported",
-                "periodic_damage or periodic_restore",
+                "periodic_damage, periodic_restore, periodic_spend or periodic_gain",
                 profile);
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
         }
@@ -435,10 +439,7 @@ internal static class EffectComponentProfiles
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
         }
 
-        var policyField = string.Equals(
-            profile,
-            "periodic_damage",
-            StringComparison.Ordinal)
+        var policyField = profile is "periodic_damage" or "periodic_spend"
             ? "floorPolicy"
             : "capPolicy";
         return new EffectPeriodicResourceComponentResult(
@@ -448,9 +449,14 @@ internal static class EffectComponentProfiles
                 component.GetProperty("priority").GetInt32(),
                 payload.GetProperty("resource").GetString()!,
                 amount,
-                string.Equals(profile, "periodic_damage", StringComparison.Ordinal)
-                    ? ResourceOperation.Damage
-                    : ResourceOperation.Restore,
+                profile switch
+                {
+                    "periodic_damage" => ResourceOperation.Damage,
+                    "periodic_restore" => ResourceOperation.Restore,
+                    "periodic_spend" => ResourceOperation.Spend,
+                    "periodic_gain" => ResourceOperation.Gain,
+                    _ => throw new InvalidOperationException("Validated resource profile expected.")
+                },
                 payload.GetProperty(policyField).GetString()!),
             Array.Empty<ValidationIssue>());
     }
@@ -505,7 +511,11 @@ internal static class EffectComponentProfiles
                 ValidatePeriodicDamage(payload, path + ".payload", issues);
                 break;
             case "periodic_restore":
+            case "periodic_gain":
                 ValidatePeriodicRestore(payload, path + ".payload", issues);
+                break;
+            case "periodic_spend":
+                ValidatePeriodicSpend(payload, path + ".payload", issues);
                 break;
             case "action_control":
                 ValidateActionControl(payload, path + ".payload", issues);
@@ -629,6 +639,26 @@ internal static class EffectComponentProfiles
         RequireExactIdentifier(payload, path, "resource", issues);
         RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "damageType", DamageTypes, issues);
+        RequireClosedString(payload, path, "floorPolicy", FloorPolicies, issues);
+    }
+
+    /// <summary>
+    /// Identifies generic executable resource profiles, without granting resource or source authority.
+    /// </summary>
+    /// <param name="profile">
+    /// Exact profile name; null, empty and unknown names return false.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a registered periodic resource profile; otherwise <see langword="false"/>.
+    /// </returns>
+    internal static bool IsPeriodicResourceProfile(string? profile) =>
+        profile is "periodic_damage" or "periodic_restore" or "periodic_spend" or "periodic_gain";
+
+    private static void ValidatePeriodicSpend(JsonElement payload, string path, List<ValidationIssue> issues)
+    {
+        ValidateClosedObject(payload, path, Set("resource", "amount", "floorPolicy"), issues);
+        RequireExactIdentifier(payload, path, "resource", issues);
+        RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "floorPolicy", FloorPolicies, issues);
     }
 

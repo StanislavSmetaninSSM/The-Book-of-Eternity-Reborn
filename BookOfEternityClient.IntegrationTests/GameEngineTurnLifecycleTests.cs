@@ -10928,11 +10928,33 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
+    /// <summary>
+    /// Builds a real lifecycle engine with the selected test filesystem, settings and optional diagnostic hooks.
+    /// </summary>
+    /// <param name="inputSource">
+    /// Console input override, or <see langword="null"/> for the engine's default input source.
+    /// </param>
+    /// <param name="configureSettings">
+    /// Optional settings customization applied before service construction.
+    /// </param>
+    /// <param name="finalizationHooks">
+    /// Optional hooks for accepted-session finalization; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <param name="fileSystem">
+    /// Shared canonical filesystem, or <see langword="null"/> to use this test instance's filesystem.
+    /// </param>
+    /// <param name="logger">
+    /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
+    /// </param>
+    /// <returns>
+    /// An engine using real lifecycle services and the supplied test overrides.
+    /// </returns>
     private GameEngine CreateGameEngine(
         IConsoleInputSource? inputSource = null,
         Action<GameSettings>? configureSettings = null,
         GameEngineSessionFinalizationHooks? finalizationHooks = null,
-        FileSystemManager? fileSystem = null)
+        FileSystemManager? fileSystem = null,
+        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null)
     {
         var fs = fileSystem ?? _fs;
         var settings = new GameSettings();
@@ -11005,7 +11027,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             pendingTurnState,
             qteSceneService,
             clipboardService,
-            NullLogger<GameEngine>.Instance,
+            logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
         return engine;

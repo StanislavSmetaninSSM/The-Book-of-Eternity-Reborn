@@ -432,6 +432,30 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
             skill => TryPositiveInt(skill["masteryLevel"], out var tier) ? tier : null,
             issues)).ToArray();
 
+    /// <summary>
+    /// Projects canonical skills and their capability aliases with the retained active flag.
+    /// </summary>
+    /// <param name="root">
+    /// The canonical skill container. A <see langword="null"/> value supplies no rows.
+    /// </param>
+    /// <param name="field">
+    /// The array field containing the canonical skill rows.
+    /// </param>
+    /// <param name="kind">
+    /// The skill kind used to match capability sources.
+    /// </param>
+    /// <param name="sources">
+    /// The parsed capability sources belonging to the same actor.
+    /// </param>
+    /// <param name="tierSelector">
+    /// The selector returning the current mastery tier, or <see langword="null"/> to omit the skill.
+    /// </param>
+    /// <param name="issues">
+    /// The collection receiving malformed container, row and identity issues.
+    /// </param>
+    /// <returns>
+    /// The exact skill authorities and capability aliases with available mastery tiers.
+    /// </returns>
     private static IEnumerable<MortalWoundTreatmentAuthority.Skill> ComposeSkillRows(
         JsonObject? root,
         string field,
@@ -464,22 +488,35 @@ internal static class MortalWoundTreatmentAcceptedCanonicalProjection
             if (tier is null)
                 continue;
             var display = Text(skill, "displayName") ?? Text(skill, "skillName") ?? skillId;
+            var active = skill["active"] is JsonValue activeValue &&
+                         activeValue.TryGetValue<bool>(out var activeFlag)
+                ? activeFlag
+                : !skill.ContainsKey("active");
             yield return new MortalWoundTreatmentAuthority.Skill(
-                skillId, skillId, display, tier.Value, "active", true);
+                skillId, skillId, display, tier.Value, "active", active);
             foreach (var source in sources.Where(source =>
                          string.Equals(source.SkillKind, kind, StringComparison.Ordinal) &&
                          string.Equals(source.SkillId, skillId, StringComparison.Ordinal)))
             foreach (var capability in source.Capabilities)
                 yield return new MortalWoundTreatmentAuthority.Skill(
-                    skillId, capability.CapabilityRef, display, tier.Value, "active", true);
+                    skillId, capability.CapabilityRef, display, tier.Value, "active", source.Active);
         }
     }
 
+    /// <summary>
+    /// Projects treatment capabilities with their canonical source active flags.
+    /// </summary>
+    /// <param name="sources">
+    /// The parsed capability sources belonging to one actor.
+    /// </param>
+    /// <returns>
+    /// The capability authorities retaining each source's active flag.
+    /// </returns>
     private static IReadOnlyList<MortalWoundTreatmentAuthority.Capability> Capabilities(
         IReadOnlyList<MortalWoundTreatmentCapabilitySkillSource> sources) =>
         sources.SelectMany(source => source.Capabilities.Select(capability =>
             new MortalWoundTreatmentAuthority.Capability(
-                capability.CapabilityRef, source.DisplayName, "active", true))).ToArray();
+                capability.CapabilityRef, source.DisplayName, "active", source.Active))).ToArray();
 
     private static void ComposeCombatActors(
         IReadOnlyDictionary<string, JsonObject> roots,

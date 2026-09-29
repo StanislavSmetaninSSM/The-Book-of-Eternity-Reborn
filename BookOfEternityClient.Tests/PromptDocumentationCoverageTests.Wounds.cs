@@ -26,7 +26,7 @@ public sealed partial class PromptDocumentationCoverageTests
                 "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
                 "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
                 "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
-                "Death, heal and legacy publication remain unfinished.",
+                "Direct treatment death, heal and legacy publication remain unfinished.",
                 "mortal_wound_treatment_selected_policy_v1"
             }) Assert.Contains(required, text, StringComparison.Ordinal);
             Assert.DoesNotContain("the failed complication band is preview-only here", text, StringComparison.Ordinal);
@@ -688,7 +688,7 @@ public sealed partial class PromptDocumentationCoverageTests
             }) Assert.Contains(invariant, document, StringComparison.OrdinalIgnoreCase);
             var pending = Regex.Match(
                 document,
-                @"The `heal`, explicit death and legacy producers remain pending implementation",
+                @"The direct treatment `heal`, explicit death and legacy producers remain pending implementation",
                 RegexOptions.CultureInvariant);
             Assert.True(pending.Success, "The exact heal/death/legacy pending boundary must remain synchronized.");
             Assert.Contains("Selected non-death treatment `apply_deterioration` now uses the atomic graph publisher.", document, StringComparison.Ordinal);
@@ -717,7 +717,10 @@ public sealed partial class PromptDocumentationCoverageTests
             {
                 "mortal_wound_recovery_history_guard_v1", "InvalidHistory", "mortal_wound_recovery_history_mismatch",
                 "mortal_wound_recovery_history_read_failed", "before recovery arithmetic", "accepted snapshot's sealed world minute",
-                "does not publish recovery, healing or a receipt", "Never hand-write history, a tick, an anchor or a receipt"
+                "does not publish recovery, healing or a receipt", "Never hand-write history, a tick, an anchor or a receipt",
+                "mortal_wound_recovery_publication_v1", "consumed intervals become3", "next due minute stays140",
+                "four-field receipt", "full-heal stage", "typed lifecycle handoff", "separate death consumer remains unfinished",
+                "No new GM command or response surface is introduced"
             }) Assert.Contains(required, document, StringComparison.Ordinal);
         }
         Assert.Contains("mortal_wound_recovery_history_guard_v1", manifest, StringComparison.Ordinal);

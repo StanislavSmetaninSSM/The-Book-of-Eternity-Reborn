@@ -140,6 +140,109 @@ public sealed class WoundReactionLineageAuthorityTests
             resolution.OwnershipDomain);
     }
 
+    /// <summary>
+    /// Verifies that a current source entry changed after lineage validation cannot replace the
+    /// exact downstream definition retained by the sealed wound group.
+    /// </summary>
+    [Fact]
+    public void ReactionAuthority_RejectsCurrentSourceDefinitionChangedAfterLineageBuild()
+    {
+        var wound = CreateLineageWound();
+        var sourceAuthority = CreateReactionSourceAuthority(wound);
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root));
+        var authority = WoundReactionLineageAuthority.Build(
+            sourceAuthority,
+            CreateLineageIdentities(rootState: "active", childState: "removed"),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        Assert.True(catalog.TryResolveOne(RootEffectId, out var occurrence));
+        var sourceKey = new EffectSourceKey(
+            "mortal_world",
+            "wound",
+            WoundId,
+            ChildDefinitionKey);
+        var entriesField = typeof(EffectSourceAuthority).GetField(
+            "_entries",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var entries = Assert.IsType<Dictionary<EffectSourceKey, EffectSourceAuthorityEntry>>(
+            entriesField!.GetValue(sourceAuthority));
+        var originalEntry = entries[sourceKey];
+        var changedDefinition = originalEntry.Definition.DeepClone().AsObject();
+        changedDefinition["display"]!["name"] = "Подменённое определение";
+        entries[sourceKey] = originalEntry with { Definition = changedDefinition };
+
+        var resolution = authority.ResolveApplyDefinition(
+            occurrence,
+            Assert.Single(root["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            ChildDefinitionKey);
+
+        Assert.False(resolution.Success);
+        Assert.Contains(resolution.Issues, static issue =>
+            issue.Code == "effect_reaction_wound_lineage_source_invalid");
+    }
+
+    /// <summary>
+    /// Verifies that a prior wound source-group epoch cannot resolve a current producer even when
+    /// its canonical source key and downstream definition are unchanged.
+    /// </summary>
+    [Fact]
+    public void ReactionAuthority_RejectsPriorSourceGroupWithSameDefinition()
+    {
+        var wound = CreateLineageWound();
+        var currentSources = CreateReactionSourceAuthority(wound);
+        var root = CreateEffectFromDefinition(wound, RootEffectId, RootDefinitionKey);
+        var catalog = EffectCarrierCatalog.Build(CreatePlayerCarriers(root));
+        var authority = WoundReactionLineageAuthority.Build(
+            currentSources,
+            CreateLineageIdentities(rootState: "active", childState: "removed"),
+            catalog,
+            Array.Empty<WoundApplicationRootEffectBinding>());
+        Assert.True(authority.Success, DescribeLineageIssues(authority.Issues));
+        Assert.True(catalog.TryResolveOne(RootEffectId, out var occurrence));
+        var priorSources = CreateReactionSourceAuthority(wound);
+        var groupsField = typeof(EffectSourceAuthority).GetField(
+            "_woundGroups",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        var groups = Assert.IsType<Dictionary<EffectIdentitySourceGroup, WoundSourceGroupAuthority>>(
+            groupsField!.GetValue(priorSources));
+        var priorGroup = Assert.Single(groups.Values);
+        var changedRoots = priorGroup.ExistingRootLineage
+            .Select((row, index) => index == 0
+                ? row with { EffectId = "effect_wound_lineage_prior_root" }
+                : row)
+            .ToArray();
+        groups[priorGroup.Key] = new WoundSourceGroupAuthority(
+            priorGroup.Key,
+            priorGroup.Owner,
+            priorGroup.Target,
+            priorGroup.SameTurn,
+            priorGroup.SourceRef,
+            priorGroup.PreparedSourceExportFingerprint,
+            priorGroup.Definitions,
+            priorGroup.ApplicationRootLineage,
+            changedRoots);
+        Assert.NotEqual(
+            priorGroup.GraphAuthorityFingerprint,
+            groups[priorGroup.Key].GraphAuthorityFingerprint);
+        var sourceAuthorityField = typeof(WoundReactionLineageAuthority).GetField(
+            "_sourceAuthority",
+            BindingFlags.Instance | BindingFlags.NonPublic);
+        sourceAuthorityField!.SetValue(authority, priorSources);
+
+        var resolution = authority.ResolveApplyDefinition(
+            occurrence,
+            Assert.Single(root["components"]!.AsArray().OfType<JsonObject>()),
+            new EffectTargetKey("mortal_world", "player", "player_current"),
+            ChildDefinitionKey);
+
+        Assert.False(resolution.Success);
+        Assert.Contains(resolution.Issues, static issue =>
+            issue.Code == "effect_reaction_wound_lineage_source_invalid");
+    }
+
     [Fact]
     public void ReactionAuthority_RequiresExactSameTurnApplicationRootResult()
     {

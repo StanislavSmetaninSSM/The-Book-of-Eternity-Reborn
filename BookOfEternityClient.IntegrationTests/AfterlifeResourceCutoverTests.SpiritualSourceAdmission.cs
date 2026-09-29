@@ -8,6 +8,10 @@ namespace BookOfEternityClient.Tests;
 
 public sealed partial class AfterlifeResourceCutoverTests
 {
+    /// <summary>
+    /// Reads owned source inputs without admitting mechanics or changing canonical conflict state.
+    /// The source reader covers its fixed sixteen inputs rather than the broader signed snapshot registry.
+    /// </summary>
     [Fact]
     public async Task SourceOwner_RealOriginalReaderProducesOwnedSourceWithoutAdmissionOrWrites()
     {
@@ -32,8 +36,30 @@ public sealed partial class AfterlifeResourceCutoverTests
         Assert.Equal(1, source.Calculation.MaximumSeverityRank);
         Assert.Equal(new[] { 0, 1 }, session.ClaimedDice);
         Assert.Equal(16, session.SelectedPaths.Count);
-        Assert.Equal(PendingTurnSnapshotPathPresenceV1.LogicalPaths.OrderBy(path => path, StringComparer.Ordinal).ToArray(),
+        string[] expectedSourcePaths =
+        [
+            "game_state/meta/soul_state.json",
+            ResourceMaterializationContract.DefinitionsPath,
+            ResourceMaterializationContract.StatePath,
+            ResourceMaterializationContract.HistoryPath,
+            CanonicalResourceOwnerAuthorityComposer.AuthorityPath,
+            AfterlifeSpiritualConflictState.StatePath,
+            AfterlifeEntityProfileState.StatePath,
+            ShiningAbodeState.StatePath,
+            AfterlifeSpiritualConflictState.DifficultySettingsPath,
+            EffectAcceptedTurnPlan.IdentityIndexPath,
+            WoundIdentityState.StatePath,
+            WoundHistoryState.HistoryPath,
+            WoundCarrierCatalog.PlayerPath,
+            WoundCarrierCatalog.NpcPath,
+            WoundCarrierCatalog.EnemiesPath,
+            WoundCarrierCatalog.AlliesPath
+        ];
+        Assert.Equal(expectedSourcePaths.OrderBy(path => path, StringComparer.Ordinal).ToArray(),
             session.SelectedPaths.OrderBy(path => path, StringComparer.Ordinal).ToArray());
+        Assert.DoesNotContain(SpiritualWoundDecisionPendingState.StatePath, session.SelectedPaths);
+        Assert.DoesNotContain(SpiritualWoundCaptureCheckpointState.StatePath, session.SelectedPaths);
+        Assert.DoesNotContain(SpiritualWoundOpportunityReceiptState.StatePath, session.SelectedPaths);
         foreach (var path in session.SelectedPaths)
         {
             Assert.NotEqual(session.HasOriginalBytes(path), session.IsOriginalAbsent(path));
@@ -342,8 +368,26 @@ public sealed partial class AfterlifeResourceCutoverTests
 
         if (guarantee == 2)
         {
-            Assert.Null(result.Session);
-            Assert.Contains(result.Issues, issue => issue.Code == "spiritual_source_input_invalid");
+            AssertNoConflictFrameErrors(result.Issues);
+            var retained = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(result.Session);
+            var laterGuarantee = Assert.Single(retained.Sources);
+            Assert.Equal(1, laterGuarantee.Calculation.MaximumSeverityRank);
+            Assert.Equal(2, laterGuarantee.GuaranteedSeverityRank);
+            var captured = await context.Validator.CaptureSpiritualOriginalTurnWithPrefixAsync(lease);
+            AssertNoConflictFrameErrors(captured.Issues);
+            using var owner = Assert.IsType<ValidationService.SpiritualOriginalTurnCapture>(captured.Capture);
+            AssertNoConflictFrameErrors(await owner.BeginResourceExecutionAsync(lease));
+            var step = await owner.AdvanceNextResourceExchangeAsync(lease);
+            AssertNoConflictFrameErrors(step.Issues);
+            var ownerSource = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(
+                OriginalCaptureField(owner, "_source"));
+            var admitted = await owner.AdmitWoundSourceAsync(lease,
+                step.Step!.Interval!, Assert.Single(ownerSource.Sources));
+            AssertNoConflictFrameErrors(admitted.Issues);
+            var impossible = await owner.ReadWoundOpportunityAsync(lease, admitted.Admission!);
+            Assert.Null(impossible.Opportunity);
+            Assert.Contains(impossible.Issues,
+                issue => issue.Code == "spiritual_wound_guarantee_above_maximum");
             return;
         }
         AssertNoConflictFrameErrors(result.Issues);
@@ -413,6 +457,14 @@ public sealed partial class AfterlifeResourceCutoverTests
 
         AssertNoConflictFrameErrors(result.Issues);
         var session = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(result.Session);
+        if (contour is "start" or "terminal_missing")
+            Assert.False(session.TryReadInitialActiveExchangeInventory(out _, out _));
+        else if (contour == "terminal_complete")
+        {
+            Assert.True(session.TryReadInitialActiveExchangeInventory(out var conflictId, out var exchangeIds));
+            Assert.Equal("conflict_resource_cost", conflictId);
+            Assert.Equal("exchange_conflict_frame_42", Assert.Single(exchangeIds));
+        }
         var pending = Assert.Single(session.PendingRequirements);
         Assert.Equal(contour switch
         {
@@ -622,7 +674,7 @@ public sealed partial class AfterlifeResourceCutoverTests
                 issue => issue.Code == "spiritual_source_input_invalid");
             Assert.Equal(mutation == "history"
                 ? "original re-trauma history/identity/carrier agreement"
-                : "exact active original re-trauma wound", sourceIssue.Actual);
+                : "exact active re-trauma wound in the authoritative view", sourceIssue.Actual);
         }
         else
         {
