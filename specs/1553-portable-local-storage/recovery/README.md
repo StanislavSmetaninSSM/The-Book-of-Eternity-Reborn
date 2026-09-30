@@ -1,5 +1,0 @@
-# Pending WIP catalog recovery
-
-2026-09-30 UTC. This is an untested B1b test-first scaffold, not accepted implementation. The large catalog blob upload stalled; all other source and planning changes are published normally. The exact catalog change is retained in categories-pending.patch so the work is recoverable without the old environment.
-
-Before running the selected tests, from repository root run `git apply --check specs/1553-portable-local-storage/recovery/categories-pending.patch`, then `git apply specs/1553-portable-local-storage/recovery/categories-pending.patch`. Verify `git hash-object tests/categories.json` equals `4b805af95ad56487e7811eb2287b74dc8b26af5d`. Do not apply twice. Before application the catalog and selection intentionally describe an incomplete WIP checkpoint. Publish the resulting catalog normally and remove this pending patch/notice once verified. No RED/GREEN or acceptance is claimed for this scaffold. Base before this WIP: 0f972ddc8529ab72c2515e4c603fbaaea9f30a3e.
