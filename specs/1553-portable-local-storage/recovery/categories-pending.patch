@@ -1,0 +1,93 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index 4b805af9..7b6ad998 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -7600,6 +7600,88 @@
+           ]
+         }
+       ]
++    },
++    {
++      "id": "portable-client-bootstrap",
++      "responsibility": "Shared leased client config/generation bootstrap, invalid-state and legacy-evidence admission, recorder-free logical mutation and prepared-set API on Linux/Windows.",
++      "excludes": "Actual menus/browser settings callbacks, legacy-format rollback implementation, save-load/gameplay and external profile transactions.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
++        "BookOfEternityClient/Core/StateManager.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-publication",
++          "when": "Common publication outcomes or recovery behavior changes."
++        },
++        {
++          "id": "portable-storage-consumers",
++          "when": "Ordinary FileSystemManager writer/generation routing changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableClientStorageTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-storage-consumers",
++      "responsibility": "Exact existing consumers of recorder-free ordinary writers: current/escaped session bindings, UI-owner leases, byte/text I/O, compare-exchange concurrency and transient access handling.",
++      "excludes": "Physical-identity adversarial swap guarantees, session replacement/rotate/save-load, and broad browser/gameplay command behavior.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-client-bootstrap",
++          "when": "Ordinary generation/bootstrap or writer route changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_NewLock_WritesOwnerAndHeartbeat",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.RefreshAsync_ExactLeaseRefreshesHeartbeat",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_ActiveOtherOwner_BlocksMutation",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_StaleOtherOwner_ReplacesLock",
++            "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_MalformedStaleLock_ReplacesLock"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_WhenTargetIsBrieflyLocked_RetriesUntilReplacementSucceeds",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_PreservesUtf8BomContract",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicBytesAsync_PreservesExactBytes",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.WriteFileAtomicAsync_RelativeTraversalFailsClosed",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RejectsStaleExpectedBytesWithoutWriting",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_ConcurrentReplacementsAllowExactlyOneWinner",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.CompareExchangeFileBytesAsync_RollbackDoesNotOverwriteNewerBytes",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.DeleteFile_WhenTargetIsBrieflyLocked_RetriesUntilDeleteSucceeds"
++          ]
++        }
++      ]
+     }
+   ]
+ }

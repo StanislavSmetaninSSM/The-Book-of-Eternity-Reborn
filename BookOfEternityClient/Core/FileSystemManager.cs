@@ -98,7 +98,7 @@ internal interface ICanonicalMutationIntentRecorder
 /// Manages the game_session directory structure per CLI API specification.
 /// Creates all required directories and validates file system integrity.
 /// </summary>
-public class FileSystemManager
+public partial class FileSystemManager
 {
     internal sealed class AmbientCanonicalLeaseRegistration
     {

@@ -457,6 +457,41 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
         AssertImage(_files.SessionGenerationPath, bytes); AssertClean();
     }
 
+    [Theory]
+    [InlineData((int)TrustedLocalPublicationPhase.MemberPublished, (int)TrustedLocalPublicationDisposition.RolledBack)]
+    [InlineData((int)TrustedLocalPublicationPhase.Committed, (int)TrustedLocalPublicationDisposition.Committed)]
+    [InlineData((int)TrustedLocalPublicationPhase.CleanupMember, (int)TrustedLocalPublicationDisposition.Committed)]
+    public async Task PublishWithOutcome_SeparatesRollbackFromDurableCommitCleanupFailure(int phase, int expected)
+    {
+        var path = Member("outcome"); File.WriteAllBytes(path, [1]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var result = Publisher().PublishWithOutcome(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(path, [1], [2])], Crash((TrustedLocalPublicationPhase)phase));
+        var committed = expected == (int)TrustedLocalPublicationDisposition.Committed;
+        Assert.Equal((TrustedLocalPublicationDisposition)expected, result.Disposition);
+        Assert.IsType<Interrupted>(result.Failure);
+        Assert.Equal(committed, result.Publication != null);
+        AssertImage(path, committed ? [2] : [1]);
+        Publisher().Recover(lease);
+        AssertImage(path, committed ? [2] : [1]); AssertClean();
+    }
+
+    [Fact]
+    public async Task PublishWithOutcome_UnknownRollbackContentIsUncertainAndRetainsEvidence()
+    {
+        var path = Member("outcome"); File.WriteAllBytes(path, [1]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var result = Publisher().PublishWithOutcome(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(path, [1], [2])], (phase, _) =>
+            {
+                if (phase != TrustedLocalPublicationPhase.MemberPublished) return;
+                File.WriteAllBytes(path, [99]); throw new Interrupted();
+            });
+        Assert.Equal(TrustedLocalPublicationDisposition.Uncertain, result.Disposition);
+        Assert.Null(result.Publication); Assert.NotNull(result.Failure);
+        AssertImage(path, [99]); Assert.True(File.Exists(Active));
+    }
+
     [DllImport("libc", EntryPoint = "link", SetLastError = true)] private static extern int Link(string oldPath, string newPath);
     [DllImport("kernel32.dll", EntryPoint = "CreateHardLinkW", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)] private static extern bool CreateHardLink(string path, string existing, IntPtr security);

@@ -46,6 +46,9 @@ public class StateManager
         _hooks = hooks;
     }
 
+    /// <summary>Admits current local storage and atomically ensures config plus session generation.</summary>
+    public Task<string> BootstrapLocalStorageAsync() => throw new NotImplementedException();
+
     public async Task LoadSettingsAsync()
     {
         var json = await _fs.ReadFileAsync("config.json");

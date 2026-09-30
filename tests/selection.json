@@ -3,11 +3,28 @@
   "selections": [
     {
       "category": "portable-storage-publication",
-      "reason": "#1553 B1b disconnected common publication engine: exact bytes/absence, multi-member rollback preflight, explicit generation, canonical lease and crash/cleanup phases.",
+      "reason": "#1553 B2a extends the accepted publisher with explicit committed/rolled-back/uncertain results; its prior recovery contract remains required.",
       "contracts": [
-        "trusted local publication",
-        "generation-bound member journal",
+        "logical publication outcome",
         "process-crash recovery"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "#1553 B2a common config+generation bootstrap, legacy admission and prepared ordinary file API.",
+      "contracts": [
+        "current-schema config bootstrap",
+        "generation fencing",
+        "legacy admission"
+      ]
+    },
+    {
+      "category": "portable-storage-consumers",
+      "reason": "#1553 B2a ordinary writer/generation routing affects these exact existing lease, session, I/O and compare-exchange consumers.",
+      "contracts": [
+        "session operation boundary",
+        "local UI owner",
+        "byte-preserving ordinary writer"
       ]
     }
   ]

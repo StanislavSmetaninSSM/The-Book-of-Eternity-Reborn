@@ -16,6 +16,10 @@ internal sealed record TrustedLocalGeneration(
 internal sealed record TrustedLocalPublishedMember(string Path, bool Exists, string? Sha256);
 internal sealed record TrustedLocalPublicationResult(string TransactionId, TrustedLocalGeneration Generation,
     IReadOnlyList<TrustedLocalPublishedMember> Members);
+internal enum TrustedLocalPublicationDisposition { Committed, RolledBack, Uncertain }
+internal sealed record TrustedLocalPublicationOutcome(TrustedLocalPublicationDisposition Disposition,
+    TrustedLocalPublicationResult? Publication, Exception? Failure);
+
 internal enum TrustedLocalPublicationPhase
 {
     IntentStaged, IntentPublished, MemberStaged, MemberPublished, CommitStaged, Committed,
@@ -67,6 +71,10 @@ internal sealed class TrustedLocalFilePublication
         _sessionLifecycleLockPath = NormalizeAuthorityPath(files.SessionLifecycleLockPath, windows);
         _journalScope = new TrustedLocalFileScope([files.RuntimeRootPath]);
     }
+
+    internal TrustedLocalPublicationOutcome PublishWithOutcome(FileSystemManager.CanonicalWriteLease lease,
+        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
+        Action<TrustedLocalPublicationPhase, int>? observer = null) => throw new NotImplementedException();
 
     internal TrustedLocalPublicationResult Publish(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
