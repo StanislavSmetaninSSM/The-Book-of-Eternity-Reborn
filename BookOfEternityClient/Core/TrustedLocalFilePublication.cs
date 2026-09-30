@@ -48,6 +48,9 @@ internal sealed class TrustedLocalFilePublication
     private string IntentStage => Path.Combine(_journalRoot, "intent.tmp");
     private string CommitStage => Path.Combine(_journalRoot, "commit.tmp");
 
+    // Pure spelling seam permits the Windows policy to be verified on Linux.
+    internal static string NormalizeAuthorityPath(string path, bool windows) => throw new NotImplementedException();
+
     internal TrustedLocalFilePublication(FileSystemManager files, TrustedLocalFileScope scope)
     {
         _files = files;

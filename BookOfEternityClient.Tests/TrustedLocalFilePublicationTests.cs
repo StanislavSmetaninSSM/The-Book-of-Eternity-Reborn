@@ -372,6 +372,69 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
         AssertImage(path, [1]); AssertClean();
     }
 
+    public static IEnumerable<object[]> GenerationEncodings()
+    {
+        foreach (var encoding in new[] { "utf8-bom", "utf16-le", "utf16-be", "utf32-le", "utf32-be" })
+            foreach (var operation in new[] { "bootstrap", "transition", "rollback" })
+                yield return [encoding, operation];
+    }
+
+    [Theory, MemberData(nameof(GenerationEncodings))]
+    public async Task Publish_GenerationEncodingPreservesExactBootstrapTransitionAndRollbackBytes(string encodingName, string operation)
+    {
+        Encoding encoding = encodingName switch
+        {
+            "utf8-bom" => new UTF8Encoding(encoderShouldEmitUTF8Identifier: true),
+            "utf16-le" => new UnicodeEncoding(bigEndian: false, byteOrderMark: true),
+            "utf16-be" => new UnicodeEncoding(bigEndian: true, byteOrderMark: true),
+            "utf32-le" => new UTF32Encoding(bigEndian: false, byteOrderMark: true),
+            "utf32-be" => new UTF32Encoding(bigEndian: true, byteOrderMark: true),
+            _ => throw new ArgumentOutOfRangeException(nameof(encodingName))
+        };
+        byte[] Encode(string id) => encoding.GetPreamble().Concat(encoding.GetBytes(Encoding.UTF8.GetString(GenerationBytes(id)))).ToArray();
+        var bootstrap = operation == "bootstrap";
+        var committed = operation != "rollback";
+        var before = bootstrap ? null : Encode(_generation);
+        var afterId = Guid.NewGuid().ToString("N");
+        var after = Encode(afterId);
+        if (bootstrap) File.Delete(_files.SessionGenerationPath);
+        else File.WriteAllBytes(_files.SessionGenerationPath, before!);
+        var config = Member("config.json");
+        if (!bootstrap) File.WriteAllBytes(config, [1]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        // Existing generation reading establishes that this is a valid current
+        // schema image, independently of the publisher's image decoder.
+        Assert.Equal(bootstrap ? null : _generation, _files.ReadExistingSessionGeneration(lease));
+        Assert.Throws<Interrupted>(() => Publisher().Publish(lease,
+            bootstrap ? TrustedLocalGeneration.Absent : TrustedLocalGeneration.Existing(_generation),
+            [new(config, bootstrap ? null : [1], [2]), new(_files.SessionGenerationPath, before, after)],
+            Crash(committed ? TrustedLocalPublicationPhase.Committed : TrustedLocalPublicationPhase.MemberPublished, committed ? -1 : 1)));
+        Publisher().Recover(lease);
+        AssertImage(_files.SessionGenerationPath, committed ? after : before);
+        AssertImage(config, committed ? [2] : bootstrap ? null : [1]);
+        Assert.Equal(committed ? afterId : _generation, _files.ReadExistingSessionGeneration(lease));
+        AssertClean();
+    }
+
+    [Theory]
+    [InlineData(@"\\?\C:\game\.boe_runtime\session-generation\current.json", @"C:\game\.boe_runtime\session-generation\current.json")]
+    [InlineData(@"\\?\C:\game\.boe_runtime\trusted-local-publication-v1", @"C:\game\.boe_runtime\trusted-local-publication-v1")]
+    [InlineData(@"\\?\C:\game\.boe_runtime\locks\canonical-write.lock", @"C:\game\.boe_runtime\locks\canonical-write.lock")]
+    [InlineData(@"\\?\C:\game\.boe_runtime\locks\session-lifecycle.lock", @"C:\game\.boe_runtime\locks\session-lifecycle.lock")]
+    [InlineData(@"\\?\UNC\server\share\game\.boe_runtime\session-generation\current.json", @"\\server\share\game\.boe_runtime\session-generation\current.json")]
+    [InlineData(@"\\?\UNC\server\share\game\.boe_runtime\trusted-local-publication-v1", @"\\server\share\game\.boe_runtime\trusted-local-publication-v1")]
+    [InlineData(@"\\?\UNC\server\share\game\.boe_runtime\locks\canonical-write.lock", @"\\server\share\game\.boe_runtime\locks\canonical-write.lock")]
+    [InlineData(@"\\?\UNC\server\share\game\.boe_runtime\locks\session-lifecycle.lock", @"\\server\share\game\.boe_runtime\locks\session-lifecycle.lock")]
+    public void AuthorityPathNormalization_MatchesScopeForExtendedWindowsComparisons(string raw, string expected)
+    {
+        var member = TrustedLocalFileScope.NormalizeWindowsPathSpelling(raw);
+        var authority = TrustedLocalFilePublication.NormalizeAuthorityPath(raw, windows: true);
+        Assert.Equal(expected, authority);
+        Assert.Equal(member, authority);
+        Assert.Equal(expected, TrustedLocalFilePublication.NormalizeAuthorityPath(expected, windows: true));
+        Assert.Equal(raw, TrustedLocalFilePublication.NormalizeAuthorityPath(raw, windows: false));
+    }
+
     [Fact]
     public async Task Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract()
     {
