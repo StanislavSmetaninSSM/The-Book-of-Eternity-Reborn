@@ -20,8 +20,8 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 ## B2 — US1 ordinary startup/settings
 
-- [ ] T020-A B2a: shared leased bootstrap/config+generation, original-handler-or-block legacy admission, explicit publication outcomes and recorder-free ordinary writer route; focused consumer/cold checks and independent review
-- [ ] T020-B B2b: prepared browser settings/audio member sets, shared client entrypoint wiring and actual Linux console/browser settings/process-restart acceptance; independent review
+- [ ] T020-A B2a: shared leased bootstrap/config+generation, original-handler-or-block legacy admission, explicit publication outcomes and recorder-free ordinary writer route; focused consumer/cold checks and independent review (112/112 GREEN at a12f71fd + exact catalog patch; 106/10251 discovery audited; review and normal catalog publication pending)
+- [ ] T020-B B2b: prepared browser settings/audio member sets, retaining B2a strict client entrypoint bootstrap, and actual Linux console/browser settings/process-restart acceptance; independent review
 
 - [ ] T020 Add failing client storage/generation/settings restart scenarios before changing `Core/FileSystemManager.cs` and `Core/StateManager.cs`
 - [ ] T021 Integrate B1 for common writes on both OSes, preserving participating leases/generation and exact bytes; no synthetic FileIdentity
