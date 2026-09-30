@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -44,18 +45,26 @@ internal sealed class TrustedLocalFilePublication
     private readonly TrustedLocalFileScope _scope;
     private readonly TrustedLocalFileScope _journalScope;
     private readonly string _journalRoot;
+    private readonly string _generationPath;
+    private readonly string _canonicalWriteLockPath;
+    private readonly string _sessionLifecycleLockPath;
     private string Active => Path.Combine(_journalRoot, "active.json");
     private string IntentStage => Path.Combine(_journalRoot, "intent.tmp");
     private string CommitStage => Path.Combine(_journalRoot, "commit.tmp");
 
     // Pure spelling seam permits the Windows policy to be verified on Linux.
-    internal static string NormalizeAuthorityPath(string path, bool windows) => throw new NotImplementedException();
+    internal static string NormalizeAuthorityPath(string path, bool windows) =>
+        windows ? TrustedLocalFileScope.NormalizeWindowsPathSpelling(path) : path;
 
     internal TrustedLocalFilePublication(FileSystemManager files, TrustedLocalFileScope scope)
     {
         _files = files;
         _scope = scope;
-        _journalRoot = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1");
+        var windows = OperatingSystem.IsWindows();
+        _journalRoot = NormalizeAuthorityPath(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1"), windows);
+        _generationPath = NormalizeAuthorityPath(files.SessionGenerationPath, windows);
+        _canonicalWriteLockPath = NormalizeAuthorityPath(files.CanonicalWriteLockPath, windows);
+        _sessionLifecycleLockPath = NormalizeAuthorityPath(files.SessionLifecycleLockPath, windows);
         _journalScope = new TrustedLocalFileScope([files.RuntimeRootPath]);
     }
 
@@ -79,7 +88,7 @@ internal sealed class TrustedLocalFilePublication
         }).ToArray();
         if (members.Select(member => member.Path).Distinct(MemberComparer).Count() != members.Length)
             throw Conflict("A publication contains duplicate members.");
-        var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _files.SessionGenerationPath));
+        var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _generationPath));
         var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After.Bytes);
         if (generationMember != null && ParseGeneration(generationMember.Before.Bytes) != generation)
             throw Conflict("The generation member does not match its binding.");
@@ -237,7 +246,7 @@ internal sealed class TrustedLocalFilePublication
             ValidateImage(member.Before);
             ValidateImage(member.After);
         }
-        var generationMember = journal.Members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _files.SessionGenerationPath));
+        var generationMember = journal.Members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _generationPath));
         if (generationMember == null)
         {
             if (journal.GenerationBefore != journal.GenerationAfter)
@@ -256,7 +265,7 @@ internal sealed class TrustedLocalFilePublication
         var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
         if (normalized.Equals(_journalRoot, comparison) || normalized.StartsWith(_journalRoot + Path.DirectorySeparatorChar, comparison) ||
             _journalRoot.StartsWith(normalized + Path.DirectorySeparatorChar, comparison) ||
-            normalized.Equals(_files.CanonicalWriteLockPath, comparison) || normalized.Equals(_files.SessionLifecycleLockPath, comparison))
+            normalized.Equals(_canonicalWriteLockPath, comparison) || normalized.Equals(_sessionLifecycleLockPath, comparison))
             throw Conflict("A publication cannot mutate its journal or writer ownership paths.");
         return normalized;
     }
@@ -282,7 +291,12 @@ internal sealed class TrustedLocalFilePublication
         if (bytes == null) return TrustedLocalGeneration.Absent;
         try
         {
-            var value = StrictJsonAuthority.Deserialize<GenerationDocument>(bytes, GenerationReadOptions, "Publication generation");
+            // Decode exactly like FileSystemManager.ReadRuntimeText. The image
+            // remains byte-exact in the journal; only its generation semantics
+            // are read through the existing BOM-aware text contract.
+            using var stream = new MemoryStream(bytes, writable: false);
+            using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+            var value = StrictJsonAuthority.Deserialize<GenerationDocument>(reader.ReadToEnd(), GenerationReadOptions, "Publication generation");
             if (value == null || value.SchemaVersion != 1 || !ValidId(value.GenerationId))
                 throw Conflict("The declared generation image is invalid.");
             return TrustedLocalGeneration.Existing(value.GenerationId);
