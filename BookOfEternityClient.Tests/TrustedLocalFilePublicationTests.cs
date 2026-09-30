@@ -492,6 +492,18 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
         AssertImage(path, [99]); Assert.True(File.Exists(Active));
     }
 
+    [Fact]
+    public async Task PublishWithOutcome_PreconditionConflictCannotClaimRestoredBeforeImages()
+    {
+        var path = Member("outcome"); File.WriteAllBytes(path, [99]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var result = Publisher().PublishWithOutcome(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(path, [1], [2])]);
+        Assert.Equal(TrustedLocalPublicationDisposition.Uncertain, result.Disposition);
+        Assert.Null(result.Publication); Assert.NotNull(result.Failure);
+        AssertImage(path, [99]);
+    }
+
     [DllImport("libc", EntryPoint = "link", SetLastError = true)] private static extern int Link(string oldPath, string newPath);
     [DllImport("kernel32.dll", EntryPoint = "CreateHardLinkW", CharSet = CharSet.Unicode, SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)] private static extern bool CreateHardLink(string path, string existing, IntPtr security);

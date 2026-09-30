@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -57,6 +59,7 @@ public sealed class PortableClientStorageTests : IDisposable
     [InlineData("{broken")]
     [InlineData("null")]
     [InlineData("[]")]
+    [InlineData("{\"language\":\"en\",\"language\":\"ru\"}")]
     public async Task Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(string content)
     {
         _files.EnsureDirectoryStructure();
@@ -140,6 +143,137 @@ public sealed class PortableClientStorageTests : IDisposable
             () => _files.WriteFileAtomicAsync("game_state/core/stale.json", "{}")));
         Assert.False(File.Exists(_files.ResolvePath("game_state/core/stale.json")));
     }
+
+    [Theory]
+    [InlineData("pending")]
+    [InlineData("committed")]
+    [InlineData("conflict")]
+    public async Task UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(string cut)
+    {
+        _files.EnsureDirectoryStructure();
+        var generation = Guid.NewGuid().ToString("N");
+        Directory.CreateDirectory(Path.GetDirectoryName(_files.SessionGenerationPath)!);
+        File.WriteAllText(_files.SessionGenerationPath, JsonSerializer.Serialize(new { SchemaVersion = 1, GenerationId = generation }));
+        const string relative = "game_state/core/read-recovery.bin";
+        var path = _files.ResolvePath(relative); File.WriteAllBytes(path, [1]);
+        var journal = Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+        await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
+        {
+            var publisher = new TrustedLocalFilePublication(_files, new TrustedLocalFileScope([_root]));
+            Assert.Throws<Interrupted>(() => publisher.Publish(lease, TrustedLocalGeneration.Existing(generation),
+                [new(path, [1], [2])], (phase, _) =>
+                {
+                    if (phase == (cut == "committed" ? TrustedLocalPublicationPhase.Committed : TrustedLocalPublicationPhase.MemberPublished))
+                        throw new Interrupted();
+                }));
+        }
+        if (cut == "conflict")
+        {
+            File.WriteAllBytes(path, [99]);
+            await Assert.ThrowsAsync<InvalidDataException>(() => _files.ReadFileBytesAsync(relative));
+            Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(path)); Assert.True(File.Exists(journal));
+        }
+        else
+        {
+            Assert.Equal(cut == "committed" ? new byte[] { 2 } : [1], await _files.ReadFileBytesAsync(relative));
+            Assert.False(File.Exists(journal));
+        }
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(bool fail)
+    {
+        _files.EnsureDirectoryStructure();
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        var called = false;
+        async Task OriginalHandler()
+        {
+            called = true;
+            Exception? failure = null;
+            try { await _files.WriteFileAtomicBytesAsync(lease, "game_state/core/legacy-probe.bin", [1]); }
+            catch (PlatformNotSupportedException ex) { failure = ex; }
+            if (OperatingSystem.IsWindows()) Assert.Null(failure);
+            else Assert.IsType<PlatformNotSupportedException>(failure);
+            Assert.False(File.Exists(_files.SessionGenerationPath));
+            Assert.False(File.Exists(Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            if (fail) throw new Interrupted();
+        }
+        if (fail) await Assert.ThrowsAsync<Interrupted>(() => _files.RunLegacyStorageRecoveryAsync(lease, OriginalHandler));
+        else await _files.RunLegacyStorageRecoveryAsync(lease, OriginalHandler);
+        Assert.True(called);
+        await _files.WriteFileAtomicBytesAsync(lease, "game_state/core/ordinary-probe.bin", [2]);
+        Assert.NotNull(_files.ReadExistingSessionGeneration(lease));
+        Assert.Equal(new byte[] { 2 }, File.ReadAllBytes(_files.ResolvePath("game_state/core/ordinary-probe.bin")));
+    }
+
+    [Fact]
+    public async Task Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart()
+    {
+        await RunBootstrapHost("", "ru");
+        string generation;
+        await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync())
+            generation = _files.ReadExistingSessionGeneration(lease)!;
+        var beforeGeneration = File.ReadAllBytes(_files.SessionGenerationPath);
+        await _files.WriteFileAtomicAsync("config.json", "{\"language\":\"en\",\"musicVolume\":37}");
+        var beforeConfig = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        await RunBootstrapHost(generation, "en");
+        Assert.Equal(beforeGeneration, File.ReadAllBytes(_files.SessionGenerationPath));
+        Assert.Equal(beforeConfig, File.ReadAllBytes(_files.ResolvePath("config.json")));
+    }
+
+    private async Task RunBootstrapHost(string generation, string expectedLanguage)
+    {
+        var assembly = typeof(PortableClientStorageTests).Assembly.Location;
+        var start = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
+        {
+            UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+        };
+        foreach (var argument in new[] { "exec", "--runtimeconfig", Path.ChangeExtension(assembly, ".runtimeconfig.json"),
+                     "--depsfile", Path.ChangeExtension(assembly, ".deps.json"), typeof(PortableStorageCrashHost.Program).Assembly.Location,
+                     _root, generation, "client-bootstrap", expectedLanguage }) start.ArgumentList.Add(argument);
+        using var process = Process.Start(start) ?? throw new InvalidOperationException("Bootstrap host did not start.");
+        var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+            Assert.True(process.ExitCode == 0, await stdout + await stderr);
+        }
+        finally
+        {
+            if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
+        }
+    }
+
+    [Fact]
+    public async Task OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation()
+    {
+        var generation = await _state.BootstrapLocalStorageAsync();
+        var trace = new List<string>(); var revoke = false;
+        var hooked = new FileSystemManager(_root, NullLogger<FileSystemManager>.Instance,
+            PhysicalLoadTransactionOperations.Instance, new FileSystemManagerHooks
+            {
+                BeforeCanonicalMutationBoundaryAsync = _ => { trace.Add("before"); return Task.CompletedTask; },
+                AfterCanonicalMutationBoundaryValidatedAsync = relativePath =>
+                {
+                    trace.Add("after");
+                    if (revoke) _ = SessionOperationContext.MarkReplaced(_root, generation, "Test operation revoked at boundary.");
+                    return Task.CompletedTask;
+                }
+            });
+        const string path = "game_state/core/boundary.bin";
+        await hooked.WriteFileAtomicBytesAsync(path, [1]);
+        Assert.Equal(new[] { "before", "after" }, trace);
+        trace.Clear(); revoke = true;
+        await Assert.ThrowsAsync<SessionReplacedException>(() => SessionOperationContext.RunBoundAsync(hooked, generation,
+            () => hooked.WriteFileAtomicBytesAsync(path, [2])));
+        Assert.Equal(new byte[] { 1 }, File.ReadAllBytes(_files.ResolvePath(path)));
+        Assert.Equal(new[] { "before", "after" }, trace);
+    }
+
+    private sealed class Interrupted : Exception { }
 
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, true); }
 }

@@ -4,6 +4,9 @@ internal sealed record CanonicalLocalFileChange(string RelativePath, byte[]? Bef
 
 public partial class FileSystemManager
 {
+    internal Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery) =>
+        throw new NotImplementedException();
+
     internal string BootstrapLocalStorage(CanonicalWriteLease lease, byte[]? beforeConfig, byte[] desiredConfig) =>
         throw new NotImplementedException();
 

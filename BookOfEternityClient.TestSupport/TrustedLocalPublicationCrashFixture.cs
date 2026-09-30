@@ -10,6 +10,17 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2] == "client-bootstrap")
+        {
+            try
+            {
+                var settings = new BookOfEternityClient.Configuration.GameSettings();
+                var state = new StateManager(files, settings, NullLogger<StateManager>.Instance);
+                var generation = await state.BootstrapLocalStorageAsync();
+                return settings.Language == args[3] && (args[1].Length == 0 || generation == args[1]) ? 0 : 77;
+            }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2] == "contend")
         {
             using var timeout = new CancellationTokenSource(TimeSpan.FromMilliseconds(350));
