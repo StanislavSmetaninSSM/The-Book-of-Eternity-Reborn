@@ -48,8 +48,12 @@ public partial class ValidationService
         /// <param name="CommandBytes">
         /// Exact command bytes used for selection, or <see langword="null"/> for automatic satisfaction.
         /// </param>
+        /// <param name="BindingOriginal">
+        /// Privately rederived pre-selection legality comparison, or <see langword="null"/> when no last-binding refinement applies.
+        /// </param>
         private sealed record C2SelectedDecision(JsonObject PacketRoot, JsonObject Staged,
-            AcceptedMechanicsPlanner.SpiritualExchangeInterval Interval, byte[]? CommandBytes);
+            AcceptedMechanicsPlanner.SpiritualExchangeInterval Interval, byte[]? CommandBytes,
+            OriginalBindingComparison? BindingOriginal);
 
         private C2SelectedDecision? _c2SelectedDecision;
         private bool _c2SelectionVerified;
@@ -337,6 +341,7 @@ public partial class ValidationService
             string decisionKind;
             string opportunityRef;
             byte[]? selectedCommandBytes = null;
+            OriginalBindingComparison? bindingOriginal = null;
             WoundMaterializationEnvelope? wound = null;
             byte[]? woundDraft = null;
             string? projectedNarrative = null;
@@ -397,6 +402,8 @@ public partial class ValidationService
                     if (!ValidC2DependentNarrative(priorPending, projectedNarrative))
                         return DecisionDraftFailure("spiritual_c2_dependent_narrative_invalid");
                 }
+                if (decisionKind == "materialize")
+                    bindingOriginal = await ReadOriginalBindingComparisonAsync(lease, priorCheckpoint);
                 // All old allocations were replayed before a new decision can append.
                 if (append)
                     _allocations.Journal.EnableAppendAfterReplay();
@@ -452,7 +459,7 @@ public partial class ValidationService
                 nextOrdinal++;
             packet["cursor"]!["nextSourceOrdinal"] = nextOrdinal;
 
-            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes);
+            _c2SelectedDecision = new(packetRoot, staged, next.Interval, selectedCommandBytes, bindingOriginal);
             if (selectionOnly)
                 return new(null, null, []);
             return await ContinueC2SelectedDecisionCoreAsync(lease, priorPending,
@@ -659,7 +666,7 @@ public partial class ValidationService
             IReadOnlyList<ValidationIssue> issues) =>
             issues.Count != 0 && issues.All(issue =>
                 issue.FilePath.StartsWith("activeConflict.exchangeLog[", StringComparison.Ordinal) &&
-                (PositionDependencyIndex(issue) is not null || issue.Code switch
+                (PositionDependencyIndex(issue) is not null || BindingDependencyIndex(issue) is not null || issue.Code switch
                 {
                     "afterlife_conflict_wound_force_cost_audit_missing" or
                     "afterlife_conflict_wound_force_cost_audit_obsolete" =>

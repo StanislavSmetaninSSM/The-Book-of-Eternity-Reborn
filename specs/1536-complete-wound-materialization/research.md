@@ -61,9 +61,28 @@
   presence, then canonical presence. Preserve those presence distinctions and
   prove the actual effective carrier before granting terminal B. A malformed
   present wrapper must not fall back to direct authority.
+  For the two-exchange wrapper fixture, the explicit pressure row must omit
+  `after.controlState` if the replacement is to own the final binding control:
+  an explicit pressure `none` would override the replacement's `hindered` value
+  and make that proposed original invalid before any wound. Retain the signed
+  initial control and ordinary snapshot validation; do not bypass precedence.
 - Rejected alternatives: automatic physical root rewrite expands client authority;
   general refusal does not complete the approved saved-choice flow. Detailed
   implementation/verification ordering is canonical in plan.md B0–B5/tasks.md.
+- B2 implementation seam, independently inspected 2026-09-30: immediately before
+  the actual selected wound, use the existing prospective next-source preparation
+  inside a discarded conflict-validation probe. It must check the exact frozen
+  pre-selection raw layer, one newly checked original last exchange, no missing
+  audit or pending requirement, and the corresponding prepared resource batch.
+  Read effective position from the real pre-selection mechanics, including older
+  wounds. Retain only that diagnostic's exact comparison inputs and rank; neither
+  its temporary ticket, projection, time nor allocation becomes execution authority.
+  Cold replay rederives the comparison before materializing the same saved wound;
+  warm retries retain it with that selection. Never substitute the corrected
+  proposed layer, canonical position alone, or a fabricated no-wound decision.
+  Failed eligibility adds no result permission and preserves existing independent
+  cost/position validation. This implements the approved original-lawful condition
+  without a second ordinary validator or a checkpoint schema change.
 
 **Feature**: `1536-complete-wound-materialization`  
 **Source issue**: [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)  

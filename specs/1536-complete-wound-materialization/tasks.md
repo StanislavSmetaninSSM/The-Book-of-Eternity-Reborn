@@ -16,7 +16,7 @@ issue closure still require final acceptance. Testing-only T066–T071 in
 CATEGORY-SELECTION-DECISION rev1 supersedes every historical Fast/PreMerge/full-
 suite gate below. Select affected categories only; do not rerun unchanged passes.
 
-- [ ] T081-RESUME-RECONCILIATION (#1536 / #1552) Reconcile Mortal recovery
+- [x] T081-RESUME-RECONCILIATION (#1536 / #1552) Reconcile Mortal recovery
   R1/R2/R3 and dependent-frontier implementation, independent review manifests
   and actual verification artifacts. Separate accepted work, implemented work
   missing evidence and absent behavior in the current plan. Replace superseded
@@ -24,6 +24,9 @@ suite gate below. Select affected categories only; do not rerun unchanged passes
   Close child tasks only on inspected source/evidence, then execute the already
   approved RESULT-CLOSURE-BINDING B0–B5. Maintain the compact current checkpoint;
   retain historical evidence below instead of duplicating it.
+  Accepted 2026-09-30: recovery R1–R3/RUNTIME-UNBLOCK and full T069 are verified;
+  FRONTIER's three missing cold cuts now pass and independent Astra XHigh review
+  accepts it. B0 is complete; execution continues in the separate open B1–B5 tasks.
 
 ## Format: `[ID] [P?] [Story] Description`
 
@@ -1338,7 +1341,18 @@ entrypoints require no update for T065.
   T068 is internal client-owned Mortal authority. Positive canonical publication and
   production commit invocation remain explicitly assigned to T070-B; no migration or
   premature publisher was added.
-- [ ] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. Stabilization clears the satisfied condition anchor while rebasing only recovery; a later accepted condition re-entry allocates a fresh deterioration anchor from that exact transition and minute without reallocating recovery. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
+- [x] T069 [US2] Implement canonical-world-minute recovery/deterioration policies, independent recovery versus condition/deterioration anchors, cadence/blockers/overflow/elapsed-next-anchor semantics, exact strictly-worsening policy classification for treatment interruption references, and exact closed typed tick outcomes in `BookOfEternityClient/Services/MortalWoundRecoveryPlanner.cs`. Stabilization clears the satisfied condition anchor while rebasing only recovery; a later accepted condition re-entry allocates a fresh deterioration anchor from that exact transition and minute without reallocating recovery. `MortalWoundDeteriorationPolicyAuthority` must offer the resolver-bound `Create(acceptedState, coordinates, policyRef)` overload as well as the canonical recovery-planner factory; neither accepts injected JSON/fingerprint/authority.
+  Current acceptance (2026-09-30): independent Astra XHigh compared the complete
+  original T069 scope with current source and completed evidence. Phase C is now
+  covered by accepted recovery R1–R3: 4b106de0 23/23, 9cadbcff 4/4 and 24983227
+  47/47; 36f50fd0 35/35 covers current cadence/authority and genuine stabilization
+  and condition re-entry. Both policy factories/strict-worsening tests are unchanged
+  since accepted f9cd385c and passed df2c7d6d 34/34. Completed integration-base-37.trx
+  inside the failed aggregate 19d243e4 additionally confirms all current policy and
+  16 history-first cases; the aggregate itself is not relabelled as passing.
+  T069 requires a typed death handoff, not its later consumer. No T069 requirement
+  remains open; broader treatment/legacy/death publication remains T070. The
+  phase histories below retain their original dates and superseded open states.
   T069 Phase A owns both closed deterioration-policy authority factories and exact
   strict-worsening classification. After T070-A has created canonical anchor state only
   through the accepted initial-wound path, T069 Phase B owns non-replay clock arithmetic,
@@ -5254,16 +5268,23 @@ retaining this task/spec authority.
   DEPENDENT-FRONTIER-DECISION revision1; owner explicitly approved2026-09-28.
   Execute the following bounded subtask and plan's staged-frontier section;
   parent dependency remains incomplete until all verification/review passes.
-- [ ] T081-D-POSITION-DEPENDENCY-FRONTIER [US3] Implement approved
+- [x] T081-D-POSITION-DEPENDENCY-FRONTIER [US3] Implement approved
   DEPENDENT-FRONTIER-DECISION revisions1+2 (#1536) through plan.md's six ordered
   steps. Preserve critical RED; cover public strict issued A before successor B,
   actual valid critical narration, forbidden future edits, exact stale/cold/pair
   handling, worker rollback and real file/worker final publication. Update the
   named validation/walk/policy, GameEngine and worker files, GM guides/example/
-  manifest/guards in the same block. Require XML build, owning Focused, Fast,
-  FullValidation and independent Astra XHigh correction/dependency review.
+  manifest/guards in the same block. Require XML build, affected documented
+  categories and independent Astra XHigh correction/dependency review.
   No new JSON authority, changed correlation formula, invented consequences,
   or RESULT-CLOSURE implementation is authorized by this subtask.
+  Current acceptance (2026-09-30): the reviewed 17 production and six lifecycle/
+  cache files remain unchanged. Independent Astra XHigh verified the three missing
+  cold cuts: 73981a04 1/1 (12:35.837), 5a4b0e55 1/1 (12:40.472), 9f6af212 1/1
+  (14:14.899), each complete without timeout/duplicates/cleanup debt. Together
+  with retained worker A/B, stale-A, orphan Ready, accepted-A recovery and private
+  journal negatives, these satisfy the approved FRONTIER scope. Historical failed
+  broad controls below remain failed and are not renewed acceptance gates.
   Revision2 explicitly APPROVED2026-09-28: revision1 cannot prove historical A acceptance or freeze its
   texts during cold B recovery without durable private evidence. Approved spec
   revision2 permits a replay-checked dependentDraftProgress inside the existing
@@ -5465,13 +5486,21 @@ they are not additional required work. Full T069/T070 and FRONTIER remain open.
   contract and quickstart with approved RESULT-CLOSURE-BINDING revision1 (#1536,
   reviewed spec65BDA9AB), then run scoped Spec Kit analysis. Follow plan.md B0–B5;
   approved documentation alignment may proceed during evidence reconciliation;
-  preserve the frozen FRONTIER runtime/tests until its acceptance, before B1.
+  preserve the frozen FRONTIER runtime/tests until its acceptance, before B1 execution.
   No new journal schema, correlation formula, exchange or authority.
-- [ ] T081-D-POSITION-RESULT-CLOSURE-B1 [US3] After B0 and FRONTIER acceptance,
+- [x] T081-D-POSITION-RESULT-CLOSURE-B1 [US3] After B0, prepare an isolated new-file
+  fixture while unchanged FRONTIER binaries finish; execute only after its acceptance.
   capture genuine saved-choice RED: lawful binding13/10 after pressure5/15 loses
   leverage but remains in player_success dice band. Add force_binding +2→+1 with
   only setup:true, sufficient strong setup/decisive and nonmatching controls.
   Preserve signed dice, actors, prefix, choice, costs/resources and unpublished state.
+  Evidence 2026-09-30: 30bf287c and 6d1f80df reproduce the genuine missing
+  behavior after ordinary original admission. Six-case ae83e528 passes all four
+  legal alternatives/nonmatching controls and fails only both intended lost cases.
+  Independent Astra XHigh reviewed the exact fixtures and bounded permissions;
+  its saved-command byte-comparison correction subsequently passes with all six
+  cases in 84efd5c4 (2m56.721s command). This closes the test-first prerequisite,
+  not RESULT-CLOSURE gameplay or its remaining B2–B5 acceptance.
 - [ ] T081-D-POSITION-RESULT-CLOSURE-B2 [US3] After B1, derive only owner-proved
   current arithmetic plus outcome/after.controlState; admit ordinary-valid
   no_effect/blocked with exact before control/value/presence. Retain independently

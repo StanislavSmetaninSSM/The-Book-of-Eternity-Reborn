@@ -13017,3 +13017,100 @@ text, changed scalar, original die or independent modifier cannot unlock B.
 After all current corrections validate, the client follows normal final publication.
 These fragments validate arithmetic and response shape only; real owner and
 GameEngine tests prove staging, rejection, cold recovery and publication.
+
+## spiritual_wound_binding_result_closure_v1
+
+Partial two-response authoring fragment, not a complete signed turn. In the
+closed pressure exchange, original dice5/15 and player position +2 yield 7/15,
+margin -8; player strain changes clear to strained and the saved rank-I wound
+applies binding position burden1 to the later exchange. Preserve that closed
+prefix and saved wound choice. The final binding originally has canonical
+player_advantaged position (+1), no setup or decisive success, original dice
+13/10 and effective position +1. Its +2 player row yields 15/10, margin5 and
+player_success dice band. The successful result changes only control from none
+to player hindered. The wound makes effective position zero: remove the position
+row, giving 13/10 and margin3, still player_success. That dice band alone does
+not preserve the binding prerequisite. No independent cost correction is shown;
+if the client separately proves one, follow its exact issued fields as well.
+
+Original last-exchange fragment before response A:
+
+```json
+{
+  "operationType": "binding", "outcome": "success",
+  "before": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "after": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "hindered", "controllerSide": "player", "controlId": "binding_example_001", "sourceOperation": "binding", "restrictedOperations": ["maneuver"], "summary": "Оковы сдерживают перестройку." } },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 10 }
+    ],
+    "modifierBreakdown": { "player": [{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 }], "opposition": [] },
+    "playerTotal": 15, "oppositionTotal": 10, "margin": 5,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Response A edits only the actual issued last exchange. An ordinarily validated
+`blocked` is also possible when the ordinary rules permit it; this example
+chooses `no_effect` and copies before.controlState exactly. Leave the final
+activeConflict.controlState physically unchanged in A.
+
+```json
+{
+  "operationType": "binding", "outcome": "no_effect",
+  "before": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "after": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 10 }
+    ],
+    "modifierBreakdown": { "player": [], "opposition": [] },
+    "playerTotal": 13, "oppositionTotal": 10, "margin": 3,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Echo the actual A continuationId in the existing response and publish its own
+Ready. This illustrative token is never a GM-created replacement ID:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_binding_A", "woundDecisions": [] }
+```
+
+Only after the client validates actual A does it issue B. The original effective
+raw final-control carrier still contains the old successful result:
+
+```json
+{ "activeConflict": { "controlState": { "level": "hindered", "controllerSide": "player", "controlId": "binding_example_001", "sourceOperation": "binding", "restrictedOperations": ["maneuver"], "summary": "Оковы сдерживают перестройку." } } }
+```
+
+In B, follow its single exact dependentDraftFields pointer and copy the validated
+last after.controlState value and presence. Do not edit the whole activeConflict
+container, an ignored wrapper, accepted A, private journal or saved choice:
+
+```json
+{ "activeConflict": { "controlState": { "level": "none", "controllerSide": null } } }
+```
+
+B has its own continuationId, response and Ready:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_binding_B", "woundDecisions": [] }
+```
+
+The client may use a detached final-control echo while validating A; neither GM
+nor worker writes that echo to files. The actual cumulative A+B draft must pass
+ordinary full validation before any publication. Cold recovery may issue B with
+zero original exchanges remaining and no synthetic progress row. The same two
+response order applies to force_binding after effective +2 falls to +1 when
+boolean setup:true is its only setup; ready setup or decisive success can retain
+the strong prerequisite. These fragments check authorable arithmetic and response
+shape; genuine GameEngine tests own issuance, replay and publication.

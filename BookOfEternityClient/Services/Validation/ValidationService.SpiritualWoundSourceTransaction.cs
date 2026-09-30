@@ -481,6 +481,24 @@ public partial class ValidationService
                 }
             }
 
+            /// <summary>
+            /// Checks the current uncommitted ticket and prepares its resource batches under the source continuation gate.
+            /// </summary>
+            /// <param name="caller">
+            /// Exact source owner that issued this ticket.
+            /// </param>
+            /// <param name="lease">
+            /// Active canonical lease retained by the ticket.
+            /// </param>
+            /// <param name="owners">
+            /// Original planning authority for the affected resource owners.
+            /// </param>
+            /// <param name="state">
+            /// Exact retained prefix ledger when a resource prefix is present.
+            /// </param>
+            /// <returns>
+            /// Prepared batches or validation issues, including a busy diagnostic when the gate is already held.
+            /// </returns>
             internal AfterlifeSpiritualConflictResourceOutcome.BuildResult BuildResourceBatches(
                 SpiritualWoundSourceSession caller, FileSystemManager.CanonicalWriteLease lease,
                 ResourceOwnerAuthority owners, ResourceStateLedger state)
@@ -490,27 +508,52 @@ public partial class ValidationService
                     return new(null, FailureIssues("spiritual_source_continuation_busy", "source continuation is already running"));
                 try
                 {
-                    var invalid = ValidateCommitContext(caller, lease);
-                    if (invalid is not null)
-                        return new(null, invalid);
-                    if (caller._resourcePrefix != null && !ReferenceEquals(state, caller._resourcePrefix.State))
-                        return new(null, FailureIssues("spiritual_source_prefix_mismatch", "exact retained prefix ledger required"));
-                    var frontier = _prospective._mechanicsContext;
-                    var result = AfterlifeSpiritualConflictResourceOutcome.TryCreate(caller.TurnNumber,
-                        _prospective._originalConflict.DeepClone().AsObject(),
-                        _prospective._candidateConflict.DeepClone().AsObject(), owners, state,
-                        frontier, frontier == null ? null : _prospective._resourceBatches
-                            .Where(pair => pair.Key < frontier.Ordinal).Select(pair => pair.Value).ToArray(),
-                        _prospective.TerminalPreparation);
-                    if (result.IsValid && frontier != null)
-                        foreach (var batch in result.Exchanges)
-                            _prospective._resourceBatches[batch.Ordinal] = batch;
-                    return result;
+                    return BuildResourceBatchesCore(caller, lease, owners, state);
                 }
                 finally
                 {
                     caller._continuationGate.Release();
                 }
+            }
+
+            /// <summary>
+            /// Prepares resource comparisons while the source continuation gate is already held, without executing them.
+            /// </summary>
+            /// <param name="caller">
+            /// Exact source owner that issued this uncommitted ticket.
+            /// </param>
+            /// <param name="lease">
+            /// Active lease retained by the ticket.
+            /// </param>
+            /// <param name="owners">
+            /// Original planning resource-owner authority.
+            /// </param>
+            /// <param name="state">
+            /// Exact retained resource-prefix ledger.
+            /// </param>
+            /// <returns>
+            /// Prepared batches or validation issues; no resource or source frontier advances.
+            /// </returns>
+            private AfterlifeSpiritualConflictResourceOutcome.BuildResult BuildResourceBatchesCore(
+                SpiritualWoundSourceSession caller, FileSystemManager.CanonicalWriteLease lease,
+                ResourceOwnerAuthority owners, ResourceStateLedger state)
+            {
+                var invalid = ValidateCommitContext(caller, lease);
+                if (invalid is not null)
+                    return new(null, invalid);
+                if (caller._resourcePrefix != null && !ReferenceEquals(state, caller._resourcePrefix.State))
+                    return new(null, FailureIssues("spiritual_source_prefix_mismatch", "exact retained prefix ledger required"));
+                var frontier = _prospective._mechanicsContext;
+                var result = AfterlifeSpiritualConflictResourceOutcome.TryCreate(caller.TurnNumber,
+                    _prospective._originalConflict.DeepClone().AsObject(),
+                    _prospective._candidateConflict.DeepClone().AsObject(), owners, state,
+                    frontier, frontier == null ? null : _prospective._resourceBatches
+                        .Where(pair => pair.Key < frontier.Ordinal).Select(pair => pair.Value).ToArray(),
+                    _prospective.TerminalPreparation);
+                if (result.IsValid && frontier != null)
+                    foreach (var batch in result.Exchanges)
+                        _prospective._resourceBatches[batch.Ordinal] = batch;
+                return result;
             }
 
             /// <summary>

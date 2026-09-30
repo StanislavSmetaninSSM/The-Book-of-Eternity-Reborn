@@ -5,6 +5,28 @@ namespace BookOfEternityClient.Services;
 public static partial class AfterlifeSpiritualConflictState
 {
     /// <summary>
+    /// Resolves the separate writable final-control carrier for a last replacement-log exchange.
+    /// </summary>
+    /// <param name="raw">
+    /// Strict original direct root or exchange wrapper, retaining presence and carrier precedence.
+    /// </param>
+    /// <returns>
+    /// The direct or selected replacement container and its control pointer; inherited or explicit-exchange control is not a separate editable echo.
+    /// </returns>
+    internal static (JsonObject Owner, string Pointer)? ResolveRawFinalControl(JsonObject raw)
+    {
+        if (!raw.ContainsKey(ResponseField))
+            return raw["activeConflict"] is JsonObject active ? (active, "/activeConflict/controlState") : null;
+        if (raw[ResponseField] is not JsonObject update ||
+            !string.Equals(GetNodeString(update["mode"]), ModeExchange, StringComparison.OrdinalIgnoreCase) ||
+            update["exchange"] is not JsonObject exchange ||
+            exchange["after"] is JsonObject after && after.ContainsKey("controlState")) return null;
+        var key = update["activeConflictAfter"] is JsonObject ? "activeConflictAfter" : "conflictStateAfter";
+        return update[key] is JsonObject replacement
+            ? (replacement, $"/{ResponseField}/{key}/controlState") : null;
+    }
+
+    /// <summary>
     /// Enumerates first-seen nonnull exchange rows using the same identity precedence as composition.
     /// </summary>
     /// <param name="source">

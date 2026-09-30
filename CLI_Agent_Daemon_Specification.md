@@ -903,3 +903,11 @@ continuationId; read and answer it separately with an empty woundDecisions array
 Future corrections are forbidden in the earlier response. Preserve the saved
 wound choice; stale Ready is not a response to the new request. Follow the wound
 guide and worked A-to-B example, including after a client restart.
+For spiritual_wound_binding_result_closure_v1, follow the exact current
+dependentDraftFields. A corrects the proved last-binding arithmetic, independent
+costs, ordinarily valid no_effect/blocked and after.controlState copied exactly
+from before; final activeConflict.controlState stays untouched. Only after actual
+A validates may B correct its one effective raw final-control carrier to the
+validated last control. B needs a new continuationId, woundDecisions: [] and
+Ready. Preserve accepted A and the saved wound choice across restart; never write
+the detached validation echo, ignored wrapper or private progress.

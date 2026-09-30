@@ -26,9 +26,17 @@ public sealed partial class AfterlifeResourceCutoverTests
         var onlyA = CreateSpiritualStagedCorrectionA(original);
         var allCorrected = CreateSpiritualStagedCorrectionB(onlyA);
         var originalFiles = await ReadSpiritualContinuationTransportFilesAsync(context);
-        var incomplete = await context.Validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, issuedA, responseA);
+        var missingTransport = await context.Validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(
+            lease, issuedA, responseA, expectedRequestBytes: [1]);
+        Assert.Null(missingTransport.Evaluation);
+        Assert.Equal("blocked", missingTransport.Progress.Disposition);
+        Assert.Contains(missingTransport.Progress.Issues, issue => issue.Code == "spiritual_dependent_progress_transport_changed");
+        await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, originalFiles);
+        var incompleteResponse = await context.Validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(lease, issuedA, responseA);
+        var incomplete = Assert.IsType<ValidationService.SpiritualWoundContinuationEvaluation>(incompleteResponse.Evaluation);
         Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Rejected, incomplete.Disposition);
         Assert.Null(incomplete.NextRequest);
+        Assert.Equal("blocked", incompleteResponse.Progress.Disposition);
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, originalFiles);
         await context.FileSystem.WriteFileAtomicBytesAsync(lease, AfterlifeSpiritualConflictState.StatePath,
             Encoding.UTF8.GetBytes(onlyA.ToJsonString()));
@@ -45,7 +53,9 @@ public sealed partial class AfterlifeResourceCutoverTests
             new Dictionary<string, byte[]?> { [AfterlifeSpiritualConflictState.StatePath] = Encoding.UTF8.GetBytes(allCorrected.ToJsonString()) }));
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, afterA);
 
-        var committed = await context.Validator.CommitSpiritualWoundDependentProgressAsync(lease, issuedA, responseA);
+        var processed = await context.Validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(lease, issuedA, responseA);
+        Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Advanced, processed.Evaluation!.Disposition);
+        var committed = processed.Progress;
         Assert.True(committed.Disposition == "committed", string.Join("\n", committed.Issues));
         var issuedB = Assert.IsType<SpiritualWoundContinuationRequest>(committed.NextRequest);
         Assert.NotEqual(issuedA.ContinuationId, issuedB.ContinuationId);
@@ -74,10 +84,13 @@ public sealed partial class AfterlifeResourceCutoverTests
             Encoding.UTF8.GetBytes(allCorrected.ToJsonString()));
         var afterB = await ReadSpiritualContinuationTransportFilesAsync(context);
         var cold = new ValidationService(context.FileSystem, NullLogger<ValidationService>.Instance);
-        var resolved = await cold.EvaluateSpiritualWoundContinuationDraftAsync(lease, issuedB, responseB);
+        var finalResponse = await cold.EvaluateAndCommitSpiritualWoundDependentResponseAsync(lease, issuedB, responseB);
+        var resolved = Assert.IsType<ValidationService.SpiritualWoundContinuationEvaluation>(finalResponse.Evaluation);
         Assert.Equal(ValidationService.SpiritualWoundContinuationDisposition.Resolved, resolved.Disposition);
         Assert.Null(resolved.NextRequest);
         Assert.Empty(resolved.Issues);
+        Assert.Equal("blocked", finalResponse.Progress.Disposition);
+        Assert.Contains(finalResponse.Progress.Issues, issue => issue.Code == "spiritual_dependent_progress_not_advanced");
         Assert.Empty(await cold.ValidateSpiritualWoundContinuationDraftAsync(lease, issuedB, responseB,
             new Dictionary<string, byte[]?>(), requireResolvedDraft: true));
         await AssertSpiritualContinuationTransportFilesUnchangedAsync(context, afterB);

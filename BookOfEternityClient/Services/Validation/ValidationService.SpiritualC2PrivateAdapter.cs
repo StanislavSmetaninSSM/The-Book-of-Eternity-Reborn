@@ -315,7 +315,8 @@ public partial class ValidationService
             {
                 var dependentIssues = await capture.ReadC2DependentIssuesAsync(lease);
                 if (!capture.IsCurrentOwner || dependentIssues.Count != 0 &&
-                    !SpiritualOriginalTurnCapture.IsCorrectableDependentConflictFailure(dependentIssues))
+                    !SpiritualOriginalTurnCapture.IsCorrectableDependentConflictFailure(dependentIssues) &&
+                    !capture.CanInspectBindingTerminalControl(dependentIssues))
                     return new("blocked", null, dependentIssues);
                 retained = true;
                 return new("dependent_continuation",

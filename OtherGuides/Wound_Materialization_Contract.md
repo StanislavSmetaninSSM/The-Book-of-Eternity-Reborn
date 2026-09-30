@@ -776,6 +776,38 @@ then calculate the effective rank and dice result using the rule above. Unaffect
 previews retain their existing dice calculation; this preview grants no authority
 to change canonical position or a closed exchange.
 
+### spiritual_wound_binding_result_closure_v1
+
+If a saved position wound removes the prerequisite of an originally valid last
+`binding` or `force_binding`, follow only the current client-issued
+`dependentDraftFields`. This bounded case requires the original successful
+exchange to have changed only control: every other `before`/`after` field must
+match. A lower dice margin alone does not grant a new outcome choice. An effective
+`+1` or boolean `setup: true` alone cannot sustain `force_binding`; effective
+`+2`, `setupState`/`bindingSetup = ready`, or decisive success can. A valid setup,
+decisive success or sufficient effective advantage keeps the original result.
+
+In response A, correct the entire exact arithmetic group and any independently
+proved action cost fields, then choose an ordinarily valid `no_effect` or
+`blocked`. Copy `before.controlState` into `after.controlState` exactly, including
+its presence and value. Keep original dice, operation, setup, actors, canonical
+position, strain, all other after fields, closed prefix and saved wound choice.
+Do not correct the final `activeConflict.controlState` in A. An unrelated ordinary
+validation error still rejects A. The client's temporary final-control echo
+used during A validation is detached; GM and workers must not write it or any
+private checkpoint, progress row, receipt or canonical state.
+
+Only after actual A passes ordinary validation does the client issue response B.
+B permits the one effective raw final-control carrier indicated by its exact
+pointer and requires the validated last `exchange.after.controlState` value and
+presence. Do not edit ignored wrapper siblings or a whole container. B needs its
+own `continuationId`, response with `woundDecisions: []`, and Ready. Keep accepted
+A unchanged. The client validates the actual cumulative raw draft after B and
+publishes only after complete acceptance. Cold replay may derive B with zero
+unaccepted exchanges; it creates no new exchange, wound choice or GM progress row.
+See `spiritual_wound_binding_result_closure_v1` in
+`Examples/E_CLI_Afterlife_Turns.txt` for the two authorable responses.
+
 ## wound_treatment_scene_authority_v1
 
 Mortal wound treatment may use three exact closed version-1 setting rows inside the

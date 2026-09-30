@@ -905,3 +905,18 @@ and workers must not author or repair that field. Original-owner replay checks
 each saved correction before a later candidate, and confirmed checkpoint progress
 opens the next frontier before its public request is written. This comparison
 evidence does not independently authorize execution or publication.
+
+### spiritual_wound_binding_result_closure_v1
+
+This narrower case uses the same `dependent_draft` transport for a last
+`binding`/`force_binding` whose saved position wound removes its control
+prerequisite. Response A changes only client-proved arithmetic, independently
+proved costs, `outcome` to ordinarily valid `no_effect`/`blocked`, and
+`after.controlState` to the exact before value and presence. It cannot change
+final control. After actual A validates, a new request B permits only the
+effective raw `activeConflict.controlState` carrier with that validated
+last-exchange value/presence. Distinct `continuationId`, `woundDecisions: []`
+and Ready are required for each response. No new public field or GM authority
+is added. Preserve the saved wound choice. Read the wound guide and worked
+afterlife example; the client alone uses a detached echo for intermediate
+validation and validates the full actual draft after B.

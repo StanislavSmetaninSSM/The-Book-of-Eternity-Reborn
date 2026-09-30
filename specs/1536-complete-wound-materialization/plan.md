@@ -10,6 +10,18 @@ plus the approved Superpowers design at
 <!-- ACTIVE-EXECUTION-CHECKPOINT:START -->
 ## Current completion checkpoint — resumed 2026-09-30
 
+GitHub preservation checkpoint requested by the owner (2026-09-30): save the
+current implementation, tests, GM documentation and category definitions on
+the existing feature branch. This is an incomplete-work checkpoint, not final
+acceptance of RESULT-CLOSURE-BINDING B2–B5. Previously accepted reconciliation,
+T069, FRONTIER and B1 remain accepted on the evidence below. Preserve the new
+binding implementation together with its tests rather than lose work while
+waiting for remaining verification. The corrected warm lifecycle rerun is
+484acdd0 (`TestResults/binding-live-owner-coordinate.log`); at checkpoint
+preparation it is still running. Cold force-binding, frontier admission,
+progress write-failure compatibility and the updated discovery-only category
+audit remain outstanding. Do not merge or close #1536 from this snapshot.
+
 Source: #1536 / #1552, T081-RESUME-RECONCILIATION. Owner approved resumption
 and the revised completion approach after the state assessment. Parent Astra
 owns the implementation; a separate Astra XHigh agent reviews the coherent
@@ -34,18 +46,149 @@ R1/R2/R3 and RUNTIME-UNBLOCK slices after inspecting actual 4b106de0 (23/23),
 9cadbcff (4/4), 24983227 (47/47), later cache 36f50fd0 (35/35), activity/guidance
 57868cc9 (27/27), and original rollback/reentry evidence. All 43 relevant current
 recovery/runtime/test/GM files match the post-affinity reviewed-source manifest.
-These child tasks are closed; full T069/T070 and US2 remain subject to their
-remaining criteria. Failed/incomplete old aggregate runs remain recorded as such.
+These child tasks are closed. Subsequent whole-scope independent review also
+accepts T069: both unchanged policy factories/strict-worsening evidence df2c7d6d
+34/34, current cadence/re-entry 36f50fd0 35/35, all 16 history-first guards in the
+completed integration-base-37.trx from 19d243e4, and R1–R3 durable replay satisfy
+its original requirements. T069's death result is a typed handoff; its consumer
+belongs to T070. Full T070 and US2 remain open. Failed/incomplete old aggregate
+runs remain recorded as such; completed constituent TRX do not change their status.
 
-FRONTIER's 17 production files match reviewed E49692EE; six relevant optimized
-lifecycle helpers match performance-final-manifest.json. Preserve the accepted
-worker A/B, stale-A, orphan and accepted-A-before-cleanup evidence. Three explicit
-spec acceptance cuts lack completed execution: after A draft apply, after A
-Ready, and after B request publication. Run their three new semantic categories
-individually (15-minute protective category bounds, measured time initially
-unknown); do not rerun the old 43-method lifecycle category. Pure inventory
-validation covers the selector move without executing unrelated tests.
-RESULT-CLOSURE production remains gated on these actual missing results.
+FRONTIER is accepted after independent Astra XHigh review of the three formerly
+missing cold cuts and retained worker A/B, stale-A, orphan and accepted-A-before-
+cleanup evidence. All 17 production files still match E49692EE; six optimized
+lifecycle helpers match performance-final-manifest.json. No assertion was removed
+or budget increased. Do not rerun the old 43-method lifecycle category.
+The prerequisite for RESULT-CLOSURE B1 execution is satisfied. Its first isolated
+new-file fixture was prepared while unchanged binaries ran, without rebuilding
+or changing the frozen runtime/helpers. After acceptance, category
+`spiritual-binding-result-dependency` produced genuine RED 30bf287c: the original
+two exchanges passed ordinary admission and all four signed dice claims; the
+real saved position wound then blocked the last binding with exactly
+`afterlife_conflict_binding_without_leverage` and the stale position modifier.
+The case took 14s (whole build/discovery/command 1m53.649s), without timeout or
+cleanup debt. Both families subsequently produced genuine RED in 6d1f80df.
+The six-case B1 control ae83e528 took 2m20.101s: four legal-alternative/nonmatching
+cases pass, and only the two intended lost-leverage cases fail at the missing
+dependent-continuation behavior. All six originals pass ordinary admission.
+Independent Astra XHigh accepts the test-first design; its exact saved-command
+byte-comparison improvement passes in the subsequent six-case 84efd5c4 control.
+No production code changed before these observations. These RED artifacts
+establish the reproduction and do not claim gameplay completion.
+First B2 implementation passes 84efd5c4, all6 cases, 1m56s tests / 2m56.721s
+command: discarded original-legality probe, current-wound rank, exact failed
+result/control groups and immutable draft bounds. No ticket/time escapes the
+original probe; cold selection replay rederives its comparison. The seven-case
+db70c216 control also passes the real rank-II mixed position/cost wound and
+actor/strain negatives (2m13s tests / 3m13.455s command). B2 remains unaccepted
+until the coherent B2–B5 review and final relevant checks.
+
+Current B3/B4 implementation checkpoint (2026-09-30): actual A/B test has genuine
+RED 9e064d79 (37s case / 1m19.878s command), rejecting valid A with the old terminal
+echo. First detached-projection implementation 76e5e06 still rejected at the
+earlier private-session opening boundary (2m14.989s). Bounded inspection now
+requires the independently reconstructed original-binding proof and exactly
+the terminal-control diagnostic; full policy and ordinary validation remain
+mandatory. Run56ce0d32 reached draft preservation and exposed the new fixture's
+missing narrative timestamp (1m08s case / 2m12.634s command), corrected in the
+fixture, not by weakening production. Direct mixed-cost A/B plus cold replay
+passes4636aa27 (1/1, 3m38s case / 4m20.350s command); force-binding raw wrapper
+passesda4b50cf (1/1, 3m42s case / 4m02.513s command). Both complete their exact
+selections without timeout, duplicates or cleanup debt. No B2–B5 completion or
+canonical gameplay acceptance is claimed yet.
+Parent owns production, binding fixtures, categories and checkpoint; bounded
+Sol High agent binding_gm_docs owns only approved B5 GM docs/example/guards and
+did not run builds/tests concurrently. Parent inspected the actual ten-file
+docs/example diff and corrected a wrapped-text guard through that agent.
+Independent Astra XHigh inspected the coherent production/test/GM diff and actual
+passed artifacts; its only finding was missing original out-of-scope eligibility
+coverage. Added an eighth ordinary-valid case with an extra strain consequence;
+it must retain the choice but expose no public result repair. New four-case unit
+control covers exact absent/null/value and raw-carrier precedence. Their execution
+passes in c3b2ddc3: all12 cases (eight original-binding cases and four raw boundary
+cases), complete2/2 descriptors,4m35.758s command, no timeout or cleanup debt.
+Selected nonbinding compatibility and final GM manifest verification remain open.
+Full GameEngine warm binding and cold force-binding tests are implemented;
+warm verification83d2fce0 failed its internal eight-minute deadline after three
+real requests and three Ready responses. Its five-second operation cleanup also
+timed out; the runner subsequently completed owned-process cleanup. This is not
+passing evidence. Added publication milestones and a nine-minute warm deadline
+within the unchanged ten-minute category bound; a second timeout requires root-
+cause investigation, not another automatic increase. Cold verification has not
+run. Second warm control5d0e9226 also failed its internal nine-minute deadline
+(9m14s case /9m35.466s command), after three requests/responses and terminal B
+publication, without any receipt/resource/identity/story publication milestone.
+Its operation cleanup also timed out; runner-owned process cleanup completed.
+Do not extend the budget again or start the cold acceptance run yet. The next
+bounded investigation samples the already passing direct A/B scenario with a
+local ignored dotnet-trace tool to identify CPU/await cost before changing code;
+it preserves production behavior, assertions and independent mutable fixtures.
+Profiled direct control f58cb706 passes1/1 (4m19s case /4m38.681s command).
+The60-second sampled-thread-time trace shows active stacks concentrated in
+FileSystemManager reads and physical path authority, including retained-input
+and dependent-draft checks; idle framework threads are not counted as gameplay
+CPU. Inspection found duplicate full evaluation at the engine and progress
+commit boundaries. Independent Astra XHigh admits this bounded B5 optimization:
+for dependent responses only, collect the unchanged exact request/Ready/input
+witness, evaluate once, then use the existing commit/postflight/cold-replay path
+for Advanced. Preserve Rejected retry, Resolved ordinary execution, and held
+transport on witness/commit failures. The standalone commit API retains its
+existing dispositions. Do not cache authority or alter filesystem protections.
+Measure the unchanged owning lifecycle afterwards; no speedup is claimed yet.
+The three-file combined-evaluation implementation is statically accepted by the
+independent reviewer (GameEngine925CDBDD, progressC6A8094F, staged-test5080204D);
+fresh XML build and the combined response controlccf1b670 pass1/1 (5m41s case /
+7m16.679s command including build/discovery), complete without timeout, duplicate
+IDs or cleanup debt. This verifies held/rejected/advanced/resolved branches and
+retained read-only, stale-A and exact-file guards, not full GameEngine completion.
+Optimized warm control3940d64a still fails the nine-minute phase deadline
+(9m13s case /9m32.870s command), but its new milestones prove actual canonical
+resource, receipt and wound-identity publication at10:28:10, before timeout.
+B was issued at10:24:53. This is progress beyond both previous failures, not a
+passing whole-turn result; story/cleanup/idle assertions remain unverified.
+Following the measured profile and removal of duplicate evaluation, revise this
+single owning category to12minutes with an11-minute internal warm phase. The
+initial ten/nine-minute bounds were estimates; this reserve covers observed
+publication plus final turn completion. No other category or cold-phase limit
+changes. No further increase is justified without new evidence; first require
+the unchanged full acceptance assertions. Independent fixtures remain isolated.
+Warm4b95244b completes the actual engine operation within the new reserve, then
+fails a test assertion (10m07s case /11m41.620s command including fresh XML build).
+Receipt, decision, wound/history/effect and player-balance assertions passed;
+the next assertion wrongly searched opposition resources by guardian actor ID.
+The established fixture seeds AfterlifeConflictSide/afterlife_conflict_side_cost
+(AfterlifeResourceCutoverTests.cs:284), also used by existing lifecycle assertions.
+Corrected this new helper to require that exact owner kind and ID and the same
+expected balance. No production behavior, counts or required outcomes changed.
+Remaining assertions still need execution; this run remains failed.
+Baseline generic category1a4097ae hit its
+ten-minute descriptor deadline (10m17.880s command), leaving no completed TRX;
+all seven planned cases remain unverified by that aggregate. Split its five
+methods/seven cases by responsibility: issued admission (two), complete response
+evaluation (one), and private journal/write-failure boundaries (four). The exact
+method multiset is preserved; no tests are removed. Existing category links now
+describe the narrower journal responsibility and conditional related categories.
+The combined path is internal only: no GM envelope, prompt or example changes.
+Documentation-examples33975520 passes231/231,4/4 descriptors,3m12.219s command,
+without timeout/duplicates/cleanup debt after the manifest-token correction.
+Selected documentation control20c025c0 executed399 cases (398 pass, one
+failure), then correctly stopped before the12 binding cases. The failure exposed
+two stale manifest text requirements for the already corrected direct-treatment
+limitation; updated those exact tokens to the existing example. Completed new
+binding GM guard/example results remain valid, but the aggregate is failed and
+incomplete. No production behavior changed since the direct and
+wrapper passes (only XML documentation was added to the extracted batch wrapper).
+
+B5 boundary rationale: Mortal World prompts/commands are unchanged because this
+is exclusively an afterlife spiritual-conflict continuation. Updated wound guide,
+afterlife matrix, CLI API/daemon guidance, worker guidance and worked example/
+manifest/guards. Existing TaskGuides/CLI_Step_Main.txt requires the afterlife
+matrix for both realms. Existing GmWorkerTaskPacketBuilder already passes the
+actual exact dependentDraftFields, empty decisions, preserved siblings and
+private-state prohibition; the public envelope/dispatch remains unchanged.
+Executable prompt/launcher entrypoints therefore need no additional branch or
+schema change. Existing live-turn contract already contains the approved A/B,
+detached-echo and zero-exchange replay rules from B0.
 The older logs below are historical evidence, not additional execution orders.
 Use the existing approved B0–B5 plan with category-based verification; preserve
 all six RESULT-CLOSURE rules, negative cases and original continuation contracts.
@@ -59,18 +202,30 @@ B3 detached-only echo validation, and B4 persisted final-A/zero-exchange B.
 B5 owns GM synchronization, both real response paths and selected verification.
 Research/quickstart already specify the original-valid fixture and three required
 regressions; data-model/live contract now include terminal progress semantics.
-No gameplay scope or public schema changes. Remaining prerequisite: the three
-unexecuted FRONTIER cuts above; do not infer their success from this analysis.
+No gameplay scope or public schema changes. The FRONTIER prerequisite was
+subsequently met by actual cold results below, not inferred from this analysis.
 
 Reconciliation/design/catalog block verification: independent Astra XHigh review
 accepted the exact ten-file diff after correcting active B0/B5 wording. B0 is
-complete; FRONTIER and B1 remain open. Discovery-only category audit 9d65cb18
+complete; FRONTIER and B1 were subsequently accepted with the evidence above. Discovery-only category audit 9d65cb18
 passed (94 categories, 10,180 discovered methods, zero executed tests; 1m57s),
 and plan-only d51e55e5 selected exactly the three intended methods (12s). The
 selector multiset is unchanged; no test or assertion was removed. XML builds
 succeeded with three existing Integration CS1587 warnings and no errors.
 `git diff --check` passed. These checks justify this documentation/catalog block,
 not gameplay acceptance; record the three actual cold outcomes separately.
+
+Cold evidence on unchanged pre-B1 binaries: 73981a04 passes A-draft-before-Ready
+(1/1, case12m12s / command12m35.837s); 5a4b0e55 passes A-Ready
+(1/1, case12m19s / command12m40.472s); 9f6af212 passes B-issued
+(1/1, case13m52s / command14m14.899s). All three selected categories completed,
+without timeout, duplicate IDs or cleanup debt. They preserve the choice,
+separately authenticate A/B and publish once. Integration binary SHA256 is
+57B52C071DBF6277B9C56A3BFDAF70480FBC14E26C02596FDB71C93B865D1A85;
+runtime binary SHA256 is 5426A8BD9048ECC62A9936B180B285655BFFA1B4CB029C554A298FA18D6804C6.
+These are the binaries built in 9d65cb18, before the new isolated B1 fixture.
+The parent inspected artifacts and independent Astra XHigh confirmed exact TRX,
+summary, commands and retained source hashes. No full-suite success is claimed.
 
 ### Historical publication and execution checkpoints
 
@@ -868,7 +1023,8 @@ the result and explicitly resumes. Its approved revision/review requirement stay
 Source: [GitHub #1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536),
 approved spec.md RESULT-CLOSURE-BINDING revision1 (reviewed text65BDA9AB).
 This bounded child of T081-D-POSITION-RESULT-CLOSURE is gated on acceptance of
-the current FRONTIER block. No implementation has started. Existing C#/.NET8,
+the current FRONTIER block; its acceptance and implementation progress are recorded
+in the active checkpoint above. Existing C#/.NET8,
 signed file-backed owners, raw-carrier precedence, closed transport, private
 journal schema and correlation formula remain. No migration, new public field,
 new authority or generic outcome mapping is planned.
@@ -887,7 +1043,8 @@ Ordered execution against tasks.md:
    Run scoped Spec Kit analysis over approved spec, this plan and new tasks.
    Approved documentation alignment may proceed during evidence reconciliation.
    Preserve the current FRONTIER runtime/tests during its owning tests and wait
-   for FRONTIER acceptance before B1 or dependent production changes.
+   for FRONTIER acceptance before B1 execution or dependent production changes;
+   isolated new-file B1 fixture preparation may overlap unchanged binary controls.
 2. **B1 — genuine RED.** Add the signed saved-choice fixture: pressure5/15,
    later binding13/10, canonical position+1, materialized binding burden1.
    Both arithmetic bands remain player_success; lost leverage must expose only

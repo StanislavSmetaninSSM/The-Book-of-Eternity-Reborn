@@ -23,8 +23,21 @@ public partial class ValidationService
         SpiritualWoundContinuationRequest? NextRequest, IReadOnlyList<ValidationIssue> Issues);
 
     /// <summary>
+    /// Keeps physical response evaluation together with its conditional progress commit, without reusable authority.
+    /// </summary>
+    /// <param name="Evaluation">
+    /// The evaluation performed after witnessing physical inputs, or <see langword="null"/> when that witness failed.
+    /// </param>
+    /// <param name="Progress">
+    /// The progress result; a non-advanced evaluation has the existing blocked/not-advanced result.
+    /// Witness and commit failures require retaining the issued transport for recovery.
+    /// </param>
+    internal sealed record SpiritualWoundDependentResponseResult(SpiritualWoundContinuationEvaluation? Evaluation,
+        SpiritualWoundDependentProgressCommitResult Progress);
+
+    /// <summary>
     /// Saves one fully validated issued frontier before activating a separate dependent request.
-    /// The engine invokes this only after authenticating the exact original-turn Ready.
+    /// Preserves standalone progress dispositions while retaining evaluation inside the operation.
     /// </summary>
     /// <param name="lease">
     /// Active canonical lease covering response validation, snapshot comparison and atomic checkpoint replacement.
@@ -52,8 +65,45 @@ public partial class ValidationService
         SpiritualWoundContinuationResponse response,
         Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task>? writeOverrideAsync = null,
         byte[]? expectedRequestBytes = null, byte[]? expectedReadyBytes = null)
+        => (await EvaluateAndCommitSpiritualWoundDependentResponseAsync(lease, expectedRequest, response,
+            writeOverrideAsync, expectedRequestBytes, expectedReadyBytes)).Progress;
+
+    /// <summary>
+    /// Evaluates a witnessed response once and durably commits only an advanced frontier.
+    /// The engine uses this for dependent responses instead of evaluating again before the progress operation.
+    /// </summary>
+    /// <param name="lease">
+    /// Active canonical lease covering the complete witness, evaluation and conditional commit.
+    /// </param>
+    /// <param name="expectedRequest">
+    /// Issued envelope whose permissions are reconstructed by the actual evaluation.
+    /// </param>
+    /// <param name="response">
+    /// Correlated response to evaluate; no earlier evaluation is accepted as authority.
+    /// </param>
+    /// <param name="writeOverrideAsync">
+    /// Optional atomic checkpoint writer for existing failure tests; <see langword="null"/> uses the filesystem.
+    /// </param>
+    /// <param name="expectedRequestBytes">
+    /// Exact engine-observed request bytes, or <see langword="null"/> for direct internal calls.
+    /// </param>
+    /// <param name="expectedReadyBytes">
+    /// Exact engine-observed Ready bytes, or <see langword="null"/> for direct internal calls.
+    /// </param>
+    /// <returns>
+    /// Rejection or resolution without a write, an independently reopened committed successor,
+    /// or a witness/commit failure that must retain transport for recovery.
+    /// </returns>
+    internal async Task<SpiritualWoundDependentResponseResult> EvaluateAndCommitSpiritualWoundDependentResponseAsync(
+        FileSystemManager.CanonicalWriteLease lease, SpiritualWoundContinuationRequest expectedRequest,
+        SpiritualWoundContinuationResponse response,
+        Func<FileSystemManager.CanonicalWriteLease, string, byte[], Task>? writeOverrideAsync = null,
+        byte[]? expectedRequestBytes = null, byte[]? expectedReadyBytes = null)
     {
         _fs.EnsureCanonicalWriteLeaseActive(lease);
+        SpiritualWoundContinuationEvaluation? evaluated = null;
+        SpiritualWoundDependentResponseResult Result(SpiritualWoundDependentProgressCommitResult progress) =>
+            new(evaluated, progress);
         try
         {
             var first = await ClassifySpiritualPendingAsync(lease);
@@ -61,7 +111,7 @@ public partial class ValidationService
             using (var capture = first.Capture)
             {
                 if (first.Disposition != "match" || capture is null)
-                    return ProgressFailure("blocked", "spiritual_dependent_progress_owner_unavailable");
+                    return Result(ProgressFailure("blocked", "spiritual_dependent_progress_owner_unavailable"));
                 var witnessed = new Dictionary<string, CanonicalBeforeImage>(
                     await capture.ReadC2TransportWitnessAsync(lease), StringComparer.Ordinal);
                 foreach (var (path, expected) in new[]
@@ -72,34 +122,34 @@ public partial class ValidationService
                 {
                     var bytes = await _fs.ReadFileBytesAsync(lease, path);
                     if (expected is not null && (bytes is null || !expected.AsSpan().SequenceEqual(bytes)))
-                        return ProgressFailure("blocked", "spiritual_dependent_progress_transport_changed");
+                        return Result(ProgressFailure("blocked", "spiritual_dependent_progress_transport_changed"));
                     witnessed[path] = new(bytes is not null, bytes);
                 }
                 before = witnessed;
             }
-            var evaluated = await EvaluateSpiritualWoundContinuationDraftAsync(lease, expectedRequest, response);
+            evaluated = await EvaluateSpiritualWoundContinuationDraftAsync(lease, expectedRequest, response);
             if (evaluated.Disposition != SpiritualWoundContinuationDisposition.Advanced)
-                return ProgressFailure("blocked", "spiritual_dependent_progress_not_advanced");
+                return Result(ProgressFailure("blocked", "spiritual_dependent_progress_not_advanced"));
             var classified = await ClassifySpiritualPendingAsync(lease);
             SpiritualWoundDependentProgressCommitResult written;
             using (var capture = classified.Capture)
             {
                 if (classified.Disposition != "match" || capture is null)
-                    return ProgressFailure("blocked", "spiritual_dependent_progress_owner_unavailable");
+                    return Result(ProgressFailure("blocked", "spiritual_dependent_progress_owner_unavailable"));
                 written = await capture.CommitDependentProgressCoreAsync(lease, expectedRequest, before, writeOverrideAsync);
             }
-            if (written.Disposition != "committed") return written;
+            if (written.Disposition != "committed") return Result(written);
             var next = await ReadSpiritualWoundContinuationAsync(lease);
             if (next.Disposition != "dependent_draft" || next.Request is null || next.Issues.Count == 0 ||
                 JsonSerializer.Serialize(next.Request) == JsonSerializer.Serialize(expectedRequest) ||
                 next.AcceptedRequest is null || JsonSerializer.Serialize(next.AcceptedRequest) != JsonSerializer.Serialize(expectedRequest))
-                return ProgressFailure("blocked", "spiritual_dependent_progress_reopen_failed");
-            return new("committed", next.Request, next.Issues);
+                return Result(ProgressFailure("blocked", "spiritual_dependent_progress_reopen_failed"));
+            return Result(new("committed", next.Request, next.Issues));
         }
         catch (Exception error) when (error is IOException or UnauthorizedAccessException or
             InvalidOperationException or FormatException or JsonException or OverflowException or DecoderFallbackException)
         {
-            return ProgressFailure("blocked", "spiritual_dependent_progress_failed");
+            return Result(ProgressFailure("blocked", "spiritual_dependent_progress_failed"));
         }
     }
 

@@ -678,6 +678,12 @@ dependent request B needs its own proposal/response and continuationId; future
 corrections are forbidden in the earlier A proposal. Preserve the saved wound
 choice. Apply, post-apply and pre-Ready ownership checks and rollback remain
 mandatory; do not copy a stale response or private checkpoint into the new task.
+For `spiritual_wound_binding_result_closure_v1`, A corrects only the exact issued
+last-exchange arithmetic, independently proved costs, ordinarily valid
+`no_effect`/`blocked` and exact before-control copy. Wait for validated A before
+proposing B's one issued effective raw final-control field. Never write the
+client's detached validation echo, ignored wrapper, private journal or saved
+wound choice; B has separate Ready and `woundDecisions: []`.
 
 1. Decide whether a worker is useful; do not delegate trivial work.
 2. Pick an enabled worker profile whose `permissions.taskTypes` include the

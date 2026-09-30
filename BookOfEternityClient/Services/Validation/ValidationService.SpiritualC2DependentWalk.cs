@@ -107,11 +107,11 @@ public partial class ValidationService
     internal sealed partial class SpiritualOriginalTurnCapture
     {
         /// <summary>
-        /// Gets whether more than one original exchange remains behind this selected decision.
+        /// Gets whether multiple exchanges or an independently eligible last-binding result require sequential continuation.
         /// </summary>
         internal bool NeedsSequentialDependentContext => HasC2PendingSubmission &&
             _source.TryReadInitialActiveExchangeInventory(out _, out var ids) &&
-            ids.Length - _closedExchangeEvidence.Count > 1;
+            (ids.Length - _closedExchangeEvidence.Count > 1 || _c2SelectedDecision?.BindingOriginal is not null);
 
         /// <summary>
         /// Binds detached fields to the exact private pair without granting execution authority.
@@ -211,7 +211,9 @@ public partial class ValidationService
                 var progress = baselinePolicy is null
                     ? checkpoint.ReadPendingSubmission()?["dependentDraftProgress"] as JsonArray ?? new JsonArray()
                     : new JsonArray();
-                if (progress.Count >= ids.Length - _closedExchangeEvidence.Count) return null;
+                var remaining = ids.Length - _closedExchangeEvidence.Count;
+                if (progress.Count > remaining || progress.Count == remaining &&
+                    (remaining != 1 || _c2SelectedDecision?.BindingOriginal is null)) return null;
                 var pending = replayPending ?? _matchedC2Pair!.Pending;
                 var pendingBytes = Encoding.UTF8.GetBytes(SpiritualWoundDecisionPendingState.SerializeCanonical(pending));
                 if (progress.Count > 0)
@@ -239,8 +241,26 @@ public partial class ValidationService
                     var continued = await AdvanceNextResourceExchangeUnderGateAsync(lease,
                         new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
                         { [path] = new(true, Encoding.UTF8.GetBytes(raw.ToJsonString())) });
+                    SpiritualWoundDependentDraftPolicy? terminalPolicy = null;
+                    IReadOnlyList<ValidationIssue> terminalIssues = [];
+                    if (_closedExchangeEvidence.Count + 1 == ids.Length && continued.Issues.Count != 0 &&
+                        continued.Issues.All(issue => issue.Code == "afterlife_conflict_control_snapshot_missing" &&
+                            issue.FilePath == "activeConflict.controlState") &&
+                        policy.TryProjectBindingTerminalControl(raw, out var projected, out var proposedTerminal))
+                    {
+                        terminalIssues = continued.Issues.ToArray();
+                        var checkedTerminal = await AdvanceNextResourceExchangeUnderGateAsync(lease,
+                            new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal)
+                            { [path] = new(true, Encoding.UTF8.GetBytes(projected!.ToJsonString())) });
+                        // Every ordinary rule and actual resource execution must pass; only the independently proved echo was replaced.
+                        if (checkedTerminal.Issues.Count != 0 || checkedTerminal.Step?.Interval is null) return null;
+                        continued = checkedTerminal;
+                        terminalPolicy = proposedTerminal;
+                    }
                     if (continued.Issues.Count != 0 || continued.Step?.Interval is null)
                     {
+                        if (baselinePolicy?.IsTerminalControl == true && continued.Issues.Count != 0)
+                            return Result(continued.Issues.ToArray());
                         if (continued.Issues.Count == 0 || !IsCorrectableDependentConflictFailure(continued.Issues)) return null;
                         if (baselinePolicy is not null) return Result(continued.Issues.ToArray());
                         if (awaitingActualNarration) return null;
@@ -253,7 +273,8 @@ public partial class ValidationService
                         if (nextPolicy is null) return null;
                         policy = policy.Merge(nextPolicy);
                         issues.AddRange(continued.Issues);
-                        if (_closedExchangeEvidence.Count + 1 == ids.Length) return Result(issues.ToArray());
+                        if (_closedExchangeEvidence.Count + 1 == ids.Length && !nextPolicy.RequiresActualBindingResult)
+                            return Result(issues.ToArray());
                         var discoveredCoordinate = false;
                         foreach (var issue in continued.Issues)
                             discoveredCoordinate |= diagnosedCoordinates.Add((_closedExchangeEvidence.Count, issue.FilePath));
@@ -304,12 +325,16 @@ public partial class ValidationService
                         continue;
                     }
                     if (!AppendC2NextExchangeEvidence(packet)) return null;
+                    if (baselinePolicy is not null && terminalPolicy is not null)
+                        return Result(terminalIssues);
                     if (awaitingActualNarration)
                     {
+                        if (policy.RequiresActualBindingResult && terminalPolicy is null) return null;
                         if (progressIndex < progress.Count) progressIndex++;
                         baseline = raw.DeepClone().AsObject();
-                        policy = SpiritualWoundDependentDraftPolicy.Create(original, baseline, [], null)!;
+                        policy = terminalPolicy ?? SpiritualWoundDependentDraftPolicy.Create(original, baseline, [], null)!;
                         issues.Clear();
+                        issues.AddRange(terminalIssues);
                         awaitingActualNarration = false;
                     }
                 }

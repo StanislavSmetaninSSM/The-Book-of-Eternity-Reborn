@@ -2417,6 +2417,15 @@ frontier. A later dependent request has its own continuationId and needs a new
 response with an empty woundDecisions array. Future corrections are forbidden in
 the earlier response; preserve the saved wound choice and read each new request.
 See the wound guide and worked A-to-B example for critical-narration boundaries.
+For spiritual_wound_binding_result_closure_v1, the last binding repair is two
+separate dependent_draft responses. In A, follow exact arithmetic and independent
+cost permissions, choose ordinary-valid no_effect/blocked and copy the exact
+before.controlState value/presence into after.controlState. Do not edit final
+activeConflict.controlState until the client validates A and issues B's exact
+effective raw carrier pointer. B copies the validated last control, with its own
+continuationId, woundDecisions: [] and Ready. Preserve the saved wound choice and
+accepted A. Do not write the client's detached validation echo or private
+progress.
 The strict envelope parser alone does not enable live dispatch; GameEngine authenticates and resumes C2; no player command is added.
 
 *This document provides comprehensive guidance for CLI agents working with The Book of Eternity Reborn game system. For implementation questions, refer to the detailed rule blocks and examples in the Rules/ and Examples/ directories.*

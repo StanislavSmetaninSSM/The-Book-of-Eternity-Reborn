@@ -77,6 +77,11 @@ public partial class ValidationService
         internal IReadOnlyList<string> Fields { get; }
 
         /// <summary>
+        /// Gets the uniquely derived ordinary dice band for prerequisite comparisons, without fabricating critical narration.
+        /// </summary>
+        internal string CorrectedOutcomeBand => _after["outcomeBand"]!.GetValue<string>();
+
+        /// <summary>
         /// Requires either the unchanged audit or its complete prescribed correction, preserving independent rows and order.
         /// </summary>
         /// <param name="candidate">
@@ -291,7 +296,8 @@ public partial class ValidationService
             AcceptedMechanicsPlanner.ResourceExecutionSession.SpiritualMechanicsContext? mechanics)
         {
             var corrections = new List<SpiritualPositionDraftCorrection>();
-            foreach (var index in issues.Select(PositionDependencyIndex).Where(index => index.HasValue)
+            var bindings = new List<SpiritualBindingDraftCorrection>();
+            foreach (var index in issues.Select(issue => PositionDependencyIndex(issue) ?? BindingDependencyIndex(issue)).Where(index => index.HasValue)
                          .Select(index => index!.Value).Distinct())
             {
                 if (mechanics is null || !mechanics.IsCurrent ||
@@ -308,8 +314,10 @@ public partial class ValidationService
                 if (rank is null || _source.ProjectDependentPositionCorrection(this, audit, rank.Value,
                         raw.Pointer + "/diceAudit") is not { } correction) return null;
                 corrections.Add(correction);
+                if (CreateBindingCorrection(raw.Exchange, raw.Pointer, rank.Value, correction) is { } binding)
+                    bindings.Add(binding);
             }
-            return SpiritualWoundDependentDraftPolicy.Create(original, baseline, issues, frontier, corrections);
+            return SpiritualWoundDependentDraftPolicy.Create(original, baseline, issues, frontier, corrections, bindings);
         }
     }
 }

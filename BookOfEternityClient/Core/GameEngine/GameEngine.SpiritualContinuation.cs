@@ -604,6 +604,7 @@ public partial class GameEngine
                 if (readyBytes is null) continue;
                 SpiritualWoundContinuationResponse? response = null;
                 ValidationService.SpiritualWoundContinuationEvaluation? evaluation = null;
+                ValidationService.SpiritualWoundDependentProgressCommitResult? committedProgress = null;
                 try
                 {
                     using var document = JsonDocument.Parse(DecodeSpiritualTransport(readyBytes));
@@ -616,7 +617,20 @@ public partial class GameEngine
                     response = SpiritualWoundContinuationProtocol.ReadResponse(
                         document.RootElement.GetProperty(SpiritualWoundContinuationProtocol.EnvelopeName));
                     // A Ready completes its exact issued frontier, which may expose a separate request.
-                    evaluation = await _validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, request, response);
+                    if (request.Phase == "dependent_draft")
+                    {
+                        var processed = await _validator.EvaluateAndCommitSpiritualWoundDependentResponseAsync(
+                            lease, request, response, expectedRequestBytes: requestBytes, expectedReadyBytes: readyBytes);
+                        evaluation = processed.Evaluation;
+                        committedProgress = processed.Progress;
+                        if (evaluation is null)
+                        {
+                            LogSpiritualContinuationIssues(committedProgress.Issues, "The response witness remains held for recovery.");
+                            return SpiritualContinuationAdmission.RetryableHeld;
+                        }
+                    }
+                    else
+                        evaluation = await _validator.EvaluateSpiritualWoundContinuationDraftAsync(lease, request, response);
                     issues = evaluation.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Rejected
                         ? evaluation.Issues : [];
                 }
@@ -633,8 +647,7 @@ public partial class GameEngine
                 }
                 if (evaluation?.Disposition == ValidationService.SpiritualWoundContinuationDisposition.Advanced)
                 {
-                    var committed = await _validator.CommitSpiritualWoundDependentProgressAsync(lease, request, response,
-                        expectedRequestBytes: requestBytes, expectedReadyBytes: readyBytes);
+                    var committed = committedProgress!;
                     if (committed.Disposition != "committed" || committed.NextRequest is null)
                     {
                         LogSpiritualContinuationIssues(committed.Issues, "The completed frontier remains held for recovery.");
