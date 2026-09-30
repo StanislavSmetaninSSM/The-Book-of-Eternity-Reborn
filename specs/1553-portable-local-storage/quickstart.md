@@ -25,6 +25,8 @@ Install from official sources without privileged system changes. For example, us
 
 ```sh
 export TOOLCHAIN="$HOME/boe-toolchain"
+(
+set -eu
 mkdir -p "$TOOLCHAIN"
 curl -fsSL https://dot.net/v1/dotnet-install.sh -o "$TOOLCHAIN/dotnet-install.sh"
 bash "$TOOLCHAIN/dotnet-install.sh" --version 10.0.401 --install-dir "$TOOLCHAIN/dotnet" --no-path
@@ -35,6 +37,7 @@ mkdir -p "$TOOLCHAIN/powershell"
 tar -xzf "$TOOLCHAIN/powershell.tar.gz" -C "$TOOLCHAIN/powershell"
 chmod u+x "$TOOLCHAIN/powershell/pwsh"
 uv tool install specify-cli==1.0.13
+)
 ```
 
 Official references: [.NET scripted installation](https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual), [PowerShell release](https://github.com/PowerShell/PowerShell/releases/tag/v7.6.6), [Spec Kit](https://github.com/github/spec-kit), [Superpowers](https://github.com/obra/superpowers), [project bridge](https://github.com/StanislavSmetaninSSM/spec-kit-superpowers-bridge). Installed agent skills must be checked in the actual execution surface; a CLI version does not prove a skill is loaded. Do not overwrite existing Spec Kit scaffolding merely to repeat setup.

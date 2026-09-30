@@ -1,6 +1,6 @@
 # Implementation Plan: Trusted local storage and cross-platform runtime
 
-**Branch**: `1553-cross-platform-runtime` | **Date**: 2026-09-30 | **Spec**: [spec.md](spec.md)  
+**Branch**: `1553-cross-platform-runtime` | **Date**: 2026-09-30 | **Spec**: [spec.md](spec.md)
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
 ## Current checkpoint — R0 reconstruction, WIP
@@ -83,9 +83,13 @@ Convert audio, clipboard, launcher/system helpers and cross-platform test infras
 - `specify version`: 1.0.13; `specify integration list` from checkout: Codex installed/default. Existing repository scaffolding metadata 0.9.3 is historical and was not blindly regenerated
 - Unrun: all new storage categories, real console/browser/game/GM acceptance, Windows. R0 changes only requirements/governance; no C# execution required for prose alone
 - Source recovery at 3970a182: a second independent GitHub clone into a new empty directory yielded that exact HEAD and clean checkout; AGENTS/workflow blobs matched efc6028a/9ecaea56. This proves source retrieval, not test execution
-- R0 Spec Kit checks: existing-branch hook with explicit branch and AllowExistingBranch, check-prerequisites -Json -PathsOnly, setup-plan -Json, setup-tasks -Json and check-prerequisites -Json -RequireTasks -IncludeTasks all exited 0 and resolved this feature. Existing plan was preserved. git diff --check passed
+- R0 Spec Kit checks: existing-branch hook with explicit branch and AllowExistingBranch, check-prerequisites -Json -PathsOnly, setup-plan -Json, setup-tasks -Json and check-prerequisites -Json -RequireTasks -IncludeTasks all exited 0 and resolved this feature. Existing plan was preserved. Initial worktree git diff --check passed but did not include new untracked Markdown; post-publication full-range check found four Markdown hard-break spaces, now removed
 - R0 consistency pass: all FR-001..015 and SC-001..006 map to B1..B5/T010..T053; no uncovered storage requirement or contradiction with the new trusted-player constitution was found. B4 concrete architecture remains intentionally pending; no implementation or result is claimed. Independent review is still pending
 
 ## Consistency and sequence
 
 US1 → B1/B2; US2 → B1/B3; US3 → B3/B4/B5; US4 → B4; US5 → B5. B2 consumes B1 logical content, never physical identity. B3 extends the same journal semantics rather than inventing a competing protocol. B4 can be researched in parallel without shared storage edits. All implementation blocks publish source and checkpoint before review; new edits stop if remote preservation fails.
+
+## B4 research checkpoint — proposal only
+
+[research.md](research.md) preserves the read-only investigation of persistent terminal, automatic input, IPC and process ownership. No candidate was installed or tested. The dependency and rare final-supervisor-loss recovery choices remain under bounded technical evaluation. Favor the existing stack and maintainability while preserving the mandatory interaction; do not substitute a one-shot job or claim generic TUI readiness.

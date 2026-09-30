@@ -1,0 +1,112 @@
+# Persistent interactive GM runtime: research and bounded proposal
+
+Research for [issue #1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553), 2026-09-30. Status: read-only architecture investigation, **not an approved specification, implementation, compatibility certification, or test result**. This document preserves research for the current feature; the implementation and acceptance status remains in plan.md.
+
+## Recommendation in brief
+
+Preserve one live interactive CLI inside an owned terminal for a game session. The daemon automatically pastes text and submits it into that same session, with output, manual interaction, resize, cancellation, and reconnect sharing one protocol on Linux and Windows. Do not substitute `codex exec`, per-turn stdin jobs, a provider API, or manual clipboard export.
+
+Separate three contracts: **terminal transport**, **input/readiness protocol**, and **process ownership/stop confirmation**. A PTY library solves only the first. Use a normal-user supervisor on both OSes; make stronger Linux service-manager containment optional rather than a new hard desktop dependency. The baseline must honestly distinguish normal shutdown/owner loss from destruction of the final supervisor.
+
+The strongest evidenced ready-made transport/screen combination is a pinned `node-pty` + `@xterm/headless` sidecar, with a native launch/supervision adapter where required. Its cost is a bundled Node runtime and RID-specific native artifacts. If that distribution cost is unacceptable, keep the same sidecar protocol and use a small native PTY helper with .NET orchestration, but budget real VT parser work rather than ANSI stripping. This research does not settle the dependency choice without packaging and bounded probes.
+
+## What the existing code actually does
+
+Inspected the repository branch `1553-cross-platform-runtime`, observed HEAD `3970a182fe6b4abd4f16a51e86f7c903b0626768`. Inspected GM bridge, worker process host/tree, settings and launcher/daemon portions under the current project requirements. No product source was changed by this research.
+
+- `BookOfEternityGMBridge.csproj` targets `net8.0-windows`; `ConPtySession.cs` directly calls Win32.
+- `BridgeHost` also calls `ReadConsoleOutputCharacterW` for readiness/paste/submission inference. Replacing ConPTY alone does not port the behavior.
+- `ClearPendingInputBeforePromptDispatchAsync` sends Ctrl+U. That can destroy an operator's draft. The write semaphore serializes individual writes, not the entire paste/verify/submit transaction.
+- `PumpOutputAsync` decodes each independent 4096-byte read with `Encoding.UTF8.GetString`, which does not preserve an incomplete multibyte codepoint across reads.
+- Generic readiness treats an empty/unavailable screen as ready for a non-Codex command. Missing observations must not mean readiness.
+- The bridge pipe is already byte-mode .NET IPC; the worker host additionally rejects non-Windows because of `GetNamedPipeClientProcessId`.
+- Bridge requests are handled serially, so a long dispatch can occupy the only server loop while a cancel/status command waits. IPC currently uses line-oriented JSON without an explicit bounded frame reader.
+- `ConPtySession.Dispose` catches cleanup errors and calls `Process.Kill(entireProcessTree: true)` without proving all owned descendants exited. The worker process-tree implementation has a real Windows Job boundary, but explicitly rejects Linux.
+- Daemon/launcher defaults and names couple functionality to ConPTY, Windows window targeting, clipboard, `*.exe`, and PowerShell bootstrap `chcp`. Port the launch and dispatch path, not only the class name.
+
+These are observed migration surfaces; they are not claims that any repaired code exists.
+
+## Common runtime contract
+
+Suggested ownership chain: game-session coordinator → runtime supervisor → terminal sidecar/CLI. Console and browser are views/controllers of the same runtime; detaching a view is distinct from shutting down the owner. A daemon restart/reconnect must not silently create a second CLI or discard the first session.
+
+1. `IPtySession`: start executable + argv + cwd + selected environment; binary output stream; binary input writes; resize; terminal-exit event. Keep the process alive across turns. Explicit shell mode may remain for the user's arbitrary shell command or empty-command manual startup; game prompt text is never interpolated into a shell command.
+2. `ITerminalState`: incremental UTF-8 and VT parser, main/alternate buffers, cursor/erase/scroll/wrap, terminal dimensions, bracketed-paste mode, and bounded transcript. Use this common state for readiness on both OSes. One component owns terminal query replies so a frontend and headless parser cannot both answer them. The console view needs an actual raw-terminal input contract and restoration on exit, not only a fixed `Console.ReadKey` arrow-key map; browser input should use the same terminal protocol.
+3. `IInputArbiter`: serial dispatch actor and manual-control latch. States include Starting, AwaitingSetup, Ready, Dispatching, Busy, ManualControl, UnknownOutcome, Stopping, Stopped, and StopUncertain. Unknown screens and permission/trust/auth prompts pause automatic input; they never cause automatic confirmation.
+4. `IProcessScope`: establish ownership before releasing the CLI command; detect owner loss; stop and reap the declared contour; return confirmed/uncertain evidence. It is independent of PTY EOF, provider completion, and accepted-turn publication.
+5. `IRunProtocol`: version, run ID, game-session ID/generation, terminal epoch, request ID, sequence, payload hash, command, and response state. Use bounded frames and deadlines. Status/stop must remain serviceable while a paste or model request is waiting.
+
+.NET 8 named pipes already use Unix sockets on Unix, reject message mode, and implement `CurrentUserOnly` using peer UID. Existing byte mode can therefore remain. Under the accepted trusted-local model, a strict run-bound handshake replaces mandatory same-user hostile-client PID defense. Preserve wrong-run/wrong-generation rejection and accidental cross-wiring tests. Use a per-run endpoint, not a stale globally reused name. [Official .NET 8 implementation](https://raw.githubusercontent.com/dotnet/runtime/v8.0.0/src/libraries/System.IO.Pipes/src/System/IO/Pipes/NamedPipeServerStream.Unix.cs)
+
+## Automatic text delivery without pretending every CLI is identical
+
+The transport accepts arbitrary terminal programs. Reliable unattended submission additionally needs a **terminal interaction profile**, not a special game API. Provide generic configurable prompt/paste/submit observations plus tested versioned profiles for named CLIs. A CLI with an unknown TUI may need initial calibration or readiness arming. It should not be advertised as validated merely because its process starts.
+
+- Keep a logical request intact. Normalize CRLF/CR to the documented text newline convention; preserve Unicode and tabs. Reject or explicitly encode input control characters, especially ESC/bracket delimiters and NUL, so game text cannot accidentally become terminal controls. This is input correctness, not save anti-tamper.
+- When the CLI enables bracketed paste, send one start delimiter, the entire text in bounded backpressure-aware chunks, and one end delimiter. Never bracket each chunk or turn multiline newlines into separate Enter presses. Bracketed paste is a terminal convention and must be observed/profile-verified, not assumed for every app. [XTerm protocol](https://invisible-island.net/xterm/ctlseqs/ctlseqs.html#h3-Bracketed-Paste-Mode)
+- The same input arbiter owns the complete paste → observe → submit transaction. No user keystrokes may interleave with its bytes. Manual input before dispatch pauses automation and preserves the draft. Manual takeover during dispatch queues the manual bytes separately and exposes the pending automatic draft for reconciliation; it must not discard keystrokes or blindly Ctrl+U.
+- Enter is separate from the paste, only after a current-epoch expected composer/paste observation and idle/armed state. A quiet interval alone proves neither idleness nor success. A collapsed paste marker is only a tested profile's acceptance signal; a character-count-looking substring in old output is insufficient.
+- Bound prompt size, queue count, write timeout, readiness timeout, and retained output. On overflow or blocked writes, fail explicitly rather than truncate a prompt.
+- Persist request progression before irreversible steps: Queued → PasteStarted → PasteCompleted → SubmissionIntent → SubmissionSent → ObservedBusy/Unknown. Identical retry IDs return known status, not a second paste. If the connection dies around Enter, do not replay automatically: delivery may already have occurred. A validated game response/receipt remains the authority for turn acceptance.
+- Terminal transcript, secret prompts, and provider auth material must not be copied into Git. No credentials are read, relocated, or printed to make a provider work.
+
+The current official Codex reference documents that Enter while working injects instructions into the current turn; Tab queues instead. OpenCode similarly uses Enter to steer and Alt+Enter to queue. That is concrete evidence for a readiness gate, not an argument to replace the TUI. Google Antigravity has a real documented CLI; its Ctrl+C action exits the CLI, with a confirmation if working. Cancellation keys are therefore profile/version-dependent. [Codex](https://learn.chatgpt.com/docs/developer-commands?surface=cli), [OpenCode](https://opencode.ai/v2/docs/cli/tui/), [Antigravity](https://www.antigravity.google/docs/cli/reference/)
+
+## Stop, timeout, and crash behavior
+
+### Baseline for ordinary Linux desktop use
+
+Use a dedicated normal-user supervisor, marked as a Linux child subreaper before starting anything. Establish the PTY/session/process group before releasing the command. Keep the supervisor alive independently of UI views, and monitor the actual session owner through a non-inherited lifetime channel or equivalent liveness handle. A heartbeat deadline can cover a hung owner, but must not be confused with proof of process death.
+
+On stop: close the dispatch gate, request profile-specific interruption/graceful exit if appropriate, then terminate the owned group and adopted descendants, reap, and repeat within a bounded deadline. Ordinary setsid/double-fork children remain relevant ownership cases, not malicious behavior to dismiss. Use stable process handles/pidfds where available; keep reaping and signaling under one owner to avoid recycled-PID races. Only the final no-owned-children condition may establish stop. A transient empty `/proc/.../children` list alone cannot: that interface can miss children during concurrent exits. [Subreaper](https://man7.org/linux/man-pages/man2/PR_SET_CHILD_SUBREAPER.2const.html), [pidfds](https://man7.org/linux/man-pages/man2/pidfd_open.2.html), [children-list caveat](https://man7.org/linux/man-pages/man5/proc_tid_children.5.html)
+
+Implement fork/exec setup in a small native helper or a mature PTY library. Do not fork a multithreaded CLR and continue normal managed code in the child; after fork only async-signal-safe work is safe until exec. [fork contract](https://man7.org/linux/man-pages/man2/fork.2.html), [PTY setup](https://man7.org/linux/man-pages/man3/openpty.3.html)
+
+This baseline can handle coordinator crash while the supervisor survives and can clean up normal descendants. **It cannot promise immediate cleanup after SIGKILL/crash of the final supervisor.** Parent-death signaling does not repair that: its setting is cleared in forked children. Closing a PTY and signaling a process group are also not all-descendant proofs. [.NET Kill caveat](https://learn.microsoft.com/en-us/dotnet/api/system.diagnostics.process.kill?view=net-10.0), [parent-death contract](https://man7.org/linux/man-pages/man2/PR_SET_PDEATHSIG.2const.html)
+
+### Windows and optional stronger Linux backend
+
+Windows can use a noninherited Job Object with kill-on-last-handle-close, attached before the CLI is released, alongside ConPTY. Keep it behind the common scope contract rather than a Windows-only gameplay feature. Stop confirmation still requires the job's empty state, and failure must remain visible. [Job Objects](https://learn.microsoft.com/en-us/windows/win32/procthread/job-objects)
+
+Where already available, a transient systemd **user service**, with the supervisor as its main process, `ExitType=main`, `KillMode=control-group`, and bounded stop escalation, can clean the unit when the supervisor dies. `ExitType=cgroup` is not the desired leader-death trigger. Do not auto-install services, require root, change user security settings, or make systemd mandatory. An independently managed delegated cgroup backend needs the same owner-death arrangement: the existence of a cgroup alone does not auto-kill on supervisor exit. [systemd service contract](https://github.com/systemd/systemd/blob/main/man/systemd.service.xml), [kill policy](https://raw.githubusercontent.com/systemd/systemd/main/man/systemd.kill.xml)
+
+The kernel's cgroup-v2 kill operation handles the group and descendant cgroups, including concurrent forks, while `cgroup.events` reports population. This is useful strong evidence where the facility is accessible. A PID namespace also has kernel cleanup on namespace-init death, but adding user/mount namespaces changes runtime conditions and may conflict with provider sandboxes. It is not a default workaround for restricted environments or grounds to bypass their restrictions. [cgroup-v2](https://www.kernel.org/doc/html/latest/admin-guide/cgroup-v2.html), [PID namespace lifecycle](https://man7.org/linux/man-pages/man7/pid_namespaces.7.html)
+
+### Explicit recovery fence, with a real exit path
+
+Before releasing any writer, durably publish a run record outside the replaceable save/session tree, binding root path, session generation, runtime epoch, host/boot identity, process identities, and declared ownership backend. Keep it until stop is confirmed. Do not clear it in a generic finally block.
+
+If stop is uncertain, show the actual reason and block mutation, rollback, deletion, folder reuse, or replacement of that session; diagnostic reads remain possible. First reconnect to the surviving supervisor and request verified stop. If all ownership evidence is lost, stale PID absence, an expired lock, or a timeout does not prove detached children are gone. A verified reboot of the affected host is a conservative recovery route before journal recovery: bind a trustworthy OS boot identity to the host, not a new random application epoch or unrelated container identity. An optional operator override must be explicitly designed as acknowledgement of residual writer/data-loss risk, not silently labeled a verified stop. Avoid a permanent unexplained lock: the UI must explain the stop/reconnect/reboot route and preserve the evidence.
+
+This is accidental data-loss protection for the trusted player's files, not a promise of a sandbox against the player or arbitrary programs. Pre-existing shared provider services are not automatically owned descendants; a real probe must identify any such topology before claiming complete cleanup.
+
+## Dependency decision and distribution
+
+- **node-pty + xterm/headless (recommended first candidate):** Linux/Windows support and production terminal use are documented; both projects identify MIT licensing. xterm/headless provides server-side terminal state and reconnect serialization. Bundle/pin a tested Node version and native artifacts by supported RID/architecture; keep lockfiles and notices, run dependency/license review, and verify offline installation. Do not demand an end-user C++ compiler or a live npm install to play. node-pty itself does not solve ownership: its current Unix `kill()` signals the root PID. [node-pty](https://github.com/microsoft/node-pty), [package/build metadata](https://raw.githubusercontent.com/microsoft/node-pty/main/package.json), [Unix kill implementation](https://raw.githubusercontent.com/microsoft/node-pty/main/src/unixTerminal.ts), [xterm/headless](https://raw.githubusercontent.com/xtermjs/xterm.js/master/README.md), [xterm license](https://raw.githubusercontent.com/xtermjs/xterm.js/master/LICENSE)
+- **Rust `portable-pty` sidecar:** MIT, cross-platform API with native implementations; can distribute a native executable without a Node runtime. Needs Rust build/packaging and a screen-parser choice; child `kill` is still not whole-contour supervision. No blanket cleanup guarantee comes with the name. [Cargo metadata](https://raw.githubusercontent.com/wezterm/wezterm/main/pty/Cargo.toml), [API/source](https://raw.githubusercontent.com/wezterm/wezterm/main/pty/src/lib.rs)
+- **Pty.Net / custom .NET-native route:** upstream advertises .NET Linux/macOS/Windows support and MIT licensing, with `netstandard2.0` and bundled native Windows components. It is worth a packaging/build probe, but this research did not establish a current maintained release or complete target-RID support. Do not choose it on the Microsoft name alone. A custom small native supervisor plus existing repaired ConPTY backend reduces new runtimes, at the cost of owned ABI/parser/packaging maintenance. [Upstream](https://github.com/microsoft/vs-pty.net), [project packaging](https://raw.githubusercontent.com/microsoft/vs-pty.net/main/src/Pty.Net/Pty.Net.csproj)
+
+No candidate was installed or executed. Main-branch package metadata is not proof that a particular released package has the same code.
+
+## Verification plan and current environment evidence
+
+Read-only inspection found an installed Codex CLI, Node/Python, `/dev/ptmx`, `gcc`, `script`, and `setsid`. Toolchain setup is now documented in quickstart.md; absence from a particular shell PATH does not establish absence from the environment. PID 1 is `codex`; `/sys/fs/cgroup`, `/run/systemd`, and `/run/user` are absent. `systemd-run` existing in PATH does not establish a running user manager. Seccomp is active, no effective capabilities were reported, and namespace support was not probed. No game, CLI TUI, provider request, package installation, permission change, or containment experiment was run.
+
+Small, separately catalogued tests should establish these boundaries rather than running a broad suite:
+
+1. **Transport fixture:** a repository-owned interactive TUI stays in one PID across at least three requests; isatty, UTF-8 Russian/emoji/combining text split at every byte boundary, multiline/CRLF, prompt above 64 KiB, delayed reads/backpressure, resize, alternate buffer, split VT sequences, and bracketed paste negotiation. Assert exact input bytes and one submission, not just matching terminal text.
+2. **Input state:** manual draft/takeover, concurrent daemon/manual writes, busy state, auth/trust/confirmation screen, zero/missing output, stale paste marker, reconnect, duplicate request, wrong generation/epoch, and cancellation while a dispatch is waiting. Disconnect immediately before/after Enter and verify no automatic replay.
+3. **Process lifecycle:** gated launch failure, root exit with child alive, setsid and double-fork descendants, grandchild spawned during stop, ignored TERM, blocked I/O, owner EOF/hang, supervisor crash, resource/handle leak, PID reuse simulation, and fence persistence across coordinator restart. Forced final-supervisor loss is expected to produce an uncertainty fence on the baseline; it is not an expected all-descendant-cleanup pass. Keep process fixtures inside a test-owned outer cleanup boundary.
+4. **Real Codex Linux:** first harmless version/help inspection, then a scoped disposable session under the candidate PTY with the existing authorized configuration, no bypass flags or auth relocation. Establish startup to an actual editable prompt, send a harmless Russian/multiline text prompt, then a second prompt relying on the first turn's context in the same live process; verify no restart and correct input interpretation. Observe actual child topology, busy/cancel behavior, and stop. If initialization/auth/permissions block, record the exact stage and do not call it a compatibility pass.
+5. **Other CLIs:** only claim tested versions after equivalent probes of OpenCode and Antigravity. An uninstalled CLI remains unverified, not implicitly unsupported and not implicitly compatible. Their own APIs/headless modes may be optional separate integrations but cannot substitute for required terminal behavior.
+6. **Actual game:** same runtime from Linux console and browser, fresh isolated game, real daemon → live CLI → response validation → accepted player action, save/restart/load, next action, cancellation and uncertain-stop behavior. Mere menu startup/HTTP 200 is not acceptance. The user will execute Windows checks; preserve a reproducible same-contract runbook and report Windows as unexecuted here.
+
+Use the repository's `scripts/test-csharp.ps1 -Category ...` workflow and add coherent test categories plus discovery-only membership validation. Record exact commands, versions, counts, skips, duration, cleanup evidence, and remote SHA. No tests were run by this investigation.
+
+## Small next decision, not a blanket redesign gate
+
+The product behavior is already clear: persistent automatic human-like CLI input on both OSes. The material unresolved choices are (a) bundled mature terminal sidecar versus owned native/.NET transport/parser, and (b) whether the baseline's rare final-supervisor-loss recovery route is acceptable or an optional stronger Linux backend should be required for a particular installation. Do not ask to reapprove the accepted storage design or quietly hide these trade-offs. A bounded disposable transport/protocol probe and a normal-shutdown/owner-loss fixture should decide the library question before broad integration.
+
+## Additional implementation cautions
+
+Console manual input needs a real raw-terminal mode contract and guaranteed mode restoration; Console.ReadKey alone is not a complete arbitrary-TUI key transport. Reboot recovery must use trustworthy boot identity for the affected host, not a new application epoch or container identifier. Linux /proc child-list reads can omit live children during concurrent exits; an empty list is not StopConfirmed. Use authoritative supervisor reaping/ownership evidence, or report uncertainty.

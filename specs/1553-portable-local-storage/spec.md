@@ -1,7 +1,7 @@
 # Feature Specification: Trusted local storage and cross-platform runtime
 
-**Feature Branch**: `1553-cross-platform-runtime`  
-**Created**: 2026-09-30  
+**Feature Branch**: `1553-cross-platform-runtime`
+**Created**: 2026-09-30
 **Status**: Approved storage design reconstructed; implementation pending
 
 ## Source Issues & Scope
@@ -84,7 +84,7 @@ Empty files, non-UTF8 bytes, BOMs, absent files, case-distinct Linux names, dupl
 
 ### Superseded storage guarantees
 
-Approved LOCAL-FR-01 replaces physical-identity/adversarial-swap requirements in #1536 FR-073 and FR-090–092 with schema, generation, content/journal authority and exact-byte rollback. LOCAL-FR-02 replaces platform restrictions in FR-095–096 with same-filesystem atomic name publication. LOCAL-FR-03 preserves FR-123 staging/session integrity without mandatory protective hard links or retained Win32 handles. LOCAL-FR-05 changes SC-029 storage acceptance accordingly. Wound gameplay criteria are unchanged. LOCAL-FR-04's foreground process-group proposal is only a bounded candidate; later requirements cover actual provider lifecycle and persistent interactive CLI behavior.
+Approved LOCAL-FR-01 replaces physical-identity/adversarial-swap requirements in [#1500, Complete Actor Materialization](../1500-complete-actor-materialization/spec.md) FR-073 and FR-090–092 with schema, generation, content/journal authority and exact-byte rollback. LOCAL-FR-02 replaces platform restrictions in FR-095–096 with same-filesystem atomic name publication. LOCAL-FR-03 preserves FR-123 staging/session integrity without mandatory protective hard links or retained Win32 handles. LOCAL-FR-05 changes SC-029 storage acceptance accordingly. Related identity-only clauses are superseded to the same extent: in particular FR-081 does not prohibit replacing a hard-linked destination name when the other name's bytes remain untouched. Existing symbolic links/reparse points, invalid types and out-of-scope paths still fail; this is not permission to edit through a link or weaken logical accepted-state authority. The cited FR/SC numbers belong to #1500, not #1536; wound gameplay criteria are unchanged. LOCAL-FR-04's foreground process-group proposal is only a bounded candidate; later requirements cover actual provider lifecycle and persistent interactive CLI behavior.
 
 ### Key entities
 

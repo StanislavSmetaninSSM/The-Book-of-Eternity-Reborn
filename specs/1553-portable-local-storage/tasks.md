@@ -1,6 +1,6 @@
 # Tasks: Trusted local storage and cross-platform runtime
 
-Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)  
+Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 ## R0 — Reconstruct approved requirements
