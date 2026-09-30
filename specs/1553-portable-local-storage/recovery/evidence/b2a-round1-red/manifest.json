@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "98585396df2ff771372263438bbeee83d0bbf298",
+  "catalogBlobAfterPatch": "7b6ad998bc2ffb09ca45ae5581e2b37815588166",
+  "kind": "newly executed RED; sanitized originals, not recovered prior evidence",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "5f68d0a5699e64533737d9685a53f831b30e56fe6c113a40d3f77e0fa2be9b9e",
+      "sanitizedSha256": "a1b3d951791238640609f903f1712694ee9fe065756e9209e7c7884e74eb0c39"
+    },
+    {
+      "path": "portable-client-bootstrap-unit-001.trx",
+      "originalSha256": "35d807597d1bd47504b2cea6110f65c3dc35cfa283ac79aa86838b9517e958ad",
+      "sanitizedSha256": "1d66dcd8feb805092abf01bf9158fb3aa5d5f34e2d6a97dccb1d2f132b7a0e40"
+    }
+  ]
+}

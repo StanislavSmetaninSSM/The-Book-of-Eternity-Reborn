@@ -52,7 +52,7 @@ public class StateManager
     {
         await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
         _fs.EnsureDirectoryStructure(lease);
-        var before = await _fs.ReadFileBytesAsync(lease, "config.json");
+        var before = await _fs.ReadLocalFileBytesAsync(lease, "config.json");
         GameSettings? loaded = null;
         if (before != null)
         {

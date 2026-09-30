@@ -1,0 +1,308 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="3f7efb49-ffa2-4db9-97fe-b88a6a4bd00e" name="portable-client-bootstrap RED" runUser="$USER">
+  <ns0:Times creation="2026-09-30T19:48:50.1408271-04:00" queuing="2026-09-30T19:48:50.1408272-04:00" start="2026-09-30T19:48:46.6433021-04:00" finish="2026-09-30T19:49:15.3309276-04:00" />
+  <ns0:TestSettings name="default" id="611b93c4-8117-4ae0-9741-30a416097765">
+    <ns0:Deployment runDeploymentRoot="_ff00c3d48a40_2026-09-30_19_48_50" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="4f225220-498a-4e2c-b622-0b30d9c1f487" testId="794b4c94-8643-36c1-34af-769d79ac6782" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;append&quot;)" computerName="$HOST" duration="00:00:05.0145153" startTime="2026-09-30T19:48:58.8415148-04:00" endTime="2026-09-30T19:48:58.8415150-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f225220-498a-4e2c-b622-0b30d9c1f487">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>A nonregular append before-image blocked while opening the FIFO.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation) in $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 368
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="73eb13eb-d86c-42d1-89d9-2cc521343f82" testId="9335c146-8681-83c0-cbf6-1201f443f06c" testName="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent" computerName="$HOST" duration="00:00:00.0112578" startTime="2026-09-30T19:49:14.8201225-04:00" endTime="2026-09-30T19:49:14.8201226-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="73eb13eb-d86c-42d1-89d9-2cc521343f82" />
+    <ns0:UnitTestResult executionId="bf182871-04da-460b-b635-f31dc3fcaac4" testId="43a4c23a-37ad-770c-da2f-1ebdcab7e40e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;pending&quot;)" computerName="$HOST" duration="00:00:00.0086566" startTime="2026-09-30T19:48:48.7739801-04:00" endTime="2026-09-30T19:48:48.7739803-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bf182871-04da-460b-b635-f31dc3fcaac4" />
+    <ns0:UnitTestResult executionId="e2dd9a4f-7a59-4b19-a263-adf30e9b2a99" testId="be5030a4-edc7-c9c6-9af6-8cd0a8366733" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;committed&quot;)" computerName="$HOST" duration="00:00:00.0790647" startTime="2026-09-30T19:48:48.7545363-04:00" endTime="2026-09-30T19:48:48.7545367-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e2dd9a4f-7a59-4b19-a263-adf30e9b2a99" />
+    <ns0:UnitTestResult executionId="a143981c-204e-4118-baf8-2a96fc463cd2" testId="017f9332-39bb-42c0-ca44-25a5bd97152d" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart" computerName="$HOST" duration="00:00:00.4029356" startTime="2026-09-30T19:49:15.2238823-04:00" endTime="2026-09-30T19:49:15.2238825-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a143981c-204e-4118-baf8-2a96fc463cd2" />
+    <ns0:UnitTestResult executionId="b6ed3f39-3fc8-42af-a7e1-e1c7af255fac" testId="4991cfb4-f106-dfe7-aa89-affa2b7c0798" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence" computerName="$HOST" duration="00:00:00.0423323" startTime="2026-09-30T19:49:13.9093446-04:00" endTime="2026-09-30T19:49:13.9093448-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b6ed3f39-3fc8-42af-a7e1-e1c7af255fac" />
+    <ns0:UnitTestResult executionId="ad2ce1ba-370c-4dbc-a3f0-6cbc0ed97a5e" testId="37856566-80e2-93a1-cd42-8d0397737e4a" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;load-transactions&quot;)" computerName="$HOST" duration="00:00:00.0005883" startTime="2026-09-30T19:49:14.0867901-04:00" endTime="2026-09-30T19:49:14.0867909-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ad2ce1ba-370c-4dbc-a3f0-6cbc0ed97a5e" />
+    <ns0:UnitTestResult executionId="c1bb1598-48d9-4a2b-a60f-022ee7276115" testId="d5c9b392-e610-eaa1-d3a7-0afd2a74dd0b" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;write&quot;)" computerName="$HOST" duration="00:00:00.0113788" startTime="2026-09-30T19:49:14.0682299-04:00" endTime="2026-09-30T19:49:14.0682300-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="c1bb1598-48d9-4a2b-a60f-022ee7276115" />
+    <ns0:UnitTestResult executionId="8631c72f-2906-463d-ae97-f088a0740f20" testId="c4bb150e-602e-d950-0bfc-000a18d3f33e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: True)" computerName="$HOST" duration="00:00:00.0088222" startTime="2026-09-30T19:49:14.8038929-04:00" endTime="2026-09-30T19:49:14.8038931-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8631c72f-2906-463d-ae97-f088a0740f20" />
+    <ns0:UnitTestResult executionId="d7fd11c4-2d7e-4e8e-b7ab-e4b4be736db5" testId="15cf62cb-c0f9-7a40-5657-a2e88b1f0c70" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;bootstrap&quot;)" computerName="$HOST" duration="00:00:00.0138987" startTime="2026-09-30T19:49:14.0425299-04:00" endTime="2026-09-30T19:49:14.0425301-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d7fd11c4-2d7e-4e8e-b7ab-e4b4be736db5" />
+    <ns0:UnitTestResult executionId="123d0990-c95b-410d-a052-726bcec43b3d" testId="9a426099-b486-333a-e0f9-973213eb042d" testName="BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux" computerName="$HOST" duration="00:00:00.0015895" startTime="2026-09-30T19:49:14.7973869-04:00" endTime="2026-09-30T19:49:14.7973869-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="123d0990-c95b-410d-a052-726bcec43b3d" />
+    <ns0:UnitTestResult executionId="907dff6b-d0d1-4937-840d-0739ae5d49ea" testId="26f53597-cdd0-f3b7-2611-3bc7829492fc" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" computerName="$HOST" duration="00:00:00.0100753" startTime="2026-09-30T19:49:14.7973151-04:00" endTime="2026-09-30T19:49:14.7973153-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="907dff6b-d0d1-4937-840d-0739ae5d49ea" />
+    <ns0:UnitTestResult executionId="5cac387b-ccfd-46a4-996c-b9f78cb2b19f" testId="fd556388-0874-2eb6-7864-343a728fd4e9" testName="BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration" computerName="$HOST" duration="00:00:00.0107548" startTime="2026-09-30T19:49:14.0965112-04:00" endTime="2026-09-30T19:49:14.0965113-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5cac387b-ccfd-46a4-996c-b9f78cb2b19f" />
+    <ns0:UnitTestResult executionId="03ea6393-802a-47e4-a12d-c595d7a7d826" testId="45c3bc9b-bb0a-a840-8350-10384ff2df52" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{broken&quot;)" computerName="$HOST" duration="00:00:00.0053707" startTime="2026-09-30T19:49:14.1214834-04:00" endTime="2026-09-30T19:49:14.1214835-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="03ea6393-802a-47e4-a12d-c595d7a7d826" />
+    <ns0:UnitTestResult executionId="6226689a-f11e-4588-966b-eb4cee16393e" testId="77b03e0a-0218-668b-20b3-03a1c8e48c18" testName="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;conflict&quot;)" computerName="$HOST" duration="00:00:00.0063939" startTime="2026-09-30T19:48:48.7611822-04:00" endTime="2026-09-30T19:48:48.7611825-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6226689a-f11e-4588-966b-eb4cee16393e" />
+    <ns0:UnitTestResult executionId="86f800c7-dc46-4413-88f7-e2c80f688d4f" testId="33d4b7da-3bce-699b-7580-917f63b0548c" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;bootstrap&quot;)" computerName="$HOST" duration="00:00:05.0081186" startTime="2026-09-30T19:49:13.8675081-04:00" endTime="2026-09-30T19:49:13.8675083-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="86f800c7-dc46-4413-88f7-e2c80f688d4f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>A nonregular bootstrap before-image blocked while opening the FIFO.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation) in $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 368
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="bcffb69c-dec0-4231-9aee-b2eb2363e5db" testId="9545c625-86ff-6fcf-9593-b8d06cd129ff" testName="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation" computerName="$HOST" duration="00:00:00.0286195" startTime="2026-09-30T19:49:15.2531648-04:00" endTime="2026-09-30T19:49:15.2531656-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="bcffb69c-dec0-4231-9aee-b2eb2363e5db" />
+    <ns0:UnitTestResult executionId="6e929b61-8374-4df9-be24-cf77f3549e1c" testId="97ba17ad-317d-6b07-a41b-e86c033c7be2" testName="BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt" computerName="$HOST" duration="00:00:00.0122991" startTime="2026-09-30T19:49:13.9219084-04:00" endTime="2026-09-30T19:49:13.9219088-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6e929b61-8374-4df9-be24-cf77f3549e1c" />
+    <ns0:UnitTestResult executionId="0a4dfb74-8a8e-4cfa-be14-04ee08ae55cc" testId="74b23196-a6bd-1e8e-8785-75225c8ff72e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;worker-apply-transactions&quot;)" computerName="$HOST" duration="00:00:00.0007420" startTime="2026-09-30T19:49:14.0868257-04:00" endTime="2026-09-30T19:49:14.0868257-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="0a4dfb74-8a8e-4cfa-be14-04ee08ae55cc" />
+    <ns0:UnitTestResult executionId="160a1162-6578-427f-92e7-ac1de15f0653" testId="23f171aa-1b4c-c909-0edb-a8ac164c28ea" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;file-publication-transactions&quot;)" computerName="$HOST" duration="00:00:00.0014161" startTime="2026-09-30T19:49:14.0841496-04:00" endTime="2026-09-30T19:49:14.0841497-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="160a1162-6578-427f-92e7-ac1de15f0653" />
+    <ns0:UnitTestResult executionId="4f3d3d16-905e-446a-bd05-f2a0c9edc55e" testId="29286fc9-8f41-99ae-f20b-bd8890dd082d" testName="BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: False)" computerName="$HOST" duration="00:00:00.0044221" startTime="2026-09-30T19:49:14.8085815-04:00" endTime="2026-09-30T19:49:14.8085816-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f3d3d16-905e-446a-bd05-f2a0c9edc55e" />
+    <ns0:UnitTestResult executionId="6217ee38-f259-4081-bcde-656d669c48bc" testId="1b02ad68-2956-2ea2-0d6a-4dfd05eca338" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;null&quot;)" computerName="$HOST" duration="00:00:00.0071956" startTime="2026-09-30T19:49:14.1044168-04:00" endTime="2026-09-30T19:49:14.1044169-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="6217ee38-f259-4081-bcde-656d669c48bc" />
+    <ns0:UnitTestResult executionId="b2087811-824c-4803-a0ef-3c813fb56271" testId="5ce4b8bf-2320-1bd6-e622-e08c0036a25b" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" computerName="$HOST" duration="00:00:00.0176866" startTime="2026-09-30T19:49:14.7824296-04:00" endTime="2026-09-30T19:49:14.7824298-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2087811-824c-4803-a0ef-3c813fb56271" />
+    <ns0:UnitTestResult executionId="14135f0a-b2a3-44b4-be83-e673e78dade6" testId="c0577fb9-7c18-31c5-ac2f-78f4a4efd072" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;append&quot;)" computerName="$HOST" duration="00:00:00.0128400" startTime="2026-09-30T19:49:14.0560383-04:00" endTime="2026-09-30T19:49:14.0560385-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="14135f0a-b2a3-44b4-be83-e673e78dade6" />
+    <ns0:UnitTestResult executionId="d9d8e80f-3a46-4345-a306-43d9403524e6" testId="04182359-5b6c-20cb-ac30-bddf096c4f2e" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;compare&quot;)" computerName="$HOST" duration="00:00:00.0134452" startTime="2026-09-30T19:49:14.0824459-04:00" endTime="2026-09-30T19:49:14.0824461-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9d8e80f-3a46-4345-a306-43d9403524e6" />
+    <ns0:UnitTestResult executionId="de8e9d11-6f85-4c18-8604-491e2d1ff104" testId="9b56669b-5041-52f2-04bb-ca1d3c44430d" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;delete&quot;)" computerName="$HOST" duration="00:00:00.0089996" startTime="2026-09-30T19:49:14.0277002-04:00" endTime="2026-09-30T19:49:14.0277003-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="de8e9d11-6f85-4c18-8604-491e2d1ff104" />
+    <ns0:UnitTestResult executionId="68313f68-b8d9-44cf-beea-fe58fee3f39c" testId="21d08414-dc5a-37a6-418b-f1f91b2e6aa0" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" computerName="$HOST" duration="00:00:00.0045446" startTime="2026-09-30T19:49:14.1155669-04:00" endTime="2026-09-30T19:49:14.1155670-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="68313f68-b8d9-44cf-beea-fe58fee3f39c" />
+    <ns0:UnitTestResult executionId="a2af1403-c6b1-456f-8fc6-262356693017" testId="7057ee70-a827-9eab-79b0-910314a62ebd" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;write&quot;)" computerName="$HOST" duration="00:00:05.0058690" startTime="2026-09-30T19:49:08.8582568-04:00" endTime="2026-09-30T19:49:08.8582570-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2af1403-c6b1-456f-8fc6-262356693017">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>A nonregular write before-image blocked while opening the FIFO.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation) in $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 368
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="4f0754ad-47bc-496c-a730-89beae6ec1d3" testId="8fd85899-9202-efc9-80e9-2c06bef42f9a" testName="BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" computerName="$HOST" duration="00:00:00.3525113" startTime="2026-09-30T19:48:48.6734511-04:00" endTime="2026-09-30T19:48:48.6734651-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="4f0754ad-47bc-496c-a730-89beae6ec1d3" />
+    <ns0:UnitTestResult executionId="9fe9b167-c86a-4370-a26e-7fc6dddcfd35" testId="b5b4a3ee-8319-2756-7934-01d3d4f9c293" testName="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent" computerName="$HOST" duration="00:00:00.6419770" startTime="2026-09-30T19:49:14.7640517-04:00" endTime="2026-09-30T19:49:14.7640519-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9fe9b167-c86a-4370-a26e-7fc6dddcfd35" />
+    <ns0:UnitTestResult executionId="1cac6b15-45e6-4167-8060-a3dfb6430186" testId="a91e9cf3-ba87-9a68-ec88-619e4e12ae60" testName="BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything" computerName="$HOST" duration="00:00:00.0959854" startTime="2026-09-30T19:49:14.0183742-04:00" endTime="2026-09-30T19:49:14.0183744-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1cac6b15-45e6-4167-8060-a3dfb6430186" />
+    <ns0:UnitTestResult executionId="d9e7294b-bab4-47ca-95ad-652080e4e367" testId="f231a6bc-013c-16d7-e6f2-b3bd5648564f" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;delete&quot;)" computerName="$HOST" duration="00:00:05.0080777" startTime="2026-09-30T19:49:03.8509765-04:00" endTime="2026-09-30T19:49:03.8509767-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d9e7294b-bab4-47ca-95ad-652080e4e367">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>A nonregular delete before-image blocked while opening the FIFO.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation) in $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 368
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="b2c2bab3-471d-4016-a88a-9daf0e31bc5e" testId="21c9433e-941c-d4cc-225a-2c12617c486f" testName="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;[]&quot;)" computerName="$HOST" duration="00:00:00.0056672" startTime="2026-09-30T19:49:14.1105897-04:00" endTime="2026-09-30T19:49:14.1105897-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="b2c2bab3-471d-4016-a88a-9daf0e31bc5e" />
+    <ns0:UnitTestResult executionId="ffad28be-18b3-4f9b-acb2-a2ebe17345ee" testId="b4dea7bb-0b4b-cf22-6243-fde0d7d882b8" testName="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;compare&quot;)" computerName="$HOST" duration="00:00:05.0351267" startTime="2026-09-30T19:48:53.8370678-04:00" endTime="2026-09-30T19:48:53.8370680-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ffad28be-18b3-4f9b-acb2-a2ebe17345ee">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>A nonregular compare before-image blocked while opening the FIFO.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation) in $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs:line 368
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c4bb150e-602e-d950-0bfc-000a18d3f33e">
+      <ns0:Execution id="8631c72f-2906-463d-ae97-f088a0740f20" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b5b4a3ee-8319-2756-7934-01d3d4f9c293">
+      <ns0:Execution id="9fe9b167-c86a-4370-a26e-7fc6dddcfd35" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="OrdinaryWriteAppendCompareExchangeAndDeleteUseExactLogicalContent" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="fd556388-0874-2eb6-7864-343a728fd4e9">
+      <ns0:Execution id="5cac387b-ccfd-46a4-996c-b9f78cb2b19f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;write&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7057ee70-a827-9eab-79b0-910314a62ebd">
+      <ns0:Execution id="a2af1403-c6b1-456f-8fc6-262356693017" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode(fail: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="29286fc9-8f41-99ae-f20b-bd8890dd082d">
+      <ns0:Execution id="4f3d3d16-905e-446a-bd05-f2a0c9edc55e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="OriginalRecoveryCallbackDoesNotCreatePortableJournalOrGenerationAndRestoresLeaseMode" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{\&quot;language\&quot;:\&quot;en\&quot;,\&quot;language\&quot;:\&quot;ru\&quot;}&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="21d08414-dc5a-37a6-418b-f1f91b2e6aa0">
+      <ns0:Execution id="68313f68-b8d9-44cf-beea-fe58fee3f39c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;file-publication-transactions&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="23f171aa-1b4c-c909-0edb-a8ac164c28ea">
+      <ns0:Execution id="160a1162-6578-427f-92e7-ac1de15f0653" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;append&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c0577fb9-7c18-31c5-ac2f-78f4a4efd072">
+      <ns0:Execution id="14135f0a-b2a3-44b4-be83-e673e78dade6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;bootstrap&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="33d4b7da-3bce-699b-7580-917f63b0548c">
+      <ns0:Execution id="86f800c7-dc46-4413-88f7-e2c80f688d4f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;{broken&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="45c3bc9b-bb0a-a840-8350-10384ff2df52">
+      <ns0:Execution id="03ea6393-802a-47e4-a12d-c595d7a7d826" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;null&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1b02ad68-2956-2ea2-0d6a-4dfd05eca338">
+      <ns0:Execution id="6217ee38-f259-4081-bcde-656d669c48bc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="97ba17ad-317d-6b07-a41b-e86c033c7be2">
+      <ns0:Execution id="6e929b61-8374-4df9-be24-cf77f3549e1c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="PreparedCanonicalSetPublishesOneLogicalResultWithoutPhysicalReceipt" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;load-transactions&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="37856566-80e2-93a1-cd42-8d0397737e4a">
+      <ns0:Execution id="ad2ce1ba-370c-4dbc-a3f0-6cbc0ed97a5e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;append&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="794b4c94-8643-36c1-34af-769d79ac6782">
+      <ns0:Execution id="4f225220-498a-4e2c-b622-0b30d9c1f487" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;write&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d5c9b392-e610-eaa1-d3a7-0afd2a74dd0b">
+      <ns0:Execution id="c1bb1598-48d9-4a2b-a60f-022ee7276115" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;pending&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="43a4c23a-37ad-770c-da2f-1ebdcab7e40e">
+      <ns0:Execution id="bf182871-04da-460b-b635-f31dc3fcaac4" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;committed&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="be5030a4-edc7-c9c6-9af6-8cd0a8366733">
+      <ns0:Execution id="e2dd9a4f-7a59-4b19-a263-adf30e9b2a99" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;bootstrap&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="15cf62cb-c0f9-7a40-5657-a2e88b1f0c70">
+      <ns0:Execution id="d7fd11c4-2d7e-4e8e-b7ab-e4b4be736db5" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes(cut: &quot;conflict&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="77b03e0a-0218-668b-20b3-03a1c8e48c18">
+      <ns0:Execution id="6226689a-f11e-4588-966b-eb4cee16393e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="UnboundCanonicalReadRecoversNewJournalBeforeReturningAcceptedBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;delete&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9b56669b-5041-52f2-04bb-ca1d3c44430d">
+      <ns0:Execution id="de8e9d11-6f85-4c18-8604-491e2d1ff104" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration(content: &quot;[]&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="21c9433e-941c-d4cc-225a-2c12617c486f">
+      <ns0:Execution id="b2c2bab3-471d-4016-a88a-9daf0e31bc5e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_InvalidExistingConfigPreservesEvidenceAndDoesNotInventGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9335c146-8681-83c0-cbf6-1201f443f06c">
+      <ns0:Execution id="73eb13eb-d86c-42d1-89d9-2cc521343f82" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="OrdinaryWriterRejectsStaleBoundGenerationWithoutChangingContent" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="26f53597-cdd0-f3b7-2611-3bc7829492fc">
+      <ns0:Execution id="907dff6b-d0d1-4937-840d-0739ae5d49ea" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_CreatesConfigAndGenerationUnderOneLeaseAndInvalidatesGenerationRevision" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8fd85899-9202-efc9-80e9-2c06bef42f9a">
+      <ns0:Execution id="4f0754ad-47bc-496c-a730-89beae6ec1d3" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained(area: &quot;worker-apply-transactions&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="74b23196-a6bd-1e8e-8785-75225c8ff72e">
+      <ns0:Execution id="0a4dfb74-8a8e-4cfa-be14-04ee08ae55cc" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UnresolvedLegacyRuntimeEvidenceBlocksAndIsRetained" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(operation: &quot;compare&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="04182359-5b6c-20cb-ac30-bddf096c4f2e">
+      <ns0:Execution id="d9d8e80f-3a46-4345-a306-43d9403524e6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;delete&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="f231a6bc-013c-16d7-e6f2-b3bd5648564f">
+      <ns0:Execution id="d9e7294b-bab4-47ca-95ad-652080e4e367" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9a426099-b486-333a-e0f9-973213eb042d">
+      <ns0:Execution id="123d0990-c95b-410d-a052-726bcec43b3d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="AcquireLease_UnresolvedLegacyPublicationCannotSilentlyPassOnLinux" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="017f9332-39bb-42c0-ca44-25a5bd97152d">
+      <ns0:Execution id="a143981c-204e-4118-baf8-2a96fc463cd2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_UsesRealColdProcessAndRetainsConfigAndGenerationAfterRestart" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: &quot;compare&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="b4dea7bb-0b4b-cf22-6243-fde0d7d882b8">
+      <ns0:Execution id="ffad28be-18b3-4f9b-acb2-a2ebe17345ee" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5ce4b8bf-2320-1bd6-e622-e08c0036a25b">
+      <ns0:Execution id="b2087811-824c-4803-a0ef-3c813fb56271" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_RepeatedAndNewManagerLoadsExistingValuesWithoutRewritingExactConfigOrGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="4991cfb4-f106-dfe7-aa89-affa2b7c0798">
+      <ns0:Execution id="b6ed3f39-3fc8-42af-a7e1-e1c7af255fac" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="Bootstrap_EmptyLegacyRootsAreNotUnresolvedEvidence" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="9545c625-86ff-6fcf-9593-b8d06cd129ff">
+      <ns0:Execution id="bcffb69c-dec0-4231-9aee-b2eb2363e5db" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="OrdinaryWriterPreservesBoundaryHooksAndStopsARevokedBoundOperationBeforeMutation" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableClientStorageTests.ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a91e9cf3-ba87-9a68-ec88-619e4e12ae60">
+      <ns0:Execution id="1cac6b15-45e6-4167-8060-a3dfb6430186" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableClientStorageTests" name="ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="794b4c94-8643-36c1-34af-769d79ac6782" executionId="4f225220-498a-4e2c-b622-0b30d9c1f487" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9335c146-8681-83c0-cbf6-1201f443f06c" executionId="73eb13eb-d86c-42d1-89d9-2cc521343f82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="43a4c23a-37ad-770c-da2f-1ebdcab7e40e" executionId="bf182871-04da-460b-b635-f31dc3fcaac4" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="be5030a4-edc7-c9c6-9af6-8cd0a8366733" executionId="e2dd9a4f-7a59-4b19-a263-adf30e9b2a99" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="017f9332-39bb-42c0-ca44-25a5bd97152d" executionId="a143981c-204e-4118-baf8-2a96fc463cd2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="4991cfb4-f106-dfe7-aa89-affa2b7c0798" executionId="b6ed3f39-3fc8-42af-a7e1-e1c7af255fac" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="37856566-80e2-93a1-cd42-8d0397737e4a" executionId="ad2ce1ba-370c-4dbc-a3f0-6cbc0ed97a5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d5c9b392-e610-eaa1-d3a7-0afd2a74dd0b" executionId="c1bb1598-48d9-4a2b-a60f-022ee7276115" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c4bb150e-602e-d950-0bfc-000a18d3f33e" executionId="8631c72f-2906-463d-ae97-f088a0740f20" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="15cf62cb-c0f9-7a40-5657-a2e88b1f0c70" executionId="d7fd11c4-2d7e-4e8e-b7ab-e4b4be736db5" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9a426099-b486-333a-e0f9-973213eb042d" executionId="123d0990-c95b-410d-a052-726bcec43b3d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="26f53597-cdd0-f3b7-2611-3bc7829492fc" executionId="907dff6b-d0d1-4937-840d-0739ae5d49ea" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="fd556388-0874-2eb6-7864-343a728fd4e9" executionId="5cac387b-ccfd-46a4-996c-b9f78cb2b19f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="45c3bc9b-bb0a-a840-8350-10384ff2df52" executionId="03ea6393-802a-47e4-a12d-c595d7a7d826" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="77b03e0a-0218-668b-20b3-03a1c8e48c18" executionId="6226689a-f11e-4588-966b-eb4cee16393e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="33d4b7da-3bce-699b-7580-917f63b0548c" executionId="86f800c7-dc46-4413-88f7-e2c80f688d4f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9545c625-86ff-6fcf-9593-b8d06cd129ff" executionId="bcffb69c-dec0-4231-9aee-b2eb2363e5db" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="97ba17ad-317d-6b07-a41b-e86c033c7be2" executionId="6e929b61-8374-4df9-be24-cf77f3549e1c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="74b23196-a6bd-1e8e-8785-75225c8ff72e" executionId="0a4dfb74-8a8e-4cfa-be14-04ee08ae55cc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="23f171aa-1b4c-c909-0edb-a8ac164c28ea" executionId="160a1162-6578-427f-92e7-ac1de15f0653" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="29286fc9-8f41-99ae-f20b-bd8890dd082d" executionId="4f3d3d16-905e-446a-bd05-f2a0c9edc55e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1b02ad68-2956-2ea2-0d6a-4dfd05eca338" executionId="6217ee38-f259-4081-bcde-656d669c48bc" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="5ce4b8bf-2320-1bd6-e622-e08c0036a25b" executionId="b2087811-824c-4803-a0ef-3c813fb56271" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c0577fb9-7c18-31c5-ac2f-78f4a4efd072" executionId="14135f0a-b2a3-44b4-be83-e673e78dade6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="04182359-5b6c-20cb-ac30-bddf096c4f2e" executionId="d9d8e80f-3a46-4345-a306-43d9403524e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="9b56669b-5041-52f2-04bb-ca1d3c44430d" executionId="de8e9d11-6f85-4c18-8604-491e2d1ff104" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="21d08414-dc5a-37a6-418b-f1f91b2e6aa0" executionId="68313f68-b8d9-44cf-beea-fe58fee3f39c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7057ee70-a827-9eab-79b0-910314a62ebd" executionId="a2af1403-c6b1-456f-8fc6-262356693017" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8fd85899-9202-efc9-80e9-2c06bef42f9a" executionId="4f0754ad-47bc-496c-a730-89beae6ec1d3" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b5b4a3ee-8319-2756-7934-01d3d4f9c293" executionId="9fe9b167-c86a-4370-a26e-7fc6dddcfd35" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a91e9cf3-ba87-9a68-ec88-619e4e12ae60" executionId="1cac6b15-45e6-4167-8060-a3dfb6430186" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="f231a6bc-013c-16d7-e6f2-b3bd5648564f" executionId="d9e7294b-bab4-47ca-95ad-652080e4e367" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="21c9433e-941c-d4cc-225a-2c12617c486f" executionId="b2c2bab3-471d-4016-a88a-9daf0e31bc5e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="b4dea7bb-0b4b-cf22-6243-fde0d7d882b8" executionId="ffad28be-18b3-4f9b-acb2-a2ebe17345ee" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="34" executed="34" passed="29" failed="5" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.17]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.13]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.15]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:06.71]       A nonregular compare before-image blocked while opening the FIFO.
+[xUnit.net 00:00:06.71]       Stack Trace:
+[xUnit.net 00:00:06.71]         $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs(368,0): at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation)
+[xUnit.net 00:00:06.71]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.72]       A nonregular append before-image blocked while opening the FIFO.
+[xUnit.net 00:00:11.72]       Stack Trace:
+[xUnit.net 00:00:11.72]         $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs(368,0): at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation)
+[xUnit.net 00:00:11.72]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:16.73]       A nonregular delete before-image blocked while opening the FIFO.
+[xUnit.net 00:00:16.73]       Stack Trace:
+[xUnit.net 00:00:16.73]         $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs(368,0): at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation)
+[xUnit.net 00:00:16.73]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.74]       A nonregular write before-image blocked while opening the FIFO.
+[xUnit.net 00:00:21.74]       Stack Trace:
+[xUnit.net 00:00:21.74]         $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs(368,0): at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation)
+[xUnit.net 00:00:21.74]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:26.75]       A nonregular bootstrap before-image blocked while opening the FIFO.
+[xUnit.net 00:00:26.75]       Stack Trace:
+[xUnit.net 00:00:26.75]         $REPO/BookOfEternityClient.Tests/PortableClientStorageTests.cs(368,0): at BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(String operation)
+[xUnit.net 00:00:26.75]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:28.14]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:48:53.8372919-04:00">
+        <ns0:Text>[xUnit.net 00:00:06.71]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "compare") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:48:58.8440599-04:00">
+        <ns0:Text>[xUnit.net 00:00:11.72]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "append") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:03.8516392-04:00">
+        <ns0:Text>[xUnit.net 00:00:16.73]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "delete") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:08.8580901-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.74]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "write") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-09-30T19:49:13.8674641-04:00">
+        <ns0:Text>[xUnit.net 00:00:26.75]     BookOfEternityClient.Tests.PortableClientStorageTests.IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(operation: "bootstrap") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

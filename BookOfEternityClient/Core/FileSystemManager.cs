@@ -832,14 +832,17 @@ public partial class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         cancellationToken.ThrowIfCancellationRequested();
-        var beforeContent = await ReadFileBytesCoreAsync(relativePath, cancellationToken);
+        var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
+        var beforeContent = useLocalWriter
+            ? await ReadLocalFileBytesAsync(writeLease, relativePath, cancellationToken)
+            : await ReadFileBytesCoreAsync(relativePath, cancellationToken);
         var currentContent = beforeContent ?? Encoding.UTF8.GetPreamble();
 
         var appendedContent = Encoding.UTF8.GetBytes(content);
         var nextContent = new byte[currentContent.Length + appendedContent.Length];
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
-        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        if (useLocalWriter)
         {
             RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
                 [new(relativePath, beforeContent, nextContent)], cancellationToken));
@@ -910,11 +913,14 @@ public partial class FileSystemManager
         byte[]? desiredContent)
     {
         EnsureValidCanonicalWriteLease(writeLease);
-        var currentContent = await ReadFileBytesCoreAsync(relativePath);
+        var useLocalWriter = UsesTrustedLocalWriter(writeLease, relativePath);
+        var currentContent = useLocalWriter
+            ? await ReadLocalFileBytesAsync(writeLease, relativePath)
+            : await ReadFileBytesCoreAsync(relativePath);
 
         if (!ExactBytesEqual(currentContent, expectedContent))
             return CanonicalFileMutationResult.Conflict;
-        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        if (useLocalWriter)
         {
             RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
                 [new(relativePath, currentContent, desiredContent)]));

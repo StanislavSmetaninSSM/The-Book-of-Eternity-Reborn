@@ -167,9 +167,57 @@ public partial class FileSystemManager
         throw new InvalidDataException("Local publication outcome is uncertain; retained evidence must be resolved before continuing.", outcome.Failure);
     }
 
+    // Byte authority for the trusted-local route. The legacy physical reader
+    // both accepts Unix special-file attributes and requires one Windows link;
+    // neither is the contract of a participating-writer, by-name publication.
+    internal async Task<byte[]?> ReadLocalFileBytesAsync(CanonicalWriteLease lease, string relativePath,
+        CancellationToken cancellationToken = default)
+    {
+        VerifyCurrentSessionOperation(lease);
+        if (!UsesTrustedLocalWriter(lease, relativePath))
+            throw new InvalidOperationException("A local byte read cannot replace a legacy transaction's physical authority.");
+        var scope = new TrustedLocalFileScope([GameSessionPath]);
+        var expectedPath = ResolvePath(relativePath);
+        for (var attempt = 0; ; attempt++)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var path = scope.ValidateFile(expectedPath);
+            if (!File.Exists(path)) return null;
+            await InvokeBeforeCanonicalReadOpenAsync(relativePath);
+            cancellationToken.ThrowIfCancellationRequested();
+            VerifyCurrentSessionOperation(lease);
+            EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+            scope.ValidateFile(path); // Revalidate after the read boundary hook, before opening.
+            FileStream stream;
+            try
+            {
+                stream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read | FileShare.Delete,
+                    bufferSize: 4096, FileOptions.Asynchronous | FileOptions.SequentialScan);
+            }
+            catch (FileNotFoundException) { scope.ValidateFile(path); return null; }
+            catch (DirectoryNotFoundException) { scope.ValidateFile(path); return null; }
+            catch (Exception ex) when (IsTransientReadOpenException(ex) && attempt < TransientFileAccessRetryCount)
+            {
+                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
+                continue;
+            }
+            await using (stream)
+            {
+                if (_hooks?.AfterCanonicalReadInitialValidationAsync != null)
+                    await _hooks.AfterCanonicalReadInitialValidationAsync(relativePath);
+                using var bytes = new MemoryStream();
+                await stream.CopyToAsync(bytes, cancellationToken);
+                scope.ValidateFile(path, allowMissing: false);
+                EnsureCanonicalPathStillSafe(relativePath, expectedPath);
+                VerifyCurrentSessionOperation(lease);
+                return bytes.ToArray();
+            }
+        }
+    }
+
     private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
     {
-        var before = await ReadFileBytesCoreAsync(relativePath);
+        var before = await ReadLocalFileBytesAsync(lease, relativePath);
         RequireCommittedLocalPublication(await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]));
     }
 }
