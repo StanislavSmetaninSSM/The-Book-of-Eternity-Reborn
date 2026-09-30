@@ -26,3 +26,6 @@
 /TestResults/
 **/.worker_runtime/
 **/.boe_runtime/
+
+/tests/fixtures/PortableStorageCrashHost/bin/
+/tests/fixtures/PortableStorageCrashHost/obj/

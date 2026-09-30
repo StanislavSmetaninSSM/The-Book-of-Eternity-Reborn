@@ -373,6 +373,18 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
     }
 
     [Fact]
+    public async Task Publish_PreservesTheExistingGenerationReadersCurrentSchemaContract()
+    {
+        var before = Encoding.UTF8.GetBytes("{\"schemaVersion\":1,\"generationId\":\"" + _generation + "\",\"extension\":true}");
+        File.WriteAllBytes(_files.SessionGenerationPath, before);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal(_generation, _files.ReadExistingSessionGeneration(lease));
+        var after = GenerationBytes(_generation);
+        Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation), [new(_files.SessionGenerationPath, before, after)]);
+        AssertImage(_files.SessionGenerationPath, after); AssertClean();
+    }
+
+    [Fact]
     public async Task Publish_RejectsDuplicateGenerationMemberAsInvalidData()
     {
         var bytes = GenerationBytes(_generation);
