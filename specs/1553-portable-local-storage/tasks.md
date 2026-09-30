@@ -7,7 +7,7 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 - [x] T001 Verify published main-based `1553-cross-platform-runtime` and adopt reviewed remote-persistence instructions
 - [x] T002 Reconstruct approved storage scope and later interactive-GM/Windows-owner-verification clarifications in spec.md and plan.md
-- [ ] T003 Run Spec Kit path/consistency checks, independently review this document block, publish evidence and verify clean restoration
+- [x] T003 Run Spec Kit path/consistency checks, independently review this document block, publish evidence and verify clean restoration
 
 ## B1 — Foundations for US1/US2
 

@@ -9,5 +9,5 @@
 - [x] No fabricated recovery of old code/test results
 - [x] Requirements map to bounded plan/tasks; generic GM draft is not labeled approved
 - [x] Category-only testing, isolated state, remote checkpoints and independent review preserved
-- [ ] Independent Astra XHigh reconstruction review complete
+- [x] Independent Astra XHigh reconstruction review complete
 - [x] Spec Kit prerequisite/consistency checks recorded in plan.md

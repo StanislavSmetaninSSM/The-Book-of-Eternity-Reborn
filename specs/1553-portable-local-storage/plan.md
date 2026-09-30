@@ -93,3 +93,9 @@ US1 → B1/B2; US2 → B1/B3; US3 → B3/B4/B5; US4 → B4; US5 → B5. B2 consu
 ## B4 research checkpoint — proposal only
 
 [research.md](research.md) preserves the read-only investigation of persistent terminal, automatic input, IPC and process ownership. No candidate was installed or tested. The dependency and rare final-supervisor-loss recovery choices remain under bounded technical evaluation. Favor the existing stack and maintainability while preserving the mandatory interaction; do not substitute a one-shot job or claim generic TUI readiness.
+
+## B1a checkpoint — path scope, RED pending
+
+R0 passed independent GPT-6 Astra XHigh review at 80d5fc52; #1500 references, checksum fail-fast and full-range whitespace issues were corrected and verified. B4 research remains a proposal, not a validated design. B1a adds a compile-only throwing API scaffold plus behavioral tests and narrow portable-storage-paths selection. There is no implemented new runtime behavior or application cutover. Next step: execute RED through scripts/test-csharp.ps1, then implement the scope and verify/review.
+
+Baseline preparation: canonical-storage -PlanOnly at e1dffabe failed during parallel build, 0 tests. Direct single-node diagnostic build succeeded. With DOTNET_PROCESSOR_COUNT=1, canonical-storage -PlanOnly at 80d5fc52 completed in 3:52.587, 5 descriptors/263 planned cases, 0 executed tests, cleanup complete. This is discovery, not a test pass. Use the one-processor environment for subsequent local runner commands until the environment-specific parallel-MSBuild issue is resolved; no category budget was raised.

@@ -2,86 +2,13 @@
   "schemaVersion": 1,
   "selections": [
     {
+      "category": "portable-storage-paths",
+      "reason": "#1553 B1a new common path-scope contract; independent per-test roots, external sentinels and link/type/cleanup rejection.",
       "contracts": [
-        "original admission",
-        "bounded A permissions"
-      ],
-      "category": "spiritual-binding-result-dependency",
-      "reason": "#1536 B2 original legality, eight saved-choice result/alternative/mixed-cost/out-of-scope cases; repeat only after final affected production changes."
-    },
-    {
-      "contracts": [
-        "absence versus null",
-        "wrapper precedence"
-      ],
-      "category": "spiritual-binding-control-boundaries",
-      "reason": "#1536 B3 exact raw control presence and carrier precedence."
-    },
-    {
-      "contracts": [
-        "ordinary validation",
-        "accepted A cold replay"
-      ],
-      "category": "spiritual-binding-final-control",
-      "reason": "#1536 B3/B4 actual mixed-cost A and separate durable B; 4636aa27 passed on current runtime."
-    },
-    {
-      "contracts": [
-        "force-binding prerequisites",
-        "raw wrapper continuation"
-      ],
-      "category": "spiritual-binding-wrapper-control",
-      "reason": "#1536 B3/B4 force-binding replacement carrier; da4b50cf passed on current runtime."
-    },
-    {
-      "contracts": [
-        "GameEngine continuation",
-        "atomic publication"
-      ],
-      "category": "spiritual-binding-live-publication",
-      "reason": "#1536 B4 actual file-GM Ready responses and once-only canonical publication."
-    },
-    {
-      "contracts": [
-        "cold startup",
-        "no synthetic B progress"
-      ],
-      "category": "spiritual-binding-cold-publication",
-      "reason": "#1536 B4 accepted final-exchange A survives restart before separate B Ready."
-    },
-    {
-      "contracts": [
-        "continuation compatibility",
-        "journal authority"
-      ],
-      "category": "spiritual-cutover-staged-publication",
-      "reason": "Shared private progress commit changed; verify journal authority and atomic write failure/readback boundaries."
-    },
-    {
-      "contracts": ["issued permissions", "private pair affinity"],
-      "category": "spiritual-frontier-admission",
-      "reason": "Binding extends shared dependent admission; preserve rejection of future edits and replacement private state."
-    },
-    {
-      "contracts": ["response classification", "combined evaluation and progress", "cold successor"],
-      "category": "spiritual-frontier-response-evaluation",
-      "reason": "Engine now uses one witnessed evaluation/conditional commit; preserve held, rejected, advanced and resolved outcomes."
-    },
-    {
-      "contracts": [
-        "GM guidance",
-        "source guards"
-      ],
-      "category": "documentation-afterlife",
-      "reason": "#1536 B5 afterlife guide, CLI and worker entrypoints changed."
-    },
-    {
-      "contracts": [
-        "authorable fragments",
-        "manifest coverage"
-      ],
-      "category": "documentation-examples",
-      "reason": "#1536 B5 worked example and shared manifest inventory changed."
+        "trusted local scope",
+        "regular file namespace",
+        "non-following cleanup"
+      ]
     }
   ]
 }

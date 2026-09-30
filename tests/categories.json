@@ -7549,6 +7549,29 @@
           "project": "unit"
         }
       ]
+    },
+    {
+      "id": "portable-storage-paths",
+      "responsibility": "Trusted-local allowed roots/exact external files, namespace type and link validation, and non-following owned cleanup on Linux/Windows.",
+      "excludes": "Publication journals, gameplay schemas, accepted-turn transactions, provider process ownership and adversarial owner races.",
+      "changeHints": [
+        "BookOfEternityClient/Core/TrustedLocalFileScope.cs"
+      ],
+      "related": [],
+      "requirements": {
+        "frontendBuild": false,
+        "exclusive": false
+      },
+      "timeoutMinutes": 3,
+      "expectedSeconds": null,
+      "selectors": [
+        {
+          "project": "unit",
+          "tests": [
+            "BookOfEternityClient.Tests.TrustedLocalFileScopeTests.*"
+          ]
+        }
+      ]
     }
   ]
 }
