@@ -14,17 +14,38 @@ internal sealed class TrustedLocalFileScope
     private readonly string[] _roots;
     private readonly HashSet<string> _exactFiles;
 
-    // Pure policy scaffolds for the remaining review regressions.
-    internal static bool IsDirectoryGrantTarget(string path, IEnumerable<string> roots, bool windows) =>
-        throw new NotImplementedException();
-    internal static string NormalizeWindowsPathSpelling(string path) => throw new NotImplementedException();
+    internal static bool IsDirectoryGrantTarget(string path, IEnumerable<string> roots, bool windows)
+    {
+        var candidate = windows ? NormalizeWindowsPathSpelling(path) : path;
+        return roots.Any(root => string.Equals(
+            candidate,
+            windows ? NormalizeWindowsPathSpelling(root) : root,
+            windows ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal));
+    }
+
+    internal static string NormalizeWindowsPathSpelling(string path)
+    {
+        var normalized = path.Replace('/', '\\');
+        ValidateWindowsComponents(normalized);
+        if (normalized.StartsWith(@"\\?\UNC\", StringComparison.OrdinalIgnoreCase))
+            return @"\\" + normalized[8..];
+        if (!normalized.StartsWith(@"\\?\", StringComparison.Ordinal))
+            return normalized;
+        var ordinary = normalized[4..];
+        if (ordinary.Length >= 3 && char.IsAsciiLetter(ordinary[0]) &&
+            ordinary[1] == ':' && ordinary[2] == '\\')
+            return ordinary;
+        throw new InvalidDataException("Only drive and UNC Windows file namespaces are supported.");
+    }
 
     internal static bool IsWithinDirectory(string path, string directory, char separator) =>
         path.Length > directory.Length + 1 &&
         path.StartsWith(directory, StringComparison.Ordinal) &&
         path[directory.Length] == separator;
 
-    internal static void ValidateWindowsPathSpelling(string path)
+    internal static void ValidateWindowsPathSpelling(string path) => _ = NormalizeWindowsPathSpelling(path);
+
+    private static void ValidateWindowsComponents(string path)
     {
         if (path.StartsWith(@"\\.\", StringComparison.Ordinal))
             throw new InvalidDataException("Device namespaces are not local storage paths.");
@@ -42,7 +63,7 @@ internal sealed class TrustedLocalFileScope
                 part.Any(value => value < ' ' || value is ':' or '*' or '?' or '"' or '<' or '>' or '|'))
                 throw new InvalidDataException("Ambiguous Windows path spelling is not a local storage name.");
 
-            var name = part.Split('.')[0];
+            var name = part.Split('.')[0].TrimEnd(' ');
             if (name.Equals("CON", StringComparison.OrdinalIgnoreCase) ||
                 name.Equals("PRN", StringComparison.OrdinalIgnoreCase) ||
                 name.Equals("AUX", StringComparison.OrdinalIgnoreCase) ||
@@ -140,7 +161,7 @@ internal sealed class TrustedLocalFileScope
     private void EnsureAllowed(string path, bool file)
     {
         var directoryGrant = _roots.Contains(path, PathComparer);
-        if (file && directoryGrant)
+        if (file && IsDirectoryGrantTarget(path, _roots, OperatingSystem.IsWindows()))
             throw new InvalidDataException("A directory grant cannot be used as a file target.");
         if ((!file && directoryGrant) || (file && _exactFiles.Contains(path)) ||
             _roots.Any(root => IsWithinDirectory(path, root, Path.DirectorySeparatorChar)))
@@ -155,7 +176,7 @@ internal sealed class TrustedLocalFileScope
         if (path.Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar]).Contains(".."))
             throw new InvalidDataException("Parent traversal is not a local storage path.");
         if (OperatingSystem.IsWindows())
-            ValidateWindowsPathSpelling(path);
+            path = NormalizeWindowsPathSpelling(path);
         var normalized = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
         return normalized;
     }
