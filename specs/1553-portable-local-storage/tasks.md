@@ -13,9 +13,9 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 - [x] T010 Write failing `TrustedLocalFileScopeTests.cs` for confined roots/exact files, traversal, links, wrong types, case sensitivity and non-following cleanup; add a narrow catalog owner
 - [x] T011 Implement `Core/TrustedLocalFileScope.cs` from those tests; run its category and publish checkpoint (35/35 Linux cases and independent Astra XHigh review at source 18461c67)
-- [x] T012 Write failing `TrustedLocalFilePublicationTests.cs` for create/replace/delete, exact bytes/absence, expected-content conflicts, crash phases, evidence retention and hard-linked outside-byte safety (RED confirmed; final candidate 43/43 Linux cases at d8ecd9dc)
-- [ ] T013 Implement `Core/TrustedLocalFilePublication.cs` and journal data contracts; no production cutover yet (implemented/tested candidate d8ecd9dc; acceptance awaits T014)
-- [ ] T013-M Add declared multi-member/generation/conflict-preflight cases to that same journal protocol; browser settings needs this slice before B2 acceptance (candidate includes explicit bootstrap generation and complete conflict preflight; independent review pending)
+- [x] T012 Write failing `TrustedLocalFilePublicationTests.cs` for create/replace/delete, exact bytes/absence, expected-content conflicts, crash phases, evidence retention and hard-linked outside-byte safety (RED confirmed; corrected candidate 66/66 Linux-run cases at 8d36e708)
+- [ ] T013 Implement `Core/TrustedLocalFilePublication.cs` and journal data contracts; no production cutover yet (implemented/tested candidate 8d36e708; acceptance awaits T014)
+- [ ] T013-M Add declared multi-member/generation/conflict-preflight cases to that same journal protocol; browser settings needs this slice before B2 acceptance (candidate includes explicit bootstrap generation and complete conflict preflight; focused independent re-review pending)
 - [ ] T014 Validate catalog ownership by discovery, run only B1 categories, independent Astra XHigh review; fix findings, publish and verify remote SHA
 
 ## B2 — US1 ordinary startup/settings
