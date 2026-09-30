@@ -16,6 +16,11 @@ internal sealed class TrustedLocalFileScope
     private readonly string[] _roots;
     private readonly HashSet<string> _exactFiles;
 
+    // API scaffolds for review regressions; no behavior is implemented here yet.
+    internal static bool IsWithinDirectory(string path, string directory, char separator) =>
+        throw new NotImplementedException();
+    internal static void ValidateWindowsPathSpelling(string path) => throw new NotImplementedException();
+
     internal TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles = null)
     {
         ArgumentNullException.ThrowIfNull(roots);

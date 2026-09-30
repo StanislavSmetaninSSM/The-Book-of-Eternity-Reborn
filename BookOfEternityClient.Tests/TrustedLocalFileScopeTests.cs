@@ -22,6 +22,54 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
     private TrustedLocalFileScope Scope(params string[] exactFiles) => new([_root], exactFiles);
 
     [Fact]
+    public void ValidateFile_RejectsAbsentDeclaredDirectoryRoot()
+    {
+        var absentRoot = Path.Combine(_sandbox, "absent-root");
+        var scope = new TrustedLocalFileScope([absentRoot]);
+        Assert.Throws<InvalidDataException>(() => scope.ValidateFile(absentRoot));
+        Assert.False(File.Exists(absentRoot));
+    }
+
+    [Fact]
+    public void DeleteOwnedFile_RejectsDirectoryRootReplacedByRegularFile()
+    {
+        var scope = Scope();
+        Directory.Delete(_root);
+        File.WriteAllText(_root, "preserve root conflict");
+        Assert.Throws<InvalidDataException>(() => scope.DeleteOwnedFile(_root));
+        Assert.Equal("preserve root conflict", File.ReadAllText(_root));
+    }
+
+    [Fact]
+    public void DirectoryGrant_UsesExactSpellingAndSeparatorBoundary()
+    {
+        Assert.True(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\root\file", @"C:\P\root", '\\'));
+        Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\ROOT\file", @"C:\P\root", '\\'));
+        Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\root-other\file", @"C:\P\root", '\\'));
+        Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\root", @"C:\P\root", '\\'));
+    }
+
+    [Theory]
+    [InlineData(@"C:\root\intent.json.")]
+    [InlineData(@"C:\root\intent.json ")]
+    [InlineData(@"C:\root.\intent.json")]
+    [InlineData(@"\\?\C:\root\intent.json.")]
+    [InlineData(@"C:\root\state.json:stream")]
+    [InlineData(@"C:\root\NUL.json")]
+    [InlineData(@"C:\root\COM1")]
+    [InlineData(@"\\.\NUL")]
+    public void WindowsPathSpelling_RejectsAmbiguousOrDeviceComponents(string path) =>
+        Assert.Throws<InvalidDataException>(() => TrustedLocalFileScope.ValidateWindowsPathSpelling(path));
+
+    [Theory]
+    [InlineData(@"C:\root\intent.json")]
+    [InlineData(@"\\?\C:\root\intent.json")]
+    [InlineData(@"\\server\share\root\intent.json")]
+    [InlineData(@"\\?\UNC\server\share\root\intent.json")]
+    public void WindowsPathSpelling_AllowsUnambiguousDiskPaths(string path) =>
+        TrustedLocalFileScope.ValidateWindowsPathSpelling(path);
+
+    [Fact]
     public void ValidateFile_AllowsMissingOrRegularFileInsideRoot()
     {
         var path = Path.Combine(_root, "state.json");
@@ -130,14 +178,11 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
     }
 
     [Fact]
-    public void ValidateFile_UsesHostPathCaseRulesWithoutBroadeningScope()
+    public void ValidateFile_RequiresExactDirectoryGrantSpelling()
     {
         var changedCase = Path.Combine(_sandbox, "ROOT", "state.json");
         var scope = Scope();
-        if (OperatingSystem.IsWindows())
-            Assert.Equal(changedCase, scope.ValidateFile(changedCase));
-        else
-            Assert.Throws<InvalidDataException>(() => scope.ValidateFile(changedCase));
+        Assert.Throws<InvalidDataException>(() => scope.ValidateFile(changedCase));
     }
 
     [Fact]
