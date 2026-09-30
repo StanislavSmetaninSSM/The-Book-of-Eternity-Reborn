@@ -10,6 +10,27 @@ public static class TrustedLocalPublicationCrashFixture
     {
         if (args.Length != 4) return 64;
         var files = new FileSystemManager(args[0], NullLogger<FileSystemManager>.Instance);
+        if (args[2] == "client-nonregular")
+        {
+            try
+            {
+                const string member = "game_state/core/nonregular.bin";
+                switch (args[3])
+                {
+                    case "bootstrap":
+                        await new StateManager(files, new BookOfEternityClient.Configuration.GameSettings(),
+                            NullLogger<StateManager>.Instance).BootstrapLocalStorageAsync(); break;
+                    case "write": await files.WriteFileAtomicBytesAsync(member, [2]); break;
+                    case "append": await files.AppendFileAtomicAsync(member, "a"); break;
+                    case "compare": await files.CompareExchangeFileBytesAsync(member, null, [2]); break;
+                    case "delete": files.DeleteFile(member); break;
+                    default: return 64;
+                }
+                return 78; // A nonregular canonical file was accepted.
+            }
+            catch (InvalidDataException) { return 0; }
+            catch (Exception ex) { Console.Error.WriteLine(ex); return 1; }
+        }
         if (args[2] == "console-startup")
         {
             try

@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Configuration;
@@ -332,6 +333,88 @@ public sealed class PortableClientStorageTests : IDisposable
         Assert.Equal("{broken", File.ReadAllText(path));
         Assert.False(File.Exists(_files.SessionGenerationPath));
     }
+
+    [Theory]
+    [InlineData("bootstrap")]
+    [InlineData("write")]
+    [InlineData("append")]
+    [InlineData("compare")]
+    [InlineData("delete")]
+    public async Task IntegratedLocalReaderRejectsFifoBeforeOpeningWithBoundedChildCleanup(string operation)
+    {
+        if (!OperatingSystem.IsLinux()) return; // FIFO fixture is Linux-only; no socket permission is needed.
+        _files.EnsureDirectoryStructure();
+        var path = _files.ResolvePath(operation == "bootstrap" ? "config.json" : "game_state/core/nonregular.bin");
+        Assert.Equal(0, MakeFifo(path, Convert.ToUInt32("600", 8)));
+        var assembly = typeof(PortableClientStorageTests).Assembly.Location;
+        var start = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
+        {
+            UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+        };
+        foreach (var argument in new[] { "exec", "--runtimeconfig", Path.ChangeExtension(assembly, ".runtimeconfig.json"),
+                     "--depsfile", Path.ChangeExtension(assembly, ".deps.json"), typeof(PortableStorageCrashHost.Program).Assembly.Location,
+                     _root, "", "client-nonregular", operation }) start.ArgumentList.Add(argument);
+        using var process = Process.Start(start) ?? throw new InvalidOperationException("Storage probe did not start.");
+        var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        var timedOut = false;
+        try { await process.WaitForExitAsync(timeout.Token); }
+        catch (OperationCanceledException) { timedOut = true; }
+        finally
+        {
+            if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
+        }
+        var output = await stdout + await stderr;
+        Assert.False(timedOut, "A nonregular " + operation + " before-image blocked while opening the FIFO.");
+        Assert.True(process.ExitCode == 0, output);
+        Assert.True(File.Exists(path));
+        Assert.False(File.Exists(_files.SessionGenerationPath));
+    }
+
+    [Theory]
+    [InlineData("bootstrap")]
+    [InlineData("write")]
+    [InlineData("append")]
+    [InlineData("compare")]
+    [InlineData("delete")]
+    public async Task IntegratedLocalWriterAcceptsHardLinksWithoutChangingOutsideAliasBytes(string operation)
+    {
+        _files.EnsureDirectoryStructure();
+        const string member = "game_state/core/hard-linked.bin";
+        var relative = operation == "bootstrap" ? "config.json" : member;
+        var target = _files.ResolvePath(relative);
+        var outside = Path.Combine(_root, "outside-canonical-alias.bin");
+        byte[] before = operation == "bootstrap"
+            ? Encoding.UTF8.GetPreamble().Concat(Encoding.UTF8.GetBytes("{\"language\":\"en\"}")).ToArray()
+            : [0xFE, 0];
+        File.WriteAllBytes(outside, before);
+        if (OperatingSystem.IsWindows()) Assert.True(CreateHardLink(target, outside, IntPtr.Zero));
+        else Assert.Equal(0, Link(outside, target));
+        byte[]? after = [2];
+        switch (operation)
+        {
+            case "bootstrap":
+                await _state.BootstrapLocalStorageAsync(); after = before;
+                Assert.Equal("en", _settings.Language); break;
+            case "write": await _files.WriteFileAtomicBytesAsync(relative, after); break;
+            case "append": await _files.AppendFileAtomicAsync(relative, "a"); after = before.Concat(new byte[] { 97 }).ToArray(); break;
+            case "compare": Assert.Equal(CanonicalFileMutationResult.Applied,
+                await _files.CompareExchangeFileBytesAsync(relative, before, after)); break;
+            case "delete": _files.DeleteFile(relative); after = null; break;
+        }
+        Assert.Equal(before, File.ReadAllBytes(outside));
+        if (after == null) Assert.False(File.Exists(target));
+        else Assert.Equal(after, File.ReadAllBytes(target));
+        Assert.True(File.Exists(_files.SessionGenerationPath));
+    }
+
+    [DllImport("libc", EntryPoint = "mkfifo", SetLastError = true)]
+    private static extern int MakeFifo(string path, uint mode);
+    [DllImport("libc", EntryPoint = "link", SetLastError = true)]
+    private static extern int Link(string existing, string created);
+    [DllImport("kernel32.dll", EntryPoint = "CreateHardLinkW", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateHardLink(string created, string existing, IntPtr security);
 
     private sealed class Interrupted : Exception { }
 
