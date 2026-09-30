@@ -1,7 +1,9 @@
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
@@ -257,6 +259,127 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
         File.WriteAllBytes(path, [99]);
         Assert.Throws<InvalidDataException>(() => Publisher().Recover(lease));
         AssertImage(path, [99]); Assert.True(File.Exists(Active));
+    }
+
+    [Theory]
+    [InlineData("MemberPublished")]
+    [InlineData("Committed")]
+    [InlineData("CleanupMember")]
+    [InlineData("RollbackStaged")]
+    public async Task Recover_AbruptColdProcessExitAndSeparateRecoveryProcess(string phase)
+    {
+        File.WriteAllBytes(Member("replace"), [0xEF, 0xBB, 0xBF, 0xFF]);
+        File.WriteAllBytes(Member("delete"), []);
+        Assert.Equal(73, await RunHost("publish", phase));
+        Assert.True(File.Exists(Active));
+        Assert.Equal(0, await RunHost("recover", phase));
+        var committed = phase is "Committed" or "CleanupMember";
+        AssertImage(Member("replace"), committed ? [] : [0xEF, 0xBB, 0xBF, 0xFF]);
+        AssertImage(Member("create"), committed ? [0xFE, 0] : null);
+        AssertImage(Member("delete"), committed ? null : []);
+        AssertClean();
+    }
+
+    [Fact]
+    public async Task Publish_SecondParticipatingProcessCannotAcquireHeldCanonicalLease()
+    {
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Equal(74, await RunHost("contend", "unused"));
+        AssertClean();
+    }
+
+    private async Task<int> RunHost(string mode, string phase)
+    {
+        var assembly = typeof(TrustedLocalFilePublicationTests).Assembly.Location;
+        var start = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
+        {
+            UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+        };
+        foreach (var arg in new[] { "exec", "--runtimeconfig", Path.ChangeExtension(assembly, ".runtimeconfig.json"),
+                     "--depsfile", Path.ChangeExtension(assembly, ".deps.json"), typeof(PortableStorageCrashHost.Program).Assembly.Location,
+                     _root, _generation, mode, phase }) start.ArgumentList.Add(arg);
+        using var process = Process.Start(start) ?? throw new InvalidOperationException("Crash fixture did not start.");
+        var stdout = process.StandardOutput.ReadToEndAsync();
+        var stderr = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+            var output = await stdout + await stderr;
+            Assert.True(process.ExitCode is 0 or 73 or 74, output);
+            return process.ExitCode;
+        }
+        finally
+        {
+            if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
+        }
+    }
+
+    [Theory]
+    [InlineData("format")]
+    [InlineData("duplicate-member")]
+    [InlineData("hash")]
+    [InlineData("missing-decision")]
+    [InlineData("outside-path")]
+    public async Task Recover_PreflightsInvalidJournalWithoutRestoringAnyMember(string corruption)
+    {
+        var a = Member("a"); var b = Member("b");
+        File.WriteAllBytes(a, [1]); File.WriteAllBytes(b, [2]);
+        var outside = Path.Combine(_sandbox, "outside"); File.WriteAllBytes(outside, [90]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<Interrupted>(() => Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(a, [1], [11]), new(b, [2], [22])], Crash(TrustedLocalPublicationPhase.MemberPublished, 1)));
+        var json = JsonNode.Parse(File.ReadAllText(Active))!;
+        switch (corruption)
+        {
+            case "format": json["Format"] = 9; break;
+            case "duplicate-member": json["Members"]!.AsArray().Add(json["Members"]![0]!.DeepClone()); break;
+            case "hash": json["Members"]![1]!["Before"]!["Sha256"] = new string('0', 64); break;
+            case "missing-decision": json.AsObject().Remove("Committed"); break;
+            case "outside-path": json["Members"]![1]!["Path"] = outside; break;
+        }
+        var evidence = Encoding.UTF8.GetBytes(json.ToJsonString()); File.WriteAllBytes(Active, evidence);
+        Assert.Throws<InvalidDataException>(() => Publisher().Recover(lease));
+        AssertImage(a, [11]); AssertImage(b, [22]); AssertImage(outside, [90]);
+        Assert.Equal(evidence, File.ReadAllBytes(Active));
+    }
+
+    [Fact]
+    public async Task Recover_LinkInLaterMemberPreservesEarlierMemberAndOutsideSentinel()
+    {
+        var a = Member("a"); var b = Member("b");
+        File.WriteAllBytes(a, [1]); File.WriteAllBytes(b, [2]);
+        var outside = Path.Combine(_sandbox, "outside"); File.WriteAllBytes(outside, [90]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<Interrupted>(() => Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(a, [1], [11]), new(b, [2], [22])], Crash(TrustedLocalPublicationPhase.MemberPublished, 1)));
+        File.Delete(b); File.CreateSymbolicLink(b, outside);
+        var evidence = File.ReadAllBytes(Active);
+        Assert.Throws<InvalidDataException>(() => Publisher().Recover(lease));
+        AssertImage(a, [11]); AssertImage(outside, [90]); Assert.Equal(evidence, File.ReadAllBytes(Active));
+    }
+
+    [Fact]
+    public async Task Recover_PartiallyWrittenPrivateScratchIsNotCanonicalAuthority()
+    {
+        var path = Member("state"); File.WriteAllBytes(path, [1]);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<Interrupted>(() => Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(path, [1], [2, 3, 4])], Crash(TrustedLocalPublicationPhase.MemberStaged)));
+        var stage = Assert.Single(Directory.EnumerateFiles(_root, ".boe-local-*.stage"));
+        File.WriteAllBytes(stage, [2]);
+        Publisher().Recover(lease);
+        AssertImage(path, [1]); AssertClean();
+    }
+
+    [Fact]
+    public async Task Publish_RejectsDuplicateGenerationMemberAsInvalidData()
+    {
+        var bytes = GenerationBytes(_generation);
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Throws<InvalidDataException>(() => Publisher().Publish(lease, TrustedLocalGeneration.Existing(_generation),
+            [new(_files.SessionGenerationPath, bytes, bytes), new(_files.SessionGenerationPath, bytes, bytes)]));
+        AssertImage(_files.SessionGenerationPath, bytes); AssertClean();
     }
 
     [DllImport("libc", EntryPoint = "link", SetLastError = true)] private static extern int Link(string oldPath, string newPath);
