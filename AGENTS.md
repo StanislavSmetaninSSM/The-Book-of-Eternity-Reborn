@@ -8,6 +8,28 @@ reasoning effort, verification, checkpoints, and process revisions. Re-read afte
 context recovery when the current policy is not retained; avoid repeated reads of
 unchanged text within a block. This applies to documentation and configuration too.
 
+## Remote persistence and recovery guardrail
+
+GitHub is the durable source of work and recovery instructions; a local checkout,
+local commit, chat summary, or review report alone is not a saved checkpoint.
+Before changing anything after a new session or context loss, locate the task's
+remote branch and latest checkpoint, verify its SHA, and read the current
+`docs/development-workflow.md` plus the task's issue/spec/plan.
+
+Publish the task branch before implementation. After each bounded block, and
+before a long test/review, handoff, or stop, commit and push all relevant source
+and checkpoint updates. If unfinished, explicitly label the commit/checkpoint
+WIP and record unrun/failed checks; remote preservation must not wait for review.
+WIP publication does not constitute review, acceptance, merge, or issue closure.
+Verify the branch SHA by reading the remote, and verify recovery into a new clean
+directory before claiming the checkpoint is recoverable. Keep secrets, private
+credentials, and unrelated local/session data out of Git.
+
+If publication fails or its outcome is uncertain, report that immediately,
+preserve the local evidence, and stop accumulating implementation changes until
+safe remote persistence is restored and verified. Follow the detailed checkpoint,
+failure, and clean-restore procedure in `docs/development-workflow.md`.
+
 ## Task tracking guardrail
 
 Do not implement project changes without a tracked task.
