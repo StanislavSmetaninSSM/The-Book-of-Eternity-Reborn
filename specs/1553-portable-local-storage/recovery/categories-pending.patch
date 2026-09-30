@@ -1,0 +1,39 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index e9bb569e..4b805af9 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -7572,6 +7572,34 @@
+           ]
+         }
+       ]
++    },
++    {
++      "id": "portable-storage-publication",
++      "responsibility": "Trusted-local single/declared-member publication, generation binding, exact-byte rollback, conflict preflight and process-crash cleanup under the canonical lease on Linux/Windows.",
++      "excludes": "Application cutover, legacy journal recovery, gameplay/history, full save-load and adversarial same-user races.",
++      "changeHints": [
++        "BookOfEternityClient/Core/TrustedLocalFilePublication.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-paths",
++          "when": "File scope or path/cleanup behavior changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.TrustedLocalFilePublicationTests.*"
++          ]
++        }
++      ]
+     }
+   ]
+ }

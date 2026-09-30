@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-storage-paths",
-      "reason": "#1553 B1a new common path-scope contract; independent per-test roots, external sentinels and link/type/cleanup rejection.",
+      "category": "portable-storage-publication",
+      "reason": "#1553 B1b disconnected common publication engine: exact bytes/absence, multi-member rollback preflight, explicit generation, canonical lease and crash/cleanup phases.",
       "contracts": [
-        "trusted local scope",
-        "regular file namespace",
-        "non-following cleanup"
+        "trusted local publication",
+        "generation-bound member journal",
+        "process-crash recovery"
       ]
     }
   ]
