@@ -1,7 +1,9 @@
 <!--
 Sync Impact Report
-Version change: 1.2.0 -> 2.0.0
-Source task: #1505 / #1536, CATEGORY-SELECTION-DECISION rev1 approved 2026-09-30
+Version change: 2.0.0 -> 2.1.0
+Source task: #1553, approved trusted-local-player storage design and 2026-09-30 cross-platform clarification
+Current amendment: add trusted-local-player constraint without weakening accepted-turn, schema, path or recovery integrity; add no OS privilege requirement. Existing category-only verification remains unchanged. Templates remain applicable without changes. Feature specification: specs/1553-portable-local-storage/spec.md.
+Previous 2.0.0 sync impact (retained for provenance):
 Modified principles:
 - Development Workflow and Quality Gates: impact-selected categories replace broad verification.
 Added sections:
@@ -118,6 +120,15 @@ Spectre.Console, file-backed JSON game state, a local browser UI, React, Vite,
 TypeScript, and local/loopback runtime services. Features MUST preserve local
 play and must not introduce cloud dependencies, telemetry, or remote services
 unless a tracked issue and accepted spec explicitly require them.
+
+The game is intended for trusted local single-player use. Deliberate editing of
+the player's own saves while the game is closed is not a threat the client must
+resist. Concurrent external editing of an open session is unsupported. This does
+not remove input/schema validation, confinement to approved file paths,
+accepted-turn integrity, generation fencing or process-crash recovery. The common
+Linux/Windows storage contract restores exact bytes or absence, without requiring
+the same physical file identity or protection against intentional owner races.
+No privileged save-protection service or OS security-setting change is required.
 
 Core source areas include:
 
@@ -250,4 +261,4 @@ delegating to Codex, and before reporting completion. If a task conflicts with
 this constitution, the agent must report the conflict and either update the
 Spec Kit artifacts through the proper phase or ask the user for direction.
 
-**Version**: 2.0.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-09-30
+**Version**: 2.1.0 | **Ratified**: 2026-06-05 | **Last Amended**: 2026-09-30
