@@ -32,6 +32,12 @@ internal sealed class TrustedLocalFilePublication
     {
         UnmappedMemberHandling = JsonUnmappedMemberHandling.Disallow
     };
+    // Match the existing current-schema generation reader; journal documents
+    // remain strict, version-separated authority.
+    private static readonly JsonSerializerOptions GenerationReadOptions = new()
+    {
+        PropertyNameCaseInsensitive = true
+    };
     private static readonly StringComparer MemberComparer = OperatingSystem.IsWindows()
         ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
     private readonly FileSystemManager _files;
@@ -68,6 +74,8 @@ internal sealed class TrustedLocalFilePublication
             Before = Image.FromBytes(change.Before),
             After = Image.FromBytes(change.After)
         }).ToArray();
+        if (members.Select(member => member.Path).Distinct(MemberComparer).Count() != members.Length)
+            throw Conflict("A publication contains duplicate members.");
         var generationMember = members.SingleOrDefault(member => MemberComparer.Equals(member.Path, _files.SessionGenerationPath));
         var afterGeneration = generationMember == null ? generation : ParseGeneration(generationMember.After.Bytes);
         if (generationMember != null && ParseGeneration(generationMember.Before.Bytes) != generation)
@@ -271,7 +279,7 @@ internal sealed class TrustedLocalFilePublication
         if (bytes == null) return TrustedLocalGeneration.Absent;
         try
         {
-            var value = StrictJsonAuthority.Deserialize<GenerationDocument>(bytes, JsonOptions, "Publication generation");
+            var value = StrictJsonAuthority.Deserialize<GenerationDocument>(bytes, GenerationReadOptions, "Publication generation");
             if (value == null || value.SchemaVersion != 1 || !ValidId(value.GenerationId))
                 throw Conflict("The declared generation image is invalid.");
             return TrustedLocalGeneration.Existing(value.GenerationId);
