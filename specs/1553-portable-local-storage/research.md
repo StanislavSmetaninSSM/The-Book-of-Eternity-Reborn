@@ -110,3 +110,7 @@ The product behavior is already clear: persistent automatic human-like CLI input
 ## Additional implementation cautions
 
 Console manual input needs a real raw-terminal mode contract and guaranteed mode restoration; Console.ReadKey alone is not a complete arbitrary-TUI key transport. Reboot recovery must use trustworthy boot identity for the affected host, not a new application epoch or container identifier. Linux /proc child-list reads can omit live children during concurrent exits; an empty list is not StopConfirmed. Use authoritative supervisor reaping/ownership evidence, or report uncertainty.
+
+## Bounded current-executor capability evidence, 2026-09-30 19:47 UTC
+
+A separate non-application probe successfully bound/listened/connected/accepted and transferred five bytes over IPv4 loopback TCP on an ephemeral port. Creating an AF_UNIX stream socket was denied with EPERM; it was not retried through an alternate route. Opening a PTY master/slave pair succeeded and both descriptors reported terminal status; no child process or model CLI was launched. All sockets/descriptors were closed and the owned temporary directory removed. This establishes only these capabilities in the current restricted executor, not general Linux limitations, browser reachability, application behavior or provider compatibility. The AF_UNIX limitation must be considered explicitly before interpreting .NET named-pipe failures as game defects.

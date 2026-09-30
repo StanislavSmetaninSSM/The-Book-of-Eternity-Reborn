@@ -14,6 +14,11 @@ internal sealed class TrustedLocalFileScope
     private readonly string[] _roots;
     private readonly HashSet<string> _exactFiles;
 
+    // Pure policy scaffolds for the remaining review regressions.
+    internal static bool IsDirectoryGrantTarget(string path, IEnumerable<string> roots, bool windows) =>
+        throw new NotImplementedException();
+    internal static string NormalizeWindowsPathSpelling(string path) => throw new NotImplementedException();
+
     internal static bool IsWithinDirectory(string path, string directory, char separator) =>
         path.Length > directory.Length + 1 &&
         path.StartsWith(directory, StringComparison.Ordinal) &&

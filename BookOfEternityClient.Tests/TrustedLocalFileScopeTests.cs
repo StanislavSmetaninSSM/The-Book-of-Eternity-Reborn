@@ -47,6 +47,12 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
         Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\ROOT\file", @"C:\P\root", '\\'));
         Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\root-other\file", @"C:\P\root", '\\'));
         Assert.False(TrustedLocalFileScope.IsWithinDirectory(@"C:\P\root", @"C:\P\root", '\\'));
+        string[] roots = [@"C:\P", @"C:\P\root"];
+        Assert.True(TrustedLocalFileScope.IsDirectoryGrantTarget(@"C:\P\ROOT", roots, windows: true));
+        Assert.False(TrustedLocalFileScope.IsDirectoryGrantTarget(@"C:\P\ROOT", roots, windows: false));
+        Assert.True(TrustedLocalFileScope.IsDirectoryGrantTarget(@"C:\P\root", [@"C:\P", @"\\?\C:\P\root"], windows: true));
+        Assert.True(TrustedLocalFileScope.IsDirectoryGrantTarget(@"\\?\C:\P\root", roots, windows: true));
+        Assert.False(TrustedLocalFileScope.IsDirectoryGrantTarget(@"C:\P\ROOT\file", roots, windows: true));
     }
 
     [Theory]
@@ -57,17 +63,24 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
     [InlineData(@"C:\root\state.json:stream")]
     [InlineData(@"C:\root\NUL.json")]
     [InlineData(@"C:\root\COM1")]
+    [InlineData(@"C:\root\NUL .json")]
+    [InlineData(@"C:\root\COM1 .json")]
     [InlineData(@"\\.\NUL")]
+    [InlineData(@"\\?\GLOBALROOT\Device\HarddiskVolume1\file")]
+    [InlineData(@"\\?\Volume{00000000-0000-0000-0000-000000000000}\file")]
     public void WindowsPathSpelling_RejectsAmbiguousOrDeviceComponents(string path) =>
         Assert.Throws<InvalidDataException>(() => TrustedLocalFileScope.ValidateWindowsPathSpelling(path));
 
     [Theory]
-    [InlineData(@"C:\root\intent.json")]
-    [InlineData(@"\\?\C:\root\intent.json")]
-    [InlineData(@"\\server\share\root\intent.json")]
-    [InlineData(@"\\?\UNC\server\share\root\intent.json")]
-    public void WindowsPathSpelling_AllowsUnambiguousDiskPaths(string path) =>
+    [InlineData(@"C:\root\intent.json", @"C:\root\intent.json")]
+    [InlineData(@"\\?\C:\root\intent.json", @"C:\root\intent.json")]
+    [InlineData(@"\\server\share\root\intent.json", @"\\server\share\root\intent.json")]
+    [InlineData(@"\\?\UNC\server\share\root\intent.json", @"\\server\share\root\intent.json")]
+    public void WindowsPathSpelling_AllowsUnambiguousDiskPaths(string path, string expected)
+    {
         TrustedLocalFileScope.ValidateWindowsPathSpelling(path);
+        Assert.Equal(expected, TrustedLocalFileScope.NormalizeWindowsPathSpelling(path));
+    }
 
     [Fact]
     public void ValidateFile_AllowsMissingOrRegularFileInsideRoot()
