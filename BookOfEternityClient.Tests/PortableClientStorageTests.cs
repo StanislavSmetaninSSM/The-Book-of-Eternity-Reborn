@@ -4,6 +4,8 @@ using System.Text.Json;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
+using BookOfEternityClient.WebUi;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Logging.Abstractions;
 using Xunit;
 
@@ -271,6 +273,64 @@ public sealed class PortableClientStorageTests : IDisposable
             () => hooked.WriteFileAtomicBytesAsync(path, [2])));
         Assert.Equal(new byte[] { 1 }, File.ReadAllBytes(_files.ResolvePath(path)));
         Assert.Equal(new[] { "before", "after" }, trace);
+    }
+
+    [Fact]
+    public async Task ActualWebHostBuildBootstrapsConfigAndGenerationBeforeServingAnything()
+    {
+        var assets = Path.Combine(_root, "host-assets"); Directory.CreateDirectory(assets);
+        File.WriteAllText(Path.Combine(assets, "index.html"), "<!doctype html><title>Fixture</title>");
+        await using var app = LocalWebUiHost.Build([], new(_root, "http://127.0.0.1:0", assets));
+        Assert.True(File.Exists(_files.ResolvePath("config.json")));
+        Assert.True(File.Exists(_files.SessionGenerationPath));
+        // Deliberately never StartAsync: this is startup admission, not browser UI evidence.
+    }
+
+    [Fact]
+    public async Task ActualWebHostBuildRejectsInvalidExistingConfigWithoutCreatingGeneration()
+    {
+        _files.EnsureDirectoryStructure();
+        var path = _files.ResolvePath("config.json"); File.WriteAllBytes(path, [0xFF, 0]);
+        var assets = Path.Combine(_root, "host-assets"); Directory.CreateDirectory(assets);
+        File.WriteAllText(Path.Combine(assets, "index.html"), "<!doctype html><title>Fixture</title>");
+        WebApplication? app = null;
+        try { Assert.Throws<InvalidDataException>(() => app = LocalWebUiHost.Build([], new(_root, "http://127.0.0.1:0", assets))); }
+        finally { if (app != null) await app.DisposeAsync(); }
+        Assert.Equal(new byte[] { 0xFF, 0 }, File.ReadAllBytes(path));
+        Assert.False(File.Exists(_files.SessionGenerationPath));
+    }
+
+    [Fact]
+    public async Task ActualConsoleEntrypointRejectsInvalidConfigBeforeMainMenuAndKeepsEvidence()
+    {
+        _files.EnsureDirectoryStructure();
+        var path = _files.ResolvePath("config.json"); File.WriteAllText(path, "{broken");
+        var script = Path.Combine(_root, "input-script.json");
+        File.WriteAllText(script, "{\"steps\":[{\"kind\":\"key\",\"key\":\"Up\"},{\"kind\":\"key\",\"key\":\"Enter\"}]}");
+        var assembly = typeof(PortableClientStorageTests).Assembly.Location;
+        var start = new ProcessStartInfo(Environment.GetEnvironmentVariable("DOTNET_HOST_PATH") ?? "dotnet")
+        {
+            UseShellExecute = false, RedirectStandardOutput = true, RedirectStandardError = true
+        };
+        foreach (var argument in new[] { "exec", "--runtimeconfig", Path.ChangeExtension(assembly, ".runtimeconfig.json"),
+                     "--depsfile", Path.ChangeExtension(assembly, ".deps.json"), typeof(PortableStorageCrashHost.Program).Assembly.Location,
+                     _root, "", "console-startup", script }) start.ArgumentList.Add(argument);
+        using var process = Process.Start(start) ?? throw new InvalidOperationException("Console host did not start.");
+        var stdout = process.StandardOutput.ReadToEndAsync(); var stderr = process.StandardError.ReadToEndAsync();
+        using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(30));
+        try
+        {
+            await process.WaitForExitAsync(timeout.Token);
+            var output = await stdout + await stderr;
+            Assert.True(process.ExitCode == 2, output);
+            Assert.Contains("config.json", output, StringComparison.Ordinal);
+        }
+        finally
+        {
+            if (!process.HasExited) { process.Kill(entireProcessTree: true); await process.WaitForExitAsync(); }
+        }
+        Assert.Equal("{broken", File.ReadAllText(path));
+        Assert.False(File.Exists(_files.SessionGenerationPath));
     }
 
     private sealed class Interrupted : Exception { }
