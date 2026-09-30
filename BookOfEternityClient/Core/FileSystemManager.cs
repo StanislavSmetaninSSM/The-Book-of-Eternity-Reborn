@@ -272,6 +272,7 @@ public partial class FileSystemManager
         internal CanonicalWritePurpose Purpose { get; }
         internal object? ExternalPublicationContext { get; set; }
         internal ICanonicalMutationIntentRecorder? MutationIntentRecorder { get; set; }
+        internal bool IsLegacyStorageRecovery { get; set; }
         internal AmbientCanonicalLeaseRegistration? AmbientRegistration
         {
             get => _ambientRegistration;
@@ -705,10 +706,7 @@ public partial class FileSystemManager
         string relativePath,
         string content)
     {
-        _ = await WriteFileAtomicWithPublicationAsync(
-            writeLease,
-            relativePath,
-            content);
+        await WriteFileAtomicBytesAsync(writeLease, relativePath, EncodeUtf8WithPreamble(content));
     }
 
     internal async Task<CanonicalMutationPublication>
@@ -785,6 +783,11 @@ public partial class FileSystemManager
         byte[] content)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            await WriteTrustedLocalFileAsync(writeLease, relativePath, content);
+            return;
+        }
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,
@@ -829,13 +832,19 @@ public partial class FileSystemManager
     {
         EnsureValidCanonicalWriteLease(writeLease);
         cancellationToken.ThrowIfCancellationRequested();
-        var currentContent = await ReadFileBytesCoreAsync(relativePath, cancellationToken) ??
-                             Encoding.UTF8.GetPreamble();
+        var beforeContent = await ReadFileBytesCoreAsync(relativePath, cancellationToken);
+        var currentContent = beforeContent ?? Encoding.UTF8.GetPreamble();
 
         var appendedContent = Encoding.UTF8.GetBytes(content);
         var nextContent = new byte[currentContent.Length + appendedContent.Length];
         Buffer.BlockCopy(currentContent, 0, nextContent, 0, currentContent.Length);
         Buffer.BlockCopy(appendedContent, 0, nextContent, currentContent.Length, appendedContent.Length);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
+                [new(relativePath, beforeContent, nextContent)], cancellationToken));
+            return;
+        }
         await RecordCanonicalMutationIntentAsync(
             writeLease,
             relativePath,
@@ -905,6 +914,12 @@ public partial class FileSystemManager
 
         if (!ExactBytesEqual(currentContent, expectedContent))
             return CanonicalFileMutationResult.Conflict;
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            RequireCommittedLocalPublication(await PublishLocalFilesAsync(writeLease,
+                [new(relativePath, currentContent, desiredContent)]));
+            return CanonicalFileMutationResult.Applied;
+        }
 
         await RecordCanonicalMutationIntentAsync(
             writeLease,
@@ -1999,6 +2014,11 @@ public partial class FileSystemManager
     internal void DeleteFile(CanonicalWriteLease writeLease, string relativePath)
     {
         EnsureValidCanonicalWriteLease(writeLease);
+        if (UsesTrustedLocalWriter(writeLease, relativePath))
+        {
+            WriteTrustedLocalFileAsync(writeLease, relativePath, null).GetAwaiter().GetResult();
+            return;
+        }
         RecordCanonicalMutationIntentAsync(
                 writeLease,
                 relativePath,
@@ -3582,25 +3602,22 @@ public partial class FileSystemManager
                 purpose);
             try
             {
-                RecoverInterruptedFilePublications();
-                if (purpose !=
-                    CanonicalWritePurpose.PublicationReadQuiescence)
+                if (!OperatingSystem.IsWindows()) EnsureNoLegacyStorageEvidence();
+                await RunLegacyStorageRecoveryAsync(writeLease, async () =>
                 {
-                    RecoverInterruptedLoadTransaction(writeLease);
-                    await RecoverInterruptedWorkerApplyTransactionAsync(
-                        writeLease);
-                    if (purpose is CanonicalWritePurpose.SessionMutation or
-                        CanonicalWritePurpose.SessionReplacement)
+                    RecoverInterruptedFilePublications();
+                    if (purpose != CanonicalWritePurpose.PublicationReadQuiescence)
                     {
-                        await ExplorerLocalTurnRollbackArtifacts
-                            .RecoverInterruptedBrowserWriteTransactionsAsync(
-                                this,
-                                writeLease);
+                        RecoverInterruptedLoadTransaction(writeLease);
+                        await RecoverInterruptedWorkerApplyTransactionAsync(writeLease);
+                        if (purpose is CanonicalWritePurpose.SessionMutation or CanonicalWritePurpose.SessionReplacement)
+                            await ExplorerLocalTurnRollbackArtifacts.RecoverInterruptedBrowserWriteTransactionsAsync(this, writeLease);
                     }
-
-                    if (purpose == CanonicalWritePurpose.SessionMutation)
-                        EnsureBoundSessionOperationCanWrite(writeLease);
-                }
+                });
+                EnsureNoLegacyStorageEvidence();
+                RecoverTrustedLocalStorage(writeLease);
+                if (purpose == CanonicalWritePurpose.SessionMutation)
+                    EnsureBoundSessionOperationCanWrite(writeLease);
                 return writeLease;
             }
             catch
@@ -3822,29 +3839,8 @@ public partial class FileSystemManager
             _basePath,
             PhysicalPublicationTransactionsRootPath);
 
-    private bool HasPendingFilePublications()
-    {
-        var journalRoot = PhysicalPublicationTransactionsRootPath;
-        var kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(
-            _basePath,
-            journalRoot,
-            "Pending file publication root");
-        if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing)
-            return false;
-        if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)
-        {
-            throw new InvalidDataException(
-                "Pending file publication root is not a physical directory.");
-        }
-
-        using var authority = PhysicalFileAuthority.OpenStableDirectory(
-            journalRoot,
-            "Pending file publication root");
-        return Directory.EnumerateFileSystemEntries(
-            journalRoot,
-            "*",
-            SearchOption.TopDirectoryOnly).Any();
-    }
+    private bool HasPendingFilePublications() =>
+        HasStorageEvidence(LocalPublicationRoot) || HasStorageEvidence(PhysicalPublicationTransactionsRootPath);
 
     private static InProcessMutationState AcquireInProcessMutationState(
         string fullPath)
@@ -5503,9 +5499,7 @@ public partial class FileSystemManager
         if (RuntimeFileExists(SessionGenerationPath))
             return ReadSessionGeneration();
 
-        var generationId = Guid.NewGuid().ToString("N");
-        WriteSessionGeneration(generationId);
-        return generationId;
+        return CreateTrustedLocalGeneration(writeLease);
     }
 
     /// <summary>

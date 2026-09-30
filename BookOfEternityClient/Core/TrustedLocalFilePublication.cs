@@ -74,11 +74,50 @@ internal sealed class TrustedLocalFilePublication
 
     internal TrustedLocalPublicationOutcome PublishWithOutcome(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
-        Action<TrustedLocalPublicationPhase, int>? observer = null) => throw new NotImplementedException();
+        Action<TrustedLocalPublicationPhase, int>? observer = null)
+    {
+        _files.EnsureCanonicalWriteLeaseActive(lease);
+        var attempt = new PublicationAttempt();
+        try
+        {
+            var result = PublishCore(lease, generation, changes, observer, attempt);
+            return new(TrustedLocalPublicationDisposition.Committed, result, null);
+        }
+        catch (Exception failure)
+        {
+            // The durable decision precedes every cleanup callback. Never undo
+            // committed runtime state merely because cleanup still needs retry.
+            if (attempt.Committed != null)
+                return new(TrustedLocalPublicationDisposition.Committed, attempt.Committed, failure);
+            try
+            {
+                Recover(lease);
+                if (attempt.Prepared != null && ReadGeneration(lease) == attempt.Prepared.GenerationBefore &&
+                    attempt.Prepared.Members.All(member => Matches(member.Path, member.Before)))
+                    return new(TrustedLocalPublicationDisposition.RolledBack, null, failure);
+            }
+            catch (Exception recoveryFailure)
+            {
+                failure = new AggregateException(failure, recoveryFailure);
+            }
+            return new(TrustedLocalPublicationDisposition.Uncertain, null, failure);
+        }
+    }
+
+    private sealed class PublicationAttempt
+    {
+        internal Journal? Prepared { get; set; }
+        internal TrustedLocalPublicationResult? Committed { get; set; }
+    }
 
     internal TrustedLocalPublicationResult Publish(FileSystemManager.CanonicalWriteLease lease,
         TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
-        Action<TrustedLocalPublicationPhase, int>? observer = null)
+        Action<TrustedLocalPublicationPhase, int>? observer = null) =>
+        PublishCore(lease, generation, changes, observer, attempt: null);
+
+    private TrustedLocalPublicationResult PublishCore(FileSystemManager.CanonicalWriteLease lease,
+        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes,
+        Action<TrustedLocalPublicationPhase, int>? observer, PublicationAttempt? attempt)
     {
         _files.EnsureCanonicalWriteLeaseActive(lease);
         Recover(lease);
@@ -108,6 +147,7 @@ internal sealed class TrustedLocalFilePublication
             GenerationBefore = generation, GenerationAfter = afterGeneration, Members = members
         };
         ValidateJournal(journal);
+        if (attempt != null) attempt.Prepared = journal;
         foreach (var member in members)
             if (!Matches(member.Path, member.Before))
                 throw Conflict("A publication member does not match its expected before image.");
@@ -144,10 +184,12 @@ internal sealed class TrustedLocalFilePublication
         WriteNew(_journalScope, CommitStage, JsonSerializer.SerializeToUtf8Bytes(journal, JsonOptions));
         Observe(lease, observer, TrustedLocalPublicationPhase.CommitStaged);
         File.Move(_journalScope.ValidateFile(CommitStage, false), _journalScope.ValidateFile(Active, false), overwrite: true);
+        var result = new TrustedLocalPublicationResult(journal.TransactionId, afterGeneration,
+            members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
+        if (attempt != null) attempt.Committed = result;
         Observe(lease, observer, TrustedLocalPublicationPhase.Committed);
         Cleanup(lease, journal, observer);
-        return new(journal.TransactionId, afterGeneration,
-            members.Select(member => new TrustedLocalPublishedMember(member.Path, member.After.Exists, member.After.Sha256)).ToArray());
+        return result;
     }
 
     internal void Recover(FileSystemManager.CanonicalWriteLease lease,

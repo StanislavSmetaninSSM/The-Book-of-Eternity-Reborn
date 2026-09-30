@@ -188,10 +188,7 @@ public partial class GameEngine
         else
             Console.InputEncoding = System.Text.Encoding.UTF8;
 
-        _fs.EnsureDirectoryStructure();
-
-        await _stateManager.LoadSettingsAsync();
-        await _stateManager.EnsureSettingsFileExistsAsync();
+        await _stateManager.BootstrapLocalStorageAsync();
         _loc.CurrentLanguage = _stateManager.Settings.Language;
         _consoleAppearance.ApplyConfiguredFontSize();
         await _audioService.ApplySettingsAsync();

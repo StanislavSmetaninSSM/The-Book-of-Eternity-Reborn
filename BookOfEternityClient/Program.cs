@@ -80,6 +80,11 @@ try
             : ConsoleE2EScriptedInputSource.FromFile(startupOptions.E2EScriptPath, startupOptions.E2EArtifactsPath);
     }
 }
+catch (InvalidDataException ex)
+{
+    Console.Error.WriteLine($"Local storage could not be initialized safely: {ex.Message}");
+    Environment.ExitCode = 2;
+}
 catch (ConsoleE2EScriptInputException ex)
 {
     Console.Error.WriteLine($"Console E2E scripted input failed at step {ex.NextStepIndex}: {ex.Message}");

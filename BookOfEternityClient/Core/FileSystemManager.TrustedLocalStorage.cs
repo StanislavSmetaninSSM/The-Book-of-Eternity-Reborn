@@ -1,16 +1,175 @@
+using System.Runtime.ExceptionServices;
+using System.Text.Json;
+using BookOfEternityClient.Services;
+using Microsoft.Extensions.Logging;
+
 namespace BookOfEternityClient.Core;
 
 internal sealed record CanonicalLocalFileChange(string RelativePath, byte[]? Before, byte[]? After);
 
 public partial class FileSystemManager
 {
-    internal Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery) =>
-        throw new NotImplementedException();
+    private string LocalPublicationRoot => Path.Combine(RuntimeRootPath, "trusted-local-publication-v1");
 
-    internal string BootstrapLocalStorage(CanonicalWriteLease lease, byte[]? beforeConfig, byte[] desiredConfig) =>
-        throw new NotImplementedException();
+    internal async Task RunLegacyStorageRecoveryAsync(CanonicalWriteLease lease, Func<Task> recovery)
+    {
+        EnsureCanonicalWriteLeaseActive(lease);
+        var previous = lease.IsLegacyStorageRecovery;
+        lease.IsLegacyStorageRecovery = true;
+        try { await recovery(); }
+        finally { lease.IsLegacyStorageRecovery = previous; }
+    }
+
+    private IEnumerable<string> LegacyStorageRoots =>
+    [
+        PhysicalPublicationTransactionsRootPath,
+        Path.GetDirectoryName(ActiveLoadTransactionJournalPath)!,
+        Path.GetDirectoryName(ActiveWorkerApplyTransactionJournalPath)!,
+        ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root)
+    ];
+
+    private bool HasStorageEvidence(string root)
+    {
+        var kind = PhysicalFileAuthority.ProbeNamespaceEntryFromRoot(_basePath, root, "Storage evidence root");
+        if (kind == PhysicalFileAuthority.NamespaceEntryKind.Missing) return false;
+        if (kind != PhysicalFileAuthority.NamespaceEntryKind.Directory)
+            throw new InvalidDataException("Storage evidence root is not an ordinary directory: " + root);
+        return Directory.EnumerateFileSystemEntries(root).Any();
+    }
+
+    private void EnsureNoLegacyStorageEvidence()
+    {
+        foreach (var root in LegacyStorageRoots)
+            if (HasStorageEvidence(root))
+                throw new InvalidDataException("Unresolved legacy storage evidence requires its original supported recovery handler: " + root);
+    }
+
+    private bool UsesTrustedLocalWriter(CanonicalWriteLease lease, string relativePath)
+    {
+        if (lease.MutationIntentRecorder != null || lease.IsLegacyStorageRecovery) return false;
+        // The old browser recorder owns its own manifest/before-image namespace,
+        // including recorder-free cleanup. Do not journal those artifacts anew.
+        var path = ResolvePath(relativePath);
+        var root = ResolvePath(ExplorerLocalTurnRollbackArtifacts.Root);
+        var comparison = OperatingSystem.IsWindows() ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
+        return !path.Equals(root, comparison) && !path.StartsWith(root + Path.DirectorySeparatorChar, comparison);
+    }
+
+    private void RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+    {
+        if (!HasStorageEvidence(LocalPublicationRoot)) return;
+        var before = ReadExistingSessionGeneration(lease);
+        new TrustedLocalFilePublication(this, new TrustedLocalFileScope([BasePath])).Recover(lease);
+        if (before != ReadExistingSessionGeneration(lease))
+            CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
+    }
+
+    internal string BootstrapLocalStorage(CanonicalWriteLease lease, byte[]? beforeConfig, byte[] desiredConfig)
+    {
+        VerifyCurrentSessionOperation(lease);
+        if (lease.IsLegacyStorageRecovery || lease.MutationIntentRecorder != null)
+            throw new InvalidOperationException("Local bootstrap cannot run inside a legacy transaction.");
+        EnsureNoLegacyStorageEvidence();
+        var generation = ReadExistingSessionGeneration(lease);
+        if (generation != null && beforeConfig != null) return generation;
+        var changes = new List<TrustedLocalFileChange>();
+        if (beforeConfig == null) changes.Add(new(ResolvePath("config.json"), null, desiredConfig));
+        var binding = generation == null ? TrustedLocalGeneration.Absent : TrustedLocalGeneration.Existing(generation);
+        if (generation == null)
+        {
+            generation = Guid.NewGuid().ToString("N");
+            changes.Add(GenerationCreation(generation));
+        }
+        var outcome = PublishLocalCoreAsync(lease, binding, changes, CancellationToken.None).GetAwaiter().GetResult();
+        RequireCommittedLocalPublication(outcome);
+        if (!binding.Exists) CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
+        return generation;
+    }
+
+    private TrustedLocalFileChange GenerationCreation(string generation) => new(SessionGenerationPath, null,
+        JsonSerializer.SerializeToUtf8Bytes(new SessionGenerationDocument(1, generation)));
+
+    private string CreateTrustedLocalGeneration(CanonicalWriteLease lease)
+    {
+        VerifyCurrentSessionOperation(lease);
+        if (lease.IsLegacyStorageRecovery)
+            throw new InvalidDataException("Legacy recovery cannot invent a missing session generation.");
+        var generation = Guid.NewGuid().ToString("N");
+        var outcome = PublishLocalCoreAsync(lease, TrustedLocalGeneration.Absent,
+            [GenerationCreation(generation)], CancellationToken.None).GetAwaiter().GetResult();
+        RequireCommittedLocalPublication(outcome);
+        CanonicalRootAuthorityIdentity.AdvanceSessionGenerationRevision();
+        return generation;
+    }
 
     internal Task<TrustedLocalPublicationOutcome> PublishLocalFilesAsync(CanonicalWriteLease lease,
-        IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default) =>
-        throw new NotImplementedException();
+        IReadOnlyList<CanonicalLocalFileChange> changes, CancellationToken cancellationToken = default)
+    {
+        VerifyCurrentSessionOperation(lease);
+        if (changes.Count == 0 || changes.Any(change => !UsesTrustedLocalWriter(lease, change.RelativePath)))
+            throw new InvalidOperationException("A local publication requires ordinary declared canonical members.");
+        var generation = GetOrCreateSessionGeneration(lease);
+        return PublishLocalCoreAsync(lease, TrustedLocalGeneration.Existing(generation),
+            changes.Select(change => new TrustedLocalFileChange(ResolvePath(change.RelativePath), change.Before, change.After)).ToArray(),
+            cancellationToken);
+    }
+
+    private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
+        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken)
+    {
+        var scope = new TrustedLocalFileScope([BasePath]);
+        var registrations = new List<InProcessMutationRegistration>();
+        try
+        {
+            foreach (var change in changes)
+            {
+                scope.EnsureDirectory(Path.GetDirectoryName(change.Path)!);
+                scope.ValidateFile(change.Path);
+                registrations.Add(new InProcessMutationRegistration(change.Path));
+            }
+            foreach (var change in changes.Where(change => change.Path != SessionGenerationPath))
+            {
+                var relative = Path.GetRelativePath(GameSessionPath, change.Path);
+                await InvokeBeforeCanonicalMutationBoundaryAsync(relative);
+                EnsureCanonicalMutationBoundary(relative, change.Path);
+                await InvokeAfterCanonicalMutationBoundaryValidatedAsync(relative);
+            }
+            cancellationToken.ThrowIfCancellationRequested();
+            VerifyCurrentSessionOperation(lease);
+            var publisher = new TrustedLocalFilePublication(this, scope);
+            for (var attempt = 0; ; attempt++)
+            {
+                var outcome = publisher.PublishWithOutcome(lease, generation, changes);
+                if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||
+                    outcome.Failure is InvalidDataException || outcome.Failure == null ||
+                    !IsTransientFileAccessException(outcome.Failure) || attempt >= TransientFileAccessRetryCount - 1)
+                    return outcome;
+                await Task.Delay(TransientFileAccessRetryDelay, cancellationToken);
+                VerifyCurrentSessionOperation(lease);
+            }
+        }
+        finally
+        {
+            foreach (var registration in registrations) registration.Dispose();
+        }
+    }
+
+    private void RequireCommittedLocalPublication(TrustedLocalPublicationOutcome outcome)
+    {
+        if (outcome.Disposition == TrustedLocalPublicationDisposition.Committed)
+        {
+            if (outcome.Failure != null)
+                _logger.LogWarning(outcome.Failure, "Local publication committed; journal cleanup remains pending.");
+            return;
+        }
+        if (outcome.Disposition == TrustedLocalPublicationDisposition.RolledBack && outcome.Failure != null)
+            ExceptionDispatchInfo.Capture(outcome.Failure).Throw();
+        throw new InvalidDataException("Local publication outcome is uncertain; retained evidence must be resolved before continuing.", outcome.Failure);
+    }
+
+    private async Task WriteTrustedLocalFileAsync(CanonicalWriteLease lease, string relativePath, byte[]? desired)
+    {
+        var before = await ReadFileBytesCoreAsync(relativePath);
+        RequireCommittedLocalPublication(await PublishLocalFilesAsync(lease, [new(relativePath, before, desired)]));
+    }
 }

@@ -80,9 +80,17 @@ public static class LocalWebUiHost
         builder.Services.AddSingleton<ExplorerWebCommandService>();
         builder.Services.AddSingleton<BrowserPlayerActionService>();
 
-        var app = builder.Build();
         var frontendAssets = LocalWebUiFrontendAssets.Resolve(options.FrontendAssetsPath);
-        app.Services.GetRequiredService<FileSystemManager>().EnsureDirectoryStructure();
+        var app = builder.Build();
+        try
+        {
+            app.Services.GetRequiredService<StateManager>().BootstrapLocalStorageAsync().GetAwaiter().GetResult();
+        }
+        catch
+        {
+            app.DisposeAsync().AsTask().GetAwaiter().GetResult();
+            throw;
+        }
 
         app.UseStaticFiles(new StaticFileOptions
         {

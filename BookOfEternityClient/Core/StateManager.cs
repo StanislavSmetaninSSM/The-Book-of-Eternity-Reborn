@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
@@ -47,7 +48,32 @@ public class StateManager
     }
 
     /// <summary>Admits current local storage and atomically ensures config plus session generation.</summary>
-    public Task<string> BootstrapLocalStorageAsync() => throw new NotImplementedException();
+    public async Task<string> BootstrapLocalStorageAsync()
+    {
+        await using var lease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        _fs.EnsureDirectoryStructure(lease);
+        var before = await _fs.ReadFileBytesAsync(lease, "config.json");
+        GameSettings? loaded = null;
+        if (before != null)
+        {
+            try
+            {
+                using var stream = new MemoryStream(before, writable: false);
+                using var reader = new StreamReader(stream, Encoding.UTF8, detectEncodingFromByteOrderMarks: true);
+                loaded = StrictJsonAuthority.Deserialize<GameSettings>(await reader.ReadToEndAsync(), JsonOpts, "config.json")
+                    ?? throw new InvalidDataException("config.json must contain a settings object.");
+            }
+            catch (JsonException ex)
+            {
+                throw new InvalidDataException("config.json is invalid; its existing bytes have been preserved.", ex);
+            }
+        }
+        var desired = before ?? Encoding.UTF8.GetPreamble()
+            .Concat(JsonSerializer.SerializeToUtf8Bytes(Settings, JsonOpts)).ToArray();
+        var generation = _fs.BootstrapLocalStorage(lease, before, desired);
+        if (loaded != null) Settings.ApplyLoadedValues(loaded);
+        return generation;
+    }
 
     public async Task LoadSettingsAsync()
     {
