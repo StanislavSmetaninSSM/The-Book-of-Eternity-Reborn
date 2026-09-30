@@ -11,16 +11,18 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 ## B1 — Foundations for US1/US2
 
-- [ ] T010 Write failing `TrustedLocalFileScopeTests.cs` for confined roots/exact files, traversal, links, wrong types, case sensitivity and non-following cleanup; add a narrow catalog owner
-- [ ] T011 Implement `Core/TrustedLocalFileScope.cs` from those tests; run its category and publish checkpoint
+- [x] T010 Write failing `TrustedLocalFileScopeTests.cs` for confined roots/exact files, traversal, links, wrong types, case sensitivity and non-following cleanup; add a narrow catalog owner
+- [x] T011 Implement `Core/TrustedLocalFileScope.cs` from those tests; run its category and publish checkpoint (35/35 Linux cases and independent Astra XHigh review at source 18461c67)
 - [ ] T012 Write failing `TrustedLocalFilePublicationTests.cs` for create/replace/delete, exact bytes/absence, expected-content conflicts, crash phases, evidence retention and hard-linked outside-byte safety
 - [ ] T013 Implement `Core/TrustedLocalFilePublication.cs` and journal data contracts; no production cutover yet
+- [ ] T013-M Add declared multi-member/generation/conflict-preflight cases to that same journal protocol; browser settings needs this slice before B2 acceptance
 - [ ] T014 Validate catalog ownership by discovery, run only B1 categories, independent Astra XHigh review; fix findings, publish and verify remote SHA
 
 ## B2 — US1 ordinary startup/settings
 
 - [ ] T020 Add failing client storage/generation/settings restart scenarios before changing `Core/FileSystemManager.cs` and `Core/StateManager.cs`
 - [ ] T021 Integrate B1 for common writes on both OSes, preserving participating leases/generation and exact bytes; no synthetic FileIdentity
+- [ ] T021-B Explicit common bootstrap for valid config and generation, plus the predeclared browser settings/audio transaction route; preserve runtime snapshot rollback and local UI ownership checks
 - [ ] T022 Add and prove legacy-journal cutover guard, retaining original handler and evidence on unsupported recovery
 - [ ] T023 Replace superseded anti-owner tests only with matching content/path/recovery coverage; maintain actual `tests/selection.json`
 - [ ] T024 Run selected consumers and actual Linux console/browser menu-setting-restart flows; document and independently review B2

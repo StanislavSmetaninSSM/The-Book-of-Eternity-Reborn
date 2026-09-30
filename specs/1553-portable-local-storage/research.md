@@ -114,3 +114,41 @@ Console manual input needs a real raw-terminal mode contract and guaranteed mode
 ## Bounded current-executor capability evidence, 2026-09-30 19:47 UTC
 
 A separate non-application probe successfully bound/listened/connected/accepted and transferred five bytes over IPv4 loopback TCP on an ephemeral port. Creating an AF_UNIX stream socket was denied with EPERM; it was not retried through an alternate route. Opening a PTY master/slave pair succeeded and both descriptors reported terminal status; no child process or model CLI was launched. All sockets/descriptors were closed and the owned temporary directory removed. This establishes only these capabilities in the current restricted executor, not general Linux limitations, browser reachability, application behavior or provider compatibility. The AF_UNIX limitation must be considered explicitly before interpreting .NET named-pipe failures as game defects.
+
+## B2/B3 storage cutover map, inspected at c75e1b4116cdf3943bbd2d13c764513a90710336
+
+Read-only source investigation; no implementation or test result is implied. Paths below are under BookOfEternityClient. The bootstrap, browser member set, legacy manifest and Linux recovery gate were independently re-read before incorporating this map.
+
+### Actual first-launch paths
+
+- Console: Program.cs:313 → Core/GameEngine.cs:182–198 → EnsureDirectoryStructure, StateManager.LoadSettingsAsync and EnsureSettingsFileExistsAsync. StateManager.cs:80–97 writes config.json through FileSystemManager.cs:698–700/776–803, then WriteFileAtomicBytesCoreAsync. The current platform gate is at :1027 and :3768–3816. The fresh menu path does not explicitly create session generation; Continue later does
+- Console startup also calls GameEngine.ValidationAndRepair.cs:133–151. SystemModService.cs:81–98 can write game_state/core/system_mods.json; existing-session profile/afterlife/QTE/progression repairs have additional ordinary writes. Do not infer existing-session startup from an empty-root menu test
+- Console language/show-GM settings save on Escape/Back through GameEngine.OptionsAndSettings.cs:60/265. Difficulty also writes game_state/core/game_settings.json at :1085–1110
+- Browser: LocalWebUiHost.cs:85 only creates directories. /api/main-menu → LocalWebUiMainMenuService → BrowserLifecycleDashboardService → LocalWebUiSessionStatusService → BrowserLocalWriteCoordinator → LocalUiSessionLockService.cs:169–174 lazily creates generation. GET client settings loads defaults/existing values but does not ensure config exists
+- Runtime generation lives in .boe_runtime/session-generation/current.json. FileSystemManager.cs:5500–5508 → :5578–5582 → WriteRuntimeTextAtomic → WriteRuntimeBytesAtomicCoreAsync. These callers need no physical publication identity
+
+A shared leased bootstrap must explicitly ensure both valid config and generation before either client claims fresh-session startup. Recover old/new journals before creating a replacement generation.
+
+### Logical versus physical consumers
+
+Ordinary settings, console startup, runtime generation, local UI lock and profile-mirror repair do not consume a physical publication result. Their Task-returning writes are forced through physical output by the implementation and optional recorder. FileSystemManager.cs:3306–3341 does nothing with recorder output when no recorder is attached.
+
+The real legacy consumers are browser rollback receipts, save/load profile staging rebind, and external Daren profile rollback. ExplorerLocalTurnRollbackArtifacts.cs:37–41 stores Operation/PhysicalIdentity/Sha256/Completed, :219–272 validates identity/link count, and :720–787 restores through identity-conditioned APIs. SaveLoadService.cs:496–525 and FileSystemManager.cs:2561–2633 use physical staging/rebind. External profile identities are at ExplorerLocalTurnRollbackArtifacts.cs:55–64/444–447/519–533.
+
+Use a distinct logical publication result, not a counterfeit identity or a nullable identity silently accepted as authority. Keep physical types only at explicitly unmigrated legacy APIs/recovery. A small profile-mirror seam can return Task and accept an optional publisher callback: default ordinary portable write, with the existing save/load physical write/rebind inside its explicit callback until B3.
+
+### Browser settings requires a member journal in B2
+
+BrowserClientSettingsService.cs:79–104 always declares config.json and game_state/core/game_settings.json through ExecuteAtomicWithinTransactionAsync, even when only config changes. Difficulty writes the projection too. BrowserAudioService.cs:67–102 uses the same transaction machinery for config.json. Preserve runtime settings/localization/audio snapshot restoration, pending-GM checks, local UI ownership and bound SessionOperationContext.
+
+Merely changing the old receipt is insufficient: BrowserWriteRollbackManifest at ExplorerLocalTurnRollbackArtifacts.cs:66–74 has no persisted generation (Scope is just browser_write), and recovery at :1246–1274 can mutate earlier members before discovering a later conflict. A fresh logical schema/route must bind declared members, generation, before presence/bytes/hash, desired presence/hash and one durable group commit. Preflight every member/evidence before rollback. Handle crash after name publication but before ordinary return/receipt. Unknown bytes or generation retain all evidence; committed cleanup never becomes rollback.
+
+Use the same journal protocol as the new publisher, including single-member transactions. Do not introduce a separate settings-only storage protocol. Keep original v6 browser recovery frozen/explicit or block it; changing only a version constant would reinterpret old evidence.
+
+### Legacy gate and test scope
+
+FileSystemManager.cs:3585–3598 already sequences publication, load, worker and browser recovery under a canonical lease. Crucially, ReversibleFilePublication.RecoverPending:911–916 simply returns on Linux. Before enabling portable writes, detect old evidence explicitly: original supported handler first, otherwise block with evidence retained. Then recover the new generation-bound journal, and only then bootstrap missing files. Empty old directories are distinct from unresolved entries; links/wrong types are not absence.
+
+Useful current owners are canonical-storage, browser-api-host, console-e2e and portable-storage-paths; canonical-storage/browser-command-parity are too broad to run blindly for settings. LocalUiSessionLockServiceTests currently belong to browser-command-parity and can receive a narrow owner. Existing anchors: LocalWebUiHostTests.cs:230/276/315/344/425; BrowserLocalWriteCoordinatorTests.cs:126/169/1303/1341/1403; ConsoleE2ESmokeTests.cs:28/77. Old byte-identical physical-replacement rejection and partial-member rollback expectations are not the new trusted-local acceptance contract.
+
+Add focused startup/config+generation/restart, stale generation, two-writer exclusion, exact BOM/non-UTF8/empty/absence, hard-link replacement, every declared journal crash phase, second-member unknown conflict leaving the first unchanged, and Linux legacy-evidence blocking. B3 still covers complete save archives/staging/session replacement, external profile transactions, general accepted-turn/history/once-only consumers and real GM/save-load gameplay. Settings success cannot establish those outcomes or Windows execution.

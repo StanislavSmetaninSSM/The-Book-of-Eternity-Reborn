@@ -3,13 +3,13 @@
 **Branch**: `1553-cross-platform-runtime` | **Date**: 2026-09-30 | **Spec**: [spec.md](spec.md)
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
-## Current checkpoint — B1a path-scope review corrections, WIP
+## Current checkpoint — B1a path scope accepted; publication/integration next
 
 Base: `f6dc2a1ce3e73f5e6940f686c97b863c9f7a8173`, the explicitly authorized wound merge into main. New branch was published from that exact base. Remote persistence instructions were adopted at `3970a182fe6b4abd4f16a51e86f7c903b0626768`; their two blobs equal reviewed docs tip `ab646806234e02e75619cb460d0b80325af328ad`.
 
 Old local portability commits, including 39dbb90/512eb2d, remain unavailable. This is new implementation from surviving source, not recovered old code or revalidated old test results. #1536 acceptance remains deferred. The former preparation branch is preserved but is not the active branch.
 
-The approved four-page storage design was reconstructed and passed independent Astra XHigh review at 80d5fc52. B1a introduces a common path/cleanup helper, still disconnected from application writers. Its initial 16-case Linux check passed; review found three path-boundary defects. All three now have failing regression evidence and corrections; the next step is corrected GREEN, discovery-only catalog audit and focused re-review. Publication journals, application startup, settings and real gameplay are not implemented by this helper.
+The approved four-page storage design was reconstructed and passed independent Astra XHigh review at 80d5fc52. B1a's common path/cleanup helper is accepted at source `18461c67fccfd478eb4dadb4d2d3136b3ce952e6`: 35/35 selected Linux cases passed, and independent GPT-6 Astra XHigh closed all findings. The helper remains disconnected from application writers. Next: implement the common durable publication/member journal and its recovery tests, then the actual two-client bootstrap/settings integration. Browser settings already require a two-member transaction, so that small slice cannot be postponed beyond B2. Publication journals, startup, settings and gameplay are not established by B1a.
 
 Latest owner instruction, 2026-09-30 18:26:06 UTC: “отлично. Тогда работай над кросплатформенностю игры как договаривались, с конвертацией всех windows only механизмов в платформонезависимые, также убрать всю сложную защиту сохранений и т.д. (игра одиночная, и бесплатная, если игрок хочет взломать сохранение это его дело) и сделать полностью кросплатформенной, работающей и в linux, и в windows. У тебя там стоит только linux, поэтому достаточно если ты отсчитаешься что на linux радотает все как надо, после этого на windows я сам проверю.”
 
@@ -35,7 +35,7 @@ Issue traceability, client parity, existing schemas/GM write boundaries, test-fi
 ### B1 — Common path scope and durable file publication
 
 - Create `BookOfEternityClient/Core/TrustedLocalFileScope.cs`: validate approved roots/exact files, existing links/types, same-parent staging and safe cleanup
-- Create `BookOfEternityClient/Core/TrustedLocalFilePublication.cs`: byte-preserving create/replace/delete, explicit content authority, durable journal and deterministic restart recovery
+- Create `BookOfEternityClient/Core/TrustedLocalFilePublication.cs`: byte-preserving create/replace/delete, explicit content authority, one durable journal protocol for single or declared multiple members, and deterministic restart recovery
 - Add focused tests in `BookOfEternityClient.Tests/TrustedLocalFileScopeTests.cs` and `TrustedLocalFilePublicationTests.cs`; add narrow category owners in `tests/categories.json`
 - Input: validated scope, journal root, destination path, expected current bytes/absence and desired bytes/absence. Output: explicit committed logical content result; no counterfeit FileIdentity
 - Keep new primitives disconnected from application writers until their negative/recovery paths pass and are reviewed
@@ -47,6 +47,8 @@ Issue traceability, client parity, existing schemas/GM write boundaries, test-fi
 - Modify `Core/FileSystemManager.cs`, `Core/StateManager.cs` and precise affected consumers; split new portable helpers into partial/focused files if needed instead of enlarging the existing 6,020-line manager
 - Consume B1 logical publication results; remove physical-identity requirements from ordinary supported writes on both OSes, not only Linux
 - Retain write/lifecycle leases and stale-generation fencing. Legacy journals recover with the original handler or block cutover. No synthetic identity and no call into Win32 rename on Linux
+- Introduce a shared leased bootstrap that explicitly creates/validates both config and generation in each client. Fresh console currently has no observed generation creation; fresh browser can show defaults without a config file
+- Include the bounded common multi-member transaction route for browser settings/audio here. Config and GM projection are already one declared browser transaction; generation binding and whole-member conflict preflight are required before this stage can claim settings persistence
 - Add test-first startup/configuration/restart and generation/conflict scenarios; update `tests/selection.json` from actual changed consumers
 - Run actual console and browser menu/settings flows in separate isolated roots, with complete process restarts. Update operational docs
 
@@ -111,3 +113,13 @@ Review-regression RED at 22b2aefa: 31/31 cases executed, 16 passed and 15 failed
 At f8b1655 the corrected category passed 31/31 with no skips, complete cleanup, 2:30.158. Discovery-only ValidateCatalog also passed in 1:37.657, zero executed tests. Focused review accepted the original ordinary cases but found remaining Windows aliases in the same boundaries: reserved stems with spaces before an extension, and directory-root aliases under overlapping broad grants (case and extended namespace spellings). Existing test methods now include these cases; no test method or category owner was added. Pure-policy scaffolds preserve test-first execution. The fix will keep allow grants ordinal, conservatively deny Windows aliases of directory grants, and canonicalize supported extended drive/UNC paths without physical-identity machinery. Other Windows device namespaces will fail closed. No runtime acceptance claim changes.
 
 Alias-regression RED at c75e1b4116cdf3943bbd2d13c764513a90710336: 35/35 executed, 26 passed, 9 failed as expected (four accepted-invalid aliases/namespaces and five pending pure-policy cases), 2:41.829, cleanup complete. Replaced scattered alias handling with one pure Windows namespace canonicalizer; supported extended drive/UNC paths become one ordinary spelling, and directory-target denials conservatively include case aliases even under broad overlapping grants. Allow grants remain ordinal and reserved stems trim trailing ASCII spaces before device comparison. Corrected GREEN/re-review are pending. The prior discovery-only audit at f8b165503ccc00ece2bdeab3344ae890677c8def recorded 10,209 methods and 103 categories with no unmapped/stale selectors; subsequent edits changed only data/assertions of existing test methods, and the selected category will rediscover all 35 cases.
+
+### B1a accepted evidence, 2026-09-30 20:04 UTC
+
+- Tested source: `18461c67fccfd478eb4dadb4d2d3136b3ce952e6`, Debian 13 x64; tool versions/environment in quickstart.md
+- Command: `pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-storage-paths`, with `DOTNET_PROCESSOR_COUNT=1` and documented writable caches
+- Result: exit 0, 35/35 passed, 0 failed/skipped, 1/1 descriptor complete, 2:42.7018133 wall time; owned-process and runtime cleanup complete; duplicate IDs 0
+- Independent reviewer: separate GPT-6 Astra, actual XHigh. Reviewed source, full diff check, summary and TRX without rerunning passing checks. All three initial P2 findings and their alias-dependent follow-ups resolved; no remaining blocking finding in this helper
+- Catalog ownership: discovery-only audit at `f8b165503ccc00ece2bdeab3344ae890677c8def` passed, 10,209 methods, 103 categories, 0 unmapped/stale selectors, 0 executed tests, 1:37.657. Later changes added no test methods or category owners; the final category discovered/executed all 35 cases
+- GM synchronization: no GM-authored field, capability or game command changed; only disconnected file-scope infrastructure. No worked GM-state example is required for B1a
+- Limits: Windows filesystem execution is still owner-run. Pure Windows spelling cases ran on Linux. No file journal, application cutover, menu or game/GM workflow is accepted by these results
