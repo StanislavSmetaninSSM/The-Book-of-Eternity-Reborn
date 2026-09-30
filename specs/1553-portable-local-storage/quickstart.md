@@ -59,6 +59,8 @@ specify integration list
 npm ci --prefix BookOfEternityClient.WebFrontend
 ```
 
+In this restricted executor, the default parallel MSBuild restore failed without a diagnostic; `export DOTNET_PROCESSOR_COUNT=1` allowed the normal category runner to build/discover successfully. Use this recorded environment workaround when reproducing that failure, without changing category selection or budgets. It is not a claimed speed improvement or a requirement for ordinary user machines.
+
 ## Verification
 
 Read docs/testing.md and select categories for the actual block. Use scripts/test-csharp.ps1; new B1 categories will be named in the checkpoint when added. `-ValidateCatalog` discovers ownership without executing tests. Never use a full-suite/aggregate/all-category run. Store meaningful result counts and source SHA remotely in plan.md, not only ignored TestResults.
@@ -68,3 +70,5 @@ For actual client acceptance use separate fresh roots for console and web. Chang
 ## Windows owner handoff
 
 Use the exact published acceptance SHA with supported .NET/PowerShell/Node versions. Run the same selected storage/path/recovery categories, then console and browser startup-setting-restart, real persistent CLI/daemon turns, cancellation/restart, core game turn, save/load, audio and clipboard. Report Windows version, filesystem, terminal/provider and exact failures. These checks are not marked passed from Linux evidence.
+
+Path grants use exact spelling on both OSes, including Windows folders configured as case-sensitive. Ambiguous Windows names (trailing dots/spaces, alternate streams and device names) are rejected before normalization. Windows symlink fixtures need permission to create their links; a fixture setup failure is not a product-coverage pass, and this workflow does not change Windows security settings automatically.

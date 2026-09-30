@@ -9,17 +9,47 @@ namespace BookOfEternityClient.Core;
 /// </summary>
 internal sealed class TrustedLocalFileScope
 {
-    private static readonly StringComparison PathComparison = OperatingSystem.IsWindows()
-        ? StringComparison.OrdinalIgnoreCase : StringComparison.Ordinal;
-    private static readonly StringComparer PathComparer = OperatingSystem.IsWindows()
-        ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal;
+    // Exact spelling avoids broadening grants on case-sensitive Windows folders.
+    private static readonly StringComparer PathComparer = StringComparer.Ordinal;
     private readonly string[] _roots;
     private readonly HashSet<string> _exactFiles;
 
-    // API scaffolds for review regressions; no behavior is implemented here yet.
     internal static bool IsWithinDirectory(string path, string directory, char separator) =>
-        throw new NotImplementedException();
-    internal static void ValidateWindowsPathSpelling(string path) => throw new NotImplementedException();
+        path.Length > directory.Length + 1 &&
+        path.StartsWith(directory, StringComparison.Ordinal) &&
+        path[directory.Length] == separator;
+
+    internal static void ValidateWindowsPathSpelling(string path)
+    {
+        if (path.StartsWith(@"\\.\", StringComparison.Ordinal))
+            throw new InvalidDataException("Device namespaces are not local storage paths.");
+        var extended = path.StartsWith(@"\\?\", StringComparison.Ordinal);
+        var parts = path.Split(['\\', '/'], StringSplitOptions.RemoveEmptyEntries);
+        for (var index = 0; index < parts.Length; index++)
+        {
+            var part = parts[index];
+            if (extended && index == 0 && part == "?")
+                continue;
+            if (index == (extended ? 1 : 0) && part.Length == 2 &&
+                char.IsAsciiLetter(part[0]) && part[1] == ':')
+                continue;
+            if (part.EndsWith('.') || part.EndsWith(' ') ||
+                part.Any(value => value < ' ' || value is ':' or '*' or '?' or '"' or '<' or '>' or '|'))
+                throw new InvalidDataException("Ambiguous Windows path spelling is not a local storage name.");
+
+            var name = part.Split('.')[0];
+            if (name.Equals("CON", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("PRN", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("AUX", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("NUL", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("CONIN$", StringComparison.OrdinalIgnoreCase) ||
+                name.Equals("CONOUT$", StringComparison.OrdinalIgnoreCase) ||
+                (name.Length == 4 && "123456789¹²³".Contains(name[3]) &&
+                 (name.StartsWith("COM", StringComparison.OrdinalIgnoreCase) ||
+                  name.StartsWith("LPT", StringComparison.OrdinalIgnoreCase))))
+                throw new InvalidDataException("Windows device names are not local storage files.");
+        }
+    }
 
     internal TrustedLocalFileScope(IEnumerable<string> roots, IEnumerable<string>? exactFiles = null)
     {
@@ -78,10 +108,13 @@ internal sealed class TrustedLocalFileScope
             var directory = ValidateDirectory(directories[index], allowMissing: false);
             foreach (var entry in Directory.EnumerateFileSystemEntries(directory))
             {
-                if (Probe(entry) == EntryKind.Directory)
-                    directories.Add(ValidateDirectory(entry, allowMissing: false));
+                // Reject ambiguous literal names before Windows normalizes a
+                // trailing dot/space into a different sibling during probing.
+                var literalEntry = Normalize(entry);
+                if (Probe(literalEntry) == EntryKind.Directory)
+                    directories.Add(ValidateDirectory(literalEntry, allowMissing: false));
                 else
-                    files.Add(ValidateFile(entry, allowMissing: false));
+                    files.Add(ValidateFile(literalEntry, allowMissing: false));
             }
         }
 
@@ -101,9 +134,11 @@ internal sealed class TrustedLocalFileScope
 
     private void EnsureAllowed(string path, bool file)
     {
-        if ((file && _exactFiles.Contains(path)) || _roots.Any(root =>
-                string.Equals(path, root, PathComparison) ||
-                path.StartsWith(root + Path.DirectorySeparatorChar, PathComparison)))
+        var directoryGrant = _roots.Contains(path, PathComparer);
+        if (file && directoryGrant)
+            throw new InvalidDataException("A directory grant cannot be used as a file target.");
+        if ((!file && directoryGrant) || (file && _exactFiles.Contains(path)) ||
+            _roots.Any(root => IsWithinDirectory(path, root, Path.DirectorySeparatorChar)))
             return;
         throw new InvalidDataException("The path is outside the explicitly allowed local storage scope.");
     }
@@ -112,12 +147,11 @@ internal sealed class TrustedLocalFileScope
     {
         if (string.IsNullOrWhiteSpace(path) || !Path.IsPathFullyQualified(path))
             throw new InvalidDataException("A local storage path must be absolute.");
-        if (path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar).Contains(".."))
+        if (path.Split([Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar]).Contains(".."))
             throw new InvalidDataException("Parent traversal is not a local storage path.");
+        if (OperatingSystem.IsWindows())
+            ValidateWindowsPathSpelling(path);
         var normalized = Path.TrimEndingDirectorySeparator(Path.GetFullPath(path));
-        if (OperatingSystem.IsWindows() &&
-            normalized[(Path.GetPathRoot(normalized)?.Length ?? 0)..].Contains(':'))
-            throw new InvalidDataException("Alternate streams are not local storage files.");
         return normalized;
     }
 
