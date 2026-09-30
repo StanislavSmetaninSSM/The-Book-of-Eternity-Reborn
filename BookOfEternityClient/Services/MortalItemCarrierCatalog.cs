@@ -264,6 +264,9 @@ internal sealed class MortalItemCarrierCatalog
                 return;
 
             RouteNodesVisited++;
+            var permanentNpcRows = new Dictionary<
+                string,
+                List<(string Section, JsonObject Npc)>>(StringComparer.Ordinal);
             foreach (var sectionName in NpcSections)
             {
                 if (root[sectionName] is not JsonArray npcs)
@@ -276,6 +279,27 @@ internal sealed class MortalItemCarrierCatalog
 
                     RouteNodesVisited++;
                     var npcPath = $"{NpcCorePath}.{sectionName}[{index}]";
+                    if (TryReadExactPermanentNpcId(npc, out var permanentNpcId))
+                    {
+                        if (!permanentNpcRows.TryGetValue(permanentNpcId, out var copies))
+                        {
+                            copies = new List<(string Section, JsonObject Npc)>();
+                            permanentNpcRows.Add(permanentNpcId, copies);
+                        }
+                        else if (copies.Count == 1 &&
+                                 !string.Equals(
+                                     copies[0].Section,
+                                     sectionName,
+                                     StringComparison.Ordinal) &&
+                                 JsonNode.DeepEquals(copies[0].Npc, npc))
+                        {
+                            copies.Add((sectionName, npc));
+                            continue;
+                        }
+
+                        copies.Add((sectionName, npc));
+                    }
+
                     var inventory = npc["inventory"] as JsonArray;
                     var hasInventoryItems =
                         inventory != null && ContainsItemObject(inventory);
@@ -316,6 +340,24 @@ internal sealed class MortalItemCarrierCatalog
                             Array.Empty<string>()));
                 }
             }
+        }
+
+        private static bool TryReadExactPermanentNpcId(
+            JsonObject npc,
+            out string npcId)
+        {
+            npcId = string.Empty;
+            if (!npc.TryGetPropertyValue("NPCId", out var node) ||
+                node is not JsonValue value ||
+                !value.TryGetValue<string>(out var candidate) ||
+                string.IsNullOrWhiteSpace(candidate) ||
+                !string.Equals(candidate, candidate.Trim(), StringComparison.Ordinal))
+            {
+                return false;
+            }
+
+            npcId = candidate;
+            return true;
         }
 
         internal void ScanNpcInventoryCommands(JsonObject? root)

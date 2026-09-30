@@ -82,7 +82,7 @@ npm run dev:local --prefix BookOfEternityClient.WebFrontend
 npm run dev --prefix BookOfEternityClient.WebFrontend
 npm run typecheck --prefix BookOfEternityClient.WebFrontend
 npm run build --prefix BookOfEternityClient.WebFrontend
-npm run verify --prefix BookOfEternityClient.WebFrontend
+./scripts/test-csharp.ps1 -ListCategories
 ```
 
 `npm run dev:local` starts the C# local web host at `http://127.0.0.1:8787` with `--web` and starts the Vite development server on loopback, normally `http://127.0.0.1:5173`. Open the Vite URL for hot frontend reload. The Vite proxy forwards `/api` and `/assets` requests to the C# backend at `http://127.0.0.1:8787`, preserving C# runtime authority without broad CORS.
@@ -137,8 +137,8 @@ Safe contract update workflow:
 1. Change the C# DTO/endpoint behavior first; C# remains the runtime authority.
 2. Update `src/api/contracts.ts` and, if request flow changes, `src/api/client.ts`.
 3. Update the matching `contract-fixtures/*.json` file.
-4. Run `dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~BrowserApiContractTests|FullyQualifiedName~BrowserFrontendWorkspaceTests|FullyQualifiedName~LocalWebUiDocumentationTests" --logger "console;verbosity=minimal"`.
-5. Run `npm run typecheck --prefix BookOfEternityClient.WebFrontend` and `npm run build --prefix BookOfEternityClient.WebFrontend`.
+4. Run `./scripts/test-csharp.ps1 -Category browser-api-host` for the C# DTO/host and frontend fixture contracts.
+5. Run `./scripts/test-csharp.ps1 -Category frontend-test-workflow` when changing the documented frontend workflow; use `./scripts/test-csharp.ps1 -ListCategories` and `docs/testing.md` to find other affected domains.
 
 The TypeScript client normalizes endpoint failures into `BrowserApiResult<T>` with a player-facing `playerMessage` and optional `technicalDetails`. Default player UI should render `playerMessage`; `technicalDetails` belongs in the explicit Advanced / developer panel.
 
@@ -156,11 +156,11 @@ Settings changes from React are serialized through a queue before calling `POST 
 
 The #689 settings DTO deliberately exposes only safe player information: controls, localhost-only status, a short `game_session` locality label, and whether the local GM bridge is enabled. Raw local paths, API keys, CLI launch commands, bridge pipe overrides, provider internals, and other dangerous technical settings must stay out of the default DTO and route; use explicit advanced diagnostics for those details.
 
-For verification, include the focused audio/settings host/contract/docs tests plus the frontend gate:
+For verification, select the audio/settings host and frontend domains:
 
 ```bash
-dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "FullyQualifiedName~AudioSettingsEndpoint|FullyQualifiedName~ClientSettingsEndpoint|FullyQualifiedName~BrowserApiContractTests|FullyQualifiedName~LocalWebHostDocs_DocumentBrowserAudioSettingsWorkflow" --logger "console;verbosity=minimal"
-npm run verify --prefix BookOfEternityClient.WebFrontend
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category browser-api-host
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category frontend-media-audio
 ```
 
 ## Current Browser MVP
@@ -475,41 +475,43 @@ See also `docs/web-ui/browser-parity-checklist.md` for the manual shell parity c
 
 ## Automated Browser Smoke And Parity Verification
 
-Issue #705 defines the frontend-aware local and CI verification pipeline. Run the frontend restore/typecheck/build before the built-frontend smoke tests so `BookOfEternityClient.WebFrontend/dist/index.html` exists and the C# host serves the same assets that will be packaged in CI:
+Issue #705 defines the frontend-aware local and CI verification pipeline. Install frontend dependencies, then select the affected domains. The category runner builds frontend assets before built-host smoke tests so `BookOfEternityClient.WebFrontend/dist/index.html` exists and the C# host serves the same assets that will be packaged in CI. Use `./scripts/test-csharp.ps1 -ListCategories` and `docs/testing.md` to find other domains and result artifacts:
 
 ```powershell
 npm ci --prefix BookOfEternityClient.WebFrontend
-npm run verify --prefix BookOfEternityClient.WebFrontend
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+./scripts/test-csharp.ps1 -Category browser-api-host
+./scripts/test-csharp.ps1 -Category browser-command-parity
 ```
 
 On MSYS/bash shells the same command uses slash paths:
 
 ```bash
 npm ci --prefix BookOfEternityClient.WebFrontend
-npm run verify --prefix BookOfEternityClient.WebFrontend
-dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiBuiltFrontend|Category=BrowserWebUiSmoke|Category=BrowserWebUiParity" --logger "console;verbosity=minimal"
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category browser-api-host
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category browser-command-parity
 ```
 
-`BrowserWebUiBuiltFrontend` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network/navigation diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `first-screen-visual-qa.html`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`.
+`browser-api-host` launches `LocalWebUiHost` against the built Vite `dist/` directory, verifies the root shell, SPA route fallback, `/api/main-menu`, `/api/session`, `/api/game-screen`, and confirms missing `/api/*` and `/assets/*` requests stay real 404 responses instead of being swallowed by the HTML fallback. The smoke writes practical HTML/network/navigation diagnostics to `TestResults/browser-smoke/`: `root.html`, `game-route.html`, `main-menu.json`, `session.json`, `game-screen.json`, `network.json`, `first-screen-visual-qa.html`, `navigation-ia.html`, `detail-surfaces.html`, and `reborn-panels.html`.
 
 GitHub Actions uploads those files as the `browser-smoke-artifacts` artifact when present. `navigation-ia.html` is the dependency-light visual smoke artifact for desktop/mobile player navigation. Issue #723 adds `first-screen-visual-qa.html`, a dependency-light HTML visual smoke artifact for the default Browser Client first screen. It has explicit desktop/mobile frames and should be reviewed against the old React UI/UX reference only: central launcher, primary CTA, polished cards, tabs/sections, and save/config actions. It is not automated PNG screenshots; it is local/offline and has no external API key required, keeping CI offline-friendly until a future tracked task selects browser screenshot automation.
 
 Regression checklist: primary CTA; no technical hero copy; no repeated unavailable alerts; no emoji route icons; advanced debug secondary behind explicit opt-in. Guard tests: `BrowserVisualQa_DocumentsFirstScreenArtifactAndRegressionChecklist` and `LocalWebHostDocs_DocumentBrowserVisualQaArtifactWorkflow`.
 
-Run the focused browser contract suite before changing browser root/menu/session/game-screen state, lifecycle dashboards, command migration metadata, prompt sessions, QTE, media, or command rendering:
+Select the affected browser category before changing browser root/menu/session/game-screen state, lifecycle dashboards, command migration metadata, prompt sessions, QTE, media, or command rendering:
 
 ```powershell
-dotnet test BookOfEternityClient.Tests\BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiSmoke|Category=BrowserWebUiParity"
+./scripts/test-csharp.ps1 -Category browser-api-host
+./scripts/test-csharp.ps1 -Category browser-command-parity
 ```
 
 On MSYS/bash shells the same command uses slash paths:
 
 ```bash
-dotnet test BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj --no-restore --filter "Category=BrowserWebUiSmoke|Category=BrowserWebUiParity"
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category browser-api-host
+pwsh -NoProfile -File ./scripts/test-csharp.ps1 -Category browser-command-parity
 ```
 
-`BrowserWebUiSmoke` covers the local host root page, main menu, session status, read-only game-screen state, lifecycle dashboard, command DTO execution, and browser prompt/form submission. `BrowserWebUiParity` guards command metadata so every Explorer command definition carries an explicit browser UX decision instead of relying on a silent default.
+`browser-api-host` covers the local host root page, main menu, session status, read-only game-screen state, lifecycle dashboard, command DTO execution, and browser prompt/form submission. `browser-command-parity` guards command metadata so every Explorer command definition carries an explicit browser UX decision instead of relying on a silent default. For QTE or media changes, select their listed browser and frontend categories as well.
 
 ## Temporary Browser Limitations
 

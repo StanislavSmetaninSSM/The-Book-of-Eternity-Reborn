@@ -1762,12 +1762,12 @@ public partial class ValidationService
 	            return _knownCanonicalFactionIdsCache;
 
 	        var ids = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-	        var factionCorePath = _fs.ResolvePath("game_state/factions/faction_core.json");
-	        if (File.Exists(factionCorePath))
+	        var factionCoreJson = TryReadCurrentFileSync("game_state/factions/faction_core.json");
+	        if (factionCoreJson != null)
 	        {
 	            try
 	            {
-	                using var doc = JsonDocument.Parse(File.ReadAllText(factionCorePath));
+	                using var doc = JsonDocument.Parse(factionCoreJson);
 	                foreach (var propName in new[] { "factions", "factionDataChanges" })
 	                {
 	                    if (!doc.RootElement.TryGetProperty(propName, out var arr) || arr.ValueKind != JsonValueKind.Array)

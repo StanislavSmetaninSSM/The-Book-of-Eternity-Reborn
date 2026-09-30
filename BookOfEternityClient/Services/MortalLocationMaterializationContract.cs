@@ -536,7 +536,7 @@ internal static class MortalLocationMaterializationContract
         ValidateLocationLoreBindings(value, context, issues);
         if (value.TryGetProperty("customStates", out var customStates))
         {
-            issues.AddRange(MortalLocationCustomStateContract.Validate(
+            issues.AddRange(MortalLocationCustomStateContract.ValidateLocation(
                 customStates,
                 context + ".customStates"));
         }
@@ -1345,7 +1345,7 @@ internal static class MortalLocationMaterializationContract
         RequireArray(value, "customStates", context, issues);
         if (value.TryGetProperty("customStates", out var customStates))
         {
-            issues.AddRange(MortalLocationCustomStateContract.Validate(
+            issues.AddRange(MortalLocationCustomStateContract.ValidateLink(
                 customStates,
                 context + ".customStates"));
         }

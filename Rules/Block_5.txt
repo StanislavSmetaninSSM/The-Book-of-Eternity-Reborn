@@ -3444,307 +3444,146 @@
   </rule>
   <rule id="5.20">
    <title>
-    Wound System and Associated Debuffs
+    Wound Materialization v1
    </title>
    <description>
-    This section outlines the integrated system for applying Wounds (significant, named injuries) and the mechanical Debuffs they cause. Wounds act as a narrative and mechanical anchor for lasting injuries, primarily for Player Characters and named NPCs.
+    Strict GM wound construction after one client-authored opportunity. Read OtherGuides/Wound_Materialization_Contract.md before authoring a wound.
    </description>
    <content type="ruleset">
     <rule id="5.20.1">
      <title>
-      Concept of Wounds and Associated Debuffs
+      Opportunity Authority and GM Choice
      </title>
      <content type="rule_text">
       <![CDATA[
 
-                            1.  Beyond simple health loss, significant combat trauma results in a Wound.
-                            2.  A Wound is a named injury (e.g., "Gashed Leg", "Broken Ribs") that serves as a container and source for one or more specific, mechanical Debuffs.
-                            3.  These generated Debuffs are temporary negative status effects (using the structure from #6.2.1) that hinder a combatant's performance and are directly parsed by the game system.
-                            4.  This creates a clear link: the narrative Wound causes tangible, mechanical consequences.
+                            A wound is an independently treatable physical or spiritual entity, not a status line, an active effect, ordinary health loss, death, or soul dissipation.
+
+                            The client first exposes one exact wound opportunity with opportunityRef, owner/realm/domain authority, maximumSeverity, safe context, and an optional guaranteed result. Never invent a wound without that authority.
+
+                            For an ordinary opportunity, the ordinary wound is optional:
+                            - return decision=none; or
+                            - return decision=materialize with any severity I-IV not above maximumSeverity.
+                            A lower severity is legal. A harmless event or a non-escalated training event cannot be turned into a wound.
+
+                            For a sealed guaranteed result, decision=none is illegal. Materialize the promised severity/result without weakening, strengthening, or replacing it. A contradictory guarantee and event cap is a client contract error; do not invent a compromise.
+
+                            A healed wound never reopens. An accepted re-trauma may create a new identity, while worsening requires the exact active-wound opportunity supplied by the client.
 
                             ]]>
      </content>
     </rule>
     <rule id="5.20.2">
      <title>
-      Triggering Wounds
-     </title>
-     <content type="rule_text">
-      <![CDATA[
-
-                            The GM applies a Wound when one of the following occurs. The severity of the Wound and the Debuffs it generates depend on the severity of the event.
-
-                            1.  Significant Damage Threshold Met:
-                                If a single instance of damage dealt to a combatant exceeds a certain share of the exact health maximum in the client-owned resource projection.
-                                -   Threshold 1 (>25% of the projected health maximum): Apply a 'Light Wound'.
-                                    Example: A blow dealing 30% of the projected health maximum might inflict a "Bruised Ribs" Wound, which generates a Debuff like:
-
-                                    { 
-                                        effectType: "Debuff", 
-                                        value: "-10%", 
-                                        targetType: "strength_checks", 
-                                        duration: 3, 
-                                        ...
-                                    }.
-
-                                -   Threshold 2 (>45% of the projected health maximum): Apply a 'Moderate Wound'.
-                                    Example: A massive hit dealing 50% of the projected health maximum could inflict a "Gashed Leg" Wound, which generates two Debuffs:
-                                    1. 
-                                    { 
-                                        effectType: "DamageOverTime", 
-                                        value: "3%", 
-                                        targetType: "piercing", 
-                                        duration: 3, 
-                                        description: "Bleeding" 
-                                    }
-
-                                    2. 
-                                    { 
-                                        effectType: "Debuff", 
-                                        value: "-25%",
-                                        targetType: "speed",
-                                        duration: 3, 
-                                        description: "Limping"
-                                    }
-
-                            2.  Critical Hit Received (by PC, Named NPC, generic enemies/allies):
-                                When any combatant scores a confirmed Critical Hit, the GM MUST apply a Wound (typically 'Light' or 'Moderate') 
-                                and its associated Debuff(s), in addition to the increased damage.
-
-                            3.  Specific Attack/Effect Properties:
-                                Some attacks may explicitly state they cause a specific Wound (e.g., a Ghoul's attack causes a "Festering Bite" Wound).
-
-                            4.  Critical Failure on an Attack Roll (PC, Named NPC, generic enemies/allies):
-                                If any combatant scores a 'Critical Failure' on an attack action check, they make a catastrophic mistake. 
-                                This MUST result in a self-inflicted 'Light' or 'Moderate' Wound (e.g., "Pulled Muscle", "Twisted Ankle", "Self-Inflicted Cut").
-
-                            **CRITICAL NOTE FOR GM: Wounds are a CONSEQUENCE of taking damage or failing an action. 
-                            You are STRICTLY FORBIDDEN from creating a Wound as a response to a player's request to 'heal' or 'treat' wounds. 
-                            Such requests must be processed through the "Protocol of Medical Triage" (Rule #12.16).**
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="5.20.3">
-     <title>
-      Wound Object Structure
+      Strict woundDecisions Constructor
      </title>
      <instructiontext>
       <![CDATA[
 
-                            This defines the structure for a Wound object, which is reported in 'playerWoundChanges' or 'NPCWoundChanges'. 
+                            Use only Wound Materialization v1. The GM authors readable wound fiction and setting-appropriate treatment/recovery policy. The client owns all permanent IDs, owner bindings, history, progress transitions, fingerprints, receipts, and canonical publication.
 
                             ]]>
      </instructiontext>
      <content language="json" type="code_example">
       <![CDATA[
+{
+  "response": "Крюк срывается с цепи и вспарывает вам предплечье. Кровь мгновенно пропитывает рукав.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_public_17",
+      "decision": "materialize",
+      "woundRef": "torn_forearm_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Рваная режущая травма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "наружная сторона левого предплечья"
+          }
+        },
+        "display": {
+          "name": "Рваная рана предплечья",
+          "description": "Края раны расходятся при движении кисти.",
+          "visibleSymptoms": ["кровотечение", "боль при хвате"],
+          "prognosis": "Без очистки возможно воспаление.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Крюк срывается с цепи и вспарывает вам предплечье. Кровь мгновенно пропитывает рукав."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": {
+            "policyRef": "untreated_forearm_contamination",
+            "unmetConditions": ["not_stabilized"],
+            "graceMinutes": 720,
+            "cadenceMinutes": 1440,
+            "result": { "kind": "increase_severity" }
+          }
+        }
+      }
+    }
+  ]
+}
+                            ]]>
+     </content>
+    </rule>
+    <rule id="5.20.3">
+     <title>
+      Narration and Separate Mechanical Consequences
+     </title>
+     <content type="rule_text">
+      <![CDATA[
 
-                            {
-                                "woundId": "exact_stable_id_or_null_for_new_without_same_turn_effect_application",
-                                "woundName": "user_readable_name_of_wound", 
-                                "severity": "'Light', 'Moderate', 'Serious', 'Critical'", 
-                                "descriptionOfEffects": "user_readable_summary_of_how_it_affects_character", 
-                                "activeEffectDefinitions": [
-                                    /* Zero or more complete Effect Materialization v1 source definitions.
-                                       A wound_consequence payload and its one wound/source link use this same woundId. */
-                                ],
-                                "healingState": {
-                                    "currentState": "'Untreated' | 'Stabilized' | 'Recovering' | 'Healed'",
-                                    "description": "User-readable description of the wound's current healing status.",
-                                    "treatmentProgress": "integer",
-                                    "progressNeeded": "integer",
-                                    "nextState": "'Stabilized' | 'Recovering' | 'Healed' | null",
-                                    "canBeImprovedBy": ["array_of_strings_describing_actions_or_items"]
-                                }
-                            }
+                            1. Copy the exact current opportunityRef. woundRef and definitionRef are response-local only. Never author woundId, effectId, complicationId, transition/history identity, current stack/lifetime, receipt, fingerprint, or canonical carrier state.
+
+                            2. display.acquisitionNarration must describe the exact proposed wound and appear verbatim in the final response. After writing the scene, reread it and make sure the player unmistakably learns that the wound was received.
+
+                            3. A wound may have consequenceDefinitions=[] and remain a complete independently treatable wound.
+
+                            4. If mechanics are required, each consequenceDefinitions[].definition is one complete Effect Materialization v1 source policy with links=[]. The client binds the accepted wound source. A directly materialized wrapper declares root ownership and readable severity slots.
+
+                            5. Do not submit ordinary effectChanges[] for a new wound root. The client derives the typed root batch and the shared effect engine allocates every opaque effect identity. Later reaction descendants execute only through the sealed definition graph.
+
+                            6. Effect removal never heals or deletes the wound. Wound healing retires only its exact owned effect group and preserves unrelated effects.
+
+                            7. In gm_thoughts_markdown record the accepted event, opportunityRef, decision, selected severity, readable wound name, and every definition/profile used. Do not predict runtime IDs or post-state.
 
                             ]]>
      </content>
     </rule>
     <rule id="5.20.4">
      <title>
-      Reporting and Applying Wounds: GM's Responsibility
-     </title>
-     <instructiontext>
-      <![CDATA[
-
-                            This is a strict protocol. When a Wound is triggered, describe the independent Wound owner and, only when a consequence must begin now, request that consequence separately through top-level effectChanges[]. The client validates source authority and handles runtime publication.
-
-                            ]]>
-     </instructiontext>
-     <content type="rule_text">
-      <![CDATA[
-
-                            When a Wound is triggered for a character (Player or NPC), you MUST follow this exact sequence:
-
-                            Step 1: Narrate the Event
-                            1) In the main 'response' text, vividly describe the injury and its immediate impact.
-                            Example: 
-                            "The ogre's club slams into your arm with a sickening crunch, and a wave of searing pain shoots through you. 
-                            Your arm hangs limply at your side."
-
-                            Step 2: Define the Complete Wound Object
-                            1) Create the full Wound Object according to the structure defined in #5.20.3.
-
-                            2) Define 'activeEffectDefinitions':
-                            - Use [] when the wound has no lifecycle consequence beyond its own healing/narrative state.
-                            - Otherwise provide one or more complete current-schema definitions. Each wound_consequence component names this exact woundId, and links[] contains exactly one matching { kind: "wound", targetId: <same woundId>, role: "source" } entry.
-                            - A definition is source policy only. It does not apply itself and contains no effectId, current stacks, remaining lifetime, chronology, transition, or receipt.
-
-                            3) Initialize 'healingState': 
-                            When a wound is first created, you MUST initialize its 'healingState' object logically:
-                                - Set 'currentState' to "Untreated".
-                                - Write a 'description' reflecting the raw injury (e.g., "A deep, open gash is bleeding freely.").
-                                - Set 'treatmentProgress' to 0.
-                                - Set an initial 'progressNeeded' value (e.g., 20-40) required to achieve stabilization. This value should be higher for more severe wounds.
-                                - Set 'nextState' to "Stabilized".
-                                - Populate the 'canBeImprovedBy' array with a list of logical first actions or items (e.g., "First Aid", "Bandages", "Minor Healing Spell").
-                           
-                            Step 3: Report the Wound and Any Separate Application Request
-                            1) Add the complete Wound Object (created in Step 2) to the appropriate array:
-                                - For the Player Character, add it to 'playerWoundChanges'.
-                                - For a named NPC, add it to 'NPCWoundChanges'.
-
-                            2) If an immediate consequence must begin in the same accepted turn, the new wound must already carry the exact stable woundId selected by the command. Add a separate top-level effectChanges[] apply with source.kind=wound, sourceId=<that exact woundId>, definitionKey owned by the wound, exact target/eventRef, bounded parameters, and reason.
-
-                            3) Never copy a definition into activeEffects[] or invent effectId/currentStacks/remaining lifetime. If no apply command is present, the definition remains dormant policy.
-
-                            Step 4: Log Everything
-                            1) In 'gm_thoughts_markdown', you must log:
-                                - The event that triggered the Wound (e.g., "Player hit by Ogre's club for 60% of max health.").
-                                - The name and severity of the inflicted Wound (e.g., "Inflicted 'Serious' Wound: 'Shattered Arm'.").
-                                - The definitionKey/profile of each source policy and every separate effectChanges[] request. This is the worksheet and justification; do not predict runtime identities or post-state.
-
-                            ]]>
-     </content>
-    </rule>
-    <rule id="5.20.5">
-     <title>
-      Healing and Recovering from Wounds
+      Treatment and Recovery Boundary
      </title>
      <content type="rule_text">
       <![CDATA[
 
-                            Healing Wounds is a multi-step process tracked via the 'healingState' object.
+                            Never create a wound in response to a request to heal, treat, inspect, or diagnose one.
 
-                            1.  Initial State: When a wound is first inflicted, its 'healingState.currentState' is 'Untreated'. Its activeEffectDefinitions[] are source policies, not active instances; only an accepted effectChanges[] application can create a runtime consequence.
+                            Physical wounds keep setting-authored treatment routes: medicine, herbs, bandages, crystals, magic, facilities, rest, or another evidence-backed method may be appropriate. There is no universal catalog of wounds or cures.
 
-                            2.  Treatment (Stabilization): Actions like First Aid or applying basic bandages can stabilize a wound.
-                                -   This action changes the wound's 'healingState.currentState' to 'Stabilized'.
-                                
-                                -   The GM must report the updated Wound object (with the new 'healingState') in 'playerWoundChanges' or 'NPCWoundChanges'.
-                                
-                                -   Any linked active-effect benefit MUST use the declared lifecycle: the client automatically applies source-loss expiry when the wound no longer satisfies its source-bound predicate; otherwise request an authorized remove/dispel and, when needed, a separate application of another complete definition. Use exact wound/source/target/event authority. Never edit the runtime carrier or remaining lifetime.
+                            wound_mortal_deterioration_policy_v1: A non-null Mortal physical recovery.deteriorationPolicy contains exactly policyRef, one-entry unmetConditions, non-negative graceMinutes, positive cadenceMinutes, and one closed result. Use only increase_severity, add_complication with one complete complicationDraft, or the explicit separate death_contour handoff. At severity IV, increase_severity is inapplicable and never becomes implicit death. no_change, add_recovery, unknown kinds, caller authority, direct mutations, fingerprints, anchors, receipts, and lifecycle writes are not valid adverse-policy authority. Use null when the wound has no deterioration rule.
 
-                                -   Effect removal never heals or deletes the wound, and the wound transition never grants direct effect-carrier authority.
+                            Spiritual wounds use their dedicated healing, provider, and natural afterlife-time contracts. Do not substitute Mortal inventory, ordinary HP, or combatConditions[].
 
-                            3.  Recovery: More advanced healing (magic, potent potions, long-term rest) is required for full recovery.
-                                -   This action changes the wound's 'healingState.currentState' to 'Recovering' or directly to 'Healed', depending on the potency of the healing method.
-                                -   The 'Recovering' state implies the wound is no longer an immediate threat but still imposes minor penalties or requires more time to fully mend.
+                            Treatment, recovery, worsening, complication, and healing are typed accepted wound transitions. Follow the current client-provided action/pending/repair surface and OtherGuides/Wound_Materialization_Contract.md. Never rewrite a complete canonical wound, mutate healing progress directly, or use effect removal as wound-write authority.
 
-                            4.  Healing (Full Recovery): When the 'healingState.currentState' becomes 'Healed':
-                                -   The wound is considered fully closed and no longer has any mechanical or narrative impact.                                
-                                -   The game system will remove the Wound object entirely from the character's 'playerWounds' or 'NPCWounds' list in the next turn's Context once it is reported as 'Healed'. Source-bound effect retirement is client-owned and cannot be used as wound-write authority.
-        
                             ]]>
-     </content>
-    </rule>
-    <rule id="5.20.6">
-     <title>
-      Calculating Treatment Progress and State Changes
-     </title>
-     <description>
-      This rule defines the core logic for the multi-stage healing of wounds using a progress point system.
-     </description>
-     <instructiontext>
-      <![CDATA[
-
-                            When a player performs an action intended to heal a wound (e.g., using an item or skill from the wound's 'canBeImprovedBy' list), 
-                            you MUST follow this protocol to calculate the healing progress.
-                            
-                            ]]>
-     </instructiontext>
-     <content type="ruleset">
-      <rule id="5.20.6.1">
-       <title>
-        Step 1: Determine Progress Points Earned
-       </title>
-       <content type="rule_text">
-        <![CDATA[
-
-                                    Based on the action performed, determine how many 'treatmentProgress' points are generated. Use the following as a baseline, 
-                                    adjusting for item/skill quality and the success of any required action checks:
-
-                                    -   Minor Actions/Items: +5 to +10 points (e.g., applying simple herbs, a clean cloth).
-                                    -   Standard Actions/Items: +15 to +30 points (e.g., successful "First Aid" check, using a "Healing Salve", basic "Mending" spell).
-                                    -   Significant Actions/Items: +40 to +70 points (e.g., successful "Medicine" or "Chirurgy" check, using a "Potent Healing Potion", powerful healing magic).
-                                    -   Rest & Time: +10 to +20 points per day of uninterrupted rest (for wounds like broken bones or deep tissue damage).
-
-                                    The 'value' of the points awarded should be directly influenced by the outcome of any associated Action Check (as per #12.7):
-                                    -   'Partial Success': Award points at the low end of the range.
-                                    -   'Full Success': Award points in the middle of the range.
-                                    -   'Critical Success': Award points at the high end of the range, possibly with a small bonus.
-
-                                    ]]>
-       </content>
-      </rule>
-      <rule id="5.20.6.2">
-       <title>
-        Step 2: Update Progress and Check for State Change
-       </title>
-       <content type="rule_text">
-        <![CDATA[
-
-                                    1.  Add the newly earned points to the wound's current 'treatmentProgress'.
-                                    2.  Compare the new total to the wound's 'progressNeeded' for its current state.
-                                    3.  If 'new_treatmentProgress' >= 'progressNeeded': A state transition occurs.
-                                    4.  If 'new_treatmentProgress' < 'progressNeeded': No state transition. Simply update the 'treatmentProgress' value.
-
-                                    ]]>
-       </content>
-      </rule>
-      <rule id="5.20.6.3">
-       <title>
-        Step 3: Process a Healing State Transition
-       </title>
-       <content type="rule_text">
-        <![CDATA[
-
-                                    If a state transition occurs, you MUST update the Wound Object comprehensively:
-                
-                                    a) Update 'currentState': Set 'currentState' to the value that was in 'nextState'.
-                
-                                    b) Update 'treatmentProgress': Reset 'treatmentProgress' to 0.
-                
-                                    c) Define New State Parameters:
-                                       - Set a new, higher 'progressNeeded' for the next stage of healing.
-                                       - Set a new 'nextState' (e.g., 'Recovering' or 'Healed').
-                                       - Update 'healingState.description' to reflect the new condition (e.g., "The bone is set, but the arm is still weak.").
-                                       - Update the 'canBeImprovedBy' list with actions/items suitable for the new state.
-
-                                    d) Resolve the Mechanical Benefit Through Current Contracts:
-                                       - Keep the wound transition complete and authoritative in its own wound-change array.
-                                       - If a linked consequence should end while the wound remains active, add a separate exact remove/dispel command whose authority is declared by that effect definition.
-                                       - If a different reduced consequence should begin, select a complete definition owned by the accepted wound and add a separate apply command. Do not mutate an existing instance or its remaining lifetime.
-                                       - Change activeEffectDefinitions[] only when the wound's future source policy itself changes; each resulting definition set must remain complete and valid.
-
-                                    ]]>
-       </content>
-      </rule>
-      <rule id="5.20.6.4">
-       <title>
-        Step 4: Reporting and Logging
-       </title>
-       <content type="rule_text">
-        <![CDATA[
-
-                                    -   Report the complete, updated Wound Object in the 'playerWoundChanges' or 'NPCWoundChanges' array.
-                                    -   Log the entire process in 'gm_thoughts_markdown': 
-                                    the action taken, points awarded, new progress total, and details of any state transition that occurred.
-                                   
-                                    ]]>
-       </content>
-      </rule>
      </content>
     </rule>
    </content>

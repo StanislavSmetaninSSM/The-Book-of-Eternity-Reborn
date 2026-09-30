@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -23,11 +24,151 @@ internal sealed record EffectSourceExport(
     IReadOnlySet<string>? SatisfiedPredicates = null,
     string? RequiredApplicationAuthority = null);
 
+internal sealed class WoundSourceGroupAuthority
+{
+    private const string FingerprintDomain =
+        "book_of_eternity.wound.effect_source_group";
+    private const string FingerprintVersion = "1";
+    private readonly WoundEffectSourceDefinition[] _definitions;
+    private readonly WoundRootLineageAuthorityRow[] _applicationRootLineage;
+    private readonly WoundRootLineageAuthorityRow[] _existingRootLineage;
+
+    internal WoundSourceGroupAuthority(
+        EffectIdentitySourceGroup key,
+        WoundOwnerCoordinate owner,
+        EffectTargetKey target,
+        bool sameTurn,
+        string? sourceRef,
+        string? preparedSourceExportFingerprint,
+        IReadOnlyList<WoundEffectSourceDefinition> definitions,
+        IReadOnlyList<WoundRootLineageAuthorityRow> applicationRootLineage,
+        IReadOnlyList<WoundRootLineageAuthorityRow> existingRootLineage,
+        string? graphAuthorityFingerprint = null)
+    {
+        Key = key;
+        Owner = owner;
+        Target = target;
+        SameTurn = sameTurn;
+        SourceRef = sourceRef;
+        PreparedSourceExportFingerprint = preparedSourceExportFingerprint;
+        _definitions = definitions.Select(CloneDefinition).ToArray();
+        _applicationRootLineage = applicationRootLineage
+            .Select(WoundAcceptedTurnData.CloneLineageRow)
+            .ToArray();
+        _existingRootLineage = existingRootLineage
+            .Select(WoundAcceptedTurnData.CloneLineageRow)
+            .ToArray();
+        GraphAuthorityFingerprint = graphAuthorityFingerprint ??
+            ComputeGraphAuthorityFingerprint(
+                Key,
+                Owner,
+                Target,
+                _definitions,
+                _applicationRootLineage,
+                _existingRootLineage);
+    }
+
+    internal EffectIdentitySourceGroup Key { get; }
+    internal WoundOwnerCoordinate Owner { get; }
+    internal EffectTargetKey Target { get; }
+    internal bool SameTurn { get; }
+    internal string? SourceRef { get; }
+    internal string? PreparedSourceExportFingerprint { get; }
+    internal string GraphAuthorityFingerprint { get; }
+    internal IReadOnlyList<WoundEffectSourceDefinition> Definitions =>
+        _definitions.Select(CloneDefinition).ToArray();
+    internal IReadOnlyList<WoundRootLineageAuthorityRow> ApplicationRootLineage =>
+        _applicationRootLineage
+            .Select(WoundAcceptedTurnData.CloneLineageRow)
+            .ToArray();
+    internal IReadOnlyList<WoundRootLineageAuthorityRow> ExistingRootLineage =>
+        _existingRootLineage
+            .Select(WoundAcceptedTurnData.CloneLineageRow)
+            .ToArray();
+
+    internal WoundSourceGroupAuthority DetachedCopy() => new(
+        Key,
+        Owner,
+        Target,
+        SameTurn,
+        SourceRef,
+        PreparedSourceExportFingerprint,
+        Definitions,
+        ApplicationRootLineage,
+        ExistingRootLineage,
+        GraphAuthorityFingerprint);
+
+    internal string RecomputeGraphAuthorityFingerprint() =>
+        ComputeGraphAuthorityFingerprint(
+            Key,
+            Owner,
+            Target,
+            _definitions,
+            _applicationRootLineage,
+            _existingRootLineage);
+
+    private static WoundEffectSourceDefinition CloneDefinition(
+        WoundEffectSourceDefinition value) =>
+        new(value.DefinitionKey, value.Definition);
+
+    private static string ComputeGraphAuthorityFingerprint(
+        EffectIdentitySourceGroup key,
+        WoundOwnerCoordinate owner,
+        EffectTargetKey target,
+        IReadOnlyList<WoundEffectSourceDefinition> definitions,
+        IReadOnlyList<WoundRootLineageAuthorityRow> applicationRoots,
+        IReadOnlyList<WoundRootLineageAuthorityRow> existingRoots)
+    {
+        var fields = new List<string?>
+        {
+            FingerprintDomain,
+            FingerprintVersion,
+            key.Realm,
+            key.Kind,
+            key.SourceId,
+            owner.Realm,
+            owner.OwnerKind,
+            owner.OwnerId,
+            owner.CarrierPath,
+            target.Realm,
+            target.Kind,
+            target.TargetId,
+            definitions.Count.ToString(System.Globalization.CultureInfo.InvariantCulture)
+        };
+        foreach (var definition in definitions)
+        {
+            fields.Add(definition.DefinitionKey);
+            fields.Add(WoundAcceptedTurnFingerprintWriter.CanonicalJson(
+                definition.Definition));
+        }
+        AppendRoots(fields, applicationRoots);
+        AppendRoots(fields, existingRoots);
+        return WoundAcceptedTurnFingerprintWriter.Compute(fields);
+    }
+
+    private static void AppendRoots(
+        ICollection<string?> fields,
+        IReadOnlyList<WoundRootLineageAuthorityRow> roots)
+    {
+        fields.Add(roots.Count.ToString(System.Globalization.CultureInfo.InvariantCulture));
+        foreach (var root in roots)
+        {
+            fields.Add(root.ApplicationRef);
+            fields.Add(root.EffectId);
+            fields.Add(root.DefinitionKey);
+            fields.Add(root.OwnershipDomain.Kind);
+            fields.Add(root.OwnershipDomain.ComplicationId);
+        }
+    }
+}
+
 internal sealed record EffectSourceAuthorityInput(
     IReadOnlyList<EffectSourceExport> PreTurnSources,
     IReadOnlyList<EffectSourceExport> SameTurnSources,
     IReadOnlySet<string> HistoricalSourceIds,
-    IReadOnlySet<string>? GrantedApplicationAuthorities = null);
+    IReadOnlySet<string>? GrantedApplicationAuthorities = null,
+    IReadOnlyList<WoundSourceGroupAuthority>? WoundGroups = null,
+    IReadOnlyList<ValidationIssue>? CompositionIssues = null);
 
 internal sealed record EffectSourceAuthorityEntry(
     EffectSourceKey Key,
@@ -50,6 +191,34 @@ internal sealed record EffectSourceResolution(
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal bool Success => Source != null && Issues.Count == 0;
+}
+
+internal enum WoundTypedRootSourceIdentityKind
+{
+    NewSourceRef,
+    ExistingSourceId
+}
+
+internal sealed record WoundTypedRootBindingRequest(
+    EffectSourceKey SourceKey,
+    WoundEffectSourceSelector SourceSelector,
+    WoundTypedRootSourceIdentityKind SourceIdentityKind,
+    EffectTargetKey Target,
+    string SourceExportFingerprint,
+    string ApplicationRef,
+    WoundRootOwnershipDomain OwnershipDomain);
+
+internal sealed record WoundTypedRootBindingResolution(
+    EffectSourceAuthorityEntry? Source,
+    WoundSourceGroupAuthority? Group,
+    WoundRootLineageAuthorityRow? Root,
+    IReadOnlyList<ValidationIssue> Issues)
+{
+    internal bool Success =>
+        Source is not null &&
+        Group is not null &&
+        Root is not null &&
+        Issues.Count == 0;
 }
 
 internal readonly record struct EffectSourceRoutingBinding(
@@ -84,10 +253,13 @@ internal sealed record EffectSourceRoutingResolution(
 
 internal sealed class EffectSourceAuthority
 {
+    internal const int MaximumSameTurnWoundDefinitions = 160;
+    internal const int MaximumPreTurnWoundDefinitions = 10_000;
+
     private static readonly HashSet<string> SourceKinds = new(StringComparer.Ordinal)
     {
         "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction",
-        "world_event", "fate_card", "combat_action"
+        "world_event", "fate_card", "combat_action", "wound_legacy"
     };
 
     private readonly Dictionary<EffectSourceKey, EffectSourceAuthorityEntry> _entries;
@@ -98,7 +270,16 @@ internal sealed class EffectSourceAuthority
     private readonly HashSet<string> _historicalAliases;
     private readonly HashSet<EffectSourceKey> _invalidKeys;
     private readonly HashSet<string> _grantedApplicationAuthorities;
+    private readonly EffectSourceExport[] _ownerExports;
+    private readonly Dictionary<EffectIdentitySourceGroup, WoundSourceGroupAuthority>
+        _woundGroups;
 
+    /// <summary>
+    /// Freezes a validated source builder, preserving whether local reference selectors are available.
+    /// </summary>
+    /// <param name="builder">
+    /// Builder containing validated catalogs and their selector mode.
+    /// </param>
     private EffectSourceAuthority(Builder builder)
     {
         _entries = new Dictionary<EffectSourceKey, EffectSourceAuthorityEntry>(builder.Entries);
@@ -117,12 +298,27 @@ internal sealed class EffectSourceAuthority
         _grantedApplicationAuthorities = new HashSet<string>(
             builder.GrantedApplicationAuthorities,
             StringComparer.Ordinal);
+        _ownerExports = builder.OwnerExports
+            .Select(DetachExport)
+            .ToArray();
+        _woundGroups = builder.WoundGroups.ToDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value.DetachedCopy());
         Issues = builder.Issues.ToArray();
         Fingerprint = CreateFingerprint(
             _entries.Values,
+            _ownerExports,
+            _woundGroups.Values,
             Issues,
             _grantedApplicationAuthorities);
-        CanonicalFingerprint = CreateCanonicalFingerprint(_entries.Values, Issues);
+        if (builder.CanonicalOnly)
+            Fingerprint = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(
+                "book_of_eternity.effect_source.canonical_view.v1:" + Fingerprint)));
+        CanonicalFingerprint = CreateCanonicalFingerprint(
+            _entries.Values,
+            _ownerExports,
+            _woundGroups.Values,
+            Issues);
     }
 
     internal IReadOnlyList<ValidationIssue> Issues { get; }
@@ -136,14 +332,291 @@ internal sealed class EffectSourceAuthority
 
     internal string CanonicalFingerprint { get; }
 
-    internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input)
+    /// <summary>
+    /// Describes a bounded set of exact canonical source differences without relaxing publication checks.
+    /// </summary>
+    /// <param name="actual">
+    /// Independently rebuilt canonical authority at the publication boundary.
+    /// </param>
+    /// <returns>
+    /// Missing, added or changed source coordinates and validation codes, limited to twelve differences.
+    /// </returns>
+    internal string DescribeCanonicalDifferences(EffectSourceAuthority actual)
+    {
+        ArgumentNullException.ThrowIfNull(actual);
+        var expectedParts = Parts(this);
+        var actualParts = Parts(actual);
+        return string.Join("; ", expectedParts.Keys.Concat(actualParts.Keys).Distinct(StringComparer.Ordinal)
+            .OrderBy(key => key, StringComparer.Ordinal)
+            .Where(key => expectedParts.GetValueOrDefault(key) != actualParts.GetValueOrDefault(key))
+            .Take(12).Select(key => (expectedParts.ContainsKey(key)
+                ? actualParts.ContainsKey(key) ? "changed " : "missing " : "added ") + key));
+
+        static Dictionary<string, string> Parts(EffectSourceAuthority authority)
+        {
+            var parts = authority._entries.ToDictionary(pair => "entry " + pair.Key,
+                pair => CreateCanonicalFingerprint([pair.Value], [], [], []), StringComparer.Ordinal);
+            foreach (var group in authority._ownerExports.GroupBy(value =>
+                         new EffectSourceOwnerKey(value.Realm, value.Kind, value.SourceId)))
+                parts["owner " + group.Key] = CreateCanonicalFingerprint([], group, [], []);
+            foreach (var pair in authority._woundGroups)
+                parts["wound " + pair.Key] = CreateCanonicalFingerprint([], [], [pair.Value], []);
+            foreach (var issue in authority.Issues)
+                parts[$"issue {issue.Code}: {issue.FilePath}"] = "present";
+            return parts;
+        }
+    }
+
+    internal bool IsCanonicalPublicationSubsetOf(
+        EffectSourceAuthority canonicalAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(canonicalAuthority);
+        if (Issues.Count != 0 || canonicalAuthority.Issues.Count != 0)
+            return false;
+
+        var entryKeys = _entries.Keys.ToHashSet();
+        var canonicalEntries = canonicalAuthority._entries
+            .Where(pair => entryKeys.Contains(pair.Key))
+            .Select(static pair => pair.Value)
+            .ToArray();
+        if (canonicalEntries.Length != _entries.Count)
+            return false;
+
+        var ownerKeys = _ownerExports
+            .Select(static export => new EffectSourceOwnerKey(
+                export.Realm,
+                export.Kind,
+                export.SourceId))
+            .ToHashSet();
+        var canonicalOwnerExports = canonicalAuthority._ownerExports
+            .Where(export => ownerKeys.Contains(new EffectSourceOwnerKey(
+                export.Realm,
+                export.Kind,
+                export.SourceId)))
+            .ToArray();
+        if (canonicalOwnerExports.Length != _ownerExports.Length)
+            return false;
+
+        var woundGroupKeys = _woundGroups.Keys.ToHashSet();
+        var canonicalWoundGroups = canonicalAuthority._woundGroups
+            .Where(pair => woundGroupKeys.Contains(pair.Key))
+            .Select(static pair => pair.Value)
+            .ToArray();
+        if (canonicalWoundGroups.Length != _woundGroups.Count)
+            return false;
+
+        var canonicalSubsetFingerprint = CreateCanonicalFingerprint(
+            canonicalEntries,
+            canonicalOwnerExports,
+            canonicalWoundGroups,
+            Array.Empty<ValidationIssue>());
+        return string.Equals(
+            CanonicalFingerprint,
+            canonicalSubsetFingerprint,
+            StringComparison.Ordinal);
+    }
+
+    internal IReadOnlyList<EffectSourceAuthorityEntry> SnapshotSameTurnWoundEntries() =>
+        _entries.Values
+            .Where(static entry =>
+                entry.SameTurn &&
+                string.Equals(entry.Key.Kind, "wound", StringComparison.Ordinal))
+            .OrderBy(static entry => entry.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static entry => entry.Key.SourceId, StringComparer.Ordinal)
+            .ThenBy(static entry => entry.Key.DefinitionKey, StringComparer.Ordinal)
+            .Select(static entry => new EffectSourceAuthorityEntry(
+                new EffectSourceKey(
+                    entry.Key.Realm,
+                    entry.Key.Kind,
+                    entry.Key.SourceId,
+                    entry.Key.DefinitionKey),
+                entry.Definition.DeepClone().AsObject(),
+                entry.Materializable,
+                entry.Active,
+                entry.SameTurn,
+                entry.SourceRef,
+                entry.SatisfiedPredicates.ToFrozenSet(StringComparer.Ordinal),
+                entry.RequiredApplicationAuthority))
+            .ToArray();
+
+    internal IReadOnlyList<EffectSourceExport> SnapshotSameTurnWoundGroups() =>
+        _ownerExports
+            .Where(static export =>
+                export.SameTurn &&
+                string.Equals(export.Kind, "wound", StringComparison.Ordinal))
+            .OrderBy(static export => export.Realm, StringComparer.Ordinal)
+            .ThenBy(static export => export.SourceId, StringComparer.Ordinal)
+            .ThenBy(static export => export.SourceRef, StringComparer.Ordinal)
+            .Select(DetachExport)
+            .ToArray();
+
+    internal IReadOnlyList<WoundSourceGroupAuthority> SnapshotWoundGroupAuthorities() =>
+        _woundGroups.Values
+            .OrderBy(static group => group.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static group => group.Key.SourceId, StringComparer.Ordinal)
+            .Select(static group => group.DetachedCopy())
+            .ToArray();
+
+    internal bool TryResolveWoundGroup(
+        EffectIdentitySourceGroup key,
+        out WoundSourceGroupAuthority group)
+    {
+        if (_woundGroups.TryGetValue(key, out var resolved))
+        {
+            group = resolved.DetachedCopy();
+            return true;
+        }
+        group = null!;
+        return false;
+    }
+
+    /// <summary>
+    /// Composes a canonical routing view of a prepared wound generation and the retained unrelated source exports and grants.
+    /// Operation-local reference selectors remain in their original scoped catalogs.
+    /// The returned catalog does not authorize insertion or replace either original catalog.
+    /// </summary>
+    /// <param name="prepared">
+    /// Authenticated preparation supplying the source graph. A registered live worsening replaces only its own prior group;
+    /// other source collisions remain invalid.
+    /// </param>
+    /// <returns>
+    /// A detached combined catalog with any preparation or composition issues.
+    /// </returns>
+    internal EffectSourceAuthority WithNewPreparedWound(WoundPreparedAcceptedTurnPlan prepared)
+    {
+        var addition = EffectAcceptedTurnInputComposer.BuildPreparedWoundOperationAuthority(prepared);
+        var replacements = new HashSet<EffectIdentitySourceGroup>();
+        if (prepared.DraftBefore is { } before && before.MatchesPrepared(prepared) && addition.Issues.Count == 0)
+            foreach (var batch in prepared.EffectOperationBatches.Where(batch => batch.TransitionAuthority.TransitionKind == "worsen"))
+            {
+                var key = new EffectIdentitySourceGroup(prepared.Binding.Realm, "wound", batch.PreparedWoundId);
+                if (_woundGroups.ContainsKey(key) && addition._woundGroups.ContainsKey(key))
+                    replacements.Add(key);
+            }
+        var exports = _ownerExports.Where(export => !replacements.Contains(
+            new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))).Concat(addition._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(export => !export.SameTurn).ToArray(),
+            exports.Where(export => export.SameTurn).ToArray(),
+            _historicalAliases.Union(addition._historicalAliases).ToHashSet(StringComparer.Ordinal),
+            _grantedApplicationAuthorities.Union(addition._grantedApplicationAuthorities).ToHashSet(StringComparer.Ordinal),
+            _woundGroups.Values.Where(group => !replacements.Contains(group.Key)).Concat(addition._woundGroups.Values).ToArray(),
+            Issues.Concat(addition.Issues).ToArray()), canonicalOnly: true);
+    }
+
+    /// <summary>
+    /// Captures a wound-only comparison catalog while the completed original execution owner remains alive.
+    /// The detached catalog grants no insertion or publication authority.
+    /// </summary>
+    /// <param name="completion">
+    /// Sealed ordered insertion proof whose preparations must still pass their live ownership checks.
+    /// </param>
+    /// <param name="effects">
+    /// Exact completed effect result issued with the proof.
+    /// </param>
+    /// <returns>
+    /// Validated immutable wound sources, including groups with no effect slots.
+    /// </returns>
+    internal static EffectSourceAuthority CaptureCompletedWoundPublication(
+        SpiritualLiveWoundCompletion completion, EffectAcceptedTurnPlan effects)
+    {
+        if (!completion.MatchesEffects(effects))
+            throw new InvalidDataException("Wound source transfer requires its exact completed effect owner.");
+        var result = Build(new EffectSourceAuthorityInput([], [], new HashSet<string>(StringComparer.Ordinal)));
+        var selected = new HashSet<EffectIdentitySourceGroup>();
+        foreach (var insertion in completion.Insertions)
+        {
+            selected.Add(new EffectIdentitySourceGroup(insertion.Wound.Owner.Realm, "wound", insertion.Wound.WoundId));
+            result = result.WithNewPreparedWound(insertion.Prepared);
+        }
+        if (result.Issues.Count != 0 || !selected.SetEquals(result._woundGroups.Keys) ||
+            !selected.SetEquals(result._ownerExports.Select(export =>
+                new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId))))
+            throw new InvalidDataException("Completed wound source transfer does not match its exact insertion chain.");
+        return result;
+    }
+
+    /// <summary>
+    /// Replaces only completed wound groups' application-lineage representation after checking their canonical sources.
+    /// Every unrelated source and validation issue remains independently reconstructed.
+    /// </summary>
+    /// <param name="completedWounds">
+    /// Immutable wound-only catalog captured before disposal by the exact publication owner.
+    /// </param>
+    /// <returns>
+    /// Comparison catalog retaining accepted application lineage and canonical source identity and definitions.
+    /// </returns>
+    internal EffectSourceAuthority WithCompletedWoundPublication(EffectSourceAuthority completedWounds)
+    {
+        var replaced = completedWounds._woundGroups.Keys.ToHashSet();
+        if (completedWounds.Issues.Count != 0)
+            throw new InvalidDataException("Completed wound source transfer contains invalid sources.");
+        foreach (var (key, expected) in completedWounds._woundGroups)
+        {
+            if (!_woundGroups.TryGetValue(key, out var actual) || actual.Owner != expected.Owner ||
+                actual.Target != expected.Target || actual.Definitions.Count != expected.Definitions.Count ||
+                expected.Definitions.Any(definition => !actual.Definitions.Any(current =>
+                    current.DefinitionKey == definition.DefinitionKey && JsonNode.DeepEquals(current.Definition, definition.Definition))))
+                throw new InvalidDataException("Published wound source differs from its completed owner or definitions.");
+            var live = _ownerExports.Single(export => export.Realm == key.Realm && export.Kind == key.Kind && export.SourceId == key.SourceId);
+            var retained = completedWounds._ownerExports.Single(export => export.Realm == key.Realm && export.Kind == key.Kind && export.SourceId == key.SourceId);
+            if (live.Active != retained.Active || live.Materializable != retained.Materializable)
+                throw new InvalidDataException("Published wound source lifecycle differs from its completion.");
+        }
+        var exports = _ownerExports.Where(export => !replaced.Contains(
+            new EffectIdentitySourceGroup(export.Realm, export.Kind, export.SourceId)))
+            .Concat(completedWounds._ownerExports).ToArray();
+        return BuildCore(new EffectSourceAuthorityInput(
+            exports.Where(export => !export.SameTurn).ToArray(), exports.Where(export => export.SameTurn).ToArray(),
+            _historicalAliases.Union(completedWounds._historicalAliases).ToHashSet(StringComparer.Ordinal),
+            _grantedApplicationAuthorities.Union(completedWounds._grantedApplicationAuthorities).ToHashSet(StringComparer.Ordinal),
+            _woundGroups.Values.Where(group => !replaced.Contains(group.Key)).Concat(completedWounds._woundGroups.Values).ToArray(),
+            Issues.Concat(completedWounds.Issues).ToArray()), canonicalOnly: true);
+    }
+
+    /// <summary>
+    /// Builds a source catalog with strict canonical and local-reference selector validation.
+    /// </summary>
+    /// <param name="input">
+    /// Source exports, groups, history and grants to validate.
+    /// </param>
+    /// <returns>
+    /// The source catalog and its validation issues.
+    /// </returns>
+    internal static EffectSourceAuthority Build(EffectSourceAuthorityInput input) => BuildCore(input, canonicalOnly: false);
+
+    /// <summary>
+    /// Validates source content with the selector mode required by the calling catalog composer.
+    /// </summary>
+    /// <param name="input">
+    /// Source exports, groups, history and grants to validate.
+    /// </param>
+    /// <param name="canonicalOnly">
+    /// Disables indexing of operation-local references when <see langword="true"/>, while preserving their metadata validation.
+    /// </param>
+    /// <returns>
+    /// A catalog retaining validated source data and any issues.
+    /// </returns>
+    private static EffectSourceAuthority BuildCore(EffectSourceAuthorityInput input, bool canonicalOnly)
     {
         ArgumentNullException.ThrowIfNull(input);
         var builder = new Builder(
             input.HistoricalSourceIds,
-            input.GrantedApplicationAuthorities ?? new HashSet<string>(StringComparer.Ordinal));
-        builder.AddRange(input.PreTurnSources, sameTurn: false);
-        builder.AddRange(input.SameTurnSources, sameTurn: true);
+            input.GrantedApplicationAuthorities ?? new HashSet<string>(StringComparer.Ordinal), canonicalOnly);
+        var compositionIssues = input.CompositionIssues ??
+            Array.Empty<ValidationIssue>();
+        builder.AddCompositionIssues(compositionIssues);
+        var woundGroups = input.WoundGroups ?? Array.Empty<WoundSourceGroupAuthority>();
+        if (builder.ValidateWoundAggregateBounds(
+                input.PreTurnSources,
+                input.SameTurnSources,
+                woundGroups) &&
+            compositionIssues.Count == 0)
+        {
+            builder.AddRange(input.PreTurnSources, sameTurn: false);
+            builder.AddRange(input.SameTurnSources, sameTurn: true);
+            builder.AddWoundGroups(woundGroups);
+        }
         builder.ValidateDefinitionLinks();
         builder.ValidateWoundBindings();
         return new EffectSourceAuthority(builder);
@@ -171,6 +644,192 @@ internal sealed class EffectSourceAuthority
             allowResolvedSameTurnIdentity: true,
             validateParameters: false,
             validateApplicationAuthority: false);
+
+    internal WoundTypedRootBindingResolution ResolveTypedWoundRootBinding(
+        WoundTypedRootBindingRequest request)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+        var issues = new List<ValidationIssue>();
+        var key = request.SourceKey;
+        var selector = request.SourceSelector;
+        var target = request.Target;
+        var ownership = request.OwnershipDomain;
+        if (key is null ||
+            selector is null ||
+            target is null ||
+            ownership is null ||
+            !string.Equals(key.Kind, "wound", StringComparison.Ordinal) ||
+            !ResourceMaterializationContract.IsExactIdentifier(key.Realm) ||
+            !ResourceMaterializationContract.IsExactIdentifier(key.SourceId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                key.DefinitionKey) ||
+            !ResourceMaterializationContract.IsExactIdentifier(target.Realm) ||
+            !ResourceMaterializationContract.IsExactIdentifier(target.Kind) ||
+            !ResourceMaterializationContract.IsExactIdentifier(target.TargetId) ||
+            !ResourceMaterializationContract.IsExactIdentifier(
+                request.ApplicationRef) ||
+            !ResourceMaterializationContract.IsAuthorityFingerprint(
+                request.SourceExportFingerprint) ||
+            !Enum.IsDefined(request.SourceIdentityKind))
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot",
+                "effect_source_wound_typed_root_request_invalid",
+                "one complete exact typed wound-root request",
+                request.ToString());
+            return new WoundTypedRootBindingResolution(
+                null,
+                null,
+                null,
+                issues);
+        }
+
+        var groupKey = new EffectIdentitySourceGroup(
+            key.Realm,
+            key.Kind,
+            key.SourceId);
+        if (!_woundGroups.TryGetValue(groupKey, out var group))
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot.group",
+                "effect_source_wound_typed_root_group_unresolved",
+                "one exact sealed wound source group",
+                groupKey.ToString());
+            return new WoundTypedRootBindingResolution(
+                null,
+                null,
+                null,
+                issues);
+        }
+
+        if (!group.SameTurn ||
+            group.Target != target ||
+            !string.Equals(
+                group.PreparedSourceExportFingerprint,
+                request.SourceExportFingerprint,
+                StringComparison.Ordinal) ||
+            !string.Equals(
+                group.GraphAuthorityFingerprint,
+                group.RecomputeGraphAuthorityFingerprint(),
+                StringComparison.Ordinal))
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot.group",
+                "effect_source_wound_typed_root_group_mismatch",
+                "the exact same-turn owner/target/source-export/graph authority",
+                groupKey.ToString());
+        }
+
+        var selectorMatches =
+            string.Equals(selector.Realm, key.Realm, StringComparison.Ordinal) &&
+            string.Equals(selector.Kind, key.Kind, StringComparison.Ordinal) &&
+            string.Equals(
+                selector.DefinitionKey,
+                key.DefinitionKey,
+                StringComparison.Ordinal) &&
+            request.SourceIdentityKind switch
+            {
+                WoundTypedRootSourceIdentityKind.NewSourceRef =>
+                    selector.SourceId is null &&
+                    selector.SourceRef is not null &&
+                    string.Equals(
+                        selector.SourceRef,
+                        group.SourceRef,
+                        StringComparison.Ordinal),
+                WoundTypedRootSourceIdentityKind.ExistingSourceId =>
+                    selector.SourceRef is null &&
+                    selector.SourceId is not null &&
+                    string.Equals(
+                        selector.SourceId,
+                        key.SourceId,
+                        StringComparison.Ordinal),
+                _ => false
+            };
+        if (!selectorMatches)
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot.selector",
+                "effect_source_wound_typed_root_selector_mismatch",
+                request.SourceIdentityKind ==
+                    WoundTypedRootSourceIdentityKind.NewSourceRef
+                    ? "the exact sealed new-wound sourceRef selector"
+                    : "the exact sealed existing-wound sourceId selector",
+                $"{selector.SourceId}/{selector.SourceRef}");
+        }
+
+        var matchingRoots = group.ApplicationRootLineage
+            .Where(root => string.Equals(
+                    root.ApplicationRef,
+                    request.ApplicationRef,
+                    StringComparison.Ordinal) &&
+                string.Equals(
+                    root.DefinitionKey,
+                    key.DefinitionKey,
+                    StringComparison.Ordinal) &&
+                root.OwnershipDomain == ownership)
+            .ToArray();
+        var rootBinding = matchingRoots.Length == 1
+            ? matchingRoots[0]
+            : null;
+        if (rootBinding is null)
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot.applicationRef",
+                "effect_source_wound_typed_root_unresolved",
+                "one exact sealed application root and ownership domain",
+                request.ApplicationRef);
+        }
+
+        _entries.TryGetValue(key, out var entry);
+        var groupedDefinitions = group.Definitions
+            .Where(definition => string.Equals(
+                definition.DefinitionKey,
+                key.DefinitionKey,
+                StringComparison.Ordinal))
+            .ToArray();
+        if (entry is null ||
+            _invalidKeys.Contains(key) ||
+            groupedDefinitions.Length != 1 ||
+            entry.Materializable ||
+            !entry.Active ||
+            !entry.SameTurn ||
+            !string.Equals(
+                entry.SourceRef,
+                group.SourceRef,
+                StringComparison.Ordinal) ||
+            !JsonNode.DeepEquals(
+                entry.Definition,
+                groupedDefinitions.ElementAtOrDefault(0)?.Definition))
+        {
+            Add(
+                issues,
+                "source.woundTypedRoot.definition",
+                "effect_source_wound_typed_root_definition_mismatch",
+                "one exact active non-materializable definition in the sealed wound source group",
+                key.ToString());
+        }
+        else
+        {
+            ValidateTargetKind(entry.Definition, target.Kind, issues);
+        }
+
+        return issues.Count == 0 && entry is not null && rootBinding is not null
+            ? new WoundTypedRootBindingResolution(
+                DetachEntry(entry),
+                group.DetachedCopy(),
+                WoundAcceptedTurnData.CloneLineageRow(rootBinding),
+                Array.Empty<ValidationIssue>())
+            : new WoundTypedRootBindingResolution(
+                null,
+                null,
+                null,
+                issues);
+    }
 
     internal EffectSourceRoutingResolution ResolveCanonicalRoutingBinding(
         EffectSourceKey key,
@@ -277,7 +936,7 @@ internal sealed class EffectSourceAuthority
                 ValidateParameters(entry.Definition, parameters, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with { Definition = entry.Definition.DeepClone().AsObject() },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -365,7 +1024,7 @@ internal sealed class EffectSourceAuthority
             ValidateResolvedEntry(entry, targetKind, parameters, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with { Definition = entry.Definition.DeepClone().AsObject() },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -474,10 +1133,7 @@ internal sealed class EffectSourceAuthority
             ValidateTargetKind(entry.Definition, targetKind, issues);
             return issues.Count == 0
                 ? new EffectSourceResolution(
-                    entry with
-                    {
-                        Definition = entry.Definition.DeepClone().AsObject()
-                    },
+                    DetachEntry(entry),
                     Array.Empty<ValidationIssue>())
                 : new EffectSourceResolution(null, issues);
         }
@@ -625,6 +1281,8 @@ internal sealed class EffectSourceAuthority
 
     private static string CreateFingerprint(
         IEnumerable<EffectSourceAuthorityEntry> entries,
+        IEnumerable<EffectSourceExport> ownerExports,
+        IEnumerable<WoundSourceGroupAuthority> woundGroups,
         IReadOnlyList<ValidationIssue> issues,
         IReadOnlySet<string> grantedApplicationAuthorities)
     {
@@ -652,6 +1310,8 @@ internal sealed class EffectSourceAuthority
                         .ToArray()),
                     ["definition"] = entry.Definition.DeepClone()
                 }).ToArray()),
+            ["owners"] = CreateOwnerExportArray(ownerExports, canonical: false),
+            ["woundGroups"] = CreateWoundGroupArray(woundGroups, canonical: false),
             ["grantedApplicationAuthorities"] = new JsonArray(
                 grantedApplicationAuthorities
                     .OrderBy(static authority => authority, StringComparer.Ordinal)
@@ -668,6 +1328,8 @@ internal sealed class EffectSourceAuthority
 
     private static string CreateCanonicalFingerprint(
         IEnumerable<EffectSourceAuthorityEntry> entries,
+        IEnumerable<EffectSourceExport> ownerExports,
+        IEnumerable<WoundSourceGroupAuthority> woundGroups,
         IReadOnlyList<ValidationIssue> issues)
     {
         var root = new JsonObject
@@ -692,6 +1354,8 @@ internal sealed class EffectSourceAuthority
                         .ToArray()),
                     ["definition"] = entry.Definition.DeepClone()
                 }).ToArray()),
+            ["owners"] = CreateOwnerExportArray(ownerExports, canonical: true),
+            ["woundGroups"] = CreateWoundGroupArray(woundGroups, canonical: true),
             ["issues"] = new JsonArray(issues
                 .OrderBy(static issue => issue.FilePath, StringComparer.Ordinal)
                 .ThenBy(static issue => issue.Code, StringComparer.Ordinal)
@@ -704,10 +1368,110 @@ internal sealed class EffectSourceAuthority
         return Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(root.ToJsonString())));
     }
 
+    private static JsonArray CreateOwnerExportArray(
+        IEnumerable<EffectSourceExport> ownerExports,
+        bool canonical) =>
+        new(ownerExports
+            .OrderBy(static export => export.Realm, StringComparer.Ordinal)
+            .ThenBy(static export => export.Kind, StringComparer.Ordinal)
+            .ThenBy(static export => export.SourceId, StringComparer.Ordinal)
+            .ThenBy(static export => export.SourceRef, StringComparer.Ordinal)
+            .Select(export => (JsonNode)new JsonObject
+            {
+                ["realm"] = export.Realm,
+                ["kind"] = export.Kind,
+                ["sourceId"] = export.SourceId,
+                ["materializable"] = export.Materializable,
+                ["active"] = export.Active,
+                ["sameTurn"] = canonical ? null : export.SameTurn,
+                ["sourceRef"] = canonical ? null : export.SourceRef,
+                ["requiredApplicationAuthority"] = export.RequiredApplicationAuthority,
+                ["satisfiedPredicates"] = new JsonArray(
+                    (export.SatisfiedPredicates ?? new HashSet<string>(StringComparer.Ordinal))
+                    .OrderBy(static predicate => predicate, StringComparer.Ordinal)
+                    .Select(static predicate => (JsonNode)predicate)
+                    .ToArray()),
+                ["definitions"] = export.Definitions.DeepClone()
+            })
+            .ToArray());
+
+    private static JsonArray CreateWoundGroupArray(
+        IEnumerable<WoundSourceGroupAuthority> woundGroups,
+        bool canonical) =>
+        new(woundGroups
+            .OrderBy(static group => group.Key.Realm, StringComparer.Ordinal)
+            .ThenBy(static group => group.Key.SourceId, StringComparer.Ordinal)
+            .Select(group => (JsonNode)new JsonObject
+            {
+                ["realm"] = group.Key.Realm,
+                ["kind"] = group.Key.Kind,
+                ["sourceId"] = group.Key.SourceId,
+                ["owner"] = new JsonObject
+                {
+                    ["realm"] = group.Owner.Realm,
+                    ["ownerKind"] = group.Owner.OwnerKind,
+                    ["ownerId"] = group.Owner.OwnerId,
+                    ["carrierPath"] = group.Owner.CarrierPath
+                },
+                ["target"] = new JsonObject
+                {
+                    ["realm"] = group.Target.Realm,
+                    ["kind"] = group.Target.Kind,
+                    ["targetId"] = group.Target.TargetId
+                },
+                ["sameTurn"] = canonical ? null : group.SameTurn,
+                ["sourceRef"] = canonical ? null : group.SourceRef,
+                ["preparedSourceExportFingerprint"] = canonical
+                    ? null
+                    : group.PreparedSourceExportFingerprint,
+                ["graphAuthorityFingerprint"] = group.GraphAuthorityFingerprint,
+                ["definitions"] = new JsonArray(group.Definitions
+                    .Select(definition => (JsonNode)new JsonObject
+                    {
+                        ["definitionKey"] = definition.DefinitionKey,
+                        ["definition"] = definition.Definition
+                    })
+                    .ToArray()),
+                ["applicationRoots"] = CreateRootLineageArray(
+                    group.ApplicationRootLineage),
+                ["existingRoots"] = CreateRootLineageArray(
+                    group.ExistingRootLineage)
+            })
+            .ToArray());
+
+    private static JsonArray CreateRootLineageArray(
+        IReadOnlyList<WoundRootLineageAuthorityRow> roots) =>
+        new(roots.Select(root => (JsonNode)new JsonObject
+        {
+            ["applicationRef"] = root.ApplicationRef,
+            ["effectId"] = root.EffectId,
+            ["definitionKey"] = root.DefinitionKey,
+            ["ownershipKind"] = root.OwnershipDomain.Kind,
+            ["complicationId"] = root.OwnershipDomain.ComplicationId
+        }).ToArray());
+
     private static string Alias(string realm, string kind, string sourceId, string definitionKey) =>
         realm + "\u001f" + kind + "\u001f" +
         MortalLocationIdentityState.BuildConfusableKey(sourceId) + "\u001f" +
         MortalLocationIdentityState.BuildConfusableKey(definitionKey);
+
+    private static EffectSourceAuthorityEntry DetachEntry(
+        EffectSourceAuthorityEntry entry) =>
+        entry with
+        {
+            Definition = entry.Definition.DeepClone().AsObject(),
+            SatisfiedPredicates = entry.SatisfiedPredicates.ToFrozenSet(
+                StringComparer.Ordinal)
+        };
+
+    private static EffectSourceExport DetachExport(EffectSourceExport export) =>
+        export with
+        {
+            Definitions = export.Definitions.DeepClone().AsArray(),
+            SatisfiedPredicates = (export.SatisfiedPredicates ??
+                    new HashSet<string>(StringComparer.Ordinal))
+                .ToFrozenSet(StringComparer.Ordinal)
+        };
 
     private static string RefAlias(string realm, string kind, string sourceRef, string definitionKey) =>
         realm + "\u001f" + kind + "\u001f" +
@@ -756,6 +1520,9 @@ internal sealed class EffectSourceAuthority
     {
         internal Dictionary<EffectSourceKey, EffectSourceAuthorityEntry> Entries { get; } = new();
         internal Dictionary<EffectSourceOwnerKey, EffectSourceExport> Owners { get; } = new();
+        internal List<EffectSourceExport> OwnerExports { get; } = new();
+        internal Dictionary<EffectIdentitySourceGroup, WoundSourceGroupAuthority>
+            WoundGroups { get; } = new();
         internal Dictionary<string, List<EffectSourceOwnerKey>> OwnerAliases { get; } = new(StringComparer.Ordinal);
         internal HashSet<EffectSourceOwnerKey> InvalidOwners { get; } = new();
         internal Dictionary<string, List<EffectSourceAuthorityEntry>> ByAlias { get; } = new(StringComparer.Ordinal);
@@ -767,10 +1534,28 @@ internal sealed class EffectSourceAuthority
         internal HashSet<EffectSourceKey> InvalidKeys { get; } = new();
         internal List<ValidationIssue> Issues { get; } = new();
 
+        /// <summary>
+        /// Gets whether this builder omits operation-local reference lookup indexes.
+        /// </summary>
+        internal bool CanonicalOnly { get; }
+
+        /// <summary>
+        /// Initializes source history, validated application grants and the reference-selector mode.
+        /// </summary>
+        /// <param name="historicalSourceIds">
+        /// Historical identities used for confusable identity checks.
+        /// </param>
+        /// <param name="grantedApplicationAuthorities">
+        /// Built-in application authorities to validate and retain.
+        /// </param>
+        /// <param name="canonicalOnly">
+        /// Omits local reference lookup indexes when <see langword="true"/>.
+        /// </param>
         internal Builder(
             IEnumerable<string> historicalSourceIds,
-            IEnumerable<string> grantedApplicationAuthorities)
+            IEnumerable<string> grantedApplicationAuthorities, bool canonicalOnly)
         {
+            CanonicalOnly = canonicalOnly;
             HistoricalAliases = historicalSourceIds
                 .Select(MortalLocationIdentityState.BuildConfusableKey)
                 .ToHashSet(StringComparer.Ordinal);
@@ -797,6 +1582,205 @@ internal sealed class EffectSourceAuthority
                 AddExport(export, sameTurn);
         }
 
+        internal void AddCompositionIssues(
+            IReadOnlyList<ValidationIssue>? compositionIssues)
+        {
+            if (compositionIssues is null)
+                return;
+            Issues.AddRange(compositionIssues);
+        }
+
+        internal void AddWoundGroups(
+            IReadOnlyList<WoundSourceGroupAuthority> groups)
+        {
+            foreach (var group in groups)
+                AddWoundGroup(group);
+        }
+
+        internal bool ValidateWoundAggregateBounds(
+            IReadOnlyList<EffectSourceExport> preTurn,
+            IReadOnlyList<EffectSourceExport> sameTurn,
+            IReadOnlyList<WoundSourceGroupAuthority> groups)
+        {
+            static long CountDefinitions(IEnumerable<EffectSourceExport> exports) =>
+                exports.Where(static export => export is not null && string.Equals(
+                        export.Kind,
+                        "wound",
+                        StringComparison.Ordinal))
+                    .Sum(static export => (long)(export.Definitions?.Count ?? 0));
+
+            var preTurnCount = CountDefinitions(preTurn);
+            var sameTurnCount = CountDefinitions(sameTurn);
+            var preTurnRootCount = groups
+                .Where(static group => group is not null && !group.SameTurn)
+                .Sum(static group => (long)group.ExistingRootLineage.Count);
+            var sameTurnRootCount = groups
+                .Where(static group => group is not null && group.SameTurn)
+                .Sum(static group => (long)group.ApplicationRootLineage.Count);
+            if (preTurnCount > MaximumPreTurnWoundDefinitions)
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.preTurn",
+                    "effect_source_wound_pre_turn_aggregate_limit_exceeded",
+                    $"at most {MaximumPreTurnWoundDefinitions} pre-turn wound definitions before source composition",
+                    preTurnCount.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)));
+            }
+            if (sameTurnCount > MaximumSameTurnWoundDefinitions)
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.sameTurn",
+                    "effect_source_wound_same_turn_aggregate_limit_exceeded",
+                    $"at most {MaximumSameTurnWoundDefinitions} same-turn wound definitions before source composition",
+                    sameTurnCount.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)));
+            }
+            if (preTurnRootCount > MaximumPreTurnWoundDefinitions)
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.preTurn.rootBindings",
+                    "effect_source_wound_pre_turn_root_aggregate_limit_exceeded",
+                    $"at most {MaximumPreTurnWoundDefinitions} pre-turn wound root bindings before source composition",
+                    preTurnRootCount.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)));
+            }
+            if (sameTurnRootCount > MaximumSameTurnWoundDefinitions)
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.sameTurn.rootApplications",
+                    "effect_source_wound_same_turn_root_aggregate_limit_exceeded",
+                    $"at most {MaximumSameTurnWoundDefinitions} same-turn wound root applications before source composition",
+                    sameTurnRootCount.ToString(
+                        System.Globalization.CultureInfo.InvariantCulture)));
+            }
+            return preTurnCount <= MaximumPreTurnWoundDefinitions &&
+                   sameTurnCount <= MaximumSameTurnWoundDefinitions &&
+                   preTurnRootCount <= MaximumPreTurnWoundDefinitions &&
+                   sameTurnRootCount <= MaximumSameTurnWoundDefinitions;
+        }
+
+        private void AddWoundGroup(WoundSourceGroupAuthority group)
+        {
+            if (group is null ||
+                !string.Equals(group.Key.Kind, "wound", StringComparison.Ordinal) ||
+                !TryExact(group.Key.Realm) ||
+                !TryExact(group.Key.SourceId) ||
+                !WoundEffectCarrierAdapter.TryCreateTargetKey(
+                    group.Owner,
+                    out var expectedTarget) ||
+                expectedTarget != group.Target ||
+                !string.Equals(group.Owner.Realm, group.Key.Realm, StringComparison.Ordinal) ||
+                group.SameTurn != (group.SourceRef is not null) ||
+                (group.SourceRef is not null && !TryExact(group.SourceRef)) ||
+                !string.Equals(
+                    group.GraphAuthorityFingerprint,
+                    group.RecomputeGraphAuthorityFingerprint(),
+                    StringComparison.Ordinal))
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.groups",
+                    "effect_source_wound_group_authority_invalid",
+                    "one exact owner-bound sealed wound source group",
+                    group?.Key.ToString() ?? "null"));
+                return;
+            }
+
+            var ownerKey = new EffectSourceOwnerKey(
+                group.Key.Realm,
+                group.Key.Kind,
+                group.Key.SourceId);
+            string? rootIssue = null;
+            var rootsValid = ValidateRootRows(group, out rootIssue);
+            if (!Owners.TryGetValue(ownerKey, out var export) ||
+                export.SameTurn != group.SameTurn ||
+                !string.Equals(export.SourceRef, group.SourceRef, StringComparison.Ordinal) ||
+                !DefinitionsAgree(export.Definitions, group.Definitions) ||
+                !rootsValid)
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.groups",
+                    rootIssue ?? "effect_source_wound_group_export_mismatch",
+                    "exact source export, complete definition graph, and disjoint root selectors",
+                    group.Key.ToString()));
+                return;
+            }
+
+            if (!WoundGroups.TryAdd(group.Key, group.DetachedCopy()))
+            {
+                Issues.Add(NewIssue(
+                    "sources.wound.groups",
+                    "effect_source_wound_group_duplicate",
+                    "one exact wound source group authority",
+                    group.Key.ToString()));
+            }
+        }
+
+        private static bool DefinitionsAgree(
+            JsonArray exported,
+            IReadOnlyList<WoundEffectSourceDefinition> grouped)
+        {
+            if (exported.Count != grouped.Count)
+                return false;
+            for (var index = 0; index < exported.Count; index++)
+            {
+                if (exported[index] is not JsonObject definition ||
+                    !string.Equals(
+                        definition["definitionKey"]?.GetValue<string>(),
+                        grouped[index].DefinitionKey,
+                        StringComparison.Ordinal) ||
+                    !JsonNode.DeepEquals(definition, grouped[index].Definition))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private static bool ValidateRootRows(
+            WoundSourceGroupAuthority group,
+            out string? issueCode)
+        {
+            issueCode = null;
+            var definitionKeys = group.Definitions
+                .Select(static definition => definition.DefinitionKey)
+                .ToHashSet(StringComparer.Ordinal);
+            var applicationRefs = new HashSet<string>(StringComparer.Ordinal);
+            var effectIds = new HashSet<string>(StringComparer.Ordinal);
+            foreach (var row in group.ApplicationRootLineage.Concat(
+                         group.ExistingRootLineage))
+            {
+                var hasApplication = TryExact(row.ApplicationRef ?? string.Empty);
+                var hasEffect = TryExact(row.EffectId ?? string.Empty);
+                var ownershipDomainValid = row.OwnershipDomain is not null &&
+                    (string.Equals(
+                         row.OwnershipDomain.Kind,
+                         "base_wound",
+                         StringComparison.Ordinal) &&
+                     row.OwnershipDomain.ComplicationId is null ||
+                     string.Equals(
+                         row.OwnershipDomain.Kind,
+                         "complication",
+                         StringComparison.Ordinal) &&
+                     TryExact(row.OwnershipDomain.ComplicationId ?? string.Empty));
+                if (hasApplication == hasEffect ||
+                    !definitionKeys.Contains(row.DefinitionKey) ||
+                    !ownershipDomainValid ||
+                    (hasApplication && !applicationRefs.Add(row.ApplicationRef!)) ||
+                    (hasEffect && !effectIds.Add(row.EffectId!)))
+                {
+                    issueCode = "effect_source_wound_group_root_invalid";
+                    return false;
+                }
+            }
+            if (group.ApplicationRootLineage.Any(static row => row.EffectId is not null) ||
+                group.ExistingRootLineage.Any(static row => row.ApplicationRef is not null))
+            {
+                issueCode = "effect_source_wound_group_root_partition_invalid";
+                return false;
+            }
+            return true;
+        }
+
         private void AddExport(EffectSourceExport export, bool sameTurn)
         {
             var sourcePath = $"sources[{export.Kind}:{export.SourceId}]";
@@ -805,6 +1789,16 @@ internal sealed class EffectSourceAuthority
                 !TryExact(export.SourceId))
             {
                 Issues.Add(NewIssue(sourcePath, "effect_source_authority_invalid_export", "exact supported source export", export.ToString()));
+                return;
+            }
+            if (string.Equals(export.Kind, "wound_legacy", StringComparison.Ordinal) &&
+                export.Materializable)
+            {
+                Issues.Add(NewIssue(
+                    sourcePath,
+                    "effect_source_wound_legacy_public_materialization_forbidden",
+                    "non-public wound legacy source export",
+                    export.ToString()));
                 return;
             }
             if (export.RequiredApplicationAuthority is { } requiredAuthority &&
@@ -819,7 +1813,17 @@ internal sealed class EffectSourceAuthority
                 return;
             }
 
-            RegisterOwner(export, sourcePath);
+            var normalizedExport = export with
+            {
+                SameTurn = sameTurn,
+                Definitions = export.Definitions.DeepClone().AsArray(),
+                SatisfiedPredicates = EffectSourcePredicateCatalog.NormalizeSatisfied(
+                        export.Active,
+                        export.SatisfiedPredicates)
+                    .ToFrozenSet(StringComparer.Ordinal)
+            };
+            OwnerExports.Add(normalizedExport);
+            RegisterOwner(normalizedExport, sourcePath);
 
             using var document = JsonDocument.Parse(export.Definitions.ToJsonString());
             var definitionIssues = EffectSourceDefinitionContract.ValidateArray(
@@ -849,8 +1853,9 @@ internal sealed class EffectSourceAuthority
                 }
                 var key = new EffectSourceKey(export.Realm, export.Kind, export.SourceId, definitionKey);
                 var satisfiedPredicates = EffectSourcePredicateCatalog.NormalizeSatisfied(
-                    export.Active,
-                    export.SatisfiedPredicates);
+                        export.Active,
+                        export.SatisfiedPredicates)
+                    .ToFrozenSet(StringComparer.Ordinal);
                 var entry = new EffectSourceAuthorityEntry(
                     key,
                     definition.DeepClone().AsObject(),
@@ -887,6 +1892,8 @@ internal sealed class EffectSourceAuthority
                     Issues.Add(NewIssue(sourcePath + ".sourceRef", "effect_source_authority_invalid_ref", "exact same-turn sourceRef", export.SourceRef));
                     continue;
                 }
+                if (CanonicalOnly)
+                    continue;
                 var reference = new EffectSourceReferenceKey(
                     export.Realm,
                     export.Kind,

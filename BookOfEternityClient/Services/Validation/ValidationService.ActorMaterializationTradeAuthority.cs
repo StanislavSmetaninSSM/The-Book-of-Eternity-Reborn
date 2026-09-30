@@ -12,11 +12,11 @@ public partial class ValidationService
     {
         var result = new HashSet<string>(StringComparer.Ordinal);
         AddCurrentGuardianTradeAuthority(
-            await _fs.ReadFileAsync(GuardiansStatePath),
+            await ReadSameTurnOwnerCurrentTextAsync(GuardiansStatePath),
             result);
         AddCurrentShiningFactionHeadTradeAuthorities(
-            await _fs.ReadFileAsync(ShiningAbodeState.StatePath),
-            await _fs.ReadFileAsync(
+            await ReadSameTurnOwnerCurrentTextAsync(ShiningAbodeState.StatePath),
+            await ReadSameTurnOwnerCurrentTextAsync(
                 GuardianAbodeResidentState.StatePath),
             result);
         return result;

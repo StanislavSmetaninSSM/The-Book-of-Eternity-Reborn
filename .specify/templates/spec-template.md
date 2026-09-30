@@ -131,9 +131,9 @@
 
 ## Verification Plan *(mandatory)*
 
-- **C# verification**: [focused dotnet test command or N/A]
+- **C# verification**: [selected test categories, affected contracts and reasons, or N/A; no full-suite control]
 - **Documentation/contract verification**: [GM prompt/docs/example tests, AfterlifeDocumentationCoverageTests, ExampleDocumentationValidationTests, source guards, or N/A]
-- **Frontend verification**: [npm run verify, focused frontend tests, browser visual check, or N/A]
+- **Frontend verification**: [selected frontend categories, browser visual check, or N/A; no aggregate npm verify]
 - **Manual/player-facing verification**: [console/browser flow to inspect, or N/A]
 
 ## Assumptions

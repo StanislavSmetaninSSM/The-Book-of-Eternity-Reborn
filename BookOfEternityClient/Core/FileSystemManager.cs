@@ -1269,6 +1269,21 @@ public class FileSystemManager
                     .GetResult();
             }
         }
+        return DecodeFileSnapshot(snapshot);
+    }
+
+    internal string? ReadFileSync(
+        CanonicalWriteLease writeLease,
+        string relativePath)
+    {
+        EnsureValidCanonicalWriteLease(writeLease);
+        // The explicit lease already supplies publication quiescence, even when
+        // its ambient execution context did not flow to this synchronous caller.
+        return DecodeFileSnapshot(ReadFileSnapshotCore(relativePath));
+    }
+
+    private static string? DecodeFileSnapshot(CanonicalFileReadSnapshot? snapshot)
+    {
         if (snapshot == null)
             return null;
 
@@ -5491,6 +5506,21 @@ public class FileSystemManager
         var generationId = Guid.NewGuid().ToString("N");
         WriteSessionGeneration(generationId);
         return generationId;
+    }
+
+    /// <summary>
+    /// Reads an existing session generation without creating or replacing runtime authority.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Active canonical lease for the physical runtime root.
+    /// </param>
+    /// <returns>
+    /// The validated existing generation, or <see langword="null"/> when its authority file is absent.
+    /// </returns>
+    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease)
+    {
+        EnsureCanonicalWriteLeaseActive(writeLease);
+        return RuntimeFileExists(SessionGenerationPath) ? ReadSessionGeneration() : null;
     }
 
     internal bool IsCurrentSessionGeneration(

@@ -1,4 +1,7 @@
 using System.Security.Cryptography;
+using System.Text;
+using System.Text.Json;
+using Microsoft.Extensions.Logging.Abstractions;
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Services;
 
@@ -68,6 +71,36 @@ public sealed class GmWorkerValidationRepairDelegator
         _hooks = hooks;
     }
 
+    /// <summary>
+    /// Dispatches bounded repair work and publishes Ready only after accepted apply and current-boundary checks.
+    /// </summary>
+    /// <param name="profiles">
+    /// Available profiles used by the existing validation-repair router.
+    /// </param>
+    /// <param name="prioritizedErrors">
+    /// Current diagnostics; an explicit continuation can dispatch with none.
+    /// </param>
+    /// <param name="sourceTurn">
+    /// Original session, request and turn identity.
+    /// </param>
+    /// <param name="createdAtUtc">
+    /// UTC task creation timestamp.
+    /// </param>
+    /// <param name="attempt">
+    /// Repair attempt used in the generated task identity.
+    /// </param>
+    /// <param name="expectedSessionGeneration">
+    /// Required generation, or <see langword="null"/> to bind to the current generation.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Cancellation token for worker execution.
+    /// </param>
+    /// <param name="spiritualWoundContinuation">
+    /// Public continuation to reauthenticate, or <see langword="null"/> for the ordinary repair route.
+    /// </param>
+    /// <returns>
+    /// Dispatch, apply and Ready outcome with diagnostics for fallback; no wound decision is consumed.
+    /// </returns>
     public async Task<GmWorkerValidationRepairDispatchResult> TryRunAsync(
         IReadOnlyList<WorkerBridgeProfile> profiles,
         IReadOnlyList<ValidationIssue> prioritizedErrors,
@@ -75,9 +108,10 @@ public sealed class GmWorkerValidationRepairDelegator
         string createdAtUtc,
         int attempt,
         string? expectedSessionGeneration = null,
-        CancellationToken cancellationToken = default)
+        CancellationToken cancellationToken = default,
+        SpiritualWoundContinuationRequest? spiritualWoundContinuation = null)
     {
-        if (prioritizedErrors.Count == 0)
+        if (prioritizedErrors.Count == 0 && spiritualWoundContinuation is null)
         {
             await RecordRouterEventAsync("validation-repair-skipped", null, null, "No validation issues were provided.");
             return new GmWorkerValidationRepairDispatchResult
@@ -100,15 +134,17 @@ public sealed class GmWorkerValidationRepairDelegator
         }
 
         WorkerTaskPacket task;
+        byte[]? readyBefore;
         try
         {
-            task = await BuildTaskAsync(
+            (task, readyBefore) = await BuildTaskAsync(
                 routing.Profile,
                 prioritizedErrors,
                 sourceTurn,
                 createdAtUtc,
                 attempt,
-                expectedSessionGeneration);
+                expectedSessionGeneration,
+                spiritualWoundContinuation);
             if (!await WriteLatestTaskIfCurrentAsync(task))
             {
                 return new GmWorkerValidationRepairDispatchResult
@@ -216,9 +252,9 @@ public sealed class GmWorkerValidationRepairDelegator
         if (_hooks?.BeforeReadyPublicationAsync != null)
             await _hooks.BeforeReadyPublicationAsync();
         var readyPublication = await TryWriteReadySignalAsync(
-            sourceTurn,
+            boundTask,
             run.Proposal,
-            boundTask.SessionGeneration);
+            readyBefore);
         return new GmWorkerValidationRepairDispatchResult
         {
             Outcome = readyPublication.SessionReplaced
@@ -238,26 +274,29 @@ public sealed class GmWorkerValidationRepairDelegator
         return _fs.IsCurrentSessionGeneration(writeLease, expectedSessionGeneration);
     }
 
-    private async Task<WorkerTaskPacket> BuildTaskAsync(
+    private async Task<(WorkerTaskPacket Task, byte[]? ReadyBefore)> BuildTaskAsync(
         WorkerBridgeProfile profile,
         IReadOnlyList<ValidationIssue> prioritizedErrors,
         WorkerTurnReference sourceTurn,
         string createdAtUtc,
         int attempt,
-        string? expectedSessionGeneration)
+        string? expectedSessionGeneration,
+        SpiritualWoundContinuationRequest? continuation)
     {
-        var targetPaths = prioritizedErrors
+        var targetPaths = continuation is not null
+            ? GmWorkerTaskPacketBuilder.ResolveSpiritualContinuationPaths(continuation)
+            : prioritizedErrors
             .Select(GmWorkerTaskPacketBuilder.ResolveValidationTargetPath)
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
             .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
             .ToArray();
-        var requiresCharacteristicAuthority = prioritizedErrors.Any(issue => string.Equals(
+        var requiresCharacteristicAuthority = continuation is null && prioritizedErrors.Any(issue => string.Equals(
             issue.Code,
             "npc_characteristics_empty",
             StringComparison.OrdinalIgnoreCase));
         var requiresAfterlifeRealmAuthority =
             targetPaths.Any(AfterlifeRealmAuthorityContract.IsAfterlifeStatePath) ||
-            prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue);
+            (continuation is null && prioritizedErrors.Any(IsAfterlifeActorMaterializationIssue));
         var contextPaths = targetPaths.AsEnumerable();
         if (requiresCharacteristicAuthority)
             contextPaths = contextPaths.Append(MortalCharacteristicAuthorityContract.StatePath);
@@ -268,6 +307,7 @@ public sealed class GmWorkerValidationRepairDelegator
         WorkerAfterlifeRealmGate realmGate = WorkerAfterlifeRealmGate.None;
         var currentRealm = string.Empty;
         string sessionGeneration;
+        byte[]? readyBefore = null;
         await using (var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync())
         {
             sessionGeneration = _fs.GetOrCreateSessionGeneration(writeLease);
@@ -276,6 +316,25 @@ public sealed class GmWorkerValidationRepairDelegator
             {
                 throw new GmWorkerSessionReplacedException(
                     "The validation-repair task belongs to a game session that is no longer current.");
+            }
+
+            if (continuation is not null)
+            {
+                readyBefore = await _fs.ReadFileBytesAsync(writeLease, ValidationRepairReadyPath);
+                if (readyBefore is not null)
+                    throw new InvalidOperationException("A continuation Ready already awaits client consumption; worker dispatch cannot replace it.");
+                var validator = new ValidationService(_fs, NullLogger<ValidationService>.Instance);
+                var current = await validator.ReadSpiritualWoundContinuationAsync(writeLease, continuation);
+                if (current.Request is null || JsonSerializer.Serialize(current.Request) != JsonSerializer.Serialize(continuation))
+                    throw new InvalidOperationException("The spiritual continuation changed before worker dispatch.");
+                var originalBytes = await _fs.ReadFileBytesAsync(writeLease, "input/turn_request.json");
+                var original = SpiritualWoundDependentDraftPolicy.ReadStrictRoot(DecodeUtf8(originalBytes)
+                    ?? throw new InvalidOperationException("The original turn request is missing."));
+                if (original["sessionId"]?.GetValue<string>() != sourceTurn.SessionId ||
+                    original["requestId"]?.GetValue<string>() != sourceTurn.RequestId ||
+                    original["turnNumber"]?.GetValue<int>() != sourceTurn.TurnNumber)
+                    throw new InvalidOperationException("The continuation task does not belong to the current original turn.");
+                prioritizedErrors = current.Issues;
             }
 
             foreach (var path in contextPaths.Distinct(GmWorkerContractValidator.CanonicalPathComparer))
@@ -307,7 +366,7 @@ public sealed class GmWorkerValidationRepairDelegator
         var afterlifeContract = requiresAfterlifeRealmAuthority
             ? BuildAfterlifeRepairContract(realmGate, currentRealm, targetPaths)
             : null;
-        return GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
+        var task = GmWorkerTaskPacketBuilder.BuildValidationRepairTask(
             profile,
             $"worker_task_validation_repair_{attempt:D4}_{Guid.NewGuid():N}",
             sourceTurn,
@@ -315,7 +374,9 @@ public sealed class GmWorkerValidationRepairDelegator
             contextHashes,
             createdAtUtc,
             sessionGeneration,
-            afterlifeContract);
+            afterlifeContract,
+            continuation);
+        return (task, readyBefore);
     }
 
     private async Task<bool> WriteLatestTaskIfCurrentAsync(WorkerTaskPacket task)
@@ -371,17 +432,20 @@ public sealed class GmWorkerValidationRepairDelegator
     }
 
     private async Task<(bool Created, string Diagnostic, bool SessionReplaced)> TryWriteReadySignalAsync(
-        WorkerTurnReference sourceTurn,
+        WorkerTaskPacket task,
         WorkerProposal proposal,
-        string sessionGeneration)
+        byte[]? readyBefore)
     {
+        var sourceTurn = task.SourceTurn;
+        var sessionGeneration = task.SessionGeneration;
         var ready = new ValidationRepairReadySignal
         {
             SessionId = sourceTurn.SessionId,
             RequestId = sourceTurn.RequestId,
             TurnNumber = sourceTurn.TurnNumber,
             UpdatedAtUtc = DateTimeOffset.UtcNow.ToString("O"),
-            Note = $"GM worker proposal {proposal.ProposalId} accepted by apply gate."
+            Note = $"GM worker proposal {proposal.ProposalId} accepted by apply gate.",
+            SpiritualWoundContinuation = proposal.SpiritualWoundContinuation
         };
 
         try
@@ -395,10 +459,20 @@ public sealed class GmWorkerValidationRepairDelegator
                     true);
             }
 
-            await _fs.WriteFileAtomicAsync(
-                writeLease,
-                ValidationRepairReadyPath,
-                GmWorkerJson.Serialize(ready));
+            if (task.SpiritualWoundContinuation is not null)
+            {
+                var issues = await _applyGate.ValidateSpiritualContinuationAfterApplyAsync(proposal, task, writeLease);
+                if (issues.Count != 0)
+                    return (false, "Continuation changed before Ready publication: " + string.Join("; ", issues), false);
+                var result = await _fs.CompareExchangeFileBytesAsync(writeLease, ValidationRepairReadyPath,
+                    readyBefore, Encoding.UTF8.GetBytes(GmWorkerJson.Serialize(ready)));
+                if (result == CanonicalFileMutationResult.Conflict)
+                    return (false, "A newer Ready response was preserved after worker apply.", false);
+            }
+            else
+            {
+                await _fs.WriteFileAtomicAsync(writeLease, ValidationRepairReadyPath, GmWorkerJson.Serialize(ready));
+            }
 
             await _auditLog.AppendEventAsync(writeLease, new WorkerAuditEvent
             {
@@ -492,5 +566,6 @@ public sealed class GmWorkerValidationRepairDelegator
         public int TurnNumber { get; init; }
         public string UpdatedAtUtc { get; init; } = "";
         public string? Note { get; init; }
+        public SpiritualWoundContinuationResponse? SpiritualWoundContinuation { get; init; }
     }
 }

@@ -1491,6 +1491,9 @@ function Test-BoeClientOwnedRuntimePath {
     }
 
     foreach ($clientOwnedPath in @(
+        "game_state/control/spiritual_wound_capture_checkpoint.json",
+        "game_state/control/pending_spiritual_wound_decisions.json",
+        "game_state/wounds/spiritual_wound_opportunity_receipts.json",
         "input/qte_effect_resolution_request.json",
         "output/qte_effect_resolution_receipts.json",
         "ready/qte_effect_resolution_complete.json",
@@ -2291,7 +2294,10 @@ function Write-BoeJson {
 
         [int]$Depth = 100,
 
-        [switch]$AllowClientOwnedRuntimeWrite
+        [switch]$AllowClientOwnedRuntimeWrite,
+
+        # Optional exact read witnesses, rechecked under this writer's existing lock.
+        [System.Collections.IDictionary]$ExpectedReadWitnesses
     )
 
     if (!$AllowClientOwnedRuntimeWrite) {
@@ -2314,6 +2320,18 @@ function Write-BoeJson {
     $replaceBackupPath = $path + '.replace-backup.' + [Guid]::NewGuid().ToString('N').Substring(0, 8)
     $writeLock = Acquire-BoeCanonicalWriteLock
     try {
+        if ($null -ne $ExpectedReadWitnesses) {
+            foreach ($witnessPath in $ExpectedReadWitnesses.Keys) {
+                $witnessFullPath = Resolve-BoeSessionPath -RelativePath $witnessPath
+                $actualWitness = if ([System.IO.File]::Exists($witnessFullPath)) {
+                    Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($witnessFullPath))
+                }
+                else { 'missing' }
+                if ($actualWitness -cne $ExpectedReadWitnesses[$witnessPath]) {
+                    throw "Continuation input changed before Ready publication: $witnessPath"
+                }
+            }
+        }
         if ($script:BoeReadBaselines.ContainsKey($path)) {
             $expectedSha256 = [string]$script:BoeReadBaselines[$path]
             $currentSha256 = if ([System.IO.File]::Exists($path)) {
@@ -2854,10 +2872,335 @@ function Fail-BoeTurn {
     throw "GM turn failed: $ErrorMessage"
 }
 
+function Assert-BoeSpiritualContinuationRawJson {
+    param([string]$Json, [switch]$RepairRequest)
+
+    # Windows PowerShell 5.1 has no System.Text.Json. Validate raw tokens before
+    # mutable object conversion can discard duplicate names or their exact case.
+    if ($null -eq ('BoeSpiritualContinuationRawJson' -as [type])) {
+        Add-Type -TypeDefinition @'
+using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Text.RegularExpressions;
+
+/// <summary>
+/// Checks raw JSON syntax and continuation key uniqueness before object conversion.
+/// </summary>
+public sealed class BoeSpiritualContinuationRawJson
+{
+    private readonly string json;
+    private readonly bool repairRequest;
+    private int offset;
+
+    /// <summary>
+    /// Retains one raw input and its envelope mode for a bounded parse.
+    /// </summary>
+    /// <param name="json">
+    /// Raw JSON to validate without producing mutable objects.
+    /// </param>
+    /// <param name="repairRequest">
+    /// Whether only the request's optional continuation subtree uses closed transport keys.
+    /// </param>
+    private BoeSpiritualContinuationRawJson(string json, bool repairRequest)
+    {
+        this.json = json ?? "";
+        this.repairRequest = repairRequest;
+    }
+
+    /// <summary>
+    /// Rejects invalid syntax, duplicate continuation keys and outer envelope case aliases.
+    /// </summary>
+    /// <param name="json">
+    /// Raw request or response JSON; empty input is invalid.
+    /// </param>
+    /// <param name="repairRequest">
+    /// <see langword="true"/> for a repair request; <see langword="false"/> for the closed response envelope itself.
+    /// </param>
+    public static void Validate(string json, bool repairRequest)
+    {
+        var parser = new BoeSpiritualContinuationRawJson(json, repairRequest);
+        parser.Value(!repairRequest, 0);
+        parser.Space();
+        if (parser.offset != parser.json.Length) throw new FormatException("Trailing JSON content.");
+    }
+
+    /// <summary>
+    /// Consumes one complete JSON value while retaining property names at each object depth.
+    /// </summary>
+    /// <param name="strict">
+    /// Whether duplicate or case-alias property names are forbidden in this subtree.
+    /// </param>
+    /// <param name="depth">
+    /// Current nesting depth; more than 64 levels is rejected.
+    /// </param>
+    private void Value(bool strict, int depth)
+    {
+        Space();
+        if (depth > 64 || offset >= json.Length) throw new FormatException("Invalid continuation JSON depth or value.");
+        char token = json[offset];
+        if (token == '{')
+        {
+            offset++;
+            Space();
+            var names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            if (Take('}')) return;
+            do
+            {
+                Space();
+                string name = Text();
+                bool envelope = repairRequest && depth == 0 &&
+                    string.Equals(name, "spiritualWoundContinuation", StringComparison.OrdinalIgnoreCase);
+                if ((strict || envelope) && !names.Add(name)) throw new FormatException("Duplicate continuation JSON key: " + name);
+                if (envelope && name != "spiritualWoundContinuation") throw new FormatException("Incorrect continuation envelope case.");
+                Space();
+                if (!Take(':')) throw new FormatException("Expected JSON property separator.");
+                Value(strict || envelope, depth + 1);
+                Space();
+                if (Take('}')) return;
+            } while (Take(','));
+            throw new FormatException("Expected JSON object delimiter.");
+        }
+        if (token == '[')
+        {
+            offset++;
+            Space();
+            if (Take(']')) return;
+            do
+            {
+                Value(strict, depth + 1);
+                Space();
+                if (Take(']')) return;
+            } while (Take(','));
+            throw new FormatException("Expected JSON array delimiter.");
+        }
+        if (token == '"') { Text(); return; }
+        var literal = Regex.Match(json.Substring(offset), @"\A(?:true|false|null|-?(?:0|[1-9][0-9]*)(?:\.[0-9]+)?(?:[eE][+-]?[0-9]+)?)");
+        if (!literal.Success) throw new FormatException("Invalid JSON literal.");
+        offset += literal.Length;
+    }
+
+    /// <summary>
+    /// Decodes one JSON string so escaped property names share the same uniqueness checks.
+    /// </summary>
+    /// <returns>
+    /// The decoded string, with invalid escapes and control characters rejected.
+    /// </returns>
+    private string Text()
+    {
+        if (!Take('"')) throw new FormatException("Expected JSON string.");
+        var text = new StringBuilder();
+        while (offset < json.Length)
+        {
+            char value = json[offset++];
+            if (value == '"') return text.ToString();
+            if (value < 32) throw new FormatException("Unescaped JSON control character.");
+            if (value != '\\') { text.Append(value); continue; }
+            if (offset == json.Length) break;
+            char escape = json[offset++];
+            switch (escape)
+            {
+                case '"': case '\\': case '/': text.Append(escape); break;
+                case 'b': text.Append('\b'); break;
+                case 'f': text.Append('\f'); break;
+                case 'n': text.Append('\n'); break;
+                case 'r': text.Append('\r'); break;
+                case 't': text.Append('\t'); break;
+                case 'u':
+                    if (offset + 4 > json.Length || !Regex.IsMatch(json.Substring(offset, 4), @"\A[0-9a-fA-F]{4}\z"))
+                        throw new FormatException("Invalid JSON Unicode escape.");
+                    text.Append((char)Convert.ToInt32(json.Substring(offset, 4), 16));
+                    offset += 4;
+                    break;
+                default: throw new FormatException("Invalid JSON escape.");
+            }
+        }
+        throw new FormatException("Unterminated JSON string.");
+    }
+
+    /// <summary>
+    /// Consumes one expected delimiter at the current position.
+    /// </summary>
+    /// <param name="value">
+    /// Exact delimiter to match.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the delimiter was consumed; otherwise <see langword="false"/> without advancing.
+    /// </returns>
+    private bool Take(char value)
+    {
+        if (offset >= json.Length || json[offset] != value) return false;
+        offset++;
+        return true;
+    }
+
+    /// <summary>
+    /// Skips only the whitespace characters permitted by JSON.
+    /// </summary>
+    private void Space()
+    {
+        while (offset < json.Length && (json[offset] == ' ' || json[offset] == '\t' ||
+            json[offset] == '\r' || json[offset] == '\n')) offset++;
+    }
+}
+'@
+    }
+    [BoeSpiritualContinuationRawJson]::Validate($Json, [bool]$RepairRequest)
+}
+
+function Get-BoeContinuationText {
+    param([object]$Object, [string]$Name)
+    $value = Get-BoeExactJsonValue -Object $Object -Name $Name
+    if ($value -isnot [string] -or [string]::IsNullOrWhiteSpace($value)) {
+        throw "Continuation $Name must be a nonempty string."
+    }
+    return $value
+}
+
+function Get-BoeContinuationInteger {
+    param([object]$Object, [string]$Name)
+    $value = Get-BoeExactJsonValue -Object $Object -Name $Name
+    if (($value -isnot [int] -and $value -isnot [long]) -or $value -lt [int]::MinValue -or $value -gt [int]::MaxValue) {
+        throw "Continuation $Name must be an integer."
+    }
+    return [int]$value
+}
+
+function Assert-BoeContinuationStringArray {
+    param([AllowNull()][object]$Value)
+    if ($Value -isnot [System.Collections.IList]) { throw 'Continuation field must be an array.' }
+    $seen = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal)
+    foreach ($entry in $Value) {
+        if ($entry -isnot [string] -or [string]::IsNullOrWhiteSpace($entry) -or !$seen.Add($entry)) {
+            throw 'Continuation array requires unique nonempty strings.'
+        }
+    }
+}
+
+function Assert-BoeSpiritualContinuationRequest {
+    param([object]$Request)
+    Assert-BoeClosedJsonObject -Object $Request -Context 'spiritualWoundContinuation' -RequiredNames @(
+        'schemaVersion', 'continuationId', 'phase', 'offer', 'sceneTextSource', 'dependentDraftFields')
+    if ((Get-BoeContinuationInteger $Request 'schemaVersion') -ne 1) { throw 'Unsupported continuation schemaVersion.' }
+    $null = Get-BoeContinuationText $Request 'continuationId'
+    $phase = Get-BoeContinuationText $Request 'phase'
+    if ($phase -cne 'decision' -and $phase -cne 'dependent_draft') { throw 'Unsupported continuation phase.' }
+    $scene = $Request.sceneTextSource
+    Assert-BoeClosedJsonObject -Object $scene -Context 'sceneTextSource' -RequiredNames @('path', 'field')
+    if ((Get-BoeContinuationText $scene 'path') -cne 'output/narrative_response.json' -or
+        (Get-BoeContinuationText $scene 'field') -cne 'response') { throw 'Continuation scene source must be the existing narrative response.' }
+    $fields = $Request.dependentDraftFields
+    if ($fields -isnot [System.Collections.IList]) { throw 'dependentDraftFields must be an array.' }
+    $seen = [System.Collections.Generic.Dictionary[string, object]]::new([System.StringComparer]::Ordinal)
+    foreach ($field in $fields) {
+        Assert-BoeClosedJsonObject -Object $field -Context 'dependentDraftFields[]' -RequiredNames @('path', 'jsonPointer')
+        $path = Get-BoeContinuationText $field 'path'
+        $pointer = Get-BoeContinuationText $field 'jsonPointer'
+        if ($path.StartsWith('/') -or $path.Contains('\') -or $path.Contains(':') -or
+            @($path.Split('/') | Where-Object { $_ -eq '' -or $_ -eq '.' -or $_ -eq '..' }).Count -ne 0 -or
+            !$pointer.StartsWith('/') -or $pointer -match '~(?:[^01]|$)') {
+            throw 'Invalid dependent draft field.'
+        }
+        if (!$seen.ContainsKey($path)) { $seen[$path] = [System.Collections.Generic.HashSet[string]]::new([System.StringComparer]::Ordinal) }
+        if (!$seen[$path].Add($pointer)) { throw 'Duplicate dependent draft field.' }
+    }
+    if ($phase -ceq 'dependent_draft') {
+        if ($null -ne $Request.offer) { throw 'Dependent correction cannot offer a new decision.' }
+        return
+    }
+    if ($fields.Count -ne 0) { throw 'Decision requests cannot permit dependent edits.' }
+    $offer = $Request.offer
+    Assert-BoeClosedJsonObject -Object $offer -Context 'offer' -RequiredNames @('opportunityRef', 'minimumSeverityRank',
+        'requiredSeverityRank', 'maximumSeverityRank', 'target', 'cause', 'allowedLocationKinds', 'allowedDecisions')
+    foreach ($name in @('opportunityRef', 'target', 'cause')) { $null = Get-BoeContinuationText $offer $name }
+    $minimum = Get-BoeContinuationInteger $offer 'minimumSeverityRank'
+    $maximum = Get-BoeContinuationInteger $offer 'maximumSeverityRank'
+    if ($minimum -lt 1 -or $minimum -gt 5 -or $maximum -lt 1 -or $maximum -gt 4) { throw 'Invalid severity bounds.' }
+    $required = $offer.requiredSeverityRank
+    if ($null -ne $required) {
+        $required = Get-BoeContinuationInteger $offer 'requiredSeverityRank'
+        if ($required -lt $minimum -or $required -gt $maximum) { throw 'Required severity is outside the offer.' }
+    }
+    Assert-BoeContinuationStringArray $offer.allowedLocationKinds
+    if ($offer.allowedLocationKinds.Count -eq 0) { throw 'The offer requires a location kind.' }
+    foreach ($kind in $offer.allowedLocationKinds) {
+        if (@('anatomical', 'systemic', 'mental', 'spiritual_axis', 'other') -cnotcontains $kind) { throw 'Unsupported location kind.' }
+    }
+    Assert-BoeContinuationStringArray $offer.allowedDecisions
+    $expected = @('none')
+    if ($null -ne $required) { $expected = @('materialize') }
+    elseif ($minimum -le $maximum) { $expected = @('none', 'materialize') }
+    if ($offer.allowedDecisions.Count -ne $expected.Count) { throw 'Decisions do not match the offer bounds.' }
+    for ($index = 0; $index -lt $expected.Count; $index++) {
+        if ($offer.allowedDecisions[$index] -cne $expected[$index]) { throw 'Decisions do not match the offer bounds.' }
+    }
+}
+
+function Assert-BoeSpiritualContinuationResponse {
+    param([object]$Request, [object]$Response)
+    Assert-BoeClosedJsonObject -Object $Response -Context 'continuation response' -RequiredNames @('schemaVersion', 'continuationId', 'woundDecisions')
+    if ((Get-BoeContinuationInteger $Response 'schemaVersion') -ne 1) { throw 'Unsupported response schemaVersion.' }
+    if ((Get-BoeContinuationText $Response 'continuationId') -cne $Request.continuationId) { throw 'Continuation correlation does not match.' }
+    $decisions = $Response.woundDecisions
+    if ($decisions -isnot [System.Collections.IList]) { throw 'woundDecisions must be an array.' }
+    $expectedCount = if ($Request.phase -ceq 'decision') { 1 } else { 0 }
+    if ($decisions.Count -ne $expectedCount) { throw 'The response has the wrong decision count for its phase.' }
+    foreach ($decision in $decisions) {
+        $kind = Get-BoeContinuationText $decision 'decision'
+        if ($kind -ceq 'none') {
+            Assert-BoeClosedJsonObject -Object $decision -Context 'woundDecisions[]' -RequiredNames @('opportunityRef', 'decision')
+        }
+        elseif ($kind -ceq 'materialize') {
+            Assert-BoeClosedJsonObject -Object $decision -Context 'woundDecisions[]' -RequiredNames @('opportunityRef', 'decision', 'woundRef', 'proposal')
+            $null = Get-BoeContinuationText $decision 'woundRef'
+            Assert-BoeClosedJsonObject -Object $decision.proposal -Context 'proposal' -RequiredNames @(
+                'classification', 'display', 'severity', 'complications', 'consequenceDefinitions', 'treatment', 'recovery')
+        }
+        else { throw 'Unsupported GM decision.' }
+        if ((Get-BoeContinuationText $decision 'opportunityRef') -cne $Request.offer.opportunityRef -or
+            $Request.offer.allowedDecisions -cnotcontains $kind) { throw 'Decision does not belong to the current offer.' }
+    }
+}
+
 function Complete-BoeValidationRepair {
-    $repair = Read-BoeJson -RelativePath "game_state/control/validation_repair_request.json"
+    param([AllowNull()][string]$SpiritualWoundContinuationJson)
+
+    $requestPath = 'game_state/control/validation_repair_request.json'
+    $readyPath = 'game_state/control/validation_repair_ready.json'
+    $requestFullPath = Resolve-BoeSessionPath -RelativePath $requestPath
+    $readyFullPath = Resolve-BoeSessionPath -RelativePath $readyPath
+    $requestBytes = [System.IO.File]::ReadAllBytes($requestFullPath)
+    $witnesses = @{}
+    $witnesses[$requestPath] = Get-BoeSha256Hex -Bytes $requestBytes
+    $witnesses[$readyPath] = if ([System.IO.File]::Exists($readyFullPath)) {
+        Get-BoeSha256Hex -Bytes ([System.IO.File]::ReadAllBytes($readyFullPath))
+    } else { 'missing' }
+    $requestJson = [System.Text.Encoding]::UTF8.GetString($requestBytes).TrimStart([char]0xFEFF)
+    Assert-BoeSpiritualContinuationRawJson -Json $requestJson -RepairRequest
+    $repair = ConvertFrom-BoeJsonMutable -Json $requestJson
     if ($repair.metadataDiagnosticOnly) {
         throw "validation_repair_request.json uses diagnostic-only metadata. Do not write validation_repair_ready.json from this request."
+    }
+
+    $hasContinuation = Test-BoeExactJsonNameInSet -Name 'spiritualWoundContinuation' -Candidates @(Get-BoeExactJsonPropertyNames $repair)
+    $response = $null
+    if ($hasContinuation) {
+        if ($witnesses[$readyPath] -cne 'missing') {
+            throw 'A continuation Ready is already awaiting client consumption. Do not replace or delete it.'
+        }
+        Assert-BoeSpiritualContinuationRequest -Request $repair.spiritualWoundContinuation
+        if ($repair.fullTurnResubmissionRequired -isnot [bool] -or $repair.fullTurnResubmissionRequired) {
+            throw 'Continuation cannot require full-turn resubmission.'
+        }
+        if (!$PSBoundParameters.ContainsKey('SpiritualWoundContinuationJson') -or [string]::IsNullOrWhiteSpace($SpiritualWoundContinuationJson)) {
+            throw 'The current continuation requires an explicit response.'
+        }
+        Assert-BoeSpiritualContinuationRawJson -Json $SpiritualWoundContinuationJson
+        $response = ConvertFrom-BoeJsonMutable -Json $SpiritualWoundContinuationJson
+        Assert-BoeSpiritualContinuationResponse -Request $repair.spiritualWoundContinuation -Response $response
+    }
+    elseif ($PSBoundParameters.ContainsKey('SpiritualWoundContinuationJson')) {
+        throw 'Continuation response is forbidden on ordinary repair.'
     }
 
     Assert-BoeNoRawMortalWorldProfileMutations -Operation "Complete-BoeValidationRepair"
@@ -2870,5 +3213,6 @@ function Complete-BoeValidationRepair {
         status = "success"
     }
 
-    Write-BoeJson -RelativePath "game_state/control/validation_repair_ready.json" -Data $signal -Depth 20
+    if ($hasContinuation) { $signal.spiritualWoundContinuation = $response }
+    Write-BoeJson -RelativePath $readyPath -Data $signal -Depth 100 -ExpectedReadWitnesses $witnesses
 }

@@ -1,5 +1,196 @@
 CLI AFTERLIFE TURN EXAMPLES — CHAOS SEA AND SHINING ABODE
 
+## spiritual_wound_source_envelope_v1
+
+This complete special-art source fragment belongs to a previously materialized
+Guardian profile in Chaos Sea or Shining Abode. Place it only in that exact
+profile's specialArts[] through its lawful materialization/update contour, before
+the harmful event. It is not a complete profile update or a battle result.
+Read OtherGuides/Wound_Materialization_Contract.md before using spiritualWoundEnvelope.
+
+```json
+{
+  "artId": "art_echo_seam_pressure",
+  "displayName": "Надлом эха",
+  "ownerActorType": "guardian",
+  "ownerActorId": "guardian_echo_seam",
+  "baseOperation": "pressure",
+  "tier": 1,
+  "costMultiplierPercent": 175,
+  "upgradeCost": { "inkFeathers": 250, "lightSparks": 0 },
+  "effectSummary": "Принятое давление может повредить устойчивый узел чужого духовного рисунка.",
+  "combatEffect": {
+    "summary": "Надлом эха ограничивает тяжесть раны и заранее задаёт условный результат при доказанном вредящем переходе.",
+    "trigger": "Только действительное применение pressure с проверенным ухудшением strain цели.",
+    "mechanicalAxis": "sideStrain",
+    "allowedPayoff": "Существующий разрешённый переход strain; рана только по предложенной клиентом возможности.",
+    "limit": "Не выше II; обещанная I не обходит стойкость, формулу, итоговый strain и опасность боя.",
+    "auditRequirement": "Назвать точное искусство, его владельца и фактический эффект в specialArtAudit; не писать вычисленную тяжесть."
+  },
+  "canTeachPlayer": false,
+  "spiritualWoundEnvelope": {
+    "schemaVersion": 1,
+    "maximumSeverityRank": 2,
+    "guaranteedSeverityRank": 1
+  }
+}
+```
+
+The source declares a ceiling of II and a guaranteed I only when its trigger and
+every harder bound are proven. Training does not become harmful merely because
+the art has this field. A contradiction is invalid, not a request to invent a
+compromise. To declare only the II ceiling, materialize guaranteedSeverityRank
+as null. To leave an art ordinary, omit the entire optional field: its source
+cap is then neutral IV with no guarantee and ordinary eligibility is retained.
+A present null field is invalid. Do not alter the source after seeing the roll,
+copy the envelope into an exchange audit, or submit a wound decision from this
+example alone. Source preparation is not admitted wound or publication authority.
+
+## spiritual_wound_source_action_v1
+
+These are two complete source-local fragments for Chaos Sea and Shining Abode, not
+a complete `afterlifeSpiritualConflictUpdate`, wound decision, receipt, or accepted
+turn. The first fragment shows both legal target locations. The player exchange harms
+an original opposition member; the opposition incoming action harms an original player
+member. Omit the whole target to use the original affected-side lead.
+
+```json
+{
+  "playerExchange": {
+    "spiritualWoundTarget": {
+      "actorType": "guardian",
+      "actorId": "guardian_frame",
+      "retraumaWoundRef": "wound_torn_resonance"
+    }
+  },
+  "oppositionExchange": {
+    "incomingAction": {
+      "spiritualWoundTarget": {
+        "actorType": "player",
+        "actorId": "player_soul"
+      }
+    }
+  }
+}
+```
+
+Both `spiritualWoundTarget` objects are closed and use raw non-empty exact strings with
+no surrounding whitespace. `retraumaWoundRef` is optional and refers only to a
+canonical prior active spiritual wound with agreeing original carrier, owner, realm,
+identity, and immutable history. Do not add `traumaPressure`, `sourceSeverityCap`,
+`maximumSeverityRank`, `guaranteedSeverityRank`, or `spiritualWoundEnvelope` here.
+
+The next fragment is one complete source-local terminal resolution for the existing
+signed `conflict_resource_cost` fixture. `terminalExchange` is the full existing
+exchange witness, not a totals summary, and its contested `diceAudit` exactly matches
+the resolution audit. The client-owned signed preparation retains it as
+`TerminalClosure`; that pending result is deliberately not wound admission or success.
+
+```json
+{
+  "conflictId": "conflict_resource_cost",
+  "realm": "Chaos Sea",
+  "dangerMode": "hostile",
+  "operationType": "pressure",
+  "resolutionState": "resolved",
+  "resolvedAtTurn": 42,
+  "terminalExchange": {
+    "exchangeId": "exchange_conflict_frame_42",
+    "turnNumber": 42,
+    "operationType": "pressure",
+    "outcome": "success",
+    "before": {
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "clear",
+      "conflictPosition": "contested"
+    },
+    "after": {
+      "playerSideStrain": "clear",
+      "oppositionSideStrain": "strained",
+      "conflictPosition": "contested"
+    },
+    "matchupAudit": {
+      "playerOperation": "pressure",
+      "oppositionOperation": "pressure",
+      "primaryResolutionLane": "pressure",
+      "matchupRationale": "Давление души преодолевает встречное давление хранителя.",
+      "riskProfile": "offensive_pressure"
+    },
+    "actionCostAudit": {
+      "player": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 6,
+        "after": 3,
+        "max": 6
+      },
+      "opposition": {
+        "operationType": "pressure",
+        "baseCost": 3,
+        "minCost": 1,
+        "artTier": 0,
+        "effectiveCost": 3,
+        "before": 6,
+        "after": 3,
+        "max": 6
+      }
+    },
+    "diceAudit": {
+      "formulaVersion": "afterlife_spiritual_conflict_v1",
+      "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+      "diceUsed": [
+        { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
+        { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
+      ],
+      "playerTotal": 15,
+      "oppositionTotal": 5,
+      "margin": 10,
+      "outcomeBand": "decisive_player_success",
+      "modifierBreakdown": { "player": [], "opposition": [] }
+    }
+  },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 0, "sides": 20, "value": 15 },
+      { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 5 }
+    ],
+    "playerTotal": 15,
+    "oppositionTotal": 5,
+    "margin": 10,
+    "outcomeBand": "decisive_player_success",
+    "modifierBreakdown": { "player": [], "opposition": [] }
+  }
+}
+```
+
+Do not shrink `terminalExchange` to totals, invent dice for a dice-free voluntary
+contour, turn passive or champion prose into an art spend, or treat a source-local
+pending result as acceptance. Start, escalation, missing prefix, terminal closure,
+passive, champion, and dice-free voluntary contours still require client-owned C/D/E
+proof. Soul dissipation remains a separate optional dissipation decision.
+
+## Afterlife turn workflow and worked examples
+
+Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+
+WOUND-OWNED GENERATION — CLIENT LIFECYCLE EXAMPLE
+Suppression is not wound healing. Suppose a Guardian's wound-owned hindrance is
+dispelled: its carrier disappears, but its wound root binding and slot remain.
+Only a separately authorized wound transition may rematerialize the retained legal
+coordinate as a new runtime effect identity. Its sole first-create parent is the
+exact old canonical root; terminal history remains unchanged, and the old dispelled
+identity is never revived. The client checks complete lineage, exact definition-derived
+owner/source/target/stack authority, and zero carriers for the terminal root: there is
+no missing-carrier fallback. If no such transition is authorized, the wound remains
+untreated and the effect stays terminal. This does not enable spiritual treatment or
+any still-pending healing art. These are client-owned lifecycle steps, not a GM output
+schema: author no runtime IDs, historical parents, new pending fields, or history rows.
+
 This file supplements:
 - CLI_Agent_Daemon_Specification.md
 - TaskGuides/CLI_Step_Main.txt
@@ -6967,6 +7158,8 @@ Scenario:
 - A hostile Guardian tries to force the soul toward an unwanted incarnation.
 - The player resists. This is not voluntary `TriggerIncarnation`.
 - The GM starts an afterlife spiritual conflict instead of writing Mortal combat state.
+
+The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
 - Conflict realm/mode is authorized from the validated pre-turn afterlife snapshot. Do not make the start legal by changing `soul_state.currentRealm` or Shining `availability`/`preparedIncarnationPackage` in the same accepted response.
 - Russian labels for this system are fixed in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`: "духовный конфликт посмертия" = `afterlife spiritual conflict`, "обмен действиями" = `exchange`, "аудит кубиков" = `diceAudit`. JSON keys and enum values remain English.
 - Read `input/turn_request.json.afterlifeSpiritualConflictPreview` for exact player/opposition `spiritual_action_points`. On a new opposition, author only `oppositionSide.resourceMaterialization.resources[]`; the client allocates `resourceOwnerBindings.opposition` and writes the common state/history. `actionEconomy` is forbidden as persisted conflict state.
@@ -6980,6 +7173,7 @@ Correct accepted response:
   "afterlifeSpiritualConflictUpdate": {
     "mode": "start",
     "conflictSeed": {
+      "dangerMode": "hostile",
       "conflictId": "afterlife_conflict_liora_forced_incarnation_001",
       "realm": "Chaos Sea",
       "sideModel": "direct_duel",
@@ -7029,6 +7223,8 @@ Correct accepted response:
 }
 ```
 
+Danger declaration worked result: the client persists `activeConflict.dangerMode = hostile` from this seed. An ordinary replacement which omits `dangerMode` retains hostile; a submitted training/controlled/annihilation value or null is rejected. On resolve or repair_cancel, `recentConflicts[].dangerMode` remains hostile. These checks establish declaration persistence, not a wound opportunity or permission to dissipate a soul.
+
 The player lead in this start example intentionally has no `actorArtTierSnapshot` and no `artAuthoritySource`: the player soul's authority comes from `soul_state.afterlifeCombatProfile`. Non-player leads still need their explicit snapshot/source. If a side has supporters, author their canonical role as `supportRole`, for example:
 
 ```json
@@ -7056,7 +7252,7 @@ or ordinary roleplay prose while this conflict is still active:
 Я не атакую Лиору напрямую. Я укрепляю своё право выбора и пытаюсь сорвать навязываемую связь.
 ```
 
-the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. `spiritual_action_points` is the client-owned afterlife ОД reserve and `actionEconomy` is forbidden as persisted state. Read player/opposition current/maximum from `afterlifeSpiritualConflictPreview`; on `mode=start`, `spiritFocusTier` supplies the registered player maximum (`0/1/2/3/4/5` => `6/7/8/10/12/15`, source `Средоточие Души tier N`), while a new opposition declares only `resourceMaterialization`. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor. The client validates both audits against the exact pre-turn resource projection, publishes common resource state/history atomically, and creates or preserves exact `resourceOwnerBindings`; the GM never writes those values or identities. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include `before.conflictPosition`. If `before.conflictPosition` is not `contested`, record it as exactly one `conflict_position` modifier in `modifierBreakdown` with exact matching `position` (+2 for advantaged, +4 for dominant, on the side that holds the position); do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
+the GM should write `afterlifeSpiritualConflictUpdate.mode = "exchange"` or `"resolve"`, not Mortal combat fields. The tag is routing help, not a requirement for artistic player input. If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, read it before writing the exchange: it is the client-owned shortcut for authoritative `actionCostAudit` tiers/costs and the first dice outcome preview, while the contract below remains canonical. A contested exchange or contested resolution must include `diceAudit` from `input/turn_request.json.preGeneratedDices1d20`; the GM may interpret the fiction, but cannot decide who wins the contest by preference alone. Every new/current contested exchange with `diceAudit` must include `matchupAudit` (`playerOperation`, `oppositionOperation`, `primaryResolutionLane`, `riskProfile`, `matchupRationale`) so the exchange follows the tactical matrix instead of GM preference. `spiritual_action_points` is the client-owned afterlife ОД reserve and `actionEconomy` is forbidden as persisted state. Read player/opposition current/maximum from `afterlifeSpiritualConflictPreview`; on `mode=start`, `spiritFocusTier` supplies the registered player maximum (`0/1/2/3/4/5` => `6/7/8/10/12/15`, source `Средоточие Души tier N`), while a new opposition declares only `resourceMaterialization`. Every new/current exchange that spends or restores ОД must include `actionCostAudit.player` with `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, and `after`, using `effectiveCost = max(minCost, baseCost - artTier)`. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; they cannot mutate player ОД through fake audit. Every exchange that resolves an active costed opposition operation must also include `actionCostAudit.opposition` in the same shape; take that operation from `incomingAction.finalOperationType` when present, otherwise from `incomingAction.operationType` or the matching `matchupAudit.oppositionOperation`; never fall back to stale `incomingAction.operationType` when `finalOperationType` exists. Take `artTier` from the validated pre-turn afterlife entity profile for the opposition lead actor. The client validates both audits against the exact pre-turn resource projection, publishes common resource state/history atomically, and creates or preserves exact `resourceOwnerBindings`; the GM never writes those values or identities. Wound-specific recovery payment and conditional zero-base `force_incarnation` audits follow `spiritual_wound_special_action_costs_v1` below. `recover_spiritual_power` / Собрать Средоточие restores +3 ОД on success, +2 on partial_success, and only +0..1 when punished by pressure, maneuver, binding, force_binding, or force_incarnation; use `riskProfile=recovery_timing` when rolled. If an active conflict already has active `controlState`, or the current exchange creates/changes active `controlState`, explicitly write both `before.controlState` and `after.controlState`; use `null` or `{ "level": "none" }` for no active control instead of omitting the field. Successful `guard` against direct pressure writes `after.tempoAdvantage` with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, id, source exchange, and summary; the next eligible non-terminal combat action must consume it in `rollMode.player.advantageSources[]` with `sourceType=guard_tempo_window` or explicitly expire/clear it. Every exchange with `diceAudit` must include canonical `before.conflictPosition`. Under `spiritual_wound_position_v1`, calculate effective rank as `clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)` from the current exact acting participants and matching operations, combining both sums before clamping. The existing `conflict_position` row names the effective position: exactly one +2/+4 advantage/dominance row on the corresponding side, or no row for effective contested. Preserve other modifiers, original dice and roll modes. Use effective position for binding/force-binding positional prerequisites, but keep canonical before/after unchanged by the burden itself; a successful maneuver must still actually change position. Newly inserted wounds affect later matching exchanges only. Do not recalculate closed exchanges or invent new fields. Read `OtherGuides/Wound_Materialization_Contract.md` and the worked `spiritual_wound_position_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`. A blocked exchange may keep before/after identical only when `incomingAction` explains what was prevented. Pick one strict Spiritual Art operation: `pressure` changes opposition strain and must not create `controlState`, `guard` safely protects player strain and may block new control but does not remove existing control; even on setback against direct pressure, player strain may worsen by at most one rank, and on full success against direct pressure it creates `tempoAdvantage`, `counter` needs incomingAction and a measured payoff on success/partial_success/countered but cannot create fresh player control from none, `maneuver` changes position and is stopped by pressure/opposing maneuver/active opposition `controlState`; if opposition `controlState.restrictedOperations` lists the attempted operation, that operation cannot succeed until control is answered, `binding` needs advantage/setup and must create or strengthen player `controlState` only after active opposition control is gone, `force_binding` needs strong leverage and at least two distinct `restrictedOperations`, failed binding/force_binding outcomes (`blocked`, `countered`, `setback`) leave `controlState` unchanged on both sides, including player-control rewrites and opposition anti-control deltas, `break_binding` needs binding/coercive context and must weaken/remove/reverse opposition `controlState`; same-level narrowing of opposition `restrictedOperations` counts as weakened `controlState`, while equal/reordered sets do not count, `incarnation_resistance` is only for force_incarnation control and does not clear ordinary binding control, failed incarnation_resistance outcomes leave forced-incarnation `controlState` unchanged, `champion_coordination` is only for champion_duel, and `recover_spiritual_power` is timing-based recovery rather than attack/defense. Active `controlState` uses `level=hindered|bound|locked`, `controllerSide`, `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; missing/null means no active control for legacy entries, and `sourceOperation` is not a free operation id. The player can inspect the resulting afterlife combat log through `/spiritual_combat_log` / `/журнал_духовного_боя`.
 
 Resource audit rule: if a side has no current `actionCostAudit.<side>`, emit no `spiritual_action_points` transition for that side and preserve the validated pre-turn active conflict resource projection. Do not change the common ledger, history, or `resourceOwnerBindings` directly. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`; fake terminal/free audits are invalid.
 
@@ -7164,7 +7360,19 @@ Correct contested exchange response:
 }
 ```
 
-`diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20` for the current/new exchange or resolution. Accepted historical `exchangeLog[]` entries from earlier turns (`exchangeAtTurn` lower than the current turn) keep their original dice and are not rewritten to match the current turn's dice pool. This example starts from `before.conflictPosition = "contested"`, so no `conflict_position` modifier is present. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
+Accepted historical dice stay unchanged only with the same validated pre-turn active conflictId and each snapshot occurrence once; exchangeAtTurn alone is not authority. An old turn marker permits a match differing in only the top-level summary, restricted to missing/null/string, with every other member exact. New, mechanically changed, foreign-conflict or duplicate exchanges receive current dice, matchup and action-cost checks. This is validation compatibility only: resource publication still preserves the exact pre-turn prefix, including summary.
+
+`diceUsed[].sourceIndex` is zero-based and must point at actual values in the current `turn_request.json.preGeneratedDices1d20` for the current/new exchange or resolution. This example starts from `before.conflictPosition = "contested"`, so no `conflict_position` modifier is present. If the player writes only ordinary prose during an active conflict, use the same shape; do not demand that the text begin with `[AFTERLIFE_SPIRITUAL_ACTION: ...]`.
+
+HISTORICAL EXCHANGE AUTHORITY — afterlife_spiritual_exchange_history_authority_v1
+
+The accepted pre-turn snapshot for conflict afterlife_conflict_test_001 contains one exchange_accepted_history_006 with exchangeAtTurn=6. Its old player/opposition dice at sourceIndex=0/1 were 9/7. The current accepted request is turn 7, whose same indices contain 5/18. The GM preserves the old entry and authors any new exchange against the current request's dice and art authority; old dice are not rewritten to 5/18.
+
+If only the old readable summary differs, its exchange audit keeps historical compatibility after matching every other member against that one snapshot occurrence. This does not authorize publishing the edit: afterlife_conflict_resource_log_prefix_mutated still requires restoring the exact accepted prefix. New artistic narration belongs in the current response, not a rewritten accepted history row.
+
+A newly appended entry claiming exchangeAtTurn=6 has no matching accepted occurrence. Neither copying the accepted entry twice, changing its artTier or nested dice data, nor placing it under a different conflictId creates historical authority. The unmatched entry receives afterlife_conflict_dice_value_not_authorized for old values 9/7 instead of current 5/18, afterlife_conflict_matchup_audit_missing if its current tactical audit is absent, and afterlife_conflict_action_cost_art_tier_authority_mismatch if artTier=5 disagrees with the current accepted pressure tier 0. Repair the current exchange from current authority; do not backdate it to suppress these diagnostics.
+
+This contrast covers exchange dice/matchup/action-cost classification, not a new wound, healing operation, accepted resource publication or Source of Light capstone decision. A historical description is never a new harmful strain event by itself.
 
 Преимущество / Помеха uses `diceAudit.rollMode.<side>` with `effectiveMode`, `advantageSources[]`, and `disadvantageSources[]`; every consumed d20 is listed in `diceUsed[]` with `selection=selected|discarded`. `advantage` / Преимущество consumes exactly 2d20 and selects the highest; `great_advantage` / Великое Преимущество consumes exactly 3d20 and selects the highest; `disadvantage` / Помеха consumes exactly 2d20 and selects the lowest; `dire_disadvantage` / Тяжкая Помеха consumes exactly 3d20 and selects the lowest. Sources may be legacy strings or objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Step cancellation uses the strongest positive and strongest negative source only: `great_advantage+disadvantage=>advantage`, `great_advantage+dire_disadvantage=>normal`, `advantage+dire_disadvantage=>disadvantage`, `advantage+disadvantage=>normal`; same-direction sources do not stack. Critical success/failure uses the selected die only.
 
@@ -7457,6 +7665,11 @@ Worked accepted-condition fragment: the GM first reads the exact current contrib
 
 Effect Materialization v1 uses the same source/identity/lifecycle contract in both afterlife realms. A validated spiritual art owns its complete definition; the GM requests application through top-level `effectChanges[]`. The client alone publishes the resulting `activeEffects[]` on the exact afterlife profile and the matching `effect_identity_index.json` entry. The runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM does not rescan raw effect values, decrement duration, or resend post-state.
 
+This source-policy example contributes only if the client resolves a real typed
+`defense_roll` for its exact target. It does not turn spiritual `guard` into that roll
+or grant a spiritual-conflict bonus through generic roll policy; those contributions
+belong to the dedicated afterlife condition/wound-profile contracts.
+
 ```json
 {
   "artId": "art_resonant_guard",
@@ -7466,7 +7679,7 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
       "definitionKey": "resonant-guard",
       "display": {
         "name": "Резонансный оберег",
-        "description": "Ритм души удерживает давление противника.",
+        "description": "Ритм души поддерживает защитный бросок.",
         "category": "buff",
         "visibility": "visible"
       },
@@ -7477,7 +7690,11 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
           "componentId": "resonant_guard_roll",
           "profile": "roll_modifier",
           "priority": 100,
-          "payload": { "operations": ["guard"], "contribution": "advantage" }
+          "payload": {
+            "operations": ["defense_roll"],
+            "contribution": "advantage",
+            "scope": { "kind": "all" }
+          }
         }
       ],
       "parameterBounds": {},
@@ -7537,6 +7754,70 @@ Effect Materialization v1 uses the same source/identity/lifecycle contract in bo
 
 Shining blessing entitlement is not a generic active effect. Blessing allocation, freeShape/freeRetune, memory selection, and blessing rerolls stay on their dedicated Shining client-owned contracts.
 
+## afterlife_ap_effect_v1
+
+This complete source definition belongs to a validated spiritual art. Once its
+effect has been accepted on the exact player target, an ordinary two-AP spend
+at 6 emits resource_spent: 6 -> 4. The one-use periodic_gain restores one AP:
+4 -> 5. A later three-AP exchange must use the actually accepted chronology.
+The profile does not itself authorize an exchange or change its audit.
+Canonical state, remainingUses, identities and receipts remain client-owned.
+For bounded_receipt resolution, answer only the current resource_delta request
+within its allowed amount; an unresolved receipt is not an accepted recovery.
+
+```json
+{
+  "artId": "art_action_echo",
+  "activeEffectDefinitions": [{
+    "schemaVersion": 1,
+    "definitionKey": "action-echo",
+    "display": { "name": "Отзвук действия", "description": "Один раз возвращает часть затраченного усилия.", "category": "buff", "visibility": "visible" },
+    "allowedRealms": ["chaos_sea", "shining_abode"],
+    "allowedTargetKinds": ["player"],
+    "components": [{
+      "componentId": "ap_recovery", "profile": "periodic_gain", "priority": 100,
+      "payload": { "resource": "spiritual_action_points", "amount": 1, "capPolicy": "registered_resource_cap" }
+    }],
+    "parameterBounds": { "amount": { "kind": "number", "minimum": 1, "maximum": 1 } },
+    "stacking": { "stackKey": "action-echo", "policy": "independent", "maxStacks": 1, "atMaximum": "no_change", "refreshMode": null, "mergeRule": null },
+    "lifetime": { "mode": "uses", "initialUses": 1, "consumingEventTypes": ["resource_spent"] },
+    "triggers": [{
+      "triggerId": "on_ap_spent", "eventType": "resource_spent", "priority": 100,
+      "componentIds": ["ap_recovery"], "consumeUses": true, "resolutionMode": "deterministic"
+    }],
+    "removal": { "dispelCategories": ["spiritual_disruption"], "cureKinds": ["purification"], "onSourceLoss": "expire", "onConditionLoss": null, "manualAuthorities": [] },
+    "links": []
+  }]
+}
+```
+
+For a source-owned extra cost, use periodic_spend with floorPolicy instead of
+capPolicy; do not substitute periodic_damage or add damageType. The resource's
+Spend/Gain permissions, exact owner and source bounds still apply. This does not
+grant a new wound consequence profile or bypass the normal full-turn protocol.
+
+## afterlife_roll_scope_v1
+
+The complete `afterlife_effect_profile_v1` source immediately above deliberately uses
+`operations=["defense_roll"]` with `scope.kind=all`. The explicit broad selector is
+mandatory: it means only a real typed `defense_roll` for the exact afterlife target,
+not every actor or every operation. Spiritual guard is not a roll_modifier operation
+and is not an alias for `defense_roll`; this definition gives no generic bonus to a
+spiritual `guard` exchange. Use the dedicated afterlife condition/wound-profile contracts
+for that spiritual operation. This example does not alter the spiritual combat model.
+Focused scope is legal only for exactly `operations=["skill_check"]` and one canonical
+skill in the exact target row of `effectSkillScopeCatalog`.
+
+A source spiritual art is not the target skill authority: spiritual arts are not Mortal skill IDs.
+Do not reinterpret `art_resonant_guard`, an art's display name or tier, or `player_soul`
+as a Mortal `skillId`. The advisory catalog contains canonical Mortal player/NPC skills;
+an afterlife-only actor without a selectable exact Mortal skill row cannot receive a
+new focused binding. Keep this generic defense-roll source broad rather than fabricating
+such a row.
+The dedicated spiritual-wound profiles retain their own operation/axis/magnitude
+contract. All common definition, source, privacy, and lifecycle rules still apply in
+both Chaos Sea and Shining Abode; no spiritual art is converted into a Mortal skill.
+
 ## afterlife_resource_bounded_receipt_waves_v1 — sequential safe packets
 
 A story-facing spiritual effect can ask the GM to choose a bounded common
@@ -7582,6 +7863,29 @@ packet appears. Do not combine old and current packet IDs, add a target,
 resource, operation, path, authority, or fingerprint, or change the original
 resource/effect commands between waves. An exact terminal retry with the same
 semantic command envelope is a no-op; a changed envelope fails closed.
+
+If a current safe packet advertises an inclusive minimum of `0`, the GM may
+return an explicit terminal zero without pretending that a resource changed:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_afterlife_zero_003",
+      "resultKind": "resource_delta",
+      "amount": 0,
+      "reason": "Клятва отозвалась, но запас духовного действия не изменился."
+    }
+  ]
+}
+```
+
+The client consumes that accepted receipt and use without emitting a resource
+transition, resource event, or dependent effect activation. This explicit zero
+remains distinct from `narrated_no_state_change`, which omits `amount`. A
+positive request that reaches a resource bound may still have an ordinary
+transition with zero applied amount; the GM never infers or authors either
+transition form.
 
 ## afterlife_effect_conditions_five_kinds_v1 — all five spiritual conditions
 
@@ -8116,15 +8420,6 @@ GM response (there is deliberately no authored `combatConditions[]` field):
           "effectiveCost": 3,
           "before": 5,
           "after": 2
-        },
-        "opposition": {
-          "operationType": "force_incarnation",
-          "baseCost": 5,
-          "minCost": 2,
-          "artTier": 3,
-          "effectiveCost": 2,
-          "before": 6,
-          "after": 4
         }
       },
       "diceAudit": {
@@ -8772,6 +9067,16 @@ Correct accepted state fragments:
 }
 ```
 
+Worked history boundary: afterlife_light_incarnate_history_authority_v1
+
+Light Incarnate history requires accepted pre-turn payload evidence during a validated turn: consume one occurrence once, and active exchanges and recent resolutions never share a history pool. Active exchanges reuse the same-conflict exchange classifier; recent resolutions require an exact full payload match. Thus backdating alone cannot waive light_incarnate, and a validated baseline without dice is still a current-turn boundary. An accepted no-marker payload retains compatibility; an unmatched current payload needs explicit turn evidence and the applicable modifier. Historical pre-grant dice are preserved, while offline history without a validated baseline keeps its existing compatibility. This does not authorize editing the exact pre-turn prefix.
+
+The complete Source of Light closure grants the passive at grantedAtTurn=7. A validated turn-7 snapshot contains exchange_light_history_006 with exchangeAtTurn=6 and no light_incarnate modifier. Keep that accepted occurrence unchanged: its old dice do not acquire a retroactive bonus. The existing active-exchange audit compatibility may differ in only the top-level summary (missing/null/string), never mechanical data; publication still preserves the exact pre-turn prefix.
+
+By contrast, appending a new exchange with exchangeAtTurn=6, adding a new recent resolution with resolvedAtTurn=6, changing an old payload, or copying one accepted occurrence twice does not prove pre-grant history. The client reports afterlife_conflict_light_incarnate_modifier_mismatch for the current payload. Resolve that current audit with explicit current turn evidence and the applicable +8 lead / +4 support bonus, plus the existing +4 coercion bonus where applicable; do not repair it by changing accepted old dice. A recent resolution must match its own accepted recentConflicts[] occurrence exactly; it cannot borrow an active exchange or ignore a changed summary.
+
+An accepted no-marker occurrence remains compatible, but an unmatched current no-marker payload must supply turn evidence even when the validated baseline has no dice. This example demonstrates history admission, not full wound or grant authority; it does not grant an art, create a wound or authorize a resource-prefix rewrite.
+
 After this reward, any contested afterlife spiritual conflict at or after `grantedAtTurn` must include explicit turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and account for `light_incarnate` in `diceAudit.modifierBreakdown.player[]`. The modifier is valid only after the full Source of Light closure exists: completed Shining marker, soul passive, and exactly one matching Incarnated Light Soul Relic. Historical conflict logs before `grantedAtTurn` are not rewritten, and pre-unlock or incomplete-closure `light_incarnate` modifiers are invalid. Example player-led coercive action:
 
 ```json
@@ -8862,6 +9167,8 @@ Validation derives actor newness only from the client-owned validated pre-turn b
 
 A new afterlife actor explicitly carries `appearanceDescription`, `profileSummary`, `personalityProfile.archetype`, `motivation`, `personalityProfile.worldview`, canonical `realm` and `locationId`, goals with a non-empty plan, and exact actor-owned memory. An existing materialized afterlife profile must never be resent through the full afterlifeEntityProfileUpdates carrier; use the exact dedicated delta for every later change. A legacy first-envelope migration may use a full carrier only when usable validated pre-turn authority proves all historical fields unchanged.
 
+STANDARD WOUND ARTS: `spiritual_resilience` — Духовная стойкость; `spiritual_healing` — Духовное исцеление. Every complete current `standardArts` and player `afterlifeCombatProfile.artTiers` object contains both as scalar integer 0..5 entries, including zero. Это не объекты `{tier, experience}`; ordinary progression works with no independent art experience through training, `/spiritual_arts`, entity `progressionStrategy`, or `standardArtTierDeltas`. `player_soul.standardArts` only mirrors `soul_state.afterlifeCombatProfile.artTiers` and is not GM-owned upgrade authority. Entity `progressionStrategy` and `standardArtTierDeltas` do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. Духовная стойкость is passive and is not an `operationType`; registering Духовное исцеление does not authorize a healing operation before the separate handler exists. Zero entries make the materialization `standardArts` section `populated`, but do not by themselves grant `canFight` or `canTeach`.
+
 If the first non-player profile initializes a pre-sealed setting-defined resource allowed for `afterlife_actor`, include one closed `resourceMaterialization.resources[]` envelope on that same full profile. The client preserves the exact actorId, creates no second actor ID, uses the Actor Materialization `materializationId` as the same-turn ownerRef for common resource authority, removes `resourceMaterialization`, and publishes `resourceOwnerBindings` plus the complete resource quartet atomically. Actor/effect selectors still use the exact canonical actorId; never write actorRef. An existing materialized profile must not resend resourceMaterialization. Do not invent a resource from prose: the definition, owner kind, capacity policy, exact key, and maximum must already be valid and sealed.
 
 CLIENT-OWNED RESERVED PLAYER_SOUL CONTRAST (not GM response): the reserved first exact `player_soul` may be seeded without a generic Actor Materialization envelope. It may still carry one closed `resourceMaterialization.resources[]`; for example `{ "resourceKey": "soul_integrity", "maximum": 9 }`. The client derives the deterministic ownerRef for that same turn from exact `player_soul` + canonical realm, consumes `resourceMaterialization`, and writes the `resourceOwnerBindings` after-image with the quartet. The canonical after-image has no generic `materialization` envelope and no residual `resourceMaterialization`. This exception never applies to a resident, Guardian, radiant actor, or other non-player profile: a first non-player without Actor Materialization is invalid.
@@ -8891,7 +9198,10 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
   "realm": "Chaos Sea",
   "locationId": "abode_quiet_lantern",
   "locationName": "Обитель Тихого Фонаря",
-  "standardArts": {},
+  "standardArts": {
+    "spiritual_resilience": 0,
+    "spiritual_healing": 0
+  },
   "specialArts": [],
   "customStates": [],
   "fateCards": [],
@@ -8928,7 +9238,7 @@ This compact envelope fragment shows a legitimate partly empty resident. The com
       "canTrade": false
     },
     "sections": {
-      "standardArts": { "state": "empty_by_design", "reason": "Резидент не владеет оформленными духовными приёмами." },
+      "standardArts": { "state": "populated" },
       "specialArts": { "state": "empty_by_design", "reason": "Личное духовное искусство ещё не возникло." },
       "customStates": { "state": "empty_by_design", "reason": "Особое духовное состояние пока не проявилось." },
       "fateCards": { "state": "empty_by_design", "reason": "Связанный узел судьбы ещё не открылся." },
@@ -9012,7 +9322,9 @@ Valid response fragment:
         "break_binding": 0,
         "incarnation_resistance": 0,
         "champion_coordination": 0,
-        "recover_spiritual_power": 1
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {
@@ -9165,8 +9477,9 @@ Valid response fragment:
       "soulDissipationTier": 1,
       "progressionStrategy": {
         "strategyId": "strategy_guardian_mirror",
-        "summary": "Сначала усиливает особую защиту, затем развеивание души.",
+        "summary": "Сначала развивает духовную стойкость, затем особую защиту и развеивание души.",
         "priorityOrder": [
+          "spiritual_resilience",
           "mirror_guard",
           "soul_dissipation",
           "guard"
@@ -9248,7 +9561,9 @@ Valid response fragment:
         "break_binding": 0,
         "incarnation_resistance": 1,
         "champion_coordination": 0,
-        "recover_spiritual_power": 1
+        "recover_spiritual_power": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {
@@ -9521,7 +9836,7 @@ Valid response fragment:
         "lightSparks": 0
       },
       "standardArtTierDeltas": {
-        "pressure": 1
+        "spiritual_healing": 1
       },
       "specialArtTierDeltas": {
         "mirror_guard": 1
@@ -9605,7 +9920,9 @@ Valid Shining faction-head response fragment:
       },
       "standardArts": {
         "guard": 2,
-        "maneuver": 1
+        "maneuver": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [],
       "customStates": [],
@@ -11732,3 +12049,1068 @@ Shining treasury interest:
   ]
 }
 ```
+## spiritual_wound_special_action_costs_v1
+
+These are GM-authored `actionCostAudit` fragments for an already admitted exchange
+in Chaos Sea or Shining Abode, not complete turn responses. The ordinary action,
+actor, outcome, matchup and dice evidence remains required. Assume the validated
+current wound generation contributes `spiritual_action_cost_burden` of 1 to the
+exact acting owner and named operation; read that contribution and the current
+resource projection instead of inventing a burden field, resource owner or wound
+identity. See `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` for the full rule.
+This example does not enable live C4 publication or other unresolved profiles.
+
+Player recovery succeeds against passive timing, with maximum 6, before 4 and
+ordinary recovery art tier 0. Pay 1 first, then cap recovery of 3 at 6:
+
+```json
+{"actionCostAudit":{"player":{"operationType":"recover_spiritual_power","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":4,"after":6}}}
+```
+
+`after=6` is action-only. The client records Spend before Gain, never a net
+mutation; Spend-triggered causal reactions run between them. The original capped
+Gain request is `after - (before - effectiveCost)`, here 3. A triggered loss of 1
+produces 4→3→2→5. A triggered gain of 1 produces 4→3→4→6: Gain still requests 3,
+but applies only 2. Never force the final ledger to audit.after or enlarge the
+original Gain request after a reaction. At before 6 with the same burden and
+success, audit.after is 6 and the fixed request is only 1, even if a reaction
+later lowers the balance.
+
+Opposition recovery is opposed by the player's `pressure`, with before 1,
+burden 1 and art tier 0. Choose the allowed recovery of 0 from the opposed
+0..1 range. Payment still occurs; the action-only difference is negative.
+This uses the existing opposed-recovery rule, not a separate opposition outcome:
+
+```json
+{"actionCostAudit":{"opposition":{"operationType":"recover_spiritual_power","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":1,"after":0}}}
+```
+
+The same payment rule applies on both sides. For an ordinary failed player
+recovery with before 1 and burden 1, recovery is 0 and audit.after is 0: the
+failed attempt still pays. Ordinary player success/partial/failure restores
+3/2/0 after payment; opposed recovery restores only 0..1 after payment, subject
+to the same maximum. With before 0 and burden 1, insufficient funds
+reject the action; future recovery cannot fund payment. Without burden, recovery
+keeps its ordinary behavior. Zero-amount mutations follow the client's no-op policy.
+
+A player `force_incarnation` has an applicable wound burden 1 and before 6:
+
+```json
+{"actionCostAudit":{"player":{"operationType":"force_incarnation","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":6,"after":5}}}
+```
+
+The same forced operation by the opposition uses the other side. When present,
+`incomingAction.finalOperationType` selects the original effective operation:
+
+```json
+{"actionCostAudit":{"opposition":{"operationType":"force_incarnation","baseCost":0,"minCost":0,"artTier":0,"effectiveCost":1,"before":6,"after":5}}}
+```
+
+These force audits contain exactly seven fields, with `baseCost=0, minCost=0,
+artTier=0`: zero tier is an audit convention, not the actor's art level. The only
+cost is the sum of applicable owned wound burdens. No burden means no force audit
+and no payment; the earlier example's unburdened forced incoming action therefore
+has no opposition audit. Insufficient funds reject; incarnation admission/control
+rules do not change. Never copy a force_binding base cost onto force_incarnation.
+
+A newly installed wound may require adding this previously absent side audit only
+to an unchanged, unexecuted force action. An absent `actionCostAudit` root may be
+created with only qualifying sides. Preserve completed prefix, action, actor,
+dice and existing sibling audits. No null/scalar replacement, extra authority or
+special-art fields are allowed. The client must prove the exact owner's positive
+burden, amount and affordability again, including cold replay; replay does not pay
+twice. GM must not write resource state/history, bindings or private receipts.
+
+Worked finite-use expiry: an accepted wound burden applies to two unchanged
+future `force_incarnation` actions, and its registered remaining use is consumed
+by the first action's real Spend. After the owner drains that action and its
+causal work, the next owner reconstruction proves zero burden for the second,
+still unexecuted action. Its earlier prescribed positive audit is now stale.
+The client requests dependent repair: remove only that force side audit, and
+remove the empty audit root if no sibling remains. Keep the root and all sibling
+audits when another side still has an audit. Never replace it with a fake zero
+audit or pay the expired burden. A removal while positive burden remains is
+rejected as a missing required audit. This correction preserves the completed
+first action, the second action's operation, actor and dice, all non-force audits
+and existing sibling evidence; it adds no author fields. The same checks apply
+on cold replay, without charging the first action twice.
+
+## spiritual_wound_source_only_publication_v1
+
+Worked GM exchange for an existing signed training conflict in Chaos Sea; the
+same source-only rule applies in Shining Abode. The original declaration is
+`dangerMode: training`, both sides have 6 action points, and the original dice are
+[15,5]. The GM preserves that declaration and authors ordinary exchange evidence
+and narration. Training yields a zero ceiling, but the client's real original
+source owner must also confirm that no guarantee exists before returning no_offer.
+No fabricated none, woundDecisions, wound command or C2 checkpoint is required.
+Do not alter dangerMode to suppress harm or omit a response to an actual offer.
+
+This focused response fragment uses the existing exchange schema. Narration goes
+in output/narrative_response.json.response: «Душа и хранитель завершили учебный
+обмен; хранителю пришлось напрячься под встречным давлением». It is not a
+complete signed world fixture; production integration separately covers actual
+completion, payment, private receipt and publication.
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "exchange",
+    "dangerMode": "training",
+    "exchange": {
+      "exchangeId": "exchange_conflict_frame_42",
+      "turnNumber": 42,
+      "operationType": "pressure",
+      "outcome": "success",
+      "before": {"playerSideStrain":"clear","oppositionSideStrain":"clear","conflictPosition":"contested"},
+      "after": {"playerSideStrain":"clear","oppositionSideStrain":"strained","conflictPosition":"contested"},
+      "matchupAudit": {
+        "playerOperation":"pressure","oppositionOperation":"pressure",
+        "primaryResolutionLane":"pressure",
+        "matchupRationale":"Учебное давление души преодолевает встречное давление хранителя.",
+        "riskProfile":"offensive_pressure"
+      },
+      "actionCostAudit": {
+        "player":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":6,"after":3},
+        "opposition":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":6,"after":3}
+      },
+      "diceAudit": {
+        "formulaVersion":"afterlife_spiritual_conflict_v1",
+        "diceSource":"input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed":[
+          {"side":"player","sourceIndex":0,"sides":20,"value":15},
+          {"side":"opposition","sourceIndex":1,"sides":20,"value":5}
+        ],
+        "playerTotal":15,"oppositionTotal":5,"margin":10,
+        "outcomeBand":"decisive_player_success",
+        "modifierBreakdown":{"player":[],"opposition":[]}
+      }
+    }
+  }
+}
+```
+
+The client completes both actual costs (6→3) and effects. An instance-only receipt
+adds no source/decision row. If the same permitted turn instead closes through
+the existing resolve/terminalExchange response, the real terminal owner issues
+one immutable closure after Spend before Retire. This does not change reward
+rules or remove the persistent guardian's wound/effect group. GM must not write
+instance IDs, closure IDs, receipt rows, resource retirement or private controls.
+A single common publisher commits the completed plan without replanning its IDs.
+Legal empty private roots are allowed as original client state; their exact bytes
+remain binding, publication consumes them, and rollback restores signed bytes or
+absence. The GM must not create empty roots as a shortcut.
+
+The bounded warm handoff is used by live B3 routing.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+Receipt-only state does not prove whole-turn acceptance.
+This example is not a new player command and its fragment check does not prove
+full acceptance after restart; separate integration probes exercise recovery.
+
+## spiritual_wound_terminal_closure_v1
+
+Worked terminal exchange fragment for the private wound pipeline. The signed
+turn42 baseline has active conflict `conflict_resource_cost` in Chaos Sea,
+opposition guardian `guardian_frame`, hostile danger, both strains clear,
+contested position, both action-point balances6, pressure tiers0 and original
+D20 values15 and5 at indices0 and1. No earlier current-turn exchange is omitted.
+The ordinary reward contract permits this example to claim no currency reward.
+
+The GM authors the existing resolve response, retaining the complete last
+exchange. Resolution diceAudit and terminalExchange diceAudit must be identical.
+This is a focused fragment, not a complete game-state fixture or proof of live
+publication. Its runtime counterpart must pass genuine signed intake and all
+existing conflict/reward validation.
+
+```json
+{
+  "afterlifeSpiritualConflictUpdate": {
+    "mode": "resolve",
+    "resolution": {
+      "conflictId": "conflict_resource_cost",
+      "operationType": "pressure",
+      "resolvedAtTurn": 42,
+      "guardianId": "guardian_frame",
+      "playerOutcome": "won",
+      "summary": "Душа завершила духовное противостояние.",
+      "diceAudit": {
+        "formulaVersion": "afterlife_spiritual_conflict_v1",
+        "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+        "diceUsed": [
+          {"side":"player","sourceIndex":0,"sides":20,"value":15},
+          {"side":"opposition","sourceIndex":1,"sides":20,"value":5}
+        ],
+        "playerTotal": 15, "oppositionTotal": 5, "margin": 10,
+        "outcomeBand": "decisive_player_success",
+        "modifierBreakdown": {"player":[],"opposition":[]}
+      },
+      "terminalExchange": {
+        "exchangeId": "exchange_conflict_frame_42",
+        "turnNumber": 42, "operationType": "pressure", "outcome": "success",
+        "before": {"playerSideStrain":"clear","oppositionSideStrain":"clear","conflictPosition":"contested"},
+        "after": {"playerSideStrain":"clear","oppositionSideStrain":"strained","conflictPosition":"contested"},
+        "matchupAudit": {
+          "playerOperation":"pressure","oppositionOperation":"pressure",
+          "primaryResolutionLane":"pressure",
+          "matchupRationale":"Давление души преодолевает встречное давление хранителя.",
+          "riskProfile":"offensive_pressure"
+        },
+        "actionCostAudit": {
+          "player":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":6,"after":3},
+          "opposition":{"operationType":"pressure","baseCost":3,"minCost":1,"artTier":0,"effectiveCost":3,"before":6,"after":3}
+        },
+        "diceAudit": {
+          "formulaVersion": "afterlife_spiritual_conflict_v1",
+          "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+          "diceUsed": [
+            {"side":"player","sourceIndex":0,"sides":20,"value":15},
+            {"side":"opposition","sourceIndex":1,"sides":20,"value":5}
+          ],
+          "playerTotal": 15, "oppositionTotal": 5, "margin": 10,
+          "outcomeBand": "decisive_player_success",
+          "modifierBreakdown": {"player":[],"opposition":[]}
+        }
+      }
+    }
+  }
+}
+```
+
+The client resolves the original wound opportunity before closing the resource
+owner: Spend before Retire, including the action's causal effects. If the visible
+offer permits `none`, an explicit decline produces one source/decision record and
+one immutable closure without inventing a wound. A materialize choice must first
+finish real wound/effect routing. GM must not write private receipt/proof fields,
+closure IDs, retirement or a second spend. Existing reward and reward anti-farm
+rules are unchanged. A reused display ID requires an accepted prior closure and
+a distinct instance; earlier start and receipt rows stay immutable.
+
+Cold replay must produce the same receipt and resource history. Missing earlier
+receipt history cannot be replaced by a recent summary. When recentConflicts
+already holds 20 entries, the existing terminal projection drops only its oldest
+summary to retain 20. Durable instance, closure, source and decision rows remain
+immutable even when that summary leaves recentConflicts. Deleting or reordering
+a retained sibling is not legal pruning.
+
+Missing earlier exchanges, start-plus-harm and replacement are explicit unfinished source-family
+work. The private C3 common plan is unpublished; live GameEngine/daemon
+publication remains C4, with no new player command.
+
+## spiritual_wound_private_roots_v1
+
+Внутреннее состояние материализации духовных ран принадлежит клиенту в Chaos Sea и
+Shining Abode. Эти файлы нельзя редактировать или переносить в ответ ГМ (GM must not write):
+
+- `game_state/control/spiritual_wound_capture_checkpoint.json` — закрытая
+  исходная запись C2 для восстановления незавершённого решения.
+- `game_state/control/pending_spiritual_wound_decisions.json` — незавершённый пакет
+  решений с исходными снимками, порядком обменов и уже выбранными решениями.
+- `game_state/wounds/spiritual_wound_opportunity_receipts.json` — неизменяемая
+  история экземпляров конфликтов, закрытий, допустимых источников и принятых решений,
+  включая явный отказ от раны.
+
+These roots are not player pending requests. Их содержимое не включается в пользовательский status/audit.
+Все три пути входят в снимок и проверку согласованности общей транзакции; отсутствие файла
+сохраняется как отсутствие, а не заменяется самовольным пустым файлом. При откате
+восстанавливаются исходные байты и факт существования.
+
+Пример границы исходного хода: подписанный снимок A отмечает
+`originalPathPresenceV1` для receipts как `false` среди 19 observed paths.
+Это signed absence. Даже если в текущем черновике B позже появится пустой
+receipts-файл с формой ниже, клиент считает исходную историю отсутствовавшей;
+он не заменяет A байтами B. Старые снимки с 16/18 путями остаются читаемыми
+для обычной работы, но без подписанного покрытия receipts не дают основание
+для первого предложения. ГМ не записывает этот файл и не подставляет
+`originalPathPresenceV1` в ответ.
+
+Закрытые формы проверяют структуру и согласованность: hashes do not grant authority.
+This registration does not enable live continuation or publication.
+После завершённого и холодно восстановленного C2-пакета внутренний C3 reducer
+может создать detached receipt after-image для `none`, `materialize` или
+клиентского `guarantee_satisfied` по каждому источнику с положительным
+максимумом или гарантией. Он привязывает полный source witness к signed A,
+instance identity, global/instance ordinals и causal wave; отсутствие ответа не
+считается отказом. Гарантированную рану нельзя отклонить. Нет раны, перехода,
+изменения carrier/index/history или acquisition notification только при `none`.
+Для `materialize` поля woundId and transitionId берутся из реального редуктора,
+проверяет историю перехода и собирает итоговые carrier/index/history, эффекты и
+receipt в неопубликованный общий план. Live GameEngine/daemon dispatch и accepted
+publication остаются C4; этот пример не является живой командой.
+ГМ не создаёт приватные receipt строки и не исправляет их через обычный JSON repair.
+
+Пример для проверки контракта: клиент ещё не имеет незавершённого решения или принятой
+истории. Если владелец создаёт пустые корни pending и receipts, их точные формы приведены ниже.
+Для checkpoint здесь нет JSON-примера; это не команда ГМ и не требование создавать отсутствующие
+файлы при запуске. ГМ продолжает использовать только разрешённое предложение
+`woundDecisions`; пример полного предложения — `wound_spiritual_source_worked_v1`
+в `E_CLI_Effect_Materialization.txt`.
+
+`game_state/control/pending_spiritual_wound_decisions.json`:
+```json
+{"schemaVersion":1,"pending":null}
+```
+
+`game_state/wounds/spiritual_wound_opportunity_receipts.json`:
+```json
+{"schemaVersion":1,"nextInstanceOrdinal":1,"nextClosureOrdinal":1,"nextSourceOrdinal":1,"nextDecisionOrdinal":1,"instances":[],"closures":[],"sources":[],"decisions":[]}
+```
+
+Worked GM continuation for a client-offered, positive but non-guaranteed source
+`spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa`: the exchange's ordinary mechanics
+and final prose continue in the same logical turn. The GM explicitly declines
+the wound using only the offered reference and decision; the client derives
+the private source/decision receipt, never a wound transition. A missing
+`woundDecisions` entry is not an implicit `none`.
+
+```json
+{"woundDecisions":[{"opportunityRef":"spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","decision":"none"}]}
+```
+
+Worked missing-receipt continuation: the first exchange created a rank-I
+spiritual wound. Before the next turn, suppose its private receipt history is
+lost or replaced with an empty root, while the signed wound and its first
+`create` transition survive. The client rejects the next offer with
+`spiritual_wound_conflict_side_receipt_missing`, including an explicit re-trauma
+request. The GM must not author a replacement wound or repair private receipts;
+the inconsistent accepted save requires recovery. A pristine first source
+without prior materialization, and unpublished insertions in the current turn,
+do not trigger this missing-history rule.
+The same integrity check applies if the accepted identity is already `healed`
+and only its creation/healing history remains. Removing the active wound does
+not erase its creation. This terminal-state check does not introduce a live
+in-conflict healing action.
+
+Worked capped same-side continuation with intact history: the first exchange created a rank-I
+spiritual wound. A later optional source for that side also has maximum I, so
+the client offer has `minimumSeverityRank=2`, `maximumSeverityRank=1`, and
+`allowedDecisions=["none"]`. The GM sends the `none` response above with the
+actual later source's `opportunityRef`. The client keeps the first wound and
+appends a `none` receipt row without a second wound transition. The GM does
+not provide a wound ID or try to raise severity past the source maximum.
+
+Worked guaranteed same-side continuation: первый обмен создал рану ранга I.
+Второй источник той же стороны имеет доказанную до обмена гарантию I и
+жёсткий максимум I. ГМ завершает обычный обмен и его повествование, но
+**не отправляет второй `woundDecisions`**: клиент сам проводит C2 с пустым
+`inputChanges` и записывает `guarantee_satisfied` для второго источника.
+Строка receipt содержит исходный `woundId`, `satisfiedSeverityRank: 1`,
+`selectedSeverityRank: null` и `transitionId: null`. Она не создаёт новой
+раны или перехода. Если последующий обмен законно поднимет ранг до II,
+здесь останется исторический ранг I. Если первого ранения не было или его
+ранг меньше гарантии, клиент не применяет этот исход; он требует точного
+законного ухудшения либо отвергает невозможный источник. Даже нулевой
+расчётный максимум не скрывает уже удовлетворённую гарантию.
+
+The complete worked GM `materialize` response is
+`wound_spiritual_source_worked_v1` in `E_CLI_Effect_Materialization.txt`. It
+includes a source-bound consequence definition and acquisition narration. The
+GM writes that narration in the final scene but never chooses a canonical
+wound ID, transition ID or private receipt row. In a two-source exchange,
+another offered source can receive `none` first; the private receipt records
+`none` followed by the actual insertion in source order.
+Worked simultaneous-side continuation: neither side has yet acquired a new
+wound in this conflict. One accepted exchange worsens both `playerSideStrain`
+and `oppositionSideStrain`, and the client offers the player-side and guardian-
+side sources in sequence. For each offer the GM uses
+the complete `materialize` response from `wound_spiritual_source_worked_v1`,
+substituting that offer's `opportunityRef` and a consequence definition whose
+target matches the affected actor. The first acquisition narration is
+"Чужое давление надломило волю души."; the second is "Чужое давление надломило
+волю хранителя." The final scene includes both exact sentences. The client
+creates two distinct wound IDs and create transitions, one per side, while
+both receipt rows retain the same exchange coordinate and their source order.
+If either side already owns its conflict wound, its source instead follows
+the same-side worsen, `none` or `guarantee_satisfied` path; the other side's
+eligibility for its first wound does not change.
+For a later same-side source in that conflict, the full rank-III GM response
+under `wound_spiritual_source_worked_v1` also serves as the worked worsening
+example when the first exchange in the same original turn produced rank II and
+the client offers III under a higher hard maximum.
+The GM sees the new offered minimum and writes the complete proposal and
+narration; the client retains the first wound ID and issues the next transition.
+
+## spiritual_wound_common_publication_v1
+
+Focused continuation example for the existing private decision adapter, not a new
+daemon request. First retain the accepted exchange from the spiritual source
+example, or the resolve/terminalExchange fragment above. The client presents one
+current optional wound offer; copy its actual opportunityRef. For this example
+the GM declines that offer with exactly these two fields:
+
+```json
+{
+  "opportunityRef": "spiritual_wound_current_client_offer",
+  "decision": "none"
+}
+```
+
+The reference above is a placeholder for the current client-issued offer, not a
+caller-created source. GM must not write private checkpoint/pending/receipt roots
+or append payment, resource retirement, wound IDs or publication flags to the reply.
+Once all opportunities are complete, the internal C4-A one-shot transaction uses
+the completed C3 plan without replanning. The resource/effect identities and any
+terminal timestamp stay unchanged. It writes the exact instance/source/decision
+receipt and consumes both private roots plus wound_commands even for none;
+none creates no wound or acquisition notification.
+
+For materialize, use the complete proposal from wound_spiritual_source_worked_v1
+instead; the same transaction also publishes its sealed wound/effect/history
+images and preserves unrelated combat-condition siblings. Uncommitted input drift
+before take rejects with zero writes. A later write/read-back failure restores
+signed original bytes and signed absence, including originally missing wound and
+private roots. The failed one-shot authority is invalidated, not retried.
+
+This fragment proves only the authorable decline shape and client boundary.
+The signed OriginalSpiritualC4 integration cases own transaction verification;
+live GM dispatch uses C4-B and the common publisher returns accepted player output.
+Separate integration probes cover interruption between publication, story and cleanup.
+Respond only to the current client request; this example introduces no player command.
+
+Live accepted output: preserve every accepted acquisition and worsening description
+in the final output/narrative_response.json.response, in exchange order. Creating
+then worsening the same wound produces two player messages at the respective ranks;
+none and guarantee_satisfied produce no extra acquisition notification. The client
+binds the final narrative, interface and debug output to the accepted publication,
+rejects substituted output, and consumes each accepted notification once. Refreshing
+the same completed response does not replay those notifications. These are client
+responsibilities: GM must not author notification IDs or publication/completion flags.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+GM waits for the current client request and must not resend a saved choice.
+Receipt-only state does not prove whole-turn acceptance; do not reconstruct private authority.
+
+## spiritual_wound_continuation_envelope_v1
+
+Worked comparison-only envelope exchange. This is the optional field inside the
+existing repair request/worker task and ready/proposal, not an entire task packet.
+The client offers one optional wound; the GM chooses explicit none because the
+completed scene describes pressure without a new injury. Copy the real references
+from the actual request, never the sample references below.
+
+```json
+{
+  "schemaVersion": 1,
+  "continuationId": "swc_example_current",
+  "phase": "decision",
+  "offer": {
+    "opportunityRef": "spiritual_wound_example_current",
+    "minimumSeverityRank": 1,
+    "requiredSeverityRank": null,
+    "maximumSeverityRank": 2,
+    "target": "Душа хранителя",
+    "cause": "Давление чужой воли",
+    "allowedLocationKinds": ["spiritual_axis"],
+    "allowedDecisions": ["none", "materialize"]
+  },
+  "sceneTextSource": {"path": "output/narrative_response.json", "field": "response"},
+  "dependentDraftFields": []
+}
+```
+
+```json
+{
+  "schemaVersion": 1,
+  "continuationId": "swc_example_current",
+  "woundDecisions": [
+    {"opportunityRef": "spiritual_wound_example_current", "decision": "none"}
+  ]
+}
+```
+
+Put the second object in spiritualWoundContinuation, preserving ordinary required
+ready/proposal metadata. Missing response never means none. A guaranteed offer
+does not permit this decline; materialize uses the existing complete proposal,
+including woundRef and the matching acquisition narration. If the scene already
+needs no correction, a current decision response may use empty changedFiles.
+For dependent_draft, retain the client-saved choice, fix only listed exact fields
+and return woundDecisions: []; do not send the previous decision again. Ordinary
+repair must not include this envelope. Narrative text stays in
+output/narrative_response.json.response with preserved siblings. GM must not write
+private checkpoint, wound_commands, pending or receipt roots. Duplicate/unknown
+fields and case aliases are rejected. The strict envelope parser alone does not
+enable live dispatch; GameEngine authenticates and resumes C2. This fragment proves
+wire parsing/correlation only, not original-turn execution or cold finalization.
+
+File-helper worked commands (three alternatives, not three submissions to one
+request). Dot-source the existing GM helper bootstrap first. Read only the public
+repair request; do not read or manufacture private C2 files. A current decision
+request can have errors: [] and fullTurnResubmissionRequired: false; keep the
+original signed turn and do not restore its baseline.
+
+Optional decision, explicitly choosing none from the actual current offer:
+
+```powershell
+$repair = Read-BoeJson -RelativePath 'game_state/control/validation_repair_request.json'
+$continuation = $repair.spiritualWoundContinuation
+if ($continuation.phase -cne 'decision' -or $continuation.offer.allowedDecisions -cnotcontains 'none') {
+    throw 'The current client offer does not permit none.'
+}
+$response = [ordered]@{
+    schemaVersion = 1
+    continuationId = $continuation.continuationId
+    woundDecisions = @([ordered]@{
+        opportunityRef = $continuation.offer.opportunityRef
+        decision = 'none'
+    })
+}
+Complete-BoeValidationRepair -SpiritualWoundContinuationJson ($response | ConvertTo-Json -Depth 100)
+```
+
+Materialize alternative: first author the complete existing wound proposal in
+`$proposal`, using the offered location kinds and severity bounds and the complete
+proposal contract in OtherGuides/Wound_Materialization_Contract.md. This variable
+is a GM-authored draft, never a canonical wound or a copied private packet. It must
+include classification, display, severity, complications, consequenceDefinitions,
+treatment and recovery; do not substitute the illustrative none response above.
+Write the matching display.acquisitionNarration in the existing narrative response
+and preserve its independent siblings. Then send that proposal explicitly:
+
+```powershell
+$repair = Read-BoeJson -RelativePath 'game_state/control/validation_repair_request.json'
+$continuation = $repair.spiritualWoundContinuation
+if ($continuation.phase -cne 'decision' -or $continuation.offer.allowedDecisions -cnotcontains 'materialize') {
+    throw 'The current client offer does not permit materialize.'
+}
+if ($null -eq $proposal) { throw 'Author the complete wound proposal before submitting it.' }
+$response = [ordered]@{
+    schemaVersion = 1
+    continuationId = $continuation.continuationId
+    woundDecisions = @([ordered]@{
+        opportunityRef = $continuation.offer.opportunityRef
+        decision = 'materialize'
+        woundRef = 'current_wound_local'
+        proposal = $proposal
+    })
+}
+Complete-BoeValidationRepair -SpiritualWoundContinuationJson ($response | ConvertTo-Json -Depth 100)
+```
+
+Dependent-draft alternative: correct only the actual request's exact
+dependentDraftFields, preserving the original action, actor, dice and all other
+valid siblings. The client already saved the choice; the response stays empty:
+
+```powershell
+$repair = Read-BoeJson -RelativePath 'game_state/control/validation_repair_request.json'
+$continuation = $repair.spiritualWoundContinuation
+if ($continuation.phase -cne 'dependent_draft') { throw 'This request is not a dependent correction.' }
+$response = [ordered]@{
+    schemaVersion = 1
+    continuationId = $continuation.continuationId
+    woundDecisions = @()
+}
+Complete-BoeValidationRepair -SpiritualWoundContinuationJson ($response | ConvertTo-Json -Depth 100)
+```
+
+Pass raw JSON for the response object itself, without an additional
+spiritualWoundContinuation wrapper. Ordinary repair calls Complete-BoeValidationRepair
+without this argument and forbids a continuation response. Missing response never
+means none. Unknown fields, duplicate keys (including nested proposal keys), case
+aliases and mismatched correlation reject before Ready publication.
+
+The helper compares exact request and Ready read witnesses under the canonical
+write lock before atomic publication. If either changed, including a newer Ready
+for the same request, it rejects without overwriting that Ready. Reread the current
+request; do not delete Ready or resend the stale response blindly. The helper
+refuses to replace an already published continuation Ready: wait for the client to
+consume or reject it. A worker also refuses dispatch or scene apply while such a
+response is awaiting consumption. The helper does not consume C2: GameEngine must
+authenticate the owner and consume the explicit
+decision or resume the saved dependent choice under its lease. These commands
+document file transport support; GameEngine authenticates and resumes C2.
+
+## spiritual_wound_pending_submission_v1
+
+Worked continuation after the GM selected a wound that increases the next
+exchange's action cost. The client accepts the selection privately, retains exact
+command/scene and selection ID/time prefix in pendingSubmission, then asks for the
+dependent result to be corrected. The committed cursor and derived pending remain
+unchanged. GM preserves the original action, actor, dice and closed exchanges,
+corrects only the client-listed cost/result fields and narrates the revised outcome.
+GM must not write pendingSubmission, private commands, IDs, timestamps or receipts.
+After restart the client must not reoffer the saved choice. The next response in
+dependent_draft contains no replacement decision; in this illustrative correlated
+envelope, the reference must come from the actual current client request:
+
+```json
+{
+  "schemaVersion": 1,
+  "continuationId": "swc_example_dependent",
+  "woundDecisions": []
+}
+```
+
+Successful correction advances and clears the retained submission atomically,
+then refreshes derived pending. If final checkpoint writing was interrupted but
+the draft already needs no correction, the client can resume without asking GM
+again. For guarantee_satisfied the saved command is null and no wound proposal is
+requested. A changed command or allocation prefix blocks cold recovery; a hash
+never grants authority. This is an internal C2 persistence example; live
+GameEngine dispatch uses C4-B.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+GM waits for the current client request and must not resend a saved choice.
+Receipt-only state does not prove whole-turn acceptance; do not reconstruct private authority.
+
+Recovery continuation of this example: the corrected result is saved in the
+checkpoint, but the derived pending write fails. The client performs
+checkpoint-first recovery through its real C2 owner. If another write fails,
+it retains the original turn and saved choice for cold recovery. GM must not write
+the checkpoint/pending or send a second wound choice. After storage is available,
+the client reopens the same signed turn, restores pending and either publishes
+the completed turn or issues the actual next request. GM waits for that current
+request; the old Ready is never reused as a new decision.
+The original completion signal is preserved byte-for-byte while gameplay stops.
+On explicit session re-entry the normal lifecycle consumes that original signal;
+GM does not send a replacement success or repeat the original turn.
+
+## spiritual_wound_position_v1
+
+Before authoring either example, an active spiritual_position_burden on a current
+participant makes the pre-turn dicePreview null. Read authoringReminders, select
+the exact acting participants and operations, and calculate the effective rank
+below; null does not mean no penalty. The saved canonical position stays intact.
+
+These are authorable position/dice fragments of ordinary exchanges, not complete
+responses or signed wound-admission fixtures. All relevant wounds are already
+accepted. Use their exact acting participant and matching operation; another
+actor, another operation or an ended effect contributes nothing. Sum each component
+once and combine both sides before clamping:
+`effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)`.
+Do not cap the two sides separately. Equal burdens cancel.
+
+First, the player pressures from canonical player_advantaged (+1), with an
+applicable rank-I pressure burden of1 and no opposition burden: effective0.
+The signed dice are13 and8, giving margin5 and ordinary player_success.
+There is no position modifier, but both canonical snapshots keep +1:
+
+```json
+{
+  "before": { "conflictPosition": "player_advantaged" },
+  "after": { "conflictPosition": "player_advantaged" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 0, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 8 }
+    ],
+    "modifierBreakdown": { "player": [], "opposition": [] },
+    "playerTotal": 13, "oppositionTotal": 8,
+    "margin": 5, "outcomeBand": "player_success"
+  }
+}
+```
+
+If the next pressure action starts from the same canonical +1 and the burden is
+still applicable, it again starts effectively at0: no repeated erosion to -1.
+That next action must use its own next unused signed dice indices. Healing or
+expiry removes future burden and does not itself improve canonical position.
+
+Second, both sides pressure from canonical contested. The player has burden1,
+and the acting opponent has an accepted rank-III component of magnitude2 for
+pressure; its other required wound components do not apply to this exchange.
+Effective rank is0+2-1=+1. With signed dice13 and8, the player gets one +2 position
+row, giving15 versus8 and margin7. Both canonical snapshots remain contested:
+
+```json
+{
+  "before": { "conflictPosition": "contested" },
+  "after": { "conflictPosition": "contested" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 0, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 1, "sides": 20, "value": 8 }
+    ],
+    "modifierBreakdown": {
+      "player": [{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 }],
+      "opposition": []
+    },
+    "playerTotal": 15, "oppositionTotal": 8,
+    "margin": 7, "outcomeBand": "player_success"
+  }
+}
+```
+
+These are separate starting scenarios, not permission to reuse dice within a turn.
+Complete each real exchange's action, matchup, strain/control, costs and result
+under the ordinary rules. Include any independently required difficulty, tempo
+or other modifiers and recompute totals; do not replace them with these minimal
+fragments. The effective position also supplies binding/force-binding positional
+prerequisites; setup and decisive-success alternatives stay available. A successful
+or partially successful maneuver still requires an actual canonical position
+change and obeys the existing strain/control restrictions.
+
+A wound inserted after one exchange affects only later matching exchanges.
+Preserve the closed prefix and original dice. During dependent repair, follow the
+current exact client request, preserve the saved wound choice, and do not broaden
+an allowed position correction to unrelated fields. GM must not write private
+identities, receipts or a new effective-position field. Cold restoration uses the
+original accepted context, not today's wounds to rewrite a closed exchange;
+an internally consistent historical audit grants no new exchange authority.
+
+## spiritual_wound_position_dependency_v1
+
+This is a partial dependent_draft authoring example, not a complete signed turn
+or proof of source ownership. The client already saved a rank-I pressure wound
+on the acting opponent after exchange0. Preserve the saved wound choice and
+closed prefix, including that exchange and its original dice15/5. Exchange1
+starts from canonical contested and uses signed indices2/3 with values12/8.
+A separately justified existing +1 modifier remains unchanged.
+
+Before correction, the draft has totals13/8 and margin5. The newly applicable
+opposition burden1 makes effective position+1, requiring player+2 and totals15/8,
+margin7. Both bands remain player_success; canonical position and consequences
+stay unchanged. Use only the current dependentDraftFields. A modifier-array
+pointer does not permit replacement of independent rows or their relative order.
+
+Original arithmetic fragment:
+
+```json
+{
+  "before": {
+    "conflictPosition": "contested"
+  },
+  "after": {
+    "conflictPosition": "contested"
+  },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      {
+        "side": "player",
+        "sourceIndex": 2,
+        "sides": 20,
+        "value": 12
+      },
+      {
+        "side": "opposition",
+        "sourceIndex": 3,
+        "sides": 20,
+        "value": 8
+      }
+    ],
+    "modifierBreakdown": {
+      "player": [
+        {
+          "source": "situational",
+          "value": 1,
+          "reason": "Уже обоснованный независимый модификатор."
+        }
+      ],
+      "opposition": []
+    },
+    "playerTotal": 13,
+    "oppositionTotal": 8,
+    "margin": 5,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Corrected arithmetic fragment:
+
+```json
+{
+  "before": {
+    "conflictPosition": "contested"
+  },
+  "after": {
+    "conflictPosition": "contested"
+  },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      {
+        "side": "player",
+        "sourceIndex": 2,
+        "sides": 20,
+        "value": 12
+      },
+      {
+        "side": "opposition",
+        "sourceIndex": 3,
+        "sides": 20,
+        "value": 8
+      }
+    ],
+    "modifierBreakdown": {
+      "player": [
+        {
+          "source": "situational",
+          "value": 1,
+          "reason": "Уже обоснованный независимый модификатор."
+        },
+        {
+          "modifierType": "conflict_position",
+          "source": "conflictPosition",
+          "position": "player_advantaged",
+          "value": 2
+        }
+      ],
+      "opposition": []
+    },
+    "playerTotal": 15,
+    "oppositionTotal": 8,
+    "margin": 7,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Submit the complete prescribed arithmetic group together. Preserve every
+nonposition modifier, all original dice, roll modes, action, actor, art and target.
+A position correction alone does not authorize cost changes or consequence
+rewrites. Cost changes need their own listed permissions. If the new band needs
+different consequences, wait for separately proved current permissions; never
+broaden a dice pointer to the outcome or after state. This same-band example
+does not demonstrate result-consequence closure.
+
+The existing envelope response keeps the current continuationId and returns
+woundDecisions: []; the illustrative token below must be replaced only by the
+current client token, never a new wound choice:
+
+```json
+{
+  "schemaVersion": 1,
+  "continuationId": "swc_example_dependent",
+  "woundDecisions": []
+}
+```
+
+Cold recovery reopens the saved selection, preserving its original identities.
+GM must not write private commands, checkpoints, receipts or allocation fields.
+The client validates the actual correction before advancing. This fragment
+proves neither cold ownership nor final publication; genuine C2/GameEngine
+integration tests cover those paths.
+
+## spiritual_wound_dependent_frontiers_v1
+
+This worked A-to-B sequence is a partial authoring example, not a signed full
+turn or proof of authority. The original dice are [5,15,20,18,9,8]. Exchange0
+has already saved a player pressure wound with burden1. Keep the saved wound
+choice and closed prefix. Exchanges1/2 are pressure with no_effect and unchanged
+strain/canonical contested position; their actions and independently justified
+modifier remain unchanged. Costs have their own permissions and do not change.
+
+The actual client request A lists only these exchange1 diceAudit pointers:
+criticalResult, margin, modifierBreakdown and oppositionTotal. Its identifier is
+client-issued; A/B below are labels, not identifiers for a GM to generate.
+Original exchange1 arithmetic:
+
+```json
+{
+  "before": { "conflictPosition": "contested" },
+  "after": { "conflictPosition": "contested" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 20 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 18 }
+    ],
+    "modifierBreakdown": {
+      "player": [{ "source": "situational", "value": 1, "reason": "Уже обоснованный независимый модификатор." }],
+      "opposition": []
+    },
+    "playerTotal": 21, "oppositionTotal": 18, "margin": 3,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+GM corrects the entire prescribed group for A, supplying both critical texts:
+
+```json
+{
+  "before": { "conflictPosition": "contested" },
+  "after": { "conflictPosition": "contested" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 20 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 18 }
+    ],
+    "modifierBreakdown": {
+      "player": [{ "source": "situational", "value": 1, "reason": "Уже обоснованный независимый модификатор." }],
+      "opposition": [{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "opposition_advantaged", "value": 2 }]
+    },
+    "playerTotal": 21, "oppositionTotal": 20, "margin": 1,
+    "outcomeBand": "player_success",
+    "criticalResult": {
+      "playerNaturalRoll": 20, "oppositionNaturalRoll": 18,
+      "marginOutcomeBand": "mixed_or_no_effect", "normalizedOutcomeBand": "player_success",
+      "scaleLimit": "Удачный бросок ограничен текущим духовным обменом и не создаёт нового вреда.",
+      "narrativeConstraint": "Обе стороны сохраняют напряжение, позицию и исходный no_effect."
+    }
+  }
+}
+```
+
+Respond with the existing envelope, copying the real current continuationId
+instead of the illustrative token below; woundDecisions: [] retains the selection:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_frontier_A", "woundDecisions": [] }
+```
+
+Ready completes only the issued frontier. Future B corrections are forbidden in
+A, even if their arithmetic is known. Wait for the client to validate the actual
+A correction and issue B. Its separately issued dependentDraftFields cover only
+exchange2 diceAudit margin, modifierBreakdown and oppositionTotal. Exchange1 and
+its actual accepted critical texts are now preserved. Original exchange2:
+
+```json
+{
+  "before": { "conflictPosition": "contested" },
+  "after": { "conflictPosition": "contested" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 4, "sides": 20, "value": 9 },
+      { "side": "opposition", "sourceIndex": 5, "sides": 20, "value": 8 }
+    ],
+    "modifierBreakdown": { "player": [], "opposition": [] },
+    "playerTotal": 9, "oppositionTotal": 8, "margin": 1,
+    "outcomeBand": "mixed_or_no_effect"
+  }
+}
+```
+
+Correct only B's prescribed group, preserving its dice and consequences:
+
+```json
+{
+  "before": { "conflictPosition": "contested" },
+  "after": { "conflictPosition": "contested" },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 4, "sides": 20, "value": 9 },
+      { "side": "opposition", "sourceIndex": 5, "sides": 20, "value": 8 }
+    ],
+    "modifierBreakdown": {
+      "player": [],
+      "opposition": [{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "opposition_advantaged", "value": 2 }]
+    },
+    "playerTotal": 9, "oppositionTotal": 10, "margin": -1,
+    "outcomeBand": "mixed_or_no_effect"
+  }
+}
+```
+
+Respond separately with B's exact current identifier:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_frontier_B", "woundDecisions": [] }
+```
+
+Never reuse A's response or Ready for B. File and worker routes obey the same
+boundaries; invalid worker changes roll back. Cold recovery reconciles outstanding
+transport before automatic continuation; public request files are not authority.
+GM must not replace the saved decision or edit private controls. A blank critical
+text, changed scalar, original die or independent modifier cannot unlock B.
+After all current corrections validate, the client follows normal final publication.
+These fragments validate arithmetic and response shape only; real owner and
+GameEngine tests prove staging, rejection, cold recovery and publication.
+
+## spiritual_wound_binding_result_closure_v1
+
+Partial two-response authoring fragment, not a complete signed turn. In the
+closed pressure exchange, original dice5/15 and player position +2 yield 7/15,
+margin -8; player strain changes clear to strained and the saved rank-I wound
+applies binding position burden1 to the later exchange. Preserve that closed
+prefix and saved wound choice. The final binding originally has canonical
+player_advantaged position (+1), no setup or decisive success, original dice
+13/10 and effective position +1. Its +2 player row yields 15/10, margin5 and
+player_success dice band. The successful result changes only control from none
+to player hindered. The wound makes effective position zero: remove the position
+row, giving 13/10 and margin3, still player_success. That dice band alone does
+not preserve the binding prerequisite. No independent cost correction is shown;
+if the client separately proves one, follow its exact issued fields as well.
+
+Original last-exchange fragment before response A:
+
+```json
+{
+  "operationType": "binding", "outcome": "success",
+  "before": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "after": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "hindered", "controllerSide": "player", "controlId": "binding_example_001", "sourceOperation": "binding", "restrictedOperations": ["maneuver"], "summary": "Оковы сдерживают перестройку." } },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 10 }
+    ],
+    "modifierBreakdown": { "player": [{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "player_advantaged", "value": 2 }], "opposition": [] },
+    "playerTotal": 15, "oppositionTotal": 10, "margin": 5,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Response A edits only the actual issued last exchange. An ordinarily validated
+`blocked` is also possible when the ordinary rules permit it; this example
+chooses `no_effect` and copies before.controlState exactly. Leave the final
+activeConflict.controlState physically unchanged in A.
+
+```json
+{
+  "operationType": "binding", "outcome": "no_effect",
+  "before": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "after": { "conflictPosition": "player_advantaged", "playerSideStrain": "strained", "controlState": { "level": "none", "controllerSide": null } },
+  "diceAudit": {
+    "formulaVersion": "afterlife_spiritual_conflict_v1",
+    "diceSource": "input/turn_request.json.preGeneratedDices1d20",
+    "diceUsed": [
+      { "side": "player", "sourceIndex": 2, "sides": 20, "value": 13 },
+      { "side": "opposition", "sourceIndex": 3, "sides": 20, "value": 10 }
+    ],
+    "modifierBreakdown": { "player": [], "opposition": [] },
+    "playerTotal": 13, "oppositionTotal": 10, "margin": 3,
+    "outcomeBand": "player_success"
+  }
+}
+```
+
+Echo the actual A continuationId in the existing response and publish its own
+Ready. This illustrative token is never a GM-created replacement ID:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_binding_A", "woundDecisions": [] }
+```
+
+Only after the client validates actual A does it issue B. The original effective
+raw final-control carrier still contains the old successful result:
+
+```json
+{ "activeConflict": { "controlState": { "level": "hindered", "controllerSide": "player", "controlId": "binding_example_001", "sourceOperation": "binding", "restrictedOperations": ["maneuver"], "summary": "Оковы сдерживают перестройку." } } }
+```
+
+In B, follow its single exact dependentDraftFields pointer and copy the validated
+last after.controlState value and presence. Do not edit the whole activeConflict
+container, an ignored wrapper, accepted A, private journal or saved choice:
+
+```json
+{ "activeConflict": { "controlState": { "level": "none", "controllerSide": null } } }
+```
+
+B has its own continuationId, response and Ready:
+
+```json
+{ "schemaVersion": 1, "continuationId": "swc_example_binding_B", "woundDecisions": [] }
+```
+
+The client may use a detached final-control echo while validating A; neither GM
+nor worker writes that echo to files. The actual cumulative A+B draft must pass
+ordinary full validation before any publication. Cold recovery may issue B with
+zero original exchanges remaining and no synthetic progress row. The same two
+response order applies to force_binding after effective +2 falls to +1 when
+boolean setup:true is its only setup; ready setup or decisive success can retain
+the strong prerequisite. These fragments check authorable arithmetic and response
+shape; genuine GameEngine tests own issuance, replay and publication.

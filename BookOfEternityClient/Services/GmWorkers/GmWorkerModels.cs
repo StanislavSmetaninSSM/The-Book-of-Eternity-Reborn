@@ -175,6 +175,10 @@ public sealed record WorkerTaskPacket
     public int TimeoutSeconds { get; init; }
     public WorkerTurnReference SourceTurn { get; init; } = new();
     public IReadOnlyList<WorkerValidationIssue> ValidationIssues { get; init; } = [];
+    /// <summary>
+    /// Carries the optional current spiritual wound continuation without private authority.
+    /// </summary>
+    public SpiritualWoundContinuationRequest? SpiritualWoundContinuation { get; init; }
     public WorkerDraftRequest? DraftRequest { get; init; }
     public WorkerContentAuthoringRequest? AuthoringRequest { get; init; }
     public WorkerGuardianAbodeRequest? GuardianAbodeRequest { get; init; }
@@ -271,6 +275,10 @@ public sealed record WorkerProposal
     public string Summary { get; init; } = "";
     public IReadOnlyList<WorkerChangedFile> ChangedFiles { get; init; } = [];
     public IReadOnlyList<WorkerFinding> Findings { get; init; } = [];
+    /// <summary>
+    /// Carries the explicit response to the task's spiritual wound continuation.
+    /// </summary>
+    public SpiritualWoundContinuationResponse? SpiritualWoundContinuation { get; init; }
     public string? DraftText { get; init; }
     public WorkerContentAuthoringProposal? AuthoringProposal { get; init; }
     public WorkerAfterlifeProposalContract? AfterlifeProposal { get; init; }

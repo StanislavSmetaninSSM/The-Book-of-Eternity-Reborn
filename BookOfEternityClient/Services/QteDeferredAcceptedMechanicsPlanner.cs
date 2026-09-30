@@ -689,7 +689,16 @@ internal static class QteDeferredAcceptedMechanicsPlanner
                 pendingInput),
             InternalInputs: HashNode(
                 "accepted-mechanics-internal-v1",
-                internalInputs));
+                internalInputs),
+            WoundCarriers: HashText(
+                "accepted-mechanics-wound-carriers-v1",
+                "<missing>"),
+            WoundIdentityIndex: HashText(
+                "accepted-mechanics-wound-index-v1",
+                "<missing>"),
+            WoundHistory: HashText(
+                "accepted-mechanics-wound-history-v1",
+                "<missing>"));
         var registered = rehydrated.ResourceDraft?.RegisteredOutcome == null
             ? Array.Empty<IResourceRegisteredSystemOutcomeDraft>()
             : new[] { rehydrated.ResourceDraft.RegisteredOutcome };

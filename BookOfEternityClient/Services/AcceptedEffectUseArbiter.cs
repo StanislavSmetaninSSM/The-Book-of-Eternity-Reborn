@@ -250,6 +250,48 @@ internal sealed class AcceptedEffectUseArbiter
             ReadOnly(Array.Empty<AcceptedEffectUseArbiterIssue>()));
     }
 
+    /// <summary>
+    /// Adds budgets for newly registered instances without replaying or resetting existing activations.
+    /// The owning routing registry must authenticate the instances, including those without use budgets.
+    /// This operation only validates and stores the supplied arithmetic seeds.
+    /// </summary>
+    /// <param name="seeds">
+    /// New exact effect identifiers with non-negative budgets. An empty collection makes no change;
+    /// a <see langword="null"/> collection, invalid seed or previously known identifier rejects the entire batch.
+    /// </param>
+    /// <returns>
+    /// An empty list after registration, or validation issues with all arbiter state preserved.
+    /// </returns>
+    internal IReadOnlyList<AcceptedEffectUseArbiterIssue> RegisterNewSeeds(
+        IReadOnlyList<CanonicalEffectUseSeed> seeds)
+    {
+        if (seeds is null)
+            return ReadOnly(new[] { Issue(AcceptedEffectUseArbiterIssueCodes.InvalidUseSeed,
+                "A new-instance seed collection is required.") });
+        var additions = new Dictionary<string, int>(StringComparer.Ordinal);
+        var issues = new List<AcceptedEffectUseArbiterIssue>();
+        var activatedIds = _acceptedTranscript.Select(stamp => stamp.Identity.EffectId)
+            .ToHashSet(StringComparer.Ordinal);
+        foreach (var seed in seeds)
+        {
+            if (seed is null || !IsExactToken(seed.EffectId) || seed.RemainingUses < 0)
+            {
+                issues.Add(Issue(AcceptedEffectUseArbiterIssueCodes.InvalidUseSeed,
+                    "Every new seed requires an exact effect id and a non-negative budget."));
+                continue;
+            }
+            if (_remainingUses.ContainsKey(seed.EffectId) || activatedIds.Contains(seed.EffectId) ||
+                !additions.TryAdd(seed.EffectId, seed.RemainingUses))
+                issues.Add(Issue(AcceptedEffectUseArbiterIssueCodes.DuplicateUseSeed,
+                    $"Effect '{seed.EffectId}' is already known or occurs twice in the new seed batch."));
+        }
+        if (issues.Count != 0)
+            return ReadOnly(issues.ToArray());
+        foreach (var addition in additions)
+            _remainingUses.Add(addition.Key, addition.Value);
+        return ReadOnly(Array.Empty<AcceptedEffectUseArbiterIssue>());
+    }
+
     internal AcceptedEffectUseArbitrationResult Arbitrate(
         IReadOnlyList<EffectActivationCandidate> candidates)
     {

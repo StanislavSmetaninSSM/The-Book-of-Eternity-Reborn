@@ -350,7 +350,9 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
         var expectedStandardArts = new JsonObject
         {
             ["guard"] = 2,
-            ["maneuver"] = 1
+            ["maneuver"] = 1,
+            [AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0,
+            [AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0
         };
         Assert.True(JsonNode.DeepEquals(expectedStandardArts, knowledgeProfile["standardArts"]));
         Assert.True(JsonNode.DeepEquals(knowledgeProfile["standardArts"], combatProfile["standardArts"]));
@@ -1244,6 +1246,34 @@ public sealed class SystemGuardianLibraryServiceTests : IDisposable
 
     private static bool IsActorMaterializationIssue(ValidationIssue issue) =>
         issue.Code?.Contains("actor_materialization", StringComparison.OrdinalIgnoreCase) == true;
+
+    [Fact]
+    public async Task StandardWoundArt_FreshSystemAndFreeformGuardianProfilesStartAtScalarZero()
+    {
+        await SeedPresetAsync(_service.GetBuiltInDirectoryPath(), "azalia", "Азалия", "Social", "built_in");
+        var preset = Assert.Single(await _service.GetAvailablePresetsAsync(includeDossier: true), item => item.PresetId == "azalia");
+        var systemRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            preset,
+            "Тестовая Душа",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-09-07T00:00:00Z"));
+        var freeformRoot = _service.BuildAfterlifeEntityProfileRootForFreshNewGame(
+            "Хранительница Селена Теневая: покровительница забытых библиотек.",
+            "Тестовая Душа",
+            turnNumber: 1,
+            createdAtUtc: DateTimeOffset.Parse("2026-09-07T00:00:00Z"));
+
+        foreach (var root in new[] { systemRoot, freeformRoot })
+        {
+            var profile = GetOnlyAfterlifeProfile(root);
+            var arts = Assert.IsType<JsonObject>(profile["standardArts"]);
+            Assert.Equal(0, Assert.IsAssignableFrom<JsonValue>(arts["spiritual_resilience"]).GetValue<int>());
+            Assert.Equal(0, Assert.IsAssignableFrom<JsonValue>(arts["spiritual_healing"]).GetValue<int>());
+            Assert.Equal(2, arts["guard"]!.GetValue<int>());
+            Assert.Equal(1, arts["maneuver"]!.GetValue<int>());
+            Assert.Equal("populated", profile[ActorMaterializationContract.PropertyName]!["sections"]!["standardArts"]!["state"]!.GetValue<string>());
+        }
+    }
 
     private static async Task SeedPresetAsync(string rootDir, string presetId, string displayName, string domain, string author)
     {

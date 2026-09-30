@@ -150,6 +150,7 @@ public sealed class AfterlifeContractRegistryTests
 
         var requiredStatusPaths = AfterlifeContractRegistry.All
             .Where(surface => surface.IsKnownClientOwnedSurface)
+            .Where(surface => !surface.IsPrivateMechanicsSurface)
             .Where(surface =>
             {
                 var fileName = Path.GetFileName(surface.Path);

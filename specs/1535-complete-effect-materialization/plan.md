@@ -275,3 +275,26 @@ No constitution exception is required.
 - The single active Mortal QTE has a separate persistent continuation and narrow receipt transport because an ordinary pending-turn snapshot is no longer valid after offer acceptance. This is continuation authority, not a second turn or a second mechanics planner.
 - Distributed owner carriers prevent a global semantic hot file while the shared planner/index/snapshot prevent divergent contracts.
 - The specialized afterlife adapter preserves existing gameplay rather than forking identity and retry semantics.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+The completed #1535 effect engine is the common implementation boundary for the
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+skill-scope extension. Its `roll_modifier` payload is directly cut over to this exact
+closed shape:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+`scope` is mandatory. The only variants are closed `kind=all` and closed
+`kind=skill` with one canonical `skillId`; focused scope requires exactly the single
+`skill_check` operation. #1536 owns structural cutover, offered/final target-skill
+binding, the shared roll resolver, projection, treatment, fixtures, lifecycle and
+documentation work. The existing #1535 plan and completed tasks remain historical
+foundation evidence; no compatibility parser, missing-scope default, or second effect
+system is planned.

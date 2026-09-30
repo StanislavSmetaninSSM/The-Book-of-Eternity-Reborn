@@ -5,7 +5,7 @@ using System.Text;
 
 namespace BookOfEternityClient.Services.GmWorkers;
 
-public sealed class GmWorkerApplyGate
+public sealed partial class GmWorkerApplyGate
 {
     private readonly FileSystemManager _fs;
     private readonly Func<Task<IReadOnlyList<ValidationIssue>>> _validateGameStateAsync;
@@ -247,6 +247,7 @@ public sealed class GmWorkerApplyGate
                 task,
                 capturedContents,
                 baselines))
+            .Concat(await VerifySpiritualContinuationProposalAsync(proposal, task, capturedContents, writeLease))
             .ToArray();
         if (preservationErrors.Length > 0)
         {
@@ -315,9 +316,10 @@ public sealed class GmWorkerApplyGate
                 appliedFiles.Add(entry.Path);
             }
 
-            var validationIssues = profile.Permissions.RequiresValidation
-                ? await _validateGameStateAsync()
-                : [];
+            var continuation = task.SpiritualWoundContinuation is not null;
+            var validationIssues = continuation
+                ? await ValidateSpiritualContinuationAfterApplyAsync(proposal, task, writeLease)
+                : profile.Permissions.RequiresValidation ? await _validateGameStateAsync() : [];
             if (validationIssues.Count > 0)
             {
                 var rollbackErrors = await RollbackDurableTransactionAsync(writeLease, durableTransaction);
@@ -371,7 +373,7 @@ public sealed class GmWorkerApplyGate
                 checkedPaths,
                 scopePassed: true,
                 violations: [],
-                validationRequired: profile.Permissions.RequiresValidation,
+                validationRequired: continuation || profile.Permissions.RequiresValidation,
                 validationPassed: true,
                 issueCount: 0,
                 appliedFiles: appliedFiles,

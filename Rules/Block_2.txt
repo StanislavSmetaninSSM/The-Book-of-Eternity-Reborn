@@ -776,12 +776,11 @@
                 }. 
                 If the tracker's state did not change this turn, this field should be null.",
 
-                "playerWoundChanges": "(array of wound_objects or null) 
-                Array of objects detailing changes to the Player Character's Wounds. Structure defined in #5.20.3.",
-                
-                "NPCWoundChanges": "(array of wound_objects or null) 
-                Array of objects detailing changes to a named NPC's Wounds. Structure defined in #5.20.3. 
-                Each object MUST include 'NPCId' and 'NPCName' to identify the target.",
+                "woundDecisions": "(array of strict wound decision objects or null)
+                Use only when the client exposes an exact current wound opportunity. Answer each exposed opportunity exactly once by its opaque 'opportunityRef', with decision='none' for an optional wound or decision='materialize' plus a complete proposal as defined in Rule #5.20 and OtherGuides/Wound_Materialization_Contract.md. Do not author wound IDs, target IDs, owner IDs, direct wound carriers, or legacy player/NPC wound-change wrappers.",
+
+                "woundTreatmentAuthorings": "(array of strict alternative-treatment response objects or null)
+                Reserved for an offered client-bound Mortal alternative-treatment request. Each entry has exactly authoringRequestRef, decision, route, and diagnosisPath; author supplies one complete setting-specific route with the documented visible/hidden diagnosis-path pairing, while decline supplies explicit null for both payloads. This checkpoint supports local parsing only and live distribution is unavailable, so do not invent a request or send this field during ordinary play. See wound_mortal_alternative_response_v1 in OtherGuides/Wound_Materialization_Contract.md.",
 
                 Legacy NPC item-resource change arrays are forbidden. Address the permanent item owner through resourceCapacityChanges/resourceChanges; moving the item between player, NPC, or storage carriers never changes its resource coordinate.
 

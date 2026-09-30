@@ -77,6 +77,30 @@ internal sealed class EffectTargetAuthority
 
     internal string CanonicalFingerprint { get; }
 
+    internal bool IsCanonicalPublicationSubsetOf(
+        EffectTargetAuthority canonicalAuthority)
+    {
+        ArgumentNullException.ThrowIfNull(canonicalAuthority);
+        if (Issues.Count != 0 || canonicalAuthority.Issues.Count != 0)
+            return false;
+
+        var targetKeys = _targets.Keys.ToHashSet();
+        var canonicalTargets = canonicalAuthority._targets
+            .Where(pair => targetKeys.Contains(pair.Key))
+            .Select(static pair => pair.Value)
+            .ToArray();
+        if (canonicalTargets.Length != _targets.Count)
+            return false;
+
+        var canonicalSubsetFingerprint = CreateCanonicalFingerprint(
+            canonicalTargets,
+            Array.Empty<ValidationIssue>());
+        return string.Equals(
+            CanonicalFingerprint,
+            canonicalSubsetFingerprint,
+            StringComparison.Ordinal);
+    }
+
     internal static EffectTargetAuthority Build(EffectTargetAuthorityInput input)
     {
         ArgumentNullException.ThrowIfNull(input);

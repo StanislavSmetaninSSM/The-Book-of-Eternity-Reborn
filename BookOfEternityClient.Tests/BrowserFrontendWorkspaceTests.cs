@@ -72,21 +72,26 @@ public sealed class BrowserFrontendWorkspaceTests
         Assert.DoesNotContain("0.0.0.0", helper, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Verifies that frontend verification uses explicit categories in local commands and CI.
+    /// </summary>
     [Fact]
-    public void FrontendWorkspace_HasVerifyScriptAndCiFrontendWorkflow()
+    public void FrontendWorkspace_HasCategorySelectionAndCiFrontendWorkflow()
     {
         var packageJsonPath = Path.Combine(FrontendRoot, "package.json");
         using var document = JsonDocument.Parse(File.ReadAllText(packageJsonPath));
         var scripts = document.RootElement.GetProperty("scripts");
-        Assert.Equal("npm run typecheck && npm run test:player-facing && npm run build", scripts.GetProperty("verify").GetString());
-        Assert.Equal("tsc -p tsconfig.player-facing-tests.json && node ../TestResults/browser-frontend-player-facing-tests/test/playerFacingCommandResult.test.js && node ../TestResults/browser-frontend-player-facing-tests/test/gameLauncherMenuLayout.test.js && vitest run test/blockRenderer.test.ts test/blockRenderer.render.test.tsx test/playerCopyRobustness.test.ts test/realmTheming.test.ts test/browserCardSpacing.test.ts test/browserCardHierarchy.test.tsx test/browserSoulEmptyStates.test.tsx test/browserSceneComposerPolish.test.tsx test/browserSettingsSavesAudio.test.ts test/qteLayoutInput.test.ts test/qteMiniGameHelpers.test.ts test/qteScenePanelMiniGames.test.tsx test/darenShowcase.test.tsx test/sidebarNavigation.test.ts test/browserPolishDesignSystem.test.ts test/mapAtlasUnification.test.tsx", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("node scripts/retired-test-entrypoint.mjs", scripts.GetProperty("verify").GetString());
+        Assert.Equal("node scripts/retired-test-entrypoint.mjs", scripts.GetProperty("test:player-facing").GetString());
+        Assert.Equal("pwsh -NoProfile -File ../scripts/test-csharp.ps1", scripts.GetProperty("test:categories").GetString());
 
         var workflow = File.ReadAllText(Path.Combine(RepoRoot, ".github", "workflows", "dotnet-ci.yml"));
         Assert.Contains("Setup Node", workflow, StringComparison.Ordinal);
         Assert.Contains("node-version: 22.x", workflow, StringComparison.Ordinal);
         Assert.Contains("cache-dependency-path: BookOfEternityClient.WebFrontend/package-lock.json", workflow, StringComparison.Ordinal);
         Assert.Contains("npm ci --prefix BookOfEternityClient.WebFrontend", workflow, StringComparison.Ordinal);
-        Assert.Contains("npm run verify --prefix BookOfEternityClient.WebFrontend", workflow, StringComparison.Ordinal);
+        Assert.Contains("./scripts/test-csharp.ps1 -SelectionFile tests/selection.json", workflow, StringComparison.Ordinal);
+        Assert.DoesNotContain("npm run verify", workflow, StringComparison.Ordinal);
         Assert.Contains("browser-smoke-artifacts", workflow, StringComparison.Ordinal);
         Assert.Contains("TestResults/browser-smoke", workflow, StringComparison.Ordinal);
 

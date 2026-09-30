@@ -96,8 +96,12 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
 
         var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         var snapshotHashes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-        foreach (var file in baselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
+        var snapshotFiles = new HashSet<string>(baselineFiles, StringComparer.OrdinalIgnoreCase);
+        snapshotFiles.UnionWith(PendingTurnSnapshotPathPresenceV1.LogicalPaths);
+        foreach (var file in snapshotFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase))
             await SnapshotFileIfPresentAsync(writeLease, file, files, snapshotHashes);
+        var originalPathPresenceV1 =
+            PendingTurnSnapshotPathPresenceV1.Create(files, snapshotHashes);
 
         var manifest = new BrowserPendingTurnSnapshotManifest
         {
@@ -113,6 +117,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
             ProgressionControl = request.ProgressionControl,
             Files = files,
             SnapshotFileHashes = snapshotHashes,
+            OriginalPathPresenceV1 = originalPathPresenceV1,
             ClientOwnedValidationHashes = await CaptureClientOwnedValidationHashesAsync(writeLease),
             RollbackBackups = new Dictionary<string, string>(rollbackBackups, StringComparer.OrdinalIgnoreCase),
             RollbackBaselineFiles = baselineFiles.OrderBy(path => path, StringComparer.OrdinalIgnoreCase).ToList(),
@@ -280,6 +285,7 @@ internal sealed class BrowserAfterlifeTurnRequestQueue
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();

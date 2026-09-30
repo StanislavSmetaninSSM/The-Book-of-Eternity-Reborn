@@ -100,6 +100,8 @@ public sealed class EffectPlayerProjectionTests
     [InlineData("resistance_modifier")]
     [InlineData("periodic_damage")]
     [InlineData("periodic_restore")]
+    [InlineData("periodic_spend")]
+    [InlineData("periodic_gain")]
     [InlineData("action_control")]
     [InlineData("event_reaction")]
     [InlineData("wound_consequence")]
@@ -137,6 +139,148 @@ public sealed class EffectPlayerProjectionTests
 
         Assert.Contains(expected, fact.Value, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain(forbiddenRawToken, fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeBroadDisadvantageUsesBroadReadableText()
+    {
+        var effect = CreateScopedRollModifier("all");
+
+        var fact = RollModifierFact(BuildProjection(effect));
+
+        Assert.Equal("Помеха на все проверки навыков", fact.Value);
+    }
+
+    [Fact]
+    public void Build_RollScopeBroadNonSkillOperationKeepsOperationSpecificText()
+    {
+        var effect = CreateScopedRollModifier("all");
+        effect["components"]![0]!["payload"]!["operations"] = new JsonArray("attack_roll");
+
+        var fact = RollModifierFact(BuildProjection(effect));
+
+        Assert.Equal("бросок атаки: помеха", fact.Value);
+    }
+
+    [Fact]
+    public void Build_RollScopeExactUsableSkillUsesReadableCurrentName()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("skill_lockpicking", "Взлом", active: true))));
+
+        Assert.Equal("Помеха на проверки навыка «Взлом»", fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+        Assert.DoesNotContain("skill_lockpicking", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeExactInactiveSkillRetainsReadableNameAndIsDormant()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("skill_lockpicking", "Взлом", active: false))));
+
+        Assert.Equal("Помеха на проверки навыка «Взлом» — сейчас не действует", fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeMissingSkillUsesSafeDormantTextWithoutIdentifier()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(effect, SkillScopeAuthority()));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+        Assert.DoesNotContain("skill_lockpicking", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeInvalidAuthorityUsesSafeDormantTextWithoutIdentifier()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(
+                Skill("skill_lockpicking", "Взлом", active: true),
+                Skill("skill_lockpicking", "Взлом", active: true))));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeUnicodeConfusableSkillAuthorityUsesSafeDormantText()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(
+                Skill("skill_lockpicking", "Взлом", active: true),
+                Skill("skill_lockpіcking", "Подмена", active: true))));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+        Assert.DoesNotContain("skill_lockpicking", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeTechnicalSkillDisplayNameDoesNotLeakIdentifier()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("skill_lockpicking", "skill_lockpicking", active: true))));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("skill_", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeReadableNameContainingUnprefixedSkillIdentifierIsDormant()
+    {
+        var effect = CreateScopedRollModifier("skill", "knife");
+
+        var fact = RollModifierFact(BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("knife", "Ловкость [knife]", active: true))));
+
+        Assert.Equal(
+            "Помеха на проверки конкретного недоступного навыка — сейчас не действует",
+            fact.Value);
+        Assert.DoesNotContain("knife", fact.Value, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Build_RollScopeHiddenEffectRemainsAbsent()
+    {
+        var effect = CreateScopedRollModifier("skill", "skill_lockpicking");
+        effect["display"]!["visibility"] = "hidden";
+
+        var projection = BuildProjection(
+            effect,
+            SkillScopeAuthority(Skill("skill_lockpicking", "Взлом", active: true)));
+
+        Assert.True(projection.IsAvailable);
+        Assert.Empty(projection.Entries);
+        Assert.Empty(projection.Actions);
     }
 
     [Fact]
@@ -438,17 +582,61 @@ public sealed class EffectPlayerProjectionTests
         Assert.DoesNotContain(fingerprint, serialized, StringComparison.Ordinal);
     }
 
-    private static EffectPlayerProjectionResult BuildProjection(JsonObject effect)
+    private static EffectPlayerFact RollModifierFact(EffectPlayerProjectionResult projection) =>
+        Assert.Single(Assert.Single(projection.Entries).Facts, fact => fact.Kind == "roll_modifier");
+
+    private static JsonObject CreateScopedRollModifier(string scopeKind, string? skillId = null)
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "roll_modifier");
+        effect["components"]![0]!["payload"] = string.Equals(
+            scopeKind,
+            "all",
+            StringComparison.Ordinal)
+            ? EffectMaterializationTestFixture.CreateBroadRollModifierPayload(
+                "disadvantage",
+                "skill_check")
+            : EffectMaterializationTestFixture.CreateFocusedRollModifierPayload(
+                skillId!);
+        return effect;
+    }
+
+    private static EffectRollSkillScopeAuthority SkillScopeAuthority(params JsonObject[] skills) =>
+        EffectRollSkillScopeAuthority.Build(new EffectRollSkillScopeAuthorityInput(
+            SkillRoots(skills),
+            SkillRoots(skills)));
+
+    private static Dictionary<string, JsonNode?> SkillRoots(params JsonObject[] skills) => new()
+    {
+        ["game_state/player/skills_active.json"] = new JsonObject
+        {
+            ["activeSkillChanges"] = new JsonArray(
+                skills.Select(static skill => (JsonNode?)skill.DeepClone()).ToArray())
+        }
+    };
+
+    private static JsonObject Skill(string skillId, string displayName, bool active) => new()
+    {
+        ["skillId"] = skillId,
+        ["skillName"] = displayName,
+        ["lifecycle"] = active ? "active" : "inactive",
+        ["active"] = active
+    };
+
+    private static EffectPlayerProjectionResult BuildProjection(
+        JsonObject effect,
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null)
     {
         var snapshot = EffectMechanicsSnapshot.Build(CreateInput(
             new JsonArray(effect.DeepClone()),
-            EffectMaterializationTestFixture.CreateIdentityIndex(effect)));
+            EffectMaterializationTestFixture.CreateIdentityIndex(effect),
+            skillScopeAuthority));
         return EffectPlayerProjection.Build(new EffectPlayerProjectionInput(snapshot));
     }
 
     private static EffectMechanicsInput CreateInput(
         JsonArray activeEffects,
-        JsonObject identityIndex) =>
+        JsonObject identityIndex,
+        EffectRollSkillScopeAuthority? skillScopeAuthority = null) =>
         new(
             new EffectCarrierCatalogInput(
                 new JsonObject
@@ -461,7 +649,8 @@ public sealed class EffectPlayerProjectionTests
                 null,
                 null,
                 null),
-            identityIndex);
+            identityIndex,
+            skillScopeAuthority);
 
     private static JsonObject CreateLifetime(string mode) => mode switch
     {

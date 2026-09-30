@@ -27,12 +27,14 @@ schemaVersion, definitionKey, display, allowedRealms, allowedTargetKinds,
 components, parameterBounds, stacking, lifetime, triggers, removal, links
 ```
 
-The exact source kind is one of:
+The representative GM source selector kind is one of:
 
 ```text
 skill, spiritual_art, item, wound, quest, location, hazard, faction,
 world_event, fate_card, combat_action
 ```
+
+Client-owned `wound_legacy` is a separate canonical source kind, not an additional GM `effectChanges[].source` selector. A lasting mechanical consequence of an accepted heal uses `source.kind=wound_legacy` and `source.sourceId=legacyId`; a source-bound canonical lifetime derives `lifetime.linkKind=wound_legacy` and `targetId=legacyId` from that source owner. Authored legacy definitions require `links=[]` and retain their existing lifetime policy, never canonical `linkKind` or `targetId` lifetime fields. Structural validity is not creation authority: only the sealed wound treatment/effect transaction may create this source and its effect, and accepted typed legacy history supplies durable reload authority. Healing cleans up exact `sourceKind=wound` effects, not the independent legacy source; later effect removal does not erase legacy provenance. Never write, copy, or repair these canonical coordinates manually. The T070 heal/history/reload producer remains pending; this structural vocabulary alone does not enable that flow.
 
 The exact source ID must resolve in the accepted composed state. Display names, array positions, case variants, whitespace variants, confusable aliases, historical IDs, and prose are never authority. Same-turn materialized item/location owners use the exact temporary source reference exported by their accepted plan; the client seals it to a permanent ID.
 
@@ -40,7 +42,9 @@ The exact source ID must resolve in the accepted composed state. Display names, 
 
 ## 3. Registered component profiles
 
-The nine current profiles are:
+The eleven general profiles are listed here. Wound Materialization adds the exact eight
+spiritual-wound profiles in section 7.1; they are first-class registered profiles, not
+aliases of the general afterlife condition profile.
 
 1. `characteristic_modifier`
 2. `roll_modifier`
@@ -51,12 +55,116 @@ The nine current profiles are:
 7. `event_reaction`
 8. `wound_consequence`
 9. `afterlife_combat_condition`
+10. `periodic_spend`
+11. `periodic_gain`
+
+`periodic_spend` has the closed payload `resource`, positive `amount`, and
+`floorPolicy`; `periodic_gain` has `resource`, positive `amount`, and `capPolicy`.
+They produce Spend/Gain, so they can affect `energy` or `spiritual_action_points`
+only when the exact target owns that resource and the accepted source authorizes
+the component. They do not accept `damageType`. Damage/Restore profiles remain
+unchanged and cannot substitute for AP spending/recovery. Use the existing floor
+and cap vocabulary; registered resource bounds remain authoritative. In particular,
+`cannot_reduce_below_one` rejects an effect spend that would leave less than one.
+
+Both profiles support deterministic triggers and bounded `resource_delta` receipts
+through the normal pending-effect protocol. Events are `resource_spent` and
+`resource_gained`; a reaction to its own event still obeys use budgets and causal
+closure. A one-use recovery on `resource_spent` can restore one AP after an
+ordinary two-AP cost: 6 -> 4 -> 5. The GM must author the source definition and
+trigger, not write 5 into the canonical ledger or fabricate the client receipt.
+These generic profiles do not expand any wound-specific consequence allowlist.
 
 Each component has an exact unique `componentId`, registered `profile`, integer `priority`, and the closed payload required by that profile. Numeric values must be finite and inside source-owned `parameterBounds`. Narrative `name`, `description`, `reason`, `effectSummary`, or custom JSON never creates mechanics.
 
 Triggers name exact registered events and exact component IDs. `resolutionMode=deterministic` is resolved entirely by the client. `resolutionMode=bounded_receipt` may create `pending_effect_resolutions.json`; the GM must return the exact allowed result in a full-turn resubmission and must not copy the pending DTO into player-visible output.
 
 Bounded receipt waves use one sequential rule: Answer the current safe packet only. Resubmit the same complete semantic turn with receipts only for that packet; the client carries earlier-wave terminal bindings. The original candidate, mutation authority, and source authority remain immutable/client-owned. A receipt supplies only an allowed result and reason; it never reconstructs, retargets, merges, or changes the protected causal origin.
+
+### Exact roll scope: one common profile
+
+Every `roll_modifier.payload` is a closed object with exactly `operations`,
+`contribution`, and `scope`. `contribution` is `advantage` or `disadvantage`.
+There are exactly two closed scope variants. Broad `scope.kind=all` has no `skillId`:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "all" }
+}
+```
+
+Focused `scope.kind=skill` requires exactly one non-empty permanent canonical
+`skillId`, and its operations must equal exactly `operations=["skill_check"]`:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+Broad scope still applies only to the declared registered operations and exact effect
+target/realm; it does not mean every actor or every operation. The common roll operation
+registry is exactly `attack_roll`, `defense_roll`, `skill_check`, `saving_throw`,
+`damage_roll`, and `initiative_roll`; spiritual operations do not extend that registry.
+Missing scope never
+means broad scope. Extra fields, a `skillId` under `all`, arrays or multiple IDs under
+`skill`, aliases, names, and focused operations other than the single `skill_check`
+are invalid. `scope` is semantic source policy, not a scalar `parameterBounds` target.
+
+Before selecting a focused scope, read the client-authored
+`turn_request.json.effectSkillScopeCatalog`. Its closed schema-v1 projection has
+`schemaVersion` and `targets`; every target row has exact `realm`, `kind`, `targetId`,
+and `skills`, and each selectable skill has `skillId` and a readable `displayName`.
+The skillId must come from the exact target row. This is a bounded, deterministic,
+detached advisory catalog, not a writable authority grant. The client independently
+rebuilds authority from canonical offered pre-turn roots and the composed final
+accepted state. A new focused binding needs the same exact usable active/passive
+skill owned by that target in both states. Thus same-response new skills are not selectable;
+a skill removed or disabled in that same response is not selectable either. An empty
+or missing matching row does not authorize an invented selector. Unknown, wrong-owner,
+idless, inactive, terminal, duplicate, ambiguous, or Unicode-confusable identities
+fail closed. There is no fuzzy or display-name matching.
+
+For an already accepted focused component, legitimate later absence or unavailability
+derives dormancy: later missing skill makes the component inactive without healing/removing the wound.
+This does not itself change effect/wound identity, severity, treatment, lifetime, or
+history. A similarly named skill or a newly learned different ID does not inherit the
+component. Only restoration of the same permanent canonical ID in usable, unambiguous
+current authority reactivates it, provided the effect itself is still active. Normal
+effect expiry and wound treatment continue under their own policies. The trusted roll
+context must match exact actor, realm, operation, and focused skill before the existing
+advantage/disadvantage reduction; repeated same-direction contributions do not escalate,
+and opposite directions cancel.
+
+For wound-owned definitions, one whole broad or focused component consumes one slot:
+one focused component consumes one consequence slot. Multiple declared broad operations
+do not expand that component into extra slots. Affecting two exact skills requires two
+components and two slots within the wound's severity envelope; scope never increases
+power or grants a duplicate consequence coordinate. Physical wounds remain free,
+setting-specific GM-authored entities: there is no catalog of ready-made wounds.
+
+A rejected selector publishes no partial mechanics and is never silently broadened,
+renamed, or rebound. For a safely repairable wound selector failure, the current
+`wound_materialization_repair` packet preserves the original response-local coordinate,
+for example `woundDecisions[0].proposal.consequenceDefinitions[0].definition.components[0].payload.scope.skillId`.
+Use its `preservedProposal` and correct only its listed paths, then resubmit the complete
+semantic turn through the owning repair protocol. Do not repair canonical state or
+change protected source/target/opportunity authority. If no exact lawful selector is
+available under that packet, obtain fresh authority rather than guess. Ordinary effects
+remain subject to their own bounded repair eligibility in section 9; a selector error
+does not create a new permission to edit an accepted source. Exact replay preserves the
+scope; changing `kind` or `skillId` changes the request.
+
+Use safe in-world Russian names in player text, such as «Помеха к проверкам навыков»
+or «Помеха к проверкам навыка „Взлом“». Technical IDs, catalog rows, repair coordinates,
+and hidden-effect existence remain operator-only. Worked broad/focused wound examples
+are `wound_mortal_roll_scope_all_v1` and `wound_mortal_roll_scope_skill_v1` in
+`Examples/E_CLI_Wound_Materialization.txt`; the ordinary-source counterpart is
+`effect_mortal_roll_scope_skill_v1` in `Examples/E_CLI_Effect_Materialization.txt`.
 
 ### 3.1 Closed event reactions
 
@@ -236,7 +344,59 @@ wrong dice/outcome, duplicate reports, and client-owned selectors fail closed.
 
 ## 7. Wounds are independent entities
 
-A wound source may own a `wound_consequence` definition and exact wound link. That grants read-only source/loss authority to the effect planner. Effect removal never heals or deletes the wound. Treatment is a separate accepted wound transition; an effect-only turn cannot mutate wound bytes, severity, treatment state, or wound identity.
+A wound may own a complete definition graph and exact wound source link. In a new-wound
+proposal the GM supplies each complete definition under
+`woundDecisions[].proposal.consequenceDefinitions[]` with exact empty `links`; the
+client binds the accepted wound source. The exported wound source is
+non-materializable to ordinary GM `effectChanges[]`. Only the client-derived typed root
+batch may create its declared direct roots, while later descendants execute through the
+sealed common reaction engine.
+
+The exact wound link grants read-only source/loss authority to the effect planner.
+Effect removal never heals or deletes the wound. Treatment is a separate accepted
+wound transition; an effect-only turn cannot mutate wound bytes, severity, treatment
+state, or wound identity. Healing retires the exact wound-owned root/descendant group
+but preserves unrelated effects and global terminal provenance.
+
+## 7.1 wound_spiritual_profiles_v1
+
+For `spiritual_action_cost_burden`, the exact owner's applicable burden is paid
+before `recover_spiritual_power`, including failure; insufficient funds reject.
+`force_incarnation` has no base cost and requires only the positive wound burden
+in its seven-field 0/0/0 audit; without burden it remains free without audit.
+The action-only recovery audit and ordered Spend/reactions/Gain rule are documented
+under `spiritual_wound_special_action_costs_v1` in
+`OtherGuides/Afterlife_Combat_Terminology_Glossary.md`, with GM-authored fragments
+in `Examples/E_CLI_Afterlife_Turns.txt`. Other unresolved profiles are unchanged.
+
+Wound Materialization v1 extends the common component registry with exactly eight
+deterministic spiritual-wound profiles:
+
+| Profile | Exact axis | Exact magnitude domain |
+| --- | --- | --- |
+| `spiritual_roll_hindrance` | `rollMode` | `disadvantage` |
+| `spiritual_action_cost_burden` | `actionCostAudit` | integer 1, 2, or 3 |
+| `spiritual_position_burden` | `conflictPosition` | integer 1 or 2 |
+| `spiritual_control_burden` | `controlState` | integer 1 |
+| `spiritual_strain_burden` | `sideStrain` | integer 1 |
+| `spiritual_tempo_burden` | `tempoAdvantage` | `deny_one_gain` |
+| `spiritual_counter_burden` | `counterPayoff` | `reduce_one_step` |
+| `spiritual_art_restriction` | `artAvailability` | `restrict` or `forbid` |
+
+Every component uses the closed `{ operation, axis, magnitude }` payload and only the
+`profile_specific` merge reducer. The common registry validates exact payload shape,
+operation set, fixed axis, magnitude type/value, deterministic resolution, afterlife
+realm, persistent-actor target, and exact wound source link. The wound contract alone
+validates severity availability, severity-specific magnitude, slot count, duplicate
+coordinates, and aggregate safety.
+
+These profiles MUST NOT masquerade as `afterlife_combat_condition`, target a spiritual
+conflict side, or write `combatConditions[]`. Their canonical effect remains on the
+persistent actor. A client-owned projector may derive a temporary current-conflict
+contribution only after resolving that actor to one exact participant and side. Effect
+expiry/removal does not heal the wound, and wound healing retires only the exact
+wound-owned source group. See `OtherGuides/Wound_Materialization_Contract.md` and the
+two named spiritual-wound examples in `Examples/E_CLI_Effect_Materialization.txt`.
 
 ## 8. Afterlife adapter
 
@@ -246,6 +406,25 @@ The GM requests their lifecycle through `effectChanges[]` and must never author 
 
 Shining blessing entitlement is not a generic active effect. Blessing allocation, rerolls, memory selection, and resource capacity remain on their dedicated client-owned Shining contracts and must not be recreated as an effect definition or carrier.
 
+## afterlife_roll_scope_v1
+
+The common closed roll payload also applies in Chaos Sea and Shining Abode. In the
+existing `afterlife_effect_profile_v1` worked example, `operations=["defense_roll"]`
+uses broad `scope.kind=all`; it is not a focused `skill_check`. This component contributes
+only when the client actually resolves a typed `defense_roll` for the exact actor and
+realm. In particular, spiritual guard is not a roll_modifier operation and is not an
+alias for `defense_roll`. It receives no contribution merely because the fiction says
+the actor guards. Spiritual `guard` uses its dedicated afterlife condition/wound-profile
+contracts; this common-source example does not change the spiritual combat model.
+A spiritual art may own this source definition, but spiritual arts are not Mortal skill IDs.
+Do not reinterpret an
+`artId`, an art name, a tier, or an afterlife actor ID as a focused skill selector.
+`effectSkillScopeCatalog` exposes canonical Mortal player/NPC skills, not a spiritual-art
+catalog; an afterlife-only target without the exact selectable Mortal skill row cannot
+receive a new focused binding. The dedicated spiritual-wound profiles retain their own
+closed operation/axis/magnitude rules and do not gain skill scope through this change.
+See `Examples/E_CLI_Afterlife_Turns.txt` under `afterlife_roll_scope_v1`.
+
 ## 9. Failure, repair, and privacy
 
 Unknown/missing/duplicate fields, wrong types, pseudo-mechanics, unauthorized source/target/realm/link, client-owned identity, direct carrier/index edits, stale events, and malformed receipts fail before publication with zero canonical writes.
@@ -254,6 +433,6 @@ Only one exact semantic omission may receive a bounded repair packet. Identity/s
 
 ## 10. Worked examples
 
-- Mortal construction, all profiles, policies, lifetimes, sources, wound independence, rejection, and bounded repair: `Examples/E_CLI_Effect_Materialization.txt`.
+- Mortal construction, all profiles, policies, lifetimes, sources, wound independence, the exact eight spiritual-wound profiles, one complete spiritual-wound source graph, rejection, and bounded repair: `Examples/E_CLI_Effect_Materialization.txt`.
 - Fate Shield purchase plus a later sealed critical-failure event report: `Examples/E_CLI_Ink_Feather_Actions.txt`.
 - Afterlife profile and all five spiritual-condition lifecycles: `Examples/E_CLI_Afterlife_Turns.txt`.

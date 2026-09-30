@@ -49,6 +49,25 @@ internal sealed class MortalItemRouteAuthorityCatalog
 
     internal IReadOnlyList<MortalItemRouteAuthorityIssue> Issues { get; }
 
+    internal static MortalItemRouteAuthorityCatalog CreateFrozen(
+        IReadOnlyDictionary<string, MortalItemRouteAuthority> byCreationRef)
+    {
+        ArgumentNullException.ThrowIfNull(byCreationRef);
+        return new MortalItemRouteAuthorityCatalog(
+            byCreationRef.ToDictionary(
+                static pair => pair.Key,
+                static pair => pair.Value with
+                {
+                    Destination = pair.Value.Destination with
+                    {
+                        ContainerPath = pair.Value.Destination.ContainerPath.ToArray()
+                    },
+                    SourceItemIds = pair.Value.SourceItemIds.ToArray()
+                },
+                StringComparer.Ordinal),
+            new List<MortalItemRouteAuthorityIssue>());
+    }
+
     internal static int MeasureTradeAuthorityWork(
         JsonObject? requestsRoot,
         JsonObject? npcRoot)
@@ -59,24 +78,44 @@ internal sealed class MortalItemRouteAuthorityCatalog
         return work.TotalVisited;
     }
 
+    /// <summary>
+    /// Builds item-route authority from current carriers and physical signed pre-turn inputs.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem for ordinary reads and physical request and snapshot authority.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease, or <see langword="null"/> for ordinary reads without a retained view.
+    /// </param>
+    /// <param name="acceptedStorageCoordinates">
+    /// Accepted location storage destinations, or <see langword="null"/> when none were admitted.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current carriers for private original intake, or <see langword="null"/> for physical current reads.
+    /// </param>
+    /// <returns>
+    /// Route authorities and issues derived from the selected current carriers and physical pre-turn data.
+    /// </returns>
     internal static async Task<MortalItemRouteAuthorityCatalog> BuildAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease? writeLease = null,
-        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null)
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
 
-        var player = ParseObject(await ReadAsync(fs, writeLease, PlayerInventoryPath));
-        var npcCore = ParseObject(await ReadAsync(fs, writeLease, NpcCorePath));
-        var npcCommands = ParseObject(await ReadAsync(fs, writeLease, NpcCommandsPath));
-        var currentLocation = ParseObject(await ReadAsync(fs, writeLease, CurrentLocationPath));
-        var offscreenLocationStorage = ParseObject(await ReadAsync(
+        var player = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, PlayerInventoryPath));
+        var npcCore = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, NpcCorePath));
+        var npcCommands = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, NpcCommandsPath));
+        var currentLocation = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, CurrentLocationPath));
+        var offscreenLocationStorage = ParseObject(await ReadCurrentAsync(
             fs,
             writeLease,
+            currentInputs,
             OffscreenLocationStoragePath));
-        var vehicles = ParseVehicles(await ReadAsync(fs, writeLease, VehiclesPath));
+        var vehicles = ParseVehicles(await ReadCurrentAsync(fs, writeLease, currentInputs, VehiclesPath));
         var turnRequest = ParseObject(await ReadAsync(fs, writeLease, TurnRequestPath));
-        var questHistory = ParseObject(await ReadAsync(fs, writeLease, QuestHistoryPath));
+        var questHistory = ParseObject(await ReadCurrentAsync(fs, writeLease, currentInputs, QuestHistoryPath));
         var snapshotManifest = ParseObject(await ReadAsync(
             fs,
             writeLease,
@@ -139,6 +178,36 @@ internal sealed class MortalItemRouteAuthorityCatalog
         writeLease == null
             ? fs.ReadFileAsync(path)
             : fs.ReadFileAsync(writeLease, path);
+
+    /// <summary>
+    /// Reads a current gameplay carrier from the retained original view when one is supplied.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem used to verify the lease and for ordinary current reads.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease required for an original view, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained original view, or <see langword="null"/> for the physical current carrier.
+    /// </param>
+    /// <param name="path">
+    /// Exact current carrier path in the view's registered inventory.
+    /// </param>
+    /// <returns>
+    /// Decoded current text, or <see langword="null"/> when that carrier is absent.
+    /// </returns>
+    private static Task<string?> ReadCurrentAsync(FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        SpiritualOriginalDraftInputs? currentInputs, string path)
+    {
+        if (currentInputs == null)
+            return ReadAsync(fs, writeLease, path);
+        if (writeLease == null)
+            throw new InvalidOperationException("Original current inputs require a real canonical lease.");
+        fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        return Task.FromResult(currentInputs.ReadText(path));
+    }
 
     private static async Task<string?> ReadSnapshotFileAsync(
         FileSystemManager fs,
@@ -696,28 +765,65 @@ internal sealed class MortalItemRouteAuthorityCatalog
         JsonObject? root,
         TradeAuthorityWorkCounter? work = null)
     {
-        var mutable = new Dictionary<string, List<JsonObject>>(StringComparer.Ordinal);
+        var mutable = new Dictionary<
+            string,
+            List<(string Section, JsonObject Actor)>>(StringComparer.Ordinal);
         if (root != null)
         {
-            foreach (var npc in EnumerateNpcObjects(root))
+            foreach (var section in GuardianPolicyContracts
+                         .NpcCoreCanonicalNpcObjectSections)
             {
-                work?.Visit();
-                var npcId = ReadNpcIdentity(npc);
-                if (npcId == null)
+                if (root[section] is not JsonArray npcs)
                     continue;
-                if (!mutable.TryGetValue(npcId, out var owners))
+                foreach (var npc in npcs.OfType<JsonObject>())
                 {
-                    owners = new List<JsonObject>();
-                    mutable.Add(npcId, owners);
+                    work?.Visit();
+                    var npcId = ReadNpcIdentity(npc);
+                    if (npcId == null)
+                        continue;
+                    if (!mutable.TryGetValue(npcId, out var owners))
+                    {
+                        owners = new List<(string Section, JsonObject Actor)>();
+                        mutable.Add(npcId, owners);
+                    }
+                    owners.Add((section, npc));
                 }
-                owners.Add(npc);
             }
         }
 
+        var confusableIds = mutable.Keys
+            .GroupBy(
+                ResourceMaterializationContract.BuildConfusableKey,
+                StringComparer.Ordinal)
+            .Where(static group => group.Count() > 1)
+            .SelectMany(static group => group)
+            .ToHashSet(StringComparer.Ordinal);
         return mutable.ToDictionary(
             pair => pair.Key,
-            pair => (IReadOnlyList<JsonObject>)pair.Value.ToArray(),
+            pair => ResolveLogicalNpcOwners(
+                pair.Key,
+                pair.Value,
+                confusableIds.Contains(pair.Key)),
             StringComparer.Ordinal);
+    }
+
+    private static IReadOnlyList<JsonObject> ResolveLogicalNpcOwners(
+        string actorId,
+        IReadOnlyList<(string Section, JsonObject Actor)> physicalOwners,
+        bool hasConfusableIdentity)
+    {
+        if (!hasConfusableIdentity &&
+            MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(
+                actorId,
+                physicalOwners))
+        {
+            return new[] { physicalOwners[0].Actor };
+        }
+
+        // Route validation accepts exactly one logical owner. Preserve a
+        // deterministic ambiguous cardinality even when the invalid topology
+        // consists of one malformed row or two distinct confusable IDs.
+        return new[] { physicalOwners[0].Actor, physicalOwners[0].Actor };
     }
 
     private static Dictionary<string, NpcAddAuthorityCandidate>

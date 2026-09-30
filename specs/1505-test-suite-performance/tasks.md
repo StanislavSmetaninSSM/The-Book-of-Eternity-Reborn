@@ -2,9 +2,13 @@
 
 **Input**: Design documents from `specs/1505-test-suite-performance/`
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 **Prerequisites**: [spec.md](spec.md), [plan.md](plan.md), [research.md](research.md), [data-model.md](data-model.md), [quickstart.md](quickstart.md)
+
+**Active execution:** T066–T071 under CATEGORY-SELECTION-DECISION rev1, approved
+2026-09-30. Earlier phases and documented Lane commands are historical evidence;
+their broad-control requirements are superseded. Do not execute those commands.
 
 ## Phase 1: Setup and Baseline
 
@@ -211,6 +215,111 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
   failures/duplicates, timeout false, and complete cleanup, then record the
   result in `docs/testing.md` and `specs/1505-test-suite-performance/quickstart.md`.
 
+---
+
+## Phase 11: Issue #1551 Fast Physical-Boundary Repair
+
+**Goal**: Restore Fast to honest unit/contract feedback with approximately
+three-minute operating time while retaining its five-minute hard limit and all
+existing test cases and assertions.
+
+**Independent test**: Exact source/category guards pass, every moved source is
+discoverable through Focused Integration and its diagnostic lane, Fast PlanOnly
+has no duplicate membership, and two Fast controls finish below five minutes.
+
+- [x] T054 [US3] Record the approved #1551 design and amend
+  `specs/1505-test-suite-performance/spec.md`, `plan.md`, and `tasks.md` with
+  the measured 7,797-case boundary regression and no-gameplay/no-GM-contract
+  scope.
+- [x] T055 [US4] Add RED exact relative-path and category expectations for the
+  reviewed #1551 sources in
+  `BookOfEternityClient.Tests/FastTestBoundaryTests.cs` and
+  `BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs`, then
+  run both focused guards while the sources are still in Fast. The final-review
+  remediation also makes category ownership Roslyn/class-level and adds
+  synthetic comment/string/method-attribute decoys.
+- [x] T056 [US3] Move the canonical wound and browser transport group into
+  `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`:
+  `MortalWoundRecoveryTests.cs`,
+  `MortalWoundTreatmentCapabilityAuthorityTests.cs`,
+  `WebUi/BrowserMortalWorldGenerationFencingTests.cs`, and
+  `WebUi/BrowserStorageTransportParityTests.cs`.
+- [x] T057 [US3] Extract every deterministic QTE input/grading assertion into
+  fixture-free `BookOfEternityClient.Tests/QteDeterministicLogicTests.cs`, move
+  the remaining canonical lifecycle in `QteSceneServiceTests.cs` to
+  `BookOfEternityClient.IntegrationTests/` with `RegressionIntegration`, and
+  prove every original test method/theory row exists exactly once through an
+  executable 66 Fast / 51 Integration Roslyn inventory.
+- [x] T058 [US3] Move `BookOfEternityClient.Tests/GmWorkerLiveSmokeTests.cs` to
+  Integration with `ProcessIntegration` and
+  `BookOfEternityClient.Tests/LocalWebUiSmokeTests.cs` to Integration with
+  `E2E`, preserving existing method-level traits and process/host cleanup.
+- [x] T059 [US3] Run focused Fast QTE logic, focused Integration selections for
+  the three changed categories, and both exact boundary guards through
+  `scripts/test-csharp.ps1`.
+- [x] T060 [US4] Run Fast PlanOnly plus one bounded Fast checkpoint, retain
+  counts/timings/duplicate/cleanup evidence, and compare the wall time with the
+  four pre-change descriptor measurements.
+- [x] T061 [US3] Because T060's fail-fast contour did not complete full planned
+  membership, move the exact measured
+  file-backed second group listed in `plan.md` to Integration with
+  `RegressionIntegration` (or `ProcessIntegration` for real-worker sources),
+  update both manifests, and rerun focused category plus PlanOnly controls.
+  Final-review remediation semantically splits the mixed Daren source: 67
+  fixture-free methods / 77 rows are Fast
+  `DarenQteDeterministicLogicTests`, while its 12 file/service methods / 12 rows
+  remain Integration `DarenQteShowcaseTests`; executable Roslyn manifests prove
+  exact ownership and row preservation.
+- [x] T062 [US3] Synchronize the final #1551 placement rules and evidence in
+  `docs/testing.md`, `specs/1505-test-suite-performance/research.md`,
+  `data-model.md`, and `quickstart.md`; record that GM prompts, examples,
+  manifests, client UI, and afterlife runtime docs are unchanged because this
+  is internal test scheduling only.
+- [x] T063 [US3] Run two representative Fast controls below the unchanged
+  five-minute hard limit, preferably around three minutes, with zero duplicate
+  IDs and complete owned-process cleanup. The retained runs are
+  `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast`
+  (`00:02:17.7762792`) and
+  `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast`
+  (`00:02:13.7896671`). Both had timeout false, zero duplicates, and complete
+  cleanup, but remain official RED/incomplete: each executed `4,759`, passed
+  `4,694`, and failed the exact retained 65 #1536 T067 rows; fail-fast left 24
+  of 29 planned descriptors without complete TRX evidence. The +77 passes are
+  exactly the Daren deterministic rows restored to Fast.
+- [x] T064 [US4] Inspect exact diffs, run `git diff --check`, complete
+  independent code review and Spec Kit consistency analysis, explicitly verify
+  source/method-body/assertion preservation not covered by the executable row
+  manifests, and retain the branch ready for the wound-materialization
+  continuation without running PreMerge until merge is explicitly requested.
+  The final independent review of `3dbf0572..4c8dc6aa` confirmed every moved
+  QTE/Daren method body and assertion was preserved, all three implementation
+  findings were closed, the duration-driven taxonomy contradiction was removed,
+  and no Critical or Important finding remained. Its sole non-blocking stale
+  internal-report range was corrected before closure. The final prerequisite
+  and consistency pass found all 18 FRs and 12 SCs represented by the 64-task
+  plan with no #1551 coverage or constitution gap; historical T043/T048 remain
+  unrelated open bookkeeping. `git diff --check 3dbf0572..HEAD` was clean,
+  status contained only the preserved untracked `.serena/`, and PreMerge was
+  intentionally not run.
+
+---
+
+## Phase 12: Issue #1536 Treatment Resolver Lane Boundary
+
+- [x] T065 [US3] Extend the exact reviewed-heavy manifest from 32 to 58 paths
+  by moving `MortalWoundTreatmentAcceptedStateRegistryTests.cs` and the exact
+  25-file `MortalWoundTreatmentResolverTests*.cs` partial family into
+  Integration. Keep only the primary partial declaration and standalone
+  registry in the 35-entry class-level `RegressionIntegrationSources` manifest,
+  with literal class-level `RegressionIntegration` traits. The source guards
+  must require exact single Integration ownership and the complete partial
+  inventory. Record that accepted-state files, persistence, leases, resource
+  claims, publication, restart, and replay are Integration behavior, while
+  fixture-free treatment parsers, projectors, fingerprints, reducers, and pure
+  policy tests remain Fast. Do not change Fast's five-minute limit or remove
+  assertions; no production, gameplay, GM, or afterlife contract changes are
+  in scope.
+
 ## Dependencies and Execution Order
 
 - T005 completes setup.
@@ -230,6 +339,12 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 - T049–T053 are the #1547 deadline correction. T049 supplies the measured
   lower bound; T050 must be RED before T051; T052 verifies the executable
   contract before T053 runs the exact final gate.
+- T054–T064 are the #1551 Fast physical-boundary repair. T055 must be RED before
+  T056–T058; T059 proves the moved groups; T060 decides whether the exact
+  second group in T061 is required; accepted whole-range findings are remediated
+  within T055/T057/T061 before T062 follows the final placement; T063 is exactly
+  two post-remediation Fast controls; T064 performs independent re-review
+  without a merge-only PreMerge run.
 
 ## Notes
 
@@ -258,3 +373,85 @@ filters, hard limits, result aggregation, and exact-owned-tree cleanup.
 .\scripts\test-csharp.ps1 -Lane DeepValidation
 .\scripts\test-csharp.ps1 -Lane PreMerge
 ```
+
+## Current direction — category selection, 2026-09-30
+
+The owner's latest instruction stops the lane-split verification below and
+supersedes mandatory Fast/PreMerge/full-suite execution. No broad controls may
+resume; the exact category strategy was approved on 2026-09-30. Historical completed
+tasks retain their evidence; unfinished old controls are suspended, not passed.
+
+- [x] T065-CATEGORY-STRATEGY-SPEC (#1505 / #1536) Prepare and present
+  `CATEGORY-SELECTION-DECISION`, revision 1, in `spec.md`: evolving documented
+  categories, executor-owned category maintenance, impact-based selection with
+  no all-suite control, discovery/accounting guards, local/CI/documentation
+  migration, and isolated fixture policy. Obtain approval of the exact written
+  revision. Then update `plan.md` and implementation tasks through Spec Kit and
+  run consistency analysis before changing the runner or tests. This task does
+  not authorize gameplay work, commit, push, merge, or resuming old controls.
+  Exact revision 1 approved by owner on 2026-09-30: «подтверждаю».
+
+### Active category implementation (#1505 / #1536)
+
+- [x] T066 [US1/US2] Implement catalog schema/selection in
+  `scripts/testing/TestCategoryCatalog.psm1` with RED/GREEN evidence in
+  `scripts/tests/test-category-catalog.tests.ps1`; populate `tests/categories.json`
+  from actual C#/frontend inventory, split large partials and document each
+  responsibility. Cover unknown/empty/stale selectors, unmapped tests,
+  multi-membership deduplication and extension without a runner enum.
+- [x] T067 [US1/US3] Implement bounded category execution in
+  `scripts/test-csharp.ps1` and `scripts/testing/TestCategoryExecution.ps1`.
+  Preserve owned processes, cleanup, result completeness and exact method filters;
+  reject old lanes and implicit full runs. Migrate obsolete boundary tests in
+  `FastTestBoundaryTests.cs` and `IntegrationTestBoundaryTests*.cs` to category
+  contracts, proving cross-project/dynamic-theory/partial-failure cases.
+- [x] T068 [US1/US4] Add selected frontend file execution and reporting; migrate
+  frontend `package.json`, `.github/workflows/dotnet-ci.yml` and explicit
+  `tests/selection.json` to category selection. Verify Node/Vitest selection,
+  missing reports, skips and failed assertions without any full suite.
+- [x] T069 [US2/US4] Audit existing fixture caches and document decisions in
+  `docs/testing.md`; change only caches with confirmed risks/unjustified
+  complexity and verify affected isolation boundaries. Migrate `AGENTS.md`,
+  `docs/development-workflow.md`, GitHub templates and active #1505/#1536
+  verification instructions; add practical category creation/splitting examples.
+- [x] T070 [US1/US3] Validate all catalog ownership through discovery only;
+  execute the selected infrastructure/process/frontend categories and any
+  actually changed fixture categories. Check XML builds, exact selection,
+  result completeness, timings and owned cleanup. Record evidence in `plan.md`.
+- [x] T071 [US4] Obtain independent Astra XHigh review of the exact completed
+  migration, original CAT-001–010 requirements and verification choices. Fix
+  validated findings, rerun affected categories, record process assessment and
+  report to owner; stop before gameplay work or external publication.
+
+Dependencies: T066 → T067 → T068 → T069/T070 → T071. Catalog data can be
+prepared independently of runner implementation once its schema is fixed.
+
+### Owner-requested GitHub checkpoint — 2026-09-30
+
+- [x] T072-PUBLISH-CHECKPOINT (#1505 / #1536) Preserve all accumulated wound
+  materialization and category-migration source, tests, prompts, examples and
+  tracked planning history on GitHub. The owner's direct request authorizes
+  staging, committing and pushing the existing feature branch and its local
+  history, superseding the earlier publication pause for this checkpoint only.
+  Exclude machine-local Serena configuration, ignored test results, runtime
+  state and build/dependency outputs. Independently review the publication
+  inventory and status wording, verify the committed tree matches the intended
+  files, push without force, and confirm the remote commit. This is durable WIP
+  preservation, not completion of #1536 or merge approval; do not resume gameplay.
+  Evidence: independent Astra XHigh publication review accepted the exact
+  586-file inventory and preserved history; snapshot
+  `e181539a4330a20781fd71e2c0432b826e396c56` was pushed without force to
+  `origin/1536-complete-wound-materialization` and the remote SHA matched.
+  See the publication receipt in [plan.md](plan.md).
+
+## Suspended cross-feature amendment — #1536 / #1505, 2026-09-30
+
+Implementation and verification of the owner-approved #1536 test-lane boundary are tracked under
+`specs/1536-complete-wound-materialization/tasks.md`
+(`T081-D-PERFORMANCE-LANE-SPLIT-*`). Those tasks were the checklist for
+FR-014/SC-013: a separate complete spiritual cutover lane, exact PreMerge
+sentinels, unchanged process cases, robust planned/completed accounting, both
+30-minute controls and independent review. Earlier completed tasks above remain
+historical; they do not authorize counting an incomplete PreMerge as the final
+control. Both unfinished full timing controls are now suspended by the owner's
+new category strategy; they must not be resumed or marked as passed.

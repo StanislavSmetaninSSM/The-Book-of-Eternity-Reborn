@@ -164,6 +164,12 @@ public sealed class ResourceAfterlifeOwnerTests
         Assert.False(canonicalProfile.ContainsKey("resourceMaterialization"));
     }
 
+    /// <summary>
+    /// Publishes a new conflict and both resource owners through the common accepted plan.
+    /// </summary>
+    /// <returns>
+    /// A task completing after raw validation, exact owner publication and canonical resource agreement.
+    /// </returns>
     [Fact]
     public async Task AcceptedTurn_ConflictStartUsesTheCommonOwnerPlanAndPublication()
     {
@@ -198,7 +204,10 @@ public sealed class ResourceAfterlifeOwnerTests
         var issues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.True(
+            issues.All(issue => issue.Severity != IssueSeverity.Error),
+            string.Join(Environment.NewLine, issues.Select(issue =>
+                $"{issue.Code}: expected={issue.Expected}; actual={issue.Actual}")));
         var handoff = await AcceptedMechanicsAuthorityTestProbe.PeekCommonAsync(
             context.FileSystem);
         Assert.NotNull(handoff);
@@ -1036,6 +1045,15 @@ public sealed class ResourceAfterlifeOwnerTests
                 new JsonArray(profiles.Select(static profile => (JsonNode)profile).ToArray())
         };
 
+    /// <summary>
+    /// Creates a persistent player-soul owner with explicit current special-art authority.
+    /// </summary>
+    /// <param name="realm">
+    /// Display realm used to select the corresponding resource-owner realm key.
+    /// </param>
+    /// <returns>
+    /// A fresh profile with no special arts and one active player-soul resource binding.
+    /// </returns>
     private static JsonObject PlayerSoulProfile(string realm) =>
         new()
         {
@@ -1043,6 +1061,7 @@ public sealed class ResourceAfterlifeOwnerTests
             ["actorId"] = "player_soul",
             ["displayName"] = "Душа игрока",
             ["realm"] = realm,
+            ["specialArts"] = new JsonArray(),
             ["resourceOwnerBindings"] = new JsonArray
             {
                 new JsonObject
@@ -1054,13 +1073,23 @@ public sealed class ResourceAfterlifeOwnerTests
             }
         };
 
+    /// <summary>
+    /// Creates the original persistent player-soul profile before its resource binding is allocated.
+    /// </summary>
+    /// <param name="realm">
+    /// Original display realm retained by the owner bootstrap and signed snapshot.
+    /// </param>
+    /// <returns>
+    /// A fresh profile with explicit empty special-art authority and no caller-authored binding.
+    /// </returns>
     private static JsonObject PlayerSoulProfileWithoutBinding(string realm) =>
         new()
         {
             ["actorType"] = "player_soul",
             ["actorId"] = "player_soul",
             ["displayName"] = "Душа игрока",
-            ["realm"] = realm
+            ["realm"] = realm,
+            ["specialArts"] = new JsonArray()
         };
 
     private static void AssertDeterministicComposition(
@@ -1228,6 +1257,7 @@ public sealed class ResourceAfterlifeOwnerTests
     private static JsonObject ActiveConflict(string conflictId, string realm) =>
         new()
         {
+            ["dangerMode"] = "hostile",
             ["conflictId"] = conflictId,
             ["realm"] = realm,
             ["status"] = "active",

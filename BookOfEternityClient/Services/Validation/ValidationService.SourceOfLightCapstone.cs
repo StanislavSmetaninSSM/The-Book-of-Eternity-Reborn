@@ -775,7 +775,8 @@ public partial class ValidationService
         JsonObject diceAudit,
         string context,
         List<ValidationIssue> issues,
-        AfterlifeConflictDiceContext diceContext)
+        AfterlifeConflictDiceContext diceContext,
+        bool isPreTurnPayload)
     {
         var actual = SourceOfLightCapstoneState.SumLightIncarnatePlayerModifiers(diceAudit);
         var auditTurn = ResolveLightIncarnateAuditTurn(payload, diceAudit);
@@ -797,10 +798,10 @@ public partial class ValidationService
 
         if (auditTurn is not > 0)
         {
-            if (diceContext.IsPreTurnNoTurnDicePayload(payload))
+            if (isPreTurnPayload)
                 return;
 
-            if (actual == 0 && !diceContext.HasAuthoritativeDice)
+            if (actual == 0 && !diceContext.HasAuthoritativeDice && !diceContext.HasValidatedTurnBaseline)
                 return;
 
             issues.Add(new ValidationIssue(
@@ -812,6 +813,22 @@ public partial class ValidationService
                 expected: $"exchangeAtTurn/resolvedAtTurn/turnNumber >= {diceContext.LightIncarnateGrantTurn!.Value} and modifier source/id/passiveId={SourceOfLightCapstoneState.PassiveId}",
                 actual: $"auditTurn=missing; modifier sum={actual}",
                 repairHint: "Добавь exchangeAtTurn/resolvedAtTurn/turnNumber к contested exchange/resolution audit и явный light_incarnate modifier, либо докажи, что audit predates grantedAtTurn."));
+            return;
+        }
+
+        if (auditTurn.Value < diceContext.LightIncarnateGrantTurn!.Value &&
+            diceContext.HasValidatedTurnBaseline &&
+            !isPreTurnPayload)
+        {
+            issues.Add(new ValidationIssue(
+                $"{context}.turnNumber",
+                IssueSeverity.Error,
+                "Новый contested audit не может пропустить Воплощение Света, указав ход до получения искусства.",
+                code: "afterlife_conflict_light_incarnate_modifier_mismatch",
+                section: "AfterlifeSpiritualConflict",
+                expected: $"accepted pre-turn payload or current audit with turn >= {diceContext.LightIncarnateGrantTurn!.Value} and explicit light_incarnate modifier",
+                actual: $"auditTurn={auditTurn.Value}; modifier sum={actual}; accepted pre-turn payload=false",
+                repairHint: "Исправь turn marker и явный light_incarnate modifier текущего exchange/resolution; не переписывай принятые старые записи."));
             return;
         }
 

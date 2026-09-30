@@ -1,0 +1,648 @@
+--- a/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs
++++ b/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs
+@@ -24,7 +24,7 @@
+ 
+     // This is an original input owner. It is deliberately not an accepted wound
+     // frontier, generation receipt or completed resource/effect plan.
+-    internal sealed class SpiritualOriginalTurnCapture : IDisposable
++    internal sealed partial class SpiritualOriginalTurnCapture : IDisposable
+     {
+         internal static async Task<SpiritualOriginalTurnCaptureResult> CaptureAsync(
+             ValidationService validator,
+--- /dev/null
++++ b/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnContinuation.cs
+@@ -0,0 +1,172 @@
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Core;
++
++namespace BookOfEternityClient.Services;
++
++public partial class ValidationService
++{
++    internal sealed partial class SpiritualOriginalTurnCapture
++    {
++        // These are the actual consumed capabilities, not a reconstructed alias
++        // dictionary or a claim of current-generation wound admission. E needs
++        // their staged candidate images and ordering to reconstruct this history.
++        private sealed record ConsumedSpiritualContinuation(
++            SpiritualWoundSourceSession.PreparedContinuation SourceTicket,
++            long SourceRevisionBefore,
++            long SourceRevisionAfter,
++            AcceptedMechanicsPlanner.ResourceExecutionStep PreviousStep,
++            AcceptedMechanicsPlanner.ResourceExecutionStep AcceptedStep,
++            AcceptedMechanicsPlanner.ResourceExecutionSession.MissingSidePreparation? MissingSide,
++            JsonArray? Receipts);
++
++        private readonly List<ConsumedSpiritualContinuation> _consumedContinuations = new();
++
++        internal JsonObject ReadPendingResourceRequest(FileSystemManager.CanonicalWriteLease lease,
++            AcceptedMechanicsPlanner.PendingSpiritualResourceExchange expected)
++        {
++            ArgumentNullException.ThrowIfNull(expected);
++            // A synchronous reader cannot race a continuation using this capture.
++            if (!_gate.Wait(0))
++                throw new InvalidOperationException("The original capture is continuing.");
++            try
++            {
++                EnsureCurrent(lease);
++                if (_resources == null || !ReferenceEquals(_lastResourceStep?.PendingResource, expected))
++                    throw new InvalidOperationException("Read the exact retained resource wait.");
++                return _resources.ReadPendingResourceRequest(expected);
++            }
++            finally { _gate.Release(); }
++        }
++
++        // Receipts are commands from the actual safe packet. The retained typed
++        // resolver validates them; editing the canonical command file is still
++        // forbidden by CheckRetainedInputsAsync. Canonical intake belongs to E.
++        internal async Task<AcceptedMechanicsPlanner.ResourceContinuationResult> ResumePendingResourceAsync(
++            FileSystemManager.CanonicalWriteLease lease,
++            AcceptedMechanicsPlanner.PendingSpiritualResourceExchange expected,
++            JsonArray receipts)
++        {
++            ArgumentNullException.ThrowIfNull(expected);
++            ArgumentNullException.ThrowIfNull(receipts);
++            // Freeze caller commands before the first await. This is data, not
++            // validity: ResumePendingResource must still check every receipt.
++            var capturedReceipts = receipts.DeepClone().AsArray();
++            await _gate.WaitAsync();
++            var attemptedResourceResume = false;
++            try
++            {
++                EnsureCurrent(lease);
++                if (_resources == null || !ReferenceEquals(_lastResourceStep?.PendingResource, expected))
++                    return ResourceFailure("spiritual_resource_wait_mismatch", "the exact retained resource wait");
++                var issues = await CheckRetainedInputsAsync(lease);
++                if (issues.Count != 0)
++                    return new(null, issues);
++                var prepared = await _source.PrepareContinuationAsync(lease);
++                if (prepared.Ticket == null)
++                    return new(null, prepared.Issues);
++                EnsureCurrent(lease);
++                attemptedResourceResume = true;
++                var result = _resources.ResumePendingResource(expected, capturedReceipts);
++                // A rejected receipt has no Step and has changed neither resource
++                // nor source prefix. Discard this source ticket and retry later.
++                return AcceptResumedResourceStep(lease, prepared.Ticket, result, null, capturedReceipts);
++            }
++            catch
++            {
++                if (attemptedResourceResume)
++                    Dispose();
++                throw;
++            }
++            finally { _gate.Release(); }
++        }
++
++        internal async Task<AcceptedMechanicsPlanner.ResourceContinuationResult> ResumeMissingAuditSideAsync(
++            FileSystemManager.CanonicalWriteLease lease,
++            AcceptedMechanicsPlanner.PendingSpiritualExchange expected)
++        {
++            ArgumentNullException.ThrowIfNull(expected);
++            await _gate.WaitAsync();
++            var attemptedResourceCommit = false;
++            try
++            {
++                EnsureCurrent(lease);
++                if (_resources == null || !ReferenceEquals(_lastResourceStep?.PendingExchange, expected))
++                    return ResourceFailure("spiritual_missing_side_wait_mismatch", "the exact retained missing-side wait");
++                var issues = await CheckRetainedInputsAsync(lease);
++                if (issues.Count != 0)
++                    return new(null, issues);
++                var preparedSource = await _source.PrepareContinuationAsync(lease);
++                if (preparedSource.Ticket == null)
++                    return new(null, preparedSource.Issues);
++                var context = _input.PlanningContext!;
++                var batches = _source.BuildPreparedResourceBatches(lease, preparedSource.Ticket,
++                    context.Owners, context.State);
++                if (!batches.IsValid)
++                    return new(null, batches.Issues);
++                var completion = batches.Exchanges.SingleOrDefault(batch => batch.Ordinal == expected.Ordinal);
++                if (completion == null || completion.ConflictId != expected.ConflictId ||
++                    completion.ExchangeId != expected.ExchangeId)
++                    return ResourceFailure("spiritual_missing_side_candidate_missing", "the waiting exchange from the exact signed source ticket");
++                EnsureCurrent(lease);
++                var preparedResource = _resources.PrepareMissingAuditSide(expected, completion);
++                if (preparedResource.Preparation == null)
++                    return new(null, preparedResource.Issues);
++                var owned = preparedResource.Preparation;
++                // This very raw completion came from this source ticket. The
++                // exact resource-owned preparation retains its canonical exports,
++                // deterministic aliases, and original raw/execution prefix.
++                if (!ReferenceEquals(owned.Owner, _resources) ||
++                    !ReferenceEquals(owned.Expected, expected) ||
++                    !ReferenceEquals(owned.CheckedCompletion, completion))
++                    throw new InvalidOperationException("Missing-side preparation lost its exact producer relation.");
++                attemptedResourceCommit = true;
++                var result = _resources.CommitMissingAuditSide(owned);
++                return AcceptResumedResourceStep(lease, preparedSource.Ticket, result, owned, null);
++            }
++            catch
++            {
++                if (attemptedResourceCommit)
++                    Dispose();
++                throw;
++            }
++            finally { _gate.Release(); }
++        }
++
++        private AcceptedMechanicsPlanner.ResourceContinuationResult AcceptResumedResourceStep(
++            FileSystemManager.CanonicalWriteLease lease,
++            SpiritualWoundSourceSession.PreparedContinuation sourceTicket,
++            AcceptedMechanicsPlanner.ResourceContinuationResult result,
++            AcceptedMechanicsPlanner.ResourceExecutionSession.MissingSidePreparation? missing,
++            JsonArray? receipts)
++        {
++            if (result.Step == null)
++                return result;
++            if (result.Issues.Any(issue => issue.Severity == IssueSeverity.Error) ||
++                result.Step.Result is { IsValid: false })
++            {
++                RevokeUnderLease(lease);
++                return new(null, result.Issues);
++            }
++            EnsureCurrent(lease);
++            var step = result.Step;
++            // Validate actual returned interval ownership before accepting source
++            // evidence. An intermediate wait is retained without closing ordinal.
++            if (step.Interval is { } interval &&
++                (!_resources!.Owns(interval) || interval.Ordinal != _nextResourceOrdinal))
++                throw new InvalidOperationException("The resumed interval must belong to this executor and ordinal.");
++            var before = _source.ContinuationRevision;
++            var committed = _source.CommitPreparedContinuation(lease, sourceTicket);
++            if (committed.Session == null)
++            {
++                RevokeUnderLease(lease);
++                return new(null, committed.Issues);
++            }
++            _consumedContinuations.Add(new(sourceTicket, before, _source.ContinuationRevision,
++                _lastResourceStep!, step, missing, receipts));
++            _lastResourceStep = step;
++            if (step.Interval != null)
++                _nextResourceOrdinal++;
++            return new(step, result.Issues);
++        }
++    }
++}
+--- /dev/null
++++ b/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalContinuation.cs
+@@ -0,0 +1,270 @@
++using System.Collections;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Core;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class AfterlifeResourceCutoverTests
++{
++    [Fact]
++    public async Task OriginalSpiritualContinuation_MissingSideUsesSignedTicketAndSameResourceOwner()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var full = await ReadSourceMissingCandidateAsync(context);
++        var partial = full.DeepClone().AsObject();
++        partial["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!.AsObject().Remove("opposition");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, partial.ToJsonString());
++        object capture;
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait;
++        ValidationService.SpiritualWoundSourceSession source;
++        AcceptedMechanicsPlanner.ResourceExecutionSession resources;
++        string binding;
++        long revision;
++        ResourceTransition[] known;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            (capture, wait, source, resources) = await BeginOriginalMissingWaitAsync(context, lease);
++            binding = source.BuildInputBinding().ToJsonString();
++            revision = source.ContinuationRevision;
++            Assert.Empty(source.Sources);
++            Assert.Empty(source.ClaimedDice);
++            known = OriginalContinuationApplied(resources);
++            Assert.Single(known);
++            Assert.Equal("exchange_conflict_frame_42", known[0].OriginId);
++            // OLD has already captured a real signed source and executed the
++            // known-side cost before the missing common API assertion below.
++        }
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, full.ToJsonString());
++        await using var continuation = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var result = await ResumeOriginalMissingAsync(capture, continuation, wait);
++        AssertNoConflictFrameErrors(result.Issues);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(result.Step!.Interval);
++        Assert.True(resources.Owns(interval));
++        Assert.Same(resources, OriginalCaptureField(capture, "_resources"));
++        Assert.Same(source, OriginalCaptureField(capture, "_source"));
++        Assert.Equal(revision + 1, source.ContinuationRevision);
++        Assert.NotEqual(binding, source.BuildInputBinding().ToJsonString());
++        Assert.Equal(new[] { 0, 1 }, source.ClaimedDice);
++        Assert.True(source.Owns(Assert.Single(source.Sources)));
++        Assert.Contains(known[0], interval.AppliedTransitions);
++        var added = Assert.Single(interval.AppliedTransitions, value => value.EventRef.EndsWith(":opposition"));
++        Assert.StartsWith("spiritual_resume_", added.OriginId);
++        var consumed = Assert.Single(Assert.IsAssignableFrom<IEnumerable>(
++            OriginalCaptureField(capture, "_consumedContinuations")).Cast<object>());
++        Assert.Same(result.Step, OriginalCaptureProperty(consumed, "AcceptedStep"));
++        var prepared = OriginalCaptureProperty(consumed, "MissingSide")!;
++        Assert.Same(wait, OriginalCaptureProperty(prepared, "Expected"));
++        Assert.Same(resources, OriginalCaptureProperty(prepared, "Owner"));
++        var aliases = Assert.IsAssignableFrom<IReadOnlyDictionary<ResourceOperationKey, ResourceOperationKey>>(
++            OriginalCaptureProperty(prepared, "Aliases"));
++        Assert.Equal(added.OriginId, Assert.Single(aliases).Value.OriginId);
++        Assert.NotNull(OriginalCaptureProperty(consumed, "SourceTicket"));
++        var stale = await ResumeOriginalMissingAsync(capture, continuation, wait);
++        Assert.Null(stale.Step);
++        Assert.NotEmpty(stale.Issues);
++        Assert.Equal(revision + 1, source.ContinuationRevision);
++        Assert.Equal(interval.AppliedTransitions, OriginalContinuationApplied(resources));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, continuation));
++    }
++
++    [Theory]
++    [InlineData("known_side")]
++    [InlineData("forged_zero")]
++    [InlineData("foreign_wait")]
++    public async Task OriginalSpiritualContinuation_InvalidMissingEvidenceLeavesBothPrefixesRetryable(string change)
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var full = await ReadSourceMissingCandidateAsync(context);
++        var partial = full.DeepClone().AsObject();
++        partial["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!.AsObject().Remove("opposition");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, partial.ToJsonString());
++        object capture;
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait;
++        ValidationService.SpiritualWoundSourceSession source;
++        AcceptedMechanicsPlanner.ResourceExecutionSession resources;
++        string binding;
++        long revision;
++        ResourceTransition[] known;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            (capture, wait, source, resources) = await BeginOriginalMissingWaitAsync(context, lease);
++            binding = source.BuildInputBinding().ToJsonString();
++            revision = source.ContinuationRevision;
++            known = OriginalContinuationApplied(resources);
++        }
++        var bad = full.DeepClone().AsObject();
++        if (change == "known_side")
++            bad["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!["player"]!["operationType"] = "guard";
++        if (change == "forged_zero")
++        {
++            bad["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!["opposition"]!["effectiveCost"] = 0;
++            bad["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!["opposition"]!["after"] = 6;
++        }
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, bad.ToJsonString());
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            var rejected = await ResumeOriginalMissingAsync(capture, lease,
++                change == "foreign_wait" ? wait with { } : wait);
++            Assert.Null(rejected.Step);
++            Assert.NotEmpty(rejected.Issues);
++            Assert.Equal(binding, source.BuildInputBinding().ToJsonString());
++            Assert.Equal(revision, source.ContinuationRevision);
++            Assert.Empty(source.ClaimedDice);
++            Assert.Equal(known, OriginalContinuationApplied(resources));
++            Assert.True(source.IsCurrentOwner);
++            Assert.Same(wait, Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionStep>(
++                OriginalCaptureField(capture, "_lastResourceStep")).PendingExchange);
++        }
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, full.ToJsonString());
++        await using var repairedLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var repaired = await ResumeOriginalMissingAsync(capture, repairedLease, wait);
++        AssertNoConflictFrameErrors(repaired.Issues);
++        Assert.Equal(2, repaired.Step!.Interval!.AppliedTransitions.Count);
++        Assert.Equal(revision + 1, source.ContinuationRevision);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, repairedLease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualContinuation_TwoMissingFillsKeepFirstAliasAndDelaySourceDice()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var full = await ReadSourceMissingCandidateAsync(context);
++        var empty = full.DeepClone().AsObject();
++        empty["activeConflict"]!["exchangeLog"]![0]!.AsObject().Remove("actionCostAudit");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, empty.ToJsonString());
++        object capture;
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait;
++        ValidationService.SpiritualWoundSourceSession source;
++        AcceptedMechanicsPlanner.ResourceExecutionSession resources;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++            (capture, wait, source, resources) = await BeginOriginalMissingWaitAsync(context, lease);
++        var player = full.DeepClone().AsObject();
++        player["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!.AsObject().Remove("opposition");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, player.ToJsonString());
++        ResourceTransition first;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            var partial = await ResumeOriginalMissingAsync(capture, lease, wait);
++            AssertNoConflictFrameErrors(partial.Issues);
++            var next = Assert.IsType<AcceptedMechanicsPlanner.PendingSpiritualExchange>(partial.Step!.PendingExchange);
++            Assert.NotSame(wait, next);
++            wait = next;
++            first = Assert.Single(OriginalContinuationApplied(resources));
++            Assert.StartsWith("spiritual_resume_", first.OriginId);
++            Assert.Empty(source.Sources);
++            Assert.Empty(source.ClaimedDice);
++        }
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, full.ToJsonString());
++        await using var completeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var complete = await ResumeOriginalMissingAsync(capture, completeLease, wait);
++        AssertNoConflictFrameErrors(complete.Issues);
++        Assert.Contains(first, complete.Step!.Interval!.AppliedTransitions);
++        Assert.Equal(2, complete.Step.Interval.AppliedTransitions.Select(value => value.OriginId).Distinct().Count());
++        Assert.Equal(2, Assert.IsAssignableFrom<IEnumerable>(OriginalCaptureField(capture,
++            "_consumedContinuations")).Cast<object>().Count());
++        Assert.Equal(new[] { 0, 1 }, source.ClaimedDice);
++        Assert.True(source.Owns(Assert.Single(source.Sources)));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, completeLease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualContinuation_LateMissingResourceFailureRevokesWithoutSourceCommit()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var full = await ReadSourceMissingCandidateAsync(context);
++        var partial = full.DeepClone().AsObject();
++        partial["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!.AsObject().Remove("player");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, partial.ToJsonString());
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.CommandPath,
++            OriginalCaptureDefinitionAndActionPointCommand(4m, 0m).ToJsonString());
++        object capture;
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait;
++        ValidationService.SpiritualWoundSourceSession source;
++        AcceptedMechanicsPlanner.ResourceExecutionSession resources;
++        long revision;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            (capture, wait, source, resources) = await BeginOriginalMissingWaitAsync(context, lease);
++            Assert.Equal(2, OriginalContinuationApplied(resources).Length);
++            revision = source.ContinuationRevision;
++        }
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, full.ToJsonString());
++        await using var continuation = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var stateBefore = await context.FileSystem.ReadFileBytesAsync(continuation, ResourceMaterializationContract.StatePath);
++        var historyBefore = await context.FileSystem.ReadFileBytesAsync(continuation, ResourceMaterializationContract.HistoryPath);
++        var failed = await ResumeOriginalMissingAsync(capture, continuation, wait);
++        Assert.Null(failed.Step);
++        Assert.Contains(failed.Issues, issue => issue.Code == "resource_mutation_below_minimum");
++        Assert.Equal(revision, source.ContinuationRevision);
++        Assert.Empty(source.ClaimedDice);
++        Assert.False(source.IsCurrentOwner);
++        Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, continuation, out _));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, continuation));
++        Assert.Equal(stateBefore, await context.FileSystem.ReadFileBytesAsync(continuation, ResourceMaterializationContract.StatePath));
++        Assert.Equal(historyBefore, await context.FileSystem.ReadFileBytesAsync(continuation, ResourceMaterializationContract.HistoryPath));
++        Assert.False(resources.Result!.IsValid);
++        Assert.Null(resources.Result.StateAfterImage);
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualContinuation_CommandFileEditStillRevokesOwnedWait()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var partial = await ReadSourceMissingCandidateAsync(context);
++        partial["activeConflict"]!["exchangeLog"]![0]!["actionCostAudit"]!.AsObject().Remove("opposition");
++        await context.WriteExactJsonAsync(AfterlifeSpiritualConflictState.StatePath, partial.ToJsonString());
++        object capture;
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait;
++        ValidationService.SpiritualWoundSourceSession source;
++        AcceptedMechanicsPlanner.ResourceExecutionSession resources;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++            (capture, wait, source, resources) = await BeginOriginalMissingWaitAsync(context, lease);
++        await context.WriteExactJsonAsync(EffectAcceptedTurnPlan.CommandPath,
++            new JsonObject { ["resourceResolutionReceipts"] = new JsonArray() }.ToJsonString());
++        await using var continuation = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var failed = await ResumeOriginalMissingAsync(capture, continuation, wait);
++        Assert.Null(failed.Step);
++        Assert.Contains(failed.Issues, issue => issue.Code == "spiritual_original_input_changed");
++        Assert.False(source.IsCurrentOwner);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, continuation));
++    }
++
++    private static async Task<(object Capture, AcceptedMechanicsPlanner.PendingSpiritualExchange Wait,
++        ValidationService.SpiritualWoundSourceSession Source,
++        AcceptedMechanicsPlanner.ResourceExecutionSession Resources)> BeginOriginalMissingWaitAsync(
++        ResourceMaterializationTestContext context, FileSystemManager.CanonicalWriteLease lease)
++    {
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        Assert.NotNull(capture);
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var result = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(result.Issues);
++        var wait = Assert.IsType<AcceptedMechanicsPlanner.PendingSpiritualExchange>(result.Step!.PendingExchange);
++        var source = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(OriginalCaptureField(capture, "_source"));
++        var resources = Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionSession>(OriginalCaptureField(capture, "_resources"));
++        Assert.True(source.IsCurrentOwner);
++        return (capture, wait, source, resources);
++    }
++
++    private static async Task<AcceptedMechanicsPlanner.ResourceContinuationResult> ResumeOriginalMissingAsync(
++        object capture, FileSystemManager.CanonicalWriteLease lease,
++        AcceptedMechanicsPlanner.PendingSpiritualExchange wait) =>
++        Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "ResumeMissingAuditSideAsync", lease, wait));
++
++    private static ResourceTransition[] OriginalContinuationApplied(AcceptedMechanicsPlanner.ResourceExecutionSession resources) =>
++        Assert.IsAssignableFrom<IReadOnlyList<ResourceTransition>>(OriginalCaptureField(
++            OriginalCaptureField(resources, "_state")!, "appliedTransitions")).ToArray();
++}
+--- /dev/null
++++ b/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalContinuation.Receipts.cs
+@@ -0,0 +1,186 @@
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class AfterlifeResourceCutoverTests
++{
++    [Theory]
++    [InlineData(0)]
++    [InlineData(1)]
++    public async Task OriginalSpiritualContinuation_RealReceiptRetryCommitsSourceOnlyAfterAcceptance(int amount)
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await SeedOriginalContinuationBoundedEffectAsync(context);
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var resources = Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionSession>(OriginalCaptureField(capture, "_resources"));
++        var source = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(OriginalCaptureField(capture, "_source"));
++        var sourceRef = Assert.Single(source.Sources);
++        var first = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(first.Issues);
++        var wait = Assert.IsType<AcceptedMechanicsPlanner.PendingSpiritualResourceExchange>(first.Step!.PendingResource);
++        Assert.Single(wait.RequiredOutputs);
++        var revision = source.ContinuationRevision;
++        var binding = source.BuildInputBinding().ToJsonString();
++        var known = OriginalContinuationApplied(resources);
++        Assert.Single(known);
++        Assert.Equal("soul_integrity", known[0].Coordinate.ResourceKey);
++        Assert.Equal(9m, known[0].AfterState!.Current);
++        var packet = Assert.IsType<JsonObject>(InvokeOriginalCapture(capture, "ReadPendingResourceRequest", lease, wait));
++        var packetJson = packet.ToJsonString();
++        var request = Assert.Single(packet["requests"]!.AsArray())!;
++        var receipts = new JsonArray(new JsonObject
++        {
++            ["requestId"] = request["requestId"]!.GetValue<string>(),
++            ["resultKind"] = "resource_delta", ["amount"] = 99,
++            ["reason"] = "Rejected out-of-bound candidate"
++        });
++        var rejected = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "ResumePendingResourceAsync", lease, wait, receipts));
++        Assert.Null(rejected.Step);
++        Assert.NotEmpty(rejected.Issues);
++        Assert.Equal(revision, source.ContinuationRevision);
++        Assert.Equal(binding, source.BuildInputBinding().ToJsonString());
++        Assert.Same(sourceRef, Assert.Single(source.Sources));
++        Assert.Equal(known, OriginalContinuationApplied(resources));
++        Assert.Equal(packetJson, Assert.IsType<JsonObject>(InvokeOriginalCapture(capture,
++            "ReadPendingResourceRequest", lease, wait)).ToJsonString());
++        receipts[0]!["amount"] = amount;
++        receipts[0]!["reason"] = "Accepted exact owned request";
++        var accepted = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "ResumePendingResourceAsync", lease, wait, receipts));
++        AssertNoConflictFrameErrors(accepted.Issues);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(accepted.Step!.Interval);
++        Assert.True(resources.Owns(interval));
++        Assert.Equal(revision + 1, source.ContinuationRevision);
++        Assert.Same(sourceRef, Assert.Single(source.Sources));
++        var all = OriginalContinuationApplied(resources);
++        Assert.Contains(known[0], all);
++        Assert.Equal(amount == 0 ? 3 : 4, all.Length);
++        Assert.Single(interval.EffectAfter.AcceptedActivations);
++        Assert.Equal(amount == 0 ? 0 : 1, all.Count(value => value.OriginKind == "bounded_receipt"));
++        var after = source.ContinuationRevision;
++        var stale = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "ResumePendingResourceAsync", lease, wait, receipts));
++        Assert.Null(stale.Step);
++        Assert.NotEmpty(stale.Issues);
++        Assert.Equal(after, source.ContinuationRevision);
++        Assert.Equal(all, OriginalContinuationApplied(resources));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++    }
++
++    // A canonical fixture, not a fabricated effect-plan/source capability. The
++    // sealed custom resource supports the real periodic Restore operation, while
++    // AP retains its narrower Spend/Gain contract. Capture reads all of this from
++    // the signed original after the actual owner composer exports its authority.
++    private static async Task SeedOriginalContinuationBoundedEffectAsync(ResourceMaterializationTestContext context)
++    {
++        var parsed = ResourceDefinitionCatalog.ParseCanonical(
++            (await context.ReadJsonAsync(ResourceMaterializationContract.DefinitionsPath))!.ToJsonString(),
++            allowMissingPristine: false);
++        Assert.True(parsed.IsValid);
++        var proposal = new JsonObject
++        {
++            ["resourceKey"] = "soul_integrity", ["definitionVersion"] = 1,
++            ["displayName"] = "Целостность души", ["numericKind"] = "integer",
++            ["unit"] = "point", ["quantum"] = 1,
++            ["minimumPolicy"] = new JsonObject { ["kind"] = "definition_fixed", ["value"] = 0 },
++            ["capacityPolicy"] = new JsonObject { ["kind"] = "instance_fixed" },
++            ["initializationPolicy"] = new JsonObject { ["kind"] = "maximum" },
++            ["allowedOwnerKinds"] = new JsonArray("afterlife_actor"),
++            ["allowedOperations"] = new JsonArray("damage", "restore"),
++            ["defaultFloorPolicy"] = "clamp_to_minimum", ["defaultCapPolicy"] = "clamp_to_maximum",
++            ["visibility"] = "owner_visible"
++        };
++        using var document = JsonDocument.Parse(proposal.ToJsonString());
++        var materialized = ResourceDefinitionCatalog.MaterializeProposal(document.RootElement,
++            parsed.Catalog!, 1, "turn_1:resource_definition:1",
++            static () => new ResourceDefinitionIdentity("resource_definition_continuation_integrity",
++                "resource_definition_seal_continuation_integrity"));
++        Assert.True(materialized.IsValid, string.Join(Environment.NewLine, materialized.Issues));
++        var definitions = parsed.Catalog!.With(materialized.Definition!);
++        var profiles = Assert.IsType<JsonObject>(await context.ReadJsonAsync(AfterlifeEntityProfileState.StatePath));
++        var guardian = profiles[AfterlifeEntityProfileState.ProfilesProperty]!.AsArray().OfType<JsonObject>()
++            .Single(profile => profile["actorId"]!.GetValue<string>() == "guardian_frame");
++        var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
++        definition["allowedRealms"] = new JsonArray("chaos_sea");
++        definition["allowedTargetKinds"] = new JsonArray("guardian");
++        definition["components"]![0]!["payload"]!["resource"] = "soul_integrity";
++        definition["components"]![0]!["payload"]!["amount"] = 1;
++        definition["triggers"] = new JsonArray(new JsonObject
++        {
++            ["triggerId"] = "on_resource_damaged", ["eventType"] = "resource_damaged",
++            ["priority"] = 100, ["componentIds"] = new JsonArray("component_001"),
++            ["consumeUses"] = false, ["resolutionMode"] = "bounded_receipt"
++        });
++        definition["lifetime"]!["advancePhase"] = "afterlife_exchange_end";
++        guardian["specialArts"] = new JsonArray(new JsonObject
++        {
++            ["artId"] = "art_continuation_integrity", ["displayName"] = "Точный отклик",
++            ["effectDescription"] = "Восстанавливает подтверждённый след повреждения.",
++            ["owner"] = "guardian_frame", ["baseOperation"] = "guard",
++            ["activeEffectDefinitions"] = new JsonArray(definition.DeepClone())
++        });
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect("guardian", "periodic_restore");
++        effect["realm"] = "chaos_sea";
++        effect["target"]!["targetId"] = "guardian_frame";
++        effect["source"] = new JsonObject
++        {
++            ["kind"] = "spiritual_art", ["sourceId"] = "art_continuation_integrity",
++            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
++        };
++        effect["components"] = definition["components"]!.DeepClone();
++        effect["triggers"] = definition["triggers"]!.DeepClone();
++        effect["lifetime"]!["advancePhase"] = "afterlife_exchange_end";
++        guardian["activeEffects"] = new JsonArray(effect);
++        var soul = Assert.IsType<JsonObject>(await context.ReadJsonAsync("game_state/meta/soul_state.json"));
++        var conflictRoot = Assert.IsType<JsonObject>(await context.ReadJsonAsync(AfterlifeSpiritualConflictState.StatePath));
++        var conflict = conflictRoot["activeConflict"]!.AsObject();
++        var (apState, apHistory) = BuildActionPointState(definitions, profiles, conflict, soul, 6m, 6m);
++        var owners = AfterlifeResourceOwnerComposer.Compose(new AfterlifeResourceOwnerCompositionInput(definitions,
++            new AfterlifeResourceOwnerRoots(profiles, conflictRoot, soul),
++            new AfterlifeResourceOwnerRoots(profiles, conflictRoot, soul)));
++        Assert.True(owners.IsValid, string.Join(Environment.NewLine, owners.Issues));
++        var owner = owners.Authority!.Entries.Values.Single(value => value.Key.ResourceOwnerId == "guardian_frame");
++        var coordinate = new ResourceCoordinate(owner.Key.Realm, owner.Key.OwnerKind, owner.Key.ResourceOwnerId, "soul_integrity");
++        var resolved = ResolvedResourceCapacity.Resolve(materialized.Definition!, coordinate,
++            new InstanceFixedCapacityInput(FormulaOwner(owner.Key), 10m, owner.AuthorityFingerprint),
++            "continuation_integrity_capacity", includeInitialization: true);
++        Assert.True(resolved.IsValid, string.Join(Environment.NewLine, resolved.Issues));
++        var initialization = InitializeTransition(owner.Key, resolved.Capacity!, 10m, sequence: 2)
++            with { Coordinate = coordinate };
++        var history = ResourceHistoryState.CreateValidated(apHistory.Transitions.Append(initialization), definitions);
++        Assert.True(history.IsValid, string.Join(Environment.NewLine, history.Issues));
++        var state = new ResourceStateLedger(apState.Entries.Append(new ResourceStateEntry(coordinate, 10m, 10m,
++            initialization.AfterState!.CapacityBinding, ResourceLifecycleState.Active,
++            new ResourceChronology(1, initialization.EventRef, initialization.TransitionId, initialization.EventRef, 1))));
++        Assert.Empty(history.History!.ValidateStateAgreement(state));
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.DefinitionsPath, definitions.ToCanonicalJson());
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.StatePath, state.ToCanonicalJson());
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.HistoryPath, history.History.ToCanonicalJson());
++        await context.WriteExactJsonAsync(AfterlifeEntityProfileState.StatePath, profiles.ToJsonString());
++        await context.WriteExactJsonAsync(EffectIdentityState.StatePath, EffectMaterializationTestFixture.CreateIdentityIndex(effect).ToJsonString());
++        await WriteComposedAuthorityAsync(context, definitions, state, history.History);
++        await context.CaptureValidatedPendingSnapshotAsync(turn: 42, currentRealm: "Chaos Sea",
++            preGeneratedDices1d20: [15, 5, 12, 8]);
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.CommandPath, new JsonObject
++        {
++            ["resourceChanges"] = new JsonArray(new JsonObject
++            {
++                ["operation"] = "damage", ["target"] = new JsonObject { ["kind"] = "afterlife_actor", ["targetId"] = "guardian_frame" },
++                ["resourceKey"] = "soul_integrity", ["amount"] = 1,
++                ["source"] = new JsonObject { ["kind"] = "narrative_outcome" },
++                ["eventRef"] = "turn_42:resource:1", ["reason"] = "Original accepted resource damage"
++            })
++        }.ToJsonString());
++    }
++}

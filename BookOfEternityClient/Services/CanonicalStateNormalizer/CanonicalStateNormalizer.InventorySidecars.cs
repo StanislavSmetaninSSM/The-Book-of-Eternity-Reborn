@@ -11,48 +11,31 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/inventory/items.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null)
+        if (currentNode is not JsonObject currentRoot)
             return;
 
-        var result = currentNode.DeepClone();
-        if (result == null || !NormalizeInventoryItemJournalEntries(result))
+        if (MortalItemPublicationTailTransforms.InventoryItemsJournal(currentRoot) is not
+            JsonObject result)
+        {
             return;
+        }
 
-        await WriteCanonicalFileAtomicAsync(path, result.ToJsonString(JsonOpts));
+        await WriteIfChangedAsync(path, currentNode, result);
     }
 
     private async Task NormalizeInventoryItemBondsAsync(IReadOnlyDictionary<string, string>? backups)
     {
         const string path = "game_state/inventory/item_bonds.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        if (currentNode is not JsonObject currentRoot) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(previous ?? new JsonObject());
-        var entries = new JsonArray();
-
-        foreach (var entry in CollectInventorySidecarEntries(previous, "entries"))
-            UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-        if (currentNode is JsonObject currentObj)
+        if (MortalItemPublicationTailTransforms.ItemBonds(currentRoot, previous) is not
+            JsonObject result)
         {
-            foreach (var entry in CollectInventorySidecarEntries(currentObj, "entries"))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-            if (currentObj["itemBondLevelChanges"] is JsonArray bondChanges)
-                ApplyInventoryBondCommands(entries, bondChanges);
-            if (currentObj["itemFateCardUnlocks"] is JsonArray fateCardUnlocks)
-                ApplyInventoryFateCardUnlockCommands(entries, fateCardUnlocks);
-        }
-        else
-        {
-            foreach (var entry in CollectInventorySidecarEntries(currentNode, "entries"))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
+            return;
         }
 
-        result["entries"] = entries;
-        result.Remove("itemBondLevelChanges");
-        result.Remove("itemFateCardUnlocks");
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
@@ -60,31 +43,15 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/inventory/item_text_updates.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        if (currentNode is not JsonObject currentRoot) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(previous ?? new JsonObject());
-        var entries = new JsonArray();
-
-        foreach (var entry in CollectInventoryTextEntries(previous))
-            UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-        if (currentNode is JsonObject currentObj)
+        if (MortalItemPublicationTailTransforms.ItemTexts(currentRoot, previous) is not
+            JsonObject result)
         {
-            foreach (var entry in CollectInventoryTextEntries(currentObj))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
-
-            if (currentObj["updateItemTextContents"] is JsonArray textUpdates)
-                ApplyInventoryTextCommands(entries, textUpdates);
-        }
-        else
-        {
-            foreach (var entry in CollectInventoryTextEntries(currentNode))
-                UpsertByIdentity(entries, entry, "existedId", "itemId", "id", "itemName", "name");
+            return;
         }
 
-        result["entries"] = entries;
-        result.Remove("updateItemTextContents");
         await WriteIfChangedAsync(path, currentNode, result);
     }
 
@@ -92,33 +59,15 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/npcs/item_journals.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        if (currentNode is not JsonObject currentRoot) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(previous ?? new JsonObject());
-        var entries = new JsonArray();
-
-        foreach (var entry in CollectInventorySidecarEntries(previous, "entries", "itemJournals"))
-            UpsertByIdentity(entries, entry, "itemId", "existedId", "id", "itemName", "name");
-
-        if (currentNode is JsonObject currentObj)
+        if (MortalItemPublicationTailTransforms.NpcItemJournals(currentRoot, previous) is not
+            JsonObject result)
         {
-            foreach (var entry in CollectInventorySidecarEntries(currentObj, "entries", "itemJournals"))
-                UpsertByIdentity(entries, entry, "itemId", "existedId", "id", "itemName", "name");
-
-            if (currentObj["itemJournalUpdates"] is JsonArray journalUpdates)
-                ApplyItemJournalCommands(entries, journalUpdates);
-        }
-        else
-        {
-            foreach (var entry in CollectInventorySidecarEntries(currentNode, "entries", "itemJournals"))
-                UpsertByIdentity(entries, entry, "itemId", "existedId", "id", "itemName", "name");
+            return;
         }
 
-        result["entries"] = entries;
-        result.Remove("itemJournals");
-        result.Remove("itemJournalUpdates");
-        NormalizeInventoryItemJournalEntries(result);
         await WriteIfChangedAsync(path, currentNode, result);
     }
 

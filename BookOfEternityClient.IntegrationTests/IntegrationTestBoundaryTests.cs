@@ -4,85 +4,23 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System.Diagnostics;
 using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class IntegrationTestBoundaryTests
+public sealed partial class IntegrationTestBoundaryTests
 {
-    private const int BroadValidationSentinelBudget = 7;
-    private const int ReviewedBroadValidationCallCount = 7;
+    private const int BroadValidationSentinelBudget = 8;
+    private const int ReviewedBroadValidationCallCount = 8;
     private const int GuardianFullValidationSentinelBudget = 8;
     private const string FastTestsDirectory = "BookOfEternityClient.Tests";
     private const string IntegrationTestsDirectory = "BookOfEternityClient.IntegrationTests";
     private const string TestSupportDirectory = "BookOfEternityClient.TestSupport";
     private const string FullValidationTrait = "[Trait(\"Category\", \"FullValidation\")]";
-    private const string DeepValidationTrait =
-        "[Trait(\"Category\", \"DeepValidation\")]";
-    private const string PreMergeSentinelTrait =
-        "[Trait(\"Category\", \"PreMergeSentinel\")]";
-    private const string ProcessIntegrationTrait = "[Trait(\"Category\", \"ProcessIntegration\")]";
-    private const string E2ETrait = "[Trait(\"Category\", \"E2E\")]";
-    private const string RegressionIntegrationTrait =
-        "[Trait(\"Category\", \"RegressionIntegration\")]";
-    private const string RegressionIntegrationOnlyTrait =
-        "[Trait(\"Category\", \"RegressionIntegrationOnly\")]";
-    private const string LifecycleIntegrationTrait =
-        "[Trait(\"Category\", \"LifecycleIntegration\")]";
-
-    private static readonly IReadOnlyDictionary<string, string[]>
-        GameEngineLifecycleSentinelCategories =
-            new Dictionary<string, string[]>(StringComparer.Ordinal)
-            {
-                ["CheckLevelUpAsync_DoesNotAwardAlreadyProcessedLevelAfterEngineRestart"] =
-                    ["PreMergeSentinel"],
-                ["CollectAcceptedTurnRawStateIssuesAsync_DirectNpcCoreMutation_IsRejectedBeforeNormalization"] =
-                    ["PreMergeSentinel"],
-                ["RebindRuntimeAfterSessionReplacement_ActiveReplacementRebindsLoopAndClearsTransientState"] =
-                    ["PreMergeSentinel"],
-                ["WriteValidationRepairRequestAsync_GuardianScopeErrors_AddsConcreteHarnessRepairPacket"] =
-                    ["PreMergeSentinel"],
-                ["ProcessPlayerTurn_UnresolvedRealm_DoesNotCreatePendingDiceState"] =
-                    ["PreMergeSentinel"],
-                ["CleanupAcceptedTurnTerminalArtifactsAsync_WithoutIncarnationTrigger_RemovesTerminalContext"] =
-                    ["PreMergeSentinel"],
-                ["ResolveLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync_ValidActiveManifest_Authorizes"] =
-                    ["PreMergeSentinel"],
-                ["TryPerformOrdinaryReturnToChaosSeaFromShiningAbodeAsync_ResetsEnlightenmentAndPreservesInkFeathers"] =
-                    ["PreMergeSentinel"],
-                ["CreateCanonicalBaselineSnapshotAsync_PreservesAndHashesExactSnapshotBytes"] =
-                    ["PreMergeSentinel"],
-                ["RestorePreTurnBackup_BrowserDirectGachaPreservesExactPreSpendSoulBytes"] =
-                    ["PreMergeSentinel"]
-            };
-
-    private static readonly IReadOnlyDictionary<string, string[]>
-        AfterlifeSpiritualConflictSentinelCategories =
-            new Dictionary<string, string[]>(StringComparer.Ordinal)
-            {
-                ["ValidateGameStateAsync_NoEffectExchange_AllowsIdenticalBeforeAfter"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_ContestedExchange_RejectsDiceNotFromAuthoritativePool"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_ValidActiveCombatCondition_AllowsKnownContractShape"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_PlayerSoulDissipationRequiresTerminalGameOver"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_ShiningVictoryReward_AllowsLightSparkDelta"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_CurrentContestedExchange_RequiresMatchupAudit"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_ActiveConflictInSealedShiningAbode_FailsAvailabilityGate"] =
-                    ["PreMergeSentinel"],
-                ["ValidateGameStateAsync_HistoricalConflictBeforeLightIncarnate_DoesNotRequireRetroactiveModifier"] =
-                    ["PreMergeSentinel"],
-                ["ApplyUpdate_ExchangeAppliesAfterSnapshotToActiveConflict"] =
-                    ["PreMergeSentinel"],
-                ["ApplyUpdate_StartMissingRealm_MarksInvalidAndDoesNotCreateConflict"] =
-                    ["PreMergeSentinel"]
-            };
 
     private static readonly IReadOnlyDictionary<string, string> GuardianProfiles =
         new Dictionary<string, string>(StringComparer.Ordinal)
@@ -137,10 +75,13 @@ public sealed class IntegrationTestBoundaryTests
         new Dictionary<string, string>(StringComparer.Ordinal)
         {
             ["ChaosSeaCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["EffectSkillScopeLifecycleTests.cs"] = "EffectSkillScopeCatalog",
             ["MathAssistantContractValidationTests.cs"] = "ReadableDocument",
             ["MechanicalBonusAuthorityValidationTests.cs"] = "MechanicalBonus",
             ["MortalBootstrapValidationTests.cs"] = "MortalBootstrap",
             ["MortalCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
+            ["MortalWoundTreatmentResourcePublicationLifecycleTests.Severity.cs"] =
+                "MortalWoundTreatmentLifecycle",
             ["ReadableDocumentAuthorityValidationTests.cs"] = "ReadableDocument",
             ["SarefMainStoryStateValidationTests.cs"] = "SarefStory",
             ["ShiningAbodeCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
@@ -160,8 +101,17 @@ public sealed class IntegrationTestBoundaryTests
             [$"{IntegrationTestsDirectory}/BookOfEternityClientGameSessionIntegrityTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
-            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2
+            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2,
+            [$"{IntegrationTestsDirectory}/MortalWoundTreatmentResourcePublicationLifecycleTests.cs"] = 1
         };
+
+    private static readonly string[] ReviewedPublishedTreatmentFullStateCallers =
+    [
+        "GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry",
+        "GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch",
+        "GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof",
+        "GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication"
+    ];
 
     private static readonly string[] GuardianPartialSources =
     [
@@ -178,75 +128,25 @@ public sealed class IntegrationTestBoundaryTests
         "MortalFactPersistenceValidationTests.cs"
     ];
 
-    private static readonly IReadOnlyDictionary<string, string[]> ProcessAndE2ECategories =
-        new Dictionary<string, string[]>(StringComparer.Ordinal)
-        {
-            ["AgentConsoleLiveSmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
-            ["ConsoleE2ESmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
-            ["FileSystemManagerTests.cs"] = [ProcessIntegrationTrait],
-            ["GmMemorySearchToolTests.cs"] = [ProcessIntegrationTrait],
-            ["GmTurnHelperContractTests.cs"] = [ProcessIntegrationTrait],
-            ["GmWorkerBridgeLifecycleTests.cs"] = [ProcessIntegrationTrait],
-            ["GmWorkerCliRunnerTests.cs"] = [ProcessIntegrationTrait],
-            ["GmWorkerProcessHostTests.cs"] = [ProcessIntegrationTrait],
-            ["GmWorkerProcessTreeTests.cs"] = [ProcessIntegrationTrait],
-            ["GmWorkerProposalStoreTests.cs"] = [ProcessIntegrationTrait],
-            ["ImageServiceTests.cs"] = [ProcessIntegrationTrait],
-            ["LocalWebUiBuiltFrontendSmokeTests.cs"] = [ProcessIntegrationTrait, E2ETrait],
-            ["SaveLoadServiceTests.cs"] = [ProcessIntegrationTrait],
-            [Path.Combine("WebUi", "BrowserMediaGenerationServiceTests.cs")] =
-                [ProcessIntegrationTrait],
-            [Path.Combine("WebUi", "BrowserQteGenerationFencingTests.cs")] =
-                [ProcessIntegrationTrait]
-        };
-
-    private static readonly string[] RegressionIntegrationSources =
-    [
-        "ActorMaterializationValidationTests.cs",
-        "AfterlifeEntityProfileValidationTests.cs",
-        "AfterlifeSpiritualConflictValidationTests.cs",
-        "BrowserCommandPresentationAuditTests.cs",
-        "ExplorerModeCommandTests.cs",
-        "ExplorerWebCommandServiceTests.cs",
-        "ExplorerWebCommandServiceTests.Effects.cs",
-        "ExplorerWebCommandServiceTestsAfterlifeProfileInboxDrilldowns.cs",
-        "ExplorerWebCommandServiceTestsSpiritualConflictArtDrilldowns.cs",
-        "GuardianSystemRegressionTests.cs",
-        "LocalWebUiHostTests.cs",
-        "ResourceConsoleBrowserParityTests.cs"
-    ];
-
-    private static readonly IReadOnlyDictionary<string, string[]>
-        RegressionIntegrationCategories =
-            RegressionIntegrationSources.ToDictionary(
-                fileName => fileName,
-                fileName => fileName switch
-                {
-                    "GuardianSystemRegressionTests.cs" =>
-                        new[] { RegressionIntegrationTrait, DeepValidationTrait },
-                    "AfterlifeSpiritualConflictValidationTests.cs" =>
-                        new[] { RegressionIntegrationTrait, RegressionIntegrationOnlyTrait },
-                    _ => new[] { RegressionIntegrationTrait }
-                },
-                StringComparer.Ordinal);
-
-    private static readonly string[] BroadValidationPreMergeSentinelSources =
-    [
-        "FullValidationEquivalenceTests.cs"
-    ];
-
-    private static readonly string[] IndirectFullValidationSources =
-    [
-        "ValidatorFixtureTests.cs"
-    ];
-
     private static readonly string[] ScopedValidationServiceSources =
     [
         Path.Combine("Services", "ValidationService.cs")
     ];
 
+    /// <summary>
+    /// Exact reviewed sources admitting scoped calls inside the ValidationService class.
+    /// </summary>
+    private static readonly string[] ScopedValidationCallerSources =
+    [
+        Path.Combine("Services", "ValidationService.cs"),
+        Path.Combine("Services", "Validation", "ValidationService.EffectMaterialization.cs")
+    ];
+
+    /// <summary>
+    /// Verifies that lifecycle tests use their own nonparallel xUnit collection.
+    /// </summary>
     [Fact]
-    public void CSharpLaneRunner_SeparatesLifecycleIntegrationFromRoutinePreMerge()
+    public void GameEngineLifecycleTests_RemainSerializedWithinTheirOwnCollection()
     {
         var lifecycleSourcePath = SourcePath(
             IntegrationTestsDirectory,
@@ -287,257 +187,6 @@ public sealed class IntegrationTestBoundaryTests
                 argument.Expression.ToString() ==
                 "GameEngineTurnLifecycleCollection.CollectionName");
 
-        var runnerPath = Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "scripts",
-            "test-csharp.ps1");
-        var runnerSource = File.ReadAllText(runnerPath);
-        var normalizedRunner = Regex.Replace(
-            runnerSource.Replace("`", ""),
-            @"\s+",
-            " ");
-
-        var requiredTokens = new[]
-        {
-            "\"LifecycleIntegration\"",
-            "$LifecycleIntegrationMinimumCases = 186",
-            "$LifecycleIntegrationMaximumTimeoutMinutes = 30",
-            "$coreIntegrationFilter = " +
-                "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
-                "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-                "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
-                "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
-            "$lifecycleIntegrationFilter = " +
-                "\"Category=LifecycleIntegration&\" + " +
-                "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "LifecycleIntegration = @{ Project = \"Integration\" " +
-                "Filter = $lifecycleIntegrationFilter TimeoutMinutes = 10 }",
-            "\"LifecycleIntegration\" { $LifecycleIntegrationMinimumCases }",
-            "elseif ($effectiveLane -eq \"LifecycleIntegration\") { 1 }"
-        };
-        Assert.All(
-            requiredTokens,
-            token => Assert.Contains(token, normalizedRunner, StringComparison.Ordinal));
-
-        Assert.DoesNotContain(
-            "$externallySerializedClasses",
-            runnerSource,
-            StringComparison.Ordinal);
-        Assert.DoesNotContain(
-            "SerialGroup",
-            runnerSource,
-            StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public void CSharpLaneRunner_DefinesNonOverlappingProjectRoutedPreMergeSchedule()
-    {
-        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
-        var source = File.ReadAllText(runnerPath);
-        var normalized = Regex.Replace(source, @"\s+", " ");
-
-        var lanes = new[]
-        {
-            "Fast",
-            "Focused",
-            "FullValidation",
-            "RegressionIntegration",
-            "DeepValidation",
-            "LifecycleIntegration",
-            "ProcessIntegration",
-            "E2E",
-            "Complete",
-            "PreMerge"
-        };
-        Assert.All(lanes, lane =>
-            Assert.Contains($"\"{lane}\"", source, StringComparison.Ordinal));
-
-        var diagnosticDefinitions = new[]
-        {
-            "FullValidation = @{ Project = \"Integration\" " +
-            "Filter = \"Category=FullValidation\" TimeoutMinutes = 15 }",
-            "RegressionIntegration = @{ Project = \"Integration\" " +
-            "Filter = \"Category=RegressionIntegration\" TimeoutMinutes = 15 }",
-            "DeepValidation = @{ Project = \"Integration\" " +
-            "Filter = $deepValidationFilter TimeoutMinutes = 15 }",
-            "LifecycleIntegration = @{ Project = \"Integration\" " +
-            "Filter = $lifecycleIntegrationFilter TimeoutMinutes = 10 }",
-            "ProcessIntegration = @{ Project = \"Integration\" " +
-            "Filter = \"Category=ProcessIntegration\" TimeoutMinutes = 15 }",
-            "E2E = @{ Project = \"Integration\" " +
-            "Filter = \"Category=E2E\" TimeoutMinutes = 15 }",
-            "PreMerge = @{ Project = \"Both\" Filter = $null TimeoutMinutes = 30 }"
-        };
-        Assert.All(diagnosticDefinitions, definition =>
-            Assert.Contains(definition, normalized, StringComparison.Ordinal));
-
-        var normalizedRequiredTokens = new[]
-        {
-            "$coreIntegrationFilter = " +
-            "\"Category!=FullValidation&Category!=DeepValidation&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E&\" + " +
-            "\"(Category!=LifecycleIntegration|Category=PreMergeSentinel)&\" + " +
-            "\"(Category!=RegressionIntegrationOnly|Category=PreMergeSentinel)\"",
-            "$deepValidationFilter = " +
-            "\"(Category=FullValidation|Category=DeepValidation)&\" + " +
-            "\"Category!=LifecycleIntegration&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$lifecycleIntegrationFilter = " +
-            "\"Category=LifecycleIntegration&\" + " +
-            "\"Category!=ProcessIntegration&Category!=E2E\"",
-            "$PreMergeMinimumCases = 4240",
-            "$DeepValidationMinimumCases = 1950",
-            "$LifecycleIntegrationMinimumCases = 186",
-            "$isComposedCoverageLane = $effectiveLane -in @( " +
-            "\"PreMerge\", \"DeepValidation\" )",
-            "if ($isComposedCoverageLane -and " +
-            "$runSummary.DuplicateTests.Count -ne 0)",
-            "elseif ($effectiveLane -eq \"DeepValidation\") { " +
-            "[Math]::Min($Parallelism, $PreMergeParallelism) }"
-        };
-        Assert.All(normalizedRequiredTokens, token =>
-            Assert.Contains(token, normalized, StringComparison.Ordinal));
-
-        var requiredTokens = new[]
-        {
-            "$effectiveLane = if ($Lane -eq \"Complete\") { \"PreMerge\" } else { $Lane }",
-            "$FocusedMaximumTimeoutMinutes = 15",
-            "$LifecycleIntegrationMaximumTimeoutMinutes = 30",
-            "\"LifecycleIntegration\" { $LifecycleIntegrationMaximumTimeoutMinutes }",
-            "if ($TimeoutMinutes -gt $maximumTimeoutMinutes)",
-            "hard limit of $maximumTimeoutMinutes minute(s)",
-            "Category=FullValidation",
-            "Category=RegressionIntegration",
-            "Category=ProcessIntegration",
-            "Category=E2E",
-            "Category!=ProcessIntegration&Category!=E2E",
-            "Category=ProcessIntegration&Category!=E2E",
-            "$PreMergeParallelism = 4",
-            "$PreMergeFastParallelismLimit = 2",
-            "Build-Fast",
-            "Build-Integration",
-            "Frontend-verify",
-            "-FileName $npmCommandPath",
-            "@(\"run\", \"verify\", \"--prefix\", " +
-            "\"BookOfEternityClient.WebFrontend\")",
-            "Select-Object Phase, Name, Project, Filter, EstimatedCases, EstimatedCost",
-            "//*[local-name()='UnitTestResult']",
-            "//*[local-name()='UnitTest']",
-            "GetAttribute(\"testId\")",
-            "GetAttribute(\"storage\")",
-            "$seenInTrx",
-            "has no UnitTest storage mapping",
-            "Group-Object Key",
-            "Select-Object -ExpandProperty TestId",
-            "Where-Object Count -gt 1",
-            "$initialCleanupSucceeded",
-            "FinalizerRetried",
-            "$OwnedCleanupPassLimit = 2",
-            "Get-OwnedCleanupDisposition",
-            "Live owned process retained after bounded cleanup retries",
-            "Owned cleanup diagnostics",
-            "DuplicateTests",
-            "summary.json",
-            "ConvertTo-Json -Depth 4"
-        };
-        Assert.All(requiredTokens, token =>
-            Assert.Contains(token, source, StringComparison.Ordinal));
-        Assert.DoesNotContain("6560", source, StringComparison.Ordinal);
-
-        Assert.Single(Regex.Matches(source, @"\$deadlineUtc\s*="));
-
-        var forbiddenBroadProcessCommands = new[]
-        {
-            "Get-" + "Process",
-            "Stop-" + "Process",
-            "task" + "kill"
-        };
-        Assert.All(forbiddenBroadProcessCommands, command =>
-            Assert.DoesNotContain(command, source, StringComparison.OrdinalIgnoreCase));
-    }
-
-    [Fact]
-    public async Task CSharpLaneRunner_DurationAwareSchedulePreservesCasesAndRunsLongFirst()
-    {
-        var probe = await RunCSharpRunnerSelfTestAsync("DurationSchedule");
-
-        Assert.True(
-            probe.ExitCode == 0,
-            $"Duration-schedule probe failed.{Environment.NewLine}" +
-            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
-            $"stderr:{Environment.NewLine}{probe.StandardError}");
-        Assert.Contains(
-            "DURATION-SCHEDULE cases=105; maxCost=542; first=heavy; exclusive=True; weighted=True; bounded=True; regression=True; preMerge=True; preMergeSmall=True",
-            probe.StandardOutput,
-            StringComparison.Ordinal);
-    }
-
-    [Fact]
-    public async Task CSharpLaneRunner_PreMergeRetainsMeasuredSmallClassCosts()
-    {
-        var probe = await RunCSharpRunnerSelfTestAsync("DurationSchedule");
-
-        Assert.True(
-            probe.ExitCode == 0,
-            $"Duration-schedule probe failed.{Environment.NewLine}" +
-            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
-            $"stderr:{Environment.NewLine}{probe.StandardError}");
-        Assert.Contains(
-            "preMergeSmall=True",
-            probe.StandardOutput,
-            StringComparison.Ordinal);
-
-        var runnerPath = Path.Combine(TestRepoPaths.RepoRoot, "scripts", "test-csharp.ps1");
-        var runnerSource = File.ReadAllText(runnerPath);
-        var normalizedRunner = Regex.Replace(
-            runnerSource.Replace("`", ""),
-            @"\s+",
-            " ");
-        var requiredTokens = new[]
-        {
-            "$PreMergeClassDurationCosts = @{",
-            "\"BookOfEternityClient.Tests.BrowserCommandPresentationAuditTests\" = 112",
-            "\"BookOfEternityClient.Tests.FactionMaterializationValidationTests\" = 194",
-            "\"BookOfEternityClient.Tests.LocalWebUiHostTests\" = 119",
-            "\"BookOfEternityClient.Tests.FullValidationEquivalenceTests\" = 27",
-            "\"BookOfEternityClient.Tests.MortalCommandDisplaySaveTests\" = 8",
-            "\"BookOfEternityClient.Tests.FactionCoreChangesTests\" = 62",
-            "\"BookOfEternityClient.Tests.MortalItemMaterializationValidationTests\" = 60",
-            "\"PreMerge\" { $PreMergeClassDurationCosts }"
-        };
-        Assert.All(
-            requiredTokens,
-            token => Assert.Contains(token, normalizedRunner, StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public async Task CSharpLaneRunner_PreMergeDrainsExplorerWebWaveBeforeFast()
-    {
-        var probe = await RunCSharpRunnerSelfTestAsync("PreMergeWaves");
-
-        Assert.True(
-            probe.ExitCode == 0,
-            $"PreMerge-wave probe failed.{Environment.NewLine}" +
-            $"stdout:{Environment.NewLine}{probe.StandardOutput}{Environment.NewLine}" +
-            $"stderr:{Environment.NewLine}{probe.StandardError}");
-        Assert.Contains(
-            "PREMERGE-WAVES explorer=4; remaining=True; cases=True",
-            probe.StandardOutput,
-            StringComparison.Ordinal);
-
-        var runnerSource = File.ReadAllText(Path.Combine(
-            TestRepoPaths.RepoRoot,
-            "scripts",
-            "test-csharp.ps1"));
-        Assert.Contains("function Get-PreMergeParallelWaves", runnerSource, StringComparison.Ordinal);
-        Assert.Contains(
-            "Get-PreMergeParallelWaves -Descriptors $parallelRuns",
-            runnerSource.Replace("`", ""),
-            StringComparison.Ordinal);
-        Assert.Contains(
-            "-Descriptors @($parallelWave.Descriptors)",
-            runnerSource.Replace("`", ""),
-            StringComparison.Ordinal);
     }
 
     [Fact]
@@ -694,8 +343,14 @@ public sealed class IntegrationTestBoundaryTests
         }
     }
 
+    /// <summary>
+    /// Verifies that multiple results for one theory method in one TRX are valid.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the reader accepts repeated theory rows.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_RepeatedTheoryRowsWithinOneTrxAreNotDuplicates()
+    public async Task CSharpCategoryRunner_RepeatedTheoryRowsWithinOneTrxAreNotDuplicates()
     {
         var fixtureDirectory = CreateTrxFixtureDirectory();
         try
@@ -725,8 +380,14 @@ public sealed class IntegrationTestBoundaryTests
         }
     }
 
+    /// <summary>
+    /// Verifies that repeated test identities across descriptors fail closed.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the reader rejects a cross-descriptor duplicate ID.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_SameTestIdAcrossDescriptorTrxFilesIsDuplicate()
+    public async Task CSharpCategoryRunner_SameTestIdAcrossDescriptorTrxFilesIsDuplicate()
     {
         var fixtureDirectory = CreateTrxFixtureDirectory();
         try
@@ -761,8 +422,14 @@ public sealed class IntegrationTestBoundaryTests
         }
     }
 
+    /// <summary>
+    /// Verifies that the same test ID in distinct assemblies remains distinguishable.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the reader accepts assembly-scoped IDs.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_SameTestIdInDifferentAssembliesIsNotDuplicate()
+    public async Task CSharpCategoryRunner_SameTestIdInDifferentAssembliesIsNotDuplicate()
     {
         var fixtureDirectory = CreateTrxFixtureDirectory();
         try
@@ -796,8 +463,14 @@ public sealed class IntegrationTestBoundaryTests
         }
     }
 
+    /// <summary>
+    /// Verifies that a TRX result without assembly storage cannot appear complete.
+    /// </summary>
+    /// <returns>
+    /// A task that completes after the reader rejects a result without assembly storage.
+    /// </returns>
     [Fact]
-    public async Task CSharpLaneRunner_MissingStorageMappingFailsClosed()
+    public async Task CSharpCategoryRunner_MissingStorageMappingFailsClosed()
     {
         var fixtureDirectory = CreateTrxFixtureDirectory();
         try
@@ -817,6 +490,37 @@ public sealed class IntegrationTestBoundaryTests
                 "duplicate TRX test IDs",
                 probe.StandardOutput,
                 StringComparison.Ordinal);
+        }
+        finally
+        {
+            Directory.Delete(fixtureDirectory, recursive: true);
+        }
+    }
+
+    /// <summary>
+    /// Verifies that a malformed TRX cannot be reported as a successful selected result.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the runner reports the parsing failure.
+    /// </returns>
+    [Fact]
+    public async Task CSharpCategoryRunner_MalformedTrxFailsClosed()
+    {
+        var fixtureDirectory = CreateTrxFixtureDirectory();
+        try
+        {
+            await File.WriteAllTextAsync(Path.Combine(fixtureDirectory, "malformed.trx"),
+                "<TestRun><Results>");
+
+            var probe = await RunCSharpRunnerTrxSelfTestAsync(fixtureDirectory);
+
+            Assert.NotEqual(0, probe.ExitCode);
+            Assert.Contains("TRX parsing failed", probe.StandardOutput + probe.StandardError,
+                StringComparison.Ordinal);
+            using var summary = JsonDocument.Parse(await File.ReadAllTextAsync(
+                Path.Combine(ResultDirectoryFrom(probe.StandardOutput), "self-test-summary.json")));
+            Assert.Equal(1, summary.RootElement.GetProperty("ExitCode").GetInt32());
+            Assert.True(summary.RootElement.GetProperty("OwnedTreeCleanupSucceeded").GetBoolean());
         }
         finally
         {
@@ -848,11 +552,13 @@ public sealed class IntegrationTestBoundaryTests
             "CanonicalInventory",
             "CanonicalNpc",
             "CommandDisplaySave",
+            "EffectSkillScopeCatalog",
             "FactionState",
             "GuardianArchiveTrade",
             "GuardianPolicy",
             "MechanicalBonus",
             "MortalBootstrap",
+            "MortalWoundTreatmentLifecycle",
             "NpcState",
             "PlayerGuardian",
             "Qte",
@@ -878,6 +584,23 @@ public sealed class IntegrationTestBoundaryTests
                 GameStateValidationPhase.None,
                 profile.Phases & ~GameStateValidationPhase.Selectable);
         });
+
+        Assert.Equal(
+            GameStateValidationPhase.PlayerStateFiles |
+            GameStateValidationPhase.SkillContractConsistency,
+            IntegrationValidationProfiles.EffectSkillScopeCatalog.Phases);
+        Assert.Equal(
+            GameStateValidationPhase.RequiredFields |
+            GameStateValidationPhase.CrossReferences |
+            GameStateValidationPhase.PlayerStateFiles |
+            GameStateValidationPhase.NpcStateFiles |
+            GameStateValidationPhase.SkillContractConsistency |
+            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+            GameStateValidationPhase.MetaMiscStateFiles |
+            GameStateValidationPhase.AcceptedTurnEffectMaterializationCompleteness |
+            GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness |
+            GameStateValidationPhase.ClientOwnedControlFiles,
+            IntegrationValidationProfiles.MortalWoundTreatmentLifecycle.Phases);
     }
 
     [Fact]
@@ -1044,7 +767,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest()
     {
         var callSites = EnumerateIntegrationAndSupportSources()
             .SelectMany(candidate =>
@@ -1059,7 +782,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
     {
         var callSites = ReviewedBroadValidationCallLocations().ToList();
         callSites.Remove($"{TestSupportDirectory}/ValidatorFixtureHarness.cs:1");
@@ -1080,7 +803,7 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
+    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
     {
         var callSites = ReviewedBroadValidationCallLocations()
             .Append($"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs:42")
@@ -1092,18 +815,18 @@ public sealed class IntegrationTestBoundaryTests
             violations,
             violation =>
                 violation.Contains(
-                    "observed 8 exceeds sentinel budget 7",
+                    "observed 9 exceeds sentinel budget 8",
                     StringComparison.Ordinal));
         Assert.Contains(
             $"{IntegrationTestsDirectory}/UnreviewedBroadValidationTests.cs: expected 0, found 1",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Broad-validation sentinel budget is 7",
+            "Broad-validation sentinel budget is 8",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
-            "Expected reviewed call sites: 7",
+            "Expected reviewed call sites: 8",
             message,
             StringComparison.Ordinal);
         Assert.Contains(
@@ -1242,168 +965,34 @@ public sealed class IntegrationTestBoundaryTests
         Assert.Contains($"{profileType}.Wrong", violation, StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Keeps the published treatment full-state fixture limited to its reviewed callers.
+    /// </summary>
     [Fact]
-    public void IntegrationAndSupportBroadValidationSources_AreExplicitlyCategorized()
+    public void PublishedTreatmentFullStateProbe_HasExactReviewedCallers()
     {
-        var broadCall = new Regex(
-            @"\.ValidateGameState" + @"Async\s*\(\s*\)",
-            RegexOptions.CultureInvariant);
-        var supportHarnessPath = SourcePath(TestSupportDirectory, "ValidatorFixtureHarness.cs");
-        var broadSentinelPaths = BroadValidationPreMergeSentinelSources
-            .Select(fileName => SourcePath(IntegrationTestsDirectory, fileName))
-            .ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var uncategorized = EnumerateIntegrationAndSupportSources()
-            .Where(candidate => !string.Equals(
-                candidate.Path,
-                supportHarnessPath,
-                StringComparison.OrdinalIgnoreCase))
-            .Where(candidate => !broadSentinelPaths.Contains(candidate.Path))
-            .Where(candidate => broadCall.IsMatch(candidate.Source))
-            .Where(candidate => !candidate.Source.Contains(
-                FullValidationTrait,
+        const string sourceName = "MortalWoundTreatmentResourcePublicationLifecycleTests.cs";
+        const string helperName = "CreatePublishedTreatmentFullStateProbeAsync";
+        var root = CSharpSyntaxTree.ParseText(File.ReadAllText(
+            SourcePath(IntegrationTestsDirectory, sourceName))).GetCompilationUnitRoot();
+        var actualCallers = root.DescendantNodes()
+            .OfType<InvocationExpressionSyntax>()
+            .Where(invocation => string.Equals(
+                invocation.Expression is IdentifierNameSyntax identifier
+                    ? identifier.Identifier.ValueText
+                    : InvokedMemberName(invocation),
+                helperName,
                 StringComparison.Ordinal))
-            .Select(candidate => Path.GetRelativePath(TestRepoPaths.RepoRoot, candidate.Path))
+            .Select(invocation => invocation.Ancestors()
+                .OfType<MethodDeclarationSyntax>()
+                .First()
+                .Identifier.ValueText)
             .Order(StringComparer.Ordinal)
             .ToArray();
 
-        Assert.True(
-            uncategorized.Length == 0,
-            "Direct full-validation integration sources must carry Category=FullValidation:" +
-            Environment.NewLine +
-            string.Join(Environment.NewLine, uncategorized));
-
-        Assert.All(BroadValidationPreMergeSentinelSources, fileName =>
-            Assert.Contains(
-                PreMergeSentinelTrait,
-                File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName)),
-                StringComparison.Ordinal));
-    }
-
-    [Fact]
-    public void IndirectFullValidationSources_AreExplicitlyCategorized()
-    {
-        var violations = IndirectFullValidationSources
-            .Where(fileName => !File
-                .ReadAllText(SourcePath(IntegrationTestsDirectory, fileName))
-                .Contains(FullValidationTrait, StringComparison.Ordinal))
-            .ToArray();
-
-        Assert.True(
-            violations.Length == 0,
-            "Fixture-driven full-validation sources must carry Category=FullValidation:" +
-            Environment.NewLine +
-            string.Join(Environment.NewLine, violations));
-    }
-
-    [Fact]
-    public void ProcessAndE2ETestSources_MatchReviewedManifest()
-    {
-        AssertExactCategoryManifest(
-            ProcessAndE2ECategories,
-            [ProcessIntegrationTrait, E2ETrait],
-            "Process/E2E");
-    }
-
-    [Fact]
-    public void FileBackedRegressionIntegrationSources_MatchReviewedManifest()
-    {
-        AssertExactCategoryManifest(
-            RegressionIntegrationCategories,
-            [
-                RegressionIntegrationTrait,
-                RegressionIntegrationOnlyTrait,
-                DeepValidationTrait
-            ],
-            "RegressionIntegration/DeepValidation");
-
-        AssertExactCategoryManifest(
-            new Dictionary<string, string[]>(StringComparer.Ordinal)
-            {
-                ["GameEngineTurnLifecycleTests.cs"] = [LifecycleIntegrationTrait]
-            },
-            [LifecycleIntegrationTrait],
-            "LifecycleIntegration");
-
         Assert.Equal(
-            ["LifecycleIntegration"],
-            CategoryTraits("GameEngineTurnLifecycleTests.cs"));
-
-        var actualLifecycleMethodCategories =
-            MethodCategoryTraits("GameEngineTurnLifecycleTests.cs");
-        Assert.Equal(
-            GameEngineLifecycleSentinelCategories.Keys.Order(StringComparer.Ordinal),
-            actualLifecycleMethodCategories.Keys.Order(StringComparer.Ordinal));
-        foreach (var (methodName, categories) in GameEngineLifecycleSentinelCategories)
-        {
-            Assert.Equal(categories, actualLifecycleMethodCategories[methodName]);
-        }
-
-        Assert.Equal(
-            ["PreMergeSentinel"],
-            CategoryTraits("FullValidationEquivalenceTests.cs"));
-        Assert.Equal(
-            ["PreMergeSentinel"],
-            CategoryTraits("GuardianTradeServiceTests.cs"));
-        Assert.Equal(
-            ["DeepValidation", "RegressionIntegration"],
-            CategoryTraits("GuardianSystemRegressionTests.cs"));
-        Assert.Equal(
-            ["RegressionIntegration", "RegressionIntegrationOnly"],
-            CategoryTraits("AfterlifeSpiritualConflictValidationTests.cs"));
-
-        var actualAfterlifeConflictMethodCategories =
-            MethodCategoryTraits("AfterlifeSpiritualConflictValidationTests.cs");
-        Assert.Equal(
-            AfterlifeSpiritualConflictSentinelCategories.Keys.Order(StringComparer.Ordinal),
-            actualAfterlifeConflictMethodCategories.Keys.Order(StringComparer.Ordinal));
-        foreach (var (methodName, categories) in AfterlifeSpiritualConflictSentinelCategories)
-        {
-            Assert.Equal(categories, actualAfterlifeConflictMethodCategories[methodName]);
-        }
-
-        var commandDisplayCategories =
-            new Dictionary<string, IReadOnlyDictionary<string, string[]>>(StringComparer.Ordinal)
-            {
-                ["MortalCommandDisplaySaveTests.cs"] =
-                    new Dictionary<string, string[]>(StringComparer.Ordinal)
-                    {
-                        ["NamedMortalCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
-                            ["PreMergeSentinel"],
-                        ["LoadedMortalCommandDisplaySave_RendersCoveredCommandInBrowserAndConsole"] =
-                            ["FullValidation"],
-                        ["LoadedMortalCommandDisplaySave_WorldNewsLocalizesVisibilityEnums"] =
-                            ["FullValidation"]
-                    },
-                ["ChaosSeaCommandDisplaySaveTests.cs"] =
-                    new Dictionary<string, string[]>(StringComparer.Ordinal)
-                    {
-                        ["NamedChaosSeaCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
-                            ["PreMergeSentinel"],
-                        ["NamedChaosSeaCommandDisplaySave_HasCleanAcceptedTurnBaselineForLiveE2E"] =
-                            ["PreMergeSentinel"],
-                        ["LoadedChaosSeaCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
-                            ["FullValidation"],
-                        ["LoadedChaosSeaCommandDisplaySave_RendersRepresentativeDetailTargets"] =
-                            ["FullValidation"]
-                    },
-                ["ShiningAbodeCommandDisplaySaveTests.cs"] =
-                    new Dictionary<string, string[]>(StringComparer.Ordinal)
-                    {
-                        ["NamedShiningAbodeCommandDisplaySave_IsDiscoverableLoadableValidAndRepeatable"] =
-                            ["PreMergeSentinel"],
-                        ["LoadedShiningAbodeCommandDisplaySave_RendersAvailableCommandInBrowserAndConsole"] =
-                            ["FullValidation"],
-                        ["LoadedShiningAbodeCommandDisplaySave_RendersRepresentativeDetailTargets"] =
-                            ["FullValidation"]
-                    }
-            };
-
-        foreach (var (fileName, methodManifest) in commandDisplayCategories)
-        {
-            Assert.Empty(CategoryTraits(fileName));
-            foreach (var (methodName, categories) in methodManifest)
-                Assert.Equal(categories, CategoryTraits(fileName, methodName));
-        }
+            ReviewedPublishedTreatmentFullStateCallers.Order(StringComparer.Ordinal),
+            actualCallers);
     }
 
     [Fact]
@@ -1537,7 +1126,6 @@ public sealed class IntegrationTestBoundaryTests
                     static attribute => attribute.Name.ToString() == "MemberData");
                 var memberDataArgument = Assert.Single(memberData.ArgumentList!.Arguments);
                 Assert.Equal($"nameof({expected.MemberData})", memberDataArgument.Expression.ToString());
-                Assert.Equal(expected.Categories, CategoryTraits(fileName, theory.Identifier.ValueText));
             }
 
             var executionHelper = Assert.Single(
@@ -1765,40 +1353,128 @@ public sealed class IntegrationTestBoundaryTests
     }
 
     [Fact]
-    public void ExactCategoryManifest_RejectsUnlistedSourcesAndTraitDrift()
+    public void QteAndDarenSplitSources_PreserveReviewedExecutableInventories()
     {
-        var expected = new Dictionary<string, string[]>(StringComparer.Ordinal)
-        {
-            ["Expected.cs"] = [ProcessIntegrationTrait],
-            ["Missing.cs"] = [E2ETrait]
-        };
-        var sources = new[]
+        var contracts = new[]
         {
             (
-                RelativePath: "Expected.cs",
-                Source: ProcessIntegrationTrait + Environment.NewLine + E2ETrait),
+                Directory: FastTestsDirectory,
+                FileName: "QteDeterministicLogicTests.cs",
+                ClassName: "QteDeterministicLogicTests",
+                Manifest: FastBoundaryTestInventories.QteDeterministicLogic),
             (
-                RelativePath: "Unexpected.cs",
-                Source: ProcessIntegrationTrait)
+                Directory: IntegrationTestsDirectory,
+                FileName: "QteSceneServiceTests.cs",
+                ClassName: "QteSceneServiceTests",
+                Manifest: FastBoundaryTestInventories.QteSceneService),
+            (
+                Directory: FastTestsDirectory,
+                FileName: "DarenQteDeterministicLogicTests.cs",
+                ClassName: "DarenQteDeterministicLogicTests",
+                Manifest: FastBoundaryTestInventories.DarenDeterministicLogic),
+            (
+                Directory: IntegrationTestsDirectory,
+                FileName: "DarenQteShowcaseTests.cs",
+                ClassName: "DarenQteShowcaseTests",
+                Manifest: FastBoundaryTestInventories.DarenQteShowcase)
         };
 
-        var violations = ExactCategoryManifestViolations(
+        foreach (var contract in contracts)
+        {
+            var violations = ExactTestInventoryViolations(
+                SourcePath(contract.Directory, contract.FileName),
+                contract.ClassName,
+                ManifestLines(contract.Manifest));
+
+            Assert.True(
+                violations.Length == 0,
+                $"{contract.ClassName} executable inventory differs from the reviewed manifest:" +
+                Environment.NewLine +
+                string.Join(Environment.NewLine, violations));
+        }
+    }
+
+    [Fact]
+    public void ExactTestInventory_RejectsMissingChangedAndDuplicateRows()
+    {
+        const string source = """
+            public sealed class SampleTests
+            {
+                [Fact]
+                public void Kept() {}
+
+                [Theory]
+                [InlineData(1)]
+                [InlineData(1)]
+                public void Rows(int value) {}
+
+                [Theory]
+                [InlineData(2)]
+                public void ChangedKind(int value) {}
+            }
+            """;
+        string[] expected =
+        [
+            "Fact|Kept",
+            "Theory|Rows|literal:1",
+            "Theory|Rows|literal:2",
+            "Fact|ChangedKind"
+        ];
+
+        var violations = ExactTestInventoryViolations(
+            "Synthetic.cs",
+            "SampleTests",
             expected,
-            sources,
-            [ProcessIntegrationTrait, E2ETrait]);
+            source);
 
-        Assert.Contains(
-            $"Expected.cs: unexpected {E2ETrait}",
-            violations,
-            StringComparer.Ordinal);
-        Assert.Contains(
-            $"Missing.cs: missing {E2ETrait}",
-            violations,
-            StringComparer.Ordinal);
-        Assert.Contains(
-            $"Unexpected.cs: unreviewed classification {ProcessIntegrationTrait}",
-            violations,
-            StringComparer.Ordinal);
+        Assert.Contains("missing (1x): Fact|ChangedKind", violations, StringComparer.Ordinal);
+        Assert.Contains("missing (1x): Theory|Rows|literal:2", violations, StringComparer.Ordinal);
+        Assert.Contains("unexpected (1x): Theory|ChangedKind|literal:2", violations, StringComparer.Ordinal);
+        Assert.Contains("unexpected (1x): Theory|Rows|literal:1", violations, StringComparer.Ordinal);
+    }
+
+    [Fact]
+    public void DarenQteSources_AreSemanticallySplitAcrossTestAssemblies()
+    {
+        var fastPath = SourcePath(FastTestsDirectory, "DarenQteDeterministicLogicTests.cs");
+        var integrationPath = SourcePath(IntegrationTestsDirectory, "DarenQteShowcaseTests.cs");
+
+        Assert.True(File.Exists(fastPath), "The fixture-free Daren QTE source must exist in Fast.");
+        Assert.True(File.Exists(integrationPath), "The file-backed Daren QTE source must remain in Integration.");
+
+        var fastRoot = CSharpSyntaxTree.ParseText(File.ReadAllText(fastPath)).GetCompilationUnitRoot();
+        var fastClass = Assert.Single(
+            fastRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
+            declaration => declaration.Identifier.ValueText == "DarenQteDeterministicLogicTests");
+        Assert.DoesNotContain(
+            fastClass.BaseList?.Types ?? [],
+            type => type.Type.ToString() == "IDisposable");
+        Assert.Empty(fastClass.Members.OfType<ConstructorDeclarationSyntax>());
+        Assert.DoesNotContain(
+            fastClass.Members.OfType<FieldDeclarationSyntax>(),
+            field =>
+                !field.Modifiers.Any(SyntaxKind.StaticKeyword) &&
+                !field.Modifiers.Any(SyntaxKind.ConstKeyword));
+
+        var forbiddenFastTypes = new[]
+        {
+            "FileSystemManager",
+            "StateManager",
+            "QteWebInteractionService",
+            "LocalUiSessionLockService"
+        };
+        var fastTypes = fastClass.DescendantNodes()
+            .OfType<TypeSyntax>()
+            .Select(type => type.ToString())
+            .ToArray();
+        Assert.All(
+            forbiddenFastTypes,
+            forbidden => Assert.DoesNotContain(forbidden, fastTypes, StringComparer.Ordinal));
+        Assert.DoesNotContain(
+            fastClass.DescendantNodes().OfType<ObjectCreationExpressionSyntax>(),
+            creation => creation.Type.ToString() == "DarenQteRewardProfileService");
+        Assert.DoesNotContain("Path.GetTempPath", fastClass.ToString(), StringComparison.Ordinal);
+
     }
 
     [Fact]
@@ -1935,6 +1611,9 @@ public sealed class IntegrationTestBoundaryTests
             StringComparison.Ordinal);
     }
 
+    /// <summary>
+    /// Verifies that scoped validation declarations and calls remain inside their reviewed ValidationService sources.
+    /// </summary>
     [Fact]
     public void RuntimeValidationCallers_UseParameterlessFacadeOutsideValidationService()
     {
@@ -1951,7 +1630,7 @@ public sealed class IntegrationTestBoundaryTests
             ScopedValidationServiceSources);
         var callViolations = ArgumentBearingValidationCallViolations(
             sources,
-            ScopedValidationServiceSources);
+            ScopedValidationCallerSources);
 
         Assert.NotEmpty(declarationLocations);
         Assert.True(
@@ -1966,6 +1645,9 @@ public sealed class IntegrationTestBoundaryTests
             string.Join(Environment.NewLine, callViolations));
     }
 
+    /// <summary>
+    /// Verifies that an unreviewed production source cannot declare or call the scoped validation API.
+    /// </summary>
     [Fact]
     public void RuntimeValidationGuard_RejectsScopedDeclarationAndCallOutsideAllowedSource()
     {
@@ -1997,7 +1679,7 @@ public sealed class IntegrationTestBoundaryTests
             ScopedValidationServiceSources);
         var callViolations = ArgumentBearingValidationCallViolations(
             sources,
-            ScopedValidationServiceSources);
+            ScopedValidationCallerSources);
 
         Assert.Single(declarationViolations);
         Assert.Contains(
@@ -2009,6 +1691,36 @@ public sealed class IntegrationTestBoundaryTests
             "UnexpectedValidator.cs",
             callViolations[0],
             StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Verifies that the reviewed effect partial admits internal owner validation while rejecting a foreign class in that same source.
+    /// </summary>
+    [Fact]
+    public void RuntimeValidationGuard_ReviewedPartialAllowsOnlyValidationServiceCalls()
+    {
+        var sources = new[]
+        {
+            (
+                RelativePath: Path.Combine("Services", "Validation", "ValidationService.EffectMaterialization.cs"),
+                Source:
+                    """
+                    namespace BookOfEternityClient.Services;
+                    public partial class ValidationService
+                    {
+                        async Task ValidateOwnerAsync() => await ownerValidator.ValidateGameStateAsync(selection);
+                    }
+                    public class ForeignCaller
+                    {
+                        async Task ValidateAsync() => await validator.ValidateGameStateAsync(selection);
+                    }
+                    """)
+        };
+
+        var violations = ArgumentBearingValidationCallViolations(sources, ScopedValidationCallerSources);
+
+        var violation = Assert.Single(violations);
+        Assert.EndsWith(":8", violation, StringComparison.Ordinal);
     }
 
     [Fact]
@@ -2037,118 +1749,179 @@ public sealed class IntegrationTestBoundaryTests
             StringComparison.Ordinal);
     }
 
-    private static void AssertExactCategoryManifest(
-        IReadOnlyDictionary<string, string[]> expected,
-        string[] classifiedTraits,
-        string manifestDescription)
+    private static string[] ManifestLines(string manifest) =>
+        manifest.Split(
+            ["\r\n", "\n"],
+            StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+    private static string[] ExactTestInventoryViolations(
+        string sourcePath,
+        string className,
+        IReadOnlyCollection<string> expected)
     {
-        var violations = ExactCategoryManifestViolations(
+        if (!File.Exists(sourcePath))
+            return [$"missing source: {sourcePath}"];
+
+        return ExactTestInventoryViolations(
+            sourcePath,
+            className,
             expected,
-            EnumerateSourceFiles(IntegrationTestsDirectory),
-            classifiedTraits);
-
-        Assert.True(
-            violations.Length == 0,
-            $"{manifestDescription} source classification differs from the reviewed manifest:" +
-            Environment.NewLine +
-            string.Join(Environment.NewLine, violations));
+            File.ReadAllText(sourcePath));
     }
 
-    private static IReadOnlyDictionary<string, string[]> MethodCategoryTraits(
-        string fileName)
+    private static string[] ExactTestInventoryViolations(
+        string sourceName,
+        string className,
+        IReadOnlyCollection<string> expected,
+        string source)
     {
-        var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
         var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
-
-        return root.DescendantNodes()
-            .OfType<MethodDeclarationSyntax>()
-            .Select(method => (
-                Name: method.Identifier.ValueText,
-                Traits: CategoryTraits(method)))
-            .Where(method => method.Traits.Length > 0)
-            .ToDictionary(
-                method => method.Name,
-                method => method.Traits,
-                StringComparer.Ordinal);
-    }
-
-    private static string[] CategoryTraits(
-        string fileName,
-        string? methodName = null)
-    {
-        var source = File.ReadAllText(SourcePath(IntegrationTestsDirectory, fileName));
-        var root = CSharpSyntaxTree.ParseText(source).GetCompilationUnitRoot();
-        MemberDeclarationSyntax node = methodName is null
-            ? Assert.Single(
-                root.DescendantNodes().OfType<ClassDeclarationSyntax>(),
-                declaration => declaration.Identifier.ValueText ==
-                    Path.GetFileNameWithoutExtension(fileName))
-            : Assert.Single(
-                root.DescendantNodes().OfType<MethodDeclarationSyntax>(),
-                method => method.Identifier.ValueText == methodName);
-
-        return CategoryTraits(node);
-    }
-
-    private static string[] CategoryTraits(MemberDeclarationSyntax node)
-    {
-        return node.AttributeLists
-            .SelectMany(list => list.Attributes)
-            .Where(attribute =>
-                attribute.Name.ToString() is "Trait" or "TraitAttribute")
-            .Select(attribute => attribute.ArgumentList?.Arguments
-                .Select(argument => argument.Expression)
-                .OfType<LiteralExpressionSyntax>()
-                .Select(literal => literal.Token.ValueText)
-                .ToArray() ?? [])
-            .Where(arguments =>
-                arguments.Length == 2 &&
-                arguments[0] == "Category")
-            .Select(arguments => arguments[1])
-            .Order(StringComparer.Ordinal)
+        var violations = root.GetDiagnostics()
+            .Where(diagnostic => diagnostic.Severity == DiagnosticSeverity.Error)
+            .Select(diagnostic => $"{sourceName}: parse error {diagnostic}")
+            .ToList();
+        var classes = root.DescendantNodes()
+            .OfType<ClassDeclarationSyntax>()
+            .Where(declaration => declaration.Identifier.ValueText == className)
             .ToArray();
-    }
-
-    private static string[] ExactCategoryManifestViolations(
-        IReadOnlyDictionary<string, string[]> expected,
-        IEnumerable<(string RelativePath, string Source)> sources,
-        string[] classifiedTraits)
-    {
-        var actual = sources
-            .Select(source => (
-                source.RelativePath,
-                Traits: classifiedTraits
-                    .Where(trait => source.Source.Contains(trait, StringComparison.Ordinal))
-                    .ToArray()))
-            .Where(source => source.Traits.Length > 0)
-            .ToDictionary(
-                source => source.RelativePath,
-                source => source.Traits,
-                StringComparer.Ordinal);
-        var violations = new List<string>();
-
-        foreach (var (relativePath, expectedTraits) in expected)
+        if (classes.Length != 1)
         {
-            actual.TryGetValue(relativePath, out var actualTraits);
-            actualTraits ??= [];
-
-            violations.AddRange(expectedTraits
-                .Except(actualTraits, StringComparer.Ordinal)
-                .Select(trait => $"{relativePath}: missing {trait}"));
-            violations.AddRange(actualTraits
-                .Except(expectedTraits, StringComparer.Ordinal)
-                .Select(trait => $"{relativePath}: unexpected {trait}"));
+            violations.Add(
+                $"{sourceName}: expected one class '{className}', found {classes.Length}");
+            return violations.Order(StringComparer.Ordinal).ToArray();
         }
 
-        violations.AddRange(actual
-            .Where(entry => !expected.ContainsKey(entry.Key))
-            .Select(entry =>
-                $"{entry.Key}: unreviewed classification {string.Join(", ", entry.Value)}"));
+        var actual = new List<string>();
+        foreach (var method in classes[0].Members.OfType<MethodDeclarationSyntax>())
+        {
+            var attributes = method.AttributeLists
+                .SelectMany(static list => list.Attributes)
+                .ToArray();
+            var facts = attributes
+                .Where(attribute => AttributeNameIs(attribute, "Fact"))
+                .ToArray();
+            var theories = attributes
+                .Where(attribute => AttributeNameIs(attribute, "Theory"))
+                .ToArray();
+            var rows = attributes
+                .Where(attribute => AttributeNameIs(attribute, "InlineData"))
+                .ToArray();
 
-        return violations
-            .Order(StringComparer.Ordinal)
-            .ToArray();
+            if (facts.Length == 0 && theories.Length == 0)
+                continue;
+
+            if (facts.Length == 1 && theories.Length == 0)
+            {
+                actual.Add($"Fact|{method.Identifier.ValueText}");
+                if (rows.Length > 0)
+                {
+                    violations.Add(
+                        $"{sourceName}: Fact '{method.Identifier.ValueText}' carries " +
+                        $"{rows.Length} InlineData row(s)");
+                }
+
+                continue;
+            }
+
+            if (facts.Length == 0 && theories.Length == 1)
+            {
+                if (rows.Length == 0)
+                {
+                    violations.Add(
+                        $"{sourceName}: Theory '{method.Identifier.ValueText}' has no InlineData rows");
+                }
+
+                foreach (var row in rows)
+                {
+                    var arguments = row.ArgumentList?.Arguments
+                        .Select(argument => TestArgumentSignature(argument.Expression))
+                        .ToArray() ?? [];
+                    actual.Add(
+                        $"Theory|{method.Identifier.ValueText}|{string.Join('|', arguments)}");
+                }
+
+                continue;
+            }
+
+            violations.Add(
+                $"{sourceName}: test '{method.Identifier.ValueText}' must carry exactly " +
+                "one Fact or one Theory attribute");
+        }
+
+        var expectedCounts = expected
+            .GroupBy(static entry => entry, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        var actualCounts = actual
+            .GroupBy(static entry => entry, StringComparer.Ordinal)
+            .ToDictionary(static group => group.Key, static group => group.Count(), StringComparer.Ordinal);
+        foreach (var entry in expectedCounts.Keys
+                     .Concat(actualCounts.Keys)
+                     .Distinct(StringComparer.Ordinal)
+                     .Order(StringComparer.Ordinal))
+        {
+            var expectedCount = expectedCounts.GetValueOrDefault(entry);
+            var actualCount = actualCounts.GetValueOrDefault(entry);
+            if (expectedCount > actualCount)
+                violations.Add($"missing ({expectedCount - actualCount}x): {entry}");
+            if (actualCount > expectedCount)
+                violations.Add($"unexpected ({actualCount - expectedCount}x): {entry}");
+        }
+
+        return violations.Order(StringComparer.Ordinal).ToArray();
     }
+
+    private static bool AttributeNameIs(AttributeSyntax attribute, string expectedName) =>
+        attribute.Name.ToString() is var name &&
+        (string.Equals(name, expectedName, StringComparison.Ordinal) ||
+            string.Equals(name, expectedName + "Attribute", StringComparison.Ordinal));
+
+    private static string TestArgumentSignature(ExpressionSyntax expression)
+    {
+        if (expression is LiteralExpressionSyntax literal)
+        {
+            var value = literal.Token.ValueText;
+            if (literal.IsKind(SyntaxKind.StringLiteralExpression))
+            {
+                if (value.Length > 80 ||
+                    value.IndexOfAny(['\r', '\n']) >= 0 ||
+                    string.IsNullOrWhiteSpace(value))
+                {
+                    var digest = Convert
+                        .ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(value)))
+                        .ToLowerInvariant();
+                    return $"string(len={value.Length},sha256={digest})";
+                }
+
+                return $"string:{EscapeTestManifestValue(value)}";
+            }
+
+            if (literal.IsKind(SyntaxKind.CharacterLiteralExpression))
+            {
+                var character = Assert.IsType<char>(literal.Token.Value);
+                return $"char:U+{(int)character:X4}";
+            }
+
+            if (literal.IsKind(SyntaxKind.NullLiteralExpression))
+                return "null";
+            if (literal.IsKind(SyntaxKind.TrueLiteralExpression) ||
+                literal.IsKind(SyntaxKind.FalseLiteralExpression))
+            {
+                return $"bool:{value.ToLowerInvariant()}";
+            }
+
+            return $"literal:{EscapeTestManifestValue(value)}";
+        }
+
+        var syntax = Regex.Replace(expression.ToString(), @"\s+", "");
+        return $"syntax:{EscapeTestManifestValue(syntax)}";
+    }
+
+    private static string EscapeTestManifestValue(string value) =>
+        value
+            .Replace("\\", "\\\\", StringComparison.Ordinal)
+            .Replace("|", "\\|", StringComparison.Ordinal)
+            .Replace("\r", "\\r", StringComparison.Ordinal)
+            .Replace("\n", "\\n", StringComparison.Ordinal);
 
     private static string[] ScopedValidationDeclarationLocations(
         IEnumerable<(string RelativePath, string Source)> sources)
@@ -2184,21 +1957,36 @@ public sealed class IntegrationTestBoundaryTests
             .ToArray();
     }
 
+    /// <summary>
+    /// Finds argument-bearing validation calls outside the exact reviewed ValidationService class sources.
+    /// </summary>
+    /// <param name="sources">
+    /// Production relative paths and their complete C# source texts.
+    /// </param>
+    /// <param name="allowedSources">
+    /// Exact source paths where calls inside the ValidationService class are admitted.
+    /// </param>
+    /// <returns>
+    /// File and line coordinates of every unauthorized scoped validation call.
+    /// </returns>
     private static string[] ArgumentBearingValidationCallViolations(
         IEnumerable<(string RelativePath, string Source)> sources,
         IReadOnlyCollection<string> allowedSources)
     {
         var allowed = allowedSources.ToHashSet(StringComparer.OrdinalIgnoreCase);
-        var scopedCall = new Regex(
-            @"\.ValidateGameStateAsync\s*\(\s*(?<argument>[^\s\)])",
-            RegexOptions.CultureInvariant);
-
         return sources
-            .Where(source => !allowed.Contains(source.RelativePath))
-            .SelectMany(source => scopedCall
-                .Matches(source.Source)
-                .Select(match =>
-                    $"{source.RelativePath}:{LineNumber(source.Source, match.Index)}"))
+            .SelectMany(source => CSharpSyntaxTree.ParseText(source.Source).GetRoot()
+                .DescendantNodes().OfType<InvocationExpressionSyntax>()
+                .Where(call => call.ArgumentList.Arguments.Count > 0 &&
+                    (call.Expression is MemberAccessExpressionSyntax member &&
+                     member.Name.Identifier.ValueText == "ValidateGameStateAsync" ||
+                     call.Expression is MemberBindingExpressionSyntax binding &&
+                     binding.Name.Identifier.ValueText == "ValidateGameStateAsync"))
+                .Where(call => !allowed.Contains(source.RelativePath) ||
+                    call.Ancestors().OfType<ClassDeclarationSyntax>().FirstOrDefault()
+                        ?.Identifier.ValueText != "ValidationService")
+                .Select(call =>
+                    $"{source.RelativePath}:{LineNumber(source.Source, call.SpanStart)}"))
             .ToArray();
     }
 
@@ -2307,13 +2095,13 @@ public sealed class IntegrationTestBoundaryTests
             .ToArray();
         var violations = new List<string>();
 
-        if (ReviewedBroadValidationCallManifest.Count != 5 ||
+        if (ReviewedBroadValidationCallManifest.Count != 6 ||
             ReviewedBroadValidationCallManifest.Values.Sum() !=
             ReviewedBroadValidationCallCount)
         {
             violations.Add(
                 "Reviewed broad-validation manifest must contain exactly " +
-                $"5 files and {ReviewedBroadValidationCallCount} call sites.");
+                $"6 files and {ReviewedBroadValidationCallCount} call sites.");
         }
 
         if (callSiteArray.Length > BroadValidationSentinelBudget)
@@ -2886,13 +2674,28 @@ public sealed class IntegrationTestBoundaryTests
         return path;
     }
 
+    /// <summary>
+    /// Creates a minimal TRX with named results for runner parser boundary checks.
+    /// </summary>
+    /// <param name="testId">
+    /// Test identity shared by the result rows and definition.
+    /// </param>
+    /// <param name="storage">
+    /// Test assembly storage, or <see langword="null"/> to exercise missing mapping rejection.
+    /// </param>
+    /// <param name="resultCount">
+    /// Number of result rows and reported cases to generate.
+    /// </param>
+    /// <returns>
+    /// A synthetic TRX document containing the requested result rows and counters.
+    /// </returns>
     private static string SyntheticTrx(
         string testId,
         string? storage,
         int resultCount)
     {
         var results = string.Concat(Enumerable.Range(1, resultCount).Select(index =>
-            $"""<UnitTestResult testId="{testId}" executionId="execution-{index}" />"""));
+            $"""<UnitTestResult testId="{testId}" testName="BookOfEternityClient.Tests.RunnerFixture.Test" executionId="execution-{index}" outcome="Passed" />"""));
         var storageAttribute = storage is null ? string.Empty : $" storage=\"{storage}\"";
         return $$"""
             <?xml version="1.0" encoding="utf-8"?>

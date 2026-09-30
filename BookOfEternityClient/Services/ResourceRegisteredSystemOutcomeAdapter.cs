@@ -25,6 +25,19 @@ internal interface IResourceRegisteredSystemOutcomeDraft
         AcceptedMechanicsResourcePlanningResult resourceResult);
 }
 
+/// <summary>
+/// Marks an afterlife outcome whose ordinary mutations finish before the first spiritual exchange
+/// and whose projection only reads a detached resource prefix.
+/// </summary>
+internal interface IOriginalSpiritualPrefixOutcomeDraft : IResourceRegisteredSystemOutcomeDraft
+{
+}
+
+internal interface IResourceRegisteredSystemCapacityDraft
+{
+    IReadOnlyList<ResourceCapacityIntent> CapacityTransitions { get; }
+}
+
 internal sealed record ResourceLossRecoveryTarget(
     ResourceCoordinate Coordinate,
     ResourceOperation Operation);

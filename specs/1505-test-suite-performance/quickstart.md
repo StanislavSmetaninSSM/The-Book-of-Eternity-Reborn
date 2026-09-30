@@ -1,6 +1,25 @@
-# Quickstart: C# Verification Lanes
+# Quickstart: Selected Test Categories
 
-**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+Current policy: CATEGORY-SELECTION-DECISION rev1, approved 2026-09-30.
+Read [docs/testing.md](../../docs/testing.md), choose categories by changed
+contracts/consumers and update `tests/selection.json` with reasons.
+
+```powershell
+./scripts/test-csharp.ps1 -ListCategories
+./scripts/test-csharp.ps1 -Category test-selection-contracts -PlanOnly
+./scripts/test-csharp.ps1 -SelectionFile tests/selection.json
+./scripts/test-csharp.ps1 -ValidateCatalog
+```
+
+The last command audits ownership by discovery without executing tests.
+Category names are extensible catalog data. Full-suite and serial-all controls
+are prohibited everywhere. Use independent mutable fixtures; immutable copied
+templates remain conditional, not mandatory. See current spec/plan/tasks for
+scope and evidence. No gameplay continuation until owner inspection.
+
+## Historical lane quickstart (superseded; do not execute these commands)
+
+**Source issues**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 
 Run commands from the repository root with PowerShell 7.
 
@@ -18,6 +37,7 @@ dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.Integrat
 ```powershell
 .\scripts\test-csharp.ps1
 .\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~ValidationPhaseSelectionTests"
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~QteSceneServiceTests"
 .\scripts\test-csharp.ps1 -Lane FullValidation
 .\scripts\test-csharp.ps1 -Lane RegressionIntegration
 .\scripts\test-csharp.ps1 -Lane ProcessIntegration
@@ -29,6 +49,22 @@ dotnet build BookOfEternityClient.IntegrationTests\BookOfEternityClient.Integrat
 
 The default/Fast lane selects the fast test project directly and has no
 category-exclusion filter. Its one hard limit is five minutes.
+
+Fast contains fixture-free deterministic unit, parser, reducer, contract, and
+source-guard coverage. Canonical file/restart/rollback/lifecycle and
+lease-contention tests live in Integration with `RegressionIntegration`; real
+child-process tests use `ProcessIntegration`; complete host/browser flows use
+`E2E`. For a mixed class, split deterministic tests from the integration
+fixture rather than adding a negative Fast filter. Use
+`-Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~..."`
+to iterate on a moved class.
+
+Treatment resolver tests requiring accepted-state files, persistence, leases,
+resource claims, publication, restart, or replay are `RegressionIntegration`.
+Move the entire `MortalWoundTreatmentResolverTests*.cs` partial family with its
+registry companion; fixture-free treatment parsers, projectors, fingerprints,
+reducers, and pure policy tests remain Fast. This does not raise Fast's
+five-minute limit or reduce assertions.
 
 The explicit diagnostic lanes select categories in the integration test
 project. They are not ordinary post-edit controls. Use them only for a relevant
@@ -162,3 +198,76 @@ The rejected historical all-inclusive attempt ended at `15:00.393` with exit
 `124`: all `4,738/4,738` completed tests passed, failures and duplicates were
 `0`, cleanup succeeded, and the projected lower bound was `25:37.741`. This was
 a capacity limit, not a correctness failure, and motivated the two-tier design.
+
+## Current #1551 Boundary and Evidence
+
+Fast is the complete physically isolated `BookOfEternityClient.Tests` project,
+not shorthand for all repository tests. It retains no negative category filter,
+the five-minute hard limit, and the two-host ceiling. Use this exact placement
+rule:
+
+```text
+canonical file/restart/rollback/lifecycle/contention -> RegressionIntegration
+real child process -> ProcessIntegration
+complete HTTP host/browser flow -> E2E
+fixture-free deterministic unit/parser/reducer/contract/source guard -> Fast
+```
+
+For moved classes, iterate in the Integration project:
+
+```powershell
+.\scripts\test-csharp.ps1 -Lane Focused -FocusedProject Integration -Filter "FullyQualifiedName~ClassOrMethod"
+```
+
+The QTE split keeps 66 deterministic input/grading rows in Fast
+`QteDeterministicLogicTests` and 51 canonical lifecycle rows in Integration
+`QteSceneServiceTests`. The Daren split keeps 77 deterministic
+route/prose/reducer/contract rows in Fast `DarenQteDeterministicLogicTests` and
+12 profile/filesystem/service/browser-projection rows in Integration
+`DarenQteShowcaseTests`. Executable Roslyn manifests pin each Fact/Theory and
+normalized InlineData row at QTE `66/51` and Daren `77/12`; category ownership
+comes only from attributes on the expected top-level class. Moved WebUi classes
+use the test-free `UiTestTextCollector` helper from TestSupport so Integration
+never references Fast. The exact final 58-entry reviewed-heavy manifest and
+35-entry class-level regression category array are recorded in `research.md`
+directly from the executable guards. Method-only Regression traits do not count
+as class ownership.
+
+Post-remediation PlanOnly artifact
+`20260904-070836-796-19044-f3c6b8f4a7364bb1913611176107307a-fast`
+contains 29 unique Fast-project descriptors and 7,071 estimated cases/cost,
+with the 77-row Daren deterministic owner exactly once, no Integration Daren
+owner, and zero duplicates. The current Fast controls
+are:
+
+| Run ID | Executed / passed / failed | Wall | Exit | Timeout / duplicates / cleanup |
+|---|---:|---:|---:|---|
+| `20260904-070944-389-28440-60e246e1148944bb86b2b8bd2d582246-fast` | `4759/4694/65` | `00:02:17.7762792` | 1 | `false/0/complete` |
+| `20260904-071206-972-37312-3696b2f3daf248da93c08092f04e572b-fast` | `4759/4694/65` | `00:02:13.7896671` | 1 | `false/0/complete` |
+
+Both satisfy the Fast capacity, duplicate, and cleanup requirements, but both
+remain official RED and incomplete. All 65 failures exactly match the retained
+#1536 T067 display names and stable TRX IDs; fail-fast completed five of 29
+descriptors, leaving 24 without complete TRX evidence. The measured contour
+now contains 77 additional passing rows, exactly the Daren deterministic rows
+restored to Fast, while the known failure set remains unchanged.
+
+Task 7's required diagnostics retained a `151/151/131/20` unrelated Guardian
+RED in RegressionIntegration and an initial `555/555/552/3` ProcessIntegration
+RED. The first E2E attempt could not start because ignored frontend dependencies
+were absent after restart. After `npm ci`, the environment-valid E2E artifact
+`20260904-061601-948-15524-cd780f2129b04dc782dc4e6122cd00cc-e2e`
+passed frontend `141/141` and E2E `18/18` in `00:01:28.5961264`; the exact two
+built-frontend ProcessIntegration smoke methods then passed `2/2` in
+`20260904-061737-528-23048-28391b77381c455c95ebccb5d5de8fff-focused`.
+The third ProcessIntegration failure, a QTE helper method, passed within the
+exact failed-method diagnostic and remains intermittent. The 20 Guardian rows
+reproduced exactly and remain unrelated pre-existing/current-branch functional
+RED, not #1551 work.
+
+#1551 changes only test placement and scheduling. It changes no production game
+capability, command, mechanic, state/validation/normalizer contract,
+player-visible UI, GM-authored output, afterlife pending/control/action/receipt
+or report surface, or daemon/launcher prompt. Mortal World/afterlife prompts,
+gameplay examples, validation manifests, afterlife contract matrix, and source
+guards require no update.

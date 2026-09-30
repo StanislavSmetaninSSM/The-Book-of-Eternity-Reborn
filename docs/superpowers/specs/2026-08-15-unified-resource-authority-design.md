@@ -359,7 +359,7 @@ narrative reason
 
 The client resolves all protected binding through the pending request. Initially registered bounded result kinds are `narrated_no_state_change` and a bounded `resource_delta` whose coordinate and operation were fixed by the request. Extra, missing, stale, partial, cross-target, wrong-operation, or out-of-bound data fails closed.
 
-Canonical resource/effect state does not change while the request is pending. A valid receipt requires one coherent full-turn resubmission, becomes an ordinary `ResourceMutation`, and is consumed exactly once with terminal replay evidence.
+Canonical resource/effect state does not change while the request is pending. A valid receipt requires one coherent full-turn resubmission and is consumed exactly once with terminal replay evidence. A positive `resource_delta` becomes an ordinary `ResourceMutation`. When the request's inclusive bound permits zero, an exact zero `resource_delta` is consumed as explicit terminal evidence without a mutation, resource event, or dependent activation; `narrated_no_state_change` remains the separate amount-free result.
 
 ## 14. Domain Cutover
 

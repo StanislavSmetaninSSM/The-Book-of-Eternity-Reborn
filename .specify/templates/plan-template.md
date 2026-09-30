@@ -51,7 +51,7 @@
 - **Player-facing integrity**: If console/browser/player UI is touched, Russian in-world copy, no debug/API leakage, and parity expectations are defined.
 - **Contract/state authority**: If summaries, mechanics, validation, pending/control files, GM prompts/docs, or examples are touched, canonical authority and prompts/docs/examples/tests updates are planned for Mortal World and afterlife surfaces.
 - **Test-first path**: Regression or feature tests are identified before implementation tasks.
-- **Verification evidence**: Focused `dotnet test`, docs coverage, frontend verification, and/or browser visual checks are listed.
+- **Verification evidence**: Selected categories, affected contracts/consumers and reasons, docs coverage and/or browser visual checks are listed. No full-suite or automatic Fast/PreMerge control.
 - **Agent orchestration**: Hermes/Codex delegation packets must include source issues, active Spec Kit artifacts, Superpowers method requirements, and verification commands.
 - **Pre-release save policy**: Backward compatibility is not assumed before the first public release. The plan migrates active bootstrap state/templates/examples/tests and removes obsolete fallbacks, or links an explicit issue/spec exception with a concrete migration and support horizon.
 

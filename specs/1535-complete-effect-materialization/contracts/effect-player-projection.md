@@ -149,3 +149,24 @@ Required fixtures include:
 - nested active effect in quest/news/reference/status data;
 - wound-derived effect removal with unchanged wound row/detail;
 - non-item/non-effect semantic objects containing legitimate `kind`, `title`, `steps`, `turn`, `source`, or `route` values to prove no global overfiltering.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+extends the completed projection contract for the mandatory common payload:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+A visible `scope.kind=all` modifier describes all of its registered operations. A
+visible `scope.kind=skill` modifier resolves the current canonical display name from
+the exact bound identity and never exposes `skillId`. An unavailable retained row is
+shown as currently inactive; a missing or invalid current authority uses neutral
+“specific unavailable skill” wording and never selects a similar name. Existing hidden
+effect rules remain authoritative. Historical #1535 tasks remain complete; #1536 owns
+the new projection tests and implementation.

@@ -1,3 +1,5 @@
+using System.Collections.Immutable;
+using System.Globalization;
 using System.Text.Json;
 
 namespace BookOfEternityClient.Services;
@@ -14,6 +16,229 @@ internal sealed record EffectComponentProfileDescriptor(
     EffectComponentResolutionMode ResolutionMode,
     IReadOnlySet<string> LegalMergeReducers,
     string ProjectionDescriptor);
+
+internal enum SpiritualWoundMagnitudeKind
+{
+    Integer,
+    String
+}
+
+internal enum SpiritualWoundProjectionKind
+{
+    RollHindrance,
+    ActionCostBurden,
+    PositionBurden,
+    ControlBurden,
+    StrainBurden,
+    TempoBurden,
+    CounterBurden,
+    ArtRestriction
+}
+
+internal sealed record SpiritualWoundOperationDescriptor(
+    string Operation,
+    string PlayerLabel);
+
+internal sealed record SpiritualWoundProfileDescriptor(
+    string Profile,
+    string Axis,
+    ImmutableHashSet<string> LegalOperations,
+    SpiritualWoundMagnitudeKind MagnitudeKind,
+    ImmutableArray<int> IntegerMagnitudes,
+    ImmutableHashSet<string> StringMagnitudes,
+    SpiritualWoundProjectionKind ProjectionKind,
+    string PlayerLabel)
+{
+    internal bool IsMagnitudeValid(JsonElement magnitude) => MagnitudeKind switch
+    {
+        SpiritualWoundMagnitudeKind.Integer =>
+            TryReadExactInteger(magnitude, out var value) &&
+            IntegerMagnitudes.Contains(value),
+        SpiritualWoundMagnitudeKind.String =>
+            magnitude.ValueKind == JsonValueKind.String &&
+            magnitude.GetString() is string value &&
+            StringMagnitudes.Contains(value),
+        _ => false
+    };
+
+    internal bool TryReadMagnitudeInteger(JsonElement magnitude, out int value)
+    {
+        value = 0;
+        return MagnitudeKind == SpiritualWoundMagnitudeKind.Integer &&
+               TryReadExactInteger(magnitude, out value) &&
+               IntegerMagnitudes.Contains(value);
+    }
+
+    internal string ExpectedMagnitude => MagnitudeKind switch
+    {
+        SpiritualWoundMagnitudeKind.Integer => string.Join(
+            " | ",
+            IntegerMagnitudes.Select(static value =>
+                value.ToString(CultureInfo.InvariantCulture))),
+        SpiritualWoundMagnitudeKind.String => string.Join(
+            " | ",
+            StringMagnitudes.OrderBy(static value => value, StringComparer.Ordinal)),
+        _ => "registered spiritual wound magnitude"
+    };
+
+    private static bool TryReadExactInteger(JsonElement value, out int result)
+    {
+        result = 0;
+        return value.ValueKind == JsonValueKind.Number &&
+               value.TryGetInt32(out result) &&
+               string.Equals(
+                   value.GetRawText(),
+                   result.ToString(CultureInfo.InvariantCulture),
+                   StringComparison.Ordinal);
+    }
+}
+
+internal static class SpiritualWoundEffectProfileCatalog
+{
+    private static readonly ImmutableDictionary<string, SpiritualWoundOperationDescriptor>
+        OperationDescriptors = new Dictionary<string, string>(StringComparer.Ordinal)
+        {
+            ["pressure"] = "Давление",
+            ["counter"] = "Контрприём",
+            ["guard"] = "Защита",
+            ["maneuver"] = "Манёвр",
+            ["binding"] = "Оковы",
+            ["break_binding"] = "Разрыв оков",
+            ["force_binding"] = "Принуждение оковами",
+            ["force_incarnation"] = "Принуждение к воплощению",
+            ["incarnation_resistance"] = "Сопротивление воплощению",
+            ["champion_coordination"] = "Координация чемпиона",
+            ["recover_spiritual_power"] = "Восстановление духовной силы"
+        }.ToImmutableDictionary(
+            static pair => pair.Key,
+            static pair => new SpiritualWoundOperationDescriptor(pair.Key, pair.Value),
+            StringComparer.Ordinal);
+
+    private static readonly ImmutableHashSet<string> OperationSet =
+        OperationDescriptors.Keys.ToImmutableHashSet(StringComparer.Ordinal);
+
+    private static readonly ImmutableHashSet<string> ArtOperationSet =
+        OperationSet.Remove("force_incarnation");
+
+    private static readonly ImmutableDictionary<string, SpiritualWoundProfileDescriptor>
+        ProfileDescriptors = new[]
+        {
+            StringProfile(
+                "spiritual_roll_hindrance",
+                "rollMode",
+                OperationSet,
+                SpiritualWoundProjectionKind.RollHindrance,
+                "Духовная проверка",
+                "disadvantage"),
+            IntegerProfile(
+                "spiritual_action_cost_burden",
+                "actionCostAudit",
+                OperationSet,
+                SpiritualWoundProjectionKind.ActionCostBurden,
+                "Стоимость духовного действия",
+                1, 2, 3),
+            IntegerProfile(
+                "spiritual_position_burden",
+                "conflictPosition",
+                OperationSet,
+                SpiritualWoundProjectionKind.PositionBurden,
+                "Позиция в духовном конфликте",
+                1, 2),
+            IntegerProfile(
+                "spiritual_control_burden",
+                "controlState",
+                OperationSet,
+                SpiritualWoundProjectionKind.ControlBurden,
+                "Духовный контроль",
+                1),
+            IntegerProfile(
+                "spiritual_strain_burden",
+                "sideStrain",
+                OperationSet,
+                SpiritualWoundProjectionKind.StrainBurden,
+                "Духовное напряжение",
+                1),
+            StringProfile(
+                "spiritual_tempo_burden",
+                "tempoAdvantage",
+                OperationSet,
+                SpiritualWoundProjectionKind.TempoBurden,
+                "Темп духовного конфликта",
+                "deny_one_gain"),
+            StringProfile(
+                "spiritual_counter_burden",
+                "counterPayoff",
+                OperationSet,
+                SpiritualWoundProjectionKind.CounterBurden,
+                "Результат контрдействия",
+                "reduce_one_step"),
+            StringProfile(
+                "spiritual_art_restriction",
+                "artAvailability",
+                ArtOperationSet,
+                SpiritualWoundProjectionKind.ArtRestriction,
+                "Доступность духовного искусства",
+                "restrict", "forbid")
+        }.ToImmutableDictionary(
+            static descriptor => descriptor.Profile,
+            StringComparer.Ordinal);
+
+    private static readonly ImmutableHashSet<string> ProfileSet =
+        ProfileDescriptors.Keys.ToImmutableHashSet(StringComparer.Ordinal);
+
+    internal static IReadOnlyDictionary<string, SpiritualWoundProfileDescriptor> Profiles =>
+        ProfileDescriptors;
+
+    internal static IReadOnlySet<string> RegisteredProfiles => ProfileSet;
+
+    internal static IReadOnlySet<string> Operations => OperationSet;
+
+    internal static IReadOnlySet<string> ArtOperations => ArtOperationSet;
+
+    internal static bool TryGetProfile(
+        string profile,
+        out SpiritualWoundProfileDescriptor descriptor) =>
+        ProfileDescriptors.TryGetValue(profile, out descriptor!);
+
+    internal static bool TryGetOperation(
+        string operation,
+        out SpiritualWoundOperationDescriptor descriptor) =>
+        OperationDescriptors.TryGetValue(operation, out descriptor!);
+
+    private static SpiritualWoundProfileDescriptor IntegerProfile(
+        string profile,
+        string axis,
+        ImmutableHashSet<string> operations,
+        SpiritualWoundProjectionKind projectionKind,
+        string playerLabel,
+        params int[] magnitudes) =>
+        new(
+            profile,
+            axis,
+            operations,
+            SpiritualWoundMagnitudeKind.Integer,
+            magnitudes.ToImmutableArray(),
+            ImmutableHashSet<string>.Empty.WithComparer(StringComparer.Ordinal),
+            projectionKind,
+            playerLabel);
+
+    private static SpiritualWoundProfileDescriptor StringProfile(
+        string profile,
+        string axis,
+        ImmutableHashSet<string> operations,
+        SpiritualWoundProjectionKind projectionKind,
+        string playerLabel,
+        params string[] magnitudes) =>
+        new(
+            profile,
+            axis,
+            operations,
+            SpiritualWoundMagnitudeKind.String,
+            ImmutableArray<int>.Empty,
+            magnitudes.ToImmutableHashSet(StringComparer.Ordinal),
+            projectionKind,
+            playerLabel);
+}
 
 internal sealed record EffectPeriodicResourceComponent(
     string ComponentId,
@@ -127,8 +352,8 @@ internal static class EffectComponentProfiles
         AfterlifeSpiritualConflictState.CombatConditionMechanicalAxes,
         StringComparer.Ordinal);
 
-    private static readonly Dictionary<string, EffectComponentProfileDescriptor> Descriptors =
-        new(StringComparer.Ordinal)
+    private static readonly ImmutableDictionary<string, EffectComponentProfileDescriptor> Descriptors =
+        new Dictionary<string, EffectComponentProfileDescriptor>(StringComparer.Ordinal)
         {
             ["characteristic_modifier"] = Descriptor(
                 "characteristic_modifier", "characteristic modifier", "sum", "minimum", "maximum"),
@@ -140,20 +365,38 @@ internal static class EffectComponentProfiles
                 "periodic_damage", "periodic damage", "sum", "minimum", "maximum"),
             ["periodic_restore"] = Descriptor(
                 "periodic_restore", "periodic restoration", "sum", "minimum", "maximum"),
+            ["periodic_spend"] = Descriptor(
+                "periodic_spend", "periodic spending", "sum", "minimum", "maximum"),
+            ["periodic_gain"] = Descriptor(
+                "periodic_gain", "periodic gain", "sum", "minimum", "maximum"),
             ["action_control"] = Descriptor(
                 "action_control", "action control", "minimum", "maximum"),
             ["event_reaction"] = new(
                 "event_reaction",
                 EffectComponentResolutionMode.Declared,
-                new HashSet<string>(StringComparer.Ordinal) { "profile_specific" },
+                ImmutableHashSet.Create(StringComparer.Ordinal, "profile_specific"),
                 "source-declared deterministic or bounded event reaction"),
             ["wound_consequence"] = Descriptor(
                 "wound_consequence", "wound consequence", "profile_specific"),
             ["afterlife_combat_condition"] = Descriptor(
                 "afterlife_combat_condition", "afterlife combat condition", "profile_specific")
-        };
+        }
+        .Concat(SpiritualWoundEffectProfileCatalog.Profiles.Values.Select(static profile =>
+            new KeyValuePair<string, EffectComponentProfileDescriptor>(
+                profile.Profile,
+                Descriptor(
+                    profile.Profile,
+                    profile.PlayerLabel,
+                    "profile_specific"))))
+        .ToImmutableDictionary(
+            static pair => pair.Key,
+            static pair => pair.Value,
+            StringComparer.Ordinal);
 
-    internal static IReadOnlyCollection<string> RegisteredProfiles => Descriptors.Keys;
+    private static readonly ImmutableArray<string> RegisteredProfileKeys =
+        Descriptors.Keys.OrderBy(static profile => profile, StringComparer.Ordinal).ToImmutableArray();
+
+    internal static IReadOnlyCollection<string> RegisteredProfiles => RegisteredProfileKeys;
 
     internal static bool TryGetDescriptor(
         string profile,
@@ -170,13 +413,13 @@ internal static class EffectComponentProfiles
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
 
         var profile = component.GetProperty("profile").GetString()!;
-        if (profile is not ("periodic_damage" or "periodic_restore"))
+        if (!IsPeriodicResourceProfile(profile))
         {
             Add(
                 issues,
                 path + ".profile",
                 "effect_resource_profile_unsupported",
-                "periodic_damage or periodic_restore",
+                "periodic_damage, periodic_restore, periodic_spend or periodic_gain",
                 profile);
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
         }
@@ -196,10 +439,7 @@ internal static class EffectComponentProfiles
             return new EffectPeriodicResourceComponentResult(null, issues.ToArray());
         }
 
-        var policyField = string.Equals(
-            profile,
-            "periodic_damage",
-            StringComparison.Ordinal)
+        var policyField = profile is "periodic_damage" or "periodic_spend"
             ? "floorPolicy"
             : "capPolicy";
         return new EffectPeriodicResourceComponentResult(
@@ -209,9 +449,14 @@ internal static class EffectComponentProfiles
                 component.GetProperty("priority").GetInt32(),
                 payload.GetProperty("resource").GetString()!,
                 amount,
-                string.Equals(profile, "periodic_damage", StringComparison.Ordinal)
-                    ? ResourceOperation.Damage
-                    : ResourceOperation.Restore,
+                profile switch
+                {
+                    "periodic_damage" => ResourceOperation.Damage,
+                    "periodic_restore" => ResourceOperation.Restore,
+                    "periodic_spend" => ResourceOperation.Spend,
+                    "periodic_gain" => ResourceOperation.Gain,
+                    _ => throw new InvalidOperationException("Validated resource profile expected.")
+                },
                 payload.GetProperty(policyField).GetString()!),
             Array.Empty<ValidationIssue>());
     }
@@ -266,7 +511,11 @@ internal static class EffectComponentProfiles
                 ValidatePeriodicDamage(payload, path + ".payload", issues);
                 break;
             case "periodic_restore":
+            case "periodic_gain":
                 ValidatePeriodicRestore(payload, path + ".payload", issues);
+                break;
+            case "periodic_spend":
+                ValidatePeriodicSpend(payload, path + ".payload", issues);
                 break;
             case "action_control":
                 ValidateActionControl(payload, path + ".payload", issues);
@@ -280,6 +529,18 @@ internal static class EffectComponentProfiles
             case "afterlife_combat_condition":
                 ValidateAfterlifeCombatCondition(payload, path + ".payload", issues);
                 break;
+            default:
+                if (SpiritualWoundEffectProfileCatalog.TryGetProfile(
+                        profile,
+                        out var spiritualProfile))
+                {
+                    ValidateSpiritualWound(
+                        payload,
+                        path + ".payload",
+                        spiritualProfile,
+                        issues);
+                }
+                break;
         }
     }
 
@@ -290,7 +551,7 @@ internal static class EffectComponentProfiles
         new(
             profile,
             EffectComponentResolutionMode.Deterministic,
-            new HashSet<string>(reducers, StringComparer.Ordinal),
+            reducers.ToImmutableHashSet(StringComparer.Ordinal),
             projection);
 
     private static void ValidateCharacteristicModifier(
@@ -310,9 +571,51 @@ internal static class EffectComponentProfiles
         string path,
         List<ValidationIssue> issues)
     {
-        ValidateClosedObject(payload, path, Set("operations", "contribution"), issues);
-        RequireClosedStringArray(payload, path, "operations", RollOperations, issues);
+        ValidateClosedObject(
+            payload,
+            path,
+            Set("operations", "contribution", "scope"),
+            issues);
+        var operations = TryReadClosedStringArray(
+            payload,
+            path,
+            "operations",
+            RollOperations,
+            issues);
         RequireClosedString(payload, path, "contribution", Contributions, issues);
+
+        if (!payload.TryGetProperty("scope", out var scope) ||
+            scope.ValueKind != JsonValueKind.Object)
+        {
+            Add(issues, path + ".scope", "effect_materialization_invalid_component",
+                "closed roll scope object", Describe(payload, "scope"));
+            return;
+        }
+
+        var scopePath = path + ".scope";
+        var kind = RequireClosedString(
+            scope,
+            scopePath,
+            "kind",
+            Set("all", "skill"),
+            issues);
+        switch (kind)
+        {
+            case "all":
+                ValidateClosedObject(scope, scopePath, Set("kind"), issues);
+                break;
+            case "skill":
+                ValidateClosedObject(scope, scopePath, Set("kind", "skillId"), issues);
+                RequireExactIdentifier(scope, scopePath, "skillId", issues);
+                if (operations is not null && operations is not ["skill_check"])
+                {
+                    Add(issues, path + ".operations",
+                        "effect_materialization_invalid_component",
+                        "exactly [\"skill_check\"] for scope.kind=skill",
+                        Describe(payload, "operations"));
+                }
+                break;
+        }
     }
 
     private static void ValidateResistanceModifier(
@@ -336,6 +639,26 @@ internal static class EffectComponentProfiles
         RequireExactIdentifier(payload, path, "resource", issues);
         RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "damageType", DamageTypes, issues);
+        RequireClosedString(payload, path, "floorPolicy", FloorPolicies, issues);
+    }
+
+    /// <summary>
+    /// Identifies generic executable resource profiles, without granting resource or source authority.
+    /// </summary>
+    /// <param name="profile">
+    /// Exact profile name; null, empty and unknown names return false.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> for a registered periodic resource profile; otherwise <see langword="false"/>.
+    /// </returns>
+    internal static bool IsPeriodicResourceProfile(string? profile) =>
+        profile is "periodic_damage" or "periodic_restore" or "periodic_spend" or "periodic_gain";
+
+    private static void ValidatePeriodicSpend(JsonElement payload, string path, List<ValidationIssue> issues)
+    {
+        ValidateClosedObject(payload, path, Set("resource", "amount", "floorPolicy"), issues);
+        RequireExactIdentifier(payload, path, "resource", issues);
+        RequireFinitePositive(payload, path, "amount", issues);
         RequireClosedString(payload, path, "floorPolicy", FloorPolicies, issues);
     }
 
@@ -495,6 +818,38 @@ internal static class EffectComponentProfiles
         RequireExactIdentifier(payload, path, "payoff", issues);
     }
 
+    private static void ValidateSpiritualWound(
+        JsonElement payload,
+        string path,
+        SpiritualWoundProfileDescriptor descriptor,
+        List<ValidationIssue> issues)
+    {
+        ValidateClosedObject(payload, path, Set("operation", "axis", "magnitude"), issues);
+        RequireClosedString(
+            payload,
+            path,
+            "operation",
+            descriptor.LegalOperations,
+            issues);
+        RequireClosedString(
+            payload,
+            path,
+            "axis",
+            new HashSet<string>(StringComparer.Ordinal) { descriptor.Axis },
+            issues);
+
+        if (!payload.TryGetProperty("magnitude", out var magnitude) ||
+            !descriptor.IsMagnitudeValid(magnitude))
+        {
+            Add(
+                issues,
+                path + ".magnitude",
+                "effect_materialization_invalid_component",
+                descriptor.ExpectedMagnitude,
+                Describe(payload, "magnitude"));
+        }
+    }
+
     private static void ValidateOptionalCap(
         JsonElement payload,
         string path,
@@ -589,6 +944,41 @@ internal static class EffectComponentProfiles
                 Add(issues, itemPath, "effect_materialization_invalid_component", "one unique registered value", item.GetRawText());
             }
         }
+    }
+
+    private static string[]? TryReadClosedStringArray(
+        JsonElement root,
+        string path,
+        string field,
+        IReadOnlySet<string> allowed,
+        List<ValidationIssue> issues)
+    {
+        if (!root.TryGetProperty(field, out var value) || value.ValueKind != JsonValueKind.Array || value.GetArrayLength() == 0)
+        {
+            Add(issues, path + "." + field, "effect_materialization_invalid_component", "non-empty closed string array", Describe(root, field));
+            return null;
+        }
+
+        var values = new List<string>();
+        var seen = new HashSet<string>(StringComparer.Ordinal);
+        var hasInvalidItem = false;
+        var index = 0;
+        foreach (var item in value.EnumerateArray())
+        {
+            var itemPath = $"{path}.{field}[{index++}]";
+            if (item.ValueKind != JsonValueKind.String || item.GetString() is not string text ||
+                text.Length == 0 || !string.Equals(text, text.Trim(), StringComparison.Ordinal) ||
+                !allowed.Contains(text) || !seen.Add(text))
+            {
+                Add(issues, itemPath, "effect_materialization_invalid_component", "one unique registered value", item.GetRawText());
+                hasInvalidItem = true;
+                continue;
+            }
+
+            values.Add(text);
+        }
+
+        return hasInvalidItem ? null : values.ToArray();
     }
 
     private static void RequireExactStringArray(

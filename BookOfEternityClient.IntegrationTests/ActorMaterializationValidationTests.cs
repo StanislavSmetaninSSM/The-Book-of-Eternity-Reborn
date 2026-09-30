@@ -4952,7 +4952,7 @@ public sealed class ActorMaterializationValidationTests : IDisposable
                 "enlightenment": { "experience": 0, "tier": 0 },
                 "radiance": { "experience": 20, "tier": 1 }
               },
-              "standardArts": { "guard": 1 },
+              "standardArts": { "guard": 1, "spiritual_resilience": 0, "spiritual_healing": 0 },
               "specialArts": [],
               "customStates": [],
               "fateCards": [],

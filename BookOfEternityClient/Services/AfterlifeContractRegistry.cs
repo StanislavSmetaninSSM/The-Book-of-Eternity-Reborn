@@ -1,16 +1,42 @@
 namespace BookOfEternityClient.Services;
 
+/// <summary>
+/// Describes ownership and presentation classification for one registered afterlife surface.
+/// </summary>
+/// <param name="Path">
+/// Canonical repository-relative state path.
+/// </param>
+/// <param name="Owner">
+/// Owning domain identifier.
+/// </param>
+/// <param name="Realm">
+/// Realms in which the surface participates.
+/// </param>
+/// <param name="Authority">
+/// Description of the permitted authoring authority; metadata grants no write authority.
+/// </param>
+/// <param name="IsKnownClientOwnedSurface">
+/// Whether the surface belongs to client-owned validation handling.
+/// </param>
+/// <param name="IsPrivateMechanicsSurface">
+/// Whether internal mechanics evidence must stay outside player pending-request status payloads.
+/// Defaults to <see langword="false"/> for existing presentation classifications.
+/// </param>
 public sealed record AfterlifeContractSurface(
     string Path,
     string Owner,
     string Realm,
     string Authority,
-    bool IsKnownClientOwnedSurface);
+    bool IsKnownClientOwnedSurface,
+    bool IsPrivateMechanicsSurface = false);
 
 public static class AfterlifeContractRegistry
 {
     private static readonly AfterlifeContractSurface[] Surfaces =
     {
+        new(SpiritualWoundCaptureCheckpointState.StatePath, "spiritual_wound_capture_checkpoint", "Chaos Sea|Shining Abode", "private client-owned original capture checkpoint; no GM writes", true, true),
+        new(SpiritualWoundDecisionPendingState.StatePath, "spiritual_wound_decisions", "Chaos Sea|Shining Abode", "private client-owned unfinished decision evidence; no GM writes", true, true),
+        new(SpiritualWoundOpportunityReceiptState.StatePath, "spiritual_wound_receipts", "Chaos Sea|Shining Abode", "private client-owned accepted decision history; no GM writes", true, true),
         new(AfterlifeSpiritualConflictState.StatePath, "afterlife_spiritual_conflict", "Chaos Sea|Shining Abode", "GM-authored through afterlifeSpiritualConflictUpdate", false),
         new(AfterlifeEntityProfileState.StatePath, "afterlife_entity_profiles", "Chaos Sea|Shining Abode", "GM-authored profile/update/actor-agency/relationship/mask surfaces plus client-owned local player upgrade paths", false),
         new(AfterlifeActiveThreatState.StatePath, "afterlife_active_threats", "Chaos Sea|Shining Abode", "GM-authored persistent afterlife threats through afterlifeThreatsToAdd/afterlifeThreatsToUpdate/completeAfterlifeThreatActivities/afterlifeThreatsToRemove", false),

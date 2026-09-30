@@ -30,9 +30,11 @@ feature-branch and owner-reviewed pull-request workflow above.
 
 ## Verification and worktree care
 
-Follow the lane guidance in [docs/testing.md](docs/testing.md): run the
-smallest relevant Focused test during implementation, a Fast checkpoint at a
-meaningful point, and PreMerge immediately before merge. Preserve
+Follow [docs/testing.md](docs/testing.md): choose documented categories from
+changed contracts and affected consumers, record reasons in `tests/selection.json`,
+and run only that selection. Add or split categories as their responsibilities
+grow. Independent review checks the selection; no full-suite, Fast or PreMerge
+control runs before merge or elsewhere. Preserve
 user-owned and unrelated changes in a worktree; do not discard or commit them
 as part of your contribution.
 

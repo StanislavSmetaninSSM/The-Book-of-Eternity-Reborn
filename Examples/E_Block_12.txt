@@ -5,6 +5,225 @@
  <title>
   Examples For Action Checks and Resolution
  </title>
+ <rule id="12.wound_repair_retry_v1">
+  <example contenttype="contract_workflow" type="good">
+   <title>
+    wound_repair_retry_v1: invalid severity, rollback, and complete corrected retry
+   </title>
+   <scenariocontext>
+    The current client-authored wound opportunity is ordinary and has maximumSeverity II. The GM chose to materialize "Трещина в узоре воли" but mistakenly proposed severity III. The acquisition narration and all unrelated decisions in the turn are otherwise valid.
+   </scenariocontext>
+   <logoutput target="gm_thoughts_markdown">
+    <![CDATA[
+
+    1. The client rejects the proposal with wound_severity_above_opportunity before publication.
+    2. The client restores the exact before-image of every rollback-tracked canonical and player-output file. The rejected attempt leaves no wound, wound-owned effect, charge, history transition, notification, or narrative output.
+    3. The current repair wave may contain 1-64 wound_materialization_repair packets, one per rejected candidate and with one or more issues per packet. This worked wave has one packet whose only issue is proposal.severity.
+    4. Correct every packet and every listed path in the current repair wave. For this packet, use preservedProposal as the base, read proposal.severity from requiredResponseShape.woundDecisions[0].proposal.correctOnly, then set proposal.severity to II. Preserve every unrelated response field and include acquisitionNarration verbatim in response.
+    5. Do not write woundId, ownerId, effectId, seals, fingerprints, receipts, or canonical paths. Do not patch game files directly.
+
+    ]]>
+   </logoutput>
+   <rejectedwoundresponseslice>
+    <![CDATA[
+    {
+      "response": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной.",
+      "woundDecisions": [
+        {
+          "opportunityRef": "wound_opportunity_public_17",
+          "decision": "materialize",
+          "woundRef": "fractured_resonance_local",
+          "proposal": {
+            "classification": {
+              "woundType": "Трещина духовного резонанса",
+              "locationProfile": {
+                "kind": "spiritual_axis",
+                "readableLocus": "узор воли"
+              }
+            },
+            "display": {
+              "name": "Трещина в узоре воли",
+              "description": "Ритм души сбивается при попытке удержать давление.",
+              "visibleSymptoms": ["дрожащий контур души"],
+              "prognosis": "Без исцеления помеха сохранится.",
+              "visibility": "known_to_player",
+              "acquisitionNarration": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной."
+            },
+            "severity": "III",
+            "complications": [],
+            "consequenceDefinitions": [],
+            "treatment": {
+              "diagnosisPaths": [],
+              "routes": [],
+              "knownRouteIds": [],
+              "completedRouteIds": []
+            },
+            "recovery": {
+              "mode": "progressive",
+              "clockKind": "afterlife_world_time",
+              "cadence": 86400,
+              "currentStepProgress": 0,
+              "currentStepThreshold": 3,
+              "lastTickKey": null,
+              "blockers": [],
+              "carryOverflow": true,
+              "deteriorationPolicy": null
+            }
+          }
+        }
+      ]
+    }
+    ]]>
+   </rejectedwoundresponseslice>
+   <clientrepairpacketexcerpt>
+    <![CDATA[
+    {
+      "kind": "wound_materialization_repair",
+      "candidateKind": "construct_wound",
+      "sessionId": "session_wound_repair_example",
+      "requestId": "request_wound_repair_example",
+      "snapshotToken": "snapshot_wound_repair_example",
+      "candidateRef": "candidate_wound_repair_example",
+      "semanticFingerprint": "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "issues": [
+        {
+          "path": "proposal.severity",
+          "code": "wound_severity_above_opportunity",
+          "expected": "I-II",
+          "actual": "III"
+        }
+      ],
+      "safeContext": {
+        "event": "духовный удар пробил защиту",
+        "target": "игрок",
+        "realm": "Море Хаоса"
+      },
+      "preservedProposal": {
+        "classification": {
+          "woundType": "Трещина духовного резонанса",
+          "locationProfile": {
+            "kind": "spiritual_axis",
+            "readableLocus": "узор воли"
+          }
+        },
+        "display": {
+          "name": "Трещина в узоре воли",
+          "description": "Ритм души сбивается при попытке удержать давление.",
+          "visibleSymptoms": ["дрожащий контур души"],
+          "prognosis": "Без исцеления помеха сохранится.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной."
+        },
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "progressive",
+          "clockKind": "afterlife_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 3,
+          "lastTickKey": null,
+          "blockers": [],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      },
+      "requiredResponseShape": {
+        "woundDecisions": [
+          {
+            "opportunityRef": "wound_opportunity_public_17",
+            "decision": "materialize",
+            "woundRef": "fractured_resonance_local",
+            "proposal": {
+              "base": "preservedProposal",
+              "correctOnly": ["proposal.severity"]
+            }
+          }
+        ],
+        "response": "complete final scene containing display.acquisitionNarration verbatim"
+      }
+    }
+    ]]>
+   </clientrepairpacketexcerpt>
+   <packetusage>
+    The packet is complete. Its session/request/snapshot/candidate/fingerprint values bind the retry protocol; never copy them into the GM-authored wound proposal. The missing severity in preservedProposal is intentional: add the corrected II value only at the listed correctOnly path. If the live wave contains sibling packets or multiple issue paths, correct all of them in the same complete resubmission.
+   </packetusage>
+   <correctedwoundresponseslice>
+    <![CDATA[
+    {
+      "response": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной.",
+      "woundDecisions": [
+        {
+          "opportunityRef": "wound_opportunity_public_17",
+          "decision": "materialize",
+          "woundRef": "fractured_resonance_local",
+          "proposal": {
+            "classification": {
+              "woundType": "Трещина духовного резонанса",
+              "locationProfile": {
+                "kind": "spiritual_axis",
+                "readableLocus": "узор воли"
+              }
+            },
+            "display": {
+              "name": "Трещина в узоре воли",
+              "description": "Ритм души сбивается при попытке удержать давление.",
+              "visibleSymptoms": ["дрожащий контур души"],
+              "prognosis": "Без исцеления помеха сохранится.",
+              "visibility": "known_to_player",
+              "acquisitionNarration": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной."
+            },
+            "severity": "II",
+            "complications": [],
+            "consequenceDefinitions": [],
+            "treatment": {
+              "diagnosisPaths": [],
+              "routes": [],
+              "knownRouteIds": [],
+              "completedRouteIds": []
+            },
+            "recovery": {
+              "mode": "progressive",
+              "clockKind": "afterlife_world_time",
+              "cadence": 86400,
+              "currentStepProgress": 0,
+              "currentStepThreshold": 3,
+              "lastTickKey": null,
+              "blockers": [],
+              "carryOverflow": true,
+              "deteriorationPolicy": null
+            }
+          }
+        }
+      ]
+    }
+    ]]>
+   </correctedwoundresponseslice>
+   <retrynote>
+    The real retry must be the complete corrected semantic turn, including every unrelated field from the rejected response. It is never only this wound-focused slice.
+   </retrynote>
+  </example>
+  <example contenttype="contract_workflow" type="good">
+   <title>
+    wound_stale_repair_packet_v1 and wound_rollback_replay_v1
+   </title>
+   <content type="rule_text">
+    <![CDATA[
+
+    Every packet belongs to one current wave. Correct every packet and every listed path in the current repair wave. If any packet's session, request, snapshot, opportunity, event, target, roll, generation, rejected proposal, or command root changed before correction, the whole wave is stale. Do not adapt it and do not roll again; request fresh authority. The exact before-image remains authoritative until a valid corrected turn is accepted. Use requiredResponseShape.woundDecisions[0].proposal.correctOnly for each packet.
+
+    The following is an internal history resolver guarantee, not a currently dispatched GM/player receipt. When an owning treatment/recovery stage invokes it, an exact replay of a known operation key resolves to the same already-accepted receipt with no second charge and no second history transition from the resolver. The resolver also creates no second wound/effect, advances no treatment course or natural-recovery cycle, and emits no second notification or output. An unknown operation key is no replay match and requires fresh authority. For a matched operation key, a changed event, attempt, course, milestone, cycle, payment, output, or readable result is a conflict and also requires fresh authority.
+
+    ]]>
+   </content>
+  </example>
+ </rule>
  <rule id="12.1.A">
   <example contenttype="narrative_scenario" type="good">
    <title>

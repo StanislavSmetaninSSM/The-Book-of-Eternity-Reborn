@@ -12,7 +12,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "RegressionIntegration")]
-public sealed class ExplorerWebCommandServiceTests :
+public sealed partial class ExplorerWebCommandServiceTests :
     IDisposable,
     IClassFixture<ExplorerWebCommandSeedTemplateFixture>
 {
@@ -3561,8 +3561,15 @@ public sealed class ExplorerWebCommandServiceTests :
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
-    [Fact]
-    public async Task SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile()
+    [Theory]
+    [InlineData("pressure", "pressure")]
+    [InlineData("spiritual_resilience", "spiritual_resilience")]
+    [InlineData("spiritual_healing", "spiritual_healing")]
+    [InlineData("spiritual_resilience", "Духовная стойкость")]
+    [InlineData("spiritual_healing", "Духовное исцеление")]
+    public async Task StandardWoundArt_SubmitPromptSessionAsync_SpiritualArtsUpgrade_UpdatesSoulProfile(
+        string artId,
+        string selector)
     {
         await SeedAfterlifeCombatAndEntityFilesAsync();
         await _fs.WriteFileAtomicAsync(
@@ -3575,7 +3582,9 @@ public sealed class ExplorerWebCommandServiceTests :
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 600, ["total"] = 600 };
-        soul["afterlifeCombatProfile"]!["artTiers"]!["pressure"] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![artId] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var started = await _service.ExecuteAsync(new ExplorerWebCommandRequest(
             "/spiritual_arts",
@@ -3587,18 +3596,24 @@ public sealed class ExplorerWebCommandServiceTests :
             started.InteractiveSession!.SessionId,
             new Dictionary<string, JsonNode?>
             {
-                ["upgrade_target"] = JsonValue.Create("pressure"),
+                ["upgrade_target"] = JsonValue.Create(selector),
                 ["upgrade_currency"] = JsonValue.Create("ink_feathers")
             },
             OwnerId: "browser-test"));
 
         Assert.Equal(CommandExecutionState.Completed, completed.State);
         var updated = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
-        Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]!["pressure"]!.GetValue<int>());
+        Assert.Equal(1, updated["afterlifeCombatProfile"]!["artTiers"]![artId]!.GetValue<int>());
         Assert.Equal(100, updated["inkFeathers"]!["current"]!.GetValue<int>());
         Assert.False(_fs.FileExists(LocalUiSessionLockService.LockPath));
     }
 
+    /// <summary>
+    /// Upgrades a special spiritual art from a valid current soul profile and records the change.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the new tier, derived currency cost, local ledger and session-lock release are checked.
+    /// </returns>
     [Fact]
     public async Task SubmitPromptSessionAsync_SpiritualArtsSpecialUpgrade_UpdatesEntityProfile()
     {
@@ -3613,6 +3628,8 @@ public sealed class ExplorerWebCommandServiceTests :
             }.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var soul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         soul["inkFeathers"] = new JsonObject { ["current"] = 500, ["total"] = 500 };
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0;
+        soul["afterlifeCombatProfile"]!["artTiers"]![AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0;
         await _fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", soul.ToJsonString(SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
         var profiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var specialArt = profiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();
@@ -3634,7 +3651,9 @@ public sealed class ExplorerWebCommandServiceTests :
             },
             OwnerId: "browser-test"));
 
-        Assert.Equal(CommandExecutionState.Completed, completed.State);
+        Assert.True(
+            completed.State == CommandExecutionState.Completed,
+            $"Expected completed special-art upgrade; actual response: {SerializeResult(completed)}");
         var updatedSoul = JsonNode.Parse((await _fs.ReadFileAsync("game_state/meta/soul_state.json"))!)!.AsObject();
         var updatedProfiles = JsonNode.Parse((await _fs.ReadFileAsync(AfterlifeEntityProfileState.StatePath))!)!.AsObject();
         var updatedSpecialArt = updatedProfiles["profiles"]!.AsArray()[0]!["specialArts"]!.AsArray()[0]!.AsObject();

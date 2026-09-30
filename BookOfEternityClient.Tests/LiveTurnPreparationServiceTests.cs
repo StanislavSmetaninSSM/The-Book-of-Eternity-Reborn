@@ -374,6 +374,7 @@ public sealed class LiveTurnPreparationServiceTests : IDisposable
         };
         var activeConflict = new JsonObject
         {
+            ["dangerMode"] = "hostile",
             ["conflictId"] = "afterlife_conflict_live_001",
             ["realm"] = "Chaos Sea",
             ["sideModel"] = "direct_duel",

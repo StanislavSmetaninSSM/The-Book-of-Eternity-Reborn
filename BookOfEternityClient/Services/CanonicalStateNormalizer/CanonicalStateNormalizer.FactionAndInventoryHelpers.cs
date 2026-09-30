@@ -220,7 +220,7 @@ public partial class CanonicalStateNormalizer
         AddUniqueNode(entries, candidate);
     }
 
-    private static void ApplyInventoryBondCommands(JsonArray entries, JsonArray commands)
+    internal static void ApplyInventoryBondCommands(JsonArray entries, JsonArray commands)
     {
         foreach (var command in commands.OfType<JsonObject>())
         {
@@ -232,7 +232,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static void ApplyInventoryFateCardUnlockCommands(JsonArray entries, JsonArray commands)
+    internal static void ApplyInventoryFateCardUnlockCommands(JsonArray entries, JsonArray commands)
     {
         foreach (var command in commands.OfType<JsonObject>())
         {
@@ -250,7 +250,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static void ApplyItemJournalCommands(JsonArray entries, JsonArray commands)
+    internal static void ApplyItemJournalCommands(JsonArray entries, JsonArray commands)
     {
         foreach (var command in commands.OfType<JsonObject>())
         {
@@ -264,7 +264,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static void ApplyInventoryTextCommands(JsonArray entries, JsonArray commands)
+    internal static void ApplyInventoryTextCommands(JsonArray entries, JsonArray commands)
     {
         foreach (var command in commands.OfType<JsonObject>())
         {

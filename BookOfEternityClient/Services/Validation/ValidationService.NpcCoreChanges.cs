@@ -8,7 +8,7 @@ public partial class ValidationService
     public async Task<IReadOnlyList<ValidationIssue>> ValidateNpcCoreChangesBeforeNormalizationAsync()
     {
         var issues = new List<ValidationIssue>();
-        var currentJson = await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath);
+        var currentJson = await ReadSameTurnOwnerCurrentTextAsync(NpcCoreChangesContract.NpcCorePath);
         if (string.IsNullOrWhiteSpace(currentJson))
             return issues;
 
@@ -117,7 +117,13 @@ public partial class ValidationService
             return issues;
         }
 
-        var authority = await NpcCoreChangesContract.ReadAuthorityAsync(_fs);
+        var authority = _sameTurnOwnerInputs is null
+            ? await NpcCoreChangesContract.ReadAuthorityAsync(_fs)
+            : NpcCoreChangesContract.CreateAuthorityFromCanonicalJson(
+                await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.WorldMapPath),
+                await ReadSameTurnOwnerCurrentTextAsync(MortalLocationMaterializationContract.CurrentLocationPath),
+                await ReadSameTurnOwnerCurrentTextAsync("game_state/factions/faction_core.json"),
+                await ReadSameTurnOwnerCurrentTextAsync("game_state/misc/characteristics.json"));
         var acceptedTurnAuthority = MortalActorAcceptedTurnAuthority.Create(
             currentRoot,
             await ReadValidatedPendingTurnSnapshotFileAsync(
@@ -176,7 +182,7 @@ public partial class ValidationService
     {
         try
         {
-            var json = await _fs.ReadFileAsync(NpcCoreChangesContract.NpcCorePath);
+            var json = await ReadSameTurnOwnerCurrentTextAsync(NpcCoreChangesContract.NpcCorePath);
             return !string.IsNullOrWhiteSpace(json) &&
                    JsonNode.Parse(json) is JsonObject root &&
                    NpcCoreChangesContract.HasCommandLikeProperty(root);

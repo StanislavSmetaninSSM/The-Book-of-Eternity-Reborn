@@ -250,7 +250,7 @@ Each component has:
 | Profile | Required payload authority |
 | --- | --- |
 | `characteristic_modifier` | Exact registered characteristic, `flat` or `percent`, finite non-zero value, optional closed cap |
-| `roll_modifier` | Non-empty registered check/operation set and exact `advantage` or `disadvantage` contribution |
+| `roll_modifier` | Non-empty registered check/operation set, exact `advantage` or `disadvantage` contribution, and one required closed `scope` (`all` or one exact canonical skill) |
 | `resistance_modifier` | Exact registered damage/resource type, `flat` or `percent`, finite non-zero value, bounded cap |
 | `periodic_damage` | Exact target resource, finite positive amount, damage type, declared trigger/interval, legal floor behavior |
 | `periodic_restore` | Exact target resource, finite positive amount, declared trigger/interval, legal cap behavior |
@@ -1016,3 +1016,26 @@ Terminal states are immutable in the identity index. They cannot return to activ
 10. All touched files, pending state, companions, and player output share one rollback boundary.
 11. Missing pristine carriers may initialize empty; non-empty legacy carriers never promote.
 12. Static source definitions remain distinct from active state.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+The completed common component model is amended by
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Every `roll_modifier.payload` is a closed object with exactly `operations`,
+`contribution`, and `scope`:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+`scope` is itself a closed discriminated union. `kind=all` contains only `kind` and
+may cover any legal non-empty unique operation subset. `kind=skill` contains exactly
+`kind` plus one non-empty canonical `skillId` and requires
+`operations: ["skill_check"]`. Scope and `skillId` are semantic effect data preserved
+by serialization, clones, snapshots, cache keys, fingerprints, replay, and rollback.
+Missing scope has no legacy meaning. Historical #1535 tasks remain complete; #1536
+owns the implementation and repository cutover.

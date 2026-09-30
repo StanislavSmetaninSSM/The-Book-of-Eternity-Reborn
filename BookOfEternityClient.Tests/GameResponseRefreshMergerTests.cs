@@ -1,5 +1,6 @@
 using BookOfEternityClient.Core;
 using BookOfEternityClient.Models;
+using System.Text.Json;
 using Xunit;
 
 namespace BookOfEternityClient.Tests;
@@ -77,5 +78,42 @@ public sealed class GameResponseRefreshMergerTests
         Assert.Equal("Только narrative", merged.Response);
         Assert.NotNull(merged.DialogueOptions);
         Assert.Equal(2, merged.DialogueOptions!.Length);
+    }
+
+    [Fact]
+    public void Merge_PreservesTakeOnceWoundNotificationsAcrossReadOnlyRefresh()
+    {
+        var source = new[]
+        {
+            "Получена рана: Ожог ладони (I). Подробнее: /раны"
+        };
+        var current = new GameResponse { WoundNotifications = source };
+
+        var merged = GameResponseRefreshMerger.Merge(
+            current,
+            new GameResponse { Response = "Обновлённая сцена." });
+
+        Assert.Equal(source, merged.WoundNotifications);
+        Assert.NotSame(source, merged.WoundNotifications);
+    }
+
+    [Fact]
+    public void GameResponse_WoundNotificationsRemainClientOnlyDuringSerialization()
+    {
+        var response = new GameResponse
+        {
+            Response = "Сцена.",
+            WoundNotifications = new[]
+            {
+                "Получена рана: Ожог ладони (I). Подробнее: /раны"
+            }
+        };
+
+        var json = JsonSerializer.Serialize(response);
+
+        Assert.Contains("\"response\"", json, StringComparison.Ordinal);
+        Assert.DoesNotContain("WoundNotifications", json, StringComparison.Ordinal);
+        Assert.DoesNotContain("woundNotifications", json, StringComparison.Ordinal);
+        Assert.DoesNotContain("Ожог ладони", json, StringComparison.Ordinal);
     }
 }

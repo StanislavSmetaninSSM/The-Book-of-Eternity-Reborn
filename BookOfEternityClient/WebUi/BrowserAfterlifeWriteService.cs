@@ -1807,9 +1807,49 @@ public sealed class BrowserAfterlifeWriteService
         if (currency is not ("ink_feathers" or "light_sparks"))
             return BrowserPromptWriteResult.ValidationError("Валюта должна быть ink_feathers или light_sparks.");
         var targetIsSpiritFocus = string.Equals(target, "spirit_focus", StringComparison.OrdinalIgnoreCase);
-        var targetIsStandardArt = AfterlifeSpiritualConflictState.SpiritualArts.Any(item =>
-            string.Equals(item.ArtId, target, StringComparison.OrdinalIgnoreCase));
+        var standardArt = AfterlifeSpiritualConflictState.SpiritualArts.FirstOrDefault(item =>
+            string.Equals(item.ArtId, target, StringComparison.OrdinalIgnoreCase) ||
+            string.Equals(item.DisplayName, target, StringComparison.OrdinalIgnoreCase));
+        var targetIsStandardArt = standardArt != null;
         var targetIsSpecialArt = !targetIsSpiritFocus && !targetIsStandardArt;
+
+        JsonObject? authoritySoulRoot;
+        try
+        {
+            authoritySoulRoot = await ReadObjectAsync(boundLease, SoulStatePath);
+        }
+        catch (JsonException)
+        {
+            authoritySoulRoot = null;
+        }
+        catch (IOException)
+        {
+            authoritySoulRoot = null;
+        }
+        catch (UnauthorizedAccessException)
+        {
+            authoritySoulRoot = null;
+        }
+
+        if (authoritySoulRoot == null)
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Прокачка заблокирована",
+                "Прокачка духовных искусств заблокирована: состояние души отсутствует, повреждено или имеет неверный корневой тип.");
+        }
+
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                authoritySoulRoot,
+                out var authorityDamage))
+        {
+            return BrowserPromptWriteResult.Failed(
+                CommandExecutionState.Failed,
+                UiNotificationSeverity.Error,
+                "Прокачка заблокирована",
+                $"Прокачка духовных искусств заблокирована: {authorityDamage}");
+        }
 
         return await ExecuteAtomicAsync(
             boundLease,
@@ -1829,6 +1869,14 @@ public sealed class BrowserAfterlifeWriteService
                     throw new InvalidOperationException(blocker);
 
                 var soulRoot = await ReadRequiredObjectAsync(writeLease, SoulStatePath, "soul_state.json недоступен.");
+                if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                        soulRoot,
+                        out var woundArtDamage))
+                {
+                    throw new InvalidOperationException(
+                        $"Прокачка духовных искусств заблокирована: {woundArtDamage}");
+                }
+
                 var shiningRoot = await ReadObjectAsync(writeLease, ShiningAbodeState.StatePath);
                 var entityProfilesRoot = await ReadObjectAsync(writeLease, AfterlifeEntityProfileState.StatePath);
                 var profile = BuildSyncedAfterlifeCombatProfile(soulRoot, shiningRoot);
@@ -1836,7 +1884,7 @@ public sealed class BrowserAfterlifeWriteService
                 var result = targetIsSpiritFocus
                     ? ApplySpiritFocusUpgrade(soulRoot, shiningRoot, profile, currency, isShining)
                     : targetIsStandardArt
-                        ? ApplyStandardSpiritualArtUpgrade(soulRoot, shiningRoot, profile, target, currency, isShining)
+                        ? ApplyStandardSpiritualArtUpgrade(soulRoot, shiningRoot, profile, standardArt!.ArtId, currency, isShining)
                         : ApplySpecialSpiritualArtUpgrade(soulRoot, shiningRoot, entityProfilesRoot, profile, target, currency, isShining);
                 if (!result.Success)
                     throw new InvalidOperationException(result.Message);

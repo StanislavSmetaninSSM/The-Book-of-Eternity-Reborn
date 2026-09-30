@@ -232,3 +232,25 @@ The example is valid only when `wound_torn_side` exists, owns `bleeding-conseque
 ```
 
 This fails because identity, target, source definition, component, stack policy, lifetime, removal authority, and event evidence are missing or unauthorized. No field may be inferred from the prose.
+
+## 2026-09-05 — exact skill scope extension from #1536
+
+[#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536)
+amends the completed common effect envelope so every `roll_modifier` uses this
+three-field closed payload shape:
+
+```json
+{
+  "operations": ["skill_check"],
+  "contribution": "disadvantage",
+  "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+}
+```
+
+The only closed scope variants are `{ "kind": "all" }` and exactly
+`{ "kind": "skill", "skillId": "<canonical-id>" }`. Focused scope is legal only
+for exactly `operations: ["skill_check"]`; names, aliases, arrays, multiple IDs,
+missing scope, and extra fields reject. The client binds a focused selector to one
+current usable canonical skill of the exact target before accepted publication.
+Historical #1535 tasks remain complete; all new implementation, repair, cutover, and
+verification work belongs to #1536.

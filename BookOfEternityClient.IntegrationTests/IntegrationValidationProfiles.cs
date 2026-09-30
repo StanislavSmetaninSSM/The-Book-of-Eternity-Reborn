@@ -68,6 +68,10 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.MetaMiscStateFiles |
         GameStateValidationPhase.ClientOwnedControlFiles);
 
+    internal static readonly GameStateValidationSelection EffectSkillScopeCatalog = Select(
+        GameStateValidationPhase.PlayerStateFiles |
+        GameStateValidationPhase.SkillContractConsistency);
+
     internal static readonly GameStateValidationSelection FactionState = Select(
         GameStateValidationPhase.CrossReferences |
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
@@ -124,6 +128,18 @@ internal static class IntegrationValidationProfiles
         GameStateValidationPhase.PlayerStateFiles |
         GameStateValidationPhase.NpcStateFiles |
         GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
+
+    internal static readonly GameStateValidationSelection MortalWoundTreatmentLifecycle = Select(
+        GameStateValidationPhase.RequiredFields |
+        GameStateValidationPhase.CrossReferences |
+        GameStateValidationPhase.PlayerStateFiles |
+        GameStateValidationPhase.NpcStateFiles |
+        GameStateValidationPhase.SkillContractConsistency |
+        GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
+        GameStateValidationPhase.MetaMiscStateFiles |
+        GameStateValidationPhase.AcceptedTurnEffectMaterializationCompleteness |
+        GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness |
+        GameStateValidationPhase.ClientOwnedControlFiles);
 
     internal static readonly GameStateValidationSelection NpcState = Select(
         GameStateValidationPhase.CrossReferences |

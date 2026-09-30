@@ -4,12 +4,14 @@ using BookOfEternityClient.Core;
 
 namespace BookOfEternityClient.Services;
 
-public static class AfterlifeSpiritualConflictState
+public static partial class AfterlifeSpiritualConflictState
 {
     public const string StatePath = "game_state/meta/afterlife_spiritual_conflict_state.json";
     public const string ResponseField = "afterlifeSpiritualConflictUpdate";
     public const string SoulStateProfileProperty = "afterlifeCombatProfile";
     public const string SpiritFocusTierProperty = "spiritFocusTier";
+    public const string SpiritualResilienceArtId = "spiritual_resilience";
+    public const string SpiritualHealingArtId = "spiritual_healing";
     public const string RewardAuditProperty = "rewardAudit";
     public const string SoulDissipationProofProperty = "soulDissipationProof";
     public const string TerminalGameOverProperty = "terminalGameOver";
@@ -18,6 +20,9 @@ public static class AfterlifeSpiritualConflictState
     public const string RewardCurrencyInkFeathers = "ink_feathers";
     public const string RewardCurrencyLightSparks = "light_sparks";
     public const int SpiritFocusMaxTier = 5;
+
+    public static readonly IReadOnlyList<string> RequiredWoundArtIds = Array.AsReadOnly(
+        new[] { SpiritualResilienceArtId, SpiritualHealingArtId });
 
     public const int ChaosSeaConflictRewardBaseAmount = 10;
     public const int ShiningConflictRewardBaseAmount = 1;
@@ -257,7 +262,9 @@ public static class AfterlifeSpiritualConflictState
         new("break_binding", "Разрыв оков", "Improve resisting or breaking spiritual bindings and forced handoffs.", 2),
         new("binding", "Оковы", "Improve imposing a bounded spiritual bind after winning leverage.", 2),
         new("incarnation_resistance", "Сопротивление воплощению", "Improve resistance to guardian_forced incarnation attempts.", 2),
-        new("champion_coordination", "Связь с чемпионом", "Improve side-vs-side support when an ally is the lead contestant.", 3)
+        new("champion_coordination", "Связь с чемпионом", "Improve side-vs-side support when an ally is the lead contestant.", 3),
+        new(SpiritualResilienceArtId, "Духовная стойкость", "Пассивная стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД.", 1),
+        new(SpiritualHealingArtId, "Духовное исцеление", "Искусство диагностики и лечения духовных ран; на нулевой ступени доступна только диагностика.", 1)
     ];
 
     public static readonly IReadOnlyList<SpiritFocusTierDefinition> SpiritFocusTiers =
@@ -298,9 +305,16 @@ public static class AfterlifeSpiritualConflictState
             ["radianceRank"] = 0,
             ["retainedRadianceRank"] = 0,
             [SpiritFocusTierProperty] = 0,
-            ["artTiers"] = new JsonObject(),
+            ["artTiers"] = CreateDefaultArtTiers(),
             ["capstones"] = new JsonObject(),
             ["lastRecoveryTurn"] = 0
+        };
+
+    public static JsonObject CreateDefaultArtTiers() =>
+        new()
+        {
+            [SpiritualResilienceArtId] = 0,
+            [SpiritualHealingArtId] = 0
         };
 
     public static JsonObject NormalizeRoot(JsonObject? root)
@@ -322,7 +336,38 @@ public static class AfterlifeSpiritualConflictState
         return normalized;
     }
 
-    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update)
+    /// <summary>
+    /// Projects an ordinary conflict update with the existing client clock policy.
+    /// </summary>
+    /// <param name="existingRoot">
+    /// Original conflict root, or <see langword="null"/> for a default root.
+    /// </param>
+    /// <param name="update">
+    /// Update whose mode and lifecycle evidence are checked by the owning projection.
+    /// </param>
+    /// <returns>
+    /// Detached projected root, including invalid-update diagnostics when admission fails.
+    /// </returns>
+    public static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update) =>
+        ApplyUpdate(existingRoot, update, null);
+
+    /// <summary>
+    /// Projects a conflict update with an explicit capture-owned closure clock.
+    /// </summary>
+    /// <param name="existingRoot">
+    /// Original conflict root, or <see langword="null"/> for a default root.
+    /// </param>
+    /// <param name="update">
+    /// Update checked by the unchanged mode and lifecycle admission rules.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional closure clock; <see langword="null"/> preserves ordinary UTC reads.
+    /// </param>
+    /// <returns>
+    /// Detached projected root; clock injection does not grant conflict authority.
+    /// </returns>
+    internal static JsonObject ApplyUpdate(JsonObject? existingRoot, JsonObject update,
+        AcceptedTurnProjectionClock? projectionClock)
     {
         var root = NormalizeRoot(existingRoot);
         var mode = GetNodeString(update["mode"]);
@@ -336,9 +381,9 @@ public static class AfterlifeSpiritualConflictState
             case ModeExchange:
                 return ApplyExchange(root, update);
             case ModeResolve:
-                return ApplyResolve(root, update, repairCancel: false);
+                return ApplyResolve(root, update, repairCancel: false, projectionClock);
             case ModeRepairCancel:
-                return ApplyResolve(root, update, repairCancel: true);
+                return ApplyResolve(root, update, repairCancel: true, projectionClock);
             default:
                 return MarkInvalidUpdate(root, update, "missing_or_invalid_mode");
         }
@@ -374,6 +419,59 @@ public static class AfterlifeSpiritualConflictState
         }
 
         return defaultValue;
+    }
+
+    internal static bool TryValidateCurrentRequiredWoundArtAuthority(
+        JsonObject soulRoot,
+        out string damage)
+    {
+        try
+        {
+            return TryValidateCurrentRequiredWoundArtAuthorityCore(soulRoot, out damage);
+        }
+        catch (ArgumentException)
+        {
+            damage = "Состояние души повреждено: soul_state.afterlifeCombatProfile содержит повторяющиеся JSON-поля.";
+            return false;
+        }
+    }
+
+    private static bool TryValidateCurrentRequiredWoundArtAuthorityCore(
+        JsonObject soulRoot,
+        out string damage)
+    {
+        const string profilePath = "soul_state.afterlifeCombatProfile";
+        damage = "";
+
+        if (!soulRoot.TryGetPropertyValue(SoulStateProfileProperty, out var profileNode))
+            return true;
+
+        if (profileNode is not JsonObject profile)
+        {
+            damage = $"{profilePath} должен быть object. Сначала исправьте боевой профиль души.";
+            return false;
+        }
+
+        if (!profile.TryGetPropertyValue("artTiers", out var artTiersNode) ||
+            artTiersNode is not JsonObject artTiers)
+        {
+            damage = $"{profilePath}.artTiers должен быть object с явными обязательными искусствами духовных ран.";
+            return false;
+        }
+
+        foreach (var requiredArtId in RequiredWoundArtIds)
+        {
+            if (!artTiers.TryGetPropertyValue(requiredArtId, out var tierNode) ||
+                tierNode is not JsonValue tierValue ||
+                !tierValue.TryGetValue<int>(out var tier) ||
+                tier is < 0 or > 5)
+            {
+                damage = $"{profilePath}.artTiers.{requiredArtId} должен быть integer 0..5.";
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static string? NormalizeAfterlifeRealmKey(string? realm)
@@ -663,6 +761,11 @@ public static class AfterlifeSpiritualConflictState
             return MarkInvalidUpdate(root, update, "start_missing_realm");
         if (!IsAfterlifeRealm(realm))
             return MarkInvalidUpdate(root, update, "start_invalid_realm");
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(conflict);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "start_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode))
+            return MarkInvalidUpdate(root, update, "start_danger_mode_mismatch");
         conflict["realm"] = realm;
         if (conflict["exchangeLog"] is not JsonArray)
             conflict["exchangeLog"] = new JsonArray();
@@ -709,6 +812,19 @@ public static class AfterlifeSpiritualConflictState
             return MarkInvalidUpdate(root, update, "exchange_conflict_id_mismatch");
         }
 
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(active);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "active_conflict_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange["before"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(exchange["after"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["activeConflictAfter"] as JsonObject, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["conflictStateAfter"] as JsonObject, dangerMode))
+        {
+            return MarkInvalidUpdate(root, update, "exchange_danger_mode_change_without_authority");
+        }
+
         var log = active["exchangeLog"]?.DeepClone() as JsonArray ?? new JsonArray();
         var isNoEffectExchange = string.Equals(GetNodeString(exchange["outcome"]), "no_effect", StringComparison.OrdinalIgnoreCase);
 
@@ -729,6 +845,8 @@ public static class AfterlifeSpiritualConflictState
 
             if (string.IsNullOrWhiteSpace(replacementConflictId))
                 replacement["conflictId"] = active["conflictId"]?.DeepClone();
+
+            replacement["dangerMode"] = dangerMode;
 
             ApplyExchangeControlStateToReplacement(replacement, exchange, active);
             log.Add(exchange.DeepClone());
@@ -770,7 +888,26 @@ public static class AfterlifeSpiritualConflictState
             : GetNodeString(exchange["id"]);
     }
 
-    private static JsonObject ApplyResolve(JsonObject root, JsonObject update, bool repairCancel)
+    /// <summary>
+    /// Checks and projects terminal conflict evidence while retaining the existing closure semantics.
+    /// </summary>
+    /// <param name="root">
+    /// Detached normalized root modified by a successful closure.
+    /// </param>
+    /// <param name="update">
+    /// Terminal update with an optional explicit resolution.
+    /// </param>
+    /// <param name="repairCancel">
+    /// Whether this is repair cancellation rather than ordinary resolution.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional clock used only when a valid closure lacks its timestamp.
+    /// </param>
+    /// <returns>
+    /// Root with the closed conflict, or existing invalid-update diagnostics.
+    /// </returns>
+    private static JsonObject ApplyResolve(JsonObject root, JsonObject update, bool repairCancel,
+        AcceptedTurnProjectionClock? projectionClock)
     {
         var active = root["activeConflict"] as JsonObject;
         if (active == null)
@@ -783,6 +920,15 @@ public static class AfterlifeSpiritualConflictState
             }
 
             return MarkInvalidUpdate(root, update, "resolve_without_active_conflict");
+        }
+
+        var dangerMode = SpiritualConflictDangerPolicy.ReadDeclaration(active);
+        if (dangerMode is null)
+            return MarkInvalidUpdate(root, update, "active_conflict_invalid_danger_mode");
+        if (!SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update, dangerMode) ||
+            !SpiritualConflictDangerPolicy.IsOmittedOrExactEcho(update["resolution"] as JsonObject, dangerMode))
+        {
+            return MarkInvalidUpdate(root, update, "resolve_danger_mode_change_without_authority");
         }
 
         var resolution = CloneObject(update["resolution"] as JsonObject);
@@ -816,11 +962,12 @@ public static class AfterlifeSpiritualConflictState
 
         if (string.IsNullOrWhiteSpace(resolutionConflictId))
             resolution["conflictId"] = active["conflictId"]?.DeepClone();
+        resolution["dangerMode"] = dangerMode;
         resolution["realm"] ??= active["realm"]?.DeepClone();
         resolution["sideModel"] ??= active["sideModel"]?.DeepClone();
 
         resolution["resolutionState"] = repairCancel ? "repair_cancelled" : "resolved";
-        resolution["resolvedAtUtc"] ??= DateTime.UtcNow.ToString("o");
+        resolution["resolvedAtUtc"] ??= ReadResolutionTime(resolution, repairCancel, projectionClock);
         resolution["mode"] = repairCancel ? ModeRepairCancel : ModeResolve;
 
         var recent = root["recentConflicts"] as JsonArray ?? new JsonArray();
@@ -832,6 +979,34 @@ public static class AfterlifeSpiritualConflictState
         root["activeConflict"] = null;
         ClearInvalidUpdateMarkers(root);
         return root;
+    }
+
+    /// <summary>
+    /// Reads closure time using stable terminal evidence, excluding the separately completed terminal witness
+    /// and unrelated carrier-root fields.
+    /// </summary>
+    /// <param name="resolution">
+    /// Validated resolution after inherited conflict identity and lifecycle defaults.
+    /// </param>
+    /// <param name="repairCancel">
+    /// Whether the effective mode is repair cancellation.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional capture clock; <see langword="null"/> uses ordinary UTC time.
+    /// </param>
+    /// <returns>
+    /// UTC DateTime round-trip text, preserving the original output representation.
+    /// </returns>
+    private static string ReadResolutionTime(JsonObject resolution, bool repairCancel,
+        AcceptedTurnProjectionClock? projectionClock)
+    {
+        if (projectionClock == null) return DateTime.UtcNow.ToString("o");
+        var evidence = resolution.DeepClone().AsObject();
+        evidence.Remove("resolvedAtUtc");
+        evidence.Remove("terminalExchange");
+        evidence["mode"] = repairCancel ? ModeRepairCancel : ModeResolve;
+        return projectionClock.GetUtcNow(AcceptedTurnProjectionTimeKind.ConflictResolution, evidence)
+            .UtcDateTime.ToString("o");
     }
 
     private static bool HasCompleteResolveResolution(JsonObject resolution, JsonObject activeConflict)
@@ -986,18 +1161,8 @@ public static class AfterlifeSpiritualConflictState
 
     private static void AddExchangeLogItems(JsonArray? source, JsonArray target, HashSet<string> seen)
     {
-        if (source == null)
-            return;
-
-        foreach (var item in source)
-        {
-            if (item == null)
-                continue;
-
-            var identity = GetExchangeLogItemIdentity(item);
-            if (seen.Add(identity))
-                target.Add(item.DeepClone());
-        }
+        foreach (var (item, _) in EnumerateNewExchangeLogItems(source, seen))
+            target.Add(item.DeepClone());
     }
 
     private static string GetExchangeLogItemIdentity(JsonNode item)

@@ -6,10 +6,26 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class CanonicalStateNormalizer
 {
+    /// <summary>
+    /// Applies validated meta-state updates to a detached soul projection.
+    /// </summary>
+    /// <param name="root">
+    /// Mutable destination soul projection.
+    /// </param>
+    /// <param name="updates">
+    /// Update envelope validated before any update is applied.
+    /// </param>
+    /// <param name="hasCanonicalTriggerLifeEnd">
+    /// Whether life-completion updates have the required lifecycle authority.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional policy for memory grant time; <see langword="null"/> reads the ordinary UTC clock.
+    /// </param>
     private static void ApplyMetaStateUpdates(
         JsonObject root,
         JsonObject updates,
-        bool hasCanonicalTriggerLifeEnd)
+        bool hasCanonicalTriggerLifeEnd,
+        AcceptedTurnProjectionClock? projectionClock = null)
     {
         if (GuardianPolicyContracts.TryDescribeInvalidMetaStateUpdates(updates, out var failureDescription))
             throw new InvalidOperationException(failureDescription);
@@ -155,7 +171,9 @@ public partial class CanonicalStateNormalizer
                     ["grantSource"] = "memoryLegacyGrant",
                     ["grantSnapshot"] = memoryLegacyGrant.DeepClone(),
                     ["applicationState"] = "pending",
-                    ["grantedAtUtc"] = DateTime.UtcNow.ToString("o")
+                    ["grantedAtUtc"] = (projectionClock?.GetUtcNow(
+                        AcceptedTurnProjectionTimeKind.MemoryLegacyGrant,
+                        memoryLegacyGrant.DeepClone().AsObject()).UtcDateTime ?? DateTime.UtcNow).ToString("o")
                 };
 
                 if (string.Equals(legacyType, "startingCharacteristicBonus", StringComparison.OrdinalIgnoreCase))
@@ -1004,7 +1022,7 @@ public partial class CanonicalStateNormalizer
         return categories;
     }
 
-    private static IEnumerable<JsonNode> CollectQuestHistoryEntries(JsonNode? root)
+    internal static IEnumerable<JsonNode> CollectQuestHistoryEntries(JsonNode? root)
     {
         if (root is JsonArray rootArray)
         {
@@ -1327,7 +1345,7 @@ public partial class CanonicalStateNormalizer
         return false;
     }
 
-    private static void CollectNamedObjectEntries(JsonNode? root, string propName, List<JsonObject> target)
+    internal static void CollectNamedObjectEntries(JsonNode? root, string propName, List<JsonObject> target)
     {
         if (root is not JsonObject obj || obj[propName] is not JsonArray arr)
             return;
@@ -1342,7 +1360,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static IEnumerable<JsonObject> CollectInventorySidecarEntries(JsonNode? root, params string[] propNames)
+    internal static IEnumerable<JsonObject> CollectInventorySidecarEntries(JsonNode? root, params string[] propNames)
     {
         if (root is JsonArray rootArray)
         {
@@ -1364,7 +1382,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static IEnumerable<JsonObject> CollectInventoryTextEntries(JsonNode? root)
+    internal static IEnumerable<JsonObject> CollectInventoryTextEntries(JsonNode? root)
     {
         if (root is not JsonObject obj)
             yield break;

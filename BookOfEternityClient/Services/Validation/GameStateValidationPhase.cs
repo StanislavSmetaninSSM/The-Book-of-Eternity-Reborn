@@ -36,11 +36,13 @@ internal enum GameStateValidationPhase : ulong
     AcceptedTurnItemMaterializationCompleteness = 1UL << 29,
     AcceptedTurnLocationMaterializationCompleteness = 1UL << 30,
     AcceptedTurnEffectMaterializationCompleteness = 1UL << 31,
+    AcceptedTurnWoundMaterializationCompleteness = 1UL << 32,
     All = ((1UL << 26) - 1) |
           AcceptedTurnFactionMaterializationCompleteness |
           AcceptedTurnItemMaterializationCompleteness |
           AcceptedTurnLocationMaterializationCompleteness |
-          AcceptedTurnEffectMaterializationCompleteness,
+          AcceptedTurnEffectMaterializationCompleteness |
+          AcceptedTurnWoundMaterializationCompleteness,
     Selectable = All | RivalAndResidentCrossReferences | GuardianProjectStateFiles
 }
 

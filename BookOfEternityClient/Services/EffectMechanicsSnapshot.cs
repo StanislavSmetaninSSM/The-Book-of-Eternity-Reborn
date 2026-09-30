@@ -7,7 +7,8 @@ namespace BookOfEternityClient.Services;
 
 internal sealed record EffectMechanicsInput(
     EffectCarrierCatalogInput Carriers,
-    JsonObject? IdentityIndex);
+    JsonObject? IdentityIndex,
+    EffectRollSkillScopeAuthority? SkillScopeAuthority = null);
 
 internal sealed record EffectMechanicalComponent(
     string EffectId,
@@ -21,7 +22,10 @@ internal sealed record EffectMechanicalComponent(
     string Profile,
     int Priority,
     int CurrentStacks,
-    JsonElement Payload);
+    JsonElement Payload)
+{
+    internal EffectSourceKey? Source { get; init; }
+}
 
 internal sealed record EffectMechanicsAuditEntry(
     string DisplayName,
@@ -47,9 +51,18 @@ internal sealed record EffectMechanicsSnapshot(
     IReadOnlyList<ValidationIssue> Issues)
 {
     internal const string Source = "accepted_effect_mechanics_snapshot_v1";
+    private static readonly EffectRollSkillScopeAuthority EmptySkillScopeAuthority =
+        EffectRollSkillScopeAuthority.Build(new EffectRollSkillScopeAuthorityInput(
+            new Dictionary<string, JsonNode?>(),
+            new Dictionary<string, JsonNode?>()));
 
     internal IReadOnlyList<EffectAcceptedInstance> Effects { get; init; } =
         Array.Empty<EffectAcceptedInstance>();
+
+    internal IReadOnlyList<FateShieldReactionCandidate> FateShieldReactionCandidates
+        { get; init; } = Array.Empty<FateShieldReactionCandidate>();
+
+    internal EffectRollSkillScopeAuthority SkillScopeAuthority { get; init; } = EmptySkillScopeAuthority;
 
     internal static EffectMechanicsSnapshot Build(EffectMechanicsInput input)
     {
@@ -110,13 +123,20 @@ internal sealed record EffectMechanicsSnapshot(
                 ? ReadExact(display?["category"]) ?? "effect"
                 : "hidden";
             var target = effect["target"] as JsonObject;
+            var realm = ReadExact(effect["realm"]) ?? string.Empty;
             var targetKind = ReadExact(target?["kind"]) ?? string.Empty;
             var targetId = ReadExact(target?["targetId"]) ?? string.Empty;
+            var source = effect["source"] as JsonObject;
+            var sourceKey = new EffectSourceKey(
+                realm,
+                ReadExact(source?["kind"]) ?? string.Empty,
+                ReadExact(source?["sourceId"]) ?? string.Empty,
+                ReadExact(source?["definitionKey"]) ?? string.Empty);
             var profiles = new List<string>();
 
             effects.Add(new EffectAcceptedInstance(
                 occurrence.EffectId,
-                ReadExact(effect["realm"]) ?? string.Empty,
+                realm,
                 targetKind,
                 targetId,
                 occurrence.Coordinate.Kind,
@@ -136,7 +156,7 @@ internal sealed record EffectMechanicsSnapshot(
                     var payload = component["payload"]!.AsObject();
                     components.Add(new EffectMechanicalComponent(
                         occurrence.EffectId,
-                        ReadExact(effect["realm"]) ?? string.Empty,
+                        realm,
                         targetKind,
                         targetId,
                         isVisible,
@@ -146,7 +166,14 @@ internal sealed record EffectMechanicsSnapshot(
                         profile,
                         component["priority"]!.GetValue<int>(),
                         ReadPositiveInt(effect["stacking"]?["currentStacks"], 1),
-                        ToDetachedElement(payload)));
+                        ToDetachedElement(payload))
+                    {
+                        Source = new EffectSourceKey(
+                            sourceKey.Realm,
+                            sourceKey.Kind,
+                            sourceKey.SourceId,
+                            sourceKey.DefinitionKey)
+                    });
                 }
             }
 
@@ -172,7 +199,10 @@ internal sealed record EffectMechanicsSnapshot(
             ReadOnly(audit),
             Array.Empty<ValidationIssue>())
         {
-            Effects = ReadOnly(effects)
+            Effects = ReadOnly(effects),
+            FateShieldReactionCandidates =
+                FateShieldReactionArbiter.ProjectEligibleCandidates(catalog.Occurrences),
+            SkillScopeAuthority = input.SkillScopeAuthority ?? EmptySkillScopeAuthority
         };
     }
 
@@ -184,6 +214,27 @@ internal sealed record EffectMechanicsSnapshot(
         return await LoadAsync(fs, readLease);
     }
 
+    internal static async Task<EffectRollSkillScopeAuthority> LoadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        await using var readLease = await fs.AcquireCanonicalWriteLeaseAsync(
+            CanonicalWritePurpose.PublicationReadQuiescence);
+        return await LoadCurrentSkillScopeAuthorityAsync(fs, readLease);
+    }
+
+    internal static async Task<EffectRollSkillScopeAuthority> LoadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease readLease)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentNullException.ThrowIfNull(readLease);
+        fs.EnsureCanonicalWriteLeaseActive(readLease);
+        var readIssues = new List<ValidationIssue>();
+        var authority = await ReadCurrentSkillScopeAuthorityAsync(fs, readLease, readIssues);
+        return readIssues.Count == 0 ? authority : EmptySkillScopeAuthority;
+    }
+
     internal static async Task<EffectMechanicsSnapshot> LoadAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease readLease)
@@ -193,6 +244,11 @@ internal sealed record EffectMechanicsSnapshot(
         fs.EnsureCanonicalWriteLeaseActive(readLease);
         var readIssues = new List<ValidationIssue>();
 
+        var skillScopeAuthority = await ReadCurrentSkillScopeAuthorityAsync(
+            fs,
+            readLease,
+            readIssues);
+
         var input = new EffectMechanicsInput(
             new EffectCarrierCatalogInput(
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.PlayerPath, readIssues),
@@ -201,13 +257,35 @@ internal sealed record EffectMechanicsSnapshot(
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.AlliesPath, readIssues),
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.AfterlifeProfilesPath, readIssues),
                 await ReadObjectAsync(fs, readLease, EffectCarrierCatalog.SpiritualConflictPath, readIssues)),
-            await ReadObjectAsync(fs, readLease, EffectIdentityState.StatePath, readIssues));
+            await ReadObjectAsync(fs, readLease, EffectIdentityState.StatePath, readIssues),
+            skillScopeAuthority);
 
         var built = Build(input);
         if (readIssues.Count == 0)
             return built;
 
         return Rejected(readIssues.Concat(built.Issues));
+    }
+
+    private static async Task<EffectRollSkillScopeAuthority> ReadCurrentSkillScopeAuthorityAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease readLease,
+        List<ValidationIssue> readIssues)
+    {
+        var activeSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_active.json", readIssues);
+        var passiveSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/player/skills_passive.json", readIssues);
+        var npcSkills = await ReadObjectAsync(
+            fs, readLease, "game_state/npcs/npc_core.json", readIssues);
+        var roots = new Dictionary<string, JsonNode?>(StringComparer.Ordinal)
+        {
+            ["game_state/player/skills_active.json"] = activeSkills,
+            ["game_state/player/skills_passive.json"] = passiveSkills,
+            ["game_state/npcs/npc_core.json"] = npcSkills
+        };
+        return EffectRollSkillScopeAuthority.Build(
+            new EffectRollSkillScopeAuthorityInput(roots, roots));
     }
 
     private static async Task<JsonObject?> ReadObjectAsync(

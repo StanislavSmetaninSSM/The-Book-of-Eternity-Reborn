@@ -12,6 +12,8 @@ using Microsoft.Extensions.Logging;
 namespace BookOfEternityClient.Services;
 public partial class ValidationService
 {
+    private const string LegacyItemResourcePath = "game_state/inventory/item_resources.json";
+
     private static readonly Regex InventoryMechanicalSummaryNumericRegex = new(
         @"[+\-]\s*\d+|\d+\s*%",
         RegexOptions.Compiled | RegexOptions.CultureInvariant);
@@ -75,6 +77,7 @@ public partial class ValidationService
             {
                 "passiveSkillChanges", "removePassiveSkills"
             }, issues);
+        await ValidatePlayerMortalWoundTreatmentCapabilityCatalogAsync(issues);
         await ValidatePlayerContractFile("game_state/player/skill_mastery.json",
             new HashSet<string>(StringComparer.OrdinalIgnoreCase)
             {
@@ -86,17 +89,16 @@ public partial class ValidationService
                 "UpdateInventory", "items", "equipmentChanges", "equipment", "equippedItems", "money", "resources",
                 "totalWeight", "maxWeight", "isOverloaded"
             }, issues);
-        const string legacyItemResourcePath = "game_state/inventory/item_resources.json";
-        if (_fs.FileExists(legacyItemResourcePath))
+        if (SameTurnOwnerCurrentFileExists(LegacyItemResourcePath))
         {
             issues.Add(new ValidationIssue(
-                legacyItemResourcePath,
+                LegacyItemResourcePath,
                 IssueSeverity.Error,
                 "Legacy item resource sidecar запрещён; все ресурсы предметов принадлежат единому resource ledger.",
                 code: "resource_legacy_item_authority_forbidden",
                 section: "ResourceMaterialization",
                 expected: $"{ResourceMaterializationContract.DefinitionsPath} + {ResourceMaterializationContract.StatePath} + {ResourceMaterializationContract.HistoryPath}",
-                actual: legacyItemResourcePath,
+                actual: LegacyItemResourcePath,
                 repairHint: "Удаление или миграция старого sidecar автоматически не выполняется. Начни новую техническую сессию с unified resource roots."));
         }
         await ValidateFlexibleStateFile("game_state/inventory/item_text_updates.json",
@@ -136,12 +138,35 @@ public partial class ValidationService
             }, issues);
     }
 
+    private async Task ValidatePlayerMortalWoundTreatmentCapabilityCatalogAsync(List<ValidationIssue> issues)
+    {
+        const string activePath = "game_state/player/skills_active.json";
+        const string passivePath = "game_state/player/skills_passive.json";
+        if (!ShouldValidateStateFile(activePath) && !ShouldValidateStateFile(passivePath))
+            return;
+
+        try
+        {
+            var active = JsonNode.Parse(await ReadSameTurnOwnerCurrentTextAsync(activePath) ?? string.Empty) as JsonObject;
+            var passive = JsonNode.Parse(await ReadSameTurnOwnerCurrentTextAsync(passivePath) ?? string.Empty) as JsonObject;
+            if (active is null || passive is null)
+                return;
+
+            issues.AddRange(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+                "player", "player", active, activePath, passive, passivePath).Issues);
+        }
+        catch (JsonException)
+        {
+            // The ordinary per-file validation owns malformed JSON diagnostics.
+        }
+    }
+
     private async Task ValidatePlayerContractFile(string filePath, HashSet<string> allowedKeys, List<ValidationIssue> issues)
     {
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -3555,7 +3580,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -4162,6 +4187,7 @@ public partial class ValidationService
 
     private static void ValidateActiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
             item,
             itemContext,
@@ -4265,6 +4291,7 @@ public partial class ValidationService
 
     private static void ValidatePassiveSkillObject(JsonElement item, string itemContext, List<ValidationIssue> issues)
     {
+        MortalWoundTreatmentCapabilityContract.ValidateSkillExtension(item, itemContext, issues);
         ValidateActiveEffectDefinitionsIfPresent(
             item,
             itemContext,
@@ -4435,8 +4462,15 @@ public partial class ValidationService
 
     private void ValidatePlayerSkillMastery(JsonElement root, string contextPrefix, List<ValidationIssue> issues)
     {
-        if (!TryGetArray(root, "skillMasteryChanges", $"{contextPrefix}.skillMasteryChanges", issues, out var arr))
+        if (!TryGetArray(
+                root,
+                "skillMasteryChanges",
+                $"{contextPrefix}.skillMasteryChanges",
+                issues,
+                out _))
+        {
             return;
+        }
 
         var knownActiveSkills = ReadCurrentPlayerActiveSkillNamesSync();
         knownActiveSkills.UnionWith(ParsePlayerSkillNames(
@@ -4454,6 +4488,23 @@ public partial class ValidationService
                 }
             }
         }
+
+        ValidatePlayerSkillMasteryCore(
+            root,
+            contextPrefix,
+            issues,
+            knownActiveSkills);
+    }
+
+    private static void ValidatePlayerSkillMasteryCore(
+        JsonElement root,
+        string contextPrefix,
+        List<ValidationIssue> issues,
+        IReadOnlySet<string> knownActiveSkills)
+    {
+        if (!TryGetArray(root, "skillMasteryChanges", $"{contextPrefix}.skillMasteryChanges", issues, out var arr))
+            return;
+
         var index = 0;
         foreach (var item in arr.EnumerateArray())
         {
@@ -5165,6 +5216,13 @@ public partial class ValidationService
         if (!string.IsNullOrWhiteSpace(preTurnQuality) || preTurnInventoryItemIds.Contains(itemId))
             return preTurnQuality;
 
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryResolveInventoryItemQualityFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath),
+                itemId,
+                preTurnInventoryItemIds,
+                currentStateNewItemsOnly: true);
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");
@@ -5259,6 +5317,13 @@ public partial class ValidationService
             currentStateNewItemsOnly: false);
         if (preTurnProfile != null || preTurnInventoryItemIds.Contains(itemId))
             return preTurnProfile;
+
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryResolveInventoryItemEquipProfileFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath),
+                itemId,
+                preTurnInventoryItemIds,
+                currentStateNewItemsOnly: true);
 
         try
         {
@@ -6426,6 +6491,10 @@ public partial class ValidationService
 
     private Dictionary<string, string?>? TryResolveCurrentPlayerEquippedItemsSync()
     {
+        if (_sameTurnOwnerInputs is { } retainedInputs)
+            return TryReadPlayerEquippedItemsStateFromJson(
+                retainedInputs.ReadText(InventoryEquipmentService.ItemsPath));
+
         try
         {
             var path = _fs.ResolvePath("game_state/inventory/items.json");
@@ -7200,6 +7269,21 @@ public partial class ValidationService
         {
             issues.Add(new ValidationIssue(contextPrefix, IssueSeverity.Error,
                 "Раны должны быть объектом или массивом"));
+            return;
+        }
+
+        if (string.Equals(
+                contextPrefix,
+                WoundCarrierCatalog.PlayerPath,
+                StringComparison.Ordinal))
+        {
+            var playerWounds = JsonNode.Parse(root.GetRawText())!.AsObject();
+            issues.AddRange(WoundCarrierCatalog.Build(new WoundCarrierCatalogInput(
+                playerWounds,
+                null,
+                null,
+                null,
+                null)).Issues);
             return;
         }
 

@@ -889,11 +889,9 @@ public sealed class SystemGuardianLibraryService
 
     private static JsonObject BuildInitialMentorStandardArts(string domain)
     {
-        var arts = new JsonObject
-        {
-            ["guard"] = 2,
-            ["maneuver"] = 1
-        };
+        var arts = AfterlifeSpiritualConflictState.CreateDefaultArtTiers();
+        arts["guard"] = 2;
+        arts["maneuver"] = 1;
 
         switch (domain.Trim().ToLowerInvariant())
         {

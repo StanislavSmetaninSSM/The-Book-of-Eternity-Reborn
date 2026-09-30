@@ -29,7 +29,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
         var indexPath = Path.Combine(frontendDist, "index.html");
         Assert.True(
             File.Exists(indexPath),
-            $"Missing built browser frontend at {indexPath}. Run `npm run verify --prefix BookOfEternityClient.WebFrontend` before the built-frontend smoke test.");
+            $"Missing built browser frontend at {indexPath}. Run `./scripts/test-csharp.ps1 -Category browser-api-host` from the repository root to build and verify the host assets.");
 
         WriteSessionFile("game_state/meta/soul_state.json", """
         {
@@ -333,7 +333,7 @@ public sealed class LocalWebUiBuiltFrontendSmokeTests : IDisposable
 
         Assert.True(
             File.Exists(indexPath),
-            $"Missing built browser frontend at {indexPath}. Run `npm run verify --prefix BookOfEternityClient.WebFrontend` before the built-frontend smoke test.");
+            $"Missing built browser frontend at {indexPath}. Run `./scripts/test-csharp.ps1 -Category browser-api-host` from the repository root to build and verify the host assets.");
         var builtScriptBundle = string.Join(
             Environment.NewLine,
             Directory.EnumerateFiles(frontendDist, "*.js", SearchOption.AllDirectories)

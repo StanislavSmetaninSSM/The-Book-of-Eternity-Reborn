@@ -1662,6 +1662,24 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
             hooks: hooks);
     }
 
+    /// <summary>
+    /// Seeds session history and matching skill, effect-carrier and identity-index authority for a resource-damage continuation.
+    /// </summary>
+    /// <param name="context">
+    /// The isolated test context whose files receive the fixture authority.
+    /// </param>
+    /// <param name="sessionId">
+    /// The session identifier written to the fixture chat history.
+    /// </param>
+    /// <param name="resolutionMode">
+    /// The resource-damage trigger resolution mode; defaults to deterministic.
+    /// </param>
+    /// <param name="remainingUses">
+    /// The initial source uses and remaining effect uses; defaults to one.
+    /// </param>
+    /// <returns>
+    /// A task that completes after the fixture authority files have been written.
+    /// </returns>
     private static async Task SeedDeferredAuthorityAsync(
         EffectMaterializationTestContext context,
         string sessionId,
@@ -1681,7 +1699,7 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
         var effect = CreateResourceDamagedEffect(
             resolutionMode,
             remainingUses);
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -1791,11 +1809,23 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
         return definition;
     }
 
+    /// <summary>
+    /// Creates a canonical skill effect with a resource-damage trigger and a uses-based lifetime.
+    /// </summary>
+    /// <param name="resolutionMode">
+    /// The resource-damage trigger resolution mode; defaults to deterministic.
+    /// </param>
+    /// <param name="remainingUses">
+    /// The remaining uses recorded in the effect lifetime; defaults to one.
+    /// </param>
+    /// <returns>
+    /// A fresh canonical skill effect carrying the requested trigger mode and remaining uses.
+    /// </returns>
     private static JsonObject CreateResourceDamagedEffect(
         string resolutionMode = "deterministic",
         int remainingUses = 1)
     {
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             profile: "periodic_damage");
         effect["lifetime"] = new JsonObject
         {

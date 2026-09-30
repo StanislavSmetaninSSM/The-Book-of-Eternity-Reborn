@@ -51,7 +51,7 @@ internal static class ShiningBlessingEffectState
     }
 
     private sealed class ShiningSurvivalResourceOutcomeDraft
-        : IResourceRegisteredSystemOutcomeDraft
+        : IOriginalSpiritualPrefixOutcomeDraft
     {
         private const string SoulPath = "game_state/meta/soul_state.json";
         private const string WorldEventsPath = "game_state/world/world_events.json";
@@ -2034,6 +2034,61 @@ internal static class ShiningBlessingEffectState
         }
 
         return changed;
+    }
+
+    /// <summary>
+    /// Constructs the ordinary survival draft with a capture-retainable consumption timestamp.
+    /// </summary>
+    /// <param name="currentTurnNumber">
+    /// Accepted turn checked by the existing survival owner.
+    /// </param>
+    /// <param name="normalizedSoulRoot">
+    /// Non-null soul projection containing pending survival entitlements.
+    /// </param>
+    /// <param name="currentWorldEventsRoot">
+    /// Non-null current narrative event projection.
+    /// </param>
+    /// <param name="preTurnWorldEventsRoot">
+    /// Original event root, or <see langword="null"/> when originally absent.
+    /// </param>
+    /// <param name="expectedSoulBeforeImage">
+    /// Exact expected soul image retained by the ordinary outcome.
+    /// </param>
+    /// <param name="expectedWorldEventsBeforeImage">
+    /// Exact expected world-event image retained by the ordinary outcome.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional capture clock; <see langword="null"/> preserves ordinary UTC timestamp creation.
+    /// </param>
+    /// <returns>
+    /// The existing owner's draft or diagnostics, without granting publication authority.
+    /// </returns>
+    internal static SurvivalResourceOutcomeDraftBuildResult TryCreateSurvivalResourceOutcomeDraftWithClock(
+        int currentTurnNumber,
+        JsonObject normalizedSoulRoot,
+        JsonObject currentWorldEventsRoot,
+        JsonNode? preTurnWorldEventsRoot,
+        CanonicalBeforeImage expectedSoulBeforeImage,
+        CanonicalBeforeImage expectedWorldEventsBeforeImage,
+        AcceptedTurnProjectionClock? projectionClock = null)
+    {
+        ArgumentNullException.ThrowIfNull(normalizedSoulRoot);
+        ArgumentNullException.ThrowIfNull(currentWorldEventsRoot);
+        ArgumentNullException.ThrowIfNull(expectedSoulBeforeImage);
+        ArgumentNullException.ThrowIfNull(expectedWorldEventsBeforeImage);
+        var consumedAtUtc = projectionClock is null ? DateTime.UtcNow.ToString("o") :
+            projectionClock.GetUtcNow(AcceptedTurnProjectionTimeKind.SurvivalConsumption, new JsonObject
+            {
+                ["turn"] = currentTurnNumber,
+                ["soul"] = normalizedSoulRoot.DeepClone(),
+                ["world"] = currentWorldEventsRoot.DeepClone(),
+                ["preTurnWorld"] = preTurnWorldEventsRoot?.DeepClone(),
+                ["soulBeforeFingerprint"] = expectedSoulBeforeImage.Fingerprint,
+                ["worldBeforeFingerprint"] = expectedWorldEventsBeforeImage.Fingerprint
+            }).UtcDateTime.ToString("o");
+        return TryCreateSurvivalResourceOutcomeDraft(currentTurnNumber, normalizedSoulRoot,
+            currentWorldEventsRoot, preTurnWorldEventsRoot, expectedSoulBeforeImage,
+            expectedWorldEventsBeforeImage, consumedAtUtc);
     }
 
     internal static SurvivalResourceOutcomeDraftBuildResult TryCreateSurvivalResourceOutcomeDraft(

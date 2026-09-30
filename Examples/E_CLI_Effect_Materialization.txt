@@ -4,7 +4,10 @@ Read `OtherGuides/Effect_Materialization_Contract.md` first. These examples show
 
 ## effect_mortal_profiles_v1
 
-The registered component library is closed. These are complete component fragments; each belongs inside a complete `activeEffectDefinitions[]` entry and cannot act as a standalone effect:
+The general component library is closed. These are the eleven general component
+fragments; the eight dedicated spiritual-wound profiles appear separately under
+`wound_spiritual_profiles_v1`. Each fragment belongs inside a complete
+`activeEffectDefinitions[]` entry and cannot act as a standalone effect:
 
 ```json
 {
@@ -19,7 +22,11 @@ The registered component library is closed. These are complete component fragmen
       "componentId": "component_roll",
       "profile": "roll_modifier",
       "priority": 100,
-      "payload": { "operations": ["attack_roll"], "contribution": "disadvantage" }
+      "payload": {
+        "operations": ["attack_roll"],
+        "contribution": "disadvantage",
+        "scope": { "kind": "all" }
+      }
     },
     {
       "componentId": "component_resistance",
@@ -48,6 +55,18 @@ The registered component library is closed. These are complete component fragmen
       "profile": "periodic_restore",
       "priority": 100,
       "payload": { "resource": "health", "amount": 3, "capPolicy": "registered_resource_cap" }
+    },
+    {
+      "componentId": "component_spend",
+      "profile": "periodic_spend",
+      "priority": 100,
+      "payload": { "resource": "energy", "amount": 1, "floorPolicy": "registered_resource_floor" }
+    },
+    {
+      "componentId": "component_gain",
+      "profile": "periodic_gain",
+      "priority": 100,
+      "payload": { "resource": "energy", "amount": 1, "capPolicy": "registered_resource_cap" }
     },
     {
       "componentId": "component_control",
@@ -507,6 +526,130 @@ The five source-owned stack policies and their required fields are:
 }
 ```
 
+## effect_mortal_roll_scope_skill_v1
+
+The player already knows both «Взлом» and «Точное сосредоточение» in canonical
+pre-turn skill state. This client request fragment offers both exact target skills.
+The focused selector is copied from the target's catalog row; the source skill is an
+already learned owner, not a same-response new skill or a wound. Both remain usable
+in the composed accepted state. Editing this advisory catalog cannot grant authority.
+
+```json
+{
+  "effectSkillScopeCatalog": {
+    "schemaVersion": 1,
+    "targets": [
+      {
+        "realm": "mortal_world",
+        "kind": "player",
+        "targetId": "player_current",
+        "skills": [
+          { "skillId": "skill_lockpicking", "displayName": "Взлом" },
+          { "skillId": "skill_precision_focus", "displayName": "Точное сосредоточение" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Existing canonical skill source fragment with its complete effect definition:
+
+```json
+{
+  "skillId": "skill_precision_focus",
+  "activeEffectDefinitions": [
+    {
+      "schemaVersion": 1,
+      "definitionKey": "precision-focus-lockpicking",
+      "display": {
+        "name": "Точное сосредоточение",
+        "description": "Преимущество к проверкам навыка «Взлом».",
+        "category": "buff",
+        "visibility": "visible"
+      },
+      "allowedRealms": ["mortal_world"],
+      "allowedTargetKinds": ["player"],
+      "components": [
+        {
+          "componentId": "precision_focus_lockpicking_roll",
+          "profile": "roll_modifier",
+          "priority": 100,
+          "payload": {
+            "operations": ["skill_check"],
+            "contribution": "advantage",
+            "scope": { "kind": "skill", "skillId": "skill_lockpicking" }
+          }
+        }
+      ],
+      "parameterBounds": {},
+      "stacking": {
+        "stackKey": "precision-focus-lockpicking",
+        "policy": "independent",
+        "maxStacks": 1,
+        "atMaximum": "no_change",
+        "refreshMode": null,
+        "mergeRule": null
+      },
+      "lifetime": {
+        "mode": "turns",
+        "initialTurns": 3,
+        "advancePhase": "owner_turn_end"
+      },
+      "triggers": [
+        {
+          "triggerId": "precision_focus_owner_turn_end",
+          "eventType": "owner_turn_end",
+          "priority": 100,
+          "componentIds": ["precision_focus_lockpicking_roll"],
+          "consumeUses": false,
+          "resolutionMode": "deterministic"
+        }
+      ],
+      "removal": {
+        "dispelCategories": ["mental_disruption"],
+        "cureKinds": ["rest"],
+        "onSourceLoss": "expire",
+        "onConditionLoss": null,
+        "manualAuthorities": []
+      },
+      "links": []
+    }
+  ]
+}
+```
+
+Complete GM response for the first application on accepted turn 42:
+
+```json
+{
+  "response": "Вы выравниваете дыхание и сосредотачиваетесь на едва слышных щелчках замка. Движения отмычки становятся точнее.",
+  "effectChanges": [
+    {
+      "operation": "apply",
+      "target": { "kind": "player", "targetId": "player_current" },
+      "source": {
+        "kind": "skill",
+        "sourceId": "skill_precision_focus",
+        "definitionKey": "precision-focus-lockpicking"
+      },
+      "parameters": {},
+      "eventRef": { "kind": "accepted_turn", "authorityId": "turn_42" },
+      "reason": "Игрок применил изученное точное сосредоточение для работы с замком."
+    }
+  ]
+}
+```
+
+This ordinary buff and a wound's focused disadvantage use the same closed common
+profile and exact-skill reducer. `scope.kind=skill` requires only `skill_check`;
+it never grants advantage to all skills or to an unidentified check. The source ID
+selects the learned source, while `scope.skillId` selects the target skill. A later
+missing skill derives dormancy, with no name substitution or lifetime reset; only the
+same usable permanent ID can reactivate an effect that has not expired. All canonical
+effect identity, publication, and replay remain client-owned. Player narration contains
+no technical ID.
+
 ## effect_mortal_dispel_v1
 
 An accepted turn may request a dispel only for the exact opaque effect identity
@@ -560,7 +703,7 @@ For `uses`, every consuming event must have exactly one trigger with `consumeUse
 
 ## effect_mortal_source_families_v1
 
-Supported exact source kinds are `skill`, `spiritual_art`, `item`, `wound`, `quest`, `location`, `hazard`, `faction`, `world_event`, `fate_card`, and `combat_action`. Representative selectors:
+Representative exact GM source selector kinds are `skill`, `spiritual_art`, `item`, `wound`, `quest`, `location`, `hazard`, `faction`, `world_event`, `fate_card`, and `combat_action`. Representative selectors:
 
 ```json
 {
@@ -579,6 +722,8 @@ Supported exact source kinds are `skill`, `spiritual_art`, `item`, `wound`, `que
   ]
 }
 ```
+
+Worked continuation after healing: an earlier accepted treatment has healed a torn muscle but left a lasting movement restriction. The client-owned source is `source.kind=wound_legacy`, with the independent `legacyId`; the healed wound is no longer an active source. The GM describes the remaining restriction in the ordinary narrative and leaves its already accepted mechanics alone. Do not apply, resend, or reconstruct the legacy effect. In particular, do not add a twelfth `sourceSelectors` entry or invent an `effectChanges[].source` selector for `wound_legacy`. A later permitted dispel/removal uses the existing effect lifecycle route and does not delete the healed wound's legacy/history provenance. This is a continuation example, not a new heal command or permission to author canonical source/link coordinates.
 
 The source must exist, be current/active/unlocked/equipped as required, allow the exact realm/target, and own the definition key. Never infer one from display prose.
 
@@ -949,6 +1094,286 @@ A wound-consequence definition contains one exact wound component and one exact 
 ```
 
 Effect removal never heals or deletes the wound. A treatment turn submits the accepted wound transition and, if authorized, a separate effect removal request. An effect-only removal must leave the wound carrier byte-semantically unchanged.
+
+## wound_spiritual_profiles_v1
+
+These are the exact eight closed component fragments registered for spiritual wound
+consequences. Each fragment is inserted into a complete wound-owned #1535 definition;
+the wound severity contract chooses the legal number and magnitude of slots.
+
+```json
+{
+  "registeredSpiritualWoundProfileFragments": [
+    {
+      "componentId": "component_spiritual_roll_hindrance",
+      "profile": "spiritual_roll_hindrance",
+      "priority": 100,
+      "payload": {
+        "operation": "pressure",
+        "axis": "rollMode",
+        "magnitude": "disadvantage"
+      }
+    },
+    {
+      "componentId": "component_spiritual_action_cost_burden",
+      "profile": "spiritual_action_cost_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "counter",
+        "axis": "actionCostAudit",
+        "magnitude": 3
+      }
+    },
+    {
+      "componentId": "component_spiritual_position_burden",
+      "profile": "spiritual_position_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "maneuver",
+        "axis": "conflictPosition",
+        "magnitude": 2
+      }
+    },
+    {
+      "componentId": "component_spiritual_control_burden",
+      "profile": "spiritual_control_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "binding",
+        "axis": "controlState",
+        "magnitude": 1
+      }
+    },
+    {
+      "componentId": "component_spiritual_strain_burden",
+      "profile": "spiritual_strain_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "break_binding",
+        "axis": "sideStrain",
+        "magnitude": 1
+      }
+    },
+    {
+      "componentId": "component_spiritual_tempo_burden",
+      "profile": "spiritual_tempo_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "force_binding",
+        "axis": "tempoAdvantage",
+        "magnitude": "deny_one_gain"
+      }
+    },
+    {
+      "componentId": "component_spiritual_counter_burden",
+      "profile": "spiritual_counter_burden",
+      "priority": 100,
+      "payload": {
+        "operation": "incarnation_resistance",
+        "axis": "counterPayoff",
+        "magnitude": "reduce_one_step"
+      }
+    },
+    {
+      "componentId": "component_spiritual_art_restriction",
+      "profile": "spiritual_art_restriction",
+      "priority": 100,
+      "payload": {
+        "operation": "guard",
+        "axis": "artAvailability",
+        "magnitude": "forbid"
+      }
+    }
+  ]
+}
+```
+
+They are deterministic persistent-actor wound profiles, not aliases for
+`afterlife_combat_condition`. They never target `spiritual_conflict_side` and never
+authorize direct `combatConditions[]` authoring.
+
+## wound_spiritual_source_worked_v1
+
+This complete GM response fragment accepts one severity-III spiritual wound. It uses
+three legal slots and one complete source definition. `woundRef` and `definitionRef`
+are response-local; every permanent wound/effect/transition identity and the exact
+wound source link remain client-owned.
+
+The same complete response also illustrates a later source in a conflict where
+this side already received a rank-II wound in an earlier exchange of the same
+original turn and the client offers severity III under a higher hard maximum.
+In that case the client binds this rank-III proposal to the
+current wound as a `worsen` transition; `fractured_resonance_local` is still only
+a response-local reference, not a request to create a second wound. The GM
+does not copy the first wound's permanent ID into this response. The two
+private receipt rows use that one ID and distinct ordered transition IDs.
+
+```json
+{
+  "woundDecisions": [
+    {
+      "opportunityRef": "spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "decision": "materialize",
+      "woundRef": "fractured_resonance_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Трещина духовного резонанса",
+          "locationProfile": {
+            "kind": "spiritual_axis",
+            "readableLocus": "узор воли"
+          }
+        },
+        "display": {
+          "name": "Трещина в узоре воли",
+          "description": "Повреждённый ритм души мешает удерживать давление и позицию.",
+          "visibleSymptoms": [
+            "дрожащий контур души",
+            "срывающийся внутренний ритм"
+          ],
+          "prognosis": "Без духовного исцеления ограничения сохранятся между конфликтами.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Удар проходит сквозь защиту, и узор вашей воли покрывается светящейся трещиной."
+        },
+        "severity": "III",
+        "complications": [],
+        "consequenceDefinitions": [
+          {
+            "definitionRef": "fractured_resonance_burdens",
+            "definition": {
+              "schemaVersion": 1,
+              "definitionKey": "fractured-resonance-burdens",
+              "display": {
+                "name": "Нарушенный духовный резонанс",
+                "description": "Трещина затрудняет давление, контрдействие и манёвр.",
+                "category": "debuff",
+                "visibility": "visible"
+              },
+              "allowedRealms": ["chaos_sea", "shining_abode"],
+              "allowedTargetKinds": [
+                "player",
+                "guardian",
+                "resident",
+                "radiant_actor",
+                "afterlife_actor"
+              ],
+              "components": [
+                {
+                  "componentId": "fracture_roll",
+                  "profile": "spiritual_roll_hindrance",
+                  "priority": 100,
+                  "payload": {
+                    "operation": "pressure",
+                    "axis": "rollMode",
+                    "magnitude": "disadvantage"
+                  }
+                },
+                {
+                  "componentId": "fracture_cost",
+                  "profile": "spiritual_action_cost_burden",
+                  "priority": 90,
+                  "payload": {
+                    "operation": "counter",
+                    "axis": "actionCostAudit",
+                    "magnitude": 2
+                  }
+                },
+                {
+                  "componentId": "fracture_position",
+                  "profile": "spiritual_position_burden",
+                  "priority": 80,
+                  "payload": {
+                    "operation": "maneuver",
+                    "axis": "conflictPosition",
+                    "magnitude": 2
+                  }
+                }
+              ],
+              "parameterBounds": {},
+              "stacking": {
+                "stackKey": "wound_fractured_resonance_burdens",
+                "policy": "independent",
+                "maxStacks": 1,
+                "atMaximum": "no_change",
+                "refreshMode": null,
+                "mergeRule": null
+              },
+              "lifetime": {
+                "mode": "source_bound",
+                "activePredicate": "active",
+                "onSourceLoss": "expire"
+              },
+              "triggers": [
+                {
+                  "triggerId": "on_owner_turn_end",
+                  "eventType": "owner_turn_end",
+                  "priority": 100,
+                  "componentIds": [
+                    "fracture_roll",
+                    "fracture_cost",
+                    "fracture_position"
+                  ],
+                  "consumeUses": false,
+                  "resolutionMode": "deterministic"
+                }
+              ],
+              "removal": {
+                "dispelCategories": ["spiritual_restoration"],
+                "cureKinds": ["spiritual_healing"],
+                "onSourceLoss": "expire",
+                "onConditionLoss": null,
+                "manualAuthorities": []
+              },
+              "links": []
+            },
+            "root": {
+              "ownership": {
+                "kind": "base_wound",
+                "complicationRef": null
+              },
+              "slots": [
+                {
+                  "profileKey": "spiritual_roll_hindrance",
+                  "readableSummary": "Давление совершается с помехой."
+                },
+                {
+                  "profileKey": "spiritual_action_cost_burden",
+                  "readableSummary": "Контрдействие требует на 2 ОД больше."
+                },
+                {
+                  "profileKey": "spiritual_position_burden",
+                  "readableSummary": "Манёвр начинает с двух неблагоприятных шагов позиции."
+                }
+              ]
+            }
+          }
+        ],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "progressive",
+          "clockKind": "afterlife_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 4,
+          "lastTickKey": null,
+          "blockers": [],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      }
+    }
+  ]
+}
+```
+
+The client binds the empty definition `links` array to the accepted wound, derives the
+typed root applications, allocates opaque identities through the common effect engine,
+and publishes wound, effect, identity, history, narration, and notification atomically.
+The GM does not resend this wound source through ordinary effect application commands.
 
 ## effect_bounded_repair_v1
 

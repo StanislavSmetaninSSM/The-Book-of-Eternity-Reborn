@@ -33,6 +33,7 @@ public partial class GameEngine
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();
@@ -86,9 +87,14 @@ public partial class GameEngine
         public string DetectedAtUtc { get; set; } = "";
         public int RevalidationAttempt { get; set; }
         public bool FullTurnResubmissionRequired { get; set; }
+        /// <summary>
+        /// Carries the current owner-derived continuation, or is omitted for ordinary repair.
+        /// </summary>
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public SpiritualWoundContinuationRequest? SpiritualWoundContinuation { get; set; }
         public string GmInstructions { get; set; } = "";
         public List<string> SummaryGroups { get; set; } = new();
-        public List<ValidationRepairHarnessPacket> HarnessRepairPackets { get; set; } = new();
+        public List<JsonObject> HarnessRepairPackets { get; set; } = new();
         public List<ValidationRepairResubmissionObligation> ResubmissionObligations { get; set; } = new();
         public List<string> RequiredResubmissionPaths { get; set; } = new();
         public List<ValidationRepairIssue> Errors { get; set; } = new();
@@ -118,6 +124,11 @@ public partial class GameEngine
     private sealed record ResourceRepairRetryObligation(
         int CommandOrdinal,
         JsonObject ExpectedCommandRootWithoutReason);
+
+    private sealed record WoundRepairRetryObligation(
+        int CommandOrdinal,
+        WoundRepairPacket Packet,
+        JsonObject ExpectedCommandRoot);
 
     private sealed record RepairResubmissionPathObligation(
         string Path,

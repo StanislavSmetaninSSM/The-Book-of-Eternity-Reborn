@@ -371,6 +371,16 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
@@ -457,6 +467,16 @@ public sealed class TrainingService
         var soulRoot = await ReadObjectAsync(SoulStatePath);
         if (soulRoot == null)
             return new TrainingOperationResult(false, false, "Нет состояния души для обучения.");
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingOperationResult(
+                false,
+                false,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var soulRootBaseline = soulRoot.ToJsonString(JsonOpts);
 
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
@@ -870,7 +890,33 @@ public sealed class TrainingService
     private async Task<TrainingView> BuildAfterlifeTrainingViewAsync(int currentTurn, bool createPendingRequests)
     {
         var localScope = await _localScopeService.ResolveAsync();
-        var soulRoot = await ReadObjectAsync(SoulStatePath) ?? new JsonObject();
+        var soulRoot = await ReadObjectAsync(SoulStatePath);
+        if (soulRoot == null)
+        {
+            return new TrainingView(
+                RealmAfterlife,
+                Array.Empty<TrainingTeacherView>(),
+                Array.Empty<TrainingOffer>(),
+                false,
+                false,
+                null,
+                "Обучение духовным искусствам заблокировано: состояние души отсутствует или недоступно для чтения.");
+        }
+
+        if (!AfterlifeSpiritualConflictState.TryValidateCurrentRequiredWoundArtAuthority(
+                soulRoot,
+                out var woundArtDamage))
+        {
+            return new TrainingView(
+                RealmAfterlife,
+                Array.Empty<TrainingTeacherView>(),
+                Array.Empty<TrainingOffer>(),
+                false,
+                false,
+                null,
+                $"Обучение духовным искусствам заблокировано: {woundArtDamage}");
+        }
+
         var shiningRoot = await ReadObjectAsync(ShiningAbodeStatePath);
         var afterlifeProfilesRoot = await ReadObjectAsync(AfterlifeEntityProfilesPath);
         var afterlifeProfilesSnapshot = afterlifeProfilesRoot?.ToJsonString(JsonOpts);
@@ -1295,9 +1341,15 @@ public sealed class TrainingService
         var targetValue = Math.Max(0, GetNodeInt(offer["targetValue"]));
         var offeredSourceCap = Math.Max(0, GetNodeInt(offer["sourceCap"]));
         var mentorSourceCap = ResolveAfterlifeMentorSourceCap(mentor, targetKind, targetId);
-        var sourceCap = mentorSourceCap > 0 && offeredSourceCap > 0
-            ? Math.Min(mentorSourceCap, offeredSourceCap)
-            : Math.Max(mentorSourceCap, offeredSourceCap);
+        var sourceCap = IsAfterlifeStandardArtTarget(targetKind)
+            ? mentorSourceCap <= 0
+                ? 0
+                : offeredSourceCap > 0
+                    ? Math.Min(mentorSourceCap, offeredSourceCap)
+                    : mentorSourceCap
+            : mentorSourceCap > 0 && offeredSourceCap > 0
+                ? Math.Min(mentorSourceCap, offeredSourceCap)
+                : Math.Max(mentorSourceCap, offeredSourceCap);
         var relationshipLevel = ResolveAfterlifeMentorRelationshipLevel(mentor);
         var mentorMultiplierPercent = AfterlifeTrainingCostPolicy.ResolveMentorMultiplierPercent(relationshipLevel);
         var baseInkFeatherCost = ResolveAfterlifeMentorBaseInkFeatherCost(playerProfile, targetKind, targetId, targetValue);
@@ -2458,6 +2510,8 @@ public sealed class TrainingService
             "incarnation_resistance" => "Сопротивление воплощению",
             "champion_coordination" => "Согласование чемпиона",
             "recover_spiritual_power" => "Собрать Средоточие",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Духовная стойкость",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Духовное исцеление",
             _ => targetId
         };
 

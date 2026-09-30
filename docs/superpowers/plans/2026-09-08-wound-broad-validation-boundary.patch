@@ -1,0 +1,226 @@
+*** Begin Patch
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/IntegrationValidationProfiles.cs
+@@
+     internal static readonly GameStateValidationSelection CommandDisplaySave = Select(
+         GameStateValidationPhase.RequiredFields |
+         GameStateValidationPhase.SoulStateConsistency |
+         GameStateValidationPhase.MetaMiscStateFiles |
+         GameStateValidationPhase.ClientOwnedControlFiles);
+
++    internal static readonly GameStateValidationSelection EffectSkillScopeCatalog = Select(
++        GameStateValidationPhase.PlayerStateFiles |
++        GameStateValidationPhase.SkillContractConsistency);
++
+     internal static readonly GameStateValidationSelection FactionState = Select(
+@@
+     internal static readonly GameStateValidationSelection MortalBootstrap = Select(
+         GameStateValidationPhase.RequiredFiles |
+         GameStateValidationPhase.RequiredFields |
+         GameStateValidationPhase.LoreBootstrapRequiredFiles |
+         GameStateValidationPhase.MortalBootstrapPlayerVisibleNames |
+@@
+         GameStateValidationPhase.NpcStateFiles |
+         GameStateValidationPhase.WorldQuestCombatFactionStateFiles);
+
++    internal static readonly GameStateValidationSelection MortalWoundTreatmentLifecycle = Select(
++        GameStateValidationPhase.RequiredFields |
++        GameStateValidationPhase.CrossReferences |
++        GameStateValidationPhase.PlayerStateFiles |
++        GameStateValidationPhase.NpcStateFiles |
++        GameStateValidationPhase.SkillContractConsistency |
++        GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
++        GameStateValidationPhase.MetaMiscStateFiles |
++        GameStateValidationPhase.AcceptedTurnEffectMaterializationCompleteness |
++        GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness |
++        GameStateValidationPhase.ClientOwnedControlFiles);
++
+     internal static readonly GameStateValidationSelection NpcState = Select(
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/EffectSkillScopeLifecycleTests.cs
+@@
+         await WriteOrdinaryTurnPlayerSkillAsync();
+         var preflightIssues = await new ValidationService(
+             _fs,
+-            NullLogger<ValidationService>.Instance).ValidateGameStateAsync();
++            NullLogger<ValidationService>.Instance).ValidateGameStateAsync(
++                IntegrationValidationProfiles.EffectSkillScopeCatalog);
+         Assert.True(
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.Severity.cs
+@@
+             : (await new ValidationService(
+                     context.FileSystem,
+                     NullLogger<ValidationService>.Instance)
+-                .ValidateGameStateAsync())
++                .ValidateGameStateAsync(
++                    IntegrationValidationProfiles.MortalWoundTreatmentLifecycle))
+                 .Where(static issue => issue.Severity == IssueSeverity.Error)
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/MortalWoundTreatmentResourcePublicationLifecycleTests.cs
+@@
+     [Fact]
++    [Trait("Category", "FullValidation")]
+     public async Task GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry()
+@@
+     [Theory]
+     [InlineData("no_open_receipt")]
+     [InlineData("root_drift")]
+     [InlineData("foreign_actor")]
+     [InlineData("foreign_path")]
+     [InlineData("extra_inventory_mutation")]
++    [Trait("Category", "FullValidation")]
+     public async Task GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof(
+@@
+     [Fact]
++    [Trait("Category", "FullValidation")]
+     public async Task GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch()
+@@
+     [Fact]
++    [Trait("Category", "FullValidation")]
+     public async Task GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication()
+*** Update File: E:/Games/worktrees/boe-1536-wound-materialization/BookOfEternityClient.IntegrationTests/IntegrationTestBoundaryTests.cs
+@@
+-    private const int BroadValidationSentinelBudget = 7;
+-    private const int ReviewedBroadValidationCallCount = 7;
++    private const int BroadValidationSentinelBudget = 8;
++    private const int ReviewedBroadValidationCallCount = 8;
+@@
+             ["ChaosSeaCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
++            ["EffectSkillScopeLifecycleTests.cs"] = "EffectSkillScopeCatalog",
+             ["MathAssistantContractValidationTests.cs"] = "ReadableDocument",
+@@
+             ["MortalBootstrapValidationTests.cs"] = "MortalBootstrap",
+             ["MortalCommandDisplaySaveTests.cs"] = "CommandDisplaySave",
++            ["MortalWoundTreatmentResourcePublicationLifecycleTests.Severity.cs"] =
++                "MortalWoundTreatmentLifecycle",
+             ["ReadableDocumentAuthorityValidationTests.cs"] = "ReadableDocument",
+@@
+             [$"{IntegrationTestsDirectory}/ExampleDocumentationValidationTests.cs"] = 1,
+             [$"{IntegrationTestsDirectory}/FileSystemExampleFixtureIntegrityTests.cs"] = 2,
+-            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2
++            [$"{IntegrationTestsDirectory}/FullValidationEquivalenceTests.cs"] = 2,
++            [$"{IntegrationTestsDirectory}/MortalWoundTreatmentResourcePublicationLifecycleTests.cs"] = 1
+         };
++
++    private static readonly string[] ReviewedPublishedTreatmentFullStateCallers =
++    [
++        "GuaranteedItemConsumption_ExactPublishedNpcInventoryPassesFullStateAndRetry",
++        "GuaranteedItemConsumption_FullStateInventoryIssueFilteringRequiresExactlyOneProvenMatch",
++        "GuaranteedItemConsumption_FullStateInventoryIssueRequiresExactOpenPublicationProof",
++        "GuaranteedItemConsumption_SameTurnItemNormalizationSurvivesPublication"
++    ];
+@@
+             "CanonicalNpc",
+             "CommandDisplaySave",
++            "EffectSkillScopeCatalog",
+             "FactionState",
+@@
+             "MechanicalBonus",
+             "MortalBootstrap",
++            "MortalWoundTreatmentLifecycle",
+             "NpcState",
+@@
+             Assert.Equal(
+                 GameStateValidationPhase.None,
+                 profile.Phases & ~GameStateValidationPhase.Selectable);
+         });
++
++        Assert.Equal(
++            GameStateValidationPhase.PlayerStateFiles |
++            GameStateValidationPhase.SkillContractConsistency,
++            IntegrationValidationProfiles.EffectSkillScopeCatalog.Phases);
++        Assert.Equal(
++            GameStateValidationPhase.RequiredFields |
++            GameStateValidationPhase.CrossReferences |
++            GameStateValidationPhase.PlayerStateFiles |
++            GameStateValidationPhase.NpcStateFiles |
++            GameStateValidationPhase.SkillContractConsistency |
++            GameStateValidationPhase.WorldQuestCombatFactionStateFiles |
++            GameStateValidationPhase.MetaMiscStateFiles |
++            GameStateValidationPhase.AcceptedTurnEffectMaterializationCompleteness |
++            GameStateValidationPhase.AcceptedTurnWoundMaterializationCompleteness |
++            GameStateValidationPhase.ClientOwnedControlFiles,
++            IntegrationValidationProfiles.MortalWoundTreatmentLifecycle.Phases);
+     }
+@@
+-    public void BroadValidationCalls_MatchReviewedSevenCallManifest()
++    public void BroadValidationCalls_MatchReviewedEightCallManifest()
+@@
+-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsSameTotalPerFileDrift()
++    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsSameTotalPerFileDrift()
+@@
+-    public void BroadValidationCalls_MatchReviewedSevenCallManifest_RejectsEighthUnreviewedCall()
++    public void BroadValidationCalls_MatchReviewedEightCallManifest_RejectsNinthUnreviewedCall()
+@@
+-                    "observed 8 exceeds sentinel budget 7",
++                    "observed 9 exceeds sentinel budget 8",
+@@
+-            "Broad-validation sentinel budget is 7",
++            "Broad-validation sentinel budget is 8",
+@@
+-            "Expected reviewed call sites: 7",
++            "Expected reviewed call sites: 8",
+@@
+         Assert.True(
+             uncategorized.Length == 0,
+-            "Direct full-validation integration sources must carry Category=FullValidation:" +
++            "Direct full-validation integration sources must carry Category=FullValidation on their owning tests:" +
+             Environment.NewLine +
+             string.Join(Environment.NewLine, uncategorized));
++
++        const string publishedTreatmentSourceName =
++            "MortalWoundTreatmentResourcePublicationLifecycleTests.cs";
++        const string publishedTreatmentHelperName =
++            "CreatePublishedTreatmentFullStateProbeAsync";
++        var publishedTreatmentSource = File.ReadAllText(
++            SourcePath(IntegrationTestsDirectory, publishedTreatmentSourceName));
++        var publishedTreatmentRoot = CSharpSyntaxTree
++            .ParseText(publishedTreatmentSource)
++            .GetCompilationUnitRoot();
++        Assert.DoesNotContain(
++            publishedTreatmentRoot.DescendantNodes().OfType<ClassDeclarationSyntax>(),
++            declaration => CategoryTraits(declaration).Contains(
++                "FullValidation",
++                StringComparer.Ordinal));
++        var actualFullStateCallers = publishedTreatmentRoot
++            .DescendantNodes()
++            .OfType<InvocationExpressionSyntax>()
++            .Where(invocation => string.Equals(
++                invocation.Expression is IdentifierNameSyntax identifier
++                    ? identifier.Identifier.ValueText
++                    : InvokedMemberName(invocation),
++                publishedTreatmentHelperName,
++                StringComparison.Ordinal))
++            .Select(invocation => invocation
++                .Ancestors()
++                .OfType<MethodDeclarationSyntax>()
++                .First()
++                .Identifier
++                .ValueText)
++            .Order(StringComparer.Ordinal)
++            .ToArray();
++        Assert.Equal(
++            ReviewedPublishedTreatmentFullStateCallers.Order(StringComparer.Ordinal),
++            actualFullStateCallers);
++        var actualFullValidationMethods = MethodCategoryTraits(
++                publishedTreatmentSourceName)
++            .Where(mapping => mapping.Value.Contains(
++                "FullValidation",
++                StringComparer.Ordinal))
++            .ToDictionary(
++                mapping => mapping.Key,
++                mapping => mapping.Value,
++                StringComparer.Ordinal);
++        Assert.Equal(
++            ReviewedPublishedTreatmentFullStateCallers.Order(StringComparer.Ordinal),
++            actualFullValidationMethods.Keys.Order(StringComparer.Ordinal));
++        Assert.All(ReviewedPublishedTreatmentFullStateCallers, methodName =>
++            Assert.Equal(
++                new[] { "FullValidation" },
++                actualFullValidationMethods[methodName]));
+
+         Assert.All(BroadValidationPreMergeSentinelSources, fileName =>
+@@
+-        if (ReviewedBroadValidationCallManifest.Count != 5 ||
++        if (ReviewedBroadValidationCallManifest.Count != 6 ||
+@@
+-                $"5 files and {ReviewedBroadValidationCallCount} call sites.");
++                $"6 files and {ReviewedBroadValidationCallCount} call sites.");
+*** End Patch

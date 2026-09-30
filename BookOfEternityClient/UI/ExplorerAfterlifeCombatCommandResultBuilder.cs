@@ -2168,7 +2168,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 {
                     Id = "spiritual-combat-help-arts",
                     Title = "Духовные искусства и контрприёмы",
-                    Summary = "Базовые действия духовного боя и то, как они перекрывают друг друга.",
+                    Summary = "Боевые приёмы, пассивная стойкость и будущие правила духовного исцеления.",
                     Icon = "sparkles",
                     Presentation = "cards",
                     CollectionLabel = $"{AfterlifeSpiritualConflictState.SpiritualArts.Count} искусств",
@@ -2176,12 +2176,22 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                         .Select(static art => new UiEntityCard
                         {
                             Title = DescribeArt(art.ArtId),
-                            Subtitle = "духовное искусство",
+                            Subtitle = IsStandardWoundArt(art.ArtId)
+                                ? DescribeStandardArtSubtitle(art.ArtId)
+                                : "духовное искусство",
                             Icon = "sparkles",
-                            Summary = art.MechanicalUse,
+                            Summary = IsStandardWoundArt(art.ArtId)
+                                ? DescribeStandardArtUse(art.ArtId)
+                                : art.MechanicalUse,
                             Facts =
                             [
-                                new UiEntityFact { Label = "Игровой смысл", Value = art.MechanicalUse },
+                                new UiEntityFact
+                                {
+                                    Label = "Игровой смысл",
+                                    Value = IsStandardWoundArt(art.ArtId)
+                                        ? DescribeStandardArtUse(art.ArtId)
+                                        : art.MechanicalUse
+                                },
                                 new UiEntityFact { Label = "Сильнее против", Value = DescribeStrongAgainst(art.ArtId) },
                                 new UiEntityFact { Label = "Чем перекрывается", Value = DescribeCounteredBy(art.ArtId) }
                             ]
@@ -2253,7 +2263,11 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                 {
                     Id = "upgrade_target",
                     Prompt = "Что прокачать",
-                    Placeholder = "Давление / Защита / Контрприём / Манёвр / Оковы / Средоточие Души"
+                    Placeholder = string.Join(
+                        " / ",
+                        AfterlifeSpiritualConflictState.SpiritualArts
+                            .Select(static art => art.DisplayName)
+                            .Append("Средоточие Души"))
                 },
                 new UiSelectionPrompt
                 {
@@ -2275,7 +2289,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             EntityType = "spiritual-arts-overview",
             Title = "Духовные искусства",
             Subtitle = "Прокачка и известные приёмы души",
-            Summary = "Здесь видно текущую духовную подготовку, обычные приёмы и особые искусства, которые уже открыты душе.",
+            Summary = "Боевые, защитные и целительные искусства души. Развитие каждого искусства открывает его собственные возможности.",
             Facts =
             [
                 new UiEntityFact { Label = "Просветление", Value = $"{GetNumberOrString(combatProfile, "enlightenmentTier", "0")} ступень" },
@@ -2298,14 +2312,14 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         new()
         {
             EntityType = "spiritual-arts-standard",
-            Title = "Стандартные духовные искусства",
-            Summary = "Базовые приёмы духовного боя. Уровни уменьшают стоимость и расширяют тактические возможности.",
+            Title = "Искусства",
+            Summary = "Боевые, защитные и целительные искусства души. Развитие каждого искусства открывает его собственные возможности.",
             Sections =
             [
                 new UiEntityDossierSection
                 {
                     Id = "standard-spiritual-arts",
-                    Title = "Приёмы",
+                    Title = "Искусства",
                     Icon = "sparkles",
                     Presentation = "cards",
                     CollectionLabel = $"{AfterlifeSpiritualConflictState.SpiritualArts.Count} искусств",
@@ -2313,7 +2327,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
                         .Select(art => new UiEntityCard
                         {
                             Title = DescribeArt(art.ArtId),
-                            Subtitle = "Стандартный приём духовного боя",
+                            Subtitle = DescribeStandardArtSubtitle(art.ArtId),
                             Icon = "sparkles",
                             Summary = DescribeStandardArtUse(art.ArtId),
                             Facts =
@@ -2405,7 +2419,7 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
         {
             EntityType = "spiritual-art-detail",
             Title = $"Духовное искусство: {DescribeArt(art.ArtId)}",
-            Subtitle = "стандартное духовное искусство",
+            Subtitle = DescribeStandardArtSubtitle(art.ArtId, "стандартное духовное искусство"),
             Summary = SafePlayerText(DescribeStandardArtUse(art.ArtId), "контекст сцены"),
             Facts =
             [
@@ -4346,7 +4360,29 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "incarnation_resistance" => "сопротивляется принудительному воплощению",
             "champion_coordination" => "помогает стороне, когда за душу действует чемпион",
             "recover_spiritual_power" => "собирает Средоточие и возвращает запас ОД",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "пассивно повышает стойкость души к духовным ранам; не требует отдельного действия и не расходует ОД. Не является отдельным боевым приёмом",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Диагностика и лечение духовных ран пока недоступны; искусство уже можно развивать. Правила искусства, когда лечение станет доступно: нулевая ступень предназначена для диагностики, ступени I–IV — для лечения ран не тяжелее освоенной ступени, ступень V — любых духовных ран",
             _ => "применяется по контексту духовного боя"
+        };
+
+    private static bool IsStandardWoundArt(string artId) =>
+        string.Equals(
+            artId,
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId,
+            StringComparison.OrdinalIgnoreCase) ||
+        string.Equals(
+            artId,
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId,
+            StringComparison.OrdinalIgnoreCase);
+
+    private static string DescribeStandardArtSubtitle(
+        string artId,
+        string fallback = "Стандартный приём духовного боя") =>
+        artId.Trim().ToLowerInvariant() switch
+        {
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Пассивное духовное искусство",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Целительное духовное искусство",
+            _ => fallback
         };
 
     private static string DescribeArtCost(string artId) =>
@@ -4362,6 +4398,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "incarnation_resistance" => "база 3 ОД, против принудительного воплощения",
             "champion_coordination" => "база 2 ОД, поддержка чемпиона",
             "recover_spiritual_power" => "восстанавливает ОД",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Пассивное действие, без затрат ОД",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Планируемое правило лечения: в бою база 5 ОД, обычное снижение по искусству, минимум 2 ОД; вне боя ОД не расходуются",
             _ => "стоимость зависит от аудита"
         };
 
@@ -4384,6 +4422,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "incarnation_resistance" => "принудительное воплощение",
             "champion_coordination" => "бой через союзника",
             "recover_spiritual_power" => "защита, ожидание",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "духовные раны и их последствия (пассивно; не отдельный приём)",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "не применяется: диагностика и лечение пока недоступны",
             _ => "контекст сцены"
         };
 
@@ -4400,6 +4440,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "incarnation_resistance" => "давление, силовое принуждение",
             "champion_coordination" => "давление на чемпиона",
             "recover_spiritual_power" => "давление, манёвр, оковы",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Не является отдельным боевым приёмом",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "рана тяжелее освоенной ступени; на нулевой ступени лечение недоступно",
             _ => "контекст сцены"
         };
 
@@ -4416,6 +4458,8 @@ public static class ExplorerAfterlifeCombatCommandResultBuilder
             "incarnation_resistance" => "Сопротивление воплощению",
             "champion_coordination" => "Координация чемпиона",
             "recover_spiritual_power" => "Собрать Средоточие",
+            AfterlifeSpiritualConflictState.SpiritualResilienceArtId => "Духовная стойкость",
+            AfterlifeSpiritualConflictState.SpiritualHealingArtId => "Духовное исцеление",
             _ => string.IsNullOrWhiteSpace(artId) ? "?" : artId
         };
 

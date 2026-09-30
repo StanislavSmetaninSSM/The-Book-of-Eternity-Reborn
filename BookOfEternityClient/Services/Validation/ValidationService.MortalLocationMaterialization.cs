@@ -28,42 +28,113 @@ public partial class ValidationService
         return issues;
     }
 
-    public async Task<IReadOnlyList<ValidationIssue>>
-        ValidateAcceptedTurnRawMortalLocationMaterializationAsync()
+    /// <summary>
+    /// Validates raw location files and their accepted-turn plan using ordinary identity allocation.
+    /// </summary>
+    /// <returns>
+    /// Raw location and plan validation issues without publishing canonical state.
+    /// </returns>
+    public Task<IReadOnlyList<ValidationIssue>>
+        ValidateAcceptedTurnRawMortalLocationMaterializationAsync() =>
+        ValidateAcceptedTurnRawMortalLocationMaterializationCoreAsync();
+
+    /// <summary>
+    /// Shares raw location admission between ordinary validation and private original intake.
+    /// </summary>
+    /// <param name="writeLease">
+    /// Existing real canonical lease, or <see langword="null"/> for ordinary read behavior.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Optional attempt factory; <see langword="null"/> retains ordinary location identity allocation.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Detached current draft for private original intake, or <see langword="null"/> for physical current reads.
+    /// </param>
+    /// <returns>
+    /// Raw location and accepted-plan validation issues.
+    /// </returns>
+    private async Task<IReadOnlyList<ValidationIssue>> ValidateAcceptedTurnRawMortalLocationMaterializationCoreAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        MortalLocationIdentityFactory? identityFactory = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
+        if (currentInputs != null && writeLease == null)
+            throw new InvalidOperationException("Original current inputs require a real canonical lease.");
         var issues = new List<ValidationIssue>();
         await ValidateAcceptedTurnRawMortalLocationFileAsync(
             MortalLocationMaterializationContract.CurrentLocationPath,
             validateCurrentLocation: true,
-            issues);
+            issues, writeLease, currentInputs);
         await ValidateAcceptedTurnRawMortalLocationFileAsync(
             MortalLocationMaterializationContract.WorldMapPath,
             validateCurrentLocation: false,
-            issues);
-        _ = await ValidateRawMortalLocationAcceptedTurnPlanAsync(issues);
+            issues, writeLease, currentInputs);
+        _ = await ValidateRawMortalLocationAcceptedTurnPlanAsync(
+            issues, writeLease, identityFactory, currentInputs);
         return issues;
     }
 
+    /// <summary>
+    /// Builds the raw location plan from authenticated original baselines and current candidate roots.
+    /// </summary>
+    /// <param name="issues">
+    /// Issue collection receiving admission and planner failures.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active real canonical lease, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Optional attempt factory; <see langword="null"/> selects ordinary cached allocation.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Detached current draft for private original intake, or <see langword="null"/> for physical current reads.
+    /// </param>
+    /// <returns>
+    /// The accepted location plan, or <see langword="null"/> when absent or invalid.
+    /// </returns>
     private async Task<MortalLocationAcceptedTurnPlan?>
         ValidateRawMortalLocationAcceptedTurnPlanAsync(
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        MortalLocationIdentityFactory? identityFactory = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
+        if (currentInputs != null && writeLease == null)
+            throw new InvalidOperationException("Original current inputs require a real canonical lease.");
         var currentRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.CurrentLocationPath);
+            MortalLocationMaterializationContract.CurrentLocationPath,
+            writeLease, currentInputs);
         var mapRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationMaterializationContract.WorldMapPath);
+            MortalLocationMaterializationContract.WorldMapPath,
+            writeLease, currentInputs);
         var indexRoot = await ReadOptionalLocationObjectAsync(
-            MortalLocationIdentityState.StatePath);
+            MortalLocationIdentityState.StatePath,
+            writeLease, currentInputs);
         var rawNpcCore = await ReadOptionalLocationObjectAsync(
-            NpcCoreChangesContract.NpcCorePath);
+            NpcCoreChangesContract.NpcCorePath,
+            writeLease, currentInputs);
         var rawFactionCore = await ReadOptionalLocationObjectAsync(
-            FactionCoreChangesContract.FactionCorePath);
+            FactionCoreChangesContract.FactionCorePath,
+            writeLease, currentInputs);
         var hasRawCommands = currentRoot?["currentLocationData"] is JsonObject ||
                              mapRoot?["worldMapUpdates"] is JsonObject;
 
-        var scaffoldJson = await _fs.ReadFileAsync(MortalBootstrapLocationScaffold.StatePath);
+        var scaffoldJson = await ReadMortalLocationValidationFileAsync(
+            MortalBootstrapLocationScaffold.StatePath,
+            writeLease, currentInputs);
 
-        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync();
+        var lookup = await LoadValidatedPendingTurnSnapshotLookupAsync(writeLease);
+        if (currentInputs != null && lookup.Manifest is { } originalManifest &&
+            !currentInputs.MatchesIdentity(originalManifest.SessionId, originalManifest.RequestId,
+                originalManifest.ManifestPayloadHash, originalManifest.TurnNumber))
+        {
+            issues.Add(LocationIssue(MortalLocationMaterializationContract.WorldMapPath,
+                "spiritual_original_input_identity_mismatch",
+                "Original location intake requires the exact validated physical snapshot.",
+                "the retained original session, request, snapshot and turn",
+                "validated lookup differs from the retained current draft"));
+            return null;
+        }
         if (lookup.Status != ValidatedPendingTurnSnapshotStatus.Usable ||
             lookup.Manifest == null)
         {
@@ -88,41 +159,51 @@ public partial class ValidationService
         var preMap = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationMaterializationContract.WorldMapPath));
+                MortalLocationMaterializationContract.WorldMapPath,
+                writeLease));
         var preCurrent = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationMaterializationContract.CurrentLocationPath));
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                writeLease));
         var preIndex = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationIdentityState.StatePath));
+                MortalLocationIdentityState.StatePath,
+                writeLease));
         var preStorageContents = ParseOptionalLocationObject(
             await ReadValidatedPendingTurnSnapshotFileAsync(
                 lookup.Manifest,
-                MortalLocationStorageContentsState.StatePath));
+                MortalLocationStorageContentsState.StatePath,
+                writeLease));
         var companionAuthority = MortalLocationCompanionAuthority.FromCanonicalRoots(
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.CodexPath)),
+                    MortalLocationCompanionAuthority.CodexPath,
+                    writeLease)),
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.RegularQuestsPath)),
+                    MortalLocationCompanionAuthority.RegularQuestsPath,
+                    writeLease)),
             ParseOptionalLocationObject(
                 await ReadValidatedPendingTurnSnapshotFileAsync(
                     lookup.Manifest,
-                    MortalLocationCompanionAuthority.WorldEventsPath)));
+                    MortalLocationCompanionAuthority.WorldEventsPath,
+                    writeLease)));
         var preScaffoldJson = await ReadValidatedPendingTurnSnapshotFileAsync(
             lookup.Manifest,
-            MortalBootstrapLocationScaffold.StatePath);
+            MortalBootstrapLocationScaffold.StatePath,
+            writeLease);
         ValidateRawMortalLocationCanonicalAuthority(
             MortalLocationMaterializationContract.WorldMapPath,
             preMap,
             mapRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.WorldMapPath),
-            _fs.FileExists(MortalLocationMaterializationContract.WorldMapPath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationMaterializationContract.WorldMapPath,
+                writeLease, currentInputs),
             "worldMapUpdates",
             "mortal_location:map",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -133,7 +214,9 @@ public partial class ValidationService
             preCurrent,
             currentRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationMaterializationContract.CurrentLocationPath),
-            _fs.FileExists(MortalLocationMaterializationContract.CurrentLocationPath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationMaterializationContract.CurrentLocationPath,
+                writeLease, currentInputs),
             "currentLocationData",
             "mortal_location:current",
             "mortal_location_canonical_state_client_owned_mutation",
@@ -144,7 +227,9 @@ public partial class ValidationService
             preIndex,
             indexRoot,
             lookup.Manifest.Files.ContainsKey(MortalLocationIdentityState.StatePath),
-            _fs.FileExists(MortalLocationIdentityState.StatePath),
+            FileExistsForMortalLocationValidation(
+                MortalLocationIdentityState.StatePath,
+                writeLease, currentInputs),
             rawWrapper: null,
             "mortal_location:index",
             "mortal_location_identity_index_client_owned_mutation",
@@ -225,7 +310,7 @@ public partial class ValidationService
                 rawNpcCore,
                 rawFactionCore,
                 preStorageContents,
-                MortalItemCurrentLocationCarrier.Select(currentRoot)));
+                MortalItemCurrentLocationCarrier.Select(currentRoot)), identityFactory);
         foreach (var issue in planningResult.Issues)
         {
             var contextual = AttachMortalLocationPlannerRepairContext(
@@ -512,8 +597,55 @@ public partial class ValidationService
         string EntityKind,
         string IdentityField);
 
-    private async Task<JsonObject?> ReadOptionalLocationObjectAsync(string path) =>
-        ParseOptionalLocationObject(await _fs.ReadFileAsync(path));
+    /// <summary>
+    /// Parses one optional current location root from the selected current-input source.
+    /// </summary>
+    /// <param name="path">
+    /// Exact current location path.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Parsed object, or <see langword="null"/> for an absent, blank or malformed root.
+    /// </returns>
+    private async Task<JsonObject?> ReadOptionalLocationObjectAsync(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        SpiritualOriginalDraftInputs? currentInputs = null) =>
+        ParseOptionalLocationObject(await ReadMortalLocationValidationFileAsync(
+            path,
+            writeLease, currentInputs));
+
+    /// <summary>
+    /// Checks the selected current location image for exact path presence.
+    /// </summary>
+    /// <param name="path">
+    /// Exact current location path.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical presence.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> if the selected image exists; otherwise, <see langword="false"/>.
+    /// </returns>
+    private bool FileExistsForMortalLocationValidation(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        SpiritualOriginalDraftInputs? currentInputs = null) =>
+        currentInputs != null
+            ? (writeLease != null
+                ? currentInputs.ReadImage(path).Existed
+                : throw new InvalidOperationException("Original current inputs require a real canonical lease."))
+            : writeLease == null
+            ? _fs.FileExists(path)
+            : _fs.FileExists(writeLease, path);
 
     private static JsonObject? ParseOptionalLocationObject(string? json)
     {
@@ -878,10 +1010,30 @@ public partial class ValidationService
             ? result
             : null;
 
+    /// <summary>
+    /// Reads one current location carrier from the retained view or ordinary filesystem.
+    /// </summary>
+    /// <param name="path">
+    /// Exact current carrier path.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Decoded text, or <see langword="null"/> when the selected carrier is absent.
+    /// </returns>
     private Task<string?> ReadMortalLocationValidationFileAsync(
         string path,
-        FileSystemManager.CanonicalWriteLease? writeLease) =>
-        writeLease == null
+        FileSystemManager.CanonicalWriteLease? writeLease,
+        SpiritualOriginalDraftInputs? currentInputs = null) =>
+        currentInputs != null
+            ? (writeLease != null
+                ? Task.FromResult(currentInputs.ReadText(path))
+                : throw new InvalidOperationException("Original current inputs require a real canonical lease."))
+            : writeLease == null
             ? _fs.ReadFileAsync(path)
             : _fs.ReadFileAsync(writeLease, path);
 
@@ -954,12 +1106,32 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Checks one raw location carrier using the selected canonical read lease.
+    /// </summary>
+    /// <param name="path">
+    /// Exact current-location or world-map logical path.
+    /// </param>
+    /// <param name="validateCurrentLocation">
+    /// Selects current-location validation when <see langword="true"/> and world-map validation when <see langword="false"/>.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable collection receiving malformed raw carrier issues.
+    /// </param>
+    /// <param name="writeLease">
+    /// Existing real canonical lease, or <see langword="null"/> for ordinary read behavior.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained original current draft, or <see langword="null"/> for ordinary physical reads.
+    /// </param>
     private async Task ValidateAcceptedTurnRawMortalLocationFileAsync(
         string path,
         bool validateCurrentLocation,
-        List<ValidationIssue> issues)
+        List<ValidationIssue> issues,
+        FileSystemManager.CanonicalWriteLease? writeLease = null,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = await ReadMortalLocationValidationFileAsync(path, writeLease, currentInputs);
         if (string.IsNullOrWhiteSpace(json))
             return;
 

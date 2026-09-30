@@ -375,30 +375,61 @@ internal static class NpcCoreChangesContract
 
     internal static async Task<Authority> ReadAuthorityAsync(FileSystemManager fs)
     {
+        ArgumentNullException.ThrowIfNull(fs);
+        return CreateAuthorityFromCanonicalJson(
+            await fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath),
+            await fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath),
+            await fs.ReadFileAsync("game_state/factions/faction_core.json"),
+            await fs.ReadFileAsync("game_state/misc/characteristics.json"));
+    }
+
+    internal static Authority CreateAuthorityFromCanonicalJson(
+        string? worldMapJson,
+        string? currentLocationJson,
+        string? factionCoreJson,
+        string? characteristicsJson)
+    {
         var permanentLocationIds = new HashSet<string>(StringComparer.Ordinal);
         var sameTurnLocationIds = new HashSet<string>(StringComparer.Ordinal);
-        await ReadExactLocationAuthorityAsync(
-            fs,
+        CollectExactLocationAuthority(
+            worldMapJson,
+            currentLocationJson,
             permanentLocationIds,
             sameTurnLocationIds);
 
         var factionNamesById = new Dictionary<string, string>(StringComparer.Ordinal);
-        var factionRoot = await ReadObjectAsync(fs, "game_state/factions/faction_core.json");
-        if (factionRoot != null)
-            CollectFactionAuthority(factionRoot, factionNamesById);
+        try
+        {
+            if (factionCoreJson is not null &&
+                JsonNode.Parse(factionCoreJson) is JsonObject factionRoot)
+            {
+                CollectFactionAuthority(factionRoot, factionNamesById);
+            }
+        }
+        catch (JsonException)
+        {
+            // Ordinary canonical validation owns malformed faction JSON.
+        }
 
         var characteristicKeys = new HashSet<string>(StringComparer.Ordinal);
-        var characteristicsRoot = await ReadObjectAsync(fs, "game_state/misc/characteristics.json");
-        if (characteristicsRoot != null)
+        try
         {
-            foreach (var property in characteristicsRoot)
+            if (characteristicsJson is not null &&
+                JsonNode.Parse(characteristicsJson) is JsonObject characteristicsRoot)
             {
-                if (!property.Key.StartsWith("_", StringComparison.Ordinal) &&
-                    property.Value is JsonValue)
+                foreach (var property in characteristicsRoot)
                 {
-                    characteristicKeys.Add(property.Key);
+                    if (!property.Key.StartsWith("_", StringComparison.Ordinal) &&
+                        property.Value is JsonValue)
+                    {
+                        characteristicKeys.Add(property.Key);
+                    }
                 }
             }
+        }
+        catch (JsonException)
+        {
+            // Ordinary canonical validation owns malformed characteristics JSON.
         }
 
         return new Authority(
@@ -1453,26 +1484,13 @@ internal static class NpcCoreChangesContract
             section: "NPCCoreChanges",
             repairHint: "Use one exact permanent NPCId and only the bounded NPCCoreChanges mutation groups; preserve every unrelated actor field.");
 
-    private static async Task<JsonObject?> ReadObjectAsync(FileSystemManager fs, string path)
-    {
-        try
-        {
-            var json = await fs.ReadFileAsync(path);
-            return string.IsNullOrWhiteSpace(json) ? null : JsonNode.Parse(json) as JsonObject;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    private static async Task ReadExactLocationAuthorityAsync(
-        FileSystemManager fs,
+    private static void CollectExactLocationAuthority(
+        string? worldMapJson,
+        string? currentJson,
         HashSet<string> permanentIds,
         HashSet<string> sameTurnIds)
     {
         var sameTurnCandidates = new List<string>();
-        var worldMapJson = await fs.ReadFileAsync(MortalLocationMaterializationContract.WorldMapPath);
         if (!string.IsNullOrWhiteSpace(worldMapJson))
         {
             try
@@ -1488,7 +1506,6 @@ internal static class NpcCoreChangesContract
             }
         }
 
-        var currentJson = await fs.ReadFileAsync(MortalLocationMaterializationContract.CurrentLocationPath);
         if (!string.IsNullOrWhiteSpace(currentJson))
         {
             try

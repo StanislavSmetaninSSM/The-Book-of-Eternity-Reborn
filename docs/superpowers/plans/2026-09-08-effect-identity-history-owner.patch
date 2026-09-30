@@ -1,0 +1,1026 @@
+*** Begin Patch
+*** Add File: BookOfEternityClient/Services/EffectIdentityHistoryOwner.cs
++using System.Text.Json.Nodes;
++
++namespace BookOfEternityClient.Services;
++
++internal enum EffectIdentityWriteKind
++{
++    CreateEntry,
++    AppendTransition,
++    InsertBeforeTransition
++}
++
++internal enum EffectIdentityAllocationKind
++{
++    Effect,
++    Transition,
++    Resolution
++}
++
++internal sealed record EffectIdentityAllocationReceipt(
++    long Ordinal,
++    EffectIdentityAllocationKind Kind,
++    string Identity);
++
++internal sealed record EffectIdentityWriteReceipt(
++    long Ordinal,
++    EffectIdentityWriteKind Kind,
++    string EffectId,
++    string? BeforeState,
++    string? AfterState,
++    string? AnchorTransitionId,
++    int? AnchorIndex,
++    string? AnchorJson,
++    string PayloadJson);
++
++internal sealed record EffectIdentityHistoryAnchor(
++    string EffectId,
++    string? TransitionId,
++    string TransitionJson);
++
++internal sealed class EffectIdentityReplacementAgreement
++{
++    private readonly EffectIdentityHistoryAnchor[] _anchors;
++
++    internal EffectIdentityReplacementAgreement(
++        string eventRef,
++        EffectReplayIdentity result,
++        EffectReplayIdentity? replaced,
++        long writeCount,
++        IEnumerable<EffectIdentityHistoryAnchor> anchors)
++    {
++        EventRef = eventRef;
++        Result = result;
++        Replaced = replaced;
++        WriteCount = writeCount;
++        _anchors = anchors.ToArray();
++    }
++
++    internal string EventRef { get; }
++    internal EffectReplayIdentity Result { get; }
++    internal EffectReplayIdentity? Replaced { get; }
++    internal long WriteCount { get; }
++    internal IReadOnlyList<EffectIdentityHistoryAnchor> Anchors =>
++        Array.AsReadOnly(_anchors.ToArray());
++}
++
++// Owns only identity history and the effect-factory call stream.
++// This is not a carrier/effect draft, source authority, or resumable turn.
++internal sealed class EffectIdentityHistoryOwner : IDisposable
++{
++    private readonly JsonObject _root;
++    private readonly string[] _baselineEffectIds;
++    private readonly string[] _baselineTransitionIds;
++    private readonly List<EffectIdentityWriteReceipt> _writes = new();
++    private readonly List<EffectIdentityAllocationReceipt> _allocations = new();
++    private readonly List<EffectIdentityReplacementAgreement> _agreements = new();
++    private bool _published;
++    private bool _disposed;
++    private bool _faulted;
++
++    internal EffectIdentityHistoryOwner(JsonObject baseline, EffectIdentityFactory factory)
++        : this(baseline, factory, Array.Empty<string>(), Array.Empty<string>())
++    {
++    }
++
++    internal EffectIdentityHistoryOwner(
++        JsonObject baseline,
++        EffectIdentityFactory factory,
++        IReadOnlyList<string> baselineEffectIds,
++        IReadOnlyList<string> baselineTransitionIds)
++    {
++        ArgumentNullException.ThrowIfNull(baseline);
++        ArgumentNullException.ThrowIfNull(factory);
++        ArgumentNullException.ThrowIfNull(baselineEffectIds);
++        ArgumentNullException.ThrowIfNull(baselineTransitionIds);
++        _root = baseline.DeepClone().AsObject();
++        _baselineEffectIds = baselineEffectIds.ToArray();
++        _baselineTransitionIds = baselineTransitionIds.ToArray();
++        Factory = new OwnedFactory(this, factory);
++    }
++
++    internal EffectIdentityFactory Factory { get; }
++    internal IReadOnlyList<string> AllocatedEffectIds => Array.AsReadOnly(_baselineEffectIds.Concat(
++        _allocations.Where(static value => value.Kind == EffectIdentityAllocationKind.Effect)
++            .Select(static value => value.Identity)).ToArray());
++    internal IReadOnlyList<string> AllocatedTransitionIds => Array.AsReadOnly(_baselineTransitionIds.Concat(
++        _allocations.Where(static value => value.Kind == EffectIdentityAllocationKind.Transition)
++            .Select(static value => value.Identity)).ToArray());
++    internal IReadOnlyList<EffectIdentityWriteReceipt> Writes => Array.AsReadOnly(_writes.ToArray());
++    internal IReadOnlyList<EffectIdentityAllocationReceipt> Allocations => Array.AsReadOnly(_allocations.ToArray());
++    internal IReadOnlyList<EffectIdentityReplacementAgreement> ReplacementAgreements =>
++        Array.AsReadOnly(_agreements.ToArray());
++
++    internal JsonObject ReadSnapshot()
++    {
++        EnsureNotDisposed();
++        return _root.DeepClone().AsObject();
++    }
++
++    internal IReadOnlyList<JsonObject> ReadEntries()
++    {
++        EnsureNotDisposed();
++        return Array.AsReadOnly(Entries().Select(static value => value.DeepClone().AsObject()).ToArray());
++    }
++
++    internal JsonObject[] FindEntries(string effectId)
++    {
++        EnsureNotDisposed();
++        return Matches(effectId).Select(static value => value.DeepClone().AsObject()).ToArray();
++    }
++
++    internal void CreateEntry(JsonObject entry)
++    {
++        EnsureMutable();
++        ArgumentNullException.ThrowIfNull(entry);
++        var owned = entry.DeepClone().AsObject();
++        _root["entries"]!.AsArray().Add(owned);
++        _writes.Add(new EffectIdentityWriteReceipt(
++            _writes.Count, EffectIdentityWriteKind.CreateEntry,
++            owned["effectId"]?.GetValue<string>() ?? string.Empty, null,
++            owned["state"]?.GetValue<string>(), null, null, null, owned.ToJsonString()));
++    }
++
++    internal bool TryAppendTransition(string effectId, string state, JsonObject transition)
++    {
++        EnsureMutable();
++        var matches = Matches(effectId).ToArray();
++        if (matches.Length != 1 || matches[0]["transitions"] is not JsonArray transitions)
++            return false;
++        var before = matches[0]["state"]?.GetValue<string>();
++        var owned = transition.DeepClone().AsObject();
++        matches[0]["state"] = state;
++        transitions.Add(owned);
++        _writes.Add(new EffectIdentityWriteReceipt(
++            _writes.Count, EffectIdentityWriteKind.AppendTransition,
++            effectId, before, state, null, null, null, owned.ToJsonString()));
++        return true;
++    }
++
++    // The caller supplies the exact last-transition position it just validated.
++    // Position plus payload preserves old late-validation behavior even if a
++    // deliberately colliding allocator has emitted duplicate transition IDs.
++    internal void InsertBeforeTransition(
++        string effectId, int anchorIndex, JsonObject expectedAnchor, JsonObject transition)
++    {
++        EnsureMutable();
++        var matches = Matches(effectId).ToArray();
++        if (matches.Length != 1 ||
++            matches[0]["transitions"] is not JsonArray transitions ||
++            anchorIndex < 0 || anchorIndex >= transitions.Count ||
++            transitions[anchorIndex] is not JsonObject anchor ||
++            !JsonNode.DeepEquals(anchor, expectedAnchor))
++        {
++            throw new InvalidOperationException("The validated identity-history insertion anchor changed.");
++        }
++        var state = matches[0]["state"]?.GetValue<string>();
++        var owned = transition.DeepClone().AsObject();
++        var anchorJson = anchor.ToJsonString();
++        var anchorId = anchor["transitionId"]?.GetValue<string>();
++        transitions.Insert(anchorIndex, owned);
++        _writes.Add(new EffectIdentityWriteReceipt(
++            _writes.Count, EffectIdentityWriteKind.InsertBeforeTransition,
++            effectId, state, state, anchorId, anchorIndex, anchorJson, owned.ToJsonString()));
++    }
++
++    // Called only after the existing exact replacement checks succeed.
++    // Retains their history anchors, not a caller-supplied validity flag.
++    internal void RetainReplacementAgreement(
++        string eventRef,
++        EffectReplayIdentity result,
++        EffectReplayIdentity? replaced,
++        string createEventRef,
++        string producerEffectId)
++    {
++        EnsureMutable();
++        var anchors = new List<EffectIdentityHistoryAnchor>();
++        anchors.Add(CaptureAnchor(result.EffectId, "create", createEventRef, producerEffectId, result.EffectId));
++        if (replaced != null)
++            anchors.Add(CaptureAnchor(replaced.EffectId, "replace", eventRef, replaced.EffectId, result.EffectId));
++        _agreements.Add(new EffectIdentityReplacementAgreement(
++            eventRef, result, replaced, _writes.Count, anchors));
++    }
++
++    internal JsonObject Publish()
++    {
++        EnsureMutable();
++        foreach (var agreement in _agreements)
++        {
++            foreach (var expected in agreement.Anchors)
++            {
++                var matches = Matches(expected.EffectId).ToArray();
++                if (matches.Length != 1 || matches[0]["transitions"] is not JsonArray transitions ||
++                    transitions.OfType<JsonObject>().Count(value =>
++                        string.Equals(value["transitionId"]?.GetValue<string>(),
++                            expected.TransitionId, StringComparison.Ordinal) &&
++                        JsonNode.DeepEquals(value, JsonNode.Parse(expected.TransitionJson))) != 1)
++                {
++                    throw new InvalidOperationException("An agreed replacement history anchor changed.");
++                }
++            }
++        }
++        _published = true;
++        return _root.DeepClone().AsObject();
++    }
++
++    public void Dispose() => _disposed = true;
++
++    private IEnumerable<JsonObject> Entries() =>
++        _root["entries"]?.AsArray().OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>();
++
++    private IEnumerable<JsonObject> Matches(string effectId) =>
++        Entries().Where(entry => string.Equals(
++            entry["effectId"]?.GetValue<string>(), effectId, StringComparison.Ordinal));
++
++    private EffectIdentityHistoryAnchor CaptureAnchor(
++        string effectId, string kind, string eventRef, string sourceEffectId, string resultEffectId)
++    {
++        // Match the existing authority dictionary's first-entry selection. A
++        // duplicate allocated effect ID must keep its existing diagnostic path.
++        var entry = Matches(effectId).First();
++        var candidates = entry["transitions"]!.AsArray().OfType<JsonObject>().Where(value =>
++            string.Equals(value["kind"]?.GetValue<string>(), kind, StringComparison.Ordinal) &&
++            string.Equals(value["eventRef"]?.GetValue<string>(), eventRef, StringComparison.Ordinal) &&
++            value["sourceEffectIds"] is JsonArray { Count: 1 } sources &&
++            string.Equals(sources[0]?.GetValue<string>(), sourceEffectId, StringComparison.Ordinal) &&
++            value["resultEffectIds"] is JsonArray { Count: 1 } results &&
++            string.Equals(results[0]?.GetValue<string>(), resultEffectId, StringComparison.Ordinal));
++        // The existing create check requires one match; replacement checks the
++        // last transition, not uniqueness among all historical replace payloads.
++        var transition = kind == "create" ? candidates.Single() : candidates.Last();
++        return new EffectIdentityHistoryAnchor(
++            effectId, transition["transitionId"]?.GetValue<string>(), transition.ToJsonString());
++    }
++
++    private string Allocate(EffectIdentityAllocationKind kind, Func<string> allocate)
++    {
++        EnsureMutable();
++        try
++        {
++            var identity = allocate();
++            _allocations.Add(new EffectIdentityAllocationReceipt(_allocations.Count, kind, identity));
++            return identity;
++        }
++        catch
++        {
++            _faulted = true;
++            throw;
++        }
++    }
++
++    private void EnsureNotDisposed()
++    {
++        if (_disposed)
++            throw new ObjectDisposedException(nameof(EffectIdentityHistoryOwner));
++    }
++
++    private void EnsureMutable()
++    {
++        EnsureNotDisposed();
++        if (_published || _faulted)
++            throw new InvalidOperationException("The identity-history owner is no longer writable.");
++    }
++
++    private sealed class OwnedFactory(
++        EffectIdentityHistoryOwner owner,
++        EffectIdentityFactory underlying) : EffectIdentityFactory
++    {
++        internal override string CreateEffectId() =>
++            owner.Allocate(EffectIdentityAllocationKind.Effect, underlying.CreateEffectId);
++        internal override string CreateTransitionId() =>
++            owner.Allocate(EffectIdentityAllocationKind.Transition, underlying.CreateTransitionId);
++        internal override string CreateResolutionId() =>
++            owner.Allocate(EffectIdentityAllocationKind.Resolution, underlying.CreateResolutionId);
++    }
++}
+*** Update File: BookOfEternityClient/Services/EffectAcceptedTurnPlanner.cs
+@@
+         }
+
+         var workspace = new CarrierWorkspace(plan.ResourceTriggerCarriers);
+-        var identityRoot = plan.IdentityIndexAfterImage;
+-        var identityState = ParseIdentity(identityRoot);
++        using var identityRoot = new EffectIdentityHistoryOwner(
++            plan.IdentityIndexAfterImage, identityFactory,
++            plan.AllocatedEffectIds, plan.AllocatedTransitionIds);
++        identityFactory = identityRoot.Factory;
++        var identityState = ParseIdentity(identityRoot.ReadSnapshot());
+         issues.AddRange(identityState.Issues);
+         if (identityState.State == null || issues.Count != 0)
+             return Failed(issues);
+@@
+                 plan.SourceAuthorityFingerprint,
+                 plan.TargetAuthorityFingerprint,
+                 plan.AllocatedCombatantIds,
+-                effectIds,
+-                transitionIds,
++                identityRoot.AllocatedEffectIds,
++                identityRoot.AllocatedTransitionIds,
+                 usedSources
+                     .Select(static entry => entry.Key)
+                     .Distinct()
+@@
+                 plan.CarrierBeforeImages,
+                 afterImages,
+                 plan.IdentityIndexBeforeImage,
+-                identityRoot,
++                identityRoot.Publish(),
+                 touchedPaths,
+                 plan.DeletedPaths,
+                 acceptedCarrierBaselines: plan.AcceptedCarrierBaselines,
+@@
+         var carrierCatalog = EffectCarrierCatalog.Build(carriers);
+         issues.AddRange(carrierCatalog.Issues);
+         var identityBeforeImage = input.PreTurnIdentityIndex?.DeepClone().AsObject();
+-        var identityRoot = identityBeforeImage?.DeepClone().AsObject() ?? EmptyIdentityIndex();
+-        var identityState = ParseIdentity(identityRoot);
++        using var identityRoot = new EffectIdentityHistoryOwner(identityBeforeImage ?? EmptyIdentityIndex(), identityFactory);
++        identityFactory = identityRoot.Factory;
++        var identityState = ParseIdentity(identityRoot.ReadSnapshot());
+         issues.AddRange(identityState.Issues);
+         if (issues.Count > 0)
+             return Failed(issues);
+@@
+         if (issues.Count > 0)
+             return Failed(issues);
+
+-        var reactionIdentityState = ParseIdentity(identityRoot);
++        var reactionIdentityState = ParseIdentity(identityRoot.ReadSnapshot());
+         issues.AddRange(reactionIdentityState.Issues);
+         var reactionCarrierCatalog = EffectCarrierCatalog.Build(workspace.ToInput());
+         issues.AddRange(reactionCarrierCatalog.Issues);
+@@
+                 input.SourceAuthority.CanonicalFingerprint,
+                 targetAuthority.CanonicalFingerprint,
+                 combatantIds,
+-                effectIds,
+-                transitionIds,
++                identityRoot.AllocatedEffectIds,
++                identityRoot.AllocatedTransitionIds,
+                 usedSources.Select(static item => item.Key).ToArray(),
+                 usedTargets,
+                 usedSources
+@@
+                 carrierBeforeImages,
+                 afterImages,
+                 identityBeforeImage,
+-                identityRoot,
++                identityRoot.Publish(),
+                 touchedPaths,
+                 new[] { EffectAcceptedTurnPlan.CommandPath },
+                 acceptedCarrierBaselines:
+@@
+         WoundTerminalRequest request,
+         CarrierWorkspace workspace,
+         EffectIdentityState identities,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         int turn,
+         List<string> transitionIds,
+@@
+         TerminalOperation operation,
+         CarrierWorkspace workspace,
+         EffectIdentityState identityState,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         int turn,
+         List<string> transitionIds,
+@@
+         string realm,
+         JsonObject eventInput,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         int turn,
+         List<string> effectIds,
+@@
+                 turn,
+                 createEventRef,
+                 provenance);
+-            identityRoot["entries"]!.AsArray().Add(identityEntry);
++            identityRoot.CreateEntry(identityEntry);
+             processedEventRefs.Add(application.EventRef);
+             var reactionResult = new ReactionApplicationResult(
+                 new EffectReplayIdentity(
+@@
+         JsonObject eventInput,
+         EffectSourceAuthority? sourceAuthority,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> transitionIds,
+         List<JsonObject> activeEffects,
+@@
+         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
+         JsonObject eventInput,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> effectIds,
+         List<string> transitionIds,
+@@
+
+     private static void AppendAcceptedTerminalAfterEarlierTerminal(
+         ReleasedEffectReaction released,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> transitionIds,
+         HashSet<string> processedEventRefs,
+@@
+             EffectReactionResultBehavior.Remove);
+         if (!isRemove)
+         {
+-            var entry = identityRoot["entries"]?.AsArray()
+-                .OfType<JsonObject>()
+-                .SingleOrDefault(candidate => string.Equals(
+-                    candidate["effectId"]?.GetValue<string>(),
+-                    reaction.EffectId,
+-                    StringComparison.Ordinal));
++            var entry = identityRoot.FindEntries(reaction.EffectId).SingleOrDefault();
+             if (entry?["transitions"] is not JsonArray transitions ||
+                 transitions.Count == 0)
+             {
+@@
+             }
+             var suspendTransitionId = identityFactory.CreateTransitionId();
+             transitionIds.Add(suspendTransitionId);
+-            transitions.Insert(
++            identityRoot.InsertBeforeTransition(
++                reaction.EffectId,
+                 transitions.Count - 1,
++                transitions[^1]!.AsObject(),
+                 CreateTransition(
+                     suspendTransitionId,
+                     "suspend",
+@@
+
+     private static bool HasAcceptedTerminalProjection(
+         ReleasedEffectReaction released,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         IReadOnlySet<string> processedEventRefs)
+     {
+         if (!processedEventRefs.Contains(
+@@
+         {
+             return false;
+         }
+-        var entries = identityRoot["entries"]?.AsArray()
+-            .OfType<JsonObject>()
+-            .Where(entry => string.Equals(
+-                entry["effectId"]?.GetValue<string>(),
+-                released.Reaction.EffectId,
+-                StringComparison.Ordinal))
+-            .ToArray() ?? Array.Empty<JsonObject>();
++        var entries = identityRoot.FindEntries(released.Reaction.EffectId);
+         if (entries.Length != 1)
+             return false;
+         return entries[0]["state"]?.GetValue<string>() is
+@@
+         string realm,
+         JsonObject eventInput,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> effectIds,
+         List<string> transitionIds,
+@@
+         EffectCarrierOccurrence occurrence,
+         EffectLifecycleEvent lifecycleEvent,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> transitionIds,
+         List<JsonObject> activeEffects,
+@@
+         int turn,
+         Dictionary<string, JsonObject> preReactionEffects,
+         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> transitionIds,
+         HashSet<string> processedEventRefs,
+         List<ValidationIssue> issues)
+     {
+-        var entries = identityRoot["entries"]?.AsArray()
+-            .OfType<JsonObject>()
+-            .Where(entry => string.Equals(
+-                entry["effectId"]?.GetValue<string>(),
+-                execution.EffectId,
+-                StringComparison.Ordinal))
+-            .ToArray() ?? Array.Empty<JsonObject>();
++        var entries = identityRoot.FindEntries(execution.EffectId);
+         if (entries.Length != 1 ||
+             !string.Equals(
+                 entries[0]["state"]?.GetValue<string>(),
+@@
+
+         var transitionId = identityFactory.CreateTransitionId();
+         transitionIds.Add(transitionId);
+-        transitions.Insert(
++        identityRoot.InsertBeforeTransition(
++            execution.EffectId,
+             transitions.Count - 1,
++            replacementTransition,
+             CreateTransition(
+                 transitionId,
+                 "consume",
+@@
+         IReadOnlyList<ReleasedEffectReaction> releasedReactions,
+         IReadOnlyDictionary<string, ReactionApplicationPlan> applicationPlans,
+         IReadOnlyDictionary<string, ReactionApplicationResult> applicationResults,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         List<ValidationIssue> issues)
+     {
+         var identityEntries = new Dictionary<string, JsonObject>(
+             StringComparer.Ordinal);
+-        foreach (var entry in identityRoot["entries"]?.AsArray()
+-                     .OfType<JsonObject>() ?? Enumerable.Empty<JsonObject>())
++        foreach (var entry in identityRoot.ReadEntries())
+         {
+             if (TryReadExact(entry["effectId"], out var effectId))
+                 identityEntries.TryAdd(effectId, entry);
+@@
+                       result.ResultIdentity,
+                       reaction.EventRef);
+             if (validExpectation && validCreate && validReplacement)
++            {
++                identityRoot.RetainReplacementAgreement(
++                    reaction.EventRef, result.ResultIdentity, expectedTarget, expectedCreateEventRef, reaction.EffectId);
+                 continue;
++            }
+             Add(
+                 issues,
+                 "effect.reactions",
+@@
+         EffectResourceTriggerExecution execution,
+         int turn,
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         EffectIdentityFactory identityFactory,
+         List<string> transitionIds,
+         List<JsonObject> activeEffects,
+@@
+             StringComparison.Ordinal);
+
+     private static void AppendIdentityTransition(
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         string effectId,
+         string state,
+         JsonObject transition,
+         List<ValidationIssue> issues)
+     {
+-        var matches = identityRoot["entries"]!.AsArray()
+-            .OfType<JsonObject>()
+-            .Where(entry => string.Equals(
+-                entry["effectId"]?.GetValue<string>(),
+-                effectId,
+-                StringComparison.Ordinal))
+-            .ToArray();
+-        if (matches.Length != 1 || matches[0]["transitions"] is not JsonArray transitions)
++        if (!identityRoot.TryAppendTransition(effectId, state, transition))
+         {
+             Add(
+                 issues,
+@@
+                 effectId);
+             return;
+         }
+-        matches[0]["state"] = state;
+-        transitions.Add(transition);
+     }
+
+     private static JsonObject CreateTransition(
+@@
+
+     private static void ValidateAfterImages(
+         CarrierWorkspace workspace,
+-        JsonObject identityRoot,
++        EffectIdentityHistoryOwner identityRoot,
+         IReadOnlyList<JsonObject> activeEffects,
+         List<ValidationIssue> issues)
+     {
+@@
+                     EffectMaterializationPhase.CanonicalActive));
+         }
+         issues.AddRange(EffectCarrierCatalog.Build(workspace.ToInput()).Issues);
+-        issues.AddRange(ParseIdentity(identityRoot).Issues);
++        issues.AddRange(ParseIdentity(identityRoot.ReadSnapshot()).Issues);
+     }
+
+     private static void ValidateRoot(JsonObject root, List<ValidationIssue> issues)
+*** Add File: BookOfEternityClient.Tests/EffectAcceptedTurnPlannerTests.IdentityHistoryOwner.cs
++using System.Reflection;
++using System.Text.Json;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class EffectAcceptedTurnPlannerTests
++{
++    [Fact]
++    public void IdentityHistoryOwner_ContractRedStartsWithRealConsumingReplacement()
++    {
++        var production = IdentityOwnerReplacement();
++        Assert.True(production.Result.Success, IdentityOwnerIssues(production.Result));
++        var plan = Assert.IsType<EffectAcceptedTurnPlan>(production.Result.Plan);
++        var old = plan.IdentityIndexAfterImage["entries"]!.AsArray().OfType<JsonObject>()
++            .Single(value => value["effectId"]!.GetValue<string>() == production.OldId);
++        Assert.Equal(new[] { "consume", "replace" },
++            old["transitions"]!.AsArray().TakeLast(2).Select(value => value!["kind"]!.GetValue<string>()));
++        Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, production.Factory.Kinds);
++
++        var type = typeof(EffectAcceptedTurnPlanner).Assembly.GetType(
++            "BookOfEternityClient.Services.EffectIdentityHistoryOwner");
++        Assert.NotNull(type); // First semantic RED only after old real production succeeds.
++        var constructor = type!.GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,
++            null, new[] { typeof(JsonObject), typeof(EffectIdentityFactory) }, null);
++        Assert.NotNull(constructor);
++        using var owner = Assert.IsAssignableFrom<IDisposable>(
++            constructor!.Invoke(new object[] { plan.IdentityIndexAfterImage, new IdentityOwnerFactory() }));
++        var publish = type.GetMethod("Publish", BindingFlags.Instance | BindingFlags.NonPublic);
++        Assert.NotNull(publish);
++        var image = Assert.IsType<JsonObject>(publish!.Invoke(owner, null));
++        Assert.True(JsonNode.DeepEquals(plan.IdentityIndexAfterImage, image));
++    }
++
++    [Theory]
++    [InlineData(false, 3)]
++    [InlineData(true, 1)]
++    [InlineData(true, 2)]
++    public void IdentityHistoryOwner_ProductionReplacementKeepsAllocationAndCanonicalOrder(
++        bool consumes, int uses)
++    {
++        var first = IdentityOwnerReplacement(consumes, uses);
++        var second = IdentityOwnerReplacement(consumes, uses);
++        Assert.True(first.Result.Success, IdentityOwnerIssues(first.Result));
++        Assert.True(second.Result.Success, IdentityOwnerIssues(second.Result));
++        var plan = first.Result.Plan!;
++        var other = second.Result.Plan!;
++        Assert.Equal(plan.IdentityIndexAfterImage.ToJsonString(), other.IdentityIndexAfterImage.ToJsonString());
++        Assert.Equal(plan.ResourceTriggerCarriers.PlayerEffects!.ToJsonString(),
++            other.ResourceTriggerCarriers.PlayerEffects!.ToJsonString());
++        Assert.Equal(plan.AllocatedEffectIds, other.AllocatedEffectIds);
++        Assert.Equal(plan.AllocatedTransitionIds, other.AllocatedTransitionIds);
++        Assert.Equal(first.Factory.Ids, second.Factory.Ids);
++        Assert.Equal(consumes
++            ? new[] { "effect", "transition", "transition", "transition" }
++            : new[] { "transition", "effect", "transition", "transition" }, first.Factory.Kinds);
++        var old = plan.IdentityIndexAfterImage["entries"]!.AsArray().OfType<JsonObject>()
++            .Single(value => value["effectId"]!.GetValue<string>() == first.OldId);
++        Assert.Equal(consumes ? new[] { "consume", "replace" } : new[] { "trigger", "replace" },
++            old["transitions"]!.AsArray().TakeLast(2).Select(value => value!["kind"]!.GetValue<string>()));
++        Assert.Equal(consumes ? first.Factory.Ids[3] : first.Factory.Ids[0],
++            old["transitions"]!.AsArray()[^2]!["transitionId"]!.GetValue<string>());
++        Assert.Equal(consumes ? first.Factory.Ids[1] : first.Factory.Ids[2],
++            old["transitions"]!.AsArray()[^1]!["transitionId"]!.GetValue<string>());
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_WritesExactAnchorsAndRetainsAgreementAcrossLaterExpiry()
++    {
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
++        var baseline = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
++        var oldId = effect["effectId"]!.GetValue<string>();
++        var factory = new IdentityOwnerFactory();
++        using var owner = new EffectIdentityHistoryOwner(baseline, factory);
++        var childId = owner.Factory.CreateEffectId();
++        var replace = IdentityOwnerTransition(owner.Factory.CreateTransitionId(), "replace",
++            "turn_42:identity_owner:replace", oldId, childId);
++        var createRef = EffectAcceptedTurnPlanner.CreateApplicationTransitionEventRef(
++            "turn_42:identity_owner:replace", "replacement_result_create");
++        var create = IdentityOwnerTransition(owner.Factory.CreateTransitionId(), "create", createRef, oldId, childId);
++        Assert.True(owner.TryAppendTransition(oldId, "replaced", replace));
++        var childEntry = baseline["entries"]![0]!.DeepClone().AsObject();
++        childEntry["effectId"] = childId;
++        childEntry["state"] = "active";
++        childEntry["createdAtTurn"] = 42;
++        childEntry["transitions"] = new JsonArray(create.DeepClone());
++        owner.CreateEntry(childEntry);
++        var child = new EffectReplayIdentity(childId,
++            new ResourcePendingAuthorityBinding("accepted_application", createRef));
++        var old = new EffectReplayIdentity(oldId, new ResourcePendingAuthorityBinding("permanent", oldId));
++        owner.RetainReplacementAgreement("turn_42:identity_owner:replace", child, old, createRef, oldId);
++        var point = Assert.Single(owner.ReplacementAgreements);
++        Assert.Equal(2, point.WriteCount);
++        Assert.Equal(2, point.Anchors.Count);
++
++        var before = Assert.Single(owner.FindEntries(oldId));
++        var consume = IdentityOwnerTransition(owner.Factory.CreateTransitionId(), "consume",
++            "turn_42:identity_owner:consume", oldId, oldId);
++        var anchorIndex = before["transitions"]!.AsArray().Count - 1;
++        owner.InsertBeforeTransition(oldId, anchorIndex, replace, consume);
++        var expire = IdentityOwnerTransition(owner.Factory.CreateTransitionId(), "expire",
++            "turn_42:identity_owner:expiry", childId);
++        Assert.True(owner.TryAppendTransition(childId, "expired", expire));
++        var insertion = owner.Writes.Single(value => value.Kind == EffectIdentityWriteKind.InsertBeforeTransition);
++        Assert.Equal(replace["transitionId"]!.GetValue<string>(), insertion.AnchorTransitionId);
++        Assert.Equal(anchorIndex, insertion.AnchorIndex);
++        Assert.True(JsonNode.DeepEquals(replace, JsonNode.Parse(insertion.AnchorJson!)));
++        Assert.True(JsonNode.DeepEquals(consume, JsonNode.Parse(insertion.PayloadJson)));
++        Assert.Equal("replaced", insertion.BeforeState);
++        Assert.Equal(insertion.BeforeState, insertion.AfterState);
++        var published = owner.Publish();
++        var entries = published["entries"]!.AsArray().OfType<JsonObject>().ToArray();
++        var oldAfter = entries.Single(value => value["effectId"]!.GetValue<string>() == oldId);
++        Assert.Equal(new[] { "consume", "replace" },
++            oldAfter["transitions"]!.AsArray().TakeLast(2).Select(value => value!["kind"]!.GetValue<string>()));
++        Assert.Equal("expired", entries.Single(value => value["effectId"]!.GetValue<string>() == childId)["state"]!.GetValue<string>());
++        Assert.Equal(factory.Ids, owner.Allocations.Select(value => value.Identity));
++        Assert.Equal(new long[] { 0, 1, 2, 3 }, owner.Writes.Select(value => value.Ordinal));
++        Assert.Equal(2, point.WriteCount); // the point-in-time assertion was not silently moved to final state
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_CloneIsolationAndOnePublication()
++    {
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
++        var baseline = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
++        var expected = baseline.ToJsonString();
++        using var owner = new EffectIdentityHistoryOwner(baseline, new IdentityOwnerFactory());
++        baseline["entries"]!.AsArray().Clear();
++        owner.ReadSnapshot()["entries"]!.AsArray().Clear();
++        Assert.Single(owner.ReadEntries())["state"] = "changed_outside_owner";
++        Assert.Single(owner.FindEntries(effect["effectId"]!.GetValue<string>()))["state"] = "changed_again";
++        Assert.Equal(expected, owner.ReadSnapshot().ToJsonString());
++        var published = owner.Publish();
++        Assert.Equal(expected, published.ToJsonString());
++        published["entries"]!.AsArray().Clear();
++        Assert.Equal(expected, owner.ReadSnapshot().ToJsonString());
++        Assert.Throws<InvalidOperationException>(() => owner.Publish());
++        Assert.Throws<InvalidOperationException>(() => owner.Factory.CreateEffectId());
++        owner.Dispose();
++        owner.Dispose();
++        Assert.Throws<ObjectDisposedException>(() => owner.ReadSnapshot());
++        Assert.Throws<ObjectDisposedException>(() => owner.Factory.CreateTransitionId());
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_RejectsChangedAnchorWithoutWriting()
++    {
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
++        var baseline = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
++        var id = effect["effectId"]!.GetValue<string>();
++        using var owner = new EffectIdentityHistoryOwner(baseline, new IdentityOwnerFactory());
++        var before = owner.ReadSnapshot().ToJsonString();
++        var anchor = baseline["entries"]![0]!["transitions"]![0]!.DeepClone().AsObject();
++        anchor["eventRef"] = "turn_42:wrong_anchor";
++        Assert.Throws<InvalidOperationException>(() => owner.InsertBeforeTransition(id, 0, anchor,
++            IdentityOwnerTransition("effect_transition_rejected", "consume", "turn_42:consume", id, id)));
++        Assert.Empty(owner.Writes);
++        Assert.Equal(before, owner.ReadSnapshot().ToJsonString());
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_MissingAppendTargetPreservesOwnerAndExistingDiagnosticRoute()
++    {
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect();
++        var baseline = EffectMaterializationTestFixture.CreateIdentityIndex(effect);
++        using var owner = new EffectIdentityHistoryOwner(baseline, new IdentityOwnerFactory());
++        Assert.False(owner.TryAppendTransition("effect_missing", "active",
++            IdentityOwnerTransition("effect_transition_missing", "trigger", "turn_42:missing",
++                "effect_missing", "effect_missing")));
++        Assert.Empty(owner.Writes);
++        Assert.True(JsonNode.DeepEquals(baseline, owner.Publish()));
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_AllocatorFailureCannotPublishOrAllocateAgain()
++    {
++        using var owner = new EffectIdentityHistoryOwner(
++            EffectMaterializationTestFixture.CreateIdentityIndex(),
++            new IdentityOwnerThrowingFactory());
++        Assert.Throws<IOException>(() => owner.Factory.CreateTransitionId());
++        Assert.Empty(owner.Allocations);
++        Assert.Empty(owner.Writes);
++        Assert.Throws<InvalidOperationException>(() => owner.Publish());
++        Assert.Throws<InvalidOperationException>(() => owner.Factory.CreateEffectId());
++    }
++
++    [Fact]
++    public void IdentityHistoryOwner_RealAllocatorCollisionRemainsValidationFailure()
++    {
++        var result = IdentityOwnerReplacement(collideTransitions: true);
++        Assert.False(result.Result.Success);
++        Assert.Null(result.Result.Plan);
++        Assert.Contains(result.Result.Issues, value => value.Code == "effect_identity_duplicate_transition");
++        Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, result.Factory.Kinds);
++    }
++
++    [Theory]
++    [InlineData(null)]
++    [InlineData("")]
++    [InlineData(" ")]
++    public void IdentityHistoryOwner_MalformedReplacementTransitionKeepsFinalValidation(string? transitionId)
++    {
++        var result = IdentityOwnerReplacement(
++            malformedReplacementTransition: true, replacementTransitionId: transitionId);
++        Assert.False(result.Result.Success);
++        Assert.Null(result.Result.Plan);
++        Assert.Contains(result.Result.Issues, value => value.Code == "effect_identity_invalid_field");
++        Assert.DoesNotContain(result.Result.Issues,
++            value => value.Code == "effect_reaction_replacement_authority_invalid");
++        Assert.Equal(new[] { "effect", "transition", "transition", "transition" }, result.Factory.Kinds);
++    }
++
++    private static (EffectAcceptedTurnPlanningResult Result, IdentityOwnerFactory Factory, string OldId)
++        IdentityOwnerReplacement(bool consumes = true, int uses = 2, bool collideTransitions = false,
++            bool malformedReplacementTransition = false, string? replacementTransitionId = null)
++    {
++        const string rootKey = "identity_owner_reaction_root";
++        const string childKey = "identity_owner_replacement";
++        const string stackKey = "identity-owner-replacement";
++        var root = EffectMaterializationTestFixture.CreateDefinition("event_reaction");
++        root["definitionKey"] = rootKey;
++        root["stacking"]!["stackKey"] = stackKey;
++        root["components"]![0]!["payload"]!["resultKind"] = "apply_definition";
++        root["components"]![0]!["payload"]!["definitionKey"] = childKey;
++        root["components"]![0]!["payload"]!["parameters"] = new JsonObject { ["amount"] = 3 };
++        root["components"]![0]!["payload"]!["maxExpansion"] = 2;
++        var child = EffectMaterializationTestFixture.CreateDefinition();
++        child["definitionKey"] = childKey;
++        child["stacking"]!["stackKey"] = stackKey;
++        child["stacking"]!["policy"] = "replace";
++        child["stacking"]!["maxStacks"] = 1;
++        child["stacking"]!["atMaximum"] = "no_change";
++        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(profile: "event_reaction");
++        effect["source"]!["definitionKey"] = rootKey;
++        effect["stacking"]!["stackKey"] = stackKey;
++        if (consumes)
++        {
++            root["triggers"]![0]!["consumeUses"] = true;
++            root["lifetime"] = new JsonObject
++            {
++                ["mode"] = "uses", ["initialUses"] = uses,
++                ["consumingEventTypes"] = new JsonArray("owner_damaged")
++            };
++            effect["lifetime"] = new JsonObject
++            {
++                ["mode"] = "uses", ["remainingUses"] = uses,
++                ["consumingTriggerIds"] = new JsonArray("on_owner_damaged"),
++                ["displayText"] = "Accepted uses remain"
++            };
++        }
++        effect["components"] = root["components"]!.DeepClone();
++        effect["triggers"] = root["triggers"]!.DeepClone();
++        var input = CreateReactionInput(effect, root, child);
++        var factory = new IdentityOwnerFactory(
++            collideTransitions, malformedReplacementTransition, replacementTransitionId);
++        var built = new EffectAcceptedTurnPlanCache(factory).GetOrBuild(input);
++        Assert.True(built.Success, IdentityOwnerIssues(built));
++        var plan = Assert.IsType<EffectAcceptedTurnPlan>(built.Plan);
++        Assert.Empty(factory.Ids);
++        var definitions = ResourceDefinitionCatalog.CreateBuiltIn();
++        var due = EffectAcceptedTurnPlanner.ResolveDuePeriodicResourceMutations(
++            plan, ResourceOwnerAuthority.CreateCurrentPlayerAuthority(definitions), definitions);
++        Assert.Empty(due.Issues);
++        var bootstrap = ResourceBootstrapStateBuilder.BuildPristine();
++        Assert.True(bootstrap.IsValid);
++        var sources = ResourceMutationSourceCatalog.Create(due.SourceExports);
++        Assert.True(sources.IsValid);
++        var resources = AcceptedMechanicsPlanner.BuildResources(new AcceptedMechanicsResourceInput(
++            Turn: 42, Definitions: bootstrap.Definitions!, State: bootstrap.State!, History: bootstrap.History!,
++            Sources: sources.Catalog!, Mutations: due.Mutations,
++            InitialTriggerCandidates: due.TriggerCandidates, InitialEffectResolutionWork: due.Work,
++            EffectPlanAuthority: AcceptedMechanicsPlanner.CreateEffectPlanAuthority(plan)),
++            new AcceptedMechanicsIdentityFactory());
++        Assert.True(resources.IsValid, string.Join(Environment.NewLine, resources.Issues));
++        Assert.Single(resources.EffectBoundaryTranscript.AcceptedActivations);
++        Assert.Single(resources.EffectBoundaryTranscript.ReleasedReactions);
++        return (EffectAcceptedTurnPlanner.CompleteAcceptedBoundaryTranscript(
++            plan, resources.EffectBoundaryTranscript, factory), factory, effect["effectId"]!.GetValue<string>());
++    }
++
++    private static JsonObject IdentityOwnerTransition(
++        string id, string kind, string eventRef, string source, params string[] results) =>
++        new()
++        {
++            ["transitionId"] = id, ["kind"] = kind, ["turn"] = 42, ["eventRef"] = eventRef,
++            ["sourceEffectIds"] = new JsonArray(JsonValue.Create(source)),
++            ["resultEffectIds"] = new JsonArray(results.Select(value => (JsonNode)JsonValue.Create(value)!).ToArray()),
++            ["receiptId"] = null
++        };
++
++    private static string IdentityOwnerIssues(EffectAcceptedTurnPlanningResult result) =>
++        string.Join(Environment.NewLine, result.Issues.Select(value => value.Code + ": " + value.Actual));
++
++    private sealed class IdentityOwnerFactory(bool collideTransitions = false,
++        bool malformedReplacementTransition = false, string? replacementTransitionId = null) : EffectIdentityFactory
++    {
++        internal List<string> Ids { get; } = new();
++        internal List<string> Kinds { get; } = new();
++        private int _effects;
++        private int _transitions;
++        internal override string CreateEffectId()
++        {
++            var id = "effect_identity_owner_" + ++_effects;
++            Kinds.Add("effect"); Ids.Add(id); return id;
++        }
++        internal override string CreateTransitionId()
++        {
++            _transitions++;
++            var id = "effect_transition_identity_owner_" + (collideTransitions ? 1 : _transitions);
++            if (malformedReplacementTransition && _transitions == 1)
++                id = replacementTransitionId!;
++            Kinds.Add("transition"); Ids.Add(id); return id;
++        }
++    }
++
++    private sealed class IdentityOwnerThrowingFactory : EffectIdentityFactory
++    {
++        internal override string CreateTransitionId() => throw new IOException("scripted allocator failure");
++    }
++}
+*** Update File: BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.cs
+@@
++    [Fact]
++    public void IdentityHistoryOwner_TwoConsumingDuplicateChildrenKeepReplacementAuthorityFailure()
++    {
++        const string childKey = "identity_owner_collision_replacement";
++        var child = EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
++        child["definitionKey"] = childKey;
++        child["stacking"]!["policy"] = "replace";
++        child["stacking"]!["maxStacks"] = 1;
++        child["stacking"]!["atMaximum"] = "no_change";
++        var fixture = CreateAcceptedEventBudgetFixture(
++            remainingUses: 2,
++            current: 10m,
++            reactionResultKind: "apply_definition",
++            applyDefinitionSource: child,
++            distinctReactionPerTrigger: true,
++            triggerSpecs: new[]
++            {
++                new BudgetTriggerSpec("trigger_budget_replace_10_first", "resource_damaged",
++                    Priority: 10, IncludePeriodic: false, IncludeReaction: true),
++                new BudgetTriggerSpec("trigger_budget_replace_20_second", "resource_damaged",
++                    Priority: 20, IncludePeriodic: false, IncludeReaction: true)
++            });
++        var damage = CreateBudgetMutation(fixture.Coordinate,
++            "turn_43:budget:identity_owner_duplicate_children", ResourceOperation.Damage, amount: 2m);
++        var factory = new IdentityOwnerDuplicateChildFactory();
++        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { damage }, factory);
++        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
++        var transcript = result.Resources.EffectBoundaryTranscript;
++        var accepted = transcript.AcceptedActivations
++            .OrderBy(value => value.Activation.Stamp.ActivationOrdinal).ToArray();
++        Assert.Equal(2, accepted.Length);
++        Assert.Single(accepted.Select(value => value.Boundary.BoundaryOrdinal).Distinct());
++        Assert.Equal(new int?[] { 2, 1 }, accepted.Select(value => value.Activation.Stamp.UsesBefore));
++        var releases = transcript.ReleasedReactions.OrderBy(value => value.MechanicsOrdinal).ToArray();
++        Assert.Equal(2, releases.Length);
++        Assert.All(releases, release =>
++        {
++            Assert.Equal("apply_definition", release.Reaction.ResultKind);
++            Assert.Equal(childKey, release.Reaction.DownstreamSourceKey?.DefinitionKey);
++        });
++        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(result.Finalized);
++        Assert.False(finalized.Success);
++        Assert.Null(finalized.Plan);
++        var issue = Assert.Single(finalized.Issues);
++        Assert.Equal("effect_reaction_replacement_authority_invalid", issue.Code);
++        Assert.Equal(releases[1].Reaction.EventRef, issue.Actual);
++        // First release passed agreement; second failed there. No consume allocation
++        // or final canonical validation occurred, and no writer exception escaped.
++        Assert.Equal(new[] { "effect", "transition", "transition", "effect", "transition", "transition" },
++            factory.Kinds);
++        Assert.Equal(new[] { "effect_identity_owner_duplicate_child", "effect_identity_owner_duplicate_child" },
++            factory.EffectIds);
++    }
++
++    private sealed class IdentityOwnerDuplicateChildFactory : EffectIdentityFactory
++    {
++        internal List<string> Kinds { get; } = new();
++        internal List<string> EffectIds { get; } = new();
++        private int _transitions;
++        internal override string CreateEffectId()
++        {
++            const string id = "effect_identity_owner_duplicate_child";
++            Kinds.Add("effect");
++            EffectIds.Add(id);
++            return id;
++        }
++        internal override string CreateTransitionId()
++        {
++            Kinds.Add("transition");
++            return "effect_transition_identity_owner_duplicate_child_" + ++_transitions;
++        }
++    }
++
+     [Fact]
+     public void AcceptedBoundary_TwoConsumingSameStackReplacementsRecordBothUsesBeforeOriginalReplace()
+*** End Patch

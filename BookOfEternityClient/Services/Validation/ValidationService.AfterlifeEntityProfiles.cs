@@ -527,6 +527,21 @@ public partial class ValidationService
         if (!TryRequireProfileObject(profile, context, "standardArts", "afterlife_entity_profile_missing_standard_arts", issues, out var standardArts))
             return;
 
+        foreach (var requiredArtId in AfterlifeSpiritualConflictState.RequiredWoundArtIds)
+        {
+            if (standardArts.TryGetProperty(requiredArtId, out _))
+                continue;
+
+            issues.Add(new ValidationIssue(
+                $"{context}.standardArts.{requiredArtId}",
+                IssueSeverity.Error,
+                "Профиль должен явно содержать тир духовной стойкости и духовного исцеления.",
+                code: "afterlife_entity_profile_missing_standard_art_tier",
+                section: "AfterlifeEntityProfiles",
+                expected: "integer 0..5",
+                actual: "missing"));
+        }
+
         foreach (var property in standardArts.EnumerateObject())
         {
             if (!AfterlifeEntityProfileState.StandardArtIds.Contains(property.Name))
@@ -2360,7 +2375,31 @@ public partial class ValidationService
     private static string BuildAfterlifeActorQuestLink(string goalId, string questId) =>
         $"{goalId.Trim()}::{questId.Trim()}";
 
-    private void ValidateAfterlifeProfileSpecialArts(
+    /// <summary>
+    /// Validates special-art payloads against their containing owner and the selected original/current policy.
+    /// </summary>
+    /// <param name="profile">
+    /// Profile projection containing the required specialArts array.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path for the containing profile.
+    /// </param>
+    /// <param name="profileActorType">
+    /// Expected owner type; a missing value cannot match a populated art owner.
+    /// </param>
+    /// <param name="profileActorId">
+    /// Expected owner identifier; a missing value cannot match a populated art owner.
+    /// </param>
+    /// <param name="effectRealm">
+    /// Realm used to validate embedded active-effect definitions.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable destination for validation diagnostics.
+    /// </param>
+    /// <param name="requireCurrentSpecialArtCombatEffect">
+    /// Whether teachable arts require the current combat-effect field; defaults to original-art rules.
+    /// </param>
+    private static void ValidateAfterlifeProfileSpecialArts(
         JsonElement profile,
         string context,
         string? profileActorType,
@@ -2395,6 +2434,15 @@ public partial class ValidationService
                 artContext,
                 effectRealm,
                 issues);
+            if (!SpiritualWoundSourceEnvelope.TryRead(art, out _, out var envelopeError))
+                issues.Add(new ValidationIssue(
+                    artContext + "." + SpiritualWoundSourceEnvelope.Property,
+                    IssueSeverity.Error,
+                    "Особое духовное искусство должно иметь точную исходную декларацию раны.",
+                    code: "afterlife_entity_profile_spiritual_wound_envelope_invalid",
+                    section: "AfterlifeEntityProfiles",
+                    expected: "closed spiritualWoundEnvelope v1 or absent",
+                    actual: envelopeError));
 
             var artId = RequireProfileString(art, artContext, "artId", "afterlife_entity_profile_special_art_missing_id", issues);
             if (!string.IsNullOrWhiteSpace(artId) && !ids.Add(artId))
@@ -3203,7 +3251,31 @@ public partial class ValidationService
         return false;
     }
 
-    private bool TryRequireProfileArray(
+    /// <summary>
+    /// Reads a required array property and reports missing or nonarray values.
+    /// </summary>
+    /// <param name="root">
+    /// Containing profile object.
+    /// </param>
+    /// <param name="context">
+    /// Diagnostic path for the containing object.
+    /// </param>
+    /// <param name="propertyName">
+    /// Exact required array property name.
+    /// </param>
+    /// <param name="code">
+    /// Diagnostic code used for missing or incorrectly typed values.
+    /// </param>
+    /// <param name="issues">
+    /// Mutable diagnostic destination.
+    /// </param>
+    /// <param name="value">
+    /// Array on success; the default element when the property is absent or not an array.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the property is an array; otherwise <see langword="false"/>.
+    /// </returns>
+    private static bool TryRequireProfileArray(
         JsonElement root,
         string context,
         string propertyName,

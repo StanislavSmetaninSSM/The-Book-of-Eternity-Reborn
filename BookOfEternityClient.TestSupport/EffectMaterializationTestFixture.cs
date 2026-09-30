@@ -10,6 +10,32 @@ internal static class EffectMaterializationTestFixture
     internal const string CombatantRef = "combatant_ref_test_raider";
     internal const string CombatantId = "combatant_test_raider";
 
+    internal static JsonObject CreateBroadRollModifierPayload(
+        string contribution,
+        params string[] operations)
+    {
+        ArgumentNullException.ThrowIfNull(operations);
+        return CreateRollModifierPayload(
+            contribution,
+            operations,
+            new JsonObject { ["kind"] = "all" });
+    }
+
+    internal static JsonObject CreateFocusedRollModifierPayload(
+        string skillId,
+        string contribution = "disadvantage")
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(skillId);
+        return CreateRollModifierPayload(
+            contribution,
+            new[] { "skill_check" },
+            new JsonObject
+            {
+                ["kind"] = "skill",
+                ["skillId"] = skillId
+            });
+    }
+
     internal static JsonObject CreateDefinition(string profile = "periodic_damage")
     {
         var isAfterlifeCondition = string.Equals(
@@ -64,6 +90,51 @@ internal static class EffectMaterializationTestFixture
             ["removal"] = CreateRemoval(),
             ["links"] = CreateLinks(profile)
         };
+    }
+
+    internal static JsonObject CreateSpiritualWoundDefinition(
+        string profile,
+        string targetKind = "guardian",
+        string realm = "chaos_sea",
+        string woundId = "wound_spiritual_test",
+        string definitionKey = "definition_spiritual_wound_test",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
+    {
+        var definition = CreateDefinition(profile);
+        definition["components"] = new JsonArray(
+            CreateSpiritualWoundComponent(
+                profile,
+                operation: operation,
+                magnitude: magnitude));
+        definition["definitionKey"] = definitionKey;
+        definition["display"]!["name"] = "Духовная рана";
+        definition["display"]!["description"] = "Духовное повреждение мешает действовать в Посмертии.";
+        definition["allowedRealms"] = new JsonArray(realm);
+        definition["allowedTargetKinds"] = new JsonArray(targetKind);
+        definition["parameterBounds"] = new JsonObject();
+        definition["stacking"] = new JsonObject
+        {
+            ["stackKey"] = $"stack_{definitionKey}",
+            ["policy"] = "independent",
+            ["maxStacks"] = 1,
+            ["atMaximum"] = "no_change",
+            ["refreshMode"] = null,
+            ["mergeRule"] = null
+        };
+        definition["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["activePredicate"] = "active",
+            ["onSourceLoss"] = "expire"
+        };
+        definition["links"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = woundId,
+            ["role"] = "source"
+        });
+        return definition;
     }
 
     internal static JsonObject CreateApplyCommand(string targetKind = "player")
@@ -176,6 +247,99 @@ internal static class EffectMaterializationTestFixture
                 ["lastTransitionTurn"] = 42
             }
         };
+    }
+
+    internal static JsonObject CreateSpiritualWoundCanonicalEffect(
+        string profile,
+        string targetKind = "guardian",
+        string realm = "chaos_sea",
+        string woundId = "wound_spiritual_test",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
+    {
+        var effect = CreateCanonicalEffect(targetKind, profile);
+        effect["components"] = new JsonArray(
+            CreateSpiritualWoundComponent(
+                profile,
+                operation: operation,
+                magnitude: magnitude));
+        effect["realm"] = realm;
+        effect["display"]!["name"] = "Духовная рана";
+        effect["display"]!["description"] = "Духовное повреждение ограничивает действия.";
+        effect["display"]!["sourceLabel"] = "Духовная рана";
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "wound",
+            ["sourceId"] = woundId,
+            ["definitionKey"] = "definition_spiritual_wound_test"
+        };
+        effect["lifetime"] = new JsonObject
+        {
+            ["mode"] = "source_bound",
+            ["linkKind"] = "wound",
+            ["targetId"] = woundId,
+            ["activePredicate"] = "active",
+            ["onSourceLoss"] = "expire",
+            ["displayText"] = "Пока духовная рана не исцелена"
+        };
+        effect["stacking"] = new JsonObject
+        {
+            ["stackKey"] = "stack_spiritual_wound_test",
+            ["policy"] = "independent",
+            ["maxStacks"] = 1,
+            ["currentStacks"] = 1,
+            ["refreshMode"] = null,
+            ["mergeRule"] = null
+        };
+        effect["links"] = new JsonArray(new JsonObject
+        {
+            ["kind"] = "wound",
+            ["targetId"] = woundId,
+            ["role"] = "source"
+        });
+        return effect;
+    }
+
+    internal static JsonObject CreateSpiritualWoundComponent(
+        string profile,
+        string componentId = "component_001",
+        string operation = "pressure",
+        JsonNode? magnitude = null)
+    {
+        var axis = profile switch
+        {
+            "spiritual_roll_hindrance" => "rollMode",
+            "spiritual_action_cost_burden" => "actionCostAudit",
+            "spiritual_position_burden" => "conflictPosition",
+            "spiritual_control_burden" => "controlState",
+            "spiritual_strain_burden" => "sideStrain",
+            "spiritual_tempo_burden" => "tempoAdvantage",
+            "spiritual_counter_burden" => "counterPayoff",
+            "spiritual_art_restriction" => "artAvailability",
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(profile),
+                profile,
+                "Unsupported spiritual wound test profile.")
+        };
+        var payload = new JsonObject
+        {
+            ["operation"] = operation,
+            ["axis"] = axis
+        };
+        payload["magnitude"] = magnitude?.DeepClone() ?? (profile switch
+        {
+            "spiritual_roll_hindrance" => JsonValue.Create("disadvantage"),
+            "spiritual_action_cost_burden" => JsonValue.Create(3),
+            "spiritual_position_burden" => JsonValue.Create(2),
+            "spiritual_control_burden" or "spiritual_strain_burden" => JsonValue.Create(1),
+            "spiritual_tempo_burden" => JsonValue.Create("deny_one_gain"),
+            "spiritual_counter_burden" => JsonValue.Create("reduce_one_step"),
+            "spiritual_art_restriction" => JsonValue.Create("forbid"),
+            _ => null
+        });
+        var component = CreateProfileComponent(profile, payload);
+        component["componentId"] = componentId;
+        return component;
     }
 
     internal static JsonObject CreateIdentityIndex(params JsonObject[] effects)
@@ -476,11 +640,9 @@ internal static class EffectMaterializationTestFixture
                 ["operation"] = "flat",
                 ["value"] = -2
             }),
-            "roll_modifier" => CreateProfileComponent(profile, new JsonObject
-            {
-                ["operations"] = new JsonArray("attack_roll"),
-                ["contribution"] = "disadvantage"
-            }),
+            "roll_modifier" => CreateProfileComponent(
+                profile,
+                CreateBroadRollModifierPayload("disadvantage", "attack_roll")),
             "resistance_modifier" => CreateProfileComponent(profile, new JsonObject
             {
                 ["resistance"] = "bleeding",
@@ -493,6 +655,16 @@ internal static class EffectMaterializationTestFixture
                 }
             }),
             "periodic_damage" => CreatePeriodicDamageComponent(),
+            "periodic_spend" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resource"] = "energy", ["amount"] = 1,
+                ["floorPolicy"] = "registered_resource_floor"
+            }),
+            "periodic_gain" => CreateProfileComponent(profile, new JsonObject
+            {
+                ["resource"] = "energy", ["amount"] = 1,
+                ["capPolicy"] = "registered_resource_cap"
+            }),
             "periodic_restore" => CreateProfileComponent(profile, new JsonObject
             {
                 ["resource"] = "health",
@@ -527,7 +699,28 @@ internal static class EffectMaterializationTestFixture
                 ["counterplay"] = new JsonArray("purification"),
                 ["payoff"] = "attrition"
             }),
+            "spiritual_roll_hindrance" or
+            "spiritual_action_cost_burden" or
+            "spiritual_position_burden" or
+            "spiritual_control_burden" or
+            "spiritual_strain_burden" or
+            "spiritual_tempo_burden" or
+            "spiritual_counter_burden" or
+            "spiritual_art_restriction" => CreateSpiritualWoundComponent(profile),
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
+        };
+
+    private static JsonObject CreateRollModifierPayload(
+        string contribution,
+        IReadOnlyList<string> operations,
+        JsonObject scope) =>
+        new()
+        {
+            ["operations"] = new JsonArray(operations
+                .Select(static operation => (JsonNode?)operation)
+                .ToArray()),
+            ["contribution"] = contribution,
+            ["scope"] = scope
         };
 
     private static JsonObject CreateProfileComponent(string profile, JsonObject payload) =>
@@ -546,12 +739,16 @@ internal static class EffectMaterializationTestFixture
             {
                 ["value"] = CreateNumericBound(-100, 100)
             },
-            "periodic_damage" or "periodic_restore" => new JsonObject
+            "periodic_damage" or "periodic_restore" or "periodic_spend" or "periodic_gain" => new JsonObject
             {
                 ["amount"] = CreateNumericBound(1, 10)
             },
             "afterlife_combat_condition" or "roll_modifier" or "action_control" or
-                "event_reaction" or "wound_consequence" =>
+                "event_reaction" or "wound_consequence" or
+                "spiritual_roll_hindrance" or "spiritual_action_cost_burden" or
+                "spiritual_position_burden" or "spiritual_control_burden" or
+                "spiritual_strain_burden" or "spiritual_tempo_burden" or
+                "spiritual_counter_burden" or "spiritual_art_restriction" =>
                 new JsonObject(),
             _ => throw new ArgumentOutOfRangeException(nameof(profile), profile, "Unsupported test profile.")
         };

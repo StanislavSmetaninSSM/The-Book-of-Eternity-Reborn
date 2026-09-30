@@ -20,7 +20,8 @@ internal sealed record EffectAcceptedPlanAuthorityStamp(
     string InputFingerprint,
     string CarrierAuthorityFingerprint,
     string SourceAuthorityFingerprint,
-    string TargetAuthorityFingerprint);
+    string TargetAuthorityFingerprint,
+    string SkillScopeAuthorityFingerprint);
 
 internal sealed record EffectEventBoundaryStamp(
     long BoundaryOrdinal,
@@ -104,6 +105,13 @@ internal sealed record AcceptedEffectBoundaryTranscriptResult(
     IReadOnlyList<EffectBoundaryTranscriptIssue> Issues)
 {
     internal bool IsValid => Transcript != null && Issues.Count == 0;
+}
+
+internal sealed record AcceptedEffectBoundaryPrefixResult(
+    AcceptedEffectBoundaryTranscript.ClosedPrefix? Prefix,
+    IReadOnlyList<EffectBoundaryTranscriptIssue> Issues)
+{
+    internal bool IsValid => Prefix != null && Issues.Count == 0;
 }
 
 internal sealed class AcceptedEffectBoundaryTranscript
@@ -450,7 +458,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
         long? pendingFrontierBoundaryOrdinal)
     {
         using var material = new ResourceFingerprintBuilder(
-            "effect-boundary-transcript-v7");
+            "effect-boundary-transcript-v8");
         material.Append(planAuthority != null);
         if (planAuthority != null)
         {
@@ -458,6 +466,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
             material.Append(planAuthority.CarrierAuthorityFingerprint);
             material.Append(planAuthority.SourceAuthorityFingerprint);
             material.Append(planAuthority.TargetAuthorityFingerprint);
+            material.Append(planAuthority.SkillScopeAuthorityFingerprint);
         }
         material.Append(boundaries.Count);
         foreach (var boundary in boundaries)
@@ -812,8 +821,81 @@ internal sealed class AcceptedEffectBoundaryTranscript
             StringComparison.Ordinal));
     }
 
+    internal sealed class ClosedPrefix
+    {
+        private readonly AcceptedEffectBoundaryTranscript _image;
+
+        internal ClosedPrefix(AcceptedEffectBoundaryTranscript image)
+        {
+            ArgumentNullException.ThrowIfNull(image);
+            if (image.UseProjectionOrdinal != null ||
+                image.PendingFrontierBoundaryOrdinal != null)
+            {
+                throw new ArgumentException(
+                    "A closed prefix cannot carry a terminal or pending seal.",
+                    nameof(image));
+            }
+            _image = image;
+        }
+
+        internal EffectAcceptedPlanAuthorityStamp? PlanAuthority => _image.PlanAuthority;
+        internal string Fingerprint => _image.Fingerprint;
+        internal IReadOnlyList<EffectEventBoundaryStamp> Boundaries => _image.Boundaries;
+        internal IReadOnlyList<EffectEventBoundaryCloseStamp> BoundaryCloses => _image.BoundaryCloses;
+        internal IReadOnlyList<EffectBoundaryCausalClosureStamp> CausalClosures => _image.CausalClosures;
+        internal IReadOnlyList<AcceptedEffectBoundaryActivation> AcceptedActivations => _image.AcceptedActivations;
+        internal IReadOnlyList<RejectedEffectBoundaryActivation> RejectedActivations => _image.RejectedActivations;
+        internal IReadOnlyList<AppliedEffectComponentEvidence> AppliedComponentEvidence => _image.AppliedComponentEvidence;
+        internal IReadOnlyList<AcceptedResourceMutationEvidence> ResourceMutations => _image.ResourceMutations;
+        internal IReadOnlyList<ReleasedEffectReaction> ReleasedReactions => _image.ReleasedReactions;
+        internal IReadOnlyList<EffectTerminalAvailabilityReservation> TerminalAvailabilityReservations =>
+            _image.TerminalAvailabilityReservations;
+        internal IReadOnlyDictionary<EffectReactionExpansionKey, EffectReactionExpansionUsage> ExpansionUsage =>
+            _image.ExpansionUsage;
+
+        // Evidence lookup, not a source/instance-existence or general eligibility check.
+        internal bool TryGetLastConsumedUseBudget(EffectReplayIdentity subject, out int remainingUses)
+        {
+            ArgumentNullException.ThrowIfNull(subject);
+            var accepted = _image._acceptedActivations
+                .Where(value =>
+                    value.Activation.Stamp.ConsumesUse &&
+                    string.Equals(value.Activation.Stamp.Identity.EffectId, subject.EffectId, StringComparison.Ordinal) &&
+                    value.Activation.Stamp.EffectAuthority == subject.Authority)
+                .OrderByDescending(static value => value.Activation.Stamp.ActivationOrdinal)
+                .FirstOrDefault();
+            if (accepted?.Activation.UsesAfter is { } remaining)
+            {
+                remainingUses = remaining;
+                return true;
+            }
+            remainingUses = default;
+            return false;
+        }
+
+        // A positive answer reports exact terminal evidence, not a newly minted effect identity.
+        internal bool HasTerminalAvailabilityEvidence(EffectReplayIdentity subject)
+        {
+            ArgumentNullException.ThrowIfNull(subject);
+            return _image._terminalAvailabilityReservations.Any(value => value.Subject == subject) ||
+                _image._releasedReactions.Any(value =>
+                    ResolveTerminalAvailabilitySubject(
+                        value.Reaction,
+                        new EffectReplayIdentity(
+                            value.Activation.Identity.EffectId,
+                            value.Activation.EffectAuthority)) == subject);
+        }
+    }
+
     internal sealed class Builder
     {
+    private enum ValidationBoundary
+    {
+        Terminal,
+        ClosedPrefix,
+        PendingPrefix
+    }
+
     private readonly EffectAcceptedPlanAuthorityStamp? _planAuthority;
     private readonly List<EffectEventBoundaryStamp> _boundaries = new();
     private readonly List<EffectEventBoundaryCloseStamp> _boundaryCloses = new();
@@ -835,6 +917,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
         StringComparer.Ordinal);
     private readonly Dictionary<long, CandidateAuthority[]> _candidateAuthority = new();
     private readonly Dictionary<long, HashSet<string>> _remainingCausalOperations = new();
+    private readonly Dictionary<long, Dictionary<string, string>> _causalOperationKeys = new();
     private readonly List<EffectBoundaryTranscriptIssue> _issues = new();
     private AcceptedEffectBoundaryTranscriptResult? _frozenResult;
     private long _nextMechanicsOrdinal;
@@ -1027,6 +1110,9 @@ internal sealed class AcceptedEffectBoundaryTranscript
                 "one unique replay-stable key per causal operation",
                 string.Join(",", replayStableOperationKeys));
         }
+        _causalOperationKeys.Add(boundary.BoundaryOrdinal,
+            replayStableOperationKeysById.ToDictionary(
+                static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal));
         _causalClosures.Add(new EffectBoundaryCausalClosureStamp(
             boundary,
             Array.AsReadOnly(ordered),
@@ -1432,6 +1518,16 @@ internal sealed class AcceptedEffectBoundaryTranscript
     internal EffectBoundaryTranscriptIssue? SealPendingFrontier(
         EffectEventBoundaryStamp boundary)
     {
+        var issue = ValidatePendingFrontier(boundary);
+        if (issue != null)
+            return issue;
+        _pendingFrontierBoundaryOrdinal = boundary.BoundaryOrdinal;
+        return null;
+    }
+
+    private EffectBoundaryTranscriptIssue? ValidatePendingFrontier(
+        EffectEventBoundaryStamp boundary)
+    {
         EnsureMutable();
         var openBoundaryOrdinals = _boundaries
             .Where(value => !_closedBoundaries.Contains(value.BoundaryOrdinal))
@@ -1469,8 +1565,108 @@ internal sealed class AcceptedEffectBoundaryTranscript
                     ? "null"
                     : boundary.BoundaryOrdinal.ToString(CultureInfo.InvariantCulture));
         }
-        _pendingFrontierBoundaryOrdinal = boundary.BoundaryOrdinal;
         return null;
+    }
+
+    private AcceptedEffectBoundaryTranscript CaptureImage(long? pendingFrontier = null) =>
+        new(
+            _planAuthority,
+            _boundaries,
+            _boundaryCloses,
+            _causalClosures,
+            _accepted,
+            _rejected,
+            _applied,
+            _resourceMutations,
+            _released,
+            _terminalReservations,
+            _expansion,
+            _useProjectionOrdinal,
+            pendingFrontier ?? _pendingFrontierBoundaryOrdinal);
+
+    // This snapshot describes a real open frontier; it neither seals nor freezes
+    // the retained builder. The execution owner retains its identity for resume.
+    internal AcceptedEffectBoundaryTranscriptResult CapturePendingFrontier(
+        EffectEventBoundaryStamp boundary)
+    {
+        var issue = ValidatePendingFrontier(boundary);
+        if (issue != null)
+            return new AcceptedEffectBoundaryTranscriptResult(null,
+                Array.AsReadOnly(new[] { issue }));
+        var issues = _issues.Concat(Validate(
+            ValidationBoundary.PendingPrefix, boundary.BoundaryOrdinal)).ToArray();
+        return issues.Length == 0
+            ? new AcceptedEffectBoundaryTranscriptResult(
+                CaptureImage(boundary.BoundaryOrdinal),
+                Array.Empty<EffectBoundaryTranscriptIssue>())
+            : new AcceptedEffectBoundaryTranscriptResult(null, Array.AsReadOnly(issues));
+    }
+
+    // Only the execution owner's validated receipt extension calls this operation.
+    // Full mappings, rather than separately sorted ID/key arrays, preserve every
+    // original operation's association while appending genuinely new descendants.
+    internal EffectBoundaryTranscriptIssue? ExtendOpenCausalClosure(
+        EffectEventBoundaryStamp boundary,
+        IReadOnlyDictionary<string, string> operationKeys)
+    {
+        EnsureMutable();
+        if (boundary == null || operationKeys == null ||
+            !_boundaries.Contains(boundary) ||
+            _closedBoundaries.Contains(boundary.BoundaryOrdinal) ||
+            _pendingFrontierBoundaryOrdinal != null || _useProjectionOrdinal != null ||
+            !_causalOperationKeys.TryGetValue(boundary.BoundaryOrdinal, out var original) ||
+            !_remainingCausalOperations.TryGetValue(boundary.BoundaryOrdinal, out var remaining))
+            return Issue("effect_boundary_causal_extension_invalid",
+                "one retained unsealed open boundary", "foreign, closed or sealed");
+        if (operationKeys.Any(pair => string.IsNullOrWhiteSpace(pair.Key) ||
+                string.IsNullOrWhiteSpace(pair.Value) ||
+                !string.Equals(pair.Value, pair.Value.Trim(), StringComparison.Ordinal)) ||
+            operationKeys.Values.Distinct(StringComparer.Ordinal).Count() != operationKeys.Count ||
+            original.Any(pair => !operationKeys.TryGetValue(pair.Key, out var key) ||
+                !string.Equals(pair.Value, key, StringComparison.Ordinal)))
+            return Issue("effect_boundary_causal_extension_invalid",
+                "an injective extension preserving each existing operation and stable key",
+                boundary.BoundaryOrdinal.ToString(CultureInfo.InvariantCulture));
+        var closureIndex = _causalClosures.FindIndex(value => value.Boundary == boundary);
+        if (closureIndex < 0)
+            return Issue("effect_boundary_causal_extension_invalid",
+                "the existing closure of the retained boundary", "missing");
+        if (operationKeys.Count == original.Count)
+            return null;
+        var ids = operationKeys.Keys.OrderBy(static value => value, StringComparer.Ordinal).ToArray();
+        var keys = operationKeys.Values.OrderBy(static value => value, StringComparer.Ordinal).ToArray();
+        var appended = ids.Where(id => !original.ContainsKey(id)).ToArray();
+        var retainedKeys = operationKeys.ToDictionary(
+            static pair => pair.Key, static pair => pair.Value, StringComparer.Ordinal);
+        _causalClosures[closureIndex] = new EffectBoundaryCausalClosureStamp(
+            boundary, Array.AsReadOnly(ids), Array.AsReadOnly(keys),
+            CreateCausalClosureFingerprint(boundary, keys));
+        _causalOperationKeys[boundary.BoundaryOrdinal] = retainedKeys;
+        remaining.UnionWith(appended.Where(id => !_completedCausalOperations.Contains(id)));
+        return null;
+    }
+
+    internal AcceptedEffectBoundaryPrefixResult CaptureClosedPrefix()
+    {
+        EnsureMutable();
+        if (_useProjectionOrdinal != null || _pendingFrontierBoundaryOrdinal != null)
+        {
+            return new AcceptedEffectBoundaryPrefixResult(
+                null,
+                Array.AsReadOnly(new[]
+                {
+                    new EffectBoundaryTranscriptIssue(
+                        "effect_boundary_prefix_sealed",
+                        "an unsealed closed causal prefix",
+                        _useProjectionOrdinal != null ? "terminal" : "pending")
+                }));
+        }
+        var issues = _issues.Concat(Validate(ValidationBoundary.ClosedPrefix)).ToArray();
+        return issues.Length == 0
+            ? new AcceptedEffectBoundaryPrefixResult(
+                new ClosedPrefix(CaptureImage()),
+                Array.Empty<EffectBoundaryTranscriptIssue>())
+            : new AcceptedEffectBoundaryPrefixResult(null, Array.AsReadOnly(issues));
     }
 
     internal AcceptedEffectBoundaryTranscriptResult Freeze()
@@ -1478,7 +1674,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
         if (_frozenResult != null)
             return _frozenResult;
         var issues = _issues
-            .Concat(Validate())
+            .Concat(Validate(ValidationBoundary.Terminal))
             .ToArray();
         if (issues.Length != 0)
         {
@@ -1488,20 +1684,7 @@ internal sealed class AcceptedEffectBoundaryTranscript
             return _frozenResult;
         }
         _frozenResult = new AcceptedEffectBoundaryTranscriptResult(
-            new AcceptedEffectBoundaryTranscript(
-                _planAuthority,
-                _boundaries,
-                _boundaryCloses,
-                _causalClosures,
-                _accepted,
-                _rejected,
-                _applied,
-                _resourceMutations,
-                _released,
-                _terminalReservations,
-                _expansion,
-                _useProjectionOrdinal,
-                _pendingFrontierBoundaryOrdinal),
+            CaptureImage(),
             Array.Empty<EffectBoundaryTranscriptIssue>());
         return _frozenResult;
     }
@@ -1558,6 +1741,60 @@ internal sealed class AcceptedEffectBoundaryTranscript
             ReferenceEquals(value.Candidate, candidate));
     }
 
+    internal EffectBoundaryTranscriptIssue? BindPendingCandidateExtension(
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate original,
+        EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate bound)
+    {
+        EnsureMutable();
+        var acceptedIndex = _accepted.FindIndex(value => ReferenceEquals(value.Candidate, original));
+        if (acceptedIndex < 0 || bound == null ||
+            _pendingFrontierBoundaryOrdinal != null || _useProjectionOrdinal != null)
+            return Issue("effect_boundary_pending_extension_invalid",
+                "one retained accepted candidate in an unsealed builder", "missing or sealed");
+        var accepted = _accepted[acceptedIndex];
+        if (_closedBoundaries.Contains(accepted.Boundary.BoundaryOrdinal) ||
+            !_candidateAuthority.TryGetValue(accepted.Boundary.BoundaryOrdinal, out var authorities))
+            return Issue("effect_boundary_pending_extension_invalid",
+                "the original candidate of an open boundary", "closed or missing");
+        var authorityIndex = Array.FindIndex(authorities,
+            value => ReferenceEquals(value.Candidate, original));
+        if (authorityIndex < 0)
+            return Issue("effect_boundary_pending_extension_invalid",
+                "the original frozen candidate reference", "foreign");
+        string fingerprint;
+        try { fingerprint = AcceptedMechanicsPlanner.CreateCandidateFingerprint(bound); }
+        catch (Exception exception) when (exception is ArgumentException or InvalidOperationException)
+        {
+            return Issue("effect_boundary_pending_extension_invalid",
+                "an exact receipt-only extension of the immutable candidate origin", exception.Message);
+        }
+        if (!string.Equals(fingerprint, accepted.CandidateFingerprint, StringComparison.Ordinal) ||
+            !string.Equals(bound.CandidateFingerprint, fingerprint, StringComparison.Ordinal) ||
+            original.Activation != bound.Activation || original.UseSeed != bound.UseSeed ||
+            original.EffectAuthority != bound.EffectAuthority || original.Producer != bound.Producer ||
+            original.PlannedComponentIdsByMutation.Any(pair =>
+                !bound.PlannedComponentIdsByMutation.TryGetValue(pair.Key, out var component) ||
+                !string.Equals(pair.Value, component, StringComparison.Ordinal)))
+            return Issue("effect_boundary_pending_extension_invalid",
+                "unchanged accepted activation, origin and previous component bindings", "changed");
+        foreach (var output in original.PendingOutputs)
+        {
+            if (!original.TryResolvePendingBinding(output.ComponentId, out var previous))
+                continue;
+            if (!bound.TryResolvePendingBinding(output.ComponentId, out var next) ||
+                previous.RequestId != next.RequestId ||
+                previous.RequestAuthority.ReplayFingerprint != next.RequestAuthority.ReplayFingerprint ||
+                previous.ReceiptFingerprint != next.ReceiptFingerprint ||
+                previous.ResultKind != next.ResultKind || previous.Amount != next.Amount ||
+                previous.Reason != next.Reason || previous.ResolvedAtTurn != next.ResolvedAtTurn)
+                return Issue("effect_boundary_pending_extension_invalid",
+                    "every previously accepted terminal binding unchanged", output.ComponentId);
+        }
+        authorities[authorityIndex] = authorities[authorityIndex] with { Candidate = bound };
+        _accepted[acceptedIndex] = accepted with { Candidate = bound };
+        return null;
+    }
+
     private bool HasUnresolvedPendingOutput(
         AcceptedEffectBoundaryActivation accepted) =>
         accepted.Candidate.PendingOutputs.Any(output =>
@@ -1578,7 +1815,8 @@ internal sealed class AcceptedEffectBoundaryTranscript
         EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate Candidate,
         string Fingerprint);
 
-    private IReadOnlyList<EffectBoundaryTranscriptIssue> Validate()
+    private IReadOnlyList<EffectBoundaryTranscriptIssue> Validate(
+        ValidationBoundary validationBoundary, long? pendingFrontierOverride = null)
     {
         var issues = new List<EffectBoundaryTranscriptIssue>();
         if (_planAuthority != null &&
@@ -1588,15 +1826,17 @@ internal sealed class AcceptedEffectBoundaryTranscript
              !IsExactPlanAuthorityToken(
                  _planAuthority.SourceAuthorityFingerprint) ||
              !IsExactPlanAuthorityToken(
-                 _planAuthority.TargetAuthorityFingerprint)))
+                 _planAuthority.TargetAuthorityFingerprint) ||
+             !IsExactPlanAuthorityToken(
+                 _planAuthority.SkillScopeAuthorityFingerprint)))
         {
             issues.Add(Issue(
                 "effect_boundary_plan_authority_invalid",
-                "one exact input identity and three accepted-effect authority fingerprints",
+                "one exact input identity and four accepted-effect authority fingerprints including skill scope",
                 "invalid"));
         }
         var closesByBoundary = new Dictionary<long, EffectEventBoundaryCloseStamp>();
-        var pendingFrontier = _pendingFrontierBoundaryOrdinal;
+        var pendingFrontier = pendingFrontierOverride ?? _pendingFrontierBoundaryOrdinal;
         if (pendingFrontier != null &&
             _boundaries.All(value =>
                 value.BoundaryOrdinal != pendingFrontier.Value))
@@ -2415,14 +2655,16 @@ internal sealed class AcceptedEffectBoundaryTranscript
                     pendingFrontier.Value.ToString(CultureInfo.InvariantCulture)));
             }
         }
-        else if (_useProjectionOrdinal == null)
+        else if (_useProjectionOrdinal == null &&
+                 validationBoundary == ValidationBoundary.Terminal)
         {
             issues.Add(Issue(
                 "effect_boundary_use_projection_missing",
                 "one terminal use/lifetime projection ordinal",
                 "null"));
         }
-        if (_useProjectionOrdinal != null || pendingFrontier != null)
+        if (_useProjectionOrdinal != null || pendingFrontier != null ||
+            validationBoundary == ValidationBoundary.ClosedPrefix)
         {
             var mechanicsOrdinals = _boundaries
                 .Select(static value => value.OpenMechanicsOrdinal)
@@ -2446,6 +2688,15 @@ internal sealed class AcceptedEffectBoundaryTranscript
                     "effect_boundary_mechanics_order_invalid",
                     "zero-based contiguous unique authority ordinals ending in use projection",
                     string.Join(",", mechanicsOrdinals)));
+            }
+            if ((validationBoundary is ValidationBoundary.ClosedPrefix or ValidationBoundary.PendingPrefix) &&
+                mechanicsOrdinals.LongLength != _nextMechanicsOrdinal)
+            {
+                issues.Add(Issue(
+                    "effect_boundary_prefix_frontier_invalid",
+                    "one observed mechanics ordinal for every allocated prefix ordinal",
+                    "observed=" + mechanicsOrdinals.LongLength.ToString(CultureInfo.InvariantCulture) +
+                    ";next=" + _nextMechanicsOrdinal.ToString(CultureInfo.InvariantCulture)));
             }
         }
         return issues;

@@ -3,7 +3,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class AcceptedEffectBoundaryTranscriptTests
+public sealed partial class AcceptedEffectBoundaryTranscriptTests
 {
     [Fact]
     public void Builder_ParentAfterCurrentReleaseWaitsForOpenChildToClose()

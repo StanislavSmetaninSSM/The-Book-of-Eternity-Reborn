@@ -1,5 +1,13 @@
 # Repository Agent Instructions
 
+## Development workflow
+
+Before making project changes, read `docs/development-workflow.md` and follow its
+rules for bounded work, mandatory independent-agent review, risk-adjusted reviewer
+reasoning effort, verification, checkpoints, and process revisions. Re-read after
+context recovery when the current policy is not retained; avoid repeated reads of
+unchanged text within a block. This applies to documentation and configuration too.
+
 ## Task tracking guardrail
 
 Do not implement project changes without a tracked task.
@@ -19,35 +27,39 @@ compatibility contract by themselves.
 This does not relax atomic accepted-turn behavior, current canonical-state
 integrity, or immutable receipt/history guarantees inside the supported schema.
 
-## C# test execution policy
+## Test category policy
 
-Use PowerShell 7 and `.\scripts\test-csharp.ps1` as the normal bounded entry
-point for C# verification. Read `docs/testing.md` for lane selection, limits,
-result artifacts, and failure diagnosis.
+Read `docs/testing.md` and the current `tests/categories.json` catalog. Use
+PowerShell 7 and `.\scripts\test-csharp.ps1 -Category <selected IDs>` for bounded
+C#, frontend and test-infrastructure verification.
 
-- During implementation, run the smallest relevant `Focused` selection, then
-  one `Fast` control at a meaningful checkpoint.
-- `Focused` targets the fast test project by default. To run an exact class or
-  method from `BookOfEternityClient.IntegrationTests`, pass
-  `-FocusedProject Integration`.
-- Never mix fast-project and integration-project test classes in one
-  `Focused` filter. Run one bounded command per selected project so a
-  successful result proves that every requested test was discoverable.
-- Lane durations are protective defaults, not immutable targets. If a measured,
-  coherent Focused selection or supported diagnostic lane has legitimately
-  grown beyond its default, use an explicit bounded `-TimeoutMinutes` override
-  within the runner's allowed ceiling and record the reason/evidence. Do not
-  narrow relevant coverage or spend time on cosmetic micro-optimizations solely
-  to beat an obsolete limit; do not use an override to excuse an unreviewed
-  broad run or suspected hang.
-- Immediately before merge, run one `PreMerge` control. Do not add duplicate
-  Fast runs immediately before it because PreMerge already includes the full
-  fast project.
-- Run `DeepValidation`, `LifecycleIntegration`, or another diagnostic lane
-  only for a related boundary change, failure diagnosis, or an explicitly
-  requested exhaustive control.
-- Do not use an unbounded full-solution or full-suite `dotnet test` command as
-  an ordinary verification step.
+- Select categories from changed contracts and affected consumers. Record why
+  each is needed; file path hints are advisory, not a substitute for reasoning.
+  Include relevant negative and cross-domain scenarios. Independent review must
+  assess selection sufficiency as well as correctness.
+- Add, split, rename or retire categories as part of the tracked change without
+  requesting a new fixed-name policy. Document responsibility, exclusions,
+  membership, related contracts, environment and budgets in the catalog. Do not
+  indefinitely broaden an old category to absorb unrelated behavior.
+- Use `-ListCategories` to inspect responsibility and `-PlanOnly` to inspect exact
+  selection. `-ValidateCatalog` checks complete inventory through discovery only;
+  it executes no tests. A new test must have a documented category owner.
+- No complete suite, all-category sequence, Fast, PreMerge or similar aggregate
+  is required or allowed, including CI and before merge/release. Missing/unknown
+  selection must fail or show help, never default to a broad run. Historical
+  instructions requesting these controls are superseded by this policy.
+- Maintain explicit `tests/selection.json` IDs, reasons and contracts for the
+  actual change reviewed in CI. A previous task's selection is not automatically
+  sufficient. Review it against the entire intended change before integration.
+- Keep categories small and coherent. Investigate and split regularly slow
+  groups; budgets are protective bounds, not speedup evidence. Do not increase
+  limits to hide a hang, omitted tests or an oversized selection.
+- Default to per-test mutable state. Shared mutable fixtures, active owners,
+  leases and test-order dependencies are prohibited. Reuse immutable templates
+  only with measured benefit and independent copies; preserve real cold paths.
+- Use `-NoBuild` only after a fresh successful build of all selected projects.
+  Preserve result artifacts, actual planned/completed counts and owned cleanup.
+  Repeat passing selections only after relevant changes or unresolved failures.
 
 ## Spec Kit and Hermes/Codex orchestration guardrail
 
@@ -147,18 +159,19 @@ Before finishing that change, check whether these files also need updates:
 
 If an explicit afterlife contract registry is added later, update it together with the matrix, examples, and manifest. Do not leave a code-only afterlife contract unless it is intentionally client-owned and documented as not GM-authored.
 
-Minimum verification for documentation-sensitive afterlife changes:
+For documentation-sensitive afterlife changes, select the current afterlife
+documentation category and relevant example/runtime consumer categories:
 
 ```powershell
-.\scripts\test-csharp.ps1 -Lane Focused -Filter "FullyQualifiedName~AfterlifeDocumentationCoverageTests"
-.\scripts\test-csharp.ps1 -Lane FullValidation
+.\scripts\test-csharp.ps1 -Category documentation-afterlife -PlanOnly
+.\scripts\test-csharp.ps1 -Category documentation-afterlife
 ```
 
-Run `FullValidation` here only when the documentation/examples boundary is
-affected; it remains a conditional diagnostic lane.
+Check the catalog for its current name and coverage; add/split categories as
+needed. Do not run all validation matrices for a documentation change.
 
 <!-- SPECKIT START -->
 For additional context about technologies to be used, project structure,
 shell commands, and other important information, read the current plan
-at specs/1543-unified-resource-authority/plan.md
+at specs/1536-complete-wound-materialization/plan.md
 <!-- SPECKIT END -->

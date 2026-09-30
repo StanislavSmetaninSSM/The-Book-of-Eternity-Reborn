@@ -51,7 +51,12 @@ internal static class AfterlifeActorMaterializationTestFixture
                     ["tier"] = 0
                 }
             },
-            ["standardArts"] = new JsonObject { ["guard"] = 1 },
+            ["standardArts"] = new JsonObject
+            {
+                ["guard"] = 1,
+                [AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0,
+                [AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0
+            },
             ["specialArts"] = specialArts.DeepClone(),
             ["customStates"] = new JsonArray(),
             ["fateCards"] = new JsonArray(),

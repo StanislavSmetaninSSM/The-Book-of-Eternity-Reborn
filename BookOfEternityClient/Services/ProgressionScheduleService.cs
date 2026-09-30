@@ -1,3 +1,4 @@
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
@@ -22,6 +23,7 @@ public class ProgressionScheduleService
 
     private readonly FileSystemManager _fs;
     private readonly ILogger<ProgressionScheduleService> _logger;
+    private readonly object _acceptedTurnMutationCapability = new();
 
     private enum ProgressionFileReadState
     {
@@ -60,6 +62,68 @@ public class ProgressionScheduleService
         string PressureTier,
         int SummaryEventsRequired,
         string[] Contours);
+
+    internal sealed class AcceptedTurnOutcomeMutation
+    {
+        private readonly FileSystemManager _fileSystem;
+        private readonly FileSystemManager.CanonicalWriteLease _writeLease;
+        private readonly object _mintCapability;
+        private int _consumed;
+
+        internal AcceptedTurnOutcomeMutation(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            object mintCapability,
+            CanonicalBeforeImage scheduleBefore,
+            CanonicalBeforeImage reportBefore,
+            CanonicalBeforeImage scheduleAfter,
+            CanonicalBeforeImage reportAfter,
+            string scheduleAfterJson,
+            string? reportAfterJson,
+            string controlJson)
+        {
+            _fileSystem = fileSystem;
+            _writeLease = writeLease;
+            _mintCapability = mintCapability;
+            ScheduleBefore = scheduleBefore;
+            ReportBefore = reportBefore;
+            ScheduleAfter = scheduleAfter;
+            ReportAfter = reportAfter;
+            ScheduleAfterJson = scheduleAfterJson;
+            ReportAfterJson = reportAfterJson;
+            Fingerprint = WoundAcceptedTurnFingerprintWriter.Compute(
+                new string?[]
+                {
+                    "book_of_eternity.progression.accepted_turn_mutation",
+                    "1",
+                    controlJson,
+                    scheduleBefore.Fingerprint,
+                    reportBefore.Fingerprint,
+                    scheduleAfter.Fingerprint,
+                    reportAfter.Fingerprint
+                });
+        }
+
+        internal CanonicalBeforeImage ScheduleBefore { get; }
+        internal CanonicalBeforeImage ReportBefore { get; }
+        internal CanonicalBeforeImage ScheduleAfter { get; }
+        internal CanonicalBeforeImage ReportAfter { get; }
+        internal string ScheduleAfterJson { get; }
+        internal string? ReportAfterJson { get; }
+        internal string Fingerprint { get; }
+
+        internal bool IsBoundTo(
+            FileSystemManager fileSystem,
+            FileSystemManager.CanonicalWriteLease writeLease,
+            object mintCapability) =>
+            ReferenceEquals(_fileSystem, fileSystem) &&
+            ReferenceEquals(_writeLease, writeLease) &&
+            ReferenceEquals(_mintCapability, mintCapability);
+
+        internal bool TryConsume(object mintCapability) =>
+            ReferenceEquals(_mintCapability, mintCapability) &&
+            Interlocked.Exchange(ref _consumed, 1) == 0;
+    }
 
     private static readonly JsonSerializerOptions JsonOpts = new()
     {
@@ -561,10 +625,53 @@ public class ProgressionScheduleService
             return;
         }
 
-        var schedule = await EnsureInitializedAsync();
-        var realmAfterTurn = await ResolveCurrentRealmAsync(string.Empty);
-        var reportSnapshot = await ReadProcessingReportSnapshotAsync();
-        var currentTurnContext = await ReadCurrentTurnRequestContextAsync();
+        _ = await EnsureInitializedAsync();
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        var mutation = await PrepareAcceptedTurnOutcomeMutationAsync(
+            writeLease,
+            control);
+        if (!await TryCommitAcceptedTurnOutcomeMutationAsync(
+                writeLease,
+                mutation))
+        {
+            throw new IOException(
+                "Progression accepted-turn outcome changed before its exact mutation could be committed.");
+        }
+    }
+
+    internal async Task<AcceptedTurnOutcomeMutation>
+        PrepareAcceptedTurnOutcomeMutationAsync(
+            FileSystemManager.CanonicalWriteLease writeLease,
+            ProgressionControl control)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(control);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+
+        var scheduleBeforeBytes = await _fs.ReadFileBytesAsync(
+            writeLease,
+            SchedulePath);
+        var scheduleSnapshot = await ReadScheduleSnapshotAsync(writeLease);
+        if (scheduleBeforeBytes == null ||
+            scheduleSnapshot.State != ProgressionFileReadState.Valid ||
+            scheduleSnapshot.Schedule == null)
+        {
+            throw new InvalidOperationException(
+                "Accepted-turn progression mutation requires one existing valid canonical progression schedule.");
+        }
+
+        var reportBeforeBytes = await _fs.ReadFileBytesAsync(
+            writeLease,
+            ReportPath);
+        var schedule = await SanitizeScheduleAsync(
+            scheduleSnapshot.Schedule,
+            scheduleSnapshot.Schedule.CurrentRealm,
+            writeLease);
+        var realmAfterTurn = await ResolveCurrentRealmAsync(
+            string.Empty,
+            writeLease);
+        var reportSnapshot = await ReadProcessingReportSnapshotAsync(writeLease);
+        var currentTurnContext = await ReadCurrentTurnRequestContextAsync(writeLease);
         var report = reportSnapshot.Report;
         var reportConsumed = false;
 
@@ -598,7 +705,9 @@ public class ProgressionScheduleService
         }
         else
         {
-            var worldTimeResolution = await ResolveWorldTimeFromFileAsync(control.CurrentWorldTimeInMinutes);
+            var worldTimeResolution = await ResolveWorldTimeFromFileAsync(
+                control.CurrentWorldTimeInMinutes,
+                writeLease: writeLease);
             var resultingWorldTime = worldTimeResolution.Minutes;
             if (worldTimeResolution.HasUnresolvedAbsoluteOverride)
             {
@@ -649,9 +758,134 @@ public class ProgressionScheduleService
             schedule.CurrentRealm = realmAfterTurn;
         schedule.LastUpdatedUtc = DateTime.UtcNow.ToString("o");
 
-        await WriteScheduleAsync(schedule);
-        if (reportConsumed && reportSnapshot.FilePresent)
-            await DeleteTransientReportAsync();
+        var scheduleAfterJson = JsonSerializer.Serialize(schedule, JsonOpts);
+        var scheduleAfterBytes = EncodeUtf8WithPreamble(scheduleAfterJson);
+        var reportAfterBytes = reportConsumed && reportSnapshot.FilePresent
+            ? null
+            : reportBeforeBytes;
+        var reportAfterJson = reportAfterBytes == null
+            ? null
+            : CanonicalJsonUtf8.DecodeOneOptionalBom(reportAfterBytes);
+        return new AcceptedTurnOutcomeMutation(
+            _fs,
+            writeLease,
+            _acceptedTurnMutationCapability,
+            new CanonicalBeforeImage(true, scheduleBeforeBytes),
+            new CanonicalBeforeImage(
+                reportBeforeBytes != null,
+                reportBeforeBytes),
+            new CanonicalBeforeImage(true, scheduleAfterBytes),
+            new CanonicalBeforeImage(
+                reportAfterBytes != null,
+                reportAfterBytes),
+            scheduleAfterJson,
+            reportAfterJson,
+            JsonSerializer.Serialize(control, JsonOpts));
+    }
+
+    internal async Task<bool> TryCommitAcceptedTurnOutcomeMutationAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        AcceptedTurnOutcomeMutation mutation)
+    {
+        ArgumentNullException.ThrowIfNull(writeLease);
+        ArgumentNullException.ThrowIfNull(mutation);
+        _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+        if (!mutation.IsBoundTo(
+                _fs,
+                writeLease,
+                _acceptedTurnMutationCapability) ||
+            !mutation.TryConsume(_acceptedTurnMutationCapability))
+        {
+            throw new InvalidOperationException(
+                "The accepted-turn progression mutation is foreign, stale, or already consumed.");
+        }
+
+        var writes = new List<CoordinatedStateWriteHelper.PlannedWrite>
+        {
+            new(
+                SchedulePath,
+                PreviousJson: null,
+                NextJson: mutation.ScheduleAfterJson,
+                RequireCurrentBaseline: true,
+                ExactPrevious: mutation.ScheduleBefore)
+        };
+        if (string.Equals(
+                mutation.ReportBefore.Fingerprint,
+                mutation.ReportAfter.Fingerprint,
+                StringComparison.Ordinal))
+        {
+            writes.Add(CoordinatedStateWriteHelper.CreateExactGuardWrite(
+                ReportPath,
+                mutation.ReportBefore));
+        }
+        else
+        {
+            writes.Add(new CoordinatedStateWriteHelper.PlannedWrite(
+                ReportPath,
+                PreviousJson: null,
+                NextJson: mutation.ReportAfterJson,
+                RequireCurrentBaseline: true,
+                ExactPrevious: mutation.ReportBefore));
+        }
+
+        if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+                _fs,
+                writeLease,
+                writes.ToArray()))
+        {
+            return false;
+        }
+
+        var scheduleAfter = await _fs.ReadFileBytesAsync(writeLease, SchedulePath);
+        var reportAfter = await _fs.ReadFileBytesAsync(writeLease, ReportPath);
+        if (ExactImageMatches(mutation.ScheduleAfter, scheduleAfter) &&
+            ExactImageMatches(mutation.ReportAfter, reportAfter))
+        {
+            return true;
+        }
+
+        await RestoreExactImageAsync(
+            writeLease,
+            SchedulePath,
+            mutation.ScheduleBefore);
+        await RestoreExactImageAsync(
+            writeLease,
+            ReportPath,
+            mutation.ReportBefore);
+        return false;
+    }
+
+    private static bool ExactImageMatches(
+        CanonicalBeforeImage expected,
+        byte[]? current) =>
+        expected.Existed == (current != null) &&
+        (current == null ||
+         expected.Bytes!.AsSpan().SequenceEqual(current));
+
+    private async Task RestoreExactImageAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        string path,
+        CanonicalBeforeImage image)
+    {
+        var bytes = image.Bytes;
+        if (bytes == null)
+        {
+            if (_fs.FileExists(writeLease, path))
+                _fs.DeleteFile(writeLease, path);
+            return;
+        }
+
+        await _fs.WriteFileAtomicBytesAsync(writeLease, path, bytes);
+    }
+
+    private static byte[] EncodeUtf8WithPreamble(string value)
+    {
+        var payload = Encoding.UTF8.GetBytes(value);
+        var preamble = Encoding.UTF8.GetPreamble();
+        var result = new byte[preamble.Length + payload.Length];
+        preamble.CopyTo(result, 0);
+        payload.CopyTo(result, preamble.Length);
+        return result;
     }
 
     public Task DeleteTransientReportAsync()
@@ -1108,7 +1342,10 @@ public class ProgressionScheduleService
         }
     }
 
-    private async Task<ProgressionScheduleState> SanitizeScheduleAsync(ProgressionScheduleState schedule, string? activeTurnRealm = null)
+    private async Task<ProgressionScheduleState> SanitizeScheduleAsync(
+        ProgressionScheduleState schedule,
+        string? activeTurnRealm = null,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         schedule.WorldCycleMinutes = schedule.WorldCycleMinutes > 0 ? schedule.WorldCycleMinutes : DefaultWorldCycleMinutes;
         schedule.FactionCycleMinutes = schedule.FactionCycleMinutes > 0 ? schedule.FactionCycleMinutes : DefaultFactionCycleMinutes;
@@ -1121,7 +1358,9 @@ public class ProgressionScheduleService
 
         var resolvedRealm = activeTurnRealm;
         if (!HasResolvedRealm(resolvedRealm))
-            resolvedRealm = await ResolveCurrentRealmAsync(string.Empty);
+            resolvedRealm = await ResolveCurrentRealmAsync(
+                string.Empty,
+                writeLease);
         if (!HasResolvedRealm(resolvedRealm))
             throw BuildUnresolvedRealmException();
 
@@ -1129,7 +1368,9 @@ public class ProgressionScheduleService
         schedule.CurrentRealm = resolvedRealm ?? string.Empty;
         if (HasResolvedRealm(schedule.CurrentRealm) && !IsAfterlifeRealm(schedule.CurrentRealm))
         {
-            schedule.CurrentWorldTimeInMinutes = (await ResolveWorldTimeFromFileAsync(schedule.CurrentWorldTimeInMinutes)).Minutes;
+            schedule.CurrentWorldTimeInMinutes = (await ResolveWorldTimeFromFileAsync(
+                schedule.CurrentWorldTimeInMinutes,
+                writeLease: writeLease)).Minutes;
         }
 
         schedule.PendingWorldCycles = Math.Max(0, schedule.PendingWorldCycles);
@@ -1160,10 +1401,15 @@ public class ProgressionScheduleService
         return schedule;
     }
 
-    private async Task<ProgressionScheduleSnapshot> ReadScheduleSnapshotAsync()
+    private async Task<ProgressionScheduleSnapshot> ReadScheduleSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var filePresent = _fs.FileExists(SchedulePath);
-        var json = await _fs.ReadFileAsync(SchedulePath);
+        var filePresent = writeLease == null
+            ? _fs.FileExists(SchedulePath)
+            : _fs.FileExists(writeLease, SchedulePath);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(SchedulePath)
+            : await _fs.ReadFileAsync(writeLease, SchedulePath);
         if (string.IsNullOrWhiteSpace(json))
             return filePresent
                 ? new ProgressionScheduleSnapshot(null, ProgressionFileReadState.Malformed, true)
@@ -1188,10 +1434,15 @@ public class ProgressionScheduleService
         await _fs.WriteFileAtomicAsync(SchedulePath, JsonSerializer.Serialize(schedule, JsonOpts));
     }
 
-    private async Task<ProgressionReportSnapshot> ReadProcessingReportSnapshotAsync()
+    private async Task<ProgressionReportSnapshot> ReadProcessingReportSnapshotAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var filePresent = _fs.FileExists(ReportPath);
-        var json = await _fs.ReadFileAsync(ReportPath);
+        var filePresent = writeLease == null
+            ? _fs.FileExists(ReportPath)
+            : _fs.FileExists(writeLease, ReportPath);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(ReportPath)
+            : await _fs.ReadFileAsync(writeLease, ReportPath);
         if (string.IsNullOrWhiteSpace(json))
             return filePresent
                 ? new ProgressionReportSnapshot(null, ProgressionFileReadState.Malformed, true)
@@ -1231,7 +1482,8 @@ public class ProgressionScheduleService
         return snapshot.Report;
     }
 
-    private async Task<PendingTurnRequestContext?> ReadCurrentTurnRequestContextAsync()
+    private async Task<PendingTurnRequestContext?> ReadCurrentTurnRequestContextAsync(
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
         foreach (var path in new[]
                  {
@@ -1240,7 +1492,9 @@ public class ProgressionScheduleService
                      "game_state/control/validation_repair_request.json"
                  })
         {
-            var context = await ReadTurnRequestContextFromPathAsync(path);
+            var context = await ReadTurnRequestContextFromPathAsync(
+                path,
+                writeLease);
             if (context != null)
                 return context;
         }
@@ -1248,9 +1502,13 @@ public class ProgressionScheduleService
         return null;
     }
 
-    private async Task<PendingTurnRequestContext?> ReadTurnRequestContextFromPathAsync(string path)
+    private async Task<PendingTurnRequestContext?> ReadTurnRequestContextFromPathAsync(
+        string path,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync(path)
+            : await _fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 
@@ -1321,9 +1579,15 @@ public class ProgressionScheduleService
         return true;
     }
 
-    private async Task<string> ResolveCurrentRealmAsync(string fallback = "")
+    private async Task<string> ResolveCurrentRealmAsync(
+        string fallback = "",
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var soulJson = await _fs.ReadFileAsync("game_state/meta/soul_state.json");
+        var soulJson = writeLease == null
+            ? await _fs.ReadFileAsync("game_state/meta/soul_state.json")
+            : await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/meta/soul_state.json");
         if (string.IsNullOrWhiteSpace(soulJson))
             return fallback;
 
@@ -1343,9 +1607,14 @@ public class ProgressionScheduleService
 
     private async Task<WorldTimeResolutionResult> ResolveWorldTimeFromFileAsync(
         int fallback,
-        bool allowIncrementalTimeChange = true)
+        bool allowIncrementalTimeChange = true,
+        FileSystemManager.CanonicalWriteLease? writeLease = null)
     {
-        var json = await _fs.ReadFileAsync("game_state/world/world_time.json");
+        var json = writeLease == null
+            ? await _fs.ReadFileAsync("game_state/world/world_time.json")
+            : await _fs.ReadFileAsync(
+                writeLease,
+                "game_state/world/world_time.json");
         if (string.IsNullOrWhiteSpace(json))
             return new WorldTimeResolutionResult(fallback, true);
 

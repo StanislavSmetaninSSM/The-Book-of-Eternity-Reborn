@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Services;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -18,6 +19,8 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
     internal const string CommandPath = "game_state/effects/effect_commands.json";
     internal const string PendingResolutionPath = "game_state/control/pending_effect_resolutions.json";
     internal const string PlayerWoundsPath = "game_state/player/wounds.json";
+    internal const string MaterializableSkillPath = "game_state/player/skills_active.json";
+    internal const string MaterializableSkillId = "skill_test_bleeding";
 
     internal static readonly string[] OwnedPaths =
     {
@@ -108,6 +111,24 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
         return string.IsNullOrWhiteSpace(json) ? null : JsonNode.Parse(json);
     }
 
+    /// <summary>
+    /// Captures exact original bytes and authenticated optional-path absence before the fixture action.
+    /// </summary>
+    /// <param name="turn">
+    /// Positive turn number assigned to the request and signed manifest; defaults to 42.
+    /// </param>
+    /// <param name="currentRealm">
+    /// Original realm recorded in progression authority; defaults to Mortal World.
+    /// </param>
+    /// <param name="playerAction">
+    /// Nonempty original action retained by the request and manifest.
+    /// </param>
+    /// <param name="preGeneratedDices1d20">
+    /// Original signed dice, or <see langword="null"/> for an empty sequence.
+    /// </param>
+    /// <returns>
+    /// A task completing after exact snapshot bytes and their detached authority are written.
+    /// </returns>
     internal async Task CaptureValidatedPendingSnapshotAsync(
         int turn = 42,
         string currentRealm = "Mortal World",
@@ -135,12 +156,17 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
 
         var files = new JsonObject();
         var snapshotFileHashes = new JsonObject();
+        var typedFiles = new Dictionary<string, string>(StringComparer.Ordinal);
+        var typedSnapshotFileHashes = new Dictionary<string, string>(StringComparer.Ordinal);
         var rollbackBaselineFiles = new JsonArray();
         var trackedPaths = CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
             .Concat(OwnedPaths)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var snapshotPaths = trackedPaths
+            .Concat(PendingTurnSnapshotPathPresenceV1.LogicalPaths)
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .OrderBy(static value => value, StringComparer.Ordinal);
-        foreach (var path in trackedPaths)
+        foreach (var path in snapshotPaths)
         {
             var bytes = await FileSystem.ReadFileBytesAsync(path);
             if (bytes == null)
@@ -149,8 +175,12 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
             var snapshotPath = $"game_state/control/pending_turn_snapshot/{path}";
             await FileSystem.WriteFileAtomicBytesAsync(snapshotPath, bytes);
             files[path] = snapshotPath;
-            snapshotFileHashes[path] = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
-            rollbackBaselineFiles.Add(path);
+            var snapshotHash = PendingTurnSnapshotAuthority.ComputeSha256(bytes);
+            snapshotFileHashes[path] = snapshotHash;
+            typedFiles.Add(path, snapshotPath);
+            typedSnapshotFileHashes.Add(path, snapshotHash);
+            if (trackedPaths.Contains(path))
+                rollbackBaselineFiles.Add(path);
         }
 
         var manifest = new JsonObject
@@ -164,8 +194,14 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
                 (preGeneratedDices1d20 ?? Array.Empty<int>())
                 .Select(static value => (JsonNode)value)
                 .ToArray()),
+            ["progressionControl"] = JsonSerializer.SerializeToNode(
+                new ProgressionControl { CurrentRealm = currentRealm }),
             ["files"] = files,
             ["snapshotFileHashes"] = snapshotFileHashes,
+            ["originalPathPresenceV1"] = JsonSerializer.SerializeToNode(
+                PendingTurnSnapshotPathPresenceV1.Create(
+                    typedFiles,
+                    typedSnapshotFileHashes)),
             ["clientOwnedValidationHashes"] = new JsonObject(),
             ["rollbackBackups"] = new JsonObject(),
             ["rollbackBaselineFiles"] = rollbackBaselineFiles,
@@ -268,8 +304,94 @@ internal sealed class EffectMaterializationTestContext : IAsyncDisposable
             }));
     }
 
+    internal Task SeedPlayerSkillSourceAsync(
+        JsonObject? definition = null,
+        string skillId = MaterializableSkillId)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(skillId);
+        return WriteJsonAsync(
+            MaterializableSkillPath,
+            new JsonObject
+            {
+                ["activeSkillChanges"] = new JsonArray(new JsonObject
+                {
+                    ["skillId"] = skillId,
+                    ["skillName"] = "Кровавый след",
+                    ["skillDescription"] =
+                        "Полный материализуемый источник для проверки эффектов.",
+                    ["rarity"] = "common",
+                    ["actionCost"] = "Main",
+                    ["combatEffect"] = new JsonObject
+                    {
+                        ["isActivatedEffect"] = true,
+                        ["actionName"] = "Кровавый след",
+                        ["actionCost"] = "Main",
+                        ["effects"] = new JsonArray(new JsonObject
+                        {
+                            ["effectType"] = "Damage",
+                            ["value"] = "10%",
+                            ["targetType"] = "enemy",
+                            ["effectDescription"] =
+                                "Навык оставляет проверяемый кровавый след.",
+                            ["poiseDamage"] = "5%"
+                        })
+                    },
+                    ["activeEffectDefinitions"] = new JsonArray(
+                        definition ?? EffectMaterializationTestFixture.CreateDefinition())
+                }),
+                ["removeActiveSkills"] = new JsonArray()
+            });
+    }
+
     internal Task SyncPendingSnapshotAuthorityAsync() =>
         PendingTurnSnapshotTestAuthority.SyncAuthorityForCurrentManifestAsync(FileSystem);
+
+    /// <summary>
+    /// Creates the ordinary apply command with the registered materializable skill source.
+    /// </summary>
+    /// <param name="targetKind">
+    /// Supported effect target kind; defaults to player.
+    /// </param>
+    /// <returns>
+    /// A fresh command retaining the standard target, parameters and event evidence.
+    /// </returns>
+    internal static JsonObject CreateSkillApplyCommand(string targetKind = "player")
+    {
+        var command = EffectMaterializationTestFixture.CreateApplyCommand(targetKind);
+        command["source"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+        return command;
+    }
+
+    /// <summary>
+    /// Creates a canonical ordinary effect with the registered materializable skill source.
+    /// </summary>
+    /// <param name="ownerKind">
+    /// Supported target-owner kind; defaults to player.
+    /// </param>
+    /// <param name="profile">
+    /// Standard component profile; defaults to periodic_damage.
+    /// </param>
+    /// <returns>
+    /// A fresh effect retaining its definition, target, value, lifetime and trigger semantics.
+    /// </returns>
+    internal static JsonObject CreateSkillCanonicalEffect(
+        string ownerKind = "player",
+        string profile = "periodic_damage")
+    {
+        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(ownerKind, profile);
+        effect["source"] = new JsonObject
+        {
+            ["kind"] = "skill",
+            ["sourceId"] = MaterializableSkillId,
+            ["definitionKey"] = EffectMaterializationTestFixture.DefinitionKey
+        };
+        return effect;
+    }
 
     internal async Task<IReadOnlyList<ValidationIssue>>
         ValidateAcceptedTurnRawMechanicsAsync()

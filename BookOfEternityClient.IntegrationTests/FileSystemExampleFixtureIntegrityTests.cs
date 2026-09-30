@@ -57,7 +57,7 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         }
 
         Assert.Equal(104, observed.Max(item => item.EntryCount));
-        Assert.Equal(372_978, observed.Max(item => item.ExpandedBytes));
+        Assert.Equal(373_016, observed.Max(item => item.ExpandedBytes));
         Assert.Equal(60_825, observed.Max(item => item.LargestEntryBytes));
         Assert.Equal(3_735, observed.Max(item => item.NameUtf8Bytes));
 
@@ -74,6 +74,26 @@ public sealed class FileSystemExampleFixtureIntegrityTests
         Assert.True(
             observed.Max(item => item.NameUtf8Bytes) <
             budget.MaxTotalEntryNameUtf8Bytes);
+    }
+
+    [Theory]
+    [InlineData("chaos_sea_command_display_fixture.zip", "conflict_chaos_hunter_001", "recent_conflict_hunter_pack_044")]
+    [InlineData("shining_abode_command_display_fixture.zip", "conflict_shining_oath_001", "recent_shining_oath_cell_001")]
+    public void RealmSaveFixtures_SpiritualConflictsDeclareDangerBeforePlay(
+        string archiveName, string activeId, string recentId)
+    {
+        var path = Path.Combine(TestRepoPaths.BaseSessionRoot, "saves", "manual_saves", archiveName);
+        using var archive = ZipFile.OpenRead(path);
+        var entry = Assert.Single(archive.Entries, item =>
+            item.FullName == AfterlifeSpiritualConflictState.StatePath);
+        using var reader = new StreamReader(entry.Open());
+        var root = JsonNode.Parse(reader.ReadToEnd())!.AsObject();
+        var active = root["activeConflict"]!.AsObject();
+        var recent = Assert.Single(root["recentConflicts"]!.AsArray())!.AsObject();
+        Assert.Equal(activeId, active["conflictId"]?.GetValue<string>());
+        Assert.Equal(recentId, recent["conflictId"]?.GetValue<string>());
+        Assert.Equal("hostile", active["dangerMode"]?.GetValue<string>());
+        Assert.Equal("hostile", recent["dangerMode"]?.GetValue<string>());
     }
 
     [Fact]

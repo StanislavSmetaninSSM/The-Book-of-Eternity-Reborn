@@ -3,6 +3,7 @@ using System.Text.Json.Nodes;
 using System.Text.Json.Serialization.Metadata;
 using BookOfEternityClient.Core;
 using Microsoft.Extensions.Logging;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 /// <summary>
@@ -122,6 +123,7 @@ public partial class CanonicalStateNormalizer
             ResourceMaterializationContract.CommandPath,
             "game_state/control/pending_effect_resolutions.json"
         })
+        .Concat(WoundAcceptedTurnSnapshotContract.RequiredPaths)
         .Distinct(StringComparer.Ordinal)
         .ToArray();
 
@@ -282,8 +284,18 @@ public partial class CanonicalStateNormalizer
                 .NormalizeAccumulatedStateWithPlanAsync(backups);
         }
 
+        EnsureHeldTreatmentPublicationUsesCoordinator();
         var acceptedMechanicsPreflight =
             await PrevalidateAcceptedMechanicsBeforeNormalizationAsync();
+        if (acceptedMechanicsPreflight is
+                AcceptedMechanicsNormalizationPreflight.Validated
+                {
+                    Plan.TreatmentResourcePublicationAuthority.RequiresCoordinatedSettlement: true
+                })
+        {
+            throw new InvalidOperationException(
+                "A held Mortal wound-treatment resource publication requires the top-level accepted-turn transaction coordinator.");
+        }
         var mortalItemMode = CaptureMortalItemAcceptedTurnNormalizationMode(
             acceptedMechanicsPreflight);
         if (acceptedMechanicsPreflight is AcceptedMechanicsNormalizationPreflight.Validated)
@@ -300,6 +312,35 @@ public partial class CanonicalStateNormalizer
                 backups,
                 mortalItemMode,
                 acceptedMechanicsPreflight);
+    }
+
+    internal async Task<AcceptedMechanicsPlan?>
+        NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync(
+            IReadOnlyDictionary<string, string>? backups,
+            TreatmentResourcePublicationPreflight preflight,
+            MortalWoundTreatmentPublicationTakeReceipt receipt)
+    {
+        ArgumentNullException.ThrowIfNull(preflight);
+        ArgumentNullException.ThrowIfNull(receipt);
+        if (_writeLease == null)
+        {
+            throw new InvalidOperationException(
+                "Held treatment publication normalization requires the owning canonical write lease.");
+        }
+        if (preflight.Plan.TreatmentResourcePublicationAuthority is not
+            { RequiresCoordinatedSettlement: true })
+        {
+            throw new InvalidOperationException(
+                "Held treatment publication normalization requires one exact confirmed resource authority.");
+        }
+
+        var mortalItemMode = new MortalItemAcceptedTurnNormalizationMode.Validated(
+            preflight.MortalItemSnapshot);
+        return await NormalizeAccumulatedStateCoreAsync(
+            backups,
+            mortalItemMode,
+            preflight.Validated,
+            receipt);
     }
 
     internal async Task NormalizeClientOwnedBootstrapAccumulatedStateAsync(
@@ -323,12 +364,14 @@ public partial class CanonicalStateNormalizer
     private async Task<AcceptedMechanicsPlan?> NormalizeAccumulatedStateCoreAsync(
         IReadOnlyDictionary<string, string>? backups,
         MortalItemAcceptedTurnNormalizationMode mortalItemMode,
-        AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight)
+        AcceptedMechanicsNormalizationPreflight? acceptedMechanicsPreflight,
+        MortalWoundTreatmentPublicationTakeReceipt? treatmentPublicationReceipt = null,
+        SpiritualPublicationReceipt? spiritualPublicationReceipt = null)
     {
         ArgumentNullException.ThrowIfNull(mortalItemMode);
         var guardianProjectInputs = await ReadGuardianProjectNormalizationInputsAsync(backups);
 
-        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups);
+        var mortalLocationPlan = await NormalizeMortalLocationsAsync(backups, spiritualPublicationReceipt);
         await NormalizeMortalItemsAsync(
             backups,
             mortalLocationPlan?.AcceptedStorageCoordinates,
@@ -348,8 +391,12 @@ public partial class CanonicalStateNormalizer
         await NormalizeQuestHistoryAsync(backups);
         await NormalizeRivalSoulArcsAsync(backups);
         await NormalizeSoulStateAsync(backups);
-        await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
-        await NormalizeAfterlifeEntityProfilesAsync(backups);
+        if (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeSpiritualConflictState.StatePath))
+            await NormalizeAfterlifeSpiritualConflictStateAsync(backups);
+        if (spiritualPublicationReceipt is null ||
+            !SpiritualPlanOwnsRoot(spiritualPublicationReceipt.Plan, AfterlifeEntityProfileState.StatePath))
+            await NormalizeAfterlifeEntityProfilesAsync(backups);
         await NormalizeAfterlifeActiveThreatsAsync(backups);
         await NormalizeChaosSeaGuardianPoliticsAsync(backups);
         await NormalizeAfterlifeChroniclesAsync(backups);
@@ -363,8 +410,14 @@ public partial class CanonicalStateNormalizer
         await NormalizeFactionCustomAsync(backups);
         await NormalizeFactionChroniclesAsync(backups);
         await NormalizeFactionCoreAsync(backups);
-        await NormalizeNpcCoreChangesAsync(backups);
-        await NormalizeNpcTradeCoreAsync(backups);
+        await NormalizeNpcCoreChangesAsync(
+            backups,
+            (acceptedMechanicsPreflight as
+                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
+        await NormalizeNpcTradeCoreAsync(
+            backups,
+            (acceptedMechanicsPreflight as
+                AcceptedMechanicsNormalizationPreflight.Validated)?.Plan);
         await NormalizeNpcJournalsAsync(backups);
         await NormalizeNpcInteractionJournalAsync(backups);
         await NormalizeInventoryItemsAsync(backups);
@@ -377,10 +430,12 @@ public partial class CanonicalStateNormalizer
         return acceptedMechanicsPreflight == null
             ? null
             : await PublishAcceptedMechanicsAsync(
-                backups,
-                mortalLocationPlan,
-                acceptedMechanicsPreflight,
-                normalizedAcceptedCarrierBaselines: true);
+                 backups,
+                 mortalLocationPlan,
+                 acceptedMechanicsPreflight,
+                 normalizedAcceptedCarrierBaselines: true,
+                 treatmentPublicationReceipt,
+                 spiritualPublicationReceipt);
     }
 
     private void EnsureGenericNormalizationHasNoAcceptedMechanicsAuthority()

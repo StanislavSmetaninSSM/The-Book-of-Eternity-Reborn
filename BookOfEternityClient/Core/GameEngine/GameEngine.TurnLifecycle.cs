@@ -30,6 +30,44 @@ public partial class GameEngine
         Completed
     }
 
+    /// <summary>
+    /// Preserves an accepted turn when treatment publication or committed spiritual continuation requires recovery.
+    /// </summary>
+    /// <param name="disposition">
+    /// Actual validation outcome controlling whether the caller must retain the original turn instead of rolling it back.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when the turn is retained. Treatment retries clear terminal signals;
+    /// spiritual recovery preserves the existing correlation and stops gameplay until the session is reentered.
+    /// Otherwise, <see langword="false"/> lets the caller settle its ordinary outcome.
+    /// </returns>
+    private bool PreserveAcceptedTurnForTreatmentPublicationRetry(
+        AcceptedTurnValidationDisposition disposition)
+    {
+        if (disposition is not (
+                AcceptedTurnValidationDisposition.RetryablePublicationRearmed or
+                AcceptedTurnValidationDisposition.RetryablePublicationHeldBlocked or
+                AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked))
+        {
+            return false;
+        }
+
+        if (disposition == AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked)
+            _inGame = false;
+        else
+            ClearReadySignals();
+        var message = disposition switch
+        {
+            AcceptedTurnValidationDisposition.RetryablePublicationRearmed =>
+                "[yellow]⚠ Финальная публикация лечения не завершилась. Ход и удержанный ресурс сохранены для повторного terminal signal.[/]",
+            AcceptedTurnValidationDisposition.SpiritualContinuationHeldBlocked =>
+                "[yellow]⚠ Духовный ход приостановлен. Состояние хода сохранено. Вернитесь в сессию после устранения ошибки, чтобы продолжить.[/]",
+            _ => "[yellow]⚠ Финальная публикация лечения заблокирована безопасно. Ход и удержанный ресурс сохранены; требуется перезапуск или восстановление сессии.[/]"
+        };
+        AnsiConsole.MarkupLine(message);
+        return true;
+    }
+
     private async Task<bool> WaitForGmResponse()
     {
         var sessionGeneration = await CaptureCurrentSessionGenerationAsync();
@@ -78,14 +116,22 @@ public partial class GameEngine
         {
             var signal = terminalOutcome.Signal;
             var expectedTurn = signal?.TurnNumber ?? snapshotContext?.TurnNumber ?? (_gameLoop.TurnNumber + 1);
-            if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+            var validationDisposition =
+                await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                     "ответа GM",
                     snapshotContext,
                     rollbackSnapshot,
                     expectedTurn,
-                    snapshotContext?.ProgressionControl))
+                    snapshotContext?.ProgressionControl);
+            if (validationDisposition !=
+                AcceptedTurnValidationDisposition.Accepted)
             {
                 _pendingMemoryLegacyAwaitingConsumption = false;
+                if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                        validationDisposition))
+                {
+                    return false;
+                }
                 _fs.DeleteFile("input/turn_request.json");
                 _fs.DeleteFile("ready/turn_complete.json");
                 _fs.DeleteFile("ready/turn_error.json");
@@ -271,10 +317,22 @@ public partial class GameEngine
         });
     }
 
-    private async Task RollbackRejectedAcceptedTurnAsync(RollbackSnapshot? rollbackSnapshot, string playerMessage)
+    /// <summary>
+    /// Restores the rejected turn's authenticated original state and reports whether restoration completed.
+    /// </summary>
+    /// <param name="rollbackSnapshot">
+    /// Validated original backups; a missing or empty snapshot cannot authorize restoration.
+    /// </param>
+    /// <param name="playerMessage">
+    /// Optional nonempty message displayed after successful restoration.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> after restoration and backup cleanup; <see langword="false"/> when authority is absent or restoration fails.
+    /// </returns>
+    private async Task<bool> RollbackRejectedAcceptedTurnAsync(RollbackSnapshot? rollbackSnapshot, string playerMessage)
     {
         if (!HasRollbackCapability(rollbackSnapshot))
-            return;
+            return false;
 
         try
         {
@@ -282,6 +340,7 @@ public partial class GameEngine
             CleanupBackup(rollbackSnapshot!);
             if (!string.IsNullOrWhiteSpace(playerMessage))
                 AnsiConsole.MarkupLine(playerMessage);
+            return true;
         }
         catch (SessionReplacedException)
         {
@@ -313,6 +372,7 @@ public partial class GameEngine
                 });
             AnsiConsole.MarkupLine(
                 "[yellow]⚠ Изменения мира не были приняты. Мир не удалось вернуть к устойчивой точке; продолжение остановлено.[/]");
+            return false;
         }
     }
 
@@ -821,12 +881,20 @@ public partial class GameEngine
                 }
 
                 var acceptedLateResponse = false;
-                if (await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                var validationDisposition =
+                    await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "late response GM",
                         snapshotContext,
                         rollbackSnapshot,
                         signalTurn ?? expectedTurn,
-                        snapshotContext?.ProgressionControl))
+                        snapshotContext?.ProgressionControl);
+                if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                        validationDisposition))
+                {
+                    return true;
+                }
+                if (validationDisposition ==
+                    AcceptedTurnValidationDisposition.Accepted)
                 {
                     var lateResponse = await BuildGameResponseFromFiles();
                     if (lateResponse == null || string.IsNullOrEmpty(lateResponse.Response))
@@ -839,9 +907,11 @@ public partial class GameEngine
                     if (!await ValidatePostAcceptedMaterializedStateWithRepairLoopAsync(rollbackSnapshot))
                     {
                         _fs.DeleteFile("ready/turn_complete.json");
-                        await RollbackRejectedAcceptedTurnAsync(
-                            rollbackSnapshot,
-                            "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+                        if (!await RollbackRejectedAcceptedTurnAsync(
+                                rollbackSnapshot,
+                                "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]"))
+                            return true;
+                        await CleanupCorrelatedRejectedTurnRequestAsync(snapshotContext);
                         await CleanupPendingTurnSnapshotAsync();
                         return true;
                     }
@@ -906,9 +976,11 @@ public partial class GameEngine
                 else
                 {
                     _fs.DeleteFile("ready/turn_complete.json");
-                    await RollbackRejectedAcceptedTurnAsync(
-                        rollbackSnapshot,
-                        "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]");
+                    if (!await RollbackRejectedAcceptedTurnAsync(
+                            rollbackSnapshot,
+                            "[yellow]↩ Изменения мира не были приняты; состояние до хода восстановлено.[/]"))
+                        return true;
+                    await CleanupCorrelatedRejectedTurnRequestAsync(snapshotContext);
                     await CleanupPendingTurnSnapshotAsync();
                 }
             }
@@ -1212,6 +1284,12 @@ public partial class GameEngine
             request.AfterlifeSpiritualConflictPreview = await new AfterlifeSpiritualConflictTurnPreviewService(_fs)
                 .BuildAsync(request.TurnNumber, request.PreGeneratedDices1d20, _stateManager.CurrentState.CurrentRealm);
             RegisterOrdinaryTurnStagingValidationSnapshotFiles(backedUpFiles);
+            var skillScopeAuthority = await EffectMechanicsSnapshot
+                .LoadCurrentSkillScopeAuthorityAsync(_fs);
+            request.EffectSkillScopeCatalog = skillScopeAuthority
+                .CreateGmCatalog()
+                .DeepClone()
+                .AsObject();
             var canonicalSnapshot = await CreateCanonicalBaselineSnapshotAsync(request, backedUpFiles, OrdinaryPlayerTurnSourceLabel);
 
             // Attach computed characteristics for GM reference
@@ -1341,13 +1419,21 @@ public partial class GameEngine
         }
 
         // Read and validate the response before accepting the turn
-        if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+        var validationDisposition =
+            await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                 "обработки хода",
                 activeSnapshotContext,
                 backedUpFiles,
                 request.TurnNumber,
-                request.ProgressionControl))
+                request.ProgressionControl);
+        if (validationDisposition !=
+            AcceptedTurnValidationDisposition.Accepted)
         {
+            if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                    validationDisposition))
+            {
+                return;
+            }
             _fs.DeleteFile("ready/turn_complete.json");
             _fs.DeleteFile("ready/turn_error.json");
             _fs.DeleteFile("output/ink_feather_action_result.json");
@@ -2183,13 +2269,21 @@ public partial class GameEngine
             {
                 var manifest = await LoadPendingTurnSnapshotManifestAsync();
                 var snapshotContext = await LoadValidatedPendingTurnSnapshotContextAsync(manifest);
-                if (!await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
+                var validationDisposition =
+                    await ValidateAcceptedTurnOutcomeWithRepairLoopAsync(
                         "оценки жизни",
                         snapshotContext,
                         BuildValidatedRollbackSnapshot(snapshotContext),
                         _gameLoop.TurnNumber + 1,
-                        evalRequest.ProgressionControl))
+                        evalRequest.ProgressionControl);
+                if (validationDisposition !=
+                    AcceptedTurnValidationDisposition.Accepted)
                 {
+                    if (PreserveAcceptedTurnForTreatmentPublicationRetry(
+                            validationDisposition))
+                    {
+                        return true;
+                    }
                     _fs.DeleteFile("ready/turn_complete.json");
                     await RollbackRejectedAcceptedTurnAsync(
                         BuildValidatedRollbackSnapshot(snapshotContext),

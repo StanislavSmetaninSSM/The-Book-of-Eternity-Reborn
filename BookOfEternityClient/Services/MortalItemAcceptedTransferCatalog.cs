@@ -32,12 +32,37 @@ internal sealed record MortalItemAcceptedTransferCatalog(
     internal const string PlayerRemovalPath = "game_state/inventory/item_removals.json";
     internal const string NpcCommandsPath = "game_state/npcs/npc_inventory.json";
 
+    /// <summary>
+    /// Derives accepted item transfers from authenticated previous carriers and selected current commands.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem for ordinary current reads and lease validation.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="previous">
+    /// Authenticated pre-turn item carriers.
+    /// </param>
+    /// <param name="current">
+    /// Current item carriers selected by the caller.
+    /// </param>
+    /// <param name="acceptedTurn">
+    /// Turn assigned to accepted transfers.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current commands for private original intake, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Accepted transfer candidates and validation issues.
+    /// </returns>
     internal static async Task<MortalItemAcceptedTransferCatalog> BuildAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease? writeLease,
         MortalItemCarrierCatalog previous,
         MortalItemCarrierCatalog current,
-        int acceptedTurn)
+        int acceptedTurn,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
         ArgumentNullException.ThrowIfNull(fs);
         ArgumentNullException.ThrowIfNull(previous);
@@ -46,9 +71,9 @@ internal sealed record MortalItemAcceptedTransferCatalog(
         var player = await ReadObjectAsync(
             fs,
             writeLease,
-            InventoryEquipmentService.ItemsPath);
-        var npcCommands = await ReadObjectAsync(fs, writeLease, NpcCommandsPath);
-        var playerRemovals = await ReadObjectAsync(fs, writeLease, PlayerRemovalPath);
+            InventoryEquipmentService.ItemsPath, currentInputs);
+        var npcCommands = await ReadObjectAsync(fs, writeLease, NpcCommandsPath, currentInputs);
+        var playerRemovals = await ReadObjectAsync(fs, writeLease, PlayerRemovalPath, currentInputs);
         var destinations = CollectDestinations(player, npcCommands);
         var removals = CollectRemovals(playerRemovals, npcCommands);
         var issues = new List<ValidationIssue>();
@@ -447,12 +472,39 @@ internal sealed record MortalItemAcceptedTransferCatalog(
                value > 0;
     }
 
+    /// <summary>
+    /// Parses one selected current command root without redirecting pre-turn reads.
+    /// </summary>
+    /// <param name="fs">
+    /// Real filesystem for lease validation and ordinary reads.
+    /// </param>
+    /// <param name="writeLease">
+    /// Active canonical lease for retained intake, or <see langword="null"/> for ordinary reads.
+    /// </param>
+    /// <param name="path">
+    /// Exact current command path.
+    /// </param>
+    /// <param name="currentInputs">
+    /// Retained current view, or <see langword="null"/> for physical reads.
+    /// </param>
+    /// <returns>
+    /// Parsed object, or <see langword="null"/> for an absent, blank or malformed carrier.
+    /// </returns>
     private static async Task<JsonObject?> ReadObjectAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease? writeLease,
-        string path)
+        string path,
+        SpiritualOriginalDraftInputs? currentInputs = null)
     {
-        var json = writeLease == null
+        string? json;
+        if (currentInputs != null)
+        {
+            if (writeLease == null)
+                throw new InvalidOperationException("Original current inputs require a real canonical lease.");
+            fs.EnsureCanonicalWriteLeaseActive(writeLease);
+            json = currentInputs.ReadText(path);
+        }
+        else json = writeLease == null
             ? await fs.ReadFileAsync(path)
             : await fs.ReadFileAsync(writeLease, path);
         if (string.IsNullOrWhiteSpace(json))

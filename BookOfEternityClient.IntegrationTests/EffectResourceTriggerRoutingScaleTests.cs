@@ -6,7 +6,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class EffectResourceTriggerRoutingScaleTests
+public sealed partial class EffectResourceTriggerRoutingScaleTests
 {
     private const string FingerprintA =
         "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -673,6 +673,82 @@ public sealed class EffectResourceTriggerRoutingScaleTests
     }
 
     [Fact]
+    public void IdentityHistoryOwner_TwoConsumingDuplicateChildrenKeepReplacementAuthorityFailure()
+    {
+        const string childKey = "identity_owner_collision_replacement";
+        var child = EffectMaterializationTestFixture.CreateDefinition("periodic_restore");
+        child["definitionKey"] = childKey;
+        child["stacking"]!["policy"] = "replace";
+        child["stacking"]!["maxStacks"] = 1;
+        child["stacking"]!["atMaximum"] = "no_change";
+        var fixture = CreateAcceptedEventBudgetFixture(
+            remainingUses: 2,
+            current: 10m,
+            reactionResultKind: "apply_definition",
+            applyDefinitionSource: child,
+            distinctReactionPerTrigger: true,
+            triggerSpecs: new[]
+            {
+                new BudgetTriggerSpec("trigger_budget_replace_10_first", "resource_damaged",
+                    Priority: 10, IncludePeriodic: false, IncludeReaction: true),
+                new BudgetTriggerSpec("trigger_budget_replace_20_second", "resource_damaged",
+                    Priority: 20, IncludePeriodic: false, IncludeReaction: true)
+            });
+        var damage = CreateBudgetMutation(fixture.Coordinate,
+            "turn_43:budget:identity_owner_duplicate_children", ResourceOperation.Damage, amount: 2m);
+        var factory = new IdentityOwnerDuplicateChildFactory();
+        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { damage }, factory);
+        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
+        var transcript = result.Resources.EffectBoundaryTranscript;
+        var accepted = transcript.AcceptedActivations
+            .OrderBy(value => value.Activation.Stamp.ActivationOrdinal).ToArray();
+        Assert.Equal(2, accepted.Length);
+        Assert.Single(accepted.Select(value => value.Boundary.BoundaryOrdinal).Distinct());
+        Assert.Equal(new int?[] { 2, 1 }, accepted.Select(value => value.Activation.Stamp.UsesBefore));
+        var releases = transcript.ReleasedReactions.OrderBy(value => value.MechanicsOrdinal).ToArray();
+        Assert.Equal(2, releases.Length);
+        Assert.All(releases, release =>
+        {
+            Assert.Equal("apply_definition", release.Reaction.ResultKind);
+            Assert.Equal(childKey, release.Reaction.DownstreamSourceKey?.DefinitionKey);
+        });
+        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(result.Finalized);
+        Assert.False(finalized.Success);
+        Assert.Null(finalized.Plan);
+        var issue = Assert.Single(finalized.Issues);
+        Assert.Equal("effect_reaction_replacement_authority_invalid", issue.Code);
+        Assert.Equal(releases[1].Reaction.EventRef, issue.Actual);
+        // First release passed agreement; second failed there. No consume allocation
+        // or final canonical validation occurred, and no writer exception escaped.
+        Assert.Equal(new[] { "effect", "transition", "transition", "effect", "transition", "transition" },
+            factory.Kinds);
+        Assert.Equal(new[] { "effect_identity_owner_duplicate_child", "effect_identity_owner_duplicate_child" },
+            factory.EffectIds);
+    }
+
+    private sealed class IdentityOwnerDuplicateChildFactory : EffectIdentityFactory
+    {
+        internal List<string> Kinds { get; } = new();
+        internal List<string> EffectIds { get; } = new();
+        private int _transitions;
+        internal override string CreateEffectId()
+        {
+            const string id = "effect_identity_owner_duplicate_child";
+            Kinds.Add("effect");
+            EffectIds.Add(id);
+            return id;
+        }
+        internal override string CreateTransitionId()
+        {
+            Kinds.Add("transition");
+            return "effect_transition_identity_owner_duplicate_child_" + ++_transitions;
+        }
+    }
+
+    /// <summary>
+    /// Preserves the historical accepted-boundary result when two consuming reactions replace the same effect stack.
+    /// </summary>
+    [Fact]
     public void AcceptedBoundary_TwoConsumingSameStackReplacementsRecordBothUsesBeforeOriginalReplace()
     {
         const string replacementDefinitionKey =
@@ -709,10 +785,16 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "turn_43:budget:two_consuming_replacements",
             ResourceOperation.Damage,
             amount: 2m);
+        var resourceIdentityFactory =
+            new ScenarioOneRecordingResourceIdentityFactory();
+        var effectIdentityFactory =
+            new ScenarioOneRecordingEffectIdentityFactory();
 
         var result = BuildAcceptedEventBudgetPlan(
             fixture,
-            new[] { rootDamage });
+            new[] { rootDamage },
+            effectIdentityFactory,
+            resourceIdentityFactory);
 
         Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
         var transcript = result.Resources.EffectBoundaryTranscript;
@@ -813,6 +895,11 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             finalEffect["source"]!["definitionKey"]!.GetValue<string>());
         Assert.Equal("turns", finalEffect["lifetime"]!["mode"]!.GetValue<string>());
         Assert.Equal(3, finalEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
+        AssertScenarioOneLegacyGolden(
+            result,
+            finalizedPlan,
+            resourceIdentityFactory,
+            effectIdentityFactory);
     }
 
     [Fact]
@@ -2375,6 +2462,61 @@ public sealed class EffectResourceTriggerRoutingScaleTests
     }
 
     [Fact]
+    public void AcceptedEventArbiterBoundary_ZeroAppliedChildDoesNotSatisfyAfterComponentReaction()
+    {
+        var fixture = CreateAcceptedEventBudgetFixture(
+            remainingUses: 1,
+            current: 10m,
+            reactionDependency: "after_component",
+            reactionAfterComponentId: "component_budget_periodic",
+            triggerSpecs: new[]
+            {
+                new BudgetTriggerSpec(
+                    "trigger_budget_zero_applied_after_component",
+                    "resource_spent",
+                    Priority: 10,
+                    IncludePeriodic: true,
+                    IncludeReaction: true)
+            });
+        var producerBaseline = AddBudgetProducerResource(fixture);
+        fixture = producerBaseline.Fixture;
+        var rootSpend = CreateBudgetMutation(
+            producerBaseline.Coordinate,
+            "turn_43:budget:zero_applied_after_component",
+            ResourceOperation.Spend,
+            amount: 2m);
+
+        var result = BuildAcceptedEventBudgetPlan(fixture, new[] { rootSpend });
+
+        Assert.True(result.Resources.IsValid, Format(result.Resources.Issues));
+        Assert.Single(
+            result.Resources.AppliedTransitions,
+            static transition =>
+                transition.Phase == ResourceMutationPhase.EffectTrigger &&
+                transition.RequestedAmount > 0m &&
+                transition.AppliedAmount == 0m);
+        Assert.Contains(
+            result.Resources.Events,
+            static resourceEvent =>
+                string.Equals(
+                    resourceEvent.EventKind,
+                    "resource_restored",
+                    StringComparison.Ordinal) &&
+                resourceEvent.AppliedAmount == 0m);
+        var execution = Assert.Single(result.Resources.ResourceTriggerExecutions);
+        Assert.Empty(execution.MutationKeys);
+        Assert.Empty(execution.ComponentIds ?? Array.Empty<string>());
+        Assert.Empty(result.Resources.EffectBoundaryTranscript.ReleasedReactions);
+        Assert.Empty(result.Resources.AcceptedReactionExecutions);
+        Assert.Empty(result.Resources.AcceptedPendingResolutions);
+
+        var finalized = Assert.IsType<EffectAcceptedTurnPlanningResult>(
+            result.Finalized);
+        Assert.True(finalized.Success, Format(finalized.Issues));
+        Assert.Equal(0, finalized.Plan!.ReactionExpansionCount);
+    }
+
+    [Fact]
     public void AcceptedEventArbiterBoundary_DueLifecycleReactionOnlyConsumesUseOnceAcrossFinalize()
     {
         var fixture = CreateAcceptedEventBudgetFixture(
@@ -3204,6 +3346,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "periodic_restore");
         effect["effectId"] = effectId;
         effect["target"]!["targetId"] = npcId;
+        effect["source"]!["kind"] = "quest";
         effect["source"]!["sourceId"] = sourceId;
         effect["chronology"]!["createdEventRef"] =
             "turn_42:many_runtime_triggers";
@@ -3317,7 +3460,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         sourceId,
                         new JsonArray(definition.DeepClone()),
                         Materializable: true,
@@ -3331,7 +3474,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var binding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 sourceId,
                 EffectMaterializationTestFixture.DefinitionKey),
             "npc");
@@ -3446,10 +3589,29 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 definitions));
     }
 
+    /// <summary>
+    /// Builds and completes one accepted event-budget plan with optional deterministic identity factories.
+    /// </summary>
+    /// <param name="fixture">
+    /// The accepted effect, resource, and authority fixture used by the boundary.
+    /// </param>
+    /// <param name="mutations">
+    /// The root resource mutations to execute before effect completion.
+    /// </param>
+    /// <param name="finalizationFactory">
+    /// The effect identity factory used during completion, or <see langword="null"/> to use the production default.
+    /// </param>
+    /// <param name="resourceIdentityFactory">
+    /// The resource identity factory used during mutation execution, or <see langword="null"/> to use the deterministic test default.
+    /// </param>
+    /// <returns>
+    /// The resource result, accepted reactions, and completed effect result for the boundary.
+    /// </returns>
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
         AcceptedEventBudgetFixture fixture,
         IReadOnlyList<ResourceMutationIntent> mutations,
-        EffectIdentityFactory? finalizationFactory = null)
+        EffectIdentityFactory? finalizationFactory = null,
+        AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null)
     {
         return BuildAcceptedEventBudgetPlan(
             fixture,
@@ -3458,7 +3620,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             Array.Empty<
                 EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>(),
             EffectAcceptedTurnPlanner.EffectResourceResolutionWork.Empty,
-            finalizationFactory);
+            finalizationFactory,
+            resourceIdentityFactory);
     }
 
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
@@ -3478,6 +3641,33 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             finalizationFactory: null);
     }
 
+    /// <summary>
+    /// Executes the supplied resource work and completes its accepted effect-boundary transcript.
+    /// </summary>
+    /// <param name="fixture">
+    /// The accepted effect, resource, and authority fixture used by the boundary.
+    /// </param>
+    /// <param name="mutations">
+    /// The resource mutations to execute.
+    /// </param>
+    /// <param name="sources">
+    /// The admitted resource mutation source catalog.
+    /// </param>
+    /// <param name="initialTriggerCandidates">
+    /// Trigger candidates already retained before resource execution starts.
+    /// </param>
+    /// <param name="initialWork">
+    /// Effect resource work already retained before resource execution starts.
+    /// </param>
+    /// <param name="finalizationFactory">
+    /// The effect identity factory used during completion, or <see langword="null"/> to use the production default.
+    /// </param>
+    /// <param name="resourceIdentityFactory">
+    /// The resource identity factory used during mutation execution, or <see langword="null"/> to use the deterministic test default.
+    /// </param>
+    /// <returns>
+    /// The resource result, accepted reactions, and completed effect result for the boundary.
+    /// </returns>
     private static AcceptedEventBudgetResult BuildAcceptedEventBudgetPlan(
         AcceptedEventBudgetFixture fixture,
         IReadOnlyList<ResourceMutationIntent> mutations,
@@ -3486,7 +3676,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             EffectAcceptedTurnPlanner.EffectResourceTriggerCandidate>
             initialTriggerCandidates,
         EffectAcceptedTurnPlanner.EffectResourceResolutionWork initialWork,
-        EffectIdentityFactory? finalizationFactory)
+        EffectIdentityFactory? finalizationFactory,
+        AcceptedMechanicsIdentityFactory? resourceIdentityFactory = null)
     {
         EffectAcceptedTurnPlanner.EffectPeriodicResourceResolution Resolve(
             ResourceAppliedEvent resourceEvent,
@@ -3514,7 +3705,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 EffectPlanAuthority:
                     AcceptedMechanicsPlanner.CreateEffectPlanAuthority(
                         fixture.Plan)),
-            IdentityFactory());
+            resourceIdentityFactory ?? IdentityFactory());
         if (!resources.IsValid)
         {
             return new AcceptedEventBudgetResult(
@@ -3839,6 +4030,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "player",
             "periodic_restore");
         oldEffect["effectId"] = oldEffectId;
+        oldEffect["source"]!["kind"] = "quest";
         oldEffect["source"]!["sourceId"] = rootSourceId;
         oldEffect["source"]!["definitionKey"] = rootDefinitionKey;
         oldEffect["stacking"]!["stackKey"] = sharedStackKey;
@@ -3849,6 +4041,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "player",
             "action_control");
         siblingEffect["effectId"] = siblingEffectId;
+        siblingEffect["source"]!["kind"] = "quest";
         siblingEffect["source"]!["sourceId"] = siblingSourceId;
         siblingEffect["source"]!["definitionKey"] = siblingDefinitionKey;
         siblingEffect["stacking"]!["stackKey"] = siblingStackKey;
@@ -3864,7 +4057,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         rootSourceId,
                         new JsonArray(
                             rootDefinition.DeepClone(),
@@ -3874,7 +4067,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                         SameTurn: false),
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         siblingSourceId,
                         new JsonArray(siblingDefinition.DeepClone()),
                         Materializable: true,
@@ -3939,14 +4132,14 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var rootBinding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 rootSourceId,
                 rootDefinitionKey),
             "player");
         var siblingBinding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 siblingSourceId,
                 siblingDefinitionKey),
             "player");
@@ -4066,6 +4259,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             "periodic_restore");
         effect["effectId"] = effectId;
         effect["target"]!["targetId"] = npcId;
+        effect["source"]!["kind"] = "quest";
         effect["source"]!["sourceId"] = sourceId;
         effect["chronology"]!["createdEventRef"] =
             "turn_42:accepted_event_budget";
@@ -4075,10 +4269,8 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var periodic = effect["components"]![0]!.DeepClone().AsObject();
         periodic["componentId"] = periodicComponentId;
         periodic["payload"]!["amount"] = 3;
-        var dependentPeriodic = string.Equals(
-                reactionResultKind,
-                "trigger_component",
-                StringComparison.Ordinal)
+        var dependentPeriodic = reactionResultKind is
+                "trigger_component" or "bounded_receipt"
             ? EffectMaterializationTestFixture
                 .CreateDefinition("periodic_damage")["components"]![0]!
                 .DeepClone()
@@ -4116,10 +4308,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             };
             if (reactionAfterComponentId != null)
                 payload["afterComponentId"] = reactionAfterComponentId;
-            if (string.Equals(
-                    resultKind,
-                    "trigger_component",
-                    StringComparison.Ordinal))
+            if (resultKind is "trigger_component" or "bounded_receipt")
             {
                 Assert.NotNull(dependentPeriodic);
                 payload["componentId"] = dependentPeriodicComponentId;
@@ -4293,7 +4482,10 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         if (competingEffect != null)
             activeEffects.Add(competingEffect);
         if (frozenReplacementTargetEffect != null)
+        {
+            frozenReplacementTargetEffect["source"]!["kind"] = "quest";
             activeEffects.Add(frozenReplacementTargetEffect);
+        }
         var carriers = CreateNpcCarriers(npcId, activeEffects);
         var sourceDefinitions = new JsonArray(definition.DeepClone());
         if (competingDefinition != null)
@@ -4308,7 +4500,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
                 {
                     new EffectSourceExport(
                         "mortal_world",
-                        "wound",
+                        "quest",
                         sourceId,
                         sourceDefinitions,
                         Materializable: true,
@@ -4322,7 +4514,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
         var binding = sourceAuthority.ResolveCanonicalBinding(
             new EffectSourceKey(
                 "mortal_world",
-                "wound",
+                "quest",
                 sourceId,
                 EffectMaterializationTestFixture.DefinitionKey),
             "npc");
@@ -4336,7 +4528,7 @@ public sealed class EffectResourceTriggerRoutingScaleTests
             var competingBinding = sourceAuthority.ResolveCanonicalBinding(
                 new EffectSourceKey(
                     "mortal_world",
-                    "wound",
+                    "quest",
                     sourceId,
                     competingDefinitionKey),
                 "npc");

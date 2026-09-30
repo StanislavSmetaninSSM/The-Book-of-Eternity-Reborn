@@ -4,13 +4,181 @@
 
 **Created**: 2026-07-31
 
-**Status**: Approved; amended from bounded implementation evidence
+**Status**: Category-selection revision 1 approved by the owner on 2026-09-30; historical lane design superseded.
 
 **Input**: Reduce the 40–60 minute C# test-suite runtime without weakening production validation or test coverage, and provide predictable local verification lanes.
 
+## CATEGORY-SELECTION-DECISION, редакция 1 — утверждена владельцем (2026-09-30)
+
+### Источник, результат и границы
+
+Задачи: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505)
+и текущая [#1536](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1536).
+Отслеживание: `T065-CATEGORY-STRATEGY-SPEC` в `tasks.md` этой особенности.
+Прямое указание владельца уже остановило прежние широкие проверки. Эта редакция
+определяет конкретное устройство новой среды. Владелец подтвердил эту точную
+редакцию ответом «подтверждаю»; реализация разрешена после согласования артефактов.
+
+Исполнитель выбирает тесты по затронутым областям и контрактам. Категории
+развиваются вместе с проектом: исполнитель самостоятельно добавляет, разделяет,
+переименовывает и удаляет устаревшие категории в рамках текущей задачи.
+Не нужен заранее закрытый перечень имён или отдельное согласование каждой новой
+категории. Общие правила качества и независимое ревью изменений сохраняются.
+
+Область работы: каталог и отбор тестов, ограниченный исполнитель проверок,
+правила фикстур, тестовая документация, инструкции агентам, локальные команды
+и CI. Классификация охватывает существующие C# и frontend-тесты; сборка,
+typecheck и получение списка тестов сами по себе не являются полным прогоном.
+Игровые возможности, GM-контракты и производственная семантика не изменяются.
+Перераспределение тестов не разрешает удалять уникальные проверки ради скорости.
+
+### Пользовательские сценарии
+
+1. Исполнитель изменяет одну механику, читает каталог и выбирает категории этой
+   механики и затронутых взаимодействий. В плане запуска видны основания выбора;
+   другие области не запускаются автоматически.
+2. Новые сценарии уже не соответствуют назначению существующей категории или
+   делают её чрезмерно долгой. Исполнитель создаёт отдельную категорию либо
+   разделяет прежнюю, обновляет описание и связи, затем запускает нужные части.
+3. Меняется общий механизм сохранения, валидации или публикации. Исполнитель
+   прослеживает потребителей изменённого контракта и выбирает их проверки вместе
+   с соответствующими сквозными сценариями. Непонятное влияние требует изучения
+   зависимостей, а не автоматического запуска всех тестов.
+4. Следующий агент с чистым контекстом находит назначение категории, её тесты,
+   причины выбора, подготовку окружения, команду запуска и результаты без чтения
+   старого диалога или внутренностей большого скрипта.
+
+### Требования
+
+- **CAT-001 — Открытый каталог.** Одна актуальная точка входа перечисляет
+  категории и позволяет найти их по области ответственности. Для каждой нужны:
+  текущее уникальное имя; что она проверяет и что находится вне её границ;
+  воспроизводимый состав тестов; покрываемые модули/контракты; связанные категории
+  и условия их совместного выбора; необходимое окружение; ограничения ресурсов
+  и параллелизма; команда просмотра состава и запуска; измеренное время либо
+  честная пометка, что время ещё не измерено. Имена служат текущими адресами,
+  но не обещанием вечной совместимости. При переименовании все активные ссылки
+  обновляются в том же изменении. Добавление категории не требует правки
+  закрытого перечня допустимых имён в общем исполнителе.
+- **CAT-002 — Смысловые границы.** Категория отвечает за понятное поведение или
+  контракт, а не просто за скорость, тип процесса или весь тестовый проект.
+  При расширении исполнитель сверяет новые случаи с её назначением. При смешении
+  независимых обязанностей или чрезмерном времени он разделяет категорию.
+  Интеграционные, процессные и сквозные тесты могут входить в предметные категории;
+  технические требования их исполнения учитываются отдельно. Нового аналога
+  бесконечно растущего Fast/PreMerge под другим именем быть не должно.
+- **CAT-003 — Выбор по влиянию.** Перед запуском исполнитель фиксирует короткую
+  связь «изменение → затронутый контракт/потребитель → выбранные категории» в
+  существующем плане или записи проверки. Учитываются изменения тестовых helpers,
+  фикстур, общих механизмов, документов, примеров и сборочной конфигурации.
+  Сопоставление путей помогает навигации, но не заменяет проверку зависимостей.
+  Межкатегорийные связи описывают причину и условие выбора; они не означают
+  безусловный транзитивный запуск всего связанного графа. Ревьюер проверяет и
+  достаточность выбора, и необоснованное включение чужих областей.
+- **CAT-004 — Никакого полного контроля.** Нет обязательного или автоматического
+  запуска всех тестов ни во время разработки, ни перед слиянием/релизом, ни по
+  расписанию, ни в CI. Нет скрытого эквивалента через последовательный запуск
+  всех категорий, wildcard или fallback на весь проект при пустом/ошибочном
+  выборе. Старые Fast/PreMerge/Complete и подобные агрегаты выводятся из активного
+  интерфейса; оставшийся устаревший вызов должен объяснять миграцию и завершаться
+  без тестов, а не запускать широкий набор. Запуск без выбора показывает помощь
+  или каталог. Даже для общего механизма обосновывается набор проверяемых
+  контрактов и подходящих сквозных категорий; весь набор не служит страховкой.
+- **CAT-005 — Проверяемый состав.** Все обнаруживаемые тесты принадлежат хотя бы
+  одной документированной категории. Несколько принадлежностей допустимы, но
+  объединённый запуск выполняет каждый случай один раз. Проверка метаданных и
+  обнаружения тестов выявляет потерянные тесты, неизвестные категории, пустые
+  или устаревшие селекторы и неоднозначные ссылки без исполнения всего набора.
+  Динамические строки параметризованных тестов учитываются корректно: отсутствие
+  строки в раннем обнаружении не выдаётся за пропуск или успешное исполнение.
+- **CAT-006 — Честный результат.** До запуска видны категории и состав отбора.
+  После сохраняются план, фактически выполненный состав, результаты, пропуски,
+  ошибки, время и очистка. Успех означает завершение всего выбранного набора;
+  ненулевой частичный результат или ноль тестов не означают успех. Межпроектные
+  категории не теряют тесты из-за фильтра, применённого только к одному проекту.
+  Свидетельство проверки привязано к проверенной версии изменений.
+- **CAT-007 — Ограниченное время.** Каждый запуск ограничен явным бюджетом;
+  категория документирует ожидаемую длительность и защитный предел. Время
+  подготовки, сборки и очистки видно отдельно от исполнения и входит в общий
+  бюджет команды. Основной способ удерживать короткую обратную связь — выбирать
+  нужные области, поддерживать небольшие связные категории и упрощать подготовку.
+  Регулярно долгая категория требует анализа и разделения по смыслу, а не
+  автоматического увеличения тайм-аута. Часовые штатные прогоны не допускаются.
+  Конкретные стартовые бюджеты определяются в плане по существующим измерениям;
+  на стадии спецификации новая универсальная цифра не вводится.
+- **CAT-008 — Изоляция фикстур.** По умолчанию тест получает собственное изменяемое
+  состояние, временные каталоги, сервисы и жизненный цикл. Общие изменяемые
+  объекты, результаты предыдущего теста, порядок тестов, активные владельцы,
+  lease, транзакции и процессы не используются как кэш для других тестов.
+  Кэширование не является обязательной стратегией оптимизации. Существующие
+  кэши проходят предметную проверку; рискованные или неоправданно сложные
+  заменяются независимой подготовкой. Повторное использование закрытого
+  неизменяемого шаблона допустимо лишь при измеренной пользе, полной копии
+  изменяемых данных, ключе всех влияющих параметров и доказанной независимости
+  тестов. Уничтожение или изменение одной копии не влияет на другую; холодное
+  восстановление и исходная подготовка реально исполняются там, где проверяются.
+  Не требуется ни удалять безопасные шаблоны вслепую, ни строить новый общий кэш.
+- **CAT-009 — Понятная среда.** `docs/testing.md` становится краткой точкой входа:
+  как выбрать категории, добавить/разделить категорию, добавить тест, подготовить
+  зависимости, увидеть отбор, запустить его, прочитать ошибку и проверить очистку.
+  Каталог и шаблон новой категории дают конкретные примеры. Инструкции агентам,
+  workflow, активные Spec Kit-планы и CI согласованы; устаревшие требования
+  обязательного Fast/PreMerge/FullValidation не остаются действующими обходами.
+  Для GM-документации выбираются связанные проверки документации/примеров.
+  Наличие frontend-теста не заставляет выполнять все frontend-тесты.
+- **CAT-010 — Сохранённые гарантии.** Сохраняются проверки атомарности, полномочий,
+  повторного применения, холодного восстановления и другие уникальные сценарии;
+  сохраняются ограничение ресурсов, безопасная очистка только принадлежащих
+  запуску процессов и каталогов, журналирование и обязательное независимое ревью.
+  Новая категоризация не требует изменения production-кода или GM-промптов.
+
+### Рассмотренные подходы
+
+Рекомендуется документированный расширяемый каталог с проверяемым составом и
+осознанным выбором исполнителя. Одни произвольные фильтры проще, но не дают
+следующему агенту понятных границ и не выявляют забытые тесты. Полностью
+автоматический выбор по изменённым файлам дороже и может не учитывать семантическую
+зависимость; такой механизм не требуется для первой версии. Каталог не должен
+превращаться в отдельный сложный продукт управления тестами.
+
+### Критерии приёмки
+
+1. Инвентаризация подтверждает принадлежность всех текущих обнаруживаемых C# и
+   frontend-тестов описанным категориям без исполнения полного набора. Каждый
+   уникальный существующий сценарий остаётся доступен; исключения не скрываются.
+2. На примерах локальной игровой правки, изменения общего контракта и обновления
+   документации исполнитель получает объяснимый выбор категорий и выполняет
+   только выбранное. Связанные отрицательные и сквозные проверки сохраняются.
+3. Исполнитель добавляет и разделяет категорию по инструкции без изменения
+   закрытого списка в runner; состав, описания и ссылки остаются согласованными.
+4. Ошибка имени, пустой отбор, необнаруженный тест, повторная принадлежность,
+   динамические строки, межпроектный отбор, падение/тайм-аут и незавершённая очистка
+   получают корректные результаты. Ни один такой случай не включает все тесты.
+5. Проверка локальных и CI-entrypoints подтверждает отсутствие полного запуска
+   или обязательных широких агрегатов; миграция проверяется обнаружением состава
+   и адресными тестами инфраструктуры, без «последнего полного контрольного».
+6. Для реально выбранных проверок сохранены состав, время и результаты.
+   Существующие кэши классифицированы с решением оставить/упростить/удалить;
+   изменённые фикстуры проверены на независимость и требуемую холодную подготовку.
+7. План и задачи согласованы до реализации. Законченный блок проходит отдельное
+   Astra XHigh ревью кода, документации, выбора проверок и доказательств. После
+   выполнения — отчёт владельцу и остановка; разработка ран сама не возобновляется.
+
+### Статус прежних решений и следующий этап
+
+Эта редакция заменяет прежнюю стратегию обязательных Fast/PreMerge и отдельных
+полных диагностических матриц, включая TEST-LANE-BOUNDARY-DECISION rev1 в #1536.
+Исторические требования и результаты ниже сохранены для прослеживаемости; они
+не разрешают возобновлять остановленные широкие прогоны. Имена будущих категорий,
+их начальный состав, формат каталога и конкретные бюджеты определяет следующий
+план по фактической структуре проекта. Это рабочие решения исполнителя, а не
+новый навсегда утверждаемый перечень имён. Редакция утверждена; новая реализация
+следует актуальному разделу `plan.md` и задачам T066–T071, а не историческим
+широким контролям ниже.
+
 ## Source Issues & Scope
 
-- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547)
+- **Source GitHub issue(s)**: [#1505](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1505); Phase 45 capacity amendment [#1502](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1502); suite-growth scheduling correction [#1526](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1526); measured deadline correction [#1547](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1547); Fast project-boundary repair [#1551](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1551)
 - **Issue type**: Test-infrastructure performance, reliability, and developer experience.
 - **Spec Kit justification**: The implementation spans the production validation orchestrator, a large multi-file guardian regression suite, test classification and source guards, verification scripts or documentation, and performance evidence across multiple sessions.
 - **Contract scope**: Internal validation orchestration and test infrastructure. There is no player-facing, GM-facing, gameplay, canonical-state schema, console, browser, frontend, prompt, documentation-example, or afterlife contract change.
@@ -76,6 +244,19 @@ raises only the globally bounded PreMerge deadline to 30 minutes. It does not
 remove coverage or change filters, cases, assertions, scheduling phases,
 ordering, or concurrency ceilings.
 
+Later Fast growth exposed a separate physical-boundary regression under #1551.
+The lane now discovers 7,797 cases across 29 descriptors and reaches its
+five-minute hard stop. Four isolated mixed Fast descriptors measured about
+3:30, 3:55, 1:05, and 4:00 without build time. Their dominant classes perform
+canonical file/restart/rollback lifecycles, real worker execution, in-process
+HTTP hosting, browser transport parity, lease contention, or large file-backed
+state-machine workflows. Detached wound/effect parsers, reducers, contracts,
+and source guards remain comparatively cheap. This amendment restores the
+already-approved physical project boundary: semantic integration sources move
+to Integration with explicit categories, while deterministic logic extracted
+from a mixed source remains in Fast. The five-minute limit, runner filters,
+process ceilings, test cases, and assertions remain unchanged.
+
 ## User Scenarios & Testing
 
 ### User Story 1 - Fast Rule-Focused Guardian Tests (Priority: P1)
@@ -134,7 +315,8 @@ changed boundary, and one final PreMerge control.
    command runs, **then** it selects only
    `BookOfEternityClient.Tests.csproj`, uses no category-exclusion filter,
    cannot discover integration tests, and completes within five minutes on the
-   baseline Windows machine.
+   baseline Windows machine, with approximately three minutes as the preferred
+   operating target so normal suite growth retains headroom.
 2. **Given** a validation-orchestration change, **when** the documented full-validation command runs, **then** all intentional full-pipeline sentinels can be selected explicitly.
 3. **Given** a file-backed Guardian, Explorer, GameEngine, browser-command, or host change, **when** the regression-integration lane runs, **then** its workflow regressions are selected explicitly without destabilizing the Fast lane.
 4. **Given** a process-host or end-to-end change, **when** its documented lane runs, **then** process-starting tests are selected explicitly and retain bounded cleanup.
@@ -190,6 +372,11 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   must terminate only the run's owned process tree and must not target
   unrelated developer processes.
 - Performance evidence must distinguish `dotnet test` startup wall time from runner-reported test duration and use the same build configuration for comparisons.
+- A measured slow class may mix deterministic logic with file-backed lifecycle
+  tests. The deterministic portion remains in Fast under a fixture-free test
+  class, while the canonical I/O portion moves to Integration; no row or
+  assertion may be duplicated, deleted, skipped, or hidden behind a negative
+  Fast filter.
 
 ## Requirements
 
@@ -216,7 +403,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   `PreMerge`.
 - **FR-013**: The fast lane MUST select the physically isolated fast project
   directly, without a slow-category exclusion filter, and that project MUST NOT
-  discover integration sources.
+  discover integration sources. Exact source guards MUST name every reviewed
+  integration-heavy source and fail if it is copied back into Fast or loses its
+  required diagnostic category.
 - **FR-014**: DeepValidation MUST select the Integration-only union of
   FullValidation and DeepValidation, excluding LifecycleIntegration,
   ProcessIntegration, and E2E. LifecycleIntegration MUST select the complete
@@ -234,9 +423,17 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   that drains before any remaining parallel descriptor starts. The remaining
   descriptors MUST then use the ordinary scheduler, and ProcessIntegration/E2E
   phase membership and ordering MUST remain unchanged.
-  PreMerge's lane-wide hard limit MUST be 30 minutes. Every other lane timeout,
-  external-process ceiling, filter, case, assertion, and phase boundary MUST
-  remain unchanged.
+  Under the owner-approved #1536 test-performance split of 2026-09-30,
+  PreMerge MUST retain a fixed, reviewed set of complete-path cutover
+  sentinels while the full 704 ordinary AfterlifeResourceCutoverTests cases
+  move to a separate SpiritualCutoverIntegration lane. The five cutover
+  ProcessIntegration cases MUST remain in their existing exclusive phase.
+  Each complete run MUST distinguish planned cases and descriptors from
+  completed TRX counts; partial results MUST NOT be reported as a complete
+  control. Both PreMerge and the separate cutover lane MUST retain a
+  30-minute hard limit until a measured, exact amendment is approved.
+  Every other existing lane timeout, external-process ceiling, filter,
+  case, assertion, and phase boundary MUST remain unchanged.
 - **FR-015**: Performance comparisons and final controls MUST use bounded
   execution, retain JSON/TRX/log results, detect cross-descriptor duplicate test
   IDs, and verify cleanup of owned child processes.
@@ -244,6 +441,20 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
   `Microsoft.NET.Test.Sdk`; IntegrationTests MUST NOT reference Tests; every
   partial test class MUST belong to exactly one test project.
 - **FR-016**: Production validation rules, canonical-state schemas, issue codes, player-facing behavior, GM prompts, gameplay documentation, worked examples, console behavior, and browser behavior MUST remain unchanged.
+- **FR-018**: Test placement MUST be determined by behavior rather than elapsed
+  time alone. Canonical file/restart/rollback/lifecycle and lease-contention
+  workflows MUST use `RegressionIntegration`; real child-process workflows MUST
+  use `ProcessIntegration`; true host/browser end-to-end workflows MUST use
+  `E2E`; detached deterministic unit, parser, reducer, contract, and source-guard
+  coverage MUST remain in Fast. A mixed source MUST be split at that semantic
+  boundary when moving it wholesale would remove meaningful deterministic
+  feedback from Fast. Exact executable Roslyn manifests MUST preserve each QTE
+  and Daren Fact/Theory method and InlineData row once across that split, and
+  category ownership MUST be read from class-level attributes on the expected
+  test class rather than source-text tokens or method-level traits. Measured
+  duration MUST NOT override this taxonomy; `RegressionIntegrationOnly` applies
+  only to genuinely integration-backed exhaustive matrices, and any taxonomy
+  change requires a separately approved tracked requirement.
 
 ### Key Entities
 
@@ -256,6 +467,9 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **Verification lane**: A documented project/selection with a purpose, hard
   limit, expected duration, and retained-result policy.
 - **Performance baseline**: Reproducible pre-change counts and bounded timings used to compare the same benchmark and complete suite after implementation.
+- **Reviewed heavy source**: A source whose canonical I/O, process, host, or
+  end-to-end behavior has been explicitly assigned to Integration and protected
+  by exact source/category manifests.
 
 ## Design Direction
 
@@ -274,6 +488,14 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
    complete lifecycle class to LifecycleIntegration and the complete
    spiritual-conflict matrix to RegressionIntegration.
 8. Treat fixture-copy optimization as secondary. Because bounded post-selection evidence missed the Fast budget, capture one immutable in-memory prepared Guardian snapshot per test host and materialize independent roots per test.
+9. Repair later Fast drift through semantic source placement under #1551. Move
+   measured canonical workflows to the Integration project with exact category
+   manifests, and split QTE deterministic grading/input coverage away from its
+   file-backed scene lifecycle so the former remains fixture-free in Fast.
+   Apply the same boundary to Daren: 77 detached route/prose/reducer/contract
+   rows remain in Fast and 12 profile/filesystem/service/browser-projection rows
+   remain categorized in Integration. Pin QTE `66/51` and Daren `77/12` with
+   executable method/row manifests.
 
 ## Success Criteria
 
@@ -297,6 +519,25 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
 - **SC-008**: Public full validation and explicit all-phase validation produce identical ordered issues on representative valid and invalid fixtures.
 - **SC-009**: The guardian source guard fails deterministically when the broad-call budget or sentinel category rule is violated.
 - **SC-010**: Bounded verification leaves no owned `dotnet`, testhost, client, worker-host, PowerShell helper, Agent Console, or related child process running.
+- **SC-011**: Two consecutive #1551 Fast controls complete within five minutes,
+  preferably around three minutes, with zero duplicate test IDs, no timeout,
+  and complete owned-process cleanup.
+- **SC-012**: Every moved test remains discoverable through its explicit
+  Integration category and Focused Integration selection, and no test body or
+  assertion may be removed or weakened to obtain the Fast result. Exact Roslyn
+  guards prove source ownership, class-level categories, Fact/Theory kind,
+  method names, and InlineData rows: QTE contains exactly 66 Fast and 51
+  Integration rows; Daren contains exactly 77 Fast and 12 Integration rows.
+  The guards reject missing, extra, duplicated, or changed inventory rows and
+  ignore category text outside the expected class-level attributes. T064
+  whole-range diff review, not the row manifests, verifies source/body/assertion
+  preservation.
+- **SC-013**: The separate SpiritualCutoverIntegration control completes all
+  704 ordinary cutover cases within 30 minutes, with zero failures, skipped
+  cases, or duplicate IDs and complete cleanup. PreMerge retains its reviewed
+  cutover sentinels, full Fast, ProcessIntegration and E2E within 30 minutes.
+  Both controls report planned versus completed descriptors and case counts;
+  a stopped or incomplete selection cannot satisfy either criterion.
 
 ## Verification Plan
 
@@ -324,6 +565,15 @@ As a maintainer, I receive a deterministic guard when guardian tests drift back 
     ProcessIntegration control, a RED/GREEN runner-contract guard, one updated
     PlanOnly contract, and one exact final PreMerge control under the new
     30-minute bound.
+  - For #1551, add RED/GREEN exact source/category guards, move each semantic
+    group with focused Integration verification, replay Fast PlanOnly after
+    each group, run only the diagnostic categories actually changed, and retain
+    two final Fast controls under five minutes with approximately three minutes
+    as the preferred target. Known wound-contour REDs remain discoverable and
+    classified; they are not skipped or used to excuse a timeout. Final-review
+    remediation additionally requires exact Roslyn QTE/Daren row inventories,
+    a semantic 77/12 Daren split, synthetic category-decoy coverage, refreshed
+    PlanOnly membership, and two new sequential Fast controls.
 - **Documentation/contract verification**: Run the new test-lane/source-guard coverage. GM prompts, Mortal/afterlife docs, worked examples, manifests, and contract matrices are N/A because FR-016 prohibits gameplay or GM-authored contract changes.
 - **Frontend verification**: N/A; no frontend files or browser behavior are in scope.
 - **Manual/player-facing verification**: N/A; compare process inventory before and after bounded integration runs to verify owned child cleanup.

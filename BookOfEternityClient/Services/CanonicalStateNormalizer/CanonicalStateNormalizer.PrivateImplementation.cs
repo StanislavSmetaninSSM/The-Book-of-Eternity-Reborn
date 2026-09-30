@@ -80,7 +80,7 @@ public partial class CanonicalStateNormalizer
         };
     }
 
-    private static void UpsertByIdentity(List<JsonObject> items, JsonObject candidate, params string[] keys)
+    internal static void UpsertByIdentity(List<JsonObject> items, JsonObject candidate, params string[] keys)
     {
         var keyValue = keys
             .Select(k => GetNodeString(candidate[k]))
@@ -101,7 +101,7 @@ public partial class CanonicalStateNormalizer
         items.Add(candidate.DeepClone()!.AsObject());
     }
 
-    private static void UpsertByIdentity(JsonArray items, JsonObject candidate, params string[] keys)
+    internal static void UpsertByIdentity(JsonArray items, JsonObject candidate, params string[] keys)
     {
         var existing = items
             .OfType<JsonObject>()
@@ -140,7 +140,7 @@ public partial class CanonicalStateNormalizer
         array.Add(node.DeepClone());
     }
 
-    private static JsonArray ToArray(IEnumerable<JsonObject> objects)
+    internal static JsonArray ToArray(IEnumerable<JsonObject> objects)
     {
         var arr = new JsonArray();
         foreach (var obj in objects)
@@ -269,7 +269,7 @@ public partial class CanonicalStateNormalizer
         return false;
     }
 
-    private static bool NormalizeInventoryItemJournalEntries(JsonNode node)
+    internal static bool NormalizeInventoryItemJournalEntries(JsonNode node)
     {
         var changed = false;
 

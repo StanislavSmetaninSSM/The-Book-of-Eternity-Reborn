@@ -71,6 +71,7 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
         var oppositionSnapshotTiers = ReadTierMap(oppositionLead?["actorArtTierSnapshot"] as JsonObject);
 
         var conflictPosition = AfterlifeSpiritualConflictState.GetNodeString(activeConflict["conflictPosition"]) ?? "contested";
+        var operationDependentPosition = HasParticipantPositionBurden(mechanics, activeConflict);
         var difficulty = AfterlifeSpiritualConflictState.GetNodeString(settingsRoot?["difficulty"]);
         AfterlifeSpiritualConflictState.DifficultyDefinitions.TryGetValue(
             string.IsNullOrWhiteSpace(difficulty) ? "normal" : difficulty,
@@ -109,18 +110,83 @@ internal sealed class AfterlifeSpiritualConflictTurnPreviewService
             ["conditionMechanics"] = BuildConditionMechanics(
                 mechanics,
                 activeConflict),
-            ["dicePreview"] = BuildDicePreview(preGeneratedDices1d20, conflictPosition, difficultyDefinition),
+            ["dicePreview"] = operationDependentPosition
+                ? null
+                : BuildDicePreview(preGeneratedDices1d20, conflictPosition, difficultyDefinition),
             ["authoringReminders"] = new JsonArray
             {
                 "Copy actionCostAudit artTier/baseCost/minCost/effectiveCost from this preview for current/new exchanges; do not guess spiritual art tiers.",
                 "Read conditionMechanics.contributions from the accepted effect snapshot; apply each condition only through its exact affectedOperations/mechanicalAxes and cite conditionId in the matching conflict audit. Never rewrite combatConditions directly.",
-                "Use dicePreview.withMandatoryModifiers.outcomeBand as the expected outcomeBand when the first opposed dice pair and listed mandatory modifiers are used.",
+                operationDependentPosition
+                    ? "dicePreview is unavailable because spiritual_position_burden depends on the chosen operation and acting participant. Compute the effective starting position for the exact two actors and operations before deriving modifiers and outcomeBand; retain canonical conflictPosition unchanged unless the action itself changes it."
+                    : "Use dicePreview.firstOpposedPair.withMandatoryModifiers.outcomeBand as the expected outcomeBand when the first opposed dice pair and listed mandatory modifiers are used.",
                 "If you choose different valid modifiers, recompute playerTotal/oppositionTotal/margin before writing outcomeBand; validators recompute this deterministically.",
                 "Do not rewrite historical exchangeLog entries from earlier turns to fit the current preGeneratedDices1d20 pool."
             }
         };
 
         return preview;
+    }
+
+    /// <summary>
+    /// Determines whether an accepted position burden on a current participant prevents an operation-independent dice preview.
+    /// </summary>
+    /// <param name="snapshot">
+    /// The accepted current effect snapshot, containing only mechanically active components.
+    /// </param>
+    /// <param name="activeConflict">
+    /// The current conflict whose exact realm and participant identities delimit the preview.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when a current participant has a position burden; otherwise, <see langword="false"/>.
+    /// </returns>
+    private static bool HasParticipantPositionBurden(
+        EffectMechanicsSnapshot snapshot,
+        JsonObject activeConflict)
+    {
+        if (!AfterlifeEntityProfileState.TryNormalizeEffectRealm(
+                AfterlifeSpiritualConflictState.GetNodeString(activeConflict["realm"]), out var realm))
+            return false;
+
+        var participants = new HashSet<(string Kind, string Id)>();
+        foreach (var sideName in new[] { "playerSide", "oppositionSide" })
+        {
+            if (activeConflict[sideName] is not JsonObject side)
+                continue;
+            AddParticipant(side["leadContestant"] as JsonObject);
+            if (side["supporters"] is JsonArray supporters)
+                foreach (var supporter in supporters)
+                    AddParticipant(supporter as JsonObject);
+        }
+
+        return snapshot.Components.Any(component =>
+            string.Equals(component.Profile, "spiritual_position_burden", StringComparison.Ordinal) &&
+            string.Equals(component.Realm, realm, StringComparison.Ordinal) &&
+            participants.Contains((component.TargetKind, component.TargetId)));
+
+        void AddParticipant(JsonObject? actor)
+        {
+            if (actor?["actorType"] is not JsonValue typeValue ||
+                !typeValue.TryGetValue<string>(out var actorType) ||
+                actor["actorId"] is not JsonValue idValue ||
+                !idValue.TryGetValue<string>(out var actorId) ||
+                string.IsNullOrWhiteSpace(actorType) || string.IsNullOrWhiteSpace(actorId) ||
+                !string.Equals(actorType, actorType.Trim(), StringComparison.Ordinal) ||
+                !string.Equals(actorId, actorId.Trim(), StringComparison.Ordinal))
+                return;
+            var kind = actorType switch
+            {
+                "player" or "player_soul" or "soul" => "player",
+                "guardian" => "guardian",
+                "resident" or "shining_resident" => "resident",
+                "radiant_actor" => "radiant_actor",
+                "afterlife_actor" or "shining_faction_head" or "saref_agent" or
+                    "system_actor" or "custom_afterlife_actor" => "afterlife_actor",
+                _ => null
+            };
+            if (kind is not null)
+                participants.Add((kind, actorId));
+        }
     }
 
     internal static JsonObject BuildConditionMechanics(

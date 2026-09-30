@@ -1037,7 +1037,8 @@ public partial class GameEngine
                         ["stored"] = new JsonArray()
                     },
                     ["livesHistory"] = new JsonArray(),
-                    ["pendingMemoryLegacy"] = null
+                    ["pendingMemoryLegacy"] = null,
+                    [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = AfterlifeSpiritualConflictState.CreateDefaultCombatProfile()
                 };
                 // The Daren service writes clientRewardGrants.darenQteShowcase before the fresh soul state is saved.
                 darenNewGameGrant = new DarenQteRewardProfileService(_fs)

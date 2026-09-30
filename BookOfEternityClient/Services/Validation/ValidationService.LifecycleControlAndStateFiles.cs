@@ -254,7 +254,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json))
             return;
 
@@ -7801,7 +7801,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -7896,7 +7896,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json))
             return;
 
@@ -8486,7 +8486,7 @@ public partial class ValidationService
 
     private async Task<JsonObject?> ReadJsonObjectAsync(string path)
     {
-        var json = await _fs.ReadFileAsync(path);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(path);
         if (string.IsNullOrWhiteSpace(json))
             return null;
 

@@ -232,6 +232,58 @@ public sealed class StateDistributorCanonicalLeaseTests : IDisposable
                 .OrderBy(static name => name, StringComparer.Ordinal));
     }
 
+    [Fact]
+    public async Task DistributeAsync_LegacyLooseWoundFieldsCannotWriteCanonicalCarriers()
+    {
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+        var response = JsonSerializer.Deserialize<GameResponse>(
+            """
+            {
+              "playerWoundChanges": [{ "woundName": "legacy player injection" }],
+              "NPCWoundChanges": [{ "NPCId": "npc_legacy", "wounds": [] }]
+            }
+            """)!;
+
+        var modified = await distributor.DistributeAsync(response);
+
+        Assert.DoesNotContain(
+            "game_state/player/wounds.json",
+            modified,
+            StringComparer.OrdinalIgnoreCase);
+        Assert.DoesNotContain(
+            "game_state/npcs/npc_effects.json",
+            modified,
+            StringComparer.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists("game_state/player/wounds.json"));
+        Assert.False(_fs.FileExists("game_state/npcs/npc_effects.json"));
+    }
+
+    [Fact]
+    public async Task DistributeAsync_UnboundWoundDecisionsFailBeforeAnyOutputWrite()
+    {
+        var distributor = new StateDistributor(
+            _fs,
+            NullLogger<StateDistributor>.Instance);
+        var response = new GameResponse
+        {
+            Response = "Сцена не должна быть опубликована.",
+            WoundDecisions = JsonSerializer.Deserialize<JsonElement[]>(
+                "[{\"opportunityRef\":\"wound_opportunity_public\",\"decision\":\"none\"}]")!
+        };
+
+        var exception = await Assert.ThrowsAsync<InvalidDataException>(
+            () => distributor.DistributeAsync(response));
+
+        Assert.Contains(
+            "wound",
+            exception.Message,
+            StringComparison.OrdinalIgnoreCase);
+        Assert.False(_fs.FileExists(AcceptedMechanicsPlan.WoundCommandPath));
+        Assert.False(_fs.FileExists("output/narrative_response.json"));
+    }
+
     private FileSystemManager CreateFileSystem(FileSystemManagerHooks? hooks = null)
     {
         var fs = new FileSystemManager(

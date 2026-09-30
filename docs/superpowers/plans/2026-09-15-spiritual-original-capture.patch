@@ -1,0 +1,1106 @@
+--- a/BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs
++++ b/BookOfEternityClient/Services/Validation/ValidationService.ResourceMaterialization.cs
+@@ -163,7 +163,8 @@
+ 
+     private async Task<IReadOnlyList<ValidationIssue>>
+         ValidateAcceptedTurnRawResourceMaterializationCoreAsync(
+-            FileSystemManager.CanonicalWriteLease writeLease)
++            FileSystemManager.CanonicalWriteLease writeLease,
++            SpiritualOriginalInputSink? spiritualCapture = null)
+     {
+         ArgumentNullException.ThrowIfNull(writeLease);
+         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+@@ -335,7 +336,9 @@
+         {
+             // The source owner performs its own signed read under this real lease.
+             // These already-read owner DTOs are not spiritual source authority.
+-            var preparation = await BeginSpiritualWoundSourceSessionAsync(writeLease);
++            var preparation = spiritualCapture == null
++                ? await BeginSpiritualWoundSourceSessionAsync(writeLease)
++                : await BeginLiveSpiritualWoundSourceSessionAsync(writeLease);
+             issues.AddRange(preparation.Issues);
+             if (preparation.Session is not { } sourceSession ||
+                 sourceSession.SessionId != manifest.SessionId ||
+@@ -362,7 +365,8 @@
+             isTerminalReceiptReplay,
+             manifest,
+             writeLease,
+-            woundHandoffSink);
++            woundHandoffSink,
++            requireSpiritualBase: spiritualCapture != null);
+         issues.AddRange(effectIssues);
+         if (issues.Any(static issue => issue.Severity == IssueSeverity.Error))
+             return issues;
+@@ -418,7 +422,7 @@
+             ownerComposition.OwnerCompanionAfterImages.Count == 0 &&
+             ownerComposition.OwnerTransitions.Count == 0 &&
+             !acceptedItemOwners.Any(static owner => owner.SameTurn) &&
+-            woundHandoff is null)
++            woundHandoff is null && spiritualCapture == null)
+             return issues;
+ 
+         var requestJson = await _fs.ReadFileAsync("input/turn_request.json");
+@@ -649,6 +653,12 @@
+             PlanningContext: context,
+             WoundCommands: woundHandoff?.Commands,
+             WoundInput: woundHandoff?.Input);
++        if (spiritualCapture != null)
++        {
++            spiritualCapture.Input = input;
++            spiritualCapture.Source = _spiritualWoundSourceSession;
++            return issues;
++        }
+         var result = woundHandoff?.StageBundle is { } woundStageBundle &&
+                      MortalWoundCanonicalAnchorPlan.RequiresInitialCreateAnchors(
+                          woundStageBundle)
+--- a/BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs
++++ b/BookOfEternityClient/Services/Validation/ValidationService.EffectMaterialization.cs
+@@ -105,7 +105,8 @@
+         bool suppressEffectExecutionForTerminalReceiptReplay,
+         ValidationPendingTurnSnapshotManifest? validatedManifest,
+         FileSystemManager.CanonicalWriteLease writeLease,
+-        AcceptedTurnWoundHandoffSink? woundHandoffSink = null)
++        AcceptedTurnWoundHandoffSink? woundHandoffSink = null,
++        bool requireSpiritualBase = false)
+     {
+         ArgumentNullException.ThrowIfNull(writeLease);
+         _fs.EnsureCanonicalWriteLeaseActive(writeLease);
+@@ -230,7 +231,7 @@
+             if (issues.Any(static issue => issue.Severity == IssueSeverity.Error) ||
+                 (!EffectAcceptedTurnInputComposer.HasPendingCombatantRefs(currentCarriers) &&
+                  EffectCarrierCatalog.Build(currentCarriers).Occurrences.Count == 0 &&
+-                 rawWoundDraft is null))
++                 rawWoundDraft is null && !requireSpiritualBase))
+             {
+                 return;
+             }
+--- a/BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs
++++ b/BookOfEternityClient/Services/AfterlifeSpiritualConflictResourceOutcome.cs
+@@ -116,6 +116,9 @@
+         }
+         return issues;
+     }
++
++    internal static bool IsConflictOutcome(IResourceRegisteredSystemOutcomeDraft outcome) =>
++        outcome is Draft;
+ 
+     private sealed class Draft : IResourceRegisteredSystemOutcomeDraft
+     {
+--- /dev/null
++++ b/BookOfEternityClient/Services/Validation/ValidationService.SpiritualOriginalTurnCapture.cs
+@@ -0,0 +1,280 @@
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Core;
++
++namespace BookOfEternityClient.Services;
++
++public partial class ValidationService
++{
++    private SpiritualOriginalTurnCapture? _spiritualOriginalTurnCapture;
++
++    internal sealed record SpiritualOriginalTurnCaptureResult(
++        SpiritualOriginalTurnCapture? Capture, IReadOnlyList<ValidationIssue> Issues);
++
++    // Only the validator's actual original-input path can fill this private sink.
++    // It interrupts before resource reduction; it does not publish a common plan.
++    private sealed class SpiritualOriginalInputSink
++    {
++        internal AcceptedMechanicsInput? Input;
++        internal SpiritualWoundSourceSession? Source;
++    }
++
++    internal Task<SpiritualOriginalTurnCaptureResult> CaptureSpiritualOriginalTurnAsync(
++        FileSystemManager.CanonicalWriteLease lease) =>
++        SpiritualOriginalTurnCapture.CaptureAsync(this, lease);
++
++    // This is an original input owner. It is deliberately not an accepted wound
++    // frontier, generation receipt or completed resource/effect plan.
++    internal sealed class SpiritualOriginalTurnCapture : IDisposable
++    {
++        internal static async Task<SpiritualOriginalTurnCaptureResult> CaptureAsync(
++            ValidationService validator,
++            FileSystemManager.CanonicalWriteLease lease)
++        {
++            validator._fs.EnsureCanonicalWriteLeaseActive(lease);
++            validator._spiritualOriginalTurnCapture?.RevokeUnderLease(lease);
++            validator.InvalidateSpiritualWoundSourceSession();
++            AcceptedMechanicsPlanAuthority.InvalidateValidated(validator._fs, lease);
++            EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
++            var sink = new SpiritualOriginalInputSink();
++            var retained = false;
++            try
++            {
++                var issues = await validator.ValidateAcceptedTurnRawResourceMaterializationCoreAsync(lease, sink);
++                if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
++                    return new(null, issues);
++                if (sink.Input is not { PlanningContext.EffectPlan: { } plan } input ||
++                    sink.Source is not { IsCurrentOwner: true } source ||
++                    !ReferenceEquals(source, validator._spiritualWoundSourceSession) ||
++                    input.SessionId != source.SessionId || input.RequestId != source.RequestId ||
++                    input.SnapshotToken != source.SnapshotToken || input.Turn != source.TurnNumber ||
++                    !EffectAcceptedTurnPlanAuthority.TryPeekValidated(validator._fs, lease,
++                        out var binding, out var result) || !result.Success ||
++                    !ReferenceEquals(result.Plan, plan) || binding.SessionId != input.SessionId ||
++                    binding.SnapshotToken != input.SnapshotToken)
++                    return new(null, new[] { SourceIssue(AfterlifeSpiritualConflictState.StatePath,
++                        "spiritual_original_capture_missing", "exact signed source and validated original effect handoff") });
++
++                // Include effect source inputs even if the original base has no effects.
++                // Publication before-images alone do not cover every source authority read.
++                var paths = input.BeforeImages.Keys
++                    .Concat(EffectAcceptedTurnInputComposer.SourceAuthorityPaths)
++                    .Concat(source.SelectedPaths)
++                    .Append(EffectAcceptedTurnPlan.CommandPath)
++                    .Append(EffectAcceptedTurnInputComposer.WorldTimePath)
++                    // Observed read inputs remain binding even when absent or
++                    // when they produced no publication after-image this turn.
++                    .Append(AcceptedMechanicsPlan.WoundCommandPath)
++                    .Append(FullPartyInteractionsPath)
++                    .Append(StorageTransportMoveService.VehiclesPath)
++                    .Append("game_state/meta/guardians.json")
++                    .Append("game_state/control/life_transitions.json")
++                    .Distinct(StringComparer.Ordinal);
++                var observed = new Dictionary<string, CanonicalBeforeImage>(StringComparer.Ordinal);
++                foreach (var path in paths)
++                {
++                    var bytes = await validator._fs.ReadFileBytesAsync(lease, path);
++                    observed.Add(path, new CanonicalBeforeImage(bytes != null, bytes));
++                }
++                var capture = new SpiritualOriginalTurnCapture(validator, input, source, observed);
++                validator._spiritualOriginalTurnCapture = capture;
++                retained = true;
++                return new(capture, issues);
++            }
++            finally
++            {
++                if (!retained)
++                {
++                    validator.InvalidateSpiritualWoundSourceSession();
++                    EffectAcceptedTurnPlanAuthority.InvalidateValidated(validator._fs, lease);
++                }
++            }
++        }
++
++        private readonly ValidationService _validator;
++        private readonly AcceptedMechanicsInput _input;
++        private readonly SpiritualWoundSourceSession _source;
++        private readonly IReadOnlyDictionary<string, CanonicalBeforeImage> _observed;
++        private AcceptedMechanicsPlanner.ResourceExecutionSession? _resources;
++        private EffectAcceptedTurnPlanner.EffectAcceptedDraft? _effects;
++        private AcceptedMechanicsPlanner.ResourceExecutionStep? _lastResourceStep;
++        private int _nextResourceOrdinal;
++        private readonly SemaphoreSlim _gate = new(1, 1);
++        private bool _disposed;
++
++        private SpiritualOriginalTurnCapture(ValidationService validator,
++            AcceptedMechanicsInput input, SpiritualWoundSourceSession source,
++            IReadOnlyDictionary<string, CanonicalBeforeImage> observed)
++        {
++            _validator = validator;
++            _input = input;
++            _source = source;
++            _observed = AcceptedMechanicsPlanBinding.CloneReadOnlyBeforeImages(observed);
++        }
++
++        internal string SessionId => _input.SessionId;
++        internal string RequestId => _input.RequestId;
++        internal bool IsCurrentOwner => !_disposed && _source.IsCurrentOwner &&
++            ReferenceEquals(_validator._spiritualOriginalTurnCapture, this);
++
++        private void EnsureCurrent(FileSystemManager.CanonicalWriteLease lease)
++        {
++            _validator._fs.EnsureCanonicalWriteLeaseActive(lease);
++            ObjectDisposedException.ThrowIf(_disposed, this);
++            if (!IsCurrentOwner)
++                throw new InvalidOperationException("The original turn capture was revoked.");
++        }
++
++        internal async Task<IReadOnlyList<ValidationIssue>> CheckRetainedInputsAsync(
++            FileSystemManager.CanonicalWriteLease lease)
++        {
++            EnsureCurrent(lease);
++            foreach (var pair in _observed)
++            {
++                // Source owner checks the conflict's retained prefix and permitted
++                // missing fields. The common owner does not infer those permissions.
++                if (pair.Key == AfterlifeSpiritualConflictState.StatePath)
++                    continue;
++                var bytes = await _validator._fs.ReadFileBytesAsync(lease, pair.Key);
++                if (pair.Value.Fingerprint == new CanonicalBeforeImage(bytes != null, bytes).Fingerprint)
++                    continue;
++                RevokeUnderLease(lease);
++                return new[] { SourceIssue(pair.Key, "spiritual_original_input_changed",
++                    "the original observed accepted-turn input; live edits need their actual owned producer") };
++            }
++            return Array.Empty<ValidationIssue>();
++        }
++
++        // Construction stays within this private-captured context. The public-to-
++        // assembly resource API still grants no source admission of its own.
++        internal async Task<IReadOnlyList<ValidationIssue>> BeginResourceExecutionAsync(
++            FileSystemManager.CanonicalWriteLease lease)
++        {
++            await _gate.WaitAsync();
++            try
++            {
++                EnsureCurrent(lease);
++                if (_resources != null)
++                    throw new InvalidOperationException("An original turn has one resource executor.");
++                var issues = await CheckRetainedInputsAsync(lease);
++                if (issues.Count != 0)
++                    return issues;
++                var source = await _source.PrepareContinuationAsync(lease);
++                if (source.Ticket == null)
++                    return source.Issues;
++                EnsureCurrent(lease);
++                var created = AcceptedMechanicsPlanner.BeginOriginalSpiritualResourceExecution(_input);
++                if (created.Session == null)
++                    return created.Issues;
++                _resources = created.Session;
++                _effects = EffectAcceptedTurnPlanner.EffectAcceptedDraft.Begin(
++                    _input.PlanningContext!.EffectPlan!,
++                    _input.PlanningContext.EffectIdentityFactory ?? new EffectIdentityFactory());
++                EnsureCurrent(lease);
++                var committed = _source.CommitPreparedContinuation(lease, source.Ticket);
++                if (committed.Session == null)
++                {
++                    RevokeUnderLease(lease);
++                    return committed.Issues;
++                }
++                return Array.Empty<ValidationIssue>();
++            }
++            catch
++            {
++                // A partially constructed executor cannot be retried as if it
++                // were the untouched original resource/effect owner.
++                Dispose();
++                throw;
++            }
++            finally { _gate.Release(); }
++        }
++
++        // This returns only a resource boundary. Source admission and wound
++        // generation insertion must separately consume the genuine owned
++        // interval; this method cannot publish a common accepted plan.
++        internal async Task<AcceptedMechanicsPlanner.ResourceContinuationResult>
++            AdvanceNextResourceExchangeAsync(FileSystemManager.CanonicalWriteLease lease)
++        {
++            await _gate.WaitAsync();
++            var advanced = false;
++            try
++            {
++                EnsureCurrent(lease);
++                if (_resources == null)
++                    throw new InvalidOperationException("Begin the original resource executor first.");
++                if (_lastResourceStep is { PendingResource: not null } or { PendingExchange: not null })
++                    return ResourceFailure("spiritual_resource_wait_unresolved", "resume the exact owned wait first");
++                var issues = await CheckRetainedInputsAsync(lease);
++                if (issues.Count != 0)
++                    return new(null, issues);
++                var prepared = await _source.PrepareContinuationAsync(lease);
++                if (prepared.Ticket == null)
++                    return new(null, prepared.Issues);
++                var context = _input.PlanningContext!;
++                var batches = _source.BuildPreparedResourceBatches(lease, prepared.Ticket,
++                    context.Owners, context.State);
++                if (!batches.IsValid)
++                    return new(null, batches.Issues);
++                var batch = batches.Exchanges.SingleOrDefault(value => value.Ordinal == _nextResourceOrdinal);
++                if (batch == null)
++                    return ResourceFailure("spiritual_resource_exchange_missing", "the next captured source exchange");
++                EnsureCurrent(lease);
++                _resources.StageNextExchange(batch);
++                advanced = true;
++                var step = _resources.AdvanceThroughExchange();
++                if (step.Result is { IsValid: false } failed)
++                {
++                    RevokeUnderLease(lease);
++                    return new(null, failed.Issues);
++                }
++                var committed = _source.CommitPreparedContinuation(lease, prepared.Ticket);
++                if (committed.Session == null)
++                {
++                    RevokeUnderLease(lease);
++                    return new(null, committed.Issues);
++                }
++                _lastResourceStep = step;
++                if (step.Interval != null)
++                {
++                    if (!_resources.Owns(step.Interval))
++                        throw new InvalidOperationException("Closed interval must belong to the retained executor.");
++                    _nextResourceOrdinal++;
++                }
++                return new(step, Array.Empty<ValidationIssue>());
++            }
++            catch
++            {
++                if (advanced)
++                    Dispose();
++                throw;
++            }
++            finally { _gate.Release(); }
++        }
++
++        private static AcceptedMechanicsPlanner.ResourceContinuationResult ResourceFailure(
++            string code, string detail) => new(null, new[] {
++                SourceIssue(AfterlifeSpiritualConflictState.StatePath, code, detail) });
++
++        private void RevokeUnderLease(FileSystemManager.CanonicalWriteLease lease)
++        {
++            _validator._fs.EnsureCanonicalWriteLeaseActive(lease);
++            if (EffectAcceptedTurnPlanAuthority.TryPeekValidated(_validator._fs, lease,
++                    out var current) && ReferenceEquals(current.Plan, _input.PlanningContext!.EffectPlan))
++                EffectAcceptedTurnPlanAuthority.InvalidateValidated(_validator._fs, lease);
++            Dispose();
++        }
++
++        public void Dispose()
++        {
++            if (_disposed)
++                return;
++            _disposed = true;
++            _resources?.Dispose();
++            _effects?.Dispose();
++            _source.Revoke();
++            if (ReferenceEquals(_validator._spiritualOriginalTurnCapture, this))
++                _validator._spiritualOriginalTurnCapture = null;
++            if (ReferenceEquals(_validator._spiritualWoundSourceSession, _source))
++                _validator._spiritualWoundSourceSession = null;
++        }
++    }
++}
+--- /dev/null
++++ b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.OriginalSpiritualResources.cs
+@@ -0,0 +1,98 @@
++using System.Text.Json;
++
++namespace BookOfEternityClient.Services;
++
++internal static partial class AcceptedMechanicsPlanner
++{
++    internal sealed record OriginalSpiritualResourceExecutionResult(
++        ResourceExecutionSession? Session, IReadOnlyList<ValidationIssue> Issues);
++
++    // Resource composition only. The enclosing signed original-turn capture is
++    // the authority owner; this method cannot manufacture a spiritual source.
++    internal static OriginalSpiritualResourceExecutionResult BeginOriginalSpiritualResourceExecution(
++        AcceptedMechanicsInput input)
++    {
++        var context = input.PlanningContext;
++        if (context?.EffectPlan == null)
++            return new(null, Issue("spiritual_original_effect_context_missing",
++                "the validated original effect base, including an empty base", "missing"));
++        var issues = new List<ValidationIssue>();
++        if (context.WoundStageBundle is { } woundStages)
++            issues.AddRange(AcceptedMechanicsCarrierAssembler.ValidateInitialEffectPlan(
++                context.EffectPlan, woundStages));
++        if (issues.Count != 0)
++            return new(null, issues);
++
++        var definitions = context.Definitions;
++        var sameTurnDefinitions = new Dictionary<string, ResourceDefinition>(StringComparer.Ordinal);
++        if (context.Commands.DefinitionCreations.Count != 0)
++        {
++            var batch = ResourceDefinitionCatalog.BeginMaterializationBatch(definitions);
++            foreach (var creation in context.Commands.DefinitionCreations.OrderBy(value => value.CommandOrdinal))
++            {
++                using var proposal = JsonDocument.Parse(creation.Definition.ToJsonString());
++                var materialized = batch.MaterializeProposal(proposal.RootElement,
++                    input.Turn, creation.EventRef,
++                    static () => new ResourceDefinitionIdentity(
++                        "resource_definition_" + Guid.NewGuid().ToString("N"),
++                        "resource_definition_seal_" + Guid.NewGuid().ToString("N")));
++                issues.AddRange(materialized.Issues);
++                if (materialized.IsValid && materialized.Definition != null)
++                    sameTurnDefinitions.Add(creation.DefinitionRef, materialized.Definition);
++            }
++            definitions = batch.Freeze();
++        }
++        var capacity = ComposeCapacityTransitions(input, context, definitions, sameTurnDefinitions, issues);
++        var ordinary = ComposeOrdinaryMutations(input, context, definitions, issues)
++            .Concat(context.RegisteredSystemOutcomes
++                .Where(outcome => !AfterlifeSpiritualConflictResourceOutcome.IsConflictOutcome(outcome))
++                .SelectMany(outcome => outcome.Mutations)).ToArray();
++        // Exchange exports arrive with their owned batch. Eagerly seeding every
++        // observed exchange would retain a partial leaf's policy even if that
++        // leaf is completed before its first resource execution.
++        var exchangeSources = context.RegisteredSystemOutcomes
++            .Where(AfterlifeSpiritualConflictResourceOutcome.IsConflictOutcome)
++            .SelectMany(outcome => outcome.SourceExports)
++            .Select(source => (source.SourceKind, source.SourceId)).ToHashSet();
++        var baselineSources = ResourceMutationSourceCatalog.Create(context.Sources.Exports
++            .Where(source => !exchangeSources.Contains((source.SourceKind, source.SourceId))));
++        issues.AddRange(baselineSources.Issues);
++        if (issues.Count != 0)
++            return new(null, issues);
++
++        // Same-turn definitions are a real output of the preparation above.
++        // Rebind only the typed context to that exact catalog; original accepted
++        // input data/fingerprints and before-images remain untouched.
++        var effectiveContext = new AcceptedMechanicsPlanningContext(
++            context.DefinitionRoot, definitions, context.State, context.History,
++            context.Owners, context.Sources, context.Commands, context.EffectIdentityRoot,
++            context.EffectPlan, context.CapacityTransitions, context.OwnerCapacityDrafts,
++            context.TerminalOwners, context.OwnerCompanionAfterImages, context.OwnerTransitions,
++            registeredSystemOutcomes: context.RegisteredSystemOutcomes,
++            pendingResolutionState: context.PendingResolutionState,
++            resourceIdentityFactory: context.ResourceIdentityFactory,
++            effectIdentityFactory: context.EffectIdentityFactory,
++            executionSequenceOffset: context.ExecutionSequenceOffset,
++            woundStageBundle: context.WoundStageBundle,
++            woundAnchorPlan: context.WoundAnchorPlan,
++            directWoundPublicationAuthority: context.DirectWoundPublicationAuthority,
++            treatmentResourcePublicationAuthority: context.TreatmentResourcePublicationAuthority);
++        var pendingInput = input.WithPlanningContext(effectiveContext);
++        var routing = EffectAcceptedTurnPlanner.BaseResourceRouting.Capture(
++            context.EffectPlan, context.Owners, definitions);
++        var session = BeginLiveResourceExecution(new AcceptedMechanicsResourceInput(
++            input.Turn, definitions, context.State, context.History, baselineSources.Catalog!,
++            ordinary, capacity, context.ExecutionSequenceOffset),
++            context.ResourceIdentityFactory ?? new AcceptedMechanicsIdentityFactory(), routing);
++        try
++        {
++            session.BindOriginalPendingContext(pendingInput);
++            return new(session, Array.Empty<ValidationIssue>());
++        }
++        catch
++        {
++            session.Dispose();
++            throw;
++        }
++    }
++}
+--- /dev/null
++++ b/BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualOriginalCapture.cs
+@@ -0,0 +1,422 @@
++using System.Reflection;
++using System.Text.Json.Nodes;
++using BookOfEternityClient.Services;
++using Xunit;
++
++namespace BookOfEternityClient.Tests;
++
++public sealed partial class AfterlifeResourceCutoverTests
++{
++    [Fact]
++    public async Task OriginalSpiritualCapture_SameTurnDefinitionPrecedesOrdinaryAndExchangeResources()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.CommandPath,
++            OriginalCaptureDefinitionAndActionPointCommand(spend: 1m, gain: 1m).ToJsonString());
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var resources = Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionSession>(
++            OriginalCaptureField(capture, "_resources"));
++        var baseline = Assert.IsType<AcceptedMechanicsResourceInput>(
++            OriginalCaptureField(resources, "_originalResourceInput"));
++        Assert.True(baseline.Definitions.TryResolveExact("mana", out var definition));
++        Assert.NotNull(definition);
++        var originalInput = Assert.IsType<AcceptedMechanicsInput>(OriginalCaptureField(capture, "_input"));
++        Assert.False(originalInput.PlanningContext!.Definitions.TryResolveExact("mana", out _));
++        var pendingInput = Assert.IsType<AcceptedMechanicsInput>(OriginalCaptureField(resources, "_pendingInput"));
++        Assert.Same(baseline.Definitions, pendingInput.PlanningContext!.Definitions);
++        Assert.Equal(AcceptedMechanicsPlanFingerprints.ComputeInput(originalInput.CreateBinding()),
++            AcceptedMechanicsPlanFingerprints.ComputeInput(pendingInput.CreateBinding()));
++        Assert.True(resources.Routing!.OwnsDefinitions(baseline.Definitions));
++        var advanced = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(advanced.Issues);
++        Assert.NotNull(advanced.Step!.Interval);
++        // Read the actual resource owner for this resource-only test. This does
++        // not manufacture a common completion or publish an accepted game turn.
++        var result = resources.Drain();
++        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
++        // The definition is materialized without asking the old afterlife owner
++        // catalog to acquire a new same-turn mana capability. Existing spiritual
++        // action points provide genuine baseline mutations before the exchange.
++        Assert.DoesNotContain(result.AppliedTransitions, value => value.Coordinate.ResourceKey == "mana");
++        var ordinary = result.AppliedTransitions
++            .Where(value => value.EventRef is "turn_42:resource:2" or "turn_42:resource:3")
++            .OrderBy(value => value.ExecutionSequence).ToArray();
++        Assert.Equal(new[] { ResourceTransitionOperation.Spend, ResourceTransitionOperation.Gain },
++            ordinary.Select(value => value.Operation));
++        Assert.Equal(new[] { 6m, 5m }, ordinary.Select(value => value.BeforeState!.Current));
++        Assert.Equal(new[] { 5m, 6m }, ordinary.Select(value => value.AfterState!.Current));
++        Assert.All(ordinary, value => Assert.Equal("spiritual_action_points", value.Coordinate.ResourceKey));
++        Assert.True(ordinary.Last().ExecutionSequence < advanced.Step.Interval!.AppliedTransitions.Min(value => value.ExecutionSequence));
++        Assert.Equal(2, advanced.Step.Interval.AppliedTransitions.Count);
++        Assert.All(advanced.Step.Interval.AppliedTransitions, value => Assert.Equal(3m, value.AfterState!.Current));
++        Assert.Equal(1, result.Statistics.HistoryFreezeCount);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_ResourceFailureRevokesOwnersWithoutPublication()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.CommandPath,
++            OriginalCaptureDefinitionAndActionPointCommand(spend: 4m, gain: 0m).ToJsonString());
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var observed = new Dictionary<string, byte[]?>();
++        foreach (var path in new[] { ResourceMaterializationContract.DefinitionsPath,
++                     ResourceMaterializationContract.StatePath, ResourceMaterializationContract.HistoryPath,
++                     AfterlifeSpiritualConflictState.StatePath, EffectAcceptedTurnPlan.CommandPath,
++                     EffectIdentityState.StatePath })
++            observed[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var resources = Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionSession>(
++            OriginalCaptureField(capture, "_resources"));
++        var source = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(
++            OriginalCaptureField(capture, "_source"));
++        var retainedSource = Assert.Single(source.Sources);
++        var revision = source.ContinuationRevision;
++        var failed = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        Assert.Null(failed.Step);
++        // Signed source admission still validates the original 6 -> 3 audit.
++        // The ordinary spend succeeds first (6 -> 2); the later exchange cost
++        // of three then fails in the real reducer, after the graph has advanced.
++        Assert.Contains(failed.Issues, issue => issue.Code == "resource_mutation_below_minimum");
++        var resourceFailure = Assert.IsType<AcceptedMechanicsResourcePlanningResult>(resources.Result);
++        Assert.False(resourceFailure.IsValid);
++        Assert.True(resourceFailure.Statistics.HistoryAppendCount > 0);
++        Assert.Null(resourceFailure.StateAfterImage);
++        Assert.Null(resourceFailure.HistoryAfterImage);
++        Assert.Empty(resourceFailure.AppliedTransitions);
++        Assert.Equal(revision, source.ContinuationRevision);
++        Assert.False(source.Owns(retainedSource));
++        Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++        foreach (var pair in observed)
++            Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
++        await Assert.ThrowsAsync<ObjectDisposedException>(() => InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_ChronologicalPrefixDiffersFromLegacyGlobalPhases()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await context.WriteExactJsonAsync(ResourceMaterializationContract.CommandPath,
++            OriginalCaptureDefinitionAndActionPointCommand(spend: 1m, gain: 1m).ToJsonString());
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var fixedIssues = await context.Validator.ValidateAcceptedTurnRawResourceMaterializationAsync(lease);
++        Assert.Contains(fixedIssues, issue => issue.Code == "afterlife_conflict_resource_transition_mismatch");
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var advanced = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(advanced.Issues);
++        Assert.NotNull(advanced.Step!.Interval);
++        // Owner decision 2026-09-16: ordinary prefix once, then chronological exchanges.
++        // The fixed adapter keeps its legacy global phase order.
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_SameTurnSpiritFocusCapacityPrecedesExchange()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        // The existing accepted-turn owner composer derives this registered
++        // capacity from a real soul-state update, without new owner capabilities.
++        const string soulPath = "game_state/meta/soul_state.json";
++        var soul = Assert.IsType<JsonObject>(await context.ReadJsonAsync(soulPath));
++        soul[AfterlifeSpiritualConflictState.SoulStateProfileProperty]![
++            AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 2;
++        await context.WriteExactJsonAsync(soulPath, soul.ToJsonString());
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var captured = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begun = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begun));
++        var resources = Assert.IsType<AcceptedMechanicsPlanner.ResourceExecutionSession>(
++            OriginalCaptureField(capture, "_resources"));
++        var advanced = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(advanced.Issues);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step!.Interval);
++        var result = resources.Drain();
++        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
++        var capacity = Assert.Single(result.AppliedTransitions, value =>
++            value.Operation == ResourceTransitionOperation.Reconfigure &&
++            value.Coordinate.OwnerKind == ResourceOwnerKind.AfterlifeActor &&
++            value.Coordinate.ResourceKey == "spiritual_action_points");
++        Assert.Equal(6m, capacity.BeforeState!.Maximum);
++        Assert.Equal(8m, capacity.AfterState!.Maximum);
++        Assert.Equal(6m, capacity.AfterState.Current);
++        Assert.Equal(ResourceCapacityDisposition.ClampToNewMaximum, capacity.CapacityDisposition);
++        Assert.True(capacity.ExecutionSequence < interval.AppliedTransitions.Min(value => value.ExecutionSequence));
++        Assert.All(interval.AppliedTransitions, value => Assert.Equal(3m, value.AfterState!.Current));
++        Assert.Equal(1, result.Statistics.HistoryFreezeCount);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++    }
++
++    private static JsonObject OriginalCaptureDefinitionAndActionPointCommand(decimal spend, decimal gain)
++    {
++        var command = ResourceMaterializationValidationTests.DefinitionCreationCommand();
++        command["resourceDefinitionCreations"]![0]!["definition"]!["allowedOwnerKinds"] = new JsonArray("afterlife_actor");
++        var changes = new JsonArray(new JsonObject
++        {
++            ["operation"] = "spend",
++            ["target"] = new JsonObject { ["kind"] = "afterlife_actor", ["targetId"] = "player_soul" },
++            ["resourceKey"] = "spiritual_action_points", ["amount"] = spend,
++            ["source"] = new JsonObject { ["kind"] = "action_cost" },
++            ["eventRef"] = "turn_42:resource:2", ["reason"] = "Original captured resource cost"
++        });
++        if (gain > 0m)
++            changes.Add(new JsonObject
++            {
++                ["operation"] = "gain",
++                ["target"] = new JsonObject { ["kind"] = "afterlife_actor", ["targetId"] = "player_soul" },
++                ["resourceKey"] = "spiritual_action_points", ["amount"] = gain,
++                ["source"] = new JsonObject { ["kind"] = "narrative_outcome" },
++                ["eventRef"] = "turn_42:resource:3", ["reason"] = "Original captured resource recovery"
++            });
++        command["resourceChanges"] = changes;
++        return command;
++    }
++
++    private static object? OriginalCaptureField(object owner, string name) =>
++        owner.GetType().GetField(name, BindingFlags.Instance | BindingFlags.NonPublic)!.GetValue(owner);
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_RealEmptyEffectHandoffPrecedesResourceReduction()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var sourceControl = await context.Validator.BeginSpiritualWoundSourceSessionAsync(lease);
++        AssertNoConflictFrameErrors(sourceControl.Issues);
++        var oldSourceOwner = Assert.IsType<ValidationService.SpiritualWoundSourceSession>(sourceControl.Session);
++        var oldSource = Assert.Single(oldSourceOwner.Sources);
++        Assert.True(oldSourceOwner.Owns(oldSource));
++        var observed = new Dictionary<string, byte[]?>();
++        foreach (var path in oldSourceOwner.SelectedPaths.Append(EffectAcceptedTurnPlan.CommandPath))
++            observed[path] = await context.FileSystem.ReadFileBytesAsync(lease, path);
++
++        var result = await InvokeOriginalCaptureAsync(context.Validator,
++            "CaptureSpiritualOriginalTurnAsync", lease);
++
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(result));
++        var capture = OriginalCaptureProperty(result, "Capture");
++        Assert.NotNull(capture);
++        Assert.True(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++        Assert.False(oldSourceOwner.Owns(oldSource));
++        Assert.True(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++        var begin = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begin));
++        var advanced = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(advanced.Issues);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(advanced.Step!.Interval);
++        Assert.NotEmpty(interval.AppliedTransitions);
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++        foreach (var pair in observed)
++            Assert.Equal(pair.Value, await context.FileSystem.ReadFileBytesAsync(lease, pair.Key));
++        await Assert.ThrowsAsync<InvalidOperationException>(() =>
++            InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_MissingNextExchangeDoesNotReexecuteClosedPrefix()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var captured = await InvokeOriginalCaptureAsync(context.Validator,
++            "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(captured));
++        var capture = OriginalCaptureProperty(captured, "Capture")!;
++        var begin = await InvokeOriginalCaptureAsync(capture, "BeginResourceExecutionAsync", lease);
++        AssertNoConflictFrameErrors(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(begin));
++        var first = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++            await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++        AssertNoConflictFrameErrors(first.Issues);
++        var interval = Assert.IsType<AcceptedMechanicsPlanner.SpiritualExchangeInterval>(first.Step!.Interval);
++        var transitions = interval.AppliedTransitions.ToArray();
++        for (var attempt = 0; attempt < 2; attempt++)
++        {
++            var absent = Assert.IsType<AcceptedMechanicsPlanner.ResourceContinuationResult>(
++                await InvokeOriginalCaptureAsync(capture, "AdvanceNextResourceExchangeAsync", lease));
++            Assert.Null(absent.Step);
++            Assert.Contains(absent.Issues, issue => issue.Code == "spiritual_resource_exchange_missing");
++            Assert.Equal(transitions, interval.AppliedTransitions);
++            Assert.True(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++        }
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_ChangedObservedInputPermanentlyRevokesCapture()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        object capture;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            var result = await InvokeOriginalCaptureAsync(context.Validator,
++                "CaptureSpiritualOriginalTurnAsync", lease);
++            AssertNoConflictFrameErrors(OriginalCaptureIssues(result));
++            capture = OriginalCaptureProperty(result, "Capture")!;
++            Assert.NotNull(capture);
++        }
++        const string path = "game_state/meta/soul_state.json";
++        var before = await context.FileSystem.ReadFileAsync(path);
++        var changed = JsonNode.Parse(before!)!.AsObject();
++        changed["unowned_candidate_change"] = true;
++        await context.WriteExactJsonAsync(path, changed.ToJsonString());
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            var result = await InvokeOriginalCaptureAsync(capture, "CheckRetainedInputsAsync", lease);
++            Assert.Contains(Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(result),
++                issue => issue.Code == "spiritual_original_input_changed");
++            Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++            Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, lease, out _));
++        }
++        await context.WriteExactJsonAsync(path, before!);
++        Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_NewCaptureReplacesTheOriginalOwner()
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        await using var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var firstResult = await InvokeOriginalCaptureAsync(context.Validator,
++            "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(firstResult));
++        var first = OriginalCaptureProperty(firstResult, "Capture")!;
++        var secondResult = await InvokeOriginalCaptureAsync(context.Validator,
++            "CaptureSpiritualOriginalTurnAsync", lease);
++        AssertNoConflictFrameErrors(OriginalCaptureIssues(secondResult));
++        var second = OriginalCaptureProperty(secondResult, "Capture")!;
++        Assert.NotNull(first);
++        Assert.NotNull(second);
++        Assert.NotSame(first, second);
++        Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(first, "IsCurrentOwner")));
++        Assert.True(Assert.IsType<bool>(OriginalCaptureProperty(second, "IsCurrentOwner")));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, lease));
++    }
++
++    [Theory]
++    [InlineData("wounds")]
++    [InlineData("party")]
++    [InlineData("vehicles")]
++    [InlineData("guardians")]
++    [InlineData("lifecycle")]
++    public async Task OriginalSpiritualCapture_PreviouslyUnstagedCommandInputStillRevokesCapture(string kind)
++    {
++        await using var context = await CreateCompleteConflictFrameContextAsync();
++        await WriteCompleteConflictFrameExchangeAsync(context);
++        var path = kind switch
++        {
++            "wounds" => AcceptedMechanicsPlan.WoundCommandPath,
++            "party" => "game_state/misc/player_interactions.json",
++            "vehicles" => StorageTransportMoveService.VehiclesPath,
++            "guardians" => "game_state/meta/guardians.json",
++            "lifecycle" => "game_state/control/life_transitions.json",
++            _ => throw new ArgumentOutOfRangeException(nameof(kind))
++        };
++        object capture;
++        await using (var lease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
++        {
++            var result = await InvokeOriginalCaptureAsync(context.Validator, "CaptureSpiritualOriginalTurnAsync", lease);
++            AssertNoConflictFrameErrors(OriginalCaptureIssues(result));
++            capture = OriginalCaptureProperty(result, "Capture")!;
++            var input = Assert.IsType<AcceptedMechanicsInput>(OriginalCaptureField(capture, "_input"));
++            Assert.DoesNotContain(path, input.BeforeImages.Keys);
++        }
++        await context.WriteExactJsonAsync(path, new JsonObject { ["changed_after_capture"] = true }.ToJsonString());
++        await using var changedLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync();
++        var issues = Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(
++            await InvokeOriginalCaptureAsync(capture, "CheckRetainedInputsAsync", changedLease));
++        Assert.Contains(issues, issue => issue.Code == "spiritual_original_input_changed");
++        Assert.False(Assert.IsType<bool>(OriginalCaptureProperty(capture, "IsCurrentOwner")));
++        Assert.False(EffectAcceptedTurnPlanAuthority.TryPeekValidated(context.FileSystem, changedLease, out _));
++        Assert.False(AcceptedMechanicsPlanAuthority.HasValidated(context.FileSystem, changedLease));
++    }
++
++    [Fact]
++    public async Task OriginalSpiritualCapture_RecoveryExchangePrecedesLaterCost()
++    {
++        await using var context = await CreateActionPointContextAsync(3m, 3m);
++        var fixture = await ReadIntervalBaselineAsync(context);
++        var accepted = fixture.Before.DeepClone().AsObject();
++        accepted["activeConflict"]!["exchangeLog"] = new JsonArray(
++            Exchange("exchange_chronological_1",
++                PlayerAudit("recover_spiritual_power", 0m, 3m, 5m),
++                OppositionAudit("recover_spiritual_power", 0m, 3m, 5m)),
++            Exchange("exchange_chronological_2", PlayerAudit("pressure", 3m, 5m, 2m),
++                OppositionAudit("pressure", 3m, 5m, 2m)));
++        var batches = AfterlifeSpiritualConflictResourceOutcome.TryCreate(
++            42, fixture.Before, accepted, fixture.Owners, fixture.Input.State);
++        Assert.True(batches.IsValid, string.Join(Environment.NewLine, batches.Issues));
++        using var resources = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
++            fixture.Input, new AcceptedMechanicsIdentityFactory());
++        resources.StageNextExchange(batches.Exchanges[0]);
++        var first = resources.AdvanceThroughExchange();
++        Assert.NotNull(first.Interval);
++        Assert.All(first.Interval.AppliedTransitions, value =>
++        {
++            Assert.Equal(ResourceTransitionOperation.Gain, value.Operation);
++            Assert.Equal(5m, value.AfterState!.Current);
++        });
++        resources.StageNextExchange(batches.Exchanges[1]);
++        var second = resources.AdvanceThroughExchange();
++        Assert.NotNull(second.Interval);
++        Assert.All(second.Interval.AppliedTransitions, value =>
++        {
++            Assert.Equal(ResourceTransitionOperation.Spend, value.Operation);
++            Assert.Equal(5m, value.BeforeState!.Current);
++            Assert.Equal(2m, value.AfterState!.Current);
++        });
++        var result = resources.Drain();
++        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
++        Assert.Empty(batches.Draft!.Project(result).Issues);
++    }
++
++    private static object InvokeOriginalCapture(object owner, string methodName, params object[] arguments)
++    {
++        var method = owner.GetType().GetMethod(methodName,
++            BindingFlags.Instance | BindingFlags.NonPublic);
++        Assert.True(method != null, "Actual original-turn capture needs " + methodName + ".");
++        return method!.Invoke(owner, arguments)!;
++    }
++
++    private static async Task<object> InvokeOriginalCaptureAsync(
++        object owner, string methodName, params object[] arguments)
++    {
++        var task = Assert.IsAssignableFrom<Task>(InvokeOriginalCapture(owner, methodName, arguments));
++        await task;
++        return task.GetType().GetProperty("Result")!.GetValue(task)!;
++    }
++
++    private static object? OriginalCaptureProperty(object owner, string name) =>
++        owner.GetType().GetProperty(name,
++            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)!.GetValue(owner);
++
++    private static IReadOnlyList<ValidationIssue> OriginalCaptureIssues(object result) =>
++        Assert.IsAssignableFrom<IReadOnlyList<ValidationIssue>>(OriginalCaptureProperty(result, "Issues"));
++}
+--- a/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
++++ b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.cs
+@@ -5988,9 +5988,10 @@
+         IReadOnlyList<PreparedMutation> initialMutations,
+         AcceptedMechanicsIdentityFactory identityFactory,
+         AllocatedIdentityRegistry identityRegistry,
+-        CompleteResourceGraphPreparation? retained = null)
+-    {
+-        var initialGraph = BuildGraph(initialMutations);
++        CompleteResourceGraphPreparation? retained = null,
++        IReadOnlySet<string>? completedOperationIds = null)
++    {
++        var initialGraph = BuildGraph(initialMutations, completedOperationIds);
+         if (!initialGraph.IsValid)
+             return CompleteGraphFailure(initialGraph.Issues);
+ 
+@@ -6349,7 +6350,7 @@
+         if (!frozenSources.IsValid || frozenSources.Catalog == null)
+             return FailureWithWork(frozenSources.Issues);
+ 
+-        var graph = BuildGraph(prepared);
++        var graph = BuildGraph(prepared, completedOperationIds);
+         var work = SnapshotWork();
+         return graph.IsValid
+             ? new CompleteResourceGraphPreparation(
+@@ -7741,7 +7742,8 @@
+     }
+ 
+     private static ResourceTriggerGraphResult BuildGraph(
+-        IReadOnlyList<PreparedMutation> mutations)
++        IReadOnlyList<PreparedMutation> mutations,
++        IReadOnlySet<string>? completedOperationIds = null)
+     {
+         var issues = new List<ValidationIssue>();
+         var byKey = mutations.ToDictionary(static value => value.Intent.Key);
+@@ -7794,7 +7796,7 @@
+         }
+ 
+         return issues.Count == 0
+-            ? ResourceTriggerGraph.Build(nodes)
++            ? ResourceTriggerGraph.Build(nodes, completedOperationIds)
+             : new ResourceTriggerGraphResult(null, issues);
+     }
+ 
+@@ -8303,7 +8305,8 @@
+     }
+ 
+     internal static ResourceTriggerGraphResult Build(
+-        IEnumerable<ResourceTriggerGraphNode> nodes)
++        IEnumerable<ResourceTriggerGraphNode> nodes,
++        IReadOnlySet<string>? completedOperationIds = null)
+     {
+         ArgumentNullException.ThrowIfNull(nodes);
+         var candidates = nodes.ToArray();
+@@ -8358,7 +8361,8 @@
+                     byId,
+                     parents,
+                     children,
+-                    issues);
++                    issues,
++                    completedOperationIds);
+             }
+ 
+             foreach (var requirement in candidate.EventRequirements)
+@@ -8379,7 +8383,8 @@
+                     byId,
+                     parents,
+                     children,
+-                    issues);
++                    issues,
++                    completedOperationIds);
+             }
+         }
+ 
+@@ -8537,7 +8542,8 @@
+         IReadOnlyDictionary<string, ResourceTriggerGraphNode> byId,
+         IReadOnlyDictionary<string, HashSet<string>> parents,
+         IReadOnlyDictionary<string, HashSet<string>> children,
+-        List<ValidationIssue> issues)
++        List<ValidationIssue> issues,
++        IReadOnlySet<string>? completedOperationIds)
+     {
+         if (!byId.TryGetValue(dependencyId, out var dependency))
+         {
+@@ -8549,7 +8555,11 @@
+             return;
+         }
+ 
+-        if (candidate.Phase < dependency.Phase)
++        // A later chronological exchange may depend on a completed recovery.
++        // Its parent remains in the graph; only the in-flight phase constraint
++        // is inapplicable. Fixed builds supply no completed execution history.
++        if (candidate.Phase < dependency.Phase &&
++            completedOperationIds?.Contains(dependency.OperationId) != true)
+         {
+             AddIssue(
+                 issues,
+--- a/BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs
++++ b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.LiveTurn.cs
+@@ -1630,7 +1630,7 @@
+                     $"at most {ResourceMaterializationContract.MaxMutationsBeforeTriggers} pre-trigger mutations",
+                     all.Length.ToString(System.Globalization.CultureInfo.InvariantCulture));
+             var appended = PrepareCompleteResourceGraph(batchInput, all,
+-                identityFactory, identityRegistry, graphPreparation);
++                identityFactory, identityRegistry, graphPreparation, completedOperationIds);
+             AddGraphWork(appended.Work);
+             if (!appended.IsValid)
+                 return appended.Issues;
+--- a/BookOfEternityClient/Services/AcceptedMechanicsPlanner.PendingContinuation.cs
++++ b/BookOfEternityClient/Services/AcceptedMechanicsPlanner.PendingContinuation.cs
+@@ -334,7 +334,8 @@
+             if (prepared.Issues.Count != 0)
+                 return prepared.Issues;
+             var appended = PrepareCompleteResourceGraph(deltaInput,
+-                preparedMutations.Concat(prepared.Mutations).ToArray(), factory, identityRegistry, retained);
++                preparedMutations.Concat(prepared.Mutations).ToArray(), factory, identityRegistry, retained,
++                completedOperationIds);
+             AddGraphWork(appended.Work);
+             if (!appended.IsValid)
+                 return appended.Issues;
+--- a/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs
++++ b/BookOfEternityClient.IntegrationTests/EffectResourceTriggerRoutingScaleTests.PendingContinuation.cs
+@@ -7,6 +7,41 @@
+ 
+ public sealed partial class EffectResourceTriggerRoutingScaleTests
+ {
++    [Fact]
++    public void LivePendingContinuation_RetainsCompletedCrossPhaseDependencyOnResume()
++    {
++        var fixture = CreateAcceptedEventBudgetFixture(remainingUses: 1, current: 5m,
++            triggerSpecs: new[] { new BudgetTriggerSpec("pending_damage", "resource_damaged", 10, true, false,
++                ResolutionMode: "bounded_receipt") });
++        var source = new ResourceMutationSourceExport("narrative_outcome", "chronological_damage",
++            "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
++            ResourceMutationSourceState.Active, false,
++            new ResourceOwnerKey(fixture.Coordinate.Realm, fixture.Coordinate.OwnerKind, fixture.Coordinate.ResourceOwnerId));
++        var catalog = ResourceMutationSourceCatalog.Create(fixture.Sources.Exports.Append(source));
++        Assert.True(catalog.IsValid, Format(catalog.Issues));
++        fixture = fixture with { Sources = catalog.Catalog! };
++        var route = EffectAcceptedTurnPlanner.BaseResourceRouting.Capture(fixture.Plan, fixture.Owners, fixture.Definitions);
++        using var session = AcceptedMechanicsPlanner.BeginLiveResourceExecution(
++            LiveBudgetBaseline(fixture), new LiveIntervalIdentityCounter().Factory, route);
++        InvokePendingOwner(session, "BindOriginalPendingContext", PendingContinuationInput(fixture));
++        var restore = CreateBudgetMutation(fixture.Coordinate, "turn_43:chronological:1", ResourceOperation.Restore, 1m);
++        session.StageNextExchange(LiveBudgetBatch(fixture, restore, 0, 5m));
++        Assert.NotNull(session.AdvanceThroughExchange().Interval);
++        var damage = CreateBudgetMutation(fixture.Coordinate, "turn_43:chronological:2", ResourceOperation.Damage, 1m,
++            new[] { restore.Key }) with
++        {
++            Source = new ResourceMutationSourceRequest(source.SourceKind, source.SourceId, ResourceOperation.Damage)
++        };
++        session.StageNextExchange(LiveBudgetBatch(fixture, damage, 1, 6m));
++        var wait = Assert.IsType<AcceptedMechanicsPlanner.PendingSpiritualResourceExchange>(
++            session.AdvanceThroughExchange().PendingResource);
++        var resumed = ResumePendingOwner(session, wait, PendingReceipts(PendingPacket(session, wait), 2m));
++        Assert.NotNull(resumed.Interval);
++        var result = session.Drain();
++        Assert.True(result.IsValid, Format(result.Issues));
++        Assert.Equal(new[] { 6m, 5m, 7m }, result.AppliedTransitions.Select(value => value.AfterState!.Current));
++    }
++
+     [Fact]
+     public void LivePendingContinuation_TwoWavesKeepTheSameExecutionAndSpentUses()
+     {
+--- a/BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs
++++ b/BookOfEternityClient.Tests/ResourceTriggerGraphTests.cs
+@@ -6,6 +6,42 @@
+ 
+ public sealed class ResourceTriggerGraphTests
+ {
++    [Theory]
++    [InlineData(false, false)]
++    [InlineData(false, true)]
++    [InlineData(true, false)]
++    [InlineData(true, true)]
++    public void Build_ChronologicalPhaseCrossingRequiresTheCompletedParent(bool completedParent, bool eventDependency)
++    {
++        var parent = Node("node_recovery", operationId: "operation_recovery");
++        var child = Node("node_cost", phase: ResourceMutationPhase.DirectCost,
++            operationId: "operation_cost",
++            dependencies: eventDependency ? null : new[] { parent.NodeId },
++            eventRequirements: eventDependency
++                ? new[] { new ResourceEventRequirement(parent.NodeId, "resource_filled") } : null);
++        var completed = new HashSet<string>(StringComparer.Ordinal)
++        {
++            completedParent ? parent.OperationId : "operation_unrelated"
++        };
++        var result = ResourceTriggerGraph.Build(new[] { parent, child }, completed);
++        if (!completedParent)
++        {
++            Assert.Contains(result.Issues, issue => issue.Code == "resource_graph_phase_inversion");
++            Assert.Null(result.Graph);
++            return;
++        }
++        Assert.True(result.IsValid, string.Join(Environment.NewLine, result.Issues));
++        // The edge and parent remain in the graph; the resumed scheduler alone
++        // skips the exact completed operation and executes the new child once.
++        Assert.Equal(new[] { parent.NodeId, child.NodeId }, result.Graph!.OrderedNodes.Select(node => node.NodeId));
++        var scheduler = result.Graph.CreateExecutionScheduler(_ => true, completed);
++        Assert.True(scheduler.TryTakeNext(out var next, out var execute));
++        Assert.Equal(child.NodeId, next.NodeId);
++        Assert.True(execute);
++        scheduler.Complete(next);
++        Assert.False(scheduler.HasPendingNodes);
++    }
++
+     [Fact]
+     public void Build_RejectsDuplicateConfusableMissingDependencyAndCycle()
+     {

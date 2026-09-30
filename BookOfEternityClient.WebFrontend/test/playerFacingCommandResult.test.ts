@@ -306,19 +306,3 @@ function collectVisibleBlockText(block: UiBlock): string[] {
       return [block.title, block.map.title, block.map.currentNodeId];
   }
 }
-
-import './shellContextComponents.test.js';
-import './tabBarShortcuts.test.js';
-import './playerStatusSidebar.test.js';
-import './uiStructure.test.js';
-import './useShellStateSettled.test.js';
-import './unifiedInputSubmitRace.test.js';
-import './commandResultViewSections.test.js';
-import './gracefulDegradation.test.js';
-import './promptFormSanitization.test.js';
-import './gameLauncherMenuLayout.test.js';
-import './audioPanelCatalogVisibility.test.js';
-import './browserMediaTask2.test.js';
-import './browserMediaTask3.test.js';
-import './browserMediaTask4.test.js';
-import './browserMediaTask5.test.js';

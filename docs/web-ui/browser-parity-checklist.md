@@ -20,7 +20,7 @@ Map rendering parity is enforced through the shared `MapViewDto`: console `/ка
 - Desktop layout keeps navigation and results visible side by side after advanced mode is opened.
 - Мобильный layout stacks navigation, status, forms, tables, image blocks, and raw JSON without horizontal overflow.
 - Player-facing labels use Russian first; English appears only as technical command IDs, raw JSON keys, or advanced-mode endpoint references.
-- Automated guards: `BrowserWebUiSmoke` covers root/menu/session/game-screen state/lifecycle/command/form flow, and `BrowserWebUiParity` forces explicit browser UX decisions for Explorer commands before new aliases can land silently.
+- Automated guards: select `browser-api-host` for root/menu/session/game-screen state/lifecycle/command/form flow, and `browser-command-parity` for explicit browser UX decisions and metadata coverage of every Explorer command and alias. Choose only categories affected by the change; see `docs/testing.md` and the current catalog for conditional consumers.
 
 ## Mortal World
 

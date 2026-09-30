@@ -1,5 +1,33 @@
 # Afterlife Contract Matrix — Chaos Sea and Shining Abode
 
+Generic resource effects use `periodic_spend` / `periodic_gain` for
+`spiritual_action_points`, whose sealed operations remain Spend/Gain. Accepted
+source/target/resource ownership, use budgets and pending `resource_delta` bounds
+are mandatory. `periodic_damage` / `periodic_restore` cannot change AP. See
+`OtherGuides/Effect_Materialization_Contract.md` and the registered profile matrix
+in `Examples/E_CLI_Effect_Materialization.txt`; generic profiles do not grant new
+wound consequence authority or permission to edit canonical resource state.
+
+Wound repair transport in Chaos Sea and Shining Abode requires candidateKind=construct_wound for spiritual construction packets (repair_wound or narrate_acquisition retains its exact client-selected kind). This required eleven-field wound packet still uses requiredResponseShape.woundDecisions[0].proposal.correctOnly; the five-field receipt and spiritual mechanics are unchanged. Missing candidateKind fails with no tagless compatibility reader. This shared discriminator does not enable Mortal alternative treatment in afterlife and does not change effect/resource/Guardian packet schemas.
+
+Wound-owned generation rule: suppression is not wound healing. Independently expiring,
+dispelling, removing, or replacing an effect leaves the wound's canonical root binding
+and slot intact. Only an already authorized wound transition can create a
+new runtime effect identity for a retained legal coordinate, with the exact old canonical root as
+its sole first-create parent; terminal history remains unchanged. The client validates
+the complete lineage and definition-derived owner/source/target/stack coordinates,
+including zero carriers for a terminal root: there is no missing-carrier fallback.
+This does not enable spiritual treatment or any still-pending healing art. The GM
+never authors these runtime identities, parents, or history rows.
+
+Worked client lifecycle: a Guardian's wound-owned hindrance is dispelled, so its
+carrier disappears but the wound and old root binding remain. If a separately
+authorized wound transition later rematerializes that retained hindrance, the client
+allocates a fresh identity whose historical parent is exactly that old bound root.
+The dispelled row is not revived or rewritten. Without that authorized transition,
+the suppressed effect stays terminal and the wound remains untreated. No new pending
+packet, GM output field, or spiritual-healing action is introduced.
+
 **Effect Materialization v1:** every afterlife active effect and spiritual condition uses the shared identity/lifecycle adapter in `OtherGuides/Effect_Materialization_Contract.md`.
 
 Across both Chaos Sea and Shining Abode, the runtime carrier and accepted mechanical contribution are client-owned; remaining lifetime is client-owned too. The GM authors complete source policy and transient `effectChanges[]` commands only; it never performs carrier arithmetic or resends raw remaining duration.
@@ -24,6 +52,12 @@ in a later wave or reconstruct, retarget, merge, or alter their protected origin
 No resource, effect, use, or lifetime after-image publishes until the final
 wave. Changed original commands, retargeted/extra fields, empty terminal replay,
 or receipt internals copied into player text fail closed.
+When the current safe packet advertises an inclusive minimum of `0`, a
+`resource_delta` amount `0` is an explicit terminal zero result. The client
+consumes its accepted use and receipt but emits no resource transition,
+resource event, or dependent effect activation. This remains distinct from
+`narrated_no_state_change`, which omits `amount`. Answer only the result that
+matches the fiction in the current packet.
 
 - When an afterlife item, relic, or inherited skill surface embeds a shared Block 5 Combat Action effect, that effect keeps the ordinary canonical fields: non-empty `effectType`, required percentage-string `value`, non-empty `targetType`, non-empty `effectDescription`, and the type-specific duration/poise fields. This does not change the separate `specialArts[].combatEffect` spiritual-conflict schema.
 - Always run realm gate first: ordinary `Chaos Sea`, ordinary active `Shining Abode`, or `Shining Abode pending-bootstrap handoff`.
@@ -74,6 +108,7 @@ or receipt internals copied into player text fail closed.
 - Player-driven Shining faction campaigns live in `game_state/meta/shining_abode_state.json.factionConflictCampaigns[]`. The player creates them through `/фракции`; the GM may advance them during ordinary active Shining turns by appending `breakthroughLog[]` entries, not by using Mortal faction files. Campaign goals are `weaken`, `expose`, `depose_leader`, `break`, and `dissolve`; statuses are `active`, `breakthrough_ready`, `completed`, `failed`, and `abandoned`. Supported breakthrough types are `exposure`, `duel_victory`, `defection`, `sabotage`, `resource_disruption`, `oath_break`, `trial`, and `saref_directive`. Spiritual combat is a strong breakthrough path through `duel_victory`, but not mandatory: infiltration, public proof, defections, sabotage, resource disruption, oath-breaking, a formal trial, or a Saref directive can also progress the campaign. A completed campaign must match target lifecycle: `weaken` needs weakened-or-worse state, `depose_leader` needs leaderless/vacant or worse, `break` needs `broken|dissolved`, and `dissolve` needs `dissolved`; `expose` records public proof and may leave lifecycle unchanged.
 - Shining faction political memory lives inside `game_state/meta/shining_abode_state.json.factions[]`, not Mortal faction files. Use targeted command surfaces `shiningFactionChronicleUpdates[]`, `shiningFactionInfluenceUpdates[]`, `shiningFactionStrategicMemoryUpdates[]`, and `shiningFactionResourceLedgerUpdates[]`; the normalizer projects them into canonical faction `chronicle[]`, `territorialInfluence[]`, `strategicMemory`, and `resourceLedger[]`. Each command must target an existing or same-turn-created Shining `factionId`; unknown targets are repair-blocking. `chronicle[]` stores political events with `entryId`, `turnNumber`, `eventType`, `summary`, `visibility`, and `consequences[]`. `territorialInfluence[]` stores map/political control zones with `zoneId`, `scopeType`, `scopeId`, `displayName`, `controlLevel`, `influenceValue`, `publicStatus`, `updatedAtTurn`, and optional `sourceEntryId`; control/influence values are 0..100 and may be used by the local map to show faction borders. `strategicMemory` stores the mutable current plan and may be initialized with a new faction, but every later faction decision also appends `chronicle[]`; rewriting `strategicMemory` alone is not durable actor memory. `resourceLedger[]` stores resource deltas with `entryId`, `turnNumber`, `resourceType`, `delta`, `balanceAfter`, and `reason`. Do not use Mortal `factionDataChanges`, `factionProjectUpdates`, `completeFactionProjects`, `factionChronicleUpdates`, or `worldMapUpdates` to represent Shining faction memory, resources, or territory.
 - Chaos Sea profiles must keep `currencies.lightSparks = 0`. Do not add Light Sparks to Chaos Sea profiles through `afterlifeEntityProfileUpdates[]`, full canonical `profiles[]`, or `afterlifeEntityProgressionOverrides[].currencyDeltas`; only ordinary active Shining Abode profiles may hold/use Light Sparks.
+- Every complete current profile explicitly carries `spiritual_resilience` — Духовная стойкость — and `spiritual_healing` — Духовное исцеление — in `standardArts` as scalar integer 0..5 values, including zero. Это не объекты `{tier, experience}`: развитие идёт без отдельного опыта искусства (no independent art experience). The current player authority is `soul_state.afterlifeCombatProfile.artTiers`; `player_soul.standardArts` only mirrors it. Non-player entities use the ordinary `progressionStrategy` or `standardArtTierDeltas` paths. Those paths do not supply or repair missing or invalid required tiers; the complete current map must already be valid. Player training and `/spiritual_arts` reject a present malformed or incomplete player `afterlifeCombatProfile` or `artTiers` before quote, currency spend, receipt, or state write; only a genuinely absent whole optional combat profile may use the existing bootstrap. `spiritual_resilience` is passive and is not an `operationType` (Духовная стойкость пассивна и не является operationType); registering Духовное исцеление also does not create an operation until its separate healing handler exists. Mandatory zero entries make `materialization.sections.standardArts.state=populated`, but alone do not grant `canFight` or `canTeach`.
 - In every afterlife entity profile, `specialArts[].ownerActorType/ownerActorId` must match that same profile's `actorType/actorId`; do not place player-owned learned arts or another entity's arts inside a Guardian/resident/faction profile.
 - During validation repair, `harnessRepairPackets[].kind = "afterlife_entity_profile_scaffold_repair"` is the executable scaffold checklist for `game_state/meta/afterlife_entity_profiles.json`. Repair profiles in place: keep `goals` as an object with `goalId`, `shortTermGoal`, `longTermGoal`, `plan`, `gmThoughtsSummary`, and `updatedAtTurn`; add/repair `progressionStrategy`, keep `ledger` as an array, and complete `afterlifeSpecialArtLearningReceipts[]` / `profileCommands.specialArtLearningReceipts[]` with teacher/player/art proof and `initialTier` omitted or `0`.
 - For every relevant non-player Guardian, resident, afterlife entity, or Shining faction that receives the player's action and chooses a response, use a full Actor Brain block in `output/debug_logs.json`: `Текущая локация:`, `Ситуация:`, `Данные профиля:`, `Мотивация:`, `Ограничения:`, `Мысли:`, `Варианты стратегий:` with at least two numbered alternatives each containing non-empty `Выгода:` and `Риск:`, `Выбранная стратегия:`, rejected alternatives, `Действия:`, and `Изменения состояния:`. Persist separate actor-owned memory in the same accepted turn. First materialization of a resident, entity, political actor, or faction is itself a relevant structured actor touch and cannot be hidden outside scope. If routing metadata carries a stable actor id, bind the memory delta to that exact id even when another actor has the same display name. For a Guardian, prefer `guardianThoughtJournalUpdates` / `guardian_thought_journal.json`; `guardians[].musings` through `UpdateGuardians.addMusings` remains a valid alternative, but the same reaction must not be duplicated across both. Residents use `residentThoughtJournalUpdates`. An afterlife entity without a dedicated journal initializes and updates actor-owned `gmThoughtsSummary`; `ledger` / `progressionLedger` remains progression audit/history and never substitutes for the actor's thought memory. A newly materialized Shining faction may initialize `strategicMemory`; every later decision appends `shiningFactionChronicleUpdates`, with optional `shiningFactionStrategicMemoryUpdates` only alongside that history entry. The Actor Brain audit and canonical memory do not replace one another.
@@ -320,6 +355,31 @@ Guardian trade repair discipline: if validation reports `guardian_trade_request_
 
 ## Afterlife Spiritual Conflict Contract
 
+Source-art wound declarations in both Chaos Sea and Shining Abode follow
+`spiritual_wound_source_envelope_v1` in
+`OtherGuides/Wound_Materialization_Contract.md` and its named afterlife example.
+The optional canonical `spiritualWoundEnvelope` must pre-exist the harmful event;
+absence is neutral IV with no guarantee, not lost ordinary eligibility. A source
+declaration never replaces the validated event, harder limits, or final admission.
+
+Source-action targeting and terminal witnesses in both Chaos Sea and Shining Abode
+follow `spiritual_wound_source_action_v1` in the same guide and named afterlife
+example. Author optional exact `spiritualWoundTarget {actorType, actorId, optional
+retraumaWoundRef}` only on the player exchange or opposition `incomingAction`.
+Absence uses the original affected-side lead; an explicit actor is an original member
+of that affected side, and re-trauma uses canonical prior wound/history authority.
+Never invent or choose mechanical tier, source cap, harmful margin, guarantee, dice
+values, or outcome. Preserve required cost/dice reports copied from original client
+data and report only checked outcomes. The exact five computed action/audit fields are
+`traumaPressure`, `sourceSeverityCap`, `maximumSeverityRank`,
+`guaranteedSeverityRank`, and `spiritualWoundEnvelope`; never author them. A terminal
+resolution carries the complete existing `terminalExchange` and matching contested
+`diceAudit`, not a totals summary. Source-local preparation is not wound admission or
+a receipt: start/escalation/prefix/terminal, passive, champion, and dice-free voluntary
+contours remain pending for client-owned C/D/E proof. Dissipation stays optional.
+
+The spiritual conflict danger declaration is mandatory: put `dangerMode` in the selected `conflictState`/`activeConflict`/`conflictSeed` of `mode=start`, canonical `activeConflict`, and every `recentConflicts[]` proof. Use exactly `training`, `controlled`, `hostile`, or `annihilation`: lowercase JSON strings without surrounding whitespace. There is no implicit mode or old-save fallback. Ordinary exchanges and partial `activeConflictAfter`/`conflictStateAfter` replacements may omit the field and preserve the accepted declaration; explicit echoes must match exactly, including in the update root and exchange `before`/`after`. `resolve` and `repair_cancel` copy that declaration into the terminal proof and cannot replace it. During a validated turn, every retained same-ID active/recent occurrence is compared with the signed pre-turn declarations; a missing, invalid or conflicting baseline fails closed, and a later duplicate cannot hide a change. Legal removal from the bounded recent-history window is unchanged. Do not infer escalation after a roll or submit a boolean as escalation authority. This declaration/persistence stage does not implement accepted escalation, wound production or healing. The declared wound ceilings remain training 0, controlled II, hostile/annihilation IV; wounds are optional GM choices within validated limits, and soul dissipation remains separately authorized and always optional.
+
 Use this system when roleplay creates a real spiritual contest in `Chaos Sea` or ordinary active `Shining Abode`: coercive Guardian pressure, duels between Guardians/residents/radiant actors, contested bindings, forced-incarnation attempts, or side-vs-side champion contests. The GM starts the conflict when the scene requires it; the client does not pre-create the conflict. Conflict realm/mode authority is evaluated from the validated pre-turn `soul_state.json` and, for Shining, the validated pre-turn `shining_abode_state.json`; same-turn edits to `currentRealm`, Shining `availability`, or `preparedIncarnationPackage` cannot make a conflict legal. For a worked valid start/exchange pattern, see example 24 in `Examples/E_CLI_Afterlife_Turns.txt`. For Russian player/GM labels and canonical English JSON terms, use `OtherGuides/Afterlife_Combat_Terminology_Glossary.md`.
 
 Canonical state lives in `game_state/meta/afterlife_spiritual_conflict_state.json`:
@@ -334,6 +394,8 @@ Canonical state lives in `game_state/meta/afterlife_spiritual_conflict_state.jso
 - `controlState` is the canonical control/оковы axis, separate from strain and position. Missing/null means no active control for legacy entries. Active control uses `level=hindered|bound|locked`, `controllerSide=player|opposition`, non-empty `controlId`, `sourceOperation=binding|force_binding|force_incarnation|break_binding|incarnation_resistance|counter|guard|repair`, non-empty `restrictedOperations`, and `summary`; `sourceOperation` is not a free operation id.
 - `tempoAdvantage` is the one-use темповое окно защиты. Full `guard` success against direct `pressure` / forced pressure writes `after.tempoAdvantage` and the active root copy with `ownerSide=player`, `sourceOperation=guard`, `status=available`, `level=advantage|great_advantage`, `advantageId/sourceId`, `sourceExchangeId`, and `summary`. The next eligible non-terminal combat action (`pressure`, `maneuver`, `binding`, `force_binding`, `break_binding`, `counter`, `incarnation_resistance`, or `champion_coordination`) must either consume it through `diceAudit.rollMode.player.advantageSources[]` using `sourceType=guard_tempo_window` and the matching id, or explicitly expire/clear it. It does not apply to `recover_spiritual_power`, `withdraw`, `surrender`, or `negotiate`.
 - `spiritual_action_points` is the afterlife ОД / очки духовного действия reserve, separate from Mortal HP/energy/stamina. `actionEconomy` is forbidden as persisted conflict state. The player uses the persistent `afterlife_actor/player_soul` coordinate; opposition uses the exact scoped owner stored in `activeConflict.resourceOwnerBindings.opposition.resourceOwnerId`. On `mode=start`, the player's registered maximum comes from client-owned `soul_state.afterlifeCombatProfile.spiritFocusTier` / `Средоточие Души`: tier `0/1/2/3/4/5` gives `6/7/8/10/12/15`. The GM reads `input/turn_request.json.afterlifeSpiritualConflictPreview.playerActionPoints` and `.oppositionActionPoints`, then writes `actionCostAudit.player` / `actionCostAudit.opposition` (`operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`). The client validates the audit against the exact pre-turn resource projection and publishes spend/gain transitions to the common state/history atomically. A side without a current audit emits no resource mutation. Terminal/free player operations (`withdraw`, `surrender`, `negotiate`) must not include `actionCostAudit.player`. Cost tiers, opposition operation selection, and special-art multiplier rules remain unchanged and must match validated owner authority.
+- Special wound costs (`spiritual_wound_special_action_costs_v1`) apply equally to player and opposition and only to the exact acting owner's applicable `spiritual_action_cost_burden`. For `recover_spiritual_power`, pay the burden first; insufficient funds reject the action, and failure still pays. Apply ordinary 3/2/0 recovery or opposed 0..1 recovery to the post-payment balance, capped by the maximum. `actionCostAudit.after` is the action-only result: the client records Spend, drains its causal reactions, then requests Gain for the original capped amount `after - (before - effectiveCost)`. Never net the mutations or enlarge that request after a reaction; the final ledger can differ from `after`. For `force_incarnation`, positive burden is the only cost: require exactly `operationType`, `baseCost`, `minCost`, `artTier`, `effectiveCost`, `before`, `after`, with `baseCost=0, minCost=0, artTier=0` and `effectiveCost` equal to the owned burden sum. Here zero artTier is an audit convention, not the actor's art level. No burden means no force audit and no payment; incarnation admission/control is unchanged. Read the complete rule in `OtherGuides/Afterlife_Combat_Terminology_Glossary.md` and the worked `spiritual_wound_special_action_costs_v1` fragments in `Examples/E_CLI_Afterlife_Turns.txt`.
+- For an unchanged, unexecuted `force_incarnation` action, a newly applicable wound may require adding the prescribed seven-field side audit; an absent `actionCostAudit` root may contain only qualifying sides. Conversely, finite-use expiry may require removing a previously prescribed side audit: the client must prove zero burden from the actual next owner reconstruction. Remove the empty audit root only when no sibling remains; preserve all sibling audits and non-force audits. A stale positive audit after expiry requests dependent repair, never payment or a fake zero audit. Removal with a positive burden is still rejected as a missing required audit. Preserve completed prefix, action, actor and dice; no null/scalar replacement or extra authority/special-art fields. Addition still requires proof of the positive burden, amount and affordability. Both presence corrections repeat the owner checks on cold replay and never edit completed exchanges. This exception does not authorize live C4 publication.
 - If a special art is used, write either `specialArtAudit` for one art or `specialArtAudits[]` for multiple sides; never write both fields on one exchange. Player-owned arts that power the player's operation use `specialCostMultiplierPercent`, `standardEffectiveCost`, and the multiplied player cost. Non-player or incoming-action special arts keep the player's ordinary ОД cost, but when they power the opposition operation they must belong to the resolved opposition actor and use the matching tier and multiplier fields under `actionCostAudit.opposition`. `finalOperationType` is authoritative. A non-player art's `baseOperation` must match the single resolved opposition operation used for `actionCostAudit.opposition`; never attach it to the player's operation or a stale earlier incoming action.
 - During validation repair, `harnessRepairPackets[].kind = "afterlife_spiritual_conflict_action_cost_repair"` is an executable checklist only for the already written `actionCostAudit` fields. Patch the named audit operands in `game_state/meta/afterlife_spiritual_conflict_state.json`; never edit `game_state/resources/resource_state.json`, `game_state/resources/resource_history.json`, `resourceOwnerBindings`, or pending snapshots. Finish with `Complete-BoeValidationRepair`; the client recomputes and republishes the resource transition.
 - During validation repair, `harnessRepairPackets[].kind = "afterlife_spiritual_conflict_reward_repair"` is the executable reward checklist. Patch only the listed `rewardAudit` / currency reward fields in `game_state/meta/afterlife_spiritual_conflict_state.json`: currency rewards require contested `player_success` or `decisive_player_success`; negotiated, training-only, withdrawn, failed, repair-cancelled, no-contest, or duplicate outcomes must remove `rewardAudit` and matching currency deltas while preserving valid learning, chronicle, relationship, and narrative consequences.
@@ -352,14 +414,14 @@ Tactical matchup audit:
 
 Dice audit rule:
 - Every contested `mode=exchange` must include `exchange.diceAudit`; every contested `mode=resolve` that determines loss, victory, surrender under pressure, concession under pressure, or Guardian-forced incarnation proof must include `resolution.diceAudit`.
-- If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, use it as a client-owned pre-turn helper for deterministic math and accepted condition mechanics: `playerActionCosts` / `opposition.actionCosts` show authority `artTier`, base/min/effective costs; `dicePreview` shows the first opposed d20 pair with mandatory position/difficulty modifiers and expected `outcomeBand`; `conditionMechanics.source="accepted_effect_mechanics_snapshot_v1"` lists only accepted `afterlife_combat_condition` contributions for this exact conflict. Apply a contribution only when its `affectedOperations` and `mechanicalAxes` cover the current exchange, cite its `conditionId` in the matching audit, and never infer a Mortal characteristic modifier or rewrite `combatConditions[]`. The preview is not canonical state and does not replace the contract below; it prevents guessing and must be recalculated if the GM chooses different valid modifiers or dice.
+- If `input/turn_request.json.afterlifeSpiritualConflictPreview` exists, use it as a client-owned pre-turn helper for deterministic math and accepted condition mechanics: `playerActionCosts` / `opposition.actionCosts` show authority `artTier`, base/min/effective costs; a non-null `dicePreview` shows the first opposed d20 pair with mandatory position/difficulty modifiers and expected `outcomeBand`; an accepted active `spiritual_position_burden` on a current participant makes `dicePreview` null because the next acting participants and operations are not selected yet: read `authoringReminders`, calculate their effective position under `spiritual_wound_position_v1`, and never interpret null as zero burden; `conditionMechanics.source="accepted_effect_mechanics_snapshot_v1"` lists only accepted `afterlife_combat_condition` contributions for this exact conflict. Apply a contribution only when its `affectedOperations` and `mechanicalAxes` cover the current exchange, cite its `conditionId` in the matching audit, and never infer a Mortal characteristic modifier or rewrite `combatConditions[]`. The preview is not canonical state and does not replace the contract below; it prevents guessing and must be recalculated if the GM chooses different valid modifiers or dice.
 - `diceAudit.diceSource` is `input/turn_request.json.preGeneratedDices1d20`; never use `gachaBaseResult`, hidden random rolls, or GM preference for afterlife conflict results.
 - Use two visible d20 entries for a contested side-vs-side check: one player-side die and one opposition-side die. If another documented surface in the same turn already consumed visible dice, use the next unused indices and list them explicitly.
 - Required fields: `formulaVersion="afterlife_spiritual_conflict_v1"`, `diceSource`, `diceUsed[]` with `side`, `sourceIndex`, `sides=20`, and `value`, `playerTotal`, `oppositionTotal`, `margin`, `outcomeBand`, and `modifierBreakdown`.
 - Преимущество / Помеха in afterlife dice uses `diceAudit.rollMode.<side>` with `effectiveMode=normal|advantage|great_advantage|disadvantage|dire_disadvantage`, `advantageSources[]`, and `disadvantageSources[]`. `advantage` / Преимущество consumes exactly 2d20 and selects the highest; `great_advantage` / Великое Преимущество consumes exactly 3d20 and selects the highest; `disadvantage` / Помеха consumes exactly 2d20 and selects the lowest; `dire_disadvantage` / Тяжкая Помеха consumes exactly 3d20 and selects the lowest. Source arrays accept legacy strings as ordinary sources or source objects with `summary`/`source`/`sourceId`, `level`, and optional `sourceType`. Step cancellation uses strongest positive and strongest negative only: `great_advantage+disadvantage=>advantage`, `great_advantage+dire_disadvantage=>normal`, `advantage+dire_disadvantage=>disadvantage`, `advantage+disadvantage=>normal`; same-direction sources do not stack.
 - If `game_state/core/game_settings.json.difficulty` is readable, every new/current contested `diceAudit` must include `difficultyAudit` and the canonical game-difficulty modifier. Difficulty table: `normal` / Нормальная gives opposition `+0` and reward multiplier `100%`; `hard` / Тяжёлая gives opposition `+1` and reward multiplier `125%`; `impossible` / Невозможная gives opposition `+2` and reward multiplier `150%`. `difficultyAudit` must contain `difficulty`, `source="game_state/core/game_settings.json.difficulty"`, `oppositionModifier`, and `rewardMultiplierPercent`; `modifierBreakdown.opposition[]` must sum exactly to that `game_difficulty` modifier, and player-side difficulty modifiers are invalid. The largest difficulty modifier is intentionally smaller than position dominance `+4` and `light_incarnate` lead `+8`, so difficulty raises pressure without making dice stronger than strategy/progression.
-- Every exchange with `diceAudit` must include `before.conflictPosition`; omitting the starting position is invalid. Non-`contested` starting position is exactly one real dice modifier with exact matching `position`. If `before.conflictPosition` is `player_advantaged` or `player_dominant`, include one `modifierBreakdown.player[]` item `{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "<before position>", "value": 2|4 }`. If it is `opposition_advantaged` or `opposition_dominant`, include the same single-item shape under `modifierBreakdown.opposition[]`. Do not split, duplicate, blank, omit, or add extra `conflict_position` entries. `contested` means zero `conflict_position` entries.
-- Runtime validation compares current/new exchange or resolution `diceUsed[].sourceIndex/value` against the current authoritative `input/turn_request.json.preGeneratedDices1d20`, recomputes side totals from `modifierBreakdown`, and rejects mismatched `margin` or `outcomeBand`. Historical exchange logs from earlier accepted turns (`exchangeAtTurn` lower than the current turn) keep their original dice values and must not be rewritten to fit the current turn's dice authority; repair them only if a dedicated historical-corruption diagnostic asks for it. Natural 20/1 is bounded critical logic and bounded criticals are symmetric: a favorable critical for the player (player natural 20 or opposition natural 1) raises a worse margin result only to ordinary `player_success`; an unfavorable critical for the player (player natural 1 or opposition natural 20) lowers a better margin result only to ordinary `opposition_success`; opposed natural criticals cancel back to the margin band. Criticals do not create decisive success/failure by themselves.
+- Every exchange with `diceAudit` must include canonical `before.conflictPosition`. Under `spiritual_wound_position_v1`, compute `effective = clamp(canonicalBefore + oppositionBurden - playerBurden, -2, 2)` using each current exact-actor/matching-operation component once; combine both sides before clamping. Effective advantage/dominance requires exactly one `modifierBreakdown.player[]` or `.opposition[]` item `{ "modifierType": "conflict_position", "source": "conflictPosition", "position": "<effective position>", "value": 2|4 }` on the corresponding side. Effective `contested` means zero position entries. Do not split, duplicate, blank, omit, or add extra rows. This effective rank also supplies binding/force-binding positional prerequisites; canonical before/after remain ordinary state and a successful maneuver must actually change position. New wounds affect later matching exchanges only; expiry removes future burden without rewriting closed exchanges or improving canonical position. See `OtherGuides/Wound_Materialization_Contract.md` and the worked `spiritual_wound_position_v1` example; no new field is authored.
+- Runtime validation compares current/new exchange or resolution `diceUsed[].sourceIndex/value` against the current authoritative `input/turn_request.json.preGeneratedDices1d20`, recomputes side totals from `modifierBreakdown`, and rejects mismatched `margin` or `outcomeBand`. Historical exchange-audit exemption requires the same validated pre-turn active conflictId and consumes each snapshot occurrence once; exchangeAtTurn alone is not authority. An old turn marker permits a match differing in only the top-level summary, restricted to missing/null/string, with every other member exact. Accepted historical dice stay unchanged; new, mechanically changed, foreign-conflict or duplicate exchanges receive current dice, matchup and action-cost checks. This is validation compatibility only: resource publication still preserves the exact pre-turn prefix, including summary, and a dedicated prefix diagnostic requires restoring that old entry rather than rewriting old dice. Natural 20/1 is bounded critical logic and bounded criticals are symmetric: a favorable critical for the player (player natural 20 or opposition natural 1) raises a worse margin result only to ordinary `player_success`; an unfavorable critical for the player (player natural 1 or opposition natural 20) lowers a better margin result only to ordinary `opposition_success`; opposed natural criticals cancel back to the margin band. Criticals do not create decisive success/failure by themselves.
 - If natural 20/1 changes the margin-derived band, `diceAudit.criticalResult` is required with `playerNaturalRoll`, `oppositionNaturalRoll`, `marginOutcomeBand`, `normalizedOutcomeBand`, `scaleLimit`, and `narrativeConstraint`. Use it to explain why the critical result is plausible at the current side strength and operation scale; do not narrate impossible outcomes just because a die rolled 20.
 - `margin = playerTotal - oppositionTotal`. The GM may narrate freely, but `outcome`, strain changes, `conflictPosition`, and terminal proof must match the audit.
 - Outcome bands for v1: `margin >= 8` -> `decisive_player_success`; `margin 3..7` -> `player_success`; `margin -2..2` -> `mixed_or_no_effect`; `margin -7..-3` -> `opposition_success`; `margin <= -8` -> `decisive_opposition_success`.
@@ -377,7 +439,7 @@ Player spiritual art upgrades and `Средоточие Души` upgrades are c
 
 Victorious contested conflict resolution may grant a small validated currency reward. Chaos Sea victories grant `ink_feathers` / Чернильные Перья through `metaStateUpdates.inkFeatherChanges.add`; ordinary active Shining Abode victories grant `light_sparks` / Искры Света by increasing `shining_abode_state.json.lightSparks`. The terminal `recentConflicts[]` proof must contain `rewardAudit` with `realm`, `currency`, `baseAmount`, `opposingLeadStrength`, `sideModel`, `startingConflictPosition`, `challengeTier`, `outcomeMultiplierPercent`, `riskMultiplierPercent`, `riskReason`, `difficultyAudit` when `game_settings` difficulty is readable, `finalAmount`, and `narrativeReason`. For a current-turn reward that resolves the validated pre-turn `activeConflict`, `rewardAudit.sideModel` must match pre-turn `activeConflict.sideModel`, `rewardAudit.startingConflictPosition` must match pre-turn `activeConflict.conflictPosition`, and `rewardAudit.opposingLeadStrength` must come from the pre-turn `oppositionSide.leadContestant.actorArtTierSnapshot` as max standard spiritual-art/authority snapshot value + 1. Canonical formula: Chaos base `10`, Shining base `1`; `challengeTier` is derived from opposing lead strength + sideModel + starting position; `outcomeMultiplierPercent` is `100` for `player_success` and `150` for `decisive_player_success`; risk is `150/125/100/75/50` for `opposition_dominant/opposition_advantaged/contested/player_advantaged/player_dominant`; difficulty multiplier is `100/125/150` for `normal`/`hard`/`impossible`; cap is `120` Ink Feathers or `8` Light Sparks. Formula: `finalAmount = clamp(baseAmount * challengeTier * outcomeMultiplierPercent * riskMultiplierPercent * difficultyAudit.rewardMultiplierPercent / 1_000_000, 0, realmCap)`. Use `mathAudit` for non-trivial afterlife arithmetic authored by the GM and copied into state, especially `afterlifeSpiritualConflictUpdate.resolution.rewardAudit.finalAmount` or contested `diceAudit.margin`; if `referencedBy[]` names such a supported numeric path, `mathAudit.result` must exactly equal that field. Math Assistant is optional for trivial one-step sums and unnecessary for client-owned calculations that the GM does not author. No reward is allowed for `repair_cancel`, `no_effect`, voluntary withdrawal/surrender, pure negotiation/no-contest closures, duplicate reward for the same `conflictId`, invalid realm, or wrong currency.
 
-Source of Light capstone (`Источник Света`) is a separate full-Radiance Shining contract. It is not a Shining core action and does not use `coreActionReceipts[]`. `light_incarnate` / `Воплощение Света` is combat-authoritative only when all closure surfaces are present: `soul_state.afterlifeCombatProfile.capstones.lightIncarnate`, `shining_abode_state.json.sourceOfLightCapstone.completed`, and exactly one matching `source_of_light_incarnated_light` / `Воплощенный Свет` Soul Relic. From `grantedAtTurn` onward, every contested `afterlife_spiritual_conflict_v1` `diceAudit` must explicitly include turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and the player-side `light_incarnate` modifier: `+8` when the player is the lead contestant, `+4` when the player is only a supporter/champion-side contributor, plus `+4` extra for coercive operations `force_incarnation`, `force_binding`, or `break_binding`. Historical conflict logs before `grantedAtTurn` are not rewritten, and `light_incarnate` modifiers before Source of Light unlock or incomplete closure are invalid.
+Source of Light capstone (`Источник Света`) is a separate full-Radiance Shining contract. It is not a Shining core action and does not use `coreActionReceipts[]`. `light_incarnate` / `Воплощение Света` is combat-authoritative only when all closure surfaces are present: `soul_state.afterlifeCombatProfile.capstones.lightIncarnate`, `shining_abode_state.json.sourceOfLightCapstone.completed`, and exactly one matching `source_of_light_incarnated_light` / `Воплощенный Свет` Soul Relic. From `grantedAtTurn` onward, every contested `afterlife_spiritual_conflict_v1` `diceAudit` must explicitly include turn evidence (`exchangeAtTurn`, `resolvedAtTurn`, or `turnNumber`) and the player-side `light_incarnate` modifier: `+8` when the player is the lead contestant, `+4` when the player is only a supporter/champion-side contributor, plus `+4` extra for coercive operations `force_incarnation`, `force_binding`, or `break_binding`. Historical conflict logs before `grantedAtTurn` are not rewritten, and `light_incarnate` modifiers before Source of Light unlock or incomplete closure are invalid. Light Incarnate history requires accepted pre-turn payload evidence during a validated turn: consume one occurrence once, and active exchanges and recent resolutions never share a history pool. Active exchanges reuse the same-conflict exchange classifier; recent resolutions require an exact full payload match. Thus backdating alone cannot waive light_incarnate, and a validated baseline without dice is still a current-turn boundary. An accepted no-marker payload retains compatibility; an unmatched current payload needs explicit turn evidence and the applicable modifier. Historical pre-grant dice are preserved, while offline history without a validated baseline keeps its existing compatibility. This does not authorize editing the exact pre-turn prefix.
 
 Forced incarnation rule: voluntary `TriggerIncarnation` remains ordinary Soul Gates/handoff flow. A Guardian forcing the soul into a life is coercive and must be backed either by legacy explicit provocation evidence or by current-turn resolved afterlife spiritual conflict proof. For the conflict path, `recentConflicts[]` must include `mode=resolve`, `resolutionState=resolved`, `resolvedAtTurn=<current turn>`, matching `guardianId`, `operationType=force_incarnation`, and `playerOutcome=lost|surrendered|conceded` or equivalent `resolutionKind=player_loss|player_surrender|player_concession`. The active Guardian, current Abode, reputation threshold, and severity band are evaluated from the validated pre-turn `game_state/meta/guardians.json` snapshot; same-turn edits to `guardians.json` cannot make forced incarnation legal. Do not treat force and consent as the same lifecycle path.
 
@@ -578,3 +640,283 @@ Resident evidence is an exact, case-sensitive identity link: `guardian_abode_res
 
 Actor Materialization is separate. An active Guardian supplies actor/living-world authority but never creates Shining faction authority by implication.
 
+## spiritual_wound_terminal_closure_v1
+
+The following C3 boundary feeds the internal common publication transaction
+described under spiritual_wound_common_publication_v1 below; real GM dispatch
+and player notification wiring remain C4 work.
+
+For the private wound pipeline's bounded terminal contour, the last
+`terminalExchange` follows the signed active conflict directly. Author the usual
+`afterlifeSpiritualConflictUpdate.mode=resolve` resolution and retain its exact
+operation, actor, original dice, before/after state and both-side cost audits.
+The resolution's `diceAudit` must equal the terminal exchange's audit. Existing
+outcome, reward, currency and reward anti-farm rules still apply; closure does
+not grant a reward or change its amount.
+
+The client executes the last action and its causal effects before retiring the
+opposition resource owner: Spend before Retire. Only verified completion can
+append one immutable closure to the client-owned receipt; a pending packet or a
+resolution-shaped JSON object is insufficient. The immutable instance start and
+earlier decisions remain unchanged. A reused display conflict ID requires an
+accepted prior closure and creates a distinct instance, never old opportunities.
+The existing 20-entry recentConflicts pruning does not prune the durable receipt:
+old instance, closure, source and decision rows remain immutable. Only the normal
+oldest recent-summary drop is allowed; retained siblings cannot be deleted or reordered.
+Missing intermediate exchanges, start-plus-harm and replacement contours remain
+explicit unfinished source-family work. GM must not write closure IDs, private
+receipt/proof fields or resource retirement. C3 produces an unpublished common
+plan; live GameEngine/daemon publication uses the C4 common publisher. See the worked terminal
+fragment under this marker in `Examples/E_CLI_Afterlife_Turns.txt`.
+
+## spiritual_wound_source_only_publication_v1
+
+For Chaos Sea and Shining Abode, a genuinely exhausted original stream containing
+only zero-ceiling sources without guarantees yields `no_offer`. The GM authors
+ordinary exchange/dice/cost evidence and narration, preserving the signed danger
+declaration. No fabricated none, woundDecisions, wound command or C2 checkpoint
+is required. A positive or guaranteed offer remains a separate decision boundary.
+
+The client retains an instance-only receipt without new source/decision rows and,
+for a terminal exchange, derives the immutable closure from its real completed
+owner. Ordinary costs/effects execute with Spend before Retire; reward rules and
+persistent actor wound/effect groups do not change. GM must not write these private
+receipts or resource retirement. A single common publisher uses the completed
+plan and original identities. Legal empty private roots and absent roots both
+retain exact original witnesses; successful publication consumes them, while
+failure restores signed bytes/absence.
+
+The bounded warm handoff is used by live B3 routing.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+Receipt-only state does not prove whole-turn acceptance.
+See the matching wound guide and worked GM example.
+
+## spiritual_wound_common_publication_v1
+
+After every original spiritual opportunity has an owner-validated decision,
+the client can pass the completed C3 result to the common accepted-turn transaction.
+This is an internal C4-A boundary: live GM dispatch uses C4-B. It introduces
+no player command or GM-authored publication field. GM must not write private
+checkpoint, pending, receipt, wound identity or effect identity roots.
+
+The client retains three distinct image sets: signed original rollback images,
+original draft provenance, and checkpoint-committed publication inputs. It checks
+the committed bytes before registration and before the one-shot publication take.
+Uncommitted edits reject publication with zero writes. The completed resource,
+effect and wound plan is reused without replanning or allocating new identities;
+terminal timestamps and retained combat-condition siblings are preserved.
+
+The same transaction writes the final wound/effect/resource images and the exact
+instance/source/decision/closure receipt, then consumes both private roots and
+wound_commands, including an explicit none decision. A write or read-back failure
+restores signed original bytes and signed absence, then invalidates the taken
+publication. Do not retry a consumed authority or fabricate a replacement receipt.
+See the focused worked continuation under this marker in Examples/E_CLI_Afterlife_Turns.txt.
+
+Live accepted output: preserve every accepted acquisition and worsening description
+in the final output/narrative_response.json.response, in exchange order. Creating
+then worsening the same wound produces two player messages at the respective ranks;
+none and guarantee_satisfied produce no extra acquisition notification. The client
+binds the final narrative, interface and debug output to the accepted publication,
+rejects substituted output, and consumes each accepted notification once. Refreshing
+the same completed response does not replay those notifications. These are client
+responsibilities: GM must not author notification IDs or publication/completion flags.
+After interruption, the client restores the signed original turn or retains the complete accepted turn.
+GM waits for the current client request and must not resend a saved choice.
+Receipt-only state does not prove whole-turn acceptance; do not reconstruct private authority.
+
+## spiritual_wound_private_roots_v1
+
+The comparison-only worker envelope is described under
+`spiritual_wound_continuation_envelope_v1` in the wound contract and worked example.
+When the client supplies `spiritualWoundContinuation`, copy its `continuationId`
+and return exactly one current decision in phase `decision`, or an empty
+`woundDecisions` array in `dependent_draft`. Missing response never means none.
+Keep narrative text in `output/narrative_response.json.response`; preserve siblings.
+Do not write private roots or manufacture a continuation request. The strict
+envelope parser alone does not enable live dispatch; GameEngine authenticates and resumes C2.
+
+File-helper response: `Complete-BoeValidationRepair -SpiritualWoundContinuationJson
+<raw response-envelope JSON>`. Pass the closed response object itself: explicit
+`none`, the complete `materialize` proposal, or `woundDecisions: []` for
+`dependent_draft`. Missing response never means none. Ordinary repair uses
+`Complete-BoeValidationRepair` without this argument and forbids the envelope.
+Continuation permits `errors: []` for a decision and requires
+`fullTurnResubmissionRequired: false`; keep the original turn and baseline.
+The helper rechecks exact request and Ready witnesses under the canonical lock;
+any change rejects publication and preserves a newer Ready even for the same
+request. Reread the request rather than deleting Ready or retrying old input.
+An already published continuation Ready blocks helper submission and worker
+dispatch/apply; only the client consumes or rejects that response.
+The helper does not consume C2 or read private authority: GameEngine owner
+authentication and consumption enforce the live route. See the three alternative helper commands in the worked
+`spiritual_wound_continuation_envelope_v1` example.
+
+Внутреннее состояние материализации духовных ран принадлежит клиенту в Chaos Sea и
+Shining Abode. Эти файлы нельзя редактировать или переносить в ответ ГМ (GM must not write):
+
+- `game_state/control/spiritual_wound_capture_checkpoint.json` — закрытая запись
+  исходного хода и восстановление незавершённого решения C2; наличие пути само
+  по себе не разрешает live dispatch.
+- `game_state/control/pending_spiritual_wound_decisions.json` — незавершённый пакет
+  решений с исходными снимками, порядком обменов и уже выбранными решениями.
+- `game_state/wounds/spiritual_wound_opportunity_receipts.json` — неизменяемая
+  история экземпляров конфликтов, закрытий, допустимых источников и принятых решений,
+  включая явный отказ от раны.
+
+These roots are not player pending requests. Их содержимое не включается в пользовательский status/audit.
+The internal `spiritual_wound_pending_submission_v1` boundary retains a selected
+choice in checkpoint.pendingSubmission before dependent execution. The committed
+cursor and derived pending remain unchanged. Cold recovery replays the original
+owners and exact selection ID/time prefix; it must not reoffer the saved choice.
+GM must not write pendingSubmission or reconstruct it from a command file.
+See the worked pending-selection continuation in the afterlife example. Live
+GameEngine dispatch uses C4-B with the original saved choice.
+If derived pending cannot be written after a confirmed checkpoint, the client
+performs checkpoint-first recovery through the actual C2 owner. A repeated
+write failure retains the original turn and saved choice for cold recovery;
+it does not request a replacement decision. GM waits for the current client
+request and must not rewrite private files or resubmit the old response.
+The client preserves the original completion signal and stops the current
+gameplay loop until explicit session re-entry; it never invents a new GM success.
+Before any private checkpoint exists, an ordinary repairable resource omission
+still follows the existing full-turn repair instructions. That path cannot
+restore missing or damaged private authority from public request/Ready files.
+Все три пути входят в снимок и проверку согласованности общей транзакции; отсутствие файла
+сохраняется как отсутствие, а не заменяется самовольным пустым файлом. При откате
+восстанавливаются исходные байты и факт существования.
+
+Для первого предложения духовной раны клиент сверяет подписанный снимок A:
+`originalPathPresenceV1` фиксирует историю receipts среди 19 observed paths.
+Если файла не было, нужна signed absence; текущий черновик B или пустой файл,
+появившийся после снимка, не создаёт прежнюю принятую историю. Снимки со старыми
+наборами 16/18 путей читаются для обычной работы, но без подписанного покрытия
+receipts не могут служить основанием первого предложения. Историю и снимок
+проверяет клиент; ГМ не должен создавать или править эти доказательства.
+
+Signed absence не отменяет уже сохранённую материализацию. Если подписанный
+снимок содержит индекс раны исходного духовного источника и её первый `create`
+(включая вылеченную рану без активного носителя),
+клиент требует соответствующую принятую квитанцию с теми же раной, переходом,
+opportunity и исходными координатами источника. Потерянная, пустая или
+перепривязанная история блокируется с
+`spiritual_wound_conflict_side_receipt_missing` до нового предложения, включая
+явную re-trauma. ГМ не чинит приватную историю и не создаёт заменяющую рану.
+У первого источника без прежней материализации отсутствие истории допустимо;
+вставки текущего незавершённого хода ещё не требуют опубликованных квитанций.
+
+Закрытые формы проверяют структуру и согласованность: hashes do not grant authority.
+This registration does not enable live continuation or publication.
+Внутренний C3 reducer после завершённого C2-пакета и обычной механики может
+построить detached receipt after-image для `none`, `materialize` и клиентского
+`guarantee_satisfied` каждого источника с положительным максимумом или гарантией.
+Он заново проверяет подписанные исходные receipt и
+conflict A, исходный source witness, instance identity и causal wave binding;
+добавляет по одной source и decision строке с global и instance ordinals.
+`none` не имеет woundId, transitionId или selectedSeverityRank и не создаёт
+рану, эффект либо acquisition notification. Для `materialize` woundId and transitionId
+(ID раны и перехода)
+берутся только из последовательного, проверенного владельцем результата редуктора;
+история перехода и итоговые carrier/index/history собираются вместе с обычными
+эффектами в один неопубликованный accepted plan. Пропуск решения не равен `none`;
+в одном завершённом пакете нельзя создать вторую новую рану для той же стороны;
+отдельно доказанная явная повторная травма более старой активной раны допустима.
+Если один обмен даёт отдельный вредоносный источник каждой стороне и ни одна
+сторона ещё не получила новую рану в этом конфликте, ГМ отвечает на оба
+последовательных предложения, используя полное описание раны и повествование
+для соответствующей цели. Клиент может создать по одной ране каждой стороне:
+они разделяют координату обмена, но получают разные `woundId`, переходы и
+строки receipt в порядке источников. Если сторона уже получила рану в том же
+конфликте, для неё действует обычный маршрут ухудшения, `none` или
+`guarantee_satisfied` независимо от исхода другой стороны.
+Если первая новая рана уже создана в раннем обмене того же исходного хода,
+а максимум следующего источника выше её текущего ранга, следующее
+предложение для той же стороны без явной цели старой раны относится к ухудшению
+её текущего состояния. ГМ выбирает ранг не ниже предложенного минимума и
+описывает ухудшение, но не указывает постоянный ID раны или перехода; клиент
+сохраняет один woundId и два последовательных transitionId. Выбор исходного
+ранга повторно не создаёт рану и отклоняется до C3. Явная старая re-trauma
+остаётся отдельным маршрутом. Для необязательного источника, чей максимум
+уже достигнут текущей раной той же стороны, клиент сохраняет точную цель и
+предлагает только `none`; попытка повторно создать или ухудшить рану
+отклоняется до C3. Ту же рану из прошлого хода клиент находит по подписанной
+истории экземпляра конфликта и сверяет с текущими carrier/index/history.
+Если точная текущая рана этой стороны уже имеет ранг не ниже доказанной
+гарантии, клиент без новой команды ГМ записывает `guarantee_satisfied` с тем же
+`woundId` и историческим `satisfiedSeverityRank`; `selectedSeverityRank` и
+`transitionId` равны null. Это верно даже когда текущий ранг не ниже жёсткого
+максимума нового источника: второй раны, перехода и ухудшения сверх максимума
+нет. Более позднее законное ухудшение не меняет записанный ранг удовлетворения.
+Если ранг ниже гарантии, он должен быть ухудшен ровно до гарантированного ранга
+в пределах максимума; если это невозможно, ход отклоняется. Гарантированную
+рану нельзя отклонить. Явная повторная травма старой раны остаётся отдельной
+целью и не подменяется раной этого конфликта. Повтор того же принятого запроса,
+изменённая подписанная история или устаревший пакет отвергаются до записи.
+Receipt after-image считается работой общего плана даже без wound transition,
+но C3 reducer не публикует её сам. Live GameEngine/daemon dispatch и общая
+физическая публикация ожидают C4. ГМ не создаёт эти строки вручную и не исправляет
+повреждённые приватные данные через обычный JSON repair.
+
+### spiritual_wound_position_dependency_v1
+
+For a client-issued `dependent_draft` caused by `spiritual_position_burden`, keep
+the saved wound choice and use only the current `dependentDraftFields`. The
+client derives the effective rank from the actual next exchange and its accepted
+actors, operations and effects. A permitted modifier-array pointer is not blanket
+permission to replace that array: preserve every nonposition row and its relative
+order. Remove the obsolete position row, insert or replace the single prescribed
+row on the correct side, or leave no position row at effective zero. Correct only
+the listed totals, margin, outcome band and required natural-critical evidence
+using the same dice and roll modes. Cost changes require their own listed
+permissions; a position correction alone does not authorize them.
+
+The original action, actor, art, target, canonical position, closed prefix and
+saved choice remain unchanged. Never infer permission to rewrite an outcome or
+`after` state from a dice correction. If changed arithmetic requires different
+consequences, the client must supply separately proved current permissions;
+otherwise that continuation remains blocked. Return `woundDecisions: []` in the
+existing envelope and preserve the current `continuationId`. Cold recovery
+reopens the saved selection; it does not invite a replacement decision.
+
+Submit the complete prescribed arithmetic group together; partial or mixed
+old/new groups are rejected. An unchanged draft remains diagnosable, but it cannot
+advance while the original position error remains.
+
+Read the wound materialization contract and matching afterlife worked example.
+This uses the existing continuation envelope; no new canonical state field,
+player command or GM execution authority is introduced.
+
+### spiritual_wound_dependent_frontiers_v1
+
+Ready completes only the issued frontier. A complete correction A may allow the
+client to prove a later request B with a new continuationId. Read and answer B
+separately with `woundDecisions: []`, retaining the saved wound choice. Future B
+corrections are forbidden in A, including valid-looking later arithmetic. The
+client checks the whole candidate against the exact issued A before deriving B;
+missing critical text or altered dice/independent modifiers cannot unlock it.
+File and worker paths share this rule; worker ownership checks and rollback stay
+mandatory. Cold recovery reconciles outstanding transport before automatic
+continuation; public request files are not authority. Never reuse stale Ready,
+reconstruct private state or replace the saved decision. Read the wound guide
+and the matching worked A-to-B example. Game formulas and the public envelope are unchanged.
+The client privately retains accepted corrections
+as pendingSubmission.dependentDraftProgress inside the existing checkpoint; GM
+and workers must not author or repair that field. Original-owner replay checks
+each saved correction before a later candidate, and confirmed checkpoint progress
+opens the next frontier before its public request is written. This comparison
+evidence does not independently authorize execution or publication.
+
+### spiritual_wound_binding_result_closure_v1
+
+This narrower case uses the same `dependent_draft` transport for a last
+`binding`/`force_binding` whose saved position wound removes its control
+prerequisite. Response A changes only client-proved arithmetic, independently
+proved costs, `outcome` to ordinarily valid `no_effect`/`blocked`, and
+`after.controlState` to the exact before value and presence. It cannot change
+final control. After actual A validates, a new request B permits only the
+effective raw `activeConflict.controlState` carrier with that validated
+last-exchange value/presence. Distinct `continuationId`, `woundDecisions: []`
+and Ready are required for each response. No new public field or GM authority
+is added. Preserve the saved wound choice. Read the wound guide and worked
+afterlife example; the client alone uses a detached echo for intermediate
+validation and validates the full actual draft after B.

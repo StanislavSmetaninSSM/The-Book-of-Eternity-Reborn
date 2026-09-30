@@ -14,6 +14,7 @@ internal sealed class StateDistributorHooks
 {
     internal Func<Task>? AfterBackupsCapturedAsync { get; init; }
     internal Func<string, Task>? AfterFileMutationAppliedAsync { get; init; }
+    internal Action<string>? BeforeFileMutationRollback { get; init; }
     internal Func<Task>? BeforeBackupCleanupAsync { get; init; }
 }
 
@@ -50,20 +51,44 @@ public class StateDistributor
     public async Task<List<string>> DistributeAsync(GameResponse response)
     {
         await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-        return await DistributeAsync(writeLease, response);
+        return await DistributeAsync(
+            writeLease,
+            response,
+            acceptedWoundInput: null);
+    }
+
+    internal async Task<List<string>> DistributeAsync(
+        GameResponse response,
+        WoundResponseInputCompositionResult acceptedWoundInput)
+    {
+        ArgumentNullException.ThrowIfNull(acceptedWoundInput);
+        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
+        return await DistributeAsync(writeLease, response, acceptedWoundInput);
     }
 
     internal async Task<List<string>> DistributeAsync(
         FileSystemManager.CanonicalWriteLease writeLease,
-        GameResponse response)
+        GameResponse response) =>
+        await DistributeAsync(writeLease, response, acceptedWoundInput: null);
+
+    private async Task<List<string>> DistributeAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        GameResponse response,
+        WoundResponseInputCompositionResult? acceptedWoundInput)
     {
         ArgumentNullException.ThrowIfNull(writeLease);
         ArgumentNullException.ThrowIfNull(response);
 
+        var acceptedWoundCommand = ResolveAcceptedWoundCommand(
+            response,
+            acceptedWoundInput);
         var modifiedFiles = new List<string>();
         var fileUpdates = CollectFileUpdates(response);
         var targetPaths = fileUpdates.Keys
             .Concat(CollectOutputPaths(response))
+            .Concat(acceptedWoundCommand is null
+                ? Array.Empty<string>()
+                : new[] { AcceptedMechanicsPlan.WoundCommandPath })
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .ToArray();
         var mutations = new Dictionary<string, DistributionMutation>(
@@ -95,8 +120,33 @@ public class StateDistributor
                     await _hooks.AfterFileMutationAppliedAsync(filePath);
             }
 
+            if (acceptedWoundCommand is not null)
+            {
+                await WriteAcceptedWoundCommandAsync(
+                    writeLease,
+                    acceptedWoundCommand.Root,
+                    mutations,
+                    modifiedFiles);
+            }
+
             // Phase 3: Write output interface files
             await WriteOutputFiles(writeLease, response, mutations);
+
+            if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })
+            {
+                var confirmation = MortalWoundTreatmentResourceComposer
+                    .ConfirmPersistedTreatmentResources(
+                        _fs,
+                        writeLease,
+                        acceptedWoundCommand.TreatmentRequests);
+                if (!confirmation.IsValid)
+                {
+                    throw new InvalidDataException(
+                        "mortal_wound_treatment_resource_confirmation_failed: " +
+                        string.Join(", ", confirmation.Issues.Select(static issue =>
+                            issue.Code)));
+                }
+            }
         }
         catch (Exception ex)
         {
@@ -107,6 +157,25 @@ public class StateDistributor
                 throw new AggregateException(
                     "State distribution failed and one or more rollback operations also failed.",
                     [ex, .. rollbackFailures]);
+            }
+
+
+            if (acceptedWoundCommand is { TreatmentRequests.Count: > 0 })
+            {
+                var release = MortalWoundTreatmentResourceComposer
+                    .ReleaseTreatmentResources(
+                        _fs,
+                        writeLease,
+                        acceptedWoundCommand.TreatmentRequests,
+                        "rolled_back");
+                if (!release.IsValid)
+                {
+                    throw new AggregateException(
+                        "State distribution failed, physical rollback succeeded, but " +
+                        "the provisional treatment resource hold could not be released.",
+                        [ex, new InvalidDataException(string.Join(", ",
+                            release.Issues.Select(static issue => issue.Code)))]);
+                }
             }
 
             ExceptionDispatchInfo.Capture(ex).Throw();
@@ -135,6 +204,9 @@ public class StateDistributor
             if (FileMapping.OutputOnlyResponseFields.Contains(prop.Name))
                 continue;
 
+            if (FileMapping.ClientConsumedResponseFields.Contains(prop.Name))
+                continue;
+
             if (FileMapping.FieldToFile.TryGetValue(prop.Name, out var targetFile))
             {
                 if (!result.ContainsKey(targetFile))
@@ -148,6 +220,170 @@ public class StateDistributor
         }
 
         return result;
+    }
+
+    private static AcceptedWoundCommand? ResolveAcceptedWoundCommand(
+        GameResponse response,
+        WoundResponseInputCompositionResult? acceptedWoundInput)
+    {
+        if (response.WoundTreatmentAuthorings is { Length: > 0 })
+        {
+            throw new InvalidDataException(
+                "wound_authorings_require_accepted_adapter: raw alternative treatment responses require their fresh accepted-world adapter.");
+        }
+
+        var hasRawDecisions = response.WoundDecisions is { Length: > 0 };
+        if (acceptedWoundInput is null)
+        {
+            if (hasRawDecisions)
+            {
+                throw new InvalidDataException(
+                    "wound_decisions_require_accepted_command: raw wound decisions cannot enter generic state distribution.");
+            }
+
+            return null;
+        }
+
+        if (!acceptedWoundInput.Success || acceptedWoundInput.CommandRoot is not { } root)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: wound distribution requires one successful typed composition result.");
+        }
+
+        var parsed = WoundResponseInputComposer.ParseCommandRoot(
+            JsonSerializer.SerializeToElement(root, JsonOpts));
+        if (!parsed.Success)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: the typed wound command failed independent strict parsing.");
+        }
+        if (parsed.AcceptedTransitionCommands.Count != 0)
+            throw new InvalidDataException(
+                "wound_command_transition_adapter_unavailable: diagnosis/alternative commands require their fresh accepted-world adapter.");
+
+        if (root["commands"] is not JsonArray commands)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_invalid: the typed wound command has no commands array.");
+        }
+        if (commands.Count == 0)
+            return null;
+        if (parsed.TreatmentCommands.Count != 0)
+        {
+            var publishedTreatmentScene = PlayerFacingTextNormalizer
+                .NormalizeEscapedLineBreakArtifacts(response.Response);
+            if (parsed.Commands.Count != 0 ||
+                hasRawDecisions ||
+                acceptedWoundInput.DecisionReceipts.Count != 0 ||
+                parsed.TreatmentCommands.Any(command => !string.Equals(
+                    command.FinalSceneText,
+                    publishedTreatmentScene,
+                    StringComparison.Ordinal)))
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed treatment command no longer matches the distributed player response.");
+            }
+            var requests = new List<MortalWoundTreatmentAttemptRequest>();
+            var requestIssues = new List<ValidationIssue>();
+            for (var index = 0; index < parsed.TreatmentCommands.Count; index++)
+            {
+                var draft = parsed.TreatmentCommands[index];
+                if (!MortalWoundTreatmentCommandCodec.TryParseRequest(
+                        draft.Request,
+                        $"{AcceptedMechanicsPlan.WoundCommandPath}.commands[{index}].authority.request",
+                        requestIssues,
+                        out var request) ||
+                    request is null)
+                {
+                    throw new InvalidDataException(
+                        "wound_accepted_command_invalid: the treatment request failed independent strict parsing.");
+                }
+                requests.Add(request);
+            }
+            if (requestIssues.Count != 0)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_invalid: the treatment request failed independent strict parsing.");
+            }
+            return new AcceptedWoundCommand(
+                root.DeepClone().AsObject(),
+                Array.AsReadOnly(requests.ToArray()));
+        }
+        if (!hasRawDecisions)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_unbound: a non-empty typed wound command has no response decisions.");
+        }
+        var rawResponseDecisions = response.WoundDecisions!;
+        if (rawResponseDecisions.Length !=
+            acceptedWoundInput.DecisionReceipts.Count)
+        {
+            throw new InvalidDataException(
+                "wound_accepted_command_unbound: the response decision set changed after typed composition.");
+        }
+
+        var responseDecisions = rawResponseDecisions
+            .Select(static value => JsonNode.Parse(value.GetRawText()))
+            .ToArray();
+        var matchedDecisionIndexes = new HashSet<int>();
+        var publishedScene = PlayerFacingTextNormalizer
+            .NormalizeEscapedLineBreakArtifacts(response.Response);
+        foreach (var commandNode in commands)
+        {
+            if (commandNode is not JsonObject command ||
+                !TryReadNullableString(command["finalSceneText"], out var commandScene) ||
+                !string.Equals(commandScene, publishedScene, StringComparison.Ordinal) ||
+                command["decision"] is not JsonObject commandDecision)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed command no longer matches the distributed player response.");
+            }
+
+            var matchingIndexes = responseDecisions
+                .Select((decision, index) => (decision, index))
+                .Where(value =>
+                    !matchedDecisionIndexes.Contains(value.index) &&
+                    JsonNode.DeepEquals(value.decision, commandDecision))
+                .Select(static value => value.index)
+                .ToArray();
+            if (matchingIndexes.Length != 1)
+            {
+                throw new InvalidDataException(
+                    "wound_accepted_command_unbound: the typed command decision is missing or ambiguous in the response.");
+            }
+
+            matchedDecisionIndexes.Add(matchingIndexes[0]);
+        }
+
+        return new AcceptedWoundCommand(
+            root.DeepClone().AsObject(),
+            Array.Empty<MortalWoundTreatmentAttemptRequest>());
+    }
+
+    private static bool TryReadNullableString(JsonNode? node, out string? value)
+    {
+        value = null;
+        if (node is null)
+            return true;
+        return node is JsonValue scalar &&
+               scalar.TryGetValue<string>(out value);
+    }
+
+    private async Task WriteAcceptedWoundCommandAsync(
+        FileSystemManager.CanonicalWriteLease writeLease,
+        JsonObject commandRoot,
+        IReadOnlyDictionary<string, DistributionMutation> mutations,
+        ICollection<string> modifiedFiles)
+    {
+        var path = AcceptedMechanicsPlan.WoundCommandPath;
+        await _fs.WriteFileAtomicAsync(
+            writeLease,
+            path,
+            commandRoot.ToJsonString(JsonOpts));
+        mutations[path].MutationApplied = true;
+        modifiedFiles.Add(path);
+        if (_hooks?.AfterFileMutationAppliedAsync != null)
+            await _hooks.AfterFileMutationAppliedAsync(path);
     }
 
     private async Task MergeFieldsIntoFile(
@@ -381,6 +617,7 @@ public class StateDistributor
 
             try
             {
+                _hooks?.BeforeFileMutationRollback?.Invoke(mutation.Path);
                 if (mutation.ExistedBefore)
                 {
                     if (string.IsNullOrWhiteSpace(mutation.BackupPath))
@@ -466,6 +703,10 @@ public class StateDistributor
         internal string? BackupPath { get; set; }
         internal bool MutationApplied { get; set; }
     }
+
+    private sealed record AcceptedWoundCommand(
+        JsonObject Root,
+        IReadOnlyList<MortalWoundTreatmentAttemptRequest> TreatmentRequests);
 
     private static DialogueOption[]? NormalizeDialogueOptions(DialogueOption[]? options)
     {

@@ -1,4 +1,7 @@
+using BookOfEternityClient.Configuration;
+using BookOfEternityClient.Models;
 using BookOfEternityClient.Models.GameState;
+using BookOfEternityClient.Services;
 using BookOfEternityClient.UI;
 using Spectre.Console;
 using System.Reflection;
@@ -95,6 +98,48 @@ public sealed class GameInterfaceTests
         };
 
         Assert.False(GameInterface.ShouldRenderAfterlifeStatus(state));
+    }
+
+    [Fact]
+    public void RenderGameScreen_RendersWoundNotificationsAsEscapedPlayerText()
+    {
+        var originalConsole = AnsiConsole.Console;
+        var writer = new StringWriter();
+        AnsiConsole.Console = AnsiConsole.Create(new AnsiConsoleSettings
+        {
+            Ansi = AnsiSupport.No,
+            ColorSystem = ColorSystemSupport.NoColors,
+            Interactive = InteractionSupport.No,
+            Out = new AnsiConsoleOutput(writer)
+        });
+        try
+        {
+            var gameInterface = new GameInterface(
+                new LocalizationManager { CurrentLanguage = "ru" },
+                new GameSettings());
+            var response = new GameResponse
+            {
+                Response = "Сцена завершена.",
+                WoundNotifications = new[]
+                {
+                    "Получена рана: [red]<script> (II). Подробнее: /раны"
+                }
+            };
+
+            gameInterface.RenderGameScreen(
+                new AggregatedGameState { CurrentRealm = "Mortal World" },
+                response,
+                42);
+
+            Assert.Contains(
+                "Получена рана: [red]<script> (II). Подробнее: /раны",
+                writer.ToString(),
+                StringComparison.Ordinal);
+        }
+        finally
+        {
+            AnsiConsole.Console = originalConsole;
+        }
     }
 
     [Fact]

@@ -43,6 +43,14 @@ public class TurnRequest
 
     [JsonPropertyName("afterlifeSpiritualConflictPreview")]
     public JsonObject? AfterlifeSpiritualConflictPreview { get; set; }
+
+    [JsonPropertyName("effectSkillScopeCatalog")]
+    public JsonObject EffectSkillScopeCatalog { get; set; } = new()
+    {
+        ["schemaVersion"] = 1,
+        ["targets"] = new JsonArray()
+    };
+
 }
 
 public class AdditionalContext

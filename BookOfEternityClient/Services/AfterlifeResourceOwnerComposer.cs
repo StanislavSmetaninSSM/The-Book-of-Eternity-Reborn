@@ -61,6 +61,33 @@ internal sealed class AfterlifeResourceOwnerCompositionInput
 
 internal static class AfterlifeResourceOwnerComposer
 {
+    /// <summary>
+    /// Reconstructs the opposition export from the signed active state for bounded terminal execution.
+    /// </summary>
+    /// <param name="definitions">
+    /// Original validated resource definitions.
+    /// </param>
+    /// <param name="original">
+    /// Signed conflict root; it is used as both sides of an unchanged owner composition.
+    /// </param>
+    /// <returns>
+    /// The single validated pre-turn opposition export, or <see langword="null"/> on invalid authority.
+    /// </returns>
+    internal static ResourceOwnerExport? ReadTerminalExecutionOwner(
+        ResourceDefinitionCatalog definitions, JsonObject original)
+    {
+        var pre = new List<ResourceOwnerExport>();
+        var same = new List<ResourceOwnerExport>();
+        var historical = new List<ResourceOwnerKey>();
+        var terminal = new List<ResourceOwnerKey>();
+        var capacities = new List<ResourceOwnerCapacityDraft>();
+        var issues = new List<ValidationIssue>();
+        ComposeConflictSideOwner(definitions, original, original, pre, same, historical,
+            terminal, capacities, issues);
+        return issues.Count == 0 && pre.Count == 1 && same.Count == 0 &&
+            historical.Count == 0 && terminal.Count == 0 ? pre[0] : null;
+    }
+
     private const string BindingsProperty =
         AfterlifeEntityProfileState.ResourceOwnerBindingsProperty;
     private const string OppositionBindingProperty = "opposition";

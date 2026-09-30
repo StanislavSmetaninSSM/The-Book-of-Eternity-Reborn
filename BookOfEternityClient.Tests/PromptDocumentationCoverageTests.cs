@@ -7,7 +7,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PromptDocumentationCoverageTests
+public sealed partial class PromptDocumentationCoverageTests
 {
     [Fact]
     public void MortalItemIdentityIndex_IsClientOwnedAcrossValidationAndRepairMappings()
@@ -1610,6 +1610,10 @@ public sealed class PromptDocumentationCoverageTests
 
         Assert.Contains("full-turn resubmission", workedExample, StringComparison.OrdinalIgnoreCase);
         Assert.Contains("client-owned publication", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("explicit terminal zero", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("\"amount\": 0", workedExample, StringComparison.Ordinal);
+        Assert.Contains("resource event", workedExample, StringComparison.OrdinalIgnoreCase);
+        Assert.Contains("dependent effect activation", workedExample, StringComparison.OrdinalIgnoreCase);
         Assert.DoesNotContain("\"currentHealth\":", workedExample, StringComparison.Ordinal);
         Assert.DoesNotContain("\"healthPercentage\":", workedExample, StringComparison.Ordinal);
         Assert.DoesNotContain("\"maxDurability\":", workedExample, StringComparison.Ordinal);
@@ -1666,6 +1670,8 @@ public sealed class PromptDocumentationCoverageTests
                      "resistance_modifier",
                      "periodic_damage",
                      "periodic_restore",
+                     "periodic_spend",
+                     "periodic_gain",
                      "action_control",
                      "event_reaction",
                      "wound_consequence",

@@ -11,7 +11,7 @@ using Xunit;
 
 namespace BookOfEternityClient.Tests;
 
-public sealed class PendingTurnSnapshotAuthorityTests : IDisposable
+public sealed partial class PendingTurnSnapshotAuthorityTests : IDisposable
 {
     private sealed class TestManifest
     {

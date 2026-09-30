@@ -12,6 +12,12 @@ public sealed class EffectResourceMaterializationTests
     private const string SnapshotManifestPath =
         "game_state/control/pending_turn_snapshot.json";
 
+    /// <summary>
+    /// Publishes skill-sourced periodic damage, resource history and effect lifetime together.
+    /// </summary>
+    /// <returns>
+    /// A task completing after resource damage, its history transition and the reduced lifetime are confirmed.
+    /// </returns>
     [Fact]
     public async Task PlayerTurnEndPeriodicDamage_PublishesResourceHistoryAndLifetimeTogether()
     {
@@ -36,11 +42,11 @@ public sealed class EffectResourceMaterializationTests
             JsonNode.Parse(resources.History!.ToCanonicalJson())!);
 
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             ownerKind: "player",
             profile: "periodic_damage");
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -106,6 +112,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(1, remainingEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
     }
 
+    /// <summary>
+    /// Keeps nested skill-effect planning bound to the already validated original snapshot.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the nested plan fingerprint and original snapshot binding are confirmed.
+    /// </returns>
     [Fact]
     public async Task ResourceValidation_NestedEffectPlanUsesTheAlreadyValidatedSnapshot()
     {
@@ -141,7 +153,7 @@ public sealed class EffectResourceMaterializationTests
         };
         await using var context = await EffectMaterializationTestContext.CreateAsync(hooks);
         fileSystem = context.FileSystem;
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -161,7 +173,7 @@ public sealed class EffectResourceMaterializationTests
         await context.WriteJsonAsync(
             EffectAcceptedTurnPlan.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                EffectMaterializationTestContext.CreateSkillApplyCommand()));
 
         var baselineIssues = await context.Validator
             .ValidateAcceptedTurnRawResourceMaterializationAsync();
@@ -213,6 +225,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(baselinePlan.InputFingerprint, nestedPlan.InputFingerprint);
     }
 
+    /// <summary>
+    /// Publishes skill-sourced periodic damage through the permanent NPC resource owner.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the NPC damage transition and reduced effect lifetime are confirmed.
+    /// </returns>
     [Fact]
     public async Task NpcTurnEndPeriodicDamage_PublishesThroughItsPermanentResourceOwner()
     {
@@ -221,12 +239,12 @@ public sealed class EffectResourceMaterializationTests
         await MaterializeNpcHealthAsync(context, npcId, maximum: 60m);
 
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             ownerKind: "npc",
             profile: "periodic_damage");
         effect["target"]!["targetId"] = npcId;
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath,
             new JsonObject
@@ -297,6 +315,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(1, remainingEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
     }
 
+    /// <summary>
+    /// Publishes skill-sourced periodic damage through the client-owned combatant resource owner.
+    /// </summary>
+    /// <returns>
+    /// A task completing after the combatant health reduction and reduced effect lifetime are confirmed.
+    /// </returns>
     [Fact]
     public async Task CombatantTurnEndPeriodicDamage_PublishesThroughItsClientOwnedResourceOwner()
     {
@@ -307,12 +331,12 @@ public sealed class EffectResourceMaterializationTests
             maximum: 75m);
 
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             ownerKind: "combatant",
             profile: "periodic_damage");
         effect["target"]!["targetId"] = combatantId;
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         var enemies = (await context.ReadJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath))!.AsObject();
         var combatant = Assert.IsType<JsonObject>(
@@ -367,6 +391,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(1, remainingEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
     }
 
+    /// <summary>
+    /// Publishes resident periodic damage through its setting-defined integrity owner in the original realm.
+    /// </summary>
+    /// <returns>
+    /// A task completing after exact integrity damage, history publication and effect lifetime checks.
+    /// </returns>
     [Fact]
     public async Task AfterlifeActorTurnEndPeriodicDamage_PublishesThroughSettingDefinedResourceOwner()
     {
@@ -409,7 +439,7 @@ public sealed class EffectResourceMaterializationTests
             EffectMaterializationTestFixture.CreateIdentityIndex(effect));
         await context.CaptureValidatedPendingSnapshotAsync(
             turn: 43,
-            currentRealm: "Chaos Sea");
+            currentRealm: "Shining Abode");
         var backups = await context.ReadPendingSnapshotBackupsAsync();
 
         var issues = await context.Validator
@@ -453,6 +483,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(1, remainingEffect["lifetime"]!["remainingTurns"]!.GetValue<int>());
     }
 
+    /// <summary>
+    /// Rejects an unsupported vehicle target without publishing the skill effect or resource writes.
+    /// </summary>
+    /// <returns>
+    /// A task completing after target rejection and unchanged governed bytes are confirmed.
+    /// </returns>
     [Fact]
     public async Task VehicleEffectTarget_IsRejectedWithoutResourceOrEffectWrites()
     {
@@ -475,7 +511,7 @@ public sealed class EffectResourceMaterializationTests
         await context.WriteJsonAsync(
             ResourceMaterializationContract.HistoryPath,
             JsonNode.Parse(resources.History!.ToCanonicalJson())!);
-        await context.SeedPlayerWoundSourceAsync(
+        await context.SeedPlayerSkillSourceAsync(
             EffectMaterializationTestFixture.CreateDefinition("periodic_damage"));
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
@@ -493,7 +529,7 @@ public sealed class EffectResourceMaterializationTests
             });
         await context.CaptureValidatedPendingSnapshotAsync(turn: 43);
 
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = EffectMaterializationTestContext.CreateSkillApplyCommand();
         command["target"] = new JsonObject
         {
             ["kind"] = "vehicle",
@@ -528,6 +564,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(before, after);
     }
 
+    /// <summary>
+    /// Restores a depleted resource and expires the skill effect's last use in one publication.
+    /// </summary>
+    /// <returns>
+    /// A task completing after ordered resource transitions and expiration of the last effect use are confirmed.
+    /// </returns>
     [Fact]
     public async Task ResourceDepletedTrigger_RestoresThroughSameReducerAndExpiresLastUseAtomically()
     {
@@ -553,7 +595,7 @@ public sealed class EffectResourceMaterializationTests
 
         var definition = CreateResourceEventDefinition();
         var effect = CreateResourceEventEffect();
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -691,6 +733,15 @@ public sealed class EffectResourceMaterializationTests
             entry["transitions"]!.AsArray()[^1]!["kind"]!.GetValue<string>());
     }
 
+    /// <summary>
+    /// Requests bounded resolution only when the accepted damage crosses the resource boundary.
+    /// </summary>
+    /// <param name="crossesBoundary">
+    /// Whether the accepted resource damage reaches the depletion boundary.
+    /// </param>
+    /// <returns>
+    /// A task completing after pending state, health and the unspent effect use match the selected boundary case.
+    /// </returns>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -721,7 +772,7 @@ public sealed class EffectResourceMaterializationTests
         definition["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
         var effect = CreateResourceEventEffect();
         effect["triggers"]![0]!["resolutionMode"] = "bounded_receipt";
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -826,6 +877,12 @@ public sealed class EffectResourceMaterializationTests
         Assert.Equal(1, activeEffect["lifetime"]!["remainingUses"]!.GetValue<int>());
     }
 
+    /// <summary>
+    /// Prevents two matching resource events from consuming more than the skill effect's remaining use.
+    /// </summary>
+    /// <returns>
+    /// A task completing after one effect-trigger transition and exhaustion of the sole effect use are confirmed.
+    /// </returns>
     [Fact]
     public async Task TwoMatchingResourceEvents_CannotExecuteBeyondRemainingUses()
     {
@@ -856,7 +913,7 @@ public sealed class EffectResourceMaterializationTests
             "resource_damaged",
             "on_resource_damaged");
         effect["components"]![0]!["payload"]!["amount"] = 1;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -990,6 +1047,12 @@ public sealed class EffectResourceMaterializationTests
         };
     }
 
+    /// <summary>
+    /// Rejects publication after the registered skill source disappears without effect or resource writes.
+    /// </summary>
+    /// <returns>
+    /// A task completing after source-change rejection and preserved governed beforeimages are confirmed.
+    /// </returns>
     [Fact]
     public async Task SourceDisappearsAfterValidation_PublicationFailsWithoutResourceOrEffectWrites()
     {
@@ -1014,11 +1077,11 @@ public sealed class EffectResourceMaterializationTests
             JsonNode.Parse(resources.History!.ToCanonicalJson())!);
 
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             ownerKind: "player",
             profile: "periodic_damage");
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.PlayerEffectsPath,
             new JsonObject
@@ -1038,13 +1101,13 @@ public sealed class EffectResourceMaterializationTests
         Assert.True(
             issues.All(issue => issue.Severity != IssueSeverity.Error),
             DescribeIssues(issues));
-        context.FileSystem.DeleteFile(EffectMaterializationTestContext.PlayerWoundsPath);
+        context.FileSystem.DeleteFile(EffectMaterializationTestContext.MaterializableSkillPath);
         var before = await context.CaptureBytesAsync(
             ResourceMaterializationContract.StatePath,
             ResourceMaterializationContract.HistoryPath,
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
-            EffectMaterializationTestContext.PlayerWoundsPath);
+            EffectMaterializationTestContext.MaterializableSkillPath);
 
         await using (var writeLease = await context.FileSystem.AcquireCanonicalWriteLeaseAsync())
         {
@@ -1062,10 +1125,16 @@ public sealed class EffectResourceMaterializationTests
             ResourceMaterializationContract.HistoryPath,
             EffectMaterializationTestContext.PlayerEffectsPath,
             EffectMaterializationTestContext.IdentityIndexPath,
-            EffectMaterializationTestContext.PlayerWoundsPath);
+            EffectMaterializationTestContext.MaterializableSkillPath);
         Assert.Equal(before, after);
     }
 
+    /// <summary>
+    /// Rejects publication after the skill effect's target disappears without effect or resource writes.
+    /// </summary>
+    /// <returns>
+    /// A task completing after target-change rejection and preserved governed beforeimages are confirmed.
+    /// </returns>
     [Fact]
     public async Task TargetDisappearsAfterValidation_PublicationFailsWithoutResourceOrEffectWrites()
     {
@@ -1074,12 +1143,12 @@ public sealed class EffectResourceMaterializationTests
         await MaterializeNpcHealthAsync(context, npcId, maximum: 60m);
 
         var definition = EffectMaterializationTestFixture.CreateDefinition("periodic_damage");
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             ownerKind: "npc",
             profile: "periodic_damage");
         effect["target"]!["targetId"] = npcId;
         effect["lifetime"]!["remainingTurns"] = 2;
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.NpcEffectsPath,
             new JsonObject
@@ -1179,11 +1248,23 @@ public sealed class EffectResourceMaterializationTests
         return definition;
     }
 
+    /// <summary>
+    /// Creates a registered skill effect whose last use is consumed by the selected resource event.
+    /// </summary>
+    /// <param name="eventType">
+    /// Exact resource event type to consume; defaults to resource_depleted.
+    /// </param>
+    /// <param name="triggerId">
+    /// Trigger identity shared by the event declaration and remaining-use lifetime.
+    /// </param>
+    /// <returns>
+    /// A fresh periodic-restore effect with one use and the requested resource trigger.
+    /// </returns>
     private static JsonObject CreateResourceEventEffect(
         string eventType = "resource_depleted",
         string triggerId = "on_resource_depleted")
     {
-        var effect = EffectMaterializationTestFixture.CreateCanonicalEffect(
+        var effect = EffectMaterializationTestContext.CreateSkillCanonicalEffect(
             profile: "periodic_restore");
         effect["lifetime"] = new JsonObject
         {
@@ -1319,6 +1400,21 @@ public sealed class EffectResourceMaterializationTests
         return canonicalCombatant["combatantId"]!.GetValue<string>();
     }
 
+    /// <summary>
+    /// Materializes the resident and its setting-defined integrity resource from matching signed realm authority.
+    /// </summary>
+    /// <param name="context">
+    /// Fresh context receiving the original bootstrap, signed snapshot and ordinary accepted publication.
+    /// </param>
+    /// <param name="actorId">
+    /// Exact resident identity retained by its profile, source art and resource owner.
+    /// </param>
+    /// <param name="maximum">
+    /// Integrity maximum used to initialize the resident resource at full capacity.
+    /// </param>
+    /// <returns>
+    /// The materialized resident ID after raw validation and common plan publication.
+    /// </returns>
     private static async Task<string> MaterializeAfterlifeIntegrityAsync(
         EffectMaterializationTestContext context,
         string actorId,
@@ -1343,7 +1439,7 @@ public sealed class EffectResourceMaterializationTests
             "game_state/meta/soul_state.json",
             new JsonObject
             {
-                ["currentRealm"] = "Chaos Sea",
+                ["currentRealm"] = "Shining Abode",
                 [AfterlifeSpiritualConflictState.SoulStateProfileProperty] = new JsonObject
                 {
                     [AfterlifeSpiritualConflictState.SpiritFocusTierProperty] = 0

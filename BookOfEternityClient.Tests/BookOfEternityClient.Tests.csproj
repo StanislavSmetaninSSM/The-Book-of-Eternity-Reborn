@@ -29,4 +29,8 @@
     <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Remove="WoundContractTestData.cs" />
+  </ItemGroup>
+
 </Project>

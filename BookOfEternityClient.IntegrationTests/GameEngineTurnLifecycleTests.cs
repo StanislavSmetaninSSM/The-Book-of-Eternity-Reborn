@@ -10400,6 +10400,46 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
     }
 
     [Fact]
+    public async Task CreateCanonicalBaselineSnapshotAsync_RecordsClosedOriginalPathPresenceWithoutChangingRollbackMembership()
+    {
+        const string settingsPath = "game_state/core/game_settings.json";
+        const string absentPath = "game_state/wounds/wound_history.json";
+        var settingsBytes = Encoding.UTF8.GetBytes("""{"difficulty":"hard"}""");
+        await _fs.WriteFileAtomicBytesAsync(settingsPath, settingsBytes);
+        _fs.DeleteFile(absentPath);
+        var engine = CreateGameEngine();
+        var request = CreateSnapshotByteContractRequest("presence_contract");
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "presence_contract");
+
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            rollbackSnapshot,
+            "presence-contract-test");
+
+        var manifest = JsonNode.Parse(
+            (await _fs.ReadFileAsync(
+                LiveTurnPreparationService.PendingTurnSnapshotManifestPath))!)!.AsObject();
+        var presence = manifest["originalPathPresenceV1"]!.AsObject();
+        var files = manifest["files"]!.AsObject();
+        var rollbackBaseline = manifest["rollbackBaselineFiles"]!.AsArray()
+            .Select(static node => node!.GetValue<string>())
+            .ToArray();
+
+        Assert.Equal(PendingTurnSnapshotPathPresenceV1.LogicalPaths, presence.Select(static row => row.Key));
+        Assert.True(presence[settingsPath]!.GetValue<bool>());
+        Assert.False(presence[absentPath]!.GetValue<bool>());
+        Assert.NotNull(files[settingsPath]);
+        Assert.Null(files[absentPath]);
+        Assert.DoesNotContain(absentPath, rollbackBaseline, StringComparer.OrdinalIgnoreCase);
+        Assert.Null(files["game_state/control/spiritual_source_snapshot_coverage.json"]);
+    }
+
+    [Fact]
     public async Task LoadCanonicalBaselineSnapshotAsync_RejectsBomOnlySnapshotByteChange()
     {
         const string trackedPath = "lore/codex_entries.json";
@@ -10452,6 +10492,38 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
 
         Assert.Equal(baseline, await _fs.ReadFileBytesAsync(path));
+    }
+
+    [Fact]
+    public async Task PreTurnRollback_PresenceMetadataDoesNotChangeCanonicalRestoreSemantics()
+    {
+        const string restoredPath = "game_state/world/weather.json";
+        const string absentTrackedPath = "game_state/wounds/wound_history.json";
+        const string syntheticPath =
+            "game_state/control/spiritual_source_snapshot_coverage.json";
+        var baseline = Encoding.UTF8.GetBytes("""{"weather":"before"}""");
+        await _fs.WriteFileAtomicBytesAsync(restoredPath, baseline);
+        _fs.DeleteFile(absentTrackedPath);
+        var engine = CreateGameEngine(new QueuedConsoleInputSource([]));
+        var request = CreateSnapshotByteContractRequest("presence_rollback");
+        var rollbackSnapshot = await InvokePrivateTaskResultAsync(
+            engine,
+            "CreatePreTurnBackup",
+            "presence_rollback");
+        await InvokePrivateTaskResultAsync(
+            engine,
+            "CreateCanonicalBaselineSnapshotAsync",
+            request,
+            rollbackSnapshot,
+            "presence-rollback-test");
+
+        await _fs.WriteFileAtomicAsync(restoredPath, """{"weather":"after"}""");
+        await _fs.WriteFileAtomicAsync(absentTrackedPath, """{"entries":[]}""");
+        await InvokePrivateTaskAsync(engine, "RestorePreTurnBackup", rollbackSnapshot);
+
+        Assert.Equal(baseline, await _fs.ReadFileBytesAsync(restoredPath));
+        Assert.False(_fs.FileExists(absentTrackedPath));
+        Assert.False(_fs.FileExists(syntheticPath));
     }
 
     [Fact]
@@ -10856,11 +10928,33 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
         return Convert.ToHexString(sha.ComputeHash(Encoding.UTF8.GetBytes(content)));
     }
 
+    /// <summary>
+    /// Builds a real lifecycle engine with the selected test filesystem, settings and optional diagnostic hooks.
+    /// </summary>
+    /// <param name="inputSource">
+    /// Console input override, or <see langword="null"/> for the engine's default input source.
+    /// </param>
+    /// <param name="configureSettings">
+    /// Optional settings customization applied before service construction.
+    /// </param>
+    /// <param name="finalizationHooks">
+    /// Optional hooks for accepted-session finalization; <see langword="null"/> leaves them disabled.
+    /// </param>
+    /// <param name="fileSystem">
+    /// Shared canonical filesystem, or <see langword="null"/> to use this test instance's filesystem.
+    /// </param>
+    /// <param name="logger">
+    /// Engine diagnostics sink, or <see langword="null"/> to retain the default null logger.
+    /// </param>
+    /// <returns>
+    /// An engine using real lifecycle services and the supplied test overrides.
+    /// </returns>
     private GameEngine CreateGameEngine(
         IConsoleInputSource? inputSource = null,
         Action<GameSettings>? configureSettings = null,
         GameEngineSessionFinalizationHooks? finalizationHooks = null,
-        FileSystemManager? fileSystem = null)
+        FileSystemManager? fileSystem = null,
+        Microsoft.Extensions.Logging.ILogger<GameEngine>? logger = null)
     {
         var fs = fileSystem ?? _fs;
         var settings = new GameSettings();
@@ -10933,7 +11027,7 @@ public sealed partial class GameEngineTurnLifecycleTests : IDisposable
             pendingTurnState,
             qteSceneService,
             clipboardService,
-            NullLogger<GameEngine>.Instance,
+            logger ?? NullLogger<GameEngine>.Instance,
             inputSource);
         engine.ConfigureSessionFinalizationHooksForTesting(finalizationHooks);
         return engine;

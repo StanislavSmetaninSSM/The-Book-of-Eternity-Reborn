@@ -16,7 +16,7 @@ using Xunit;
 namespace BookOfEternityClient.Tests;
 
 [Trait("Category", "FullValidation")]
-public sealed class ExampleDocumentationValidationTests
+public sealed partial class ExampleDocumentationValidationTests
 {
     private static readonly JsonDocumentOptions DocumentOptions = new()
     {
@@ -30,6 +30,34 @@ public sealed class ExampleDocumentationValidationTests
         PropertyNameCaseInsensitive = true,
         ReadCommentHandling = JsonCommentHandling.Skip
     };
+
+    [Fact]
+    public void StandardWoundArt_ManifestPinsScalarProfileAndOrdinaryProgressionExample()
+    {
+        using var manifest = JsonDocument.Parse(File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "example_validation_manifest.json")));
+        var contract = Assert.Single(
+            manifest.RootElement.GetProperty("afterlifeEntityProfileCoverage").EnumerateArray(),
+            item => item.GetProperty("contractId").GetString() == "standard_wound_arts_v1");
+        var requiredText = contract.GetProperty("requiredText").EnumerateArray()
+            .Select(item => item.GetString())
+            .ToArray();
+
+        Assert.Contains("spiritual_resilience", requiredText);
+        Assert.Contains("spiritual_healing", requiredText);
+        Assert.Contains("standardArtTierDeltas", requiredText);
+        Assert.Contains("without independent art experience", requiredText);
+
+        var examples = File.ReadAllText(Path.Combine(
+            TestRepoPaths.RepoRoot,
+            "Examples",
+            "E_CLI_Afterlife_Turns.txt"));
+        Assert.Contains("\"spiritual_resilience\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 0", examples, StringComparison.Ordinal);
+        Assert.Contains("\"spiritual_healing\": 1", examples, StringComparison.Ordinal);
+    }
 
     [Fact]
     public void JsonExamples_AreParseableOrExplicitlyExempted()
@@ -159,11 +187,382 @@ public sealed class ExampleDocumentationValidationTests
     }
 
     [Fact]
+    public void MortalWoundSelectedPolicyWorkedExample_ParsesExactPolicyAndProcedure()
+    {
+        var example = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Wound_Materialization.txt", "mortal_wound_treatment_selected_policy_v1"));
+        var policy = MortalWoundDeteriorationPolicyContract.Parse(
+            JsonSerializer.SerializeToElement(example["recovery"]!["deteriorationPolicy"]),
+            "example.recovery.deteriorationPolicy", "mortal_world", "player", 3);
+        Assert.True(policy.IsValid, string.Join(" | ", policy.Issues.Select(issue => issue.Code)));
+        Assert.Equal(MortalWoundDeteriorationResultKind.IncreaseSeverity, policy.Policy!.ResultKind);
+        var rawRoute = Assert.Single(example["treatment"]!["routes"]!.AsArray());
+        var route = MortalWoundTreatmentContract.ParseRouteShape(
+            JsonSerializer.SerializeToElement(rawRoute), "example.treatment.routes[0]");
+        Assert.True(route.IsValid, string.Join(" | ", route.Issues.Select(issue => issue.Code)));
+        var procedure = Assert.IsType<MortalWoundProcedureRouteDefinition>(route.Route);
+        var failed = Assert.Single(procedure.Bands, row => row.Category == "failed_attempt");
+        var operation = Assert.IsType<MortalWoundApplyDeteriorationOperation>(Assert.Single(failed.DeclaredResult));
+        Assert.Equal(policy.Policy.PolicyRef, operation.PolicyRef);
+    }
+
+    [Fact]
+    public void MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute()
+    {
+        var treatment = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Wound_Materialization.txt", "mortal_wound_treatment_scalar_course_v1"));
+        var rawRoute = Assert.Single(treatment["routes"]!.AsArray());
+        var parsed = MortalWoundTreatmentContract.ParseRouteShape(
+            JsonSerializer.SerializeToElement(rawRoute), "example.treatment.routes[0]");
+        Assert.True(parsed.IsValid, string.Join(" | ", parsed.Issues.Select(issue =>
+            $"{issue.Code}@{issue.FilePath}:{issue.Actual}")));
+        var course = Assert.IsType<MortalWoundCourseRouteDefinition>(parsed.Route);
+        Assert.Equal("field_clinic_recovery_course", course.RouteId);
+    }
+
+    /// <summary>
+    /// Checks the documented special wound-cost fragments for closed GM audit fields
+    /// and the approved action-only payment and recovery arithmetic.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundSpecialCostWorkedExamples_KeepClosedAuditsAndActionOnlyArithmetic()
+    {
+        var fragments = ParseNamedJsonFences(
+            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_special_action_costs_v1");
+        var cases = new[]
+        {
+            (Side: "player", Operation: "recover_spiritual_power", Before: 4, After: 6, Recovery: 3),
+            (Side: "opposition", Operation: "recover_spiritual_power", Before: 1, After: 0, Recovery: 0),
+            (Side: "player", Operation: "force_incarnation", Before: 6, After: 5, Recovery: 0),
+            (Side: "opposition", Operation: "force_incarnation", Before: 6, After: 5, Recovery: 0)
+        };
+        Assert.Equal(cases.Length, fragments.Count);
+        var expectedFields = new[]
+        {
+            "operationType", "baseCost", "minCost", "artTier", "effectiveCost", "before", "after"
+        }.OrderBy(field => field, StringComparer.Ordinal).ToArray();
+        for (var index = 0; index < cases.Length; index++)
+        {
+            var expected = cases[index];
+            var fragment = fragments[index];
+            Assert.Equal("actionCostAudit", Assert.Single(fragment).Key);
+            var sides = fragment["actionCostAudit"]!.AsObject();
+            Assert.Equal(expected.Side, Assert.Single(sides).Key);
+            var audit = sides[expected.Side]!.AsObject();
+            Assert.Equal(expectedFields,
+                audit.Select(field => field.Key).OrderBy(field => field, StringComparer.Ordinal).ToArray());
+            Assert.Equal(expected.Operation, audit["operationType"]!.GetValue<string>());
+            Assert.Equal(0, audit["baseCost"]!.GetValue<int>());
+            Assert.Equal(0, audit["minCost"]!.GetValue<int>());
+            Assert.Equal(0, audit["artTier"]!.GetValue<int>());
+            Assert.Equal(1, audit["effectiveCost"]!.GetValue<int>());
+            Assert.Equal(expected.Before, audit["before"]!.GetValue<int>());
+            Assert.Equal(expected.After, audit["after"]!.GetValue<int>());
+            Assert.Equal(expected.Recovery,
+                audit["after"]!.GetValue<int>() -
+                (audit["before"]!.GetValue<int>() - audit["effectiveCost"]!.GetValue<int>()));
+        }
+    }
+
+    /// <summary>
+    /// Checks a dependent position example through production dice and envelope parsing while retaining independent input.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundPositionDependencyWorkedExample_PreservesIndependentRowsAndSavedChoice()
+    {
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_position_dependency_v1");
+        Assert.Equal(3, fragments.Count);
+        var before = fragments[0];
+        var after = fragments[1];
+        var expected = before.DeepClone();
+        expected["diceAudit"]!["modifierBreakdown"]!["player"]!.AsArray().Add(new JsonObject
+        {
+            ["modifierType"] = "conflict_position", ["source"] = "conflictPosition",
+            ["position"] = "player_advantaged", ["value"] = 2
+        });
+        expected["diceAudit"]!["playerTotal"] = 15;
+        expected["diceAudit"]!["margin"] = 7;
+        Assert.True(JsonNode.DeepEquals(expected, after));
+        Assert.Equal(13, before["diceAudit"]!["playerTotal"]!.GetValue<int>());
+        Assert.Equal(5, before["diceAudit"]!["margin"]!.GetValue<int>());
+        Assert.Equal("contested", before["before"]!["conflictPosition"]!.GetValue<string>());
+        Assert.True(JsonNode.DeepEquals(before["before"], before["after"]));
+        Assert.Equal("player_success", after["diceAudit"]!["outcomeBand"]!.GetValue<string>());
+        var independent = Assert.Single(before["diceAudit"]!["modifierBreakdown"]!["player"]!.AsArray())!;
+        Assert.Equal(1, independent["value"]!.GetValue<int>());
+        foreach (var fragment in fragments.Take(2))
+        {
+            var issues = new List<ValidationIssue>();
+            ValidationService.ValidateRetainedSpiritualDiceAudit(fragment,
+                JsonNode.Parse("{\"acceptedD20Values\":[15,5,12,8]}")!.AsObject(), issues);
+            Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        }
+        var response = SpiritualWoundContinuationProtocol.ReadResponse(JsonSerializer.SerializeToElement(fragments[2]));
+        Assert.Equal("swc_example_dependent", response.ContinuationId);
+        Assert.Empty(response.WoundDecisions);
+    }
+
+    /// <summary>
+    /// Checks exact staged arithmetic examples and rejects reusing the first response for the later request.
+    /// </summary>
+    [Fact]
+    public void SpiritualDependentFrontiersWorkedExample_PreservesDiceAndSeparateResponses()
+    {
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_dependent_frontiers_v1");
+        Assert.Equal(6, fragments.Count);
+        foreach (var index in new[] { 0, 1, 3, 4 })
+        {
+            var issues = new List<ValidationIssue>();
+            ValidationService.ValidateRetainedSpiritualDiceAudit(fragments[index],
+                JsonNode.Parse("{\"acceptedD20Values\":[5,15,20,18,9,8]}")!.AsObject(), issues);
+            Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        }
+        foreach (var pair in new[] { (Before: 0, After: 1), (Before: 3, After: 4) })
+        {
+            var before = fragments[pair.Before];
+            var after = fragments[pair.After];
+            Assert.True(JsonNode.DeepEquals(before["before"], after["before"]));
+            Assert.True(JsonNode.DeepEquals(before["after"], after["after"]));
+            Assert.True(JsonNode.DeepEquals(before["diceAudit"]!["diceUsed"], after["diceAudit"]!["diceUsed"]));
+            Assert.True(JsonNode.DeepEquals(before["diceAudit"]!["modifierBreakdown"]!["player"],
+                after["diceAudit"]!["modifierBreakdown"]!["player"]));
+            Assert.Equal(before["diceAudit"]!["outcomeBand"]!.GetValue<string>(),
+                after["diceAudit"]!["outcomeBand"]!.GetValue<string>());
+        }
+        var critical = fragments[1]["diceAudit"]!["criticalResult"]!;
+        Assert.Equal(20, critical["playerNaturalRoll"]!.GetValue<int>());
+        Assert.Equal(18, critical["oppositionNaturalRoll"]!.GetValue<int>());
+        Assert.Equal("mixed_or_no_effect", critical["marginOutcomeBand"]!.GetValue<string>());
+        Assert.Equal("player_success", critical["normalizedOutcomeBand"]!.GetValue<string>());
+        Assert.False(string.IsNullOrWhiteSpace(critical["scaleLimit"]!.GetValue<string>()));
+        Assert.False(string.IsNullOrWhiteSpace(critical["narrativeConstraint"]!.GetValue<string>()));
+        Assert.Equal(1, fragments[1]["diceAudit"]!["margin"]!.GetValue<int>());
+        Assert.Equal(-1, fragments[4]["diceAudit"]!["margin"]!.GetValue<int>());
+        var first = SpiritualWoundContinuationProtocol.ReadResponse(JsonSerializer.SerializeToElement(fragments[2]));
+        var second = SpiritualWoundContinuationProtocol.ReadResponse(JsonSerializer.SerializeToElement(fragments[5]));
+        Assert.Empty(first.WoundDecisions);
+        Assert.Empty(second.WoundDecisions);
+        Assert.NotEqual(first.ContinuationId, second.ContinuationId);
+        var laterRequest = new SpiritualWoundContinuationRequest
+        {
+            ContinuationId = second.ContinuationId, Phase = "dependent_draft", Offer = null,
+            SceneTextSource = new() { Path = "output/narrative_response.json", Field = "response" },
+            DependentDraftFields = [new() { Path = AfterlifeSpiritualConflictState.StatePath,
+                JsonPointer = "/activeConflict/exchangeLog/2/diceAudit/margin" }]
+        };
+        Assert.Empty(SpiritualWoundContinuationProtocol.ValidateResponse(laterRequest, second));
+        Assert.NotEmpty(SpiritualWoundContinuationProtocol.ValidateResponse(laterRequest, first));
+    }
+
+    /// <summary>
+    /// Checks the documented effective position fragments against preserved canonical snapshots and production dice arithmetic.
+    /// </summary>
+    [Fact]
+    public void SpiritualWoundPositionWorkedExamples_PreserveCanonicalPositionAndDice()
+    {
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt", "spiritual_wound_position_v1");
+        Assert.Equal(2, fragments.Count);
+        var expectedPositions = new[] { "player_advantaged", "contested" };
+        for (var index = 0; index < fragments.Count; index++)
+        {
+            var fragment = fragments[index];
+            Assert.Equal(new[] { "after", "before", "diceAudit" },
+                fragment.Select(field => field.Key).OrderBy(key => key, StringComparer.Ordinal).ToArray());
+            Assert.Equal("conflictPosition", Assert.Single(fragment["before"]!.AsObject()).Key);
+            Assert.Equal(expectedPositions[index], fragment["before"]!["conflictPosition"]!.GetValue<string>());
+            Assert.True(JsonNode.DeepEquals(fragment["before"], fragment["after"]));
+            var audit = fragment["diceAudit"]!.AsObject();
+            Assert.Equal(index == 0 ? 13 : 15, audit["playerTotal"]!.GetValue<int>());
+            Assert.Equal(8, audit["oppositionTotal"]!.GetValue<int>());
+            Assert.Equal(index == 0 ? 5 : 7, audit["margin"]!.GetValue<int>());
+            Assert.Equal("player_success", audit["outcomeBand"]!.GetValue<string>());
+            Assert.Empty(audit["modifierBreakdown"]!["opposition"]!.AsArray());
+            var playerModifiers = audit["modifierBreakdown"]!["player"]!.AsArray();
+            if (index == 0)
+                Assert.Empty(playerModifiers);
+            else
+            {
+                var modifier = Assert.Single(playerModifiers)!.AsObject();
+                Assert.Equal(new[] { "modifierType", "position", "source", "value" },
+                    modifier.Select(field => field.Key).OrderBy(key => key, StringComparer.Ordinal).ToArray());
+                Assert.Equal("conflict_position", modifier["modifierType"]!.GetValue<string>());
+                Assert.Equal("conflictPosition", modifier["source"]!.GetValue<string>());
+                Assert.Equal("player_advantaged", modifier["position"]!.GetValue<string>());
+                Assert.Equal(2, modifier["value"]!.GetValue<int>());
+            }
+            var issues = new List<ValidationIssue>();
+            ValidationService.ValidateRetainedSpiritualDiceAudit(fragment,
+                JsonNode.Parse("{\"acceptedD20Values\":[13,8]}")!.AsObject(), issues);
+            Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        }
+    }
+
+    /// <summary>
+    /// Parses the existing training response and checks projection without treating the fragment as signed admission.
+    /// </summary>
+    [Fact]
+    public void SpiritualSourceOnlyWorkedExample_PreservesTrainingAndOrdinaryExchange()
+    {
+        var fragment = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_source_only_publication_v1"));
+        Assert.Equal("afterlifeSpiritualConflictUpdate", Assert.Single(fragment).Key);
+        var response = JsonSerializer.Deserialize<GameResponse>(fragment.ToJsonString(), SerializerOptions);
+        Assert.NotNull(response);
+        Assert.Null(response.WoundDecisions);
+        var update = JsonNode.Parse(response.AfterlifeSpiritualConflictUpdate!.Value.GetRawText())!.AsObject();
+        Assert.Equal("exchange", update["mode"]!.GetValue<string>());
+        var original = AfterlifeSpiritualConflictState.CreateDefaultRoot();
+        original["activeConflict"] = new JsonObject
+        {
+            ["conflictId"] = "conflict_resource_cost", ["realm"] = "chaos_sea",
+            ["dangerMode"] = "training", ["sideModel"] = "direct_duel",
+            ["playerSideStrain"] = "clear", ["oppositionSideStrain"] = "clear",
+            ["conflictPosition"] = "contested", ["exchangeLog"] = new JsonArray(),
+            ["combatConditions"] = new JsonArray()
+        };
+
+        var projected = AfterlifeSpiritualConflictState.ApplyUpdate(original, update);
+
+        Assert.Null(projected["lastInvalidUpdate"]);
+        var active = projected["activeConflict"]!.AsObject();
+        Assert.Equal("training", SpiritualConflictDangerPolicy.ReadDeclaration(active));
+        Assert.Equal(0, SpiritualConflictDangerPolicy.SeverityCap(
+            SpiritualConflictDangerPolicy.ReadDeclaration(active)));
+        var exchange = Assert.Single(active["exchangeLog"]!.AsArray())!;
+        Assert.True(JsonNode.DeepEquals(update["exchange"], exchange));
+        Assert.Equal(new[] { 15, 5 }, exchange["diceAudit"]!["diceUsed"]!.AsArray()
+            .Select(row => row!["value"]!.GetValue<int>()));
+        Assert.Equal(new[] { 0, 1 }, exchange["diceAudit"]!["diceUsed"]!.AsArray()
+            .Select(row => row!["sourceIndex"]!.GetValue<int>()));
+        Assert.Equal(new[] { "opposition", "player" }, exchange["actionCostAudit"]!.AsObject()
+            .Select(pair => pair.Key).OrderBy(key => key, StringComparer.Ordinal));
+        foreach (var audit in exchange["actionCostAudit"]!.AsObject().Select(pair => pair.Value!))
+        {
+            Assert.Equal(3, audit["effectiveCost"]!.GetValue<int>());
+            Assert.Equal(6, audit["before"]!.GetValue<int>());
+            Assert.Equal(3, audit["after"]!.GetValue<int>());
+        }
+        foreach (var field in new[] { "woundDecisions", "decision", "checkpoint", "instanceId", "closureId", "receipts" })
+            Assert.DoesNotContain($"\"{field}\"", fragment.ToJsonString(), StringComparison.Ordinal);
+        var changed = update.DeepClone().AsObject();
+        changed["dangerMode"] = "hostile";
+        Assert.NotNull(AfterlifeSpiritualConflictState.ApplyUpdate(original, changed)["lastInvalidUpdate"]);
+    }
+
+    /// <summary>
+    /// Keeps the terminal resolve fragment's original dice and final exchange payment witnesses identical.
+    /// </summary>
+    [Fact]
+    public void SpiritualTerminalClosureWorkedExample_PreservesExchangeWitness()
+    {
+        var fragment = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_terminal_closure_v1"));
+        Assert.Equal("afterlifeSpiritualConflictUpdate", Assert.Single(fragment).Key);
+        var update = fragment["afterlifeSpiritualConflictUpdate"]!;
+        Assert.Equal("resolve", update["mode"]!.GetValue<string>());
+        var resolution = update["resolution"]!;
+        var exchange = resolution["terminalExchange"]!;
+        Assert.True(JsonNode.DeepEquals(resolution["diceAudit"], exchange["diceAudit"]));
+        Assert.Equal(resolution["resolvedAtTurn"]!.GetValue<int>(), exchange["turnNumber"]!.GetValue<int>());
+        Assert.Equal(resolution["operationType"]!.GetValue<string>(), exchange["operationType"]!.GetValue<string>());
+        var dice = exchange["diceAudit"]!["diceUsed"]!.AsArray();
+        Assert.Equal(new[] { 0, 1 }, dice.Select(row => row!["sourceIndex"]!.GetValue<int>()));
+        Assert.Equal(new[] { 15, 5 }, dice.Select(row => row!["value"]!.GetValue<int>()));
+        Assert.Equal(10, exchange["diceAudit"]!["margin"]!.GetValue<int>());
+        var audits = exchange["actionCostAudit"]!.AsObject();
+        Assert.Equal(new[] { "opposition", "player" }, audits.Select(row => row.Key).OrderBy(key => key));
+        foreach (var audit in audits.Select(row => row.Value!))
+        {
+            Assert.Equal(3, audit["effectiveCost"]!.GetValue<int>());
+            Assert.Equal(6, audit["before"]!.GetValue<int>());
+            Assert.Equal(3, audit["after"]!.GetValue<int>());
+        }
+        foreach (var clientField in new[] { "closures", "closureId", "instanceId", "receiptProof", "terminalOwners" })
+            Assert.DoesNotContain($"\"{clientField}\"", fragment.ToJsonString(), StringComparison.Ordinal);
+    }
+
+    /// <summary>
+    /// Pins the existing optional decision shape without inventing a GM publication command.
+    /// </summary>
+    [Fact]
+    public void SpiritualCommonPublicationWorkedExample_UsesOnlyExistingDecisionFields()
+    {
+        var fragment = Assert.Single(ParseNamedJsonFences(
+            "E_CLI_Afterlife_Turns.txt", "spiritual_wound_common_publication_v1"));
+        Assert.Equal(new[] { "decision", "opportunityRef" }, fragment.Select(pair => pair.Key).OrderBy(key => key));
+        Assert.Equal("none", fragment["decision"]!.GetValue<string>());
+        Assert.StartsWith("spiritual_wound_", fragment["opportunityRef"]!.GetValue<string>());
+    }
+
+    /// <summary>
+    /// Validates the worked continuation pair through the production wire parser and correlation check.
+    /// </summary>
+    [Fact]
+    public void SpiritualContinuationEnvelopeWorkedExample_UsesStrictProductionProtocol()
+    {
+        var fragments = ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt",
+            "spiritual_wound_continuation_envelope_v1").ToArray();
+        Assert.Equal(2, fragments.Length);
+        var request = SpiritualWoundContinuationProtocol.ReadRequest(
+            JsonSerializer.SerializeToElement(fragments[0]));
+        var response = SpiritualWoundContinuationProtocol.ReadResponse(
+            JsonSerializer.SerializeToElement(fragments[1]));
+        Assert.Equal("decision", request.Phase);
+        Assert.Equal("none", Assert.Single(response.WoundDecisions).GetProperty("decision").GetString());
+        Assert.Empty(SpiritualWoundContinuationProtocol.ValidateResponse(request, response));
+        Assert.NotEmpty(SpiritualWoundContinuationProtocol.ValidateResponse(request,
+            response with { ContinuationId = "stale_example" }));
+    }
+
+    /// <summary>
+    /// Checks that the documented dependent response preserves the saved choice instead of replacing it.
+    /// </summary>
+    [Fact]
+    public void SpiritualPendingSubmissionWorkedExample_DoesNotReplaceSavedDecision()
+    {
+        var fragment = Assert.Single(ParseNamedJsonFences("E_CLI_Afterlife_Turns.txt",
+            "spiritual_wound_pending_submission_v1"));
+        var response = SpiritualWoundContinuationProtocol.ReadResponse(JsonSerializer.SerializeToElement(fragment));
+        var request = new SpiritualWoundContinuationRequest
+        {
+            ContinuationId = "swc_example_dependent", Phase = "dependent_draft", Offer = null,
+            SceneTextSource = new() { Path = "output/narrative_response.json", Field = "response" },
+            DependentDraftFields = [new() { Path = "game_state/meta/afterlife_spiritual_conflict_state.json",
+                JsonPointer = "/activeConflict/exchangeLog/1/actionCostAudit/opposition/after" }]
+        };
+        Assert.Empty(response.WoundDecisions);
+        Assert.Empty(SpiritualWoundContinuationProtocol.ValidateResponse(request, response));
+        var replacement = response with
+        {
+            WoundDecisions = [JsonSerializer.SerializeToElement(new
+                { opportunityRef = "spiritual_wound_example_current", decision = "none" })]
+        };
+        Assert.NotEmpty(SpiritualWoundContinuationProtocol.ValidateResponse(request, replacement));
+    }
+
+    [Fact]
     public void CompleteEffectMaterializationManifest_CoversEveryRequiredWorkedFamily()
     {
         var manifest = ExampleValidationManifest.Load();
         var expected = new Dictionary<string, string>(StringComparer.Ordinal)
         {
+            ["spiritual_wound_binding_result_closure_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_dependent_frontiers_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_position_dependency_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_position_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_source_only_publication_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_pending_submission_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_continuation_envelope_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["wound_treatment_scene_authority_v1"] =
+                "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_roll_scope_all_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_scalar_course_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_selected_policy_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_roll_scope_skill_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_alternative_response_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["wound_mortal_alternative_repair_v1"] = "E_CLI_Wound_Materialization.txt",
+            ["effect_mortal_roll_scope_skill_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["afterlife_roll_scope_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["effect_mortal_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_apply_stack_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_event_report_v1"] = "E_CLI_Ink_Feather_Actions.txt",
@@ -173,8 +572,15 @@ public sealed class ExampleDocumentationValidationTests
             ["effect_mortal_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_mortal_dispel_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_wound_independence_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["wound_spiritual_profiles_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["wound_spiritual_source_worked_v1"] = "E_CLI_Effect_Materialization.txt",
+            ["spiritual_wound_private_roots_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_special_action_costs_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_terminal_closure_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["spiritual_wound_common_publication_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["effect_bounded_repair_v1"] = "E_CLI_Effect_Materialization.txt",
             ["effect_afterlife_profile_v1"] = "E_CLI_Afterlife_Turns.txt",
+            ["afterlife_ap_effect_v1"] = "E_CLI_Afterlife_Turns.txt",
             ["afterlife_resource_bounded_receipt_waves_v1"] =
                 "E_CLI_Afterlife_Turns.txt",
             ["mortal_qte_deferred_effect_receipt_waves_v1"] =
@@ -552,6 +958,38 @@ public sealed class ExampleDocumentationValidationTests
                     $"{entry.ContractId}.requiredText must require '{stablePhrase}'.");
             }
         }
+
+        foreach (var entry in entries)
+        {
+            foreach (var stablePhrase in new[]
+                     {
+                         "explicit terminal zero",
+                         "resource event",
+                         "dependent effect activation"
+                     })
+            {
+                Assert.True(
+                    entry.RequiredText.Any(token => string.Equals(
+                        token,
+                        stablePhrase,
+                        StringComparison.OrdinalIgnoreCase)),
+                    $"{entry.ContractId}.requiredText must require '{stablePhrase}'.");
+            }
+        }
+
+        foreach (var (entry, requestId) in new[]
+                 {
+                     (entries[0], "resource_resolution_example_zero_002"),
+                     (entries[1], "resource_resolution_afterlife_zero_003")
+                 })
+        {
+            Assert.True(
+                entry.RequiredText.Any(token => string.Equals(
+                    token,
+                    requestId,
+                    StringComparison.OrdinalIgnoreCase)),
+                $"{entry.ContractId}.requiredText must require '{requestId}'.");
+        }
     }
 
     [Fact]
@@ -619,7 +1057,7 @@ public sealed class ExampleDocumentationValidationTests
             new[]
             {
                 "action_control", "afterlife_combat_condition", "characteristic_modifier",
-                "event_reaction", "periodic_damage", "periodic_restore", "resistance_modifier",
+                "event_reaction", "periodic_damage", "periodic_gain", "periodic_restore", "periodic_spend", "resistance_modifier",
                 "roll_modifier", "wound_consequence"
             },
             profileFragments
@@ -2453,6 +2891,13 @@ public sealed class ExampleDocumentationValidationTests
             "game_state/inventory/item_identity_index.json",
             """{ "schemaVersion": 1, "entries": [] }""");
 
+        await fs.WriteFileAtomicAsync(
+            WoundIdentityState.StatePath,
+            """{ "schemaVersion": 1, "entries": [] }""");
+        await fs.WriteFileAtomicAsync(
+            WoundHistoryState.HistoryPath,
+            """{ "schemaVersion": 1, "nextOrdinal": 1, "transitions": [] }""");
+
         var neutralLocation = MortalLocationTestFixture.CreateCanonicalLocationWithIdentity(
             "loc_afterlife_documentation_baseline",
             "Нейтральная точка проверки документации");
@@ -2693,6 +3138,7 @@ public sealed class ExampleDocumentationValidationTests
         profile["locationId"] = "abode_azalia_memory_silk_001";
         profile["locationName"] = "Обитель Азалии";
         profile["activeEffects"] = new JsonArray();
+        profile["activeWounds"] = new JsonArray();
 
         var root = AfterlifeEntityProfileState.CreateDefaultRoot();
         Assert.IsType<JsonArray>(root[AfterlifeEntityProfileState.ProfilesProperty])
@@ -3751,7 +4197,9 @@ public sealed class ExampleDocumentationValidationTests
             },
             ["standardArts"] = new JsonObject
             {
-                ["guard"] = 1
+                ["guard"] = 1,
+                [AfterlifeSpiritualConflictState.SpiritualResilienceArtId] = 0,
+                [AfterlifeSpiritualConflictState.SpiritualHealingArtId] = 0
             },
             ["specialArts"] = new JsonArray(),
             ["customStates"] = new JsonArray(),
@@ -3923,12 +4371,12 @@ public sealed class ExampleDocumentationValidationTests
         Assert.True(
             headingIndex >= 0,
             $"Named example heading '{heading}' was not found in Examples/{file}.");
-        var sectionEnd = source.IndexOf(
-            heading.StartsWith("## ", StringComparison.Ordinal) ? "\n## " : "\n### ",
-            headingIndex + heading.Length,
-            StringComparison.Ordinal);
-        if (sectionEnd < 0)
-            sectionEnd = source.Length;
+        var headingLevel = heading.StartsWith("## ", StringComparison.Ordinal) ? 2 : 3;
+        var nextHeading = new Regex(
+            $@"^#{{1,{headingLevel}}}[ \t]+\S",
+            RegexOptions.Multiline | RegexOptions.CultureInvariant)
+            .Match(source, headingIndex + heading.Length);
+        var sectionEnd = nextHeading.Success ? nextHeading.Index : source.Length;
 
         var fences = new List<JsonObject>();
         var searchIndex = headingIndex + heading.Length;

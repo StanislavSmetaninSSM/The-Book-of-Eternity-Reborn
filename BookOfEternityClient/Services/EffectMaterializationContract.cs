@@ -36,7 +36,7 @@ internal static class EffectMaterializationContract
         "afterlife_actor", "spiritual_conflict_side");
     private static readonly HashSet<string> SourceKinds = Set(
         "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction",
-        "world_event", "fate_card", "combat_action");
+        "world_event", "fate_card", "combat_action", "wound_legacy");
     private static readonly HashSet<string> DisplayCategories = Set(
         "buff", "debuff", "condition", "environmental", "mixed");
     private static readonly HashSet<string> Visibilities = Set("visible", "hidden", "gm_only");
@@ -57,7 +57,7 @@ internal static class EffectMaterializationContract
     private static readonly HashSet<string> SourceLossPolicies = Set("expire", "suspend", "no_change");
     private static readonly HashSet<string> LinkKinds = Set(
         "wound", "skill", "spiritual_art", "item", "quest", "location", "hazard", "faction",
-        "world_event", "fate_card", "combat");
+        "world_event", "fate_card", "combat", "wound_legacy");
     private static readonly HashSet<string> LinkRoles = Set(
         "source", "condition", "context", "cleanup_companion");
 

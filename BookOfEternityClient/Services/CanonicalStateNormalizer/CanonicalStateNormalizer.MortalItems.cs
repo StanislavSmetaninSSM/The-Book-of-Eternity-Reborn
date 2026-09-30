@@ -1,7 +1,9 @@
 using System.Runtime.ExceptionServices;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
 using BookOfEternityClient.Core;
+using SpiritualPublicationReceipt = BookOfEternityClient.Services.ValidationService.SpiritualOriginalTurnCapture.SpiritualC4PublicationReceipt;
 
 namespace BookOfEternityClient.Services;
 
@@ -38,8 +40,20 @@ public partial class CanonicalStateNormalizer
                 validated.Binding.SessionId,
                 validated.Binding.SnapshotToken,
                 validated.Binding.Turn,
-                out var snapshot) ||
-            !snapshot.MatchesAcceptedOwnerAuthority(validated.Plan.OwnerAuthority))
+                out var snapshot))
+        {
+            throw new InvalidDataException(
+                "Mortal item accepted-turn authority cache is missing or its immutable allocation map does not match the exact validated common-plan session and snapshot binding.");
+        }
+
+        var itemPublication = validated.Plan
+            .TreatmentResourcePublicationAuthority?.ItemPublicationAuthority;
+        var ownerAuthorityMatches = itemPublication is null
+            ? snapshot.MatchesAcceptedOwnerAuthority(validated.Plan.OwnerAuthority)
+            : itemPublication.MatchesNormalizationSnapshot(
+                snapshot,
+                validated.Plan.OwnerAuthority);
+        if (!ownerAuthorityMatches)
         {
             throw new InvalidDataException(
                 "Mortal item accepted-turn authority cache is missing or its immutable allocation map does not match the exact validated common-plan session and snapshot binding.");
@@ -54,8 +68,74 @@ public partial class CanonicalStateNormalizer
         MortalItemAcceptedTurnNormalizationMode mode)
     {
         ArgumentNullException.ThrowIfNull(mode);
+        if (mode is MortalItemAcceptedTurnNormalizationMode.Validated validated)
+        {
+            var currentRoots = validated.Snapshot.CloneCurrentProjectionRoots();
+            IReadOnlyDictionary<string, JsonNode?> projectedRoots;
+            if (validated.Snapshot.CloneFinalBaseline() is { } finalBaseline)
+            {
+                var itemPhase = validated.Snapshot.CloneItemPhase();
+                if (finalBaseline.Issues.Count != 0 ||
+                    itemPhase is null ||
+                    itemPhase.Issues.Count != 0 ||
+                    !validated.Snapshot.RecomputesFinalPublicationBaseline())
+                {
+                    throw new InvalidDataException(
+                        "Accepted Mortal item final publication baseline is invalid.");
+                }
+                projectedRoots = itemPhase.ItemPhaseAfterImages;
+            }
+            else
+            {
+                var backupRoots = validated.Snapshot.CloneBackupProjectionRoots();
+                var identityRoot = currentRoots[MortalItemIdentityState.StatePath]
+                    as JsonObject ?? throw new InvalidDataException(
+                        "Accepted Mortal item projection requires its frozen identity root.");
+                var identity = MortalItemIdentityState.Parse(identityRoot.DeepClone());
+                var projected = MortalItemCanonicalProjectionPlanner.Project(
+                    new MortalItemCanonicalProjectionInput(
+                        validated.Snapshot.Turn,
+                        validated.Snapshot,
+                        validated.Snapshot.CloneRouteCatalog(),
+                        currentRoots,
+                        backupRoots,
+                        identity));
+                if (!projected.IsValid)
+                {
+                    throw new InvalidDataException(
+                        $"Accepted Mortal item projection failed: {projected.Issues[0].Code}.");
+                }
+                projectedRoots = projected.ItemPhaseAfterImages;
+            }
+            foreach (var path in MortalItemCanonicalProjectionPlanner.ProjectionRootPaths)
+            {
+                var after = projectedRoots[path];
+                if (JsonNode.DeepEquals(currentRoots[path], after))
+                    continue;
+                if (after == null)
+                {
+                    throw new InvalidDataException(
+                        $"Accepted Mortal item projection cannot remove registered root '{path}'.");
+                }
+                await WriteCanonicalFileAtomicAsync(path, after.ToJsonString(JsonOpts));
+            }
+            return;
+        }
+
+        await NormalizeOrdinaryMortalItemsAsync(
+            backups,
+            acceptedStorageCoordinates,
+            mode);
+    }
+
+    private async Task NormalizeOrdinaryMortalItemsAsync(
+        IReadOnlyDictionary<string, string>? backups,
+        IReadOnlyList<MortalLocationStorageCoordinate>? acceptedStorageCoordinates,
+        MortalItemAcceptedTurnNormalizationMode mode)
+    {
+        ArgumentNullException.ThrowIfNull(mode);
         if (mode is not MortalItemAcceptedTurnNormalizationMode.ClientOwnedBootstrap)
-            await NormalizeMortalItemTransfersAsync(backups);
+            await NormalizeOrdinaryMortalItemTransfersAsync(backups);
 
         var playerRoot = await ReadMortalItemObjectRootAsync(
             InventoryEquipmentService.ItemsPath);
@@ -68,9 +148,7 @@ public partial class CanonicalStateNormalizer
         var offscreenLocationStorageRoot = await ReadMortalItemObjectRootAsync(
             MortalLocationStorageContentsState.StatePath);
         var vehiclesRoot = await ReadMortalItemVehiclesRootAsync();
-        var routeCatalog = await MortalItemRouteAuthorityCatalog.BuildAsync(
-            _fs,
-            _writeLease,
+        var routeCatalog = await BuildOrdinaryMortalItemRouteAuthorityCatalogAsync(
             acceptedStorageCoordinates);
         if (routeCatalog.Issues.Count > 0)
         {
@@ -500,196 +578,7 @@ public partial class CanonicalStateNormalizer
             MortalItemMaterializationContract.ReceiptProperty,
             StringComparison.Ordinal);
 
-    private async Task NormalizeMortalItemTransfersAsync(
-        IReadOnlyDictionary<string, string>? backups)
-    {
-        var previousPlayer = await ReadBackupObjectAsync(
-            InventoryEquipmentService.ItemsPath,
-            backups);
-        var previousNpc = await ReadBackupObjectAsync(
-            NpcCoreChangesContract.NpcCorePath,
-            backups);
-        var previousLocation = await ReadBackupObjectAsync(
-            StorageTransportMoveService.CurrentLocationPath,
-            backups);
-        var previousOffscreenLocationStorage = await ReadBackupObjectAsync(
-            MortalLocationStorageContentsState.StatePath,
-            backups);
-        var previousVehicles = WrapMortalItemVehicles(
-            await ReadBackupNodeAsync(StorageTransportMoveService.VehiclesPath, backups));
-        var previousCatalog = MortalItemCarrierCatalog.Build(
-            new MortalItemCarrierCatalogInput(
-                previousPlayer,
-                previousNpc,
-                null,
-                previousLocation,
-                previousVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                previousOffscreenLocationStorage));
-
-        var currentPlayer = await ReadMortalItemObjectRootAsync(
-            InventoryEquipmentService.ItemsPath);
-        var currentNpc = await ReadMortalItemObjectRootAsync(
-            NpcCoreChangesContract.NpcCorePath);
-        var currentLocation = await ReadMortalItemObjectRootAsync(
-            StorageTransportMoveService.CurrentLocationPath);
-        var currentOffscreenLocationStorage = await ReadMortalItemObjectRootAsync(
-            MortalLocationStorageContentsState.StatePath);
-        var currentVehicles = await ReadMortalItemVehiclesRootAsync();
-        var currentCatalog = MortalItemCarrierCatalog.Build(
-            new MortalItemCarrierCatalogInput(
-                currentPlayer,
-                currentNpc,
-                null,
-                currentLocation,
-                currentVehicles,
-                new Dictionary<string, JsonObject>(StringComparer.Ordinal),
-                currentOffscreenLocationStorage));
-        if (previousCatalog.Issues.Count > 0 || currentCatalog.Issues.Count > 0)
-        {
-            var issue = previousCatalog.Issues.FirstOrDefault() ?? currentCatalog.Issues[0];
-            throw new InvalidDataException(
-                $"Mortal item transfer carrier authority failed: {issue.Code}.");
-        }
-
-        var acceptedTurn = await TryReadCurrentTurnNumberAsync();
-        var transfers = await MortalItemAcceptedTransferCatalog.BuildAsync(
-            _fs,
-            _writeLease,
-            previousCatalog,
-            currentCatalog,
-            acceptedTurn);
-        if (transfers.Issues.Count > 0)
-        {
-            throw new InvalidDataException(
-                $"Mortal item transfer authority failed: {transfers.Issues[0].Code}.");
-        }
-        if (transfers.Transfers.Count == 0)
-            return;
-
-        if (_writeLease == null)
-        {
-            await using var ownedLease = await _fs.AcquireCanonicalWriteLeaseAsync();
-            await ApplyMortalItemTransfersAsync(ownedLease, transfers.Transfers);
-        }
-        else
-        {
-            await ApplyMortalItemTransfersAsync(_writeLease, transfers.Transfers);
-        }
-        await RemoveAppliedMortalItemTransferCommandsAsync(transfers.Transfers);
-    }
-
-    private async Task ApplyMortalItemTransfersAsync(
-        FileSystemManager.CanonicalWriteLease writeLease,
-        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
-    {
-        var writer = new MortalItemTransitionWriter(_fs);
-        foreach (var transfer in transfers)
-        {
-            var result = await writer.ExecuteAsync(
-                writeLease,
-                new MortalItemTransitionIntent(
-                    MortalItemTransitionKind.Transfer,
-                    new[] { transfer.ItemId },
-                    transfer.SourceCarrier,
-                    transfer.DestinationCarrier,
-                    transfer.Quantity,
-                    transfer.Turn,
-                    transfer.AuthorityKind,
-                    transfer.AuthorityId));
-            if (!result.Success)
-            {
-                throw new InvalidDataException(
-                    $"Mortal item transfer '{transfer.ItemId}' failed: {result.Message}");
-            }
-        }
-    }
-
-    private async Task RemoveAppliedMortalItemTransferCommandsAsync(
-        IReadOnlyList<MortalItemAcceptedTransfer> transfers)
-    {
-        var player = await ReadMortalItemObjectRootAsync(
-            InventoryEquipmentService.ItemsPath);
-        var npcCommands = await ReadMortalItemObjectRootAsync(
-            MortalItemAcceptedTransferCatalog.NpcCommandsPath);
-        var playerRemovals = await ReadMortalItemObjectRootAsync(
-            MortalItemAcceptedTransferCatalog.PlayerRemovalPath);
-
-        var playerChanged = RemoveCommandIndexes(
-            player,
-            "UpdateInventory",
-            transfers
-                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.PlayerUpdate)
-                .Select(transfer => transfer.DestinationIndex));
-        var npcAddsChanged = RemoveCommandIndexes(
-            npcCommands,
-            "NPCInventoryAdds",
-            transfers
-                .Where(transfer => transfer.DestinationSurface == MortalItemTransferCommandSurface.NpcAdd)
-                .Select(transfer => transfer.DestinationIndex));
-        var npcRemovalsChanged = RemoveCommandIndexes(
-            npcCommands,
-            "NPCInventoryRemovals",
-            transfers
-                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.NpcRemoval)
-                .Select(transfer => transfer.RemovalIndex));
-        var playerRemovalsChanged = RemoveCommandIndexes(
-            playerRemovals,
-            "removeInventoryItems",
-            transfers
-                .Where(transfer => transfer.RemovalSurface == MortalItemTransferCommandSurface.PlayerRemoval)
-                .Select(transfer => transfer.RemovalIndex));
-
-        if (playerChanged && player != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                InventoryEquipmentService.ItemsPath,
-                player.ToJsonString(JsonOpts));
-        }
-        if ((npcAddsChanged || npcRemovalsChanged) && npcCommands != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                MortalItemAcceptedTransferCatalog.NpcCommandsPath,
-                npcCommands.ToJsonString(JsonOpts));
-        }
-        if (playerRemovalsChanged && playerRemovals != null)
-        {
-            await WriteCanonicalFileAtomicAsync(
-                MortalItemAcceptedTransferCatalog.PlayerRemovalPath,
-                playerRemovals.ToJsonString(JsonOpts));
-        }
-    }
-
-    private static bool RemoveCommandIndexes(
-        JsonObject? root,
-        string property,
-        IEnumerable<int> indexes)
-    {
-        if (root?[property] is not JsonArray array)
-            return false;
-        var ordered = indexes.Distinct().OrderByDescending(index => index).ToArray();
-        if (ordered.Length == 0)
-            return false;
-        foreach (var index in ordered)
-        {
-            if (index < 0 || index >= array.Count)
-                throw new InvalidDataException($"Mortal item transfer command index {index} is stale.");
-            array.RemoveAt(index);
-        }
-        if (array.Count == 0)
-            root.Remove(property);
-        return true;
-    }
-
-    private static JsonObject? WrapMortalItemVehicles(JsonNode? node) =>
-        node switch
-        {
-            JsonObject root => root,
-            JsonArray vehicles => new JsonObject { ["vehicles"] = vehicles.DeepClone() },
-            _ => null
-        };
-
-    private static void EnsureRawMortalItemCreation(
+    internal static void EnsureRawMortalItemCreation(
         JsonObject rawItem,
         string itemPath,
         int acceptedTurn)
@@ -778,7 +667,7 @@ public partial class CanonicalStateNormalizer
         return result;
     }
 
-    private static bool CollectPlayerMortalItemCreations(
+    internal static bool CollectPlayerMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -818,7 +707,7 @@ public partial class CanonicalStateNormalizer
         return true;
     }
 
-    private static bool CollectNpcCoreMortalItemCreations(
+    internal static bool CollectNpcCoreMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -861,7 +750,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static MortalItemNpcCommandCollectionResult
+    internal static MortalItemNpcCommandCollectionResult
         CollectNpcCommandMortalItemCreations(
             MortalNpcCommandIndex npcCommandIndex,
             JsonObject? commandsRoot,
@@ -886,17 +775,22 @@ public partial class CanonicalStateNormalizer
             var npcId = ReadMortalNpcIdentity(command) ??
                         throw new InvalidDataException(
                             $"NPCInventoryAdds[{index}] requires one exact NPC identity.");
-            if (!npcCommandIndex.TryGetUniqueOwner(npcId, out var owner))
+            if (!npcCommandIndex.TryGetOwners(npcId, out var owners))
             {
                 throw new InvalidDataException(
-                    $"NPCInventoryAdds[{index}] must resolve exact NPC '{npcId}' once.");
+                    $"NPCInventoryAdds[{index}] must resolve one exact logical NPC '{npcId}'.");
             }
 
-            var inventory = owner["inventory"] as JsonArray;
-            if (inventory == null)
+            var inventories = new List<JsonArray>(owners.Count);
+            foreach (var owner in owners)
             {
-                inventory = new JsonArray();
-                owner["inventory"] = inventory;
+                var inventory = owner["inventory"] as JsonArray;
+                if (inventory == null)
+                {
+                    inventory = new JsonArray();
+                    owner["inventory"] = inventory;
+                }
+                inventories.Add(inventory);
             }
 
             if (ReadExactMortalItemIdentity(command["destinationContainerId"]) is { } containerId)
@@ -906,7 +800,11 @@ public partial class CanonicalStateNormalizer
 
             var itemPath =
                 $"game_state/npcs/npc_inventory.json.NPCInventoryAdds[{index}].item";
-            addPending(item, itemPath, canonical => inventory.Add(canonical));
+            addPending(item, itemPath, canonical =>
+            {
+                foreach (var inventory in inventories)
+                    inventory.Add(canonical.DeepClone());
+            });
             commandsChanged = true;
             npcCoreChanged = true;
         }
@@ -924,7 +822,7 @@ public partial class CanonicalStateNormalizer
             npcCoreChanged);
     }
 
-    private static bool CollectLocationMortalItemCreations(
+    internal static bool CollectLocationMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -969,7 +867,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static bool CollectOffscreenLocationStorageMortalItemCreations(
+    internal static bool CollectOffscreenLocationStorageMortalItemCreations(
         JsonObject? root,
         Action<JsonObject, string, Action<JsonObject>> addPending)
     {
@@ -1007,7 +905,7 @@ public partial class CanonicalStateNormalizer
         return changed;
     }
 
-    private static MortalItemNpcCommandCollectionResult ApplyMortalNpcEquipmentCommands(
+    internal static MortalItemNpcCommandCollectionResult ApplyMortalNpcEquipmentCommands(
         MortalNpcCommandIndex npcCommandIndex,
         JsonObject? commandsRoot,
         IReadOnlySet<string> createdItemIds)
@@ -1030,10 +928,10 @@ public partial class CanonicalStateNormalizer
             var npcId = ReadMortalNpcIdentity(command) ??
                         throw new InvalidDataException(
                             "NPCEquipmentChanges requires one exact NPC identity.");
-            if (!npcCommandIndex.TryGetUniqueOwner(npcId, out var owner))
+            if (!npcCommandIndex.TryGetOwners(npcId, out var owners))
             {
                 throw new InvalidDataException(
-                    $"NPCEquipmentChanges must resolve exact NPC '{npcId}' once.");
+                    $"NPCEquipmentChanges must resolve one exact logical NPC '{npcId}'.");
             }
 
             if (!npcCommandIndex.InventoryItemOccursExactlyOnce(npcId, itemId))
@@ -1043,40 +941,43 @@ public partial class CanonicalStateNormalizer
             }
 
             var action = ReadExactMortalItemIdentity(command["action"]);
-            var equipped = owner["equippedItems"] as JsonObject;
-            if (equipped == null)
+            foreach (var owner in owners)
             {
-                equipped = new JsonObject();
-                owner["equippedItems"] = equipped;
-            }
+                var equipped = owner["equippedItems"] as JsonObject;
+                if (equipped == null)
+                {
+                    equipped = new JsonObject();
+                    owner["equippedItems"] = equipped;
+                }
 
-            switch (action)
-            {
-                case "equip":
-                    foreach (var slot in ReadMortalItemEquipmentSlots(
-                                 command["targetSlots"],
-                                 "targetSlots"))
-                    {
-                        equipped[slot] = itemId;
-                    }
-                    break;
-                case "unequip":
-                    foreach (var slot in ReadMortalItemEquipmentSlots(
-                                 command["sourceSlots"],
-                                 "sourceSlots"))
-                    {
-                        if (string.Equals(
-                                ReadExactMortalItemIdentity(equipped[slot]),
-                                itemId,
-                                StringComparison.Ordinal))
+                switch (action)
+                {
+                    case "equip":
+                        foreach (var slot in ReadMortalItemEquipmentSlots(
+                                     command["targetSlots"],
+                                     "targetSlots"))
                         {
-                            equipped.Remove(slot);
+                            equipped[slot] = itemId;
                         }
-                    }
-                    break;
-                default:
-                    throw new InvalidDataException(
-                        "NPCEquipmentChanges.action must be exact 'equip' or 'unequip'.");
+                        break;
+                    case "unequip":
+                        foreach (var slot in ReadMortalItemEquipmentSlots(
+                                     command["sourceSlots"],
+                                     "sourceSlots"))
+                        {
+                            if (string.Equals(
+                                    ReadExactMortalItemIdentity(equipped[slot]),
+                                    itemId,
+                                    StringComparison.Ordinal))
+                            {
+                                equipped.Remove(slot);
+                            }
+                        }
+                        break;
+                    default:
+                        throw new InvalidDataException(
+                            "NPCEquipmentChanges.action must be exact 'equip' or 'unequip'.");
+                }
             }
 
             applied = true;
@@ -1144,7 +1045,7 @@ public partial class CanonicalStateNormalizer
                     IsRawMortalItemCreation(item) &&
                     ReadMortalNpcIdentity(command) is { } npcId)
                 {
-                    _ = index.TryGetUniqueOwner(npcId, out _);
+                    _ = index.TryGetOwners(npcId, out _);
                 }
             }
         }
@@ -1158,7 +1059,7 @@ public partial class CanonicalStateNormalizer
                     ReadMortalNpcIdentity(command) is { } npcId &&
                     ReadExactMortalItemIdentity(command["itemId"]) is { } itemId)
                 {
-                    _ = index.TryGetUniqueOwner(npcId, out _);
+                    _ = index.TryGetOwners(npcId, out _);
                     _ = index.InventoryItemOccursExactlyOnce(npcId, itemId);
                 }
             }
@@ -1173,9 +1074,13 @@ public partial class CanonicalStateNormalizer
         ReadExactMortalItemIdentity(obj["id"]) ??
         ReadExactMortalItemIdentity(obj["initialId"]);
 
-    private sealed class MortalNpcCommandIndex
+    internal sealed class MortalNpcCommandIndex
     {
-        private readonly Dictionary<string, List<JsonObject>> _ownersById =
+        private readonly Dictionary<
+            string,
+            List<(string Section, JsonObject Actor)>> _ownersById =
+            new(StringComparer.Ordinal);
+        private readonly HashSet<string> _confusableOwnerIds =
             new(StringComparer.Ordinal);
         private readonly Dictionary<string, Dictionary<string, int>>
             _inventoryItemCountsByNpcId = new(StringComparer.Ordinal);
@@ -1185,34 +1090,52 @@ public partial class CanonicalStateNormalizer
         internal static MortalNpcCommandIndex Build(JsonObject? root)
         {
             var result = new MortalNpcCommandIndex();
-            foreach (var npc in EnumerateMortalNpcObjects(root))
+            if (root == null)
+                return result;
+            foreach (var section in GuardianPolicyContracts
+                         .NpcCoreCanonicalNpcObjectSections)
             {
-                result.WorkUnits++;
-                var npcId = ReadMortalNpcIdentity(npc);
-                if (npcId == null)
+                if (root[section] is not JsonArray npcs)
                     continue;
-                if (!result._ownersById.TryGetValue(npcId, out var owners))
+                foreach (var npc in npcs.OfType<JsonObject>())
                 {
-                    owners = new List<JsonObject>();
-                    result._ownersById.Add(npcId, owners);
+                    result.WorkUnits++;
+                    var npcId = ReadMortalNpcIdentity(npc);
+                    if (npcId == null)
+                        continue;
+                    if (!result._ownersById.TryGetValue(npcId, out var owners))
+                    {
+                        owners = new List<(string Section, JsonObject Actor)>();
+                        result._ownersById.Add(npcId, owners);
+                    }
+                    owners.Add((section, npc));
                 }
-                owners.Add(npc);
+            }
+
+            foreach (var group in result._ownersById.Keys.GroupBy(
+                         ResourceMaterializationContract.BuildConfusableKey,
+                         StringComparer.Ordinal).Where(static group => group.Count() > 1))
+            {
+                result._confusableOwnerIds.UnionWith(group);
             }
 
             return result;
         }
 
-        internal bool TryGetUniqueOwner(string npcId, out JsonObject owner)
+        internal bool TryGetOwners(
+            string npcId,
+            out IReadOnlyList<JsonObject> owners)
         {
             WorkUnits++;
-            if (_ownersById.TryGetValue(npcId, out var owners) &&
-                owners.Count == 1)
+            if (!_confusableOwnerIds.Contains(npcId) &&
+                _ownersById.TryGetValue(npcId, out var copies) &&
+                MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(npcId, copies))
             {
-                owner = owners[0];
+                owners = copies.Select(static copy => copy.Actor).ToArray();
                 return true;
             }
 
-            owner = null!;
+            owners = Array.Empty<JsonObject>();
             return false;
         }
 
@@ -1222,11 +1145,14 @@ public partial class CanonicalStateNormalizer
             foreach (var pair in _ownersById)
             {
                 WorkUnits++;
-                if (pair.Value.Count != 1)
+                if (_confusableOwnerIds.Contains(pair.Key) ||
+                    !MortalItemNpcMirrorPolicy.IsSupportedLogicalActor(
+                        pair.Key,
+                        pair.Value))
                     continue;
 
                 var counts = new Dictionary<string, int>(StringComparer.Ordinal);
-                if (pair.Value[0]["inventory"] is JsonArray inventory)
+                if (pair.Value[0].Actor["inventory"] is JsonArray inventory)
                 {
                     foreach (var node in inventory)
                     {
@@ -1253,16 +1179,17 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static bool IsRawMortalItemCreation(JsonObject item) =>
+    internal static bool IsRawMortalItemCreation(JsonObject item) =>
         item.ContainsKey("creationRef") ||
         item.TryGetPropertyValue("existedId", out var existedId) && existedId == null;
 
-    private static JsonObject CreateMortalItemIdentityEntry(
+    internal static JsonObject CreateMortalItemIdentityEntry(
         JsonObject item,
         JsonObject receipt,
         int acceptedTurn,
         MortalItemRouteAuthority routeAuthority,
-        IReadOnlyDictionary<string, string> creationMap)
+        IReadOnlyDictionary<string, string> creationMap,
+        string? transitionId = null)
     {
         var itemId = RequireExactMortalItemIdentity(item["itemId"], "itemId");
         var envelope = item[MortalItemMaterializationContract.EnvelopeProperty]!.AsObject();
@@ -1272,16 +1199,28 @@ public partial class CanonicalStateNormalizer
         var quantity = ReadMortalItemQuantity(item);
         var carrier = CreateMortalItemCarrierNode(
             RewriteMortalItemCarrierCoordinate(routeAuthority.Destination, creationMap));
-        var transition = MortalItemIdentityState.CreateTransition(
-            "create",
-            acceptedTurn,
-            routeAuthority.SourceItemIds,
-            sourceCarrier: null,
-            destinationCarrier: carrier,
-            quantityBefore: 0,
-            quantityAfter: quantity,
-            routeAuthority.AuthorityKind,
-            routeAuthority.AuthorityId);
+        var transition = transitionId == null
+            ? MortalItemIdentityState.CreateTransition(
+                "create",
+                acceptedTurn,
+                routeAuthority.SourceItemIds,
+                sourceCarrier: null,
+                destinationCarrier: carrier,
+                quantityBefore: 0,
+                quantityAfter: quantity,
+                routeAuthority.AuthorityKind,
+                routeAuthority.AuthorityId)
+            : MortalItemIdentityState.CreateTransition(
+                "create",
+                acceptedTurn,
+                routeAuthority.SourceItemIds,
+                sourceCarrier: null,
+                destinationCarrier: carrier,
+                quantityBefore: 0,
+                quantityAfter: quantity,
+                routeAuthority.AuthorityKind,
+                routeAuthority.AuthorityId,
+                transitionId);
 
         return new JsonObject
         {
@@ -1310,7 +1249,7 @@ public partial class CanonicalStateNormalizer
         throw new InvalidDataException("A sealed Mortal item requires a positive integer count.");
     }
 
-    private static MortalItemCarrierCoordinate RewriteMortalItemCarrierCoordinate(
+    internal static MortalItemCarrierCoordinate RewriteMortalItemCarrierCoordinate(
         MortalItemCarrierCoordinate carrier,
         IReadOnlyDictionary<string, string> creationMap) =>
         carrier with
@@ -1320,7 +1259,7 @@ public partial class CanonicalStateNormalizer
                 .ToArray()
         };
 
-    private static JsonObject CreateMortalItemCarrierNode(
+    internal static JsonObject CreateMortalItemCarrierNode(
         MortalItemCarrierCoordinate carrier) =>
         new()
         {
@@ -1333,7 +1272,7 @@ public partial class CanonicalStateNormalizer
                     .ToArray())
         };
 
-    private static void RewriteMortalItemContentsPath(
+    internal static void RewriteMortalItemContentsPath(
         JsonObject item,
         IReadOnlyDictionary<string, string> creationMap)
     {
@@ -1348,7 +1287,7 @@ public partial class CanonicalStateNormalizer
         }
     }
 
-    private static bool RewriteMortalItemCreationReferences(
+    internal static bool RewriteMortalItemCreationReferences(
         JsonNode? node,
         IReadOnlyDictionary<string, string> creationMap) =>
         RewriteMortalItemCreationReferences(
@@ -1517,16 +1456,248 @@ public partial class CanonicalStateNormalizer
         MortalItemRouteAuthority Authority,
         Action<JsonObject> Store);
 
-    private sealed record MortalItemNpcCommandCollectionResult(
+    internal sealed record MortalItemNpcCommandCollectionResult(
         bool CommandsChanged,
         bool NpcCoreChanged);
 }
 
 internal static class AcceptedTurnCanonicalStateRefresh
 {
+    /// <summary>
+    /// Reports canonical refresh diagnostics and the completed publication's detached handoffs.
+    /// </summary>
+    /// <param name="Issues">
+    /// Validation diagnostics collected during canonical refresh and publication read-back.
+    /// </param>
+    /// <param name="MechanicsPlan">
+    /// Accepted plan, or <see langword="null"/> when no plan was accepted.
+    /// </param>
+    /// <param name="TreatmentResourcePublicationTransaction">
+    /// Treatment transaction requiring caller settlement, or <see langword="null"/> for other paths.
+    /// </param>
+    /// <param name="SpiritualWoundOutput">
+    /// Detached spiritual presentation and exact output witnesses; <see langword="null"/> for ordinary or failed publication.
+    /// </param>
+    /// <param name="SpiritualConflictValidation">
+    /// Published-only causal comparisons, or <see langword="null"/> without a successful spiritual publication.
+    /// </param>
     internal sealed record Result(
         IReadOnlyList<ValidationIssue> Issues,
-        AcceptedMechanicsPlan? MechanicsPlan);
+        AcceptedMechanicsPlan? MechanicsPlan,
+        MortalWoundTreatmentResourcePublicationTransaction?
+            TreatmentResourcePublicationTransaction = null,
+        SpiritualWoundPublishedOutput? SpiritualWoundOutput = null,
+        ValidationService.SpiritualOriginalTurnCapture.SpiritualCompletedConflictValidation?
+            SpiritualConflictValidation = null);
+
+    private static Task<MortalWoundTreatmentPublicationProbeResult>
+        ProbeTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.ProbeAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        CompleteTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.CompleteAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        CompensateTreatmentResourcePublicationTransactionAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction) =>
+        transaction.CompensateAsync(fs);
+
+    private static Task<MortalWoundTreatmentPublicationOperationResult>
+        ReleaseTreatmentResourcePublicationTerminalAsync(
+            FileSystemManager fs,
+            MortalWoundTreatmentResourcePublicationTransaction transaction,
+            string reason) =>
+        transaction.ReleaseTerminalAsync(fs, reason);
+
+    internal static async Task<MortalWoundTreatmentPublicationOperationResult?>
+        ReleaseValidatedTreatmentPublicationBeforeCanonicalRefreshAsync(
+            FileSystemManager fs,
+            string reason)
+    {
+        ArgumentNullException.ThrowIfNull(fs);
+        ArgumentException.ThrowIfNullOrWhiteSpace(reason);
+
+        await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        if (!AcceptedMechanicsPlanAuthority.TryPeekValidated(
+                fs,
+                writeLease,
+                out var binding,
+                out var peeked))
+        {
+            return null;
+        }
+        if (!peeked.Success || peeked.Plan is null)
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup found an incomplete validated accepted-mechanics plan.");
+        }
+
+        var plan = peeked.Plan;
+        var authority = plan.TreatmentResourcePublicationAuthority;
+        if (authority is null || !authority.RequiresCoordinatedSettlement)
+            return null;
+        if (!authority.HasValidSeal())
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup requires the exact sealed resource-publication authority.");
+        }
+
+        var hasCurrentMortalItemSnapshot =
+            MortalItemAcceptedTurnAuthority.TryCaptureNormalizationSnapshot(
+                fs,
+                writeLease,
+                binding.SessionId,
+                binding.SnapshotToken,
+                binding.Turn,
+                out var mortalItemSnapshot);
+        if (hasCurrentMortalItemSnapshot &&
+            !mortalItemSnapshot.MatchesAcceptedOwnerAuthority(plan.OwnerAuthority))
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup could not capture the exact Mortal item authority snapshot.");
+        }
+
+        var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+        var commandBefore = beforeImages.SingleOrDefault(value => string.Equals(
+            value.Path,
+            AcceptedMechanicsPlan.WoundCommandPath,
+            StringComparison.Ordinal));
+        var pendingBefore = beforeImages.SingleOrDefault(value => string.Equals(
+            value.Path,
+            WoundAcceptedTurnSnapshotContract.PendingResolutionPath,
+            StringComparison.Ordinal));
+        if (commandBefore?.Bytes is not { } commandBytes ||
+            pendingBefore is null)
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup requires exact command and pending before-images.");
+        }
+        var command = ParseTreatmentDurableRoot(
+            commandBytes,
+            AcceptedMechanicsPlan.WoundCommandPath);
+        var pending = pendingBefore.Bytes is { } pendingBytes
+            ? ParseTreatmentDurableRoot(
+                pendingBytes,
+                WoundAcceptedTurnSnapshotContract.PendingResolutionPath)
+            : null;
+        if (!MortalWoundTreatmentDurableSurfaceQuarantine.ContainsExactRequestRows(
+                command,
+                pending,
+                authority.RequestAuthority.Coordinates.OperationKey,
+                authority.RequestAuthority.Coordinates.AttemptId,
+                authority.RequestFingerprint))
+        {
+            throw new InvalidDataException(
+                "Pre-canonical treatment cleanup could not prove the exact durable request row before take.");
+        }
+
+        MortalWoundTreatmentResourcePublicationTransaction? transaction = null;
+        try
+        {
+            var tookPublication = hasCurrentMortalItemSnapshot
+                ? AcceptedMechanicsPlanAuthority
+                    .TryTakeCurrentValidatedTreatmentPublicationForTerminalRelease(
+                    fs,
+                    writeLease,
+                    binding,
+                    mortalItemSnapshot,
+                    out var taken,
+                    out var receipt)
+                : AcceptedMechanicsPlanAuthority
+                    .TryTakeValidatedTreatmentPublicationForTerminalRelease(
+                        fs,
+                        writeLease,
+                        binding,
+                        out taken,
+                        out receipt);
+            if (!tookPublication ||
+                !taken.Success || taken.Plan is null ||
+                !ReferenceEquals(plan, taken.Plan))
+            {
+                throw new InvalidDataException(
+                    "Pre-canonical treatment cleanup could not take the exact validated publication plan.");
+            }
+
+            transaction = MortalWoundTreatmentResourcePublicationTransaction.Create(
+                fs,
+                plan,
+                binding,
+                receipt,
+                beforeImages);
+            var released = await transaction.ReleaseTerminalUnderLeaseAsync(
+                fs,
+                writeLease,
+                reason);
+            var releasedExactly = released.IsValid &&
+                                  released.Issues.Count == 0 &&
+                                  released.ChangedCount == 1 &&
+                                  released.Outcome ==
+                                      MortalWoundTreatmentPublicationTransactionOutcome
+                                          .Released;
+            var safelyRestartBlocked =
+                MortalWoundTreatmentResourcePublicationTransaction
+                    .IsExactProvenTerminalReleaseFailure(released);
+            if (!releasedExactly && !safelyRestartBlocked)
+            {
+                throw new InvalidOperationException(
+                    "Pre-canonical treatment cleanup did not atomically quarantine and release the exact held request.");
+            }
+            return released;
+        }
+        catch (SessionReplacedException)
+        {
+            throw;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
+        catch (Exception exception)
+        {
+            if (transaction is null)
+                throw;
+
+            try
+            {
+                await transaction.FinishHelperFailureAsync(fs, writeLease);
+            }
+            catch (Exception settlementException)
+            {
+                throw new AggregateException(
+                    "Pre-canonical treatment cleanup failed and its transaction could not be settled safely.",
+                    exception,
+                    settlementException);
+            }
+            ExceptionDispatchInfo.Capture(exception).Throw();
+            throw;
+        }
+    }
+
+    private static JsonObject ParseTreatmentDurableRoot(
+        byte[] bytes,
+        string path)
+    {
+        var preamble = Encoding.UTF8.GetPreamble();
+        var offset = bytes.AsSpan().StartsWith(preamble) ? preamble.Length : 0;
+        try
+        {
+            return JsonNode.Parse(bytes.AsSpan(offset)) as JsonObject ??
+                   throw new InvalidDataException(
+                       $"Treatment durable root '{path}' is not a JSON object.");
+        }
+        catch (JsonException exception)
+        {
+            throw new InvalidDataException(
+                $"Treatment durable root '{path}' is malformed.",
+                exception);
+        }
+    }
 
     internal static async Task<IReadOnlyList<ValidationIssue>> NormalizeAndValidateAsync(
         FileSystemManager fs,
@@ -1554,11 +1725,77 @@ internal static class AcceptedTurnCanonicalStateRefresh
         ArgumentNullException.ThrowIfNull(backups);
 
         await using var writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
+        var boundNormalizer = normalizer.BindTo(writeLease);
+        var spiritualPreflight = await boundNormalizer.PrevalidateSpiritualPublicationTransactionAsync();
         var beforeImages = await CaptureBeforeImagesAsync(fs, writeLease);
+        if (spiritualPreflight is not null)
+        {
+            var signed = spiritualPreflight.Authority.SignedRollbackImages;
+            foreach (var image in beforeImages)
+            {
+                if (!signed.ContainsKey(image.Path))
+                    throw new InvalidDataException($"Spiritual publication lacks signed rollback coverage for '{image.Path}'.");
+            }
+            beforeImages = signed.Select(pair => new MortalWoundTreatmentPublicationBeforeImage(
+                pair.Key, pair.Value.Bytes)).ToArray();
+        }
+        SpiritualPublicationReceipt? spiritualReceipt = null;
+        var spiritualWritesStarted = false;
+        MortalWoundTreatmentResourcePublicationTransaction? treatmentTransaction = null;
         try
         {
-            var mechanicsPlan = await normalizer.BindTo(writeLease)
-                .NormalizeAccumulatedStateWithPlanAsync(backups);
+            var treatmentPreflight = spiritualPreflight is null
+                ? await boundNormalizer.PrevalidateTreatmentResourcePublicationTransactionAsync()
+                : null;
+            AcceptedMechanicsPlan? mechanicsPlan;
+            if (spiritualPreflight is not null)
+            {
+                var inputIssues = await spiritualPreflight.Authority.ValidateCurrentInputsAsync(fs, writeLease);
+                if (inputIssues.Count != 0)
+                    throw new InvalidDataException(string.Join("; ", inputIssues.Select(issue =>
+                        $"{issue.Code}: {issue.FilePath}")));
+                if (!AcceptedMechanicsPlanAuthority.TryTakeSpiritualPublication(
+                        fs, writeLease, spiritualPreflight.Authority, out spiritualReceipt))
+                    throw new InvalidDataException("The completed spiritual publication could not take its exact handoff.");
+                spiritualWritesStarted = true;
+                mechanicsPlan = await boundNormalizer.NormalizeAccumulatedStateWithSpiritualPublicationTransactionAsync(
+                    backups, spiritualPreflight, spiritualReceipt);
+            }
+            else if (treatmentPreflight is null)
+            {
+                mechanicsPlan = await boundNormalizer
+                    .NormalizeAccumulatedStateWithPlanAsync(backups);
+            }
+            else
+            {
+                if (!AcceptedMechanicsPlanAuthority
+                        .TryTakeValidatedTreatmentPublication(
+                            fs,
+                            writeLease,
+                            treatmentPreflight.Binding,
+                            treatmentPreflight.MortalItemSnapshot,
+                            out var taken,
+                            out var receipt) ||
+                    !taken.Success || taken.Plan is null ||
+                    !ReferenceEquals(treatmentPreflight.Plan, taken.Plan))
+                {
+                    throw new InvalidDataException(
+                        "The held Mortal wound-treatment publication transaction could not take the exact validated plan.");
+                }
+
+                treatmentTransaction =
+                    MortalWoundTreatmentResourcePublicationTransaction.Create(
+                        fs,
+                        treatmentPreflight.Plan,
+                        treatmentPreflight.Binding,
+                        receipt,
+                        beforeImages);
+                mechanicsPlan = await boundNormalizer
+                    .NormalizeAccumulatedStateWithTreatmentPublicationTransactionAsync(
+                        backups,
+                        treatmentPreflight,
+                        receipt);
+            }
             var issues = new List<ValidationIssue>();
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalMortalLocationMaterializationAsync(writeLease));
@@ -1568,25 +1805,74 @@ internal static class AcceptedTurnCanonicalStateRefresh
                 .ValidateAcceptedTurnCanonicalResourceMaterializationAsync(writeLease));
             issues.AddRange(await validator
                 .ValidateAcceptedTurnCanonicalEffectMaterializationAsync(writeLease));
+            if (mechanicsPlan?.WoundStageBundle is not null)
+            {
+                issues.AddRange(await WoundAcceptedTurnSnapshotContract
+                    .ValidatePublishedOutputAuthorityAsync(
+                        mechanicsPlan,
+                        path => fs.ReadFileBytesAsync(writeLease, path)));
+            }
+            if (mechanicsPlan is { AwaitsPendingResolution: false } &&
+                (mechanicsPlan.WoundStageBundle is not null || mechanicsPlan.LiveWoundProofFingerprint is not null))
+                issues.AddRange(await validator.ValidateAcceptedTurnCanonicalWoundMaterializationAsync(writeLease));
+            var spiritualOutput = spiritualReceipt is null ? null :
+                await SpiritualWoundPublishedOutput.BindAsync(fs, writeLease, spiritualReceipt);
+            if (spiritualOutput is not null)
+                issues.AddRange(spiritualOutput.Issues);
             if (issues.Any(issue => issue.Severity == IssueSeverity.Error))
             {
                 await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
+                if (spiritualReceipt is not null)
+                    AcceptedMechanicsPlanAuthority.FailSpiritualPublication(fs, writeLease, spiritualReceipt);
                 mechanicsPlan = null;
+                spiritualOutput = null;
             }
-            return new Result(issues, mechanicsPlan);
+            else if (treatmentTransaction is not null)
+            {
+                await treatmentTransaction.CapturePublishedAgreementAsync(
+                    fs,
+                    writeLease);
+            }
+            if (mechanicsPlan is not null && spiritualReceipt is not null &&
+                !AcceptedMechanicsPlanAuthority.CompleteSpiritualPublication(fs, writeLease, spiritualReceipt))
+                throw new InvalidDataException("Spiritual transaction ownership changed before acceptance.");
+            return new Result(issues, mechanicsPlan, treatmentTransaction, spiritualOutput,
+                mechanicsPlan is null ? null : spiritualReceipt?.Authority.CompletedConflictValidation);
         }
         catch (Exception exception)
         {
+            var rollbackFailures = new List<Exception>();
             try
             {
-                await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
+                if (spiritualPreflight is null || spiritualWritesStarted)
+                    await RestoreBeforeImagesAsync(fs, writeLease, beforeImages);
             }
             catch (Exception rollbackException)
             {
+                rollbackFailures.Add(rollbackException);
+            }
+            if (spiritualReceipt is not null)
+                AcceptedMechanicsPlanAuthority.FailSpiritualPublication(fs, writeLease, spiritualReceipt);
+
+            if (treatmentTransaction is not null)
+            {
+                try
+                {
+                    await treatmentTransaction.FinishHelperFailureAsync(
+                        fs,
+                        writeLease);
+                }
+                catch (Exception rollbackException)
+                {
+                    rollbackFailures.Add(rollbackException);
+                }
+            }
+
+            if (rollbackFailures.Count != 0)
+            {
                 throw new AggregateException(
                     "Accepted-turn canonical normalization failed and exact rollback also failed.",
-                    exception,
-                    rollbackException);
+                    new[] { exception }.Concat(rollbackFailures));
             }
 
             ExceptionDispatchInfo.Capture(exception).Throw();
@@ -1594,16 +1880,17 @@ internal static class AcceptedTurnCanonicalStateRefresh
         }
     }
 
-    private static async Task<IReadOnlyList<CanonicalBeforeImage>> CaptureBeforeImagesAsync(
+    private static async Task<IReadOnlyList<
+        MortalWoundTreatmentPublicationBeforeImage>> CaptureBeforeImagesAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease)
     {
-        var beforeImages = new List<CanonicalBeforeImage>(
+        var beforeImages = new List<MortalWoundTreatmentPublicationBeforeImage>(
             CanonicalStateNormalizer.NormalizerRollbackTrackedFiles.Length);
         foreach (var path in CanonicalStateNormalizer.NormalizerRollbackTrackedFiles
                      .Distinct(StringComparer.OrdinalIgnoreCase))
         {
-            beforeImages.Add(new CanonicalBeforeImage(
+            beforeImages.Add(new MortalWoundTreatmentPublicationBeforeImage(
                 path,
                 await fs.ReadFileBytesAsync(writeLease, path)));
         }
@@ -1614,7 +1901,7 @@ internal static class AcceptedTurnCanonicalStateRefresh
     private static async Task RestoreBeforeImagesAsync(
         FileSystemManager fs,
         FileSystemManager.CanonicalWriteLease writeLease,
-        IReadOnlyList<CanonicalBeforeImage> beforeImages)
+        IReadOnlyList<MortalWoundTreatmentPublicationBeforeImage> beforeImages)
     {
         var failures = new List<Exception>();
         for (var index = beforeImages.Count - 1; index >= 0; index--)
@@ -1653,5 +1940,4 @@ internal static class AcceptedTurnCanonicalStateRefresh
         }
     }
 
-    private sealed record CanonicalBeforeImage(string Path, byte[]? Bytes);
 }

@@ -23,7 +23,9 @@
       },
       "standardArts": {
         "binding": 2,
-        "maneuver": 1
+        "maneuver": 1,
+        "spiritual_resilience": 0,
+        "spiritual_healing": 0
       },
       "specialArts": [
         {

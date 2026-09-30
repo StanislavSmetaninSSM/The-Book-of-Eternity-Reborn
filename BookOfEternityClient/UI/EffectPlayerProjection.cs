@@ -80,7 +80,7 @@ internal static class EffectPlayerProjection
             var entries = input.Snapshot.Effects
                 .Where(effect => MatchesScope(effect, input))
                 .OrderBy(static effect => effect.EffectId, StringComparer.Ordinal)
-                .Select(BuildEntry)
+                .Select(effect => BuildEntry(effect, input.Snapshot.SkillScopeAuthority))
                 .Where(static entry => entry != null)
                 .Cast<EffectPlayerEntry>()
                 .ToArray();
@@ -115,7 +115,7 @@ internal static class EffectPlayerProjection
 
         foreach (var accepted in input.Snapshot.Effects.Where(effect => MatchesScope(effect, input)))
         {
-            var entry = BuildEntry(accepted);
+            var entry = BuildEntry(accepted, input.Snapshot.SkillScopeAuthority);
             if (entry == null)
                 continue;
 
@@ -154,7 +154,9 @@ internal static class EffectPlayerProjection
         (input.TargetKind == null || string.Equals(effect.TargetKind, input.TargetKind, StringComparison.Ordinal)) &&
         (input.TargetId == null || string.Equals(effect.TargetId, input.TargetId, StringComparison.Ordinal));
 
-    private static EffectPlayerEntry? BuildEntry(EffectAcceptedInstance accepted)
+    private static EffectPlayerEntry? BuildEntry(
+        EffectAcceptedInstance accepted,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
     {
         var effect = accepted.CanonicalEffect;
         if (!effect.TryGetProperty("display", out var display) ||
@@ -179,10 +181,14 @@ internal static class EffectPlayerProjection
         if (effect.TryGetProperty("components", out var components) &&
             components.ValueKind == JsonValueKind.Array)
         {
+            var target = new EffectTargetKey(
+                accepted.Realm,
+                accepted.TargetKind,
+                accepted.TargetId);
             foreach (var component in components.EnumerateArray()
                          .OrderBy(static component => ReadInt(component, "priority")))
             {
-                facts.Add(ProjectComponent(component));
+                facts.Add(ProjectComponent(component, target, skillScopeAuthority));
             }
         }
 
@@ -243,13 +249,23 @@ internal static class EffectPlayerProjection
         };
     }
 
-    private static EffectPlayerFact ProjectComponent(JsonElement component)
+    private static EffectPlayerFact ProjectComponent(
+        JsonElement component,
+        EffectTargetKey target,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
     {
         var profile = ReadString(component, "profile") ?? "effect";
         if (!component.TryGetProperty("payload", out var payload) ||
             payload.ValueKind != JsonValueKind.Object)
         {
             throw new InvalidOperationException("Accepted effect component has no payload.");
+        }
+
+        if (SpiritualWoundEffectProfileCatalog.TryGetProfile(
+                profile,
+                out var spiritualProfile))
+        {
+            return ProjectSpiritualWoundComponent(payload, spiritualProfile);
         }
 
         return profile switch
@@ -261,7 +277,7 @@ internal static class EffectPlayerProjection
             "roll_modifier" => new(
                 profile,
                 "Проверки",
-                $"{DescribeStringArray(payload, "operations")}: {DescribeToken(ReadString(payload, "contribution"))}"),
+                DescribeRollModifier(payload, target, skillScopeAuthority)),
             "resistance_modifier" => new(
                 profile,
                 "Сопротивление",
@@ -273,6 +289,14 @@ internal static class EffectPlayerProjection
             "periodic_restore" => new(
                 profile,
                 "Периодическое восстановление",
+                $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "capPolicy"))}"),
+            "periodic_spend" => new(
+                profile,
+                "Периодический расход",
+                $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "floorPolicy"))}"),
+            "periodic_gain" => new(
+                profile,
+                "Периодическое получение",
                 $"{DescribeNumber(payload, "amount")} ед. ресурса «{DescribeToken(ReadString(payload, "resource"))}»; граница: {DescribeToken(ReadString(payload, "capPolicy"))}"),
             "action_control" => new(
                 profile,
@@ -293,6 +317,134 @@ internal static class EffectPlayerProjection
             _ => throw new InvalidOperationException("Accepted effect contains an unregistered component profile.")
         };
     }
+
+    private static string DescribeRollModifier(
+        JsonElement payload,
+        EffectTargetKey target,
+        EffectRollSkillScopeAuthority skillScopeAuthority)
+    {
+        var contribution = ReadString(payload, "contribution") switch
+        {
+            "advantage" => "Преимущество",
+            "disadvantage" => "Помеха",
+            _ => "Изменение броска"
+        };
+
+        if (!payload.TryGetProperty("scope", out var scope) ||
+            scope.ValueKind != JsonValueKind.Object)
+        {
+            return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+        }
+
+        var scopeKind = ReadString(scope, "kind");
+        if (string.Equals(scopeKind, "all", StringComparison.Ordinal) &&
+            HasExactlySkillCheckOperation(payload))
+            return $"{contribution} на все проверки навыков";
+
+        if (string.Equals(scopeKind, "all", StringComparison.Ordinal))
+        {
+            return $"{DescribeStringArray(payload, "operations")}: " +
+                   DescribeToken(ReadString(payload, "contribution"));
+        }
+
+        if (!string.Equals(scopeKind, "skill", StringComparison.Ordinal) ||
+            ReadString(scope, "skillId") is not { } skillId)
+        {
+            return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+        }
+
+        var resolution = skillScopeAuthority.ResolveCurrent(
+            target,
+            skillId,
+            "effect_player_projection.scope.skillId");
+        if (resolution.IsUsable && IsReadableSkillName(resolution.DisplayName, skillId))
+            return $"{contribution} на проверки навыка «{resolution.DisplayName}»";
+
+        if (resolution.State == EffectRollSkillScopeState.Unavailable &&
+            IsReadableSkillName(resolution.DisplayName, skillId))
+        {
+            return $"{contribution} на проверки навыка «{resolution.DisplayName}» — сейчас не действует";
+        }
+
+        return $"{contribution} на проверки конкретного недоступного навыка — сейчас не действует";
+    }
+
+    private static bool IsReadableSkillName(string? displayName, string skillId) =>
+        !string.IsNullOrWhiteSpace(displayName) &&
+        !string.Equals(displayName, skillId, StringComparison.Ordinal) &&
+        !displayName.Contains(skillId, StringComparison.Ordinal) &&
+        !displayName.Contains("skill_", StringComparison.OrdinalIgnoreCase);
+
+    private static bool HasExactlySkillCheckOperation(JsonElement payload) =>
+        payload.TryGetProperty("operations", out var operations) &&
+        operations.ValueKind == JsonValueKind.Array &&
+        operations.GetArrayLength() == 1 &&
+        operations[0].ValueKind == JsonValueKind.String &&
+        string.Equals(operations[0].GetString(), "skill_check", StringComparison.Ordinal);
+
+    private static EffectPlayerFact ProjectSpiritualWoundComponent(
+        JsonElement payload,
+        SpiritualWoundProfileDescriptor profile)
+    {
+        var operationKey = ReadString(payload, "operation");
+        if (operationKey == null ||
+            !profile.LegalOperations.Contains(operationKey) ||
+            !SpiritualWoundEffectProfileCatalog.TryGetOperation(
+                operationKey,
+                out var operation) ||
+            !string.Equals(
+                ReadString(payload, "axis"),
+                profile.Axis,
+                StringComparison.Ordinal) ||
+            !payload.TryGetProperty("magnitude", out var magnitude) ||
+            !profile.IsMagnitudeValid(magnitude))
+        {
+            throw new InvalidOperationException(
+                "Accepted spiritual wound component violates its registered projection contract.");
+        }
+
+        var mechanic = profile.ProjectionKind switch
+        {
+            SpiritualWoundProjectionKind.RollHindrance =>
+                "бросок совершается с помехой.",
+            SpiritualWoundProjectionKind.ActionCostBurden =>
+                $"стоимость духовного действия увеличена на {ReadMagnitudeInteger(profile, magnitude)}.",
+            SpiritualWoundProjectionKind.PositionBurden =>
+                $"позиция ухудшена на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.ControlBurden =>
+                $"контроль ухудшен на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.StrainBurden =>
+                $"напряжение стороны увеличено на {DescribeSteps(ReadMagnitudeInteger(profile, magnitude))}.",
+            SpiritualWoundProjectionKind.TempoBurden =>
+                "получение одного преимущества темпа запрещено.",
+            SpiritualWoundProjectionKind.CounterBurden =>
+                "результат контрдействия снижен на 1 ступень.",
+            SpiritualWoundProjectionKind.ArtRestriction =>
+                string.Equals(magnitude.GetString(), "restrict", StringComparison.Ordinal)
+                    ? "духовное искусство ограничено."
+                    : "духовное искусство запрещено.",
+            _ => throw new InvalidOperationException(
+                "Accepted spiritual wound component has no player projection.")
+        };
+
+        return new EffectPlayerFact(
+            profile.Profile,
+            profile.PlayerLabel,
+            $"{operation.PlayerLabel}: {mechanic}");
+    }
+
+    private static int ReadMagnitudeInteger(
+        SpiritualWoundProfileDescriptor profile,
+        JsonElement magnitude)
+    {
+        if (profile.TryReadMagnitudeInteger(magnitude, out var value))
+            return value;
+        throw new InvalidOperationException(
+            "Accepted spiritual wound component has no exact integer magnitude.");
+    }
+
+    private static string DescribeSteps(int value) =>
+        value == 1 ? "1 ступень" : $"{value} ступени";
 
     private static string DescribeActionControl(JsonElement payload)
     {

@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using BookOfEternityClient.Configuration;
 using BookOfEternityClient.Core;
@@ -10,6 +11,100 @@ namespace BookOfEternityClient.Tests;
 
 public sealed class ValidationRepairRequestTests
 {
+    [Fact]
+    public void WoundRepairIssue_UsesTheClosedSafePacketWithoutHarnessExpansion()
+    {
+        var issue = new ValidationIssue(
+            "woundDecisions[0].proposal.severity",
+            IssueSeverity.Error,
+            "Severity exceeds the sealed opportunity.",
+            code: "wound_severity_above_opportunity",
+            section: "wound_materialization",
+            expected: "validator-internal range",
+            actual: "III");
+        issue.WoundRepairContext = new WoundRepairContext(
+            "session_wound_harness",
+            "request_wound_harness",
+            "snapshot_wound_harness",
+            "repair_wound",
+            "candidate_wound_harness_001",
+            Fingerprint('a'),
+            "opportunity_wound_harness_001",
+            new JsonObject
+            {
+                ["event"] = "осколок после обвала",
+                ["target"] = "игрок",
+                ["realm"] = "Смертный мир",
+                ["ownerId"] = "owner_private_secret"
+            },
+            new[] { "none", "materialize" },
+            "I",
+            "II",
+            new JsonObject
+            {
+                ["opportunityRef"] = "opportunity_wound_harness_001",
+                ["decision"] = "materialize",
+                ["woundRef"] = "local_wound_harness_001",
+                ["proposal"] = new JsonObject
+                {
+                    ["classification"] = new JsonObject(),
+                    ["display"] = new JsonObject
+                    {
+                        ["name"] = "Рваная рана",
+                        ["acquisitionNarration"] = "Осколок рассекает предплечье."
+                    },
+                    ["severity"] = "III",
+                    ["complications"] = new JsonArray(),
+                    ["consequenceDefinitions"] = new JsonArray(),
+                    ["treatment"] = new JsonObject(),
+                    ["recovery"] = new JsonObject(),
+                    ["gmPrivateNotes"] = "hidden repair secret"
+                }
+            });
+        var builder = typeof(GameEngine).GetMethod(
+            "BuildValidationRepairHarnessPackets",
+            BindingFlags.NonPublic | BindingFlags.Static);
+        Assert.NotNull(builder);
+
+        var packets = builder!.Invoke(
+            null,
+            new object?[] { new[] { issue }, null, null });
+        using var document = JsonDocument.Parse(JsonSerializer.Serialize(
+            packets,
+            SharedJsonOptions.PrettyCamelCaseUnsafeRelaxed));
+        var packet = Assert.Single(document.RootElement.EnumerateArray());
+
+        Assert.Equal(
+            new[]
+            {
+                "kind", "candidateKind", "sessionId", "requestId", "snapshotToken", "candidateRef",
+                "semanticFingerprint", "issues", "safeContext", "preservedProposal",
+                "requiredResponseShape"
+            },
+            packet.EnumerateObject().Select(static property => property.Name));
+        Assert.Equal(
+            "wound_materialization_repair",
+            packet.GetProperty("kind").GetString());
+        Assert.Equal(
+            new[] { "event", "target", "realm" },
+            packet.GetProperty("safeContext")
+                .EnumerateObject()
+                .Select(static property => property.Name));
+        Assert.Equal(
+            new[] { "woundDecisions", "response" },
+            packet.GetProperty("requiredResponseShape")
+                .EnumerateObject()
+                .Select(static property => property.Name));
+        Assert.DoesNotContain(
+            "owner_private_secret",
+            packet.GetRawText(),
+            StringComparison.Ordinal);
+        Assert.DoesNotContain(
+            "hidden repair secret",
+            packet.GetRawText(),
+            StringComparison.Ordinal);
+    }
+
     [Fact]
     public void MortalLocationPacketSerialization_PreservesExactContextAndExcludesClientOwnedTargets()
     {
@@ -329,4 +424,7 @@ public sealed class ValidationRepairRequestTests
         issue.MortalLocationRepairContext = context;
         return issue;
     }
+
+    private static string Fingerprint(char value) =>
+        "sha256:" + new string(value, 64);
 }

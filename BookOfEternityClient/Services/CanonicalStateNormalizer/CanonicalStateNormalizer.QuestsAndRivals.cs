@@ -11,35 +11,15 @@ public partial class CanonicalStateNormalizer
     {
         const string path = "game_state/quests/quest_history.json";
         var currentNode = await ReadNodeAsync(path);
-        if (currentNode == null) return;
+        if (currentNode is not JsonObject currentRoot) return;
 
         var previous = await ReadBackupObjectAsync(path, backups);
-        var result = CloneObject(previous ?? new JsonObject());
-        var questHistory = new List<JsonObject>();
-        foreach (var quest in CollectQuestHistoryEntries(previous).OfType<JsonObject>())
-            UpsertByIdentity(questHistory, quest, "questId", "questName", "title", "name");
-        foreach (var quest in CollectQuestHistoryEntries(currentNode).OfType<JsonObject>())
-            UpsertByIdentity(questHistory, quest, "questId", "questName", "title", "name");
+        if (MortalItemPublicationTailTransforms.QuestHistory(currentRoot, previous) is not
+            JsonObject result)
+        {
+            return;
+        }
 
-        var questRewards = new List<JsonObject>();
-        CollectNamedObjectEntries(previous, "questRewards", questRewards);
-        CollectNamedObjectEntries(currentNode, "questRewards", questRewards);
-
-        var questChains = new List<JsonObject>();
-        CollectNamedObjectEntries(previous, "questChains", questChains);
-        CollectNamedObjectEntries(currentNode, "questChains", questChains);
-
-        result["questHistory"] = ToArray(questHistory);
-        if (questRewards.Count > 0)
-            result["questRewards"] = ToArray(questRewards);
-        else
-            result.Remove("questRewards");
-        if (questChains.Count > 0)
-            result["questChains"] = ToArray(questChains);
-        else
-            result.Remove("questChains");
-        result.Remove("questLog");
-        result.Remove("quests");
         await WriteIfChangedAsync(path, currentNode, result);
     }
 

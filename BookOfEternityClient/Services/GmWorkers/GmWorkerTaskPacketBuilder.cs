@@ -6,6 +6,39 @@ namespace BookOfEternityClient.Services.GmWorkers;
 
 public static class GmWorkerTaskPacketBuilder
 {
+    /// <summary>
+    /// Builds a bounded ordinary repair or explicit spiritual continuation task from hash-pinned context.
+    /// </summary>
+    /// <param name="profile">
+    /// Worker profile whose read and proposal permissions constrain the task.
+    /// </param>
+    /// <param name="taskId">
+    /// Unique task identity for later durable reservation.
+    /// </param>
+    /// <param name="sourceTurn">
+    /// Original session, request and turn identity.
+    /// </param>
+    /// <param name="validationIssues">
+    /// Current diagnostics; may be empty only for an explicit continuation.
+    /// </param>
+    /// <param name="contextFileHashes">
+    /// Captured canonical path hashes, including required read-only authorities.
+    /// </param>
+    /// <param name="createdAtUtc">
+    /// UTC task creation timestamp.
+    /// </param>
+    /// <param name="sessionGeneration">
+    /// Current session generation used to reject replaced sessions.
+    /// </param>
+    /// <param name="afterlifeContract">
+    /// Typed realm contract, or <see langword="null"/> for ordinary tasks without afterlife context.
+    /// </param>
+    /// <param name="spiritualWoundContinuation">
+    /// Closed public request, or <see langword="null"/> for ordinary repair; callers authenticate non-<see langword="null"/> requests against private C2.
+    /// </param>
+    /// <returns>
+    /// Validated task packet; invalid scopes or missing required permissions throw.
+    /// </returns>
     public static WorkerTaskPacket BuildValidationRepairTask(
         WorkerBridgeProfile profile,
         string taskId,
@@ -14,14 +47,15 @@ public static class GmWorkerTaskPacketBuilder
         IReadOnlyDictionary<string, string> contextFileHashes,
         string createdAtUtc,
         string sessionGeneration,
-        WorkerAfterlifeTaskContract? afterlifeContract = null)
+        WorkerAfterlifeTaskContract? afterlifeContract = null,
+        SpiritualWoundContinuationRequest? spiritualWoundContinuation = null)
     {
         var profileValidation = GmWorkerContractValidator.ValidateProfile(profile);
         if (!profileValidation.IsValid)
             throw new ArgumentException(string.Join(Environment.NewLine, profileValidation.Errors), nameof(profile));
         if (!profile.Permissions.TaskTypes.Contains(WorkerTaskType.ValidationRepair))
             throw new ArgumentException("Worker profile cannot handle validation-repair tasks.", nameof(profile));
-        if (validationIssues.Count == 0)
+        if (validationIssues.Count == 0 && spiritualWoundContinuation is null)
             throw new ArgumentException("At least one validation issue is required.", nameof(validationIssues));
         var duplicateContextHashPath = contextFileHashes.Keys
             .GroupBy(path => path, GmWorkerContractValidator.CanonicalPathComparer)
@@ -60,8 +94,13 @@ public static class GmWorkerTaskPacketBuilder
                 nameof(contextFileHashes));
         }
 
-        var allowedPaths = validationIssues
-            .Select(ResolveValidationTargetPath)
+        var requestedPaths = spiritualWoundContinuation is null
+            ? validationIssues.Select(ResolveValidationTargetPath).ToArray()
+            : ResolveSpiritualContinuationPaths(spiritualWoundContinuation);
+        if (spiritualWoundContinuation is not null && requestedPaths.Any(path =>
+                !profile.Permissions.ProposalWritePaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path))))
+            throw new ArgumentException("Worker profile does not permit every required continuation draft path.", nameof(profile));
+        var allowedPaths = requestedPaths
             .Where(GmWorkerContractValidator.IsSafeRelativePath)
             .Where(path => profile.Permissions.ProposalWritePaths.Any(pattern => GmWorkerContractValidator.PathMatches(pattern, path)))
             .Distinct(GmWorkerContractValidator.CanonicalPathComparer)
@@ -124,6 +163,16 @@ public static class GmWorkerTaskPacketBuilder
                 "Do not propose changes to game_state/meta/soul_state.json; it is read-only realm authority.");
         }
 
+        if (spiritualWoundContinuation is not null)
+        {
+            acceptanceCriteria.Clear();
+            acceptanceCriteria.Add("Return a worker-proposal-v1 with the exact correlated spiritualWoundContinuation response.");
+            acceptanceCriteria.Add("For decision phase return exactly the current offer decision, including explicit none; changedFiles may be empty.");
+            acceptanceCriteria.Add("For dependent_draft return woundDecisions: [] and correct only dependentDraftFields; preserve every other conflict field.");
+            acceptanceCriteria.Add("Narrative changes may update response and timestamp only; preserve every sibling field. Keep sourceTurn metadata unchanged.");
+            forbiddenActions.Add("Do not read or write private checkpoints, pending submissions, wound commands, resources, receipts or snapshots. Only GameEngine consumes the decision.");
+        }
+
         var task = new WorkerTaskPacket
         {
             TaskId = taskId,
@@ -146,12 +195,15 @@ public static class GmWorkerTaskPacketBuilder
             }).ToArray(),
             ContextFiles = contextFiles,
             AfterlifeContract = afterlifeContract,
+            SpiritualWoundContinuation = spiritualWoundContinuation,
             AllowedProposalPaths = allowedPaths,
             AcceptanceCriteria = acceptanceCriteria,
             ForbiddenActions = forbiddenActions,
             Instructions =
                 "Return a worker-proposal-v1 JSON proposal. Include changedFiles only for allowedProposalPaths. " +
-                "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. " +
+                (spiritualWoundContinuation is null
+                    ? "Use validationIssues actor/section/expected/actual coordinates as the exact repair scope. "
+                    : "Use spiritualWoundContinuation phase, offer and dependentDraftFields as the exact scope; do not invent validation errors or advance the conflict. ") +
                 "Do not edit canonical game_session files directly." +
                 BuildAfterlifeInstructions(afterlifeContract, validationRepair: true)
         };
@@ -161,6 +213,27 @@ public static class GmWorkerTaskPacketBuilder
             throw new InvalidOperationException(string.Join(Environment.NewLine, taskValidation.Errors));
 
         return task;
+    }
+
+    /// <summary>
+    /// Resolves closed continuation draft paths without interpreting diagnostic paths as authority.
+    /// </summary>
+    /// <param name="request">
+    /// Public continuation; the caller must separately authenticate it against current private C2.
+    /// </param>
+    /// <returns>
+    /// Exact narrative and, when requested by dependent fields, conflict paths.
+    /// </returns>
+    internal static string[] ResolveSpiritualContinuationPaths(SpiritualWoundContinuationRequest request)
+    {
+        var errors = SpiritualWoundContinuationProtocol.ValidateRequest(request);
+        if (errors.Count != 0)
+            throw new ArgumentException(string.Join(Environment.NewLine, errors), nameof(request));
+        var paths = request.DependentDraftFields.Select(field => field.Path)
+            .Append(request.SceneTextSource.Path).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal).ToArray();
+        if (paths.Any(path => path != "output/narrative_response.json" && path != AfterlifeSpiritualConflictState.StatePath))
+            throw new ArgumentException("Continuation contains an unsupported draft path.", nameof(request));
+        return paths;
     }
 
     private static bool TryGetPathHash(

@@ -242,6 +242,29 @@ publishes the whole resource/effect result atomically. Reusing an exact terminal
 receipt with the unchanged command envelope is a no-op; changing the original
 resource/effect commands makes it a conflicting replay.
 
+When the current safe packet advertises an inclusive minimum of `0`, an
+explicit terminal zero keeps the choice mechanical without inventing a state
+change:
+
+```json
+{
+  "effectResolutionReceipts": [
+    {
+      "requestId": "resource_resolution_example_zero_002",
+      "resultKind": "resource_delta",
+      "amount": 0,
+      "reason": "Яд отступил на миг, не изменив запас здоровья."
+    }
+  ]
+}
+```
+
+The client consumes the accepted receipt and use without emitting a resource
+transition, resource event, or dependent effect activation. This remains
+distinct from `narrated_no_state_change`, which omits `amount`. A positive
+request that reaches a resource bound may still record an ordinary transition
+with zero applied amount; the GM never authors either transition form.
+
 ### mortal_resource_bounded_repair_v1
 
 If one exact ordinary resource command omitted only its required narrative

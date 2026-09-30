@@ -2,16 +2,282 @@
   "version": 1,
   "effectMaterializationCoverage": [
     {
+      "contractId": "spiritual_wound_binding_result_closure_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "existing spiritual conflict last exchange and effective raw activeConflict.controlState carrier",
+      "responseSurface": "existing dependent_draft envelope with separate A and B responses",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Saved position wound removes a last binding prerequisite while dice remain in player_success; GM corrects exchange result and final control in separate responses.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualBindingResultClosureWorkedExample_ValidatesArithmeticControlAndSeparateResponses checks the authored fragments with retained dice validation and the strict continuation parser.",
+      "coverageLimit": "Partial fragments do not prove original owner authority, issued permissions, cold journal replay, raw cumulative admission or final publication; genuine GameEngine integration owns those boundaries.",
+      "requiredText": ["spiritual_wound_binding_result_closure_v1", "saved wound choice", "13/10", "15/10", "margin5", "margin3", "player_success", "no_effect", "before.controlState", "dependentDraftFields", "continuationId", "woundDecisions", "Ready", "detached final-control echo", "zero original exchanges remaining"]
+    },
+    {
+      "contractId": "spiritual_wound_dependent_frontiers_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "existing spiritual conflict exchange diceAudit and client continuation transport",
+      "responseSurface": "existing dependent_draft envelope, separate issued A and B responses",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Two sequential exact correction requests retain a saved wound choice across a GM-authored critical narration boundary.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualDependentFrontiersWorkedExample_PreservesDiceAndSeparateResponses validates four arithmetic fragments with the production retained validator and checks separate response correlation with the production protocol.",
+      "coverageLimit": "Does not establish issuance authority, staged transition, rollback, cold replay or final publication; genuine owner and GameEngine file/worker tests are required separately.",
+      "requiredText": ["spiritual_wound_dependent_frontiers_v1", "saved wound choice", "Ready completes only the issued frontier", "Future B corrections are forbidden", "continuationId", "woundDecisions: []", "public request files are not authority", "GM must not"]
+    },
+    {
+      "contractId": "spiritual_wound_position_dependency_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "existing spiritual conflict later exchange diceAudit",
+      "responseSurface": "existing dependent_draft fields and empty woundDecisions response",
+      "realms": [
+        "Chaos Sea",
+        "Shining Abode"
+      ],
+      "description": "Bounded position arithmetic correction preserving an independent modifier, signed dice, canonical snapshots and saved wound choice.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualWoundPositionDependencyWorkedExample_PreservesIndependentRowsAndSavedChoice checks partial before/after arithmetic and invokes retained production dice validation and the continuation response parser.",
+      "coverageLimit": "Does not prove live source authority, exact owner-derived permissions, cold replay, changed-result consequences or final publication; genuine owner/lifecycle controls are required separately.",
+      "requiredText": [
+        "spiritual_wound_position_dependency_v1",
+        "dependentDraftFields",
+        "saved wound choice",
+        "closed prefix",
+        "relative order",
+        "complete prescribed arithmetic group",
+        "position correction alone does not authorize",
+        "woundDecisions: []",
+        "Cold recovery reopens the saved selection",
+        "GM must not write"
+      ]
+    },
+    {
+      "contractId": "spiritual_wound_position_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "afterlife_spiritual_conflict_state.json canonical before/after and exchange diceAudit",
+      "responseSurface": "existing exchange position snapshots and conflict_position modifier",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Effective position with no canonical erosion and combined opposing wound burdens, using existing GM fields.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualWoundPositionWorkedExamples_PreserveCanonicalPositionAndDice checks two partial authoring fragments and invokes the retained production dice validator; signed current wound ownership remains integration-test-owned.",
+      "coverageLimit": "Checks unchanged canonical positions, exact modifier shape and declared dice arithmetic. Does not prove source authority, wound insertion, dependent repair, cold recovery or publication; those require genuine owner/lifecycle tests.",
+      "requiredText": ["spiritual_wound_position_v1", "combine both sides before clamping", "Equal burdens cancel", "no repeated erosion", "binding/force-binding", "actual canonical position", "later matching exchanges", "closed prefix", "original dice", "saved wound choice", "GM must not write", "no new exchange authority"]
+    },
+    {
+      "contractId": "spiritual_wound_source_only_publication_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "existing spiritual conflict exchange and client-owned instance/closure receipt",
+      "responseSurface": "existing afterlifeSpiritualConflictUpdate exchange; no wound decision",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Training exchange without invented wound choice, retaining ordinary costs and one client-owned publication.",
+      "validationKind": "production-validator",
+      "validationRoute": "SpiritualSourceOnlyWorkedExample_PreservesTrainingAndOrdinaryExchange -> GameResponse JSON deserialization -> AfterlifeSpiritualConflictState.ApplyUpdate -> SpiritualConflictDangerPolicy.SeverityCap",
+      "coverageLimit": "Checks the response shape and ordinary exchange projection against a minimal declared training baseline, zero danger cap and cost/dice operands. This is not full signed admission. OriginalSpiritualC4SourceOnly integration covers warm completion, exact private roots, common publication and rollback. The handoff is used by live B3 routing. Separate GameEngine interruption probes cover signed-original-or-complete-accepted recovery; this fragment does not prove cold recovery or acceptance from a receipt alone.",
+      "requiredText": ["spiritual_wound_source_only_publication_v1", "no_offer", "No fabricated none", "instance-only receipt", "Spend before Retire", "GM must not write", "single common publisher", "Legal empty private roots", "warm handoff", "live B3 routing", "restores the signed original turn", "retains the complete accepted turn", "Receipt-only state does not prove whole-turn acceptance"]
+    },
+    {
+      "contractId": "spiritual_wound_pending_submission_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "client-owned spiritual checkpoint pendingSubmission",
+      "responseSurface": "spiritualWoundContinuation with empty woundDecisions for dependent_draft",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Retained private selection across dependent correction or interrupted final advancement.",
+      "validationKind": "production-validator",
+      "validationRoute": "SpiritualPendingSubmissionWorkedExample_DoesNotReplaceSavedDecision -> SpiritualWoundContinuationProtocol.ReadResponse/ValidateResponse",
+      "coverageLimit": "Checks the authorable empty response against dependent phase only. Signed OriginalSpiritualC2PendingSubmission integration owns persistence, cold replay and faults; live GameEngine dispatch uses C4-B. Separate GameEngine interruption probes cover signed-original-or-complete-accepted recovery; this fragment does not prove whole-turn recovery.",
+      "requiredText": ["spiritual_wound_pending_submission_v1", "pendingSubmission", "must not reoffer", "GM must not write", "guarantee_satisfied", "woundDecisions", "restores the signed original turn", "retains the complete accepted turn", "Receipt-only state does not prove whole-turn acceptance", "must not resend a saved choice"]
+    },
+    {
+      "contractId": "spiritual_wound_continuation_envelope_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "existing repair and worker transport only; private state is not GM-authored",
+      "responseSurface": "optional spiritualWoundContinuation response envelope",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Closed request and explicit current none response with structural correlation, plus file-helper none/materialize/dependent commands.",
+      "validationKind": "production-validator",
+      "validationRoute": "SpiritualContinuationEnvelopeWorkedExample_UsesStrictProductionProtocol -> SpiritualWoundContinuationProtocol.ReadRequest/ReadResponse/ValidateResponse",
+      "coverageLimit": "Parses and correlates the two wire fragments only. Helper_SpiritualContinuation process tests separately cover explicit file responses and request/Ready publication races; the PowerShell commands require a current client request and, for materialize, a complete authored proposal. These wire fragments do not prove GameEngine consumption, persistence or cold finalization; separate C4-B integration covers actual dispatch and continuation.",
+      "requiredText": ["spiritual_wound_continuation_envelope_v1", "spiritualWoundContinuation", "continuationId", "woundDecisions", "dependent_draft", "Missing response never means none", "GM must not write", "GameEngine authenticates and resumes C2", "Complete-BoeValidationRepair -SpiritualWoundContinuationJson", "decision = 'none'", "decision = 'materialize'", "woundDecisions = @()", "request and Ready", "for the same request"]
+    },
+    {
+      "contractId": "spiritual_wound_common_publication_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "client-owned completed C3 receipt, common canonical images and consumed private roots",
+      "responseSurface": "existing private optional wound decision: opportunityRef + decision none",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Internal common transaction handoff, exact committed inputs and signed-original rollback; no new GM transport.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualCommonPublicationWorkedExample_UsesOnlyExistingDecisionFields checks the two-field decline and prohibits fabricated publication fields.",
+      "coverageLimit": "Checks the authorable decline fragment only. Signed OriginalSpiritualC4 integration tests own publication, drift, effect/wound read-back and rollback; live GM dispatch uses C4-B and returns accepted output. Separate GameEngine interruption probes cover signed-original-or-complete-accepted recovery across publication, story and cleanup; this fragment is not recovery evidence or a physical exactly-once notification guarantee.",
+      "requiredText": ["spiritual_wound_common_publication_v1", "opportunityRef", "one-shot", "without replanning", "zero writes", "signed absence", "both private roots", "wound_commands", "GM must not write", "live GM dispatch uses C4-B", "two player messages", "guarantee_satisfied", "binds the final narrative", "restores the signed original turn", "retains the complete accepted turn", "Receipt-only state does not prove whole-turn acceptance", "must not resend a saved choice"]
+    },
+    {
+      "contractId": "spiritual_wound_terminal_closure_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "afterlife_spiritual_conflict_state.json terminalExchange + client-owned spiritual receipt closures",
+      "responseSurface": "existing afterlifeSpiritualConflictUpdate resolve resolution",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "One terminal exchange immediately after the signed baseline, retaining exact dice/cost witnesses and client-owned closure/retirement ordering.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "SpiritualTerminalClosureWorkedExample_PreservesExchangeWitness checks the complete response fragment's matching dice, source indices and payment operands; it does not supply a signed world baseline.",
+      "coverageLimit": "Checks authorable fragment consistency only. Runtime terminal integration separately owns signed intake, actual payment/effects/retirement, closure authority, cold replay and common assembly. Live publication is outside this example.",
+      "requiredText": ["spiritual_wound_terminal_closure_v1", "terminalExchange", "Spend before Retire", "GM must not write", "immutable closure", "accepted prior closure", "distinct instance", "reward anti-farm", "recentConflicts", "Durable instance, closure, source and decision rows remain", "publication remains C4"]
+    },
+    {
+      "contractId": "spiritual_wound_special_action_costs_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json exchange actionCostAudit",
+      "responseSurface": "afterlifeSpiritualConflictUpdate exchange actionCostAudit.player/opposition",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Authorable recovery payment and conditional force-incarnation wound-cost audit fragments for both sides, with reaction-relative recovery, frozen continuation boundaries and dependent audit removal after owner-proven finite-use expiry.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "The four exchange audit fragments isolate authorable cost operands. ExampleDocumentationValidationTests.SpiritualWoundSpecialCostWorkedExamples_KeepClosedAuditsAndActionOnlyArithmetic checks their closed shape and arithmetic without asserting full runtime acceptance.",
+      "coverageLimit": "Parses four GM audit fragments, checks their exact side/field sets and approved operands, and pins action-only recovery arithmetic. Does not run the runtime planner, reconstruct wound ownership, prove live dispatch or publish a turn; runtime special-cost integration tests cover owner authority and ordered reactions.",
+      "requiredText": ["spiritual_wound_special_action_costs_v1", "recover_spiritual_power", "force_incarnation", "Spend before Gain", "original capped", "failed attempt still pays", "insufficient funds", "exactly seven fields", "No burden means no force audit", "completed prefix", "GM must not write", "Worked finite-use expiry", "proves zero burden", "remove the empty audit root", "fake zero"]
+    },
+    {
+      "contractId": "spiritual_wound_private_roots_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/control/pending_spiritual_wound_decisions.json + game_state/wounds/spiritual_wound_opportunity_receipts.json",
+      "responseSurface": "none: private client-owned roots, not GM response fields",
+      "realms": [
+        "Chaos Sea",
+        "Shining Abode"
+      ],
+      "description": "Empty private pending and receipt roots, signed A receipt presence distinct from physical draft B, explicit GM none continuation, and the owner-proven C3 materialize receipt/common-plan contract linked to the full spiritual wound example.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualDurableStateExample_ParsesEmptyPrivateRoots -> SpiritualWoundDecisionPendingState.Parse + SpiritualWoundOpportunityReceiptState.Parse; exact GM decline field-set guard",
+      "coverageLimit": "Executes the documented empty pending and receipt roots through strict production parsers and checks the GM decline fragment's closed field set. The complete materialize proposal is checked under wound_spiritual_source_worked_v1; integration tests exercise signed C3 reduction. The example does not prove live GameEngine/daemon dispatch or accepted publication.",
+      "requiredText": [
+        "spiritual_wound_private_roots_v1",
+        "game_state/control/spiritual_wound_capture_checkpoint.json",
+        "game_state/control/pending_spiritual_wound_decisions.json",
+        "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+        "originalPathPresenceV1",
+        "19 observed paths",
+        "signed absence",
+        "16/18",
+        "GM must not write",
+        "not player pending requests",
+        "hashes do not grant authority",
+        "does not enable live continuation or publication",
+        "spiritual_wound_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "\"decision\":\"none\"",
+        "wound_spiritual_source_worked_v1",
+        "materialize",
+        "woundId and transitionId",
+        "not an implicit `none`",
+        "spiritual_wound_conflict_side_receipt_missing",
+        "Live GameEngine/daemon"
+      ]
+    },
+    {
+      "contractId": "wound_mortal_selected_policy_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "Mortal wound recovery.deteriorationPolicy and treatment.routes[]",
+      "responseSurface": "canonical policyRef selected by the accepted treatment command",
+      "realms": [
+        "Mortal World"
+      ],
+      "description": "Complete canonical worsening policy and procedure route authored for an untreated rank-III Mortal physical wound.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundSelectedPolicyWorkedExample_ParsesExactPolicyAndProcedure -> MortalWoundDeteriorationPolicyContract.Parse -> MortalWoundTreatmentContract.ParseRouteShape",
+      "coverageLimit": "Policy/route parsing and exact policyRef linkage only; real selected atomic publication, rollback, resources and replay are proved by Integration MortalWoundTreatmentResolverTests.DeteriorationPublication_ tests. Shape parsing does not publish state.",
+      "requiredText": [
+        "mortal_wound_treatment_selected_policy_v1",
+        "untreated_deep_wound",
+        "clean_deep_wound_with_policy_risk",
+        "Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.",
+        "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.",
+        "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.",
+        "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.",
+        "Direct treatment death, heal and legacy publication remain unfinished.",
+        "client-owned"
+      ]
+    },
+    {
+      "contractId": "wound_mortal_scalar_course_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "ordinary complete Mortal wound proposal treatment member",
+      "responseSurface": "complete wound treatment.routes[]",
+      "realms": ["Mortal World"],
+      "description": "Complete three-milestone scalar course: empty active start, one severity reduction, final stabilization, exact current dose and client-owned pointer.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundScalarCourseWorkedExample_ParsesCompleteRoute -> MortalWoundTreatmentContract.ParseRouteShape; PromptDocumentationCoverageTests.WoundTreatmentScalarCourseDocumentation_UsesCompleteMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentWorkingWoundSimulator.Simulate; PromptDocumentationCoverageTests.MortalRecoveryCurrentHistoryDocumentation_DescribesClientOwnedAdmission",
+      "coverageLimit": "Complete authored route and whole-wound applicability only; actual atomic publication, dose settlement, pointer history, restart and replay are proved by Integration CourseScalarPublication_ lifecycle tests, not by this shape guard. Recovery admission and the client-owned publication walkthrough are text-guarded here; their actual mechanics, closed receipts, restart and rejection are proved by MortalWoundRecoveryTests and MortalWoundRecoveryPersistenceTests.",
+      "requiredText": ["mortal_wound_treatment_scalar_course_v1", "field_clinic_recovery_course", "only the current milestone's dose", "other treatment does not cancel a course", "client-owned", "mortal_wound_recovery_history_guard_v1", "mortal_wound_recovery_publication_v1"]
+    },
+    {
+      "contractId": "wound_mortal_alternative_repair_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "local rejected alternative author and public repair transport only",
+      "responseSurface": "woundTreatmentAuthorings[] and candidateKind-specific repair recipe",
+      "realms": ["Mortal World"],
+      "description": "A complete hidden procedure route with only invalid mode is projected by the production builder and corrected without changing any valid route/path sibling.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.AlternativeTreatmentRepairWorkedExamples_ExecuteRealProjectionAndStrictTransport -> WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring -> WoundRepairPacketBuilder.Build -> WoundRepairPacketBuilder.IsValidPersistedRepairWave -> WoundRepairPacket.MatchesCorrectedAlternativeTreatmentAuthoring",
+      "coverageLimit": "Complete local parser, builder, strict packet/receipt transport and correction relationship only; no live alternative repair adapter, private alternative repair authority, accepted command, canonical/evidence seal or publication is supplied by public bytes.",
+      "requiredText": ["wound_mortal_alternative_repair_v1", "wound_mortal_alternative_repair_rejected_author_v1", "wound_mortal_alternative_repair_safe_packet_v1", "wound_mortal_alternative_repair_corrected_author_v1", "candidateKind", "NeedsAnotherRepair", "no live alternative repair adapter"]
+    },
+    {
+      "contractId": "wound_treatment_scene_authority_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "current Mortal location customStates[]",
+      "responseSurface": "worldMapUpdates.locationUpdates[] | currentLocationData | worldMapUpdates.newLocations[]",
+      "realms": ["Mortal World"],
+      "description": "The three exact closed treatment scene kinds are shown through existing-location replacement and new selected/remote creation, with unrelated sibling preservation and link rejection; the same example also publishes one production-parsed rank-III Mortal procedure route whose ordered success stabilizes and reduces severity by one without weakening its retained graph, while partial success stabilizes, adds two recovery points and remains nonterminal.",
+      "validationKind": "production-validator",
+      "validationRoute": "PromptDocumentationCoverageTests.WoundTreatmentSceneAuthorityDocumentation_CoversClosedKindsAndAuthoringRoutes -> MortalLocationCustomStateContract.ValidateLocation | ValidateLink; PromptDocumentationCoverageTests.WoundTreatmentReduceSeverityDocumentation_UsesParsedOrderedMortalRoute -> WoundMaterializationContract.Parse -> MortalWoundTreatmentContract.ParseProjection -> MortalWoundTreatmentSeverityReductionPlanner.Project | MortalWoundTreatmentWorkingWoundSimulator.Simulate | MortalWoundTreatmentWorkingGraphProjection.TryAppendComplication -> ConvertTreatmentComplicationGraph -> ValidateGraph",
+      "coverageLimit": "Closed treatment rows, exact parsed success/partial projections and cumulative graph admission are pure controls; MortalWoundTreatmentResolverTests.ComplicationAdditionPublication_ exercises selected direct-add batch publication, resource/history atomicity and cold replay in Integration. Selected non-death policy publication is supported by MortalWoundTreatmentResolverTests.DeteriorationPublication_ Integration controls; death, heal and legacy publication remain unfinished.",
+      "requiredText": ["wound_treatment_scene_authority_v1", "wound_treatment_existing_location_update_v1", "wound_treatment_new_selected_location_v1", "wound_treatment_new_remote_location_v1", "wound_treatment_link_rejection_v1", "mortal_wound_treatment_reduce_severity_v1", "mortal_wound_treatment_facility", "mortal_wound_treatment_environment", "mortal_wound_treatment_consent", "no universal catalog", "Only a newly successful category completes the route", "never prunes or weakens mechanics", "checked signed-64-bit arithmetic", "Reaching the threshold does not itself trigger a recovery tick", "The GM authors points, never canonical progress or recovery anchors", "Partial success does not complete the route", "The client validates the complete cumulative graph after every authored operation, including unselected procedure bands, before claiming a die or resources.", "Local complication and definition references are not permanent runtime identities.", "Applicability preview does not authorize publication of an unfinished outcome.", "Selected direct add_complication outcomes publish through one authenticated treatment graph batch.", "Same-rank retained wound roots keep their exact identities, carrier payloads and index history.", "An effectless addition still requires a sealed 0/0 batch and an empty application result map.", "Selected non-death apply_deterioration outcomes publish through the same authenticated treatment graph batch.", "The client reobtains the original accepted wound policy; the GM supplies policyRef, never private preparation or permanent identities.", "Only a change between original and final severity rematerializes retained roots; an unchanged final rank also preserves the original slot budget.", "Policy root and child-only selector diagnostics name recovery.deteriorationPolicy.result.complicationDraft at the canonical wound source.", "Direct treatment death, heal and legacy publication remain unfinished."]
+    },
+    {
+      "contractId": "wound_mortal_roll_scope_all_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
+      "responseSurface": "effectSkillScopeCatalog request fragment plus complete woundDecisions[] response",
+      "realms": ["Mortal World"],
+      "description": "A setting-authored rank-II physical wound declares one complete broad skill-check hindrance component and one consequence slot, with exact acquisition narration, a complete stabilization procedure, and no permanent wound/effect IDs.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill",
+      "coverageLimit": "Parses the client catalog and complete GM response, composes the wound through the production response contract, and checks broad scope and one-component/one-slot accounting against independently supplied canonical skill roots; file-backed publication, replay, and recovery remain lifecycle-test-owned.",
+      "requiredText": ["wound_mortal_roll_scope_all_v1", "effectSkillScopeCatalog", "scope.kind=all", "bell-contusion-hindrance", "acquisitionNarration", "one whole", "consequence slot"]
+    },
+    {
+      "contractId": "wound_mortal_alternative_response_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "future client-bound Mortal alternative-treatment authoring request",
+      "responseSurface": "woundTreatmentAuthorings[]",
+      "realms": ["Mortal World"],
+      "description": "Complete visible-author, hidden-author, and decline responses demonstrate the closed four-field local GM draft wire, including an offered opaque complicationRef and the existing diagnosis-fact grammar.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.AlternativeTreatmentResponseWorkedExamples_ParseRoundTripAndRejectCopiedAuthority; ExampleDocumentationValidationTests.AlternativeTreatmentResponseWorkedExamples_RejectCanonicalRemovalSelector -> WoundResponseInputComposer.ParseAlternativeTreatmentAuthoring | WriteAlternativeTreatmentAuthoringCanonical",
+      "coverageLimit": "Deserializes the documented GameResponse fragments, validates and canonically roundtrips each local immutable draft, rejects copied authority and the canonical complicationId dialect; it does not prove a fresh request, accepted adapter, publication, execution, or live distribution.",
+      "requiredText": ["wound_mortal_alternative_response_v1", "wound_mortal_alternative_response_visible_author_v1", "wound_mortal_alternative_response_hidden_author_v1", "wound_mortal_alternative_response_decline_v1", "woundTreatmentAuthorings", "complicationRef", "live distribution"]
+    },
+    {
+      "contractId": "wound_mortal_roll_scope_skill_v1",
+      "file": "E_CLI_Wound_Materialization.txt",
+      "statePath": "input/turn_request.json + game_state/player/wounds.json + game_state/effects/*",
+      "responseSurface": "effectSkillScopeCatalog request fragment plus complete woundDecisions[] response",
+      "realms": ["Mortal World"],
+      "description": "A rank-II ashglass injury preserves its exact-skill base roll_modifier and adds one complication-owned grip restriction. The complete procedure removes the same-proposal shard complication then stabilizes; both roots exactly fit two slots and all permanent identity stays client-owned.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.MortalWoundRollScopeWorkedExamples_ComposeAndBindExactSkill",
+      "coverageLimit": "Production composition rewrites removal and root ownership to the same canonical complication ID and validates exact skill binding. Detached Prepare/Build/Finalize produces the canonical wound; typed ParseProjection and WorkingWoundSimulator prove the actual documented success removes only the shard root, compacts to one slot and stabilizes while retaining the exact base root. This is not live publication coverage; full accepted publication, dormancy/reactivation and rollback remain lifecycle-test-owned.",
+      "requiredText": ["wound_mortal_roll_scope_skill_v1", "effectSkillScopeCatalog", "scope.kind=skill", "skill_lockpicking", "ashglass-lockpicking-hindrance", "consequence slot", "dormant without healing/removing the wound"]
+    },
+    {
       "contractId": "effect_mortal_profiles_v1",
       "file": "E_CLI_Effect_Materialization.txt",
       "statePath": "game_state/effects/effect_commands.json",
       "responseSurface": "activeEffectDefinitions[] registered component fragments",
       "realms": ["Mortal World", "Chaos Sea", "Shining Abode"],
-      "description": "All nine registered component profiles are shown with their closed profile-owned payloads and no prose mechanics.",
+      "description": "All eleven general component profiles are shown with their closed profile-owned payloads and no prose mechanics; the eight dedicated spiritual-wound profiles have their own exact matrix.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The matrix intentionally isolates profile payloads; ExampleDocumentationValidationTests composes every fragment into a complete test definition and runs the production source-definition contract.",
-      "coverageLimit": "Exact nine-profile catalog and production validation of each composed payload; accepted source existence, planning, and publication remain lifecycle-test-owned.",
-      "requiredText": ["effect_mortal_profiles_v1", "characteristic_modifier", "afterlife_combat_condition"]
+      "coverageLimit": "Exact eleven-profile general catalog and production validation of each composed payload; the separate spiritual-wound matrix owns its eight additional profiles, while accepted source existence, planning, and publication remain lifecycle-test-owned.",
+      "requiredText": ["effect_mortal_profiles_v1", "characteristic_modifier", "afterlife_combat_condition", "periodic_spend", "periodic_gain"]
     },
     {
       "contractId": "effect_mortal_apply_stack_v1",
@@ -24,6 +290,18 @@
       "focusedFragmentReason": "The example combines an owner definition fragment and a later GameResponse fragment rather than fabricating a full accepted session snapshot.",
       "coverageLimit": "Complete source-policy shape, exact apply selector/event shape, and production-contract composition of all five stack-policy records; accepted identity/index publication remains lifecycle-test-owned.",
       "requiredText": ["effect_mortal_apply_stack_v1", "\"policy\": \"refresh\"", "turn_42"]
+    },
+    {
+      "contractId": "effect_mortal_roll_scope_skill_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "input/turn_request.json + canonical learned-skill source + game_state/effects/effect_commands.json",
+      "responseSurface": "effectSkillScopeCatalog plus complete activeEffectDefinitions[] source and effectChanges[] apply response",
+      "realms": ["Mortal World"],
+      "description": "An already learned ordinary skill owns a complete focused buff whose selector comes from the exact target catalog, proving that wound and non-wound effects share one exact-skill profile.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.EffectRollScopeWorkedExample_UsesCommonExactSelector",
+      "coverageLimit": "Validates the parsed complete source definition, exact source/command correspondence, advisory catalog projection, and focused binding against independent canonical skill roots; accepted-turn identity publication and lifecycle remain integration-lifecycle-test-owned.",
+      "requiredText": ["effect_mortal_roll_scope_skill_v1", "effectSkillScopeCatalog", "skill_precision_focus", "skill_lockpicking", "precision-focus-lockpicking", "scope.kind=skill", "Player narration contains"]
     },
     {
       "contractId": "effect_mortal_event_report_v1",
@@ -67,11 +345,11 @@
       "statePath": "game_state/effects/effect_commands.json",
       "responseSurface": "effectChanges[].source exact selector catalog",
       "realms": ["Mortal World", "Chaos Sea", "Shining Abode"],
-      "description": "Representative exact selectors cover every supported source family and reject prose/name inference.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "Selectors are shown as a catalog independent of the different owning entity envelopes.",
-      "coverageLimit": "Exact eleven-kind source catalog and sourceId/definitionKey triples only; each owner materializer validates its complete entity separately.",
-      "requiredText": ["effect_mortal_source_families_v1", "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction", "world_event", "fate_card", "combat_action"]
+      "description": "Representative exact GM selectors cover eleven source families; the worked continuation distinguishes client-owned wound_legacy without granting a new apply selector.",
+      "coverageLimit": "Exact eleven-kind representative GM source catalog and sourceId/definitionKey triples, plus client-only wound_legacy continuation guidance; structural/catalog tests own canonical source/lifetime validation and closed authored links, and T070 owns heal/history/reload publication.",
+      "requiredText": ["effect_mortal_source_families_v1", "skill", "spiritual_art", "item", "wound", "quest", "location", "hazard", "faction", "world_event", "fate_card", "combat_action", "wound_legacy", "Worked continuation after healing", "Do not apply, resend, or reconstruct the legacy effect."]
     },
     {
       "contractId": "effect_mortal_source_worked_v1",
@@ -110,6 +388,30 @@
       "requiredText": ["effect_wound_independence_v1", "wound_consequence", "Effect removal never heals or deletes the wound"]
     },
     {
+      "contractId": "wound_spiritual_profiles_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "spiritual wound consequenceDefinitions[].definition + common effect component registry",
+      "responseSurface": "registeredSpiritualWoundProfileFragments[] closed component matrix",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "All exact eight registered spiritual-wound component profiles are documented with closed operation, axis, and magnitude payloads and without combat-condition substitution.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundProfileExample_UsesExactClosedRuntimeCatalog -> EffectSourceDefinitionContract.ValidateArray",
+      "coverageLimit": "Executes every documented component fragment through the production source-definition contract in both afterlife realms; severity-specific slot admission remains WoundConsequenceEnvelope test-owned.",
+      "requiredText": ["wound_spiritual_profiles_v1", "spiritual_roll_hindrance", "spiritual_action_cost_burden", "spiritual_position_burden", "spiritual_control_burden", "spiritual_strain_burden", "spiritual_tempo_burden", "spiritual_counter_burden", "spiritual_art_restriction", "not aliases for"]
+    },
+    {
+      "contractId": "wound_spiritual_source_worked_v1",
+      "file": "E_CLI_Effect_Materialization.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json + game_state/wounds/* + game_state/effects/*",
+      "responseSurface": "woundDecisions[].proposal.consequenceDefinitions[] complete GM source graph",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "One complete severity-III GM spiritual-wound proposal owns a production-valid three-slot source definition while all permanent wound/effect identity and source-link authority remain client-owned.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundWorkedExample_IsCompleteGmSourceGraphWithoutClientIds -> EffectSourceDefinitionContract.ValidateArray",
+      "coverageLimit": "Validates the complete ID-free GM source definition in both afterlife realms and checks root/slot presence; opportunity binding, severity admission, opaque identity allocation, and atomic publication remain wound lifecycle-test-owned.",
+      "requiredText": ["wound_spiritual_source_worked_v1", "woundDecisions", "consequenceDefinitions", "fractured-resonance-burdens", "links", "remain client-owned"]
+    },
+    {
       "contractId": "effect_bounded_repair_v1",
       "file": "E_CLI_Effect_Materialization.txt",
       "statePath": "game_state/control/validation_repair_request.json",
@@ -134,6 +436,30 @@
       "requiredText": ["afterlife_effect_profile_v1", "activeEffects[]", "remaining lifetime is client-owned", "Shining blessing entitlement is not a generic active effect"]
     },
     {
+      "contractId": "afterlife_ap_effect_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "specialArts[].activeEffectDefinitions[]",
+      "responseSurface": "source-owned periodic_gain definition",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "A complete one-use spiritual-art definition restores one AP after a resource_spent event; generic Spend/Gain retain resource authority.",
+      "validationKind": "focused-fragment",
+      "focusedFragmentReason": "Complete source definition is validated in both realms without duplicating the enclosing actor profile.",
+      "coverageLimit": "Production source-definition validation; signed execution and bounded receipt coverage belongs to OriginalSpiritualPrefix_RealActionPointEffectPrecedesExchange. This is not publication coverage.",
+      "requiredText": ["afterlife_ap_effect_v1", "periodic_gain", "periodic_spend", "spiritual_action_points", "resource_delta", "client-owned"]
+    },
+    {
+      "contractId": "afterlife_roll_scope_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "specialArts[].activeEffectDefinitions[] + game_state/meta/afterlife_entity_profiles.json",
+      "responseSurface": "existing afterlife_effect_profile_v1 spiritual-art source and shared explicit roll-scope guidance",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "The afterlife source uses an explicitly broad typed defense_roll selector; spiritual guard is not a generic roll operation, spiritual arts are not Mortal skill IDs, and the advisory Mortal skill catalog is not reinterpreted as art authority.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.AfterlifeEffectRollScopeWorkedExample_RemainsBroad; AfterlifeDocumentationCoverageTests.RollScopeAfterlifeDocumentation_KeepsSpiritualArtsSeparateFromMortalSkills",
+      "coverageLimit": "Executes the complete source definition through the production source-definition validator in both afterlife realms, checks defense_roll with all scope and no skillId, and guards the spiritual-guard exclusion and art/skill authority distinction; it does not prove a spiritual guard exchange consumes a generic modifier. Full actor-profile acceptance, publication, and conflict lifecycle remain their owning integration tests' responsibility.",
+      "requiredText": ["afterlife_roll_scope_v1", "afterlife_effect_profile_v1", "operations=[\"defense_roll\"]", "scope.kind=all", "effectSkillScopeCatalog", "spiritual arts are not Mortal skill IDs", "Spiritual guard is not a roll_modifier operation"]
+    },
+    {
       "contractId": "afterlife_resource_bounded_receipt_waves_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/control/pending_effect_resolutions.json + game_state/effects/effect_commands.json",
@@ -142,8 +468,8 @@
       "description": "Two safe-packet fragments prove that bounded afterlife resource outputs remain atomic across causal waves while immutable client-owned origin authority survives every replay.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The protected request authority and rejected full-turn package are client/session-specific; the examples intentionally expose only the safe GM receipt shape.",
-      "coverageLimit": "Current-wave receipt fields, immutable origin/source authority, prior-wave client ownership, unchanged semantic command envelope, terminal atomic publication, and no-op/conflicting replay rules; executable causal replay is covered by pending-wave integration tests.",
-      "requiredText": ["afterlife_resource_bounded_receipt_waves_v1", "resource_resolution_afterlife_wave_001", "resource_resolution_afterlife_wave_002", "current safe packet only", "same complete semantic turn", "client carries earlier-wave terminal bindings", "original candidate, mutation authority, and source authority remain immutable/client-owned", "publishes the complete accepted mechanics atomically"]
+      "coverageLimit": "Current-wave receipt fields, immutable origin/source authority, prior-wave client ownership, unchanged semantic command envelope, explicit terminal zero behavior, terminal atomic publication, and no-op/conflicting replay rules; executable causal replay is covered by pending-wave integration tests.",
+      "requiredText": ["afterlife_resource_bounded_receipt_waves_v1", "resource_resolution_afterlife_wave_001", "resource_resolution_afterlife_wave_002", "resource_resolution_afterlife_zero_003", "current safe packet only", "same complete semantic turn", "client carries earlier-wave terminal bindings", "original candidate, mutation authority, and source authority remain immutable/client-owned", "publishes the complete accepted mechanics atomically", "explicit terminal zero", "resource event", "dependent effect activation"]
     },
     {
       "contractId": "mortal_qte_deferred_effect_receipt_waves_v1",
@@ -574,6 +900,68 @@
   ],
   "afterlifeEntityProfileCoverage": [
     {
+      "contractId": "spiritual_wound_source_envelope_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json.profiles[].specialArts[].spiritualWoundEnvelope",
+      "responseSurface": "pre-materialized canonical special-art source only",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "A complete special-art source fragment declares a II cap and conditional guaranteed I without bypassing prior source authority or harder limits.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualWoundSourceEnvelope_DocumentedArtUsesProductionParser -> SpiritualWoundSourceEnvelope.TryRead",
+      "focusedFragmentReason": "The complete source-art row is deliberately not a complete actor profile, profile update, exchange, or accepted-turn publication.",
+      "coverageLimit": "Closed declaration parsing and exact documented source values only; signed source acquisition, actor membership, original dice and strain, resource/effect reductions, pending decisions and final publication remain the source/lifecycle tests' responsibility.",
+      "requiredText": ["spiritual_wound_source_envelope_v1", "spiritualWoundEnvelope", "maximumSeverityRank", "guaranteedSeverityRank", "before", "neutral IV", "no guarantee"]
+    },
+    {
+      "contractId": "spiritual_wound_source_action_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json afterlifeSpiritualConflictUpdate exchange or recentConflicts[] terminal resolution",
+      "responseSurface": "player exchange spiritualWoundTarget, opposition incomingAction spiritualWoundTarget, and source-local resolution.terminalExchange",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Two typed fragments cover both legal exact target locations and one complete contested terminal witness without presenting source preparation as wound admission.",
+      "validationKind": "production-validator",
+      "validationRoute": "ExampleDocumentationValidationTests.SpiritualSourceAction_DocumentedTargetsUseProductionShapeValidator -> ValidationService.ValidateSpiritualWoundSourceActionShape; AfterlifeResourceCutoverTests.SpiritualSourceAction_DocumentedTerminalWitnessIsSourceLocalPendingOnly -> ValidationService.BeginSpiritualWoundSourceSessionAsync -> SpiritualSourceRequirement.TerminalClosure",
+      "focusedFragmentReason": "The first object contains two complete action-location fragments; the second is a complete resolution fragment evaluated against a real signed production preparation fixture, not a complete response or accepted turn.",
+      "coverageLimit": "Exact source-action shape and source-local signed preparation only; original affected-side membership and prior re-trauma are covered by B1 source tests, while C/D/E still own applied source/effect/champion binding, start/escalation/prefix/terminal closure, admission, insertion, receipts, and publication.",
+      "requiredText": ["spiritual_wound_source_action_v1", "spiritualWoundTarget", "retraumaWoundRef", "terminalExchange", "TerminalClosure", "source-local", "Chaos Sea", "Shining Abode", "C/D/E", "optional dissipation"]
+    },
+    {
+      "contractId": "afterlife_light_incarnate_history_authority_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json",
+      "responseSurface": "afterlifeSpiritualConflictUpdate exchange/resolution diceAudit",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Accepted pre-turn capstone history versus a new, changed, duplicate or cross-surface pre-grant claim.",
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeSpiritualConflictValidationTests.T085_LightIncarnateHistory_ -> ValidationService.ValidateGameStateAsync(AfterlifeSpiritualConflictState); AfterlifeDocumentationCoverageTests.LightIncarnateHistoryDocumentation_RequiresAcceptedPayloadNotOldMarker",
+      "coverageLimit": "Light Incarnate historical admission only; not full wound or grant authority, resource publication, actor progression or healing.",
+      "requiredText": ["afterlife_light_incarnate_history_authority_v1", "exchange_light_history_006", "grantedAtTurn=7", "resolvedAtTurn=6", "backdating alone cannot waive light_incarnate", "afterlife_conflict_light_incarnate_modifier_mismatch", "not full wound or grant authority"]
+    },
+    {
+      "contractId": "afterlife_spiritual_exchange_history_authority_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_spiritual_conflict_state.json.activeConflict.exchangeLog",
+      "responseSurface": "afterlifeSpiritualConflictUpdate.exchange and retained accepted exchange history",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Same-conflict one-use snapshot authority for historical exchange dice, matchup and action-cost audit exemption; marker-alone backdating rejected, narrow readable-summary validation compatibility retained.",
+      "validationKind": "production-validator",
+      "validationRoute": "AfterlifeSpiritualConflictValidationTests.T085_HistoricalExchange_ -> ValidationService.ValidateGameStateAsync(AfterlifeSpiritualConflictState); AfterlifeDocumentationCoverageTests.HistoricalExchangeAuthorityDocumentation_RequiresSnapshotNotBackdating",
+      "coverageLimit": "Behavioral exchange-audit classification and worked text coverage, not full wound or publication authority. The resource publisher still requires the exact pre-turn prefix. Source of Light has a separate turn-marker contract outside this prerequisite.",
+      "requiredText": ["afterlife_spiritual_exchange_history_authority_v1", "exchange_accepted_history_006", "exchangeAtTurn alone is not authority", "validation compatibility only", "exact pre-turn prefix", "afterlife_conflict_resource_log_prefix_mutated"]
+    },
+    {
+      "contractId": "standard_wound_arts_v1",
+      "file": "E_CLI_Afterlife_Turns.txt",
+      "statePath": "game_state/meta/afterlife_entity_profiles.json.profiles[].standardArts and game_state/meta/soul_state.json.afterlifeCombatProfile.artTiers",
+      "responseSurface": "afterlifeEntityProfileUpdates[].standardArts / afterlifeEntityProgressionOverrides[].standardArtTierDeltas",
+      "realms": ["Chaos Sea", "Shining Abode"],
+      "description": "Spiritual resilience and healing are required scalar ordinary arts at tier zero through five, mirrored from player soul authority and progressed without independent art experience.",
+      "validationKind": "production-validator",
+      "validationRoute": "SpiritualHealingArtValidationTests.StandardWoundArt_ -> ValidationService current profile validators; SpiritualHealingArtTests.StandardWoundArt_ -> ordinary registry/progression; ExampleDocumentationValidationTests.StandardWoundArt_ManifestPinsScalarProfileAndOrdinaryProgressionExample",
+      "coverageLimit": "Registration, current scalar authority, ordinary progression and documentation only; no spiritual wound producer, healing resolver, healing operation, safe-cycle scheduler, or wound command is claimed.",
+      "requiredText": ["spiritual_resilience", "spiritual_healing", "standardArtTierDeltas", "without independent art experience"]
+    },
+    {
       "contractId": "afterlife_actor_materialization_v1",
       "file": "E_CLI_Afterlife_Turns.txt",
       "statePath": "game_state/meta/afterlife_entity_profiles.json",
@@ -846,10 +1234,14 @@
       "description": "A bounded story receipt supplies only request identity, allowed result, amount, and reason while immutable client-owned origin authority survives sequential replay.",
       "validationKind": "focused-fragment",
       "focusedFragmentReason": "The worked fence is the GM receipt fragment; the originating protected pending request and coherent rejected-turn package are necessarily session-specific.",
-      "coverageLimit": "Closed receipt fields, bounded delta shape, current-packet-only resubmission, immutable origin/source authority, prior-wave bindings, and client-owned one-time publication; pending binding and replay are executable-test-owned.",
+      "coverageLimit": "Closed receipt fields, bounded delta and explicit terminal zero shapes, current-packet-only resubmission, immutable origin/source authority, prior-wave bindings, and client-owned one-time publication; pending binding and replay are executable-test-owned.",
       "requiredText": [
         "mortal_resource_bounded_receipt_v1",
         "\"resultKind\": \"resource_delta\"",
+        "resource_resolution_example_zero_002",
+        "explicit terminal zero",
+        "resource event",
+        "dependent effect activation",
         "current safe packet only",
         "same complete semantic turn",
         "client carries earlier-wave terminal bindings",
@@ -995,12 +1387,12 @@
     },
     {
       "file": "E_Block_5.txt",
-      "line": 2568,
+      "line": 2729,
       "reason": "Legacy NPC creation fragment uses ellipsis and is not a standalone JSON document."
     },
     {
       "file": "E_Block_5.txt",
-      "line": 2586,
+      "line": 2747,
       "reason": "Legacy NPC update fragment uses ellipsis and is not a standalone JSON document."
     }
   ],
@@ -1070,10 +1462,19 @@
         "\"afterlifeSpiritualConflictUpdate\"",
         "\"mode\": \"start\"",
         "\"resourceKey\": \"spiritual_action_points\"",
-        "\"resourceMaterialization\""
+        "\"resourceMaterialization\"",
+        "\"dangerMode\": \"hostile\""
       ],
       "expectedModifiedFiles": [
         "game_state/meta/afterlife_spiritual_conflict_state.json"
+      ],
+      "expectedFileContains": [
+        {
+          "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
+          "requiredText": [
+            "\"dangerMode\": \"hostile\""
+          ]
+        }
       ]
     },
     {

@@ -313,7 +313,7 @@ public sealed partial class EffectMaterializationValidationTests
             path,
             CreateCanonicalSourceRoot(path, source));
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = sourceKind;
         command["source"]!["sourceId"] = sourceId;
         await context.WriteJsonAsync(
@@ -347,7 +347,7 @@ public sealed partial class EffectMaterializationValidationTests
             MortalLocationMaterializationContract.CurrentLocationPath,
             MortalLocationTestFixture.CreateCurrentProjection(location));
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "location",
@@ -400,7 +400,7 @@ public sealed partial class EffectMaterializationValidationTests
             MortalLocationMaterializationContract.CurrentLocationPath,
             MortalLocationTestFixture.CreateCurrentProjection(current));
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "hazard",
@@ -425,7 +425,7 @@ public sealed partial class EffectMaterializationValidationTests
         string profileRealm)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         var profileRoot = JsonNode.Parse(
             AfterlifeEntityProfileValidationTests.BuildValidProfileJson())!.AsObject();
         var profile = profileRoot[AfterlifeEntityProfileState.ProfilesProperty]![0]!
@@ -463,7 +463,7 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateMaterializableApplyCommand()));
 
         var issues = await context.Validator
             .ValidateAcceptedTurnRawEffectMaterializationAsync();
@@ -472,13 +472,14 @@ public sealed partial class EffectMaterializationValidationTests
     }
 
     [Theory]
-    [InlineData("game_state/player/wounds.json", "wound", "wound_same_turn_effect")]
-    [InlineData("game_state/quests/regular_quests.json", "quest", "quest_same_turn_effect")]
-    [InlineData("game_state/world/world_events.json", "world_event", "event_same_turn_effect")]
-    public async Task RawApply_ComposesValidatedSameTurnEffectiveSource(
+    [InlineData("game_state/player/wounds.json", "wound", "wound_same_turn_effect", false)]
+    [InlineData("game_state/quests/regular_quests.json", "quest", "quest_same_turn_effect", true)]
+    [InlineData("game_state/world/world_events.json", "world_event", "event_same_turn_effect", true)]
+    public async Task RawApply_ComposesOnlyMaterializableValidatedSameTurnSource(
         string path,
         string sourceKind,
-        string sourceId)
+        string sourceId,
+        bool expectMaterializable)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         await context.WriteJsonAsync(path, CreateEmptySameTurnOwnerRoot(path));
@@ -486,7 +487,7 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(
             path,
             CreateCompleteSameTurnOwnerRoot(path, sourceId));
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = sourceKind;
         command["source"]!["sourceId"] = sourceId;
         await context.WriteJsonAsync(
@@ -495,7 +496,15 @@ public sealed partial class EffectMaterializationValidationTests
 
         var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
 
-        Assert.DoesNotContain(issues, issue => issue.Severity == IssueSeverity.Error);
+        Assert.Equal(
+            !expectMaterializable,
+            issues.Any(issue => issue.Code == "effect_source_selector_unresolved"));
+        if (expectMaterializable)
+        {
+            Assert.DoesNotContain(
+                issues,
+                issue => issue.Severity == IssueSeverity.Error);
+        }
     }
 
     [Fact]
@@ -504,12 +513,12 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var beforeDefinition = EffectMaterializationTestFixture.CreateDefinition();
         beforeDefinition["definitionKey"] = "old_definition";
-        await context.SeedPlayerWoundSourceAsync(beforeDefinition);
+        await context.SeedPlayerSkillSourceAsync(beforeDefinition);
         await context.CaptureValidatedPendingSnapshotAsync();
         var afterDefinition = EffectMaterializationTestFixture.CreateDefinition();
         afterDefinition["definitionKey"] = "accepted_definition";
-        await context.SeedPlayerWoundSourceAsync(afterDefinition);
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        await context.SeedPlayerSkillSourceAsync(afterDefinition);
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["definitionKey"] = "accepted_definition";
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
@@ -524,21 +533,20 @@ public sealed partial class EffectMaterializationValidationTests
     public async Task RawApply_ExistingSourceRemovalDoesNotFallBackToPreTurnDefinition()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.CaptureValidatedPendingSnapshotAsync();
         await context.WriteJsonAsync(
-            EffectMaterializationTestContext.PlayerWoundsPath,
-            new JsonArray(new JsonObject
+            EffectMaterializationTestContext.MaterializableSkillPath,
+            new JsonObject
             {
-                ["woundId"] = "wound_test_torn_side",
-                ["woundName"] = "Рваная рана в боку",
-                ["severity"] = "severe",
-                ["description"] = "Рана больше не создаёт активный эффект."
-            }));
+                ["activeSkillChanges"] = new JsonArray(),
+                ["removeActiveSkills"] = new JsonArray(
+                    "Кровавый след")
+            });
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateMaterializableApplyCommand()));
 
         var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
 
@@ -567,7 +575,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["newDetailsLogEntry"] = "#[42]. След подтверждён."
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "quest";
         command["source"]!["sourceId"] = questId;
         await context.WriteJsonAsync(
@@ -702,7 +710,7 @@ public sealed partial class EffectMaterializationValidationTests
                 ["activeSkillChanges"] = new JsonArray(replacement),
                 ["removeActiveSkills"] = new JsonArray()
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "skill",
@@ -893,7 +901,7 @@ public sealed partial class EffectMaterializationValidationTests
                 ["activeSkillChanges"] = new JsonArray(changedSkill),
                 ["removeActiveSkills"] = new JsonArray()
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "skill",
@@ -953,7 +961,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["status"] = "Completed"
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "quest";
         command["source"]!["sourceId"] = questId;
         await context.WriteJsonAsync(
@@ -988,7 +996,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["activeEffectDefinitions"] = new JsonArray()
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "quest";
         command["source"]!["sourceId"] = questId;
         await context.WriteJsonAsync(
@@ -1036,7 +1044,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["newDetailsLogEntry"] = "#[42]. Второй след уточнён."
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "quest";
         command["source"]!["sourceId"] = firstQuestId;
         await context.WriteJsonAsync(
@@ -1093,7 +1101,7 @@ public sealed partial class EffectMaterializationValidationTests
                     }
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "faction";
         command["source"]!["sourceId"] = factionId;
         await context.WriteJsonAsync(
@@ -1126,7 +1134,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "skill";
         command["source"]!["sourceId"] = forgedSkillId;
         await context.WriteJsonAsync(
@@ -1164,7 +1172,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "world_event";
         command["source"]!["sourceId"] = forgedEventId;
         await context.WriteJsonAsync(
@@ -1197,7 +1205,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "world_event";
         command["source"]!["sourceId"] = forgedEventId;
         await context.WriteJsonAsync(
@@ -1234,7 +1242,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "skill";
         command["source"]!["sourceId"] = forgedSkillId;
         await context.WriteJsonAsync(
@@ -1268,7 +1276,7 @@ public sealed partial class EffectMaterializationValidationTests
             MortalLocationMaterializationContract.WorldMapPath,
             new JsonObject { ["locations"] = new JsonArray(location) });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "location";
         command["source"]!["sourceId"] = forgedLocationId;
         await context.WriteJsonAsync(
@@ -1295,7 +1303,7 @@ public sealed partial class EffectMaterializationValidationTests
                     CreateCanonicalQuestSource(questId, "Completed"))
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "quest";
         command["source"]!["sourceId"] = questId;
         await context.WriteJsonAsync(
@@ -1326,7 +1334,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "world_event";
         command["source"]!["sourceId"] = eventId;
         await context.WriteJsonAsync(
@@ -1357,7 +1365,7 @@ public sealed partial class EffectMaterializationValidationTests
                 })
             });
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "item";
         command["source"]!["sourceId"] = itemId;
         await context.WriteJsonAsync(
@@ -1410,7 +1418,7 @@ public sealed partial class EffectMaterializationValidationTests
                 "player_inventory",
                 "player"));
         await context.CaptureValidatedPendingSnapshotAsync();
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "item";
         command["source"]!["sourceId"] = itemId;
         await context.WriteJsonAsync(
@@ -1671,7 +1679,7 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(
             InventoryEquipmentService.ItemsPath,
             new JsonObject { ["items"] = new JsonArray(movedItem) });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "item";
         command["source"]!["sourceId"] = itemId;
         await context.WriteJsonAsync(
@@ -1709,7 +1717,7 @@ public sealed partial class EffectMaterializationValidationTests
                         EffectMaterializationTestFixture.CreateDefinition())
                 })
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"]!["kind"] = "world_event";
         command["source"]!["sourceId"] = sourceId;
         await context.WriteJsonAsync(
@@ -1730,12 +1738,12 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         var definition = EffectMaterializationTestFixture.CreateDefinition();
         definition.Remove("removal");
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
         await context.CaptureValidatedPendingSnapshotAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.CommandPath,
             EffectMaterializationTestFixture.CreateCommandRoot(
-                EffectMaterializationTestFixture.CreateApplyCommand()));
+                CreateMaterializableApplyCommand()));
 
         var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
 
@@ -1778,7 +1786,7 @@ public sealed partial class EffectMaterializationValidationTests
             {
                 ["UpdateNPCs"] = new JsonArray(sameTurnNpc)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
+        var command = CreateMaterializableApplyCommand("npc");
         command["target"] = new JsonObject
         {
             ["kind"] = "npc",
@@ -1804,7 +1812,7 @@ public sealed partial class EffectMaterializationValidationTests
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string existingNpcId = "npc_existing_effect_target";
         const string newNpcRef = "npcref_new_effect_target";
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         var existingNpc = MortalActorTestFixtures.CreateActor(existingNpcId);
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
@@ -1830,7 +1838,7 @@ public sealed partial class EffectMaterializationValidationTests
                 ["NPCsInScene"] = new JsonArray(existingNpc.DeepClone()),
                 ["UpdateNPCs"] = new JsonArray(sameTurnNpc)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
+        var command = CreateMaterializableApplyCommand("npc");
         command["target"] = new JsonObject
         {
             ["kind"] = "npc",
@@ -1868,7 +1876,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["newLinks"] = new JsonArray()
                 }
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "location",
@@ -1944,7 +1952,7 @@ public sealed partial class EffectMaterializationValidationTests
                     ["newLinks"] = new JsonArray()
                 }
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "hazard",
@@ -2005,7 +2013,7 @@ public sealed partial class EffectMaterializationValidationTests
             "turn_outcome",
             rawItem,
             includeMortalPlayerResources: true);
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "item",
@@ -2066,7 +2074,7 @@ public sealed partial class EffectMaterializationValidationTests
             "player_acquisition",
             "turn_outcome",
             rawItem);
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "item",
@@ -2119,7 +2127,7 @@ public sealed partial class EffectMaterializationValidationTests
             route,
             authorityKind,
             rawItem);
-        var command = EffectMaterializationTestFixture.CreateApplyCommand();
+        var command = CreateMaterializableApplyCommand();
         command["source"] = new JsonObject
         {
             ["kind"] = "item",
@@ -2144,7 +2152,7 @@ public sealed partial class EffectMaterializationValidationTests
     public async Task RawApply_NewNamedCombatRepresentationRejectsUnknownNpcRef()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCsInScene"] = new JsonArray() });
@@ -2164,7 +2172,7 @@ public sealed partial class EffectMaterializationValidationTests
             {
                 ["enemiesData"] = new JsonArray(combatant)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
+        var command = CreateMaterializableApplyCommand("npc");
         command["target"] = new JsonObject
         {
             ["kind"] = "npc",
@@ -2212,7 +2220,7 @@ public sealed partial class EffectMaterializationValidationTests
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
         const string npcInitialId = "npcref_named_combatant_healer";
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             "game_state/npcs/npc_core.json",
             new JsonObject { ["NPCsInScene"] = new JsonArray() });
@@ -2251,7 +2259,7 @@ public sealed partial class EffectMaterializationValidationTests
             {
                 ["enemiesData"] = new JsonArray(combatant)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("npc");
+        var command = CreateMaterializableApplyCommand("npc");
         command["target"] = new JsonObject
         {
             ["kind"] = "npc",
@@ -2298,7 +2306,7 @@ public sealed partial class EffectMaterializationValidationTests
     public async Task RawApply_ComposesCombatantRefIntoOnePermanentTargetAndCarrier()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject
@@ -2315,7 +2323,7 @@ public sealed partial class EffectMaterializationValidationTests
                     CreateMaterializedCombatant(
                         EffectMaterializationTestFixture.CombatantRef))
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = CreateMaterializableApplyCommand("combatant");
         command["target"] = new JsonObject
         {
             ["kind"] = "combatant",
@@ -2356,7 +2364,7 @@ public sealed partial class EffectMaterializationValidationTests
     public async Task RawApply_DetachedGroupMemberKeepsMemberTargetAndCarrier()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray() });
@@ -2403,7 +2411,7 @@ public sealed partial class EffectMaterializationValidationTests
             {
                 ["enemiesData"] = new JsonArray(splitGroup, detachedRow)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = CreateMaterializableApplyCommand("combatant");
         command["eventRef"]!["authorityId"] = "turn_43";
         command["target"] = new JsonObject
         {
@@ -2487,7 +2495,7 @@ public sealed partial class EffectMaterializationValidationTests
         bool nestedInGroup)
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray() });
@@ -2504,7 +2512,7 @@ public sealed partial class EffectMaterializationValidationTests
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray(rawOwner) });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = CreateMaterializableApplyCommand("combatant");
         command["target"] = new JsonObject
         {
             ["kind"] = "combatant",
@@ -2577,7 +2585,7 @@ public sealed partial class EffectMaterializationValidationTests
     public async Task RawApply_ConsumesEveryAcceptedCombatantRefWhenOneIsTargeted()
     {
         await using var context = await EffectMaterializationTestContext.CreateAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject { ["enemiesData"] = new JsonArray() });
@@ -2595,7 +2603,7 @@ public sealed partial class EffectMaterializationValidationTests
             {
                 ["enemiesData"] = new JsonArray(targeted, sibling)
             });
-        var command = EffectMaterializationTestFixture.CreateApplyCommand("combatant");
+        var command = CreateMaterializableApplyCommand("combatant");
         command["target"] = new JsonObject
         {
             ["kind"] = "combatant",
@@ -2689,7 +2697,7 @@ public sealed partial class EffectMaterializationValidationTests
             new JsonObject { ["enemiesData"] = new JsonArray() });
         await context.CaptureValidatedPendingSnapshotAsync();
         var backups = await context.ReadPendingSnapshotBackupsAsync();
-        await context.SeedPlayerWoundSourceAsync();
+        await context.SeedPlayerSkillSourceAsync();
         await context.WriteJsonAsync(
             EffectMaterializationTestContext.EnemyCombatantsPath,
             new JsonObject
@@ -2734,7 +2742,7 @@ public sealed partial class EffectMaterializationValidationTests
             ["targetId"] = "quest_missing_effect_link",
             ["role"] = "context"
         });
-        await context.SeedPlayerWoundSourceAsync(definition);
+        await context.SeedPlayerSkillSourceAsync(definition);
 
         var issues = await context.Validator.ValidateAcceptedTurnRawEffectMaterializationAsync();
 

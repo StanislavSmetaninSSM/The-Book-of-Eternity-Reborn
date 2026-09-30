@@ -347,11 +347,64 @@ internal sealed class ResourcePendingResolutionState
 
     internal string Fingerprint { get; }
 
+    /// <summary>
+    /// Preserves the legacy allocation callback while isolating validated draft evidence.
+    /// </summary>
+    /// <param name="canonicalJson">
+    /// Existing pending state, or <see langword="null"/> for pristine state.
+    /// </param>
+    /// <param name="drafts">
+    /// Non-null ordered candidate batch; empty or oversized batches produce diagnostics.
+    /// </param>
+    /// <param name="definitions">
+    /// Non-null resource definitions used for draft admission.
+    /// </param>
+    /// <param name="allocateRequestId">
+    /// Non-null allocation callback invoked only after the full batch is valid.
+    /// </param>
+    /// <param name="createdAtUtc">
+    /// Original batch creation time, normalized to UTC in retained requests.
+    /// </param>
+    /// <returns>
+    /// Validated pending state and safe GM projection, or diagnostics without a partial state.
+    /// </returns>
     internal static ResourcePendingResolutionCreationResult CreatePending(
         string? canonicalJson,
         IReadOnlyList<ResourcePendingResolutionDraft> drafts,
         ResourceDefinitionCatalog definitions,
         Func<string> allocateRequestId,
+        DateTimeOffset createdAtUtc)
+    {
+        ArgumentNullException.ThrowIfNull(allocateRequestId);
+        return CreatePending(canonicalJson, drafts, definitions, _ => allocateRequestId(), createdAtUtc);
+    }
+
+    /// <summary>
+    /// Creates a pending batch from frozen evidence and passes detached validated drafts to its allocator.
+    /// </summary>
+    /// <param name="canonicalJson">
+    /// Existing pending state, or <see langword="null"/> for pristine state.
+    /// </param>
+    /// <param name="drafts">
+    /// Non-null ordered candidate batch; empty or oversized batches produce diagnostics.
+    /// </param>
+    /// <param name="definitions">
+    /// Non-null resource definitions used for draft admission.
+    /// </param>
+    /// <param name="allocateRequestId">
+    /// Non-null typed allocator; receives a fresh detached draft after all admission checks.
+    /// </param>
+    /// <param name="createdAtUtc">
+    /// Original batch creation time, normalized to UTC in retained requests.
+    /// </param>
+    /// <returns>
+    /// Validated pending state and safe GM projection, or diagnostics without a partial state.
+    /// </returns>
+    internal static ResourcePendingResolutionCreationResult CreatePending(
+        string? canonicalJson,
+        IReadOnlyList<ResourcePendingResolutionDraft> drafts,
+        ResourceDefinitionCatalog definitions,
+        Func<ResourcePendingResolutionDraft, string> allocateRequestId,
         DateTimeOffset createdAtUtc)
     {
         ArgumentNullException.ThrowIfNull(drafts);
@@ -380,6 +433,7 @@ internal sealed class ResourcePendingResolutionState
             return FailedCreation(issues);
         }
 
+        drafts = drafts.Select(DetachDraft).ToArray();
         ResourcePendingResolutionState? previous = null;
         if (canonicalJson != null)
         {
@@ -463,7 +517,7 @@ internal sealed class ResourcePendingResolutionState
         var foldedIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         for (var index = 0; index < requestIds.Length; index++)
         {
-            var requestId = allocateRequestId();
+            var requestId = allocateRequestId(DetachDraft(drafts[index]));
             requestIds[index] = requestId;
             if (!ResourceMaterializationContract.IsExactIdentifier(requestId))
             {
@@ -954,6 +1008,23 @@ internal sealed class ResourcePendingResolutionState
             draft.SafeResourceLabel,
             draft.SafeOperationLabel,
             draft.CausalAuthority);
+    }
+
+    /// <summary>
+    /// Copies mutable request payloads so callers and allocation callbacks cannot rewrite admitted evidence.
+    /// </summary>
+    /// <param name="draft">
+    /// Non-null request draft with non-null source and target JSON.
+    /// </param>
+    /// <returns>
+    /// A new record retaining immutable values and detached source/target trees.
+    /// </returns>
+    internal static ResourcePendingResolutionDraft DetachDraft(ResourcePendingResolutionDraft draft)
+    {
+        ArgumentNullException.ThrowIfNull(draft);
+        ArgumentNullException.ThrowIfNull(draft.Source);
+        ArgumentNullException.ThrowIfNull(draft.Target);
+        return draft with { Source = draft.Source.DeepClone().AsObject(), Target = draft.Target.DeepClone().AsObject() };
     }
 
     private static void ValidateDraft(
@@ -2444,7 +2515,9 @@ internal sealed class ResourcePendingResolutionState
         if (!string.Equals(
                 binding.ResultKind,
                 "resource_delta",
-                StringComparison.Ordinal))
+                StringComparison.Ordinal) ||
+            !binding.Amount.HasValue ||
+            binding.Amount.Value <= 0m)
         {
             sourceExport = null;
             return false;

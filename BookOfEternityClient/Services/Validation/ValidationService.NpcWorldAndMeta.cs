@@ -4525,7 +4525,7 @@ public partial class ValidationService
         if (!ShouldValidateStateFile(filePath))
             return;
 
-        var json = await _fs.ReadFileAsync(filePath);
+        var json = await ReadSameTurnOwnerCurrentTextAsync(filePath);
         if (string.IsNullOrWhiteSpace(json)) return;
 
         try
@@ -4916,9 +4916,22 @@ public partial class ValidationService
         }
     }
 
+    /// <summary>
+    /// Identifies client-owned or separately validated paths excluded from generic GM file repair.
+    /// </summary>
+    /// <param name="normalizedPath">
+    /// Non-null repository-relative path with forward slash separators.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> when generic GM JSON repair must skip the path;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
     private static bool IsClientOwnedSurfaceValidationPath(string normalizedPath)
     {
         return MortalItemRepairPacketBuilder.IsProtectedClientOwnedTarget(normalizedPath) ||
+               normalizedPath.Equals(SpiritualWoundCaptureCheckpointState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SpiritualWoundDecisionPendingState.StatePath, StringComparison.OrdinalIgnoreCase) ||
+               normalizedPath.Equals(SpiritualWoundOpportunityReceiptState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals(MortalLocationIdentityState.StatePath, StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.StartsWith(MortalLocationIdentityState.StatePath + ".", StringComparison.OrdinalIgnoreCase) ||
                normalizedPath.Equals("game_state/control/pending_turn_snapshot.json", StringComparison.OrdinalIgnoreCase) ||
@@ -5066,9 +5079,6 @@ public partial class ValidationService
                     continue;
                 }
 
-                ValidateNpcSceneIdentity(item, itemContext, issues);
-                RequireString(item, itemContext, issues, "name");
-                issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(item, itemContext, sectionName));
                 var hasEffectiveNpcId = TryReadCanonicalCurrentMortalActorId(item, out var effectiveNpcId);
                 var requiresCompletePersonality = RequiresCompleteCurrentMortalPersonality(
                     item,
@@ -5076,13 +5086,12 @@ public partial class ValidationService
                     effectiveNpcId,
                     mortalActorPreTurnAuthority,
                     validateCurrentMaterializationPersonality);
-                ValidateNpcCoreObjectShape(
+                ValidateFullNpcCoreObject(
                     item,
                     itemContext,
                     issues,
                     sectionName,
                     requiresCompletePersonality);
-                ValidateNpcTradeState(item, itemContext, issues);
 
                 var npcId = GetFirstNonEmptyString(item, "NPCId", "npcId", "id");
                 var usesSameTurnInitialId = string.IsNullOrWhiteSpace(npcId) && hasEffectiveNpcId;
@@ -5312,6 +5321,28 @@ public partial class ValidationService
                 }
             }
         }
+    }
+
+    private void ValidateFullNpcCoreObject(
+        JsonElement item,
+        string itemContext,
+        List<ValidationIssue> issues,
+        string sectionName,
+        bool requiresCompletePersonality)
+    {
+        ValidateNpcSceneIdentity(item, itemContext, issues);
+        RequireString(item, itemContext, issues, "name");
+        issues.AddRange(ActorMaterializationContract.ValidateMortalNpc(
+            item,
+            itemContext,
+            sectionName));
+        ValidateNpcCoreObjectShape(
+            item,
+            itemContext,
+            issues,
+            sectionName,
+            requiresCompletePersonality);
+        ValidateNpcTradeState(item, itemContext, issues);
     }
 
     private static bool RequiresCompleteCurrentMortalPersonality(
@@ -5644,6 +5675,16 @@ public partial class ValidationService
             ValidateArrayItems(activeSkills, $"{itemContext}.activeSkills", issues, ValidateActiveSkillObject);
         if (item.TryGetProperty("passiveSkills", out var passiveSkills) && passiveSkills.ValueKind != JsonValueKind.Null)
             ValidateArrayItems(passiveSkills, $"{itemContext}.passiveSkills", issues, ValidatePassiveSkillObject);
+        if (JsonNode.Parse(item.GetRawText()) is JsonObject npcRoot)
+        {
+            issues.AddRange(MortalWoundTreatmentCapabilityContract.ParseActorCatalog(
+                "npc",
+                GetFirstNonEmptyString(item, "NPCId", "npcId", "id", "initialId") ?? string.Empty,
+                npcRoot,
+                itemContext,
+                npcRoot,
+                itemContext).Issues);
+        }
         if (item.TryGetProperty("equippedItems", out var equippedItems))
             ValidateNpcEquippedItemsObject(equippedItems, $"{itemContext}.equippedItems", issues);
         if (item.TryGetProperty("fateCards", out var fateCards))
@@ -7170,7 +7211,7 @@ public partial class ValidationService
         {
             try
             {
-                var json = _fs.ReadFileAsync(path).GetAwaiter().GetResult();
+                var json = ReadSameTurnOwnerCurrentTextAsync(path).GetAwaiter().GetResult();
                 if (string.IsNullOrWhiteSpace(json))
                     continue;
 

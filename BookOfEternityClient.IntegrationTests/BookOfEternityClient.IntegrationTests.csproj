@@ -30,4 +30,9 @@
     <ProjectReference Include="..\BookOfEternityClient\BookOfEternityClient.csproj" />
     <ProjectReference Include="..\BookOfEternityClient.TestSupport\BookOfEternityClient.TestSupport.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <!-- Helper-only fixture base: no Fact, Theory, or InlineData declarations. -->
+    <Compile Include="..\BookOfEternityClient.Tests\MortalItemConsumptionPlannerTests.Helpers.cs"
+             Link="MortalItemConsumptionPlannerTests.Helpers.cs" />
+  </ItemGroup>
 </Project>

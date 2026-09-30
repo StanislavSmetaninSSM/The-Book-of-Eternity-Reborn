@@ -505,6 +505,7 @@ public partial class ValidationService
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();
@@ -549,10 +550,38 @@ public partial class ValidationService
         public Dictionary<string, HashSet<string>> CustomStateIdsByFactionKey { get; } = new(StringComparer.OrdinalIgnoreCase);
     }
 
+    /// <summary>
+    /// Creates a validator that reads the current game session from the physical filesystem.
+    /// </summary>
+    /// <param name="fs">
+    /// Filesystem owning the canonical game session.
+    /// </param>
+    /// <param name="logger">
+    /// Logger receiving validation diagnostics.
+    /// </param>
     public ValidationService(FileSystemManager fs, ILogger<ValidationService> logger)
+        : this(fs, logger, null)
+    {
+    }
+
+    /// <summary>
+    /// Creates an isolated validator whose current same-turn owner reads use one retained draft.
+    /// </summary>
+    /// <param name="fs">
+    /// Physical filesystem retained for signed pre-turn and control authority.
+    /// </param>
+    /// <param name="logger">
+    /// Logger receiving validation diagnostics.
+    /// </param>
+    /// <param name="sameTurnOwnerInputs">
+    /// Retained current draft, or <see langword="null"/> for physical current reads.
+    /// </param>
+    private ValidationService(FileSystemManager fs, ILogger<ValidationService> logger,
+        SpiritualOriginalDraftInputs? sameTurnOwnerInputs)
     {
         _fs = fs;
         _logger = logger;
+        _sameTurnOwnerInputs = sameTurnOwnerInputs;
     }
 
     /// <summary>
@@ -623,6 +652,7 @@ public class ValidationIssue
     internal MortalItemRepairContext? MortalItemRepairContext { get; set; }
     internal MortalLocationRepairContext? MortalLocationRepairContext { get; set; }
     internal EffectRepairContext? EffectRepairContext { get; set; }
+    internal WoundRepairContext? WoundRepairContext { get; set; }
 
     public ValidationIssue(
         string filePath,

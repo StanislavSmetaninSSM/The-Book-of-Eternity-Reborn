@@ -105,6 +105,15 @@ public class GameResponse
     [JsonPropertyName("effectEventReports")]
     public JsonElement[]? EffectEventReports { get; set; }
 
+    [JsonPropertyName("woundDecisions")]
+    public JsonElement[]? WoundDecisions { get; set; }
+
+    [JsonPropertyName("woundTreatmentAuthorings")]
+    public JsonElement[]? WoundTreatmentAuthorings { get; set; }
+
+    [JsonIgnore]
+    public string[]? WoundNotifications { get; set; }
+
     [JsonPropertyName("resourceDefinitionCreations")]
     public JsonElement[]? ResourceDefinitionCreations { get; set; }
 
@@ -119,9 +128,6 @@ public class GameResponse
 
     [JsonPropertyName("playerEffortTrackerChange")]
     public JsonElement? PlayerEffortTrackerChange { get; set; }
-
-    [JsonPropertyName("playerWoundChanges")]
-    public JsonElement[]? PlayerWoundChanges { get; set; }
 
     [JsonPropertyName("customStateChanges")]
     public JsonElement[]? CustomStateChanges { get; set; }
@@ -257,9 +263,6 @@ public class GameResponse
 
     [JsonPropertyName("NPCPassiveSkillMasteryChanges")]
     public JsonElement[]? NPCPassiveSkillMasteryChanges { get; set; }
-
-    [JsonPropertyName("NPCWoundChanges")]
-    public JsonElement[]? NPCWoundChanges { get; set; }
 
     [JsonPropertyName("interNPCRelationshipChanges")]
     public JsonElement[]? InterNPCRelationshipChanges { get; set; }

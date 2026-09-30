@@ -22,7 +22,7 @@ internal static class AfterlifeShiningGachaResourceOutcome
         decimal Before,
         decimal After);
 
-    private sealed class Draft : IResourceRegisteredSystemOutcomeDraft
+    private sealed class Draft : IOriginalSpiritualPrefixOutcomeDraft
     {
         private readonly ResourceMutationSourceExport[] _sources;
         private readonly ResourceMutationIntent[] _mutations;

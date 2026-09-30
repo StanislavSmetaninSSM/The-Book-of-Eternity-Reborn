@@ -3,6 +3,58 @@
   "purpose": "Machine-readable inventory for Chaos Sea / Shining Abode pending, control, and meta lifecycle surfaces. This file is the audit baseline for issue #510; issue #511 migrates this data into runtime registry code.",
   "surfaces": [
     {
+      "path": "game_state/control/spiritual_wound_capture_checkpoint.json",
+      "surfaceType": "private_mechanics_checkpoint",
+      "owner": "spiritual_wound_capture_checkpoint",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "Client-owned original spiritual capture checkpoint; GM must not write.",
+      "privateMechanics": true,
+      "emptyWrapperSemantics": "schemaVersion=1 checkpoint=null differs from absence; original snapshot observations preserve both exactly.",
+      "malformedBehavior": "The strict C2 parser rejects malformed evidence; never send this private path to generic GM JSON repair.",
+      "blockerBehavior": "C2 retains committed layers and optional pendingSubmission; original owner replay must reproduce its exact choice and allocation prefix before continuation. Optional dependentDraftProgress stores owner-validated correction images; confirmed checkpoint append activates the next frontier before public transport publication. Replay every row before considering the current draft; public request files cannot replace this proof.",
+      "closureSurface": "The internal common accepted publisher consumes the checkpoint together with pending; no GM closure command.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_wound_private_roots_v1",
+        "Examples/E_CLI_Afterlife_Turns.txt#spiritual_wound_private_roots_v1",
+        "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_wound_dependent_frontiers_v1"
+      ],
+      "notes": "Private mechanics, not a player pending request. Signed original presence and accepted-plan rollback inventory must preserve exact bytes or absence; hashes do not grant authority."
+    },
+    {
+      "path": "game_state/control/pending_spiritual_wound_decisions.json",
+      "surfaceType": "private_mechanics_pending",
+      "owner": "spiritual_wound_decisions",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "Client-owned unfinished spiritual decision evidence; GM must not write.",
+      "privateMechanics": true,
+      "emptyWrapperSemantics": "schemaVersion=1 with pending=null is empty; absent file remains absent in snapshots.",
+      "malformedBehavior": "Owning strict parser rejects malformed evidence; generic GM JSON repair must not rewrite it.",
+      "blockerBehavior": "Derived committed C2 projection; staging pendingSubmission does not advance it. A stale or damaged projection must be recovered from genuine checkpoint replay before another choice.",
+      "closureSurface": "The internal common accepted publisher consumes the packet; no GM closure command or implied live dispatch.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_wound_private_roots_v1",
+        "Examples/E_CLI_Afterlife_Turns.txt#spiritual_wound_private_roots_v1"
+      ],
+      "notes": "Private mechanics, not player pending requests. Snapshot preserves exact bytes/existence; hashes do not grant authority."
+    },
+    {
+      "path": "game_state/wounds/spiritual_wound_opportunity_receipts.json",
+      "surfaceType": "private_mechanics_receipts",
+      "owner": "spiritual_wound_receipts",
+      "realm": "Chaos Sea|Shining Abode",
+      "authority": "Client-owned append-only accepted spiritual decision history; GM must not write.",
+      "privateMechanics": true,
+      "emptyWrapperSemantics": "schemaVersion=1, all four next ordinals=1, instances/closures/sources/decisions empty; absent file remains absent.",
+      "malformedBehavior": "Owning strict parser rejects malformed history; generic GM JSON repair must not rewrite it.",
+      "blockerBehavior": "C1 registers topology only; no live receipt writer is enabled.",
+      "closureSurface": "Terminal closure appends a row; it does not mutate or remove earlier history.",
+      "docAnchors": [
+        "OtherGuides/Afterlife_Contract_Matrix.md#spiritual_wound_private_roots_v1",
+        "Examples/E_CLI_Afterlife_Turns.txt#spiritual_wound_private_roots_v1"
+      ],
+      "notes": "Private mechanics, not player pending requests; no publication authority follows from registration or hashes. New signed snapshots observe this path in originalPathPresenceV1; first-offer admission requires signed bytes or signed absence separately from physical draft and rollback images."
+    },
+    {
       "path": "game_state/meta/afterlife_spiritual_conflict_state.json",
       "surfaceType": "meta_state_with_response_wrapper",
       "owner": "afterlife_spiritual_conflict",
@@ -669,6 +721,14 @@
     {
       "path": "game_state/control/pending_effect_resolutions.json",
       "reason": "Reserved by issue #1535 Tasks T043/T049-T050 for a later bounded effect-resolution lifecycle slice; Task 7 has no runtime writer, validator, receipt consumer, or GM-facing pending contract yet."
+    },
+    {
+      "path": "game_state/control/pending_wound_resolutions.json",
+      "reason": "Reserved by issue #1536 for later bounded wound-resolution and healing lifecycle tasks; the foundational snapshot contract has no runtime writer, resolver, receipt consumer, status surface, or GM-facing pending contract yet."
+    },
+    {
+      "path": "game_state/control/pending_mortal_wound_occurrences.json",
+      "reason": "Client-owned Mortal World occurrence authority for issue #1536. It is sealed into accepted-turn snapshots and is neither an afterlife gameplay contract nor a GM-authored/status-audit surface."
     },
     {
       "path": "game_state/control/gm_cli_window_binding.json",

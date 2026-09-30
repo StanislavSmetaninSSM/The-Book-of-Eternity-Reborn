@@ -138,7 +138,14 @@ public static class GmWorkerContractValidator
 
         if (profile.Permissions.ProposalOnly && task.AllowedProposalPaths.Count > 0)
             errors.Add("proposal-only tasks must not include allowedProposalPaths.");
-        if (task.TaskType == WorkerTaskType.ValidationRepair && task.ValidationIssues.Count == 0)
+        if (task.SpiritualWoundContinuation is { } continuation)
+        {
+            errors.AddRange(SpiritualWoundContinuationProtocol.ValidateRequest(continuation));
+            if (task.TaskType != WorkerTaskType.ValidationRepair)
+                errors.Add("Spiritual wound continuation is only allowed for validation-repair tasks.");
+        }
+        if (task.TaskType == WorkerTaskType.ValidationRepair && task.ValidationIssues.Count == 0 &&
+            task.SpiritualWoundContinuation is null)
             errors.Add("validation-repair tasks must include validationIssues.");
         if (task.TaskType == WorkerTaskType.NarrativeDraft && task.DraftRequest == null)
             errors.Add("narrative-draft tasks must include draftRequest.");
@@ -228,9 +235,15 @@ public static class GmWorkerContractValidator
             errors.Add("proposal-only worker proposals must not include changedFiles.");
         if (proposal.Status != WorkerProposalStatus.Completed && proposal.ChangedFiles.Count > 0)
             errors.Add("non-completed worker proposals must not include changedFiles.");
+        var continuationErrors = SpiritualWoundContinuationProtocol.ValidateResponse(
+            task.SpiritualWoundContinuation, proposal.SpiritualWoundContinuation);
+        errors.AddRange(continuationErrors);
+        var validDecisionResponse = task.TaskType == WorkerTaskType.ValidationRepair &&
+            task.SpiritualWoundContinuation?.Phase == "decision" &&
+            proposal.SpiritualWoundContinuation is not null && continuationErrors.Count == 0;
         if (task.TaskType == WorkerTaskType.ValidationRepair &&
             proposal.Status == WorkerProposalStatus.Completed &&
-            proposal.ChangedFiles.Count == 0)
+            proposal.ChangedFiles.Count == 0 && !validDecisionResponse)
         {
             errors.Add("completed validation-repair proposals must include at least one changedFiles item.");
         }
@@ -538,7 +551,8 @@ public static class GmWorkerContractValidator
 
         foreach (var path in task.AllowedProposalPaths)
         {
-            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, path)))
+            if (!IsSpiritualContinuationNarrative(task, path) &&
+                !contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, path)))
             {
                 errors.Add(
                     $"allowedProposalPaths contains a path outside afterlifeContract.allowedAfterlifeSurfaces: {path}");
@@ -749,7 +763,8 @@ public static class GmWorkerContractValidator
         var contract = task.AfterlifeContract;
         foreach (var changedFile in proposal.ChangedFiles)
         {
-            if (!contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, changedFile.Path)))
+            if (!IsSpiritualContinuationNarrative(task, changedFile.Path) &&
+                !contract.AllowedAfterlifeSurfaces.Any(pattern => PathMatches(pattern, changedFile.Path)))
             {
                 errors.Add(
                     $"changedFiles contains a path outside task.afterlifeContract.allowedAfterlifeSurfaces: {changedFile.Path}");
@@ -1602,6 +1617,23 @@ public static class GmWorkerContractValidator
         string.Equals(value, "gm_only", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(value, "private", StringComparison.OrdinalIgnoreCase) ||
         string.Equals(value, "secret", StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>
+    /// Recognizes the sole output path allowed alongside afterlife state in explicit spiritual continuations.
+    /// </summary>
+    /// <param name="task">
+    /// Task whose continuation envelope is validated independently; this predicate grants no owner authority.
+    /// </param>
+    /// <param name="path">
+    /// Exact canonical proposal path; case aliases and other outputs are not accepted.
+    /// </param>
+    /// <returns>
+    /// <see langword="true"/> only for the existing narrative response in a continuation validation-repair task;
+    /// otherwise, <see langword="false"/>.
+    /// </returns>
+    private static bool IsSpiritualContinuationNarrative(WorkerTaskPacket task, string path) =>
+        task.TaskType == WorkerTaskType.ValidationRepair && task.SpiritualWoundContinuation is not null &&
+        string.Equals(path, "output/narrative_response.json", StringComparison.Ordinal);
 
     private static bool ContainsAll(string value, params string[] fragments) =>
         fragments.All(fragment => value.Contains(fragment, StringComparison.OrdinalIgnoreCase));

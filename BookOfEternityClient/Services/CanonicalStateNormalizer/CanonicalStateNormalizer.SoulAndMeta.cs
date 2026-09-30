@@ -41,6 +41,7 @@ public partial class CanonicalStateNormalizer
         public ProgressionControl? ProgressionControl { get; set; }
         public Dictionary<string, string> Files { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> SnapshotFileHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
+        public Dictionary<string, bool>? OriginalPathPresenceV1 { get; set; }
         public Dictionary<string, string> ClientOwnedValidationHashes { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public Dictionary<string, string> RollbackBackups { get; set; } = new(StringComparer.OrdinalIgnoreCase);
         public List<string> RollbackBaselineFiles { get; set; } = new();
@@ -55,12 +56,37 @@ public partial class CanonicalStateNormalizer
         public int TurnNumber { get; set; }
     }
 
+    /// <summary>
+    /// Projects soul updates over the previous root without writing files.
+    /// </summary>
+    /// <param name="current">
+    /// Current soul fields and admitted update envelopes.
+    /// </param>
+    /// <param name="previous">
+    /// Original soul root, or <see langword="null"/> for an empty baseline.
+    /// </param>
+    /// <param name="currentTurn">
+    /// Turn recorded by archive resolution projections.
+    /// </param>
+    /// <param name="hasCanonicalTriggerLifeEnd">
+    /// Whether lifecycle authority permits life-completion updates.
+    /// </param>
+    /// <param name="enforceStrictCanonicalRoots">
+    /// Whether canonical soul subroots must pass their strict shape guards.
+    /// </param>
+    /// <param name="projectionClock">
+    /// Optional capture-owned timestamp policy; <see langword="null"/> preserves ordinary clock reads.
+    /// </param>
+    /// <returns>
+    /// Detached normalized soul root with transient update envelopes removed.
+    /// </returns>
     internal static JsonObject BuildNormalizedSoulStateRoot(
         JsonObject current,
         JsonObject? previous,
         int currentTurn,
         bool hasCanonicalTriggerLifeEnd,
-        bool enforceStrictCanonicalRoots)
+        bool enforceStrictCanonicalRoots,
+        AcceptedTurnProjectionClock? projectionClock = null)
     {
         var result = CloneObject(previous ?? new JsonObject());
         MergeObject(result, current);
@@ -85,7 +111,7 @@ public partial class CanonicalStateNormalizer
         }
 
         if (current["metaStateUpdates"] is JsonObject updates)
-            ApplyMetaStateUpdates(result, updates, hasCanonicalTriggerLifeEnd);
+            ApplyMetaStateUpdates(result, updates, hasCanonicalTriggerLifeEnd, projectionClock);
 
         if (current.TryGetPropertyValue("afterlifeArchiveUpdates", out var archiveUpdatesNode) &&
             archiveUpdatesNode is not JsonArray)
@@ -103,7 +129,7 @@ public partial class CanonicalStateNormalizer
         }
 
         if (current["archiveActionResolutions"] is JsonArray archiveActionResolutions)
-            AfterlifeArchiveState.ApplyActionResolutions(result, archiveActionResolutions, currentTurn);
+            AfterlifeArchiveState.ApplyActionResolutions(result, archiveActionResolutions, currentTurn, projectionClock);
 
         result.Remove("metaStateUpdates");
         result.Remove("afterlifeArchiveUpdates");

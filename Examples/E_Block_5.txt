@@ -2311,41 +2311,202 @@
   </example>
  </rule>
  <rule id="5.20.4">
-  <example contenttype="log_and_json_snippet" type="good">
+  <example contenttype="strict_game_response" type="good">
    <title>
-    Example: Player receives a "Shattered Arm" Wound (Corrected for New Healing System)
+    wound_optional_creation_v1
    </title>
-   <content type="text_and_json">
+   <scenariocontext>
+    The client exposes an ordinary severity-II wound opportunity. The GM decides that the accepted event does not create an independently treatable wound.
+   </scenariocontext>
+   <content type="json">
     <![CDATA[
-
-                                    Log in 'gm_thoughts_markdown':
-                                    "Player hit by Ogre's club for 60% of max health. Inflicted 'Serious' Wound: 'Shattered Arm'.
-                                    The wound is created as its own entity. This focused creation example declares activeEffectDefinitions=[] and therefore creates no runtime effect from prose.
-                                    A later wound consequence requires a complete exact source definition and a separate effectChanges[] apply as shown in Examples/E_CLI_Effect_Materialization.txt.
-                                    Healing State initialized: 'Untreated', 0/40 progress towards 'Stabilized'. Requires First Aid, Splint, etc."
-
-                                    JSON Response Snippets:
-                                    // In 'playerWoundChanges' - THIS IS THE ONLY PLACE THE WOUND IS REPORTED
-                                    "playerWoundChanges": [{
-                                        "woundId": null, // New wound, so ID is null
-                                        "woundName": "Shattered Arm",
-                                        "severity": "Serious",
-                                        "descriptionOfEffects": "A gruesome compound fracture in the forearm renders the arm useless. The character is in shock from the pain and cannot effectively hold anything in that hand.",
-                                        "activeEffectDefinitions": [],
-                                        "healingState": {
-                                            "currentState": "Untreated",
-                                            "description": "A compound fracture is visible, with bone piercing the skin. The arm is bleeding and unnaturally bent. Immediate medical attention is required.",
-                                            "treatmentProgress": 0,
-                                            "progressNeeded": 40,
-                                            "nextState": "Stabilized",
-                                            "canBeImprovedBy": ["First Aid check", "Application of Splint", "Use of Bandages", "Minor Healing Spell"]
-                                        }
-                                    }]
-
-                                    // NOTE: no effectChanges[] command is present because this example supplied no active effect definition.
-                                    // The wound remains independently treatable; an effect removal never heals or deletes it.
-
-                                    ]]>
+{
+  "response": "Удар скользит по наплечнику, оставляя лишь краткую боль.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_optional_17",
+      "decision": "none"
+    }
+  ]
+}
+    ]]>
+   </content>
+  </example>
+  <example contenttype="strict_game_response" type="good">
+   <title>
+    wound_lower_severity_creation_v1
+   </title>
+   <scenariocontext>
+    The ordinary opportunity permits maximumSeverity=II. The GM legally chooses severity I and authors a setting-specific injury without any mechanical consequence roots.
+   </scenariocontext>
+   <content type="json">
+    <![CDATA[
+{
+  "response": "Осколок рассекает вам щёку. На коже остаётся неглубокий, но болезненный порез.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_lower_18",
+      "decision": "materialize",
+      "woundRef": "cheek_cut_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Неглубокая резаная травма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "левая щека"
+          }
+        },
+        "display": {
+          "name": "Порез на щеке",
+          "description": "Неглубокий порез саднит при движении лица.",
+          "visibleSymptoms": ["тонкая полоса крови", "жжение"],
+          "prognosis": "Заживёт после очистки и защиты от загрязнения.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Осколок рассекает вам щёку. На коже остаётся неглубокий, но болезненный порез."
+        },
+        "severity": "I",
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 2,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      }
+    }
+  ]
+}
+    ]]>
+   </content>
+  </example>
+  <example contenttype="strict_game_response" type="good">
+   <title>
+    wound_guaranteed_creation_v1
+   </title>
+   <scenariocontext>
+    A pre-materialized source guarantees a severity-II physical wound. The GM must materialize that guaranteed result, while retaining freedom over its setting-appropriate fiction. wound_mortal_deterioration_policy_v1 is shown as one exact setting-authored strictly-worsening policy.
+   </scenariocontext>
+   <content type="json">
+    <![CDATA[
+{
+  "response": "Клеймо вспыхивает и прожигает вам ладонь до глубоких тканей. Пальцы сводит от резкой боли.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_guaranteed_19",
+      "decision": "materialize",
+      "woundRef": "brand_burn_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Глубокий ожог от клейма",
+          "locationProfile": {
+            "kind": "anatomical",
+            "readableLocus": "правая ладонь"
+          }
+        },
+        "display": {
+          "name": "Ожог клейма",
+          "description": "Обожжённые ткани болезненно стягивают ладонь.",
+          "visibleSymptoms": ["почерневший рисунок клейма", "сведённые пальцы"],
+          "prognosis": "Требует охлаждения, защиты и дальнейшего лечения.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Клеймо вспыхивает и прожигает вам ладонь до глубоких тканей. Пальцы сводит от резкой боли."
+        },
+        "severity": "II",
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 4,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": {"policyRef":"untreated_brand_inflammation","unmetConditions":["not_stabilized"],"graceMinutes":720,"cadenceMinutes":1440,"result":{"kind":"increase_severity"}}
+        }
+      }
+    }
+  ]
+}
+    ]]>
+   </content>
+  </example>
+  <example contenttype="strict_game_response" type="bad">
+   <title>
+    wound_rejected_creation_v1 — INVALID
+   </title>
+   <scenariocontext>
+    INVALID: the ordinary opportunity permits maximumSeverity=I, but the GM proposes severity III. The client rejects the entire wound/effect/history/output publication and reports the legal range.
+   </scenariocontext>
+   <content type="json">
+    <![CDATA[
+{
+  "response": "Неверный пример не публикуется.",
+  "woundDecisions": [
+    {
+      "opportunityRef": "wound_opportunity_rejected_20",
+      "decision": "materialize",
+      "woundRef": "overpowered_wound_local",
+      "proposal": {
+        "classification": {
+          "woundType": "Несоразмерная травма",
+          "locationProfile": {
+            "kind": "other",
+            "readableLocus": "всё тело"
+          }
+        },
+        "display": {
+          "name": "Несоразмерная травма",
+          "description": "Эта тяжесть противоречит принятому событию.",
+          "visibleSymptoms": ["невалидный пример"],
+          "prognosis": "Не публикуется.",
+          "visibility": "known_to_player",
+          "acquisitionNarration": "Неверный пример не публикуется."
+        },
+        "severity": "III",
+        "complications": [],
+        "consequenceDefinitions": [],
+        "treatment": {
+          "diagnosisPaths": [],
+          "routes": [],
+          "knownRouteIds": [],
+          "completedRouteIds": []
+        },
+        "recovery": {
+          "mode": "requires_stabilization",
+          "clockKind": "mortal_world_time",
+          "cadence": 86400,
+          "currentStepProgress": 0,
+          "currentStepThreshold": 5,
+          "lastTickKey": null,
+          "blockers": ["not_stabilized"],
+          "carryOverflow": true,
+          "deteriorationPolicy": null
+        }
+      }
+    }
+  ]
+}
+    ]]>
    </content>
   </example>
  </rule>

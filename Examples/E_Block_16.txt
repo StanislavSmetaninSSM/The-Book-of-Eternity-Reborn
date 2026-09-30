@@ -93,11 +93,10 @@
                             - Сопротивление Гоблина (Рубящий урон): 0%.
                             - Финальный Урон по Цели: round(68% * (1 - 0/100)) = 68%
 
-                            ## 4. Применение Эффектов от Значительного Урона (Правило #5.20.3)
-                            - Максимальное здоровье Гоблина: 91%.
-                            - Процент нанесенного урона: (68 / 91) * 100 ≈ 74.7%.
-                            - Проверка: 74.7% > Порог 2 (45%). Применяется значительный дебафф.
-                            - Эффект: request effectChanges[].apply from combat_action/action_critical_hit_trauma/critical-hit-trauma against the exact goblin target and accepted eventRef. Its complete source definition owns the characteristic_modifier magnitude and turns lifetime; the client publishes the carrier and accepted contribution.
+                            ## 4. Отдельный временный эффект (Правило #5.20.3)
+                            - Принятое событие критического удара связано с зарегистрированным источником combat_action/action_valerius_sword_strike/critical-trauma.
+                            - Эффект: request effectChanges[].apply against the exact goblin target and accepted eventRef. Its complete source definition owns the characteristic_modifier magnitude and turns lifetime; the client publishes the carrier and accepted contribution.
+                            - Этот дебафф не является самостоятельной раной и не создаёт её. Если клиент отдельно экспонирует wound opportunity, ГМ отвечает на неё через woundDecisions[]; в этом примере такой возможности нет.
 
                             Итоговая интерпретация: Критический успех атаки игрока наносит 68% урона и накладывает на гоблина дебафф "Тяжело ранен". Здоровье гоблина: 91% - 68% = 23%.
                             Энергия игрока: -5 (стандартная атака).

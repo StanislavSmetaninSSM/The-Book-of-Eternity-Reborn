@@ -404,6 +404,39 @@ internal static class MortalResourceOwnerComposer
         }
     }
 
+    /// <summary>
+    /// Validates vehicle continuity and creates ordinary owners from admitted same-turn references.
+    /// </summary>
+    /// <param name="preTurnRoot">
+    /// Original canonical vehicle collection.
+    /// </param>
+    /// <param name="root">
+    /// Current vehicle collection and transient update commands.
+    /// </param>
+    /// <param name="definitions">
+    /// Resource definitions used for owner and materialization validation.
+    /// </param>
+    /// <param name="preTurnExports">
+    /// Destination for existing owner exports.
+    /// </param>
+    /// <param name="sameTurnExports">
+    /// Destination for admitted new owner exports.
+    /// </param>
+    /// <param name="historicalOwners">
+    /// Destination for owners removed by validated lifecycle commands.
+    /// </param>
+    /// <param name="companionAfterImages">
+    /// Destination for the projected canonical vehicle root.
+    /// </param>
+    /// <param name="identityFactory">
+    /// Allocation policy receiving each admitted exact vehicle reference.
+    /// </param>
+    /// <param name="materializationCandidates">
+    /// Destination for new owners' resource initialization proposals.
+    /// </param>
+    /// <param name="issues">
+    /// Shared diagnostics; detected errors stop this composition path.
+    /// </param>
     private static void ComposeVehicleOwners(
         JsonObject preTurnRoot,
         JsonObject root,
@@ -617,7 +650,7 @@ internal static class MortalResourceOwnerComposer
                     continue;
                 }
 
-                var vehicleId = identityFactory.CreateVehicleId();
+                var vehicleId = identityFactory.CreateVehicleId(vehicleRef);
                 if (!ResourceMaterializationContract.IsExactIdentifier(vehicleId) ||
                     !exact.Add(vehicleId) ||
                     !confusable.Add(ResourceMaterializationContract.BuildConfusableKey(vehicleId)))
@@ -1146,133 +1179,174 @@ internal static class MortalResourceOwnerComposer
     {
         var preTurnIds = new HashSet<string>(StringComparer.Ordinal);
         var ownerAliases = new HashSet<string>(StringComparer.Ordinal);
+        var preTurnCopies = new Dictionary<string, (HashSet<string> Sections, JsonObject Npc)>(StringComparer.Ordinal);
+        var preTurnAliasIds = new Dictionary<string, string>(StringComparer.Ordinal);
         var index = 0;
-        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(preTurnRoot))
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
         {
-            var path = $"game_state/npcs/npc_core.json.preTurnNpcs[{index++}].NPCId";
-            if (!TryReadExact(npc["NPCId"], out var npcId))
-            {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_npc_id_invalid",
-                    "one exact permanent NPCId",
-                    Describe(npc["NPCId"]));
+            if (preTurnRoot[section] is not JsonArray rows)
                 continue;
-            }
-
-            if (!preTurnIds.Add(npcId) ||
-                !ownerAliases.Add(ResourceMaterializationContract.BuildConfusableKey(npcId)))
+            foreach (var npc in rows.OfType<JsonObject>())
             {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_npc_identity_ambiguous",
-                    "one exact/confusable-unique canonical NPC identity",
-                    npcId);
-                continue;
-            }
-            RejectLegacyResourceValues(
-                npc,
-                path,
-                new[] { "currentHealthPercentage", "maxHealthPercentage" },
-                issues);
-            RejectExistingMaterialization(npc, path, issues);
-        }
-
-        var acceptedIds = new HashSet<string>(StringComparer.Ordinal);
-        var sameTurnRefs = new HashSet<string>(StringComparer.Ordinal);
-        var sameTurnAliases = new HashSet<string>(StringComparer.Ordinal);
-        index = 0;
-        foreach (var npc in GuardianPolicyContracts.EnumerateCanonicalNpcObjects(acceptedRoot))
-        {
-            var path = $"game_state/npcs/npc_core.json.npcs[{index++}]";
-            if (TryReadExact(npc["NPCId"], out var npcId))
-            {
-                if (!preTurnIds.Contains(npcId))
+                var path = $"game_state/npcs/npc_core.json.{section}[{index++}].NPCId";
+                if (!TryReadExact(npc["NPCId"], out var npcId))
                 {
                     Add(
                         issues,
-                        path + ".NPCId",
-                        "resource_owner_npc_preassigned_id_forbidden",
-                        "exact validated pre-turn NPCId or same-turn initialId",
-                        npcId);
+                        path,
+                        "resource_owner_npc_id_invalid",
+                        "one exact permanent NPCId",
+                        Describe(npc["NPCId"]));
                     continue;
                 }
-                if (!acceptedIds.Add(npcId))
-                    continue;
 
+                var alias = ResourceMaterializationContract.BuildConfusableKey(npcId);
+                if (preTurnAliasIds.TryGetValue(alias, out var previousId))
+                {
+                    var previous = preTurnCopies[previousId];
+                    if (!string.Equals(previousId, npcId, StringComparison.Ordinal) ||
+                        !previous.Sections.Add(section) ||
+                        !JsonNode.DeepEquals(previous.Npc, npc))
+                    {
+                        Add(
+                            issues,
+                            path,
+                            "resource_owner_npc_identity_ambiguous",
+                            "one exact NPC row per carrier and one semantically identical cross-carrier mirror",
+                            npcId);
+                    }
+                    continue;
+                }
+                preTurnAliasIds.Add(alias, npcId);
+                preTurnCopies.Add(
+                    npcId,
+                    (new HashSet<string>(StringComparer.Ordinal) { section }, npc));
+                preTurnIds.Add(npcId);
+                ownerAliases.Add(alias);
                 RejectLegacyResourceValues(
                     npc,
                     path,
                     new[] { "currentHealthPercentage", "maxHealthPercentage" },
                     issues);
                 RejectExistingMaterialization(npc, path, issues);
-                preTurnExports.Add(CreateExport(
+            }
+        }
+
+        var acceptedIds = new HashSet<string>(StringComparer.Ordinal);
+        var sameTurnRefs = new HashSet<string>(StringComparer.Ordinal);
+        var sameTurnAliases = new HashSet<string>(StringComparer.Ordinal);
+        var acceptedPermanentCopies = new Dictionary<string, (HashSet<string> Sections, JsonObject Npc)>(StringComparer.Ordinal);
+        index = 0;
+        foreach (var section in GuardianPolicyContracts.NpcCoreCanonicalNpcObjectSections)
+        {
+            if (acceptedRoot[section] is not JsonArray rows)
+                continue;
+            foreach (var npc in rows.OfType<JsonObject>())
+            {
+                var path = $"game_state/npcs/npc_core.json.{section}[{index++}]";
+                if (TryReadExact(npc["NPCId"], out var npcId))
+                {
+                    if (!preTurnIds.Contains(npcId))
+                    {
+                        Add(
+                            issues,
+                            path + ".NPCId",
+                            "resource_owner_npc_preassigned_id_forbidden",
+                            "exact validated pre-turn NPCId or same-turn initialId",
+                            npcId);
+                        continue;
+                    }
+                    if (acceptedPermanentCopies.TryGetValue(npcId, out var previous))
+                    {
+                        if (!previous.Sections.Add(section) ||
+                            !JsonNode.DeepEquals(previous.Npc, npc))
+                        {
+                            Add(
+                                issues,
+                                path + ".NPCId",
+                                "resource_owner_npc_identity_ambiguous",
+                                "one exact NPC row per carrier and one semantically identical cross-carrier mirror",
+                                npcId);
+                        }
+                        continue;
+                    }
+                    acceptedPermanentCopies.Add(
+                        npcId,
+                        (new HashSet<string>(StringComparer.Ordinal) { section }, npc));
+                    acceptedIds.Add(npcId);
+
+                    RejectLegacyResourceValues(
+                        npc,
+                        path,
+                        new[] { "currentHealthPercentage", "maxHealthPercentage" },
+                        issues);
+                    RejectExistingMaterialization(npc, path, issues);
+                    preTurnExports.Add(CreateExport(
+                        definitions,
+                        ResourceOwnerKind.Npc,
+                        npcId));
+                    continue;
+                }
+
+                var hasNullNpcId = npc.TryGetPropertyValue("NPCId", out var npcIdNode) &&
+                                   npcIdNode == null;
+                if (!hasNullNpcId || !TryReadExact(npc["initialId"], out var initialId))
+                {
+                    Add(
+                        issues,
+                        path,
+                        "resource_owner_npc_id_invalid",
+                        "pre-turn permanent NPCId or NPCId null plus exact same-turn initialId",
+                        npc.ToJsonString());
+                    continue;
+                }
+
+                var alias = ResourceMaterializationContract.BuildConfusableKey(initialId);
+                if (!sameTurnRefs.Add(initialId) ||
+                    !sameTurnAliases.Add(alias) ||
+                    ownerAliases.Contains(alias))
+                {
+                    Add(
+                        issues,
+                        path + ".initialId",
+                        "resource_owner_npc_same_turn_identity_ambiguous",
+                        "one exact/confusable-unique same-turn NPC initialId",
+                        initialId);
+                    continue;
+                }
+
+                acceptedIds.Add(initialId);
+                sameTurnNpcIdsByRef.Add(initialId, initialId);
+                var export = CreateExport(
                     definitions,
                     ResourceOwnerKind.Npc,
-                    npcId));
-                continue;
-            }
-
-            var hasNullNpcId = npc.TryGetPropertyValue("NPCId", out var npcIdNode) &&
-                               npcIdNode == null;
-            if (!hasNullNpcId || !TryReadExact(npc["initialId"], out var initialId))
-            {
-                Add(
-                    issues,
-                    path,
-                    "resource_owner_npc_id_invalid",
-                    "pre-turn permanent NPCId or NPCId null plus exact same-turn initialId",
-                    npc.ToJsonString());
-                continue;
-            }
-
-            var alias = ResourceMaterializationContract.BuildConfusableKey(initialId);
-            if (!sameTurnRefs.Add(initialId) ||
-                !sameTurnAliases.Add(alias) ||
-                ownerAliases.Contains(alias))
-            {
-                Add(
-                    issues,
-                    path + ".initialId",
-                    "resource_owner_npc_same_turn_identity_ambiguous",
-                    "one exact/confusable-unique same-turn NPC initialId",
+                    initialId,
+                    sameTurn: true,
                     initialId);
-                continue;
-            }
-
-            acceptedIds.Add(initialId);
-            sameTurnNpcIdsByRef.Add(initialId, initialId);
-            var export = CreateExport(
-                definitions,
-                ResourceOwnerKind.Npc,
-                initialId,
-                sameTurn: true,
-                initialId);
-            sameTurnExports.Add(export);
-            RejectLegacyResourceValues(
-                npc,
-                path,
-                new[] { "currentHealthPercentage", "maxHealthPercentage" },
-                issues);
-            var expectedMaterialization =
-                (npc["resourceMaterialization"] as JsonObject)?.DeepClone().AsObject();
-            CaptureMaterializationCandidate(
-                npc,
-                path,
-                export.Key,
-                initialId,
-                new[] { "health" },
-                materializationCandidates,
-                issues);
-            if (expectedMaterialization != null)
-            {
-                ownerTransitions.Add(
-                    AcceptedMechanicsOwnerTransition.CreateMortalNpcCreation(
-                        initialId,
-                        initialId,
-                        expectedMaterialization));
+                sameTurnExports.Add(export);
+                RejectLegacyResourceValues(
+                    npc,
+                    path,
+                    new[] { "currentHealthPercentage", "maxHealthPercentage" },
+                    issues);
+                var expectedMaterialization =
+                    (npc["resourceMaterialization"] as JsonObject)?.DeepClone().AsObject();
+                CaptureMaterializationCandidate(
+                    npc,
+                    path,
+                    export.Key,
+                    initialId,
+                    new[] { "health" },
+                    materializationCandidates,
+                    issues);
+                if (expectedMaterialization != null)
+                {
+                    ownerTransitions.Add(
+                        AcceptedMechanicsOwnerTransition.CreateMortalNpcCreation(
+                            initialId,
+                            initialId,
+                            expectedMaterialization));
+                }
             }
         }
         return acceptedIds;
