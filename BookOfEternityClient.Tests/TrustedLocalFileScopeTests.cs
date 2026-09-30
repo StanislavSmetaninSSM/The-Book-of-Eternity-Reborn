@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using BookOfEternityClient.Core;
 using Xunit;
 
@@ -94,13 +95,17 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
     }
 
     [Fact]
-    public void ValidateFile_RejectsNonRegularSocketWithoutOpeningIt()
+    public void ValidateFile_RejectsNonRegularEntryWithoutOpeningIt()
     {
         var socketPath = Path.Combine(_root, "s.sock");
-        using var socket = new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
-        socket.Bind(new UnixDomainSocketEndPoint(socketPath));
+        using var socket = OperatingSystem.IsLinux() ? null :
+            new Socket(AddressFamily.Unix, SocketType.Stream, ProtocolType.Unspecified);
+        if (OperatingSystem.IsLinux())
+            Assert.Equal(0, CreateFifo(socketPath, 0x180));
+        else
+            socket!.Bind(new UnixDomainSocketEndPoint(socketPath));
         Assert.Throws<InvalidDataException>(() => Scope().ValidateFile(socketPath));
-        Assert.True(socket.IsBound);
+        Assert.True(File.Exists(socketPath));
     }
 
     [Fact]
@@ -185,6 +190,9 @@ public sealed class TrustedLocalFileScopeTests : IDisposable
         Assert.True(Directory.Exists(_root));
         Assert.True(Directory.Exists(_outside));
     }
+
+    [DllImport("libc", EntryPoint = "mkfifo", SetLastError = true, CharSet = CharSet.Ansi)]
+    private static extern int CreateFifo(string path, uint mode);
 
     public void Dispose()
     {
