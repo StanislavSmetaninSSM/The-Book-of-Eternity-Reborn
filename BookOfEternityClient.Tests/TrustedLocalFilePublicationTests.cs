@@ -240,8 +240,8 @@ public sealed class TrustedLocalFilePublicationTests : IDisposable
     public async Task Recover_RetainsInvalidJournalAndLeavesOldFormatSeparate()
     {
         var old = Path.Combine(_files.PhysicalPublicationTransactionsRootPath, "old.json");
-        Directory.CreateDirectory(Path.GetDirectoryName(old)!); File.WriteAllText(old, "old evidence");
         await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Directory.CreateDirectory(Path.GetDirectoryName(old)!); File.WriteAllText(old, "old evidence");
         Directory.CreateDirectory(Journal); File.WriteAllText(Active, "{\"Format\":1,\"Format\":1}");
         Assert.Throws<InvalidDataException>(() => Publisher().Recover(lease));
         Assert.Equal("{\"Format\":1,\"Format\":1}", File.ReadAllText(Active));
