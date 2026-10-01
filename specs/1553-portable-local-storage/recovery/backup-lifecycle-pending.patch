@@ -1,8 +1,74 @@
+diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
+index 70079f9d..4dc1ce30 100644
+--- a/BookOfEternityClient/Core/FileSystemManager.cs
++++ b/BookOfEternityClient/Core/FileSystemManager.cs
+@@ -5636,14 +5636,12 @@ public partial class FileSystemManager
+ 
+     public async Task<string?> CreateBackupAsync(string relativePath)
+     {
+-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+-        return CreateBackupCore(relativePath);
++        return await WithOwnedBackupLeaseAsync(lease => CreateBackupWithLeaseAsync(lease, relativePath));
+     }
+ 
+     internal string? CreateBackup(CanonicalWriteLease writeLease, string relativePath)
+     {
+-        EnsureValidCanonicalWriteLease(writeLease);
+-        return CreateBackupCore(relativePath);
++        return CreateBackupWithLeaseAsync(writeLease, relativePath).GetAwaiter().GetResult();
+     }
+ 
+     private string? CreateBackupCore(string relativePath)
+@@ -5666,8 +5664,11 @@ public partial class FileSystemManager
+ 
+     public async Task RestoreBackupAsync(string backupFullPath, string originalRelativePath)
+     {
+-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+-        RestoreBackupCore(backupFullPath, originalRelativePath);
++        await WithOwnedBackupLeaseAsync(async lease =>
++        {
++            await RestoreBackupWithLeaseAsync(lease, backupFullPath, originalRelativePath);
++            return true;
++        });
+     }
+ 
+     internal void RestoreBackup(
+@@ -5675,8 +5676,7 @@ public partial class FileSystemManager
+         string backupFullPath,
+         string originalRelativePath)
+     {
+-        EnsureValidCanonicalWriteLease(writeLease);
+-        RestoreBackupCore(backupFullPath, originalRelativePath);
++        RestoreBackupWithLeaseAsync(writeLease, backupFullPath, originalRelativePath).GetAwaiter().GetResult();
+     }
+ 
+     private void RestoreBackupCore(string backupFullPath, string originalRelativePath)
+@@ -5701,14 +5701,16 @@ public partial class FileSystemManager
+ 
+     public async Task CleanupBackupAsync(string backupFullPath)
+     {
+-        await using var writeLock = await AcquireCanonicalWriteLeaseAsync();
+-        CleanupBackupCore(backupFullPath);
++        await WithOwnedBackupLeaseAsync(async lease =>
++        {
++            await CleanupBackupWithLeaseAsync(lease, backupFullPath);
++            return true;
++        });
+     }
+ 
+     internal void CleanupBackup(CanonicalWriteLease writeLease, string backupFullPath)
+     {
+-        EnsureValidCanonicalWriteLease(writeLease);
+-        CleanupBackupCore(backupFullPath);
++        CleanupBackupWithLeaseAsync(writeLease, backupFullPath).GetAwaiter().GetResult();
+     }
+ 
+     private void CleanupBackupCore(string backupFullPath)
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..4f8bddf3 100644
+index 0a621b60..73b498c3 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,66 @@
+@@ -1,6 +1,92 @@
  {
    "schemaVersion": 1,
    "categories": [
@@ -66,402 +132,32 @@ index 0a621b60..4f8bddf3 100644
 +        }
 +      ]
 +    },
-     {
-       "id": "portable-directory-uncertain-consumer",
-       "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
-@@ -1230,34 +1290,88 @@
-       "id": "spiritual-staged-recovery-before-ready",
-       "responsibility": "Cold recovery after the real A draft write but before A Ready; require the original A response before B and publish once.",
-       "excludes": "Recovery after authenticated Ready or issued B, worker transport, and unrelated turn lifecycles.",
--      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
--      "related": [{"id": "spiritual-staged-recovery-ready", "when": "The change affects authentication or recovery of already-written A transport."}],
--      "requirements": {"frontendBuild": false, "exclusive": true},
++    {
++      "id": "portable-backup-publication",
++      "responsibility": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
++      "excludes": "Whole StateDistributor/QTE atomicity, original physical evidence, archive/load and external profiles.",
 +      "changeHints": [
-+        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
 +      ],
-+      "related": [
-+        {
-+          "id": "spiritual-staged-recovery-ready",
-+          "when": "The change affects authentication or recovery of already-written A transport."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 15,
-       "expectedSeconds": null,
--      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB"]}]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAApplyRequiresAReadyThenB"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-staged-recovery-ready",
-       "responsibility": "Cold recovery with the original A Ready already present; authenticate A before a separate B response.",
-       "excludes": "Pre-Ready draft recovery, already-issued B recovery, worker transport, and unrelated turn lifecycles.",
--      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
--      "related": [{"id": "spiritual-staged-recovery-issued-successor", "when": "The change alters accepted A preservation or successor request recovery."}],
--      "requirements": {"frontendBuild": false, "exclusive": true},
-+      "changeHints": [
-+        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-staged-recovery-issued-successor",
-+          "when": "The change alters accepted A preservation or successor request recovery."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 15,
-       "expectedSeconds": null,
--      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB"]}]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterAReadyAuthenticatesBeforeB"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-staged-recovery-issued-successor",
-       "responsibility": "Cold recovery after B request publication; preserve accepted A and the saved wound, require B Ready, and publish once.",
-       "excludes": "Earlier A draft/Ready cuts, worker transport, and unrelated turn lifecycles.",
--      "changeHints": ["BookOfEternityClient/Core/GameEngine/*Spiritual*", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"],
--      "related": [{"id": "spiritual-cutover-staged-publication", "when": "The change alters private progress write/readback or staged publication ownership."}],
--      "requirements": {"frontendBuild": false, "exclusive": true},
-+      "changeHints": [
-+        "BookOfEternityClient/Core/GameEngine/*Spiritual*",
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependent*"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-cutover-staged-publication",
-+          "when": "The change alters private progress write/readback or staged publication ownership."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 15,
-       "expectedSeconds": null,
--      "selectors": [{"project": "integration", "tests": ["BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA"]}]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualStagedContinuation_ColdAfterBPublicationRetainsA"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "turn-lifecycle-spiritual",
-@@ -7429,56 +7543,113 @@
-         "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs"
-       ],
-       "related": [
--        { "id": "spiritual-cutover-c2-replay", "when": "The change affects saved-decision replay or generic position/cost correction compatibility." },
--        { "id": "spiritual-cutover-staged-publication", "when": "The change affects durable A/B progress or continuation publication ownership." }
-+        {
-+          "id": "spiritual-cutover-c2-replay",
-+          "when": "The change affects saved-decision replay or generic position/cost correction compatibility."
-+        },
-+        {
-+          "id": "spiritual-cutover-staged-publication",
-+          "when": "The change affects durable A/B progress or continuation publication ownership."
-+        }
-       ],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 5,
-       "expectedSeconds": null,
-       "selectors": [
--        { "project": "integration", "tests": [
--          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult"
--        ] }
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingLosesLeverageRequestsExactFailedResult"
-+          ]
-+        }
-       ]
-     },
-     {
-       "id": "spiritual-binding-control-boundaries",
-       "responsibility": "Exact control presence/value and effective raw carrier precedence for bounded failed-binding and terminal correction groups.",
-       "excludes": "Original-owner admission, resource execution and live continuation publication.",
--      "changeHints": ["BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"],
--      "related": [{ "id": "spiritual-binding-wrapper-control", "when": "Raw carrier interpretation changes." }],
--      "requirements": { "frontendBuild": false, "exclusive": false },
-+      "changeHints": [
-+        "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-binding-wrapper-control",
-+          "when": "Raw carrier interpretation changes."
-+        }
-+      ],
++      "related": [],
 +      "requirements": {
 +        "frontendBuild": false,
 +        "exclusive": false
 +      },
-       "timeoutMinutes": 2,
-       "expectedSeconds": null,
--      "selectors": [{ "project": "unit", "tests": [
--        "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.*"
--      ] }]
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
 +      "selectors": [
 +        {
 +          "project": "unit",
 +          "tests": [
-+            "BookOfEternityClient.Tests.SpiritualBindingCorrectionBoundaryTests.*"
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision"
 +          ]
 +        }
 +      ]
-     },
++    },
      {
-       "id": "spiritual-binding-live-publication",
-       "responsibility": "Original GameEngine binding turn with three actual file-GM responses, final-control closure and once-only resource/wound/story publication.",
-       "excludes": "Cold force-binding recovery and unrelated spiritual lifecycle matrices.",
--      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs"],
--      "related": [{ "id": "spiritual-binding-final-control", "when": "Private A/B admission or progress replay changes." }],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "changeHints": [
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2DependentWalk.cs"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-binding-final-control",
-+          "when": "Private A/B admission or progress replay changes."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 12,
-       "expectedSeconds": null,
--      "selectors": [{ "project": "integration", "tests": [
--        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce"
--      ] }]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_FileRepliesPublishOnce"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-binding-cold-publication",
-       "responsibility": "Force-binding original GameEngine turn interrupted after accepted A and B publication, requiring a distinct final Ready after restart and publishing once.",
-       "excludes": "Other restart cuts, worker processes and general continuation matrices.",
--      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs"],
--      "related": [{ "id": "spiritual-binding-live-publication", "when": "Shared live binding completion changes." }],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "changeHints": [
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2SavedReplay.cs"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-binding-live-publication",
-+          "when": "Shared live binding completion changes."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 15,
-       "expectedSeconds": null,
--      "selectors": [{ "project": "integration", "tests": [
--        "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady"
--      ] }]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.SpiritualBindingContinuation_ColdAfterARequiresFinalReady"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-binding-wrapper-control",
-@@ -7489,15 +7660,24 @@
-         "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"
-       ],
-       "related": [
--        { "id": "spiritual-binding-final-control", "when": "Shared terminal continuation or private progress rules change." }
-+        {
-+          "id": "spiritual-binding-final-control",
-+          "when": "Shared terminal continuation or private progress rules change."
-+        }
-       ],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 5,
-       "expectedSeconds": null,
-       "selectors": [
--        { "project": "integration", "tests": [
--          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl"
--        ] }
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_ForceBindingWrapperClosesAThenFinalControl"
-+          ]
-+        }
-       ]
-     },
-     {
-@@ -7510,16 +7690,28 @@
-         "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs"
-       ],
-       "related": [
--        { "id": "spiritual-binding-result-dependency", "when": "Original legality, result permissions or mixed-cost arithmetic changes." },
--        { "id": "spiritual-cutover-staged-publication", "when": "Shared sequential walk, progress journal or continuation evaluation changes." }
-+        {
-+          "id": "spiritual-binding-result-dependency",
-+          "when": "Original legality, result permissions or mixed-cost arithmetic changes."
-+        },
-+        {
-+          "id": "spiritual-cutover-staged-publication",
-+          "when": "Shared sequential walk, progress journal or continuation evaluation changes."
-+        }
-       ],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 5,
-       "expectedSeconds": null,
-       "selectors": [
--        { "project": "integration", "tests": [
--          "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl"
--        ] }
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualC2_LastBindingClosesAThenSeparatelyCorrectsFinalControl"
-+          ]
-+        }
-       ]
-     },
-     {
-@@ -7661,8 +7853,14 @@
-         "BookOfEternityClient/Services/Afterlife*"
-       ],
-       "related": [
--        { "id": "spiritual-frontier-admission", "when": "Changes affect issued draft permissions or private-pair affinity." },
--        { "id": "spiritual-frontier-response-evaluation", "when": "Changes affect response classification or transition from accepted A to issued B." }
-+        {
-+          "id": "spiritual-frontier-admission",
-+          "when": "Changes affect issued draft permissions or private-pair affinity."
-+        },
-+        {
-+          "id": "spiritual-frontier-response-evaluation",
-+          "when": "Changes affect response classification or transition from accepted A to issued B."
-+        }
-       ],
-       "requirements": {
-         "frontendBuild": false,
-@@ -7684,28 +7882,61 @@
-       "id": "spiritual-frontier-admission",
-       "responsibility": "Issued A rejects future or invalid critical edits and replacement of its private checkpoint/pending pair.",
-       "excludes": "Progress persistence, complete A/B response evaluation and final GameEngine publication.",
--      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2Dependent*", "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"],
--      "related": [{ "id": "spiritual-frontier-response-evaluation", "when": "Changed admission rules affect a complete corrected response." }],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "changeHints": [
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualC2Dependent*",
-+        "BookOfEternityClient/Services/SpiritualWoundDependentDraftPolicy.cs"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-frontier-response-evaluation",
-+          "when": "Changed admission rules affect a complete corrected response."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 5,
-       "expectedSeconds": null,
--      "selectors": [{ "project": "integration", "tests": [
--        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsFutureAndInvalidCriticalDrafts",
--        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsReplacementPrivatePair"
--      ] }]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsFutureAndInvalidCriticalDrafts",
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_IssuedARejectsReplacementPrivatePair"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-frontier-response-evaluation",
-       "responsibility": "One complete A/B protocol scenario: held witness, rejected draft, read-only progress, durable successor, stale A and resolved B without another write.",
-       "excludes": "Atomic write-failure matrix, unrelated draft admission variants and final GameEngine publication.",
--      "changeHints": ["BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs", "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs", "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs"],
--      "related": [{ "id": "spiritual-cutover-staged-publication", "when": "Changed evaluation also changes progress persistence or failure classification." }],
--      "requirements": { "frontendBuild": false, "exclusive": true },
-+      "changeHints": [
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualContinuationDraft.cs",
-+        "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs",
-+        "BookOfEternityClient/Core/GameEngine/GameEngine.SpiritualContinuation.cs"
-+      ],
-+      "related": [
-+        {
-+          "id": "spiritual-cutover-staged-publication",
-+          "when": "Changed evaluation also changes progress persistence or failure classification."
-+        }
-+      ],
-+      "requirements": {
-+        "frontendBuild": false,
-+        "exclusive": true
-+      },
-       "timeoutMinutes": 7,
-       "expectedSeconds": null,
--      "selectors": [{ "project": "integration", "tests": [
--        "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_PublicEvaluationAdvancesAThenResolvesB"
--      ] }]
-+      "selectors": [
-+        {
-+          "project": "integration",
-+          "tests": [
-+            "BookOfEternityClient.Tests.AfterlifeResourceCutoverTests.OriginalSpiritualStagedFrontier_PublicEvaluationAdvancesAThenResolvesB"
-+          ]
-+        }
-+      ]
-     },
-     {
-       "id": "spiritual-cutover-output",
+       "id": "portable-directory-uncertain-consumer",
+       "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
