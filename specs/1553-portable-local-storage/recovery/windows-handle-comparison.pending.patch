@@ -1,0 +1,79 @@
+diff --git a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+index 2931c6c1..a942b4d8 100644
+--- a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
++++ b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+@@ -5999,8 +5999,9 @@ public sealed class FileSystemManagerTests : IDisposable
+         var outsideRoot = Path.Combine(_rootPath, "opened-lock-outside");
+         var probeLink = Path.Combine(_rootPath, "opened-lock-probe");
+         Directory.CreateDirectory(outsideRoot);
+-        if (!TryCreateDirectoryLink(probeLink, outsideRoot))
+-            return;
++        Assert.True(
++            TryCreateDirectoryLink(probeLink, outsideRoot),
++            "The opened-lock path-swap scenario requires a working directory-link fixture.");
+         Directory.Delete(probeLink);
+ 
+         var swappedToOutside = false;
+diff --git a/BookOfEternityClient/Core/PhysicalFileAuthority.cs b/BookOfEternityClient/Core/PhysicalFileAuthority.cs
+index f11db901..1445bf5f 100644
+--- a/BookOfEternityClient/Core/PhysicalFileAuthority.cs
++++ b/BookOfEternityClient/Core/PhysicalFileAuthority.cs
+@@ -1552,7 +1552,7 @@ internal static class PhysicalFileAuthority
+             return;
+ 
+         var openedPath = NormalizeWindowsHandlePath(GetFinalPath(handle, flags));
+-        var normalizedExpectedPath = Path.GetFullPath(expectedPath);
++        var normalizedExpectedPath = NormalizeWindowsHandlePath(expectedPath);
+         if (!PathsEqual(openedPath, normalizedExpectedPath))
+         {
+             throw new InvalidDataException(
+diff --git a/tests/categories.json b/tests/categories.json
+index f8dd72a3..dd51f5e5 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -8231,6 +8231,45 @@
+         }
+       ]
+     },
++    {
++      "id": "portable-storage-windows-handle-comparison",
++      "responsibility": "Native Windows comparison correction: extended-root clear and lease admission, causally proven alias before-write generation fencing, original opened-external-lock path rejection and hard-linked-lock rejection. Exactly seven cases; run behavior only on Windows.",
++      "excludes": "Linux behavioral claims from gated bodies, unchanged junction-clear cohort, broad canonical storage, legacy recovery migration or any relaxation of handle/type/link identity guards.",
++      "changeHints": [
++        "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
++        "BookOfEternityClient.Tests/PortableSessionRootKeyTests.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-windows-paths",
++          "when": "The wider Windows replacement namespace or alias contract changes beyond this comparison correction."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableSessionReplacementTests.Clear_ExtendedWindowsRootPreservesExclusionsAndCanonicalMutationBoundaries",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasesShareRevisionIdentityWithoutRewritingBaseOrJournalPaths",
++            "BookOfEternityClient.Tests.PortableSessionRootKeyTests.WindowsAliasBoundWriterCannotMutateTheReplacementSessionBeforeFinalFence"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireCanonicalWriteLease_RejectsOpenedExternalLockHandleAfterPathSwap",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.AcquireSessionLifecycleLease_RejectsOpenedExternalLockHandleAfterPathSwap",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.LeaseAcquisition_RejectsHardLinkedLockFile"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "portable-storage-windows-paths",
+       "responsibility": "Exactly six Windows-only filesystem bodies: selected directory junction, lock junction/dangling node, extended-root clear boundaries, shared alias revision identity and cross-manager before-write fencing.",

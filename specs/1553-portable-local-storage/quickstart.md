@@ -2,6 +2,8 @@
 
 Source: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 
+The current Windows handle-comparison fix is WIP on the normal `a7925a18` evidence base. Apply the [small correction packet](recovery/windows-handle-comparison-pending.json) once as directed in recovery/README.md before build or verification. Linux performs discovery/PlanOnly; the parent runs exactly `-Category portable-storage-windows-handle-comparison -Parallelism 1` on Windows. The prior two failures are preserved as RED; no new behavioral GREEN is claimed.
+
 ## Restore source first
 
 ```sh

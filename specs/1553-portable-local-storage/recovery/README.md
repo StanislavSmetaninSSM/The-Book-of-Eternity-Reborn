@@ -1,5 +1,16 @@
 # Source and evidence recovery
 
+## Current Windows handle-comparison correction WIP
+
+The normal source/evidence base is `a7925a189a6bab356afdee525fb79d72eb3e4609`. Before build or native verification, apply the [exact pending correction](windows-handle-comparison-pending.json) once. It contains only the large physical-authority, two-scenario integration fixture and category deltas; the strengthened focused test and current selection are normal blobs.
+
+```sh
+git apply --check specs/1553-portable-local-storage/recovery/windows-handle-comparison.pending.patch
+git apply specs/1553-portable-local-storage/recovery/windows-handle-comparison.pending.patch
+```
+
+Verify every after-blob in the manifest; reverse `--check` identifies an already applied patch. Preserve the packet until normal delivery verifies exact bytes. Linux uses discovery/PlanOnly; actual behavioral correction evidence requires the seven-case `portable-storage-windows-handle-comparison` category on Windows. The earlier six-case native RED remains immutable, including its qualified alias-writer reported pass. No correction GREEN or B3b acceptance is claimed yet.
+
 ## Current B3b implementation WIP checkpoint
 
 The initial 15-case RED/GREEN and expanded 37-case RED ran at their recorded exact sources. Narrow caller corrections passed the affected 86-case covering selection at f38a68f6 plus its exact packet. The proposal-store RED and 30-case proposal/exact-consumer GREEN are preserved. The in-process root-key policy RED completed six cases (five intended scaffold failures, one retained Linux pass); the shared-key implementation and eleven exact existing consumers subsequently passed 17/17 at 37a56703 plus its exact packet. Fresh audit validates 121 categories / 10,340 methods or files; zero-test plans cover 123 Linux-selection cases and exactly six Windows bodies. The subsequent native run executed those six bodies at normal source `830e160df6ea4fd94b875c7c591b7aa71e9f50aa`: 4 passed, 2 failed, 0 skipped/unrun, exit 1, complete selection/owned cleanup. This remains a B3b candidate; the two Windows failures are open and acceptance is not declared.

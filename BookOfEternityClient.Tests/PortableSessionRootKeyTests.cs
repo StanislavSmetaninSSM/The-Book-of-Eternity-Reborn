@@ -89,19 +89,36 @@ public sealed class PortableSessionRootKeyTests : IDisposable
         var started = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         const string target = "game_state/core/alias-boundary.json";
+        Exception? directWriteFailure = null;
         var oldOperation = Task.Run(() => SessionOperationContext.RunBoundAsync(ordinary, generation, async () =>
         {
             started.TrySetResult();
             await release.Task;
-            await extended.WriteFileAtomicBytesAsync(target, [99]);
+            try
+            {
+                await extended.WriteFileAtomicBytesAsync(target, [99]);
+            }
+            catch (Exception exception)
+            {
+                directWriteFailure = exception;
+                throw;
+            }
         }));
         try
         {
             await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
             await ordinary.ClearGameStateAsync();
             await ordinary.WriteFileAtomicBytesAsync(target, [42]);
+            string replacementGeneration;
+            await using (var lease = await ordinary.AcquireCanonicalWriteLeaseAsync())
+                replacementGeneration = ordinary.ReadLocalGenerationSnapshot(lease).Binding.Id;
+            Assert.NotEqual(generation, replacementGeneration);
             release.TrySetResult();
             await Assert.ThrowsAsync<SessionReplacedException>(() => oldOperation.WaitAsync(TimeSpan.FromSeconds(5)));
+            // The final bound-operation fence must not conceal an earlier lease/path failure.
+            var directReplacement = Assert.IsType<SessionReplacedException>(directWriteFailure);
+            Assert.Equal(generation, directReplacement.ExpectedGeneration);
+            Assert.Equal(replacementGeneration, directReplacement.ActualGeneration);
             Assert.Equal(new byte[] { 42 }, File.ReadAllBytes(ordinary.ResolvePath(target)));
         }
         finally

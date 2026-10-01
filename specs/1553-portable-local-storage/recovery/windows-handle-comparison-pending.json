@@ -1,0 +1,29 @@
+{
+  "baseCommit": "a7925a189a6bab356afdee525fb79d72eb3e4609",
+  "status": "Windows comparison correction WIP. Existing native two-failure evidence is RED. New Linux build/discovery/plan and parent-owned seven-case native GREEN are unrun; independent acceptance remains pending.",
+  "patch": {
+    "path": "windows-handle-comparison.pending.patch",
+    "bytes": 4265,
+    "sha256": "385578978141eee54a2fbcb525f7c6c4af676fb567b8eaac181f8451d7995a6c",
+    "applyArguments": [],
+    "files": [
+      {
+        "path": "BookOfEternityClient/Core/PhysicalFileAuthority.cs",
+        "beforeBlob": "f11db9017b69fcbcd7f7616a7e98327faf21ff1b",
+        "afterBlob": "1445bf5f6cc3c3c5bb8145983974336446a53604"
+      },
+      {
+        "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+        "beforeBlob": "2931c6c169bf2532c8bd278692baa7fe0d685193",
+        "afterBlob": "a942b4d8a99689f1e8447b8c08fb053536e3ac4f"
+      },
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "f8dd72a355a4639ca7b95ccce7eee5cd23c43038",
+        "afterBlob": "dd51f5e50a73baeed77ac23c29895b7f5a0cb7a1"
+      }
+    ]
+  },
+  "rootKeyTestBlob": "ca02ff37574e32da385374db87746d3e31d99be1",
+  "selectionBlob": "7ae4542ff8b8b9833fd6817730f5ff24737db068"
+}
