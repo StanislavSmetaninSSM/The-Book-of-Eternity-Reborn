@@ -1,0 +1,212 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="8864fdd8-3d73-4778-84a4-926fd29b34f9" name="@ff00c3d48a40 2026-10-01 18:07:36" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T18:07:36.7404368-04:00" queuing="2026-10-01T18:07:36.7404368-04:00" start="2026-10-01T18:07:33.8639237-04:00" finish="2026-10-01T18:07:36.7469152-04:00" />
+  <TestSettings name="default" id="0eb25065-3024-4e0b-86cd-c50ee8510229">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_18_07_36" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="8d3c1e67-2ce1-400c-998e-b3b9c07c69e7" testId="165e4097-c3d0-44ea-5aee-30b11c3ce562" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)" computerName="ff00c3d48a40" duration="00:00:00.0040976" startTime="2026-10-01T18:07:36.6363178-04:00" endTime="2026-10-01T18:07:36.6363181-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8d3c1e67-2ce1-400c-998e-b3b9c07c69e7">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 67
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="a2f45d6e-1445-4bd8-b2b9-4f4f3ac373b8" testId="caffeb95-8848-370a-79e6-6cb9a176af62" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)" computerName="ff00c3d48a40" duration="00:00:00.0056678" startTime="2026-10-01T18:07:36.6122285-04:00" endTime="2026-10-01T18:07:36.6122287-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a2f45d6e-1445-4bd8-b2b9-4f4f3ac373b8">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write overwrite requires a reversible opened-handle replacement backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3852
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 1061
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupCore(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5693
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5670
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5670
+   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 45
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="8bfc9ce6-d436-4494-89fa-77a92750fe9c" testId="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)" computerName="ff00c3d48a40" duration="00:00:00.9079509" startTime="2026-10-01T18:07:36.6084727-04:00" endTime="2026-10-01T18:07:36.6084866-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8bfc9ce6-d436-4494-89fa-77a92750fe9c">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write overwrite requires a reversible opened-handle replacement backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3852
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 1061
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupCore(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5693
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5670
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5670
+   at BookOfEternityClient.Core.FileSystemManager.RestoreBackup(String backupFullPath, String originalRelativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5664
+   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 46
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="932d08de-d450-4752-ad15-557309896b13" testId="eeac358e-cc87-6afd-ff65-a65537adf895" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)" computerName="ff00c3d48a40" duration="00:00:00.0108361" startTime="2026-10-01T18:07:36.6321377-04:00" endTime="2026-10-01T18:07:36.6321380-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="932d08de-d450-4752-ad15-557309896b13">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Equal() Failure: Values differ
+Expected: 1
+Actual:   0</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 67
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="91d76520-765e-4bbc-86b0-9e1746dbe31b" testId="18cde7bf-a81a-34d9-d9d1-0e314fd0a817" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)" computerName="ff00c3d48a40" duration="00:00:00.0043181" startTime="2026-10-01T18:07:36.6159052-04:00" endTime="2026-10-01T18:07:36.6159054-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="91d76520-765e-4bbc-86b0-9e1746dbe31b">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3874
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3846
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 1061
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupCore(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5658
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5640
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5640
+   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="00b3ea20-0625-4edd-8508-42d9bf475075" testId="3342614c-7b1e-3fa2-8175-8ad236f0fcf4" testName="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)" computerName="ff00c3d48a40" duration="00:00:00.0031992" startTime="2026-10-01T18:07:36.6204961-04:00" endTime="2026-10-01T18:07:36.6204963-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="00b3ea20-0625-4edd-8508-42d9bf475075">
+      <Output>
+        <ErrorInfo>
+          <Message>System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.</Message>
+          <StackTrace>   at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3874
+   at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 3846
+   at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 1061
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupCore(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5658
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5640
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5640
+   at BookOfEternityClient.Core.FileSystemManager.CreateBackup(String relativePath) in SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs:line 5634
+   at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(Boolean asynchronous) in SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs:line 26
+--- End of stack trace from previous location ---</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="18cde7bf-a81a-34d9-d9d1-0e314fd0a817">
+      <Execution id="91d76520-765e-4bbc-86b0-9e1746dbe31b" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CreateBackupPreservesExactSourceAndPublishesIndependentBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3342614c-7b1e-3fa2-8175-8ad236f0fcf4">
+      <Execution id="00b3ea20-0625-4edd-8508-42d9bf475075" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CreateBackupPreservesExactSourceAndPublishesIndependentBytes" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="eeac358e-cc87-6afd-ff65-a65537adf895">
+      <Execution id="932d08de-d450-4752-ad15-557309896b13" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CleanupBackupPublishesEvidenceDeletion" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899">
+      <Execution id="8bfc9ce6-d436-4494-89fa-77a92750fe9c" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="caffeb95-8848-370a-79e6-6cb9a176af62">
+      <Execution id="a2f45d6e-1445-4bd8-b2b9-4f4f3ac373b8" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)" storage="SOURCE_ROOT/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="165e4097-c3d0-44ea-5aee-30b11c3ce562">
+      <Execution id="8d3c1e67-2ce1-400c-998e-b3b9c07c69e7" />
+      <TestMethod codeBase="SOURCE_ROOT/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableBackupLifecycleTests" name="CleanupBackupPublishesEvidenceDeletion" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="165e4097-c3d0-44ea-5aee-30b11c3ce562" executionId="8d3c1e67-2ce1-400c-998e-b3b9c07c69e7" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="caffeb95-8848-370a-79e6-6cb9a176af62" executionId="a2f45d6e-1445-4bd8-b2b9-4f4f3ac373b8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="0fa4b1bf-1b9d-1f01-671f-3ea3c382d899" executionId="8bfc9ce6-d436-4494-89fa-77a92750fe9c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="eeac358e-cc87-6afd-ff65-a65537adf895" executionId="932d08de-d450-4752-ad15-557309896b13" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="18cde7bf-a81a-34d9-d9d1-0e314fd0a817" executionId="91d76520-765e-4bbc-86b0-9e1746dbe31b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3342614c-7b1e-3fa2-8175-8ad236f0fcf4" executionId="00b3ea20-0625-4edd-8508-42d9bf475075" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="6" executed="6" passed="0" failed="6" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.33]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:02.30]       System.PlatformNotSupportedException : Canonical atomic write overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:02.30]       Stack Trace:
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3852,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(1061,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5693,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupCore(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5670,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5670,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5664,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackup(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(46,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(Boolean asynchronous)
+[xUnit.net 00:00:02.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.30]       System.PlatformNotSupportedException : Canonical atomic write overwrite requires a reversible opened-handle replacement backend.
+[xUnit.net 00:00:02.30]       Stack Trace:
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3852,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(1061,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5693,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupCore(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5670,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5670,0): at BookOfEternityClient.Core.FileSystemManager.RestoreBackupAsync(String backupFullPath, String originalRelativePath)
+[xUnit.net 00:00:02.30]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(45,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(Boolean asynchronous)
+[xUnit.net 00:00:02.30]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.31]       System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.31]       Stack Trace:
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3874,0): at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3846,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(1061,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5658,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupCore(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5640,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5640,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(26,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(Boolean asynchronous)
+[xUnit.net 00:00:02.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.31]       System.PlatformNotSupportedException : Canonical atomic write create-only publication requires a descriptor-bound relative publication backend.
+[xUnit.net 00:00:02.31]       Stack Trace:
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3874,0): at BookOfEternityClient.Core.FileSystemManager.EnsureDescriptorBoundCreateOnlyPublicationSupported(String authorityName)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(3846,0): at BookOfEternityClient.Core.FileSystemManager.EnsureAuthorityFilePublicationSupported(NamespaceEntryKind destinationEntry, String authorityName)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(1061,0): at BookOfEternityClient.Core.FileSystemManager.WriteFileAtomicBytesCoreAsync(String relativePath, Byte[] content, CancellationToken cancellationToken, IReadOnlySet`1 allowedCurrentSha256s, Boolean allowMissingCurrent, FileIdentity expectedDestinationIdentity, String expectedDestinationSha256, Func`1 afterPublicationNotCommitted)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5658,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupCore(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5640,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5640,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackupAsync(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient/Core/FileSystemManager.cs(5634,0): at BookOfEternityClient.Core.FileSystemManager.CreateBackup(String relativePath)
+[xUnit.net 00:00:02.31]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(26,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(Boolean asynchronous)
+[xUnit.net 00:00:02.31]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.32]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.32]       Expected: 1
+[xUnit.net 00:00:02.32]       Actual:   0
+[xUnit.net 00:00:02.32]       Stack Trace:
+[xUnit.net 00:00:02.32]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(67,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(Boolean asynchronous)
+[xUnit.net 00:00:02.32]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.33]       Assert.Equal() Failure: Values differ
+[xUnit.net 00:00:02.33]       Expected: 1
+[xUnit.net 00:00:02.33]       Actual:   0
+[xUnit.net 00:00:02.33]       Stack Trace:
+[xUnit.net 00:00:02.33]         SOURCE_ROOT/BookOfEternityClient.Tests/PortableBackupLifecycleTests.cs(67,0): at BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(Boolean asynchronous)
+[xUnit.net 00:00:02.33]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:02.33]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6065315-04:00">
+        <Text>[xUnit.net 00:00:02.30]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6122555-04:00">
+        <Text>[xUnit.net 00:00:02.30]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6159555-04:00">
+        <Text>[xUnit.net 00:00:02.31]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6201914-04:00">
+        <Text>[xUnit.net 00:00:02.31]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6320906-04:00">
+        <Text>[xUnit.net 00:00:02.32]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True) [FAIL]</Text>
+      </RunInfo>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T18:07:36.6363782-04:00">
+        <Text>[xUnit.net 00:00:02.33]     BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False) [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

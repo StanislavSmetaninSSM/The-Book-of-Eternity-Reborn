@@ -1,8 +1,8 @@
 diff --git a/tests/categories.json b/tests/categories.json
-index 0a621b60..edded8dd 100644
+index 0a621b60..4f8bddf3 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -1,6 +1,32 @@
+@@ -1,6 +1,66 @@
  {
    "schemaVersion": 1,
    "categories": [
@@ -32,10 +32,44 @@ index 0a621b60..edded8dd 100644
 +        }
 +      ]
 +    },
++    {
++      "id": "portable-backup-boundaries",
++      "responsibility": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
++      "excludes": "Whole StateDistributor/QTE atomicity, original physical evidence, archive/load and external profiles.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.BackupLifecycle.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
++            "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName"
++          ]
++        }
++      ]
++    },
      {
        "id": "portable-directory-uncertain-consumer",
        "responsibility": "Exact actual LiveTurnPreparationService unresolved tree evidence and finalization recovery propagation; rerun only the reviewed assertion correction.",
-@@ -1230,34 +1256,88 @@
+@@ -1230,34 +1290,88 @@
        "id": "spiritual-staged-recovery-before-ready",
        "responsibility": "Cold recovery after the real A draft write but before A Ready; require the original A response before B and publish once.",
        "excludes": "Recovery after authenticated Ready or issued B, worker transport, and unrelated turn lifecycles.",
@@ -136,7 +170,7 @@ index 0a621b60..edded8dd 100644
      },
      {
        "id": "turn-lifecycle-spiritual",
-@@ -7429,56 +7509,113 @@
+@@ -7429,56 +7543,113 @@
          "BookOfEternityClient.IntegrationTests/AfterlifeResourceCutoverTests.SpiritualBindingResultClosure.cs"
        ],
        "related": [
@@ -274,7 +308,7 @@ index 0a621b60..edded8dd 100644
      },
      {
        "id": "spiritual-binding-wrapper-control",
-@@ -7489,15 +7626,24 @@
+@@ -7489,15 +7660,24 @@
          "BookOfEternityClient/Services/SpiritualBindingTerminalControlCorrection.cs"
        ],
        "related": [
@@ -304,7 +338,7 @@ index 0a621b60..edded8dd 100644
        ]
      },
      {
-@@ -7510,16 +7656,28 @@
+@@ -7510,16 +7690,28 @@
          "BookOfEternityClient/Services/Validation/ValidationService.SpiritualDependentProgress.cs"
        ],
        "related": [
@@ -339,7 +373,7 @@ index 0a621b60..edded8dd 100644
        ]
      },
      {
-@@ -7661,8 +7819,14 @@
+@@ -7661,8 +7853,14 @@
          "BookOfEternityClient/Services/Afterlife*"
        ],
        "related": [
@@ -356,7 +390,7 @@ index 0a621b60..edded8dd 100644
        ],
        "requirements": {
          "frontendBuild": false,
-@@ -7684,28 +7848,61 @@
+@@ -7684,28 +7882,61 @@
        "id": "spiritual-frontier-admission",
        "responsibility": "Issued A rejects future or invalid critical edits and replacement of its private checkpoint/pending pair.",
        "excludes": "Progress persistence, complete A/B response evaluation and final GameEngine publication.",
