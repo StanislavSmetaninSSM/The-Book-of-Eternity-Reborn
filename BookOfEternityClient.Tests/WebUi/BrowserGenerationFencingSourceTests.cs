@@ -433,7 +433,7 @@ public sealed class BrowserGenerationFencingSourceTests
             browserRestoreSource,
             StringComparison.Ordinal);
         Assert.Contains(
-            "fs.DeleteDirectoryTree(writeLease, cleanupDirectory)",
+            "fs.DeleteOriginalDirectoryTree(writeLease, cleanupDirectory)",
             browserRestoreSource,
             StringComparison.Ordinal);
         Assert.DoesNotContain(

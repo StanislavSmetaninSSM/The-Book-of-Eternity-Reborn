@@ -1,10 +1,24 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "2e3cb6deb772b96fbcec53b98b5d2d50e0bdbc0e",
+  "baseCommit": "c22aac9bd6e9306b424dcf6cbcbc0fe7aa12399d",
   "patchFile": "directory-deletion-pending.patch",
-  "patchBytes": 4798,
-  "patchSha256": "78fb2c6488257cb3f1c8dc08e2dfe6f8a010a87864dc82055f831ec5e9f5487b",
+  "patchBytes": 7415,
+  "patchSha256": "35697024c87cd544261952c5d3b35b7c08733a94daa8c095f9f12f881ec6da4f",
   "entries": [
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "beforeBlob": "936b68099f221f040ec5230f29afff1a3187c9dc",
+      "afterBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+      "beforeSha256": "7c9ee54899e040fdfe07b283590299b98e50abe4560ffc851696949bcc392356",
+      "afterSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83"
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "beforeBlob": "83bfbd225e43c7a4e4244e067175a2481e39cbae",
+      "afterBlob": "24afa3fe78f8d344a04a51062988e61f9621b888",
+      "beforeSha256": "47b21b4f78b197badf93b7f01b4b177eab917adb49368fa2d6cdac1b7f39af8a",
+      "afterSha256": "16398de7f3fdb7719004c5929543ea75c2bc0f51da4d398792c86cc4f6de3312"
+    },
     {
       "path": "specs/1553-portable-local-storage/research.md",
       "beforeBlob": "f226ef9783005e3dff5a9e96d3026d59e0737f4a",
@@ -20,7 +34,7 @@
       "afterSha256": "4dab24ca5491963e8423afa00a4db2e9513bba0d8c1c0323d23c9fa42241baa0"
     }
   ],
-  "appliedSourceTree": "faf21c1f06df98f51102d09d8e708c46e62ae8d1",
+  "appliedSourceTree": "574b4c9179eb14ede15dd35a1377a4f066fd8c4f",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.patch",
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.json"

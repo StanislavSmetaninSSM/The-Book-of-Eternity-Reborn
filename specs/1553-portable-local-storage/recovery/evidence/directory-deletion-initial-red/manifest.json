@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "c22aac9bd6e9306b424dcf6cbcbc0fe7aa12399d",
+  "patchSha256": "78fb2c6488257cb3f1c8dc08e2dfe6f8a010a87864dc82055f831ec5e9f5487b",
+  "appliedSourceTree": "faf21c1f06df98f51102d09d8e708c46e62ae8d1",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "commands": [
+    "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-directory-deletion -PlanOnly -Parallelism 1",
+    "pwsh -NoLogo -NoProfile -File scripts/test-csharp.ps1 -Category portable-directory-deletion -NoBuild -Parallelism 1"
+  ],
+  "plannedCases": 3,
+  "executedCases": 3,
+  "passed": 0,
+  "failed": 3,
+  "skipped": 0,
+  "complete": true,
+  "ownedCleanup": "complete",
+  "failure": "All three public directory deletion cases reach PhysicalFileAuthority.TryDeleteEntry -> kernel32.dll and fail on Linux. Causal RED before production edits.",
+  "duration": "00:00:06.6878467",
+  "planDuration": "00:02:43.1202176",
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "5d60a5fe6044c3ec8eb15e2289bbddc813a5b126105a374db34b72b38b6fd986",
+      "sanitizedSha256": "5d60a5fe6044c3ec8eb15e2289bbddc813a5b126105a374db34b72b38b6fd986",
+      "sanitizedBytes": 1365
+    },
+    {
+      "file": "portable-directory-deletion-unit-001.trx",
+      "originalSha256": "fdf8b8f1a8b4a3e95f43ab5381b2cf216b9dda50c6b509a6ab7301ebcc028891",
+      "sanitizedSha256": "4a3fc53cfd1a42b1044574cb2c5f9f0a0f608d2597c84cea9e9124b789096460",
+      "sanitizedBytes": 25152
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "8cc4bcbacbf0a84d2dd859e2633b2d46bb02814deffb46275a18890620f69faa",
+      "sanitizedSha256": "8cc4bcbacbf0a84d2dd859e2633b2d46bb02814deffb46275a18890620f69faa",
+      "sanitizedBytes": 1416
+    }
+  ]
+}

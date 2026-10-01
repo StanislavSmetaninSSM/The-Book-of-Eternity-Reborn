@@ -115,7 +115,8 @@ public partial class FileSystemManager
     }
 
     private async Task<TrustedLocalPublicationOutcome> PublishLocalCoreAsync(CanonicalWriteLease lease,
-        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken)
+        TrustedLocalGeneration generation, IReadOnlyList<TrustedLocalFileChange> changes, CancellationToken cancellationToken,
+        Action? validatePreparedNamespace = null)
     {
         var scope = new TrustedLocalFileScope([BasePath]);
         var registrations = new List<InProcessMutationRegistration>();
@@ -145,6 +146,7 @@ public partial class FileSystemManager
             var publisher = new TrustedLocalFilePublication(this, scope);
             for (var attempt = 0; ; attempt++)
             {
+                validatePreparedNamespace?.Invoke();
                 var outcome = publisher.PublishWithOutcome(lease, generation, changes, _hooks?.LocalPublicationObserver);
                 if (outcome.Disposition != TrustedLocalPublicationDisposition.RolledBack ||
                     outcome.Failure is InvalidDataException || outcome.Failure == null ||

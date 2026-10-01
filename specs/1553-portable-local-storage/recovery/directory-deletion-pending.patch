@@ -1,3 +1,60 @@
+diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
+index 936b6809..70079f9d 100644
+--- a/BookOfEternityClient/Core/FileSystemManager.cs
++++ b/BookOfEternityClient/Core/FileSystemManager.cs
+@@ -1612,6 +1612,22 @@ public partial class FileSystemManager
+     internal void DeleteDirectoryTree(
+         CanonicalWriteLease writeLease,
+         string relativePath)
++    {
++        EnsureValidCanonicalWriteLease(writeLease);
++        EnsureSafeCanonicalRelativePath(relativePath);
++        if (UsesTrustedLocalWriter(writeLease, relativePath))
++        {
++            DeleteTrustedLocalDirectoryTreeAsync(writeLease, relativePath).GetAwaiter().GetResult();
++            return;
++        }
++        DeleteOriginalDirectoryTree(writeLease, relativePath);
++    }
++
++    // Original browser rollback owns dynamic cleanup even after clearing its
++    // recorder. Such cleanup must never enter a new common publication journal.
++    internal void DeleteOriginalDirectoryTree(
++        CanonicalWriteLease writeLease,
++        string relativePath)
+     {
+         EnsureValidCanonicalWriteLease(writeLease);
+         EnsureSafeCanonicalRelativePath(relativePath);
+diff --git a/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs b/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs
+index 83bfbd22..24afa3fe 100644
+--- a/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs
++++ b/BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs
+@@ -1333,7 +1333,7 @@ public static class ExplorerLocalTurnRollbackArtifacts
+         {
+             try
+             {
+-                fs.DeleteDirectoryTree(writeLease, cleanupDirectory);
++                fs.DeleteOriginalDirectoryTree(writeLease, cleanupDirectory);
+             }
+             catch (Exception ex)
+             {
+@@ -1929,14 +1929,14 @@ public static class ExplorerLocalTurnRollbackArtifacts
+             if (Directory.Exists(scopeFullPath) &&
+                 !Directory.EnumerateFileSystemEntries(scopeFullPath).Any())
+             {
+-                fs.DeleteDirectoryTree(writeLease, scopePath);
++                fs.DeleteOriginalDirectoryTree(writeLease, scopePath);
+             }
+ 
+             var rootFullPath = fs.ResolvePath(Root);
+             if (Directory.Exists(rootFullPath) &&
+                 !Directory.EnumerateFileSystemEntries(rootFullPath).Any())
+             {
+-                fs.DeleteDirectoryTree(writeLease, Root);
++                fs.DeleteOriginalDirectoryTree(writeLease, Root);
+             }
+         }
+         catch
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
 index f226ef97..a9291256 100644
 --- a/specs/1553-portable-local-storage/research.md
