@@ -61,10 +61,10 @@ index 4a4415cc..33f1deab 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..a0e7ae38 100644
+index ad2fe43a..f049c709 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,120 @@
+@@ -8417,6 +8417,148 @@
            ]
          }
        ]
@@ -179,6 +179,34 @@ index ad2fe43a..a0e7ae38 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableCoordinatedRecoveryTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-authority",
++      "responsibility": "Actual CreateAuthorityGuardWrites factory and coordinated guard-only consumer preserve every platform-distinct initial authority snapshot.",
++      "excludes": "Full interaction-scope discovery and unrelated domain authority rules.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-coordinated-publication",
++          "when": "Shared initial guard comparison or zero-write lease behavior changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedAuthorityTests.*"
 +          ]
 +        }
 +      ]

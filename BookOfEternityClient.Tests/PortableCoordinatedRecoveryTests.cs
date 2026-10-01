@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using BookOfEternityClient.Core;
@@ -58,6 +59,34 @@ public sealed class PortableCoordinatedRecoveryTests : IDisposable
         Assert.Equal(GenerationBytes(_generation), File.ReadAllBytes(_files.SessionGenerationPath));
         AssertClean();
     }
+
+    [Theory]
+    [InlineData("first-member", false)]
+    [InlineData("Committed", true)]
+    public async Task ActualHelperColdRecoveryPreservesTheOutsideHardLink(string cut, bool committed)
+    {
+        var outside = Path.Combine(_root, "outside-alias.bin");
+        var source = _files.ResolvePath(ReplacePath);
+        if (OperatingSystem.IsWindows()) Assert.True(CreateHardLink(outside, source, IntPtr.Zero));
+        else Assert.Equal(0, Link(source, outside));
+        Assert.Equal(_before, File.ReadAllBytes(outside));
+
+        Assert.Equal(73, (await RunHost("coordinated-cut", cut)).Exit);
+        Assert.Equal(_before, File.ReadAllBytes(outside));
+        Assert.Equal(0, (await RunHost("coordinated-recover", cut)).Exit);
+
+        AssertImage(ReplacePath, committed ? After : _before);
+        AssertImage(CreatePath, committed ? After : null);
+        AssertImage(DeletePath, committed ? null : []);
+        Assert.Equal(_before, File.ReadAllBytes(outside));
+        AssertClean();
+    }
+
+    [DllImport("libc", EntryPoint = "link", SetLastError = true)]
+    private static extern int Link(string existing, string created);
+    [DllImport("kernel32.dll", EntryPoint = "CreateHardLinkW", CharSet = CharSet.Unicode, SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool CreateHardLink(string created, string existing, IntPtr security);
 
     [Fact]
     public async Task ColdRecoveryUnknownLaterMemberKeepsEarlierPublishedBytesAndEvidence()

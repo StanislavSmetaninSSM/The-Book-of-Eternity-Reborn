@@ -82,9 +82,11 @@ public sealed partial class PortableCoordinatedPublicationTests
     {
         string[]? members = null;
         _observer = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) members = ReadActiveMembers(); };
+        var alias = "  " + ReplacePath.Replace('/', Path.AltDirectorySeparatorChar) + "  ";
+        Assert.Equal(_files.ResolvePath(ReplacePath), _files.ResolvePath(alias));
         Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(_files,
             new CoordinatedStateWriteHelper.PlannedWrite(ReplacePath, null, "{}"),
-            new CoordinatedStateWriteHelper.PlannedWrite("  " + ReplacePath.Replace('/', '\\') + "  ", null, NextJson)));
+            new CoordinatedStateWriteHelper.PlannedWrite(alias, null, NextJson)));
         Assert.Equal(new[] { _files.ResolvePath(ReplacePath) }, members);
         AssertImage(ReplacePath, Utf8WithPreamble(NextJson));
     }
@@ -195,10 +197,8 @@ public sealed partial class PortableCoordinatedPublicationTests
         Assert.False(File.Exists(Active));
     }
 
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task OriginalRecorderAndRecoveryModesDoNotEnterTheCommonJournal(bool recovery)
+    [Fact]
+    public async Task OriginalRecorderRejectionDoesNotEnterTheCommonJournal()
     {
         var recorder = new RejectingRecorder();
         var intents = 0;
@@ -208,15 +208,63 @@ public sealed partial class PortableCoordinatedPublicationTests
         lease.MutationIntentRecorder = recorder;
         Task<bool> Commit() => CoordinatedStateWriteHelper.TryCommitWithHookAsync(_files, lease,
             _ => { callbacks++; return Task.CompletedTask; }, new CoordinatedStateWriteHelper.PlannedWrite(CreatePath, null, NextJson));
-        bool? result = null;
-        if (recovery) await _files.RunLegacyStorageRecoveryAsync(lease, async () => { result = await Commit(); });
-        else result = await Commit();
+        var result = await Commit();
 
         Assert.False(result);
         Assert.Equal(1, recorder.Intents);
         Assert.Equal(0, callbacks);
         Assert.Equal(0, intents);
         AssertImage(CreatePath, null);
+        AssertClean();
+    }
+
+    [Fact]
+    public async Task RecorderFreeLegacyRecoveryRetainsTheOriginalNoOpCallbackRoute()
+    {
+        var callbacks = 0;
+        var intents = 0;
+        _observer = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) intents++; };
+        await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
+        Assert.Null(lease.MutationIntentRecorder);
+        Assert.True(_files.UsesTrustedLocalWriter(lease, CreatePath));
+        await _files.RunLegacyStorageRecoveryAsync(lease, async () =>
+        {
+            Assert.False(_files.UsesTrustedLocalWriter(lease, CreatePath));
+            Assert.True(await CoordinatedStateWriteHelper.TryCommitWithHookAsync(_files, lease,
+                _ => { callbacks++; return Task.CompletedTask; },
+                new CoordinatedStateWriteHelper.PlannedWrite(CreatePath, null, null)));
+        });
+        Assert.True(_files.UsesTrustedLocalWriter(lease, CreatePath));
+        Assert.Equal(1, callbacks);
+        Assert.Equal(0, intents);
+        AssertImage(CreatePath, null);
+        AssertClean();
+    }
+
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task DeclaredSameImageMutationsStillReceiveOneDurableDecision(bool absent)
+    {
+        var path = absent ? CreatePath : ReplacePath;
+        var next = absent ? null : NextJson;
+        if (!absent) File.WriteAllBytes(_files.ResolvePath(path), Utf8WithPreamble(NextJson));
+        var intents = 0;
+        var commits = 0;
+        _observer = (phase, _) =>
+        {
+            if (phase == TrustedLocalPublicationPhase.IntentPublished)
+            {
+                intents++;
+                Assert.Equal(new[] { _files.ResolvePath(path) }, ReadActiveMembers());
+            }
+            if (phase == TrustedLocalPublicationPhase.Committed) commits++;
+        };
+        Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(_files,
+            new CoordinatedStateWriteHelper.PlannedWrite(path, next, next, RequireCurrentBaseline: true)));
+        Assert.Equal(1, intents);
+        Assert.Equal(1, commits);
+        AssertImage(path, absent ? null : Utf8WithPreamble(NextJson));
         AssertClean();
     }
 

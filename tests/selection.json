@@ -2,13 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-publication",
-      "reason": "T031 expanded helper contract scaffold: 25 cases including the original four, all guards/duplicates/bytes, distinct admission/preflight/unknown boundaries, explicit original routes and two expected post-commit diagnostic failures. Cold owner is preserved but intentionally unrun until corrected covering GREEN.",
+      "category": "portable-coordinated-authority",
+      "reason": "One causal actual factory/helper regression before changing the platform comparer; other newly saved helper and cold qualifications remain unrun.",
       "contracts": [
-        "initial guard semantics",
-        "complete final member set",
-        "durable outcomes and follow-up diagnostics",
-        "original route separation"
+        "platform-distinct initial authority guards"
       ]
     }
   ]
