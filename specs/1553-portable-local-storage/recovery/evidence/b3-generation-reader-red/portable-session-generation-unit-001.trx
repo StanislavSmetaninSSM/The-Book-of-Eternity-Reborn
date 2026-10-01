@@ -1,0 +1,763 @@
+<ns0:TestRun xmlns:ns0="http://microsoft.com/schemas/VisualStudio/TeamTest/2010" id="43a75f2c-78f8-4ea4-abfe-62fb6efdd539" name="b3-generation-reader-red" runUser="$USER">
+  <ns0:Times creation="2026-10-01T03:18:39.1049544-04:00" queuing="2026-10-01T03:18:39.1049545-04:00" start="2026-10-01T03:18:35.4753147-04:00" finish="2026-10-01T03:18:58.2193901-04:00" />
+  <ns0:TestSettings name="default" id="01f8e871-fb40-409f-ad22-6299df71b6a1">
+    <ns0:Deployment runDeploymentRoot="$RUN" />
+  </ns0:TestSettings>
+  <ns0:Results>
+    <ns0:UnitTestResult executionId="ff4e7dfa-97da-4795-b6f3-e44960ccac5b" testId="5806c3a5-d1db-3573-7fad-34fd318730d1" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;existing&quot;)" computerName="$HOST" duration="00:00:05.0690943" startTime="2026-10-01T03:18:42.6259168-04:00" endTime="2026-10-01T03:18:42.6259174-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff4e7dfa-97da-4795-b6f3-e44960ccac5b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Generation read hung instead of reaching the declared result: existing</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 182
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 153
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="57035cab-aabe-45de-8366-8778d5b06086" testId="2dd61c83-ab2b-80a3-b182-f1faedbdef8e" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:1,\&quot;generationId\&quot;:\&quot;0123456789&quot;···)" computerName="$HOST" duration="00:00:00.0011013" startTime="2026-10-01T03:18:57.9206416-04:00" endTime="2026-10-01T03:18:57.9206429-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="57035cab-aabe-45de-8366-8778d5b06086">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="aef50249-8882-4b63-97a3-9cfc8051dc5b" testId="8fea59bd-a36b-c67d-cceb-37f374baa3c5" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;current&quot;)" computerName="$HOST" duration="00:00:05.0336451" startTime="2026-10-01T03:18:52.8486222-04:00" endTime="2026-10-01T03:18:52.8486225-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aef50249-8882-4b63-97a3-9cfc8051dc5b">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Generation read hung instead of reaching the declared result: current</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 182
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 153
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ff411e0d-9904-49c2-abaf-19ddf8a3adeb" testId="e4c2bac2-c853-b98c-bc69-3cdd73cb774d" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;ancestor-link&quot;)" computerName="$HOST" duration="00:00:00.0019606" startTime="2026-10-01T03:18:57.9103039-04:00" endTime="2026-10-01T03:18:57.9103040-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ff411e0d-9904-49c2-abaf-19ddf8a3adeb">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 115
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7075731e-6263-47c4-81d5-8bb4a9b7c857" testId="3b4fe915-7328-3792-bf17-bfe2688ca6e3" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;get-or-create&quot;)" computerName="$HOST" duration="00:00:05.0249712" startTime="2026-10-01T03:18:47.6542120-04:00" endTime="2026-10-01T03:18:47.6542122-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7075731e-6263-47c4-81d5-8bb4a9b7c857">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Generation read hung instead of reaching the declared result: get-or-create</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 182
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 153
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="52e3efa6-142c-4398-b4ef-2f4eb078878d" testId="61dc4e52-7a4a-2e30-b87f-aae35d1d2bc2" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration" computerName="$HOST" duration="00:00:00.0021770" startTime="2026-10-01T03:18:57.9298361-04:00" endTime="2026-10-01T03:18:57.9298361-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="52e3efa6-142c-4398-b4ef-2f4eb078878d">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 36
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 39
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="5bc2fe82-bbfb-47d1-bc3f-16b4de4b922c" testId="581fde50-6643-044b-b0c7-3fcd30b6898d" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:2,\&quot;generationId\&quot;:\&quot;0123456789&quot;···)" computerName="$HOST" duration="00:00:00.0036081" startTime="2026-10-01T03:18:57.9281533-04:00" endTime="2026-10-01T03:18:57.9281538-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="5bc2fe82-bbfb-47d1-bc3f-16b4de4b922c">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="279d9201-8b22-4fa9-86ba-f5c4f186f4e6" testId="84f2c177-d3a1-fddf-ede0-5c5433cc1107" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf16-be&quot;)" computerName="$HOST" duration="00:00:00.0011243" startTime="2026-10-01T03:18:37.5678067-04:00" endTime="2026-10-01T03:18:37.5678068-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="279d9201-8b22-4fa9-86ba-f5c4f186f4e6">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 60
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="9474e37a-cb96-4cc8-845e-9c444a8e9c9a" testId="302f3a84-cb88-dfe5-3080-399e27696636" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf16-le&quot;)" computerName="$HOST" duration="00:00:00.0387193" startTime="2026-10-01T03:18:37.5483839-04:00" endTime="2026-10-01T03:18:37.5484496-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9474e37a-cb96-4cc8-845e-9c444a8e9c9a">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 60
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="7f0d8ac8-c6d4-40ac-baf1-968c690cb91f" testId="c9d9724d-7b23-4312-85eb-420f20329270" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration" computerName="$HOST" duration="00:00:00.0094060" startTime="2026-10-01T03:18:57.9028569-04:00" endTime="2026-10-01T03:18:57.9028570-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="7f0d8ac8-c6d4-40ac-baf1-968c690cb91f">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 129
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 133
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ebf57c9c-6c9b-4659-b981-423480688c4a" testId="a7605057-61f1-144b-296a-08a1e92ce94e" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess" computerName="$HOST" duration="00:00:00.1900341" startTime="2026-10-01T03:18:58.1227211-04:00" endTime="2026-10-01T03:18:58.1227214-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ebf57c9c-6c9b-4659-b981-423480688c4a">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException: The method or operation is not implemented.
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.&lt;&gt;c__DisplayClass0_1.&lt;&lt;RunAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 24
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.&lt;&gt;c__DisplayClass0_1.&lt;&lt;RunAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 25
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 34
+--- End of stack trace from previous location ---
+   at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 44
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 29
+   at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 21
+</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 183
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 162
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="22406bf8-a424-45a0-9191-fc6861822a38" testId="74899bef-4202-e231-3962-cd26f7b0e8c9" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;snapshot&quot;)" computerName="$HOST" duration="00:00:00.1539072" startTime="2026-10-01T03:18:47.8094814-04:00" endTime="2026-10-01T03:18:47.8094817-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="22406bf8-a424-45a0-9191-fc6861822a38">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException: The method or operation is not implemented.
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 33
+   at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 39
+</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 183
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 153
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="f9f5aa59-0de8-41b4-a5eb-a1d09e3cedec" testId="488356c5-feb0-0fd3-f8ef-47e3f6acd4e5" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;leaf-link&quot;)" computerName="$HOST" duration="00:00:00.0022913" startTime="2026-10-01T03:18:57.9058322-04:00" endTime="2026-10-01T03:18:57.9058323-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f9f5aa59-0de8-41b4-a5eb-a1d09e3cedec">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 115
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="538cbdf9-cb8e-441d-9e1b-d455b5bcf38c" testId="16653cfa-3625-f886-58d5-b71d546bbcdc" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf32-le&quot;)" computerName="$HOST" duration="00:00:00.0012033" startTime="2026-10-01T03:18:37.5676345-04:00" endTime="2026-10-01T03:18:37.5676348-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="538cbdf9-cb8e-441d-9e1b-d455b5bcf38c">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 60
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="f7c7016c-6941-4fd8-8237-3a0926cf70b2" testId="854a00a2-8907-e504-61ef-be422bd06eac" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;bound-write&quot;)" computerName="$HOST" duration="00:00:05.0238740" startTime="2026-10-01T03:18:57.8744659-04:00" endTime="2026-10-01T03:18:57.8744663-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="f7c7016c-6941-4fd8-8237-3a0926cf70b2">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Generation read hung instead of reaching the declared result: bound-write</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 182
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 153
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="8e4837b8-2ebb-4ce5-a10a-f82583d44889" testId="39b519ff-39b4-66b4-7a09-86f5669afbe6" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: True)" computerName="$HOST" duration="00:00:00.0038126" startTime="2026-10-01T03:18:57.8927545-04:00" endTime="2026-10-01T03:18:57.8927549-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="8e4837b8-2ebb-4ce5-a10a-f82583d44889">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.InvalidOperationException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 91
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 92
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass8_0.&lt;Snapshot_RejectsForeignOrDisposedLeaseBeforeReading&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 91</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="cd2c42a8-76c2-4426-a860-da715af3861a" testId="52b35e29-cbb8-12e4-c76c-bb4d9e39713d" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:1,\&quot;generationId\&quot;:\&quot;01234567-8&quot;···)" computerName="$HOST" duration="00:00:00.0016014" startTime="2026-10-01T03:18:57.9195214-04:00" endTime="2026-10-01T03:18:57.9195216-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="cd2c42a8-76c2-4426-a860-da715af3861a">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="afeb7f1a-ca29-496d-a9cc-5919e9a78d08" testId="1649875b-79f0-4254-1fff-afb9be4a450f" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;&quot;)" computerName="$HOST" duration="00:00:00.0019120" startTime="2026-10-01T03:18:57.9229327-04:00" endTime="2026-10-01T03:18:57.9229329-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="afeb7f1a-ca29-496d-a9cc-5919e9a78d08">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="a9b30af4-d578-4bea-b6b0-ee2fad1023c2" testId="ee5a742b-3585-4ad2-3c6e-5bd5d89b03d4" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{broken&quot;)" computerName="$HOST" duration="00:00:00.0028000" startTime="2026-10-01T03:18:57.9176663-04:00" endTime="2026-10-01T03:18:57.9176668-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="a9b30af4-d578-4bea-b6b0-ee2fad1023c2">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="30b6852d-7d42-40ff-89e3-5dfd7e3cd549" testId="d7bcaad3-9d4e-4f8f-b9ca-ab21153fa6c0" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: False)" computerName="$HOST" duration="00:00:00.0109421" startTime="2026-10-01T03:18:57.8890580-04:00" endTime="2026-10-01T03:18:57.8890584-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="30b6852d-7d42-40ff-89e3-5dfd7e3cd549">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.InvalidOperationException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 91
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 92
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass8_0.&lt;Snapshot_RejectsForeignOrDisposedLeaseBeforeReading&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 91</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="e499323a-89b8-4883-b2af-beb1fdede86e" testId="7b8c16d3-fd61-b1aa-c3dc-fa3866a4da04" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;null&quot;)" computerName="$HOST" duration="00:00:00.0018348" startTime="2026-10-01T03:18:57.9122144-04:00" endTime="2026-10-01T03:18:57.9122145-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="e499323a-89b8-4883-b2af-beb1fdede86e">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 78
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 77</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="82bc7cf8-2b4a-49a1-8c41-e1b73e4d0cc9" testId="6a9a1e42-e6b0-39ef-d551-15244251a469" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf32-be&quot;)" computerName="$HOST" duration="00:00:00.0020632" startTime="2026-10-01T03:18:37.5655268-04:00" endTime="2026-10-01T03:18:37.5655269-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="82bc7cf8-2b4a-49a1-8c41-e1b73e4d0cc9">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 60
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="987fb36e-0ad6-4334-8cee-44471df06311" testId="7661417d-e9c1-0341-36c4-583c0a66391f" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;directory&quot;)" computerName="$HOST" duration="00:00:00.0014784" startTime="2026-10-01T03:18:57.9081123-04:00" endTime="2026-10-01T03:18:57.9081125-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="987fb36e-0ad6-4334-8cee-44471df06311">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(System.IO.InvalidDataException)
+Actual:   typeof(System.NotImplementedException)
+---- System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 115
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0() in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 113</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+    <ns0:UnitTestResult executionId="ba41144c-badc-46bf-b9a9-4db2b07fb3d8" testId="d698b328-b143-1e2f-bd5c-de2852590c6b" testName="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf8&quot;)" computerName="$HOST" duration="00:00:00.0013515" startTime="2026-10-01T03:18:37.5680633-04:00" endTime="2026-10-01T03:18:37.5680634-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="ba41144c-badc-46bf-b9a9-4db2b07fb3d8">
+      <ns0:Output>
+        <ns0:ErrorInfo>
+          <ns0:Message>System.NotImplementedException : The method or operation is not implemented.</ns0:Message>
+          <ns0:StackTrace>   at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 60
+   at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name) in $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs:line 63
+--- End of stack trace from previous location ---</ns0:StackTrace>
+        </ns0:ErrorInfo>
+      </ns0:Output>
+    </ns0:UnitTestResult>
+  </ns0:Results>
+  <ns0:TestDefinitions>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:1,\&quot;generationId\&quot;:\&quot;01234567-8&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="52b35e29-cbb8-12e4-c76c-bb4d9e39713d">
+      <ns0:Execution id="cd2c42a8-76c2-4426-a860-da715af3861a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="a7605057-61f1-144b-296a-08a1e92ce94e">
+      <ns0:Execution id="ebf57c9c-6c9b-4659-b981-423480688c4a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="61dc4e52-7a4a-2e30-b87f-aae35d1d2bc2">
+      <ns0:Execution id="52e3efa6-142c-4398-b4ef-2f4eb078878d" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf8&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d698b328-b143-1e2f-bd5c-de2852590c6b">
+      <ns0:Execution id="ba41144c-badc-46bf-b9a9-4db2b07fb3d8" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;current&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="8fea59bd-a36b-c67d-cceb-37f374baa3c5">
+      <ns0:Execution id="aef50249-8882-4b63-97a3-9cfc8051dc5b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:2,\&quot;generationId\&quot;:\&quot;0123456789&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="581fde50-6643-044b-b0c7-3fcd30b6898d">
+      <ns0:Execution id="5bc2fe82-bbfb-47d1-bc3f-16b4de4b922c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf16-le&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="302f3a84-cb88-dfe5-3080-399e27696636">
+      <ns0:Execution id="9474e37a-cb96-4cc8-845e-9c444a8e9c9a" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{\&quot;schemaVersion\&quot;:1,\&quot;generationId\&quot;:\&quot;0123456789&quot;···)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="2dd61c83-ab2b-80a3-b182-f1faedbdef8e">
+      <ns0:Execution id="57035cab-aabe-45de-8366-8778d5b06086" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf32-le&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="16653cfa-3625-f886-58d5-b71d546bbcdc">
+      <ns0:Execution id="538cbdf9-cb8e-441d-9e1b-d455b5bcf38c" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;leaf-link&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="488356c5-feb0-0fd3-f8ef-47e3f6acd4e5">
+      <ns0:Execution id="f9f5aa59-0de8-41b4-a5eb-a1d09e3cedec" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;ancestor-link&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="e4c2bac2-c853-b98c-bc69-3cdd73cb774d">
+      <ns0:Execution id="ff411e0d-9904-49c2-abaf-19ddf8a3adeb" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="1649875b-79f0-4254-1fff-afb9be4a450f">
+      <ns0:Execution id="afeb7f1a-ca29-496d-a9cc-5919e9a78d08" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: False)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d7bcaad3-9d4e-4f8f-b9ca-ab21153fa6c0">
+      <ns0:Execution id="30b6852d-7d42-40ff-89e3-5dfd7e3cd549" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_RejectsForeignOrDisposedLeaseBeforeReading" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="c9d9724d-7b23-4312-85eb-420f20329270">
+      <ns0:Execution id="7f0d8ac8-c6d4-40ac-baf1-968c690cb91f" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf32-be&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="6a9a1e42-e6b0-39ef-d551-15244251a469">
+      <ns0:Execution id="82bc7cf8-2b4a-49a1-8c41-e1b73e4d0cc9" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;get-or-create&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3b4fe915-7328-3792-bf17-bfe2688ca6e3">
+      <ns0:Execution id="7075731e-6263-47c4-81d5-8bb4a9b7c857" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;bound-write&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="854a00a2-8907-e504-61ef-be422bd06eac">
+      <ns0:Execution id="f7c7016c-6941-4fd8-8237-3a0926cf70b2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: True)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="39b519ff-39b4-66b4-7a09-86f5669afbe6">
+      <ns0:Execution id="8e4837b8-2ebb-4ce5-a10a-f82583d44889" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_RejectsForeignOrDisposedLeaseBeforeReading" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;{broken&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="ee5a742b-3585-4ad2-3c6e-5bd5d89b03d4">
+      <ns0:Execution id="a9b30af4-d578-4bea-b6b0-ee2fad1023c2" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: &quot;null&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7b8c16d3-fd61-b1aa-c3dc-fa3866a4da04">
+      <ns0:Execution id="e499323a-89b8-4883-b2af-beb1fdede86e" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: &quot;directory&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="7661417d-e9c1-0341-36c4-583c0a66391f">
+      <ns0:Execution id="987fb36e-0ad6-4334-8cee-44471df06311" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;existing&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5806c3a5-d1db-3573-7fad-34fd318730d1">
+      <ns0:Execution id="ff4e7dfa-97da-4795-b6f3-e44960ccac5b" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: &quot;utf16-be&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="84f2c177-d3a1-fddf-ede0-5c5433cc1107">
+      <ns0:Execution id="279d9201-8b22-4fa9-86ba-f5c4f186f4e6" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension" />
+    </ns0:UnitTest>
+    <ns0:UnitTest name="BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: &quot;snapshot&quot;)" storage="$REPO/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="74899bef-4202-e231-3962-cd26f7b0e8c9">
+      <ns0:Execution id="22406bf8-a424-45a0-9191-fc6861822a38" />
+      <ns0:TestMethod codeBase="$REPO/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableSessionGenerationTests" name="GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers" />
+    </ns0:UnitTest>
+  </ns0:TestDefinitions>
+  <ns0:TestEntries>
+    <ns0:TestEntry testId="5806c3a5-d1db-3573-7fad-34fd318730d1" executionId="ff4e7dfa-97da-4795-b6f3-e44960ccac5b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="2dd61c83-ab2b-80a3-b182-f1faedbdef8e" executionId="57035cab-aabe-45de-8366-8778d5b06086" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="8fea59bd-a36b-c67d-cceb-37f374baa3c5" executionId="aef50249-8882-4b63-97a3-9cfc8051dc5b" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="e4c2bac2-c853-b98c-bc69-3cdd73cb774d" executionId="ff411e0d-9904-49c2-abaf-19ddf8a3adeb" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="3b4fe915-7328-3792-bf17-bfe2688ca6e3" executionId="7075731e-6263-47c4-81d5-8bb4a9b7c857" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="61dc4e52-7a4a-2e30-b87f-aae35d1d2bc2" executionId="52e3efa6-142c-4398-b4ef-2f4eb078878d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="581fde50-6643-044b-b0c7-3fcd30b6898d" executionId="5bc2fe82-bbfb-47d1-bc3f-16b4de4b922c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="84f2c177-d3a1-fddf-ede0-5c5433cc1107" executionId="279d9201-8b22-4fa9-86ba-f5c4f186f4e6" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="302f3a84-cb88-dfe5-3080-399e27696636" executionId="9474e37a-cb96-4cc8-845e-9c444a8e9c9a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="c9d9724d-7b23-4312-85eb-420f20329270" executionId="7f0d8ac8-c6d4-40ac-baf1-968c690cb91f" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="a7605057-61f1-144b-296a-08a1e92ce94e" executionId="ebf57c9c-6c9b-4659-b981-423480688c4a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="74899bef-4202-e231-3962-cd26f7b0e8c9" executionId="22406bf8-a424-45a0-9191-fc6861822a38" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="488356c5-feb0-0fd3-f8ef-47e3f6acd4e5" executionId="f9f5aa59-0de8-41b4-a5eb-a1d09e3cedec" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="16653cfa-3625-f886-58d5-b71d546bbcdc" executionId="538cbdf9-cb8e-441d-9e1b-d455b5bcf38c" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="854a00a2-8907-e504-61ef-be422bd06eac" executionId="f7c7016c-6941-4fd8-8237-3a0926cf70b2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="39b519ff-39b4-66b4-7a09-86f5669afbe6" executionId="8e4837b8-2ebb-4ce5-a10a-f82583d44889" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="52b35e29-cbb8-12e4-c76c-bb4d9e39713d" executionId="cd2c42a8-76c2-4426-a860-da715af3861a" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="1649875b-79f0-4254-1fff-afb9be4a450f" executionId="afeb7f1a-ca29-496d-a9cc-5919e9a78d08" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="ee5a742b-3585-4ad2-3c6e-5bd5d89b03d4" executionId="a9b30af4-d578-4bea-b6b0-ee2fad1023c2" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d7bcaad3-9d4e-4f8f-b9ca-ab21153fa6c0" executionId="30b6852d-7d42-40ff-89e3-5dfd7e3cd549" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7b8c16d3-fd61-b1aa-c3dc-fa3866a4da04" executionId="e499323a-89b8-4883-b2af-beb1fdede86e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="6a9a1e42-e6b0-39ef-d551-15244251a469" executionId="82bc7cf8-2b4a-49a1-8c41-e1b73e4d0cc9" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="7661417d-e9c1-0341-36c4-583c0a66391f" executionId="987fb36e-0ad6-4334-8cee-44471df06311" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestEntry testId="d698b328-b143-1e2f-bd5c-de2852590c6b" executionId="ba41144c-badc-46bf-b9a9-4db2b07fb3d8" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </ns0:TestEntries>
+  <ns0:TestLists>
+    <ns0:TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <ns0:TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </ns0:TestLists>
+  <ns0:ResultSummary outcome="Failed">
+    <ns0:Counters total="24" executed="24" passed="0" failed="24" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <ns0:Output>
+      <ns0:StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.18]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.31]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.34]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.44]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.44]       Stack Trace:
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(60,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.44]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(63,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.44]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(60,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(63,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(60,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(63,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(60,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(63,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.46]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:01.46]       Stack Trace:
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(60,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(63,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(String name)
+[xUnit.net 00:00:01.46]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:06.52]       Generation read hung instead of reaching the declared result: existing
+[xUnit.net 00:00:06.52]       Stack Trace:
+[xUnit.net 00:00:06.52]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(182,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:06.52]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation)
+[xUnit.net 00:00:06.52]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.55]       Generation read hung instead of reaching the declared result: get-or-create
+[xUnit.net 00:00:11.55]       Stack Trace:
+[xUnit.net 00:00:11.55]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(182,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:11.55]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation)
+[xUnit.net 00:00:11.55]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:11.70]       System.NotImplementedException: The method or operation is not implemented.
+[xUnit.net 00:00:11.70]          at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+[xUnit.net 00:00:11.70]          at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 33
+[xUnit.net 00:00:11.70]          at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 39
+[xUnit.net 00:00:11.70]
+[xUnit.net 00:00:11.70]       Stack Trace:
+[xUnit.net 00:00:11.70]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(183,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:11.70]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation)
+[xUnit.net 00:00:11.70]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:16.74]       Generation read hung instead of reaching the declared result: current
+[xUnit.net 00:00:16.74]       Stack Trace:
+[xUnit.net 00:00:16.74]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(182,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:16.74]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation)
+[xUnit.net 00:00:16.74]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.77]       Generation read hung instead of reaching the declared result: bound-write
+[xUnit.net 00:00:21.77]       Stack Trace:
+[xUnit.net 00:00:21.77]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(182,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:21.77]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(153,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(String operation)
+[xUnit.net 00:00:21.77]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.78]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.78]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:21.78]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.78]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.78]       Stack Trace:
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(91,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed)
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(92,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed)
+[xUnit.net 00:00:21.78]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.78]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(91,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass8_0.&lt;Snapshot_RejectsForeignOrDisposedLeaseBeforeReading&gt;b__0()
+[xUnit.net 00:00:21.78]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.78]       Expected: typeof(System.InvalidOperationException)
+[xUnit.net 00:00:21.78]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.78]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.78]       Stack Trace:
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(91,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed)
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(92,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(Boolean disposed)
+[xUnit.net 00:00:21.78]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.78]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.78]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(91,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass8_0.&lt;Snapshot_RejectsForeignOrDisposedLeaseBeforeReading&gt;b__0()
+[xUnit.net 00:00:21.79]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.79]       Stack Trace:
+[xUnit.net 00:00:21.79]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.79]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(129,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration()
+[xUnit.net 00:00:21.79]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(133,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration()
+[xUnit.net 00:00:21.79]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.80]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.80]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.80]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.80]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.80]       Stack Trace:
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(115,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.80]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0()
+[xUnit.net 00:00:21.80]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.80]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.80]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.80]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.80]       Stack Trace:
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(115,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.80]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0()
+[xUnit.net 00:00:21.80]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.80]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.80]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.80]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.80]       Stack Trace:
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(115,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(String kind)
+[xUnit.net 00:00:21.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.80]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(113,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass9_0.&lt;Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem&gt;b__0()
+[xUnit.net 00:00:21.80]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.80]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.80]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.80]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.80]       Stack Trace:
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.80]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.80]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.80]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.81]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.81]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.81]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.81]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.81]       Stack Trace:
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.81]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.81]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.81]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.81]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.81]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.81]       Stack Trace:
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.81]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.81]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.81]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.81]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.81]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.81]       Stack Trace:
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.81]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.81]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.81]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.81]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.81]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.81]       Stack Trace:
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.81]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.81]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.81]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.82]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:21.82]       Expected: typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:21.82]       Actual:   typeof(System.NotImplementedException)
+[xUnit.net 00:00:21.82]       ---- System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.82]       Stack Trace:
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(78,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(String json)
+[xUnit.net 00:00:21.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:21.82]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(77,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.&lt;&gt;c__DisplayClass7_0.&lt;Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes&gt;b__0()
+[xUnit.net 00:00:21.82]       System.NotImplementedException : The method or operation is not implemented.
+[xUnit.net 00:00:21.82]       Stack Trace:
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs(10,0): at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease)
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(36,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration()
+[xUnit.net 00:00:21.82]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(39,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration()
+[xUnit.net 00:00:21.82]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.01]       System.NotImplementedException: The method or operation is not implemented.
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.FileSystemManager.ReadLocalGenerationSnapshot(CanonicalWriteLease lease) in $REPO/BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs:line 10
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.&lt;&gt;c__DisplayClass0_1.&lt;&lt;RunAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 24
+[xUnit.net 00:00:22.01]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.&lt;&gt;c__DisplayClass0_1.&lt;&lt;RunAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 25
+[xUnit.net 00:00:22.01]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.&lt;&gt;c__DisplayClass1_0.&lt;&lt;RunBoundAsync&gt;b__0&gt;d.MoveNext() in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 34
+[xUnit.net 00:00:22.01]       --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.RunWithinBindingAsync[T](BindingState state, FileSystemManager fileSystem, Func`1 operation, CanonicalWriteLease writeLease, Boolean verifyAfterOperation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 187
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 102
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 141
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 44
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync(FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in $REPO/BookOfEternityClient/Core/SessionOperationContext.cs:line 29
+[xUnit.net 00:00:22.01]          at BookOfEternityClient.Tests.TrustedLocalPublicationCrashFixture.RunAsync(String[] args) in $REPO/BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs:line 21
+[xUnit.net 00:00:22.01]
+[xUnit.net 00:00:22.01]       Stack Trace:
+[xUnit.net 00:00:22.01]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(183,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.RunChild(String operation, String expected)
+[xUnit.net 00:00:22.01]         $REPO/BookOfEternityClient.Tests/PortableSessionGenerationTests.cs(162,0): at BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess()
+[xUnit.net 00:00:22.01]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:22.03]   Finished:    BookOfEternityClient.Tests
+</ns0:StdOut>
+    </ns0:Output>
+    <ns0:RunInfos>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:37.5471618-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.44]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: "utf16-le") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:37.5847123-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: "utf32-be") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:37.5850039-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: "utf32-le") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:37.5855079-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: "utf16-be") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:37.5857524-04:00">
+        <ns0:Text>[xUnit.net 00:00:01.46]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_PreservesExactBomWhitespaceAndCurrentSchemaExtension(name: "utf8") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:42.6304471-04:00">
+        <ns0:Text>[xUnit.net 00:00:06.52]     BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: "existing") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:47.6564733-04:00">
+        <ns0:Text>[xUnit.net 00:00:11.55]     BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: "get-or-create") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:47.8096833-04:00">
+        <ns0:Text>[xUnit.net 00:00:11.70]     BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: "snapshot") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:52.8527393-04:00">
+        <ns0:Text>[xUnit.net 00:00:16.74]     BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: "current") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.8747574-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.77]     BookOfEternityClient.Tests.PortableSessionGenerationTests.GenerationFifoIsRejectedBeforeOpenBySnapshotAndWiredConsumers(operation: "bound-write") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.8890727-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.78]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: False) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.8938635-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.78]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsForeignOrDisposedLeaseBeforeReading(disposed: True) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9030668-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.79]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_ExistingReadersAndBoundWriteAcceptHardLinkedGeneration [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9059529-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.80]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: "leaf-link") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9077737-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.80]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: "directory") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9099948-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.80]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_RejectsWrongTypeAndLinksWithoutFollowingThem(kind: "ancestor-link") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9121588-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.80]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "null") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9172145-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.81]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "{broken") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9191633-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.81]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "{\"schemaVersion\":1,\"generationId\":\"01234567-8"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9339176-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.81]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "{\"schemaVersion\":1,\"generationId\":\"0123456789"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9339485-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.81]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "") [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9339739-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.82]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_InvalidAuthorityRemainsAnErrorAndPreservesBytes(json: "{\"schemaVersion\":2,\"generationId\":\"0123456789"···) [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:57.9339935-04:00">
+        <ns0:Text>[xUnit.net 00:00:21.82]     BookOfEternityClient.Tests.PortableSessionGenerationTests.Snapshot_AbsenceIsExplicitAndDoesNotCreateGeneration [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+      <ns0:RunInfo computerName="$HOST" outcome="Error" timestamp="2026-10-01T03:18:58.1225089-04:00">
+        <ns0:Text>[xUnit.net 00:00:22.01]     BookOfEternityClient.Tests.PortableSessionGenerationTests.BoundGenerationReadDoesNotReenterItsOwnFenceInColdProcess [FAIL]</ns0:Text>
+      </ns0:RunInfo>
+    </ns0:RunInfos>
+  </ns0:ResultSummary>
+</ns0:TestRun>

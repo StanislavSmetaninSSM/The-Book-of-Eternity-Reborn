@@ -1,0 +1,93 @@
+diff --git a/tests/categories.json b/tests/categories.json
+index e69c1668..a66e7792 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -598,7 +598,6 @@
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RolledBackWorkerApply_JournalDeleteFailureDoesNotPoisonNextWriter",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_MissingDescriptorCreateOnlyBackendFailsBeforeTempOrHook",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_UnsupportedBackendAllowsCreateOnlyPublication",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_UnsupportedOverwriteFailsBeforeTempJournalOrHook",
+@@ -606,12 +605,7 @@
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeDirectoryMove_RechecksReparseConfinementAtMutationBoundary",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeDirectoryMove_RejectsRegularFileRacedIntoDirectorySource",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGenerationWrite_ParentSwapAfterAuthorityValidationIsBlocked",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_LinkAddedAfterInitialValidationFailsClosed",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsHardLinkedAuthorityFile",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsRuntimeSiblingReparsePoint",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText",
+-            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_SwapBackReadCannotAuthorizeExternalGeneration",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionMutationLease_CannotRotateSessionGeneration",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_CanRotateGenerationWhileLifecycleAuthorityIsActive",
+             "BookOfEternityClient.Tests.FileSystemManagerTests.SessionReplacementLease_RequiresActiveLifecycleAuthority",
+@@ -7638,7 +7632,7 @@
+     },
+     {
+       "id": "portable-storage-consumers",
+-      "responsibility": "Exact existing consumers of recorder-free ordinary writers: current/escaped session bindings, UI-owner leases, byte/text I/O, compare-exchange concurrency and transient access handling.",
++      "responsibility": "Exact existing consumers of recorder-free ordinary writers: UI-owner leases, byte/text I/O, compare-exchange concurrency and transient access handling. Current/escaped generation bindings have the dedicated portable-session-generation-consumers owner.",
+       "excludes": "Physical-identity adversarial swap guarantees, session replacement/rotate/save-load, and broad browser/gameplay command behavior.",
+       "changeHints": [
+         "BookOfEternityClient/Core/FileSystemManager.cs"
+@@ -7659,9 +7653,6 @@
+         {
+           "project": "unit",
+           "tests": [
+-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
+-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
+-            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter",
+             "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_NewLock_WritesOwnerAndHeartbeat",
+             "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.AcquireOrRefreshAsync_SameOwnerWithoutLease_DoesNotRefreshHeartbeat",
+             "BookOfEternityClient.Tests.LocalUiSessionLockServiceTests.RefreshAsync_ExactLeaseRefreshesHeartbeat",
+@@ -7789,6 +7780,48 @@
+         }
+       ]
+     },
++    {
++      "id": "portable-session-generation-consumers",
++      "responsibility": "Exact existing generation schema/type and operation-fence consumers, plus explicitly legacy load-reader physical regressions retained only on that unmigrated Windows route.",
++      "excludes": "Broad canonical storage, generation rotation/clear/save-load behavior, provider ownership and claims that Linux exercises Windows-gated assertions.",
++      "changeHints": [
++        "BookOfEternityClient/Core/FileSystemManager.cs",
++        "BookOfEternityClient/Core/FileSystemManager.GenerationSnapshot.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-session-generation",
++          "when": "Exact generation snapshot or fence routing changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 5,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundWriter_CurrentGeneration_UsesOrdinaryCanonicalWriter",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_EscapedTaskCannotWriteAfterOwningScopeCloses",
++            "BookOfEternityClient.Tests.SessionOperationContextTests.BoundOperation_ClosingStartsBeforeFinalLeaseAndRejectsEscapedWriter"
++          ]
++        },
++        {
++          "project": "integration",
++          "tests": [
++            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_RejectsUppercaseNonCanonicalGuidText",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.SessionGeneration_DuplicateGenerationPropertyFailsClosed",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.RuntimeAtomicWrite_DirectoryDestinationFailsBeforeMutationHook",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed",
++            "BookOfEternityClient.Tests.FileSystemManagerTests.LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration"
++          ]
++        }
++      ]
++    },
+     {
+       "id": "portable-session-generation",
+       "responsibility": "Exact leased generation snapshot and nonrecursive existing-generation/fence readers, including BOM/schema/absence, type/link admission and bounded cold-process probes.",

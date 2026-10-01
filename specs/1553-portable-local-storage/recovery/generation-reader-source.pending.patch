@@ -1,0 +1,123 @@
+diff --git a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+index b73559c5..9f7bd2e4 100644
+--- a/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
++++ b/BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs
+@@ -2164 +2164 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task SessionGeneration_RejectsHardLinkedAuthorityFile()
++    public async Task LegacyLoadBegin_RejectsHardLinkedGenerationAuthorityFile()
+@@ -2183 +2183,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await using var writeLease = await _fs.AcquireCanonicalWriteLeaseAsync();
++        // Only the original load journal retains this Windows physical-reader contract.
++        await using var lifecycleLease = await _fs.AcquireSessionLifecycleLeaseAsync();
++        await using var writeLease = await _fs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+@@ -2185 +2187,2 @@ public sealed class FileSystemManagerTests : IDisposable
+-            () => _fs.IsCurrentSessionGeneration(writeLease, externalGeneration));
++            () => _fs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
++        Assert.False(File.Exists(_fs.ActiveLoadTransactionJournalPath));
+@@ -2217 +2220 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task SessionGeneration_LinkAddedAfterInitialValidationFailsClosed()
++    public async Task LegacyLoadBegin_GenerationLinkAddedAfterInitialValidationFailsClosed()
+@@ -2253,2 +2256,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-        await using var writeLease =
+-            await raceFs.AcquireCanonicalWriteLeaseAsync();
++        // Ordinary generation reads no longer use these legacy physical hooks.
++        await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
++        await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+@@ -2258 +2262,2 @@ public sealed class FileSystemManagerTests : IDisposable
+-            () => raceFs.IsCurrentSessionGeneration(writeLease, generation));
++            () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
++        Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
+@@ -5019 +5024 @@ public sealed class FileSystemManagerTests : IDisposable
+-    public async Task SessionGeneration_SwapBackReadCannotAuthorizeExternalGeneration()
++    public async Task LegacyLoadBegin_SwapBackReadCannotAuthorizeExternalGeneration()
+@@ -5108 +5113,3 @@ public sealed class FileSystemManagerTests : IDisposable
+-            await using var writeLease = await raceFs.AcquireCanonicalWriteLeaseAsync();
++            // Exercise the original load handler, not the common logical reader.
++            await using var lifecycleLease = await raceFs.AcquireSessionLifecycleLeaseAsync();
++            await using var writeLease = await raceFs.AcquireSessionReplacementWriteLeaseAsync(lifecycleLease);
+@@ -5112,3 +5119,2 @@ public sealed class FileSystemManagerTests : IDisposable
+-                () => raceFs.IsCurrentSessionGeneration(
+-                    writeLease,
+-                    externalGeneration));
++                () => raceFs.BeginLoadTransaction(writeLease, Guid.NewGuid().ToString("N")));
++            Assert.False(File.Exists(raceFs.ActiveLoadTransactionJournalPath));
+diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
+index d7c13693..05cbe935 100644
+--- a/BookOfEternityClient/Core/FileSystemManager.cs
++++ b/BookOfEternityClient/Core/FileSystemManager.cs
+@@ -3647,3 +3647 @@ public partial class FileSystemManager
+-        var actualGeneration = RuntimeFileExists(SessionGenerationPath)
+-            ? ReadSessionGeneration()
+-            : null;
++        var actualGeneration = ReadLocalGenerationSnapshot(writeLease).Binding.Id;
+@@ -5505,4 +5503,2 @@ public partial class FileSystemManager
+-        EnsureValidCanonicalWriteLease(writeLease);
+-        if (RuntimeFileExists(SessionGenerationPath))
+-            return ReadSessionGeneration();
+-
++        var snapshot = ReadLocalGenerationSnapshot(writeLease);
++        if (snapshot.Binding.Exists) return snapshot.Binding.Id!;
+@@ -5512,14 +5508,3 @@ public partial class FileSystemManager
+-    /// <summary>
+-    /// Reads an existing session generation without creating or replacing runtime authority.
+-    /// </summary>
+-    /// <param name="writeLease">
+-    /// Active canonical lease for the physical runtime root.
+-    /// </param>
+-    /// <returns>
+-    /// The validated existing generation, or <see langword="null"/> when its authority file is absent.
+-    /// </returns>
+-    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease)
+-    {
+-        EnsureCanonicalWriteLeaseActive(writeLease);
+-        return RuntimeFileExists(SessionGenerationPath) ? ReadSessionGeneration() : null;
+-    }
++    /// <summary>Reads existing logical generation authority without creating or replacing it.</summary>
++    internal string? ReadExistingSessionGeneration(CanonicalWriteLease writeLease) =>
++        ReadLocalGenerationSnapshot(writeLease).Binding.Id;
+@@ -5531,11 +5516,4 @@ public partial class FileSystemManager
+-        EnsureValidCanonicalWriteLease(writeLease);
+-        if (string.IsNullOrWhiteSpace(expectedGenerationId) ||
+-            !RuntimeFileExists(SessionGenerationPath))
+-        {
+-            return false;
+-        }
+-
+-        return string.Equals(
+-            ReadSessionGeneration(),
+-            expectedGenerationId,
+-            StringComparison.Ordinal);
++        EnsureCanonicalWriteLeaseActive(writeLease);
++        if (string.IsNullOrWhiteSpace(expectedGenerationId)) return false;
++        return string.Equals(ReadLocalGenerationSnapshot(writeLease).Binding.Id,
++            expectedGenerationId, StringComparison.Ordinal);
+@@ -5553,25 +5531,4 @@ public partial class FileSystemManager
+-    private string ReadSessionGeneration()
+-    {
+-        try
+-        {
+-            var document = StrictJsonAuthority.Deserialize<SessionGenerationDocument>(
+-                ReadRuntimeText(SessionGenerationPath),
+-                RecoveryJsonOptions,
+-                "Session generation authority");
+-            if (document is null || document.SchemaVersion != 1 ||
+-                !Guid.TryParseExact(document.GenerationId, "N", out var parsedGeneration) ||
+-                !string.Equals(
+-                    document.GenerationId,
+-                    parsedGeneration.ToString("N"),
+-                    StringComparison.Ordinal))
+-            {
+-                throw new InvalidDataException("Session generation authority is invalid.");
+-            }
+-
+-            return document.GenerationId;
+-        }
+-        catch (JsonException ex)
+-        {
+-            throw new InvalidDataException("Session generation authority is invalid.", ex);
+-        }
+-    }
++    // Original load-transaction generation read; keep its physical open contract
++    // separate until the load journal itself is migrated.
++    private string ReadSessionGeneration() =>
++        ParseSessionGenerationText(ReadRuntimeText(SessionGenerationPath));

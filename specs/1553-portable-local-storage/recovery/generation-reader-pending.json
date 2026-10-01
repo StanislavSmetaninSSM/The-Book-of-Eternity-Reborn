@@ -1,0 +1,41 @@
+{
+  "baseCommit": "6f2e95e356e977199717fef57863b4dcf288720f",
+  "status": "Untested reader implementation; observed RED is preserved; GREEN pending",
+  "preparedIndexTreeBeforeRecoveryBookkeeping": "0a318b5fe447fdabc3e7ba55064d5f60e0d02e91",
+  "treeQualification": "Historical prepared index before these packet/recovery bookkeeping files; not the tree of the later checkpoint. Native normalization verifies the exact per-file blobs and the separately reported applied index tree.",
+  "patches": [
+    {
+      "path": "generation-reader-source.pending.patch",
+      "bytes": 7292,
+      "sha256": "f2c0f469d6ce2f07a2d3071b88bdab2f806721f527cc7f97d704a0d71ff6b8ef",
+      "files": [
+        {
+          "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+          "beforeBlob": "d7c13693e69c43b7050e29a423e55e02f3d5b7ed",
+          "afterBlob": "05cbe935435a9245604b89f7f631239b994630d5"
+        },
+        {
+          "path": "BookOfEternityClient.IntegrationTests/FileSystemManagerTests.cs",
+          "beforeBlob": "b73559c512781a864c32633dd8e30464a01ae0bc",
+          "afterBlob": "9f7bd2e4a6dad783eaeac6c565eca27c22c85be5"
+        }
+      ],
+      "applyArguments": [
+        "--unidiff-zero"
+      ]
+    },
+    {
+      "path": "categories-pending.patch",
+      "bytes": 6880,
+      "sha256": "96e96f5a33c7a37335321509f4e5ab83e306be21b39cee50f258d8a071c59180",
+      "files": [
+        {
+          "path": "tests/categories.json",
+          "beforeBlob": "e69c166820095b9b42140ab9ce78b3f848cd076d",
+          "afterBlob": "a66e7792c1e4208f728d87a39924d0ae4d2f55ea"
+        }
+      ],
+      "applyArguments": []
+    }
+  ]
+}

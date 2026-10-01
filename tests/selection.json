@@ -3,10 +3,35 @@
   "selections": [
     {
       "category": "portable-session-generation",
-      "reason": "Initial test-first exact generation snapshot and cold nonregular/fence reader cases; rotation/clear remain unchanged.",
+      "reason": "Cover the observed 24-case snapshot/FIFO/fence RED after implementation.",
       "contracts": [
-        "exact generation bytes and explicit absence",
-        "nonrecursive regular-file generation admission"
+        "generation snapshot bytes/type admission",
+        "nonrecursive existing reader wiring"
+      ]
+    },
+    {
+      "category": "portable-session-generation-consumers",
+      "reason": "Exact existing schema/type and bound-operation consumers; three explicitly legacy physical-reader tests are Windows-gated and their assertions are not exercised by Linux.",
+      "contracts": [
+        "canonical generation schema",
+        "operation lifetime fencing",
+        "original load-reader separation"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Bootstrap, cold recovery and ordinary writes now reach the common generation snapshot.",
+      "contracts": [
+        "common client generation admission",
+        "cold bootstrap and writer recovery"
+      ]
+    },
+    {
+      "category": "portable-storage-publication",
+      "reason": "B1 generation validation and recovery call the newly wired ReadExistingSessionGeneration.",
+      "contracts": [
+        "generation-bound journal recovery",
+        "exact member preflight and generation image compatibility"
       ]
     }
   ]
