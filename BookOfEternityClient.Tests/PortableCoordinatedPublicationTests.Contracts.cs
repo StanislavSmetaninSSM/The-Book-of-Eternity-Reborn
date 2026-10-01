@@ -82,7 +82,7 @@ public sealed partial class PortableCoordinatedPublicationTests
     {
         string[]? members = null;
         _observer = (phase, _) => { if (phase == TrustedLocalPublicationPhase.IntentPublished) members = ReadActiveMembers(); };
-        var alias = "  " + ReplacePath.Replace('/', Path.AltDirectorySeparatorChar) + "  ";
+        var alias = "  " + ReplacePath.Replace('/', Path.DirectorySeparatorChar) + "  ";
         Assert.Equal(_files.ResolvePath(ReplacePath), _files.ResolvePath(alias));
         Assert.True(await CoordinatedStateWriteHelper.TryCommitAsync(_files,
             new CoordinatedStateWriteHelper.PlannedWrite(ReplacePath, null, "{}"),

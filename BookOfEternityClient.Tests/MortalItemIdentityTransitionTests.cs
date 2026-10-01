@@ -309,7 +309,7 @@ public sealed partial class MortalItemIdentityTransitionTests
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected second carrier write failure");
+                        throw new InvalidOperationException("injected second carrier write failure");
                     }
                 }
             });

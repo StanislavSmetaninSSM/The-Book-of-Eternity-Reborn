@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "5cc0bc984e31c0606097c2100aa9e8d0afc5f17b",
+  "baseCommit": "5321448295b6eda3d4ecc96293a8dcdcf00a7f4b",
   "patchFile": "coordinated-publication-pending.patch",
-  "patchBytes": 48104,
-  "patchSha256": "62916ec6f737012c3ea3fa6ced223dd8810546aba897067960ae3a67aede3320",
+  "patchBytes": 49034,
+  "patchSha256": "828af193ce777f9c5cf658b060e64366b70c50e711e66c795dfc93b197c6895d",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs",
       "beforeBlob": "91fc4e02776e4c2992b51f84fc2d8369bad74ea0",
-      "afterBlob": "6cd8bc866736fac42879c3eba0e55f47f6c685ca",
+      "afterBlob": "1c5ad3badb10da2335f7c4114ccc4b06d4220eca",
       "beforeSha256": "bbdeba83f22922cb6ce88ad407875cf266f2a7dcb5c9747461b9bb6a3fd478c7",
-      "afterSha256": "dfcf0cf41d4429723ffd6798d0065772b587697a945bff420485f8c38f4cca93"
+      "afterSha256": "8a0ffd50a631bf31fee4c645a95bf4dca170647cfddf94ad27cf938c3c1e8dff"
     },
     {
       "path": "BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs",
@@ -64,12 +64,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
-      "afterBlob": "5402a0efe30e2741c3ee4d54c1cc8bd58608f14f",
+      "afterBlob": "4bef4a4acb1afdb2250209012cebe59995bd51eb",
       "beforeSha256": "928087ad1e5e6df965427ab13db6db1381804d0d4ee8651b45211a9c5a7d9576",
-      "afterSha256": "d083bb0479531ef0ff6a96bc801befaaeb1992500def574a29fa985912d06f00"
+      "afterSha256": "78424dc4598a729daef6e48211eb5560c239fcfc15b50135c8f1377c2667bf55"
     }
   ],
-  "appliedSourceTree": "256b52b53929ee5b267eaa50f0925df3049ac23b",
+  "appliedSourceTree": "dd389afa09dbca94845fd1b734e0a2c6a8e8fb89",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"

@@ -142,7 +142,7 @@ public sealed partial class MortalItemIdentityTransitionTests
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected split index write failure");
+                        throw new InvalidOperationException("injected split index write failure");
                     }
                 }
             });

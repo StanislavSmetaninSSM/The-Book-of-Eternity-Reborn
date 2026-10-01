@@ -3,33 +3,27 @@
   "selections": [
     {
       "category": "portable-coordinated-qte-outcome",
-      "reason": "Cover the two causal QTE compensation/Russian projection fixes after the reached RED.",
+      "reason": "Two outcome cases unrun after the earlier prerequisite failure. Verify the actual uncertainty compensation filter and private Russian notice.",
       "contracts": [
         "no follow-up mutation after unresolved helper publication",
         "exact evidence retained",
-        "safe Russian uncertainty projection"
+        "safe Russian notice"
       ]
     },
     {
       "category": "portable-coordinated-phase-consumers",
-      "reason": "Migrate old apply/boundary fault fixtures to actual B1 member publication while preserving service acknowledgments, real lease contention and later QTE post-commit/domain-compensation controls.",
+      "reason": "All 23 phase cases were unrun. Correct pre-decision deterministic cuts to non-I/O faults so unchanged B1 retry cannot defeat their oracle; retain final:* IOException domain compensation and post-commit cleanup controls.",
       "contracts": [
-        "complete B1 rollback",
-        "ordinary fault phase is pre-decision",
-        "later known-outcome compensation retained"
+        "single deterministic rollback cut",
+        "real lease contention",
+        "known post-commit/domain compensation preserved"
       ]
     },
     {
-      "category": "portable-coordinated-actual-consumers",
-      "reason": "Select only the approved concrete helper consumers and privacy control; no broad category traversal or repetition of completed helper/caller cohorts.",
+      "category": "portable-coordinated-progression",
+      "reason": "The sole progression unit case was unrun. Minimal category split is necessary because the canonical runner selects all selectors of each category and exposes no project/descriptor filter.",
       "contracts": [
-        "guard-only and guard/write interaction",
-        "carrier/identity/resource settlement",
-        "owner/quartet and blessing overlap",
-        "progression exact mutation",
-        "wound authority quarantine",
-        "QTE success and stale sealed input",
-        "ordinary private error projection"
+        "exact progression schedule/report guard/write mutation"
       ]
     }
   ]

@@ -702,7 +702,7 @@ public sealed class NpcTradeServiceRequestFlowTests : IDisposable
                             StringComparison.OrdinalIgnoreCase))
                     {
                         injected = true;
-                        throw new IOException("injected trade settlement write failure");
+                        throw new InvalidOperationException("injected trade settlement write failure");
                     }
                 }
             });

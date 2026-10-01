@@ -70,7 +70,7 @@ public sealed class ResourceMaterializationTestContextTests
             {
                 if (!armed || phase != TrustedLocalPublicationPhase.MemberPublished) return;
                 applied = index;
-                if (index == failAfterWriteIndex) throw new IOException("injected quartet member failure");
+                if (index == failAfterWriteIndex) throw new InvalidOperationException("injected quartet member failure");
             }
         });
         var initial = new Dictionary<string, string>(StringComparer.Ordinal)

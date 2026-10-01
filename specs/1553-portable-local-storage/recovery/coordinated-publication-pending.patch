@@ -1,5 +1,5 @@
 diff --git a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
-index 91fc4e02..6cd8bc86 100644
+index 91fc4e02..1c5ad3ba 100644
 --- a/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
 +++ b/BookOfEternityClient.IntegrationTests/QteDeferredEffectContinuationIntegrationTests.cs
 @@ -11,7 +11,7 @@ using Xunit;
@@ -25,9 +25,13 @@ index 91fc4e02..6cd8bc86 100644
          const int sourceTurn = 42;
          var scenario = await PrepareAwaitingReceiptAsync(
              context,
-@@ -1295,15 +1300,21 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+@@ -1293,17 +1298,24 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+             amount: 2m);
+         var before = await context.CaptureBytesAsync(
              ReceiptResumeProtectedPaths);
-         var injected = new IOException(
+-        var injected = new IOException(
++        // The cut proves deterministic rollback, not B1 transient-I/O retry.
++        var injected = new InvalidOperationException(
              $"Injected deferred QTE failure at {failurePoint}.");
 -        var service = CreateQteService(
 -            context.FileSystem,
@@ -56,7 +60,7 @@ index 91fc4e02..6cd8bc86 100644
  
          var error = await Assert.ThrowsAsync<InvalidOperationException>(async () =>
          {
-@@ -1319,6 +1330,7 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
+@@ -1319,6 +1331,7 @@ public sealed class QteDeferredEffectContinuationIntegrationTests
                      allowPreexistingStateIssues: true));
          });
  
@@ -553,10 +557,10 @@ index 4a4415cc..1ef228e3 100644
 +
 +T031 implementation refinement: ordinary QTE acceptance/transport calls use the helper without callbacks; explicit AfterLegacyAcceptanceRuntimeWrittenAsync/AfterLegacyDeferredEffectMutationAsync preserve original recorder/recovery callbacks. AfterRuntimeWrittenAsync and final:* AfterDeferredEffectMutationAsync remain later domain hooks. Uncertainty bypasses domain compensation; the private Russian notice avoids unchanged-state/retry claims. This is the bounded helper/error boundary, not full accepted-turn or browser-v6 migration; current verified/unrun evidence lives in plan.md.
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..5402a0ef 100644
+index ad2fe43a..4bef4a4a 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,312 @@
+@@ -8417,6 +8417,330 @@
            ]
          }
        ]
@@ -831,7 +835,7 @@ index ad2fe43a..5402a0ef 100644
 +    },
 +    {
 +      "id": "portable-coordinated-actual-consumers",
-+      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, progression exact guards, wound command quarantine, successful/stale-sealed QTE flow and generic private console notice.",
++      "responsibility": "Exact existing helper consumers: training guard-only visibility/purchase conflict, item settlement, afterlife owner/quartet, blessing overlap, wound command quarantine, successful/stale-sealed QTE flow and generic private console notice.",
 +      "excludes": "Whole domain categories, full normalizer/accepted-turn migration, original browser-v6/save-load/external profile migration and live UI/provider execution.",
 +      "changeHints": [
 +        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
@@ -846,12 +850,6 @@ index ad2fe43a..5402a0ef 100644
 +      "expectedSeconds": null,
 +      "selectors": [
 +        {
-+          "project": "unit",
-+          "tests": [
-+            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals"
-+          ]
-+        },
-+        {
 +          "project": "integration",
 +          "tests": [
 +            "BookOfEternityClient.Tests.TrainingServiceTests.EnsureTrainingAsync_MortalActorChangesAfterFinalRead_IsRejectedByVisibilityGuard",
@@ -863,6 +861,30 @@ index ad2fe43a..5402a0ef 100644
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.BoundedReceipt_TwoWavesSurviveRestartsAndPublishMechanicsOnlyAtFinalWave",
 +            "BookOfEternityClient.Tests.QteDeferredEffectContinuationIntegrationTests.TerminalSelection_ByteDifferentSealedRootFailsBeforeAnyWrite",
 +            "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.EffectMaterializationRepairLifecycleTests_Privacy_AgentConsoleOuterFailureUsesPlayerSafeProjection"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-progression",
++      "responsibility": "One actual progression accepted-turn mutation through coordinated exact schedule/report guard/write publication. Independently selectable without repeating integration consumers.",
++      "excludes": "Full progression category and unrelated calendar/realm rules.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Services/ProgressionScheduleService.cs"
++      ],
++      "related": [],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.ProgressionScheduleServiceTests.ApplyAcceptedTurnOutcomeAsync_ValidChaosProgressionReport_AdvancesOrdinals"
 +          ]
 +        }
 +      ]
