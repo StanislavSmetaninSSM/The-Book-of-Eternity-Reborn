@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "5e0292fd1969eb9ec047a100dca0318d560fceb0",
+  "patchFile": "backup-lifecycle-pending.patch",
+  "patchBytes": 20457,
+  "patchSha256": "1205e3d012e41c569e388910f936573b25097b0df09f80a6d88f8e1d52c12fa1",
+  "entries": [
+    {
+      "path": "tests/categories.json",
+      "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+      "afterBlob": "edded8dd0c0c9c81846b8e4e991eb8493edaf531",
+      "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+      "afterSha256": "23a34cffa4aafef708f1ced1aa57d3f547e95d87a73f94d70702002e82ebd461"
+    }
+  ],
+  "appliedSourceTree": "c75dccd507912f51aa8044ebb5ffdb5bf765478e",
+  "comparisonExcludes": [
+    "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
+    "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
+  ],
+  "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+}

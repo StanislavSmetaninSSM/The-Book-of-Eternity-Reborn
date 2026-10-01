@@ -2,31 +2,10 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-directory-deletion",
-      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
+      "category": "portable-backup-api",
+      "reason": "T030-G causal public API RED before changing the three ordinary backup lifecycle routes.",
       "contracts": [
-        "FR-002 through FR-007; canonical directory deletion"
-      ]
-    },
-    {
-      "category": "portable-directory-recovery",
-      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
-      "contracts": [
-        "FR-002 through FR-007; canonical directory deletion"
-      ]
-    },
-    {
-      "category": "portable-directory-linux-special",
-      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
-      "contracts": [
-        "FR-002 through FR-007; canonical directory deletion"
-      ]
-    },
-    {
-      "category": "portable-directory-consumers",
-      "reason": "Bounded Linux T030-F reproduction: ordinary deletion, recovery and reached consumers. The separately owned portable-directory-backup-prerequisite preserves the known failed Linux quarantine setup; it is not counted as passed or hidden by an OS guard.",
-      "contracts": [
-        "FR-002 through FR-007; canonical directory deletion"
+        "FR-003 through FR-006; exact bytes/absence and complete B1 decision"
       ]
     }
   ]

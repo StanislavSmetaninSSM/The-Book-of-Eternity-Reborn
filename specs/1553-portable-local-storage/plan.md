@@ -4,6 +4,20 @@
 **Source**: [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553)
 **Requirements**: [spec.md](spec.md) | **Work**: [tasks.md](tasks.md) | **Decisions**: [research.md](research.md) | **Reproduction**: [quickstart.md](quickstart.md)
 
+## Active T030-G — ordinary backup lifecycle
+
+**2026-10-01: WIP, plan and causal tests only; no implementation or acceptance yet.** Source issue [#1553](https://github.com/StanislavSmetaninSSM/The-Book-of-Eternity-Reborn/issues/1553). Clean local and remote base `5e0292fd1969eb9ec047a100dca0318d560fceb0`, tree `a1bbcb685d1db18902af6252ebd8dbf15baf3fa7`. The [source map](backup-lifecycle-cutover.md) remains historical research. This assigned slice implements approved FR-001–009 without a new product decision.
+
+1. Preserve sync/async public create, independently seeded restore, and cleanup RED with exact bytes and reached B1 decision assertions. Current create/restore bypass the common publisher; cleanup needs the durable common disposition even where physical Linux deletion already works.
+2. Add narrowly dispatched ordinary backup helpers using real leases, recovery before capture/no-op, validated platform paths/types/links, exact bytes/absence, generation fencing and existing B1. Create is absence-guarded; restore declares target plus backup deletion together; cleanup declares evidence deletion. Fresh generation belongs to the same nonempty decision. Keep original physical cores and both-context original restore routing.
+3. Propagate unresolved publication through StateDistributor and its QTE compensation catches; stop later rollback mutations and treatment-hold release on uncertainty. Preserve committed results despite cleanup, logger and owned-release failures. Ordinary setup/parse rejection remains a known failure. Distribution/QTE as a whole are still multiple decisions.
+4. Add bounded boundary, nontransient warm-fault and actual-public-API separate-process crash/recovery tests, then actual StateDistributor/QTE catch consumers and the exact previously blocked quarantine fixture. Capture planned/completed counts, source identities and valid sanitized XML. No passing T030-F cohort replay.
+5. Audit category ownership and exact Linux/native selections through discovery only; freeze source for the coordinator's independent Astra XHigh review and later native execution. Preserve each bounded WIP remotely first, with small exact patch/manifests for large files and fresh GitHub-only recovery before handoff.
+
+Out of scope: full accepted-turn/normalizer/StateDistributor atomicity, browser-v6 receipts, load/archive/staged-workspace and external Daren authority, save library formats, B4/B5 and full Linux gameplay. No physical identity fabrication, OS guard deletion, schema/GM change or new journal. Synthetic save sentinels remain exact bytes. Current Linux quarantine is still unqualified until its real body is reached and verified. T030/T031/#1553 remain open.
+
+Verification starts with `scripts/test-csharp.ps1 -Category portable-backup-api -Parallelism 1`; initial three methods/six sync/async cases, not yet run. New categories and selection will expand only with their concrete changed contracts. Review, native, recovery checks and all behavioral results are pending. The environment follows quickstart's isolated recipe with HOME/home/CODEX_HOME unchanged and existing immutable tool binaries/cache only.
+
 <a id="active-t030-f--ordinary-canonical-directory-tree-deletion"></a>
 
 ## Accepted T030-F — ordinary canonical directory-tree deletion
