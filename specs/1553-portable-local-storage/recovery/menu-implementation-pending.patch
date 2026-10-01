@@ -1,0 +1,540 @@
+diff --git a/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs b/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs
+index dc01b86..334e641 100644
+--- a/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs
++++ b/BookOfEternityClient.Tests/ConsoleSettingsSessionTests.cs
+@@ -291 +291,3 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
+-        Assert.True(await session.IsCurrentSetSynchronizedAsync());
++        _live.Language = "en"; // A prior runtime snapshot; the complete confirmed set is ru.
++        Assert.True(await session.TryAcceptSynchronizedSettingsAsync());
++        Assert.Equal("ru", _live.Language);
+@@ -301 +303,3 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
+-        Assert.False(await session.IsCurrentSetSynchronizedAsync());
++        session.Draft.Language = "en";
++        Assert.False(await session.TryAcceptSynchronizedSettingsAsync());
++        Assert.Equal("ru", _live.Language); Assert.Equal("en", session.Draft.Language);
+@@ -313 +317 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
+-        await Assert.ThrowsAsync<SessionReplacedException>(() => session.IsCurrentSetSynchronizedAsync());
++        await Assert.ThrowsAsync<SessionReplacedException>(() => session.TryAcceptSynchronizedSettingsAsync());
+diff --git a/BookOfEternityClient/Core/ConsoleSettingsPreview.cs b/BookOfEternityClient/Core/ConsoleSettingsPreview.cs
+index 13270e2..662d81a 100644
+--- a/BookOfEternityClient/Core/ConsoleSettingsPreview.cs
++++ b/BookOfEternityClient/Core/ConsoleSettingsPreview.cs
+@@ -9,0 +10,9 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
++    private readonly GameSettings _accepted;
++    private readonly GameSettings _draft;
++    private readonly LocalizationManager _localization;
++    private readonly AudioService _audio;
++    private readonly ConsoleAppearanceService _appearance;
++    private readonly Func<GameSettings, Task> _refreshPlayback;
++    private readonly IDisposable _audioPreview;
++    private bool _disposed;
++
+@@ -12 +21,19 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
+-        => throw new NotImplementedException();
++    {
++        _accepted = accepted;
++        _draft = draft;
++        _localization = localization;
++        _audio = audio;
++        _appearance = appearance;
++        _refreshPlayback = refreshPlayback;
++        _audioPreview = audio.BeginSettingsPreview(draft);
++    }
++
++    internal async Task<bool> ApplyAsync()
++    {
++        ObjectDisposedException.ThrowIf(_disposed, this);
++        _localization.CurrentLanguage = _draft.Language;
++        var fontApplied = _appearance.TryPreviewFontSize(_draft.ConsoleFontSize);
++        await _audio.ApplySettingsAsync();
++        await _refreshPlayback(_draft);
++        return fontApplied;
++    }
+@@ -14,2 +41,12 @@ internal sealed class ConsoleSettingsPreview : IAsyncDisposable
+-    internal Task<bool> ApplyAsync() => throw new NotImplementedException();
+-    public ValueTask DisposeAsync() => throw new NotImplementedException();
++    public async ValueTask DisposeAsync()
++    {
++        if (_disposed) return;
++        _disposed = true;
++        _audioPreview.Dispose();
++        _localization.CurrentLanguage = _accepted.Language;
++        _appearance.ApplyConfiguredFontSize();
++        // Even if a backend cannot stop cleanly, still attempt to restore the
++        // accepted playlist context. File acceptance is unaffected by either.
++        try { await _audio.ApplySettingsAsync(); }
++        finally { await _refreshPlayback(_accepted); }
++    }
+diff --git a/BookOfEternityClient/Core/ConsoleSettingsSession.cs b/BookOfEternityClient/Core/ConsoleSettingsSession.cs
+index 28df001..d2576c4 100644
+--- a/BookOfEternityClient/Core/ConsoleSettingsSession.cs
++++ b/BookOfEternityClient/Core/ConsoleSettingsSession.cs
+@@ -50 +50,22 @@ internal sealed class ConsoleSettingsSession
+-    internal Task<bool> IsCurrentSetSynchronizedAsync() => throw new NotImplementedException();
++    internal async Task<bool> TryAcceptSynchronizedSettingsAsync()
++    {
++        await BrowserAudioService.SettingsWriteGate.WaitAsync();
++        try
++        {
++            if (RequiresReload) return false;
++            await using var lease = await _files.AcquireCanonicalWriteLeaseAsync();
++            var prepared = await _preparation.PrepareAsync(lease, _baseline, Draft);
++            // No file publication is needed only after the entire current set
++            // and captured generation match. An edited/unconfirmed draft is
++            // never applied to runtime through this path.
++            var synchronized = prepared.Changes.All(change => change.Before == null
++                ? change.After == null
++                : change.After != null && change.Before.AsSpan().SequenceEqual(change.After));
++            if (!synchronized) return false;
++            _state.Settings.ApplyLoadedValues(prepared.Settings);
++            Draft.ApplyLoadedValues(_state.CaptureRuntimeSnapshot().Settings);
++            VerifyGeneration(lease);
++            return true;
++        }
++        finally { BrowserAudioService.SettingsWriteGate.Release(); }
++    }
+diff --git a/BookOfEternityClient/Core/GameEngine.cs b/BookOfEternityClient/Core/GameEngine.cs
+index 2c65dc4..d9ad773 100644
+--- a/BookOfEternityClient/Core/GameEngine.cs
++++ b/BookOfEternityClient/Core/GameEngine.cs
+@@ -195 +195 @@ public partial class GameEngine
+-        await EnsureClientOwnedSystemFilesHealthyAsync();
++        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
+diff --git a/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs b/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs
+index bbdfc0e..30c7cb9 100644
+--- a/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs
++++ b/BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs
+@@ -409 +409 @@ public partial class GameEngine
+-        await EnsureClientOwnedSystemFilesHealthyAsync();
++        await EnsureClientOwnedSystemFilesHealthyAsync(ordinaryEntry: true);
+@@ -1216 +1216 @@ public partial class GameEngine
+-        await WriteGameSettingsForGm();
++        if (!await WriteGameSettingsForGm()) return;
+@@ -1240 +1240 @@ public partial class GameEngine
+-            SystemReminder = await BuildTurnSystemReminderAsync()
++            SystemReminder = await BuildTurnSystemReminderAsync(maintainLegacyTurnSettings: false)
+@@ -3336 +3336 @@ public partial class GameEngine
+-            await WriteGameSettingsForGm();
++            if (!await WriteGameSettingsForGm()) return;
+diff --git a/BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs b/BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs
+index ec86303..292915d 100644
+--- a/BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs
++++ b/BookOfEternityClient/Core/GameEngine/GameEngine.OptionsAndSettings.cs
+@@ -11,0 +12 @@ using BookOfEternityClient.UI;
++using BookOfEternityClient.WebUi;
+@@ -20,0 +22,15 @@ public partial class GameEngine
++        var session = await ConsoleSettingsSession.OpenAsync(_fs, _stateManager, _systemModService);
++        var settings = session.Draft;
++        await using var preview = new ConsoleSettingsPreview(_stateManager.Settings, settings, _loc,
++            _audioService, _consoleAppearance, RefreshAudioPlaybackContextAsync);
++        string? notice = null;
++        var exitAfterReconcile = false;
++        async Task<BrowserPreparedWriteResult> SaveDraftAsync()
++        {
++            var outcome = await session.SaveAsync(async () => { await preview.ApplyAsync(); });
++            notice = outcome.Message;
++            return outcome;
++        }
++        static bool CanLeave(BrowserPreparedWriteResult result) =>
++            result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp;
++
+@@ -28 +44,20 @@ public partial class GameEngine
+-            var entries = await BuildOptionsEntriesAsync();
++            if (session.RequiresReload)
++            {
++                var action = ShowSingleChoiceMenu("Настройки требуют проверки",
++                    new List<MenuChoiceItem> { new("reload", "Перечитать сохранённые настройки", "Отменить неподтверждённый черновик после успешного чтения", "yellow") },
++                    footer: notice + " Esc — остаться в настройках");
++                if (action == null) continue;
++                try
++                {
++                    await session.ReloadAsync(async () => { await preview.ApplyAsync(); });
++                    notice = "Подтверждённые настройки перечитаны.";
++                    if (exitAfterReconcile) return;
++                }
++                catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
++                {
++                    notice = "Не удалось перечитать настройки: " + ex.Message;
++                    continue;
++                }
++                lastWidth = -1;
++            }
++            var entries = await BuildOptionsEntriesAsync(session);
+@@ -36,3 +71,3 @@ public partial class GameEngine
+-                menuTop = RenderOptionsStaticFrame();
+-                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
+-                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
++                menuTop = RenderOptionsStaticFrame(settings, notice);
++                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight, settings, notice);
++                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu", notice);
+@@ -60,2 +95,4 @@ public partial class GameEngine
+-                    await _stateManager.SaveSettingsAsync();
+-                    return;
++                    exitAfterReconcile = true;
++                    if (CanLeave(await SaveDraftAsync())) return;
++                    lastWidth = -1;
++                    continue;
+@@ -70,2 +107,2 @@ public partial class GameEngine
+-                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight);
+-                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu");
++                RedrawOptionsMenuArea(entries, selectedIndex, menuTop, currentHeight, settings, notice);
++                WriteOptionsMenuObservation(entries, selectedIndex, "options-menu", notice);
+@@ -77,0 +115,3 @@ public partial class GameEngine
++            exitAfterReconcile = false;
++            if (chosen.Key is not ("difficulty" or "qte" or "system_mods" or "back" or "reload" or "gm_worker_profiles" or "image_cleanup"))
++                notice = "Предпросмотр: изменения ещё не сохранены.";
+@@ -80 +120 @@ public partial class GameEngine
+-                await ShowDifficultySelection();
++                if (await ShowDifficultySelection(settings)) await SaveDraftAsync();
+@@ -84 +124 @@ public partial class GameEngine
+-                _stateManager.Settings.AllowHistoryManipulation = !_stateManager.Settings.AllowHistoryManipulation;
++                settings.AllowHistoryManipulation = !settings.AllowHistoryManipulation;
+@@ -88 +128 @@ public partial class GameEngine
+-                _stateManager.Settings.ShowGmThoughts = !_stateManager.Settings.ShowGmThoughts;
++                settings.ShowGmThoughts = !settings.ShowGmThoughts;
+@@ -92 +132 @@ public partial class GameEngine
+-                _stateManager.Settings.AutoDiscardBrokenItems = !_stateManager.Settings.AutoDiscardBrokenItems;
++                settings.AutoDiscardBrokenItems = !settings.AutoDiscardBrokenItems;
+@@ -96,2 +136,2 @@ public partial class GameEngine
+-                _stateManager.Settings.EnableQteEvents = !_stateManager.Settings.EnableQteEvents;
+-                await WriteGameSettingsForGm();
++                settings.EnableQteEvents = !settings.EnableQteEvents;
++                await SaveDraftAsync();
+@@ -101,3 +141,2 @@ public partial class GameEngine
+-                _stateManager.Settings.MusicEnabled = !_stateManager.Settings.MusicEnabled;
+-                await _audioService.ApplySettingsAsync();
+-                await RefreshAudioPlaybackContextAsync();
++                settings.MusicEnabled = !settings.MusicEnabled;
++                await preview.ApplyAsync();
+@@ -107,3 +146,2 @@ public partial class GameEngine
+-                _stateManager.Settings.MusicVolume = PromptVolume(_loc.T("volume_prompt_music"), _stateManager.Settings.MusicVolume);
+-                await _audioService.ApplySettingsAsync();
+-                await RefreshAudioPlaybackContextAsync();
++                settings.MusicVolume = PromptVolume(_loc.T("volume_prompt_music"), settings.MusicVolume);
++                await preview.ApplyAsync();
+@@ -113,2 +151,2 @@ public partial class GameEngine
+-                _stateManager.Settings.SoundEnabled = !_stateManager.Settings.SoundEnabled;
+-                await _audioService.ApplySettingsAsync();
++                settings.SoundEnabled = !settings.SoundEnabled;
++                await preview.ApplyAsync();
+@@ -118,2 +156,2 @@ public partial class GameEngine
+-                _stateManager.Settings.SoundVolume = PromptVolume(_loc.T("volume_prompt_sound"), _stateManager.Settings.SoundVolume);
+-                await _audioService.ApplySettingsAsync();
++                settings.SoundVolume = PromptVolume(_loc.T("volume_prompt_sound"), settings.SoundVolume);
++                await preview.ApplyAsync();
+@@ -124,2 +162,2 @@ public partial class GameEngine
+-                _stateManager.Settings.ConsoleFontSize = PromptFontSize(_stateManager.Settings.ConsoleFontSize);
+-                if (!_consoleAppearance.TryApplyFontSize(_stateManager.Settings.ConsoleFontSize))
++                settings.ConsoleFontSize = PromptFontSize(settings.ConsoleFontSize);
++                if (!await preview.ApplyAsync())
+@@ -133 +171 @@ public partial class GameEngine
+-                _stateManager.Settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(_stateManager.Settings.GmCliLaunchCommand);
++                settings.GmCliLaunchCommand = PromptGmCliLaunchCommand(settings.GmCliLaunchCommand);
+@@ -141 +179 @@ public partial class GameEngine
+-                await ShowSystemModsMenu();
++                await ShowSystemModsMenu(session, SaveDraftAsync);
+@@ -145 +183 @@ public partial class GameEngine
+-                var currentPollKey = _stateManager.Settings.PollinationsApiKey;
++                var currentPollKey = settings.PollinationsApiKey;
+@@ -159 +197 @@ public partial class GameEngine
+-                    initialIndex: _stateManager.Settings.ImageProvider == "pollinations" ? 1 : 0);
++                    initialIndex: settings.ImageProvider == "pollinations" ? 1 : 0);
+@@ -163,2 +201,2 @@ public partial class GameEngine
+-                    menuTop = RenderOptionsStaticFrame();
+-                    RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
++                    menuTop = RenderOptionsStaticFrame(settings, notice);
++                    RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(session), selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
+@@ -170 +208 @@ public partial class GameEngine
+-                    _stateManager.Settings.ImageProvider = "pollinations";
++                    settings.ImageProvider = "pollinations";
+@@ -178 +216 @@ public partial class GameEngine
+-                        _stateManager.Settings.PollinationsApiKey = newKey.Trim();
++                        settings.PollinationsApiKey = newKey.Trim();
+@@ -181 +219 @@ public partial class GameEngine
+-                    var currentModel = _stateManager.Settings.PollinationsImageModel;
++                    var currentModel = settings.PollinationsImageModel;
+@@ -198,2 +236,2 @@ public partial class GameEngine
+-                        menuTop = RenderOptionsStaticFrame();
+-                        RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
++                        menuTop = RenderOptionsStaticFrame(settings, notice);
++                        RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(session), selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
+@@ -209 +247 @@ public partial class GameEngine
+-                        _stateManager.Settings.PollinationsImageModel = customModel.Trim();
++                        settings.PollinationsImageModel = customModel.Trim();
+@@ -213 +251 @@ public partial class GameEngine
+-                        _stateManager.Settings.PollinationsImageModel = modelChoice.Key;
++                        settings.PollinationsImageModel = modelChoice.Key;
+@@ -218 +256 @@ public partial class GameEngine
+-                    _stateManager.Settings.ImageProvider = "placeholder";
++                    settings.ImageProvider = "placeholder";
+@@ -223 +261 @@ public partial class GameEngine
+-                _stateManager.Settings.GenerateSceneImages = !_stateManager.Settings.GenerateSceneImages;
++                settings.GenerateSceneImages = !settings.GenerateSceneImages;
+@@ -227 +265 @@ public partial class GameEngine
+-                _stateManager.Settings.ShowImagesInConsole = !_stateManager.Settings.ShowImagesInConsole;
++                settings.ShowImagesInConsole = !settings.ShowImagesInConsole;
+@@ -231 +269 @@ public partial class GameEngine
+-                _stateManager.Settings.GenerateImagesWithoutDisplay = !_stateManager.Settings.GenerateImagesWithoutDisplay;
++                settings.GenerateImagesWithoutDisplay = !settings.GenerateImagesWithoutDisplay;
+@@ -259,3 +297,15 @@ public partial class GameEngine
+-                var lang = _stateManager.Settings.Language == "ru" ? "en" : "ru";
+-                _stateManager.Settings.Language = lang;
+-                _loc.CurrentLanguage = lang;
++                var lang = settings.Language == "ru" ? "en" : "ru";
++                settings.Language = lang;
++                await preview.ApplyAsync();
++            }
++            else if (chosen.Key == "reload")
++            {
++                try
++                {
++                    await session.ReloadAsync(async () => { await preview.ApplyAsync(); });
++                    return; // Explicit discard; disposal restores accepted effects.
++                }
++                catch (Exception ex) when (ex is not ConsoleE2EScriptInputException)
++                {
++                    notice = "Не удалось перечитать настройки: " + ex.Message;
++                }
+@@ -265,2 +315,2 @@ public partial class GameEngine
+-                await _stateManager.SaveSettingsAsync();
+-                return;
++                exitAfterReconcile = true;
++                if (CanLeave(await SaveDraftAsync())) return;
+@@ -269,2 +319,4 @@ public partial class GameEngine
+-            menuTop = RenderOptionsStaticFrame();
+-            RedrawOptionsMenuArea(await BuildOptionsEntriesAsync(), selectedIndex, menuTop, GetSafeConsoleHeight());
++            menuTop = RenderOptionsStaticFrame(settings, notice);
++            var updatedEntries = await BuildOptionsEntriesAsync(session);
++            RedrawOptionsMenuArea(updatedEntries, selectedIndex, menuTop, GetSafeConsoleHeight(), settings, notice);
++            WriteOptionsMenuObservation(updatedEntries, selectedIndex, "options-menu", notice);
+@@ -274 +326 @@ public partial class GameEngine
+-    private async Task<List<OptionsMenuEntry>> BuildOptionsEntriesAsync()
++    private async Task<List<OptionsMenuEntry>> BuildOptionsEntriesAsync(ConsoleSettingsSession session)
+@@ -276,9 +328,10 @@ public partial class GameEngine
+-        var histStatus = _stateManager.Settings.AllowHistoryManipulation ? _loc.T("enabled") : _loc.T("disabled");
+-        var gmStatus = _stateManager.Settings.ShowGmThoughts ? _loc.T("enabled") : _loc.T("disabled");
+-        var autoDiscardStatus = _stateManager.Settings.AutoDiscardBrokenItems ? _loc.T("enabled") : _loc.T("disabled");
+-        var sceneImgStatus = _stateManager.Settings.GenerateSceneImages ? _loc.T("enabled") : _loc.T("disabled");
+-        var noDisplayStatus = _stateManager.Settings.GenerateImagesWithoutDisplay ? _loc.T("enabled") : _loc.T("disabled");
+-        var qteStatus = _stateManager.Settings.EnableQteEvents ? _loc.T("enabled") : _loc.T("disabled");
+-        var musicStatus = _stateManager.Settings.MusicEnabled ? _loc.T("enabled") : _loc.T("disabled");
+-        var soundStatus = _stateManager.Settings.SoundEnabled ? _loc.T("enabled") : _loc.T("disabled");
+-        var systemMods = await _systemModService.GetAvailableModsAsync(includeContent: false);
++        var settings = session.Draft;
++        var histStatus = settings.AllowHistoryManipulation ? _loc.T("enabled") : _loc.T("disabled");
++        var gmStatus = settings.ShowGmThoughts ? _loc.T("enabled") : _loc.T("disabled");
++        var autoDiscardStatus = settings.AutoDiscardBrokenItems ? _loc.T("enabled") : _loc.T("disabled");
++        var sceneImgStatus = settings.GenerateSceneImages ? _loc.T("enabled") : _loc.T("disabled");
++        var noDisplayStatus = settings.GenerateImagesWithoutDisplay ? _loc.T("enabled") : _loc.T("disabled");
++        var qteStatus = settings.EnableQteEvents ? _loc.T("enabled") : _loc.T("disabled");
++        var musicStatus = settings.MusicEnabled ? _loc.T("enabled") : _loc.T("disabled");
++        var soundStatus = settings.SoundEnabled ? _loc.T("enabled") : _loc.T("disabled");
++        var systemMods = await session.ReadModsAsync();
+@@ -286,3 +339,3 @@ public partial class GameEngine
+-        var workerProfilesStatus = BuildGmWorkerBridgeProfileSummary();
+-        var imgDisplay = _stateManager.Settings.ShowImagesInConsole ? _loc.T("opt_in_console") : _loc.T("opt_in_viewer");
+-        var imgProvider = _stateManager.Settings.ImageProvider switch
++        var workerProfilesStatus = BuildGmWorkerBridgeProfileSummary(settings);
++        var imgDisplay = settings.ShowImagesInConsole ? _loc.T("opt_in_console") : _loc.T("opt_in_viewer");
++        var imgProvider = settings.ImageProvider switch
+@@ -290 +343 @@ public partial class GameEngine
+-            "pollinations" => $"Pollinations ({_stateManager.Settings.PollinationsImageModel})",
++            "pollinations" => $"Pollinations ({settings.PollinationsImageModel})",
+@@ -293 +346 @@ public partial class GameEngine
+-        var difficultyLabel = _stateManager.Settings.Difficulty switch
++        var difficultyLabel = settings.Difficulty switch
+@@ -299 +352 @@ public partial class GameEngine
+-        var difficultyColor = _stateManager.Settings.Difficulty switch
++        var difficultyColor = settings.Difficulty switch
+@@ -313 +366 @@ public partial class GameEngine
+-            new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(_stateManager.Settings.GmCliLaunchCommand, 56))}[/]"),
++            new("gm_cli_launch_command", $"🌉 {_loc.T("opt_gm_cli_launch_command")}: [yellow]{Markup.Escape(TruncateDiagnosticValue(settings.GmCliLaunchCommand, 56))}[/]"),
+@@ -316 +369 @@ public partial class GameEngine
+-            new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{_stateManager.Settings.MusicVolume}%[/]"),
++            new("music_volume", $"🎚 {_loc.T("opt_music_volume")}: [yellow]{settings.MusicVolume}%[/]"),
+@@ -318,2 +371,2 @@ public partial class GameEngine
+-            new("sound_volume", $"🎛 {_loc.T("opt_sound_volume")}: [yellow]{_stateManager.Settings.SoundVolume}%[/]"),
+-            new("font_size", $"🔤 {_loc.T("opt_font_size")}: [yellow]{_stateManager.Settings.ConsoleFontSize}[/]"),
++            new("sound_volume", $"🎛 {_loc.T("opt_sound_volume")}: [yellow]{settings.SoundVolume}%[/]"),
++            new("font_size", $"🔤 {_loc.T("opt_font_size")}: [yellow]{settings.ConsoleFontSize}[/]"),
+@@ -326 +379,2 @@ public partial class GameEngine
+-            new("language", $"{_loc.T("opt_language")}: [yellow]{_stateManager.Settings.Language.ToUpper()}[/]"),
++            new("language", $"{_loc.T("opt_language")}: [yellow]{settings.Language.ToUpper()}[/]"),
++            new("reload", "Перечитать сохранённые настройки (отменить черновик)"),
+@@ -331 +385 @@ public partial class GameEngine
+-    private int RenderOptionsStaticFrame()
++    private int RenderOptionsStaticFrame(GameSettings settings, string? notice)
+@@ -335,0 +390,3 @@ public partial class GameEngine
++        AnsiConsole.MarkupLine("[dim]Предпросмотр настроек. Esc/Назад — сохранить; перечитать — отменить несохранённое.[/]");
++        if (!string.IsNullOrWhiteSpace(notice))
++            AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(notice)}[/]");
+@@ -337 +394 @@ public partial class GameEngine
+-        if (_stateManager.Settings.GenerateImagesWithoutDisplay)
++        if (settings.GenerateImagesWithoutDisplay)
+@@ -353 +410 @@ public partial class GameEngine
+-    private void RedrawOptionsMenuArea(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, int menuTop, int consoleHeight)
++    private void RedrawOptionsMenuArea(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, int menuTop, int consoleHeight, GameSettings settings, string? notice)
+@@ -368 +425 @@ public partial class GameEngine
+-            RenderOptionsStaticFrame();
++            RenderOptionsStaticFrame(settings, notice);
+@@ -393 +450 @@ public partial class GameEngine
+-    private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug)
++    private void WriteOptionsMenuObservation(IReadOnlyList<OptionsMenuEntry> entries, int selectedIndex, string slug, string? notice = null)
+@@ -408 +465 @@ public partial class GameEngine
+-            playerText,
++            playerText + (string.IsNullOrWhiteSpace(notice) ? string.Empty : " " + notice),
+@@ -472 +529 @@ public partial class GameEngine
+-    private string BuildGmWorkerBridgeProfileSummary()
++    private string BuildGmWorkerBridgeProfileSummary(GameSettings settings)
+@@ -474 +531 @@ public partial class GameEngine
+-        var profiles = _stateManager.Settings.GmWorkerBridgeProfiles;
++        var profiles = settings.GmWorkerBridgeProfiles;
+@@ -588 +645,3 @@ public partial class GameEngine
+-    private async Task RefreshAudioPlaybackContextAsync()
++    private Task RefreshAudioPlaybackContextAsync() => RefreshAudioPlaybackContextAsync(_stateManager.Settings);
++
++    private async Task RefreshAudioPlaybackContextAsync(GameSettings settings)
+@@ -590 +649 @@ public partial class GameEngine
+-        if (!_stateManager.Settings.MusicEnabled || _stateManager.Settings.MusicVolume <= 0)
++        if (!settings.MusicEnabled || settings.MusicVolume <= 0)
+@@ -602 +661 @@ public partial class GameEngine
+-    private async Task ShowDifficultySelection()
++    private Task<bool> ShowDifficultySelection(GameSettings settings)
+@@ -642 +701 @@ public partial class GameEngine
+-            initialIndex: _stateManager.Settings.Difficulty switch
++            initialIndex: settings.Difficulty switch
+@@ -650 +709 @@ public partial class GameEngine
+-            return;
++            return Task.FromResult(false);
+@@ -652 +711 @@ public partial class GameEngine
+-        _stateManager.Settings.Difficulty = selected.Key;
++        settings.Difficulty = selected.Key;
+@@ -654,2 +713 @@ public partial class GameEngine
+-        // Persist to game_state so the GM agent reads it
+-        await WriteGameSettingsForGm();
++        return Task.FromResult(true);
+@@ -658 +716 @@ public partial class GameEngine
+-    private async Task ShowSystemModsMenu()
++    private async Task ShowSystemModsMenu(ConsoleSettingsSession session, Func<Task<BrowserPreparedWriteResult>> save)
+@@ -664 +722 @@ public partial class GameEngine
+-            var mods = await _systemModService.GetAvailableModsAsync(includeContent: false);
++            var mods = await session.ReadModsAsync();
+@@ -757 +815 @@ public partial class GameEngine
+-            _stateManager.Settings.EnabledSystemMods = selectedLabels
++            session.Draft.EnabledSystemMods = selectedLabels
+@@ -761,4 +819,3 @@ public partial class GameEngine
+-            await _stateManager.SaveSettingsAsync();
+-            await WriteGameSettingsForGm();
+-
+-            AnsiConsole.MarkupLine($"[green]{Markup.Escape(_loc.T("system_mods_saved"))}[/]");
++            var result = await save();
++            var color = result.Disposition == BrowserPreparedWriteDisposition.Committed ? "green" : "yellow";
++            AnsiConsole.MarkupLine($"[{color}]{Markup.Escape(result.Message)}[/]");
+@@ -765,0 +823 @@ public partial class GameEngine
++            if (session.RequiresReload) return;
+@@ -1085 +1143 @@ public partial class GameEngine
+-    private async Task WriteGameSettingsForGm()
++    private async Task<bool> WriteGameSettingsForGm()
+@@ -1087,14 +1145,2 @@ public partial class GameEngine
+-        if (await _systemModService.WriteManifestForGmAsync())
+-            await _stateManager.SaveSettingsAsync();
+-
+-        var activeMods = (await _systemModService.GetAvailableModsAsync(includeContent: false))
+-            .Where(mod => mod.Enabled)
+-            .Select(mod => new
+-            {
+-                mod.FileName,
+-                mod.ModId,
+-                mod.Name
+-            })
+-            .ToArray();
+-
+-        var gameSettings = new
++        var session = await ConsoleSettingsSession.OpenAsync(_fs, _stateManager, _systemModService);
++        async Task RefreshAcceptedSettingsAsync()
+@@ -1102,9 +1148,18 @@ public partial class GameEngine
+-            hardMode = _stateManager.Settings.Difficulty == "hard",
+-            impossibleMode = _stateManager.Settings.Difficulty == "impossible",
+-            difficulty = _stateManager.Settings.Difficulty,
+-            qteEventsEnabled = _stateManager.Settings.EnableQteEvents,
+-            enabledSystemMods = activeMods,
+-            _lastUpdated = DateTime.UtcNow.ToString("o")
+-        };
+-        await _fs.WriteFileAtomicAsync("game_state/core/game_settings.json",
+-            JsonSerializer.Serialize(gameSettings, JsonOpts));
++            _loc.CurrentLanguage = _stateManager.Settings.Language;
++            _consoleAppearance.ApplyConfiguredFontSize();
++            await _audioService.ApplySettingsAsync();
++        }
++        if (await session.TryAcceptSynchronizedSettingsAsync())
++        {
++            try { await RefreshAcceptedSettingsAsync(); return true; }
++            catch (Exception ex)
++            {
++                _logger.LogWarning(ex, "Confirmed settings require console refresh follow-up.");
++                AnsiConsole.MarkupLine("[yellow]Сохранённые настройки подтверждены, но обновление консоли требует проверки.[/]");
++                return false;
++            }
++        }
++        var result = await session.SaveAsync(RefreshAcceptedSettingsAsync);
++        if (result.Disposition == BrowserPreparedWriteDisposition.Committed && !result.NeedsFollowUp) return true;
++        AnsiConsole.MarkupLine($"[yellow]{Markup.Escape(result.Message)}[/]");
++        return false;
+diff --git a/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
+index 23b24a8..3871b02 100644
+--- a/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
++++ b/BookOfEternityClient/Core/GameEngine/GameEngine.TurnLifecycle.cs
+@@ -4454 +4454 @@ The client owns the guarded quartet game_state/resources/resource_definitions.js
+-    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null)
++    private async Task<string> BuildTurnSystemReminderAsync(string? extraReminder = null, bool maintainLegacyTurnSettings = true)
+@@ -4456 +4456,3 @@ The client owns the guarded quartet game_state/resources/resource_definitions.js
+-        if (await _systemModService.WriteManifestForGmAsync())
++        // B3 owns the active turn/snapshot/receipt migration. The fresh-game
++        // caller has already completed the ordinary prepared settings operation.
++        if (maintainLegacyTurnSettings && await _systemModService.WriteManifestForGmAsync())
+diff --git a/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs
+index 20db0f1..b555101 100644
+--- a/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs
++++ b/BookOfEternityClient/Core/GameEngine/GameEngine.ValidationAndRepair.cs
+@@ -133 +133 @@ public partial class GameEngine
+-    private async Task EnsureClientOwnedSystemFilesHealthyAsync()
++    private async Task EnsureClientOwnedSystemFilesHealthyAsync(bool ordinaryEntry = false)
+@@ -140,2 +140,12 @@ public partial class GameEngine
+-        if (await _systemModService.WriteManifestForGmAsync())
+-            await _stateManager.SaveSettingsAsync();
++        if (ordinaryEntry)
++        {
++            if (!await WriteGameSettingsForGm())
++                throw new InvalidDataException("Синхронизация настроек не подтверждена. Требуется завершить активную запись или восстановление перед продолжением.");
++        }
++        else
++        {
++            // B3: accepted-turn/repair receipt workflows retain their existing
++            // route until that whole publication boundary is migrated.
++            if (await _systemModService.WriteManifestForGmAsync())
++                await _stateManager.SaveSettingsAsync();
++        }
+diff --git a/BookOfEternityClient/Core/LocalSettingsPreparation.cs b/BookOfEternityClient/Core/LocalSettingsPreparation.cs
+index 8c5d9aa..5723341 100644
+--- a/BookOfEternityClient/Core/LocalSettingsPreparation.cs
++++ b/BookOfEternityClient/Core/LocalSettingsPreparation.cs
+@@ -71,0 +72,3 @@ internal sealed class LocalSettingsPreparation
++        var encodedCandidate = _state.EncodeLocalSettings(candidate);
++        var configAfter = encodedCandidate.AsSpan().SequenceEqual(_state.EncodeLocalSettings(snapshot.Settings))
++            ? snapshot.Bytes : encodedCandidate;
+@@ -75 +78 @@ internal sealed class LocalSettingsPreparation
+-            new("config.json", snapshot.Bytes, _state.EncodeLocalSettings(candidate)),
++            new("config.json", snapshot.Bytes, configAfter),
+diff --git a/BookOfEternityClient/Services/ConsoleAppearanceService.cs b/BookOfEternityClient/Services/ConsoleAppearanceService.cs
+index 12191dd..b875cf8 100644
+--- a/BookOfEternityClient/Services/ConsoleAppearanceService.cs
++++ b/BookOfEternityClient/Services/ConsoleAppearanceService.cs
+@@ -33 +33 @@ public sealed class ConsoleAppearanceService
+-    internal bool TryPreviewFontSize(int requestedSize) => throw new NotImplementedException();
++    internal bool TryPreviewFontSize(int requestedSize) => ApplyFontSizeCore(NormalizeFontSize(requestedSize));
+@@ -38,0 +39,2 @@ public sealed class ConsoleAppearanceService
++        return ApplyFontSizeCore(normalized);
++    }
+@@ -39,0 +42,2 @@ public sealed class ConsoleAppearanceService
++    private bool ApplyFontSizeCore(int normalized)
++    {
