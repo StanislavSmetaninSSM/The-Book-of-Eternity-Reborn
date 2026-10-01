@@ -1,0 +1,154 @@
+{
+  "Categories": [
+    "portable-backup-api",
+    "portable-backup-boundaries",
+    "portable-backup-publication"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-boundaries",
+      "reason": "Ordinary backup path/type/link, exact absence/empty/hard-link, real lease/generation and same-lease recovery boundaries. Each test has isolated mutable state.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-publication",
+      "reason": "Nontransient warm backup lifecycle faults, complete restore membership, exact rollback/committed outcomes, unknown bytes and postcommit logger failure.",
+      "contracts": [
+        "FR-002 through FR-007; ordinary backup lifecycle"
+      ]
+    }
+  ],
+  "Revision": {
+    "Head": "261bda1b92fdca3bcb992008a7eeec822799f139",
+    "WorkingTreeFingerprint": "87EA4AE9E609E8D4C3F35ECBAABE889F1BF45BD38B5ED2A38F281119D92D7C9F",
+    "ChangedFiles": 3
+  },
+  "PreparationSeconds": 121.9144854,
+  "Descriptors": [
+    {
+      "Name": "portable-backup-api-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-api",
+      "Categories": [
+        "portable-backup-api"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 6,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+          "Cases": 2
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-boundaries-unit-002",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-boundaries",
+      "Categories": [
+        "portable-backup-boundaries"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 22,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+          "Cases": 6
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+          "Cases": 3
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+          "Cases": 2
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+          "Cases": 1
+        }
+      ]
+    },
+    {
+      "Name": "portable-backup-publication-unit-003",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-backup-publication",
+      "Categories": [
+        "portable-backup-publication"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult|FullyQualifiedName=BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 15,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision",
+          "Cases": 1
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+          "Cases": 12
+        },
+        {
+          "Name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
+          "Cases": 2
+        }
+      ]
+    }
+  ]
+}

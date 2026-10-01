@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "261bda1b92fdca3bcb992008a7eeec822799f139",
+    "WorkingTreeFingerprint": "87EA4AE9E609E8D4C3F35ECBAABE889F1BF45BD38B5ED2A38F281119D92D7C9F",
+    "ChangedFiles": 3
+  },
+  "command": "scripts/test-csharp.ps1 -SelectionFile tests/selection.json -Parallelism 1",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:02:11.8504756",
+    "Tests": {
+      "Total": 43,
+      "Executed": 43,
+      "Passed": 43,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 3,
+      "CompletedDescriptors": 3,
+      "PlannedCases": 43,
+      "CompletedCases": 43,
+      "UnderfilledDescriptors": [],
+      "Complete": true
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "f28448fc87acbce654566f40615657906f880b601cebbbbc34670279efbc5144",
+      "sanitizedSha256": "f28448fc87acbce654566f40615657906f880b601cebbbbc34670279efbc5144"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "8eab16c5d8f2bd023d7df84cc923e9c25ed754367aa8444d3d3a4378c8c654c7",
+      "sanitizedSha256": "8eab16c5d8f2bd023d7df84cc923e9c25ed754367aa8444d3d3a4378c8c654c7"
+    },
+    {
+      "file": "portable-backup-boundaries-unit-002.trx",
+      "originalSha256": "06051404a53996285cde0cf8fc85469dc460579420e8ad7b01e86242b90d6275",
+      "sanitizedSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "file": "portable-backup-publication-unit-003.trx",
+      "originalSha256": "1ca6c406b8bfcf1dee595fc3ab6c8ee3706ffc875086217c5e3109f2a1677c94",
+      "sanitizedSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "file": "portable-backup-api-unit-001.trx",
+      "originalSha256": "c70543444028f82a785080227d0a2e36a13554b1cf43a252d443baf1fb46d112",
+      "sanitizedSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "0a503418b68d5abcaa1deddc28a550ecc66e4075",
+    "patchFile": "backup-lifecycle-pending.patch",
+    "patchBytes": 13624,
+    "patchSha256": "a0fffa84d210851c80be8732ec7dd1d3f13d5bbc414108cbababad4289a6b27c",
+    "entries": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+        "beforeBlob": "4cec0dc9a5ca6428c86e891135dae1ad163ed4b9",
+        "afterBlob": "de441eb73df3be9d4fdeb5281528a131739de35e",
+        "beforeSha256": "81f40dc827bc9d7759b7091b238d31a533fb7fdbb87b2b3152b53cfb43c716e1",
+        "afterSha256": "7711cd74f294c0eb0ef88539094a4e58b62b7abaae1cba3910850e6ad4fa31c5"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "beforeBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+        "afterBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+        "beforeSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+        "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+      },
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+        "afterBlob": "ad714ecee9b0ce13ddaa4485cb543fd35c07b345",
+        "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+        "afterSha256": "f3df46adccb35c754ebf6a82d190806a6de6e74e85964a9d60f391ce1e5f2a22"
+      }
+    ],
+    "appliedSourceTree": "8be4a6cff14383290263ba79119733486d0e03d9",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
+    ],
+    "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+  }
+}
