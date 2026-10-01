@@ -576,6 +576,7 @@ internal static class ShiningTradeRequestState
             if (string.IsNullOrWhiteSpace(shiningJson))
                 return;
 
+            string? nextJson;
             try
             {
                 var shiningRoot = JsonNode.Parse(shiningJson) as JsonObject;
@@ -604,20 +605,21 @@ internal static class ShiningTradeRequestState
                 if (requests.Count == requestState.Requests.Count)
                     return;
 
-                var nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
-                await CoordinatedStateWriteHelper.TryCommitAsync(
-                    fs,
-                    writeLease,
-                    new CoordinatedStateWriteHelper.PlannedWrite(
-                        PendingRequestsPath,
-                        previousJson,
-                        nextJson,
-                        RequireCurrentBaseline: true));
+                nextJson = requests.Count == 0 ? null : SerializeRequests(requests);
             }
             catch
             {
                 // keep pending requests until canonical state is readable again
+                return;
             }
+            await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                writeLease,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    PendingRequestsPath,
+                    previousJson,
+                    nextJson,
+                    RequireCurrentBaseline: true));
         }
         finally
         {

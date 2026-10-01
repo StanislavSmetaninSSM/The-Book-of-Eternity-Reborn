@@ -2,13 +2,21 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-cleanup-resident",
-      "reason": "Correct four resident fixture observations only. Require target helper cut hits and independently forbid every publication after retained evidence is injected during the intervening read. Production unchanged; other completed RED rows are not repeated.",
+      "category": "portable-coordinated-cleanup",
+      "reason": "Cover the causal structural NPC/Guardian/Shining catch correction and actual ordinary QTE acceptance route, preserving malformed planning controls.",
       "contracts": [
-        "target versus preamble publication",
-        "uncertainty propagation",
-        "known parse abort",
-        "retained-evidence read admission"
+        "uncertain and retained admission propagate",
+        "known parse abort retained",
+        "ordinary QTE acceptance"
+      ]
+    },
+    {
+      "category": "portable-coordinated-cleanup-resident",
+      "reason": "Cover resident uncertainty/read-admission fixes and existing materialized/malformed-soul semantic branches after moving filesystem calls out of planning catches.",
+      "contracts": [
+        "target helper and independent preamble",
+        "every post-injection attempt blocked",
+        "pure planning behavior retained"
       ]
     }
   ]

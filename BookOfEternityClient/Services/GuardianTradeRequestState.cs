@@ -528,19 +528,20 @@ internal static class GuardianTradeRequestState
                 if (!ReceiptMatchesRequestContract(FindMatchingReceipt(guardian, request), request, tradeInventory))
                     return;
 
-                await CoordinatedStateWriteHelper.TryCommitAsync(
-                    fs,
-                    writeLease,
-                    new CoordinatedStateWriteHelper.PlannedWrite(
-                        PendingRequestPath,
-                        json,
-                        NextJson: null,
-                        RequireCurrentBaseline: true));
             }
             catch
             {
                 // keep pending request until canonical state is readable again
+                return;
             }
+            await CoordinatedStateWriteHelper.TryCommitAsync(
+                fs,
+                writeLease,
+                new CoordinatedStateWriteHelper.PlannedWrite(
+                    PendingRequestPath,
+                    json,
+                    NextJson: null,
+                    RequireCurrentBaseline: true));
         }
         finally
         {

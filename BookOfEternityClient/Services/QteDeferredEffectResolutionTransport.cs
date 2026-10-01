@@ -193,7 +193,7 @@ internal static class QteDeferredEffectResolutionTransport
         FileSystemManager.CanonicalWriteLease writeLease,
         QteSceneService.ActiveQteSceneState activeScene,
         QteDeferredAcceptedMechanicsPreparation preparation,
-        Func<string, Task>? afterMutationAsync = null)
+        Func<string, Task>? afterLegacyMutationAsync = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -336,7 +336,7 @@ internal static class QteDeferredEffectResolutionTransport
                 fileSystem,
                 writeLease,
                 "initial",
-                afterMutationAsync,
+                afterLegacyMutationAsync,
                 writes.ToArray()))
         {
             throw new InvalidOperationException(
@@ -353,7 +353,7 @@ internal static class QteDeferredEffectResolutionTransport
         FileSystemManager.CanonicalWriteLease writeLease,
         QteSceneService.ActiveQteSceneState activeScene,
         QteDeferredEffectReceiptResume resume,
-        Func<string, Task>? afterMutationAsync = null)
+        Func<string, Task>? afterLegacyMutationAsync = null)
     {
         ArgumentNullException.ThrowIfNull(fileSystem);
         ArgumentNullException.ThrowIfNull(writeLease);
@@ -494,7 +494,7 @@ internal static class QteDeferredEffectResolutionTransport
                 fileSystem,
                 writeLease,
                 "next_wave",
-                afterMutationAsync,
+                afterLegacyMutationAsync,
                 writes.ToArray()))
         {
             throw new InvalidOperationException(
@@ -510,10 +510,10 @@ internal static class QteDeferredEffectResolutionTransport
         FileSystemManager fileSystem,
         FileSystemManager.CanonicalWriteLease writeLease,
         string phase,
-        Func<string, Task>? afterMutationAsync,
+        Func<string, Task>? afterLegacyMutationAsync,
         CoordinatedStateWriteHelper.PlannedWrite[] writes)
     {
-        return afterMutationAsync == null
+        return afterLegacyMutationAsync == null
             ? CoordinatedStateWriteHelper.TryCommitAsync(
                 fileSystem,
                 writeLease,
@@ -521,7 +521,7 @@ internal static class QteDeferredEffectResolutionTransport
             : CoordinatedStateWriteHelper.TryCommitWithHookAsync(
                 fileSystem,
                 writeLease,
-                write => afterMutationAsync($"{phase}:{write.Path}"),
+                write => afterLegacyMutationAsync($"{phase}:{write.Path}"),
                 writes);
     }
 

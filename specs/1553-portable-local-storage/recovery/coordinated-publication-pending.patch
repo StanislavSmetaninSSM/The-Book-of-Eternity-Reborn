@@ -11,6 +11,33 @@ index 8af7cf89..f2193f22 100644
      {
          await fs.WriteFileAtomicAsync("game_state/meta/soul_state.json", new JsonObject
          {
+diff --git a/BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs b/BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs
+index 14b4edc2..28e95b84 100644
+--- a/BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs
++++ b/BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs
+@@ -785,15 +785,17 @@ public sealed class BrowserQteGenerationFencingTests : IDisposable
+         var fs = CreateFileSystem();
+         if (string.Equals(decision, "accept", StringComparison.Ordinal))
+             await CanonicalResourceQuartetTestFixture.CommitFreshBootstrapAsync(fs);
++        Func<QteSceneService.QteRuntimeState, Task> failRuntime = _ =>
++        {
++            runtimeWriteObserved = true;
++            return Task.FromException(failure);
++        };
+         var web = CreateWebService(
+             fs,
+             new QteSceneServiceHooks
+             {
+-                AfterRuntimeWrittenAsync = _ =>
+-                {
+-                    runtimeWriteObserved = true;
+-                    return Task.FromException(failure);
+-                }
++                AfterLegacyAcceptanceRuntimeWrittenAsync = decision == "accept" ? failRuntime : null,
++                AfterRuntimeWrittenAsync = decision == "decline" ? failRuntime : null
+             });
+         await WriteOfferAsync(fs, BuildTerminalOffer());
+         var interactionToken = RequiredInteractionToken(
 diff --git a/BookOfEternityClient/Core/FileSystemManager.cs b/BookOfEternityClient/Core/FileSystemManager.cs
 index d44879dd..936b6809 100644
 --- a/BookOfEternityClient/Core/FileSystemManager.cs
@@ -60,6 +87,290 @@ index d44879dd..936b6809 100644
      {
          var preamble = Encoding.UTF8.GetPreamble();
          var body = Encoding.UTF8.GetBytes(content);
+diff --git a/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs b/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs
+index 52f49775..1fe48d03 100644
+--- a/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs
++++ b/BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs
+@@ -1477,8 +1477,7 @@ internal static class GuardianAbodeResidentRequestState
+     {
+         if (!IsMortalRealm(currentRealm))
+         {
+-            // Manifestation requests are Mortal-only, but afterlife runtime must not delete them:
+-            // a wrong-realm file is repair evidence and should block Soul Gates until resolved.
++            // Wrong-realm requests remain repair evidence for Soul Gates.
+             return;
+         }
+ 
+@@ -1486,17 +1485,22 @@ internal static class GuardianAbodeResidentRequestState
+         if (string.IsNullOrWhiteSpace(soulJson))
+             return;
+ 
++        JsonObject? soulRoot;
++        try { soulRoot = JsonNode.Parse(soulJson) as JsonObject; }
++        catch { return; }
++        if (soulRoot == null)
++            return;
++
++        // Recovery-capable reads and publication must not be mistaken for
++        // malformed in-memory planning input.
++        var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
++        var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
++            fs,
++            lifeTransitionsJson,
++            soulRoot);
++        List<PendingResidentCompanionManifestationRequest> validForIncarnation;
+         try
+         {
+-            if (JsonNode.Parse(soulJson) is not JsonObject soulRoot)
+-                return;
+-
+-            var lifeTransitionsJson = await fs.ReadFileAsync("game_state/control/life_transitions.json");
+-            var hasCanonicalTriggerLifeEnd = await CanonicalStateNormalizer.HasLifecycleAuthorizedTriggerLifeEndFromPendingSnapshotAsync(
+-                fs,
+-                lifeTransitionsJson,
+-                soulRoot);
+-
+             if (!GuardianPolicyContracts.TryReadStrictCurrentManifestationSoulRelicCollections(
+                     soulRoot,
+                     hasCanonicalTriggerLifeEnd,
+@@ -1504,105 +1508,95 @@ internal static class GuardianAbodeResidentRequestState
+                     out _,
+                     out _,
+                     out _))
+-            {
+                 return;
+-            }
+-
+-            var validForIncarnation = requests
++            validForIncarnation = requests
+                 .Where(request =>
+                     !string.IsNullOrWhiteSpace(request.RequestId) &&
+                     !string.IsNullOrWhiteSpace(request.RelicId) &&
+                     request.TargetIncarnation == currentIncarnation)
+                 .ToList();
++        }
++        catch { return; }
+ 
+-            if (validForIncarnation.Count == 0)
+-            {
+-                ClearManifestationRequest(fs);
+-                return;
+-            }
+-
+-            var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
+-            if (string.IsNullOrWhiteSpace(npcJson))
+-            {
+-                await WriteManifestationRequestsAsync(fs, validForIncarnation);
+-                return;
+-            }
++        if (validForIncarnation.Count == 0)
++        {
++            ClearManifestationRequest(fs);
++            return;
++        }
++        var npcJson = await fs.ReadFileAsync("game_state/npcs/npc_core.json");
++        if (string.IsNullOrWhiteSpace(npcJson))
++        {
++            await WriteManifestationRequestsAsync(fs, validForIncarnation);
++            return;
++        }
+ 
+-            try
++        string? postSoulJson;
++        string? postManifestationJson;
++        try
++        {
++            using var npcDoc = JsonDocument.Parse(npcJson);
++            var remaining = new List<PendingResidentCompanionManifestationRequest>();
++            var soulChanged = false;
++            var matchedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
++            var resolvedRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
++            foreach (var request in validForIncarnation)
+             {
+-                using var npcDoc = JsonDocument.Parse(npcJson);
+-                var remaining = new List<PendingResidentCompanionManifestationRequest>();
+-                var soulChanged = false;
+-                var matchedNpcIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+-                var resolvedRelicIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+-                foreach (var request in validForIncarnation)
+-                {
+-                    if (TryFindManifestedNpc(npcDoc.RootElement, validForIncarnation, request, matchedNpcIds, out var manifestedNpc))
+-                    {
+-                        var requestResolved = MarkManifestationResolved(
+-                            soulRoot,
+-                            request,
+-                            manifestedNpc,
+-                            hasCanonicalTriggerLifeEnd);
+-                        soulChanged |= requestResolved;
+-                        if (requestResolved)
+-                        {
+-                            if (!string.IsNullOrWhiteSpace(request.RelicId))
+-                                resolvedRelicIds.Add(request.RelicId);
+-
+-                            continue;
+-                        }
+-                    }
+-
+-                    remaining.Add(request);
+-                }
+-
+-                if (soulChanged)
++                if (TryFindManifestedNpc(npcDoc.RootElement, validForIncarnation, request, matchedNpcIds, out var manifestedNpc))
+                 {
+-                    var unsafeToReplayAddedRelicIds = BuildUnsafeReplayAddedRelicIds(
++                    var requestResolved = MarkManifestationResolved(
+                         soulRoot,
+-                        resolvedRelicIds,
++                        request,
++                        manifestedNpc,
+                         hasCanonicalTriggerLifeEnd);
+-                }
+-                var preManifestationJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
+-                var preSoulJson = soulJson;
+-                var postSoulJson = soulChanged
+-                    ? GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
+-                        soulRoot,
+-                        new GuardianPolicyContracts.SoulStatePatchConflictContext(
+-                            GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
+-                            unsafeToReplayAddedSoulRelicIds: BuildUnsafeReplayAddedRelicIds(
+-                                soulRoot,
+-                                resolvedRelicIds,
+-                                hasCanonicalTriggerLifeEnd),
+-                            updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts)
+-                    : preSoulJson;
+-                var postManifestationJson = remaining.Count == 0
+-                    ? null
+-                    : JsonSerializer.Serialize(new Dictionary<string, object?>
++                    soulChanged |= requestResolved;
++                    if (requestResolved)
+                     {
+-                        [ManifestationRequestsProperty] = remaining
+-                    }, JsonOpts);
++                        if (!string.IsNullOrWhiteSpace(request.RelicId))
++                            resolvedRelicIds.Add(request.RelicId);
+ 
+-                if (!await CoordinatedStateWriteHelper.TryCommitAsync(
+-                        fs,
+-                        new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", preSoulJson, postSoulJson),
+-                        new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationJson, postManifestationJson)))
+-                {
+-                    return;
++                        continue;
++                    }
+                 }
++
++                remaining.Add(request);
+             }
+-            catch
++
++            if (soulChanged)
+             {
+-                // keep requests until npc state is readable again
++                var unsafeToReplayAddedRelicIds = BuildUnsafeReplayAddedRelicIds(
++                    soulRoot,
++                    resolvedRelicIds,
++                    hasCanonicalTriggerLifeEnd);
+             }
+-
+-            return;
++            postSoulJson = soulChanged
++                ? GuardianPolicyContracts.CreatePatchedSoulStateWriteRoot(
++                    soulRoot,
++                    new GuardianPolicyContracts.SoulStatePatchConflictContext(
++                        GuardianPolicyContracts.SoulStatePatchTouchedDomains.SoulRelics,
++                        unsafeToReplayAddedSoulRelicIds: BuildUnsafeReplayAddedRelicIds(
++                            soulRoot,
++                            resolvedRelicIds,
++                            hasCanonicalTriggerLifeEnd),
++                        updatedSoulRelicFieldsById: BuildManifestationRelicFieldUpdates(resolvedRelicIds))).ToJsonString(JsonOpts)
++                : soulJson;
++            postManifestationJson = remaining.Count == 0
++                ? null
++                : JsonSerializer.Serialize(new Dictionary<string, object?>
++                {
++                    [ManifestationRequestsProperty] = remaining
++                }, JsonOpts);
+         }
+         catch
+         {
++            // Keep requests until in-memory NPC/soul planning is readable.
+             return;
+         }
++
++        var preManifestationJson = await fs.ReadFileAsync(PendingManifestationRequestPath);
++        await CoordinatedStateWriteHelper.TryCommitAsync(
++            fs,
++            new CoordinatedStateWriteHelper.PlannedWrite("game_state/meta/soul_state.json", soulJson, postSoulJson),
++            new CoordinatedStateWriteHelper.PlannedWrite(PendingManifestationRequestPath, preManifestationJson, postManifestationJson));
+     }
+ 
+     private static bool TryFindManifestedNpc(
+diff --git a/BookOfEternityClient/Services/QteSceneService.cs b/BookOfEternityClient/Services/QteSceneService.cs
+index da14ab71..079a7f33 100644
+--- a/BookOfEternityClient/Services/QteSceneService.cs
++++ b/BookOfEternityClient/Services/QteSceneService.cs
+@@ -23,7 +23,11 @@ internal sealed class QteSceneServiceHooks
+     internal Func<Task>? BeforeDarenProfileWriteAsync { get; init; }
+     internal Func<Task>? AfterDarenProfileWrittenAsync { get; init; }
+     internal Func<Task>? BeforeQteCharacteristicReadAsync { get; init; }
++    // These remain later gameplay/compensation hooks. Ordinary member-set
++    // fault cuts use FileSystemManagerHooks.LocalPublicationObserver instead.
+     internal Func<string, Task>? AfterDeferredEffectMutationAsync { get; init; }
++    internal Func<QteSceneService.QteRuntimeState, Task>? AfterLegacyAcceptanceRuntimeWrittenAsync { get; init; }
++    internal Func<string, Task>? AfterLegacyDeferredEffectMutationAsync { get; init; }
+ }
+ 
+ public sealed partial class QteSceneService
+@@ -730,21 +734,16 @@ public sealed partial class QteSceneService
+                     ExactPrevious: capture.OfferBeforeImage)
+             ])
+             .ToArray();
+-        var committed = await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
+-            _fs,
+-            writeLease,
+-            async applied =>
+-            {
+-                if (string.Equals(
+-                        applied.Path,
+-                        QteRuntimePath,
+-                        StringComparison.Ordinal) &&
+-                    _hooks?.AfterRuntimeWrittenAsync != null)
+-                {
+-                    await _hooks.AfterRuntimeWrittenAsync(state);
+-                }
+-            },
+-            writes);
++        var legacyRuntimeHook = _hooks?.AfterLegacyAcceptanceRuntimeWrittenAsync;
++        var committed = legacyRuntimeHook == null
++            ? await CoordinatedStateWriteHelper.TryCommitAsync(_fs, writeLease, writes)
++            : await CoordinatedStateWriteHelper.TryCommitWithHookAsync(
++                _fs,
++                writeLease,
++                applied => string.Equals(applied.Path, QteRuntimePath, StringComparison.Ordinal)
++                    ? legacyRuntimeHook(state)
++                    : Task.CompletedTask,
++                writes);
+         if (!committed)
+         {
+             throw new InvalidOperationException(
+@@ -1782,7 +1781,7 @@ public sealed partial class QteSceneService
+                             writeLease,
+                             active,
+                             receiptResume,
+-                            _hooks?.AfterDeferredEffectMutationAsync);
++                            _hooks?.AfterLegacyDeferredEffectMutationAsync);
+                     return new QteSceneCompletion
+                     {
+                         QteId = offer.QteId,
+@@ -1804,7 +1803,7 @@ public sealed partial class QteSceneService
+                         writeLease,
+                         active,
+                         deferredPreparation,
+-                        _hooks?.AfterDeferredEffectMutationAsync);
++                        _hooks?.AfterLegacyDeferredEffectMutationAsync);
+                 return new QteSceneCompletion
+                 {
+                     QteId = offer.QteId,
 diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
 index 4a4415cc..33f1deab 100644
 --- a/specs/1553-portable-local-storage/research.md
@@ -74,10 +385,10 @@ index 4a4415cc..33f1deab 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..67957d28 100644
+index ad2fe43a..1767d9d7 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,204 @@
+@@ -8417,6 +8417,211 @@
            ]
          }
        ]
@@ -276,6 +587,13 @@ index ad2fe43a..67957d28 100644
 +          "project": "integration",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableCoordinatedCleanupTests.Resident*"
++          ]
++        },
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MaterializedCompanion_PrunesUnsafeSameRelicAddAndMarksRelicResolved",
++            "BookOfEternityClient.Tests.GuardianAbodeResidentRequestStateTests.EnsureHealthyAsync_MalformedCurrentSoulRelics_KeepsManifestationRequestRetryable"
 +          ]
 +        }
 +      ]

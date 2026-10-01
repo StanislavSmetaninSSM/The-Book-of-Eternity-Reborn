@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "5dc3e34bd575e631c0d3f89c20f313dd6a458c85",
+  "baseCommit": "3e657f7d85f5801dc5948da3f514fa15edfdecbf",
   "patchFile": "coordinated-publication-pending.patch",
-  "patchBytes": 14716,
-  "patchSha256": "e0b867b05576b0d2a29c95c550b759b880669ba87feb4c614fadb10ff0f4b0e5",
+  "patchBytes": 30019,
+  "patchSha256": "a7cf294f3d1773ca996dbbc45737111419efa6c156ad74486664a5fb75c70fff",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/ShiningTradeRequestStateTests.cs",
@@ -13,11 +13,32 @@
       "afterSha256": "406341a88c769d60eb55e5549480ea286f159f5345acaf174ff3f8dd10bd9bbc"
     },
     {
+      "path": "BookOfEternityClient.IntegrationTests/WebUi/BrowserQteGenerationFencingTests.cs",
+      "beforeBlob": "14b4edc27e81a92aba88ff55b9d60ca1c261a7b8",
+      "afterBlob": "28e95b848aed3c8b2dd6a609148f616eab831e92",
+      "beforeSha256": "c77604980f24e8d23207005cd950d34ac6b1177723705c5bec35deeb9de17af0",
+      "afterSha256": "aca420135eed93efb3b7801c72506a28ffad7bf1b15518288a7be734c61b150a"
+    },
+    {
       "path": "BookOfEternityClient/Core/FileSystemManager.cs",
       "beforeBlob": "d44879dd699ed5629fecf7647c565372fe6121cd",
       "afterBlob": "936b68099f221f040ec5230f29afff1a3187c9dc",
       "beforeSha256": "7991e0cbd2c05ac892a935120c5d0222d813c8a1a79ccdfd8ed92248706bd23f",
       "afterSha256": "7c9ee54899e040fdfe07b283590299b98e50abe4560ffc851696949bcc392356"
+    },
+    {
+      "path": "BookOfEternityClient/Services/GuardianAbodeResidentRequestState.cs",
+      "beforeBlob": "52f49775edf918d52e05d63721044be2ad22608e",
+      "afterBlob": "1fe48d0314ca3698da7b8e18a391474abc2c8060",
+      "beforeSha256": "9baed4740eefaba836c6a7df634552b511370ce95c6cbe84725a5adb6d9b7883",
+      "afterSha256": "4c7bcdb716281e961b5882b10d1d378c5804bc52c2a7285f56ec1e329e80ebe7"
+    },
+    {
+      "path": "BookOfEternityClient/Services/QteSceneService.cs",
+      "beforeBlob": "da14ab71b7a42417f335a9a46cc81f7cbcd3f1f5",
+      "afterBlob": "079a7f331550c7fc2d4d0d7cd5a43b1b4574b091",
+      "beforeSha256": "6ecba6da73d2d920b61939f958774826fd40ed6670e228aea436018b8a1dc105",
+      "afterSha256": "cf4bf6d3295386ad595cd3bdd2a668e8ba52658e21e0d3efba36917c7c70ab9a"
     },
     {
       "path": "specs/1553-portable-local-storage/research.md",
@@ -29,12 +50,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "ad2fe43ab192f5908e328d6bead37cb8f31af595",
-      "afterBlob": "67957d28fa2bcb3239efd966e0efb085a8dffc84",
+      "afterBlob": "1767d9d761f641839cf979ca2f11d056e6fbe1f2",
       "beforeSha256": "928087ad1e5e6df965427ab13db6db1381804d0d4ee8651b45211a9c5a7d9576",
-      "afterSha256": "a9199ad8846c8cdf3bc5294adf286d3edf98817301cf04374b498a7cc8cf32d9"
+      "afterSha256": "886a3040a98c6d5e55f3f12e0117553a52aa78332861b751b8bd60ca2956bf86"
     }
   ],
-  "appliedSourceTree": "7ccafabe0648979916be8df48abd264fab765903",
+  "appliedSourceTree": "b90063d467e8a7a965ca752e2299c97346f9d4cc",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.patch",
     "specs/1553-portable-local-storage/recovery/coordinated-publication-pending.json"
