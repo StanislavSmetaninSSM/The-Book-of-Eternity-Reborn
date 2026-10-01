@@ -1,0 +1,111 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "2e3cb6deb772b96fbcec53b98b5d2d50e0bdbc0e",
+  "lastBehavioralSource": "a0a35d57bde429befbf1b9b90e5b7410d4fb202a",
+  "sourcePatchSha256": "95646e45277e0d3fd913ac610d2412381e8aefec5692c532a90f41d643e46f0f",
+  "scope": "Exact code/test/catalog/selection delivery identities; documentation/evidence checkpoints may evolve separately. No normal publication or native acceptance claim.",
+  "entries": [
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.DirectoryDeletion.cs",
+      "blob": "8165215f5ed100251966187cae9c29bf67c2375e",
+      "sha256": "aa8be31dd5ab5d468f90dde6a83459cf5d9b8a501e9606a4771a0bdd672b1221",
+      "bytes": 3557
+    },
+    {
+      "path": "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
+      "blob": "6dec071740a09f6ca8ff282542341c1926f7d554",
+      "sha256": "86457242da02cda09b2fad7a476034cd5c0044f8c0079c19868acba4366cc63d",
+      "bytes": 96800
+    },
+    {
+      "path": "BookOfEternityClient.TestSupport/TrustedLocalPublicationCrashFixture.cs",
+      "blob": "6754eca0fda73cd14a62b3ec0fe2fcaf91a7bca5",
+      "sha256": "0ea46ff7b7895ae74cf4acf8a02caf5938fd3527bf9ecb5a5aa4fe0b345512ec",
+      "bytes": 15023
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.cs",
+      "blob": "fcc0d263927bfe2cc8f6a7624c6ba1e055661076",
+      "sha256": "94ccfe54c1df08e0839be8d09559a73ab1494b15028b938b747c92577c3a6205",
+      "bytes": 4473
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionRecoveryTests.cs",
+      "blob": "c59d928e27334db408be218acf4a62c7166cb354",
+      "sha256": "718ba760c3f86b1f67944ca8536bdc0996166a437efe5d55dd796ffcaa8fbbe3",
+      "bytes": 7549
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.Boundaries.cs",
+      "blob": "8191ba35281e999a9f4f69d3e768fcf2692198b1",
+      "sha256": "13b1fb03886bdbb64b8f8576db8db050787b362afd84772f31bac39c6e08587e",
+      "bytes": 16391
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.SameLeaseRecovery.cs",
+      "blob": "9bc952547e38312ad499a30c03366b66b1f4cad5",
+      "sha256": "30fa1f6d22ee18d8e1156fd045247aec7804e810e671856dbc517dc8a8b98919",
+      "bytes": 2752
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionTests.cs",
+      "blob": "712e3a56c60b02034e67773574eed1017b594843",
+      "sha256": "43d98889d2391ed766e24d7d868dd9160d08caeb08cc3e6bdac5967415259f9c",
+      "bytes": 3493
+    },
+    {
+      "path": "BookOfEternityClient.Tests/PortableDirectoryDeletionWindowsTests.cs",
+      "blob": "f659c9e2558706cd8834a8a7da8e711f5971666a",
+      "sha256": "4ebc9d05efb3e913a74512928455acf529fe6b70c9e164db1e8ff33a3880f98c",
+      "bytes": 1691
+    },
+    {
+      "path": "BookOfEternityClient.Tests/WebUi/BrowserGenerationFencingSourceTests.cs",
+      "blob": "fa0ce2e58f39cf7c9cc162ac5eb0c95ab7dc43f0",
+      "sha256": "1df4bf96fa6d64e4687581668ce355295fc35632dccc190108b6502f4aa2fc20",
+      "bytes": 46583
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.DirectoryDeletion.cs",
+      "blob": "7aa3a5c433de50ef050f9099ccb54c2016f21dee",
+      "sha256": "447093c8e99065b07399af3845f2228d21799b018fbe79c68fc20fdb3b96c0e8",
+      "bytes": 4800
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs",
+      "blob": "16e8c91855bc72865a8ce2efb371400b26dbb307",
+      "sha256": "e8a448d8f35cf5d8b76a472426b5c33b49d54692b8f8ccab559810858b7d4c5b",
+      "bytes": 12149
+    },
+    {
+      "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+      "blob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+      "sha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+      "bytes": 226704
+    },
+    {
+      "path": "BookOfEternityClient/Services/ExplorerLocalTurnRollbackArtifacts.cs",
+      "blob": "24afa3fe78f8d344a04a51062988e61f9621b888",
+      "sha256": "16398de7f3fdb7719004c5929543ea75c2bc0f51da4d398792c86cc4f6de3312",
+      "bytes": 83309
+    },
+    {
+      "path": "specs/1553-portable-local-storage/recovery/directory-windows-selection.json",
+      "blob": "b1e6ba4b26a963d11dc28c75c959b22edf77cfbc",
+      "sha256": "3a32e3e03e24abcf4e0d327c051044b05028c2827d0c96e2dcfcf78138cb59f0",
+      "bytes": 1047
+    },
+    {
+      "path": "tests/categories.json",
+      "blob": "0a621b605dac7029df573211c7dd091615f870fe",
+      "sha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+      "bytes": 847299
+    },
+    {
+      "path": "tests/selection.json",
+      "blob": "301a0425baeb369d277961c8c8bbc32e77424b4d",
+      "sha256": "405bee30a231cb88c90b5ab799ce929001ccece31cbf7b3bb7c73c3736ca4468",
+      "bytes": 1745
+    }
+  ]
+}

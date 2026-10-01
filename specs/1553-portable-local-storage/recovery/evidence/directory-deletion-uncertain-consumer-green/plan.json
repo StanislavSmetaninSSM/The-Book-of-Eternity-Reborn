@@ -1,0 +1,34 @@
+{
+  "Categories": [
+    "portable-directory-uncertain-consumer"
+  ],
+  "Reasons": [],
+  "Revision": {
+    "Head": "a0a35d57bde429befbf1b9b90e5b7410d4fb202a",
+    "WorkingTreeFingerprint": "E554088E16DA53A941AAC99A95A88E8DFB85C34A3321C387B511A74B298F092E",
+    "ChangedFiles": 5
+  },
+  "PreparationSeconds": 136.4942736,
+  "Descriptors": [
+    {
+      "Name": "portable-directory-uncertain-consumer-unit-001",
+      "Project": "BookOfEternityClient.Tests/BookOfEternityClient.Tests.csproj",
+      "Category": "portable-directory-uncertain-consumer",
+      "Categories": [
+        "portable-directory-uncertain-consumer"
+      ],
+      "Filter": "FullyQualifiedName=BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+      "Adapter": "unit",
+      "Exclusive": false,
+      "FrontendBuild": false,
+      "BudgetMinutes": 5,
+      "EstimatedCases": 1,
+      "ExpectedMethodCounts": [
+        {
+          "Name": "BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup",
+          "Cases": 1
+        }
+      ]
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+  "baseCommit": "a0a35d57bde429befbf1b9b90e5b7410d4fb202a",
   "patchFile": "directory-deletion-pending.patch",
   "patchBytes": 23102,
   "patchSha256": "95646e45277e0d3fd913ac610d2412381e8aefec5692c532a90f41d643e46f0f",
@@ -41,7 +41,7 @@
       "afterSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045"
     }
   ],
-  "appliedSourceTree": "dd78dd2497e080d72121e509aef467a7689fe378",
+  "appliedSourceTree": "958f624aa501feb2e0ac6be73aa7e264072868b9",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.patch",
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.json"
