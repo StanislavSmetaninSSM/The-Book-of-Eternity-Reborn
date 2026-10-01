@@ -105,5 +105,16 @@ await scenario('both actual settings consumers render and own persistence notice
   }
 });
 
+await scenario('frontend build resolves the platform-specific npm application', async () => {
+  const fsSpecifier = 'node:fs'; const pathSpecifier = 'node:path';
+  const { readFileSync } = await import(fsSpecifier); const { join, basename, dirname } = await import(pathSpecifier);
+  const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
+  const root = basename(cwd) === 'BookOfEternityClient.WebFrontend' ? dirname(cwd) : cwd;
+  const source = readFileSync(join(root, 'scripts', 'test-csharp.ps1'), 'utf8');
+  const resolver = source.slice(source.indexOf('function Resolve-NpmCommandPath {'), source.indexOf('function New-OwnedProcessContainment {'));
+  assert(resolver.includes('$npmName = if ($IsWindows) { "npm.cmd" } else { "npm" }'), 'Windows/Linux npm application selection regressed.');
+  assert(resolver.includes('Get-Command -Name $npmName -CommandType Application'), 'Resolver does not use the selected application name.');
+});
+
 console.log(`Settings persistence scenarios: passed=${passed} failed=${failures.length}`);
 if (failures.length) throw new Error(failures.join('\n'));

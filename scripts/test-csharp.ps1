@@ -433,8 +433,9 @@ function Get-ProjectDisplayPath {
 }
 
 function Resolve-NpmCommandPath {
+    $npmName = if ($IsWindows) { "npm.cmd" } else { "npm" }
     $npmCommands = @(
-        Get-Command -Name "npm.cmd" -CommandType Application -ErrorAction Stop
+        Get-Command -Name $npmName -CommandType Application -ErrorAction Stop
     )
     foreach ($npmCommand in $npmCommands) {
         $candidate = $npmCommand.Path
@@ -444,7 +445,7 @@ function Resolve-NpmCommandPath {
         }
     }
 
-    throw "Could not resolve npm.cmd to an absolute application path."
+    throw "Could not resolve $npmName to an absolute application path."
 }
 
 function New-OwnedProcessContainment {
