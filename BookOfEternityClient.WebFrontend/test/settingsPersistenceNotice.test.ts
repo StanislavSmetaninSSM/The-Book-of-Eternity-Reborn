@@ -208,12 +208,14 @@ await scenario('shared refresh checks optional owner after asynchronous reads be
   const { readFileSync } = await import(fsSpecifier); const { join, basename } = await import(pathSpecifier);
   const cwd = (globalThis as { process?: { cwd?: () => string } }).process?.cwd?.() ?? '.';
   const root = basename(cwd) === 'BookOfEternityClient.WebFrontend' ? cwd : join(cwd, 'BookOfEternityClient.WebFrontend');
-  const source = readFileSync(join(root, 'src', 'hooks', 'useShellState.ts'), 'utf8');
+  const hook = readFileSync(join(root, 'src', 'hooks', 'useShellState.ts'), 'utf8');
+  const source = readFileSync(join(root, 'src', 'hooks', 'loadShellState.ts'), 'utf8');
+  assert(hook.includes('const publicationOwner = useRef(0)') && hook.includes('return loadShellState(browserApi, setShellState, publicationOwner, advancedEnabled, isCurrent)'), 'Hook does not use the tested shared publication owner.');
   const context = readFileSync(join(root, 'src', 'context', 'ShellContext.tsx'), 'utf8');
   assert(context.includes('loadBrowserState: (isCurrent?: () => boolean) => Promise<void>'), 'Context type drops the optional refresh owner.');
   assert(context.includes('const { shellState, loadBrowserState } = useShellState(advancedEnabled);') &&
     context.includes('    loadBrowserState\n  }),'), 'Context no longer directly forwards the owned refresh function.');
-  assert(source.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');
+  assert(hook.includes('isCurrent: () => boolean = () => true'), 'Refresh lacks optional response ownership.');
   const readIndex = source.indexOf('const results = await Promise.allSettled');
   const errorIndex = source.indexOf("status: 'error'");
   assert(source.slice(readIndex, errorIndex).includes('if (!isCurrent()) return;'), 'Error publication is not fenced after reads.');

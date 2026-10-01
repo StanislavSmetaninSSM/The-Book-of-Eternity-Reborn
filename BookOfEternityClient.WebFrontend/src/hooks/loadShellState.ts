@@ -5,15 +5,17 @@ import { settledToResult } from './shellStateResult.js';
 export interface ShellRefreshOwner { current: number }
 export type PublishShellState = (state: BrowserShellState | ((previous: BrowserShellState) => BrowserShellState)) => void;
 
-// Test-first extraction of the existing refresh; shared publication ordering is not yet implemented.
+// All settings/audio refreshes share publication ownership in their ShellProvider.
 export async function loadShellState(
   browserApi: BrowserApiClient,
   setShellState: PublishShellState,
   publicationOwner: ShellRefreshOwner,
   advancedEnabled: boolean,
-  isCurrent: () => boolean = () => true
+  requestIsCurrent: () => boolean = () => true
 ): Promise<void> {
-  if (!isCurrent()) return;
+  if (!requestIsCurrent()) return;
+  const refresh = ++publicationOwner.current;
+  const isCurrent = () => publicationOwner.current === refresh && requestIsCurrent();
   setShellState((prev) => prev.status === 'ready' ? prev : { status: 'loading' });
 
   const results = await Promise.allSettled([

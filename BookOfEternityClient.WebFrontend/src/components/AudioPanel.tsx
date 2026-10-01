@@ -10,14 +10,14 @@ import type {
 import { isSuccess, useShell } from '../context/ShellContext';
 import { EmptyOrFailure } from './ErrorNotice';
 import { formatSidebarAudioSummary } from '../utils/formatters';
-import { createSettingsWriteNoticeTracker, type SettingsWriteNotice } from '../utils/settingsPersistenceNotice';
+import { createSettingsWriteNoticeTracker, type SettingsWriteNotice, type SettingsWriteScope } from '../utils/settingsPersistenceNotice';
 import { toPlayerFacingText } from '../utils/playerCopy';
 
-export function AudioPanel() {
+export function AudioPanel({ writeScope }: { writeScope: SettingsWriteScope }) {
   const { activeRoute, advancedEnabled, readyState, loadBrowserState } = useShell();
   const [audioResult, setAudioResult] = useState<BrowserApiResult<BrowserAudioSettingsDto> | null>(readyState?.audio ?? null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
-  const persistenceTracker = useRef(createSettingsWriteNoticeTracker());
+  const persistenceTracker = useRef(createSettingsWriteNoticeTracker(writeScope));
   const pendingUpdate = useRef(false);
   const [notice, setNotice] = useState('');
   const audioElementRef = useRef<HTMLAudioElement | null>(null);
@@ -66,28 +66,31 @@ export function AudioPanel() {
     pendingUpdate.current = true;
     audioSettingsUpdateQueueRef.current = audioSettingsUpdateQueueRef.current
       .catch(() => undefined)
-      .then(() => browserApi.updateAudioSettings(request).then((updated) => {
-        persistenceTracker.current.resolve(responseOwner, updated, (writeNotice) => {
-          pendingUpdate.current = false;
-          setPersistenceNotice(writeNotice);
-          setAudioResult(updated);
-          if (isSuccess(updated)) {
-            const currentElement = audioElementRef.current;
-            if (currentElement) {
-              currentElement.volume = volumeToUnit(updated.data.musicVolume);
-              if (!updated.data.musicEnabled) currentElement.pause();
+      .then(() => {
+        if (!persistenceTracker.current.canDispatch(responseOwner)) return;
+        return browserApi.updateAudioSettings(request).then((updated) => {
+          persistenceTracker.current.resolve(responseOwner, updated, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setAudioResult(updated);
+            if (isSuccess(updated)) {
+              const currentElement = audioElementRef.current;
+              if (currentElement) {
+                currentElement.volume = volumeToUnit(updated.data.musicVolume);
+                if (!updated.data.musicEnabled) currentElement.pause();
+              }
             }
-          }
-          void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
+          });
+        }, () => {
+          persistenceTracker.current.interrupted(responseOwner, (writeNotice) => {
+            pendingUpdate.current = false;
+            setPersistenceNotice(writeNotice);
+            setAudioResult(null);
+            void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
+          });
         });
-      }, () => {
-        persistenceTracker.current.interrupted(responseOwner, (writeNotice) => {
-          pendingUpdate.current = false;
-          setPersistenceNotice(writeNotice);
-          setAudioResult(null);
-          void loadBrowserState(() => persistenceTracker.current.isCurrent(responseOwner));
-        });
-      }));
+      });
     return audioSettingsUpdateQueueRef.current;
   }
 

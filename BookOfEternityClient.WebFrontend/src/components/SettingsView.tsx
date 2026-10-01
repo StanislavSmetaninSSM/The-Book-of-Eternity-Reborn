@@ -11,7 +11,8 @@ export function SettingsView() {
   const { readyState, menu, advancedEnabled, setAdvancedEnabled, setActiveRoute, loadBrowserState } = useShell();
   const [settings, setSettings] = useState<BrowserClientSettingsDto | null>(null);
   const [persistenceNotice, setPersistenceNotice] = useState<SettingsWriteNotice | null>(null);
-  const persistenceTracker = useRef(createSettingsWriteNoticeTracker());
+  const writeScope = useRef({ generation: 0 });
+  const persistenceTracker = useRef(createSettingsWriteNoticeTracker(writeScope.current));
   const pendingPatch = useRef<BrowserClientSettingsUpdateRequest>({});
   const pendingUpdate = useRef(false);
   const settingsWriteQueue = useRef<Promise<void>>(Promise.resolve());
@@ -21,13 +22,22 @@ export function SettingsView() {
   const updateQueue = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
 
+  const invalidatePendingSettings = useCallback(() => {
+    writeScope.current.generation++;
+    persistenceTracker.current.invalidate();
+    if (updateQueue.current) clearTimeout(updateQueue.current);
+    updateQueue.current = null;
+    pendingPatch.current = {};
+    pendingUpdate.current = false;
+  }, []);
+
   useEffect(() => {
     isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
-      persistenceTracker.current.invalidate();
+      invalidatePendingSettings();
     };
-  }, []);
+  }, [invalidatePendingSettings]);
 
   useEffect(() => {
     if (!pendingUpdate.current && readyState && isSuccess(readyState.settings)) {
@@ -45,9 +55,11 @@ export function SettingsView() {
       pendingPatch.current = {};
       updateQueue.current = null;
       // Serialize admitted patches so an earlier request cannot commit after a later one.
-      // Navigation invalidates response effects; it does not revoke an authorized write.
-      settingsWriteQueue.current = settingsWriteQueue.current.catch(() => undefined).then(() =>
-        browserApi.updateClientSettings(combined).then((result) => {
+      // Cancel only unsent work when this mount/session loses ownership.
+      // An already-sent request may still commit; response invalidation is not rollback.
+      settingsWriteQueue.current = settingsWriteQueue.current.catch(() => undefined).then(() => {
+        if (!persistenceTracker.current.canDispatch(request)) return;
+        return browserApi.updateClientSettings(combined).then((result) => {
           persistenceTracker.current.resolve(request, result, (writeNotice) => {
             pendingUpdate.current = false;
             setPersistenceNotice(writeNotice);
@@ -61,8 +73,8 @@ export function SettingsView() {
             setSettings(null);
             void loadBrowserState(() => persistenceTracker.current.isCurrent(request));
           });
-        })
-      );
+        });
+      });
     }, 500);
   }, [loadBrowserState]);
 
@@ -97,6 +109,7 @@ export function SettingsView() {
   }
 
   async function loadSaveSlot(slot: BrowserMainMenuDto['saves'][number]) {
+    invalidatePendingSettings();
     setLoadingSaveId(slot.saveId);
     setSaveNotice('Загружаем выбранное сохранение…');
     try {
@@ -144,7 +157,7 @@ export function SettingsView() {
         : '';
 
   return (
-    <div className="settings-view">
+    <fieldset className="settings-view" disabled={loadingSaveId !== null} style={{ border: 0, padding: 0, margin: 0, minWidth: 0 }}>
       {persistenceNotice && <p className="composer-notice" role="status">{persistenceNotice.message}</p>}
       <section className="settings-card">
         <h3>⚙️ Основные</h3>
@@ -186,7 +199,7 @@ export function SettingsView() {
         </div>
       </section>
 
-      <AudioPanel />
+      <AudioPanel writeScope={writeScope.current} />
 
       <section className="settings-card" aria-labelledby="browser-saves-title">
         <h3 id="browser-saves-title">Сохранения</h3>
@@ -294,6 +307,6 @@ export function SettingsView() {
         </div>
         <p className="block-text--muted">{settings.locality.safetySummary}</p>
       </section>
-    </div>
+    </fieldset>
   );
 }

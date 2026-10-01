@@ -20,10 +20,12 @@ const uncertainMessage = 'Результат сохранения настрое
 
 export function createSettingsWriteNoticeTracker(scope: SettingsWriteScope = { generation: 0 }): SettingsWriteNoticeTracker {
   let current = 0;
+  let scopeGeneration = scope.generation;
   let invalidatedThrough = 0;
   let lastCommitted = 0;
   let committedAdvice = '';
-  const isCurrent = (request: number) => request === current && request > invalidatedThrough;
+  const canDispatch = (request: number) => scope.generation === scopeGeneration && request > invalidatedThrough && request <= current;
+  const isCurrent = (request: number) => request === current && canDispatch(request);
   const applyCurrent = (request: number, notice: SettingsWriteNotice, apply?: (notice: SettingsWriteNotice) => void) => {
     if (!isCurrent(request)) return null;
     if (committedAdvice && notice.kind !== 'saved' && notice.kind !== 'follow-up') {
@@ -34,10 +36,18 @@ export function createSettingsWriteNoticeTracker(scope: SettingsWriteScope = { g
   };
 
   return {
-    begin: () => ++current,
+    begin: () => {
+      if (scopeGeneration !== scope.generation) {
+        invalidatedThrough = current;
+        scopeGeneration = scope.generation;
+        lastCommitted = 0;
+        committedAdvice = '';
+      }
+      return ++current;
+    },
     invalidate: () => { invalidatedThrough = ++current; },
     isCurrent,
-    canDispatch: () => { throw new Error('Settings dispatch ownership is not implemented.'); },
+    canDispatch,
     resolve(request, result, apply) {
       let notice: SettingsWriteNotice;
       if (result.ok) {
@@ -58,7 +68,7 @@ export function createSettingsWriteNoticeTracker(scope: SettingsWriteScope = { g
       }
       // Remember known commit advice even if a newer request is still pending, but
       // never let a duplicate older response undo a newer confirmed result.
-      if (request > invalidatedThrough && request >= lastCommitted &&
+      if (canDispatch(request) && request >= lastCommitted &&
           (notice.kind === 'saved' || notice.kind === 'follow-up')) {
         lastCommitted = request;
         committedAdvice = notice.kind === 'follow-up' ? notice.message : '';
