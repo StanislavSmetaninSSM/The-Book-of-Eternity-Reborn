@@ -14,6 +14,7 @@ public sealed class PortableDirectoryDeletionConsumerTests
         var root = Path.Combine(Path.GetTempPath(), "boe-tree-live-outcome-" + Guid.NewGuid().ToString("N"));
         const string snapshot = LiveTurnPreparationService.PendingTurnSnapshotDirectory;
         FileSystemManager? files = null; var treeDecision = false; var reached = false;
+        byte[]? retainedJournal = null;
         try
         {
             files = new(root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
@@ -29,7 +30,9 @@ public sealed class PortableDirectoryDeletionConsumerTests
                                 member.GetProperty("Path").GetString()!.StartsWith(files.ResolvePath(snapshot) + Path.DirectorySeparatorChar, StringComparison.Ordinal));
                         }
                         if (!treeDecision || phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
-                        File.WriteAllBytes(files.ResolvePath(snapshot + "/z.bin"), [42]); reached = true; throw new CutFailure();
+                        File.WriteAllBytes(files.ResolvePath(snapshot + "/z.bin"), [42]);
+                        retainedJournal = File.ReadAllBytes(active);
+                        reached = true; throw new CutFailure();
                     }
                 });
             files.EnsureDirectoryStructure();
@@ -41,15 +44,27 @@ public sealed class PortableDirectoryDeletionConsumerTests
             byte[] dice = [0xEF, 0xBB, 0xBF, 42];
             File.WriteAllBytes(files.ResolvePath(PendingTurnStateService.PendingDiceStatePath), dice);
 
-            await Assert.ThrowsAsync<CanonicalDirectoryDeletionUncertainException>(() =>
+            // The outer bound scope reacquires its finalization lease; its real
+            // recovery preflight preserves this unresolved conflict and evidence.
+            var failure = await Assert.ThrowsAsync<InvalidDataException>(() =>
                 new LiveTurnPreparationService(files).PrepareAsync(new LiveTurnPreparationOptions { PlayerAction = "Осмотреться" }));
 
             Assert.True(reached);
+            Assert.Equal("A publication member contains unknown bytes; evidence retained.", failure.Message);
             Assert.Equal(dice, File.ReadAllBytes(files.ResolvePath(PendingTurnStateService.PendingDiceStatePath)));
             Assert.False(File.Exists(files.ResolvePath(snapshot + "/a.bin")));
             Assert.Equal(new byte[] { 42 }, File.ReadAllBytes(files.ResolvePath(snapshot + "/z.bin")));
-            Assert.True(File.Exists(Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+            var activeJournal = Path.Combine(files.RuntimeRootPath, "trusted-local-publication-v1", "active.json");
+            Assert.NotNull(retainedJournal);
+            Assert.Equal(retainedJournal, File.ReadAllBytes(activeJournal));
             Assert.False(File.Exists(files.ResolvePath(LiveTurnPreparationService.TurnRequestPath)));
+            var coldFailure = await Assert.ThrowsAsync<InvalidDataException>(async () =>
+            {
+                var recovered = new FileSystemManager(root, NullLogger<FileSystemManager>.Instance);
+                await using var lease = await recovered.AcquireCanonicalWriteLeaseAsync();
+            });
+            Assert.Equal(failure.Message, coldFailure.Message);
+            Assert.Equal(retainedJournal, File.ReadAllBytes(activeJournal));
         }
         finally { if (Directory.Exists(root)) Directory.Delete(root, recursive: true); }
     }

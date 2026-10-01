@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="d8bd7a51-ca2a-4ed0-b623-1ab91c60aaf4" name="@ff00c3d48a40 2026-10-01 16:44:08" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2026-10-01T16:44:08.1891464-04:00" queuing="2026-10-01T16:44:08.1891465-04:00" start="2026-10-01T16:44:06.2073674-04:00" finish="2026-10-01T16:44:08.9021836-04:00" />
+  <TestSettings name="default" id="94c16052-e95a-4209-af10-d523e5defd8d">
+    <Deployment runDeploymentRoot="_ff00c3d48a40_2026-10-01_16_44_08" />
+  </TestSettings>
+  <Results>
+    <UnitTestResult executionId="2353b9ca-8369-4325-ab49-9355b0465c82" testId="72900ac9-9b5c-a5ac-8621-2bb96de8c70a" testName="BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup" computerName="ff00c3d48a40" duration="00:00:00.1347007" startTime="2026-10-01T16:44:08.1139815-04:00" endTime="2026-10-01T16:44:08.1139957-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Failed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="2353b9ca-8369-4325-ab49-9355b0465c82">
+      <Output>
+        <ErrorInfo>
+          <Message>Assert.Throws() Failure: Exception type was not an exact match
+Expected: typeof(BookOfEternityClient.Core.CanonicalDirectoryDeletionUncertainException)
+Actual:   typeof(System.IO.InvalidDataException)
+---- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.</Message>
+          <StackTrace>   at BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup() in [REPO]/BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.cs:line 44
+--- End of stack trace from previous location ---
+----- Inner Stack Trace -----
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter) in [REPO]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 256
+   at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer) in [REPO]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs:line 219
+   at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease) in [REPO]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs:line 62
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [REPO]/BookOfEternityClient/Core/FileSystemManager.cs:line 3662
+   at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [REPO]/BookOfEternityClient/Core/FileSystemManager.cs:line 3670
+   at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken) in [REPO]/BookOfEternityClient/Core/FileSystemManager.cs:line 3569
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease) in [REPO]/BookOfEternityClient/Core/SessionOperationContext.cs:line 122
+   at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation) in [REPO]/BookOfEternityClient/Core/SessionOperationContext.cs:line 44
+   at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options) in [REPO]/BookOfEternityClient/Services/LiveTurnPreparationService.cs:line 66</StackTrace>
+        </ErrorInfo>
+      </Output>
+    </UnitTestResult>
+    <UnitTestResult executionId="aed18d4a-0007-4493-a58a-c345a7453eaf" testId="3387e496-c75c-213f-1a5b-bd9af75634d8" testName="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts" computerName="ff00c3d48a40" duration="00:00:00.2439200" startTime="2026-10-01T16:44:08.6498524-04:00" endTime="2026-10-01T16:44:08.6498526-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="aed18d4a-0007-4493-a58a-c345a7453eaf" />
+    <UnitTestResult executionId="d70710b3-c61a-4df8-bfc3-82cdbd6aa62e" testId="acd144e8-23ee-d9d9-9722-34d70286394b" testName="BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths" computerName="ff00c3d48a40" duration="00:00:00.0167036" startTime="2026-10-01T16:44:08.8202176-04:00" endTime="2026-10-01T16:44:08.8202178-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d70710b3-c61a-4df8-bfc3-82cdbd6aa62e" />
+    <UnitTestResult executionId="1d0b29b0-8676-4284-9061-271ae367200e" testId="d8921a35-b28e-29b9-2131-2664ba0a88db" testName="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority" computerName="ff00c3d48a40" duration="00:00:00.1497069" startTime="2026-10-01T16:44:08.8005889-04:00" endTime="2026-10-01T16:44:08.8005891-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="1d0b29b0-8676-4284-9061-271ae367200e" />
+    <UnitTestResult executionId="d8a7e6c2-af02-496e-b23c-d11fa984277e" testId="5748ed84-bdcb-0a6a-bb19-d3ea540445f9" testName="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" computerName="ff00c3d48a40" duration="00:00:00.0064498" startTime="2026-10-01T16:44:08.1527531-04:00" endTime="2026-10-01T16:44:08.1527533-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="d8a7e6c2-af02-496e-b23c-d11fa984277e" />
+    <UnitTestResult executionId="9fdd1396-ff8e-4196-9033-587209af976d" testId="300df175-31ab-4dc4-60d3-d31e1ee89765" testName="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts" computerName="ff00c3d48a40" duration="00:00:00.2791779" startTime="2026-10-01T16:44:08.4030564-04:00" endTime="2026-10-01T16:44:08.4030568-04:00" testType="13cdc9d9-ddb5-4fa4-a97d-d965ccfc6d4b" outcome="Passed" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" relativeResultsDirectory="9fdd1396-ff8e-4196-9033-587209af976d" />
+  </Results>
+  <TestDefinitions>
+    <UnitTest name="BookOfEternityClient.Tests.GameEngineSourceGuardTests.PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="acd144e8-23ee-d9d9-9722-34d70286394b">
+      <Execution id="d70710b3-c61a-4df8-bfc3-82cdbd6aa62e" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.GameEngineSourceGuardTests" name="PendingSnapshotCleanup_AndLateRollback_MustNotTrustRawManifestArtifactPaths" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="d8921a35-b28e-29b9-2131-2664ba0a88db">
+      <Execution id="1d0b29b0-8676-4284-9061-271ae367200e" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests" name="PrepareAsync_RemovesStalePendingDiceStateSoTurnRequestIsOnlyCurrentDiceAuthority" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="3387e496-c75c-213f-1a5b-bd9af75634d8">
+      <Execution id="aed18d4a-0007-4493-a58a-c345a7453eaf" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests" name="PrepareAsync_SessionReplacementCannotReceiveOldPreparedTurnArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests.PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="300df175-31ab-4dc4-60d3-d31e1ee89765">
+      <Execution id="9fdd1396-ff8e-4196-9033-587209af976d" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.LiveTurnPreparationServiceTests" name="PrepareAsync_WritesLinkedTurnRequestSnapshotAndAuthorityWithoutGeneratedHarnessArtifacts" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="72900ac9-9b5c-a5ac-8621-2bb96de8c70a">
+      <Execution id="2353b9ca-8369-4325-ab49-9355b0465c82" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests" name="LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup" />
+    </UnitTest>
+    <UnitTest name="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests.BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" storage="[REPO]/bookofeternityclient.tests/bin/debug/net8.0/bookofeternityclient.tests.dll" id="5748ed84-bdcb-0a6a-bb19-d3ea540445f9">
+      <Execution id="d8a7e6c2-af02-496e-b23c-d11fa984277e" />
+      <TestMethod codeBase="[REPO]/BookOfEternityClient.Tests/bin/Debug/net8.0/BookOfEternityClient.Tests.dll" adapterTypeName="executor://xunit/VsTestRunner2/netcoreapp" className="BookOfEternityClient.Tests.WebUi.BrowserGenerationFencingSourceTests" name="BrowserPendingAndRecoveryAuthority_ContainsNoPathnameAbsenceFallback" />
+    </UnitTest>
+  </TestDefinitions>
+  <TestEntries>
+    <TestEntry testId="72900ac9-9b5c-a5ac-8621-2bb96de8c70a" executionId="2353b9ca-8369-4325-ab49-9355b0465c82" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="3387e496-c75c-213f-1a5b-bd9af75634d8" executionId="aed18d4a-0007-4493-a58a-c345a7453eaf" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="acd144e8-23ee-d9d9-9722-34d70286394b" executionId="d70710b3-c61a-4df8-bfc3-82cdbd6aa62e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="d8921a35-b28e-29b9-2131-2664ba0a88db" executionId="1d0b29b0-8676-4284-9061-271ae367200e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="5748ed84-bdcb-0a6a-bb19-d3ea540445f9" executionId="d8a7e6c2-af02-496e-b23c-d11fa984277e" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestEntry testId="300df175-31ab-4dc4-60d3-d31e1ee89765" executionId="9fdd1396-ff8e-4196-9033-587209af976d" testListId="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+  </TestEntries>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Failed">
+    <Counters total="6" executed="6" passed="5" failed="1" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.8.2+699d445a1a (64-bit .NET 8.0.31)
+[xUnit.net 00:00:00.16]   Discovering: BookOfEternityClient.Tests
+[xUnit.net 00:00:01.21]   Discovered:  BookOfEternityClient.Tests
+[xUnit.net 00:00:01.23]   Starting:    BookOfEternityClient.Tests
+[xUnit.net 00:00:01.42]       Assert.Throws() Failure: Exception type was not an exact match
+[xUnit.net 00:00:01.42]       Expected: typeof(BookOfEternityClient.Core.CanonicalDirectoryDeletionUncertainException)
+[xUnit.net 00:00:01.42]       Actual:   typeof(System.IO.InvalidDataException)
+[xUnit.net 00:00:01.42]       ---- System.IO.InvalidDataException : A publication member contains unknown bytes; evidence retained.
+[xUnit.net 00:00:01.42]       Stack Trace:
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient.Tests/PortableDirectoryDeletionConsumerTests.cs(44,0): at BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup()
+[xUnit.net 00:00:01.42]         --- End of stack trace from previous location ---
+[xUnit.net 00:00:01.42]         ----- Inner Stack Trace -----
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(256,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Preflight(CanonicalWriteLease lease, Journal journal, Boolean requireAfter)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/TrustedLocalFilePublication.cs(219,0): at BookOfEternityClient.Core.TrustedLocalFilePublication.Recover(CanonicalWriteLease lease, Action`2 observer)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs(62,0): at BookOfEternityClient.Core.FileSystemManager.RecoverTrustedLocalStorage(CanonicalWriteLease lease)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/FileSystemManager.cs(3662,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/FileSystemManager.cs(3670,0): at BookOfEternityClient.Core.FileSystemManager.AcquireCanonicalWriteLeaseCoreAsync(CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/FileSystemManager.cs(3569,0): at BookOfEternityClient.Core.FileSystemManager.CompleteCanonicalWriteLeaseAcquisitionAsync(AmbientCanonicalLeaseRegistration registration, CanonicalWritePurpose purpose, CancellationToken cancellationToken)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/SessionOperationContext.cs(122,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundCoreAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation, CanonicalWriteLease writeLease)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Core/SessionOperationContext.cs(44,0): at BookOfEternityClient.Core.SessionOperationContext.RunBoundAsync[T](FileSystemManager fileSystem, String expectedGeneration, Func`1 operation)
+[xUnit.net 00:00:01.42]         [REPO]/BookOfEternityClient/Services/LiveTurnPreparationService.cs(66,0): at BookOfEternityClient.Services.LiveTurnPreparationService.PrepareAsync(LiveTurnPreparationOptions options)
+[xUnit.net 00:00:02.13]   Finished:    BookOfEternityClient.Tests
+</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="ff00c3d48a40" outcome="Error" timestamp="2026-10-01T16:44:08.1119987-04:00">
+        <Text>[xUnit.net 00:00:01.42]     BookOfEternityClient.Tests.PortableDirectoryDeletionConsumerTests.LivePreparationPropagatesUncertainTreeOutcomeAndStopsBeforeDiceCleanup [FAIL]</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

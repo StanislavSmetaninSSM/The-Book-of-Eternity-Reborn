@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+  "sourceFingerprint": "953962DAA135244FCDFCF4294E3346CD614AA4546D1C168791636526DE01610B",
+  "patchSha256": "a50f83faa55854ff53ac17a6dee1bd2ed4cf15fec8ab2aee1d83304c1e7f869a",
+  "appliedSourceTree": "15df5cb0aaa25ef5abdd1f69c6b11c8a26546644",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command: scripts/test-csharp.ps1 -Category portable-directory-recovery-boundary,portable-directory-same-lease-recovery -NoBuild -Parallelism 1",
+  "scope": "All four same-lease tree/ancestor cleanup-debt and generation-conflict regressions GREEN, plus twelve directly affected basic/cold cases. Source is unchanged from the preceding fresh successful builds; evidence exports are not compiled source.",
+  "categories": [
+    "portable-directory-recovery-boundary",
+    "portable-directory-same-lease-recovery"
+  ],
+  "selection": {
+    "PlannedDescriptors": 2,
+    "CompletedDescriptors": 2,
+    "PlannedCases": 16,
+    "CompletedCases": 16,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "tests": {
+    "Total": 16,
+    "Executed": 16,
+    "Passed": 16,
+    "Failed": 0
+  },
+  "duration": "00:00:14.4153851",
+  "exitCode": 0,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "6cbf4cb92e29d30a007034a4604829a5296722a30690d8dbe9de08d50ae524cf",
+      "sanitizedSha256": "6cbf4cb92e29d30a007034a4604829a5296722a30690d8dbe9de08d50ae524cf",
+      "sanitizedBytes": 1681
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "cbb73e7921104ee791c2c5ea1601b9d4d8246f4c586cfa6771fdf0a9eebe3a3b",
+      "sanitizedSha256": "cbb73e7921104ee791c2c5ea1601b9d4d8246f4c586cfa6771fdf0a9eebe3a3b",
+      "sanitizedBytes": 2638
+    },
+    {
+      "file": "portable-directory-recovery-boundary-unit-001.trx",
+      "originalSha256": "233d2068dc51f9284b49b370c26f06d2d761f92bd8101a82326ffd62bd861bee",
+      "sanitizedSha256": "fb026e1171c230bea65e652eed6d58bf3ab74848d3475eb498b5698945767ec3",
+      "sanitizedBytes": 19544
+    },
+    {
+      "file": "portable-directory-same-lease-recovery-unit-002.trx",
+      "originalSha256": "f41d3402020b639d2c509d45b4930fe6d70c869edad838ec1d2124b3b0f0f14e",
+      "sanitizedSha256": "00b00c1dfc7dcb624d1d1656ad86de5cbcffff742c47f6b6717533ea48dc973f",
+      "sanitizedBytes": 7393
+    }
+  ]
+}

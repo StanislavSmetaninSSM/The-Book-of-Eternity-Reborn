@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "selections": [
+    {
+      "category": "portable-directory-windows-boundaries",
+      "reason": "Actual native links/hard links, case paths, repeated same-lease debt and cold whole-set recovery; no Linux early-return qualification.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-original-windows",
+      "reason": "Actual extended-root deletion plus warm recorder-cleared and cold original browser cleanup with wrong-type negatives.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    },
+    {
+      "category": "portable-directory-backup-prerequisite",
+      "reason": "Qualify the unchanged real quarantine body on this source; retain its distinct Linux backup failure and prior T031-A evidence.",
+      "contracts": [
+        "T030-F native ordinary tree deletion and original browser cleanup boundaries"
+      ]
+    }
+  ]
+}

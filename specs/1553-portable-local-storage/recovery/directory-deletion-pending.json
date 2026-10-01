@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "efc28137c92515a9d72f16637084e571e48806b1",
+  "baseCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
   "patchFile": "directory-deletion-pending.patch",
-  "patchBytes": 18521,
-  "patchSha256": "a50f83faa55854ff53ac17a6dee1bd2ed4cf15fec8ab2aee1d83304c1e7f869a",
+  "patchBytes": 23102,
+  "patchSha256": "95646e45277e0d3fd913ac610d2412381e8aefec5692c532a90f41d643e46f0f",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/BrowserLocalWriteCoordinatorTests.cs",
@@ -29,19 +29,19 @@
     {
       "path": "specs/1553-portable-local-storage/research.md",
       "beforeBlob": "f226ef9783005e3dff5a9e96d3026d59e0737f4a",
-      "afterBlob": "a929125666c894c40337929f8fb9a1e942963362",
+      "afterBlob": "d6796ffaf53841e1584137db6a5ade0b4be65421",
       "beforeSha256": "8758269b64f898c888375f5f0c959a3310841a75a2e1c3b7c57472aa94d88562",
-      "afterSha256": "fbc2c61e18813cec9ca78b8b52a4b901605b13cb5947694fc3ae8874adca74a7"
+      "afterSha256": "37758ec08279cb95a26739b20b26b6f502f28436248d9290607c8d1849f7dba4"
     },
     {
       "path": "tests/categories.json",
       "beforeBlob": "b63e8a81f53172bdd26eae63570a6a894bee4560",
-      "afterBlob": "a5aec313067a033b6289c0aea4f4ae35fa47c6d8",
+      "afterBlob": "0a621b605dac7029df573211c7dd091615f870fe",
       "beforeSha256": "3907b1ca149b740ce1c3954777faaa8e8a74695b4b345c92723d2d379529a3a7",
-      "afterSha256": "dd5606c26850ef132de4a724e14c18b722fd8a9567c8eca2e64bdf7b7d36d39c"
+      "afterSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045"
     }
   ],
-  "appliedSourceTree": "15df5cb0aaa25ef5abdd1f69c6b11c8a26546644",
+  "appliedSourceTree": "dd78dd2497e080d72121e509aef467a7689fe378",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.patch",
     "specs/1553-portable-local-storage/recovery/directory-deletion-pending.json"

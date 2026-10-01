@@ -1,0 +1,68 @@
+{
+  "Categories": [
+    "portable-directory-consumers-continuation",
+    "portable-directory-recovery-boundary",
+    "portable-directory-same-lease-recovery"
+  ],
+  "Reasons": [],
+  "DiscoveryOnly": false,
+  "PlanOnly": false,
+  "Revision": {
+    "Head": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+    "WorkingTreeFingerprint": "953962DAA135244FCDFCF4294E3346CD614AA4546D1C168791636526DE01610B",
+    "ChangedFiles": 5
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [
+    {
+      "Category": "portable-directory-consumers-continuation",
+      "Seconds": 3.4797059,
+      "BudgetMinutes": 5,
+      "Completed": false
+    }
+  ],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0629058,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0135497,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0172236,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 20,
+  "WallTime": "00:00:07.7811329",
+  "ExitCode": 1,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 22,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [
+      "portable-directory-recovery-boundary-unit-002",
+      "portable-directory-same-lease-recovery-unit-003"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 5,
+    "Failed": 1
+  },
+  "DuplicateTests": []
+}

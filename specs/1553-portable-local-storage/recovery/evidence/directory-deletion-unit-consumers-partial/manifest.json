@@ -1,0 +1,62 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "8ffe61d0a328b9aca5b70f98013226c153e3e5aa",
+  "sourceFingerprint": "953962DAA135244FCDFCF4294E3346CD614AA4546D1C168791636526DE01610B",
+  "patchSha256": "a50f83faa55854ff53ac17a6dee1bd2ed4cf15fec8ab2aee1d83304c1e7f869a",
+  "appliedSourceTree": "15df5cb0aaa25ef5abdd1f69c6b11c8a26546644",
+  "platform": "Linux x64",
+  "toolchain": {
+    "sdk": "10.0.401",
+    "runtime": "8.0.31",
+    "powershell": "7.6.6"
+  },
+  "command": "pwsh -NoLogo -NoProfile -Command: scripts/test-csharp.ps1 -Category portable-directory-consumers-continuation,portable-directory-recovery-boundary,portable-directory-same-lease-recovery -NoBuild -Parallelism 1",
+  "scope": "Six unit consumers reached: five pass, exact exception-type assertion in the new uncertainty consumer fails at existing bound-scope finalization recovery; sixteen basic/cold/debt cases unrun. No outcome assertion weakening or production scope change has yet been made.",
+  "categories": [
+    "portable-directory-consumers-continuation",
+    "portable-directory-recovery-boundary",
+    "portable-directory-same-lease-recovery"
+  ],
+  "selection": {
+    "PlannedDescriptors": 3,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 22,
+    "CompletedCases": 6,
+    "UnderfilledDescriptors": [
+      "portable-directory-recovery-boundary-unit-002",
+      "portable-directory-same-lease-recovery-unit-003"
+    ],
+    "Complete": false
+  },
+  "tests": {
+    "Total": 6,
+    "Executed": 6,
+    "Passed": 5,
+    "Failed": 1
+  },
+  "duration": "00:00:07.7811329",
+  "exitCode": 1,
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "4e4146ec7312464a91d0350d16ee7c8243e5adaeda5345dbe2b4dc3fe6e39a70",
+      "sanitizedSha256": "4e4146ec7312464a91d0350d16ee7c8243e5adaeda5345dbe2b4dc3fe6e39a70",
+      "sanitizedBytes": 1601
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "4791b9ba6bc9e9950150c9d37506877f6726f50874360b5603032116c67e78e8",
+      "sanitizedSha256": "4791b9ba6bc9e9950150c9d37506877f6726f50874360b5603032116c67e78e8",
+      "sanitizedBytes": 5321
+    },
+    {
+      "file": "portable-directory-consumers-continuation-unit-001.trx",
+      "originalSha256": "c342f4c56e90f8e761c4d8a2c9c76e4dea648434c1c4d08f1e7fa2cdb7c5be21",
+      "sanitizedSha256": "4049a9b25548b6b2b61455d5313348d4623217df556aef1cec5f4c8587664657",
+      "sanitizedBytes": 16465
+    }
+  ]
+}
