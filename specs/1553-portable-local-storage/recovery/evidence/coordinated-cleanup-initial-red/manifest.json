@@ -1,0 +1,47 @@
+{
+  "sourceCommit": "b800fb46e33d15c69e73ec58a5b67f2b959e82b8",
+  "sourceAppliedTree": "827d13e7ed1327b724fd7ba5f0d427a5f6c3178f",
+  "packetSha256": "2978b6266a65ac9a2ec0a52315aebe5b49234e389cd8b0c43d32d4c41d37143d",
+  "kind": "coordinated-cleanup-initial-red; exact completed selected-run evidence",
+  "sanitization": "Repository/toolchain/isolated environment paths and TRX run user/computer/deployment identifiers replaced; original and sanitized hashes retained.",
+  "command": "DOTNET_PROCESSOR_COUNT=1 DOTNET_CLI_TELEMETRY_OPTOUT=1 POWERSHELL_TELEMETRY_OPTOUT=1 TESTINGPLATFORM_TELEMETRY_OPTOUT=1 pwsh -NoProfile -File scripts/test-csharp.ps1 -Category portable-coordinated-cleanup -Parallelism 1",
+  "environment": "Linux x64; SDK10.0.401, .NET8.0.31, PowerShell7.6.6; existing isolated homes/temp/cache; no app/provider execution",
+  "tests": {
+    "Total": 18,
+    "Executed": 18,
+    "Passed": 8,
+    "Failed": 10
+  },
+  "selection": {
+    "PlannedDescriptors": 1,
+    "CompletedDescriptors": 1,
+    "PlannedCases": 18,
+    "CompletedCases": 18,
+    "UnderfilledDescriptors": [],
+    "Complete": true
+  },
+  "exitCode": 1,
+  "wallTime": "00:03:50.2107828",
+  "timedOut": false,
+  "ownedCleanup": true,
+  "runtimeCleanup": true,
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "141d92c2a62325298c5c8341a3b091f28d85648f0d190473c4d667587302b4ce",
+      "sanitizedSha256": "141d92c2a62325298c5c8341a3b091f28d85648f0d190473c4d667587302b4ce"
+    },
+    {
+      "path": "portable-coordinated-cleanup-integration-001.trx",
+      "originalSha256": "8d03db3cea3a63346c60651555e63dd7cde3b5d51542c3cc6355d1e7cd14da27",
+      "sanitizedSha256": "e4e5b4f67626ba95e4962af223798ec508b0624ffca09ac88001f73c42f6f82e"
+    }
+  ],
+  "causalResult": "18 executed: eight controls passed; six intended failures (four reached uncertain cleanup routes, NPC retained journal during helper acquisition, ordinary QTE acceptance callback). Four resident rows have an observer fixture error: the public service publishes three unrelated absent-file cleanups before the helper. Preserve the run and filter observations to the actual manifestation member set before claiming resident RED.",
+  "residentAssertionFailures": {
+    "positive": "Expected one committed target set, observed four total decisions including three prior cleanup no-ops.",
+    "malformedPlanning": "Expected zero target intents, observed three prior unrelated cleanup intents.",
+    "newUncertainPublication": "Reached target-cut count expected one, actual zero: an assertion inside the observer intercepted the first unrelated cleanup member.",
+    "retainedEvidenceDuringRead": "Retained-evidence injection count one was established, then expected zero new intents saw three earlier preamble intents. The exception-type assertion was not reached; this does not establish or refute propagation from the intervening life-transitions read."
+  }
+}
