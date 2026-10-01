@@ -71,6 +71,7 @@ internal static class CoordinatedStateWriteHelper
         await CommitGate.WaitAsync();
         FileSystemManager.CanonicalWriteLease? writeLease = null;
         var completed = false;
+        Exception? operationFailure = null;
         try
         {
             writeLease = await fs.AcquireCanonicalWriteLeaseAsync();
@@ -81,20 +82,32 @@ internal static class CoordinatedStateWriteHelper
                 writes);
             return completed;
         }
+        catch (Exception failure)
+        {
+            operationFailure = failure;
+            throw;
+        }
         finally
         {
             try
             {
                 if (writeLease != null)
-                {
-                    try { await writeLease.DisposeAsync(); }
-                    catch (Exception failure) when (completed)
-                    {
-                        fs.LogCompletedCoordinatedWriteReleaseFailure(failure);
-                    }
-                }
+                    await ReleaseOwnedLeaseAsync(fs, writeLease, completed, operationFailure);
             }
             finally { CommitGate.Release(); }
+        }
+    }
+
+    internal static async ValueTask ReleaseOwnedLeaseAsync(
+        FileSystemManager fs,
+        FileSystemManager.CanonicalWriteLease writeLease,
+        bool completed,
+        Exception? operationFailure)
+    {
+        try { await writeLease.DisposeAsync(); }
+        catch (Exception failure) when (completed)
+        {
+            fs.LogCompletedCoordinatedWriteReleaseFailure(failure);
         }
     }
 

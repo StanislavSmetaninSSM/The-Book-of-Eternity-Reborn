@@ -25,10 +25,10 @@ index 4a4415cc..5391cb96 100644
  
  B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
 diff --git a/tests/categories.json b/tests/categories.json
-index ad2fe43a..f6ff77dd 100644
+index ad2fe43a..0deede0e 100644
 --- a/tests/categories.json
 +++ b/tests/categories.json
-@@ -8417,6 +8417,35 @@
+@@ -8417,6 +8417,64 @@
            ]
          }
        ]
@@ -58,6 +58,35 @@ index ad2fe43a..f6ff77dd 100644
 +          "project": "unit",
 +          "tests": [
 +            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.*"
++          ]
++        }
++      ]
++    },
++    {
++      "id": "portable-coordinated-lease",
++      "responsibility": "Real lease admission for empty and guard-only coordinated operations; deterministic real external-context disposal, actual canonical-lock reacquisition and primary operation failure precedence in the owned release routine.",
++      "excludes": "Synthetic identities, OS FileStream fault injection, browser-v6 transaction migration and unrelated lifecycle/lease matrices.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Core/FileSystemManager.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-coordinated-publication",
++          "when": "Owned helper acquisition/release or publication disposition handling changes."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedLeaseTests.*"
 +          ]
 +        }
 +      ]

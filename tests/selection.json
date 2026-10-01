@@ -2,12 +2,12 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-coordinated-publication",
-      "reason": "T031 initial four-test RED scaffold: actual helper, one complete journal decision, reached pre-decision rollback, unknown later member and committed cleanup. Existing generation is explicitly admitted before observation; no gameplay or broad storage cohort.",
+      "category": "portable-coordinated-lease",
+      "reason": "T031 next bounded RED: ten real-lease admission/release cases; preserve unchanged valid no-op/completed controls, reject foreign/disposed empty guards, close the actual lock after context failure and retain primary failure. The four-case adapter GREEN is separately preserved.",
       "contracts": [
-        "declared complete member set",
-        "exact byte rollback",
-        "durable outcome propagation"
+        "owning lease admission",
+        "complete owned cleanup",
+        "durable failure precedence"
       ]
     }
   ]
