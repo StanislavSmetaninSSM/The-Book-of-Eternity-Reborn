@@ -1,0 +1,670 @@
+{
+  "scope": "Verified union of distinct passing cases at their own saved source revisions; not an aggregate execution at this or any final checkpoint. Corrected cases use the latest scoped evidence. Native body qualification is separate.",
+  "methods": 42,
+  "cases": 94,
+  "cohorts": {
+    "backup-lifecycle-core-green": 43,
+    "backup-lifecycle-continuation-green": 50,
+    "backup-review-correction-green": 19
+  },
+  "passingCases": [
+    {
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.CleanupBackup_WaitsForCanonicalWriteLease",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-api-integration-002.trx",
+      "artifactSha256": "2653dfc72974d680311945835f7a5267d9f4d6c23097686ecaa0fc4bcd71ead7"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.CreateBackup_WaitsForCanonicalWriteLease",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-api-integration-002.trx",
+      "artifactSha256": "2653dfc72974d680311945835f7a5267d9f4d6c23097686ecaa0fc4bcd71ead7"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_MissingBeforeImageFailsClosed",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-api-integration-002.trx",
+      "artifactSha256": "2653dfc72974d680311945835f7a5267d9f4d6c23097686ecaa0fc4bcd71ead7"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_RejectsBackupOutsideCanonicalSession",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-api-integration-002.trx",
+      "artifactSha256": "2653dfc72974d680311945835f7a5267d9f4d6c23097686ecaa0fc4bcd71ead7"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+      "method": "BookOfEternityClient.Tests.FileSystemManagerTests.RestoreBackup_WaitsForCanonicalWriteLease",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-api-integration-002.trx",
+      "artifactSha256": "2653dfc72974d680311945835f7a5267d9f4d6c23097686ecaa0fc4bcd71ead7"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: False)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-treatment-claims-integration-009.trx",
+      "artifactSha256": "1c9569e80c85f007566d6ee04f2a7e0ba33a8b70d7c425b632e3462e1fd03e0b"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims(committedDebt: True)",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.BackupUncertaintyRetainsRealTreatmentResourceAndItemClaims",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-treatment-claims-integration-009.trx",
+      "artifactSha256": "1c9569e80c85f007566d6ee04f2a7e0ba33a8b70d7c425b632e3462e1fd03e0b"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "method": "BookOfEternityClient.Tests.GameEngineTurnLifecycleTests.ProcedureTerminalQuarantine_RemovesDurableAuthorityBeforeReleasingEveryClaim",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-directory-backup-prerequisite-integration-010.trx",
+      "artifactSha256": "0fa00401aebf308f62f62fe89710b282a0ec63fc2079aedfdd99040e1c2ee841"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-consumers-unit-001.trx",
+      "artifactSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure(unknown: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.AcceptedDistributionSurvivesCleanupDebtAndDiagnosticFailure",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-consumers-unit-001.trx",
+      "artifactSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-consumers-unit-001.trx",
+      "artifactSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt(committedDebt: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsAtUnknownBackupOrSameLeaseCommittedDebt",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-consumers-unit-001.trx",
+      "artifactSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-consumers-unit-001.trx",
+      "artifactSha256": "c3c8d91c6088ab95c8a960d1931d8ecfa0ec3fe0bd1d5f79e6bc010333ed712f"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "method": "BookOfEternityClient.Tests.PortableBackupConsumerTests.BoundDistributorClassifiesGenerationConflictInCommittedBackupDebtBeforeCompensation",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-generation-debt-unit-002.trx",
+      "artifactSha256": "03e3dbd087310e886a02e5a24fdb7f7e166c24814ff4ba16c7d8a068084e819c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.AbsentSourceAndCleanupDoNotCreateGenerationOrJournal",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook(changed: \"generation\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook(changed: \"source\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CapturedSourceAndGenerationAreRecheckedAfterMutationHook",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion(asynchronous: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CleanupBackupPublishesEvidenceDeletion",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CollidingBackupNameIsRejectedBeforeIntentAndPreservesExistingBytes",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes(asynchronous: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.CreateBackupPreservesExactSourceAndPublishesIndependentBytes",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget(targetExists: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget(targetExists: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.EmptyBackupRestoresExactEmptyBytesOverPresentOrAbsentTarget",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.ExistingOriginalEvidenceBlocksEvenOrdinaryAbsenceWithoutDeletingEvidence",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-routing-unit-008.trx",
+      "artifactSha256": "5d0d949782344093b81dda4b03204af9d61c766de4299255a12a35428729ed2c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.FreshGenerationAndBackupRollBackAsOneDecision",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.HardLinkedSourceTargetAndBackupPreserveEveryOutsideName",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether(asynchronous: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.IndependentlySeededRestorePublishesTargetAndBackupAbsenceTogether",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-api-unit-001.trx",
+      "artifactSha256": "493467213ded2e3d90ab88e9817fbe7fe1f6d4a4ef40b255b3f637afea9c3e0c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"ancestor-link\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"dangling-link\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"directory\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"link\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"outside\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside(kind: \"root\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidBackupInputIsRejectedWithoutChangingTargetOrOutside",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation(member: \"source\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation(member: \"target\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.InvalidSourceOrTargetTypeIsRejectedBeforeBackupMutation",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.LinuxCaseDistinctBackupAndTargetAreIndependentNames",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-linux-case-unit-004.trx",
+      "artifactSha256": "e41130e61b0f4e74ea4a7be15c208b96ecfd34fb7456e68dc45a3123db44e209"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"cleanup\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"cleanup\", cut: \"MemberPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"create\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"create\", cut: \"IntentPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"create\", cut: \"MemberPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"create\", cut: \"MemberStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"CleanupMember\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"CommitStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"IntentPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"MemberPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult(operation: \"restore\", cut: \"MemberStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.NonTransientCutsPreserveWholeBeforeOrCommittedResult",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks(recovery: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.OriginalRecorderAndRecoveryKeepPhysicalCoreWithoutNewCallbacks",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"cleanup\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"create\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected(operation: \"restore\")",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RealForeignDisposedAndNullLeasesAreRejected",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-routing-unit-008.trx",
+      "artifactSha256": "5d0d949782344093b81dda4b03204af9d61c766de4299255a12a35428729ed2c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget(originalTarget: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreCannotMixOriginalEvidenceAndOrdinaryTarget",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-routing-unit-008.trx",
+      "artifactSha256": "5d0d949782344093b81dda4b03204af9d61c766de4299255a12a35428729ed2c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreSameNameIsRejectedBeforeDeletingItsOnlyCopy",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-boundaries-unit-002.trx",
+      "artifactSha256": "10178346caea22c6ed0471c3414aef2a31676acc890579e30845e74baf847ceb"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification(cutMember: 0)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification(cutMember: 1)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.RestoreUnknownBytesRetainPartialMembersAndUnresolvedClassification",
+      "source": "261bda1b92fdca3bcb992008a7eeec822799f139",
+      "artifact": "backup-lifecycle-core-green/portable-backup-publication-unit-003.trx",
+      "artifactSha256": "e26d3e72e25b56331d583a715b7e23779ccf73d70a96270ebb853132155b265a"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence(unknown: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SameLeaseNoOpResolvesCommittedCleanupDebtAndBlocksUnknownEvidence",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp(atBoundary: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-routing-unit-008.trx",
+      "artifactSha256": "5d0d949782344093b81dda4b03204af9d61c766de4299255a12a35428729ed2c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp(atBoundary: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SourceLinkBeforeOrAtReadBoundaryCannotBeBackedUp",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-routing-unit-008.trx",
+      "artifactSha256": "5d0d949782344093b81dda4b03204af9d61c766de4299255a12a35428729ed2c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+      "method": "BookOfEternityClient.Tests.PortableBackupLifecycleTests.SuppliedLeaseHonorsChangedBoundGenerationBeforeNoOp",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"cleanup\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"cleanup\", cut: \"MemberPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"cleanup\", cut: \"cleanup-debt\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"create\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"create\", cut: \"IntentStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"create\", cut: \"MemberPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"create\", cut: \"MemberStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"CleanupComplete\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"CleanupMember\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"CommitStaged\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"Committed\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"IntentPublished\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"first-member\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess(operation: \"restore\", cut: \"last-member\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ActualBackupApiCrashRecoversCompleteDecisionInSeparateProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"cleanup-debt\", committed: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames(cut: \"last-member\", committed: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdRestoreAndCleanupPreserveExternalHardLinkNames",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence(generation: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence(generation: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.ColdUnknownLaterBackupOrGenerationRetainsEarlierTargetAndEvidence",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-recovery-unit-007.trx",
+      "artifactSha256": "59382c4f3f20ec9b5f1c19ed7b38c5f37b89cfc7beabb84a1e652c88eb7d7caf"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: \"cleanup\", backup: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-linux-special-unit-005.trx",
+      "artifactSha256": "13fe9f43163d99f578ad245d4c959d1a38ff530f823f561b4d7ae3d1115f095c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: \"create\", backup: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-linux-special-unit-005.trx",
+      "artifactSha256": "13fe9f43163d99f578ad245d4c959d1a38ff530f823f561b4d7ae3d1115f095c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: \"restore\", backup: False)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-linux-special-unit-005.trx",
+      "artifactSha256": "13fe9f43163d99f578ad245d4c959d1a38ff530f823f561b4d7ae3d1115f095c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess(operation: \"restore\", backup: True)",
+      "method": "BookOfEternityClient.Tests.PortableBackupRecoveryTests.LinuxFifoIsRejectedInBoundedActualApiProcess",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-linux-special-unit-005.trx",
+      "artifactSha256": "13fe9f43163d99f578ad245d4c959d1a38ff530f823f561b4d7ae3d1115f095c"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"accepted-cleanup\")",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-qte-integration-003.trx",
+      "artifactSha256": "9f18e60fc1195e972d0ef987b4ae04bf1b7872539be4110ec94875563e5e6fab"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-debt\")",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-qte-integration-003.trx",
+      "artifactSha256": "9f18e60fc1195e972d0ef987b4ae04bf1b7872539be4110ec94875563e5e6fab"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation(cut: \"create-unknown\")",
+      "method": "BookOfEternityClient.Tests.QteSceneServiceTests.ActualBackupUncertaintyStopsQteBeforeExperienceNormalizationAndCompensation",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-qte-integration-003.trx",
+      "artifactSha256": "9f18e60fc1195e972d0ef987b4ae04bf1b7872539be4110ec94875563e5e6fab"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+      "method": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_BackupCleanupFailure_DoesNotRollbackCommittedDistribution",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-consumers-unit-003.trx",
+      "artifactSha256": "29a4f9fc0c7a04f173aeb9ca9cfba838c52f7ebd1120a8c72c2250b2f23921e4"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+      "method": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterBackupCapture_DoesNotOverwriteConcurrentAcceptedWriter",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-consumers-unit-003.trx",
+      "artifactSha256": "29a4f9fc0c7a04f173aeb9ca9cfba838c52f7ebd1120a8c72c2250b2f23921e4"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+      "method": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_FailureAfterFirstWrite_DoesNotRollbackConcurrentAcceptedWriter",
+      "source": "7a40bbaf7d5192f9ef1fce8f3803417bcb04bf94",
+      "artifact": "backup-lifecycle-continuation-green/portable-backup-existing-consumers-unit-003.trx",
+      "artifactSha256": "29a4f9fc0c7a04f173aeb9ca9cfba838c52f7ebd1120a8c72c2250b2f23921e4"
+    },
+    {
+      "name": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+      "method": "BookOfEternityClient.Tests.StateDistributorCanonicalLeaseTests.DistributeAsync_MalformedExistingJson_FailsClosedAndPreservesExactBytes",
+      "source": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+      "artifact": "backup-review-correction-green/portable-backup-review-regressions-unit-004.trx",
+      "artifactSha256": "8c5993547516c35400bddaf2b31369379648987e289e5dbf08b02baa67f631da"
+    }
+  ]
+}

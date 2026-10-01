@@ -1,0 +1,125 @@
+{
+  "Categories": [
+    "portable-backup-api",
+    "portable-backup-windows-paths",
+    "portable-backup-native-boundaries",
+    "portable-backup-native-routing",
+    "portable-backup-native-cold",
+    "portable-backup-generation-debt",
+    "portable-backup-qte"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-backup-api",
+      "reason": "Public ordinary sync/async backup creation, independently seeded restore and cleanup with exact bytes and B1 decision semantics on Linux/Windows.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-windows-paths",
+      "reason": "Actual Windows extended-root create/restore/cleanup and same-file case alias rejection; required native body with no silent platform return.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-boundaries",
+      "reason": "Exact native Windows by-name links, namespace/alias/type and real lease/debt subset; all link fixtures must execute.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-routing",
+      "reason": "Actual original native physical backup handler and unchanged recorder bypass, plus both mixed-route rejections.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-native-cold",
+      "reason": "Two actual public restore cuts with separate-process normal lease recovery and external hard-link preservation on Windows.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-generation-debt",
+      "reason": "Actual bound StateDistributor generation conflict after a committed backup retains journal uncertainty before compensation; outer SessionOperationContext finalization remains separate.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    },
+    {
+      "category": "portable-backup-qte",
+      "reason": "Actual QTE backup publication and same-lease debt reach its immediate distributor boundary; uncertainty excludes wider baseline compensation and later writes.",
+      "contracts": [
+        "FR-002 through FR-007; bounded backup lifecycle"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "bd8141a2bdc9f88602525b0808e935a8184ca967",
+    "WorkingTreeFingerprint": "2473F183E9DE2602FA195043A03F0401454CAD493543CAC1E97F72E82CEE8EEE",
+    "ChangedFiles": 4
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0636486,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0096158,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.0111246,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0115771,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 30,
+  "WallTime": "00:00:06.7893802",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 7,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 30,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-backup-api-unit-001",
+      "portable-backup-generation-debt-unit-002",
+      "portable-backup-native-boundaries-unit-003",
+      "portable-backup-native-cold-unit-004",
+      "portable-backup-native-routing-unit-005",
+      "portable-backup-qte-integration-006",
+      "portable-backup-windows-paths-unit-007"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

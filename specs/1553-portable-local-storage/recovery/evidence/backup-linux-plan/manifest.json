@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "Head": "bd8141a2bdc9f88602525b0808e935a8184ca967",
+    "WorkingTreeFingerprint": "2473F183E9DE2602FA195043A03F0401454CAD493543CAC1E97F72E82CEE8EEE",
+    "ChangedFiles": 4
+  },
+  "command": "scripts/test-csharp.ps1 -SelectionFile tests/selection.json -PlanOnly -NoBuild -Parallelism 1",
+  "summary": {
+    "ExitCode": 0,
+    "WallTime": "00:00:07.4654780",
+    "Tests": {
+      "Total": 0,
+      "Executed": 0,
+      "Passed": 0,
+      "Failed": 0
+    },
+    "Selection": {
+      "PlannedDescriptors": 14,
+      "CompletedDescriptors": 0,
+      "PlannedCases": 94,
+      "CompletedCases": 0,
+      "UnderfilledDescriptors": [
+        "portable-backup-api-unit-001",
+        "portable-backup-boundaries-unit-002",
+        "portable-backup-consumers-unit-003",
+        "portable-backup-existing-api-integration-004",
+        "portable-backup-existing-consumers-unit-005",
+        "portable-backup-generation-debt-unit-006",
+        "portable-backup-linux-case-unit-007",
+        "portable-backup-linux-special-unit-008",
+        "portable-backup-publication-unit-009",
+        "portable-backup-qte-integration-010",
+        "portable-backup-recovery-unit-011",
+        "portable-backup-routing-unit-012",
+        "portable-backup-treatment-claims-integration-013",
+        "portable-directory-backup-prerequisite-integration-014"
+      ],
+      "Complete": false
+    },
+    "TimedOut": false,
+    "OwnedTreeCleanupSucceeded": true,
+    "RuntimeCleanupSucceeded": true,
+    "DuplicateTests": []
+  },
+  "artifacts": [
+    {
+      "file": "summary.json",
+      "originalSha256": "a18bf5fd412381be78af2c5c281c377eb95191d10c33ad615f795ef4098373ee",
+      "sanitizedSha256": "a18bf5fd412381be78af2c5c281c377eb95191d10c33ad615f795ef4098373ee"
+    },
+    {
+      "file": "plan.json",
+      "originalSha256": "ff3bae189187bb8949ad8faa57d4625f396a00df36eb9c9ea3780e083569daaa",
+      "sanitizedSha256": "ff3bae189187bb8949ad8faa57d4625f396a00df36eb9c9ea3780e083569daaa"
+    }
+  ],
+  "sanitization": "Role-based path tokens without angle brackets; all sanitized TRX parsed as XML before publication. Raw hashes retain original provenance.",
+  "packet": {
+    "schemaVersion": 1,
+    "baseCommit": "e2d1afff9a8b9fa88ca221420ddf4a1301dd8449",
+    "patchFile": "backup-lifecycle-pending.patch",
+    "patchBytes": 28296,
+    "patchSha256": "a88e5df0ed4ae56fe851e5bba7aa8cb9b0962074cd12cd3c789693604c793e38",
+    "entries": [
+      {
+        "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
+        "beforeBlob": "4cec0dc9a5ca6428c86e891135dae1ad163ed4b9",
+        "afterBlob": "de441eb73df3be9d4fdeb5281528a131739de35e",
+        "beforeSha256": "81f40dc827bc9d7759b7091b238d31a533fb7fdbb87b2b3152b53cfb43c716e1",
+        "afterSha256": "7711cd74f294c0eb0ef88539094a4e58b62b7abaae1cba3910850e6ad4fa31c5"
+      },
+      {
+        "path": "BookOfEternityClient/Core/FileSystemManager.cs",
+        "beforeBlob": "70079f9db26fd60980f9a7868a2644436bbeb9d8",
+        "afterBlob": "4dc1ce302c9f0db8c167901f61c548513098d296",
+        "beforeSha256": "8cfec1a97f1ec180325b5b4cb7ebf3082300bf31f6e6d8421f128e368cbecf83",
+        "afterSha256": "764e3698d84bdeeffa372e0830b8b643373b14e5e963132fde88562c1ae5805f"
+      },
+      {
+        "path": "BookOfEternityClient/Services/QteSceneService.cs",
+        "beforeBlob": "3a0189ff949ee8a6f0a09b894a87d4cbcc76e110",
+        "afterBlob": "17ddc4efbeaee534b32cce33bd56bcb2ec3a27e8",
+        "beforeSha256": "752cf5468cd818d241d190b4b22184f79ed211abab4a1b282a192b2d2f94aea9",
+        "afterSha256": "aedb827fecd686b904f549d4c22008176932896edb8f2c7b73c194476d272d50"
+      },
+      {
+        "path": "tests/categories.json",
+        "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
+        "afterBlob": "6bbd1c6f0e8a087a7c92df4cce0a6e798bcfa4e5",
+        "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
+        "afterSha256": "414e68f9da3eb09121c430204bf04f199dba5d27d2b9065ab404d995ad919e08"
+      }
+    ],
+    "appliedSourceTree": "5c779cdf9a30d15a4d3134c5eb5d5a702f836f4b",
+    "comparisonExcludes": [
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
+      "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"
+    ],
+    "scope": "T030-G ordinary backup lifecycle; current plan records exact execution and remaining scope"
+  },
+  "observation": "Discovery only; zero tests executed. A plan incomplete-execution flag is expected and is not a passing behavioral result."
+}
