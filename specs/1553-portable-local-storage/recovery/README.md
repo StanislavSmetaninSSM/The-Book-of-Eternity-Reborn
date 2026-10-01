@@ -1,5 +1,10 @@
 # Source and evidence recovery
 
+## Active T031 coordinated recovery
+
+This WIP continues from accepted T030-E closure `e244a890000f7ae789eb24aa85dbec789b837aee`. The helper test scaffold and current plan/tasks/selection are normal Git files. The large research/catalog updates are preserved in `coordinated-publication-pending.patch` with exact before/after blobs and SHA-256 values in `coordinated-publication-pending.json`. Production is unchanged. After a fresh GitHub-only checkout, verify the patch hash and every before blob, then run `git apply --check` and `git apply` for this packet. Verify every after blob and the manifest’s applied source tree using a temporary index excluding only the two pending packet files. Do not apply a retired packet over normalized source. No T031 test has run at this scaffold checkpoint.
+
+
 <a id="active-t030-e-wip-recovery"></a>
 ## Accepted T030-E recovery
 

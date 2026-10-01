@@ -1,0 +1,53 @@
+diff --git a/specs/1553-portable-local-storage/research.md b/specs/1553-portable-local-storage/research.md
+index 4a4415cc..5391cb96 100644
+--- a/specs/1553-portable-local-storage/research.md
++++ b/specs/1553-portable-local-storage/research.md
+@@ -292,6 +292,8 @@ Prefer migrating **helper-specific** fault injections to the existing synchronou
+ 
+ Do not replay old callbacks after commit, ignore returned Tasks, or block arbitrary async callbacks with sync-over-async. Preserving the arbitrary internal `Func<PlannedWrite,Task>` contract would require a genuinely awaited observer path through B1 and is a wider alternative. There is no observed production need for that alternative. Collapsing duplicates necessarily changes synthetic intermediate-image hook observations; state the revised test contract as one observation per published unique final member.
+ 
++Chosen T031-A refinement (2026-10-01): retain the original-recorder browser acceptance callback on its existing route. Ordinary helper storage cuts move to B1; invalid mixed ordinary-publication/legacy-callback use must fail explicitly. The actual ordinary acceptance and next-wave tests must assert both the reached pre-decision member cut and absence of service acknowledgment. The existing `final:mechanics/history/runtime`, transport deletion and `final:continuation` controls remain later gameplay compensation tests, including exact restoration and retry identity reuse. `QteSceneServiceTests.ResolveActiveActionAsync_BackupCleanupFailureDoesNotMaskCommittedResult` remains a post-acceptance cleanup control. A test-only hook name does not make these boundaries semantically interchangeable. The first four-test helper scaffold has not yet run; implementation and these consumer refinements remain pending.
++
+ ### Outcomes and minimal caller changes
+ 
+ B1 already distinguishes `Committed`, `RolledBack`, `Uncertain` (`TrustedLocalFilePublication.cs:75–104`), including committed observer/cleanup failure. Keep the bool facade: true for committed, false for initial baseline mismatch or positively confirmed rollback, distinct unresolved exception for uncertain. Never broadly catch the publish API and return false. Capture the durable result before owned-lease disposal/follow-up; a disposal/cleanup failure cannot turn an established commit into uncommitted or start manual undo. Surface/log the follow-up without changing that disposition. The prepared settings implementation supplies the existing model (`WebUi/BrowserLocalWriteCoordinator.Prepared.cs:35–59,73–92`).
+diff --git a/tests/categories.json b/tests/categories.json
+index ad2fe43a..f6ff77dd 100644
+--- a/tests/categories.json
++++ b/tests/categories.json
+@@ -8417,6 +8417,35 @@
+           ]
+         }
+       ]
++    },
++    {
++      "id": "portable-coordinated-publication",
++      "responsibility": "Ordinary CoordinatedStateWriteHelper complete member-set decisions, exact before/after images, confirmed rollback and retained uncertain/committed evidence. Initial scaffold exercises the actual helper with an admitted existing generation.",
++      "excludes": "Legacy browser recorder migration, full accepted-turn/gameplay acceptance, generation bootstrap redesign, external profiles and save/load.",
++      "changeHints": [
++        "BookOfEternityClient/Services/CoordinatedStateWriteHelper.cs",
++        "BookOfEternityClient/Core/FileSystemManager.TrustedLocalStorage.cs"
++      ],
++      "related": [
++        {
++          "id": "portable-storage-publication",
++          "when": "The shared B1 publication adapter or phase observer semantics change."
++        }
++      ],
++      "requirements": {
++        "frontendBuild": false,
++        "exclusive": false
++      },
++      "timeoutMinutes": 4,
++      "expectedSeconds": null,
++      "selectors": [
++        {
++          "project": "unit",
++          "tests": [
++            "BookOfEternityClient.Tests.PortableCoordinatedPublicationTests.*"
++          ]
++        }
++      ]
+     }
+   ]
+ }
