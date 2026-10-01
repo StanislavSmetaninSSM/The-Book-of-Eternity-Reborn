@@ -362,18 +362,7 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
         var keys = new[] { "Down", "Down", "Down", "Down", "Enter", "Enter" };
         File.WriteAllText(script, System.Text.Json.JsonSerializer.Serialize(new { steps = keys.Select(key => new { kind = "key", key }) }));
         var input = ConsoleE2EScriptedInputSource.FromFile(script, artifacts);
-        var loc = new BookOfEternityClient.UI.LocalizationManager();
-        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
-        // Invoke the actual menu with its real dependencies. Unused gameplay/GM
-        // services are absent; this fixture cannot launch a turn or provider.
-        var engine = new GameEngine(fs: _files, stateManager: _state, gameLoop: null!, normalizer: null!,
-            progressionSchedule: null!, ui: null!, explorer: null!, loc: loc, saveLoad: null!, imageService: null!,
-            validator: null!, charService: null!, storyService: null!, actorMemoryService: null!, audioService: audio,
-            consoleAppearance: new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance),
-            systemModService: _mods, systemGuardianLibraryService: null!, criticalStateHealth: null!, worldDirectiveService: null!,
-            scenarioCoreService: null!, afterlifeArchiveCandidateService: null!, afterlifeReturnGuardService: null!,
-            rivalSoulArcService: null!, guardianCorrectionService: null!, pendingTurnState: null!, qteSceneService: null!,
-            clipboardService: null!, logger: NullLogger<GameEngine>.Instance, inputSource: input);
+        var engine = CreateConsoleSettingsEngine(input);
         var injected = false;
         _observe = (phase, _) =>
         {
@@ -413,6 +402,109 @@ public sealed class ConsoleSettingsSessionTests : IDisposable
             Assert.Equal("en", loc.CurrentLanguage); Assert.False(second.IsCancellationRequested);
         }
         Assert.Equal("ru", loc.CurrentLanguage); Assert.True(second.IsCancellationRequested);
+    }
+
+    [Theory]
+    [InlineData("committed")]
+    [InlineData("blocked")]
+    [InlineData("rollback")]
+    [InlineData("committed-follow-up")]
+    [InlineData("uncertain")]
+    public async Task InitialSettingsFailureEscapesBoundInitializerBeforeRequestOrGmWait(string failure)
+    {
+        await Open(); var engine = CreateConsoleSettingsEngine();
+        var before = File.ReadAllBytes(_files.ResolvePath("config.json"));
+        string generation;
+        await using (var lease = await _files.AcquireCanonicalWriteLeaseAsync()) generation = _files.ReadExistingSessionGeneration(lease)!;
+        var injected = false; var ownerReads = 0;
+        if (failure == "blocked")
+        {
+            await new LocalUiSessionLockService(_files).AcquireOrRefreshAsync(
+                new("other", "browser", "Другой интерфейс", TimeSpan.FromSeconds(120)), "Other operation");
+            _read = path => { if (path == LocalUiSessionLockService.LockPath) ownerReads++; };
+        }
+        else if (failure != "committed") _observe = (phase, _) =>
+        {
+            var cut = failure == "committed-follow-up" ? TrustedLocalPublicationPhase.Committed : TrustedLocalPublicationPhase.MemberPublished;
+            if (injected || phase != cut) return;
+            injected = true;
+            if (failure == "uncertain") File.WriteAllBytes(_files.ResolvePath(Projection), [99]);
+            throw new InvalidOperationException("Injected initial settings publication failure.");
+        };
+        var requestCreated = false; var gmWaitEntered = false;
+        var boundary = typeof(GameEngine).GetMethod("RequireInitialSettingsReadyAsync", BindingFlags.NonPublic | BindingFlags.Instance)!;
+        var error = await Record.ExceptionAsync(async () =>
+        {
+            await SessionOperationContext.RunBoundAsync(_files, generation, async () =>
+            {
+                await (Task)boundary.Invoke(engine, null)!;
+                requestCreated = true;
+                await _files.WriteFileAtomicAsync("input/turn_request.json", "{}");
+            });
+            gmWaitEntered = true; // Observation only; this fixture cannot start a real GM wait/provider.
+        });
+        if (failure == "committed")
+        {
+            Assert.Null(error); Assert.True(requestCreated); Assert.True(gmWaitEntered);
+            Assert.True(File.Exists(_files.ResolvePath("input/turn_request.json")));
+            Assert.True(File.Exists(_files.ResolvePath(Projection)));
+            Assert.True(File.Exists(_files.ResolvePath(SystemModService.ManifestPath)));
+            return;
+        }
+        Assert.IsType<InvalidDataException>(error);
+        Assert.False(requestCreated); Assert.False(gmWaitEntered);
+        Assert.False(File.Exists(_files.ResolvePath("input/turn_request.json")));
+        if (failure != "blocked") Assert.True(injected);
+        else Assert.True(ownerReads > 0, "The real owner admission must have inspected the blocking lease.");
+        if (failure == "committed-follow-up")
+        {
+            Assert.True(File.Exists(_files.ResolvePath(Projection)));
+            Assert.True(File.Exists(_files.ResolvePath(SystemModService.ManifestPath)));
+        }
+        else if (failure == "uncertain")
+        {
+            Assert.Equal(new byte[] { 99 }, File.ReadAllBytes(_files.ResolvePath(Projection)));
+            Assert.True(File.Exists(Path.Combine(_files.RuntimeRootPath, "trusted-local-publication-v1", "active.json")));
+        }
+        else
+        {
+            Assert.Equal(before, File.ReadAllBytes(_files.ResolvePath("config.json")));
+            Assert.False(File.Exists(_files.ResolvePath(Projection)));
+        }
+    }
+
+    [Fact]
+    public void RealInitializerRequiresSettingsInsideItsGenerationBindingBeforeCreatingTheRequest()
+    {
+        var dir = new DirectoryInfo(AppContext.BaseDirectory);
+        const string relative = "BookOfEternityClient/Core/GameEngine/GameEngine.MainMenu.cs";
+        while (dir != null && !File.Exists(Path.Combine(dir.FullName, relative))) dir = dir.Parent;
+        Assert.NotNull(dir);
+        var source = File.ReadAllText(Path.Combine(dir!.FullName, relative));
+        var start = source.IndexOf("private async Task<string> InitializeChaosSea(", StringComparison.Ordinal);
+        var end = source.IndexOf("private async Task WriteInitialGuardianProjectTrackerStateAsync", start, StringComparison.Ordinal);
+        var initializer = source[start..end];
+        var binding = initializer.IndexOf("SessionOperationContext.RunBoundAsync(_fs, sessionGeneration", StringComparison.Ordinal);
+        var boundary = initializer.IndexOf("await RequireInitialSettingsReadyAsync();", StringComparison.Ordinal);
+        var request = initializer.IndexOf("var request = new TurnRequest", StringComparison.Ordinal);
+        Assert.True(binding >= 0 && boundary > binding && request > boundary,
+            "The executed settings failure boundary must guard the real bound initializer before request creation.");
+        Assert.DoesNotContain("if (!await WriteGameSettingsForGm()) return;", initializer, StringComparison.Ordinal);
+    }
+
+    private GameEngine CreateConsoleSettingsEngine(IConsoleInputSource? input = null)
+    {
+        var loc = new BookOfEternityClient.UI.LocalizationManager();
+        var audio = new AudioService(_files, _live, NullLogger<AudioService>.Instance);
+        // Only settings/menu services participate; no gameplay or GM provider is supplied.
+        return new GameEngine(fs: _files, stateManager: _state, gameLoop: null!, normalizer: null!,
+            progressionSchedule: null!, ui: null!, explorer: null!, loc: loc, saveLoad: null!, imageService: null!,
+            validator: null!, charService: null!, storyService: null!, actorMemoryService: null!, audioService: audio,
+            consoleAppearance: new ConsoleAppearanceService(_live, NullLogger<ConsoleAppearanceService>.Instance),
+            systemModService: _mods, systemGuardianLibraryService: null!, criticalStateHealth: null!, worldDirectiveService: null!,
+            scenarioCoreService: null!, afterlifeArchiveCandidateService: null!, afterlifeReturnGuardService: null!,
+            rivalSoulArcService: null!, guardianCorrectionService: null!, pendingTurnState: null!, qteSceneService: null!,
+            clipboardService: null!, logger: NullLogger<GameEngine>.Instance, inputSource: input);
     }
 
     public void Dispose() { if (Directory.Exists(_root)) Directory.Delete(_root, recursive: true); }

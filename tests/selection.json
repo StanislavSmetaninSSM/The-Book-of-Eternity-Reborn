@@ -3,18 +3,10 @@
   "selections": [
     {
       "category": "portable-console-settings-session",
-      "reason": "Correction of actual immediate-save recovery control flow and last accepted preview restoration/rearm; retain all affected session and preview cases.",
+      "reason": "Real initial-settings failure boundary under SessionOperationContext must stop both request and wait continuation for blocked, rolled-back, committed-follow-up and uncertain results; source-order check ties it to the actual initializer without changing generation-return anchors.",
       "contracts": [
-        "console recovery control flow",
-        "last accepted preview effect restoration"
-      ]
-    },
-    {
-      "category": "portable-console-settings-client",
-      "reason": "OptionsMenu control flow and preview restoration changed; rerun its five exact real-process save/discard/restart/owner and existing menu consumers. Unchanged preparation category is excluded.",
-      "contracts": [
-        "console settings menu outcomes",
-        "scripted process persistence and discard"
+        "fresh-game settings admission failure",
+        "generation-bound dispatch continuation"
       ]
     }
   ]
