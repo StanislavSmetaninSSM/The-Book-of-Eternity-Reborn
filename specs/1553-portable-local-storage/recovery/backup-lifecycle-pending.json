@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "baseCommit": "66bbcd240424f696709b7eea4bd96783f7eec59d",
+  "baseCommit": "0b2be663320a89e3be30ba1d57298c67f7d73cd4",
   "patchFile": "backup-lifecycle-pending.patch",
-  "patchBytes": 21742,
-  "patchSha256": "1e877b2a6e4f233d8f5db24eb119fa76418c5c592d4fdbaed5cfccb5b0b31656",
+  "patchBytes": 22575,
+  "patchSha256": "84b4626870f9d42828ea10fabbc9d684a8ec55788f10f3ec828040e16be1b84f",
   "entries": [
     {
       "path": "BookOfEternityClient.IntegrationTests/QteSceneServiceTests.cs",
@@ -29,12 +29,12 @@
     {
       "path": "tests/categories.json",
       "beforeBlob": "0a621b605dac7029df573211c7dd091615f870fe",
-      "afterBlob": "011005b76ccf84e9f076c82cd2a41ae247948668",
+      "afterBlob": "e9af923726ce93f26292d0690d04931634de54a1",
       "beforeSha256": "e90132627211590d9b78798133175d6468b59907801c83a9818500cd610bc045",
-      "afterSha256": "31149e5aef2be2c628ec77e40e32805dcf2a7aece71975c1501224ef4c5f9239"
+      "afterSha256": "471b43a74216189bdae19aad7090b4f734e6ef2d38e8ef659a2ba8c5ffbf18e9"
     }
   ],
-  "appliedSourceTree": "ebe21ebe737ca806caaaf078d185207bdcb5c19e",
+  "appliedSourceTree": "f37647a14c87a47fdda2b26c60e17dbb3e67a9e7",
   "comparisonExcludes": [
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.patch",
     "specs/1553-portable-local-storage/recovery/backup-lifecycle-pending.json"

@@ -83,22 +83,26 @@ public sealed class PortableBackupConsumerTests : IDisposable
     public async Task ActualDistributorStopsReverseCompensationWhenRestoreIsUnresolved()
     {
         FileSystemManager? files = null; var rollbackStarted = false; var reached = 0; var rollbackPaths = new List<string>();
+        var primaryFailure = new InvalidOperationException("Distinct primary distribution failure.");
+        var restoreFailure = new CutFailure();
         files = new(_root, NullLogger<FileSystemManager>.Instance, PhysicalLoadTransactionOperations.Instance,
             new FileSystemManagerHooks { LocalPublicationObserver = (phase, index) =>
             {
                 if (!rollbackStarted || phase != TrustedLocalPublicationPhase.MemberPublished || index != 0) return;
                 var members = ReadMembers(files!);
-                Assert.Equal(2, members.Length); reached++; File.WriteAllBytes(members[1], [99]); throw new CutFailure();
+                Assert.Equal(2, members.Length); reached++; File.WriteAllBytes(members[1], [99]); throw restoreFailure;
             } });
         Seed(files, Weather); Seed(files, Output); SeedGeneration(files);
         var distributor = new StateDistributor(files, NullLogger<StateDistributor>.Instance,
             new StateDistributorHooks
             {
-                AfterFileMutationAppliedAsync = _ => throw new CutFailure(),
+                AfterFileMutationAppliedAsync = _ => throw primaryFailure,
                 BeforeFileMutationRollback = path => { rollbackStarted = true; rollbackPaths.Add(path); }
             });
-        await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => distributor.DistributeAsync(Response()));
+        var failure = await Assert.ThrowsAsync<CoordinatedStatePublicationUncertainException>(() => distributor.DistributeAsync(Response()));
         Assert.Equal(1, reached); Assert.Equal(new[] { Weather }, rollbackPaths);
+        Assert.Contains(restoreFailure, Assert.IsType<AggregateException>(failure.InnerException).InnerExceptions);
+        Assert.Same(primaryFailure, failure.Data["StateDistributionFailure"]);
         Assert.Equal(Baseline, File.ReadAllBytes(files.ResolvePath(Weather)));
         Assert.Equal(Baseline, File.ReadAllBytes(files.ResolvePath(Output)));
         Assert.Single(Directory.GetFiles(Path.GetDirectoryName(files.ResolvePath(Output))!, "*.backup.*"));
