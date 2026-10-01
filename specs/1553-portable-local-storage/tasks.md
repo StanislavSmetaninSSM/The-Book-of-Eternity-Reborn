@@ -36,7 +36,7 @@ Spec: [spec.md](spec.md) | Plan/checkpoint: [plan.md](plan.md)
 
 ## B3 — US2/US3 transactions and accepted state
 
-- [ ] T030-A First bounded RED/implementation: exact leased generation snapshot reader with explicit absence/invalid distinction, original BOM bytes, common type/link/hard-link admission and no recursive generation fence; keep rotation/clear behavior unchanged until the coherent replacement slice is ready
+- [ ] T030-A Exact leased generation snapshot and wired read/fence consumers implemented: explicit absence/invalid distinction, BOM bytes, common type/link/hard-link admission and no recursive fence; 138-case covering result, 10-case original legacy-gate correction and 1-case source-guard correction passed as separately recorded; 115/10310 discovery and 140-case plan audited; independent review/normal delivery pending. Rotation/clear remain unchanged
 - [ ] T030-B Prepare generation plus all selected clear/worker file deletions for one existing B1 journal decision, retaining lifecycle-then-replacement lease order and rejecting the complete invalid selected namespace before mutation; exclude preserved context pack at traversal boundary
 - [ ] T030-C Make the exact browser/console pending checks ignore validated directory-only residue and allow proposal-ID reuse only after safe recursively-empty destination normalization; retain unknown/nonempty/link/type conflicts and legacy-evidence admission
 - [ ] T030-D Prove replacement interruption phases, full conflict preflight, generation/revision/owner fences and representative cold-process recovery; include nested empty snapshot/proposal residue and preserved opaque context-pack negatives

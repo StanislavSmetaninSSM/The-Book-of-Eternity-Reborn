@@ -1,0 +1,104 @@
+{
+  "Categories": [
+    "portable-session-generation",
+    "portable-session-generation-consumers",
+    "portable-client-bootstrap",
+    "portable-storage-publication"
+  ],
+  "Reasons": [
+    {
+      "category": "portable-session-generation",
+      "reason": "Cover the observed 24-case snapshot/FIFO/fence RED after implementation.",
+      "contracts": [
+        "generation snapshot bytes/type admission",
+        "nonrecursive existing reader wiring"
+      ]
+    },
+    {
+      "category": "portable-session-generation-consumers",
+      "reason": "Exact existing schema/type and bound-operation consumers, restored original legacy commit gate and strict shared-parser/lease-bookkeeping source guard; three physical-reader assertion bodies remain Windows-gated.",
+      "contracts": [
+        "canonical generation schema and strict parser delegation",
+        "operation lifetime fencing",
+        "original load-reader separation"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Bootstrap, cold recovery and ordinary writes now reach the common generation snapshot.",
+      "contracts": [
+        "common client generation admission",
+        "cold bootstrap and writer recovery"
+      ]
+    },
+    {
+      "category": "portable-storage-publication",
+      "reason": "B1 generation validation and recovery call the newly wired ReadExistingSessionGeneration.",
+      "contracts": [
+        "generation-bound journal recovery",
+        "exact member preflight and generation image compatibility"
+      ]
+    }
+  ],
+  "DiscoveryOnly": false,
+  "PlanOnly": true,
+  "Revision": {
+    "Head": "32be77c8c4adc340c33625bb03d3ff62dd4b757d",
+    "WorkingTreeFingerprint": "F9181226FCA7790593AE6AE798AA8FE98876E4728207EFE0BAF4EDCBE42499FA",
+    "ChangedFiles": 8
+  },
+  "CatalogAudit": null,
+  "CategoryResults": [],
+  "AdapterResults": [],
+  "PhaseResults": [
+    {
+      "Name": "Revision",
+      "Seconds": 0.0813583,
+      "Completed": true
+    },
+    {
+      "Name": "Changed-paths",
+      "Seconds": 0.0286723,
+      "Completed": true
+    },
+    {
+      "Name": "New-paths",
+      "Seconds": 0.012217,
+      "Completed": true
+    },
+    {
+      "Name": "Runtime-cleanup",
+      "Seconds": 0.0113333,
+      "Completed": true
+    }
+  ],
+  "Strategy": "SelectedCategories",
+  "TimeoutMinutes": 22,
+  "WallTime": "00:00:09.4020393",
+  "ExitCode": 0,
+  "TimedOut": false,
+  "OwnedTreeCleanupSucceeded": true,
+  "RuntimeCleanupSucceeded": true,
+  "RuntimeCleanup": null,
+  "Selection": {
+    "PlannedDescriptors": 5,
+    "CompletedDescriptors": 0,
+    "PlannedCases": 140,
+    "CompletedCases": 0,
+    "UnderfilledDescriptors": [
+      "portable-client-bootstrap-unit-001",
+      "portable-session-generation-unit-002",
+      "portable-session-generation-consumers-integration-003",
+      "portable-session-generation-consumers-unit-004",
+      "portable-storage-publication-unit-005"
+    ],
+    "Complete": false
+  },
+  "Tests": {
+    "Total": 0,
+    "Executed": 0,
+    "Passed": 0,
+    "Failed": 0
+  },
+  "DuplicateTests": []
+}

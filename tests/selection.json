@@ -2,11 +2,36 @@
   "schemaVersion": 1,
   "selections": [
     {
-      "category": "portable-session-generation-source",
-      "reason": "Observe the single existing stale parser-chain guard against freshly built unchanged runtime/test assemblies; all other browser guards remain excluded.",
+      "category": "portable-session-generation",
+      "reason": "Cover the observed 24-case snapshot/FIFO/fence RED after implementation.",
       "contracts": [
-        "strict generation parser delegation",
-        "existing authority classification and lease bookkeeping"
+        "generation snapshot bytes/type admission",
+        "nonrecursive existing reader wiring"
+      ]
+    },
+    {
+      "category": "portable-session-generation-consumers",
+      "reason": "Exact existing schema/type and bound-operation consumers, restored original legacy commit gate and strict shared-parser/lease-bookkeeping source guard; three physical-reader assertion bodies remain Windows-gated.",
+      "contracts": [
+        "canonical generation schema and strict parser delegation",
+        "operation lifetime fencing",
+        "original load-reader separation"
+      ]
+    },
+    {
+      "category": "portable-client-bootstrap",
+      "reason": "Bootstrap, cold recovery and ordinary writes now reach the common generation snapshot.",
+      "contracts": [
+        "common client generation admission",
+        "cold bootstrap and writer recovery"
+      ]
+    },
+    {
+      "category": "portable-storage-publication",
+      "reason": "B1 generation validation and recovery call the newly wired ReadExistingSessionGeneration.",
+      "contracts": [
+        "generation-bound journal recovery",
+        "exact member preflight and generation image compatibility"
       ]
     }
   ]

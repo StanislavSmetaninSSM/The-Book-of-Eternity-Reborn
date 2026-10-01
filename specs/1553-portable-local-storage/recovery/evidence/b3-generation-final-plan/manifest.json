@@ -1,0 +1,16 @@
+{
+  "sourceCommit": "32be77c8c4adc340c33625bb03d3ff62dd4b757d",
+  "catalogBlobAfterPatch": "b803fccaafbb24a5824d00984117b3ead6d3afa3",
+  "kind": "Discovery/selection metadata only; zero tests executed",
+  "sanitization": "Repository/toolchain paths and run user/computer/deployment identifiers replaced; results/timing retained.",
+  "files": [
+    {
+      "path": "summary.json",
+      "originalSha256": "686b001a9a7176fc55301f34c5090f8791576841530675043f11956dfb7a6f8a",
+      "sanitizedSha256": "686b001a9a7176fc55301f34c5090f8791576841530675043f11956dfb7a6f8a"
+    }
+  ],
+  "appliedSourceTree": "7c049c2d5e0f4b4a6592f3ca9e9657378252bb7a",
+  "selectionBlob": "bf910c649b0c9d278996984f7c23ecbb41ae97ce",
+  "freshOutputs": "Both projects built after final shared-core correction; unit rebuilt after guard-only test edit; integration sources/core unchanged since that passing build."
+}
